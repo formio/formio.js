@@ -217,7 +217,7 @@ export function checkSimpleConditional(component, condition, row, data) {
     value = getValue({ data }, condition.when);
   }
   // FOR-400 - Fix issue where falsey values were being evaluated as show=true
-  if (_.isNil(value)) {
+  if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
     value = '';
   }
 

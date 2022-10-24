@@ -278,6 +278,14 @@ export default class Webform extends NestedDataComponent {
     return this.options.language;
   }
 
+  get emptyValue() {
+    return null;
+  }
+
+  componentContext() {
+    return this._data;
+  }
+
   /**
    * Sets the language for this form.
    *

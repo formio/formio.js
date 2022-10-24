@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.14]
+## [Unreleased: 4.15.0-rc.15]
+### Fixed
+ - Revert change to always execute apis on pdf output.
+ - FIO-5431: Fixed Quill editor losing data after switching to source view and back.
+
+## 4.15.0-rc.14
+### Added
+ - FIO-5272: added URL dataSrc for Radio , Select boxes
+
 ### Fixed
  - FIO-4799: fixed property value is not set by default and causes the values as 'undefined'
  - FIO-2505: Fixes Signature changing size when inside DataGrid on new row adding
@@ -14,7 +22,51 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4799: updated code for Property Value is not set by default and show as 'undefined'
  - FIO-3973: Fixes an issue where the invalidRowsError is set to the wrong element when an EditGrid has an opened row
  - FIO-5142: fixed an issue where resource select data not showing on view submission and pdf download
-
+ - FIO-4405: fixed an issue where walidation error displays with empty value even if it is not required
+ - fix button loader icon removal at an unexpected event
+ - FIO-4949: done disable auto fill in browser
+ - FIO-4886: Fixes value calculation not working for nested forms
+ - FIO-4876 added condition for displaying the current form revision
+ - FIO-4816: email-submission-data-display-issues
+ - FIO-4752: Added autoscroll when dragging components inside of formbuilder
+ - FIO-4664: Fixed conditional logic based on Address component
+ - FIO-4629: fixed signature displaying in pdf form
+ - FIO-3258: fixed when user has to click twice on edit page to change Radio select
+ - FIO-5178: fixed emitting events from HTML component with Refresh On Change
+ - FIO-5057: added undefined check for TemplateData
+ - FIO-4820: Fixes an issue where API key of the component resets after changing some value labels on the Data tab
+ - FIO-4814: Ability to configure formio to store x-jwt-token in sessionStorage
+ - FIO-4603: fixed an issue where after closing the error message upload box is missing until refreshing the page
+ - FIO-5152: fixed an issue where value of html element displays differently on pdf download and form builder pages
+ - FIO-4814: Fixes form creation failed due to useSessionToken property read on undefined options object
+ - FIO-4764: Fixed issue with loading zones, added test for showing date in timezone
+ - FIO-2677: Pass options object to getSubmission as they may include request options
+ - FIO-4705: fixed an issue with bad request error in console when render pdf form
+ - FIO-5361: Fixes can not get user info when sesion token configured and session token config not dropped on log out
+ - FIO-4392: fixed Help links
+ - FIO-5370: Fixes quick inline embed section broken because of wrong embed form url
+ - FIO-5082: Label adjustments for PDF condensed mode
+ - FIO-4943: Fixed an issue where Content component displays wrongly in the build mode when no content is entered
+ - FIO-4153: fixed when calendar widget local settings not saving
+ - FIO-3448: Fixes an issue where Keep Overlay Aspect Ratio Signature option does not work in PDF forms
+ - FIO-5234: avoid lazy load flatpickr if it is already available in the window
+ - FIO-5399: Make formio use flatpickr script from test cdn for non-production builds
+ - FIO-5436: Fix incorrect signature size setting
+ - FIO-5266: Fixes flatpickr initialization happend prior to localization script loaded and calendar translations not applied
+ - FIO-5301: Added localization to the builder components search field
+ - FIO-5418: Fixes checkbox values in edit grid not translated
+ - FIO-5417: Fixes multiple calendar widgets could be opened at same time
+ - FIO-2971: fixed an issue table tooltip text of clone row components option is not fully visible
+ - FIO-4764: Fix date format that prevent saving in ISO standard
+ - FIO-5415 Fixed component settings not fitting in in some cases
+ - FIO-3308: fixed an issue where all checkboxes (radio type) are displayed as selected in email submissions when user selects just one
+ - FIO-5044: Removed Dropbox for Next Portal
+ - FIO-5069: API driven dataTable
+ - FIO-5455: Fixes context variables not available in datetime custom disabled dates config
+ - FIO-5544: added sticky property to the form components when building forms
+ - Upgrade vanilla text mask and text-mask addons. 
+ - FIO-3814: fixed fetch data several times when RefreshOnBlur
+ 
 ## 4.15.0-rc.13
 ### Added
  - FIO-4836: hash was added to file

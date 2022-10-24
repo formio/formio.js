@@ -320,6 +320,8 @@ export default class FormComponent extends Component {
             this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
             this.setOpenModalElement();
           }
+
+          this.calculateValue();
         });
       });
   }
@@ -652,7 +654,7 @@ export default class FormComponent extends Component {
     if (this.subForm) {
       const revisionPath = submission._frid ? '_frid' : '_vid';
       const shouldLoadOriginalRevision = this.useOriginalRevision
-      && _.isNumber(submission[revisionPath])
+      && (_.isNumber(submission[revisionPath]) || _.isNumber(submission._fvid))
       && _.isNumber(this.subForm.form?.[revisionPath])
       && submission._fvid !== this.subForm.form[revisionPath];
 

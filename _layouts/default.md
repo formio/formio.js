@@ -59,8 +59,8 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <ul class="navbar-nav nav-fill mr-auto">
         <li class="nav-item {% if page.section == 'home' %}active bg-white border{% endif %}"><a class="nav-link" href="{{ site.baseurl }}"><i class="fa fa-home"></i></a></li>
-        <li class="nav-item {% if page.section == 'builder' %}active bg-white border{% endif %}"><a class="nav-link" href="app/builder"><i class="fa fa-th-list"></i> Form Builder</a></li>
-        <li class="nav-item {% if page.section == 'sandbox' %}active bg-white border{% endif %}"><a class="nav-link" href="app/sandbox"><i class="fa fa-cube"></i> Sandbox</a></li>
+        <li class="nav-item {% if page.section == 'builder' %}active bg-white border{% endif %}"><a class="nav-link" href="app/builder.html"><i class="fa fa-th-list"></i> Form Builder</a></li>
+        <li class="nav-item {% if page.section == 'sandbox' %}active bg-white border{% endif %}"><a class="nav-link" href="app/sandbox.html"><i class="fa fa-cube"></i> Sandbox</a></li>
         <li class="nav-item {% if page.section == 'examples' %}active bg-white border{% endif %}"><a class="nav-link" href="app/examples"><i class="fa fa-check-square-o"></i> Examples</a></li>
         <li class="nav-item"><a class="nav-link" target="_blank" href="https://github.com/formio/formio.js/wiki"><i class="fa fa-book"></i> Documentation</a></li>
         <li class="nav-item {% if page.section == 'sdk'%}active bg-white border{% endif %}"><a class="nav-link" href="app/sdk"><i class="fa fa-list-alt"></i> SDK</a></li>

@@ -1,6 +1,6 @@
 import { maskInput, conformToMask } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
-import { createNumberMask } from 'text-mask-addons';
+import { createNumberMask } from '@formio/text-mask-addons';
 import Input from '../_classes/input/Input';
 import { getNumberSeparators, getNumberDecimalLimit } from '../../utils/utils';
 

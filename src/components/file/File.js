@@ -343,6 +343,9 @@ export default class FileComponent extends Field {
     const superAttach = super.attach(element);
 
     if (this.refs.fileDrop) {
+      if (!this.statuses.length) {
+        this.refs.fileDrop.removeAttribute('hidden');
+      }
       const element = this;
       this.addEventListener(this.refs.fileDrop, 'dragover', function(event) {
         this.className = 'fileSelector fileDragOver';

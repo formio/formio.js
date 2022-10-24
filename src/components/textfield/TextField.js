@@ -75,7 +75,7 @@ export default class TextFieldComponent extends Input {
         readOnly: this.options.readOnly,
         timezone,
         displayInTimezone,
-        locale: this.options.language,
+        locale: this.component.widget.locale || this.options.language,
         saveAs: 'text'
       };
     }

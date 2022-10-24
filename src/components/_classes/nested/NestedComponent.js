@@ -729,6 +729,9 @@ export default class NestedComponent extends Field {
       return false;
     }
     if (component.type === 'components') {
+      if (component.tree && component.hasValue(value)) {
+        return component.setValue(_.get(value, component.key), flags);
+      }
       return component.setValue(value, flags);
     }
     else if (value && component.hasValue(value)) {

@@ -20,7 +20,9 @@ import _ from 'lodash';
 
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
-const CDN_URL = 'https://cdn.form.io/';
+const CDN_URL = (Formio?.version || '').includes('rc')
+  ? 'https://cdn.test-form.io/'
+  : 'https://cdn.form.io/';
 const JSDELIVR_CDN_URL = 'https://cdn.jsdelivr.net';
 const CDN_FLATPICKR_LOCALE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/l10n';
 const SHORTCUT_BUTTONS_PLUGIN_URL = '/npm/shortcut-buttons-flatpickr@0.1.0/dist/';
@@ -66,11 +68,11 @@ export default class CalendarWidget extends InputWidget {
     }
     if (!this.settings.enableTime) {
       this.settings.format = this.settings.format.replace(/ hh:mm a$/g, '');
-      this.settings.dateFormat = this.settings.format;
     }
     else if (this.settings.time_24hr) {
       this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
     }
+    this.zoneLoading = false;
   }
 
   /**
@@ -80,8 +82,17 @@ export default class CalendarWidget extends InputWidget {
    */
   loadZones() {
     const timezone = this.timezone;
+
+    if (this.zoneLoading) {
+      return true;
+    }
+
     if (!zonesLoaded() && shouldLoadZones(timezone)) {
-      loadZones(timezone).then(() => this.emit('redraw'));
+      this.zoneLoading = true;
+      loadZones(timezone).then(() => {
+        this.zoneLoading = false;
+        this.emit('redraw');
+      });
 
       // Return zones are loading.
       return true;
@@ -157,6 +168,12 @@ export default class CalendarWidget extends InputWidget {
     Formio.requireLibrary('flatpickr-css', 'flatpickr', [
       { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }
     ], true);
+
+    const flatpickr = _.get(window, 'flatpickr');
+
+    if (flatpickr && this._input) {
+      return this.initFlatpickr(flatpickr);
+    }
 
     if (this.component.shortcutButtons) {
       this.component.shortcutButtons = this.component.shortcutButtons.filter((btn) => btn.label && btn.onClick);
@@ -248,17 +265,17 @@ export default class CalendarWidget extends InputWidget {
   }
 
   addSuffix(suffix) {
-    this.addEventListener(suffix, 'click', (event) => {
-      event.stopPropagation();
-
-      if (this.calendar) {
-        if (!this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
-          this.calendar.open();
+    this.addEventListener(suffix, 'click', () => {
+      setTimeout(() => {
+        if (this.calendar) {
+          if (!this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
+            this.calendar.open();
+          }
+          else if (this.calendar.isOpen) {
+            this.calendar.close();
+          }
         }
-        else if (this.calendar.isOpen) {
-          this.calendar.close();
-        }
-      }
+      }, 0);
     });
 
     return suffix;
@@ -378,11 +395,12 @@ export default class CalendarWidget extends InputWidget {
       value = value ? formatDate(value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
       return super.setValue(value);
     }
+
+    const zonesLoading = this.loadZones();
     if (this.isValueISO8601(value)) {
       this.calendar.setDate(moment(value).toDate(), false);
     }
     else if (value) {
-      const zonesLoading = this.loadZones();
       if (!saveAsText && this.settings.readOnly && !zonesLoading) {
         this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);
       }
@@ -543,7 +561,7 @@ export default class CalendarWidget extends InputWidget {
     return (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
-        if (!this.settings.enableTime || this.loadZones()) {
+        if (this.loadZones()) {
           return Flatpickr.formatDate(date, format);
         }
 

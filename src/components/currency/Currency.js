@@ -1,4 +1,4 @@
-import { createNumberMask } from 'text-mask-addons';
+import { createNumberMask } from '@formio/text-mask-addons';
 import { maskInput } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
 import { getCurrencyAffixes } from '../../utils/utils';

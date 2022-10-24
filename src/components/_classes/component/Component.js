@@ -690,12 +690,15 @@ export default class Component extends Element {
   }
 
   rightDirection(direction) {
+    if (this.options.condensedMode) {
+      return false;
+    }
     return direction === 'right';
   }
 
-  getLabelInfo() {
+  getLabelInfo(isCondensed = false) {
     const isRightPosition = this.rightDirection(this.labelPositions[0]);
-    const isLeftPosition = this.labelPositions[0] === 'left';
+    const isLeftPosition = this.labelPositions[0] === 'left' || isCondensed;
     const isRightAlign = this.rightDirection(this.labelPositions[1]);
 
     let contentMargin = '';
@@ -2238,7 +2241,7 @@ export default class Component extends Element {
               this.addEventListener(qlSource, 'click', (event) => {
                 event.preventDefault();
                 if (txtArea.style.display === 'inherit') {
-                  this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
+                  this.quill.setContents(this.quill.clipboard.convert({ html: txtArea.value }));
                 }
                 txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
               });
@@ -3146,6 +3149,8 @@ export default class Component extends Element {
 
   shouldSkipValidation(data, dirty, row) {
     const rules = [
+      // Do not check custom validation for empty data if it is not required
+      () => this.component.validate.custom && !this.dataValue && !this.component.validate.required,
       // Force valid if component is read-only
       () => this.options.readOnly,
       // Do not check validations if component is not an input component.

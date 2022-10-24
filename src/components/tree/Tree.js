@@ -25,6 +25,7 @@ export default class TreeComponent extends NestedDataComponent {
       icon: 'indent',
       group: 'data',
       weight: 40,
+      documentation: '/userguide/forms/data-components#tree',
       schema: TreeComponent.schema(),
     };
   }

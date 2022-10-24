@@ -75,6 +75,10 @@ class Formio {
     this.path = path;
     this.options = options;
 
+    if (options.useSessionToken) {
+      Formio.useSessionToken(options);
+    }
+
     if (options.hasOwnProperty('base')) {
       this.base = options.base;
     }
@@ -182,11 +186,18 @@ class Formio {
       else if (hostName === this.base) {
         // Get project id as first part of path (subdirectory).
         if (hostparts.length > 3 && path.split('/').length > 1) {
+          const isFile = path.match(/.json/);
           const pathParts = path.split('/');
-          pathParts.shift(); // Throw away the first /.
-          this.projectId = pathParts.shift();
-          path = `/${pathParts.join('/')}`;
-          this.projectUrl = `${hostName}/${this.projectId}`;
+
+          if (isFile) {
+            this.projectUrl = hostName;
+          }
+          else {
+            pathParts.shift(); // Throw away the first /.
+            this.projectId = pathParts.shift();
+            path = `/${pathParts.join('/')}`;
+            this.projectUrl = `${hostName}/${this.projectId}`;
+          }
         }
       }
       else {
@@ -243,6 +254,26 @@ class Formio {
     }
     Formio.cache = {};
     return this.makeRequest(type, this[_url], 'delete', null, opts);
+  }
+
+  static useSessionToken(options) {
+    const tokenName = `${options.namespace || Formio.namespace || 'formio'}Token`;
+    const token = localStorage.getItem(tokenName);
+
+    if (token) {
+      localStorage.removeItem(tokenName);
+      sessionStorage.setItem(tokenName, token);
+    }
+
+    const userName = `${options.namespace || Formio.namespace || 'formio'}User`;
+    const user = localStorage.getItem(userName);
+
+    if (user) {
+      localStorage.removeItem(userName);
+      sessionStorage.setItem(userName, user);
+    }
+
+    localStorage.setItem('useSessionToken', true);
   }
 
   index(type, query, opts) {
@@ -1061,6 +1092,8 @@ class Formio {
       Formio.tokens = {};
     }
 
+    const storage = localStorage.getItem('useSessionToken') ? sessionStorage : localStorage;
+
     if (!token) {
       if (!opts.fromUser) {
         opts.fromToken = true;
@@ -1068,7 +1101,7 @@ class Formio {
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        localStorage.removeItem(tokenName);
+        storage.removeItem(tokenName);
       }
       catch (err) {
         cookies.erase(tokenName, { path: '/' });
@@ -1081,7 +1114,7 @@ class Formio {
       Formio.tokens[tokenName] = token;
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        localStorage.setItem(tokenName, token);
+        storage.setItem(tokenName, token);
       }
       catch (err) {
         cookies.set(tokenName, token, { path: '/' });
@@ -1105,7 +1138,10 @@ class Formio {
       return Formio.tokens[decodedTokenName];
     }
     try {
-      Formio.tokens[tokenName] = localStorage.getItem(tokenName) || '';
+      const token = localStorage.getItem('useSessionToken')
+        ? sessionStorage.getItem(tokenName)
+        : localStorage.getItem(tokenName);
+      Formio.tokens[tokenName] = token || '';
       if (options.decode) {
         Formio.tokens[decodedTokenName] = Formio.tokens[tokenName] ? jwtDecode(Formio.tokens[tokenName]) : {};
         return Formio.tokens[decodedTokenName];
@@ -1119,7 +1155,9 @@ class Formio {
   }
 
   static setUser(user, opts = {}) {
-    var userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
+    const userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
+    const storage = localStorage.getItem('useSessionToken') ? sessionStorage : localStorage;
+
     if (!user) {
       if (!opts.fromToken) {
         opts.fromUser = true;
@@ -1131,7 +1169,7 @@ class Formio {
 
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem(userName);
+        return storage.removeItem(userName);
       }
       catch (err) {
         return cookies.erase(userName, { path: '/' });
@@ -1139,7 +1177,7 @@ class Formio {
     }
     // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
     try {
-      localStorage.setItem(userName, JSON.stringify(user));
+      storage.setItem(userName, JSON.stringify(user));
     }
     catch (err) {
       cookies.set(userName, JSON.stringify(user), { path: '/' });
@@ -1153,7 +1191,12 @@ class Formio {
     options = options || {};
     var userName = `${options.namespace || Formio.namespace || 'formio'}User`;
     try {
-      return JSON.parse(localStorage.getItem(userName) || null);
+      return JSON.parse(
+        (localStorage.getItem('useSessionToken')
+          ? sessionStorage
+          : localStorage
+        ).getItem(userName) || null
+      );
     }
     catch (e) {
       return JSON.parse(cookies.get(userName));
@@ -1306,6 +1349,8 @@ class Formio {
         options
       });
     }
+
+    authUrl = `${Formio.baseUrl}/current`;
     this.currentUserResolved = false;
     return Formio.makeRequest(formio, 'currentUser', authUrl, 'GET', null, options)
       .then((response) => {
@@ -1319,17 +1364,19 @@ class Formio {
     options = options || {};
     options.formio = formio;
     const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);
+    const logout = () => {
+      Formio.setToken(null, options);
+      Formio.setUser(null, options);
+      Formio.clearCache();
+      localStorage.removeItem('useSessionToken');
+    };
     return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`)
       .then(function(result) {
-        Formio.setToken(null, options);
-        Formio.setUser(null, options);
-        Formio.clearCache();
+        logout();
         return result;
       })
       .catch(function(err) {
-        Formio.setToken(null, options);
-        Formio.setUser(null, options);
-        Formio.clearCache();
+        logout();
         throw err;
       });
   }
@@ -1509,7 +1556,10 @@ class Formio {
           }
 
           if (onload) {
-            element.addEventListener('load', () => onload(Formio.libraries[name].ready));
+            element.addEventListener('load', () => {
+              Formio.libraries[name].loaded = true;
+              onload(Formio.libraries[name].ready);
+            });
           }
 
           const { head } = document;
@@ -1531,9 +1581,9 @@ class Formio {
       }
     }
 
-    const lib = Formio.libraries[name].ready;
+    const lib = Formio.libraries[name];
 
-    return onload ? onload(lib) : lib;
+    return onload && lib.loaded ? onload(lib.ready) : lib.ready;
   }
 
   static libraryReady(name) {

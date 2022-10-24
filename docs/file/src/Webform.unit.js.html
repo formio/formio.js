@@ -44,6 +44,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-list">components/_classes/list</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ListComponent">ListComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
@@ -238,6 +239,7 @@ import formWithNestedDataGridInitEmpty from &apos;../test/forms/nestedDataGridWi
 import * as FormioUtils from &apos;./utils/utils&apos;;
 import htmlRenderMode from &apos;../test/forms/htmlRenderMode&apos;;
 import optionalSanitize from &apos;../test/forms/optionalSanitize&apos;;
+import formWithCheckboxRadioaType from &apos;../test/forms/formWithCheckboxRadioType&apos;;
 
 global.requestAnimationFrame = (cb) =&gt; cb();
 global.cancelAnimationFrame = () =&gt; {};
@@ -245,6 +247,39 @@ global.cancelAnimationFrame = () =&gt; {};
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should return correct strign value for checkbox radio type&apos;, function(done) {
+    Formio.createForm(formWithCheckboxRadioaType).then((form) =&gt; {
+      form.setValue({ data: { radio: &apos;value1&apos;, checkbox: true } });
+      setTimeout(() =&gt; {
+        const stringValues = {
+          checkbox1: &apos;Yes&apos;,
+          checkbox2: &apos;No&apos;,
+          checkbox: &apos;Yes&apos;
+        };
+
+        form.eachComponent((comp) =&gt; {
+          assert.equal(comp.getValueAsString(comp.dataValue), stringValues[`${comp.component.key}`], `Error for string value of ${comp.component.key}`);
+        });
+
+        form.setValue({ data: { radio: &apos;value2&apos;, checkbox: false } });
+
+        setTimeout(() =&gt; {
+          const stringValues2 = {
+            checkbox1: &apos;No&apos;,
+            checkbox2: &apos;Yes&apos;,
+            checkbox: &apos;No&apos;
+          };
+
+          form.eachComponent((comp) =&gt; {
+            assert.equal(comp.getValueAsString(comp.dataValue), stringValues2[`${comp.component.key}`], `Error for string value of ${comp.component.key}`);
+          });
+
+          done();
+        }, 200);
+      }, 200);
+    }).catch((err) =&gt; done(err));
+  });
 
   it(&apos;Should recalculate value when submission is being set in edit mode&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
