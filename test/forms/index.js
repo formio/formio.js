@@ -15,6 +15,7 @@ import ComponentsBasicSettingsTests from './componentsBasicSettingsTests';
 // import WysiwygCursor from './wysiwygCursor';
 // import ChildMetadata from './childMetadata';
 import NestedFormValidation from './nested-form-validation';
+import uniqueValidationForm from './uniqueValidationForm';
 
 export default [
   Simple,
@@ -34,4 +35,5 @@ export default [
   // WysiwygCursor
   ClearOnHide,
   ...ComponentsBasicSettingsTests,
+  uniqueValidationForm,
 ];
