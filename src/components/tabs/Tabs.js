@@ -169,10 +169,13 @@ else {
     if (this.refs[this.tabLinkKey][index]) {
       this.addClass(this.refs[this.tabLinkKey][index], 'formio-tab-link-active');
     }
-    if (!this.builderMode || this.parent?.type === 'form' || !this.component.builderEdit) {
-      this.init();
-      this.redraw();
+    if ( _.isEmpty(this.tabs[index])) {
+      if (!this.builderMode || this.parent?.type === 'form' || !this.component.builderEdit ) {
+        this.init();
+        this.redraw();
+      }
     }
+
     this.triggerChange();
   }
 
