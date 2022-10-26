@@ -1,0 +1,138 @@
+I"&<p>You can use field logic to dynamically change field component definitions based on many different triggers. For example, you can make a field required based on another field’s value or change another fields value.</p>
+
+<p>This can also be configured on our beta portal (https://beta.form.io) under the “Field Logic” tab.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"formio"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">icons</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">fontawesome</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio</span><span class="dl">'</span><span class="p">),</span> <span class="p">{</span>
+ <span class="na">components</span><span class="p">:</span> <span class="p">[</span>
+   <span class="p">{</span>
+     <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">textfield</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">iAmATrigger</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">I am a trigger</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">placeholder</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Enter joe or bob.</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">input</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+     <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">textfield</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">lastName</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Last Name</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">placeholder</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Enter your last name</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">input</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+     <span class="na">tooltip</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Enter your &lt;strong&gt;Last Name&lt;/strong&gt;</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Enter your &lt;strong&gt;Last Name&lt;/strong&gt;</span><span class="dl">'</span><span class="p">,</span>
+     <span class="na">logic</span><span class="p">:</span> <span class="p">[</span>
+       <span class="p">{</span>
+         <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Bob Logic</span><span class="dl">'</span><span class="p">,</span>
+         <span class="na">trigger</span><span class="p">:</span> <span class="p">{</span>
+           <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">simple</span><span class="dl">'</span><span class="p">,</span>
+           <span class="na">simple</span><span class="p">:</span> <span class="p">{</span>
+             <span class="na">show</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+             <span class="na">when</span><span class="p">:</span> <span class="dl">'</span><span class="s1">iAmATrigger</span><span class="dl">'</span><span class="p">,</span>
+             <span class="na">eq</span><span class="p">:</span> <span class="dl">'</span><span class="s1">bob</span><span class="dl">'</span>
+           <span class="p">}</span>
+         <span class="p">},</span>
+         <span class="na">actions</span><span class="p">:</span> <span class="p">[</span>
+           <span class="p">{</span>
+             <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Set to snob</span><span class="dl">'</span><span class="p">,</span>
+             <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">value</span><span class="dl">'</span><span class="p">,</span>
+             <span class="na">value</span><span class="p">:</span> <span class="dl">'</span><span class="s1">value = </span><span class="se">\'</span><span class="s1">snob</span><span class="se">\'</span><span class="s1">;</span><span class="dl">'</span>
+           <span class="p">}</span>
+         <span class="p">]</span>
+       <span class="p">},</span>
+       <span class="p">{</span>
+         <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Joe Logic</span><span class="dl">'</span><span class="p">,</span>
+         <span class="na">trigger</span><span class="p">:</span> <span class="p">{</span>
+           <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">simple</span><span class="dl">'</span><span class="p">,</span>
+           <span class="na">simple</span><span class="p">:</span> <span class="p">{</span>
+             <span class="na">show</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+             <span class="na">when</span><span class="p">:</span> <span class="dl">'</span><span class="s1">iAmATrigger</span><span class="dl">'</span><span class="p">,</span>
+             <span class="na">eq</span><span class="p">:</span> <span class="dl">'</span><span class="s1">joe</span><span class="dl">'</span>
+           <span class="p">}</span>
+         <span class="p">},</span>
+         <span class="na">actions</span><span class="p">:</span> <span class="p">[</span>
+           <span class="p">{</span>
+             <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Set schmoe</span><span class="dl">'</span><span class="p">,</span>
+             <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">value</span><span class="dl">'</span><span class="p">,</span>
+             <span class="na">value</span><span class="p">:</span> <span class="dl">'</span><span class="s1">value = </span><span class="se">\'</span><span class="s1">schmoe</span><span class="se">\'</span><span class="s1">;</span><span class="dl">'</span>
+           <span class="p">}</span>
+         <span class="p">]</span>
+       <span class="p">}</span>
+     <span class="p">]</span>
+   <span class="p">},</span>
+ <span class="p">]</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3>Result</h3>
+<div class="card card-body bg-light">
+<div id="formio"></div>
+<script type="text/javascript">
+Formio.createForm(document.getElementById('formio'), {
+ components: [
+   {
+     type: 'textfield',
+     key: 'iAmATrigger',
+     label: 'I am a trigger',
+     placeholder: 'Enter joe or bob.',
+     input: true,
+   },
+   {
+     type: 'textfield',
+     key: 'lastName',
+     label: 'Last Name',
+     placeholder: 'Enter your last name',
+     input: true,
+     tooltip: 'Enter your <strong>Last Name</strong>',
+     description: 'Enter your <strong>Last Name</strong>',
+     logic: [
+       {
+         name: 'Bob Logic',
+         trigger: {
+           type: 'simple',
+           simple: {
+             show: true,
+             when: 'iAmATrigger',
+             eq: 'bob'
+           }
+         },
+         actions: [
+           {
+             name: 'Set to snob',
+             type: 'value',
+             value: 'value = \'snob\';'
+           }
+         ]
+       },
+       {
+         name: 'Joe Logic',
+         trigger: {
+           type: 'simple',
+           simple: {
+             show: true,
+             when: 'iAmATrigger',
+             eq: 'joe'
+           }
+         },
+         actions: [
+           {
+             name: 'Set schmoe',
+             type: 'value',
+             value: 'value = \'schmoe\';'
+           }
+         ]
+       }
+     ]
+   },
+ ]
+}
+);
+</script>
+</div>
+:ET

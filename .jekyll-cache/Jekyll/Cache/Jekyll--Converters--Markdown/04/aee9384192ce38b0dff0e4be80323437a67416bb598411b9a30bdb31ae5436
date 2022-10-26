@@ -1,0 +1,184 @@
+I"�<<p>Stripe securely collect card information from your customers and create a card payment.
+This component provides a card input field created by <a href="https://stripe.com/docs/stripe-js">Stripe</a> library.
+The component also provides a “pay button” using Android Pay, Apple Pay or Payment Request API.</p>
+
+<p>The authorization will be automaticly called when users use the pay button. Instead, for the card input field, the call will be done before submission
+or you can call manually add an button which call the method <code class="language-plaintext highlighter-rouge">authorize()</code>.</p>
+
+<p>These parameters are directly injected to Stripe functions:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">cardData</code> for <a href="https://stripe.com/docs/stripe-js/reference#stripe-create-token">Stripe.createToken()</a></li>
+  <li><code class="language-plaintext highlighter-rouge">stripeElementsOptions</code> for <a href="https://stripe.com/docs/stripe-js/reference#stripe-payment-request">stripe.elements()</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">stripeElementOptions</code> for <a href="https://stripe.com/docs/stripe-js/reference#the-elements-object">elements.create()</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">payButton.paymentRequest</code> for <a href="https://stripe.com/docs/stripe-js/reference#stripe-payment-request">stripe.paymentRequest()</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">payButton.stripeOptions</code> for <a href="https://stripe.com/docs/stripe-js/reference#the-elements-object">elements.create()</a>.</li>
+</ul>
+
+<p>Stripe can be configured with this following parameters:</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="dl">"</span><span class="s2">stripe</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">apiKey</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">pk_test_Aprek1cboUExxK6dHoBaOphh</span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">payButton</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="dl">"</span><span class="s2">enable</span><span class="dl">"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="dl">"</span><span class="s2">separatorLabel</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Or</span><span class="dl">"</span><span class="p">,</span>
+      <span class="dl">"</span><span class="s2">paymentRequest</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="dl">"</span><span class="s2">country</span><span class="dl">"</span><span class="p">:</span> <span class="dl">'</span><span class="s1">CA</span><span class="dl">'</span><span class="p">,</span>
+        <span class="dl">"</span><span class="s2">currency</span><span class="dl">"</span><span class="p">:</span> <span class="dl">'</span><span class="s1">cad</span><span class="dl">'</span><span class="p">,</span>
+        <span class="dl">"</span><span class="s2">total</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+          <span class="dl">"</span><span class="s2">label</span><span class="dl">"</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Test payment</span><span class="dl">'</span><span class="p">,</span>
+          <span class="dl">"</span><span class="s2">amount</span><span class="dl">"</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="dl">"</span><span class="s2">stripeOptions</span><span class="dl">"</span><span class="p">:</span> <span class="p">{}</span>
+    <span class="p">},</span>
+    <span class="dl">"</span><span class="s2">cardData</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="dl">"</span><span class="s2">name</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2"> </span><span class="dl">"</span><span class="p">,</span>
+      <span class="dl">"</span><span class="s2">address_line1</span><span class="dl">"</span><span class="p">:</span> <span class="dl">""</span><span class="p">,</span>
+      <span class="dl">"</span><span class="s2">address_city</span><span class="dl">"</span><span class="p">:</span> <span class="dl">""</span><span class="p">,</span>
+      <span class="dl">"</span><span class="s2">address_country</span><span class="dl">"</span><span class="p">:</span> <span class="dl">""</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="dl">"</span><span class="s2">successLabel</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Payment successful</span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">stripeElementsOptions</span><span class="dl">"</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="dl">"</span><span class="s2">stripeElementOptions</span><span class="dl">"</span><span class="p">:</span> <span class="p">{}</span>
+  <span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="install">Install</h4>
+<p>To use this plugin, you must first include the contributed modules for the Form.io renderer using.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.contrib.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<p>After you have included this library within your page, you will then need to register it with the Form renderer using the following.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">registerComponent</span><span class="p">(</span><span class="dl">'</span><span class="s1">stripe</span><span class="dl">'</span><span class="p">,</span> <span class="nx">Formio</span><span class="p">.</span><span class="nx">contrib</span><span class="p">.</span><span class="nx">stripe</span><span class="p">.</span><span class="nx">stripe</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>If you are including this within your own library, you can also include it with the following.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">StripeComponent</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">formiojs/build/contrib/stripe/stripe/stripe</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">Formio</span><span class="p">.</span><span class="nx">registerComponent</span><span class="p">(</span><span class="dl">'</span><span class="s1">stripe</span><span class="dl">'</span><span class="p">,</span> <span class="nx">StripeComponent</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="example">Example</h4>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.contrib.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"formio"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio</span><span class="dl">'</span><span class="p">),</span> <span class="p">{</span>
+  <span class="na">components</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">textfield</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">First name</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">placeholder</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Enter the first name.</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">firstName</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">input</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="na">inputType</span><span class="p">:</span> <span class="dl">'</span><span class="s1">text</span><span class="dl">'</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">textfield</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Last name</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">placeholder</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Enter the last name.</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">lastName</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">input</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="na">inputType</span><span class="p">:</span> <span class="dl">'</span><span class="s1">text</span><span class="dl">'</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">stripe</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">card</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Credit card</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">validate</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">required</span><span class="p">:</span> <span class="kc">true</span>
+      <span class="p">},</span>
+      <span class="na">stripe</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">apiKey</span><span class="p">:</span> <span class="dl">'</span><span class="s1">pk_test_Aprek1cboUExxK6dHoBaOphh</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">cardData</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1"> </span><span class="dl">'</span>
+        <span class="p">},</span>
+        <span class="na">payButton</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">enable</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+          <span class="na">paymentRequest</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">currency</span><span class="p">:</span> <span class="dl">'</span><span class="s1">cad</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">country</span><span class="p">:</span> <span class="dl">'</span><span class="s1">CA</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">total</span><span class="p">:</span> <span class="p">{</span>
+              <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Tee-shirt</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">amount</span><span class="p">:</span> <span class="mi">3000</span><span class="p">,</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Submit</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">theme</span><span class="p">:</span> <span class="dl">'</span><span class="s1">primary</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="result">Result</h4>
+
+<div class="card card-body bg-light">
+<div id="formio"></div>
+<script type="text/javascript">
+Formio.createForm(document.getElementById('formio'), {
+  components: [
+    {
+      type: 'textfield',
+      label: 'First name',
+      placeholder: 'Enter the first name.',
+      key: 'firstName',
+      input: true,
+      inputType: 'text'
+    },
+    {
+      type: 'textfield',
+      label: 'Last name',
+      placeholder: 'Enter the last name.',
+      key: 'lastName',
+      input: true,
+      inputType: 'text'
+    },
+    {
+      type: 'stripe',
+      key: 'card',
+      label: 'Credit card',
+      validate: {
+        required: true
+      },
+      stripe: {
+        apiKey: 'pk_test_Aprek1cboUExxK6dHoBaOphh',
+        cardData: {
+          name: ' '
+        },
+        payButton: {
+          enable: true,
+          paymentRequest: {
+            currency: 'cad',
+            country: 'CA',
+            total: {
+              label: 'T-Shirt',
+              amount: 3000,
+            }
+          }
+        }
+      },
+    },
+    {
+      type: 'button',
+      action: 'submit',
+      label: 'Submit',
+      theme: 'primary',
+      key: 'submit'
+    }
+  ]
+});
+</script>
+</div>
+:ET

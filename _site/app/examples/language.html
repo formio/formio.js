@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-58453303-6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'UA-58453303-6');
+  </script>
+
+  <base href="https://formiojs.test-form.io/4.14.9-rc.2/"></base>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JavaScript Powered Forms and Form.io SDK</title>
+  <link href="https://formiojs.test-form.io/4.14.9-rc.2/app/syntax.css" rel="stylesheet">
+  <link href="https://formiojs.test-form.io/4.14.9-rc.2/app/main.css" rel="stylesheet">
+  <link href="https://formiojs.test-form.io/4.14.9-rc.2/app/fontawesome/css/font-awesome.min.css" rel="stylesheet">
+  
+  
+    <link href="https://bootswatch.com/4/cosmo/bootstrap.min.css" rel="stylesheet">
+  
+  
+    <link href="https://formiojs.test-form.io/4.14.9-rc.2/dist/formio.full.min.css" rel="stylesheet">
+  
+  <script src="https://cdn.form.io/ace/ace.js"></script>
+  <script src="https://formiojs.test-form.io/4.14.9-rc.2/app/jquery/jquery.slim.min.js"></script>
+  <script src="https://formiojs.test-form.io/4.14.9-rc.2/app/bootstrap/js/bootstrap.min.js"></script>
+  
+    <script src="https://formiojs.test-form.io/4.14.9-rc.2/dist/formio.full.js"></script>
+  
+  
+  <script type="text/javascript">
+    window.onload = function() {
+      if (Formio) {
+        Formio.icons = 'fontawesome';
+        document.getElementById('renderer-version').innerHTML = Formio.version;
+      }
+    };
+  </script>
+</head>
+<body>
+<a href="https://github.com/formio/formio.js"><img style="position: absolute; top: 0; right: 0; border: 0;z-index:3000;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <img height="25px;" style="display: inline;" alt="Form.io" src="https://help.form.io/assets/formio-logo.png"> | JavaScript SDK Library
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <ul class="navbar-nav nav-fill mr-auto">
+        <li class="nav-item "><a class="nav-link" href="https://formiojs.test-form.io/4.14.9-rc.2"><i class="fa fa-home"></i></a></li>
+        <li class="nav-item "><a class="nav-link" href="app/builder.html"><i class="fa fa-th-list"></i> Form Builder</a></li>
+        <li class="nav-item "><a class="nav-link" href="app/sandbox.html"><i class="fa fa-cube"></i> Sandbox</a></li>
+        <li class="nav-item active bg-white border"><a class="nav-link" href="app/examples"><i class="fa fa-check-square-o"></i> Examples</a></li>
+        <li class="nav-item"><a class="nav-link" target="_blank" href="https://github.com/formio/formio.js/wiki"><i class="fa fa-book"></i> Documentation</a></li>
+        <li class="nav-item "><a class="nav-link" href="app/sdk"><i class="fa fa-list-alt"></i> SDK</a></li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="github-button nav-link" href="https://github.com/formio/formio.js" data-size="large" data-show-count="true" aria-label="Star formio/formio.js on GitHub">Star</a></li>
+        <li class="nav-item"><a class="github-button nav-link" href="https://github.com/formio/formio.js/fork" data-size="large" data-show-count="true" aria-label="Fork formio/formio.js on GitHub">Fork</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container">
+  <div class="row">
+  <div class="col-2">
+    <ul class="nav nav-pills nav-fill flex-column border-right border-left border-bottom">
+      
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/">Simple Embedding</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/jsfiddle.html">JSFiddle</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/hosted.html">Hosted Forms</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/submissions.html">Submission Hosting</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/htmlview.html">Submission View</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/customendpoint.html">Submission Custom Endpoint</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/thanyou.html">Thank You Page</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/externalload.html">External Data Load</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/pdf.html">PDF Form</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/customcomponent.html">Custom Components</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/custombuilder.html">Custom Form Builder</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/wizard.html">Wizards</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/customwizard.html">Custom Wizards</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/conditionalwizard.html">Conditional Wizards</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/wysiwyg.html">WYSIWYG Editor</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/embed.html">JavaScript Embedding</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/json.html">JSON Powered Forms</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/fieldLogic.html">Field Logic</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/savedraft.html">Save as Draft</a>
+          </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/conditions.html">Conditional Forms</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/select.html">Select Dropdowns</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/datagrid.html">Data Grid Input</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/noeval.html">No Eval</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/editgrid.html">Edit Grid</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/datagrid2.html">Data Grid Panels</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/external.html">External Sources & Conditional Selects</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/calculated.html">Calculated Values</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 active" href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/language.html">Multi-Language Forms</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/kitchen.html">Kitchen Sink</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="https://formiojs.test-form.io/4.14.9-rc.2/app/examples/recaptcha.html">reCAPTCHA component</a>
+          </li>
+        
+      
+    </ul>
+  </div>
+  <div class="col-10">
+    <h3 class="mt-0">Multi-Language Forms</h3>
+    <p>With Form.io, you can provide multiple languages for the forms that are rendered within your application. This
+is done like the following.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"btn-group"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">class=</span><span class="s">"btn btn-primary"</span> <span class="na">onclick=</span><span class="s">"setLanguage('sp')"</span><span class="nt">&gt;</span>Español<span class="nt">&lt;/button&gt;</span>
+  <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">class=</span><span class="s">"btn btn-primary"</span> <span class="na">onclick=</span><span class="s">"setLanguage('en')"</span><span class="nt">&gt;</span>English<span class="nt">&lt;/button&gt;</span>
+  <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">class=</span><span class="s">"btn btn-primary"</span> <span class="na">onclick=</span><span class="s">"setLanguage('ch')"</span><span class="nt">&gt;</span>中文<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"formio"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<div class="row">
+<div class="col col-sm-6">
+
+<pre>
+Formio.createForm(document.getElementById('formio'), {
+  components: [
+    {
+      type: 'textfield',
+      key: 'firstName',
+      label: 'First Name',
+      placeholder: 'Enter your first name',
+      input: true
+    },
+    {
+      type: 'textfield',
+      key: 'lastName',
+      label: 'Last Name',
+      placeholder: 'Enter your last name',
+      input: true
+    },
+    {
+      type: 'survey',
+      key: 'questions',
+      label: 'Survey',
+      values: [
+        {
+          label: 'Great',
+          value: 'great'
+        },
+        {
+          label: 'Good',
+          value: 'good'
+        },
+        {
+          label: 'Poor',
+          value: 'poor'
+        }
+      ],
+      questions: [
+        {
+          label: 'How would you rate the Form.io platform?',
+          value: 'howWouldYouRateTheFormIoPlatform'
+        },
+        {
+          label: 'How was Customer Support?',
+          value: 'howWasCustomerSupport'
+        },
+        {
+          label: 'Overall Experience?',
+          value: 'overallExperience'
+        }
+      ]
+    },
+    {
+      type: 'button',
+      action: 'submit',
+      label: 'Submit',
+      theme: 'primary'
+    }
+  ]
+}, {
+  language: 'sp',
+  i18n: {
+    sp: {
+      'First Name': 'Nombre de pila',
+      'Last Name': 'Apellido',
+      'Enter your first name': 'Ponga su primer nombre',
+      'Enter your last name': 'Introduce tu apellido',
+      'How would you rate the Form.io platform?': '¿Cómo calificaría la plataforma Form.io?',
+      'How was Customer Support?': '¿Cómo fue el servicio de atención al cliente?',
+      'Overall Experience?': '¿Experiencia general?',
+      Survey: 'Encuesta',
+      Excellent: 'Excelente',
+      Great: 'Estupendo',
+      Good: 'Bueno',
+      Average: 'Promedio',
+      Poor: 'Pobre',
+      'Submit': 'Enviar',
+      complete: 'Presentación Completa',
+    },
+    ch: {
+      'First Name': '名字',
+      'Last Name': '姓',
+      'Enter your first name': '输入你的名字',
+      'Enter your last name': '输入你的姓氏',
+      'How would you rate the Form.io platform?': '你如何评价Form.io平台？',
+      'How was Customer Support?': '客户支持如何？',
+      'Overall Experience?': '总体体验？',
+       Survey: '调查',
+      Excellent: '优秀',
+      Great: '大',
+      Good: '好',
+      Average: '平均',
+      Poor: '错',
+      'Submit': '提交',
+      complete: '提交完成',
+    }
+  }
+}).then(function(form) {
+  window.setLanguage = function(lang) {
+    form.language = lang;
+  };
+});
+</pre>
+
+</div>
+<div class="col col-sm-6">
+<h3 class="mt-0">Result</h3>
+<div class="card card-body bg-light">
+<div class="btn-group">
+  <button type="button" class="btn btn-primary mr-1" onclick="setLanguage('sp')">Español</button>
+  <button type="button" class="btn btn-primary mr-1" onclick="setLanguage('en')">English</button>
+  <button type="button" class="btn btn-primary" onclick="setLanguage('ch')">中文</button>
+</div>
+<div id="formio" style="margin-top: 20px;"></div>
+<script type="text/javascript">
+Formio.createForm(document.getElementById('formio'), {
+  components: [
+    {
+      type: 'textfield',
+      key: 'firstName',
+      label: 'First Name',
+      placeholder: 'Enter your first name',
+      input: true
+    },
+    {
+      type: 'textfield',
+      key: 'lastName',
+      label: 'Last Name',
+      placeholder: 'Enter your last name',
+      input: true,
+      conditional: {
+        json: {"!==": [{var: "data.firstName"}, "Bob"]}
+      }
+    },
+    {
+      type: 'survey',
+      key: 'questions',
+      label: 'Survey',
+      values: [
+        {
+          label: 'Great',
+          value: 'great'
+        },
+        {
+          label: 'Good',
+          value: 'good'
+        },
+        {
+          label: 'Poor',
+          value: 'poor'
+        }
+      ],
+      questions: [
+        {
+          label: 'How would you rate the Form.io platform?',
+          value: 'howWouldYouRateTheFormIoPlatform'
+        },
+        {
+          label: 'How was Customer Support?',
+          value: 'howWasCustomerSupport'
+        },
+        {
+          label: 'Overall Experience?',
+          value: 'overallExperience'
+        }
+      ]
+    },
+    {
+      type: 'button',
+      action: 'submit',
+      label: 'Submit',
+      theme: 'primary'
+    }
+  ]
+}, {
+  language: 'sp',
+  i18n: {
+    sp: {
+      'First Name': 'Nombre de pila',
+      'Last Name': 'Apellido',
+      'Enter your first name': 'Ponga su primer nombre',
+      'Enter your last name': 'Introduce tu apellido',
+      'How would you rate the Form.io platform?': '¿Cómo calificaría la plataforma Form.io?',
+      'How was Customer Support?': '¿Cómo fue el servicio de atención al cliente?',
+      'Overall Experience?': '¿Experiencia general?',
+      Survey: 'Encuesta',
+      Excellent: 'Excelente',
+      Great: 'Estupendo',
+      Good: 'Bueno',
+      Average: 'Promedio',
+      Poor: 'Pobre',
+      'Submit': 'Enviar',
+      complete: 'Presentación Completa',
+    },
+    ch: {
+      'First Name': '名字',
+      'Last Name': '姓',
+      'Enter your first name': '输入你的名字',
+      'Enter your last name': '输入你的姓氏',
+      'How would you rate the Form.io platform?': '你如何评价Form.io平台？',
+      'How was Customer Support?': '客户支持如何？',
+      'Overall Experience?': '总体体验？',
+       Survey: '调查',
+      Excellent: '优秀',
+      Great: '大',
+      Good: '好',
+      Average: '平均',
+      Poor: '错',
+      'Submit': '提交',
+      complete: '提交完成',
+    }
+  }
+}).then(function(form) {
+  window.setLanguage = function(lang) {
+    form.language = lang;
+  };
+});
+</script>
+</div>
+</div>
+</div>
+
+
+  </div>
+</div>
+
+</div>
+<hr />
+<div>
+  <h4 class="text-center text-muted">powered by <img src="https://formiojs.test-form.io/4.14.9-rc.2/app/logo.png" class="mr-2" style="height: 1.2em;" /></h4>
+  <p class="text-center text-muted mb-0" style="font-size: 0.8em">Copyright © Form.io LLC 2021. All rights reserved</p>
+</div>
+<p class="text-center text-muted mb-0" style="font-size: 0.8em">Renderer v<span id="renderer-version"></span></p>
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+</body>
+</html>

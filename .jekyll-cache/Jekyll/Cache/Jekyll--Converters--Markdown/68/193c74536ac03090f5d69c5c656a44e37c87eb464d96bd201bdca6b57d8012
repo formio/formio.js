@@ -1,0 +1,190 @@
+I"†1<p>Not only can this library be used to render the default form builder as seen within the form builder section, but you can
+also create your own customized form builder interface by providing the components you wish to add to the builder within
+the builder configuration.</p>
+
+<p>To see this in action, you can use the pre-built formio builder libraries as follows.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"builder"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">builder</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">builder</span><span class="dl">'</span><span class="p">),</span> <span class="p">{},</span> <span class="p">{</span>
+  <span class="na">builder</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">basic</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">advanced</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">data</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">customBasic</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Basic Components</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">default</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="na">weight</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="na">components</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">textfield</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="na">textarea</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="na">email</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="na">phoneNumber</span><span class="p">:</span> <span class="kc">true</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="na">custom</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">User Fields</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">weight</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+      <span class="na">components</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">firstName</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">First Name</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">firstName</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">icon</span><span class="p">:</span> <span class="dl">'</span><span class="s1">terminal</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">schema</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">First Name</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">textfield</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">firstName</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">input</span><span class="p">:</span> <span class="kc">true</span>
+          <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="na">lastName</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Last Name</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">lastName</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">icon</span><span class="p">:</span> <span class="dl">'</span><span class="s1">terminal</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">schema</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Last Name</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">textfield</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">lastName</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">input</span><span class="p">:</span> <span class="kc">true</span>
+          <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="na">email</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Email</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">email</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">icon</span><span class="p">:</span> <span class="dl">'</span><span class="s1">at</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">schema</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Email</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">email</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">email</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">input</span><span class="p">:</span> <span class="kc">true</span>
+          <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="na">phoneNumber</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Mobile Phone</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">mobilePhone</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">icon</span><span class="p">:</span> <span class="dl">'</span><span class="s1">phone-square</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">schema</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Mobile Phone</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">phoneNumber</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">mobilePhone</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">input</span><span class="p">:</span> <span class="kc">true</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="na">layout</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">components</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">table</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">editForm</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">textfield</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">api</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">ignore</span><span class="p">:</span> <span class="kc">true</span>
+      <span class="p">}</span>        
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">builder</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">builder</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">saveComponent</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">builder</span><span class="p">.</span><span class="nx">schema</span><span class="p">);</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3>Result</h3>
+<div class="card card-body bg-light">
+<div id="builder"></div>
+<script type="text/javascript">
+Formio.builder(document.getElementById('builder'), {}, {
+  builder: {
+    basic: false,
+    advanced: false,
+    data: false,
+    customBasic: {
+      title: 'Basic Components',
+      default: true,
+      weight: 0,
+      components: {
+        textfield: true,
+        textarea: true,
+        email: true,
+        phoneNumber: true
+      }
+    },
+    custom: {
+      title: 'User Fields',
+      weight: 10,
+      components: {
+        firstName: {
+          title: 'First Name',
+          key: 'firstName',
+          icon: 'terminal',
+          schema: {
+            label: 'First Name',
+            type: 'textfield',
+            key: 'firstName',
+            input: true
+          }
+        },
+        lastName: {
+          title: 'Last Name',
+          key: 'lastName',
+          icon: 'terminal',
+          schema: {
+            label: 'Last Name',
+            type: 'textfield',
+            key: 'lastName',
+            input: true
+          }
+        },
+        email: {
+          title: 'Email',
+          key: 'email',
+          icon: 'at',
+          schema: {
+            label: 'Email',
+            type: 'email',
+            key: 'email',
+            input: true
+          }
+        },
+        phoneNumber: {
+          title: 'Mobile Phone',
+          key: 'mobilePhone',
+          icon: 'phone-square',
+          schema: {
+            label: 'Mobile Phone',
+            type: 'phoneNumber',
+            key: 'mobilePhone',
+            input: true
+          }
+        }
+      }
+    },
+    layout: {
+      components: {
+        table: false
+      }
+    }
+  },
+  editForm: {
+    textfield: [
+      {
+        key: 'api',
+        ignore: true
+      }        
+    ]
+  }
+}).then(function(builder) {
+  builder.on('saveComponent', function() {
+    console.log(builder.schema);
+  });
+});
+</script>
+</div>
+:ET

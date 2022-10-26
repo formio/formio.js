@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/utils/utils.js | formiojs</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-input">components/_classes/input</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html">Input</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Checkbox">Checkbox</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Columns.js~ColumnsComponent.html">ColumnsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Columns">Columns</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-container">components/container</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Container">Container</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/content/Content.js~ContentComponent.html">ContentComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html">DataGridComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Fieldset">Fieldset</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-File">File</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden">components/hidden</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PhoneNumber">PhoneNumber</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-radio">components/radio</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/radio/Radio.js~RadioComponent.html">RadioComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Radio">Radio</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-recaptcha">components/recaptcha</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html">ReCaptchaComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextArea">TextArea</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textfield">components/textfield</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html">TextFieldComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Node.js~Node.html">Node</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Tree.js~TreeComponent.html">TreeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-edittable">contrib/edittable</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/edittable/EditTable.js~EditTableComponent.html">EditTableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditTable">EditTable</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-location">contrib/location</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/location/Location.js~LocationComponent.html">LocationComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Location">Location</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-modaledit">contrib/modaledit</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/modaledit/ModalEdit.js~ModalEditComponent.html">ModalEditComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateFormChange">generateFormChange</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStrings">getStrings</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getValue">getValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasCondition">hasCondition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-removeComponent">removeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-searchComponents">searchComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkJsonConditional">checkJsonConditional</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkSimpleConditional">checkSimpleConditional</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkTrigger">checkTrigger</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMask">convertFormatToMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertStringToHTMLElement">convertStringToHTMLElement</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getArrayFromComponentPath">getArrayFromComponentPath</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponentPathWithoutIndicies">getComponentPathWithoutIndicies</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getContextComponents">getContextComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDataParentComponent">getDataParentComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getIEBrowserVersion">getIEBrowserVersion</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getInputMask">getInputMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLocaleDateFormatInfo">getLocaleDateFormatInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberDecimalLimit">getNumberDecimalLimit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberSeparators">getNumberSeparators</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStringFromComponentPath">getStringFromComponentPath</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasInvalidComponent">hasInvalidComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-loadZones">loadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchInputMask">matchInputMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-KEY_CODES">KEY_CODES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/utils/utils.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* global $ */
+
+import _ from &apos;lodash&apos;;
+import fetchPonyfill from &apos;fetch-ponyfill&apos;;
+import jsonLogic from &apos;json-logic-js&apos;;
+import moment from &apos;moment-timezone/moment-timezone&apos;;
+import jtz from &apos;jstimezonedetect&apos;;
+import { lodashOperators } from &apos;./jsonlogic/operators&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
+import dompurify from &apos;dompurify&apos;;
+import { getValue } from &apos;./formUtils&apos;;
+import Evaluator from &apos;./Evaluator&apos;;
+const interpolate = Evaluator.interpolate;
+const { fetch } = fetchPonyfill({
+  Promise: NativePromise
+});
+
+export * from &apos;./formUtils&apos;;
+
+// Configure JsonLogic
+lodashOperators.forEach((name) =&gt; jsonLogic.add_operation(`_${name}`, _[name]));
+
+// Retrieve Any Date
+jsonLogic.add_operation(&apos;getDate&apos;, (date) =&gt; {
+  return moment(date).toISOString();
+});
+
+// Set Relative Minimum Date
+jsonLogic.add_operation(&apos;relativeMinDate&apos;, (relativeMinDate) =&gt; {
+  return moment().subtract(relativeMinDate, &apos;days&apos;).toISOString();
+});
+
+// Set Relative Maximum Date
+jsonLogic.add_operation(&apos;relativeMaxDate&apos;, (relativeMaxDate) =&gt; {
+  return moment().add(relativeMaxDate, &apos;days&apos;).toISOString();
+});
+
+export { jsonLogic, moment };
+
+/**
+ * Evaluate a method.
+ *
+ * @param func
+ * @param args
+ * @return {*}
+ */
+export function evaluate(func, args, ret, tokenize) {
+  let returnVal = null;
+  const component = args.component ? args.component : { key: &apos;unknown&apos; };
+  if (!args.form &amp;&amp; args.instance) {
+    args.form = _.get(args.instance, &apos;root._form&apos;, {});
+  }
+
+  const componentKey = component.key;
+
+  if (typeof func === &apos;string&apos;) {
+    if (ret) {
+      func += `;return ${ret}`;
+    }
+
+    if (tokenize) {
+      // Replace all {{ }} references with actual data.
+      func = func.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) =&gt; {
+        if ($2.indexOf(&apos;data.&apos;) === 0) {
+          return _.get(args.data, $2.replace(&apos;data.&apos;, &apos;&apos;));
+        }
+        else if ($2.indexOf(&apos;row.&apos;) === 0) {
+          return _.get(args.row, $2.replace(&apos;row.&apos;, &apos;&apos;));
+        }
+
+        // Support legacy...
+        return _.get(args.data, $2);
+      });
+    }
+
+    try {
+      func = Evaluator.evaluator(func, args);
+      args = _.values(args);
+    }
+    catch (err) {
+      console.warn(`An error occured within the custom function for ${componentKey}`, err);
+      returnVal = null;
+      func = false;
+    }
+  }
+
+  if (typeof func === &apos;function&apos;) {
+    try {
+      returnVal = Evaluator.evaluate(func, args);
+    }
+    catch (err) {
+      returnVal = null;
+      console.warn(`An error occured within custom function for ${componentKey}`, err);
+    }
+  }
+  else if (typeof func === &apos;object&apos;) {
+    try {
+      returnVal = jsonLogic.apply(func, args);
+    }
+    catch (err) {
+      returnVal = null;
+      console.warn(`An error occured within custom function for ${componentKey}`, err);
+    }
+  }
+  else if (func) {
+    console.warn(`Unknown function type for ${componentKey}`);
+  }
+  return returnVal;
+}
+
+export function getRandomComponentId() {
+  return `e${Math.random().toString(36).substring(7)}`;
+}
+
+/**
+ * Get a property value of an element.
+ *
+ * @param style
+ * @param prop
+ * @return {number}
+ */
+export function getPropertyValue(style, prop) {
+  let value = style.getPropertyValue(prop);
+  value = value ? value.replace(/[^0-9.]/g, &apos;&apos;) : &apos;0&apos;;
+  return parseFloat(value);
+}
+
+/**
+ * Get an elements bounding rectagle.
+ *
+ * @param element
+ * @return {{x: string, y: string, width: string, height: string}}
+ */
+export function getElementRect(element) {
+  const style = window.getComputedStyle(element, null);
+  return {
+    x: getPropertyValue(style, &apos;left&apos;),
+    y: getPropertyValue(style, &apos;top&apos;),
+    width: getPropertyValue(style, &apos;width&apos;),
+    height: getPropertyValue(style, &apos;height&apos;)
+  };
+}
+
+/**
+ * Determines the boolean value of a setting.
+ *
+ * @param value
+ * @return {boolean}
+ */
+export function boolValue(value) {
+  if (_.isBoolean(value)) {
+    return value;
+  }
+  else if (_.isString(value)) {
+    return (value.toLowerCase() === &apos;true&apos;);
+  }
+  else {
+    return !!value;
+  }
+}
+
+/**
+ * Check to see if an ID is a mongoID.
+ * @param text
+ * @return {Array|{index: number, input: string}|Boolean|*}
+ */
+export function isMongoId(text) {
+  return text.toString().match(/^[0-9a-fA-F]{24}$/);
+}
+
+/**
+ * Checks the calculated value for a provided component and data.
+ *
+ * @param {Object} component
+ *   The component to check for the calculated value.
+ * @param {Object} submission
+ *   A submission object.
+ * @param data
+ *   The full submission data.
+ */
+export function checkCalculated(component, submission, rowData) {
+  // Process calculated value stuff if present.
+  if (component.calculateValue) {
+    _.set(rowData, component.key, evaluate(component.calculateValue, {
+      value: undefined,
+      data: submission ? submission.data : rowData,
+      row: rowData,
+      util: this,
+      component
+    }, &apos;value&apos;));
+  }
+}
+
+/**
+ * Check if a simple conditional evaluates to true.
+ *
+ * @param condition
+ * @param condition
+ * @param row
+ * @param data
+ * @returns {boolean}
+ */
+export function checkSimpleConditional(component, condition, row, data) {
+  let value = null;
+  if (row) {
+    value = getValue({ data: row }, condition.when);
+  }
+  if (data &amp;&amp; _.isNil(value)) {
+    value = getValue({ data }, condition.when);
+  }
+  // FOR-400 - Fix issue where falsey values were being evaluated as show=true
+  if (_.isNil(value)) {
+    value = &apos;&apos;;
+  }
+
+  const eq = String(condition.eq);
+  const show = String(condition.show);
+
+  // Special check for selectboxes component.
+  if (_.isObject(value) &amp;&amp; _.has(value, condition.eq)) {
+    return String(value[condition.eq]) === show;
+  }
+  // FOR-179 - Check for multiple values.
+  if (Array.isArray(value) &amp;&amp; value.map(String).includes(eq)) {
+    return show === &apos;true&apos;;
+  }
+
+  return (String(value) === eq) === (show === &apos;true&apos;);
+}
+
+/**
+ * Check custom javascript conditional.
+ *
+ * @param component
+ * @param custom
+ * @param row
+ * @param data
+ * @returns {*}
+ */
+export function checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {
+  if (typeof custom === &apos;string&apos;) {
+    custom = `var ${variable} = true; ${custom}; return ${variable};`;
+  }
+  const value = (instance &amp;&amp; instance.evaluate) ?
+    instance.evaluate(custom, { row, data, form }) :
+    evaluate(custom, { row, data, form });
+  if (value === null) {
+    return onError;
+  }
+  return value;
+}
+
+export function checkJsonConditional(component, json, row, data, form, onError) {
+  try {
+    return jsonLogic.apply(json, {
+      data,
+      row,
+      form,
+      _,
+    });
+  }
+  catch (err) {
+    console.warn(`An error occurred in jsonLogic advanced condition for ${component.key}`, err);
+    return onError;
+  }
+}
+
+/**
+ * Checks the conditions for a provided component and data.
+ *
+ * @param component
+ *   The component to check for the condition.
+ * @param row
+ *   The data within a row
+ * @param data
+ *   The full submission data.
+ *
+ * @returns {boolean}
+ */
+export function checkCondition(component, row, data, form, instance) {
+  const { customConditional, conditional } = component;
+  if (customConditional) {
+    return checkCustomConditional(component, customConditional, row, data, form, &apos;show&apos;, true, instance);
+  }
+  else if (conditional &amp;&amp; conditional.when) {
+    const dataParent = getDataParentComponent(instance);
+    if (dataParent &amp;&amp; conditional.when.startsWith(dataParent.path)) {
+      const newRow = {};
+      _.set(newRow, dataParent.path, row);
+      row = newRow;
+    }
+    return checkSimpleConditional(component, conditional, row, data);
+  }
+  else if (conditional &amp;&amp; conditional.json) {
+    return checkJsonConditional(component, conditional.json, row, data, form, true);
+  }
+
+  // Default to show.
+  return true;
+}
+
+/**
+ * Test a trigger on a component.
+ *
+ * @param component
+ * @param action
+ * @param data
+ * @param row
+ * @returns {mixed}
+ */
+export function checkTrigger(component, trigger, row, data, form, instance) {
+  // If trigger is empty, don&apos;t fire it
+  if (!trigger[trigger.type]) {
+    return false;
+  }
+
+  switch (trigger.type) {
+    case &apos;simple&apos;:
+      return checkSimpleConditional(component, trigger.simple, row, data);
+    case &apos;javascript&apos;:
+      return checkCustomConditional(component, trigger.javascript, row, data, form, &apos;result&apos;, false, instance);
+    case &apos;json&apos;:
+      return checkJsonConditional(component, trigger.json, row, data, form, false);
+  }
+  // If none of the types matched, don&apos;t fire the trigger.
+  return false;
+}
+
+export function setActionProperty(component, action, result, row, data, instance) {
+  const property = action.property.value;
+
+  switch (action.property.type) {
+    case &apos;boolean&apos;: {
+      const currentValue = _.get(component, property, false).toString();
+      const newValue = action.state.toString();
+
+      if (currentValue !== newValue) {
+        _.set(component, property, newValue === &apos;true&apos;);
+      }
+
+      break;
+    }
+    case &apos;string&apos;: {
+      const evalData = {
+        data,
+        row,
+        component,
+        result,
+      };
+      const textValue = action.property.component ? action[action.property.component] : action.text;
+      const currentValue = _.get(component, property, &apos;&apos;);
+      const newValue = (instance &amp;&amp; instance.interpolate)
+        ? instance.interpolate(textValue, evalData)
+        : Evaluator.interpolate(textValue, evalData);
+
+      if (newValue !== currentValue) {
+        _.set(component, property, newValue);
+      }
+
+      break;
+    }
+  }
+
+  return component;
+}
+
+/**
+ * Unescape HTML characters like &amp;lt, &amp;gt, &amp;amp and etc.
+ * @param str
+ * @returns {string}
+ */
+export function unescapeHTML(str) {
+  if (typeof window === &apos;undefined&apos; || !(&apos;DOMParser&apos; in window)) {
+    return str;
+  }
+
+  const doc = new window.DOMParser().parseFromString(str, &apos;text/html&apos;);
+  return doc.documentElement.textContent;
+}
+
+/**
+ * Make HTML element from string
+ * @param str
+ * @param selector
+ * @returns {HTMLElement}
+ */
+
+export function convertStringToHTMLElement(str, selector) {
+  const doc = new window.DOMParser().parseFromString(str, &apos;text/html&apos;);
+  return doc.body.querySelector(selector);
+}
+
+/**
+ * Make a filename guaranteed to be unique.
+ * @param name
+ * @param template
+ * @param evalContext
+ * @returns {string}
+ */
+export function uniqueName(name, template, evalContext) {
+  template = template || &apos;{{fileName}}-{{guid}}&apos;;
+  //include guid in template anyway, to prevent overwriting issue if filename matches existing file
+  if (!template.includes(&apos;{{guid}}&apos;)) {
+    template = `${template}-{{guid}}`;
+  }
+  const parts = name.split(&apos;.&apos;);
+  let fileName = parts.slice(0, parts.length - 1).join(&apos;.&apos;);
+  const extension = parts.length &gt; 1
+    ? `.${_.last(parts)}`
+    : &apos;&apos;;
+  //allow only 100 characters from original name to avoid issues with filename length restrictions
+  fileName = fileName.substr(0, 100);
+  evalContext = Object.assign(evalContext || {}, {
+    fileName,
+    guid: guid()
+  });
+  //only letters, numbers, dots, dashes, underscores and spaces are allowed. Anything else will be replaced with dash
+  const uniqueName = `${Evaluator.interpolate(template, evalContext)}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, &apos;-&apos;);
+  return uniqueName;
+}
+
+export function guid() {
+  return &apos;xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx&apos;.replace(/[xy]/g, (c) =&gt; {
+    const r = Math.random()*16|0;
+    const v = c === &apos;x&apos;
+      ? r
+      : (r&amp;0x3|0x8);
+    return v.toString(16);
+  });
+}
+
+/**
+ * Return a translated date setting.
+ *
+ * @param date
+ * @return {(null|Date)}
+ */
+export function getDateSetting(date) {
+  if (_.isNil(date) || _.isNaN(date) || date === &apos;&apos;) {
+    return null;
+  }
+
+  if (date instanceof Date) {
+    return date;
+  }
+  else if (typeof date.toDate === &apos;function&apos;) {
+    return date.isValid() ? date.toDate() : null;
+  }
+
+  let dateSetting = ((typeof date !== &apos;string&apos;) || (date.indexOf(&apos;moment(&apos;) === -1)) ? moment(date) : null;
+  if (dateSetting &amp;&amp; dateSetting.isValid()) {
+    return dateSetting.toDate();
+  }
+
+  dateSetting = null;
+  try {
+    const value = Evaluator.evaluator(`return ${date};`, &apos;moment&apos;)(moment);
+    if (typeof value === &apos;string&apos;) {
+      dateSetting = moment(value);
+    }
+    else if (typeof value.toDate === &apos;function&apos;) {
+      dateSetting = moment(value.toDate().toUTCString());
+    }
+    else if (value instanceof Date) {
+      dateSetting = moment(value);
+    }
+  }
+  catch (e) {
+    return null;
+  }
+
+  if (!dateSetting) {
+    return null;
+  }
+
+  // Ensure this is a date.
+  if (!dateSetting.isValid()) {
+    return null;
+  }
+
+  return dateSetting.toDate();
+}
+
+export function isValidDate(date) {
+  return _.isDate(date) &amp;&amp; !_.isNaN(date.getDate());
+}
+
+/**
+ * Get the current timezone string.
+ *
+ * @return {string}
+ */
+export function currentTimezone() {
+  if (moment.currentTimezone) {
+    return moment.currentTimezone;
+  }
+  moment.currentTimezone = jtz.determine().name();
+  return moment.currentTimezone;
+}
+
+/**
+ * Get an offset date provided a date object and timezone object.
+ *
+ * @param date
+ * @param timezone
+ * @return {Date}
+ */
+export function offsetDate(date, timezone) {
+  if (timezone === &apos;UTC&apos;) {
+    return {
+      date: new Date(date.getTime() + (date.getTimezoneOffset() * 60000)),
+      abbr: &apos;UTC&apos;
+    };
+  }
+  const dateMoment = moment(date).tz(timezone);
+  return {
+    date: new Date(date.getTime() + ((dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000)),
+    abbr: dateMoment.format(&apos;z&apos;)
+  };
+}
+
+/**
+ * Returns if the zones are loaded.
+ *
+ * @return {boolean}
+ */
+export function zonesLoaded() {
+  return moment.zonesLoaded;
+}
+
+/**
+ * Returns if we should load the zones.
+ *
+ * @param timezone
+ * @return {boolean}
+ */
+export function shouldLoadZones(timezone) {
+  if (timezone === currentTimezone() || timezone === &apos;UTC&apos;) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Externally load the timezone data.
+ *
+ * @return {Promise&lt;any&gt; | *}
+ */
+export function loadZones(timezone) {
+  if (timezone &amp;&amp; !shouldLoadZones(timezone)) {
+    // Return non-resolving promise.
+    return new NativePromise(_.noop);
+  }
+
+  if (moment.zonesPromise) {
+    return moment.zonesPromise;
+  }
+  return moment.zonesPromise = fetch(
+    &apos;https://cdn.form.io/moment-timezone/data/packed/latest.json&apos;,
+  ).then(resp =&gt; resp.json().then(zones =&gt; {
+    moment.tz.load(zones);
+    moment.zonesLoaded = true;
+
+    // Trigger a global event that the timezones have finished loading.
+    if (document &amp;&amp; document.createEvent &amp;&amp; document.body &amp;&amp; document.body.dispatchEvent) {
+      var event = document.createEvent(&apos;Event&apos;);
+      event.initEvent(&apos;zonesLoaded&apos;, true, true);
+      document.body.dispatchEvent(event);
+    }
+  }));
+}
+
+/**
+ * Get the moment date object for translating dates with timezones.
+ *
+ * @param value
+ * @param format
+ * @param timezone
+ * @return {*}
+ */
+export function momentDate(value, format, timezone) {
+  const momentDate = moment(value);
+  if (timezone === &apos;UTC&apos;) {
+    timezone = &apos;Etc/UTC&apos;;
+  }
+  if ((timezone !== currentTimezone() || (format &amp;&amp; format.match(/\s(z$|z\s)/))) &amp;&amp; moment.zonesLoaded) {
+    return momentDate.tz(timezone);
+  }
+  return momentDate;
+}
+
+/**
+ * Format a date provided a value, format, and timezone object.
+ *
+ * @param value
+ * @param format
+ * @param timezone
+ * @return {string}
+ */
+export function formatDate(value, format, timezone, flatPickrInputFormat) {
+  const momentDate = moment(value, flatPickrInputFormat || undefined);
+  if (timezone === currentTimezone()) {
+    // See if our format contains a &quot;z&quot; timezone character.
+    if (format.match(/\s(z$|z\s)/)) {
+      loadZones();
+      if (moment.zonesLoaded) {
+        return momentDate.tz(timezone).format(convertFormatToMoment(format));
+      }
+      else {
+        return momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, &apos;&apos;)));
+      }
+    }
+
+    // Return the standard format.
+    return momentDate.format(convertFormatToMoment(format));
+  }
+  if (timezone === &apos;UTC&apos;) {
+    const offset = offsetDate(momentDate.toDate(), &apos;UTC&apos;);
+    return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;
+  }
+
+  // Load the zones since we need timezone information.
+  loadZones();
+  if (moment.zonesLoaded &amp;&amp; timezone) {
+    return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
+  }
+  else {
+    return momentDate.format(convertFormatToMoment(format));
+  }
+}
+
+/**
+ * Pass a format function to format within a timezone.
+ *
+ * @param formatFn
+ * @param date
+ * @param format
+ * @param timezone
+ * @return {string}
+ */
+export function formatOffset(formatFn, date, format, timezone) {
+  if (timezone === currentTimezone()) {
+    return formatFn(date, format);
+  }
+  if (timezone === &apos;UTC&apos;) {
+    return `${formatFn(offsetDate(date, &apos;UTC&apos;).date, format)} UTC`;
+  }
+
+  // Load the zones since we need timezone information.
+  loadZones();
+  if (moment.zonesLoaded) {
+    const offset = offsetDate(date, timezone);
+    return `${formatFn(offset.date, format)} ${offset.abbr}`;
+  }
+  else {
+    return formatFn(date, format);
+  }
+}
+
+export function getLocaleDateFormatInfo(locale) {
+  const formatInfo = {};
+
+  const day = 21;
+  const exampleDate = new Date(2017, 11, day);
+  const localDateString = exampleDate.toLocaleDateString(locale);
+
+  formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();
+
+  return formatInfo;
+}
+
+/**
+ * Convert the format from the angular-datepicker module to flatpickr format.
+ * @param format
+ * @return {string}
+ */
+export function convertFormatToFlatpickr(format) {
+  return format
+  // Remove the Z timezone offset, not supported by flatpickr.
+    .replace(/Z/g, &apos;&apos;)
+
+    // Year conversion.
+    .replace(/y/g, &apos;Y&apos;)
+    .replace(&apos;YYYY&apos;, &apos;Y&apos;)
+    .replace(&apos;YY&apos;, &apos;y&apos;)
+
+    // Month conversion.
+    .replace(&apos;MMMM&apos;, &apos;F&apos;)
+    .replace(/M/g, &apos;n&apos;)
+    .replace(&apos;nnn&apos;, &apos;M&apos;)
+    .replace(&apos;nn&apos;, &apos;m&apos;)
+
+    // Day in month.
+    .replace(/d/g, &apos;j&apos;)
+    .replace(/jj/g, &apos;d&apos;)
+
+    // Day in week.
+    .replace(&apos;EEEE&apos;, &apos;l&apos;)
+    .replace(&apos;EEE&apos;, &apos;D&apos;)
+
+    // Hours, minutes, seconds
+    .replace(&apos;HH&apos;, &apos;H&apos;)
+    .replace(&apos;hh&apos;, &apos;G&apos;)
+    .replace(&apos;mm&apos;, &apos;i&apos;)
+    .replace(&apos;ss&apos;, &apos;S&apos;)
+    .replace(/a/g, &apos;K&apos;);
+}
+
+/**
+ * Convert the format from the angular-datepicker module to moment format.
+ * @param format
+ * @return {string}
+ */
+export function convertFormatToMoment(format) {
+  return format
+  // Year conversion.
+    .replace(/y/g, &apos;Y&apos;)
+    // Day in month.
+    .replace(/d/g, &apos;D&apos;)
+    // Day in week.
+    .replace(/E/g, &apos;d&apos;)
+    // AM/PM marker
+    .replace(/a/g, &apos;A&apos;)
+    // Unix Timestamp
+    .replace(/U/g, &apos;X&apos;);
+}
+
+export function convertFormatToMask(format) {
+  return format
+  // Long month replacement.
+    .replace(/M{4}/g, &apos;MM&apos;)
+    // Initial short month conversion.
+    .replace(/M{3}/g, &apos;***&apos;)
+    // Short month conversion if input as text.
+    .replace(/e/g, &apos;Q&apos;)
+    // Year conversion.
+    .replace(/[ydhmsHMG]/g, &apos;9&apos;)
+    // AM/PM conversion.
+    .replace(/a/g, &apos;AA&apos;);
+}
+
+/**
+ * Returns an input mask that is compatible with the input mask library.
+ * @param {string} mask - The Form.io input mask.
+ * @returns {Array} - The input mask for the mask library.
+ */
+export function getInputMask(mask) {
+  if (mask instanceof Array) {
+    return mask;
+  }
+  const maskArray = [];
+  maskArray.numeric = true;
+  for (let i = 0; i &lt; mask.length; i++) {
+    switch (mask[i]) {
+      case &apos;9&apos;:
+        maskArray.push(/\d/);
+        break;
+      case &apos;A&apos;:
+        maskArray.numeric = false;
+        maskArray.push(/[a-zA-Z]/);
+        break;
+      case &apos;a&apos;:
+        maskArray.numeric = false;
+        maskArray.push(/[a-z]/);
+        break;
+      case &apos;*&apos;:
+        maskArray.numeric = false;
+        maskArray.push(/[a-zA-Z0-9]/);
+        break;
+      default:
+        maskArray.numeric = false;
+        maskArray.push(mask[i]);
+        break;
+    }
+  }
+  return maskArray;
+}
+
+export function matchInputMask(value, inputMask) {
+  if (!inputMask) {
+    return true;
+  }
+
+  // If value is longer than mask, it isn&apos;t valid.
+  if (value.length &gt; inputMask.length) {
+    return false;
+  }
+
+  for (let i = 0; i &lt; inputMask.length; i++) {
+    const char = value[i];
+    const charPart = inputMask[i];
+
+    if (!(_.isRegExp(charPart) &amp;&amp; charPart.test(char) || charPart === char)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export function getNumberSeparators(lang = &apos;en&apos;) {
+  const formattedNumberString = (12345.6789).toLocaleString(lang);
+  const delimeters = formattedNumberString.match(/..(.)...(.)../);
+  if (!delimeters) {
+    return {
+      delimiter: &apos;,&apos;,
+      decimalSeparator: &apos;.&apos;
+    };
+  }
+  return {
+    delimiter: (delimeters.length &gt; 1) ? delimeters[1] : &apos;,&apos;,
+    decimalSeparator: (delimeters.length &gt; 2) ? delimeters[2] : &apos;.&apos;,
+  };
+}
+
+export function getNumberDecimalLimit(component, defaultLimit) {
+  if (_.has(component, &apos;decimalLimit&apos;)) {
+    return _.get(component, &apos;decimalLimit&apos;);
+  }
+  // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
+  let decimalLimit = defaultLimit || 20;
+  const step = _.get(component, &apos;validate.step&apos;, &apos;any&apos;);
+
+  if (step !== &apos;any&apos;) {
+    const parts = step.toString().split(&apos;.&apos;);
+    if (parts.length &gt; 1) {
+      decimalLimit = parts[1].length;
+    }
+  }
+
+  return decimalLimit;
+}
+
+export function getCurrencyAffixes({
+   currency = &apos;USD&apos;,
+   decimalLimit,
+   decimalSeparator,
+   lang,
+ }) {
+  // Get the prefix and suffix from the localized string.
+  let regex = &apos;(.*)?100&apos;;
+  if (decimalLimit) {
+    regex += `${decimalSeparator === &apos;.&apos; ? &apos;\\.&apos; : decimalSeparator}0{${decimalLimit}}`;
+  }
+  regex += &apos;(.*)?&apos;;
+  const parts = (100).toLocaleString(lang, {
+    style: &apos;currency&apos;,
+    currency,
+    useGrouping: true,
+    maximumFractionDigits: decimalLimit,
+    minimumFractionDigits: decimalLimit
+  }).replace(&apos;.&apos;, decimalSeparator).match(new RegExp(regex));
+  return {
+    prefix: parts[1] || &apos;&apos;,
+    suffix: parts[2] || &apos;&apos;
+  };
+}
+
+/**
+ * Fetch the field data provided a component.
+ *
+ * @param data
+ * @param component
+ * @return {*}
+ */
+export function fieldData(data, component) {
+  if (!data) {
+    return &apos;&apos;;
+  }
+  if (!component || !component.key) {
+    return data;
+  }
+  if (component.key.includes(&apos;.&apos;)) {
+    let value = data;
+    const parts = component.key.split(&apos;.&apos;);
+    let key = &apos;&apos;;
+    for (let i = 0; i &lt; parts.length; i++) {
+      key = parts[i];
+
+      // Handle nested resources
+      if (value.hasOwnProperty(&apos;_id&apos;)) {
+        value = value.data;
+      }
+
+      // Return if the key is not found on the value.
+      if (!value.hasOwnProperty(key)) {
+        return;
+      }
+
+      // Convert old single field data in submissions to multiple
+      if (key === parts[parts.length - 1] &amp;&amp; component.multiple &amp;&amp; !Array.isArray(value[key])) {
+        value[key] = [value[key]];
+      }
+
+      // Set the value of this key.
+      value = value[key];
+    }
+    return value;
+  }
+  else {
+    // Convert old single field data in submissions to multiple
+    if (component.multiple &amp;&amp; !Array.isArray(data[component.key])) {
+      data[component.key] = [data[component.key]];
+    }
+
+    // Fix for checkbox type radio submission values in tableView
+    if (component.type === &apos;checkbox&apos; &amp;&amp; component.inputType === &apos;radio&apos;) {
+      return data[component.name] === component.value;
+    }
+
+    return data[component.key];
+  }
+}
+
+/**
+ * Delays function execution with possibility to execute function synchronously or cancel it.
+ *
+ * @param fn Function to delay
+ * @param delay Delay time
+ * @return {*}
+ */
+export function delay(fn, delay = 0, ...args) {
+  const timer = setTimeout(fn, delay, ...args);
+
+  function cancel() {
+    clearTimeout(timer);
+  }
+
+  function earlyCall() {
+    cancel();
+    return fn(...args);
+  }
+
+  earlyCall.timer = timer;
+  earlyCall.cancel = cancel;
+
+  return earlyCall;
+}
+
+/**
+ * Iterate the given key to make it unique.
+ *
+ * @param {String} key
+ *   Modify the component key to be unique.
+ *
+ * @returns {String}
+ *   The new component key.
+ */
+export function iterateKey(key) {
+  if (!key.match(/(\d+)$/)) {
+    return `${key}1`;
+  }
+
+  return key.replace(/(\d+)$/, function(suffix) {
+    return Number(suffix) + 1;
+  });
+}
+
+/**
+ * Determines a unique key within a map provided the base key.
+ *
+ * @param map
+ * @param base
+ * @return {*}
+ */
+export function uniqueKey(map, base) {
+  let newKey = base;
+  while (map.hasOwnProperty(newKey)) {
+    newKey = iterateKey(newKey);
+  }
+  return newKey;
+}
+
+/**
+ * Determines the major version number of bootstrap.
+ *
+ * @return {number}
+ */
+export function bootstrapVersion(options) {
+  if (options.bootstrap) {
+    return options.bootstrap;
+  }
+  if ((typeof $ === &apos;function&apos;) &amp;&amp; (typeof $().collapse === &apos;function&apos;)) {
+    return parseInt($.fn.collapse.Constructor.VERSION.split(&apos;.&apos;)[0], 10);
+  }
+  return 0;
+}
+
+/**
+ * Retrun provided argument.
+ * If argument is a function, returns the result of a function call.
+ * @param {*} e;
+ *
+ * @return {*}
+ */
+export function unfold(e) {
+  if (typeof e === &apos;function&apos;) {
+    return e();
+  }
+
+  return e;
+}
+
+/**
+ * Map values through unfold and return first non-nil value.
+ * @param {Array&lt;T&gt;} collection;
+ *
+ * @return {T}
+ */
+export const firstNonNil = _.flow([
+  _.partialRight(_.map, unfold),
+  _.partialRight(_.find, v =&gt; !_.isUndefined(v))
+]);
+
+/*
+ * Create enclosed state.
+ * Returns functions to getting and cycling between states.
+ * @param {*} a - initial state.
+ * @param {*} b - next state.
+ * @return {Functions[]} -- [get, toggle];
+ */
+export function withSwitch(a, b) {
+  let state = a;
+  let next = b;
+
+  function get() {
+    return state;
+  }
+
+  function toggle() {
+    const prev = state;
+    state = next;
+    next = prev;
+  }
+
+  return [get, toggle];
+}
+
+export function observeOverload(callback, options = {}) {
+  const { limit = 50, delay = 500 } = options;
+  let callCount = 0;
+  let timeoutID = 0;
+
+  const reset = () =&gt; callCount = 0;
+
+  return () =&gt; {
+    if (timeoutID !== 0) {
+      clearTimeout(timeoutID);
+      timeoutID = 0;
+    }
+
+    timeoutID = setTimeout(reset, delay);
+
+    callCount += 1;
+
+    if (callCount &gt;= limit) {
+      clearTimeout(timeoutID);
+      reset();
+      return callback();
+    }
+  };
+}
+
+export function getContextComponents(context) {
+  const values = [];
+
+  context.utils.eachComponent(context.instance.options.editForm.components, (component, path) =&gt; {
+    if (component.key !== context.data.key) {
+      values.push({
+        label: `${component.label || component.key} (${path})`,
+        value: path,
+      });
+    }
+  });
+
+  return values;
+}
+
+/**
+ * Sanitize an html string.
+ *
+ * @param string
+ * @returns {*}
+ */
+export function sanitize(string, options) {
+  // Dompurify configuration
+  const sanitizeOptions = {
+    ADD_ATTR: [&apos;ref&apos;, &apos;target&apos;],
+    USE_PROFILES: { html: true }
+  };
+  // Add attrs
+  if (options.sanitizeConfig &amp;&amp; Array.isArray(options.sanitizeConfig.addAttr) &amp;&amp; options.sanitizeConfig.addAttr.length &gt; 0) {
+    options.sanitizeConfig.addAttr.forEach((attr) =&gt; {
+      sanitizeOptions.ADD_ATTR.push(attr);
+    });
+  }
+  // Add tags
+  if (options.sanitizeConfig &amp;&amp; Array.isArray(options.sanitizeConfig.addTags) &amp;&amp; options.sanitizeConfig.addTags.length &gt; 0) {
+    sanitizeOptions.ADD_TAGS = options.sanitizeConfig.addTags;
+  }
+  // Allow tags
+  if (options.sanitizeConfig &amp;&amp; Array.isArray(options.sanitizeConfig.allowedTags) &amp;&amp; options.sanitizeConfig.allowedTags.length &gt; 0) {
+    sanitizeOptions.ALLOWED_TAGS = options.sanitizeConfig.allowedTags;
+  }
+  // Allow attributes
+  if (options.sanitizeConfig &amp;&amp; Array.isArray(options.sanitizeConfig.allowedAttrs) &amp;&amp; options.sanitizeConfig.allowedAttrs.length &gt; 0) {
+    sanitizeOptions.ALLOWED_ATTR = options.sanitizeConfig.allowedAttrs;
+  }
+  // Allowd URI Regex
+  if (options.sanitizeConfig &amp;&amp; options.sanitizeConfig.allowedUriRegex) {
+    sanitizeOptions.ALLOWED_URI_REGEXP = options.sanitizeConfig.allowedUriRegex;
+  }
+  return dompurify.sanitize(string, sanitizeOptions);
+}
+
+/**
+ * Fast cloneDeep for JSON objects only.
+ */
+export function fastCloneDeep(obj) {
+  return obj ? JSON.parse(JSON.stringify(obj)) : obj;
+}
+
+export { Evaluator, interpolate };
+
+export function isInputComponent(componentJson) {
+  if (componentJson.input === false || componentJson.input === true) {
+    return componentJson.input;
+  }
+  switch (componentJson.type) {
+    case &apos;htmlelement&apos;:
+    case &apos;content&apos;:
+    case &apos;columns&apos;:
+    case &apos;fieldset&apos;:
+    case &apos;panel&apos;:
+    case &apos;table&apos;:
+    case &apos;tabs&apos;:
+    case &apos;well&apos;:
+    case &apos;button&apos;:
+      return false;
+    default:
+      return true;
+  }
+}
+
+export function getArrayFromComponentPath(pathStr) {
+  if (!pathStr || !_.isString(pathStr)) {
+    if (!_.isArray(pathStr)) {
+      return [pathStr];
+    }
+    return pathStr;
+  }
+  return pathStr.replace(/[[\]]/g, &apos;.&apos;)
+    .replace(/\.\./g, &apos;.&apos;)
+    .replace(/(^\.)|(\.$)/g, &apos;&apos;)
+    .split(&apos;.&apos;)
+    .map(part =&gt; _.defaultTo(_.toNumber(part), part));
+}
+
+export function  hasInvalidComponent(component) {
+  return component.getComponents().some((comp) =&gt; {
+    if (_.isArray(comp.components)) {
+      return hasInvalidComponent(comp);
+    }
+      return comp.error;
+  });
+}
+
+export function getStringFromComponentPath(path) {
+  if (!_.isArray(path)) {
+    return path;
+  }
+  let strPath = &apos;&apos;;
+  path.forEach((part, i) =&gt; {
+    if (_.isNumber(part)) {
+      strPath += `[${part}]`;
+    }
+    else {
+      strPath += i === 0 ? part : `.${part}`;
+    }
+  });
+  return strPath;
+}
+
+export function round(number, precision) {
+  if (_.isNumber(number)) {
+    return number.toFixed(precision);
+  }
+  return number;
+}
+
+/**
+ * Check for Internet Explorer browser version
+ *
+ * @return {(number|null)}
+ */
+export function getIEBrowserVersion() {
+  if (typeof document === &apos;undefined&apos; || !(&apos;documentMode&apos; in document)) {
+    return null;
+  }
+
+  return document[&apos;documentMode&apos;];
+}
+
+export function getComponentPathWithoutIndicies(path = &apos;&apos;) {
+  return path.replace(/\[\d+\]/, &apos;&apos;);
+}
+
+/**
+ * Returns a parent component of the passed component instance skipping all the Layout components
+ * @param {*} componentInstance
+ * @return {(Component|undefined)}
+ */
+export function getDataParentComponent(componentInstance) {
+  if (!componentInstance) {
+    return;
+  }
+  const { parent } = componentInstance;
+  if (parent &amp;&amp; parent.isInputComponent) {
+    return parent;
+  }
+  else {
+    return getDataParentComponent(parent);
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

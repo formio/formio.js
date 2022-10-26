@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/Webform.js | formiojs</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-input">components/_classes/input</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html">Input</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Checkbox">Checkbox</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Columns.js~ColumnsComponent.html">ColumnsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Columns">Columns</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-container">components/container</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Container">Container</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/content/Content.js~ContentComponent.html">ContentComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html">DataGridComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Fieldset">Fieldset</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-File">File</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden">components/hidden</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PhoneNumber">PhoneNumber</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-radio">components/radio</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/radio/Radio.js~RadioComponent.html">RadioComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Radio">Radio</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-recaptcha">components/recaptcha</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html">ReCaptchaComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextArea">TextArea</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textfield">components/textfield</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html">TextFieldComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Node.js~Node.html">Node</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Tree.js~TreeComponent.html">TreeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-edittable">contrib/edittable</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/edittable/EditTable.js~EditTableComponent.html">EditTableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditTable">EditTable</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-location">contrib/location</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/location/Location.js~LocationComponent.html">LocationComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Location">Location</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-modaledit">contrib/modaledit</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/modaledit/ModalEdit.js~ModalEditComponent.html">ModalEditComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateFormChange">generateFormChange</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStrings">getStrings</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getValue">getValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasCondition">hasCondition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-removeComponent">removeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-searchComponents">searchComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-KEY_CODES">KEY_CODES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/Webform.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import moment from &apos;moment&apos;;
+import compareVersions from &apos;compare-versions&apos;;
+import EventEmitter from &apos;./EventEmitter&apos;;
+import i18next from &apos;i18next&apos;;
+import i18nDefaults from &apos;./i18n&apos;;
+import Formio from &apos;./Formio&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
+import Components from &apos;./components/Components&apos;;
+import NestedDataComponent from &apos;./components/_classes/nesteddata/NestedDataComponent&apos;;
+import {
+  fastCloneDeep,
+  currentTimezone,
+  unescapeHTML,
+  getStringFromComponentPath,
+  searchComponents,
+} from &apos;./utils/utils&apos;;
+import { eachComponent } from &apos;./utils/formUtils&apos;;
+
+// Initialize the available forms.
+Formio.forms = {};
+
+// Allow people to register components.
+Formio.registerComponent = Components.setComponent;
+
+function getIconSet(icons) {
+  if (icons === &apos;fontawesome&apos;) {
+    return &apos;fa&apos;;
+  }
+  return icons || &apos;&apos;;
+}
+
+function getOptions(options) {
+  options = _.defaults(options, {
+    submitOnEnter: false,
+    iconset: getIconSet((options &amp;&amp; options.icons) ? options.icons : Formio.icons),
+    i18next,
+    saveDraft: false,
+    alwaysDirty: false,
+    saveDraftThrottle: 5000
+  });
+  if (!options.events) {
+    options.events = new EventEmitter({
+      wildcard: false,
+      maxListeners: 0
+    });
+  }
+  return options;
+}
+
+/**
+ * Renders a Form.io form within the webpage.
+ */
+export default class Webform extends NestedDataComponent {
+  /**
+   * Creates a new Form instance.
+   *
+   * @param {Object} options - The options to create a new form instance.
+   * @param {boolean} options.saveDraft - Set this if you would like to enable the save draft feature.
+   * @param {boolean} options.saveDraftThrottle - The throttle for the save draft feature.
+   * @param {boolean} options.readOnly - Set this form to readOnly
+   * @param {boolean} options.noAlerts - Set to true to disable the alerts dialog.
+   * @param {boolean} options.i18n - The translation file for this rendering. @see https://github.com/formio/formio.js/blob/master/i18n.js
+   * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.
+   */
+  /* eslint-disable max-statements */
+  constructor() {
+    let element, options;
+    if (arguments[0] instanceof HTMLElement || arguments[1]) {
+      element = arguments[0];
+      options = arguments[1];
+    }
+    else {
+      options = arguments[0];
+    }
+    super(null, getOptions(options));
+
+    this.element = element;
+
+    // Keep track of all available forms globally.
+    Formio.forms[this.id] = this;
+
+    // Set the base url.
+    if (this.options.baseUrl) {
+      Formio.setBaseUrl(this.options.baseUrl);
+    }
+
+    /**
+     * The i18n configuration for this component.
+     */
+    let i18n = i18nDefaults;
+    if (options &amp;&amp; options.i18n &amp;&amp; !options.i18nReady) {
+      // Support legacy way of doing translations.
+      if (options.i18n.resources) {
+        i18n = options.i18n;
+      }
+      else {
+        _.each(options.i18n, (lang, code) =&gt; {
+          if (code === &apos;options&apos;) {
+            _.merge(i18n, lang);
+          }
+          else if (!i18n.resources[code]) {
+            i18n.resources[code] = { translation: lang };
+          }
+          else {
+            _.assign(i18n.resources[code].translation, lang);
+          }
+        });
+      }
+
+      options.i18n = i18n;
+      options.i18nReady = true;
+    }
+
+    if (options &amp;&amp; options.i18n) {
+      this.options.i18n = options.i18n;
+    }
+    else {
+      this.options.i18n = i18n;
+    }
+
+    // Set the language.
+    if (this.options.language) {
+      this.options.i18n.lng = this.options.language;
+    }
+
+    /**
+     * The type of this element.
+     * @type {string}
+     */
+    this.type = &apos;form&apos;;
+    this._src = &apos;&apos;;
+    this._loading = false;
+    this._form = {};
+    this.draftEnabled = false;
+    this.savingDraft = true;
+    if (this.options.saveDraftThrottle) {
+      this.triggerSaveDraft = _.throttle(this.saveDraft.bind(this), this.options.saveDraftThrottle);
+    }
+    else {
+      this.triggerSaveDraft = this.saveDraft.bind(this);
+    }
+
+    this.customErrors = [];
+
+    /**
+     * Determines if this form should submit the API on submit.
+     * @type {boolean}
+     */
+    this.nosubmit = false;
+
+    /**
+     * Determines if the form has tried to be submitted, error or not.
+     *
+     * @type {boolean}
+     */
+    this.submitted = false;
+
+    /**
+     * Determines if the form is being submitted at the moment.
+     *
+     * @type {boolean}
+     */
+    this.submitting = false;
+
+    /**
+     * The Formio instance for this form.
+     * @type {Formio}
+     */
+    this.formio = null;
+
+    /**
+     * The loader HTML element.
+     * @type {HTMLElement}
+     */
+    this.loader = null;
+
+    /**
+     * The alert HTML element
+     * @type {HTMLElement}
+     */
+    this.alert = null;
+
+    /**
+     * Promise that is triggered when the submission is done loading.
+     * @type {Promise}
+     */
+    this.onSubmission = null;
+
+    /**
+     * Determines if this submission is explicitly set.
+     * @type {boolean}
+     */
+    this.submissionSet = false;
+
+    /**
+     * Promise that executes when the form is ready and rendered.
+     * @type {Promise}
+     *
+     * @example
+     * import Webform from &apos;formiojs/Webform&apos;;
+     * let form = new Webform(document.getElementById(&apos;formio&apos;));
+     * form.formReady.then(() =&gt; {
+     *   console.log(&apos;The form is ready!&apos;);
+     * });
+     * form.src = &apos;https://examples.form.io/example&apos;;
+     */
+    this.formReady = new NativePromise((resolve, reject) =&gt; {
+      /**
+       * Called when the formReady state of this form has been resolved.
+       *
+       * @type {function}
+       */
+      this.formReadyResolve = resolve;
+
+      /**
+       * Called when this form could not load and is rejected.
+       *
+       * @type {function}
+       */
+      this.formReadyReject = reject;
+    });
+
+    /**
+     * Promise that executes when the submission is ready and rendered.
+     * @type {Promise}
+     *
+     * @example
+     * import Webform from &apos;formiojs/Webform&apos;;
+     * let form = new Webform(document.getElementById(&apos;formio&apos;));
+     * form.submissionReady.then(() =&gt; {
+     *   console.log(&apos;The submission is ready!&apos;);
+     * });
+     * form.src = &apos;https://examples.form.io/example/submission/234234234234234243&apos;;
+     */
+    this.submissionReady = new NativePromise((resolve, reject) =&gt; {
+      /**
+       * Called when the formReady state of this form has been resolved.
+       *
+       * @type {function}
+       */
+      this.submissionReadyResolve = resolve;
+
+      /**
+       * Called when this form could not load and is rejected.
+       *
+       * @type {function}
+       */
+      this.submissionReadyReject = reject;
+    });
+
+    this.shortcuts = [];
+
+    // Set language after everything is established.
+    this.localize().then(() =&gt; {
+      this.language = this.options.language;
+    });
+
+    // See if we need to restore the draft from a user.
+    if (this.options.saveDraft &amp;&amp; Formio.events) {
+      Formio.events.on(&apos;formio.user&apos;, (user) =&gt; {
+        this.formReady.then(() =&gt; {
+          // Only restore a draft if the submission isn&apos;t explicitly set.
+          if (!this.submissionSet) {
+            this.restoreDraft(user._id);
+          }
+        });
+      });
+    }
+
+    this.component.clearOnHide = false;
+
+    // Ensure the root is set to this component.
+    this.root = this;
+  }
+  /* eslint-enable max-statements */
+
+  /**
+   * Sets the language for this form.
+   *
+   * @param lang
+   * @return {Promise}
+   */
+  set language(lang) {
+    return new NativePromise((resolve, reject) =&gt; {
+      this.options.language = lang;
+      if (this.i18next.language === lang) {
+        return resolve();
+      }
+      try {
+        this.i18next.changeLanguage(lang, (err) =&gt; {
+          if (err) {
+            return reject(err);
+          }
+          this.redraw();
+          this.emit(&apos;languageChanged&apos;);
+          resolve();
+        });
+      }
+      catch (err) {
+        return reject(err);
+      }
+    });
+  }
+
+  get componentComponents() {
+    return this.form.components;
+  }
+
+  /**
+   * Add a language for translations
+   *
+   * @param code
+   * @param lang
+   * @param active
+   * @return {*}
+   */
+  addLanguage(code, lang, active = false) {
+    this.i18next.addResourceBundle(code, &apos;translation&apos;, lang, true, true);
+    if (active) {
+      this.language = code;
+    }
+  }
+
+  /**
+   * Perform the localization initialization.
+   * @returns {*}
+   */
+  localize() {
+    if (this.i18next.initialized) {
+      return NativePromise.resolve(this.i18next);
+    }
+    this.i18next.initialized = true;
+    return new NativePromise((resolve, reject) =&gt; {
+      try {
+        this.i18next.init(this.options.i18n, (err) =&gt; {
+          // Get language but remove any ;q=1 that might exist on it.
+          this.options.language = this.i18next.language.split(&apos;;&apos;)[0];
+          if (err) {
+            return reject(err);
+          }
+          resolve(this.i18next);
+        });
+      }
+      catch (err) {
+        return reject(err);
+      }
+    });
+  }
+
+  keyboardCatchableElement(element) {
+    if (element.nodeName === &apos;TEXTAREA&apos;) {
+      return false;
+    }
+
+    if (element.nodeName === &apos;INPUT&apos;) {
+      return [
+        &apos;text&apos;,
+        &apos;email&apos;,
+        &apos;password&apos;
+      ].indexOf(element.type) === -1;
+    }
+
+    return true;
+  }
+
+  executeShortcuts = (event) =&gt; {
+    const { target } = event;
+    if (!this.keyboardCatchableElement(target)) {
+      return;
+    }
+
+    const ctrl = event.ctrlKey || event.metaKey;
+    const keyCode = event.keyCode;
+    let char = &apos;&apos;;
+
+    if (65 &lt;= keyCode &amp;&amp; keyCode &lt;= 90) {
+      char = String.fromCharCode(keyCode);
+    }
+    else if (keyCode === 13) {
+      char = &apos;Enter&apos;;
+    }
+    else if (keyCode === 27) {
+      char = &apos;Esc&apos;;
+    }
+
+    _.each(this.shortcuts, (shortcut) =&gt; {
+      if (shortcut.ctrl &amp;&amp; !ctrl) {
+        return;
+      }
+
+      if (shortcut.shortcut === char) {
+        shortcut.element.click();
+        event.preventDefault();
+      }
+    });
+  };
+
+  addShortcut(element, shortcut) {
+    if (!shortcut || !/^([A-Z]|Enter|Esc)$/i.test(shortcut)) {
+      return;
+    }
+
+    shortcut = _.capitalize(shortcut);
+
+    if (shortcut === &apos;Enter&apos; || shortcut === &apos;Esc&apos;) {
+      // Restrict Enter and Esc only for buttons
+      if (element.tagName !== &apos;BUTTON&apos;) {
+        return;
+      }
+
+      this.shortcuts.push({
+        shortcut,
+        element
+      });
+    }
+    else {
+      this.shortcuts.push({
+        ctrl: true,
+        shortcut,
+        element
+      });
+    }
+  }
+
+  removeShortcut(element, shortcut) {
+    if (!shortcut || !/^([A-Z]|Enter|Esc)$/i.test(shortcut)) {
+      return;
+    }
+
+    _.remove(this.shortcuts, {
+      shortcut,
+      element
+    });
+  }
+
+  /**
+   * Get the embed source of the form.
+   *
+   * @returns {string}
+   */
+  get src() {
+    return this._src;
+  }
+
+  /**
+   * Loads the submission if applicable.
+   */
+  loadSubmission() {
+    this.loadingSubmission = true;
+    if (this.formio.submissionId) {
+      this.onSubmission = this.formio.loadSubmission().then(
+        (submission) =&gt; this.setSubmission(submission),
+        (err) =&gt; this.submissionReadyReject(err)
+      ).catch(
+        (err) =&gt; this.submissionReadyReject(err)
+      );
+    }
+    else {
+      this.submissionReadyResolve();
+    }
+    return this.submissionReady;
+  }
+
+  /**
+   * Set the src of the form renderer.
+   *
+   * @param value
+   * @param options
+   */
+  setSrc(value, options) {
+    if (this.setUrl(value, options)) {
+      this.nosubmit = false;
+      return this.formio.loadForm({ params: { live: 1 } }).then(
+        (form) =&gt; {
+          const setForm = this.setForm(form);
+          this.loadSubmission();
+          return setForm;
+        }).catch((err) =&gt; {
+        console.warn(err);
+        this.formReadyReject(err);
+      });
+    }
+    return NativePromise.resolve();
+  }
+
+  /**
+   * Set the Form source, which is typically the Form.io embed URL.
+   *
+   * @param {string} value - The value of the form embed url.
+   *
+   * @example
+   * import Webform from &apos;formiojs/Webform&apos;;
+   * let form = new Webform(document.getElementById(&apos;formio&apos;));
+   * form.formReady.then(() =&gt; {
+   *   console.log(&apos;The form is formReady!&apos;);
+   * });
+   * form.src = &apos;https://examples.form.io/example&apos;;
+   */
+  set src(value) {
+    this.setSrc(value);
+  }
+
+  /**
+   * Get the embed source of the form.
+   *
+   * @returns {string}
+   */
+  get url() {
+    return this._src;
+  }
+
+  /**
+   * Sets the url of the form renderer.
+   *
+   * @param value
+   * @param options
+   */
+  setUrl(value, options) {
+    if (
+      !value ||
+      (typeof value !== &apos;string&apos;) ||
+      (value === this._src)
+    ) {
+      return false;
+    }
+    this._src = value;
+    this.nosubmit = true;
+    this.formio = this.options.formio = new Formio(value, options);
+
+    if (this.type === &apos;form&apos;) {
+      // Set the options source so this can be passed to other components.
+      this.options.src = value;
+    }
+    return true;
+  }
+
+  /**
+   * Set the form source but don&apos;t initialize the form and submission from the url.
+   *
+   * @param {string} value - The value of the form embed url.
+   */
+  set url(value) {
+    this.setUrl(value);
+  }
+
+  /**
+   * Called when both the form and submission have been loaded.
+   *
+   * @returns {Promise} - The promise to trigger when both form and submission have loaded.
+   */
+  get ready() {
+    return this.formReady.then(() =&gt; {
+      return super.ready.then(() =&gt; {
+        return this.loadingSubmission ? this.submissionReady : true;
+      });
+    });
+  }
+
+  /**
+   * Returns if this form is loading.
+   *
+   * @returns {boolean} - TRUE means the form is loading, FALSE otherwise.
+   */
+  get loading() {
+    return this._loading;
+  }
+
+  /**
+   * Set the loading state for this form, and also show the loader spinner.
+   *
+   * @param {boolean} loading - If this form should be &quot;loading&quot; or not.
+   */
+  set loading(loading) {
+    if (this._loading !== loading) {
+      this._loading = loading;
+      if (!this.loader &amp;&amp; loading) {
+        this.loader = this.ce(&apos;div&apos;, {
+          class: &apos;loader-wrapper&apos;
+        });
+        const spinner = this.ce(&apos;div&apos;, {
+          class: &apos;loader text-center&apos;
+        });
+        this.loader.appendChild(spinner);
+      }
+      /* eslint-disable max-depth */
+      if (this.loader) {
+        try {
+          if (loading) {
+            this.prependTo(this.loader, this.wrapper);
+          }
+          else {
+            this.removeChildFrom(this.loader, this.wrapper);
+          }
+        }
+        catch (err) {
+          // ingore
+        }
+      }
+      /* eslint-enable max-depth */
+    }
+  }
+
+  /**
+   * Sets the JSON schema for the form to be rendered.
+   *
+   * @example
+   * import Webform from &apos;formiojs/Webform&apos;;
+   * let form = new Webform(document.getElementById(&apos;formio&apos;));
+   * form.setForm({
+   *   components: [
+   *     {
+   *       type: &apos;textfield&apos;,
+   *       key: &apos;firstName&apos;,
+   *       label: &apos;First Name&apos;,
+   *       placeholder: &apos;Enter your first name.&apos;,
+   *       input: true
+   *     },
+   *     {
+   *       type: &apos;textfield&apos;,
+   *       key: &apos;lastName&apos;,
+   *       label: &apos;Last Name&apos;,
+   *       placeholder: &apos;Enter your last name&apos;,
+   *       input: true
+   *     },
+   *     {
+   *       type: &apos;button&apos;,
+   *       action: &apos;submit&apos;,
+   *       label: &apos;Submit&apos;,
+   *       theme: &apos;primary&apos;
+   *     }
+   *   ]
+   * });
+   *
+   * @param {Object} form - The JSON schema of the form @see https://examples.form.io/example for an example JSON schema.
+   * @returns {*}
+   */
+  setForm(form, flags) {
+    try {
+      // Do not set the form again if it has been already set
+      if (JSON.stringify(this._form) === JSON.stringify(form)) {
+        return NativePromise.resolve();
+      }
+    }
+    catch (err) {
+      console.warn(err);
+      // If provided form is not a valid JSON object, do not set it too
+      return NativePromise.resolve();
+    }
+
+    // Create the form.
+    this._form = form;
+
+    // Allow the form to provide component overrides.
+    if (form &amp;&amp; form.settings &amp;&amp; form.settings.components) {
+      this.options.components = form.settings.components;
+    }
+
+    if (&apos;schema&apos; in form &amp;&amp; compareVersions(form.schema, &apos;1.x&apos;) &gt; 0) {
+      this.ready.then(() =&gt; {
+        this.setAlert(&apos;alert alert-danger&apos;, &apos;Form schema is for a newer version, please upgrade your renderer. Some functionality may not work.&apos;);
+      });
+    }
+
+    // See if they pass a module, and evaluate it if so.
+    if (form &amp;&amp; form.module) {
+      let formModule = null;
+      if (typeof form.module === &apos;string&apos;) {
+        try {
+          formModule = this.evaluate(`return ${form.module}`);
+        }
+        catch (err) {
+          console.warn(err);
+        }
+      }
+      else {
+        formModule = form.module;
+      }
+      if (formModule) {
+        Formio.use(formModule);
+
+        // Since we got here after instantiation, we need to manually apply form options.
+        if (formModule.options &amp;&amp; formModule.options.form) {
+          this.options = Object.assign(this.options, formModule.options.form);
+        }
+      }
+    }
+
+    this.initialized = false;
+    const rebuild = this.rebuild() || NativePromise.resolve();
+    return rebuild.then(() =&gt; {
+      this.emit(&apos;formLoad&apos;, form);
+      this.triggerRecaptcha();
+      // Make sure to trigger onChange after a render event occurs to speed up form rendering.
+      setTimeout(() =&gt; {
+        this.onChange(flags);
+        this.formReadyResolve();
+      }, 0);
+
+      return this.formReady;
+    });
+  }
+
+  /**
+   * Gets the form object.
+   *
+   * @returns {Object} - The form JSON schema.
+   */
+  get form() {
+    if (!this._form) {
+      this._form = {
+        components: []
+      };
+    }
+    return this._form;
+  }
+
+  /**
+   * Sets the form value.
+   *
+   * @alias setForm
+   * @param {Object} form - The form schema object.
+   */
+  set form(form) {
+    this.setForm(form);
+  }
+
+  /**
+   * Returns the submission object that was set within this form.
+   *
+   * @returns {Object}
+   */
+  get submission() {
+    return this.getValue();
+  }
+
+  /**
+   * Sets the submission of a form.
+   *
+   * @example
+   * import Webform from &apos;formiojs/Webform&apos;;
+   * let form = new Webform(document.getElementById(&apos;formio&apos;));
+   * form.src = &apos;https://examples.form.io/example&apos;;
+   * form.submission = {data: {
+   *   firstName: &apos;Joe&apos;,
+   *   lastName: &apos;Smith&apos;,
+   *   email: &apos;joe@example.com&apos;
+   * }};
+   *
+   * @param {Object} submission - The Form.io submission object.
+   */
+  set submission(submission) {
+    this.setSubmission(submission);
+  }
+
+  /**
+   * Sets a submission and returns the promise when it is ready.
+   * @param submission
+   * @param flags
+   * @return {Promise.&lt;TResult&gt;}
+   */
+  setSubmission(submission, flags = {}) {
+    flags = {
+      ...flags,
+      fromSubmission: _.has(flags, &apos;fromSubmission&apos;) ? flags.fromSubmission : true,
+    };
+    return this.onSubmission = this.formReady.then(
+      (resolveFlags) =&gt; {
+        if (resolveFlags) {
+          flags = {
+            ...flags,
+            ...resolveFlags
+          };
+        }
+        this.submissionSet = true;
+        this.triggerChange(flags);
+        this.setValue(submission, flags);
+        return this.submissionReadyResolve(submission);
+      },
+      (err) =&gt; this.submissionReadyReject(err)
+    ).catch(
+      (err) =&gt; this.submissionReadyReject(err)
+    );
+  }
+
+  /**
+   * Saves a submission draft.
+   */
+  saveDraft() {
+    if (!this.draftEnabled) {
+      return;
+    }
+    if (!this.formio) {
+      console.warn(this.t(&apos;saveDraftInstanceError&apos;));
+      return;
+    }
+    if (!Formio.getUser()) {
+      console.warn(this.t(&apos;saveDraftAuthError&apos;));
+      return;
+    }
+    const draft = fastCloneDeep(this.submission);
+    draft.state = &apos;draft&apos;;
+
+    if (!this.savingDraft) {
+      this.emit(&apos;saveDraftBegin&apos;);
+      this.savingDraft = true;
+      this.formio.saveSubmission(draft).then((sub) =&gt; {
+        // Set id to submission to avoid creating new draft submission
+        this.submission._id = sub._id;
+        this.savingDraft = false;
+        this.emit(&apos;saveDraft&apos;, sub);
+      });
+    }
+  }
+
+  /**
+   * Restores a draft submission based on the user who is authenticated.
+   *
+   * @param {userId} - The user id where we need to restore the draft from.
+   */
+  restoreDraft(userId) {
+    if (!this.formio) {
+      console.warn(this.t(&apos;restoreDraftInstanceError&apos;));
+      return;
+    }
+    this.savingDraft = true;
+    this.formio.loadSubmissions({
+      params: {
+        state: &apos;draft&apos;,
+        owner: userId
+      }
+    }).then(submissions =&gt; {
+      if (submissions.length &gt; 0 &amp;&amp; !this.options.skipDraftRestore) {
+        const draft = fastCloneDeep(submissions[0]);
+        return this.setSubmission(draft).then(() =&gt; {
+          this.draftEnabled = true;
+          this.savingDraft = false;
+          this.emit(&apos;restoreDraft&apos;, draft);
+        });
+      }
+      // Enable drafts so that we can keep track of changes.
+      this.draftEnabled = true;
+      this.savingDraft = false;
+      this.emit(&apos;restoreDraft&apos;, null);
+    });
+  }
+
+  get schema() {
+    const schema = fastCloneDeep(_.omit(this._form, [&apos;components&apos;]));
+    schema.components = [];
+    this.eachComponent((component) =&gt; schema.components.push(component.schema));
+    return schema;
+  }
+
+  mergeData(_this, _that) {
+    _.mergeWith(_this, _that, (thisValue, thatValue) =&gt; {
+      if (Array.isArray(thisValue) &amp;&amp; Array.isArray(thatValue) &amp;&amp; thisValue.length !== thatValue.length) {
+        return thatValue;
+      }
+    });
+  }
+
+  setValue(submission, flags = {}) {
+    if (!submission || !submission.data) {
+      submission = { data: {} };
+    }
+    // Metadata needs to be available before setValue
+    this._submission.metadata = submission.metadata || {};
+    this.editing = !!submission._id;
+
+    // Set the timezone in the options if available.
+    if (
+      !this.options.submissionTimezone &amp;&amp;
+      submission.metadata &amp;&amp;
+      submission.metadata.timezone
+    ) {
+      this.options.submissionTimezone = submission.metadata.timezone;
+    }
+
+    const changed = super.setValue(submission.data, flags);
+    if (!flags.sanitize) {
+      this.mergeData(this.data, submission.data);
+    }
+
+    submission.data = this.data;
+    this._submission = submission;
+    return changed;
+  }
+
+  getValue() {
+    if (!this._submission.data) {
+      this._submission.data = {};
+    }
+    if (this.viewOnly) {
+      return this._submission;
+    }
+    const submission = this._submission;
+    submission.data = this.data;
+    return this._submission;
+  }
+
+  /**
+   * Build the form.
+   */
+  init() {
+    this._submission = this._submission || { data: {} };
+
+    // Remove any existing components.
+    if (this.components &amp;&amp; this.components.length) {
+      this.destroyComponents();
+      this.components = [];
+    }
+
+    if (this.component) {
+      this.component.components = this.form ? this.form.components : [];
+    }
+    else {
+      this.component = this.form;
+    }
+    this.component.type = &apos;form&apos;;
+    this.component.input = false;
+
+    this.addComponents();
+    this.on(&apos;submitButton&apos;, options =&gt; {
+      this.submit(false, options).catch(e =&gt; e !== false &amp;&amp; console.log(e));
+    }, true);
+
+    this.on(&apos;checkValidity&apos;, (data) =&gt; this.checkValidity(data, true, data), true);
+    this.on(&apos;requestUrl&apos;, (args) =&gt; (this.submitUrl(args.url,args.headers)), true);
+    this.on(&apos;resetForm&apos;, () =&gt; this.resetValue(), true);
+    this.on(&apos;deleteSubmission&apos;, () =&gt; this.deleteSubmission(), true);
+    this.on(&apos;refreshData&apos;, () =&gt; this.updateValue(), true);
+
+    this.executeFormController();
+
+    return this.formReady;
+  }
+
+  executeFormController() {
+    // If no controller value or
+    // hidden and set to clearOnHide (Don&apos;t calculate a value for a hidden field set to clear when hidden)
+    if (
+      !this.form || !this.form.controller
+      || ((!this.visible || this.component.hidden) &amp;&amp; this.component.clearOnHide &amp;&amp; !this.rootPristine)
+    ) {
+      return false;
+    }
+
+    this.formReady.then(() =&gt; {
+      this.evaluate(this.form.controller, {
+        components: this.components,
+      });
+    });
+  }
+
+  destroy(deleteFromGlobal = false) {
+    this.off(&apos;submitButton&apos;);
+    this.off(&apos;checkValidity&apos;);
+    this.off(&apos;requestUrl&apos;);
+    this.off(&apos;resetForm&apos;);
+    this.off(&apos;deleteSubmission&apos;);
+    this.off(&apos;refreshData&apos;);
+
+    if (deleteFromGlobal) {
+      delete Formio.forms[this.id];
+    }
+
+    return super.destroy();
+  }
+
+  build(element) {
+    if (element || this.element) {
+      return this.ready.then(() =&gt; {
+        element = element || this.element;
+        super.build(element);
+      });
+    }
+    return this.ready;
+  }
+
+  getClassName() {
+    let classes = &apos;formio-form&apos;;
+    if (this.options.readOnly) {
+      classes += &apos; formio-read-only&apos;;
+    }
+    return classes;
+  }
+
+  render() {
+    return super.render(this.renderTemplate(&apos;webform&apos;, {
+      classes: this.getClassName(),
+      children: this.renderComponents(),
+    }), this.builderMode ? &apos;builder&apos; : &apos;form&apos;, true);
+  }
+
+  redraw() {
+    // Don&apos;t bother if we have not built yet.
+    if (!this.element) {
+      return NativePromise.resolve();
+    }
+    this.clear();
+    this.setContent(this.element, this.render());
+    return this.attach(this.element);
+  }
+
+  attach(element) {
+    this.element = element;
+    this.loadRefs(element, { webform: &apos;single&apos; });
+    const childPromise = this.attachComponents(this.refs.webform);
+    this.addEventListener(document, &apos;keydown&apos;, this.executeShortcuts);
+    this.currentForm = this;
+    return childPromise.then(() =&gt; {
+      this.emit(&apos;render&apos;, this.element);
+
+      return this.setValue(this._submission, {
+        noUpdateEvent: true,
+      });
+    });
+  }
+
+  hasRequiredFields() {
+    let result = false;
+
+    eachComponent(this.form.components, (component) =&gt; {
+      if (component.validate.required) {
+        result = true;
+        return true;
+      }
+    }, true);
+
+    return result;
+  }
+
+  resetValue() {
+    _.each(this.getComponents(), (comp) =&gt; (comp.resetValue()));
+    this.setPristine(true);
+    this.redraw();
+  }
+
+  /**
+   * Sets a new alert to display in the error dialog of the form.
+   *
+   * @param {string} type - The type of alert to display. &quot;danger&quot;, &quot;success&quot;, &quot;warning&quot;, etc.
+   * @param {string} message - The message to show in the alert.
+   * @param {string} classes - Styling classes for alert.
+   */
+  setAlert(type, message, classes) {
+    if (!type &amp;&amp; this.submitted) {
+      if (this.alert) {
+        if (this.refs.errorRef &amp;&amp; this.refs.errorRef.length) {
+          this.refs.errorRef.forEach(el =&gt; {
+            this.removeEventListener(el, &apos;click&apos;);
+            this.removeEventListener(el, &apos;keypress&apos;);
+          });
+        }
+        this.removeChild(this.alert);
+        this.alert = null;
+      }
+      return;
+    }
+    if (this.options.noAlerts) {
+      if (!message) {
+        this.emit(&apos;error&apos;, false);
+      }
+      return;
+    }
+    if (this.alert) {
+      try {
+        if (this.refs.errorRef &amp;&amp; this.refs.errorRef.length) {
+          this.refs.errorRef.forEach(el =&gt; {
+            this.removeEventListener(el, &apos;click&apos;);
+            this.removeEventListener(el, &apos;keypress&apos;);
+          });
+        }
+        this.removeChild(this.alert);
+        this.alert = null;
+      }
+      catch (err) {
+        // ignore
+      }
+    }
+    if (message) {
+      this.alert = this.ce(&apos;div&apos;, {
+        class: classes || `alert alert-${type}`,
+        id: `error-list-${this.id}`,
+      });
+      if (message instanceof HTMLElement) {
+        this.appendTo(message, this.alert);
+      }
+      else {
+        this.setContent(this.alert, message);
+      }
+    }
+    if (!this.alert) {
+      return;
+    }
+
+    this.loadRefs(this.alert, { errorRef: &apos;multiple&apos; });
+
+    if (this.refs.errorRef &amp;&amp; this.refs.errorRef.length) {
+      this.refs.errorRef.forEach(el =&gt; {
+        this.addEventListener(el, &apos;click&apos;, (e) =&gt; {
+          const key = e.currentTarget.dataset.componentKey;
+          this.focusOnComponent(key);
+        });
+        this.addEventListener(el, &apos;keydown&apos;, (e) =&gt; {
+          if (e.keyCode === 13) {
+            e.preventDefault();
+            const key = e.currentTarget.dataset.componentKey;
+            this.focusOnComponent(key);
+          }
+        });
+      });
+    }
+    this.prepend(this.alert);
+  }
+
+  /**
+   * Focus on selected component.
+   *
+   * @param {string} key - The key of selected component.
+   * @returns {*}
+   */
+  focusOnComponent(key) {
+    if (key) {
+      const component = this.getComponent(key);
+      if (component) {
+        component.focus();
+      }
+    }
+  }
+
+  /**
+   * Show the errors of this form within the alert dialog.
+   *
+   * @param {Object} error - An optional additional error to display along with the component errors.
+   * @returns {*}
+   */
+  /* eslint-disable no-unused-vars */
+  showErrors(error, triggerEvent, onChange) {
+    this.loading = false;
+    let errors = this.errors;
+    if (error) {
+      if (Array.isArray(error)) {
+        errors = errors.concat(error);
+      }
+      else {
+        errors.push(error);
+      }
+    }
+    else {
+      errors = super.errors;
+    }
+
+    errors = errors.concat(this.customErrors);
+
+    if (!errors.length) {
+      this.setAlert(false);
+      return;
+    }
+
+    // Mark any components as invalid if in a custom message.
+    errors.forEach((err) =&gt; {
+      const { components = [] } = err;
+
+      if (err.component) {
+        components.push(err.component);
+      }
+
+      if (err.path) {
+        components.push(err.path);
+      }
+
+      components.forEach((path) =&gt; {
+        const component = this.getComponent(path, _.identity);
+        const components = _.compact(Array.isArray(component) ? component : [component]);
+
+        components.forEach((component) =&gt; component.setCustomValidity(err.message, true));
+      });
+    });
+
+    const message = document.createDocumentFragment();
+    const p = this.ce(&apos;p&apos;);
+    this.setContent(p, this.t(&apos;error&apos;));
+    const ul = this.ce(&apos;ul&apos;);
+    errors.forEach(err =&gt; {
+      if (err) {
+        const createListItem = (message, index) =&gt; {
+          const params = {
+            ref: &apos;errorRef&apos;,
+            tabIndex: 0,
+            &apos;aria-label&apos;: `${message}. Click to navigate to the field with following error.`
+          };
+          const li = this.ce(&apos;li&apos;, params);
+          const span = this.ce(&apos;span&apos;);
+          li.style.cursor = &apos;pointer&apos;;
+
+          this.setContent(span, unescapeHTML(message));
+          this.appendTo(span, li);
+
+          const messageFromIndex = !_.isUndefined(index) &amp;&amp; err.messages &amp;&amp; err.messages[index];
+          const keyOrPath = (messageFromIndex &amp;&amp; messageFromIndex.path) || (err.component &amp;&amp; err.component.key);
+          if (keyOrPath) {
+            const formattedKeyOrPath = getStringFromComponentPath(keyOrPath);
+            li.dataset.componentKey = formattedKeyOrPath;
+          }
+
+          this.appendTo(li, ul);
+        };
+
+        if (err.messages &amp;&amp; err.messages.length) {
+          const { component } = err;
+          err.messages.forEach(({ message }, index) =&gt; {
+            const text = this.t(&apos;alertMessage&apos;, { label: this.t(component.label), message });
+            createListItem(text, index);
+          });
+        }
+        else if (err) {
+          const message = _.isObject(err) ? err.message || &apos;&apos; : err;
+          createListItem(message);
+        }
+      }
+    });
+    p.appendChild(ul);
+    message.appendChild(p);
+    this.setAlert(&apos;danger&apos;, message);
+    if (triggerEvent) {
+      this.emit(&apos;error&apos;, errors);
+    }
+
+    return errors;
+  }
+  /* eslint-enable no-unused-vars */
+
+  /**
+   * Called when the submission has completed, or if the submission needs to be sent to an external library.
+   *
+   * @param {Object} submission - The submission object.
+   * @param {boolean} saved - Whether or not this submission was saved to the server.
+   * @returns {object} - The submission object.
+   */
+  onSubmit(submission, saved) {
+    this.loading = false;
+    this.submitting = false;
+    this.setPristine(true);
+    // We want to return the submitted submission and setValue will mutate the submission so cloneDeep it here.
+    this.setValue(fastCloneDeep(submission), {
+      noValidate: true,
+      noCheck: true
+    });
+    this.setAlert(&apos;success&apos;, `&lt;p&gt;${this.t(&apos;complete&apos;)}&lt;/p&gt;`);
+    this.emit(&apos;submit&apos;, submission);
+    if (saved) {
+      this.emit(&apos;submitDone&apos;, submission);
+    }
+    return submission;
+  }
+
+  /**
+   * Called when an error occurs during the submission.
+   *
+   * @param {Object} error - The error that occured.
+   */
+  onSubmissionError(error) {
+    if (error) {
+      // Normalize the error.
+      if (typeof error === &apos;string&apos;) {
+        error = { message: error };
+      }
+
+      if (&apos;details&apos; in error) {
+        error = error.details;
+      }
+    }
+
+    this.submitting = false;
+    this.setPristine(false);
+    this.emit(&apos;submitError&apos;, error);
+
+    // Allow for silent cancellations (no error message, no submit button error state)
+    if (error &amp;&amp; error.silent) {
+      this.emit(&apos;change&apos;, { isValid: true });
+      return false;
+    }
+
+    return this.showErrors(error, true);
+  }
+
+  /**
+   * Trigger the change event for this form.
+   *
+   * @param changed
+   * @param flags
+   */
+  onChange(flags, changed, modified, changes) {
+    flags = flags || {};
+    let isChangeEventEmitted = false;
+    // For any change events, clear any custom errors for that component.
+    if (changed &amp;&amp; changed.component) {
+      this.customErrors = this.customErrors.filter(err =&gt; err.component &amp;&amp; err.component !== changed.component.key);
+    }
+
+    super.onChange(flags, true);
+    const value = _.clone(this.submission);
+    flags.changed = value.changed = changed;
+    flags.changes = changes;
+
+    if (modified &amp;&amp; this.pristine) {
+      this.pristine = false;
+    }
+
+    value.isValid = this.checkData(value.data, flags);
+    this.loading = false;
+    if (this.submitted) {
+      this.showErrors();
+    }
+
+    // See if we need to save the draft of the form.
+    if (modified &amp;&amp; this.options.saveDraft) {
+      this.triggerSaveDraft();
+    }
+
+    if (!flags || !flags.noEmit) {
+      this.emit(&apos;change&apos;, value, flags, modified);
+      isChangeEventEmitted = true;
+    }
+
+    // The form is initialized after the first change event occurs.
+    if (isChangeEventEmitted &amp;&amp; !this.initialized) {
+      this.emit(&apos;initialized&apos;);
+      this.initialized = true;
+    }
+  }
+
+  checkData(data, flags = {}) {
+    const valid = super.checkData(data, flags);
+    if ((_.isEmpty(flags) || flags.noValidate) &amp;&amp; this.submitted) {
+      this.showErrors();
+    }
+    return valid;
+  }
+
+  /**
+   * Send a delete request to the server.
+   */
+  deleteSubmission() {
+    return this.formio.deleteSubmission()
+      .then(() =&gt; {
+        this.emit(&apos;submissionDeleted&apos;, this.submission);
+        this.resetValue();
+      });
+  }
+
+  /**
+   * Cancels the submission.
+   *
+   * @alias reset
+   */
+  cancel(noconfirm) {
+    const shouldReset = this.hook(&apos;beforeCancel&apos;, true);
+    if (shouldReset &amp;&amp; (noconfirm || confirm(this.t(&apos;confirmCancel&apos;)))) {
+      this.resetValue();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  setMetadata(submission) {
+    // Add in metadata about client submitting the form
+    submission.metadata = submission.metadata || {};
+    _.defaults(submission.metadata, {
+      timezone: _.get(this, &apos;_submission.metadata.timezone&apos;, currentTimezone()),
+      offset: parseInt(_.get(this, &apos;_submission.metadata.offset&apos;, moment().utcOffset()), 10),
+      origin: document.location.origin,
+      referrer: document.referrer,
+      browserName: navigator.appName,
+      userAgent: navigator.userAgent,
+      pathName: window.location.pathname,
+      onLine: navigator.onLine
+    });
+  }
+
+  submitForm(options = {}) {
+    return new NativePromise((resolve, reject) =&gt; {
+      // Read-only forms should never submit.
+      if (this.options.readOnly) {
+        return resolve({
+          submission: this.submission,
+          saved: false
+        });
+      }
+
+      const submission = fastCloneDeep(this.submission || {});
+
+      this.setMetadata(submission);
+
+      submission.state = options.state || &apos;submitted&apos;;
+
+      const isDraft = (submission.state === &apos;draft&apos;);
+      this.hook(&apos;beforeSubmit&apos;, { ...submission, component: options.component }, (err) =&gt; {
+        if (err) {
+          return reject(err);
+        }
+
+        if (!isDraft &amp;&amp; !submission.data) {
+          return reject(&apos;Invalid Submission&apos;);
+        }
+
+        if (!isDraft &amp;&amp; !this.checkValidity(submission.data, true, submission.data)) {
+          return reject();
+        }
+
+        this.everyComponent((comp) =&gt; {
+          const { persistent } = comp.component;
+          if (persistent === &apos;client-only&apos;) {
+            _.unset(submission.data, comp.path);
+          }
+        });
+
+        this.hook(&apos;customValidation&apos;, { ...submission, component: options.component }, (err) =&gt; {
+          if (err) {
+            // If string is returned, cast to object.
+            if (typeof err === &apos;string&apos;) {
+              err = {
+                message: err
+              };
+            }
+
+            // Ensure err is an array.
+            err = Array.isArray(err) ? err : [err];
+
+            // Set as custom errors.
+            this.customErrors = err;
+
+            return reject();
+          }
+
+          this.loading = true;
+
+          // Use the form action to submit the form if available.
+          if (this._form &amp;&amp; this._form.action) {
+            const method = (submission.data._id &amp;&amp; this._form.action.includes(submission.data._id)) ? &apos;PUT&apos; : &apos;POST&apos;;
+            return Formio.makeStaticRequest(this._form.action, method, submission, this.formio ? this.formio.options : {})
+              .then((result) =&gt; resolve({
+                submission: result,
+                saved: true,
+              }))
+              .catch(reject);
+          }
+
+          const submitFormio = this.formio;
+          if (this.nosubmit || !submitFormio) {
+            return resolve({
+              submission,
+              saved: false,
+            });
+          }
+          // If this is an actionUrl, then make sure to save the action and not the submission.
+          const submitMethod = submitFormio.actionUrl ? &apos;saveAction&apos; : &apos;saveSubmission&apos;;
+          submitFormio[submitMethod](submission)
+            .then((result) =&gt; resolve({
+              submission: result,
+              saved: true,
+            }))
+            .catch(reject);
+        });
+      });
+    });
+  }
+
+  executeSubmit(options) {
+    this.submitted = true;
+    this.submitting = true;
+    return this.submitForm(options)
+      .then(({ submission, saved }) =&gt; this.onSubmit(submission, saved))
+      .catch((err) =&gt; NativePromise.reject(this.onSubmissionError(err)));
+  }
+
+  /**
+   * Submits the form.
+   *
+   * @example
+   * import Webform from &apos;formiojs/Webform&apos;;
+   * let form = new Webform(document.getElementById(&apos;formio&apos;));
+   * form.src = &apos;https://examples.form.io/example&apos;;
+   * form.submission = {data: {
+   *   firstName: &apos;Joe&apos;,
+   *   lastName: &apos;Smith&apos;,
+   *   email: &apos;joe@example.com&apos;
+   * }};
+   * form.submit().then((submission) =&gt; {
+   *   console.log(submission);
+   * });
+   *
+   * @param {boolean} before - If this submission occured from the before handlers.
+   *
+   * @returns {Promise} - A promise when the form is done submitting.
+   */
+  submit(before, options) {
+    if (!before) {
+      return this.beforeSubmit(options).then(() =&gt; this.executeSubmit(options));
+    }
+    else {
+      return this.executeSubmit(options);
+    }
+  }
+
+  submitUrl(URL, headers) {
+    if (!URL) {
+      return console.warn(&apos;Missing URL argument&apos;);
+    }
+
+    const submission = this.submission || {};
+    const API_URL  = URL;
+    const settings = {
+      method: &apos;POST&apos;,
+      headers: {}
+    };
+
+    if (headers &amp;&amp; headers.length &gt; 0) {
+      headers.map((e) =&gt; {
+        if (e.header !== &apos;&apos; &amp;&amp; e.value !== &apos;&apos;) {
+          settings.headers[e.header] = this.interpolate(e.value, submission);
+        }
+      });
+    }
+    if (API_URL &amp;&amp; settings) {
+        Formio.makeStaticRequest(API_URL,settings.method,submission, { headers: settings.headers }).then(() =&gt; {
+          this.emit(&apos;requestDone&apos;);
+          this.setAlert(&apos;success&apos;, &apos;&lt;p&gt; Success &lt;/p&gt;&apos;);
+        }).catch((e) =&gt; {
+          this.showErrors(`${e.statusText ? e.statusText : &apos;&apos;} ${e.status ? e.status : e}`);
+          this.emit(&apos;error&apos;,`${e.statusText ? e.statusText : &apos;&apos;} ${e.status ? e.status : e}`);
+          console.error(`${e.statusText ? e.statusText : &apos;&apos;} ${e.status ? e.status : e}`);
+          this.setAlert(&apos;danger&apos;, `&lt;p&gt; ${e.statusText ? e.statusText : &apos;&apos;} ${e.status ? e.status : e} &lt;/p&gt;`);
+        });
+    }
+    else {
+      this.emit(&apos;error&apos;, &apos;You should add a URL to this button.&apos;);
+      this.setAlert(&apos;warning&apos;, &apos;You should add a URL to this button.&apos;);
+      return console.warn(&apos;You should add a URL to this button.&apos;);
+    }
+  }
+
+  triggerRecaptcha() {
+    if (!this || !this.components) {
+      return;
+    }
+    const recaptchaComponent = searchComponents(this.components, {
+      &apos;component.type&apos;: &apos;recaptcha&apos;,
+      &apos;component.eventType&apos;: &apos;formLoad&apos;
+    });
+    if (recaptchaComponent.length &gt; 0) {
+      recaptchaComponent[0].verify(`${this.form.name ? this.form.name : &apos;form&apos;}Load`);
+    }
+  }
+
+  set nosubmit(value) {
+    this._nosubmit = !!value;
+    this.emit(&apos;nosubmit&apos;, this._nosubmit);
+  }
+
+  get nosubmit() {
+    return this._nosubmit || false;
+  }
+}
+
+Webform.setBaseUrl = Formio.setBaseUrl;
+Webform.setApiUrl = Formio.setApiUrl;
+Webform.setAppUrl = Formio.setAppUrl;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

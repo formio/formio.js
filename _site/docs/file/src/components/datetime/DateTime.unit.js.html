@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/components/datetime/DateTime.unit.js | formiojs</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-GlobalFormio">GlobalFormio</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#addons">addons</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/addons/FormioAddon.js~FormioAddon.html">FormioAddon</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-editForms">editForms</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Checkbox">Checkbox</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Columns">Columns</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-container">components/container</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Container">Container</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Fieldset">Fieldset</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-File">File</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden">components/hidden</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PhoneNumber">PhoneNumber</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-radio">components/radio</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Radio">Radio</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-recaptcha">components/recaptcha</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html">ReCaptchaComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextArea">TextArea</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textfield">components/textfield</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Node.js~Node.html">Node</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-edittable">contrib/edittable</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/edittable/EditTable.js~EditTableComponent.html">EditTableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditTable">EditTable</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-location">contrib/location</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/location/Location.js~LocationComponent.html">LocationComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Location">Location</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-modaledit">contrib/modaledit</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/modaledit/ModalEdit.js~ModalEditComponent.html">ModalEditComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-processor">providers/processor</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fileProcessor">fileProcessor</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-googledrive">googledrive</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateFormChange">generateFormChange</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStrings">getStrings</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getValue">getValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasCondition">hasCondition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-removeComponent">removeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-searchComponents">searchComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-KEY_CODES">KEY_CODES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator-conjunctions">validator/conjunctions</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/conjunctions/index.js~Conjunctions.html">Conjunctions</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator-operators">validator/operators</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/operators/index.js~Operators.html">Operators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator-quickrules">validator/quickRules</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/quickRules/index.js~QuickRules.html">QuickRules</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator-transformers">validator/transformers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/transformers/index.js~Transformers.html">Transformers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator-valuesources">validator/valueSources</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/valueSources/index.js~ValueSources.html">ValueSources</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/components/datetime/DateTime.unit.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
+import Harness from &apos;../../../test/harness&apos;;
+import DateTimeComponent from &apos;./DateTime&apos;;
+import Formio from &apos;./../../Formio&apos;;
+import _ from &apos;lodash&apos;;
+import &apos;flatpickr&apos;;
+import {
+  comp1,
+  comp2,
+  comp3,
+  comp5,
+  comp6,
+  comp7
+} from &apos;./fixtures&apos;;
+
+describe(&apos;DateTime Component&apos;, () =&gt; {
+  it(&apos;Should build a date time component&apos;, () =&gt; {
+    return Harness.testCreate(DateTimeComponent, comp1).then((dateTime) =&gt; dateTime.destroy());
+  });
+
+  it(&apos;Test formatting&apos;, (done) =&gt; {
+    Harness.testCreate(DateTimeComponent, comp2).then((dateTime) =&gt; {
+      const value = &apos;2020-09-22T00:00:00&apos;;
+      const formattedValue = &apos;2020-09-22&apos;;
+      dateTime.setValue(value);
+      setTimeout(() =&gt; {
+        assert.equal(dateTime.getValueAsString(value), formattedValue, &apos;getValueAsString should return formatted value&apos;);
+        dateTime.destroy();
+        done();
+      }, 250);
+    }).catch(done);
+  });
+
+  it(&apos;Should format value&apos;, () =&gt; {
+    comp2.format = &apos;yyyy-MM-dd hh:mm a&apos;;
+    return Harness.testCreate(DateTimeComponent, comp2)
+      .then((dateTime) =&gt; {
+        assert.equal(dateTime.getValueAsString(&apos;2020-09-18T12:12:00&apos;), &apos;2020-09-18 12:12 PM&apos;);
+        dateTime.destroy();
+      });
+  });
+
+  it(&apos;Should allow manual input&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const blurEvent = new Event(&apos;blur&apos;);
+
+      const value = &apos;2021-04-13 7:00 PM&apos;;
+      const expectedValueStart = &apos;2021-04-13T19:00:00&apos;;
+      const input = dateTime.element.querySelector(&apos;.input&apos;);
+      input.value = value;
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(dateTime.getValue().startsWith(expectedValueStart), true);
+        assert.equal(dateTime.dataValue.startsWith(expectedValueStart), true);
+
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should not allow manual input&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].allowInput = false;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const blurEvent = new Event(&apos;blur&apos;);
+
+      const value = &apos;2021-04-13 7:00 PM&apos;;
+      const input = dateTime.element.querySelector(&apos;.input&apos;);
+      input.value = value;
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(dateTime.getValue(), &apos;&apos;);
+        assert.equal(dateTime.dataValue, &apos;&apos;);
+
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should format date correctly&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    const formatsInitial = [
+      {
+        format: &apos;yyyy-dd-MM&apos;,
+        inputValue:&apos;2021-15-03 11:10 AM&apos;,
+        setValue:&apos;2021-03-15T00:00:00&apos;,
+        expectedFormattedValue:&apos;2021-15-03&apos;
+      },
+      {
+        format: &apos;yyyy-dd&apos;,
+        inputValue:&apos;2021-15-03 11:10 AM&apos;,
+        setValue:&apos;2021-03-15T00:00:00&apos;,
+        expectedFormattedValue:&apos;2021-15&apos;
+      },
+      {
+        format: &apos;yyyy&apos;,
+        inputValue:&apos;2021-15-03 11:10 AM&apos;,
+        setValue:&apos;2021-03-15T00:00:00&apos;,
+        expectedFormattedValue:&apos;2021&apos;
+      },
+      {
+        format: &apos;dd-MM-yyyy&apos;,
+        inputValue:&apos;15-03-2021 11:10 AM&apos;,
+        setValue:&apos;2021-03-15T00:00:00&apos;,
+        expectedFormattedValue:&apos;15-03-2021&apos;
+      },
+      {
+        format: &apos;MM-dd&apos;,
+        inputValue:&apos;03-15-2021 11:10 AM&apos;,
+        setValue:&apos;2021-03-15T00:00:00&apos;,
+        expectedFormattedValue:&apos;03-15&apos;
+      },
+      {
+        format: &apos;dd-MM&apos;,
+        inputValue:&apos;15-03-2021 11:10 AM&apos;,
+        setValue:&apos;2021-03-15T00:00:00&apos;,
+        expectedFormattedValue:&apos;15-03&apos;
+      },
+      {
+        format: &apos;MM-dd-yyyy&apos;,
+        inputValue:&apos;03-15-2021 11:10 AM&apos;,
+        setValue:&apos;2021-03-15T00:00:00&apos;,
+        expectedFormattedValue:&apos;03-15-2021&apos;
+      },
+      {
+        format: &apos;yyyy-MM-dd&apos;,
+        inputValue:&apos;2021-03-15 11:10 AM&apos;,
+        setValue:&apos;2021-03-15T00:00:00&apos;,
+        expectedFormattedValue:&apos;2021-03-15&apos;
+      },
+      {
+        format: &apos;dd-MM-yyyy hh:mm&apos;,
+        inputValue:&apos;15-03-2021 11:10 AM&apos;,
+        setValue:&apos;2021-03-15T11:10:00&apos;,
+        expectedFormattedValue:&apos;15-03-2021 11:10&apos;
+      },
+      {
+        format: &apos;yyyy-MM-dd a&apos;,
+        inputValue:&apos;2021-03-15 PM&apos;,
+        setValue:&apos;2021-03-15T12:00:00&apos;,
+        expectedFormattedValue:&apos;2021-03-15 PM&apos;
+      },
+      {
+        format: &apos;hh&apos;,
+        inputValue:&apos;11:10 AM&apos;,
+        setValue:&apos;2021-01-01T11:00:00&apos;,
+        expectedFormattedValue:&apos;11&apos;
+      },
+      {
+        format: &apos;hh:mm a&apos;,
+        inputValue:&apos;11:10 AM 34&apos;,
+        setValue:&apos;2021-01-01T11:10:00&apos;,
+        expectedFormattedValue:&apos;11:10 AM&apos;
+      },
+      {
+        format: &apos;mm&apos;,
+        inputValue:&apos;11:10 AM&apos;,
+        setValue:&apos;2021-01-01T00:11:00&apos;,
+        expectedFormattedValue:&apos;11&apos;
+      },
+    ];
+
+    const getAllFormats = function(formats) {
+      const separators = [&apos;.&apos;, &apos;/&apos;];
+
+      const formatsWithDiffSeparators = separators.reduce((result, separator) =&gt; {
+        const formatWithNewSeparator = formats
+          .filter(format =&gt; {
+            return format.format.split(&apos;-&apos;).length &gt; 1;
+          })
+          .map(format =&gt; {
+            return {
+              ...format,
+              format: format.format.split(&apos;-&apos;).join(separator),
+              inputValue: format.inputValue.split(&apos;-&apos;).join(separator),
+              expectedFormattedValue: format.expectedFormattedValue.split(&apos;-&apos;).join(separator),
+            };
+          });
+
+        return [...result, ...formatWithNewSeparator];
+      }, []);
+
+      return [...formats, ...formatsWithDiffSeparators];
+    };
+
+    const formats = getAllFormats(formatsInitial);
+    const formComponents = [];
+
+    formats.forEach((format, index) =&gt; {
+      const comp = _.cloneDeep(form.components[0]);
+      comp.format = format.format;
+      comp.widget.format = format.format;
+      comp.key = comp.key + index;
+      formComponents.push(comp);
+    });
+
+    form.components = formComponents;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      form.components.forEach((comp, index) =&gt; {
+        comp.setValue(formats[index].setValue);
+      });
+
+      setTimeout(() =&gt; {
+        form.components.forEach((comp, index) =&gt; {
+          const input = comp.element.querySelector(&apos;.input&apos;);
+          assert.equal(input.value, formats[index].expectedFormattedValue, &apos;Should format date/time value after setting value&apos;);
+
+          const blurEvent = new Event(&apos;blur&apos;);
+          input.value = formats[index].inputValue;
+          input.dispatchEvent(blurEvent);
+        });
+
+        setTimeout(() =&gt; {
+          form.components.forEach((comp, index) =&gt; {
+            const input = comp.element.querySelector(&apos;.input&apos;);
+            assert.equal(input.value, formats[index].expectedFormattedValue, &apos;Should format date/time value after inputting value&apos;);
+          });
+
+          document.innerHTML = &apos;&apos;;
+          done();
+        }, 300);
+      }, 300);
+    }).catch(done);
+  }).timeout(4000);
+
+  it(&apos;Should disable weekends&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].datePicker.disableWeekends = true;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const calendar = dateTime.element.querySelector(&apos;.flatpickr-input&apos;).widget.calendar;
+      assert.equal(calendar.config.disableWeekends, true);
+
+      document.innerHTML = &apos;&apos;;
+      done();
+    }).catch(done);
+  });
+
+  it(&apos;Should disable weekdays&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].datePicker.disableWeekdays = true;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const calendar = dateTime.element.querySelector(&apos;.flatpickr-input&apos;).widget.calendar;
+      assert.equal(calendar.config.disableWeekdays, true);
+
+      document.innerHTML = &apos;&apos;;
+      done();
+    }).catch(done);
+  });
+
+  it(&apos;Should disable time&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].enableTime = false;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const calendar = dateTime.element.querySelector(&apos;.flatpickr-input&apos;).widget.calendar;
+      assert.equal(calendar.config.enableTime, false);
+      assert.equal(!!calendar.timeContainer, false);
+
+      document.innerHTML = &apos;&apos;;
+      done();
+    }).catch(done);
+  });
+
+  it(&apos;Should disable date&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].enableDate = false;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const calendar = dateTime.element.querySelector(&apos;.flatpickr-input&apos;).widget.calendar;
+      assert.equal(!!calendar.daysContainer, false);
+
+      document.innerHTML = &apos;&apos;;
+      done();
+    }).catch(done);
+  });
+
+  it(&apos;Should enable time&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].enableTime = true;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const calendar = dateTime.element.querySelector(&apos;.flatpickr-input&apos;).widget.calendar;
+      assert.equal(calendar.config.enableTime, true);
+      assert.equal(!!calendar.timeContainer, true);
+
+      document.innerHTML = &apos;&apos;;
+      done();
+    }).catch(done);
+  });
+
+  it(&apos;Should enable date&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].enableDate = true;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const calendar = dateTime.element.querySelector(&apos;.flatpickr-input&apos;).widget.calendar;
+      assert.equal(calendar.config.enableDate, true);
+      assert.equal(!!calendar.daysContainer, true);
+
+      document.innerHTML = &apos;&apos;;
+      done();
+    }).catch(done);
+  });
+
+  it(&apos;Should not input the date that is disabled&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].datePicker.disable = &apos;2021-04-15&apos;;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const input = dateTime.element.querySelector(&apos;.input&apos;);
+
+      const blurEvent = new Event(&apos;blur&apos;);
+      input.value = &apos;2021-04-15&apos;;
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() =&gt; {
+        const input = dateTime.element.querySelector(&apos;.input&apos;);
+        assert.equal(input.value, &apos;&apos;);
+        assert.equal(dateTime.dataValue, &apos;&apos;);
+
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should not input the date that is in disabled range&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].datePicker.disable = &apos;2021-04-15-2021-04-20&apos;;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const input = dateTime.element.querySelector(&apos;.input&apos;);
+
+      const blurEvent = new Event(&apos;blur&apos;);
+      input.value = &apos;2021-04-17&apos;;
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() =&gt; {
+        const input = dateTime.element.querySelector(&apos;.input&apos;);
+        assert.equal(input.value, &apos;&apos;);
+        assert.equal(dateTime.dataValue, &apos;&apos;);
+
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should not allow inputting the date that meets condition of &quot;custom disabled date&quot;&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].datePicker.disableFunction = &apos;date.getDay() === 2&apos;;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const input = dateTime.element.querySelector(&apos;.input&apos;);
+
+      const blurEvent = new Event(&apos;blur&apos;);
+      input.value = &apos;2021-04-06&apos;;
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() =&gt; {
+        const input = dateTime.element.querySelector(&apos;.input&apos;);
+        assert.equal(input.value, &apos;&apos;);
+        assert.equal(dateTime.dataValue, &apos;&apos;);
+
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should not allow inputting the date if it is out of min/max date range&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].datePicker.minDate = &apos;2021-04-04T12:00:00&apos;;
+    form.components[0].datePicker.maxDate = &apos;2021-04-18T12:00:00&apos;;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const input = dateTime.element.querySelector(&apos;.input&apos;);
+
+      const blurEvent = new Event(&apos;blur&apos;);
+      input.value = &apos;2020-04-03&apos;;
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() =&gt; {
+        const input = dateTime.element.querySelector(&apos;.input&apos;);
+        assert.equal(input.value, &apos;&apos;);
+        assert.equal(dateTime.dataValue, &apos;&apos;);
+
+        const blurEvent = new Event(&apos;blur&apos;);
+        input.value = &apos;2022-04-13&apos;;
+        input.dispatchEvent(blurEvent);
+
+        setTimeout(() =&gt; {
+          const input = dateTime.element.querySelector(&apos;.input&apos;);
+          assert.equal(input.value, &apos;&apos;);
+          assert.equal(dateTime.dataValue, &apos;&apos;);
+
+          document.innerHTML = &apos;&apos;;
+          done();
+        }, 300);
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should set hour and minutes step&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].timePicker = { hourStep:3, minuteStep:10 };
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const calendar = dateTime.element.querySelector(&apos;.flatpickr-input&apos;).widget.calendar;
+      assert.equal(calendar.config.minuteIncrement, 10);
+      assert.equal(calendar.config.hourIncrement, 3);
+
+      document.innerHTML = &apos;&apos;;
+      done();
+    }).catch(done);
+  });
+
+  it(&apos;Should allow inputting 24h time&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].timePicker = { showMeridian: false };
+    form.components[0].widget[&apos;time_24hr&apos;] = true;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const input = dateTime.element.querySelector(&apos;.input&apos;);
+
+      const blurEvent = new Event(&apos;blur&apos;);
+      input.value = &apos;2020-04-03 22:11&apos;;
+      input.dispatchEvent(blurEvent);
+      setTimeout(() =&gt; {
+        const input = dateTime.element.querySelector(&apos;.input&apos;);
+        assert.equal(input.value, &apos;2020-04-03 22:11&apos;);
+        assert.equal(dateTime.dataValue.startsWith(&apos;2020-04-03T22:11:00&apos;), true);
+
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should not set value if it does not meet minDate validation&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      dateTime.setValue(&apos;2021-05-01T09:00:00&apos;);
+
+      setTimeout(() =&gt; {
+        const input = dateTime.element.querySelector(&apos;.input&apos;);
+        assert.equal(input.value, &apos;&apos;);
+
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should set value in readOnly mode even if it does not meet current minDate validation conditions&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form, { readOnly: true }).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      dateTime.setValue(&apos;2021-05-01T09:00:00&apos;);
+
+      setTimeout(() =&gt; {
+        const input = dateTime.element.querySelector(&apos;.input&apos;);
+        assert.equal(input.value, &apos;05/01/21&apos;);
+
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should save hours and minutes values on first change&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp6);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].enableDate = false;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const blurEvent = new Event(&apos;blur&apos;);
+      const input = dateTime.element.querySelector(&apos;.input&apos;);
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() =&gt; {
+        const calendar = dateTime.element.querySelector(&apos;.flatpickr-input&apos;).widget.calendar;
+        calendar._input.value = &apos;7:00 PM&apos;;
+        const expectedValue = &apos;T19:00:00&apos;;
+        calendar._input.dispatchEvent(blurEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(dateTime.dataValue.includes(expectedValue), true);
+
+          document.innerHTML = &apos;&apos;;
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;Should provide correct value after submission&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp7);
+    const element = document.createElement(&apos;div&apos;);
+    form.components[0].enableTime = false;
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      dateTime.setValue(&apos;2022-12-21&apos;);
+
+      setTimeout(() =&gt; {
+        const submit = form.getComponent(&apos;submit&apos;);
+        const clickEvent = new Event(&apos;click&apos;);
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(dateTime.dataValue, &apos;2022-12-21&apos;);
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+  // it(&apos;Test Shortcut Buttons&apos;, (done) =&gt; {
+  //   // eslint-disable-next-line no-debugger
+  //   debugger;
+  //   window.flatpickr = Flatpickr;
+  //   window.ShortcutButtonsPlugin = ShortcutButtonsPlugin;
+  //   const formElement = document.createElement(&apos;div&apos;);
+  //   const form = new Webform(formElement);
+  //   form.setForm({ display: &apos;form&apos;, type: &apos;form&apos;, components: [comp2] })
+  //     .then(() =&gt; {
+  //       const dateTime = form.components[0];
+  //       const buttonsWrappers = document.querySelectorAll(&apos;.shortcut-buttons-flatpickr-wrapper&apos;);
+  //       const shortcutButtons = buttonsWrappers[buttonsWrappers.length - 1].querySelectorAll(&apos;.shortcut-buttons-flatpickr-button&apos;);
+
+  //       assert.equal(shortcutButtons.length, 1);
+
+  //       const input = dateTime.refs.input[0];
+  //       Harness.clickElement(dateTime, shortcutButtons[0]);
+
+  //       setTimeout(() =&gt; {
+  //         input.widget.calendar.close();
+  //         setTimeout(() =&gt; {
+  //           assert.equal(form.data.date, &apos;2020-10-10T00:00:00+00:00&apos;);
+  //           dateTime.destroy();
+  //           done();
+  //         }, 250);
+  //       }, 150);
+  //     }).catch(done);
+  // });
+});
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

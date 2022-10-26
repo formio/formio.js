@@ -1,0 +1,10 @@
+I"<p>With this library, you can easly embed a form within your website by adding the <code class="language-plaintext highlighter-rouge">src</code> query string to the Form.io API url of your form. For example, if you wish to embed the https://examples.form.io/example form within your website, you could use.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.embed.js?src=https://examples.form.io/example"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<h3>Result</h3>
+<div class="card card-body bg-light">
+<script src="dist/formio.embed.js?src=https://examples.form.io/example"></script>
+</div>
+:ET

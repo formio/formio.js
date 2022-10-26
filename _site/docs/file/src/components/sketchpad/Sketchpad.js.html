@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/components/sketchpad/Sketchpad.js | formiojs</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-input">components/_classes/input</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html">Input</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Checkbox">Checkbox</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Columns.js~ColumnsComponent.html">ColumnsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Columns">Columns</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-container">components/container</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Container">Container</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/content/Content.js~ContentComponent.html">ContentComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html">DataGridComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Fieldset">Fieldset</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-File">File</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden">components/hidden</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PhoneNumber">PhoneNumber</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-radio">components/radio</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/radio/Radio.js~RadioComponent.html">RadioComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Radio">Radio</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-recaptcha">components/recaptcha</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html">ReCaptchaComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-sketchpad">components/sketchpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/sketchpad/Sketchpad.js~Sketchpad.html">Sketchpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Sketchpad">Sketchpad</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tagpad">components/tagpad</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tagpad/Tagpad.js~Tagpad.html">Tagpad</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tagpad">Tagpad</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextArea">TextArea</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textfield">components/textfield</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html">TextFieldComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Node.js~Node.html">Node</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Tree.js~TreeComponent.html">TreeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-edittable">contrib/edittable</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/edittable/EditTable.js~EditTableComponent.html">EditTableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditTable">EditTable</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-location">contrib/location</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/location/Location.js~LocationComponent.html">LocationComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Location">Location</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-modaledit">contrib/modaledit</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/modaledit/ModalEdit.js~ModalEditComponent.html">ModalEditComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap3">templates/bootstrap3</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-semantic">templates/semantic</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateFormChange">generateFormChange</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStrings">getStrings</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getValue">getValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasCondition">hasCondition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-removeComponent">removeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-searchComponents">searchComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkJsonConditional">checkJsonConditional</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkSimpleConditional">checkSimpleConditional</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkTrigger">checkTrigger</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMask">convertFormatToMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getContextComponents">getContextComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getInputMask">getInputMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLocaleDateFormatInfo">getLocaleDateFormatInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberDecimalLimit">getNumberDecimalLimit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberSeparators">getNumberSeparators</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-loadZones">loadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchInputMask">matchInputMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-KEY_CODES">KEY_CODES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/components/sketchpad/Sketchpad.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Field from &apos;../../components/_classes/field/Field&apos;;
+import Two from &apos;two.js/src/two&apos;;
+import Picker from &apos;vanilla-picker&apos;;
+import _ from &apos;lodash&apos;;
+import Formio from &apos;../../Formio&apos;;
+import editForm from &apos;./Sketchpad.form&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
+
+export default class Sketchpad extends Field {
+  static schema(...extend) {
+    return Field.schema({
+      type: &apos;sketchpad&apos;,
+      label: &apos;Sketchpad&apos;,
+      key: &apos;sketchpad&apos;,
+      defaultZoom: 100
+    }, ...extend);
+  }
+
+  static builderInfo = {
+    title: &apos;Sketchpad&apos;,
+    group: &apos;premium&apos;,
+    icon: &apos;pencil&apos;,
+    weight: 110,
+    documentation: &apos;http://help.form.io/userguide/&apos;,
+    schema: Sketchpad.schema()
+  };
+
+  static editForm = editForm;
+
+  constructor(...args) {
+    super(...args);
+    _.defaults(this.component, {
+      defaultZoom: 100
+    });
+    this.deleted = [];
+    this.viewSketchpad = {
+      canvas: {},
+      background: {}
+    };
+    this.editSketchpad = {
+      canvas: {},
+      background: {}
+    };
+    //will use dimensions from background viewBox if either width or height is not defined for component
+    //TODO maybe change this criteria to AND instead of OR, use defined dimension and default another missing dimension to value from viewBox (in this case will need to use promise in case of any missing dimension
+    this.useBackgroundDimensions = !this.component.width || !this.component.height;
+    //initialize backgroundReady promise
+    const backgroundReadyPromise = new NativePromise((resolve, reject) =&gt; {
+      this.backgroundReady = {
+        resolve,
+        reject
+      };
+    });
+    this.backgroundReady.promise = backgroundReadyPromise;
+    //default state of SVG editor
+    this.state = {
+      mode: Object.keys(this.modes)[0],
+      stroke: &apos;#333&apos;,
+      fill: &apos;#ccc&apos;,
+      linewidth: 1,
+      circleSize: 10
+    };
+
+    this.dimensionsMultiplier = 1;
+
+    this.zoomInfo = {
+      viewBox: {},
+      multiplier: 1.5,
+      totalMultiplier: 1
+    };
+  }
+
+  /**
+   * Builds the component.
+   */
+  render() {
+    return super.render(&apos;coming soon&apos;, {});
+    // return super.render(this.renderTemplate(&apos;sketchpad&apos;, {}));
+  }
+
+  getValue() {
+    return this.dataValue;
+  }
+
+  get emptyValue() {
+    return [];
+  }
+
+  get modes() {
+    return {
+      pencil: {
+        icon: &apos;pencil&apos;,
+        title: &apos;Pencil&apos;,
+        state: {
+          mode: &apos;pencil&apos;
+        },
+        eventStart: (coordinate) =&gt; {
+          this.points = [coordinate];
+          this.prev = coordinate;
+          this.curve = this.two.makeCurve([
+            new Two.Vector(this.prev.x, this.prev.y),
+            new Two.Vector(coordinate.x, coordinate.y + 1)
+          ], true);
+          this.curve.noFill().stroke = this.state.stroke;
+          this.curve.linewidth = this.state.linewidth;
+          this.curve.vertices.forEach((v) =&gt; v.addSelf(this.curve.translation));
+          this.curve.translation.clear();
+          this.two.update();
+          this.layers.push(this.curve);
+          this.curve._renderer.elem.addEventListener(&apos;click&apos;, (e) =&gt; this.click(e, this.layers.length));
+        },
+        drag: (coordinate) =&gt; {
+          this.points.push(coordinate);
+          this.curve.vertices.push(new Two.Vector(coordinate.x, coordinate.y));
+          this.two.update();
+          this.prev = coordinate;
+        },
+        eventEnd: () =&gt; {
+          const value = this.editValue.slice();
+          value.push(Object.assign({}, this.state, { points: this.points }));
+          this.editValue = value;
+          this.triggerChange();
+        },
+        draw: (state) =&gt; {
+          const layer = this.two.makeCurve(state.points.map(point =&gt; new Two.Vector(point.x, point.y)), true);
+          layer.noFill().stroke = state.stroke;
+          layer.linewidth = state.linewidth;
+          layer.vertices.forEach((v) =&gt; v.addSelf(layer.translation));
+          layer.translation.clear();
+          return layer;
+        }
+      },
+      line: {
+        icon: &apos;minus&apos;,
+        title: &apos;Line&apos;,
+        state: {
+          mode: &apos;line&apos;
+        },
+        eventStart: (coordinate) =&gt; {
+          this.center = coordinate;
+          this.line = this.two.makeLine(
+            coordinate.x,
+            coordinate.y,
+            coordinate.x,
+            coordinate.y
+          );
+          this.line.fill = this.state.fill;
+          this.line.stroke = this.state.stroke;
+          this.line.linewidth = this.state.linewidth;
+          this.two.update();
+          this.layers.push(this.line);
+          const index = this.layers.length - 1;
+          this.line._renderer.elem.addEventListener(&apos;click&apos;, (e) =&gt; this.click(e, index));
+        },
+        drag: (coordinate) =&gt; {
+          this.line.vertices[1].x = coordinate.x;
+          this.line.vertices[1].y = coordinate.y;
+          this.two.update();
+        },
+        eventEnd: () =&gt; {
+          const value = this.editValue.slice();
+          const vertices = this.line.vertices.map(vertice =&gt; {
+            return {
+              x: vertice.x,
+              y: vertice.y
+            };
+          });
+          value.push(Object.assign({}, this.state, { vertices: vertices }));
+          this.editValue = value;
+          this.triggerChange();
+        },
+        draw: (state) =&gt; {
+          const layer = this.two.makeLine(
+            state.vertices[0].x,
+            state.vertices[0].y,
+            state.vertices[1].x,
+            state.vertices[1].y
+          );
+          layer.fill = state.fill;
+          layer.stroke = state.stroke;
+          layer.linewidth = state.linewidth;
+          return layer;
+        }
+      },
+      circle: {
+        icon: &apos;circle&apos;,
+        title: &apos;Circle&apos;,
+        state: {
+          mode: &apos;circle&apos;
+        },
+        eventStart: (coordinate) =&gt; {
+          this.center = coordinate;
+          const layer = this.two.makeCircle(coordinate.x, coordinate.y, this.state.circleSize);
+          layer.fill = this.state.fill;
+          layer.stroke = this.state.stroke;
+          layer.linewidth = this.state.linewidth;
+          this.two.update();
+          this.layers.push(layer);
+          const index = this.layers.length - 1;
+          layer._renderer.elem.addEventListener(&apos;click&apos;, (e) =&gt; this.click(e, index));
+        },
+        drag: () =&gt; {
+
+        },
+        eventEnd: () =&gt; {
+          const value = this.editValue.slice();
+          value.push(Object.assign({}, this.state, { center: this.center }));
+          this.editValue = value;
+          this.triggerChange();
+        },
+        draw: (state) =&gt; {
+          const layer = this.two.makeCircle(state.center.x, state.center.y, state.circleSize);
+          layer.fill = state.fill;
+          layer.stroke = state.stroke;
+          layer.linewidth = state.linewidth;
+          return layer;
+        },
+        attach: (element) =&gt; {
+          const radiusInput = this.ce(&apos;input&apos;, {
+            type: &apos;number&apos;,
+            class: &apos;formio-sketchpad-toolbar-input formio-sketchpad-radius-input&apos;,
+            onChange: (e) =&gt; {
+              this.state.circleSize = e.target.value;
+            }
+          });
+          radiusInput.value = this.state.circleSize;
+          element.appendChild(radiusInput);
+          return element;
+        }
+      },
+      rectangle: {
+        icon: &apos;square-o&apos;,
+        cursor: {
+          hover: &apos;crosshair&apos;
+        },
+        title: &apos;Rectangle&apos;,
+        state: {
+          mode: &apos;rectangle&apos;
+        },
+        eventStart: (coordinate) =&gt; {
+          this.dragStartPoint = coordinate;
+        },
+        drag: (coordinate) =&gt; {
+          this.dragEndPoint = coordinate;
+          if (this.rectangle) {
+            this.rectangle.remove();
+          }
+          this.width = Math.abs(this.dragEndPoint.x - this.dragStartPoint.x);
+          this.height = Math.abs(this.dragEndPoint.y - this.dragStartPoint.y);
+          this.center = {
+            x: Math.min(this.dragStartPoint.x, this.dragEndPoint.x) + this.width / 2,
+            y: Math.min(this.dragStartPoint.y, this.dragEndPoint.y) + this.height / 2
+          };
+          this.rectangle = this.two.makeRectangle(this.center.x, this.center.y, this.width, this.height);
+          this.rectangle.fill = this.state.fill;
+          this.rectangle.stroke = this.state.stroke;
+          this.rectangle.linewidth = this.state.linewidth;
+          this.two.update();
+          this.layers.push(this.rectangle);
+          const index = this.layers.length - 1;
+          this.rectangle._renderer.elem.addEventListener(&apos;click&apos;, (e) =&gt; this.click(e, index));
+        },
+        eventEnd: () =&gt; {
+          const value = this.editValue.slice();
+          delete this.rectangle;
+          const rectangleState = {
+            center: this.center,
+            width: this.width,
+            height: this.height
+          };
+          value.push(Object.assign({}, this.state, rectangleState));
+          this.editValue = value;
+          this.triggerChange();
+        },
+        draw: (state) =&gt; {
+          const layer = this.two.makeRectangle(state.center.x, state.center.y, state.width, state.height);
+          layer.fill = state.fill;
+          layer.stroke = state.stroke;
+          layer.linewidth = state.linewidth;
+          return layer;
+        },
+      },
+      zoomIn: {
+        icon: &apos;search-plus&apos;,
+        cursor: {
+          hover: &apos;zoom-in&apos;
+        },
+        title: &apos;Zoom In&apos;,
+        state: {
+          mode: &apos;zoomIn&apos;
+        },
+        eventStart: (coordinate) =&gt; {
+          this.zoom(coordinate, this.zoomInfo.multiplier);
+        }
+      },
+      zoomOut: {
+        icon: &apos;search-minus&apos;,
+        cursor: {
+          hover: &apos;zoom-out&apos;
+        },
+        title: &apos;Zoom Out&apos;,
+        state: {
+          mode: &apos;zoomOut&apos;
+        },
+        eventStart: (coordinate) =&gt; {
+          this.zoom(coordinate, 1 / this.zoomInfo.multiplier);
+        }
+      },
+      drag: {
+        icon: &apos;hand-paper-o&apos;,
+        title: &apos;Drag Zoomed Image&apos;,
+        cursor: {
+          hover: &apos;grab&apos;,
+          clicked: &apos;grabbing&apos;
+        },
+        state: {
+          mode: &apos;drag&apos;
+        },
+        eventStart: (coordinate) =&gt; {
+          this.dragStartPoint = coordinate;
+        },
+        drag: (coordinate) =&gt; {
+          if (!this.dragLastPoint) {
+            this.dragLastPoint = this.dragStartPoint;
+          }
+          const offset = {
+            x: Math.round(coordinate.x - this.dragStartPoint.x),
+            y: Math.round(coordinate.y - this.dragStartPoint.y)
+          };
+          if (offset.x !== 0 || offset.y !== 0) {
+            this.dragImage(offset);
+            this.dragLastPoint = coordinate;
+          }
+        }
+      }
+    };
+  }
+
+  get styles() {
+    return [
+      {
+        icon: &apos;square-o&apos;,
+        title: &apos;Stroke Color&apos;,
+        type: &apos;colorpicker&apos;,
+        property: &apos;stroke&apos;,
+        attach: (element) =&gt; {
+          const picker = new Picker(element);
+          picker.setColor(this.state.stroke, true);
+          picker.onChange = (color) =&gt; {
+            this.state.stroke = color.rgbaString;
+            element.style.color = color.rgbaString;
+          };
+          return element;
+        }
+      },
+      {
+        icon: &apos;square&apos;,
+        title: &apos;Fill Color&apos;,
+        type: &apos;colorpicker&apos;,
+        property: &apos;fill&apos;,
+        attach: (element) =&gt; {
+          const picker = new Picker(element);
+          picker.setColor(this.state.fill, true);
+          picker.onChange = (color) =&gt; {
+            this.state.fill = color.rgbaString;
+            element.style.color = color.rgbaString;
+          };
+          return element;
+        }
+      },
+      {
+        icon: &apos;minus&apos;,
+        title: &apos;Line Width&apos;,
+        type: &apos;number&apos;,
+        property: &apos;linewidth&apos;,
+        attach: (element) =&gt; {
+          const widthInput = this.ce(&apos;input&apos;, {
+            type: &apos;number&apos;,
+            class: &apos;formio-sketchpad-toolbar-input formio-sketchpad-linewidth-input&apos;,
+            onChange: (e) =&gt; {
+              this.state.linewidth = e.target.value;
+            }
+          });
+          widthInput.value = this.state.linewidth;
+          element.appendChild(widthInput);
+          return element;
+        }
+      }
+    ];
+  }
+
+  get actions() {
+    return [
+      {
+        icon: &apos;undo&apos;,
+        action: &apos;undo&apos;,
+        title: &apos;Undo&apos;
+      },
+      {
+        icon: &apos;repeat&apos;,
+        action: &apos;redo&apos;,
+        title: &apos;Redo&apos;
+      },
+      {
+        icon: &apos;search&apos;,
+        action: &apos;resetZoom&apos;,
+        title: &apos;Reset Zoom&apos;
+      },
+      {
+        icon: &apos;ban&apos;,
+        action: &apos;clearAll&apos;,
+        title: &apos;Clear All&apos;
+      }
+    ];
+  }
+
+  editSvg() {
+    if (this.options.readOnly) {
+      return;
+    }
+    //open editor in modal
+    this.editorModal = this.createModal();
+    this.addClass(this.editorModal, &apos;formio-sketchpad-edit-dialog&apos;);
+    this.addClass(this.editorModal.body, &apos;formio-sketchpad-edit-dialog-body&apos;);
+    const toolbar = this.createToolbar();
+    const metaInfoContainer = this.ce(&apos;div&apos;, { class: &apos;formio-sketchpad-meta-info&apos; },
+      this.ce(&apos;span&apos;, {}, [
+        this.totalMultiplierElement = this.ce(&apos;span&apos;, {}, this.t(Math.round(this.zoomInfo.totalMultiplier) * 100) / 100),
+        this.t(&apos;x&apos;)
+      ])
+    );
+    this.saveSvgButton = this.ce(&apos;button&apos;, {
+      class: &apos;btn btn-success formio-sketchpad-save-button&apos;
+    }, this.t(&apos;Save&apos;));
+    this.addEventListener(this.saveSvgButton, &apos;click&apos;, () =&gt; {
+      this.saveSvg();
+      this.editorModal.close(true);
+    });
+    this.editorModalHeader = this.ce(&apos;div&apos;, { class: &apos;formio-sketchpad-edit-dialog-header&apos; }, [toolbar]);
+    this.editorModalFooter = this.ce(&apos;div&apos;, { class: &apos;formio-sketchpad-edit-dialog-footer&apos; }, [metaInfoContainer, this.saveSvgButton]);
+    this.editorModalContent = this.ce(&apos;div&apos;, {
+      class: &apos;formio-edit-sketchpad-container&apos;
+    }, [
+      this.editSketchpad.canvas.container,
+      this.editSketchpad.background.container
+    ]);
+    this.editorModal.body.appendChild(this.editorModalHeader);
+    this.editorModal.body.appendChild(this.editorModalContent);
+    this.editorModal.body.appendChild(this.editorModalFooter);
+    const resizeListener = () =&gt; {
+      this.stretchDrawingArea();
+      this.setEditorSize(this.dimensions.width, this.dimensions.height);
+    };
+    window.addEventListener(&apos;resize&apos;, resizeListener);
+    this.stretchDrawingArea();
+    this.editValue = _.cloneDeep(this.dataValue);
+    this.draw(this.editValue);
+    const initialDialogClose = this.editorModal.close;
+    this.editorModal.close = (ignoreWarning) =&gt; {
+      if (ignoreWarning || confirm(&apos;Are you sure you want to close? Your unsaved progress will be lost&apos;)) {
+        this.resetZoom();
+        window.removeEventListener(&apos;resize&apos;, resizeListener);
+        initialDialogClose();
+      }
+    };
+    this.resetZoom();
+  }
+
+  stretchDrawingArea() {
+    const [modalWidth, modalHeight] = [this.editorModal.bodyContainer.clientWidth, this.editorModal.bodyContainer.clientHeight];
+    const computedStyle = getComputedStyle(this.editorModal.bodyContainer);
+    const [paddingTop, paddingBottom, paddingLeft, paddingRight] = [&apos;paddingTop&apos;, &apos;paddingBottom&apos;, &apos;paddingLeft&apos;, &apos;paddingRight&apos;].map(property =&gt; {
+      return parseFloat(computedStyle[property]);
+    });
+    const [headerHeight, footerHeight] = [this.editorModalHeader.offsetHeight, this.editorModalFooter.offsetHeight],
+      //dimensions of available space in modal
+      availableWidth = modalWidth - paddingLeft - paddingRight,
+      availableHeight = modalHeight - paddingTop - paddingBottom - headerHeight - footerHeight,
+      //default width of drawing area
+      defaultWidth = this.zoomInfo.viewBox.default.width,
+      defaultHeight = this.zoomInfo.viewBox.default.height,
+      widthRatio = availableWidth / defaultWidth,
+      heightRatio = availableHeight / defaultHeight;
+    //use the smallest ratio as multiplier so that drawing area doesn&apos;t overflow popup in any dimension
+    this.dimensionsMultiplier = Math.min(widthRatio, heightRatio);
+    //calculate new dimensions so that drawing area fills all free modal space
+    this.dimensions.width = Math.round(defaultWidth * this.dimensionsMultiplier);
+    this.dimensions.height = Math.round(defaultHeight * this.dimensionsMultiplier);
+  }
+
+  saveSvg() {
+    this.dataValue = this.editValue;
+    this.copySvgToView();
+  }
+
+  createToolbar() {
+    /* eslint-disable max-len */
+    return this.ce(&apos;div&apos;, {
+      class: &apos;btn-toolbar formio-sketchpad-toolbar&apos;,
+      role: &apos;toolbar&apos;
+    }, [
+      this.ce(&apos;div&apos;, {
+          class: &apos;btn-group formio-sketchpad-toolbar-group&apos;,
+          role: &apos;group&apos;
+        },
+        this.modeButtons = Object.keys(this.modes).map(key =&gt; {
+          const mode = this.modes[key];
+          const toolbarButton = this.ce(&apos;div&apos;, {
+            class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${key} ${this.state.mode === mode.state.mode ? &apos; active&apos; : &apos;&apos;}`,
+            onClick: () =&gt; this.setState(mode.state),
+            title: mode.title
+          }, this.ce(&apos;i&apos;, {
+            class: `fa fa-${mode.icon}`,
+          }));
+          if (mode.attach) {
+            return mode.attach(toolbarButton);
+          }
+          return toolbarButton;
+        }),
+      ),
+      this.ce(&apos;div&apos;, {
+          class: &apos;btn-group formio-sketchpad-toolbar-group&apos;,
+          role: &apos;group&apos;
+        },
+        this.styles.map(button =&gt; {
+          const toolbarButtonIcon = this.ce(&apos;i&apos;, {
+            class: `fa fa-${button.icon}`,
+          });
+          const toolbarButton = this.ce(&apos;div&apos;, {
+            class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${button.property}`,
+            title: button.title
+          }, toolbarButtonIcon);
+          if (button.attach) {
+            return button.attach(toolbarButton);
+          }
+          return toolbarButton;
+        }),
+      ),
+      this.ce(&apos;div&apos;, {
+          class: &apos;btn-group float-right formio-sketchpad-toolbar-group&apos;,
+          role: &apos;group&apos;
+        },
+        this.actions.map(button =&gt; this.ce(&apos;div&apos;, {
+          class: `btn btn-secondary formio-sketchpad-toolbar-button formio-sketchpad-toolbar-button-${button.action}`,
+          onClick: () =&gt; this[button.action](),
+          title: button.title
+        }, this.ce(&apos;i&apos;, {
+          class: `fa fa-${button.icon}`,
+        }))),
+      ),
+    ]);
+    /* eslint-enable max-len */
+  }
+
+  attach(element) {
+    // Disable for now.
+    return super.attach(element);
+  }
+
+  attachOld(element) {
+    this.loadRefs(element, {
+      sketchpadContainer: &apos;single&apos;,
+      sketchpadCanvas: &apos;single&apos;,
+      sketchpadBackground: &apos;single&apos;,
+    });
+
+    this.addEventListener(this.refs.sketchpadContainer, &apos;click&apos;, () =&gt; this.editSvg());
+
+    //init two instance
+
+    // this.two = new Two({
+    //   type: Two.Types.svg,
+    // }).appendTo(this.editSketchpad.canvas.container);
+    // //init canvas SVG variable
+    // this.editSketchpad.canvas.svg = this.two.renderer.domElement;
+    // this.addClass(this.editSketchpad.canvas.svg, &apos;formio-sketchpad-svg&apos;);
+
+    this.addBackground();
+    this.backgroundReady.promise.then(() =&gt; {
+      this.backgroundReady.isReady = true;
+      this.attach();
+      // Disable if needed.
+      if (this.shouldDisable) {
+        this.disabled = true;
+      }
+
+      // Restore the value.
+      this.restoreValue();
+
+      this.autofocus();
+
+      this.attachLogic();
+    });
+
+    // Set up mouse events.
+    this.editSketchpad.canvas.svg
+      .addEventListener(&apos;mousedown&apos;, (e) =&gt; {
+        e.preventDefault();
+        const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
+        //change cursor
+        let cursor = &apos;default&apos;;
+        if (this.modes[this.state.mode].cursor) {
+          cursor = this.modes[this.state.mode].cursor.clicked || this.modes[this.state.mode].cursor.hover;
+        }
+        this.editSketchpad.canvas.svg.style.cursor = cursor;
+        if (this.modes[this.state.mode].eventStart) {
+          this.modes[this.state.mode].eventStart(this.getActualCoordinate({
+            x: e.clientX - offset.left,
+            y: e.clientY - offset.top
+          }));
+        }
+
+        const mouseDrag = (e) =&gt; {
+          e.preventDefault();
+          const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
+          if (this.modes[this.state.mode].drag) {
+            this.modes[this.state.mode].drag(this.getActualCoordinate({
+              x: e.clientX - offset.left,
+              y: e.clientY - offset.top
+            }));
+          }
+        };
+
+        const mouseEnd = (e) =&gt; {
+          e.preventDefault();
+
+          this.editSketchpad.canvas.svg
+            .removeEventListener(&apos;mousemove&apos;, mouseDrag);
+          this.editSketchpad.canvas.svg
+            .removeEventListener(&apos;mouseup&apos;, mouseEnd);
+          //change cursor
+          let cursor = &apos;default&apos;;
+          if (this.modes[this.state.mode].cursor) {
+            cursor = this.modes[this.state.mode].cursor.hover || cursor;
+          }
+          this.editSketchpad.canvas.svg.style.cursor = cursor;
+          const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
+          if (this.modes[this.state.mode].eventEnd) {
+            this.modes[this.state.mode].eventEnd(this.getActualCoordinate({
+              x: e.clientX - offset.left,
+              y: e.clientY - offset.top
+            }));
+          }
+        };
+
+        this.editSketchpad.canvas.svg
+          .addEventListener(&apos;mousemove&apos;, mouseDrag);
+
+        this.editSketchpad.canvas.svg
+          .addEventListener(&apos;mouseup&apos;, mouseEnd);
+
+        return false;
+      });
+
+    // Set up touch events.
+    this.editSketchpad.canvas.svg
+      .addEventListener(&apos;touchstart&apos;, (e) =&gt; {
+        e.preventDefault();
+
+        const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
+        const touch = e.changedTouches[0];
+        //change cursor
+        let cursor = &apos;default&apos;;
+        if (this.modes[this.state.mode].cursor) {
+          cursor = this.modes[this.state.mode].cursor.clicked || this.modes[this.state.mode].cursor.hover;
+        }
+        this.editSketchpad.canvas.svg.style.cursor = cursor;
+        if (this.modes[this.state.mode].eventStart) {
+          this.modes[this.state.mode].eventStart(this.getActualCoordinate({
+            x: touch.pageX - offset.left,
+            y: touch.pageY - offset.top
+          }));
+        }
+
+        const touchDrag = (e) =&gt; {
+          e.preventDefault();
+
+          const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
+          const touch = e.changedTouches[0];
+          if (this.modes[this.state.mode].drag) {
+            this.modes[this.state.mode].drag(this.getActualCoordinate({
+              x: touch.pageX - offset.left,
+              y: touch.pageY - offset.top
+            }));
+          }
+        };
+
+        const touchEnd = (e) =&gt; {
+          e.preventDefault();
+
+          this.editSketchpad.canvas.svg
+            .removeEventListener(&apos;touchmove&apos;, touchDrag);
+          this.editSketchpad.canvas.svg
+            .removeEventListener(&apos;touchend&apos;, touchEnd);
+
+          const offset = this.editSketchpad.canvas.svg.getBoundingClientRect();
+          const touch = e.changedTouches[0];
+          //change cursor
+          let cursor = &apos;default&apos;;
+          if (this.modes[this.state.mode].cursor) {
+            cursor = this.modes[this.state.mode].cursor.hover || cursor;
+          }
+          this.editSketchpad.canvas.svg.style.cursor = cursor;
+          if (this.modes[this.state.mode].eventEnd) {
+            this.modes[this.state.mode].eventEnd(this.getActualCoordinate({
+              x: touch.pageX - offset.left,
+              y: touch.pageY - offset.top
+            }));
+          }
+        };
+
+        this.editSketchpad.canvas.svg
+          .addEventListener(&apos;touchmove&apos;, touchDrag);
+
+        this.editSketchpad.canvas.svg
+          .addEventListener(&apos;touchend&apos;, touchEnd);
+
+        return false;
+      });
+
+    this.two.update();
+  }
+
+  get dataReady() {
+    return this.backgroundReady.promise;
+  }
+
+  addBackground() {
+    if (this.component.image) {
+      this.setBackgroundImage(this.component.image);
+      this.backgroundReady.resolve();
+    }
+    else if (this.component.imageUrl) {
+      Formio.makeStaticRequest(this.component.imageUrl, &apos;GET&apos;, null, { noToken: true, headers: {} })
+        .then(image =&gt; {
+          this.setBackgroundImage(image);
+          this.backgroundReady.resolve();
+        })
+        .catch(() =&gt; {
+          console.warn(`Sketchpad background didn&apos;t load for component: ${this.component.key}`);
+          this.backgroundReady.resolve();
+        });
+    }
+    //TODO make sure component works without background
+  }
+
+  /* eslint-disable max-statements */
+  setBackgroundImage(svgMarkup) {
+    const xmlDoc = new DOMParser().parseFromString(svgMarkup, &apos;image/svg+xml&apos;);
+    let backgroundSvg = xmlDoc.getElementsByTagName(&apos;svg&apos;);
+    if (!backgroundSvg || !backgroundSvg[0]) {
+      console.warn(`Sketchpad &apos;${this.component.key}&apos;: Background SVG doesn&apos;t contain &lt;svg&gt; tag on it`);
+      return;
+    }
+    backgroundSvg = backgroundSvg[0];
+    if (this.useBackgroundDimensions) {
+      const viewBox = backgroundSvg.getAttribute(&apos;viewBox&apos;);
+      let viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight;
+      if (viewBox) {
+        [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = viewBox.split(&apos; &apos;).map(parseFloat);
+      }
+      else {
+        //if viewBox is not defined, use &apos;x&apos;, &apos;y&apos;, &apos;width&apos; and &apos;height&apos; SVG attributes (or 0, 0, 640, 480 relatively if any is not defined)
+        [viewBoxMinX, viewBoxMinY, viewBoxWidth, viewBoxHeight] = [
+          { attribute: &apos;x&apos;, defaultValue: 0 },
+          { attribute: &apos;y&apos;, defaultValue: 0 },
+          { attribute: &apos;width&apos;, defaultValue: 640 },
+          { attribute: &apos;height&apos;, defaultValue: 480 }
+        ].map(dimension =&gt; {
+          return parseFloat(backgroundSvg.getAttribute(dimension.attribute)) || dimension.defaultValue;
+        });
+      }
+      //set  dimensions to width and height from viewBox of background svg
+      this.dimensions = {
+        width: viewBoxWidth,
+        height: viewBoxHeight
+      };
+      //set default and current viewBox sizes for canvas and background (should be based on background)
+      this.zoomInfo.viewBox.default = {
+        width: this.dimensions.width,
+        height: this.dimensions.height,
+        minX: viewBoxMinX,
+        minY: viewBoxMinY
+      };
+    }
+    else {
+      //set dimensions to component width and height
+      this.dimensions = {
+        width: this.component.width,
+        height: this.component.height
+      };
+      let viewBoxValue = backgroundSvg.getAttribute(&apos;viewBox&apos;);
+
+      if (!viewBoxValue) {
+        // since zooming works based on viewBox, we need to have explicitly defined value for it
+        // if viewBox is not defined on SVG element, browser behaves like it&apos;s equal to &quot;0 0 &lt;current_width&gt; &lt;current_height&gt;&quot;
+        // since background image should match dimensions of editor image, current width and height will always be equal to component.width and component.height
+        // as a result:
+        viewBoxValue = `0 0 ${this.dimensions.width} ${this.dimensions.height}`;
+        backgroundSvg.setAttribute(&apos;viewBox&apos;, viewBoxValue);
+      }
+      let [initialMinX, initialMinY, initialWidth, initialHeight] = viewBoxValue.split(&apos; &apos;).map(parseFloat);
+      initialMinX = initialMinX || 0;
+      initialMinY = initialMinY || 0;
+      initialWidth = initialWidth || this.dimensions.width;
+      initialHeight = initialHeight || this.dimensions.height;
+      const width = this.dimensions.width,
+        height = this.dimensions.height,
+        minX = Math.round(initialMinX - (this.dimensions.width - initialWidth) / 2),
+        minY = Math.round(initialMinY - (this.dimensions.height - initialHeight) / 2);
+      //set initial zoom info for SVG
+      this.zoomInfo.viewBox.default = {
+        width: width,
+        height: height,
+        minX: minX,
+        minY: minY
+      };
+    }
+    //set current zoom to default
+    this.zoomInfo.viewBox.current = _.cloneDeep(this.zoomInfo.viewBox.default);
+
+    svgMarkup = new XMLSerializer().serializeToString(backgroundSvg);
+    //fix weird issue in Chrome when it returned &apos;&lt;svg:svg&gt;...&lt;/svg:svg&gt;&apos; string after serialization instead of &lt;svg&gt;...&lt;/svg&gt;
+    svgMarkup = svgMarkup.replace(&apos;&lt;svg:svg&apos;, &apos;&lt;svg&apos;).replace(&apos;&lt;/svg:svg&gt;&apos;, &apos;&lt;/svg&gt;&apos;);
+
+    // this.editSketchpad.background.container.style.minWidth = `${this.dimensions.width}px`;
+    // this.editSketchpad.background.container.style.minHeight = `${this.dimensions.height}px`;
+
+    //set background containers content to SVG markup
+    this.refs.sketchpadContainer.innerHTML = svgMarkup;
+    // this.editSketchpad.background.container.innerHTML = svgMarkup;
+    //init svg variables
+    this.sketchpadBackground.svg = this.viewSketchpad.background.container.firstElementChild;
+    // this.editSketchpad.background.svg = this.editSketchpad.background.container.firstElementChild;
+
+    //set background image viewBox
+    const viewBox = this.zoomInfo.viewBox.current;
+    this.sketchpadBackground.svg.setAttribute(&apos;viewBox&apos;, `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    // this.editSketchpad.background.svg.setAttribute(&apos;viewBox&apos;, `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    //set canvas image viewBox (necessary at least for useBackgroundDimensions when background image has minX and minY other that 0
+    // this.editSketchpad.canvas.svg.setAttribute(&apos;viewBox&apos;, `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+
+    //set dimensions for Two.js instance
+    this.setEditorSize(this.dimensions.width, this.dimensions.height);
+  }
+
+  /* eslint-enable max-statements */
+
+  clear() {
+    this.two.clear();
+  }
+
+  clearAll() {
+    this.layers = [];
+    this.editValue = [];
+    this.clear();
+    this.two.update();
+  }
+
+  draw(value) {
+    this.clear();
+    const layers = value.map(item =&gt; this.modes[item.mode].draw(item));
+    this.two.update();
+    this.layers = layers;
+    if (layers.length) {
+      layers.forEach((layer, index) =&gt; {
+        layer._renderer.elem.addEventListener(&apos;click&apos;, (e) =&gt; this.click(e, index));
+      });
+    }
+  }
+
+  click(event, index) {
+    console.log(event, index);
+  }
+
+  undo() {
+    const value = this.editValue.slice();
+    if (value.length === 0) {
+      return;
+    }
+    this.deleted.push(value.pop());
+    this.editValue = value;
+    this.triggerChange();
+    this.draw(value);
+  }
+
+  redo() {
+    if (this.deleted.length === 0) {
+      return;
+    }
+    const value = this.editValue.slice();
+    value.push(this.deleted.pop());
+    this.editValue = value;
+    this.triggerChange();
+    this.draw(value);
+  }
+
+  setState(state) {
+    Object.assign(this.state, state);
+    this.setActiveButton(this.state.mode);
+    //change cursor
+    this.editSketchpad.canvas.svg.style.cursor = _.get(this.modes[this.state.mode], &apos;cursor.hover&apos;, &apos;default&apos;);
+  }
+
+  setActiveButton(mode) {
+    this.modeButtons.forEach(button =&gt; this.removeClass(button, &apos;active&apos;));
+    Object.keys(this.modes).forEach((key, index) =&gt; {
+      if (this.modes[key].state.mode === mode) {
+        this.addClass(this.modeButtons[index], &apos;active&apos;);
+      }
+    });
+  }
+
+  setValue(value) {
+    if (!this.backgroundReady.isReady || !this.two) {
+      return;
+    }
+    this.draw(value);
+    this.copySvgToView();
+  }
+
+  copySvgToView() {
+    //clone view SVG element from editor
+    const svgElement = this.editSketchpad.canvas.svg.cloneNode(true);
+    //make view SVG responsive: remove height and width attribute, add viewBox attribute
+    svgElement.removeAttribute(&apos;height&apos;);
+    svgElement.removeAttribute(&apos;width&apos;);
+    svgElement.style.cursor = &apos;pointer&apos;;
+    //set viewBox to default to reset zoom
+    const viewBox = this.zoomInfo.viewBox.default;
+    svgElement.setAttribute(&apos;viewBox&apos;, `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    this.viewSketchpad.canvas.container.innerHTML = &apos;&apos;;
+    this.viewSketchpad.canvas.container.appendChild(svgElement);
+  }
+
+  zoom(coordinate, multiplier) {
+    this.setTotalMultiplier(this.zoomInfo.totalMultiplier * multiplier);
+    //calculate new viewBox width for canvas
+    this.zoomInfo.viewBox.current.width =
+      Math.round(this.zoomInfo.viewBox.default.width / this.zoomInfo.totalMultiplier);
+    this.zoomInfo.viewBox.current.height =
+      Math.round(this.zoomInfo.viewBox.default.height / this.zoomInfo.totalMultiplier);
+    if (
+      this.zoomInfo.viewBox.current.width &gt; this.zoomInfo.viewBox.default.width &amp;&amp;
+      this.zoomInfo.viewBox.current.height &gt; this.zoomInfo.viewBox.default.height
+    ) {
+      //if should get less than initial size, change editor size instead of viewBox size
+      this.setEditorSize(
+        this.dimensions.width * this.zoomInfo.totalMultiplier,
+        this.dimensions.height * this.zoomInfo.totalMultiplier
+      );
+      //restore default viewBox values for canvas and background
+      this.zoomInfo.viewBox.current = _.cloneDeep(this.zoomInfo.viewBox.default);
+    }
+    else {
+      //if should get more than initial size, change viewBox size
+      //restore editor size if needed
+      if (this.two.width !== this.dimensions.width || this.two.height !== this.dimensions.height) {
+        this.setEditorSize(this.dimensions.width, this.dimensions.height);
+      }
+      //calculate SVG offset so that coordinate would be center of zoomed image
+      this.zoomInfo.viewBox.current.minX = coordinate.x - this.zoomInfo.viewBox.current.width / 2;
+      this.zoomInfo.viewBox.current.minY = coordinate.y - this.zoomInfo.viewBox.current.height / 2;
+      this.normalizeSvgOffset();
+    }
+    this.updateSvgViewBox();
+  }
+
+  resetZoom() {
+    this.zoom({ x: 0, y: 0 }, (this.component.defaultZoom / 100) / this.zoomInfo.totalMultiplier);
+  }
+
+  getActualCoordinate(coordinate) {
+    //recalculate coordinate taking into account current zoom
+    coordinate.x = Math.round((coordinate.x / this.zoomInfo.totalMultiplier / this.dimensionsMultiplier) + this.zoomInfo.viewBox.current.minX);
+    coordinate.y = Math.round((coordinate.y / this.zoomInfo.totalMultiplier / this.dimensionsMultiplier) + this.zoomInfo.viewBox.current.minY);
+    return coordinate;
+  }
+
+  dragImage(offset) {
+    //calculate new offsets for SVG
+    this.zoomInfo.viewBox.current.minX = this.zoomInfo.viewBox.current.minX - offset.x;
+    this.zoomInfo.viewBox.current.minY = this.zoomInfo.viewBox.current.minY - offset.y;
+    this.normalizeSvgOffset();
+    this.updateSvgViewBox();
+  }
+
+  normalizeSvgOffset() {
+    /* eslint-disable max-len */
+    //don&apos;t let offset go out of SVG on the left and on the top
+    //canvas
+    this.zoomInfo.viewBox.current.minX = this.zoomInfo.viewBox.current.minX &lt; this.zoomInfo.viewBox.default.minX ? this.zoomInfo.viewBox.default.minX : this.zoomInfo.viewBox.current.minX;
+    this.zoomInfo.viewBox.current.minY = this.zoomInfo.viewBox.current.minY &lt; this.zoomInfo.viewBox.default.minY ? this.zoomInfo.viewBox.default.minY : this.zoomInfo.viewBox.current.minY;
+    //don&apos;t let offset go out of SVG on the right and on the bottom
+    //canvas
+    const canvasMaxOffsetX = this.zoomInfo.viewBox.default.width - this.zoomInfo.viewBox.current.width + this.zoomInfo.viewBox.default.minX,
+      canvasMaxOffsetY = this.zoomInfo.viewBox.default.height - this.zoomInfo.viewBox.current.height + this.zoomInfo.viewBox.default.minY;
+    this.zoomInfo.viewBox.current.minX = this.zoomInfo.viewBox.current.minX &gt; (canvasMaxOffsetX) ? canvasMaxOffsetX : this.zoomInfo.viewBox.current.minX;
+    this.zoomInfo.viewBox.current.minY = this.zoomInfo.viewBox.current.minY &gt; (canvasMaxOffsetY) ? canvasMaxOffsetY : this.zoomInfo.viewBox.current.minY;
+    /* eslint-enable max-len */
+  }
+
+  updateSvgViewBox() {
+    //set viewBox so that SVG gets zoomed to the proper area according to zoomInfo
+    const viewBox = this.zoomInfo.viewBox.current;
+    this.editSketchpad.canvas.svg.setAttribute(&apos;viewBox&apos;, `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+    this.editSketchpad.background.svg.setAttribute(&apos;viewBox&apos;, `${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`);
+  }
+
+  setTotalMultiplier(multiplier) {
+    this.zoomInfo.totalMultiplier = multiplier;
+    this.totalMultiplierElement.innerHTML = this.t(Math.round(multiplier * 100) / 100);
+  }
+
+  setEditorSize(width, height) {
+    this.two.width = width;
+    this.two.height = height;
+    this.two.update();
+    //change width of background svg so it matches editor SVG
+    this.editSketchpad.background.svg.style.width = width;
+    this.editSketchpad.background.svg.style.height = height;
+    this.editSketchpad.background.container.style.minWidth = `${width}px`;
+    this.editSketchpad.background.container.style.minHeight = `${height}px`;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

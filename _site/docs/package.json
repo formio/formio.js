@@ -1,0 +1,126 @@
+{
+  "name": "formiojs",
+  "version": "2.24.0",
+  "description": "Common js library for client side interaction with <form.io>",
+  "main": "build/formio.js",
+  "files": [
+    "dist",
+    "build",
+    "utils.js",
+    "wizard.js",
+    "form.js",
+    "embed.js",
+    "full.js"
+  ],
+  "scripts": {
+    "prepublish": "gulp build",
+    "build": "esdoc;gulp build",
+    "serve": "jekyll serve --config _config.yml,_config.dev.yml",
+    "test": "./node_modules/karma/bin/karma start --verbose --single-run",
+    "test:watch": "./node_modules/karma/bin/karma start --no-single-run --auto-watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/formio/formio.js.git"
+  },
+  "contributors": [
+    {
+      "name": "Travis Tidwell",
+      "github": "https://github.com/travist",
+      "email": "travis@form.io"
+    },
+    {
+      "name": "Randall Knutson",
+      "github": "https://github.com/randallknutson",
+      "email": "randall@form.io"
+    },
+    {
+      "name": "Doug Lee",
+      "github": "https://github.com/douglaselee",
+      "email": "douglaselee@comcast.net"
+    },
+    {
+      "name": "Eric Alter",
+      "email": "neolanders@hotmail.com"
+    },
+    {
+      "name": "Guillaume SMAHA",
+      "email": "guillaume.smaha@gmail.com"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/formio/formio.js/issues"
+  },
+  "homepage": "https://github.com/formio/formio.js#readme",
+  "dependencies": {
+    "browser-cookies": "^1.1.0",
+    "choices.js": "^3.0.2",
+    "dialog-polyfill": "^0.4.9",
+    "eventemitter2": "^4.1.2",
+    "flatpickr": "^4.0.5",
+    "i18next": "^10.0.3",
+    "json-logic-js": "^1.1.3",
+    "lodash": "^4.17.4",
+    "moment": "^2.19.1",
+    "native-promise-only": "^0.8.1",
+    "shallow-copy": "0.0.1",
+    "signature_pad": "^2.3.0",
+    "text-mask-all": "github:text-mask/text-mask",
+    "tooltip.js": "^1.1.5",
+    "whatwg-fetch": "^2.0.3"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-array-includes": "^2.0.3",
+    "babel-plugin-espower": "^2.3.2",
+    "babel-preset-env": "^1.6.1",
+    "babelify": "^8.0.0",
+    "browserify": "^14.5.0",
+    "chai": "^4.1.2",
+    "chance": "^1.0.12",
+    "del": "^3.0.0",
+    "fetch-mock": "^5.13.1",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^7.0.0",
+    "gulp-clean-css": "^3.9.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-filter": "^5.0.0",
+    "gulp-jshint": "^2.0.4",
+    "gulp-load-plugins": "^1.0.0-rc.1",
+    "gulp-notify": "^3.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.6.1",
+    "gulp-sass": "^3.0.0",
+    "gulp-streamify": "^1.0.2",
+    "gulp-strip-debug": "^1.0.2",
+    "gulp-sync": "^0.1.4",
+    "gulp-uglify": "^3.0.0",
+    "gulp-watch": "^4.2.0",
+    "gulp-wrapper": "^1.0.0",
+    "jshint": "^2.9.5",
+    "karma": "^1.7.1",
+    "karma-browserify": "^5.1.1",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-mocha": "^1.3.0",
+    "karma-phantomjs-launcher": "^1.0.2",
+    "mocha": "^4.0.1",
+    "power-assert": "^1.4.2",
+    "sinon": "^4.0.2",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.9.0",
+    "written-number": "^0.7.0"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "env"
+          ]
+        }
+      ]
+    ]
+  }
+}

@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/components/day/Day.js | formiojs</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Checkbox">Checkbox</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Columns.js~ColumnsComponent.html">ColumnsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Columns">Columns</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-container">components/container</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Container">Container</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/content/Content.js~ContentComponent.html">ContentComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Fieldset">Fieldset</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-File">File</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden">components/hidden</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PhoneNumber">PhoneNumber</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-radio">components/radio</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/radio/Radio.js~RadioComponent.html">RadioComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Radio">Radio</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-recaptcha">components/recaptcha</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html">ReCaptchaComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextArea">TextArea</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textfield">components/textfield</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html">TextFieldComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Node.js~Node.html">Node</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-edittable">contrib/edittable</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/edittable/EditTable.js~EditTableComponent.html">EditTableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditTable">EditTable</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-location">contrib/location</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/location/Location.js~LocationComponent.html">LocationComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Location">Location</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-modaledit">contrib/modaledit</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/modaledit/ModalEdit.js~ModalEditComponent.html">ModalEditComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-processor">providers/processor</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fileProcessor">fileProcessor</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateFormChange">generateFormChange</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStrings">getStrings</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getValue">getValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasCondition">hasCondition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-removeComponent">removeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-searchComponents">searchComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-KEY_CODES">KEY_CODES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/components/day/Day.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import Field from &apos;../_classes/field/Field&apos;;
+import { boolValue, getLocaleDateFormatInfo } from &apos;../../utils/utils&apos;;
+
+export default class DayComponent extends Field {
+  static schema(...extend) {
+    return Field.schema({
+      type: &apos;day&apos;,
+      label: &apos;Day&apos;,
+      key: &apos;day&apos;,
+      fields: {
+        day: {
+          type: &apos;number&apos;,
+          placeholder: &apos;&apos;,
+          required: false
+        },
+        month: {
+          type: &apos;select&apos;,
+          placeholder: &apos;&apos;,
+          required: false
+        },
+        year: {
+          type: &apos;number&apos;,
+          placeholder: &apos;&apos;,
+          required: false
+        }
+      },
+      dayFirst: false
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: &apos;Day&apos;,
+      group: &apos;advanced&apos;,
+      icon: &apos;calendar&apos;,
+      documentation: &apos;/userguide/#day&apos;,
+      weight: 50,
+      schema: DayComponent.schema()
+    };
+  }
+
+  /**
+   * The empty value for day component.
+   *
+   * @return {&apos;00/00/0000&apos;}
+   */
+  get emptyValue() {
+    return &apos;00/00/0000&apos;;
+  }
+
+  get valueMask() {
+    return /^\d{2}\/\d{2}\/\d{4}$/;
+  }
+
+  get dayRequired() {
+    return this.showDay &amp;&amp; _.get(this.component, &apos;fields.day.required&apos;, false);
+  }
+
+  get showDay() {
+    return !_.get(this.component, &apos;fields.day.hide&apos;, false);
+  }
+
+  get monthRequired() {
+    return this.showMonth &amp;&amp; _.get(this.component, &apos;fields.month.required&apos;, false);
+  }
+
+  get showMonth() {
+    return !_.get(this.component, &apos;fields.month.hide&apos;, false);
+  }
+
+  get yearRequired() {
+    return this.showYear &amp;&amp; _.get(this.component, &apos;fields.year.required&apos;, false);
+  }
+
+  get showYear() {
+    return !_.get(this.component, &apos;fields.year.hide&apos;, false);
+  }
+
+  get defaultSchema() {
+    return DayComponent.schema();
+  }
+
+  get shouldDisabled() {
+    return super.shouldDisabled || this.parentDisabled;
+  }
+
+  get inputInfo() {
+    const info = super.elementInfo();
+    info.type = &apos;input&apos;;
+    info.attr.type = &apos;hidden&apos;;
+    info.changeEvent = &apos;input&apos;;
+    return info;
+  }
+
+  inputDefinition(name) {
+    let min, max;
+    if (name === &apos;day&apos;) {
+      min = 1;
+      max = 31;
+    }
+    if (name === &apos;month&apos;) {
+      min = 1;
+      max = 12;
+    }
+    if (name === &apos;year&apos;) {
+      min = _.get(this.component, &apos;fields.year.minYear&apos;, 1900) || 1900;
+      max = _.get(this.component, &apos;fields.year.maxYear&apos;, 2030) || 1900;
+    }
+    return {
+      type: &apos;input&apos;,
+      ref: name,
+      attr: {
+        id: `${this.component.key}-${name}`,
+        class: `form-control ${this.transform(&apos;class&apos;, `formio-day-component-${name}`)}`,
+        type: this.component.fields[name].type === &apos;select&apos; ? &apos;select&apos; : &apos;number&apos;,
+        placeholder: this.component.fields[name].placeholder,
+        step: 1,
+        min,
+        max,
+      }
+    };
+  }
+
+  selectDefinition(name) {
+    return {
+      multiple: false,
+      ref: name,
+      widget: &apos;html5&apos;,
+      attr: {
+        id: `${this.component.key}-${name}`,
+        class: &apos;form-control&apos;,
+        name,
+        lang: this.options.language
+      }
+    };
+  }
+
+  get days() {
+    if (this._days) {
+      return this._days;
+    }
+    this._days = [
+      { value: &apos;&apos;, label: _.get(this.component, &apos;fields.day.placeholder&apos;, &apos;&apos;) }
+    ];
+    for (let x = 1; x &lt;= 31; x++) {
+      this._days.push({
+        value: x,
+        label: x.toString()
+      });
+    }
+    return this._days;
+  }
+
+  get months() {
+    if (this._months) {
+      return this._months;
+    }
+    this._months = [
+      {
+        value: &apos;&apos;,
+        label: _.get(this.component, &apos;fields.month.placeholder&apos;) || (this.hideInputLabels ? this.t(&apos;Month&apos;) : &apos;&apos;)
+      },
+      { value: 1, label: &apos;January&apos; },
+      { value: 2, label: &apos;February&apos; },
+      { value: 3, label: &apos;March&apos; },
+      { value: 4, label: &apos;April&apos; },
+      { value: 5, label: &apos;May&apos; },
+      { value: 6, label: &apos;June&apos; },
+      { value: 7, label: &apos;July&apos; },
+      { value: 8, label: &apos;August&apos; },
+      { value: 9, label: &apos;September&apos; },
+      { value: 10, label: &apos;October&apos; },
+      { value: 11, label: &apos;November&apos; },
+      { value: 12, label: &apos;December&apos; }
+    ];
+    return this._months;
+  }
+
+  get years() {
+    if (this._years) {
+      return this._years;
+    }
+    this._years = [
+      { value: &apos;&apos;, label: _.get(this.component, &apos;fields.year.placeholder&apos;, &apos;&apos;) }
+    ];
+    const minYears = _.get(this.component, &apos;fields.year.minYear&apos;, 1900) || 1900;
+    const maxYears = _.get(this.component, &apos;fields.year.maxYear&apos;, 2030) || 2030;
+    for (let x = minYears; x &lt;= maxYears; x++) {
+      this._years.push({
+        value: x,
+        label: x.toString()
+      });
+    }
+    return this._years;
+  }
+
+  setErrorClasses(elements, dirty, hasError) {
+    super.setErrorClasses(elements, dirty, hasError);
+    super.setErrorClasses([this.refs.day, this.refs.month, this.refs.year], dirty, hasError);
+  }
+
+  removeInputError(elements) {
+    super.removeInputError([this.refs.day, this.refs.month, this.refs.year]);
+    super.removeInputError(elements);
+  }
+
+  init() {
+    super.init();
+    this.validators = this.validators.concat([&apos;day&apos;, &apos;maxDate&apos;, &apos;minDate&apos;, &apos;minYear&apos;, &apos;maxYear&apos;]);
+
+    const minYear = this.component.fields.year.minYear;
+    const maxYear = this.component.fields.year.maxYear;
+    this.component.maxYear = maxYear;
+    this.component.minYear = minYear;
+
+    const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
+    this.dayFirst = this.component.useLocaleSettings
+      ? dateFormatInfo.dayFirst
+      : this.component.dayFirst;
+  }
+
+  render() {
+    return super.render(this.renderTemplate(&apos;day&apos;, {
+      dayFirst: this.dayFirst,
+      showDay: this.showDay,
+      showMonth: this.showMonth,
+      showYear: this.showYear,
+      day: this.renderField(&apos;day&apos;),
+      month: this.renderField(&apos;month&apos;),
+      year: this.renderField(&apos;year&apos;),
+    }));
+  }
+
+  renderField(name) {
+    if (this.component.fields[name].type === &apos;select&apos;) {
+      return this.renderTemplate(&apos;select&apos;, {
+        input: this.selectDefinition(name),
+        selectOptions: this[`${name}s`].reduce((html, option) =&gt;
+          html + this.renderTemplate(&apos;selectOption&apos;, {
+            option,
+            selected: false,
+            attrs: {}
+          }), &apos;&apos;
+        ),
+      });
+    }
+    else {
+      return this.renderTemplate(&apos;input&apos;, {
+        prefix: this.prefix,
+        suffix: this.suffix,
+        input: this.inputDefinition(name)
+      });
+    }
+  }
+
+  attach(element) {
+    this.loadRefs(element, { day: &apos;single&apos;, month: &apos;single&apos;, year: &apos;single&apos;, input: &apos;multiple&apos; });
+    const superAttach = super.attach(element);
+    if (this.shouldDisabled) {
+      this.setDisabled(this.refs.day, true);
+      this.setDisabled(this.refs.month, true);
+      this.setDisabled(this.refs.year, true);
+      if (this.refs.input) {
+        this.refs.input.forEach((input) =&gt; this.setDisabled(input, true));
+      }
+    }
+    else {
+      this.addEventListener(this.refs.day, &apos;input&apos;, () =&gt; this.updateValue(null, {
+        modified: true
+      }));
+      // TODO: Need to rework this to work with day select as well.
+      // Change day max input when month changes.
+      this.addEventListener(this.refs.month, &apos;input&apos;, () =&gt; {
+        const maxDay = this.refs.year ? parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10)
+          : &apos;&apos;;
+        const day = this.getFieldValue(&apos;day&apos;);
+        if (!this.component.fields.day.hide &amp;&amp; maxDay) {
+          this.refs.day.max = maxDay;
+        }
+        if (maxDay &amp;&amp; day &gt; maxDay) {
+          this.refs.day.value = this.refs.day.max;
+        }
+        this.updateValue(null, {
+          modified: true
+        });
+      });
+      this.addEventListener(this.refs.year, &apos;input&apos;, () =&gt; this.updateValue(null, {
+        modified: true
+      }));
+      this.addEventListener(this.refs.input, this.info.changeEvent, () =&gt; this.updateValue(null, {
+        modified: true
+      }));
+    }
+    this.setValue(this.dataValue);
+    // Force the disabled state with getters and setters.
+    this.disabled = this.shouldDisabled;
+    return superAttach;
+  }
+
+  validateRequired(setting, value) {
+    const { day, month, year } = this.parts;
+    if (this.dayRequired &amp;&amp; !day) {
+      return false;
+    }
+
+    if (this.monthRequired &amp;&amp; !month) {
+      return false;
+    }
+
+    if (this.yearRequired &amp;&amp; !year) {
+      return false;
+    }
+
+    if (!boolValue(setting)) {
+      return true;
+    }
+    return !this.isEmpty(value);
+  }
+
+  set disabled(disabled) {
+    super.disabled = disabled;
+    if (!this.refs.year || !this.refs.month || !this.refs.day) {
+      return;
+    }
+    if (disabled) {
+      this.refs.year.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
+      this.refs.month.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
+      this.refs.day.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
+    }
+    else {
+      this.refs.year.removeAttribute(&apos;disabled&apos;);
+      this.refs.month.removeAttribute(&apos;disabled&apos;);
+      this.refs.day.removeAttribute(&apos;disabled&apos;);
+    }
+  }
+
+  normalizeValue(value) {
+    if (!value || this.valueMask.test(value)) {
+      return value;
+    }
+    const dateParts = [];
+    const valueParts = value.split(&apos;/&apos;);
+
+    const getNextPart = (shouldTake, defaultValue) =&gt;
+      dateParts.push(shouldTake ? valueParts.shift() : defaultValue);
+
+    if (this.dayFirst) {
+      getNextPart(this.showDay, &apos;00&apos;);
+    }
+
+    getNextPart(this.showMonth, &apos;00&apos;);
+
+    if (!this.dayFirst) {
+      getNextPart(this.showDay, &apos;00&apos;);
+    }
+
+    getNextPart(this.showYear, &apos;0000&apos;);
+
+    return dateParts.join(&apos;/&apos;);
+  }
+
+  /**
+   * Set the value at a specific index.
+   *
+   * @param index
+   * @param value
+   */
+  setValueAt(index, value) {
+    // temporary solution to avoid input reset
+    // on invalid date.
+    if (!value || value === &apos;Invalid date&apos;) {
+      return null;
+    }
+    const parts = value.split(&apos;/&apos;);
+    let day;
+    if (this.component.dayFirst) {
+      day = parts.shift();
+    }
+    const month = parts.shift();
+    if (!this.component.dayFirst) {
+      day = parts.shift();
+    }
+    const year = parts.shift();
+
+    if (this.refs.day &amp;&amp; this.showDay) {
+      this.refs.day.value = day === &apos;00&apos; ? &apos;&apos; : parseInt(day, 10);
+    }
+    if (this.refs.month &amp;&amp; this.showMonth) {
+      this.refs.month.value = month === &apos;00&apos; ? &apos;&apos; : parseInt(month, 10);
+    }
+    if (this.refs.year &amp;&amp; this.showYear) {
+      this.refs.year.value = year === &apos;0000&apos; ? &apos;&apos; : parseInt(year, 10);
+    }
+  }
+
+  getFieldValue(name) {
+    const parts = this.dataValue ? this.dataValue.split(&apos;/&apos;) : [];
+    let val = 0;
+
+    switch (name) {
+      case &apos;month&apos;:
+        val = parts[this.dayFirst ? 1 : 0];
+        break;
+      case &apos;day&apos;:
+        val = parts[this.dayFirst ? 0 : 1];
+        break;
+      case &apos;year&apos;:
+        val = parts[2];
+        break;
+    }
+
+    val = parseInt(val, 10);
+    return (!_.isNaN(val) &amp;&amp; _.isNumber(val)) ? val : 0;
+  }
+
+  get parts() {
+    return {
+      day: this.getFieldValue(&apos;day&apos;),
+      month: this.getFieldValue(&apos;month&apos;),
+      year: this.getFieldValue(&apos;year&apos;),
+    };
+  }
+
+  /**
+   * Get the format for the value string.
+   * @returns {string}
+   */
+  get format() {
+    let format = &apos;&apos;;
+    if (this.component.dayFirst &amp;&amp; this.showDay) {
+      format += &apos;D/&apos;;
+    }
+    if (this.showMonth) {
+      format += &apos;M/&apos;;
+    }
+    if (!this.component.dayFirst &amp;&amp; this.showDay) {
+      format += &apos;D/&apos;;
+    }
+    if (this.showYear) {
+      format += &apos;YYYY&apos;;
+      return format;
+    }
+    else {
+      // Trim off the &quot;/&quot; from the end of the format string.
+      return format.length ? format.substring(0, format.length - 1) : format;
+    }
+  }
+
+  /**
+   * Return the date for this component.
+   *
+   * @param value
+   * @return {*}
+   */
+  getDate(value) {
+    let defaults = [], day, month, year;
+    // Map positions to identifiers to get default values for each part of day
+    const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+    const defaultValue = value || this.component.defaultValue;
+    if (defaultValue) {
+      defaults = defaultValue.split(&apos;/&apos;).map(x =&gt; parseInt(x, 10));
+    }
+
+    if (this.showDay &amp;&amp; this.refs.day) {
+      day = parseInt(this.refs.day.value, 10);
+    }
+    if (day === undefined || _.isNaN(day)) {
+      day = defaults[DAY] &amp;&amp; !_.isNaN(defaults[DAY]) ? defaults[DAY] : 0;
+    }
+
+    if (this.showMonth &amp;&amp; this.refs.month) {
+      // Months are 0 indexed.
+      month = parseInt(this.refs.month.value, 10);
+    }
+    if (month === undefined || _.isNaN(month)) {
+      month = defaults[MONTH] &amp;&amp; !_.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0;
+    }
+
+    if (this.showYear &amp;&amp; this.refs.year) {
+      year = parseInt(this.refs.year.value);
+    }
+    if (year === undefined || _.isNaN(year)) {
+      year = defaults[YEAR] &amp;&amp; !_.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0;
+    }
+
+    let result;
+    if (!day &amp;&amp; !month &amp;&amp; !year) {
+      return null;
+    }
+
+    // add trailing zeros if the data is showed
+    day = this.showDay ? day.toString().padStart(2, 0) : &apos;&apos;;
+    month = this.showMonth ? month.toString().padStart(2, 0) : &apos;&apos;;
+    year = this.showYear ? year.toString().padStart(4, 0) : &apos;&apos;;
+
+    if (this.component.dayFirst) {
+      result = `${day}${this.showDay &amp;&amp; this.showMonth || this.showDay &amp;&amp; this.showYear ? &apos;/&apos; : &apos;&apos;}${month}${this.showMonth &amp;&amp; this.showYear ? &apos;/&apos; : &apos;&apos;}${year}`;
+    }
+    else {
+      result = `${month}${this.showDay &amp;&amp; this.showMonth || this.showMonth &amp;&amp; this.showYear ? &apos;/&apos; : &apos;&apos;}${day}${this.showDay &amp;&amp; this.showYear ? &apos;/&apos; : &apos;&apos;}${year}`;
+    }
+
+    return result;
+  }
+
+  /**
+   * Return the date object for this component.
+   * @returns {Date}
+   */
+  get date() {
+    return this.getDate();
+  }
+
+  normalizeMinMaxDates() {
+   return [this.component.minDate, this.component.maxDate]
+      .map(date =&gt; date ? date.split(&apos;-&apos;).reverse().join(&apos;/&apos;) : date);
+  }
+
+  /**
+   * Return the raw value.
+   *
+   * @returns {Date}
+   */
+  get validationValue() {
+    [this.component.minDate, this.component.maxDate] = this.dayFirst ? this.normalizeMinMaxDates()
+      : [this.component.minDate, this.component.maxDate];
+    return this.dataValue;
+  }
+
+  getValue() {
+    const result = super.getValue();
+    return (!result) ? this.dataValue : result;
+  }
+
+  /**
+   * Get the value at a specific index.
+   *
+   * @param index
+   * @returns {*}
+   */
+  getValueAt(index) {
+    const date = this.date;
+    if (date) {
+      this.refs.input[index].value = date;
+      return this.refs.input[index].value;
+    }
+    else {
+      this.refs.input[index].value = &apos;&apos;;
+      return null;
+    }
+  }
+
+  /**
+   * Get the input value of the date.
+   *
+   * @param value
+   * @return {null}
+   */
+  getValueAsString(value) {
+    return this.getDate(value) || &apos;&apos;;
+  }
+
+  focus() {
+    if (this.dayFirst &amp;&amp; this.showDay || !this.dayFirst &amp;&amp; !this.showMonth &amp;&amp; this.showDay) {
+      this.refs.day.focus();
+    }
+    else if (this.dayFirst &amp;&amp; !this.showDay &amp;&amp; this.showMonth || !this.dayFirst &amp;&amp; this.showMonth) {
+      this.refs.month.focus();
+    }
+    else if (!this.showDay &amp;&amp; !this.showDay &amp;&amp; this.showYear) {
+      this.refs.year.focus();
+    }
+  }
+
+  isPartialDay(value) {
+    if (!value) {
+      return false;
+    }
+    const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+    const values = value.split(&apos;/&apos;);
+    return (values[DAY] === &apos;00&apos; || values[MONTH] === &apos;00&apos; || values[YEAR] === &apos;0000&apos;);
+  }
+
+  getValidationFormat() {
+    return this.dayFirst ? &apos;DD-MM-YYYY&apos; : &apos;MM-DD-YYYY&apos;;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

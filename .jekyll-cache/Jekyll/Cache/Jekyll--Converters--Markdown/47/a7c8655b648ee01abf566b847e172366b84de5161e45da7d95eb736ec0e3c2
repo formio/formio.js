@@ -1,0 +1,97 @@
+I"(-<p>Within the Form.io renderer, you can also enable a Save as Draft feature which will save a submission in “draft” mode either periodically (every 5 seconds), or manually, as the user
+is filling out the form. This system will also “restore” a draft submission if the user leaves the page, and then comes back in a later session. A common term used to describe this process is “save and return” capability.</p>
+
+<p>This feature works along with our authentication system to attach a “draft” submission to a user who has been authenticated, to periodically store the draft of that submission as that user is using the form.</p>
+
+<p>In order to enable this feature, you simply need to use the <code class="language-plaintext highlighter-rouge">saveDraft</code> parameter when you are rendering the form.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">icons</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">fontawesome</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio</span><span class="dl">'</span><span class="p">),</span> <span class="dl">'</span><span class="s1">https://examples.form.io/example</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">saveDraft</span><span class="p">:</span> <span class="kc">true</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>This will then trigger the drafts to start periodically every 5 seconds once a user is established through the use of common Form.io authentication modules, such as the <a href="https://github.com/formio/angular-formio/wiki/User-Authentication">one provided within Angular</a>.</p>
+
+<p>If you wish to manually allow for “anonymous” drafts, then you will need to add the “Anonymous” role to your forms “Create All” permissions, and then provide the following logic within your application to trigger the saveDraft process.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">icons</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">fontawesome</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="c1">// Create a new form with saveDraft enabled.</span>
+<span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio</span><span class="dl">'</span><span class="p">),</span> <span class="dl">'</span><span class="s1">https://examples.form.io/example</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">saveDraft</span><span class="p">:</span> <span class="kc">true</span>
+<span class="p">});</span>
+
+<span class="c1">// Set the "owner" field for the draft submissions to the following user.</span>
+<span class="nx">Formio</span><span class="p">.</span><span class="nx">setUser</span><span class="p">({</span>
+  <span class="na">_id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">123</span><span class="dl">'</span>
+<span class="p">})</span>
+</code></pre></div></div>
+
+<p><strong>Note:</strong> This will only work if you do NOT explicitly set the form submission as follows.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// This won't work....</span>
+<span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio</span><span class="dl">'</span><span class="p">),</span> <span class="dl">'</span><span class="s1">https://examples.form.io/example</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">saveDraft</span><span class="p">:</span> <span class="kc">true</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">form</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Explicitly setting the form submission will stop the "draft" mode.</span>
+  <span class="nx">form</span><span class="p">.</span><span class="nx">submission</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">firstName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Joe</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">lastName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Smith</span><span class="dl">'</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="timing-configuration">Timing configuration</h4>
+<p>You can also configure how regular the “save draft” is triggered using the <code class="language-plaintext highlighter-rouge">saveDraftThrottle</code> parameter. This defaults to 5 seconds, and is defined in milliseconds.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">icons</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">fontawesome</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="c1">// Save a draft every 10 seconds.</span>
+<span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio</span><span class="dl">'</span><span class="p">),</span> <span class="dl">'</span><span class="s1">https://examples.form.io/example</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">saveDraft</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="na">saveDraftThrottle</span><span class="p">:</span> <span class="mi">10000</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="manual-draft-submissions">Manual Draft Submissions</h2>
+<p>You can also enable draft submissions to occur manually through the use of our Button component, configured with the Action of “Save State” and the “State” option configured as “draft”. Then when this button is pressed, it will save the submission in “draft” mode.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Create a manual form with a Draft button, and submit the data to a specific API.</span>
+<span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio</span><span class="dl">'</span><span class="p">),</span> <span class="p">{</span>
+  <span class="na">components</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">textfield</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">firstName</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">First Name</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">input</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">textfield</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">lastName</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Last Name</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">input</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Save Submission</span><span class="dl">'</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">saveState</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">state</span><span class="p">:</span> <span class="dl">'</span><span class="s1">draft</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">saveDraft</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Save as Draft</span><span class="dl">'</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">form</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Set the url so that it knows where to submit the data to.</span>
+  <span class="nx">form</span><span class="p">.</span><span class="nx">url</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">https://examples.form.io/example</span><span class="dl">'</span><span class="p">;</span>
+  <span class="nx">form</span><span class="p">.</span><span class="nx">nosubmit</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">});</span>
+</code></pre></div></div>
+:ET

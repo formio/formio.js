@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/components/editgrid/EditGrid.js | formiojs</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/component/Component.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-input">components/_classes/input</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html">Input</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-multivalue">components/_classes/multivalue</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/multivalue/Multivalue.js~Multivalue.html">Multivalue</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Checkbox">Checkbox</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Columns.js~ColumnsComponent.html">ColumnsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Columns">Columns</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-container">components/container</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Container">Container</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/content/Content.js~ContentComponent.html">ContentComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html">DataGridComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Fieldset">Fieldset</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-File">File</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden">components/hidden</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PhoneNumber">PhoneNumber</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-radio">components/radio</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/radio/Radio.js~RadioComponent.html">RadioComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Radio">Radio</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-recaptcha">components/recaptcha</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html">ReCaptchaComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextArea">TextArea</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textfield">components/textfield</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html">TextFieldComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Node.js~Node.html">Node</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Tree.js~TreeComponent.html">TreeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-edittable">contrib/edittable</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/edittable/EditTable.js~EditTableComponent.html">EditTableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditTable">EditTable</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-location">contrib/location</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/location/Location.js~LocationComponent.html">LocationComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Location">Location</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-modaledit">contrib/modaledit</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/modaledit/ModalEdit.js~ModalEditComponent.html">ModalEditComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/GoogleAddressProvider.js~GoogleAddressProvider.html">GoogleAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateFormChange">generateFormChange</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStrings">getStrings</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getValue">getValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasCondition">hasCondition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-removeComponent">removeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-searchComponents">searchComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bootstrapVersion">bootstrapVersion</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkJsonConditional">checkJsonConditional</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkSimpleConditional">checkSimpleConditional</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkTrigger">checkTrigger</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMask">convertFormatToMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertStringToHTMLElement">convertStringToHTMLElement</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-currentTimezone">currentTimezone</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-delay">delay</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fastCloneDeep">fastCloneDeep</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatDate">formatDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatOffset">formatOffset</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getArrayFromComponentPath">getArrayFromComponentPath</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getContextComponents">getContextComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getIEBrowserVersion">getIEBrowserVersion</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getInputMask">getInputMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLocaleDateFormatInfo">getLocaleDateFormatInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberDecimalLimit">getNumberDecimalLimit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberSeparators">getNumberSeparators</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStringFromComponentPath">getStringFromComponentPath</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isInputComponent">isInputComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iterateKey">iterateKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-loadZones">loadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchInputMask">matchInputMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-momentDate">momentDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-observeOverload">observeOverload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-offsetDate">offsetDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-round">round</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sanitize">sanitize</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-shouldLoadZones">shouldLoadZones</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unescapeHTML">unescapeHTML</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unfold">unfold</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueKey">uniqueKey</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withSwitch">withSwitch</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-zonesLoaded">zonesLoaded</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-KEY_CODES">KEY_CODES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-firstNonNil">firstNonNil</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-interpolate">interpolate</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/CalendarWidget.js~CalendarWidget.html">CalendarWidget</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/components/editgrid/EditGrid.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
+import NestedArrayComponent from &apos;../_classes/nestedarray/NestedArrayComponent&apos;;
+import Component from &apos;../_classes/component/Component&apos;;
+import Alert from &apos;../alert/Alert&apos;;
+import { fastCloneDeep, Evaluator, getArrayFromComponentPath } from &apos;../../utils/utils&apos;;
+import templates from &apos;./templates&apos;;
+
+const EditRowState = {
+  New: &apos;new&apos;,
+  Editing: &apos;editing&apos;,
+  Saved: &apos;saved&apos;,
+  Removed: &apos;removed&apos;,
+  Draft: &apos;draft&apos;,
+};
+
+export default class EditGridComponent extends NestedArrayComponent {
+  static schema(...extend) {
+    return NestedArrayComponent.schema({
+      type: &apos;editgrid&apos;,
+      label: &apos;Edit Grid&apos;,
+      key: &apos;editGrid&apos;,
+      clearOnHide: true,
+      input: true,
+      tree: true,
+      removeRow: &apos;Cancel&apos;,
+      defaultOpen: false,
+      openWhenEmpty: false,
+      modal: false,
+      components: [],
+      inlineEdit: false,
+      templates: {
+        header: EditGridComponent.defaultHeaderTemplate,
+        row: EditGridComponent.defaultRowTemplate,
+        footer: &apos;&apos;,
+      },
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: &apos;Edit Grid&apos;,
+      icon: &apos;tasks&apos;,
+      group: &apos;data&apos;,
+      documentation: &apos;http://help.form.io/userguide/#editgrid&apos;,
+      weight: 30,
+      schema: EditGridComponent.schema(),
+    };
+  }
+
+  static get defaultHeaderTemplate() {
+    return `&lt;div class=&quot;row&quot;&gt;
+  {% (component.components || []).forEach(function(component) { %}
+    &lt;div class=&quot;col-sm-2&quot;&gt;{{ component.label }}&lt;/div&gt;
+  {% }) %}
+&lt;/div&gt;`;
+  }
+
+  static get defaultRowTemplate() {
+    return `&lt;div class=&quot;row&quot;&gt;
+  {% instance.eachComponent(function(component) { %}
+    &lt;div class=&quot;col-sm-2&quot;&gt;
+      {{ component.getView(component.dataValue) }}
+    &lt;/div&gt;
+  {% }, rowIndex) %}
+  {% if (!instance.options.readOnly &amp;&amp; !instance.originalComponent.disabled) { %}
+    &lt;div class=&quot;col-sm-2&quot;&gt;
+      &lt;div class=&quot;btn-group pull-right&quot;&gt;
+        &lt;button class=&quot;btn btn-default btn-light btn-sm editRow&quot;&gt;&lt;i class=&quot;{{ iconClass(&apos;edit&apos;) }}&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+        {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}
+          &lt;button class=&quot;btn btn-danger btn-sm removeRow&quot;&gt;&lt;i class=&quot;{{ iconClass(&apos;trash&apos;) }}&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+        {% } %}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  {% } %}
+&lt;/div&gt;`;
+  }
+
+  get defaultDialogTemplate() {
+    return  `
+    &lt;h3 ref=&quot;dialogHeader&quot;&gt;${this.t(&apos;Do you want to clear data?&apos;)}&lt;/h3&gt;
+    &lt;div style=&quot;display:flex; justify-content: flex-end;&quot;&gt;
+      &lt;button ref=&quot;dialogCancelButton&quot; class=&quot;btn btn-secondary&quot;&gt;${this.t(&apos;Cancel&apos;)}&lt;/button&gt;
+      &lt;button ref=&quot;dialogYesButton&quot; class=&quot;btn btn-primary&quot;&gt;${this.t(&apos;Yes, delete it&apos;)}&lt;/button&gt;
+    &lt;/div&gt;
+  `;
+  }
+
+  get defaultSchema() {
+    return EditGridComponent.schema();
+  }
+
+  get emptyValue() {
+    return [];
+  }
+
+  get editgridKey() {
+    return `editgrid-${this.key}`;
+  }
+
+  get rowRef() {
+    return `${this.editgridKey}-row`;
+  }
+
+  get rowElements() {
+    return this.refs[this.rowRef];
+  }
+
+  get addRowRef() {
+    return `${this.editgridKey}-addRow`;
+  }
+
+  get addRowElements() {
+    return this.refs[this.addRowRef];
+  }
+
+  get saveRowRef() {
+    return `${this.editgridKey}-saveRow`;
+  }
+
+  get saveRowElements() {
+    return this.refs[this.saveRowRef];
+  }
+
+  get cancelRowRef() {
+    return `${this.editgridKey}-cancelRow`;
+  }
+
+  get cancelRowElements() {
+    return this.refs[this.cancelRowRef];
+  }
+
+  get inlineEditMode() {
+    return this.component.inlineEdit;
+  }
+
+  get saveEditMode() {
+    return !this.inlineEditMode;
+  }
+
+  get minLength() {
+    return _.get(this.component, &apos;validate.minLength&apos;, 0);
+  }
+
+  get data() {
+    return this._data;
+  }
+
+  set data(value) {
+    this._data = value;
+
+    const data = this.dataValue;
+
+    (this.editRows || []).forEach((row, index) =&gt; {
+      const rowData = data[index];
+
+      row.data = rowData;
+      row.components.forEach((component) =&gt; {
+        component.data = rowData;
+      });
+    });
+  }
+
+  get iteratableRows() {
+    return this.editRows;
+  }
+
+  get defaultValue() {
+    const value = super.defaultValue;
+    const defaultValue = Array.isArray(value) ? value : [];
+
+    _.times(this.minLength - defaultValue.length, () =&gt; defaultValue.push({}));
+
+    return defaultValue;
+  }
+
+  constructor(...args) {
+    super(...args);
+    this.type = &apos;editgrid&apos;;
+  }
+
+  loadRefs(element, refs) {
+    super.loadRefs(element, refs);
+
+    const massageContainerRef = &apos;messageContainer&apos;;
+
+    if (refs[`${ massageContainerRef }`] === &apos;single&apos;) {
+      this.refs[`${ massageContainerRef }`] = element.querySelector(`:scope &gt; [ref=&quot;${ massageContainerRef }&quot;]`);
+    }
+  }
+
+  hasRemoveButtons() {
+    return !this.component.disableAddingRemovingRows &amp;&amp;
+      !this.options.readOnly &amp;&amp;
+      !this.disabled &amp;&amp;
+      this.fullMode &amp;&amp;
+      (this.dataValue.length &gt; _.get(this.component, &apos;validate.minLength&apos;, 0));
+  }
+
+  init() {
+    if (this.builderMode) {
+      this.editRows = [];
+      return super.init();
+    }
+
+    this.components = this.components || [];
+    const dataValue = this.dataValue || [];
+    const openWhenEmpty = !dataValue.length &amp;&amp; this.component.openWhenEmpty;
+    if (openWhenEmpty) {
+      const dataObj = {};
+      this.editRows = [
+        {
+          components: this.createRowComponents(dataObj, 0),
+          data: dataObj,
+          state: EditRowState.New,
+          backup: null,
+          error: null,
+        },
+      ];
+      if (this.inlineEditMode) {
+        this.dataValue.push(dataObj);
+      }
+    }
+    else {
+      this.editRows = dataValue.map((row, rowIndex) =&gt; ({
+        components: this.createRowComponents(row, rowIndex),
+        data: row,
+        state: EditRowState.Saved,
+        backup: null,
+        error: null,
+      }));
+    }
+
+    this.checkData();
+  }
+
+  isOpen(editRow) {
+    return [EditRowState.New, EditRowState.Editing].includes(editRow.state);
+  }
+
+  render(children) {
+    if (this.builderMode) {
+      return super.render();
+    }
+
+    const dataValue = this.dataValue || [];
+    const headerTemplate = Evaluator.noeval ? templates.header : _.get(this.component, &apos;templates.header&apos;);
+    return super.render(children || this.renderTemplate(&apos;editgrid&apos;, {
+      ref: {
+        row: this.rowRef,
+        addRow: this.addRowRef,
+        saveRow: this.saveRowRef,
+        cancelRow: this.cancelRowRef,
+      },
+      header: this.renderString(headerTemplate, {
+        components: this.component.components,
+        value: dataValue,
+      }),
+      footer: this.renderString(_.get(this.component, &apos;templates.footer&apos;), {
+        components: this.component.components,
+        value: dataValue,
+      }),
+      rows: this.editRows.map(this.renderRow.bind(this)),
+      openRows: this.editRows.map((row) =&gt; this.isOpen(row)),
+      errors: this.editRows.map((row) =&gt; row.error),
+      hasAddButton: this.hasAddButton(),
+      hasRemoveButtons: this.hasRemoveButtons(),
+    }));
+  }
+
+  attach(element) {
+    if (this.builderMode) {
+      return super.attach(element);
+    }
+
+    this.loadRefs(element, {
+      [this.addRowRef]: &apos;multiple&apos;,
+      [this.saveRowRef]: &apos;multiple&apos;,
+      [this.cancelRowRef]: &apos;multiple&apos;,
+      [this.rowRef]: &apos;multiple&apos;,
+    });
+
+    this.addRowElements.forEach((addButton) =&gt; {
+      this.addEventListener(addButton, &apos;click&apos;, () =&gt; this.addRow());
+    });
+
+    let openRowCount = 0;
+    this.rowElements.forEach((row, rowIndex) =&gt; {
+      const editRow = this.editRows[rowIndex];
+      if (this.isOpen(editRow)) {
+        this.attachComponents(row, editRow.components);
+        this.addEventListener(this.saveRowElements[openRowCount], &apos;click&apos;, () =&gt; this.saveRow(rowIndex));
+        this.addEventListener(this.cancelRowElements[openRowCount], &apos;click&apos;, () =&gt; this.cancelRow(rowIndex));
+        openRowCount++;
+      }
+      else {
+        // Attach edit and remove button events.
+        [
+          {
+            className: &apos;removeRow&apos;,
+            event: &apos;click&apos;,
+            action: () =&gt; this.removeRow(rowIndex),
+          },
+          {
+            className: &apos;editRow&apos;,
+            event: &apos;click&apos;,
+            action: () =&gt; {
+              this.editRow(rowIndex).then(()=&gt; {
+                if (this.component.rowDrafts) {
+                  this.validateRow(editRow, false);
+
+                  if (this.component.modal &amp;&amp; editRow.errors &amp;&amp; !!editRow.errors.length ) {
+                    this.alert.showErrors(editRow.errors, false);
+                  }
+                }
+              });
+            },
+          },
+        ].forEach(({
+          className,
+          event,
+          action,
+        }) =&gt; {
+          const elements = row.getElementsByClassName(className);
+          Array.prototype.forEach.call(elements, (element) =&gt; {
+            this.addEventListener(element, event, action);
+          });
+        });
+      }
+    });
+
+    // Add open class to the element if any edit grid row is open
+    if (openRowCount) {
+      this.addClass(this.refs.component, `formio-component-${this.component.type}-row-open`);
+    }
+    else {
+      this.removeClass(this.refs.component, `formio-component-${this.component.type}-row-open`);
+    }
+
+    return super.attach(element);
+  }
+
+  flattenRowDataValue(dataValue) {
+    const flattened = {};
+
+    Object.keys(dataValue).forEach((key) =&gt; {
+      if (_.isObject(dataValue[key]) &amp;&amp; !_.isNil(dataValue[key])) {
+        Object.assign(flattened, this.flattenRowDataValue(dataValue[key]));
+      }
+      else {
+        flattened[key] = dataValue[key];
+      }
+    });
+
+    return flattened;
+  }
+
+  renderRow(row, rowIndex) {
+    const dataValue = this.dataValue || [];
+    if (this.isOpen(row)) {
+      return this.renderComponents(row.components);
+    }
+    else {
+      const flattenedComponents = this.flattenComponents(rowIndex);
+      const rowTemplate = Evaluator.noeval ? templates.row : _.get(this.component, &apos;templates.row&apos;, EditGridComponent.defaultRowTemplate);
+
+      return this.renderString(
+        rowTemplate,
+        {
+          row: dataValue[rowIndex] || {},
+          data: this.data,
+          rowIndex,
+          components: this.component.components,
+          flattenedComponents,
+          getView: (component, data) =&gt; {
+            const instance = flattenedComponents[component.key];
+            let view = instance ? instance.getView(data || instance.dataValue) : &apos;&apos;;
+
+            if (instance &amp;&amp; instance.widget &amp;&amp; (view !== &apos;--- PROTECTED ---&apos; )) {
+              if (_.isArray(view)) {
+                view = view.map((value) =&gt; instance.widget.getValueAsString(value));
+              }
+              else {
+                view = instance.widget.getValueAsString(view);
+              }
+            }
+
+            return view;
+          },
+          state: this.editRows[rowIndex].state,
+        },
+      );
+    }
+  }
+
+  eachComponent(fn, rowIndex) {
+    _.each(this.getComponents(rowIndex), (component, index) =&gt; {
+      if (fn(component, index) === false) {
+        return false;
+      }
+    });
+  }
+
+  restoreComponentsContext() {
+    this.getComponents().forEach((component) =&gt; component.data = this.dataValue[component.rowIndex]);
+  }
+
+  flattenComponents(rowIndex) {
+    const result = {};
+
+    this.everyComponent((component) =&gt; {
+      result[component.component.flattenAs || component.key] = component;
+    }, rowIndex);
+
+    return result;
+  }
+
+  getComponents(rowIndex) {
+    // Ensure editrows is set.
+    this.editRows = this.editRows || [];
+    return this.builderMode
+      ? super.getComponents()
+      : _.isNumber(rowIndex)
+        ? (this.editRows[rowIndex].components || [])
+        : this.editRows.reduce((result, row) =&gt; result.concat(row.components || []), []);
+  }
+
+  destroyComponents(rowIndex) {
+    if (this.builderMode) {
+      return super.destroyComponents();
+    }
+
+    const components = this.getComponents(rowIndex).slice();
+    components.forEach((comp) =&gt; comp.destroy());
+  }
+
+  addRow() {
+    if (this.options.readOnly) {
+      return;
+    }
+
+    const dataObj = {};
+    const rowIndex = this.editRows.length;
+    const editRow = {
+      components: this.createRowComponents(dataObj, rowIndex),
+      data: dataObj,
+      state: EditRowState.New,
+      backup: null,
+      error: null,
+    };
+    this.editRows.push(editRow);
+
+    if (this.inlineEditMode) {
+      this.dataValue.push(dataObj);
+      this.triggerChange();
+    }
+    this.emit(&apos;editGridAddRow&apos;, {
+      component: this.component,
+      row: editRow,
+    });
+    this.checkRow(&apos;checkData&apos;, null, {}, editRow.data, editRow.components);
+    if (this.component.modal) {
+      this.addRowModal(rowIndex);
+    }
+    else {
+      this.redraw();
+    }
+    return editRow;
+  }
+
+  addRowModal(rowIndex) {
+    const modalContent =  this.ce(&apos;div&apos;);
+    const editRow = this.editRows[rowIndex];
+    editRow.willBeSaved = false;
+    const { components } = editRow;
+    modalContent.innerHTML = this.renderComponents(components);
+    const dialog = this.component.modal ? this.createModal(modalContent, {}, () =&gt; this.showDialog(rowIndex)) : undefined;
+    if (this.alert) {
+      this.alert.clear();
+      this.alert = null;
+    }
+    this.alert = new Alert(dialog.refs.dialogContents, this);
+
+    this.addEventListener(dialog, &apos;close&apos;, () =&gt; {
+      if (!editRow.willBeSaved) {
+        this.cancelRow(rowIndex);
+      }
+      if (this.alert) {
+        this.alert.clear();
+        this.alert = null;
+      }
+    });
+
+    dialog.refs.dialogContents.appendChild(this.ce(&apos;button&apos;, {
+      class: &apos;btn btn-primary&apos;,
+      onClick: () =&gt; {
+        if (this.validateRow(editRow, true) || this.component.rowDrafts) {
+          editRow.willBeSaved = true;
+          dialog.close();
+          this.saveRow(rowIndex);
+        }
+        else {
+          this.alert.showErrors(editRow.errors, false);
+        }
+      },
+    }, this.component.saveRow || &apos;Save&apos;));
+
+    return this.attachComponents(modalContent, components);
+  }
+
+  showDialog(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+    if (_.isEqual(editRow.backup, editRow.data)) {
+      return NativePromise.resolve();
+    }
+
+    const wrapper = this.ce(&apos;div&apos;, { ref: &apos;confirmationDialog&apos; });
+    const dialogContent =this.component.dialogTemplate || this.defaultDialogTemplate;
+
+    wrapper.innerHTML = dialogContent;
+    wrapper.refs = {};
+    this.loadRefs.call(wrapper, wrapper, {
+      dialogHeader: &apos;single&apos;,
+      dialogCancelButton: &apos;single&apos;,
+      dialogYesButton: &apos;single&apos;,
+    });
+
+    const dialog = this.createModal(wrapper);
+    const close = (event) =&gt; {
+      event.preventDefault();
+      dialog.close();
+    };
+    let dialogResult;
+
+    const promise = new NativePromise((resolve, reject) =&gt; {
+      dialogResult = { resolve, reject };
+    });
+
+    this.addEventListener(wrapper.refs.dialogYesButton, &apos;click&apos;, (event) =&gt; {
+      close(event);
+      dialogResult.resolve();
+    });
+    this.addEventListener(wrapper.refs.dialogCancelButton, &apos;click&apos;, (event) =&gt; {
+      close(event);
+      dialogResult.reject();
+    });
+    return promise;
+  }
+
+  editRow(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+    const isAlreadyEditing = editRow.state === EditRowState.Editing || editRow.state === EditRowState.New;
+    if (!editRow || isAlreadyEditing) {
+      return;
+    }
+    editRow.prevState = editRow.state;
+
+    if (!this.options.readOnly) {
+      editRow.state = EditRowState.Editing;
+    }
+
+    const dataSnapshot = fastCloneDeep(editRow.data);
+
+    if (this.inlineEditMode) {
+      editRow.backup = dataSnapshot;
+    }
+    else {
+      editRow.backup = editRow.data;
+      editRow.data = dataSnapshot;
+      this.restoreRowContext(editRow);
+    }
+
+    if (this.component.modal) {
+      return this.addRowModal(rowIndex);
+    }
+
+    return this.redraw();
+  }
+
+  clearErrors(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+    if (editRow &amp;&amp; Array.isArray(editRow.components)) {
+      editRow.components.forEach((comp) =&gt; {
+        comp.setPristine(true);
+        comp.setCustomValidity(&apos;&apos;);
+      });
+    }
+  }
+
+  cancelRow(rowIndex) {
+    if (this.options.readOnly) {
+      return;
+    }
+
+    const editRow = this.editRows[rowIndex];
+    switch (editRow.state) {
+      case EditRowState.New: {
+        editRow.state = EditRowState.Removed;
+
+        this.clearErrors(rowIndex);
+        this.destroyComponents(rowIndex);
+        if (this.inlineEditMode) {
+          this.splice(rowIndex);
+        }
+        this.editRows.splice(rowIndex, 1);
+        break;
+      }
+      case EditRowState.Editing: {
+        editRow.state = editRow.prevState;
+
+        if (this.inlineEditMode) {
+          this.dataValue[rowIndex] = editRow.backup;
+        }
+        editRow.data = editRow.backup;
+        editRow.backup = null;
+        this.restoreRowContext(editRow);
+        if (!this.component.rowDrafts) {
+          this.clearErrors(rowIndex);
+        }
+        break;
+      }
+    }
+
+    this.checkValidity(null, true);
+    this.redraw();
+
+    if (this.component.rowDrafts) {
+      this.checkValidity(this.data, false);
+    }
+  }
+
+  saveRow(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+
+    if (this.options.readOnly) {
+      return;
+    }
+
+    const isRowValid = this.validateRow(editRow, true);
+
+    if (!this.component.rowDrafts) {
+      if (!isRowValid) {
+        return false;
+      }
+    }
+
+    if (this.saveEditMode) {
+      const dataValue = this.dataValue || [];
+      switch (editRow.state) {
+        case EditRowState.New: {
+          const newIndex = dataValue.length;
+          dataValue.push(editRow.data);
+          if (rowIndex !== newIndex) {
+            this.editRows.splice(rowIndex, 1);
+            this.editRows.splice(newIndex, 0, editRow);
+          }
+          break;
+        }
+        case EditRowState.Editing: {
+          dataValue[rowIndex] = editRow.data;
+          break;
+        }
+      }
+    }
+
+    editRow.state = this.component.rowDrafts &amp;&amp; !isRowValid ? EditRowState.Draft : EditRowState.Saved;
+    editRow.backup = null;
+
+    this.updateValue();
+    this.triggerChange();
+    if (this.component.rowDrafts) {
+      editRow.components.forEach(comp =&gt; comp.setPristine(this.pristine));
+    }
+    this.checkValidity(null, true);
+    this.redraw();
+
+    return true;
+  }
+
+  beforeFocus(component) {
+    if (&apos;beforeFocus&apos; in this.parent) {
+      this.parent.beforeFocus(this);
+    }
+    const relativePath = this.getRelativePath(component.path);
+    const arrayPath = getArrayFromComponentPath(relativePath);
+    if (_.isNumber(arrayPath[0])) {
+      this.editRow(arrayPath[0]);
+    }
+  }
+
+  updateComponentsRowIndex(components, rowIndex) {
+    components.forEach((component, colIndex) =&gt; {
+      component.rowIndex = rowIndex;
+      component.row = `${rowIndex}-${colIndex}`;
+    });
+  }
+
+  updateRowsComponents(rowIndex) {
+    this.editRows.slice(rowIndex).forEach((row, index) =&gt; {
+      this.updateComponentsRowIndex(row.components, index);
+    });
+  }
+
+  baseRemoveRow(rowIndex) {
+    const editRow = this.editRows[rowIndex];
+
+    editRow.state = EditRowState.Removed;
+    this.destroyComponents(rowIndex);
+
+    return editRow;
+  }
+
+  removeRow(rowIndex) {
+    if (this.options.readOnly) {
+      return;
+    }
+
+    this.baseRemoveRow(rowIndex);
+    this.splice(rowIndex);
+    this.editRows.splice(rowIndex, 1);
+    this.updateRowsComponents(rowIndex);
+    this.updateValue();
+    this.triggerChange();
+    this.checkValidity(null, true);
+    this.checkData();
+    this.redraw();
+  }
+
+  createRowComponents(row, rowIndex) {
+    return this.component.components.map((col, colIndex) =&gt; {
+      const column = _.clone(col);
+      const options = _.clone(this.options);
+      options.name += `[${rowIndex}]`;
+      options.row = `${rowIndex}-${colIndex}`;
+      options.onChange = (flags, changed, modified) =&gt; {
+        const editRow = this.editRows[rowIndex];
+        if (this.inlineEditMode) {
+          this.triggerRootChange(flags, changed, modified);
+        }
+        else if (editRow) {
+          this.checkRow(&apos;checkData&apos;, null, {
+            ...flags,
+            changed,
+          }, editRow.data, editRow.components);
+        }
+      };
+
+      const comp = this.createComponent(_.assign({}, column, {
+        row: options.row,
+      }), options, row);
+      comp.rowIndex = rowIndex;
+      return comp;
+    });
+  }
+
+  hasOpenRows() {
+    return this.editRows.some(row =&gt; this.isOpen(row));
+  }
+
+  validateRow(editRow, dirty) {
+    let valid = true;
+    const errorsSnapshot = [...this.errors];
+
+    if (editRow.state === EditRowState.Editing || dirty || (editRow.state === EditRowState.Draft &amp;&amp; !this.pristine &amp;&amp; !this.root.pristine &amp;&amp; !this.hasOpenRows())) {
+      editRow.components.forEach(comp =&gt; {
+        if (!this.component.rowDrafts) {
+          comp.setPristine(!dirty);
+        }
+
+        valid &amp;= comp.checkValidity(null, dirty, editRow.data);
+      });
+    }
+
+    if (this.component.validate &amp;&amp; this.component.validate.row) {
+      valid = this.evaluate(this.component.validate.row, {
+        valid,
+        row: editRow.data
+      }, &apos;valid&apos;, true);
+      if (valid.toString() !== &apos;true&apos;) {
+        editRow.error = valid;
+        valid = false;
+      }
+      else {
+        editRow.error = null;
+      }
+      if (valid === null) {
+        valid = `Invalid row validation for ${this.key}`;
+      }
+    }
+
+    editRow.errors = !valid ? this.errors.filter((err) =&gt; !errorsSnapshot.includes(err)) : null;
+
+    return !!valid;
+  }
+
+  checkValidity(data, dirty, row) {
+    data = data || this.rootValue;
+    row = row || this.data;
+
+    if (!this.checkCondition(row, data)) {
+      this.setCustomValidity(&apos;&apos;);
+      return true;
+    }
+
+    return this.checkComponentValidity(data, dirty, row);
+  }
+
+  checkComponentValidity(data, dirty, row) {
+    if (!super.checkComponentValidity(data, dirty, row)) {
+      return false;
+    }
+
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      return true;
+    }
+
+    let rowsValid = true;
+    let rowsEditing = false;
+
+    this.editRows.forEach((editRow, index) =&gt; {
+      // Trigger all errors on the row.
+      const rowValid = this.validateRow(editRow, dirty);
+
+      rowsValid &amp;= rowValid;
+
+      const rowRefs = this.refs[`editgrid-${this.component.key}-row`];
+
+      if (rowRefs) {
+        const rowContainer = rowRefs[index];
+
+        if (rowContainer) {
+          const errorContainer = rowContainer.querySelector(&apos;.editgrid-row-error&apos;);
+
+          if (!rowValid ) {
+            errorContainer.textContent = &apos;Invalid row. Please correct it or delete.&apos;;
+          }
+        }
+      }
+      // If this is a dirty check, and any rows are still editing, we need to throw validation error.
+      rowsEditing |= (dirty &amp;&amp; this.isOpen(editRow));
+    });
+
+    if (!rowsValid) {
+      this.setCustomValidity(&apos;Please correct invalid rows before proceeding.&apos;, dirty);
+      return false;
+    }
+    else if (rowsEditing &amp;&amp; this.saveEditMode) {
+      this.setCustomValidity(&apos;Please save all rows before proceeding.&apos;, dirty);
+      return false;
+    }
+
+    const message = this.invalid || this.invalidMessage(data, dirty);
+    this.setCustomValidity(message, dirty);
+    return true;
+  }
+
+  setValue(value, flags = {}) {
+    if (!value) {
+      value = this.defaultValue;
+    }
+
+    if (!Array.isArray(value)) {
+      if (typeof value === &apos;object&apos;) {
+        value = [value];
+      }
+      else {
+        return false;
+      }
+    }
+
+    const changed = this.hasChanged(value, this.dataValue);
+    this.dataValue = value;
+    // Refresh editRow data when data changes.
+    this.dataValue.forEach((row, rowIndex) =&gt; {
+      const editRow = this.editRows[rowIndex];
+      if (editRow) {
+        editRow.data = row;
+        this.restoreRowContext(editRow, flags);
+        editRow.state = EditRowState.Saved;
+        editRow.backup = null;
+        editRow.error = null;
+      }
+      else {
+        this.editRows[rowIndex] = {
+          components: this.createRowComponents(row, rowIndex),
+          data: row,
+          state: EditRowState.Saved,
+          backup: null,
+          error: null,
+        };
+      }
+    });
+    let { length: dataLength } = this.dataValue;
+
+    // If the last row is a new row, then do not remove it.
+    if (this.editRows[dataLength] &amp;&amp; (this.editRows[dataLength].state === EditRowState.New)) {
+      dataLength = (dataLength + 1);
+    }
+    this.editRows.slice(dataLength).forEach((editRow, index) =&gt; this.baseRemoveRow(dataLength + index));
+    this.editRows = this.editRows.slice(0, dataLength);
+    this.updateOnChange(flags, changed);
+    this.checkData();
+    if (changed || flags.resetValue) {
+      this.rebuild();
+    }
+    return changed;
+  }
+
+  restoreRowContext(editRow, flags = {}) {
+    editRow.components.forEach((component) =&gt; {
+      component.data = editRow.data;
+      this.setNestedValue(component, editRow.data, flags);
+    });
+  }
+}
+
+EditGridComponent.prototype.hasChanged = Component.prototype.hasChanged;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

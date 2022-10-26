@@ -1,0 +1,30 @@
+I",<p>Not only can you build multi-page forms, but you can also create conditional wizards where the pages are determined by 
+conditional logic that is executed as the person is filling out the form.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"wizard"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">icons</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">fontawesome</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">wizard</span><span class="dl">'</span><span class="p">),</span> <span class="dl">'</span><span class="s1">https://examples.form.io/conditionalwizard</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>This wizard will render conditionally based on the data input from the first page.</p>
+
+<h3>Result</h3>
+<p><label><input type="checkbox" id="showfull" /> Show full wizard</label></p>
+<div class="card card-body bg-light">
+  <div id="wizard"></div>
+  <script type="text/javascript">
+  Formio.createForm(document.getElementById('wizard'), 'https://examples.form.io/conditionalwizard').then(function(wizard) {
+    document.getElementById('showfull').addEventListener('click', function(event) {
+      var updatedWizardSchema = Object.assign({}, wizard.wizard, { full: event.target.checked });
+      wizard.setForm(updatedWizardSchema);
+    });
+  });
+  </script>
+</div>
+:ET

@@ -1,0 +1,48 @@
+I"s<div class="jumbotron">
+  <h2>JavaScript Powered Forms by <a href="https://form.io" target="_blank"><img height="25px;" style="display: inline;" alt="Form.io" src="https://help.form.io/assets/formio-logo.png" /></a></h2>
+  <p>This library is a plain JavaScript form renderer and SDK for Form.io. This allows you to render the JSON schema forms produced by Form.io and render those within your application using plain JavaScript, as well as provides an interface SDK to communicate to the Form.io API's. The benefits of this library include.</p>
+  <p>
+    <ul>
+      <li>Plain JavaScript implementation using ES6 and Modern practices (no jQuery, Angular, React, or any other framework dependency)</li>
+      <li>Renders a JSON schema as a webform and hooks up that form to the Form.io API's</li>
+      <li>Nested components, layouts, Date/Time, Select, Input Masks, and many more included features</li>
+      <li>Full JavaScript API SDK library on top of Form.io</li>
+    </ul>
+  </p>
+</div>
+
+<h3 id="simple-example">Simple Example</h3>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.css"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+      <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">Formio</span><span class="p">.</span><span class="nx">icons</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">fontawesome</span><span class="dl">'</span><span class="p">;</span>
+        <span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio</span><span class="dl">'</span><span class="p">),</span> <span class="dl">'</span><span class="s1">https://examples.form.io/example</span><span class="dl">'</span><span class="p">);</span>
+      <span class="p">};</span>
+    <span class="nt">&lt;/script&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"formio"</span><span class="nt">&gt;&lt;/div&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h3 id="result">Result</h3>
+<div class="card card-body bg-light">
+<div id="formio"></div>
+<script type="text/javascript">
+  window.onload = function() {
+    Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
+  };
+</script>
+</div>
+
+<h3 id="jsfiddle">JSFiddle</h3>
+<p>To play around with this renderer, we recommend using JSFiddle. Here is an example you can fork and use as a sandbox.
+<script async="" src="//jsfiddle.net/travistidwell/v38du9y1/3/embed/"></script></p>
+:ET

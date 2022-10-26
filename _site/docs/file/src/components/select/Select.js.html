@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/components/select/Select.js | formiojs</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="JavaScript powered Forms with JSON Form Builder"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="JavaScript powered Forms with JSON Form Builder"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#builders">builders</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/builders/Builders.js~Builders.html">Builders</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-componentmodal">components/_classes/componentModal</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/componentModal/ComponentModal.js~ComponentModal.html">ComponentModal</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-input">components/_classes/input</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/input/Input.js~Input.html">Input</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Checkbox">Checkbox</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Columns.js~ColumnsComponent.html">ColumnsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Columns">Columns</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-container">components/container</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Container">Container</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/content/Content.js~ContentComponent.html">ContentComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html">DataGridComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datamap">components/datamap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datamap/DataMap.js~DataMapComponent.html">DataMapComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataMap">DataMap</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Fieldset">Fieldset</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-File">File</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden">components/hidden</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PhoneNumber">PhoneNumber</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-radio">components/radio</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/radio/Radio.js~RadioComponent.html">RadioComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Radio">Radio</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-recaptcha">components/recaptcha</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html">ReCaptchaComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelect">multiSelect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-multiSelectOptions">multiSelectOptions</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextArea">TextArea</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textfield">components/textfield</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html">TextFieldComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tree">components/tree</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Node.js~Node.html">Node</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tree/Tree.js~TreeComponent.html">TreeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tree">Tree</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Unknown">Unknown</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-url">components/url</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/url/Url.js~UrlComponent.html">UrlComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Url">Url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-edittable">contrib/edittable</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/edittable/EditTable.js~EditTableComponent.html">EditTableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditTable">EditTable</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-location">contrib/location</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/location/Location.js~LocationComponent.html">LocationComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Location">Location</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-modaledit">contrib/modaledit</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/modaledit/ModalEdit.js~ModalEditComponent.html">ModalEditComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ModalEdit">ModalEdit</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/CustomAddressProvider.js~CustomAddressProvider.html">CustomAddressProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/NominatimAddressProvider.js~NominatimAddressProvider.html">NominatimAddressProvider</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-azure">azure</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates-bootstrap">templates/bootstrap</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-iconClass">iconClass</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html">ChoicesWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkInvalidDate">checkInvalidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-lessOrGreater">lessOrGreater</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-applyFormChanges">applyFormChanges</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponent">findComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-generateFormChange">generateFormChange</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getStrings">getStrings</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getValue">getValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasCondition">hasCondition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-removeComponent">removeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-searchComponents">searchComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-KEY_CODES">KEY_CODES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Evaluator">Evaluator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CALENDAR_ERROR_MESSAGES">CALENDAR_ERROR_MESSAGES</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#validator">validator</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Rules.js~Rules.html">Rules</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validator/Validator.js~ValidationChecker.html">ValidationChecker</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#widgets">widgets</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/widgets/InputWidget.js~InputWidget.html">InputWidget</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/components/select/Select.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import Formio from &apos;../../Formio&apos;;
+import Field from &apos;../_classes/field/Field&apos;;
+import Form from &apos;../../Form&apos;;
+import NativePromise from &apos;native-promise-only&apos;;
+import { getRandomComponentId, boolValue } from &apos;../../utils/utils&apos;;
+
+let Choices;
+if (typeof window !== &apos;undefined&apos;) {
+  Choices = require(&apos;../../utils/ChoicesWrapper&apos;).default;
+}
+
+export default class SelectComponent extends Field {
+  static schema(...extend) {
+    return Field.schema({
+      type: &apos;select&apos;,
+      label: &apos;Select&apos;,
+      key: &apos;select&apos;,
+      idPath: &apos;id&apos;,
+      data: {
+        values: [],
+        json: &apos;&apos;,
+        url: &apos;&apos;,
+        resource: &apos;&apos;,
+        custom: &apos;&apos;
+      },
+      clearOnRefresh: false,
+      limit: 100,
+      dataSrc: &apos;values&apos;,
+      valueProperty: &apos;&apos;,
+      lazyLoad: true,
+      filter: &apos;&apos;,
+      searchEnabled: true,
+      searchField: &apos;&apos;,
+      minSearch: 0,
+      readOnlyValue: false,
+      authenticate: false,
+      ignoreCache: false,
+      template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
+      selectFields: &apos;&apos;,
+      searchThreshold: 0.3,
+      uniqueOptions: false,
+      tableView: true,
+      fuseOptions: {
+        include: &apos;score&apos;,
+        threshold: 0.3,
+      },
+      customOptions: {},
+      useExactSearch: false,
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: &apos;Select&apos;,
+      group: &apos;basic&apos;,
+      icon: &apos;th-list&apos;,
+      weight: 70,
+      documentation: &apos;/userguide/#select&apos;,
+      schema: SelectComponent.schema()
+    };
+  }
+
+  init() {
+    super.init();
+    this.validators = this.validators.concat([&apos;select&apos;, &apos;onlyAvailableItems&apos;]);
+
+    // Trigger an update.
+    let updateArgs = [];
+    const triggerUpdate = _.debounce((...args) =&gt; {
+      updateArgs = [];
+      return this.updateItems.apply(this, args);
+    }, 100);
+    this.triggerUpdate = (...args) =&gt; {
+      if (args.length) {
+        updateArgs = args;
+      }
+      return triggerUpdate(...updateArgs);
+    };
+
+    // Keep track of the select options.
+    this.selectOptions = [];
+
+    if (this.isInfiniteScrollProvided) {
+      this.isFromSearch = false;
+
+      this.searchServerCount = null;
+      this.defaultServerCount = null;
+
+      this.isScrollLoading = false;
+
+      this.searchDownloadedResources = [];
+      this.defaultDownloadedResources = [];
+    }
+
+    // If this component has been activated.
+    this.activated = false;
+
+    // Determine when the items have been loaded.
+    this.itemsLoaded = new NativePromise((resolve) =&gt; {
+      this.itemsLoadedResolve = resolve;
+    });
+  }
+
+  get dataReady() {
+    // If the root submission has been set, and we are still not attached, then assume
+    // that our data is ready.
+    if (
+      this.root &amp;&amp;
+      this.root.submissionSet &amp;&amp;
+      !this.attached
+    ) {
+      return NativePromise.resolve();
+    }
+    return this.itemsLoaded;
+  }
+
+  get defaultSchema() {
+    return SelectComponent.schema();
+  }
+
+  get emptyValue() {
+    if (this.component.multiple) {
+      return [];
+    }
+    // if select has JSON data source type, we are defining if empty value would be an object or a string by checking JSON&apos;s first item
+    if (this.component.dataSrc === &apos;json&apos; &amp;&amp; this.component.data.json) {
+      const firstItem = this.component.data.json[0];
+      let firstValue;
+      if (this.valueProperty) {
+        firstValue = _.get(firstItem, this.valueProperty);
+      }
+      else {
+        firstValue = firstItem;
+      }
+      if (firstValue &amp;&amp; typeof firstValue === &apos;string&apos;) {
+        return &apos;&apos;;
+      }
+      else {
+        return {};
+      }
+    }
+    if (this.valueProperty) {
+      return &apos;&apos;;
+    }
+    return {};
+  }
+
+  get valueProperty() {
+    if (this.component.valueProperty) {
+      return this.component.valueProperty;
+    }
+    // Force values datasource to use values without actually setting it on the component settings.
+    if (this.component.dataSrc === &apos;values&apos;) {
+      return &apos;value&apos;;
+    }
+
+    return &apos;&apos;;
+  }
+
+  get inputInfo() {
+    const info = super.elementInfo();
+    info.type = &apos;select&apos;;
+    info.changeEvent = &apos;change&apos;;
+    return info;
+  }
+
+  get isSelectResource() {
+    return this.component.dataSrc === &apos;resource&apos;;
+  }
+
+  get isSelectURL() {
+    return this.component.dataSrc === &apos;url&apos;;
+  }
+
+  get isInfiniteScrollProvided() {
+    return this.isSelectResource || this.isSelectURL;
+  }
+
+  get shouldDisabled() {
+    return super.shouldDisabled || this.parentDisabled;
+  }
+
+  isEntireObjectDisplay() {
+    return this.component.dataSrc === &apos;resource&apos; &amp;&amp; this.valueProperty === &apos;data&apos;;
+  }
+
+  itemTemplate(data) {
+    if (_.isEmpty(data)) {
+      return &apos;&apos;;
+    }
+
+    // If they wish to show the value in read only mode, then just return the itemValue here.
+    if (this.options.readOnly &amp;&amp; this.component.readOnlyValue) {
+      return this.itemValue(data);
+    }
+
+    // Perform a fast interpretation if we should not use the template.
+    if (data &amp;&amp; !this.component.template) {
+      const itemLabel = data.label || data;
+      return (typeof itemLabel === &apos;string&apos;) ? this.t(itemLabel, { _userInput: true }) : itemLabel;
+    }
+    if (typeof data === &apos;string&apos;) {
+      return this.t(data, { _userInput: true });
+    }
+
+    if (data.data) {
+      // checking additional fields in the template for the selected Entire Object option
+      const hasNestedFields = /item\.data\.\w*/g.test(this.component.template);
+      data.data = this.isEntireObjectDisplay() &amp;&amp; _.isObject(data.data) &amp;&amp; !hasNestedFields
+        ? JSON.stringify(data.data)
+        : data.data;
+    }
+    const template = this.sanitize(this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label);
+    if (template) {
+      const label = template.replace(/&lt;\/?[^&gt;]+(&gt;|$)/g, &apos;&apos;);
+      if (!label || !this.t(label, { _userInput: true })) return;
+      return template.replace(label, this.t(label, { _userInput: true }));
+    }
+    else {
+      return JSON.stringify(data);
+    }
+  }
+
+  /**
+   * Adds an option to the select dropdown.
+   *
+   * @param value
+   * @param label
+   */
+  addOption(value, label, attrs = {}, id = getRandomComponentId()) {
+    if (_.isNil(label)) return;
+    const idPath = this.component.idPath
+      ? this.component.idPath.split(&apos;.&apos;).reduceRight((obj, key) =&gt; ({ [key]: obj }), id)
+      : {};
+    const option = {
+      value: this.getOptionValue(value),
+      label,
+      ...idPath
+    };
+
+    const skipOption = this.component.uniqueOptions
+      ? !!this.selectOptions.find((selectOption) =&gt; _.isEqual(selectOption.value, option.value))
+      : false;
+
+    if (skipOption) {
+      return;
+    }
+
+    if (value) {
+      this.selectOptions.push(option);
+    }
+
+    if (this.refs.selectContainer &amp;&amp; (this.component.widget === &apos;html5&apos;)) {
+      // Add element to option so we can reference it later.
+      const div = document.createElement(&apos;div&apos;);
+      div.innerHTML = this.sanitize(this.renderTemplate(&apos;selectOption&apos;, {
+        selected: _.isEqual(this.dataValue, option.value),
+        option,
+        attrs,
+        id,
+        useId: (this.valueProperty === &apos;&apos;) &amp;&amp; _.isObject(value) &amp;&amp; id,
+      })).trim();
+
+      option.element = div.firstChild;
+      this.refs.selectContainer.appendChild(option.element);
+    }
+  }
+
+  addValueOptions(items) {
+    items = items || [];
+    let added = false;
+    if (!this.selectOptions.length) {
+      // Add the currently selected choices if they don&apos;t already exist.
+      const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
+      added = this.addCurrentChoices(currentChoices, items);
+      if (!added &amp;&amp; !this.component.multiple) {
+        this.addPlaceholder();
+      }
+    }
+    return added;
+  }
+
+  disableInfiniteScroll() {
+    if (!this.downloadedResources) {
+      return;
+    }
+
+    this.downloadedResources.serverCount = this.downloadedResources.length;
+    this.serverCount = this.downloadedResources.length;
+  }
+
+  /* eslint-disable max-statements */
+  setItems(items, fromSearch) {
+    // If the items is a string, then parse as JSON.
+    if (typeof items == &apos;string&apos;) {
+      try {
+        items = JSON.parse(items);
+      }
+      catch (err) {
+        console.warn(err.message);
+        items = [];
+      }
+    }
+
+    // Allow js processing (needed for form builder)
+    if (this.component.onSetItems &amp;&amp; typeof this.component.onSetItems === &apos;function&apos;) {
+      const newItems = this.component.onSetItems(this, items);
+      if (newItems) {
+        items = newItems;
+      }
+    }
+
+    if (!this.choices &amp;&amp; this.refs.selectContainer) {
+      if (this.loading) {
+        // this.removeChildFrom(this.refs.input[0], this.selectContainer);
+      }
+
+      this.empty(this.refs.selectContainer);
+    }
+
+    // If they provided select values, then we need to get them instead.
+    if (this.component.selectValues) {
+      items = _.get(items, this.component.selectValues, items) || [];
+    }
+
+    let areItemsEqual;
+
+    if (this.isInfiniteScrollProvided) {
+      areItemsEqual = this.isSelectURL ? _.isEqual(items, this.downloadedResources) : false;
+
+      const areItemsEnded = this.component.limit &gt; items.length;
+      const areItemsDownloaded = areItemsEqual
+        &amp;&amp; this.downloadedResources
+        &amp;&amp; this.downloadedResources.length === items.length;
+
+      if (areItemsEnded) {
+        this.disableInfiniteScroll();
+      }
+      else if (areItemsDownloaded) {
+        this.selectOptions = [];
+      }
+      else {
+        this.serverCount = items.serverCount;
+      }
+    }
+
+    if (this.isScrollLoading &amp;&amp; items) {
+      if (!areItemsEqual) {
+        this.downloadedResources = this.downloadedResources
+          ? this.downloadedResources.concat(items)
+          : items;
+      }
+
+      this.downloadedResources.serverCount = items.serverCount || this.downloadedResources.serverCount;
+    }
+    else {
+      this.downloadedResources = items || [];
+      this.selectOptions = [];
+      // If there is new select option with same id as already selected, set the new one
+      if (!_.isEmpty(this.dataValue) &amp;&amp; this.component.idPath) {
+        const selectedOptionId = _.get(this.dataValue, this.component.idPath, null);
+        const newOptionWithSameId = !_.isNil(selectedOptionId) &amp;&amp; items.find(item =&gt; {
+          const itemId = _.get(item, this.component.idPath);
+
+          return itemId === selectedOptionId;
+        });
+
+        if (newOptionWithSameId) {
+          this.setValue(newOptionWithSameId);
+        }
+      }
+    }
+
+    // Add the value options.
+    if (!fromSearch) {
+      this.addValueOptions(items);
+    }
+
+    if (this.component.widget === &apos;html5&apos; &amp;&amp; !this.component.placeholder) {
+      this.addOption(null, &apos;&apos;);
+    }
+
+    // Iterate through each of the items.
+    _.each(items, (item, index) =&gt; {
+      // preventing references of the components inside the form to the parent form when building forms
+      if (this.root &amp;&amp; this.root.options.editForm &amp;&amp; this.root.options.editForm._id &amp;&amp; this.root.options.editForm._id === item._id) return;
+      this.addOption(this.itemValue(item), this.itemTemplate(item), {}, _.get(item, this.component.idPath, String(index)));
+    });
+
+    if (this.choices) {
+      this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
+    }
+    else if (this.loading) {
+      // Re-attach select input.
+      // this.appendTo(this.refs.input[0], this.selectContainer);
+    }
+
+    // We are no longer loading.
+    this.isScrollLoading = false;
+    this.loading = false;
+
+    // If a value is provided, then select it.
+    if (this.dataValue) {
+      this.setValue(this.dataValue, {
+        noUpdateEvent: true
+      });
+    }
+    else {
+      // If a default value is provided then select it.
+      const defaultValue = this.multiple ? this.defaultValue || [] : this.defaultValue;
+      if (defaultValue) {
+        this.setValue(defaultValue);
+      }
+    }
+
+    // Say we are done loading the items.
+    this.itemsLoadedResolve();
+  }
+  /* eslint-enable max-statements */
+
+  loadItems(url, search, headers, options, method, body) {
+    options = options || {};
+
+    // See if they have not met the minimum search requirements.
+    const minSearch = parseInt(this.component.minSearch, 10);
+    if (
+      this.component.searchField &amp;&amp;
+      (minSearch &gt; 0) &amp;&amp;
+      (!search || (search.length &lt; minSearch))
+    ) {
+      // Set empty items.
+      return this.setItems([]);
+    }
+
+    // Ensure we have a method and remove any body if method is get
+    method = method || &apos;GET&apos;;
+    if (method.toUpperCase() === &apos;GET&apos;) {
+      body = null;
+    }
+
+    const limit = this.component.limit || 100;
+    const skip = this.isScrollLoading ? this.selectOptions.length : 0;
+    const query = (this.component.dataSrc === &apos;url&apos;) ? {} : {
+      limit,
+      skip,
+    };
+
+    // Allow for url interpolation.
+    url = this.interpolate(url, {
+      formioBase: Formio.getBaseUrl(),
+      search,
+      limit,
+      skip,
+      page: Math.abs(Math.floor(skip / limit))
+    });
+
+    // Add search capability.
+    if (this.component.searchField &amp;&amp; search) {
+      if (Array.isArray(search)) {
+        query[`${this.component.searchField}`] = search.join(&apos;,&apos;);
+      }
+      else {
+        query[`${this.component.searchField}`] = search;
+      }
+    }
+
+    // If they wish to return only some fields.
+    if (this.component.selectFields) {
+      query.select = this.component.selectFields;
+    }
+
+    // Add sort capability
+    if (this.component.sort) {
+      query.sort = this.component.sort;
+    }
+
+    if (!_.isEmpty(query)) {
+      // Add the query string.
+      url += (!url.includes(&apos;?&apos;) ? &apos;?&apos; : &apos;&amp;&apos;) + Formio.serialize(query, (item) =&gt; this.interpolate(item));
+    }
+
+    // Add filter capability
+    if (this.component.filter) {
+      url += (!url.includes(&apos;?&apos;) ? &apos;?&apos; : &apos;&amp;&apos;) + this.interpolate(this.component.filter);
+    }
+
+    // Set ignoreCache if it is
+    options.ignoreCache = this.component.ignoreCache;
+
+    // Make the request.
+    options.header = headers;
+    this.loading = true;
+
+    Formio.makeRequest(this.options.formio, &apos;select&apos;, url, method, body, options)
+      .then((response) =&gt; {
+        this.loading = false;
+        this.setItems(response, !!search);
+      })
+      .catch((err) =&gt; {
+        if (this.isInfiniteScrollProvided) {
+          this.setItems([]);
+          this.disableInfiniteScroll();
+        }
+
+        this.isScrollLoading = false;
+        this.loading = false;
+        this.itemsLoadedResolve();
+        this.emit(&apos;componentError&apos;, {
+          component: this.component,
+          message: err.toString(),
+        });
+        console.warn(`Unable to load resources for ${this.key}`);
+      });
+  }
+
+  /**
+   * Get the request headers for this select dropdown.
+   */
+  get requestHeaders() {
+    // Create the headers object.
+    const headers = new Formio.Headers();
+
+    // Add custom headers to the url.
+    if (this.component.data &amp;&amp; this.component.data.headers) {
+      try {
+        _.each(this.component.data.headers, (header) =&gt; {
+          if (header.key) {
+            headers.set(header.key, this.interpolate(header.value));
+          }
+        });
+      }
+      catch (err) {
+        console.warn(err.message);
+      }
+    }
+
+    return headers;
+  }
+
+  getCustomItems() {
+    return this.evaluate(this.component.data.custom, {
+      values: []
+    }, &apos;values&apos;);
+  }
+
+  updateCustomItems() {
+    this.setItems(this.getCustomItems() || []);
+  }
+
+  refresh(value, { instance }) {
+    if (this.component.clearOnRefresh &amp;&amp; (instance &amp;&amp; !instance.pristine)) {
+      this.setValue(this.emptyValue);
+    }
+
+    if (this.component.lazyLoad) {
+      this.activated = false;
+      this.loading = true;
+      this.setItems([]);
+      return;
+    }
+
+    this.updateItems(null, true);
+  }
+
+  get additionalResourcesAvailable() {
+    return _.isNil(this.serverCount) || (this.serverCount &gt; this.downloadedResources.length);
+  }
+
+  get serverCount() {
+    if (this.isFromSearch) {
+      return this.searchServerCount;
+    }
+
+    return this.defaultServerCount;
+  }
+
+  set serverCount(value) {
+    if (this.isFromSearch) {
+      this.searchServerCount = value;
+    }
+    else {
+      this.defaultServerCount = value;
+    }
+  }
+
+  get downloadedResources() {
+    if (this.isFromSearch) {
+      return this.searchDownloadedResources;
+    }
+
+    return this.defaultDownloadedResources;
+  }
+
+  set downloadedResources(value) {
+    if (this.isFromSearch) {
+      this.searchDownloadedResources = value;
+    }
+    else {
+      this.defaultDownloadedResources = value;
+    }
+  }
+
+  /* eslint-disable max-statements */
+  updateItems(searchInput, forceUpdate) {
+    this.itemsLoaded = new NativePromise((resolve) =&gt; {
+      this.itemsLoadedResolve = resolve;
+    });
+    if (!this.component.data) {
+      console.warn(`Select component ${this.key} does not have data configuration.`);
+      this.itemsLoadedResolve();
+      return;
+    }
+
+    // Only load the data if it is visible.
+    if (!this.checkConditions()) {
+      this.itemsLoadedResolve();
+      return;
+    }
+
+    switch (this.component.dataSrc) {
+      case &apos;values&apos;:
+        this.setItems(this.component.data.values);
+        break;
+      case &apos;json&apos;:
+        this.setItems(this.component.data.json);
+        break;
+      case &apos;custom&apos;:
+        this.updateCustomItems();
+        break;
+      case &apos;resource&apos;: {
+        // If there is no resource, or we are lazyLoading, wait until active.
+        if (!this.component.data.resource || (!forceUpdate &amp;&amp; !this.active)) {
+          return;
+        }
+
+        let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
+        resourceUrl += (`/${this.component.data.resource}/submission`);
+
+        if (forceUpdate || this.additionalResourcesAvailable || !this.serverCount) {
+          try {
+            this.loadItems(resourceUrl, searchInput, this.requestHeaders);
+          }
+          catch (err) {
+            console.warn(`Unable to load resources for ${this.key}`);
+          }
+        }
+        else {
+          this.setItems(this.downloadedResources);
+        }
+        break;
+      }
+      case &apos;url&apos;: {
+        if (!forceUpdate &amp;&amp; !this.active &amp;&amp; !this.calculatedValue) {
+          // If we are lazyLoading, wait until activated.
+          return;
+        }
+        let { url } = this.component.data;
+        let method;
+        let body;
+
+        if (url.startsWith(&apos;/&apos;)) {
+          // if URL starts with &apos;/project&apos;, we should use base URL to avoid issues with URL formed like &lt;base_url&gt;/&lt;project_name&gt;/project/&lt;project_id&gt;/...
+          const baseUrl = url.startsWith(&apos;/project&apos;) ? Formio.getBaseUrl() : Formio.getProjectUrl() || Formio.getBaseUrl();
+          url = baseUrl + url;
+        }
+
+        if (!this.component.data.method) {
+          method = &apos;GET&apos;;
+        }
+        else {
+          method = this.component.data.method;
+          if (method.toUpperCase() === &apos;POST&apos;) {
+            body = this.component.data.body;
+          }
+          else {
+            body = null;
+          }
+        }
+        const options = this.component.authenticate ? {} : { noToken: true };
+        this.loadItems(url, searchInput, this.requestHeaders, options, method, body);
+        break;
+      }
+      case &apos;indexeddb&apos;: {
+        if (typeof window === &apos;undefined&apos;) {
+          return;
+        }
+
+        if (!window.indexedDB) {
+          window.alert(&quot;Your browser doesn&apos;t support current version of indexedDB&quot;);
+        }
+
+        if (this.component.indexeddb &amp;&amp; this.component.indexeddb.database &amp;&amp; this.component.indexeddb.table) {
+          const request = window.indexedDB.open(this.component.indexeddb.database);
+
+          request.onupgradeneeded = (event) =&gt; {
+            if (this.component.customOptions) {
+              const db = event.target.result;
+              const objectStore = db.createObjectStore(this.component.indexeddb.table, { keyPath: &apos;myKey&apos;, autoIncrement: true });
+              objectStore.transaction.oncomplete = () =&gt; {
+                const transaction = db.transaction(this.component.indexeddb.table, &apos;readwrite&apos;);
+                this.component.customOptions.forEach((item) =&gt; {
+                  transaction.objectStore(this.component.indexeddb.table).put(item);
+                });
+              };
+            }
+          };
+
+          request.onerror = () =&gt; {
+            window.alert(request.errorCode);
+          };
+
+          request.onsuccess = (event) =&gt; {
+            const db = event.target.result;
+            const transaction = db.transaction(this.component.indexeddb.table, &apos;readwrite&apos;);
+            const objectStore = transaction.objectStore(this.component.indexeddb.table);
+            new NativePromise((resolve) =&gt; {
+              const responseItems = [];
+              objectStore.getAll().onsuccess = (event) =&gt; {
+                event.target.result.forEach((item) =&gt; {
+                  responseItems.push(item);
+                });
+                resolve(responseItems);
+              };
+            }).then((items) =&gt; {
+              if (!_.isEmpty(this.component.indexeddb.filter)) {
+                items = _.filter(items, this.component.indexeddb.filter);
+              }
+              this.setItems(items);
+            });
+          };
+        }
+      }
+    }
+  }
+  /* eslint-enable max-statements */
+
+  addPlaceholder() {
+    if (!this.component.placeholder) {
+      return;
+    }
+
+    this.addOption(&apos;&apos;, this.component.placeholder, { placeholder: true });
+  }
+
+  /**
+   * Activate this select control.
+   */
+  activate() {
+    if (this.loading || !this.active) {
+      this.setLoadingItem();
+    }
+    if (this.active) {
+      return;
+    }
+    this.activated = true;
+    this.triggerUpdate();
+  }
+
+  setLoadingItem(addToCurrentList = false) {
+    if (this.choices) {
+      if (addToCurrentList) {
+        this.choices.setChoices([{
+          value: `${this.id}-loading`,
+          label: &apos;Loading...&apos;,
+          disabled: true,
+        }], &apos;value&apos;, &apos;label&apos;);
+      }
+      else {
+        this.choices.setChoices([{
+          value: &apos;&apos;,
+          label: `&lt;i class=&quot;${this.iconClass(&apos;refresh&apos;)}&quot; style=&quot;font-size:1.3em;&quot;&gt;&lt;/i&gt;`,
+          disabled: true,
+        }], &apos;value&apos;, &apos;label&apos;, true);
+      }
+    }
+    else if (this.component.dataSrc === &apos;url&apos; || this.component.dataSrc === &apos;resource&apos;) {
+      this.addOption(&apos;&apos;, this.t(&apos;loading...&apos;));
+    }
+  }
+
+  get active() {
+    return !this.component.lazyLoad || this.activated || this.options.readOnly;
+  }
+
+  render() {
+    const info = this.inputInfo;
+    info.attr = info.attr || {};
+    info.multiple = this.component.multiple;
+    return super.render(this.wrapElement(this.renderTemplate(&apos;select&apos;, {
+      input: info,
+      selectOptions: &apos;&apos;,
+      index: null,
+    })));
+  }
+
+  wrapElement(element) {
+    return this.component.addResource &amp;&amp; !this.options.readOnly
+      ? (
+        this.renderTemplate(&apos;resourceAdd&apos;, {
+          element
+        })
+      )
+      : element;
+  }
+
+  choicesOptions() {
+    const useSearch = this.component.hasOwnProperty(&apos;searchEnabled&apos;) ? this.component.searchEnabled : true;
+    const placeholderValue = this.t(this.component.placeholder, { _userInput: true });
+    let customOptions = this.component.customOptions || {};
+    if (typeof customOptions == &apos;string&apos;) {
+      try {
+        customOptions = JSON.parse(customOptions);
+      }
+      catch (err) {
+        console.warn(err.message);
+        customOptions = {};
+      }
+    }
+
+    return {
+      removeItemButton: this.component.disabled ? false : _.get(this.component, &apos;removeItemButton&apos;, true),
+      itemSelectText: &apos;&apos;,
+      classNames: {
+        containerOuter: &apos;choices form-group formio-choices&apos;,
+        containerInner: this.transform(&apos;class&apos;, &apos;form-control ui fluid selection dropdown&apos;)
+      },
+      addItemText: false,
+      placeholder: !!this.component.placeholder,
+      placeholderValue: placeholderValue,
+      noResultsText: this.t(&apos;No results found&apos;),
+      noChoicesText: this.t(&apos;No choices to choose from&apos;),
+      searchPlaceholderValue: this.t(&apos;Type to search&apos;),
+      shouldSort: false,
+      position: (this.component.dropdown || &apos;auto&apos;),
+      searchEnabled: useSearch,
+      searchChoices: !this.component.searchField,
+      searchFields: _.get(this, &apos;component.searchFields&apos;, [&apos;label&apos;]),
+      fuseOptions: this.component.useExactSearch
+        ? {}
+        : Object.assign(
+        {},
+        _.get(this, &apos;component.fuseOptions&apos;, {}),
+        {
+          include: &apos;score&apos;,
+          threshold: _.get(this, &apos;component.searchThreshold&apos;, 0.3),
+        }
+      ),
+      valueComparer: _.isEqual,
+      resetScrollPosition: false,
+      ...customOptions,
+    };
+  }
+
+  /* eslint-disable max-statements */
+  attach(element) {
+    const superAttach = super.attach(element);
+    this.loadRefs(element, {
+      selectContainer: &apos;single&apos;,
+      addResource: &apos;single&apos;,
+      autocompleteInput: &apos;single&apos;
+    });
+    //enable autocomplete for select
+    const autocompleteInput = this.refs.autocompleteInput;
+    if (autocompleteInput) {
+      this.addEventListener(autocompleteInput, &apos;change&apos;, (event) =&gt; {
+        this.setValue(event.target.value);
+      });
+    }
+    const input = this.refs.selectContainer;
+    if (!input) {
+      return;
+    }
+    this.addEventListener(input, this.inputInfo.changeEvent, () =&gt; this.updateValue(null, {
+      modified: true
+    }));
+    this.attachRefreshOnBlur();
+
+    if (this.component.widget === &apos;html5&apos;) {
+      this.triggerUpdate(null, true);
+
+      if (this.visible) {
+        this.setItems(this.selectOptions || []);
+      }
+
+      this.focusableElement = input;
+      this.addEventListener(input, &apos;focus&apos;, () =&gt; this.update());
+      this.addEventListener(input, &apos;keydown&apos;, (event) =&gt; {
+        const { key } = event;
+
+        if ([&apos;Backspace&apos;, &apos;Delete&apos;].includes(key)) {
+          this.setValue(this.emptyValue);
+        }
+      });
+
+      return;
+    }
+
+    const tabIndex = input.tabIndex;
+    this.addPlaceholder();
+    input.setAttribute(&apos;dir&apos;, this.i18next.dir());
+    if (this.choices) {
+      this.choices.destroy();
+    }
+
+    const choicesOptions = this.choicesOptions();
+
+    if (Choices) {
+      this.choices = new Choices(input, choicesOptions);
+
+      if (this.selectOptions &amp;&amp; this.selectOptions.length) {
+        this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
+      }
+
+      if (this.component.multiple) {
+        this.focusableElement = this.choices.input.element;
+      }
+      else {
+        this.focusableElement = this.choices.containerInner.element;
+        this.choices.containerOuter.element.setAttribute(&apos;tabIndex&apos;, &apos;-1&apos;);
+        if (choicesOptions.searchEnabled) {
+          this.addEventListener(this.choices.containerOuter.element, &apos;focus&apos;, () =&gt; this.focusableElement.focus());
+        }
+      }
+
+      if (this.isInfiniteScrollProvided) {
+        this.scrollList = this.choices.choiceList.element;
+        this.addEventListener(this.scrollList, &apos;scroll&apos;, () =&gt; this.onScroll());
+      }
+    }
+
+    this.focusableElement.setAttribute(&apos;tabIndex&apos;, tabIndex);
+
+    // If a search field is provided, then add an event listener to update items on search.
+    if (this.component.searchField) {
+      // Make sure to clear the search when no value is provided.
+      if (this.choices &amp;&amp; this.choices.input &amp;&amp; this.choices.input.element) {
+        this.addEventListener(this.choices.input.element, &apos;input&apos;, (event) =&gt; {
+          this.isFromSearch = !!event.target.value;
+
+          if (!event.target.value) {
+            this.triggerUpdate();
+          }
+          else {
+            this.serverCount = null;
+            this.downloadedResources = [];
+          }
+        });
+      }
+
+      this.addEventListener(input, &apos;choice&apos;, () =&gt; {
+        if (this.component.multiple &amp;&amp; this.component.dataSrc === &apos;resource&apos; &amp;&amp; this.isFromSearch) {
+          this.triggerUpdate();
+        }
+        this.isFromSearch = false;
+      });
+      this.addEventListener(input, &apos;search&apos;, (event) =&gt; this.triggerUpdate(event.detail.value));
+      this.addEventListener(input, &apos;stopSearch&apos;, () =&gt; this.triggerUpdate());
+      this.addEventListener(input, &apos;hideDropdown&apos;, () =&gt; {
+        if (this.choices &amp;&amp; this.choices.input &amp;&amp; this.choices.input.element) {
+          this.choices.input.element.value = &apos;&apos;;
+        }
+
+        this.updateItems(null, true);
+      });
+    }
+
+    this.addEventListener(input, &apos;showDropdown&apos;, () =&gt; this.update());
+
+    if (this.choices &amp;&amp; choicesOptions.placeholderValue &amp;&amp; this.choices._isSelectOneElement) {
+      this.addPlaceholderItem(choicesOptions.placeholderValue);
+
+      this.addEventListener(input, &apos;removeItem&apos;, () =&gt; {
+        this.addPlaceholderItem(choicesOptions.placeholderValue);
+      });
+    }
+
+    // Add value options.
+    this.addValueOptions();
+    this.setChoicesValue(this.dataValue);
+
+    if (this.isSelectResource &amp;&amp; this.refs.addResource) {
+      this.addEventListener(this.refs.addResource, &apos;click&apos;, (event) =&gt; {
+        event.preventDefault();
+
+        const formioForm = this.ce(&apos;div&apos;);
+        const dialog = this.createModal(formioForm);
+
+        const projectUrl = _.get(this.root, &apos;formio.projectUrl&apos;, Formio.getBaseUrl());
+        const formUrl = `${projectUrl}/form/${this.component.data.resource}`;
+        new Form(formioForm, formUrl, {}).ready
+          .then((form) =&gt; {
+            form.on(&apos;submit&apos;, (submission) =&gt; {
+              // If valueProperty is set, replace the submission with the corresponding value
+              let value = this.valueProperty ? _.get(submission, this.valueProperty) : submission;
+
+              if (this.component.multiple) {
+                value = [...this.dataValue, value];
+              }
+              this.setValue(value);
+              this.triggerUpdate();
+              dialog.close();
+            });
+          });
+      });
+    }
+
+    // Force the disabled state with getters and setters.
+    this.disabled = this.shouldDisabled;
+    this.triggerUpdate();
+    return superAttach;
+  }
+
+  get isLoadingAvailable() {
+    return !this.isScrollLoading &amp;&amp; this.additionalResourcesAvailable;
+  }
+
+  onScroll() {
+    if (this.isLoadingAvailable) {
+      this.isScrollLoading = true;
+      this.setLoadingItem(true);
+      this.triggerUpdate(this.choices.input.element.value);
+    }
+  }
+
+  attachRefreshOnBlur() {
+    if (this.component.refreshOnBlur) {
+      this.on(&apos;blur&apos;, (instance) =&gt; {
+        this.checkRefreshOn([{ instance, value: instance.dataValue }], { fromBlur: true });
+      });
+    }
+  }
+
+  addPlaceholderItem(placeholderValue) {
+    const items = this.choices._store.activeItems;
+    if (!items.length) {
+      this.choices._addItem({
+        value: placeholderValue,
+        label: placeholderValue,
+        choiceId: 0,
+        groupId: -1,
+        customProperties: null,
+        placeholder: true,
+        keyCode: null
+      });
+    }
+  }
+
+  /* eslint-enable max-statements */
+
+  update() {
+    if (this.component.dataSrc === &apos;custom&apos;) {
+      this.updateCustomItems();
+    }
+
+    // Activate the control.
+    this.activate();
+  }
+
+  set disabled(disabled) {
+    super.disabled = disabled;
+    if (!this.choices) {
+      return;
+    }
+    if (disabled) {
+      this.setDisabled(this.choices.containerInner.element, true);
+      this.focusableElement.removeAttribute(&apos;tabIndex&apos;);
+      this.choices.disable();
+    }
+    else {
+      this.setDisabled(this.choices.containerInner.element, false);
+      this.focusableElement.setAttribute(&apos;tabIndex&apos;, this.component.tabindex || 0);
+      this.choices.enable();
+    }
+  }
+
+  get disabled() {
+    return super.disabled;
+  }
+
+  set visible(value) {
+    // If we go from hidden to visible, trigger a refresh.
+    if (value &amp;&amp; (!this._visible !== !value)) {
+      this.triggerUpdate();
+    }
+    super.visible = value;
+  }
+
+  get visible() {
+    return super.visible;
+  }
+
+  /**
+   * @param {*} value
+   * @param {Array} items
+   */
+  addCurrentChoices(values, items, keyValue) {
+    if (!values) {
+      return false;
+    }
+    const notFoundValuesToAdd = [];
+    const added = values.reduce((defaultAdded, value) =&gt; {
+      if (!value || _.isEmpty(value)) {
+        return defaultAdded;
+      }
+      let found = false;
+
+      // Make sure that `items` and `this.selectOptions` points
+      // to the same reference. Because `this.selectOptions` is
+      // internal property and all items are populated by
+      // `this.addOption` method, we assume that items has
+      // &apos;label&apos; and &apos;value&apos; properties. This assumption allows
+      // us to read correct value from the item.
+      const isSelectOptions = items === this.selectOptions;
+      if (items &amp;&amp; items.length) {
+        _.each(items, (choice) =&gt; {
+          if (choice._id &amp;&amp; value._id &amp;&amp; (choice._id === value._id)) {
+            found = true;
+            return false;
+          }
+          const itemValue = keyValue ? choice.value : this.itemValue(choice, isSelectOptions);
+          found |= _.isEqual(itemValue, value);
+          return found ? false : true;
+        });
+      }
+
+      // Add the default option if no item is found.
+      if (!found) {
+        notFoundValuesToAdd.push({
+          value: this.itemValue(value),
+          label: this.itemTemplate(value)
+        });
+        return true;
+      }
+      return found || defaultAdded;
+    }, false);
+
+    if (notFoundValuesToAdd.length) {
+      if (this.choices) {
+        this.choices.setChoices(notFoundValuesToAdd, &apos;value&apos;, &apos;label&apos;);
+      }
+      notFoundValuesToAdd.map(notFoundValue =&gt; {
+        this.addOption(notFoundValue.value, notFoundValue.label);
+      });
+    }
+    return added;
+  }
+
+  getValueAsString(data) {
+    return (this.component.multiple &amp;&amp; Array.isArray(data))
+      ? data.map(this.asString.bind(this)).join(&apos;, &apos;)
+      : this.asString(data);
+  }
+
+  getValue() {
+    // If the widget isn&apos;t active.
+    if (
+      this.viewOnly || this.loading
+      || (!this.component.lazyLoad &amp;&amp; !this.selectOptions.length)
+      || !this.element
+    ) {
+      return this.dataValue;
+    }
+
+    let value = this.emptyValue;
+    if (this.choices) {
+      value = this.choices.getValue(true);
+
+      // Make sure we don&apos;t get the placeholder
+      if (
+        !this.component.multiple &amp;&amp;
+        this.component.placeholder &amp;&amp;
+        (value === this.t(this.component.placeholder, { _userInput: true }))
+      ) {
+        value = this.emptyValue;
+      }
+    }
+    else if (this.refs.selectContainer) {
+      value = this.refs.selectContainer.value;
+
+      if (this.valueProperty === &apos;&apos;) {
+        if (value === &apos;&apos;) {
+          return {};
+        }
+
+        const option = this.selectOptions[value];
+        if (option &amp;&amp; _.isObject(option.value)) {
+          value = option.value;
+        }
+      }
+    }
+    else {
+      value = this.dataValue;
+    }
+    // Choices will return undefined if nothing is selected. We really want &apos;&apos; to be empty.
+    if (value === undefined || value === null) {
+      value = &apos;&apos;;
+    }
+    return value;
+  }
+
+  redraw() {
+    const done = super.redraw();
+    this.triggerUpdate();
+    return done;
+  }
+
+  normalizeSingleValue(value) {
+    if (_.isNil(value)) {
+      return;
+    }
+    //check if value equals to default emptyValue
+    if (_.isObject(value) &amp;&amp; Object.keys(value).length === 0) {
+      return value;
+    }
+    const displayEntireObject = this.isEntireObjectDisplay();
+    const dataType = this.component.dataType || &apos;auto&apos;;
+    const normalize = {
+      value,
+
+      number() {
+        const numberValue = Number(this.value);
+        const isEquivalent = value.toString() === numberValue.toString();
+
+        if (!Number.isNaN(numberValue) &amp;&amp; Number.isFinite(numberValue) &amp;&amp; value !== &apos;&apos; &amp;&amp; isEquivalent) {
+          this.value = numberValue;
+        }
+
+        return this;
+      },
+
+      boolean() {
+        if (
+          _.isString(this.value)
+          &amp;&amp; (this.value.toLowerCase() === &apos;true&apos;
+            || this.value.toLowerCase() === &apos;false&apos;)
+        ) {
+          this.value = (this.value.toLowerCase() === &apos;true&apos;);
+        }
+
+        return this;
+      },
+
+      string() {
+        this.value = String(this.value);
+        return this;
+      },
+
+      object() {
+        if (_.isObject(this.value) &amp;&amp; displayEntireObject) {
+          this.value = JSON.stringify(this.value);
+        }
+
+        return this;
+      },
+
+      auto() {
+        if (_.isObject(this.value)) {
+          this.value = this.object().value;
+        }
+        else {
+          this.value = this.string().number().boolean().value;
+        }
+
+        return this;
+      }
+    };
+
+    try {
+      return normalize[dataType]().value;
+    }
+    catch (err) {
+      console.warn(&apos;Failed to normalize value&apos;, err);
+      return value;
+    }
+  }
+
+  /**
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
+   */
+  normalizeValue(value) {
+    if (this.component.multiple &amp;&amp; Array.isArray(value)) {
+      return value.map((singleValue) =&gt; this.normalizeSingleValue(singleValue));
+    }
+
+    return super.normalizeValue(this.normalizeSingleValue(value));
+  }
+
+  setValue(value, flags = {}) {
+    const previousValue = this.dataValue;
+    const changed = this.updateValue(value, flags);
+    value = this.dataValue;
+    const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
+    const hasValue = Array.isArray(value) ? value.length : value;
+
+    // Undo typing when searching to set the value.
+    if (this.component.multiple &amp;&amp; Array.isArray(value)) {
+      value = value.map(value =&gt; {
+        if (typeof value === &apos;boolean&apos; || typeof value === &apos;number&apos;) {
+          return value.toString();
+        }
+        return value;
+      });
+    }
+    else {
+      if (typeof value === &apos;boolean&apos; || typeof value === &apos;number&apos;) {
+        value = value.toString();
+      }
+    }
+
+    // Do not set the value if we are loading... that will happen after it is done.
+    if (this.loading) {
+      return changed;
+    }
+
+    // Determine if we need to perform an initial lazyLoad api call if searchField is provided.
+    if (this.isInitApiCallNeeded(hasValue)) {
+      this.loading = true;
+      this.lazyLoadInit = true;
+      const searchProperty = this.component.searchField || this.component.valueProperty;
+      this.triggerUpdate(_.get(value.data || value, searchProperty, value), true);
+      return changed;
+    }
+
+    // Add the value options.
+    this.addValueOptions();
+    this.setChoicesValue(value, hasPreviousValue, flags);
+    return changed;
+  }
+
+  isInitApiCallNeeded(hasValue) {
+    return this.component.lazyLoad &amp;&amp;
+      !this.lazyLoadInit &amp;&amp;
+      !this.active &amp;&amp;
+      !this.selectOptions.length &amp;&amp;
+      hasValue &amp;&amp;
+      this.visible &amp;&amp; (this.component.searchField || this.component.valueProperty);
+  }
+
+  setChoicesValue(value, hasPreviousValue, flags = {}) {
+    const hasValue = Array.isArray(value) ? value.length : value;
+    hasPreviousValue = (hasPreviousValue === undefined) ? true : hasPreviousValue;
+    if (this.choices) {
+      // Now set the value.
+      if (hasValue) {
+        this.choices.removeActiveItems();
+        // Add the currently selected choices if they don&apos;t already exist.
+        const currentChoices = Array.isArray(value) ? value : [value];
+        if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
+          this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
+        }
+        this.choices.setChoiceByValue(value);
+      }
+      else if (hasPreviousValue || flags.resetValue) {
+        this.choices.removeActiveItems();
+      }
+    }
+    else {
+      if (hasValue) {
+        const values = Array.isArray(value) ? value : [value];
+        _.each(this.selectOptions, (selectOption) =&gt; {
+          _.each(values, (val) =&gt; {
+            if (_.isEqual(val, selectOption.value) &amp;&amp; selectOption.element) {
+              selectOption.element.selected = true;
+              selectOption.element.setAttribute(&apos;selected&apos;, &apos;selected&apos;);
+              return false;
+            }
+          });
+        });
+      }
+      else {
+        _.each(this.selectOptions, (selectOption) =&gt; {
+          if (selectOption.element) {
+            selectOption.element.selected = false;
+            selectOption.element.removeAttribute(&apos;selected&apos;);
+          }
+        });
+      }
+    }
+  }
+
+  validateValueAvailability(setting, value) {
+    if (!boolValue(setting) || !value) {
+      return true;
+    }
+
+    const values = this.getOptionsValues();
+
+    if (values) {
+      if (_.isObject(value)) {
+        const compareComplexValues = (optionValue) =&gt; {
+          const normalizedOptionValue = this.normalizeSingleValue(optionValue);
+
+          if (!_.isObject(normalizedOptionValue)) {
+            return false;
+          }
+
+          try {
+            return (JSON.stringify(normalizedOptionValue) === JSON.stringify(value));
+          }
+          catch (err) {
+            console.warn.error(&apos;Error while comparing items&apos;, err);
+            return false;
+          }
+        };
+
+        return values.findIndex((optionValue) =&gt; compareComplexValues(optionValue)) !== -1;
+      }
+
+      return values.findIndex((optionValue) =&gt; this.normalizeSingleValue(optionValue) === value) !== -1;
+    }
+    return false;
+  }
+
+  /**
+   * Performs required transformations on the initial value to use in selectOptions
+   * @param {*} value
+   */
+  getOptionValue(value) {
+    return _.isObject(value) &amp;&amp; this.isEntireObjectDisplay()
+    ? this.normalizeSingleValue(value)
+    : _.isObject(value)
+      ? value
+      : _.isNull(value)
+        ? this.emptyValue
+        : String(this.normalizeSingleValue(value));
+  }
+
+  /**
+   * If component has static values (values, json) or custom values, returns an array of them
+   * @returns {Array&lt;*&gt;|undefiened}
+   */
+  getOptionsValues() {
+    let rawItems = [];
+    switch (this.component.dataSrc) {
+      case &apos;values&apos;:
+        rawItems = this.component.data.values;
+        break;
+      case &apos;json&apos;:
+        rawItems = this.component.data.json;
+        break;
+      case &apos;custom&apos;:
+        rawItems = this.getCustomItems();
+        break;
+    }
+
+    if (typeof rawItems === &apos;string&apos;) {
+      try {
+        rawItems = JSON.parse(rawItems);
+      }
+      catch (err) {
+        console.warn(err.message);
+        rawItems = [];
+      }
+    }
+
+    if (!Array.isArray(rawItems)) {
+      return;
+    }
+
+    return rawItems.map((item) =&gt; this.getOptionValue(this.itemValue(item)));
+  }
+
+  /**
+   * Deletes the value of the component.
+   */
+  deleteValue() {
+    this.setValue(&apos;&apos;, {
+      noUpdateEvent: true
+    });
+    this.unset();
+  }
+
+  /**
+   * Check if a component is eligible for multiple validation
+   *
+   * @return {boolean}
+   */
+  validateMultiple() {
+    // Select component will contain one input when flagged as multiple.
+    return false;
+  }
+
+  /**
+   * Output this select dropdown as a string value.
+   * @return {*}
+   */
+
+  isBooleanOrNumber(value) {
+    return typeof value === &apos;number&apos; || typeof value === &apos;boolean&apos;;
+  }
+
+  getNormalizedValues() {
+    if (!this.component || !this.component.data || !this.component.data.values) {
+      return;
+    }
+    return this.component.data.values.map(
+      value =&gt; ({ label: value.label, value: String(this.normalizeSingleValue(value.value)) })
+    );
+  }
+
+  asString(value) {
+    value = value || this.getValue();
+    //need to convert values to strings to be able to compare values with available options that are strings
+    const convertToString = (data, valueProperty) =&gt; {
+      if (valueProperty) {
+        if (Array.isArray(data)) {
+          data.forEach((item) =&gt; item[valueProperty] = item[valueProperty].toString());
+        }
+        else {
+          data[valueProperty] = data[valueProperty].toString();
+        }
+        return data;
+      }
+
+      if (this.isBooleanOrNumber(data)) {
+        data = data.toString();
+      }
+
+      if (Array.isArray(data) &amp;&amp; data.some(item =&gt; this.isBooleanOrNumber(item))) {
+        data = data.map(item =&gt; {
+          if (this.isBooleanOrNumber(item)) {
+            item = item.toString();
+          }
+        });
+      }
+
+      return data;
+    };
+
+    value = convertToString(value);
+
+    if ([&apos;values&apos;, &apos;custom&apos;].includes(this.component.dataSrc)) {
+      const {
+        items,
+        valueProperty,
+      } = this.component.dataSrc === &apos;values&apos;
+          ? {
+            items: convertToString(this.getNormalizedValues(), &apos;value&apos;),
+            valueProperty: &apos;value&apos;,
+          }
+          : {
+            items: convertToString(this.getCustomItems(), this.valueProperty),
+            valueProperty: this.valueProperty,
+          };
+
+      value = (this.component.multiple &amp;&amp; Array.isArray(value))
+        ? _.filter(items, (item) =&gt; value.includes(item.value))
+        : valueProperty
+          ? _.find(items, [valueProperty, value])
+          : value;
+    }
+
+    if (_.isString(value)) {
+      return value;
+    }
+
+    if (Array.isArray(value)) {
+      const items = [];
+      value.forEach(item =&gt; items.push(this.itemTemplate(item)));
+      return items.length &gt; 0 ? items.join(&apos;&lt;br /&gt;&apos;) : &apos;-&apos;;
+    }
+
+    return !_.isNil(value)
+      ? this.itemTemplate(value)
+      : &apos;-&apos;;
+  }
+
+  detach() {
+    super.detach();
+    if (this.choices) {
+      this.choices.destroy();
+      this.choices = null;
+    }
+  }
+
+  focus() {
+    if (this.focusableElement) {
+      super.focus.call(this);
+      this.focusableElement.focus();
+    }
+  }
+
+  setErrorClasses(elements, dirty, hasError) {
+    super.setErrorClasses(elements, dirty, hasError);
+    if (this.choices) {
+      super.setErrorClasses([this.choices.containerInner.element], dirty, hasError);
+    }
+    else {
+      super.setErrorClasses([this.refs.selectContainer], dirty, hasError);
+    }
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

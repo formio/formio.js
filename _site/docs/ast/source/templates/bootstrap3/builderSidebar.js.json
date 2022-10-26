@@ -1,0 +1,457 @@
+{
+  "type": "File",
+  "start": 0,
+  "end": 2743,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 47,
+      "column": 0
+    }
+  },
+  "program": {
+    "type": "Program",
+    "start": 0,
+    "end": 2743,
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0
+      },
+      "end": {
+        "line": 47,
+        "column": 0
+      }
+    },
+    "sourceType": "module",
+    "body": [
+      {
+        "type": "ExportDefaultDeclaration",
+        "start": 0,
+        "end": 2742,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 46,
+            "column": 2
+          }
+        },
+        "declaration": {
+          "type": "ObjectExpression",
+          "start": 15,
+          "end": 2741,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 15
+            },
+            "end": {
+              "line": 46,
+              "column": 1
+            }
+          },
+          "properties": [
+            {
+              "type": "ObjectProperty",
+              "start": 19,
+              "end": 2738,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 2
+                },
+                "end": {
+                  "line": 45,
+                  "column": 1
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 19,
+                "end": 23,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 2,
+                    "column": 6
+                  },
+                  "identifierName": "form"
+                },
+                "name": "form"
+              },
+              "value": {
+                "type": "TemplateLiteral",
+                "start": 25,
+                "end": 2738,
+                "loc": {
+                  "start": {
+                    "line": 2,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 45,
+                    "column": 1
+                  }
+                },
+                "expressions": [],
+                "quasis": [
+                  {
+                    "type": "TemplateElement",
+                    "start": 26,
+                    "end": 2737,
+                    "loc": {
+                      "start": {
+                        "line": 2,
+                        "column": 9
+                      },
+                      "end": {
+                        "line": 45,
+                        "column": 0
+                      }
+                    },
+                    "value": {
+                      "raw": "\n<div id=\"builder-sidebar-{{id}}\" class=\"accordion panel-group\" ref=\"sidebar\">\n  {% groupOrder.forEach(function(groupKey, index) { %}\n  <div class=\"panel panel-default form-builder-panel\" ref=\"group-panel-{{groupKey}}\">\n    <div class=\"panel-heading form-builder-group-header\">\n      <h5 class=\"mb-0 panel-title\">\n        <button class=\"btn btn-block builder-group-button\" data-toggle=\"collapse\" data-parent=\"#builder-sidebar-{{id}}\" data-target=\"#group-{{groupKey}}\" ref=\"sidebar-anchor\">{{groups[groupKey].title}}</button>\n      </h5>\n    </div>\n    <div class=\"panel-collapse collapse {{groups[groupKey].default ? ' in' : ''}}\" data-default=\"{{groups[groupKey].default}}\" id=\"group-{{groupKey}}\" ref=\"sidebar-group\">\n      <div id=\"group-container-{{groupKey}}\" class=\"panel-body no-drop\" ref=\"sidebar-container\">\n        {% groups[groupKey].componentOrder.forEach(function(componentKey) { %}\n        <span data-type=\"{{componentKey}}\" class=\"btn btn-primary btn-xs btn-block formcomponent drag-copy\">\n          <i class=\"{{iconClass(groups[groupKey].components[componentKey].icon)}}\" style=\"margin-right: 5px;\"></i>\n          {{groups[groupKey].components[componentKey].title}}\n        </span>\n        {% }) %}\n      </div>\n      {% if (groups[groupKey].groups) { %}\n        {% for (var subgroupKey in groups[groupKey].groups) { %}\n          <div class=\"panel panel-default form-builder-panel\" ref=\"group-panel-{{subgroupKey}}\">\n            <div class=\"panel-heading form-builder-group-header\">\n              <h5 class=\"mb-0 panel-title\">\n                <button class=\"btn btn-block builder-group-button\" data-toggle=\"collapse\" data-parent=\"#builder-sidebar-{{id}}\" data-target=\"#group-{{subgroupKey}}\" ref=\"sidebar-anchor\">{{groups[groupKey].groups[subgroupKey].title}}</button>\n              </h5>\n            </div>\n            <div class=\"panel-collapse collapse {{groups[groupKey].groups[subgroupKey].default ? ' in' : ''}}\" id=\"group-{{subgroupKey}}\" ref=\"sidebar-group\">\n              <div id=\"group-container-{{subgroupKey}}\" class=\"panel-body no-drop\" ref=\"sidebar-container\">\n                {% groups[groupKey].groups[subgroupKey].componentOrder.forEach(function(componentKey) { %}\n                <span data-type=\"{{componentKey}}\" class=\"btn btn-primary btn-xs btn-block formcomponent drag-copy\">\n                  <i class=\"{{groups[groupKey].groups[subgroupKey].components[componentKey].icon}}\" style=\"margin-right: 5px;\"></i>\n                  {{groups[groupKey].groups[subgroupKey].components[componentKey].title}}\n                </span>\n                {% }) %}\n              </div>\n            </div>\n          </div>\n        {% } %}\n      {% } %}\n    </div>\n  </div>\n  {% }) %}\n</div>\n",
+                      "cooked": "\n<div id=\"builder-sidebar-{{id}}\" class=\"accordion panel-group\" ref=\"sidebar\">\n  {% groupOrder.forEach(function(groupKey, index) { %}\n  <div class=\"panel panel-default form-builder-panel\" ref=\"group-panel-{{groupKey}}\">\n    <div class=\"panel-heading form-builder-group-header\">\n      <h5 class=\"mb-0 panel-title\">\n        <button class=\"btn btn-block builder-group-button\" data-toggle=\"collapse\" data-parent=\"#builder-sidebar-{{id}}\" data-target=\"#group-{{groupKey}}\" ref=\"sidebar-anchor\">{{groups[groupKey].title}}</button>\n      </h5>\n    </div>\n    <div class=\"panel-collapse collapse {{groups[groupKey].default ? ' in' : ''}}\" data-default=\"{{groups[groupKey].default}}\" id=\"group-{{groupKey}}\" ref=\"sidebar-group\">\n      <div id=\"group-container-{{groupKey}}\" class=\"panel-body no-drop\" ref=\"sidebar-container\">\n        {% groups[groupKey].componentOrder.forEach(function(componentKey) { %}\n        <span data-type=\"{{componentKey}}\" class=\"btn btn-primary btn-xs btn-block formcomponent drag-copy\">\n          <i class=\"{{iconClass(groups[groupKey].components[componentKey].icon)}}\" style=\"margin-right: 5px;\"></i>\n          {{groups[groupKey].components[componentKey].title}}\n        </span>\n        {% }) %}\n      </div>\n      {% if (groups[groupKey].groups) { %}\n        {% for (var subgroupKey in groups[groupKey].groups) { %}\n          <div class=\"panel panel-default form-builder-panel\" ref=\"group-panel-{{subgroupKey}}\">\n            <div class=\"panel-heading form-builder-group-header\">\n              <h5 class=\"mb-0 panel-title\">\n                <button class=\"btn btn-block builder-group-button\" data-toggle=\"collapse\" data-parent=\"#builder-sidebar-{{id}}\" data-target=\"#group-{{subgroupKey}}\" ref=\"sidebar-anchor\">{{groups[groupKey].groups[subgroupKey].title}}</button>\n              </h5>\n            </div>\n            <div class=\"panel-collapse collapse {{groups[groupKey].groups[subgroupKey].default ? ' in' : ''}}\" id=\"group-{{subgroupKey}}\" ref=\"sidebar-group\">\n              <div id=\"group-container-{{subgroupKey}}\" class=\"panel-body no-drop\" ref=\"sidebar-container\">\n                {% groups[groupKey].groups[subgroupKey].componentOrder.forEach(function(componentKey) { %}\n                <span data-type=\"{{componentKey}}\" class=\"btn btn-primary btn-xs btn-block formcomponent drag-copy\">\n                  <i class=\"{{groups[groupKey].groups[subgroupKey].components[componentKey].icon}}\" style=\"margin-right: 5px;\"></i>\n                  {{groups[groupKey].groups[subgroupKey].components[componentKey].title}}\n                </span>\n                {% }) %}\n              </div>\n            </div>\n          </div>\n        {% } %}\n      {% } %}\n    </div>\n  </div>\n  {% }) %}\n</div>\n"
+                    },
+                    "tail": true
+                  }
+                ]
+              }
+            }
+          ],
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      }
+    ],
+    "directives": []
+  },
+  "comments": [],
+  "tokens": [
+    {
+      "type": {
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "export",
+      "start": 0,
+      "end": 6,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "default",
+        "keyword": "default",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "default",
+      "start": 7,
+      "end": 14,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 7
+        },
+        "end": {
+          "line": 1,
+          "column": 14
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "{",
+        "beforeExpr": true,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 15,
+      "end": 16,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 15
+        },
+        "end": {
+          "line": 1,
+          "column": 16
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "form",
+      "start": 19,
+      "end": 23,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 2
+        },
+        "end": {
+          "line": 2,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 23,
+      "end": 24,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 6
+        },
+        "end": {
+          "line": 2,
+          "column": 7
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 25,
+      "end": 26,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 8
+        },
+        "end": {
+          "line": 2,
+          "column": 9
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "template",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "\n<div id=\"builder-sidebar-{{id}}\" class=\"accordion panel-group\" ref=\"sidebar\">\n  {% groupOrder.forEach(function(groupKey, index) { %}\n  <div class=\"panel panel-default form-builder-panel\" ref=\"group-panel-{{groupKey}}\">\n    <div class=\"panel-heading form-builder-group-header\">\n      <h5 class=\"mb-0 panel-title\">\n        <button class=\"btn btn-block builder-group-button\" data-toggle=\"collapse\" data-parent=\"#builder-sidebar-{{id}}\" data-target=\"#group-{{groupKey}}\" ref=\"sidebar-anchor\">{{groups[groupKey].title}}</button>\n      </h5>\n    </div>\n    <div class=\"panel-collapse collapse {{groups[groupKey].default ? ' in' : ''}}\" data-default=\"{{groups[groupKey].default}}\" id=\"group-{{groupKey}}\" ref=\"sidebar-group\">\n      <div id=\"group-container-{{groupKey}}\" class=\"panel-body no-drop\" ref=\"sidebar-container\">\n        {% groups[groupKey].componentOrder.forEach(function(componentKey) { %}\n        <span data-type=\"{{componentKey}}\" class=\"btn btn-primary btn-xs btn-block formcomponent drag-copy\">\n          <i class=\"{{iconClass(groups[groupKey].components[componentKey].icon)}}\" style=\"margin-right: 5px;\"></i>\n          {{groups[groupKey].components[componentKey].title}}\n        </span>\n        {% }) %}\n      </div>\n      {% if (groups[groupKey].groups) { %}\n        {% for (var subgroupKey in groups[groupKey].groups) { %}\n          <div class=\"panel panel-default form-builder-panel\" ref=\"group-panel-{{subgroupKey}}\">\n            <div class=\"panel-heading form-builder-group-header\">\n              <h5 class=\"mb-0 panel-title\">\n                <button class=\"btn btn-block builder-group-button\" data-toggle=\"collapse\" data-parent=\"#builder-sidebar-{{id}}\" data-target=\"#group-{{subgroupKey}}\" ref=\"sidebar-anchor\">{{groups[groupKey].groups[subgroupKey].title}}</button>\n              </h5>\n            </div>\n            <div class=\"panel-collapse collapse {{groups[groupKey].groups[subgroupKey].default ? ' in' : ''}}\" id=\"group-{{subgroupKey}}\" ref=\"sidebar-group\">\n              <div id=\"group-container-{{subgroupKey}}\" class=\"panel-body no-drop\" ref=\"sidebar-container\">\n                {% groups[groupKey].groups[subgroupKey].componentOrder.forEach(function(componentKey) { %}\n                <span data-type=\"{{componentKey}}\" class=\"btn btn-primary btn-xs btn-block formcomponent drag-copy\">\n                  <i class=\"{{groups[groupKey].groups[subgroupKey].components[componentKey].icon}}\" style=\"margin-right: 5px;\"></i>\n                  {{groups[groupKey].groups[subgroupKey].components[componentKey].title}}\n                </span>\n                {% }) %}\n              </div>\n            </div>\n          </div>\n        {% } %}\n      {% } %}\n    </div>\n  </div>\n  {% }) %}\n</div>\n",
+      "start": 26,
+      "end": 2737,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 9
+        },
+        "end": {
+          "line": 45,
+          "column": 0
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "`",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 2737,
+      "end": 2738,
+      "loc": {
+        "start": {
+          "line": 45,
+          "column": 0
+        },
+        "end": {
+          "line": 45,
+          "column": 1
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2738,
+      "end": 2739,
+      "loc": {
+        "start": {
+          "line": 45,
+          "column": 1
+        },
+        "end": {
+          "line": 45,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "}",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 2740,
+      "end": 2741,
+      "loc": {
+        "start": {
+          "line": 46,
+          "column": 0
+        },
+        "end": {
+          "line": 46,
+          "column": 1
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ";",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2741,
+      "end": 2742,
+      "loc": {
+        "start": {
+          "line": 46,
+          "column": 1
+        },
+        "end": {
+          "line": 46,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "eof",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2743,
+      "end": 2743,
+      "loc": {
+        "start": {
+          "line": 47,
+          "column": 0
+        },
+        "end": {
+          "line": 47,
+          "column": 0
+        }
+      }
+    }
+  ]
+}

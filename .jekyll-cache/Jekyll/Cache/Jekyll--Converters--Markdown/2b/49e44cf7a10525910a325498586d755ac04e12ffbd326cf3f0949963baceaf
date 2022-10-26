@@ -1,0 +1,19 @@
+I"n<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"formio"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio</span><span class="dl">'</span><span class="p">),</span> <span class="dl">'</span><span class="s1">https://examples.form.io/w4</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">zoom</span><span class="p">:</span> <span class="dl">'</span><span class="s1">-20</span><span class="dl">'</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<div class="card card-body bg-light">
+<div id="formio"></div>
+<script type="text/javascript">
+Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/w4', {
+  zoom: '-20'
+});
+</script>
+</div>
+:ET

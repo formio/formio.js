@@ -1,0 +1,296 @@
+I"•P<p>The Edit Grid is very similar to the Data Grid, but allows you to view the whole form within for each new item, and then
+constructs as table view as you add new rows.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio</span><span class="dl">'</span><span class="p">),</span> <span class="p">{</span>
+  <span class="na">components</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Children</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">children</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">editgrid</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">input</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="na">templates</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">header</span><span class="p">:</span> <span class="dl">''</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">&lt;div class="row"&gt;</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">  {% util.eachComponent(components, function(component) { %} </span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">    &lt;div class="col-sm-2"&gt;</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">      &lt;strong&gt;{{ component.label }}&lt;/strong&gt;</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">    &lt;/div&gt;</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">  {% }) %}</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">&lt;/div&gt;</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">row</span><span class="p">:</span> <span class="dl">''</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">&lt;div class="row"&gt;</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">  {%util.eachComponent(components, function(component) { %}</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">    &lt;div class="col-sm-2"&gt;</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">      {{ row[component.key] }}</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">    &lt;/div&gt;</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">  {% }) %}</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">  &lt;div class="col-sm-2"&gt;</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">    &lt;div class="btn-group pull-right"&gt;</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">      &lt;div class="btn btn-default btn-sm editRow"&gt;&lt;i class="fa fa-edit"&gt;&lt;/i&gt;&lt;/div&gt;</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">      &lt;div class="btn btn-danger btn-sm removeRow"&gt;&lt;i class="fa fa-trash"&gt;&lt;/i&gt;&lt;/div&gt;</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">    &lt;/div&gt;</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">  &lt;/div&gt;</span><span class="dl">'</span> <span class="o">+</span>
+            <span class="dl">'</span><span class="s1">&lt;/div&gt;</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">footer</span><span class="p">:</span> <span class="dl">''</span>
+        <span class="p">},</span>
+        <span class="na">components</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">First Name</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">firstName</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">textfield</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">input</span><span class="p">:</span> <span class="kc">true</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Last Name</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">lastName</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">textfield</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">input</span><span class="p">:</span> <span class="kc">true</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Gender</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">gender</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">select</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">input</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+              <span class="na">values</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                  <span class="na">value</span><span class="p">:</span> <span class="dl">'</span><span class="s1">male</span><span class="dl">'</span><span class="p">,</span>
+                  <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Male</span><span class="dl">'</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                  <span class="na">value</span><span class="p">:</span> <span class="dl">'</span><span class="s1">female</span><span class="dl">'</span><span class="p">,</span>
+                  <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Female</span><span class="dl">'</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                  <span class="na">value</span><span class="p">:</span> <span class="dl">'</span><span class="s1">other</span><span class="dl">'</span><span class="p">,</span>
+                  <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Other</span><span class="dl">'</span>
+                <span class="p">}</span>
+              <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="na">dataSrc</span><span class="p">:</span> <span class="dl">'</span><span class="s1">values</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">template</span><span class="p">:</span> <span class="dl">'</span><span class="s1">&lt;span&gt;{{ item.label }}&lt;/span&gt;</span><span class="dl">'</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">checkbox</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Dependant</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">dependant</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">inputType</span><span class="p">:</span> <span class="dl">'</span><span class="s1">checkbox</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">input</span><span class="p">:</span> <span class="kc">true</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Birthdate</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">birthdate</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">datetime</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">input</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">format</span><span class="p">:</span> <span class="dl">'</span><span class="s1">yyyy-MM-dd hh:mm a</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">enableDate</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">enableTime</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">defaultDate</span><span class="p">:</span> <span class="dl">''</span><span class="p">,</span>
+            <span class="na">datepickerMode</span><span class="p">:</span> <span class="dl">'</span><span class="s1">day</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">datePicker</span><span class="p">:</span> <span class="p">{</span>
+              <span class="na">showWeeks</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+              <span class="na">startingDay</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+              <span class="na">initDate</span><span class="p">:</span> <span class="dl">''</span><span class="p">,</span>
+              <span class="na">minMode</span><span class="p">:</span> <span class="dl">'</span><span class="s1">day</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">maxMode</span><span class="p">:</span> <span class="dl">'</span><span class="s1">year</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">yearRows</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+              <span class="na">yearColumns</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+              <span class="na">datepickerMode</span><span class="p">:</span> <span class="dl">'</span><span class="s1">day</span><span class="dl">'</span>
+            <span class="p">},</span>
+            <span class="na">timePicker</span><span class="p">:</span> <span class="p">{</span>
+              <span class="na">hourStep</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="na">minuteStep</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="na">showMeridian</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+              <span class="na">readonlyInput</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+              <span class="na">mousewheel</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+              <span class="na">arrowkeys</span><span class="p">:</span> <span class="kc">true</span>
+            <span class="p">},</span>
+            <span class="dl">"</span><span class="s2">conditional</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+              <span class="dl">"</span><span class="s2">eq</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">true</span><span class="dl">"</span><span class="p">,</span>
+              <span class="dl">"</span><span class="s2">when</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">dependant</span><span class="dl">"</span><span class="p">,</span>
+              <span class="dl">"</span><span class="s2">show</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">true</span><span class="dl">"</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">form</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Provide a default submission.</span>
+  <span class="nx">form</span><span class="p">.</span><span class="nx">submission</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">children</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="na">firstName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Joe</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">lastName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Smith</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">gender</span><span class="p">:</span> <span class="dl">'</span><span class="s1">male</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">dependant</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+          <span class="na">birthdate</span><span class="p">:</span> <span class="dl">'</span><span class="s1">1982-05-18</span><span class="dl">'</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="na">firstName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Mary</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">lastName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Smith</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">gender</span><span class="p">:</span> <span class="dl">'</span><span class="s1">female</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">dependant</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+          <span class="na">birthdate</span><span class="p">:</span> <span class="dl">'</span><span class="s1">1979-02-17</span><span class="dl">'</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3>Result</h3>
+<div class="card card-body bg-light">
+<div id="formio"></div>
+<script type="text/javascript">
+Formio.createForm(document.getElementById('formio'), {
+  components: [
+      {
+        label: 'Children',
+        key: 'children',
+        type: 'editgrid',
+        input: true,
+        removeRow: 'Cancel',
+        templates: {
+          header: '' +
+            '<div class="row">' +
+            '  {%util.eachComponent(components, function(component) { %}' +
+            '    <div class="col-sm-2">' +
+            '      <strong>{{ component.label }}</strong>' +
+            '    </div>' +
+            '  {% }) %}' +
+            '</div>',
+          row: '' +
+            '<div class="row">' +
+            '  {%util.eachComponent(components, function(component) { %}' +
+            '    <div class="col-sm-2">' +
+            '      {{ row[component.key] }}' +
+            '    </div>' +
+            '  {% }) %}' +
+            '  <div class="col-sm-2">' +
+            '    <div class="btn-group pull-right">' +
+            '      <div class="btn btn-default btn-sm editRow"><i class="fa fa-edit"></i></div>' +
+            '      <div class="btn btn-danger btn-sm removeRow"><i class="fa fa-trash"></i></div>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>',
+          footer: ''
+        },
+        components: [
+          {
+            label: 'First Name',
+            key: 'firstName',
+            type: 'textfield',
+            input: true
+          },
+          {
+            label: 'Last Name',
+            key: 'lastName',
+            type: 'textfield',
+            input: true
+          },
+          {
+            label: 'Gender',
+            key: 'gender',
+            type: 'select',
+            input: true,
+            data: {
+              values: [
+                {
+                  value: 'male',
+                  label: 'Male'
+                },
+                {
+                  value: 'female',
+                  label: 'Female'
+                },
+                {
+                  value: 'other',
+                  label: 'Other'
+                }
+              ]
+            },
+            dataSrc: 'values',
+            template: '<span>{{ item.label }}</span>'
+          },
+          {
+            type: 'checkbox',
+            label: 'Dependant',
+            key: 'dependant',
+            inputType: 'checkbox',
+            input: true
+          },
+          {
+            label: 'Birthdate',
+            key: 'birthdate',
+            type: 'datetime',
+            input: true,
+            format: 'yyyy-MM-dd hh:mm a',
+            enableDate: true,
+            enableTime: true,
+            defaultDate: '',
+            datepickerMode: 'day',
+            datePicker: {
+              showWeeks: true,
+              startingDay: 0,
+              initDate: '',
+              minMode: 'day',
+              maxMode: 'year',
+              yearRows: 4,
+              yearColumns: 5,
+              datepickerMode: 'day'
+            },
+            timePicker: {
+              hourStep: 1,
+              minuteStep: 1,
+              showMeridian: true,
+              readonlyInput: false,
+              mousewheel: true,
+              arrowkeys: true
+            },
+            "conditional": {
+              "eq": "true",
+              "when": "dependant",
+              "show": "true"
+            }
+          }
+        ]
+      },
+      {
+        type: 'button',
+        action: 'submit',
+        label: 'Submit',
+        theme: 'primary',
+        key: 'submit'
+      }
+    ]
+}).then(function(form) {
+  // Provide a default submission.
+  form.submission = {
+    data: {
+      children: [
+        {
+          firstName: 'Joe',
+          lastName: 'Smith',
+          gender: 'male',
+          dependant: true,
+          birthdate: '1982-05-18'
+        },
+        {
+          firstName: 'Mary',
+          lastName: 'Smith',
+          gender: 'female',
+          dependant: false,
+          birthdate: '1979-02-17'
+        }
+      ]
+    }
+  };
+  
+  form.on('submit', function(submission) {
+    console.log(submission);
+  });
+});
+</script>
+</div>
+:ET

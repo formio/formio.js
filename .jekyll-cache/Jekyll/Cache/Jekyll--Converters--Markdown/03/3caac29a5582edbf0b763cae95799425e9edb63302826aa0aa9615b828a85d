@@ -1,0 +1,125 @@
+I"ÿ'<p>In addition to rendering forms, this library can also be used to render complex wizard workflows.</p>
+
+<p>Wizards work by taking the root <strong>Panel</strong> components within a normal flat form, and turning those
+panels into separate pages that can be added to a workflow. You can also provide conditional logic
+on those panel components so that the pages are conditionally shown based on what is entered within
+the wizard flow.</p>
+
+<p>The determination on whether a form is a wizard or not is based on the <strong>display</strong> property on the form schema like so.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="dl">"</span><span class="s2">title</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">My Wizard</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">type</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">form</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">display: </span><span class="dl">"</span><span class="nx">wizard</span><span class="dl">"</span><span class="s2">,
+  </span><span class="dl">"</span><span class="nx">components</span><span class="dl">"</span><span class="s2">: [
+    {
+      </span><span class="dl">"</span><span class="nx">type</span><span class="dl">"</span><span class="s2">: </span><span class="dl">"</span><span class="nx">panel</span><span class="dl">"</span><span class="s2">,
+      </span><span class="dl">"</span><span class="nx">title</span><span class="dl">"</span><span class="s2">: </span><span class="dl">"</span><span class="nx">Page</span> <span class="mi">1</span><span class="dl">"</span><span class="s2">,
+      </span><span class="dl">"</span><span class="nx">components</span><span class="dl">"</span><span class="s2">: [
+        ...
+        ...
+      ]
+    },
+    {
+      </span><span class="dl">"</span><span class="nx">type</span><span class="dl">"</span><span class="s2">: </span><span class="dl">"</span><span class="nx">panel</span><span class="dl">"</span><span class="s2">,
+      </span><span class="dl">"</span><span class="nx">title</span><span class="dl">"</span><span class="s2">: </span><span class="dl">"</span><span class="nx">Page</span> <span class="mi">2</span><span class="dl">"</span><span class="s2">,
+      </span><span class="dl">"</span><span class="nx">components</span><span class="dl">"</span><span class="s2">: [
+        ...
+        ...
+      ]
+    }
+  ]
+}
+</span></code></pre></div></div>
+
+<p>You can create a new wizard just like you can a normal form.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"wizard"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">wizard</span><span class="dl">'</span><span class="p">),</span> <span class="dl">'</span><span class="s1">https://examples.form.io/wizard</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">wizard</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">wizard</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">nextPage</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">page</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">page</span><span class="p">);</span>
+    <span class="p">});</span>
+    <span class="nx">wizard</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">submission</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">submission</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+</code></pre></div></div>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"wizard"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<h3 id="result">Result</h3>
+
+<div class="card card-body bg-light">
+<div id="wizard"></div>
+<script type="text/javascript">
+Formio.createForm(document.getElementById('wizard'), 'https://examples.form.io/wizard')
+  .then(function(wizard) {
+    wizard.on('nextPage', function(page) {
+      console.log(page);
+    });
+    wizard.on('submit', function(submission) {
+      console.log(submission);
+    });
+  });
+</script>
+</div>
+
+<p>You can also add options when creating a form, the following options are supported:</p>
+<ul>
+  <li>breadcrumbSettings.clickable: true (default) determines if the breadcrumb bar is clickable or not</li>
+  <li>buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"wizardWithOptions"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span>
+  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">wizardWithOptions</span><span class="dl">'</span><span class="p">),</span>
+  <span class="dl">'</span><span class="s1">https://examples.form.io/wizard</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">{</span>
+    <span class="na">breadcrumbSettings</span><span class="p">:</span> <span class="p">{</span><span class="na">clickable</span><span class="p">:</span><span class="kc">false</span><span class="p">},</span>
+    <span class="na">buttonSettings</span><span class="p">:</span> <span class="p">{</span><span class="na">showCancel</span><span class="p">:</span> <span class="kc">false</span><span class="p">}</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">wizard</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">wizard</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">nextPage</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">page</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">page</span><span class="p">);</span>
+    <span class="p">});</span>
+    <span class="nx">wizard</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">submission</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">submission</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+</code></pre></div></div>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"wizardWithOptions"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<h3 id="result-1">Result</h3>
+<div class="card card-body bg-light">
+<div id="wizardWithOptions"></div>
+<script type="text/javascript">
+Formio.createForm(
+  document.getElementById('wizardWithOptions'),
+  'https://examples.form.io/wizard',
+  {
+    breadcrumbSettings: {clickable:false},
+    buttonSettings: {showCancel: false}
+  })
+  .then(function(wizard) {
+    wizard.on('nextPage', function(page) {
+      console.log(page);
+    });
+    wizard.on('submit', function(submission) {
+      console.log(submission);
+    });
+  });
+</script>
+</div>
+:ET

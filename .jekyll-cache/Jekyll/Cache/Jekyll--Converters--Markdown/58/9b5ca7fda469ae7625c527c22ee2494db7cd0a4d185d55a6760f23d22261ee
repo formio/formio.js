@@ -1,0 +1,123 @@
+I"'<p>Please read <a href="https://help.form.io/userguide/form-components/#recaptcha" target="_blank">Help Docs</a> to learn details of how reCAPTCHA component works.</p>
+
+<p>Example below shows how both Form Load and Button Click reCAPTCHA components work, together with how to render form with reCAPTCHA from JSON</p>
+
+<p>To test this example, click the ‘Submit’ button and you will see Submission JSON including response from Google for Form Load action under ‘reCaptcha2’ field. Click ‘Test’ button and then ‘Submit’ button and you will see Submission JSON including response from Google for Button Click action under ‘reCaptcha’ field.</p>
+
+<h3 id="code">Code</h3>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">setProjectUrl</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://examples.test-form.io</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">formJSON</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="dl">'</span><span class="s1">components</span><span class="dl">'</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="dl">'</span><span class="s1">label</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Test</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">action</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">event</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">key</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">test</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">event</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">test</span><span class="dl">'</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="dl">'</span><span class="s1">eventType</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">buttonClick</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">recaptcha</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">key</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">reCaptcha</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">label</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">reCAPTCHA</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">buttonKey</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">test</span><span class="dl">'</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="dl">'</span><span class="s1">eventType</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">formLoad</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">recaptcha</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">key</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">reCaptcha2</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">label</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">reCAPTCHA</span><span class="dl">'</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="dl">'</span><span class="s1">type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">label</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Submit</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">key</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">action</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="dl">'</span><span class="s1">name</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">testRecaptchaForm</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">settings</span><span class="dl">'</span><span class="p">:</span> <span class="p">{</span>
+    <span class="dl">'</span><span class="s1">recaptcha</span><span class="dl">'</span><span class="p">:</span> <span class="p">{</span>
+      <span class="dl">'</span><span class="s1">isEnabled</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">true</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">siteKey</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">6Ldc54MUAAAAAP4KjayrT1InduuvCnXvNZUpZpQj</span><span class="dl">'</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+<span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio</span><span class="dl">'</span><span class="p">),</span> <span class="nx">formJSON</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">form</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Provide a default submission.</span>
+  <span class="nx">form</span><span class="p">.</span><span class="nx">submission</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+  <span class="nx">form</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">submission</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">submission</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">jsonElement</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio-submission-json</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">jsonElement</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">submission</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+  <span class="p">})</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="rendered-form">Rendered form</h3>
+<div class="card card-body bg-light">
+  <div id="formio"></div>
+</div>
+
+<h3 id="submission">Submission</h3>
+<div class="card card-body bg-light">
+  <pre id="formio-submission-json"></pre>
+</div>
+<script type="text/javascript">
+Formio.setProjectUrl('https://examples.test-form.io');
+const formJSON = {
+  'components': [
+    {
+      'label': 'Test',
+      'action': 'event',
+      'type': 'button',
+      'key': 'test',
+      'event': 'test'
+    },
+    {
+      'eventType': 'buttonClick',
+      'type': 'recaptcha',
+      'key': 'reCaptcha',
+      'label': 'reCAPTCHA',
+      'buttonKey': 'test'
+    },
+    {
+      'eventType': 'formLoad',
+      'type': 'recaptcha',
+      'key': 'reCaptcha2',
+      'label': 'reCAPTCHA'
+    },
+    {
+      'type': 'button',
+      'label': 'Submit',
+      'key': 'submit',
+      'action': 'submit'
+    }
+  ],
+  'name': 'testRecaptchaForm',
+  'settings': {
+    'recaptcha': {
+      'isEnabled': 'true',
+      'siteKey': '6Ldc54MUAAAAAP4KjayrT1InduuvCnXvNZUpZpQj'
+    }
+  }
+};
+Formio.createForm(document.getElementById('formio'), formJSON).then(function(form) {
+  // Provide a default submission.
+  form.submission = {
+    data: {
+    }
+  };
+  form.on('submit', function(submission){
+    console.log(submission);
+    var jsonElement = document.getElementById('formio-submission-json');
+    jsonElement.innerHTML = JSON.stringify(submission, null, 4);
+  })
+});
+</script>
+
+:ET

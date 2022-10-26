@@ -1,0 +1,228 @@
+I"E<p>Stripe securely collect card information from your customers and create a card payment.
+This component is based on the ButtonComponent and add an overlay to call <a href="https://stripe.com/docs/checkout">Stripe Checkout</a> library.
+After the customer validate his payment information, a token will be returned by Stripe API and it will be stored in the form data.</p>
+
+<p>The component can replace the submission button to force payment authorization to submit the form.</p>
+
+<p>Stripe Checkout can be configured with this following parameters:</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="dl">"</span><span class="s2">stripe</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">apiKey</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">pk_test_Aprek1cboUExxK6dHoBaOphh</span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">handlerConfiguration</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="dl">"</span><span class="s2">image</span><span class="dl">"</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://stripe.com/img/documentation/checkout/marketplace.png</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">"</span><span class="s2">locale</span><span class="dl">"</span><span class="p">:</span> <span class="dl">'</span><span class="s1">auto</span><span class="dl">'</span>
+    <span class="p">},</span>
+    <span class="dl">"</span><span class="s2">popupConfiguration</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="dl">"</span><span class="s2">name</span><span class="dl">"</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Demo Site</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">"</span><span class="s2">description</span><span class="dl">"</span><span class="p">:</span> <span class="dl">'</span><span class="s1">2 widgets</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">"</span><span class="s2">currency</span><span class="dl">"</span><span class="p">:</span> <span class="dl">'</span><span class="s1">cad</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">"</span><span class="s2">amount</span><span class="dl">"</span><span class="p">:</span> <span class="mi">2000</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">handlerConfiguration</code> is directly injected to stripe function <a href="https://stripe.com/docs/checkout#integration-simple-options">StripeCheckout.configure</a>.
+<code class="language-plaintext highlighter-rouge">token</code> and <code class="language-plaintext highlighter-rouge">key</code> parameters are overwrite by component.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">popupConfiguration</code> is also directly injected to stripe function <a href="https://stripe.com/docs/checkout#integration-simple-options">handler.open</a>.</p>
+  </li>
+</ul>
+
+<h4 id="install">Install</h4>
+<p>To use this plugin, you must first include the contributed modules for the Form.io renderer using.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.contrib.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<p>After you have included this library within your page, you will then need to register it with the Form renderer using the following.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">registerComponent</span><span class="p">(</span><span class="dl">'</span><span class="s1">stripeCheckout</span><span class="dl">'</span><span class="p">,</span> <span class="nx">Formio</span><span class="p">.</span><span class="nx">contrib</span><span class="p">.</span><span class="nx">stripe</span><span class="p">.</span><span class="nx">checkout</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>If you are including this within your own library, you can also include it with the following.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">StripeCheckoutComponent</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">formiojs/build/contrib/stripe/checkout/stripeCheckout</span><span class="dl">'</span><span class="p">;</span>
+<span class="nx">Formio</span><span class="p">.</span><span class="nx">registerComponent</span><span class="p">(</span><span class="dl">'</span><span class="s1">stripeCheckout</span><span class="dl">'</span><span class="p">,</span> <span class="nx">StripeCheckoutComponent</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="example">Example</h4>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.css"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.full.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdn.form.io/formiojs/formio.contrib.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"formio"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio</span><span class="dl">'</span><span class="p">),</span> <span class="p">{</span>
+  <span class="na">components</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">textfield</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Title</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">placeholder</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Enter the title.</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">defaultValue</span><span class="p">:</span> <span class="dl">'</span><span class="s1">T-Shirt</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">title</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">input</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="na">inputType</span><span class="p">:</span> <span class="dl">'</span><span class="s1">text</span><span class="dl">'</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">textarea</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Description</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">placeholder</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Enter the description.</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">defaultValue</span><span class="p">:</span> <span class="dl">'</span><span class="s1">XL - Men</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">description</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">input</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">select</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Currency</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">placeholder</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Select the currency.</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">defaultValue</span><span class="p">:</span> <span class="dl">'</span><span class="s1">usd</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">currency</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">input</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="na">dataSrc</span><span class="p">:</span> <span class="dl">'</span><span class="s1">values</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">values</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">CAD</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">value</span><span class="p">:</span> <span class="dl">'</span><span class="s1">cad</span><span class="dl">'</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">USD</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">value</span><span class="p">:</span> <span class="dl">'</span><span class="s1">usd</span><span class="dl">'</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">currency</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Amount</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">amount</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">defaultValue</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+      <span class="na">input</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">hidden</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">stripeAmount</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">calculateValue</span><span class="p">:</span> <span class="dl">'</span><span class="s1">value = parseFloat(data.amount) * 100</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">input</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">stripeCheckout</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">card</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Authorize payment</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">stripe</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">apiKey</span><span class="p">:</span> <span class="dl">'</span><span class="s1">pk_test_Aprek1cboUExxK6dHoBaOphh</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">handlerConfiguration</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">image</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://stripe.com/img/documentation/checkout/marketplace.png</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">locale</span><span class="p">:</span> <span class="dl">'</span><span class="s1">auto</span><span class="dl">'</span>
+        <span class="p">},</span>
+        <span class="na">popupConfiguration</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">{{ data.title }}</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">{{ data.description }}</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">currency</span><span class="p">:</span> <span class="dl">'</span><span class="s1">{{ data.currency }}</span><span class="dl">'</span><span class="p">,</span>
+          <span class="na">amount</span><span class="p">:</span> <span class="dl">'</span><span class="s1">{{ data.stripeAmount }}</span><span class="dl">'</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">button</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Submit</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">theme</span><span class="p">:</span> <span class="dl">'</span><span class="s1">primary</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">submit</span><span class="dl">'</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="result">Result</h4>
+
+<div class="card card-body bg-light">
+<div id="formio"></div>
+<script type="text/javascript">
+Formio.createForm(document.getElementById('formio'), {
+  components: [
+    {
+      type: 'textfield',
+      label: 'Title',
+      placeholder: 'Enter the title.',
+      defaultValue: 'T-Shirt',
+      key: 'title',
+      input: true,
+      inputType: 'text'
+    },
+    {
+      type: 'textarea',
+      label: 'Description',
+      placeholder: 'Enter the description.',
+      defaultValue: 'XL - Men',
+      key: 'description',
+      input: true
+    },
+    {
+      type: 'select',
+      label: 'Currency',
+      placeholder: 'Select the currency.',
+      defaultValue: 'usd',
+      key: 'currency',
+      input: true,
+      dataSrc: 'values',
+      data: {
+        values: [
+          {
+            label: 'CAD',
+            value: 'cad'
+          },
+          {
+            label: 'USD',
+            value: 'usd'
+          }
+        ]
+      }
+    },
+    {
+      type: 'currency',
+      label: 'Amount',
+      key: 'amount',
+      defaultValue: 20,
+      input: true
+    },
+    {
+      type: 'hidden',
+      key: 'stripeAmount',
+      calculateValue: 'value = parseFloat(data.amount) * 100',
+      input: true
+    },
+    {
+      type: 'stripeCheckout',
+      key: 'card',
+      label: 'Authorize payment',
+      stripe: {
+        apiKey: 'pk_test_Aprek1cboUExxK6dHoBaOphh',
+        handlerConfiguration: {
+          image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+          locale: 'auto'
+        },
+        popupConfiguration: {
+          name: '{{ data.title }}',
+          description: '{{ data.description }}',
+          currency: '{{ data.currency }}',
+          amount: '{{ data.stripeAmount }}'
+        }
+      },
+    },
+    {
+      type: 'button',
+      action: 'submit',
+      label: 'Submit',
+      theme: 'primary',
+      key: 'submit'
+    }
+  ]
+});
+</script>
+</div>
+
+:ET

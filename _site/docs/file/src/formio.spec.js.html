@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/Formio.spec.js | formiojs</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDF.js~PDF.html">PDF</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Webform.js~Webform.html">Webform</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WebformBuilder.js~WebformBuilder.html">WebformBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Wizard.js~Wizard.html">Wizard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address-fixtures">components/address/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-base">components/base</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html">BaseComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Base">Base</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-base-editform">components/base/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-base-fixtures">components/base/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button-fixtures">components/button/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox">components/checkbox</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Checkbox">Checkbox</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-checkbox-fixtures">components/checkbox/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns">components/columns</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Column.js~ColumnComponent.html">ColumnComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Columns.js~ColumnsComponent.html">ColumnsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Columns">Columns</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-columns-fixtures">components/columns/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-container">components/container</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Container">Container</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-container-fixtures">components/container/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content">components/content</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/content/Content.js~ContentComponent.html">ContentComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Content">Content</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-content-fixtures">components/content/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency">components/currency</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Currency">Currency</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-currency-fixtures">components/currency/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid">components/datagrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html">DataGridComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DataGrid">DataGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datagrid-fixtures">components/datagrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime">components/datetime</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-DateTime">DateTime</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-datetime-fixtures">components/datetime/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Day">Day</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day-fixtures">components/day/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-EditGrid">EditGrid</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Email">Email</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset">components/fieldset</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Fieldset">Fieldset</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-fieldset-fixtures">components/fieldset/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-File">File</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form-fixtures">components/form/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden">components/hidden</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden-fixtures">components/hidden/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html-fixtures">components/html/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-location">components/location</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/location/Location.js~LocationComponent.html">LocationComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Location">Location</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-location-fixtures">components/location/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-nested">components/nested</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/nested/NestedComponent.js~NestedComponent.html">NestedComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number-fixtures">components/number/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel-fixtures">components/panel/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password-fixtures">components/password/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PhoneNumber">PhoneNumber</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber-fixtures">components/phonenumber/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-radio">components/radio</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/radio/Radio.js~RadioComponent.html">RadioComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Radio">Radio</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-radio-fixtures">components/radio/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource">components/resource</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resource">Resource</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-resource-fixtures">components/resource/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select">components/select</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Select">Select</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-select-fixtures">components/select/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes">components/selectboxes</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SelectBoxes">SelectBoxes</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-selectboxes-fixtures">components/selectboxes/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature">components/signature</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Signature">Signature</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-signature-fixtures">components/signature/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey">components/survey</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Survey">Survey</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Table">Table</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tabs">Tabs</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags">components/tags</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tags/Tags.js~TagsComponent.html">TagsComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Tags">Tags</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tags-fixtures">components/tags/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea">components/textarea</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextArea">TextArea</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textarea-fixtures">components/textarea/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textfield">components/textfield</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html">TextFieldComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-TextField">TextField</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-textfield-fixtures">components/textfield/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time">components/time</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Time">Time</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-time-fixtures">components/time/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-unknown">components/unknown</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Well">Well</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib">contrib</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Contrib">Contrib</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-boolValue">boolValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCalculated">checkCalculated</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCondition">checkCondition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkCustomConditional">checkCustomConditional</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkJsonConditional">checkJsonConditional</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkSimpleConditional">checkSimpleConditional</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-checkTrigger">checkTrigger</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToFlatpickr">convertFormatToFlatpickr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-convertFormatToMoment">convertFormatToMoment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getComponent">getComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCurrencyAffixes">getCurrencyAffixes</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getDateSetting">getDateSetting</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getElementRect">getElementRect</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getInputMask">getInputMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getLocaleDateFormatInfo">getLocaleDateFormatInfo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberDecimalLimit">getNumberDecimalLimit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getNumberSeparators">getNumberSeparators</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getPropertyValue">getPropertyValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRandomComponentId">getRandomComponentId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getValue">getValue</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-guid">guid</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-hasCondition">hasCondition</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-interpolate">interpolate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isLayoutComponent">isLayoutComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isMongoId">isMongoId</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isValidDate">isValidDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchComponent">matchComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-matchInputMask">matchInputMask</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseFloatExt">parseFloatExt</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setActionProperty">setActionProperty</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-uniqueName">uniqueName</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/Formio.spec.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
+import Formio from &apos;./Formio&apos;;
+import _each from &apos;lodash/each&apos;;
+import assert from &apos;power-assert&apos;;
+import sinon from &apos;sinon&apos;;
+import Chance from &apos;chance&apos;;
+import fetchMock from &apos;fetch-mock/es5/client&apos;;
+import _ from &apos;lodash&apos;;
+
+const chance = Chance();
+const protocol = &apos;https&apos;;
+const domain = &apos;localhost:3000&apos;;
+const baseUrl = `${protocol}://api.${domain}`;
+Formio.setBaseUrl(baseUrl);
+Formio.setToken(null);
+
+var generateID = function() {
+  return chance.string({length: 24, pool: &apos;0123456789abcdef&apos;});
+};
+
+var runTests = function(cb, options) {
+  var tests = {};
+  var noBefore = cb(tests);
+  if (!noBefore) {
+    beforeEach(() =&gt; {
+      Formio.setBaseUrl(baseUrl);
+      Formio.projectUrlSet = false;
+      Formio.projectUrl = &apos;https://api.form.io&apos;;
+    });
+  }
+  _each(tests, (test, path) =&gt; {
+    it(`Should initialize for ${path}`, (done) =&gt; {
+      if (typeof test === &apos;function&apos;) {
+        test();
+      }
+      else {
+        var formio = new Formio(path, options);
+        for (var param in test) {
+          assert.equal(formio[param], test[param], `${param} is not equal. ${formio[param]} == ${test[param]}\n`);
+        }
+      }
+      done();
+    });
+  });
+};
+
+describe(&apos;Formio Constructor Tests&apos;, () =&gt; {
+  runTests((tests) =&gt; {
+    tests[&apos;http://form.io/project/234234234234/form/23234234234234&apos;] = {
+      projectUrl: &apos;http://form.io/project/234234234234&apos;,
+      projectsUrl: &apos;http://form.io/project&apos;,
+      projectId: &apos;234234234234&apos;,
+      formsUrl: &apos;http://form.io/project/234234234234/form&apos;,
+      formUrl: &apos;http://form.io/project/234234234234/form/23234234234234&apos;,
+      formId: &apos;23234234234234&apos;,
+      actionsUrl: &apos;http://form.io/project/234234234234/form/23234234234234/action&apos;,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: &apos;http://form.io/project/234234234234/form/23234234234234/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+    tests[&apos;http://form.io/form/23234234234234&apos;] = {
+      projectUrl: &apos;http://form.io&apos;,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: &apos;&apos;,
+      formsUrl: &apos;http://form.io/form&apos;,
+      formUrl: &apos;http://form.io/form/23234234234234&apos;,
+      formId: &apos;23234234234234&apos;,
+      actionsUrl: &apos;http://form.io/form/23234234234234/action&apos;,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: &apos;http://form.io/form/23234234234234/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+    tests[&apos;http://form.io/form/23234234234234/submission/982398220983&apos;] = {
+      projectUrl: &apos;http://form.io&apos;,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: &apos;&apos;,
+      formsUrl: &apos;http://form.io/form&apos;,
+      formUrl: &apos;http://form.io/form/23234234234234&apos;,
+      formId: &apos;23234234234234&apos;,
+      actionsUrl: &apos;http://form.io/form/23234234234234/action&apos;,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: &apos;http://form.io/form/23234234234234/submission&apos;,
+      submissionUrl: &apos;http://form.io/form/23234234234234/submission/982398220983&apos;,
+      submissionId: &apos;982398220983&apos;,
+      query: &apos;&apos;
+    };
+    tests[&apos;http://form.io/form/23234234234234/action/234230987872&apos;] = {
+      projectUrl: &apos;http://form.io&apos;,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: &apos;&apos;,
+      formsUrl: &apos;http://form.io/form&apos;,
+      formUrl: &apos;http://form.io/form/23234234234234&apos;,
+      formId: &apos;23234234234234&apos;,
+      actionsUrl: &apos;http://form.io/form/23234234234234/action&apos;,
+      actionUrl: &apos;http://form.io/form/23234234234234/action/234230987872&apos;,
+      actionId: &apos;234230987872&apos;,
+      submissionsUrl: &apos;http://form.io/form/23234234234234/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+    tests[&apos;http://form.io/project/092934882/form/23234234234234/action/234230987872&apos;] = {
+      projectUrl: &apos;http://form.io/project/092934882&apos;,
+      projectsUrl: &apos;http://form.io/project&apos;,
+      projectId: &apos;092934882&apos;,
+      formsUrl: &apos;http://form.io/project/092934882/form&apos;,
+      formUrl: &apos;http://form.io/project/092934882/form/23234234234234&apos;,
+      formId: &apos;23234234234234&apos;,
+      actionsUrl: &apos;http://form.io/project/092934882/form/23234234234234/action&apos;,
+      actionUrl: &apos;http://form.io/project/092934882/form/23234234234234/action/234230987872&apos;,
+      actionId: &apos;234230987872&apos;,
+      submissionsUrl: &apos;http://form.io/project/092934882/form/23234234234234/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+    tests[&apos;http://api.form.io/project/092934882&apos;] = {
+      projectUrl: &apos;http://api.form.io/project/092934882&apos;,
+      projectsUrl: &apos;http://api.form.io/project&apos;,
+      projectId: &apos;092934882&apos;,
+      formsUrl: &apos;http://api.form.io/project/092934882/form&apos;,
+      formUrl: &apos;&apos;,
+      formId: &apos;&apos;,
+      actionsUrl: &apos;http://api.form.io/project/092934882/action&apos;,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: &apos;http://api.form.io/project/092934882/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+    tests[&apos;http://form.io/project/092934882/form/23234234234234/submission/2987388987982&apos;] = {
+      projectUrl: &apos;http://form.io/project/092934882&apos;,
+      projectsUrl: &apos;http://form.io/project&apos;,
+      projectId: &apos;092934882&apos;,
+      formsUrl: &apos;http://form.io/project/092934882/form&apos;,
+      formUrl: &apos;http://form.io/project/092934882/form/23234234234234&apos;,
+      formId: &apos;23234234234234&apos;,
+      actionsUrl: &apos;http://form.io/project/092934882/form/23234234234234/action&apos;,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: &apos;http://form.io/project/092934882/form/23234234234234/submission&apos;,
+      submissionUrl: &apos;http://form.io/project/092934882/form/23234234234234/submission/2987388987982&apos;,
+      submissionId: &apos;2987388987982&apos;,
+      query: &apos;&apos;
+    };
+    tests[&apos;http://form.io/project/092934882/form/23234234234234?test=hello&amp;test2=there&apos;] = {
+      projectUrl: &apos;http://form.io/project/092934882&apos;,
+      projectsUrl: &apos;http://form.io/project&apos;,
+      projectId: &apos;092934882&apos;,
+      formsUrl: &apos;http://form.io/project/092934882/form&apos;,
+      formUrl: &apos;http://form.io/project/092934882/form/23234234234234&apos;,
+      formId: &apos;23234234234234&apos;,
+      actionsUrl: &apos;http://form.io/project/092934882/form/23234234234234/action&apos;,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: &apos;http://form.io/project/092934882/form/23234234234234/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;?test=hello&amp;test2=there&apos;
+    };
+    tests[&apos;http://project.form.io/user/login&apos;] = {
+      projectUrl: &apos;http://project.form.io&apos;,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: &apos;project&apos;,
+      formsUrl: &apos;http://project.form.io/form&apos;,
+      formUrl: &apos;http://project.form.io/user/login&apos;,
+      formId: &apos;user/login&apos;,
+      actionsUrl: &apos;http://project.form.io/user/login/action&apos;,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: &apos;http://project.form.io/user/login/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+    tests[&apos;http://project.form.io/user/login/submission/234234243234&apos;] = {
+      projectUrl: &apos;http://project.form.io&apos;,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: &apos;project&apos;,
+      formsUrl: &apos;http://project.form.io/form&apos;,
+      formUrl: &apos;http://project.form.io/user/login&apos;,
+      formId: &apos;user/login&apos;,
+      actionsUrl: &apos;http://project.form.io/user/login/action&apos;,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: &apos;http://project.form.io/user/login/submission&apos;,
+      submissionUrl: &apos;http://project.form.io/user/login/submission/234234243234&apos;,
+      submissionId: &apos;234234243234&apos;,
+      query: &apos;&apos;
+    };
+    tests[&apos;http://project.form.io/user/login/action/234234243234&apos;] = {
+      projectUrl: &apos;http://project.form.io&apos;,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: &apos;project&apos;,
+      formsUrl: &apos;http://project.form.io/form&apos;,
+      formUrl: &apos;http://project.form.io/user/login&apos;,
+      formId: &apos;user/login&apos;,
+      actionsUrl: &apos;http://project.form.io/user/login/action&apos;,
+      actionUrl: &apos;http://project.form.io/user/login/action/234234243234&apos;,
+      actionId: &apos;234234243234&apos;,
+      submissionsUrl: &apos;http://project.form.io/user/login/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+    tests[&apos;http://project.form.io/user/login/action/234234243234?test=test2&apos;] = {
+      projectUrl: &apos;http://project.form.io&apos;,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: &apos;project&apos;,
+      formsUrl: &apos;http://project.form.io/form&apos;,
+      formUrl: &apos;http://project.form.io/user/login&apos;,
+      formId: &apos;user/login&apos;,
+      actionsUrl: &apos;http://project.form.io/user/login/action&apos;,
+      actionUrl: &apos;http://project.form.io/user/login/action/234234243234&apos;,
+      actionId: &apos;234234243234&apos;,
+      submissionsUrl: &apos;http://project.form.io/user/login/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;?test=test2&apos;
+    };
+    tests[&apos;http://project.form.io/user/loginform/action/234234243234?test=test2&apos;] = {
+      projectUrl: &apos;http://project.form.io&apos;,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: &apos;project&apos;,
+      formsUrl: &apos;http://project.form.io/form&apos;,
+      formUrl: &apos;http://project.form.io/user/loginform&apos;,
+      formId: &apos;user/loginform&apos;,
+      actionsUrl: &apos;http://project.form.io/user/loginform/action&apos;,
+      actionUrl: &apos;http://project.form.io/user/loginform/action/234234243234&apos;,
+      actionId: &apos;234234243234&apos;,
+      submissionsUrl: &apos;http://project.form.io/user/loginform/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;?test=test2&apos;
+    };
+    tests[&apos;http://project.form.io/user/loginform/submission&apos;] = {
+      projectUrl: &apos;http://project.form.io&apos;,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: &apos;project&apos;,
+      formsUrl: &apos;http://project.form.io/form&apos;,
+      formUrl: &apos;http://project.form.io/user/loginform&apos;,
+      formId: &apos;user/loginform&apos;,
+      actionsUrl: &apos;http://project.form.io/user/loginform/action&apos;,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: &apos;http://project.form.io/user/loginform/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+    tests[&apos;http://project.form.io/user&apos;] = {
+      projectUrl: &apos;http://project.form.io&apos;,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: &apos;project&apos;,
+      formsUrl: &apos;http://project.form.io/form&apos;,
+      formUrl: &apos;http://project.form.io/user&apos;,
+      formId: &apos;user&apos;,
+      actionsUrl: &apos;http://project.form.io/user/action&apos;,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: &apos;http://project.form.io/user/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+    tests[&apos;http://project.form.io/user/actionform/submission/2342424234234&apos;] = {
+      projectUrl: &apos;http://project.form.io&apos;,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: &apos;project&apos;,
+      formsUrl: &apos;http://project.form.io/form&apos;,
+      formUrl: &apos;http://project.form.io/user/actionform&apos;,
+      formId: &apos;user/actionform&apos;,
+      actionsUrl: &apos;http://project.form.io/user/actionform/action&apos;,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: &apos;http://project.form.io/user/actionform/submission&apos;,
+      submissionUrl: &apos;http://project.form.io/user/actionform/submission/2342424234234&apos;,
+      submissionId: &apos;2342424234234&apos;,
+      query: &apos;&apos;
+    };
+    tests[&apos;http://project.form.io/user/actionform/?test=foo&apos;] = {
+      projectUrl: &apos;http://project.form.io&apos;,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: &apos;project&apos;,
+      formsUrl: &apos;http://project.form.io/form&apos;,
+      formUrl: &apos;http://project.form.io/user/actionform&apos;,
+      formId: &apos;user/actionform&apos;,
+      actionsUrl: &apos;http://project.form.io/user/actionform/action&apos;,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: &apos;http://project.form.io/user/actionform/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;?test=foo&apos;
+    };
+  });
+});
+
+describe(&apos;Localhost Constructor Tests&apos;, () =&gt; {
+  var testBaseUrl = &apos;localhost:3000&apos;;
+  var projectName = &apos;myproject&apos;;
+  var projectUrl = `${protocol}://${projectName}.${testBaseUrl}`;
+  runTests((tests) =&gt; {
+    tests[`${projectUrl}/user/actionform/?test=foo`] = {
+      projectUrl: projectUrl,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: projectName,
+      formsUrl: `${projectUrl}/form`,
+      formUrl: `${projectUrl}/user/actionform`,
+      formId: &apos;user/actionform&apos;,
+      actionsUrl: `${projectUrl}/user/actionform/action`,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: `${projectUrl}/user/actionform/submission`,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;?test=foo&apos;
+    };
+    tests[`${projectUrl}/user`] = {
+      projectUrl: projectUrl,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: projectName,
+      formsUrl: `${projectUrl}/form`,
+      formUrl: `${projectUrl}/user`,
+      formId: &apos;user&apos;,
+      actionsUrl: `${projectUrl}/user/action`,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: `${projectUrl}/user/submission`,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+  }, {base: baseUrl});
+});
+
+describe(&apos;Subdomain Constructor Tests&apos;, () =&gt; {
+  var testBaseUrl = &apos;foo.blah.form.io&apos;;
+  var projectName = &apos;myproject&apos;;
+  var projectUrl = `${protocol}://${projectName}.${testBaseUrl}`;
+  runTests((tests) =&gt; {
+    tests[`${projectUrl}/user/actionform/?test=foo`] = {
+      projectUrl: projectUrl,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: projectName,
+      formsUrl: `${projectUrl}/form`,
+      formUrl: `${projectUrl}/user/actionform`,
+      formId: &apos;user/actionform&apos;,
+      actionsUrl: `${projectUrl}/user/actionform/action`,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: `${projectUrl}/user/actionform/submission`,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;?test=foo&apos;
+    };
+    tests[`${projectUrl}/user`] = {
+      projectUrl: projectUrl,
+      projectsUrl: `${baseUrl}/project`,
+      projectId: projectName,
+      formsUrl: `${projectUrl}/form`,
+      formUrl: `${projectUrl}/user`,
+      formId: &apos;user&apos;,
+      actionsUrl: `${projectUrl}/user/action`,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: `${projectUrl}/user/submission`,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+  }, {base: baseUrl});
+});
+
+describe(&apos;Subdirectory Constructor Tests&apos;, () =&gt; {
+  var testBaseUrl = &apos;foo.blah.form.io&apos;;
+  var projectName = &apos;myproject&apos;;
+  var projectUrl = `${protocol}://${testBaseUrl}/${projectName}`;
+  runTests((tests) =&gt; {
+    tests[`${projectUrl}/user/actionform/?test=foo`] = {
+      projectUrl: projectUrl,
+      projectsUrl: `${protocol}://${testBaseUrl}/project`,
+      projectId: projectName,
+      formsUrl: `${projectUrl}/form`,
+      formUrl: `${projectUrl}/user/actionform`,
+      formId: &apos;user/actionform&apos;,
+      actionsUrl: `${projectUrl}/user/actionform/action`,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: `${projectUrl}/user/actionform/submission`,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;?test=foo&apos;
+    };
+    tests[`${projectUrl}/user`] = {
+      projectUrl: projectUrl,
+      projectsUrl: `${protocol}://${testBaseUrl}/project`,
+      projectId: projectName,
+      formsUrl: `${projectUrl}/form`,
+      formUrl: `${projectUrl}/user`,
+      formId: &apos;user&apos;,
+      actionsUrl: `${projectUrl}/user/action`,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: `${projectUrl}/user/submission`,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+    tests[projectUrl] = {
+      projectUrl: projectUrl,
+      projectsUrl: `${protocol}://${testBaseUrl}/project`,
+      projectId: projectName,
+      formsUrl: `${projectUrl}/form`,
+      formUrl: projectUrl,
+      formId: &apos;&apos;,
+      actionsUrl: `${projectUrl}/action`,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: `${projectUrl}/submission`,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+  }, {base: `${protocol}://${testBaseUrl}`});
+});
+
+describe(&apos;Simple Form Constructor Tests&apos;, () =&gt; {
+  runTests((tests) =&gt; {
+    tests[&apos;init&apos;] = () =&gt; {
+      Formio.setBaseUrl(&apos;https://api.form.io&apos;);
+      Formio.projectUrlSet = false;
+      Formio.projectUrl = &apos;https://api.form.io&apos;;
+    };
+    tests[&apos;https://examples.form.io/example&apos;] = {
+      projectUrl: &apos;https://examples.form.io&apos;,
+      projectsUrl: &apos;&apos;,
+      projectId: &apos;&apos;,
+      formsUrl: &apos;https://examples.form.io/form&apos;,
+      formUrl: &apos;https://examples.form.io/example&apos;,
+      formId: &apos;example&apos;,
+      actionsUrl: &apos;https://examples.form.io/example/action&apos;,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: &apos;https://examples.form.io/example/submission&apos;,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+    return true;
+  });
+});
+
+describe(&apos;Open Source Constructor Tests&apos;, () =&gt; {
+  const formBaseUrl = &apos;http://localhost:3000&apos;;
+  runTests((tests) =&gt; {
+    tests[`${formBaseUrl}/user`] = {
+      projectUrl: formBaseUrl,
+      projectsUrl: &apos;&apos;,
+      projectId: &apos;&apos;,
+      formsUrl: `${formBaseUrl}/form`,
+      formUrl: `${formBaseUrl}/user`,
+      formId: &apos;user&apos;,
+      actionsUrl: `${formBaseUrl}/user/action`,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: `${formBaseUrl}/user/submission`,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;&apos;
+    };
+    tests[`${formBaseUrl}/user/actionform/?test=foo`] = {
+      projectUrl: formBaseUrl,
+      projectsUrl: &apos;&apos;,
+      projectId: &apos;&apos;,
+      formsUrl: `${formBaseUrl}/form`,
+      formUrl: `${formBaseUrl}/user/actionform`,
+      formId: &apos;user/actionform&apos;,
+      actionsUrl: `${formBaseUrl}/user/actionform/action`,
+      actionUrl: &apos;&apos;,
+      actionId: &apos;&apos;,
+      submissionsUrl: `${formBaseUrl}/user/actionform/submission`,
+      submissionUrl: &apos;&apos;,
+      submissionId: &apos;&apos;,
+      query: &apos;?test=foo&apos;
+    };
+  }, {base: formBaseUrl, project: formBaseUrl});
+});
+
+describe(&apos;Plugins&apos;, () =&gt; {
+  var plugin = null;
+  beforeEach(() =&gt; {
+    assert.equal(Formio.getPlugin(&apos;test-plugin&apos;), undefined, &apos;No plugin may be returned under the name `test-plugin`&apos;);
+    plugin = {init: sinon.spy()};
+    Formio.registerPlugin(plugin, &apos;test-plugin&apos;);
+    assert.ok(plugin.init.calledOnce, &apos;plugin.init must be called exactly once&apos;);
+    assert.ok(plugin.init.calledOn(plugin), &apos;plugin.init must be called on plugin as `this`&apos;);
+    assert.ok(plugin.init.calledWithExactly(Formio), &apos;plugin.init must be given Formio as argument&apos;);
+    assert.equal(Formio.getPlugin(&apos;test-plugin&apos;), plugin, &apos;getPlugin must return plugin&apos;);
+  });
+
+  afterEach(() =&gt; {
+    assert.equal(Formio.getPlugin(&apos;test-plugin&apos;), plugin, &apos;getPlugin must return plugin&apos;);
+    plugin.deregister = sinon.spy();
+    Formio.deregisterPlugin(plugin, &apos;test-plugin&apos;);
+    assert.ok(plugin.deregister.calledOnce, &apos;plugin.deregister must be called exactly once&apos;);
+    assert.ok(plugin.deregister.calledOn(plugin), &apos;plugin.deregister must be called on plugin as `this`&apos;);
+    assert.ok(plugin.deregister.calledWithExactly(Formio), &apos;plugin.deregister must be given Formio as argument&apos;);
+    assert.equal(Formio.getPlugin(&apos;test-plugin&apos;), undefined, &apos;No plugin may be returned under the name `test-plugin`&apos;);
+  });
+
+  // Test a request to see if the plugin flow order is correct
+  var testRequest = function testRequest(url, method, type) {
+    var fnName;
+    switch (method) {
+      case &apos;GET&apos;: fnName = `load${_.capitalize(type)}`; break;
+      case &apos;POST&apos;:
+      case &apos;PUT&apos;: fnName = `save${_.capitalize(type)}`; break;
+      case &apos;DELETE&apos;: fnName = `delete${_.capitalize(type)}`; break;
+    }
+
+    it(`Plugin ${method} ${fnName}`, (done) =&gt; {
+      let step = 0;
+      var formio = new Formio(url);
+      method = method.toUpperCase();
+      var testData = {testRequest: &apos;TEST_REQUEST&apos;};
+      var testOpts = {testOption: true};
+      var testResult = {_id: &apos;TEST_ID&apos;, testResult: &apos;TEST_RESULT&apos;};
+
+      var expectedArgs = {
+        formio: formio,
+        type: type,
+        method: method,
+        url: formio[type + (method === &apos;POST&apos; ? &apos;sUrl&apos; : &apos;Url&apos;)],
+        data: _.startsWith(fnName, &apos;save&apos;) ? testData : null,
+        opts: testOpts
+      };
+
+      // Set up plugin hooks
+      plugin.preRequest = function(requestArgs) {
+        assert.equal(++step, 1, &apos;preRequest hook should be called first&apos;);
+        assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
+        return Promise.resolve()
+          .then(() =&gt; {
+            assert.equal(++step, 3, &apos;preRequest promise should resolve third&apos;);
+            // TODO
+          });
+      };
+      plugin.request = function(requestArgs) {
+        assert.equal(++step, 4, &apos;request hook should be called fourth&apos;);
+        assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
+        return Promise.resolve()
+          .then(() =&gt; {
+            assert.equal(++step, 5, &apos;request promise should resolve fifth&apos;);
+            return testResult;
+          });
+      };
+      plugin.wrapRequestPromise = function(promise, requestArgs) {
+        assert.equal(++step, 2, &apos;wrapRequestPromise hook should be called second&apos;);
+        assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
+        return promise.then((result) =&gt; {
+          assert.equal(++step, 6, &apos;wrapRequestPromise post-result promise should resolve sixth&apos;);
+          assert.deepEqual(result, testResult, &apos;Result should match result from request hook&apos;);
+          return result;
+        });
+      };
+
+      var promise;
+      if (_.startsWith(fnName, &apos;save&apos;)) {
+        promise = formio[fnName](testData, testOpts);
+      }
+      else if (_.startsWith(fnName, &apos;load&apos;)) {
+        promise = formio[fnName](null, testOpts);
+      }
+      else {
+        promise = formio[fnName](testOpts);
+      }
+      promise.then((result) =&gt; {
+        assert.equal(++step, 7, &apos;post request promise should resolve last&apos;);
+        assert.deepEqual(result, testResult, &apos;Result should match result from request hook&apos;);
+        done();
+      });
+    });
+  };
+
+  var tests = [
+    {
+      url: &apos;https://api.localhost:3000/project/myproject&apos;,
+      method: &apos;GET&apos;,
+      type: &apos;project&apos;
+    },
+    {
+      url: &apos;&apos;,
+      method: &apos;POST&apos;,
+      type: &apos;project&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject&apos;,
+      method: &apos;PUT&apos;,
+      type: &apos;project&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject&apos;,
+      method: &apos;DELETE&apos;,
+      type: &apos;project&apos;
+    },
+
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567&apos;,
+      method: &apos;GET&apos;,
+      type: &apos;form&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject&apos;,
+      method: &apos;POST&apos;,
+      type: &apos;form&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567&apos;,
+      method: &apos;PUT&apos;,
+      type: &apos;form&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567&apos;,
+      method: &apos;DELETE&apos;,
+      type: &apos;form&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/&apos;,
+      method: &apos;GET&apos;,
+      type: &apos;forms&apos;
+    },
+
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567/submission/76543210FEDCBA9876543210&apos;,
+      method: &apos;GET&apos;,
+      type: &apos;submission&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567&apos;,
+      method: &apos;POST&apos;,
+      type: &apos;submission&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567/submission/76543210FEDCBA9876543210&apos;,
+      method: &apos;PUT&apos;,
+      type: &apos;submission&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567/submission/76543210FEDCBA9876543210&apos;,
+      method: &apos;DELETE&apos;,
+      type: &apos;submission&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567&apos;,
+      method: &apos;GET&apos;,
+      type: &apos;submissions&apos;
+    },
+
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567/action/76543210FEDCBA9876543210&apos;,
+      method: &apos;GET&apos;,
+      type: &apos;action&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567&apos;,
+      method: &apos;POST&apos;,
+      type: &apos;action&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567/action/76543210FEDCBA9876543210&apos;,
+      method: &apos;PUT&apos;,
+      type: &apos;action&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567/action/76543210FEDCBA9876543210&apos;,
+      method: &apos;DELETE&apos;,
+      type: &apos;action&apos;
+    },
+    {
+      url: &apos;https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567&apos;,
+      method: &apos;GET&apos;,
+      type: &apos;actions&apos;
+    }
+  ];
+
+  tests.forEach((test) =&gt; {
+    testRequest(test.url, test.method, test.type);
+  });
+
+  var testStaticRequest = function testStaticRequest(fnName, url, method) {
+    it(`Plugin ${fnName}`, (done) =&gt; {
+      var step = 0;
+      var testResult = {_id: &apos;TEST_ID&apos;, testResult: &apos;TEST_RESULT&apos;};
+      var expectedArgs = {
+        url: url,
+        method: method,
+        data: null,
+        opts: {}
+      };
+
+      // Set up plugin hooks
+      plugin.preRequest = function(requestArgs) {
+        assert.equal(++step, 1, &apos;preRequest hook should be called first&apos;);
+        assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
+        return Promise.resolve()
+          .then(() =&gt; {
+            assert.equal(++step, 3, &apos;preRequest promise should resolve third&apos;);
+            // TODO
+          });
+      };
+      plugin.staticRequest = function(requestArgs) {
+        assert.equal(++step, 4, &apos;request hook should be called fourth&apos;);
+        assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
+        return Promise.resolve()
+          .then(() =&gt; {
+            assert.equal(++step, 5, &apos;request promise should resolve fifth&apos;);
+            return testResult;
+          });
+      };
+      plugin.wrapStaticRequestPromise = function(promise, requestArgs) {
+        assert.equal(++step, 2, &apos;wrapRequestPromise hook should be called second&apos;);
+        assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
+        return promise.then((result) =&gt; {
+          assert.equal(++step, 6, &apos;wrapRequestPromise post-result promise should resolve sixth&apos;);
+          assert.deepEqual(result, testResult, &apos;Result should match result from request hook&apos;);
+          return result;
+        });
+      };
+
+      Formio[fnName]()
+        .then((result) =&gt; {
+          assert.equal(++step, 7, &apos;post request promise should resolve last&apos;);
+          assert.deepEqual(result, testResult, &apos;Result should match result from request hook&apos;);
+          done();
+        });
+    });
+  };
+
+  var staticTests = [
+    {
+      fnName: &apos;loadProjects&apos;,
+      url: &apos;https://api.localhost:3000/project&apos;,
+      method: &apos;GET&apos;
+    },
+    {
+      fnName: &apos;logout&apos;,
+      url: &apos;https://api.localhost:3000/logout&apos;,
+      method: &apos;GET&apos;
+    }
+  ];
+
+  staticTests.forEach((test) =&gt; {
+    testStaticRequest(test.fnName, test.url, test.method, test.type);
+  });
+
+  var testFileRequest = function testFileRequest(fnName, formUrl, args) {
+    it(`Plugin ${fnName}`, (done) =&gt; {
+      var step = 0;
+      var testResult = {_id: &apos;TEST_ID&apos;, testResult: &apos;TEST_RESULT&apos;};
+
+      if (fnName == &apos;downloadFile&apos;) {
+        var expectedArgs = {
+          method: &apos;download&apos;,
+          file: args[0]
+        };
+      }
+      else if (fnName === &apos;uploadFile&apos;) {
+        var expectedArgs = {
+          provider: args[0],
+          method: &apos;upload&apos;,
+          file: args[1],
+          fileName: args[2],
+          dir: args[3]
+        };
+      }
+
+      // Set up plugin hooks
+      plugin.preRequest = function(requestArgs) {
+        assert.equal(++step, 1, &apos;preRequest hook should be called first&apos;);
+        assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
+        return Promise.resolve()
+          .then(() =&gt; {
+            assert.equal(++step, 3, &apos;preRequest promise should resolve third&apos;);
+            // TODO
+          });
+      };
+      plugin.fileRequest = function(requestArgs) {
+        assert.equal(++step, 4, &apos;request hook should be called fourth&apos;);
+        assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
+        return Promise.resolve()
+          .then(() =&gt; {
+            assert.equal(++step, 5, &apos;request promise should resolve fifth&apos;);
+            return testResult;
+          });
+      };
+      plugin.wrapFileRequestPromise = function(promise, requestArgs) {
+        assert.equal(++step, 2, &apos;wrapFileRequestPromise hook should be called second&apos;);
+        assert.deepEqual(requestArgs, expectedArgs, &apos;Request hook arguments match expected arguments&apos;);
+        return promise.then((result) =&gt; {
+          assert.equal(++step, 6, &apos;wrapFileRequestPromise post-result promise should resolve sixth&apos;);
+          assert.deepEqual(result, testResult, &apos;Result should match result from request hook&apos;);
+          return result;
+        });
+      };
+
+      var formio = new Formio(formUrl);
+      formio[fnName].apply(null, args)
+        .then((result) =&gt; {
+          assert.equal(++step, 7, &apos;post request promise should resolve last&apos;);
+          assert.deepEqual(result, testResult, &apos;Result should match result from request hook&apos;);
+          done();
+        });
+    });
+  };
+
+  var fileTests = [
+    {
+      fnName: &apos;uploadFile&apos;,
+      formUrl: &apos;https://api.localhost:3000/project/123/form/123&apos;,
+      args: [
+        &apos;s3&apos;,
+        &apos;FILE&apos;,
+        &apos;file.jpg&apos;,
+        &apos;dir/&apos;
+      ]
+    },
+    {
+      fnName: &apos;uploadFile&apos;,
+      formUrl: &apos;https://api.localhost:3000/project/123/form/123&apos;,
+      args: [
+        &apos;dropbox&apos;,
+        &apos;FILE&apos;,
+        &apos;file.jpg&apos;,
+        &apos;dir/&apos;
+      ]
+    },
+    {
+      fnName: &apos;downloadFile&apos;,
+      formUrl: &apos;https://api.localhost:3000/project/123/form/123&apos;,
+      args: [
+        {
+          storage: &apos;s3&apos;,
+          name: &apos;test&apos;
+        }
+      ]
+    },
+    {
+      fnName: &apos;downloadFile&apos;,
+      formUrl: &apos;https://api.localhost:3000/project/123/form/123&apos;,
+      args: [
+        {
+          storage: &apos;dropbox&apos;,
+          name: &apos;test&apos;
+        }
+      ]
+    }
+  ];
+
+  fileTests.forEach((test) =&gt; {
+    testFileRequest(test.fnName, test.formUrl, test.args);
+  });
+});
+describe(&apos;Test Formio.js capabilities&apos;, () =&gt; {
+  var testCapability = function(test) {
+    it(test.name, (done) =&gt; {
+      if (test.mock) {
+        var mock = test.mock();
+        if (mock instanceof Array) {
+          _.each(mock, (_mock) =&gt; {
+            fetchMock.mock(_mock.url, _mock.response, {method: _mock.method});
+          });
+        }
+        else {
+          fetchMock.mock(mock.url, mock.response, {method: mock.method});
+        }
+      }
+      Promise.resolve()
+        .then(() =&gt; {
+          return test.test();
+        })
+        .then(() =&gt; {
+          if (test.mock) fetchMock.restore();
+          done();
+        })
+        .catch((err) =&gt; {
+          assert.equal(err, null, &apos;Caught error during test&apos;);
+          if (err) console.error(err.stack);
+          if (test.mock) fetchMock.restore();
+          done();
+        });
+    });
+  };
+
+  var user;
+  var userPassword;
+  var userToken = chance.string({length: 450});
+  var userFormId = generateID();
+  var project;
+  var form;
+  var submission;
+
+  var tests = [
+    {
+      name: &apos;Registering user.&apos;,
+      test: function() {
+        var req = {
+          data: {
+            &apos;user.name&apos;: chance.string({
+              length: 10,
+              pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
+            }),
+            &apos;user.email&apos;: chance.email(),
+            &apos;user.password&apos;: chance.string({length: 12})
+          }
+        };
+        var formio = new Formio(`${Formio.getBaseUrl()}/user/register`);
+        return formio.saveSubmission(req)
+          .then((response) =&gt; {
+            assert.deepEqual(response, user, &apos;saveSubmission response should match test user&apos;);
+            assert.equal(Formio.getToken(), userToken, &apos;Formio should save the user token&apos;);
+          });
+      },
+      mock: function() {
+        return [
+          {
+            url: `${Formio.getBaseUrl()}/current`,
+            method: &apos;GET&apos;,
+            response: function() {
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: user
+              };
+            }
+          },
+          {
+            url: `${Formio.getBaseUrl()}/user/register/submission`,
+            method: &apos;POST&apos;,
+            response: function(url, opts) {
+              var body = JSON.parse(opts.body);
+              var userId = generateID();
+              user = {
+                _id: userId,
+                created: new Date().toISOString(),
+                modified: new Date().toISOString(),
+                data: {
+                  email: body.data[&apos;user.email&apos;],
+                  name: body.data[&apos;user.name&apos;]
+                },
+                externalIds: [],
+                externalTokens: [],
+                form: userFormId,
+                owner: userId
+              };
+              userPassword = body.data[&apos;user.password&apos;];
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: user
+              };
+            }
+          }
+        ];
+      }
+    },
+    {
+      name: &apos;Logging in.&apos;,
+      test: function() {
+        var req = {
+          data: {
+            &apos;user.email&apos;: user.data.email,
+            &apos;user.password&apos;: userPassword
+          }
+        };
+        var formio = new Formio(`${Formio.getBaseUrl()}/user/login`);
+        return formio.saveSubmission(req)
+          .then((response) =&gt; {
+            assert.deepEqual(response, user, &apos;saveSubmission response should match test user&apos;);
+            assert.equal(Formio.getToken(), userToken, &apos;Formio should save the user token&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/user/login/submission`,
+          method: &apos;POST&apos;,
+          response: function(url, opts) {
+            var body = JSON.parse(opts.body);
+            userToken = chance.string({length: 450});
+            assert.equal(body.data[&apos;user.email&apos;], user.data.email, &apos;Login email must be correct.&apos;);
+            assert.equal(body.data[&apos;user.password&apos;], userPassword, &apos;Login password must be correct.&apos;);
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: user
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Current user.&apos;,
+      test: function() {
+        return Formio.currentUser()
+          .then((response) =&gt; {
+            assert.deepEqual(response, user, &apos;currentUser response should match test user&apos;);
+            return Formio.currentUser();
+          })
+          .then((response) =&gt; {
+            assert.deepEqual(response, user, &apos;currentUser response should match test user&apos;);
+          });
+      },
+      mock: function() {
+        var called = false;
+        return {
+          url: `${Formio.getBaseUrl()}/current`,
+          method: &apos;GET&apos;,
+          response: function() {
+            assert.ok(!called, &apos;User should be requested only once.&apos;);
+            called = true;
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: user
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Create Project&apos;,
+      test: function() {
+        var formio = new Formio();
+        var req = {
+          title: chance.string({
+            length: 10,
+            pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
+          }),
+          name: chance.string({
+            length: 10,
+            pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
+          }),
+          description: chance.paragraph({sentences: 1}),
+          settings: {
+            cors: &apos;*&apos;
+          },
+          template: &apos;http://help.form.io/templates/empty.json&apos;
+        };
+        return formio.saveProject(req)
+          .then((response) =&gt; {
+            assert.deepEqual(response, project, &apos;saveProject response should match test user&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project`,
+          method: &apos;POST&apos;,
+          response: function(url, opts) {
+            var body = JSON.parse(opts.body);
+            var projectId = generateID();
+            project = {
+              _id: projectId,
+              created: new Date().toISOString(),
+              modified: new Date().toISOString(),
+              apiCalls: {
+                used: 0,
+                limit: 1000,
+                remaining: 1000,
+                reset: new Date(Date.now() + 2.628e9).toISOString() // ~1 month later
+              },
+              access: [],
+              title: body.title,
+              name: body.name,
+              description: body.description,
+              plan: &apos;basic&apos;,
+              owner: user._id
+            };
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: project
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Getting Projects&apos;,
+      test: function() {
+        return Formio.loadProjects()
+          .then((projects) =&gt; {
+            assert.equal(projects.length, 1, &apos;Should return only one project.&apos;);
+            assert.equal(projects.skip, 0, &apos;skip should be 0.&apos;);
+            assert.equal(projects.limit, 1, &apos;limit should be 1.&apos;);
+            assert.equal(projects.serverCount, 1, &apos;serverCount should be 1.&apos;);
+            assert.deepEqual(projects[0], project, &apos;Should match project&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project`,
+          method: &apos;GET&apos;,
+          response: function() {
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;Content-Range&apos;: &apos;0-0/1&apos;,
+                &apos;Range-Unit&apos;: &apos;items&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: [project]
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Read Project&apos;,
+      test: function() {
+        var formio = new Formio(`${Formio.getBaseUrl()}/project/${project._id}`);
+        return formio.loadProject()
+          .then((response) =&gt; {
+            assert.deepEqual(response, project, &apos;Should match project&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}`,
+          method: &apos;GET&apos;,
+          response: function() {
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: project
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Update Project&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}`);
+        var newProject = _.cloneDeep(project);
+        newProject.name = chance.string({
+          length: 10,
+          pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
+        });
+        newProject.title = chance.string({
+          length: 10,
+          pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
+        });
+        newProject.description = chance.paragraph({sentences: 1});
+        return formio.saveProject(newProject)
+          .then((response) =&gt; {
+            assert.deepEqual(response, project, &apos;Project should match&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}`,
+          method: &apos;PUT&apos;,
+          response: function(url, opts) {
+            var body = JSON.parse(opts.body);
+            project = body;
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: project
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Create Form&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}/form`);
+        var req = {
+          title: chance.string({
+            length: 10,
+            pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
+          }),
+          name: chance.string({
+            length: 10,
+            pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
+          }),
+          path: chance.string({
+            length: 10,
+            pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
+          }),
+          components: [
+            {
+              defaultValue: &apos;&apos;,
+              input: true,
+              inputMask: &apos;&apos;,
+              inputType: &apos;text&apos;,
+              isNew: false,
+              key: &apos;fieldLabel&apos;,
+              label: &apos;Field Label&apos;,
+              multiple: false,
+              persistent: true,
+              placeholder: &apos;&apos;,
+              prefix: &apos;&apos;,
+              protected: false,
+              suffix: &apos;&apos;,
+              tableView: true,
+              type: &apos;textfield&apos;,
+              unique: false,
+              validate: {
+                required: false,
+                minLength: &apos;&apos;,
+                maxLength: &apos;&apos;,
+                pattern: &apos;&apos;,
+                custom: &apos;&apos;,
+                customPrivate: false
+              }
+            },
+            {
+              action: &apos;submit&apos;,
+              block: false,
+              disableOnInvalid: true,
+              input: true,
+              key: &apos;submit&apos;,
+              label: &apos;Submit&apos;,
+              leftIcon: &apos;&apos;,
+              rightIcon: &apos;&apos;,
+              size: &apos;md&apos;,
+              tableView: false,
+              theme: &apos;primary&apos;,
+              type: &apos;button&apos;
+            }
+          ],
+          type: &apos;form&apos;,
+          access: [],
+          submissionAccess: []
+        };
+        return formio.saveForm(req)
+          .then((response) =&gt; {
+            assert.deepEqual(response, form, &apos;Form should match&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}/form`,
+          method: &apos;POST&apos;,
+          response: function(url, opts) {
+            var body = JSON.parse(opts.body);
+            var formId = generateID();
+            form = _.cloneDeep(body);
+            _.assign(form, {
+              _id: formId,
+              created: new Date().toISOString(),
+              modified: new Date().toISOString(),
+              project: project._id,
+              owner: user._id
+            });
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: form
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Load Forms&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}/form`);
+        return formio.loadForms()
+          .then((forms) =&gt; {
+            assert.equal(forms.length, 1, &apos;Should return only one form.&apos;);
+            assert.equal(forms.skip, 0, &apos;skip should be 0.&apos;);
+            assert.equal(forms.limit, 1, &apos;limit should be 1.&apos;);
+            assert.equal(forms.serverCount, 1, &apos;serverCount should be 1.&apos;);
+            assert.deepEqual(forms[0], form, &apos;Should match form&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}/form`,
+          method: &apos;GET&apos;,
+          response: function() {
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;Content-Range&apos;: &apos;0-0/1&apos;,
+                &apos;Range-Unit&apos;: &apos;items&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: [form]
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Read Form&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}/form/${form._id}`);
+        return formio.loadForm()
+          .then((response) =&gt; {
+            assert.deepEqual(response, form, &apos;Form should match&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}`,
+          method: &apos;GET&apos;,
+          response: function() {
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: form
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Update Form&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}/form/${form._id}`);
+        var newForm = _.cloneDeep(form);
+        newForm.title = chance.string({
+          length: 10,
+          pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
+        });
+        newForm.name = chance.string({
+          length: 10,
+          pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
+        });
+        newForm.path = chance.string({
+          length: 10,
+          pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
+        });
+        return formio.saveForm(newForm)
+          .then((response) =&gt; {
+            assert.deepEqual(response, form, &apos;Form should match&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}`,
+          method: &apos;PUT&apos;,
+          response: function(url, opts) {
+            var body = JSON.parse(opts.body);
+            form = body;
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: form
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Create Submission&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}/form/${form._id}/submission`);
+        var req = {
+          data: {
+            fieldLabel: chance.string()
+          }
+        };
+        return formio.saveSubmission(req)
+          .then((response) =&gt; {
+            assert.deepEqual(response, submission, &apos;Submission should match&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission`,
+          method: &apos;POST&apos;,
+          response: function(url, opts) {
+            var body = JSON.parse(opts.body);
+            var submissionId = generateID();
+            submission = {
+              _id: submissionId,
+              created: new Date().toISOString(),
+              modified: new Date().toISOString(),
+              data: body.data,
+              externalIds: [],
+              externalTokens: [],
+              form: form._id,
+              owner: user._id,
+              roles: []
+            };
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: submission
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Load Submissions&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}/form/${form._id}/submission`);
+        return formio.loadSubmissions()
+          .then((submissions) =&gt; {
+            assert.equal(submissions.length, 1, &apos;Should return only one submission.&apos;);
+            assert.equal(submissions.skip, 0, &apos;skip should be 0.&apos;);
+            assert.equal(submissions.limit, 1, &apos;limit should be 1.&apos;);
+            assert.equal(submissions.serverCount, 1, &apos;serverCount should be 1.&apos;);
+            assert.deepEqual(submissions[0], submission, &apos;Should match submission&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission`,
+          method: &apos;GET&apos;,
+          response: function() {
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;Content-Range&apos;: &apos;0-0/1&apos;,
+                &apos;Range-Unit&apos;: &apos;items&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: [submission]
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Read Submission&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
+        return formio.loadSubmission()
+          .then((response) =&gt; {
+            assert.deepEqual(response, submission, &apos;Submission should match&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
+          method: &apos;GET&apos;,
+          response: function() {
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: submission
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Update Submission&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
+        var newSubmission = _.cloneDeep(submission);
+        newSubmission.data.fieldLabel = chance.string();
+        return formio.saveSubmission(newSubmission)
+          .then((response) =&gt; {
+            assert.deepEqual(response, submission, &apos;Submission should match&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
+          method: &apos;PUT&apos;,
+          response: function(url, opts) {
+            var body = JSON.parse(opts.body);
+            submission = body;
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: submission
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Update Submission without ID&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}/form/${form._id}`);
+        var newSubmission = _.cloneDeep(submission);
+        newSubmission.data.fieldLabel = chance.string();
+        return formio.saveSubmission(newSubmission)
+          .then((response) =&gt; {
+            assert.deepEqual(response, submission, &apos;Submission should match&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
+          method: &apos;PUT&apos;,
+          response: function(url, opts) {
+            var body = JSON.parse(opts.body);
+            submission = body;
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: submission
+            };
+          }
+        };
+      }
+    },
+    // // Actions
+    // // Available Actions
+    // // Action Info
+    {
+      name: &apos;Delete Submission&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
+        return formio.deleteSubmission()
+          .then((response) =&gt; {
+            assert.equal(response, &apos;OK&apos;, &apos;Submission should be deleted.&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
+          method: &apos;DELETE&apos;,
+          response: {
+            status: 200,
+            body: &apos;OK&apos;,
+            headers: {
+              &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
+              &apos;x-jwt-token&apos;: userToken
+            }
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Delete Form&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}/form/${form._id}`);
+        return formio.deleteForm()
+          .then((response) =&gt; {
+            assert.equal(response, &apos;OK&apos;, &apos;Submission should be deleted.&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}`,
+          method: &apos;DELETE&apos;,
+          response: {
+            status: 200,
+            body: &apos;OK&apos;,
+            headers: {
+              &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
+              &apos;x-jwt-token&apos;: userToken
+            }
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Delete Project&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}`);
+        return formio.deleteProject()
+          .then((response) =&gt; {
+            assert.equal(response, &apos;OK&apos;, &apos;Submission should be deleted.&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}`,
+          method: &apos;DELETE&apos;,
+          response: {
+            status: 200,
+            body: &apos;OK&apos;,
+            headers: {
+              &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
+              &apos;x-jwt-token&apos;: userToken
+            }
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Getting Projects&apos;,
+      test: function() {
+        return Formio.loadProjects()
+          .then((projects) =&gt; {
+            assert.equal(projects.length, 0, &apos;Should return no projects.&apos;);
+            assert.equal(projects.skip, undefined, &apos;skip should be undefined.&apos;);
+            assert.equal(projects.limit, undefined, &apos;limit should be undefined.&apos;);
+            assert.equal(projects.serverCount, 0, &apos;serverCount should be 0.&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project`,
+          method: &apos;GET&apos;,
+          response: function() {
+            return {
+              headers: {
+                &apos;Content-Type&apos;: &apos;application/json&apos;,
+                &apos;Content-Range&apos;: &apos;*/0&apos;,
+                &apos;Range-Unit&apos;: &apos;items&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              },
+              body: []
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Temporary Token&apos;,
+      test: function() {
+        var formio = new Formio(`/project/${project._id}`);
+        return formio.getTempToken(200, &apos;GET:/current&apos;).then((tempToken) =&gt; {
+          assert.equal(tempToken, userToken);
+        });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/project/${project._id}/token`,
+          method: &apos;GET&apos;,
+          response: function() {
+            return {
+              status: 200,
+              body: userToken,
+              headers: {
+                &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              }
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Logging Out&apos;,
+      test: function() {
+        return Formio.logout()
+          .then(() =&gt; {
+            assert.equal(Formio.getToken(), &apos;&apos;, &apos;Logged out&apos;);
+          });
+      },
+      mock: function() {
+        return {
+          url: `${Formio.getBaseUrl()}/logout`,
+          method: &apos;GET&apos;,
+          response: function() {
+            userToken = null;
+            return {
+              status: 200,
+              body: &apos;OK&apos;,
+              headers: {
+                &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
+                &apos;x-jwt-token&apos;: &apos;&apos;
+              }
+            };
+          }
+        };
+      }
+    }
+  ];
+
+  tests.forEach(testCapability);
+});
+describe(&apos;Formio.currentUser&apos;, () =&gt; {
+  var plugin = null;
+  beforeEach(() =&gt; {
+    plugin = {
+      wrapStaticRequestPromise: sinon.spy((promise, promiseArgs) =&gt; {
+        return promise;
+      }),
+      staticRequest: sinon.spy(() =&gt; {
+        // Return dummy user
+        var userId = generateID();
+        return Promise.resolve({
+          _id: userId,
+          created: new Date().toISOString(),
+          modified: new Date().toISOString(),
+          data: {
+            email: &apos;user@place.com&apos;,
+            name: &apos;user&apos;
+          },
+          externalIds: [],
+          externalTokens: [],
+          form: generateID(),
+          owner: userId
+        });
+      })
+    };
+    Formio.registerPlugin(plugin, &apos;currentUserTestPlugin&apos;);
+  });
+
+  afterEach(() =&gt; {
+    Formio.deregisterPlugin(plugin);
+  });
+
+  it(&apos;Initial currentUser() should make static request&apos;, (done) =&gt; {
+    // Force token
+    Formio.token = chance.string({length: 30});
+    Formio.currentUser()
+      .then(() =&gt; {
+        assert.ok(plugin.staticRequest.calledOnce, &apos;staticRequest should be called once&apos;);
+        done();
+      });
+    assert.ok(plugin.wrapStaticRequestPromise.calledOnce, &apos;wrapStaticRequestPromise should be called once&apos;);
+  });
+
+  it(&apos;Next currentUser() should return cached value&apos;, (done) =&gt; {
+    // Clear token
+    Formio.currentUser()
+      .then(() =&gt; {
+        assert.ok(!plugin.staticRequest.called, &apos;staticRequest should not be called&apos;);
+        done();
+      });
+    assert.ok(plugin.wrapStaticRequestPromise.calledOnce, &apos;wrapStaticRequestPromise should be called once&apos;);
+  });
+});
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

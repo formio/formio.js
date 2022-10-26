@@ -1,0 +1,138 @@
+I"¼"<p>The Select component allows you to connect to external data sources as well as perform look ahead searching within that data source.</p>
+
+<h3 id="conditional-selects">Conditional Selects</h3>
+<p>In addition, you can also make each of the selects conditional based on the values provided from previous select lists. For example, you could set up a Make + Model select dropdown selection, where the Model is dependent on the Make selection. This can be done with the following JSON configurations.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Formio</span><span class="p">.</span><span class="nx">createForm</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="dl">'</span><span class="s1">formio</span><span class="dl">'</span><span class="p">),</span> <span class="p">{</span>
+  <span class="na">components</span><span class="p">:</span> <span class="p">[{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">editgrid</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Cars</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">cars</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">defaultOpen</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">removeRow</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Cancel</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">components</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">select</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Make</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">make</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">placeholder</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Select your make</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">dataSrc</span><span class="p">:</span> <span class="dl">'</span><span class="s1">values</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">validate</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">required</span><span class="p">:</span> <span class="kc">true</span>
+        <span class="p">},</span>
+        <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">values</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Chevy</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">value</span><span class="p">:</span> <span class="dl">'</span><span class="s1">chevrolet</span><span class="dl">'</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="na">value</span><span class="p">:</span> <span class="dl">'</span><span class="s1">honda</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Honda</span><span class="dl">'</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Ford</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">value</span><span class="p">:</span> <span class="dl">'</span><span class="s1">ford</span><span class="dl">'</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Toyota</span><span class="dl">'</span><span class="p">,</span>
+              <span class="na">value</span><span class="p">:</span> <span class="dl">'</span><span class="s1">toyota</span><span class="dl">'</span>
+            <span class="p">}</span>
+          <span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">select</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Model</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">model</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">placeholder</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Select your model</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">dataSrc</span><span class="p">:</span> <span class="dl">'</span><span class="s1">url</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">url</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/{{ row.make }}?format=json</span><span class="dl">'</span>
+        <span class="p">},</span>
+        <span class="na">valueProperty</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Model_Name</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">template</span><span class="p">:</span> <span class="dl">'</span><span class="s1">&lt;span&gt;{{ item.Model_Name }}&lt;/span&gt;</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">refreshOn</span><span class="p">:</span> <span class="dl">'</span><span class="s1">cars.make</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">clearOnRefresh</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="na">selectValues</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Results</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">validate</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">required</span><span class="p">:</span> <span class="kc">true</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">}]</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3>Result</h3>
+<div class="card card-body bg-light">
+<div id="formio"></div>
+<script type="text/javascript">
+Formio.createForm(document.getElementById('formio'), {
+  components: [{
+    type: 'editgrid',
+    label: 'Cars',
+    key: 'cars',
+    defaultOpen: true,
+    removeRow: 'Cancel',
+    components: [
+      {
+        type: 'select',
+        label: 'Make',
+        key: 'make',
+        placeholder: 'Select your make',
+        dataSrc: 'values',
+        validate: {
+          required: true
+        },
+        data: {
+          values: [
+            {
+              label: 'Chevy',
+              value: 'chevrolet'
+            },
+            {
+              value: 'honda',
+              label: 'Honda'
+            },
+            {
+              label: 'Ford',
+              value: 'ford'
+            },
+            {
+              label: 'Toyota',
+              value: 'toyota'
+            }
+          ]
+        }
+      },
+      {
+        type: 'select',
+        label: 'Model',
+        key: 'model',
+        placeholder: 'Select your model',
+        dataSrc: 'url',
+        data: {
+          url: 'https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/{{ row.make }}?format=json'
+        },
+        valueProperty: 'Model_Name',
+        template: '<span>{{ item.Model_Name }}</span>',
+        refreshOn: 'cars.make',
+        clearOnRefresh: true,
+        selectValues: 'Results',
+        validate: {
+          required: true
+        }
+      }
+    ]
+  }, {
+    type: 'button',
+    action: 'submit',
+    label: 'Submit',
+    theme: 'primary',
+    key: 'submit'
+  }]
+});
+</script>
+</div>
+:ET
