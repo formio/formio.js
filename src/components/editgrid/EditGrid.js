@@ -734,6 +734,16 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   createRowComponents(row, rowIndex) {
+    // Iterate through existing components and destroy the ones with the same rowIndex.
+    if (this.components) {
+      for (let i = 0; i < this.components.length; i++) {
+        if (this.components[i].rowIndex === rowIndex) {
+          this.components[i].destroy();
+          this.components.splice(i, 1);
+        }
+      }
+    }
+
     return this.component.components.map((col, colIndex) => {
       const column = _.clone(col);
       const options = _.clone(this.options);
