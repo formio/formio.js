@@ -29,7 +29,7 @@
               {{file.originalName || file.name}}
             {% } else { %}
               <a href="{{file.url || '#'}}" target="_blank" ref="fileLink">
-                <span class="{{ctx.transform('class', 'sr-only')}}">{{ctx.t('Press to open ')}}</span>{{file.originalName || file.name}}
+                <span class="sr-only">{{ctx.t('Press to open ')}}</span>{{file.originalName || file.name}}
               </a>
             {% } %}
           </div>
