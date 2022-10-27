@@ -43,9 +43,9 @@ export default class PanelComponent extends NestedComponent {
     this.noField = true;
     this.on('componentError', () => {
       //change collapsed value only when the panel is collapsed to avoid additional redrawing that prevents validation messages
-      if (hasInvalidComponent(this) && this.collapsed) {
-        this.collapsed = false;
-      }
+      // if (hasInvalidComponent(this) && this.collapsed) {
+      //   this.collapsed = false;
+      // }
     });
   }
 
