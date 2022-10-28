@@ -34,8 +34,23 @@ import wizardNavigateOrSaveOnEnter from '../test/forms/wizardNavigateOrSaveOnEnt
 import wizardWithFieldsValidationChild from '../test/forms/wizardWithFieldsValidationChild';
 import wizardWithFieldsValidationParent from '../test/forms/wizardWithFieldsValidationParent';
 import nestedConditionalWizard from '../test/forms/nestedConditionalWizard';
+import wizardPermission from '../test/forms/wizardPermission';
 
 describe('Wizard tests', () => {
+  it('Should check correctly Permissions and disabled sumbit button', (done) => {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+
+    wizard.setForm(wizardPermission).then(() => {
+      wizard.form.disableWizardSubmit = true;
+      wizard.redraw();
+      const btn = wizard.element.querySelector('.btn-wizard-nav-submit');
+      assert.equal(btn.disabled, true);
+
+      done();
+    }).catch(err => done(err));
+  });
+
   it('Should correctly reset values', function(done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
