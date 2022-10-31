@@ -21,10 +21,9 @@ import _ from 'lodash';
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
 const CDN_URL = (Formio?.version || '').includes('rc')
-  ? 'https://cdn.test-form.io/'
-  : 'https://cdn.form.io/';
+  ? 'https://cdn.test-form.io/flatpickr-formio'
+  : 'https://cdn.form.io/flatpickr-formio';
 const JSDELIVR_CDN_URL = 'https://cdn.jsdelivr.net';
-const CDN_FLATPICKR_LOCALE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/l10n';
 const SHORTCUT_BUTTONS_PLUGIN_URL = '/npm/shortcut-buttons-flatpickr@0.1.0/dist/';
 const SHORTCUT_BUTTONS_CSS = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}themes/light.min.css`;
 const SHORTCUT_BUTTONS_PLUGIN = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}shortcut-buttons-flatpickr.min.js`;
@@ -166,7 +165,7 @@ export default class CalendarWidget extends InputWidget {
     };
 
     Formio.requireLibrary('flatpickr-css', 'flatpickr', [
-      { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }
+      { type: 'styles', src: `${CDN_URL}/flatpickr.min.css` }
     ], true);
 
     const flatpickr = _.get(window, 'flatpickr');
@@ -194,7 +193,7 @@ export default class CalendarWidget extends InputWidget {
         }
       })
       .then((ShortcutButtonsPlugin) => {
-        return Formio.requireLibrary('flatpickr', 'flatpickr', `${CDN_URL}${this.flatpickrType}/flatpickr.min.js`, true)
+        return Formio.requireLibrary('flatpickr', 'flatpickr', `${CDN_URL}/flatpickr.min.js`, true)
           .then((Flatpickr) => {
             if (this.component.shortcutButtons?.length && ShortcutButtonsPlugin) {
               this.initShortcutButtonsPlugin(ShortcutButtonsPlugin);
@@ -208,8 +207,8 @@ export default class CalendarWidget extends InputWidget {
               if (locale && locale.length >= 2 && locale !== 'en') {
                 return Formio.requireLibrary(
                   `flatpickr-${locale}`,
-                  `${locale}`,
-                  `${CDN_FLATPICKR_LOCALE_URL}/${locale}.min.js`,
+                  `flatpickr-${locale}`,
+                  `${CDN_URL}/l10n/flatpickr-${locale}.js`,
                   true).then(() => this.initFlatpickr(Flatpickr));
               }
               else {
@@ -348,10 +347,6 @@ export default class CalendarWidget extends InputWidget {
       return momentDate(date, this.valueFormat, this.timezone).format(convertFormatToMoment(format));
     }
     return moment(date).format(convertFormatToMoment(format));
-  }
-
-  get flatpickrType() {
-    return 'flatpickr';
   }
 
   /**
