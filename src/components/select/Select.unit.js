@@ -25,6 +25,7 @@ import {
   comp14,
   comp15,
   comp16,
+  comp17
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -878,6 +879,19 @@ describe('Select Component', () => {
         }, 200);
       }, 200);
     }).catch(done);
+  });
+
+  it('Should provide correct items for Resource DataSrc Type and Entire Object Value Property', () => {
+    return Harness.testCreate(SelectComponent, comp17).then((component) => {
+      const testItems = [
+        { name: 'Jone' },
+        { name: 'Mary' },
+        { name: 'Sally' }
+      ];
+      component.setItems(testItems.map(item => ({ data: item })));
+      component.addCurrentChoices(['{"name": "Jone"}'], testItems.map(item => ({ data: item })));
+      assert.equal(component.selectOptions.length, 3);
+     });
   });
 
   it('Should show async custom values and be able to set submission', (done) => {
