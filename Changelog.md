@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.10-rc.3
+### Changed
+ - FIO-5430 Fixed datetime not being initialized when there are multiple…
+ - FIO-5430 Fixed datetime not being initialized when there are multiple…
+
 ## 4.14.10-rc.2
 ### Changed
  - FIO-5674: fixed broken positioning of the data table on the submissio…
