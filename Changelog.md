@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.10-rc.2
+### Changed
+ - FIO-5674: fixed broken positioning of the data table on the submissio…
+ - FIO-4194: fixed submit button for PDF in FVP
+
 ## 4.14.10-rc.1
 ### Changed
  - FIO-5418: Fixes checkbox values in edit grid not translated
