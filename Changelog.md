@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5431: Fixed Quill editor losing data after switching to source view and back.
  - FIO-5674: fixed broken positioning of the data table on the submission
  - FIO-4194: fixed submit button for PDF in FVP
+ - FIO-5430: Fixed datetime not being initialized when there are multiple ones on the form while translations are enabled
 
 ## 4.15.0-rc.14
 ### Added
