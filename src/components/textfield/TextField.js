@@ -54,7 +54,7 @@ export default class TextFieldComponent extends Input {
     else {
       info.attr.type = (this.component.inputType === 'password') ? 'password' : 'text';
     }
-    info.changeEvent = 'input';
+    info.changeEvent = (this.component.applyMaskOn === 'blur') ? 'blur' : 'input';
     return info;
   }
 
