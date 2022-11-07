@@ -184,6 +184,7 @@ import {
   comp3,
   comp4,
   comp5,
+  comp6,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
@@ -273,6 +274,15 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
   it(&apos;Should build a data grid component&apos;, () =&gt; {
     return Harness.testCreate(DataGridComponent, comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 3);
+    });
+  });
+
+  it(&apos;Should build a data grid component with formio-component-datagrid class property&apos;, () =&gt; {
+    return Harness.testCreate(DataGridComponent, comp6).then((component) =&gt; {
+      const element = component.element.querySelector(&apos;.formio-component&apos;);
+      setTimeout(() =&gt; {
+        assert.deepEqual(element.className.includes(&apos;formio-component-datagrid&apos;), true);
+      }, 200);
     });
   });
 

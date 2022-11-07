@@ -213,6 +213,27 @@ describe(&apos;File Component&apos;, () =&gt; {
     });
   });
 
+  it(&apos;Should hide loader after loading process&apos;, () =&gt; {
+    return Harness.testCreate(FileComponent, comp1).then((component) =&gt; {
+      const parentNode = document.createElement(&apos;div&apos;);
+      const element = document.createElement(&apos;div&apos;);
+      parentNode.appendChild(element);
+      component.build(element);
+      Harness.testElements(component, &apos;div.loader-wrapper&apos;, 1);
+      component.setValue([
+        {
+          storage: &apos;base64&apos;,
+          name: &apos;IMG_5235-ce0abe18-5d3e-4ab4-84ca-b3e06684bc86.jpg&apos;,
+          url: &apos;data:image/jpg;base64,AAAAIGZ0eXBoZWljAAAAAG1pZjF&apos;,
+          size: 1159732,
+          type: &apos;image/jpeg&apos;,
+          originalName: &apos;IMG_5235.jpg&apos;,
+        }
+      ]);
+      Harness.testElements(component, &apos;div.loader-wrapper&apos;, 0);
+    });
+  });
+
   it(&apos;Should create a multiple File Component&apos;, () =&gt; {
     comp1.multiple = true;
     return Harness.testCreate(FileComponent, comp1).then((component) =&gt; {

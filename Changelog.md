@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.11-rc.1
+### Changed
+ - FIO-4824: added overflow property to the datagrid component
+ - FIO-4777: Fixed issue where a loader icon is showing when file compon…
+ - FIO-5697: fixed PDF is not showing borders in Data Grids
+ - FIO-4777 added test
+
 ## 4.14.10
 ### Changed
  - Official Release

@@ -3480,6 +3480,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datagrid/fixtures/comp6.js",
+    "file/src/components/datagrid/fixtures/comp6.js.html",
+    "src/components/datagrid/fixtures/comp6.js",
+    "file"
+  ],
+  [
     "src/components/datagrid/fixtures/index.js",
     "file/src/components/datagrid/fixtures/index.js.html",
     "src/components/datagrid/fixtures/index.js",

@@ -3344,6 +3344,13 @@ body.formio-dialog-open {
   transition: opacity 200ms linear, visibility 0ms 200ms;
 }
 
+.formio-component-datagrid {
+  overflow-x: auto;
+}
+.formio-component-datagrid .datagrid-table, .formio-component-datagrid .datagrid-table td, .formio-component-datagrid .datagrid-table th {
+  border: 2px solid #ddd !important;
+  padding: 10px;
+}
 .formio-component-datagrid .datagrid-table > tbody > tr > td:last-child {
   position: relative;
 }
