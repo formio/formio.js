@@ -78,18 +78,13 @@ export default class FileComponent extends Field {
       hasWarning: !fileReaderSupported || !formDataSupported || !progressSupported,
       progress: progressSupported,
     };
-    // Called when our files are ready.
-    this.filesReady = new NativePromise((resolve, reject) => {
-      this.filesReadyResolve = resolve;
-      this.filesReadyReject = reject;
-    });
     this.cameraMode = false;
     this.statuses = [];
     this.fileDropHidden = false;
   }
 
   get dataReady() {
-    return this.filesReady;
+    return this.filesReady || NativePromise.resolve();
   }
 
   get defaultSchema() {
@@ -483,6 +478,10 @@ export default class FileComponent extends Field {
     const fileService = this.fileService;
     if (fileService) {
       const loadingImages = [];
+      this.filesReady = new NativePromise((resolve, reject) => {
+        this.filesReadyResolve = resolve;
+        this.filesReadyReject = reject;
+      });
       this.refs.fileImage.forEach((image, index) => {
         loadingImages.push(this.loadImage(this.dataValue[index]).then((url) => (image.src = url)));
       });
