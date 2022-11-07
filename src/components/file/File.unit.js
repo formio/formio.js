@@ -41,6 +41,27 @@ describe('File Component', () => {
     });
   });
 
+  it('Should hide loader after loading process', () => {
+    return Harness.testCreate(FileComponent, comp1).then((component) => {
+      const parentNode = document.createElement('div');
+      const element = document.createElement('div');
+      parentNode.appendChild(element);
+      component.build(element);
+      Harness.testElements(component, 'div.loader-wrapper', 1);
+      component.setValue([
+        {
+          storage: 'base64',
+          name: 'IMG_5235-ce0abe18-5d3e-4ab4-84ca-b3e06684bc86.jpg',
+          url: 'data:image/jpg;base64,AAAAIGZ0eXBoZWljAAAAAG1pZjF',
+          size: 1159732,
+          type: 'image/jpeg',
+          originalName: 'IMG_5235.jpg',
+        }
+      ]);
+      Harness.testElements(component, 'div.loader-wrapper', 0);
+    });
+  });
+
   it('Should create a multiple File Component', () => {
     comp1.multiple = true;
     return Harness.testCreate(FileComponent, comp1).then((component) => {
