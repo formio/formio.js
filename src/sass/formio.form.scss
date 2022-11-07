@@ -946,6 +946,8 @@ body.formio-dialog-open {
 }
 
 .formio-component-datagrid {
+  overflow-x: auto;
+
   .datagrid-table {
     &, td, th {
       border: 2px solid #ddd !important;
