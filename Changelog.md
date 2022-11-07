@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5674: fixed broken positioning of the data table on the submission
  - FIO-4194: fixed submit button for PDF in FVP
  - FIO-5430: Fixed datetime not being initialized when there are multiple ones on the form while translations are enabled
+ - FIO-4777: Fixed issue where a loader icon is showing when file component is used in PDF first forms.
+ - FIO-4777: added test
+ - FIO-5697: fixed PDF is not showing borders in Data Grids
+ - FIO-4824: added overflow property to the datagrid component
 
 ## 4.15.0-rc.14
 ### Added
