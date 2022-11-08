@@ -13,6 +13,7 @@ import {
   comp4,
   comp5,
   comp6,
+  comp7,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
@@ -400,6 +401,17 @@ describe('DataGrid Panels', () => {
           lastName: ''
         }
       ]);
+    });
+  });
+
+  it('Should have unique IDs inside data grid', () => {
+    return Harness.testCreate(DataGridComponent, comp6).then((component) => {
+      component.addRow();
+      const idArr = [];
+      component.components.forEach((row, i) => {
+        idArr[i] = row.element.component.components[0].id;
+      });
+      assert.equal(idArr[0] !== idArr[1], true);
     });
   });
 });
