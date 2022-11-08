@@ -426,6 +426,7 @@ describe('DataGrid Panels', () => {
     });
   });
 
+  // Comp 7 Test
   it('Should have unique IDs inside data grid', () => {
     return Harness.testCreate(DataGridComponent, comp7).then((component) => {
       component.addRow();
