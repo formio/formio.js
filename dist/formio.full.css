@@ -3279,6 +3279,10 @@ body.formio-dialog-open {
   margin-bottom: 0;
 }
 
+.formio-component-htmlelement {
+  word-wrap: break-word;
+}
+
 .editgrid-table-container {
   margin-bottom: 10px;
   max-width: calc(100vw - 140px);
@@ -4145,7 +4149,7 @@ span[role=link] {
 
 .builder-sidebar_scroll {
   position: sticky;
-  top: 15px;
+  top: 30px;
   max-height: 100vh;
   overflow-y: auto;
 }

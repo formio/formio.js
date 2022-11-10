@@ -4,7 +4,22 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.14]
+## [Unreleased: 4.15.0-rc.15]
+### Fixed
+ - Revert change to always execute apis on pdf output.
+ - FIO-5431: Fixed Quill editor losing data after switching to source view and back.
+ - FIO-5674: fixed broken positioning of the data table on the submission
+ - FIO-4194: fixed submit button for PDF in FVP
+ - FIO-5430: Fixed datetime not being initialized when there are multiple ones on the form while translations are enabled
+ - FIO-4777: Fixed issue where a loader icon is showing when file component is used in PDF first forms.
+ - FIO-4777: added test
+ - FIO-5697: fixed PDF is not showing borders in Data Grids
+ - FIO-4824: added overflow property to the datagrid component
+
+## 4.15.0-rc.14
+### Added
+ - FIO-5272: added URL dataSrc for Radio , Select boxes
+
 ### Fixed
  - FIO-4799: fixed property value is not set by default and causes the values as 'undefined'
  - FIO-2505: Fixes Signature changing size when inside DataGrid on new row adding
@@ -38,7 +53,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4392: fixed Help links
  - FIO-5370: Fixes quick inline embed section broken because of wrong embed form url
  - FIO-5082: Label adjustments for PDF condensed mode
-
+ - FIO-4943: Fixed an issue where Content component displays wrongly in the build mode when no content is entered
+ - FIO-4153: fixed when calendar widget local settings not saving
+ - FIO-3448: Fixes an issue where Keep Overlay Aspect Ratio Signature option does not work in PDF forms
+ - FIO-5234: avoid lazy load flatpickr if it is already available in the window
+ - FIO-5399: Make formio use flatpickr script from test cdn for non-production builds
+ - FIO-5436: Fix incorrect signature size setting
+ - FIO-5266: Fixes flatpickr initialization happend prior to localization script loaded and calendar translations not applied
+ - FIO-5301: Added localization to the builder components search field
+ - FIO-5418: Fixes checkbox values in edit grid not translated
+ - FIO-5417: Fixes multiple calendar widgets could be opened at same time
+ - FIO-2971: fixed an issue table tooltip text of clone row components option is not fully visible
+ - FIO-4764: Fix date format that prevent saving in ISO standard
+ - FIO-5415 Fixed component settings not fitting in in some cases
+ - FIO-3308: fixed an issue where all checkboxes (radio type) are displayed as selected in email submissions when user selects just one
+ - FIO-5044: Removed Dropbox for Next Portal
+ - FIO-5069: API driven dataTable
+ - FIO-5455: Fixes context variables not available in datetime custom disabled dates config
+ - FIO-5544: added sticky property to the form components when building forms
+ - Upgrade vanilla text mask and text-mask addons. 
+ - FIO-3814: fixed fetch data several times when RefreshOnBlur
+ 
 ## 4.15.0-rc.13
 ### Added
  - FIO-4836: hash was added to file

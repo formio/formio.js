@@ -20,9 +20,10 @@ import _ from 'lodash';
 
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
-const CDN_URL = 'https://cdn.form.io/';
+const CDN_URL = (Formio?.version || '').includes('rc')
+  ? 'https://cdn.test-form.io/flatpickr-formio'
+  : 'https://cdn.form.io/flatpickr-formio';
 const JSDELIVR_CDN_URL = 'https://cdn.jsdelivr.net';
-const CDN_FLATPICKR_LOCALE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/l10n';
 const SHORTCUT_BUTTONS_PLUGIN_URL = '/npm/shortcut-buttons-flatpickr@0.1.0/dist/';
 const SHORTCUT_BUTTONS_CSS = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}themes/light.min.css`;
 const SHORTCUT_BUTTONS_PLUGIN = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}shortcut-buttons-flatpickr.min.js`;
@@ -66,7 +67,6 @@ export default class CalendarWidget extends InputWidget {
     }
     if (!this.settings.enableTime) {
       this.settings.format = this.settings.format.replace(/ hh:mm a$/g, '');
-      this.settings.dateFormat = this.settings.format;
     }
     else if (this.settings.time_24hr) {
       this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
@@ -165,8 +165,14 @@ export default class CalendarWidget extends InputWidget {
     };
 
     Formio.requireLibrary('flatpickr-css', 'flatpickr', [
-      { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }
+      { type: 'styles', src: `${CDN_URL}/flatpickr.min.css` }
     ], true);
+
+    const flatpickr = _.get(window, 'flatpickr');
+
+    if (flatpickr && this._input) {
+      return this.initFlatpickr(flatpickr);
+    }
 
     if (this.component.shortcutButtons) {
       this.component.shortcutButtons = this.component.shortcutButtons.filter((btn) => btn.label && btn.onClick);
@@ -187,7 +193,7 @@ export default class CalendarWidget extends InputWidget {
         }
       })
       .then((ShortcutButtonsPlugin) => {
-        return Formio.requireLibrary('flatpickr', 'flatpickr', `${CDN_URL}${this.flatpickrType}/flatpickr.min.js`, true)
+        return Formio.requireLibrary('flatpickr', 'flatpickr', `${CDN_URL}/flatpickr.min.js`, true)
           .then((Flatpickr) => {
             if (this.component.shortcutButtons?.length && ShortcutButtonsPlugin) {
               this.initShortcutButtonsPlugin(ShortcutButtonsPlugin);
@@ -202,10 +208,8 @@ export default class CalendarWidget extends InputWidget {
                 return Formio.requireLibrary(
                   `flatpickr-${locale}`,
                   `flatpickr-${locale}`,
-                  `${CDN_FLATPICKR_LOCALE_URL}/${locale}.min.js`,
-                  false,
-                  () => this.initFlatpickr(Flatpickr)
-                );
+                  `${CDN_URL}/l10n/flatpickr-${locale}.js`,
+                  true).then(() => this.initFlatpickr(Flatpickr));
               }
               else {
                 this.initFlatpickr(Flatpickr);
@@ -258,17 +262,17 @@ export default class CalendarWidget extends InputWidget {
   }
 
   addSuffix(suffix) {
-    this.addEventListener(suffix, 'click', (event) => {
-      event.stopPropagation();
-
-      if (this.calendar) {
-        if (!this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
-          this.calendar.open();
+    this.addEventListener(suffix, 'click', () => {
+      setTimeout(() => {
+        if (this.calendar) {
+          if (!this.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
+            this.calendar.open();
+          }
+          else if (this.calendar.isOpen) {
+            this.calendar.close();
+          }
         }
-        else if (this.calendar.isOpen) {
-          this.calendar.close();
-        }
-      }
+      }, 0);
     });
 
     return suffix;
@@ -343,10 +347,6 @@ export default class CalendarWidget extends InputWidget {
       return momentDate(date, this.valueFormat, this.timezone).format(convertFormatToMoment(format));
     }
     return moment(date).format(convertFormatToMoment(format));
-  }
-
-  get flatpickrType() {
-    return 'flatpickr';
   }
 
   /**
