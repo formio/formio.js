@@ -1640,6 +1640,10 @@ div[data-oembed-url] {
   font-weight: normal;
 }
 
+.ace_editor, .ace_editor div, .ace_editor span {
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", "Droid Sans Mono", "Consolas", monospace !important;
+}
+
 span[role=link] {
   text-decoration: underline;
   cursor: pointer;
