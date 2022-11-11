@@ -181,6 +181,7 @@ export default class WizardBuilder extends WebformBuilder {
       display: 'form',
       type: 'form',
       components: page ? [page] : [],
+      controller: this.form?.controller || null
     }, { keepAsReference: true });
     return this.redraw();
   }

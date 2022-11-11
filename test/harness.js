@@ -31,14 +31,14 @@ function onNext(cmp, event, cb) {
 }
 
 const Harness = {
-  builderBefore(done, options = {}) {
+  builderBefore(done, options = {}, wizard) {
     var html;    // Unsure what _your code_ needs here -- using `undefined` to trigger default value
     var opt = { url: 'http://localhost/' };
     this.jsdom = require('jsdom-global')(html, opt);
     window.confirm = () => true;
     formBuilderElement = document.createElement('div');
     document.body.appendChild(formBuilderElement);
-    formBuilder = new FormBuilder(formBuilderElement, { display: 'form', components: [] }, options);
+    formBuilder = new FormBuilder(formBuilderElement, { display: wizard ? 'wizard' : 'form', components: [] }, options);
     formBuilder.instance.ready.then(() => done());
   },
 

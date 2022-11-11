@@ -35,8 +35,26 @@ import wizardNavigateOrSaveOnEnter from '../test/forms/wizardNavigateOrSaveOnEnt
 import wizardWithFieldsValidationChild from '../test/forms/wizardWithFieldsValidationChild';
 import wizardWithFieldsValidationParent from '../test/forms/wizardWithFieldsValidationParent';
 import nestedConditionalWizard from '../test/forms/nestedConditionalWizard';
+import formWithFormController from '../test/forms/formWithFormController';
+import { fastCloneDeep } from './utils/utils';
 
 describe('Wizard tests', () => {
+  it('Should execute form controller', function(done) {
+    const form = fastCloneDeep(formWithFormController);
+    form.display = 'wizard';
+    Formio.createForm(form).then((form) => {
+      setTimeout(() => {
+        const textField = form.getComponent('textField');
+
+        assert.equal(textField.getValue(), 'Hello World');
+        assert.equal(textField.disabled, true);
+        assert.equal(form.components[0].disabled, true);
+
+        done();
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
   it('Should correctly reset values', function(done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
