@@ -177,6 +177,9 @@ export default class DateTimeComponent extends Input {
 
   getValueAsString(value) {
     const format = FormioUtils.convertFormatToMoment(this.component.format);
+    if (value && !this.attached && this.submissionTimezone) {
+      return FormioUtils.momentDate(value, format, this.submissionTimezone).format(format);
+    }
     return (value ? moment(value).format(format) : value) || '';
   }
 }
