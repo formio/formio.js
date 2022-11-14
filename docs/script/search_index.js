@@ -3666,6 +3666,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datetime/fixtures/comp10.js",
+    "file/src/components/datetime/fixtures/comp10.js.html",
+    "src/components/datetime/fixtures/comp10.js",
+    "file"
+  ],
+  [
     "src/components/datetime/fixtures/comp2.js",
     "file/src/components/datetime/fixtures/comp2.js.html",
     "src/components/datetime/fixtures/comp2.js",
