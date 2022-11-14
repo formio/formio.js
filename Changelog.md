@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5697: fixed PDF is not showing borders in Data Grids
  - FIO-4824: added overflow property to the datagrid component
  - FIO-5792: fixed Caret position for ACE editor
+ - FIO-5233: fixed an issue where users in different timezones have diff
 
 ## 4.15.0-rc.14
 ### Added
