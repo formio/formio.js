@@ -12,7 +12,8 @@ import {
   comp6,
   comp7,
   comp8,
- // comp9
+ // comp9,
+  comp10,
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -598,6 +599,35 @@ describe('DateTime Component', () => {
           done();
         }, 300);
       }, 300);
+    }).catch(done);
+  });
+
+  it('Should provide correct values with time after submission', (done) => {
+    const form = _.cloneDeep(comp10);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      const textField = form.getComponent('textField');
+
+      dateTime.setValue('2022-04-01T14:00:00.000');
+      textField.setValue('2022-04-01T14:00:00.000');
+
+      setTimeout(() => {
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          const input1 = dateTime.element.querySelector('.input');
+          const input2 = textField.element.querySelector('.input');
+
+          assert.equal(input1.value, '2022-04-01 02:00 PM');
+          assert.equal(input2.value, '2022-04-01 02:00 PM');
+          done();
+        }, 200);
+      }, 200);
     }).catch(done);
   });
 
