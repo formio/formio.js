@@ -198,6 +198,10 @@ export default class RadioComponent extends Field {
     }
 
     if (!flags || !flags.modified || !this.isRadio) {
+      if (changed) {
+        this.previousValue = this.dataValue;
+      }
+
       return changed;
     }
 
