@@ -512,7 +512,7 @@ export default class CalendarWidget extends InputWidget {
 
       if (!(isIEBrowser && !relatedTarget) && !this.isCalendarElement(relatedTarget)) {
         const inputValue = this.calendar.input.value;
-        const dateValue = inputValue && this.settings.enableTime ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
+        const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
 
         this.calendar.setDate(dateValue, true, this.settings.altFormat);
       }
