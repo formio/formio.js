@@ -14,7 +14,8 @@ import {
   comp8,
  // comp9,
   comp10,
-  comp11
+  comp11,
+  comp12
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -83,6 +84,30 @@ describe('DateTime Component', () => {
         assert.equal(dateTime.getValue().startsWith(expectedValueStart), true);
         assert.equal(dateTime.dataValue.startsWith(expectedValueStart), true);
 
+        document.innerHTML = '';
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it('Should allow manual input for date with full month format (like MMMM)', (done) => {
+    const form = _.cloneDeep(comp12);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      const blurEvent = new Event('blur');
+
+      const value = 'April 22';
+      const expectedValue = 'April/22';
+      const input = dateTime.element.querySelector('.input');
+      input.value = value;
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() => {
+        // assert.equal(dateTime.getValue().startsWith(expectedValueStart), true);
+        assert.equal(input.value, expectedValue);
+console.log(22222, input.value, dateTime.getValue());
         document.innerHTML = '';
         done();
       }, 300);

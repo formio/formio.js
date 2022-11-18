@@ -477,7 +477,9 @@ export default class CalendarWidget extends InputWidget {
       }
     });
 
-    if (!this.settings.readOnly) {
+    const excludedFromMaskFormats = ['MMMM'];
+
+    if (!this.settings.readOnly && !_.some(excludedFromMaskFormats, format => _.includes(this.settings.format, format))) {
       // Enforce the input mask of the format.
       this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
     }
