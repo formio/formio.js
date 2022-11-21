@@ -567,6 +567,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     this.editorsReady = [];
     this.updateSizes.forEach(updateSize => this.removeEventListener(window, 'resize', updateSize));
     this.updateSizes = [];
+    super.detach();
   }
 
   getValue() {

@@ -267,13 +267,13 @@ export default class FormComponent extends Component {
     });
   }
 
-  destroy() {
+  destroy(all = false) {
     if (this.subForm) {
-      this.subForm.destroy();
+      this.subForm.destroy(all);
       this.subForm = null;
       this.subFormReady = null;
     }
-    super.destroy();
+    super.destroy(all);
   }
 
   redraw() {

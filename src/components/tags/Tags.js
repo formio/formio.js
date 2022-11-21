@@ -56,7 +56,9 @@ export default class TagsComponent extends Input {
     if (!element) {
       return;
     }
-    element.setAttribute('dir', this.i18next.dir());
+    if (this.i18next) {
+      element.setAttribute('dir', this.i18next.dir());
+    }
     if (this.choices) {
       this.choices.destroy();
     }
@@ -91,11 +93,11 @@ export default class TagsComponent extends Input {
   }
 
   detach() {
-    super.detach();
     if (this.choices) {
       this.choices.destroy();
       this.choices = null;
     }
+    super.detach();
   }
 
   normalizeValue(value) {

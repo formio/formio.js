@@ -398,6 +398,7 @@ export default class NestedComponent extends Field {
    */
   addComponents(data, options) {
     data = data || this.data;
+    this.components = this.components || [];
     options = options || this.options;
     if (options.components) {
       this.components = options.components;
@@ -418,6 +419,7 @@ export default class NestedComponent extends Field {
    */
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
+    this.components = this.components || [];
     if (this.options.parentPath) {
       component.shouldIncludeSubFormPath = true;
     }

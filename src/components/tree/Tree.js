@@ -65,11 +65,10 @@ export default class TreeComponent extends NestedComponent {
   }
 
   destroy() {
-    super.destroy();
-
     if (!this.builderMode) {
       this.removeComponents(this._viewComponents);
     }
+    super.destroy();
   }
 
   createComponents(data, node) {

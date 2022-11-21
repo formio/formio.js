@@ -494,9 +494,26 @@ export default class Component extends Base {
     this.disabled = this.shouldDisabled;
   }
 
+  teardown() {
+    if (this.element) {
+      delete this.element.component;
+      delete this.element;
+    }
+    delete this._currentForm;
+    delete this.parent;
+    delete this.root;
+    if (this.options) {
+      delete this.options.root;
+      delete this.options.parent;
+      delete this.options.i18next;
+    }
+    super.teardown();
+  }
+
   destroy() {
     super.destroy();
     this.detach();
+    this.teardown();
   }
 
   get shouldDisabled() {
@@ -1006,7 +1023,7 @@ export default class Component extends Base {
     }
 
     this.attached = true;
-    this.element = element;
+    this.setElement(element);
     element.component = this;
 
     // If this already has an id, get it from the dom. If SSR, it could be different from the initiated id.
@@ -1127,6 +1144,17 @@ export default class Component extends Base {
    * Remove all event handlers.
    */
   detach() {
+    // First iterate through each ref and delete the component so there are no dangling component references.
+    _.each(this.refs, (ref) => {
+      if (typeof ref === NodeList) {
+        ref.forEach((elem) => {
+          delete elem.component;
+        });
+      }
+      else if (ref) {
+        delete ref.component;
+      }
+    });
     this.refs = {};
     this.removeEventListeners();
     this.detachLogic();
@@ -1217,10 +1245,18 @@ export default class Component extends Base {
     return this.options.readOnly && this.options.viewAsHtml;
   }
 
+  setElement(element) {
+    if (this.element) {
+      delete this.element.component;
+      delete this.element;
+    }
+    this.element = element;
+  }
+
   createViewOnlyElement() {
-    this.element = this.ce('dl', {
+    this.setElement(this.ce('dl', {
       id: this.id
-    });
+    }));
 
     if (this.element) {
       // Ensure you can get the component info from the element.
@@ -1515,12 +1551,15 @@ export default class Component extends Base {
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
     this.element.outerHTML = this.sanitize(this.render());
-    this.element = parent.children[index];
+    this.setElement(parent.children[index]);
     return this.attach(this.element);
   }
 
   rebuild() {
-    this.destroy();
+    // Only destroy if there was a previously attached component.
+    if (this.attached) {
+      this.destroy();
+    }
     this.init();
     return this.redraw();
   }

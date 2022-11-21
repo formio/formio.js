@@ -38,6 +38,9 @@ export class Form extends Base {
 
     this.instance = null;
     if (args[0] instanceof HTMLElement) {
+      if (this.element) {
+        delete this.element.component;
+      }
       this.element = args[0];
       this.options = args[2] || {};
       this.options.events = this.events;
@@ -156,6 +159,9 @@ export class Form extends Base {
 
     // A redraw has occurred so save off the new element in case of a setDisplay causing a rebuild.
     return result.then(() => {
+      if (this.element) {
+        delete this.element.component;
+      }
       this.element = this.instance.element;
       return this.instance;
     });
@@ -289,6 +295,9 @@ export class Form extends Base {
   attach(element) {
     if (!this.instance) {
       return NativePromise.reject('Form not ready. Use form.ready promise');
+    }
+    if (this.element) {
+      delete this.element.component;
     }
     this.element = element;
     return this.instance.attach(this.element)

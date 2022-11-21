@@ -373,9 +373,9 @@ export default class CalendarWidget extends InputWidget {
   }
 
   destroy() {
-    super.destroy();
     if (this.calendar) {
       this.calendar.destroy();
     }
+    super.destroy();
   }
 }

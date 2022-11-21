@@ -1,6 +1,5 @@
 import compareVersions from 'compare-versions';
 import { EventEmitter2 as EventEmitter } from 'eventemitter2';
-import i18next from 'i18next';
 import _ from 'lodash';
 import moment from 'moment';
 import NativePromise from 'native-promise-only';
@@ -28,7 +27,7 @@ function getOptions(options) {
   options = _.defaults(options, {
     submitOnEnter: false,
     iconset: getIconSet((options && options.icons) ? options.icons : Formio.icons),
-    i18next,
+    i18next: null,
     saveDraft: false,
     alwaysDirty: false,
     saveDraftThrottle: 5000
@@ -69,7 +68,7 @@ export class Webform extends NestedDataComponent {
     }
     super(null, getOptions(options));
 
-    this.element = element;
+    this.setElement(element);
 
     // Keep track of all available forms globally.
     Formio.forms[this.id] = this;
@@ -276,6 +275,9 @@ export class Webform extends NestedDataComponent {
    * @return {Promise}
    */
   set language(lang) {
+    if (!this.i18next) {
+      return NativePromise.resolve();
+    }
     return new NativePromise((resolve, reject) => {
       this.options.language = lang;
       if (this.i18next.language === lang) {
@@ -318,9 +320,11 @@ export class Webform extends NestedDataComponent {
    * @return {*}
    */
   addLanguage(code, lang, active = false) {
-    this.i18next.addResourceBundle(code, 'translation', lang, true, true);
-    if (active) {
-      this.language = code;
+    if (this.i18next) {
+      this.i18next.addResourceBundle(code, 'translation', lang, true, true);
+      if (active) {
+        this.language = code;
+      }
     }
   }
 
@@ -329,6 +333,9 @@ export class Webform extends NestedDataComponent {
    * @returns {*}
    */
   localize() {
+    if (!this.i18next) {
+      return NativePromise.resolve(null);
+    }
     if (this.i18next.initialized) {
       return NativePromise.resolve(this.i18next);
     }
@@ -964,18 +971,18 @@ export class Webform extends NestedDataComponent {
     });
   }
 
-  destroy(deleteFromGlobal = false) {
+  teardown() {
+    delete Formio.forms[this.id];
+    super.teardown();
+  }
+
+  destroy() {
     this.off('submitButton');
     this.off('checkValidity');
     this.off('requestUrl');
     this.off('resetForm');
     this.off('deleteSubmission');
     this.off('refreshData');
-
-    if (deleteFromGlobal) {
-      delete Formio.forms[this.id];
-    }
-
     return super.destroy();
   }
 
@@ -1015,7 +1022,7 @@ export class Webform extends NestedDataComponent {
   }
 
   attach(element) {
-    this.element = element;
+    this.setElement(element);
     this.loadRefs(element, { webform: 'single' });
     const childPromise = this.attachComponents(this.refs.webform);
     this.addEventListener(this.element, 'keydown', this.executeShortcuts);
