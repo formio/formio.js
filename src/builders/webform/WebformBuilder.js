@@ -33,7 +33,7 @@ export default class WebformBuilder extends Component {
 
     super(null, options);
 
-    this.element = element;
+    this.setElement(element);
 
     this.builderHeight = 0;
     this.schemas = {};
@@ -1564,11 +1564,11 @@ export default class WebformBuilder extends Component {
     return super.init();
   }
 
-  destroy(deleteFromGlobal) {
+  destroy(all = false) {
     if (this.webform.initialized) {
-      this.webform.destroy(deleteFromGlobal);
+      this.webform.destroy(all);
     }
-    super.destroy(deleteFromGlobal);
+    super.destroy(all);
   }
 
   addBuilderGroup(name, group) {

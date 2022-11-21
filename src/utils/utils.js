@@ -35,7 +35,9 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, moment };
+
+export * as moment from 'moment-timezone/moment-timezone';
+export { jsonLogic };
 
 /**
  * Evaluate a method.

@@ -85,7 +85,7 @@ export default class NestedComponent extends Field {
      * @param {Component} component - The component to remove from the components.
      * @param {Array<Component>} components - An array of components to remove this component from.
      */
-    removeComponent(component: any, components: Array<any>): void;
+    removeComponent(component: any, components: Array<any>, all?: boolean): void;
     /**
      * Removes a component provided the API key of that component.
      *
@@ -104,7 +104,7 @@ export default class NestedComponent extends Field {
     removeComponentById(id: string, fn: Function): null;
     restoreComponentsContext(): void;
     isLastPage(): boolean;
-    destroyComponents(): void;
+    destroyComponents(all?: boolean): void;
     setNestedValue(component: any, value: any, flags?: {}): any;
 }
 import Field from "../field/Field";

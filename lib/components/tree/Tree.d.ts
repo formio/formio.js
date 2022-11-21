@@ -15,7 +15,7 @@ export default class TreeComponent extends NestedComponent {
         root: Component | TreeComponent;
     };
     createComponents(data: any, node: any): any;
-    removeComponents(components: any): any;
+    removeComponents(components: any, all?: boolean): any;
     renderTree(node?: {}, odd?: boolean): any;
     renderChildNodes(nodes: any[], odd: any): any[];
     renderEdit(node?: {}): any;

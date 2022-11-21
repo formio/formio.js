@@ -904,7 +904,9 @@ export default class SelectComponent extends Field {
 
     const tabIndex = input.tabIndex;
     this.addPlaceholder();
-    input.setAttribute('dir', this.i18next.dir());
+    if (this.i18next) {
+      input.setAttribute('dir', this.i18next.dir());
+    }
     if (this.choices) {
       this.choices.destroy();
     }
@@ -1499,11 +1501,11 @@ export default class SelectComponent extends Field {
   }
 
   detach() {
-    super.detach();
     if (this.choices) {
       this.choices.destroy();
       this.choices = null;
     }
+    super.detach();
   }
 
   focus() {
