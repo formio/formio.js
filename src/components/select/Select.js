@@ -901,6 +901,7 @@ export default class SelectComponent extends ListComponent {
     this.attachRefreshOnBlur();
 
     if (this.component.widget === 'html5') {
+      this.addFocusBlurEvents(input);
       this.triggerUpdate(null, true);
 
       if (this.visible) {
@@ -942,10 +943,10 @@ export default class SelectComponent extends ListComponent {
       else {
         this.focusableElement = this.choices.containerInner.element;
         this.choices.containerOuter.element.setAttribute('tabIndex', '-1');
-        if (choicesOptions.searchEnabled) {
-          this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
-        }
+        this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
       }
+
+      this.addFocusBlurEvents(this.focusableElement);
 
       if (this.itemsFromUrl) {
         this.scrollList = this.choices.choiceList.element;

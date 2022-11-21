@@ -541,6 +541,8 @@ export default class AddressComponent extends ContainerComponent {
           }
         });
       });
+
+      _.each(this.refs.searchInput || [], el => this.addFocusBlurEvents(el));
     }
 
     return result;

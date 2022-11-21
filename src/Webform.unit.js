@@ -49,7 +49,7 @@ import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 import { fastCloneDeep } from '../lib/utils/utils';
 import dataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
-
+import checkBlurFocusEventForm from '../test/forms/checkBlurFocusEventForm';
 import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
 import calculatedValue from '../test/forms/calculatedValue';
 import conditionalDataGridWithTableAndRadio from '../test/forms/conditionalDataGridWithTableAndRadio';
@@ -67,8 +67,8 @@ import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithIni
 import * as FormioUtils from './utils/utils';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
 import optionalSanitize from '../test/forms/optionalSanitize';
-import formWithCheckboxRadioaType from '../test/forms/formWithCheckboxRadioType';
 import formWithRadioInsideDataGrid from '../test/forms/formWithRadioInsideDataGrid';
+import formWithCheckboxRadioType from '../test/forms/formWithCheckboxRadioType';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -89,8 +89,55 @@ describe('Webform tests', function() {
     }).catch((err) => done(err));
   });
 
-  it('Should return correct strign value for checkbox radio type', function(done) {
-    Formio.createForm(formWithCheckboxRadioaType).then((form) => {
+  it('Should fire blur and focus events for address and select components', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(checkBlurFocusEventForm).then(() => {
+      let blurEvents = 0;
+      let focusEvents = 0;
+      form.on('blur', () => {
+        blurEvents = blurEvents + 1;
+      });
+
+      form.on('focus', () => {
+        focusEvents = focusEvents + 1;
+      });
+
+      const focusEvent = new Event('focus');
+      const blurEvent = new Event('blur');
+
+      const selectChoices = form.getComponent('selectChoices');
+      selectChoices.focusableElement.dispatchEvent(focusEvent);
+
+      setTimeout(() => {
+        selectChoices.focusableElement.dispatchEvent(blurEvent);
+
+        const selectHtml = form.getComponent('selectHtml');
+        selectHtml.refs.selectContainer.dispatchEvent(focusEvent);
+
+        setTimeout(() => {
+          selectHtml.refs.selectContainer.dispatchEvent(blurEvent);
+
+          const address = form.getComponent('address');
+          address.refs.searchInput[0].dispatchEvent(focusEvent);
+
+          setTimeout(() => {
+            address.refs.searchInput[0].dispatchEvent(blurEvent);
+
+            setTimeout(() => {
+              assert.equal(focusEvents, 3);
+              assert.equal(blurEvents, 3);
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should return correct string value for checkbox radio type', function(done) {
+    Formio.createForm(formWithCheckboxRadioType).then((form) => {
       form.setValue({ data: { radio: 'value1', checkbox: true } });
       setTimeout(() => {
         const stringValues = {
