@@ -61,6 +61,9 @@ export function embed(config = {}) {
       before: () => {},
       after: () => {}
     }, config);
+    if (config.addPremiumLib) {
+      config.addPremiumLib(config.libs, scriptSrc);
+    }
 
     /**
      * Print debug statements.
@@ -340,9 +343,17 @@ export function embed(config = {}) {
         addStyles(config.libs.fontawesome.css, true);
         addStyles(config.libs.bootstrap.css);
       }
+      else if (config.libs.premium) {
+        addStyles(config.libs.premium.css);
+        addScript(config.libs.premium.js, 'premium', (premium) => {
+          debug('Using premium');
+          Formio.use(premium);
+          renderForm();
+        });
+      }
 
       // Render the form if no template is provided.
-      if (!config.template) {
+      if (!config.template && !config.libs.premium) {
         renderForm();
       }
     });
