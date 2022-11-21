@@ -29,7 +29,7 @@ export default [
     valueProperty: 'name',
     dataSrc: 'url',
     data: {
-      url: 'https://cdn.form.io/timezones.json'
+      url: '{{options.cdnUrl}}/timezones.json'
     },
     template: '<span>{{ item.label }}</span>',
     conditional: {
