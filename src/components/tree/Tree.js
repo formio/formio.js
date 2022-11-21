@@ -64,11 +64,11 @@ export default class TreeComponent extends NestedComponent {
     this._viewComponents = [];
   }
 
-  destroy() {
+  destroy(all = false) {
     if (!this.builderMode) {
-      this.removeComponents(this._viewComponents);
+      this.removeComponents(this._viewComponents, all);
     }
-    super.destroy();
+    super.destroy(all);
   }
 
   createComponents(data, node) {
@@ -83,8 +83,8 @@ export default class TreeComponent extends NestedComponent {
     return components;
   }
 
-  removeComponents(components) {
-    return components.map((component) => component.destroy());
+  removeComponents(components, all = false) {
+    return components.map((component) => component.destroy(all));
   }
 
   render() {

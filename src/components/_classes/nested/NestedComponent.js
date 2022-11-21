@@ -502,9 +502,9 @@ export default class NestedComponent extends Field {
    * @param {Component} component - The component to remove from the components.
    * @param {Array<Component>} components - An array of components to remove this component from.
    */
-  removeComponent(component, components) {
+  removeComponent(component, components, all = false) {
     components = components || this.components;
-    component.destroy();
+    component.destroy(all);
     _.remove(components, { id: component.id });
   }
 
@@ -675,14 +675,14 @@ export default class NestedComponent extends Field {
     super.detach();
   }
 
-  destroy() {
-    this.destroyComponents();
-    super.destroy();
+  destroy(all = false) {
+    this.destroyComponents(all);
+    super.destroy(all);
   }
 
-  destroyComponents() {
+  destroyComponents(all = false) {
     const components = this.getComponents().slice();
-    components.forEach((comp) => this.removeComponent(comp, this.components));
+    components.forEach((comp) => this.removeComponent(comp, this.components, all));
     this.components = [];
   }
 

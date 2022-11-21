@@ -66,12 +66,12 @@ export class PDF extends Webform {
     return this.builderMode ? NativePromise.resolve() : super.redraw();
   }
 
-  destroy() {
+  destroy(all = false) {
     if (this.iframeElement) {
       delete this.iframeElement.formioComponent;
       this.iframeElement.formioComponent = null;
     }
-    super.destroy();
+    super.destroy(all);
   }
 
   rebuild() {

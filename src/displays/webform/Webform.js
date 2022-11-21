@@ -976,14 +976,14 @@ export class Webform extends NestedDataComponent {
     super.teardown();
   }
 
-  destroy() {
+  destroy(all = false) {
     this.off('submitButton');
     this.off('checkValidity');
     this.off('requestUrl');
     this.off('resetForm');
     this.off('deleteSubmission');
     this.off('refreshData');
-    return super.destroy();
+    return super.destroy(all);
   }
 
   build(element) {

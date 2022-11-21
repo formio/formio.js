@@ -224,9 +224,12 @@ export default class Base {
   /**
    * Removes all event listeners attached to this component.
    */
-  destroy() {
+  destroy(all = false) {
     this.removeEventListeners();
     this.removeAllEvents();
+    if (all) {
+      this.teardown();
+    }
   }
 
   /**

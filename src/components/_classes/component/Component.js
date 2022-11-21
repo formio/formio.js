@@ -510,10 +510,12 @@ export default class Component extends Base {
     super.teardown();
   }
 
-  destroy() {
+  destroy(all = false) {
     super.destroy();
     this.detach();
-    this.teardown();
+    if (all) {
+      this.teardown();
+    }
   }
 
   get shouldDisabled() {
