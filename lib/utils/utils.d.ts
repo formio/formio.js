@@ -310,4 +310,4 @@ export const firstNonNil: any;
 import jsonLogic from "json-logic-js";
 import Evaluator from "./Evaluator";
 export const interpolate: (rawTemplate: any, data: any) => any;
-export { jsonLogic, moment, Evaluator };
+export { jsonLogic, Evaluator };

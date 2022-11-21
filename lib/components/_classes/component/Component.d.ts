@@ -269,7 +269,6 @@ declare class Component extends Base {
     render(children?: string, topLevel?: boolean): any;
     attach(element: any): any;
     componentModal: any;
-    element: any;
     addFocusBlurEvents(element: any): void;
     addShortcut(element: any, shortcut: any): void;
     removeShortcut(element: any, shortcut: any): void;
@@ -298,6 +297,8 @@ declare class Component extends Base {
      */
     inContext(component: any): boolean;
     get viewOnly(): any;
+    setElement(element: any): void;
+    element: any;
     createViewOnlyElement(): any;
     get defaultViewOnlyValue(): string;
     /**

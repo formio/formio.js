@@ -94,10 +94,11 @@ export default class Base {
     removeEventListener(obj: any, type: any, func?: any): Base;
     removeEventListeners(): void;
     removeAllEvents(includeExternal: any): void;
+    teardown(): void;
     /**
      * Removes all event listeners attached to this component.
      */
-    destroy(): void;
+    destroy(all?: boolean): void;
     /**
      * Append an HTML DOM element to a container.
      *
