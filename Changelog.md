@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5792: fixed Caret position for ACE editor
  - FIO-5233: fixed an issue where users in different timezones have diff
  - FIO-4824: fixed tests for datagrid component
+ - FIO-5784: Allow Quick Inline Embed to pull Premium
 
 ## 4.15.0-rc.14
 ### Added
