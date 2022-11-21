@@ -1,3 +1,4 @@
+import CDN from './CDN';
 // eslint-disable-next-line max-statements
 export function embed(config = {}) {
   const scripts = document.getElementsByTagName('script');
@@ -30,10 +31,9 @@ export function embed(config = {}) {
     query.script = query.script || (`${scriptSrc}/formio.form.min.js`);
     query.styles = query.styles || (`${scriptSrc}/formio.form.min.css`);
     const cdn = query.cdn || 'https://cdn.jsdelivr.net/npm';
-    config = Object.assign({
-      script: query.script,
-      style: query.styles,
-      libs: {
+
+    const resolveLibs = (cdn) => {
+      const libs = {
         uswds: {
           fa: true,
           js: `${cdn}/uswds@2.10.0/dist/js/uswds.min.js`,
@@ -45,7 +45,21 @@ export function embed(config = {}) {
         bootstrap: {
           css: `${cdn}/bootstrap@4.6.0/dist/css/bootstrap.min.css`
         }
-      },
+      };
+      // Check if using cdn.form.io standart folders format
+      if (cdn instanceof CDN) {
+        const url = cdn.baseUrl;
+        libs.uswds.js = `${url}/uswds/${cdn.getVersion('uswds')}/uswds.min.js`;
+        libs.uswds.css = `${url}/uswds/${cdn.getVersion('uswds')}/uswds.min.css`;
+        libs.fontawesome.css = `${url}/font-awesome/${cdn.getVersion('font-awesome')}/css/font-awesome.min.css`;
+        libs.uswds.css = `${url}/bootstrap/${cdn.getVersion('bootstrap')}/css/bootstrap.min.css`;
+      }
+      return libs;
+    };
+
+    config = Object.assign({
+      script: query.script,
+      style: query.styles,
       class: (query.class || 'formio-form-wrapper'),
       src: query.src,
       form: null,
@@ -204,6 +218,7 @@ export function embed(config = {}) {
     // Add the main formio script.
     addScript(config.script, 'Formio', (Formio) => {
       const renderForm = () => {
+        config.libs = resolveLibs(query.cdn || Formio.cdn);
         addStyles(config.style);
         const isReady = config.before(Formio, formElement, config) || Formio.Promise.resolve();
         const form = (config.form || config.src);
@@ -326,7 +341,13 @@ export function embed(config = {}) {
             addStyles(config.libs.fontawesome.css, true);
           }
         }
-        const templateSrc = `${cdn}/@formio/${config.template}@latest/dist/${config.template}.min`;
+        let templateSrc;
+        if (cdn instanceof CDN) {
+          templateSrc = `${cdn[config.template]}/${config.template}.min`;
+        }
+        else {
+          templateSrc = `${cdn}/@formio/${config.template}@latest/dist/${config.template}.min`;
+        }
         addStyles(`${templateSrc}.css`);
         addScript(`${templateSrc}.js`, config.template, (template) => {
           debug(`Using ${config.template}`);
