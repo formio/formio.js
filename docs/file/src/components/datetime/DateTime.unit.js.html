@@ -186,6 +186,7 @@ import {
   comp8,
  // comp9,
   comp10,
+  comp11
 } from &apos;./fixtures&apos;;
 
 describe(&apos;DateTime Component&apos;, () =&gt; {
@@ -213,6 +214,27 @@ describe(&apos;DateTime Component&apos;, () =&gt; {
         assert.equal(dateTime.getValueAsString(&apos;2020-09-18T12:12:00&apos;), &apos;2020-09-18 12:12 PM&apos;);
         dateTime.destroy();
       });
+  });
+
+  it(&apos;Should not change manually entered value on blur when time is disabled&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp11);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const blurEvent = new Event(&apos;blur&apos;);
+
+      const value = &apos;01-02-2021&apos;;
+      const input = dateTime.element.querySelector(&apos;.input&apos;);
+      input.value = value;
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(input.value, value);
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 600);
+    }).catch(done);
   });
 
   it(&apos;Should allow manual input&apos;, (done) =&gt; {

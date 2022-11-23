@@ -239,6 +239,7 @@ import * as FormioUtils from &apos;./utils/utils&apos;;
 import htmlRenderMode from &apos;../test/forms/htmlRenderMode&apos;;
 import optionalSanitize from &apos;../test/forms/optionalSanitize&apos;;
 import formWithCheckboxRadioaType from &apos;../test/forms/formWithCheckboxRadioType&apos;;
+import formWithRadioInsideDataGrid from &apos;../test/forms/formWithRadioInsideDataGrid&apos;;
 
 global.requestAnimationFrame = (cb) =&gt; cb();
 global.cancelAnimationFrame = () =&gt; {};
@@ -246,6 +247,18 @@ global.cancelAnimationFrame = () =&gt; {};
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should set radio components value inside data grid correctly&apos;, function(done) {
+    Formio.createForm(formWithRadioInsideDataGrid).then((form) =&gt; {
+      const dataGridData =  [{ radio: &apos;two&apos; },{ radio: &apos;two&apos; } ,{ radio: &apos;three&apos; }];
+      form.setValue({ data: { dataGrid: fastCloneDeep(dataGridData) } });
+      setTimeout(() =&gt; {
+          const dataGrid = form.getComponent(&apos;dataGrid&apos;);
+          assert.deepEqual(dataGrid.dataValue, dataGridData);
+          done();
+      }, 200);
+    }).catch((err) =&gt; done(err));
+  });
 
   it(&apos;Should return correct strign value for checkbox radio type&apos;, function(done) {
     Formio.createForm(formWithCheckboxRadioaType).then((form) =&gt; {
