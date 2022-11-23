@@ -6,7 +6,8 @@ import Formio from './../../Formio';
 import {
   comp1,
   comp3,
-  comp4
+  comp4,
+  comp5
 } from './fixtures';
 import wizardWithSelectBoxes from '../../../test/forms/wizardWithSelectBoxes';
 
@@ -14,6 +15,15 @@ describe('SelectBoxes Component', () => {
   it('Should build a SelectBoxes component', () => {
     return Harness.testCreate(SelectBoxesComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="checkbox"]', 8);
+    });
+  });
+
+  it('Should build a SelectBoxes component with URL DataSrc', (done) => {
+    Harness.testCreate(SelectBoxesComponent, comp5).then((component) => {
+      setTimeout(()=>{
+        assert.equal(component.refs.input.length, 59);
+        done();
+      }, 1000);
     });
   });
 
