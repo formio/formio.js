@@ -12,7 +12,8 @@ import {
   comp5,
   comp6,
   comp7,
-  comp8
+  comp8,
+  comp9
 } from './fixtures';
 
 describe('Radio Component', () => {
@@ -27,6 +28,15 @@ describe('Radio Component', () => {
     return Harness.testCreate(RadioComponent, comp2).then((component) => {
       assert.equal(component.getValueAsString(1), 'one');
       assert.equal(component.getValueAsString(2), 'two');
+    });
+  });
+
+  it('Should build a radio component with URL DataSrc', (done) => {
+    Harness.testCreate(RadioComponent, comp9).then((component) => {
+      setTimeout(()=>{
+        assert.equal(component.refs.input.length, 59);
+        done();
+      }, 1000);
     });
   });
 
