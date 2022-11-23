@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5233: fixed an issue where users in different timezones have diff
  - FIO-4824: fixed tests for datagrid component
  - FIO-5784: Allow Quick Inline Embed to pull Premium
+ - FIO-5895: fixed an issue where value of radio component inside data grid disappears after submission
+ - FIO-5872: fixed an issue where Wizard page navigation buttons are centered in some templates
+ - FIO-5628: fixed an issue where datetime component value is changed on blur when time is disabled
+ - FIO-5949: fixed data presentation on View submission
 
 ## 4.15.0-rc.14
 ### Added
