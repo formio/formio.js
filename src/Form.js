@@ -306,4 +306,10 @@ export class Form extends Base {
         return param;
       });
   }
+
+  teardown() {
+    super.teardown();
+    delete this.instance;
+    delete this.ready;
+  }
 }

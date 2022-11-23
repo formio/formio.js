@@ -973,6 +973,8 @@ export class Webform extends NestedDataComponent {
 
   teardown() {
     delete Formio.forms[this.id];
+    delete this.executeShortcuts;
+    delete this.triggerSaveDraft;
     super.teardown();
   }
 

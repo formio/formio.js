@@ -502,6 +502,8 @@ export default class Component extends Base {
     delete this._currentForm;
     delete this.parent;
     delete this.root;
+    delete this.triggerChange;
+    delete this.triggerRedraw;
     if (this.options) {
       delete this.options.root;
       delete this.options.parent;
@@ -511,7 +513,7 @@ export default class Component extends Base {
   }
 
   destroy(all = false) {
-    super.destroy();
+    super.destroy(all);
     this.detach();
     if (all) {
       this.teardown();
