@@ -59,6 +59,10 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   }
 }
 
+.formio-form-group {
+  margin-bottom: 1rem;
+}
+
 .formio-wysiwyg-editor {
   min-height: 200px;
   background-color: #fff;
@@ -234,7 +238,8 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   }
 }
 
-td > .form-group {
+td > .form-group,
+td > .formio-form-group {
   margin-bottom: 0;
 }
 
@@ -854,7 +859,8 @@ body.formio-dialog-open {
   display: block;
 }
 
-.formio-choices.form-group {
+.formio-choices.form-group,
+.formio-choices.formio-form-group {
   margin-bottom: 0;
 }
 
