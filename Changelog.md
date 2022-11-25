@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5872: fixed an issue where Wizard page navigation buttons are centered in some templates
  - FIO-5628: fixed an issue where datetime component value is changed on blur when time is disabled
  - FIO-5949: fixed data presentation on View submission
+ - FIO-4447: Bootstrap 5 support
 
 ## 4.15.0-rc.14
 ### Added
