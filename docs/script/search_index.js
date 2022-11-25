@@ -3498,6 +3498,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datagrid/fixtures/comp6.js",
+    "file/src/components/datagrid/fixtures/comp6.js.html",
+    "src/components/datagrid/fixtures/comp6.js",
+    "file"
+  ],
+  [
     "src/components/datagrid/fixtures/index.js",
     "file/src/components/datagrid/fixtures/index.js.html",
     "src/components/datagrid/fixtures/index.js",
@@ -3675,6 +3681,18 @@ window.esdocSearchIndex = [
     "src/components/datetime/fixtures/comp1.js",
     "file/src/components/datetime/fixtures/comp1.js.html",
     "src/components/datetime/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/datetime/fixtures/comp10.js",
+    "file/src/components/datetime/fixtures/comp10.js.html",
+    "src/components/datetime/fixtures/comp10.js",
+    "file"
+  ],
+  [
+    "src/components/datetime/fixtures/comp11.js",
+    "file/src/components/datetime/fixtures/comp11.js.html",
+    "src/components/datetime/fixtures/comp11.js",
     "file"
   ],
   [
@@ -8127,6 +8145,102 @@ window.esdocSearchIndex = [
     "src/templates/bootstrap/wizardnav/index.js",
     "file/src/templates/bootstrap/wizardNav/index.js.html",
     "src/templates/bootstrap/wizardNav/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/alert/index.js",
+    "file/src/templates/bootstrap5/alert/index.js.html",
+    "src/templates/bootstrap5/alert/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/buildereditform/index.js",
+    "file/src/templates/bootstrap5/builderEditForm/index.js.html",
+    "src/templates/bootstrap5/builderEditForm/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/buildersidebar/index.js",
+    "file/src/templates/bootstrap5/builderSidebar/index.js.html",
+    "src/templates/bootstrap5/builderSidebar/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/buildersidebargroup/index.js",
+    "file/src/templates/bootstrap5/builderSidebarGroup/index.js.html",
+    "src/templates/bootstrap5/builderSidebarGroup/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/builderwizard/index.js",
+    "file/src/templates/bootstrap5/builderWizard/index.js.html",
+    "src/templates/bootstrap5/builderWizard/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/componentmodal/index.js",
+    "file/src/templates/bootstrap5/componentModal/index.js.html",
+    "src/templates/bootstrap5/componentModal/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/cssclasses.js",
+    "file/src/templates/bootstrap5/cssClasses.js.html",
+    "src/templates/bootstrap5/cssClasses.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/datagrid/index.js",
+    "file/src/templates/bootstrap5/datagrid/index.js.html",
+    "src/templates/bootstrap5/datagrid/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/dialog/index.js",
+    "file/src/templates/bootstrap5/dialog/index.js.html",
+    "src/templates/bootstrap5/dialog/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/file/index.js",
+    "file/src/templates/bootstrap5/file/index.js.html",
+    "src/templates/bootstrap5/file/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/index.js",
+    "file/src/templates/bootstrap5/index.js.html",
+    "src/templates/bootstrap5/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/input/index.js",
+    "file/src/templates/bootstrap5/input/index.js.html",
+    "src/templates/bootstrap5/input/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/label/index.js",
+    "file/src/templates/bootstrap5/label/index.js.html",
+    "src/templates/bootstrap5/label/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/modalpreview/index.js",
+    "file/src/templates/bootstrap5/modalPreview/index.js.html",
+    "src/templates/bootstrap5/modalPreview/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/radio/index.js",
+    "file/src/templates/bootstrap5/radio/index.js.html",
+    "src/templates/bootstrap5/radio/index.js",
+    "file"
+  ],
+  [
+    "src/templates/bootstrap5/table/index.js",
+    "file/src/templates/bootstrap5/table/index.js.html",
+    "src/templates/bootstrap5/table/index.js",
     "file"
   ],
   [

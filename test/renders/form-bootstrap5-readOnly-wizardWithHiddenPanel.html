@@ -1,0 +1,35 @@
+<div class="formio-form formio-read-only">
+  <div style="position: relative;">
+    <nav aria-label="Wizard navigation" id="wizard-page1-header" ref="wizard-page1-header">
+      <ul class="pagination" role="tablist">
+        <li class="page-item active" style="cursor: pointer;">
+          <button tabindex="0" data-index="0" role="tab" class="page-link" ref="wizard-page1-link">
+            Page 1
+          </button>
+        </li>
+        <li class="page-item" style="cursor: pointer;">
+          <button tabindex="0" data-index="1" role="tab" class="page-link" ref="wizard-page1-link">
+            Page 3
+          </button>
+        </li>
+      </ul>
+    </nav>
+    <div class="wizard-page" ref="wizard-page1">
+      <div id="number" class="formio-form-group has-feedback formio-component formio-component-number formio-component-number " ref="component">
+        <label ref="label" class="col-form-label " for="number-number" id="l-number-number">
+          Number
+          <span class="visually-hidden">, numeric only,</span>
+        </label>
+        <div ref="element">
+          <input ref="input" name="data[number]" type="text" class="form-control" lang="en" disabled="disabled" inputmode="decimal" value="" id="number-number" aria-labelledby="l-number-number " aria-required="false"></input>
+        </div>
+        <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+      </div>
+    </div>
+    <ul class="formio-wizard-nav-container list-inline" id="wizard-page1-nav">
+      <li>
+        <button class="btn btn-primary btn-wizard-nav-next" ref="wizard-page1-next" aria-label="Next button. Click to go to the next tab">Next</button>
+      </li>
+    </ul>
+  </div>
+</div>

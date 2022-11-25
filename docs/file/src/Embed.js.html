@@ -234,6 +234,9 @@ export function embed(config = {}) {
       before: () =&gt; {},
       after: () =&gt; {}
     }, config);
+    if (config.addPremiumLib) {
+      config.addPremiumLib(config.libs, scriptSrc);
+    }
 
     /**
      * Print debug statements.
@@ -513,9 +516,17 @@ export function embed(config = {}) {
         addStyles(config.libs.fontawesome.css, true);
         addStyles(config.libs.bootstrap.css);
       }
+      else if (config.libs.premium) {
+        addStyles(config.libs.premium.css);
+        addScript(config.libs.premium.js, &apos;premium&apos;, (premium) =&gt; {
+          debug(&apos;Using premium&apos;);
+          Formio.use(premium);
+          renderForm();
+        });
+      }
 
       // Render the form if no template is provided.
-      if (!config.template) {
+      if (!config.template &amp;&amp; !config.libs.premium) {
         renderForm();
       }
     });
