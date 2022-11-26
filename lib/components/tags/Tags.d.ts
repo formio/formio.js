@@ -9,7 +9,6 @@ export default class TagsComponent extends Input {
     };
     constructor(component: any, options: any, data: any);
     get delimiter(): any;
-    choices: Choices;
+    choices: any;
 }
 import Input from "../_classes/input/Input";
-import Choices from "choices.js";

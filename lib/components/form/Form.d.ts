@@ -51,6 +51,7 @@ export default class FormComponent extends Component {
     isHidden(): boolean;
     updateSubFormVisibility(): void;
     isInternalEvent(event: any): boolean;
-    createEmitter(): any;
+    createEmitter(): EventEmitter;
 }
 import Component from "../_classes/component/Component";
+import EventEmitter from "eventemitter2";

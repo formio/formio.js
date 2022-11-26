@@ -11,7 +11,7 @@ export namespace KEY_CODES {
     export const PAGE_DOWN_KEY: number;
 }
 export default ChoicesWrapper;
-declare class ChoicesWrapper extends Choices {
+declare class ChoicesWrapper {
     constructor(...args: any[]);
     _onTabKey({ activeItems, hasActiveDropdown }: {
         activeItems: any;
@@ -29,5 +29,6 @@ declare class ChoicesWrapper extends Choices {
         activeItems: any;
         hasActiveDropdown: any;
     }): void;
+    showDropdown(...args: any[]): void;
+    hideDropdown(...args: any[]): void;
 }
-import Choices from "choices.js";
