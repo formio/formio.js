@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.11-rc.6]
+### Changed
+ - FIO-5627: fixed an issue where manual input does not work for date with full month format
+
 ## 4.14.11-rc.5
 ### Changed
  - FIO-5872: fixed an issue where Wizard page navigation buttons are cen…
