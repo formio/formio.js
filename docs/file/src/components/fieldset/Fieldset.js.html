@@ -202,7 +202,7 @@ export default class FieldsetComponent extends NestedComponent {
   }
 
   get className() {
-    return `form-group ${super.className}`;
+    return `${this.transform(&apos;class&apos;, &apos;form-group&apos;)} ${super.className}`;
   }
 
   get templateName() {

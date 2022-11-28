@@ -1,0 +1,66 @@
+<div id="day" class="formio-form-group has-feedback formio-component formio-component-day formio-component-day formio-component-multiple " ref="component">
+  <label ref="label" class="col-form-label " for="day-day" id="l-day-day">
+    Day
+  </label>
+  <div class="row" role="group" aria-labelledby="l-day-day">
+    <div class="col col-xs-4">
+      <label for="day-month" class="">Month</label>
+      <div><select ref="month" id="day-month" class="form-control" name="month" lang="en" aria-required="false">
+          <option value=''>
+          </option>
+          <option value='1'>
+            January
+          </option>
+          <option value='2'>
+            February
+          </option>
+          <option value='3'>
+            March
+          </option>
+          <option value='4'>
+            April
+          </option>
+          <option value='5'>
+            May
+          </option>
+          <option value='6'>
+            June
+          </option>
+          <option value='7'>
+            July
+          </option>
+          <option value='8'>
+            August
+          </option>
+          <option value='9'>
+            September
+          </option>
+          <option value='10'>
+            October
+          </option>
+          <option value='11'>
+            November
+          </option>
+          <option value='12'>
+            December
+          </option>
+        </select>
+        <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
+      </div>
+    </div>
+    <div class="col col-xs-3">
+      <label for="day-day" class="">Day</label>
+      <div>
+        <input ref="day" id="day-day" class="form-control formio-day-component-day" type="number" placeholder="" step="1" min="1" max="31" id="day-day" aria-labelledby="l-day-day " aria-required="false"></input>
+      </div>
+    </div>
+    <div class="col col-xs-5">
+      <label for="day-year" class="">Year</label>
+      <div>
+        <input ref="year" id="day-year" class="form-control formio-day-component-year" type="number" placeholder="" step="1" min="1900" max="2030" id="day-day" aria-labelledby="l-day-day " aria-required="false"></input>
+      </div>
+    </div>
+  </div>
+  <input name="ctx.data[day]" type="hidden" class="form-control" lang="en" value="" ref="input">
+  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+</div>

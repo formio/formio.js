@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.15]
+## 4.15.0-rc.15
 ### Fixed
  - Revert change to always execute apis on pdf output.
  - FIO-5431: Fixed Quill editor losing data after switching to source view and back.
@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5792: fixed Caret position for ACE editor
  - FIO-5233: fixed an issue where users in different timezones have diff
  - FIO-4824: fixed tests for datagrid component
+ - FIO-5784: Allow Quick Inline Embed to pull Premium
+ - FIO-5895: fixed an issue where value of radio component inside data grid disappears after submission
+ - FIO-5872: fixed an issue where Wizard page navigation buttons are centered in some templates
+ - FIO-5628: fixed an issue where datetime component value is changed on blur when time is disabled
+ - FIO-5949: fixed data presentation on View submission
+ - FIO-4447: Bootstrap 5 support
 
 ## 4.15.0-rc.14
 ### Added

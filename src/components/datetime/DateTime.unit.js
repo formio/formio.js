@@ -14,6 +14,7 @@ import {
   comp8,
  // comp9,
   comp10,
+  comp11,
   comp12
 } from './fixtures';
 
@@ -42,6 +43,27 @@ describe('DateTime Component', () => {
         assert.equal(dateTime.getValueAsString('2020-09-18T12:12:00'), '2020-09-18 12:12 PM');
         dateTime.destroy();
       });
+  });
+
+  it('Should not change manually entered value on blur when time is disabled', (done) => {
+    const form = _.cloneDeep(comp11);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      const blurEvent = new Event('blur');
+
+      const value = '01-02-2021';
+      const input = dateTime.element.querySelector('.input');
+      input.value = value;
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() => {
+        assert.equal(input.value, value);
+        document.innerHTML = '';
+        done();
+      }, 600);
+    }).catch(done);
   });
 
   it('Should allow manual input', (done) => {
