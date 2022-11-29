@@ -1,0 +1,60 @@
+<div id="" class="formio-component formio-component-form  formio-component-label-hidden" ref="component">
+  <div class="formio-form formio-read-only" ref="webform" novalidate>
+    <div id="radio" class="formio-form-group has-feedback formio-component formio-component-radio formio-component-radio " ref="component">
+      <label ref="label" class="col-form-label " for="radio-radio" id="l-radio-radio">
+        Radio
+      </label>
+      <div class="form-radio radio" ref="radioGroup" role="radiogroup" aria-required="false" aria-labelledby="l-radio-radio">
+        <div class="radio  form-check" ref="wrapper">
+          <label class="form-check-label label-position-right" for="-radio--a">
+            <input ref="input" name="data[radio][-radio]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="a" id="-radio--a" role="radio">
+            <span>a</span>
+          </label>
+        </div>
+        <div class="radio  form-check" ref="wrapper">
+          <label class="form-check-label label-position-right" for="-radio--b">
+            <input ref="input" name="data[radio][-radio]" type="radio" class="form-check-input" lang="en" disabled="disabled" value="b" id="-radio--b" role="radio">
+            <span>b</span>
+          </label>
+        </div>
+      </div>
+      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+    </div>
+    <div id="selectBoxes" class="formio-form-group has-feedback formio-component formio-component-selectboxes formio-component-selectBoxes " ref="component">
+      <label ref="label" class="col-form-label " for="selectBoxes-selectBoxes" id="l-selectBoxes-selectBoxes">
+        Select Boxes
+      </label>
+      <div class="form-radio radio" ref="radioGroup" role="group" aria-required="false" aria-labelledby="l-selectBoxes-selectBoxes">
+        <div class="checkbox  form-check" ref="wrapper">
+          <label class="form-check-label label-position-right" for="-selectBoxes--a">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="a" id="-selectBoxes--a" role="checkbox">
+            <span>a</span>
+          </label>
+        </div>
+        <div class="checkbox  form-check" ref="wrapper">
+          <label class="form-check-label label-position-right" for="-selectBoxes--b">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="b" id="-selectBoxes--b" role="checkbox">
+            <span>b</span>
+          </label>
+        </div>
+        <div class="checkbox  form-check" ref="wrapper">
+          <label class="form-check-label label-position-right" for="-selectBoxes--c">
+            <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="c" id="-selectBoxes--c" role="checkbox">
+            <span>c</span>
+          </label>
+        </div>
+      </div>
+      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+    </div>
+    <div id="submit" class="formio-form-group has-feedback formio-component formio-component-button formio-component-submit  formio-form-group" ref="component">
+      <button ref="button" name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en" disabled="disabled">
+        Submit
+      </button>
+      <div ref="buttonMessageContainer">
+        <span class="help-block" ref="buttonMessage"></span>
+      </div>
+      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+    </div>
+  </div>
+  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+</div>

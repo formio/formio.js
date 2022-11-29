@@ -43,7 +43,7 @@ export default class ComponentModal {
   }
 
   setValue(value) {
-    if (this.dataLoaded) {
+    if (this.dataLoaded && this.currentValue === value) {
       return;
     }
 

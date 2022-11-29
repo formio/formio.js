@@ -3,12 +3,12 @@ import Formio from './Formio';
 import _each from 'lodash/each';
 import assert from 'power-assert';
 import sinon from 'sinon';
-import Chance from 'chance';
 import fetchMock from 'fetch-mock/es5/server';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
-const chance = Chance();
+//import Chance from 'chance';
+//const chance = Chance();
 const protocol = 'https';
 const domain = 'localhost:3000';
 const baseUrl = `${protocol}://api.${domain}`;

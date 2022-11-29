@@ -1,0 +1,143 @@
+{% if (ctx.options.vpat) { %}
+  <span tabindex="-1" class="visually-hidden" id="invisible-{{ctx.instance.id}}-{{ctx.component.key}}"></span>
+{% } %}
+{% if (!ctx.self.imageUpload) { %}
+  {% if (ctx.options.vpat) { %}
+    <div>{{(!ctx.component.filePattern || ctx.component.filePattern === '*') ? 'Any file types are allowed' : ctx.t('Allowed file types: ') + ctx.component.filePattern}}</div>
+  {% } %}
+  <ul class="list-group list-group-striped">
+    <li class="list-group-item list-group-header hidden-xs hidden-sm">
+      <div class="row">
+        {% if (!ctx.disabled) { %}
+          <div class="col-md-1"></div>
+        {% } %}
+        <div class="col-md-{% if (ctx.self.hasTypes) { %}7{% } else { %}9{% } %}"><strong>{{ctx.t('File Name')}}</strong></div>
+        <div class="col-md-2"><strong>{{ctx.t('Size')}}</strong></div>
+        {% if (ctx.self.hasTypes) { %}
+          <div class="col-md-2"><strong>{{ctx.t('Type')}}</strong></div>
+        {% } %}
+      </div>
+    </li>
+    {% ctx.files.forEach(function(file) { %}
+      <li class="list-group-item">
+        <div class="row">
+          {% if (!ctx.disabled) { %}
+            <div class="col-md-1"><i tabindex="0" class="{{ctx.iconClass('remove')}}" ref="removeLink"></i></div>
+          {% } %}
+          <div class="col-md-{% if (ctx.self.hasTypes) { %}7{% } else { %}9{% } %}">
+            {% if (ctx.component.uploadOnly) { %}
+              {{file.originalName || file.name}}
+            {% } else { %}
+              <a href="{{file.url || '#'}}" target="_blank" ref="fileLink">
+                <span class="visually-hidden">{{ctx.t('Press to open ')}}</span>{{file.originalName || file.name}}
+              </a>
+            {% } %}
+          </div>
+          <div class="col-md-2">{{ctx.fileSize(file.size)}}</div>
+          {% if (ctx.self.hasTypes && !ctx.disabled) { %}
+            <div class="col-md-2">
+              <select class="file-type" ref="fileType">
+                {% ctx.component.fileTypes.map(function(type) { %}
+                  <option class="test" value="{{ type.value }}" {% if (type.label === file.fileType) { %}selected="selected"{% } %}>{{ctx.t(type.label)}}</option>
+                {% }); %}
+              </select>
+            </div>
+          {% } %}
+          {% if (ctx.self.hasTypes && ctx.disabled) { %}
+          <div class="col-md-2">{{file.fileType}}</div>
+          {% } %}
+        </div>
+      </li>
+    {% }) %}
+  </ul>
+{% } else { %}
+  <div>
+    {% ctx.files.forEach(function(file) { %}
+      <div>
+        <span>
+          <img ref="fileImage" src="" alt="{{file.originalName || file.name}}" style="width:{{ctx.component.imageSize}}px">
+          {% if (!ctx.disabled) { %}
+            <i tabindex="0" class="{{ctx.iconClass('remove')}}" ref="removeLink"></i>
+          {% } %}
+        </span>
+      </div>
+    {% }) %}
+  </div>
+{% } %}
+{% if (!ctx.disabled && (ctx.component.multiple || !ctx.files.length)) { %}
+  {% if (ctx.self.useWebViewCamera) { %}
+    <div class="fileSelector">
+      <button class="btn btn-primary" ref="galleryButton"><i class="fa fa-book"></i> {{ctx.t('Gallery')}}</button>
+      <button class="btn btn-primary" ref="cameraButton"><i class="fa fa-camera"></i> {{ctx.t('Camera')}}</button>
+    </div>
+  {% } else if (!ctx.self.cameraMode) { %}
+    <div class="fileSelector" ref="fileDrop" {{ctx.fileDropHidden ?'hidden' : ''}}>
+      <i class="{{ctx.iconClass('cloud-upload')}}"></i> {{ctx.t('Drop files to attach,')}}
+        {% if (ctx.self.imageUpload && ctx.component.webcam) { %}
+          <a href="#" ref="toggleCameraMode"><i class="fa fa-camera"></i> {{ctx.t('use camera')}}</a>
+        {% } %}
+        {{ctx.t('or')}}
+        <a href="#" ref="fileBrowse" class="browse">
+          {{ctx.t('browse')}}
+          <span class="visually-hidden">
+            {{ctx.t('Browse to attach file for ' + ctx.component.label + '. ' + 
+            (ctx.component.description ? ctx.component.description + '. ' : '') + 
+            ((!ctx.component.filePattern || ctx.component.filePattern === '*') ? 'Any file types are allowed' : ctx.t('Allowed file types: ') + ctx.component.filePattern))}}
+          </span>
+        </a>
+      <div ref="fileProcessingLoader" class="loader-wrapper">
+        <div class="loader text-center"></div>
+      </div>
+    </div>
+  {% } else { %}
+    <div class="video-container">
+      <video class="video" autoplay="true" ref="videoPlayer" tabindex="-1"></video>
+    </div>
+    <button class="btn btn-primary" ref="takePictureButton"><i class="fa fa-camera"></i> {{ctx.t('Take Picture')}}</button>
+    <button class="btn btn-primary" ref="toggleCameraMode">{{ctx.t('Switch to file upload')}}</button>
+  {% } %}
+{% } %}
+{% ctx.statuses.forEach(function(status) { %}
+  <div class="file {{ctx.statuses.status === 'error' ? ' has-error' : ''}}">
+    <div class="row">
+      <div class="fileName col-form-label col-sm-10">{{status.originalName}}
+        <i class="{{ctx.iconClass('remove')}}" ref="fileStatusRemove">
+          <span class="visually-hidden">{{ctx.t('Remove button. Press to remove ' + status.originalName || status.name + '.')}}</span>
+          <span class="visually-hidden">{{status.message ? status.message.replace(';', '.') : ''}}</span>
+        </i>
+      </div>
+      <div class="fileSize col-form-label col-sm-2 text-end">{{ctx.fileSize(status.size)}}</div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        {% if (status.status === 'progress') { %}
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="{{status.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{status.progress}}%">
+              <span class="visually-hidden">{{status.progress}}% {{ctx.t('Complete')}}</span>
+            </div>
+          </div>
+        {% } else if (status.status === 'error') { %}
+          <div class="alert alert-danger bg-{{status.status}}">{{ctx.t(status.message)}}</div>
+        {% } else { %}
+          <div class="bg-{{status.status}}">{{ctx.t(status.message)}}</div>
+        {% } %}
+      </div>
+    </div>
+  </div>
+{% }) %}
+{% if (!ctx.component.storage || ctx.support.hasWarning) { %}
+  <div class="alert alert-warning">
+    {% if (!ctx.component.storage) { %}
+      <p>{{ctx.t('No storage has been set for this field. File uploads are disabled until storage is set up.')}}</p>
+    {% } %}
+    {% if (!ctx.support.filereader) { %}
+      <p>{{ctx.t('File API & FileReader API not supported.')}}</p>
+    {% } %}
+    {% if (!ctx.support.formdata) { %}
+      <p>{{ctx.t("XHR2's FormData is not supported.")}}</p>
+    {% } %}
+    {% if (!ctx.support.progress) { %}
+      <p>{{ctx.t("XHR2's upload progress isn't supported.")}}</p>
+    {% } %}
+  </div>
+{% } %}

@@ -168,12 +168,6 @@ export default class CalendarWidget extends InputWidget {
       { type: 'styles', src: `${CDN_URL}/flatpickr.min.css` }
     ], true);
 
-    const flatpickr = _.get(window, 'flatpickr');
-
-    if (flatpickr && this._input) {
-      return this.initFlatpickr(flatpickr);
-    }
-
     if (this.component.shortcutButtons) {
       this.component.shortcutButtons = this.component.shortcutButtons.filter((btn) => btn.label && btn.onClick);
     }
@@ -239,6 +233,9 @@ export default class CalendarWidget extends InputWidget {
   }
 
   defineTimezone() {
+    if (!this.componentInstance.attached && this.componentInstance.submissionTimezone) {
+      return this.componentInstance.submissionTimezone;
+    }
     if (this.settings.timezone) {
       return this.settings.timezone;
     }
@@ -391,7 +388,7 @@ export default class CalendarWidget extends InputWidget {
 
     const zonesLoading = this.loadZones();
     if (this.isValueISO8601(value)) {
-      this.calendar.setDate(moment(value).toDate(), false);
+      this.calendar.setDate(value, false);
     }
     else if (value) {
       if (!saveAsText && this.settings.readOnly && !zonesLoading) {
@@ -480,7 +477,9 @@ export default class CalendarWidget extends InputWidget {
       }
     });
 
-    if (!this.settings.readOnly) {
+    const excludedFromMaskFormats = ['MMMM'];
+
+    if (!this.settings.readOnly && !_.some(excludedFromMaskFormats, format => _.includes(this.settings.format, format))) {
       // Enforce the input mask of the format.
       this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
     }
@@ -515,7 +514,7 @@ export default class CalendarWidget extends InputWidget {
 
       if (!(isIEBrowser && !relatedTarget) && !this.isCalendarElement(relatedTarget)) {
         const inputValue = this.calendar.input.value;
-        const dateValue = inputValue && this.settings.enableTime ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
+        const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
 
         this.calendar.setDate(dateValue, true, this.settings.altFormat);
       }
@@ -553,7 +552,7 @@ export default class CalendarWidget extends InputWidget {
   getFlatpickrFormatDate(Flatpickr) {
     return (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
-      if (this.settings.readOnly && (format === this.settings.altFormat)) {
+      if (this.settings.readOnly && (format === this.settings.altFormat) && (this.settings.submissionTimezone === this.timezone)) {
         if (this.loadZones()) {
           return Flatpickr.formatDate(date, format);
         }

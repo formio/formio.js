@@ -1,0 +1,78 @@
+<table class="table datagrid-table table-bordered
+    {{ ctx.component.striped ? 'table-striped' : ''}}
+    {{ ctx.component.hover ? 'table-hover' : ''}}
+    {{ ctx.component.condensed ? 'table-sm' : ''}}
+    " {% if (ctx.component.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
+  {% if (ctx.hasHeader) { %}
+  <thead>
+    <tr>
+      {% if (ctx.component.reorder) { %}<th></th>{% } %}
+      {% ctx.columns.forEach(function(col) { %}
+        <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
+          {{ col.hideLabel ? '' : ctx.t(col.label || col.title, { _userInput: true }) }}
+          {% if (col.tooltip) { %} <i ref="tooltip" tabindex="0" data-title="{{col.tooltip}}" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{col.tooltip}}"></i>{% } %}
+        </th>
+      {% }) %}
+      {% if (ctx.hasExtraColumn) { %}
+      <th>
+        <span class="visually-hidden">{{ ctx.t('Add/Remove') }}</span>
+        {% if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { %}
+        <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow" tabindex="{{ctx.tabIndex}}">
+          <i class="{{ctx.iconClass('plus')}}"></i>{{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}
+        </button>
+        {% } %}
+      </th>
+      {% } %}
+    </tr>
+  </thead>
+  {% } %}
+  <tbody ref="{{ctx.datagridKey}}-tbody" data-key="{{ctx.datagridKey}}">
+    {% ctx.rows.forEach(function(row, index) { %}
+    {% if (ctx.hasGroups && ctx.groups[index]) { %}
+    <tr ref="{{ctx.datagridKey}}-group-header" class="datagrid-group-header{{ctx.hasToggle ? ' clickable' : ''}}">
+      <td
+        ref="{{ctx.datagridKey}}-group-label"
+        colspan="{{ctx.numColumns}}"
+        class="datagrid-group-label">{{ctx.groups[index].label}}</td>
+    </tr>
+    {% } %}
+    <tr ref="{{ctx.datagridKey}}-row">
+      {% if (ctx.component.reorder) { %}
+        <td>
+          <button type="button" class="formio-drag-button btn btn-default fa fa-bars" data-key="{{ctx.datagridKey}}"></button>
+        </td>
+      {% } %}
+      {% ctx.columns.forEach(function(col) { %}
+        <td ref="{{ctx.datagridKey}}" {% if (col.key && col.overlay && col.overlay.width) { %} style="width: {{col.overlay.width + 'px'}}"{% } %} >
+          {{row[col.key]}}
+        </td>
+      {% }) %}
+      {% if (ctx.hasExtraColumn) { %}
+        {% if (ctx.hasRemoveButtons) { %}
+        <td>
+          <button type="button" class="btn btn-secondary formio-button-remove-row" ref="{{ctx.datagridKey}}-removeRow" tabindex="{{ctx.tabIndex}}" aria-label="{{ctx.t('remove')}}">
+            <i class="{{ctx.iconClass('remove-circle')}}"></i>
+          </button>
+        </td>
+        {% } %}
+        {% if (ctx.canAddColumn) { %}
+        <td ref="{{ctx.key}}-container">
+          {{ctx.placeholder}}
+        </td>
+        {% } %}
+      {% } %}
+    </tr>
+    {% }) %}
+  </tbody>
+  {% if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit) { %}
+  <tfoot>
+    <tr>
+      <td colspan="{{ctx.component.layoutFixed ? ctx.numColumns :  ctx.numColumns + 1}}">
+        <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow" tabindex="{{ctx.tabIndex}}">
+          <i class="{{ctx.iconClass('plus')}}"></i> {{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}
+        </button>
+      </td>
+    </tr>
+  </tfoot>
+  {% } %}
+</table>
