@@ -298,6 +298,30 @@ it('Should protect against change loops', function(done) {
   .catch((err) => done(err));
 });
 
+it('Should not calculate value when pdf options passed', function(done) {
+  const formElement = document.createElement('div');
+  const form = new Webform(formElement);
+  const formJson = {
+    components: [
+      {
+        key: 'textField',
+        label: 'Text Field',
+        type: 'textfield',
+        calculateValue: "value = value + '_calculated'",
+      },
+    ],
+  };
+  form.setForm(formJson).then(() => {
+    form.options.readOnly = true;
+    form.options.pdf = true;
+
+    const result = form.calculateComponentValue();
+    expect(result).to.be.false;
+    done();
+  })
+  .catch((err) => done(err));
+});
+
 it('Should mark as invalid only invalid fields in multiple components', function(done) {
   const formElement = document.createElement('div');
   const form = new Webform(formElement);
