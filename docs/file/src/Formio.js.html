@@ -29,7 +29,8 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
@@ -186,6 +187,7 @@ import _defaults from &apos;lodash/defaults&apos;;
 import { eachComponent } from &apos;./utils/utils&apos;;
 import jwtDecode from &apos;jwt-decode&apos;;
 import &apos;./polyfills&apos;;
+import CDN from &apos;./CDN&apos;;
 
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
@@ -1823,6 +1825,7 @@ Formio.Providers = Providers;
 Formio.version = &apos;---VERSION---&apos;;
 Formio.pathType = &apos;&apos;;
 Formio.events = new EventEmitter();
+Formio.cdn = new CDN();
 
 if (typeof global !== &apos;undefined&apos;) {
   Formio.addToGlobal(global);

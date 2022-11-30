@@ -36,6 +36,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "formiojs/src/cdn.js~cdn",
+    "class/src/CDN.js~CDN.html",
+    "<span>CDN</span> <span class=\"search-result-import-path\">formiojs/src/CDN.js</span>",
+    "class"
+  ],
+  [
     "formiojs/src/components/checkbox/checkbox.js~checkboxcomponent",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html",
     "<span>CheckBoxComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/checkbox/Checkbox.js</span>",
@@ -1096,6 +1102,60 @@ window.esdocSearchIndex = [
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
     "src/.external-ecmascript.js~undefined",
     "external"
+  ],
+  [
+    "src/cdn.js",
+    "file/src/CDN.js.html",
+    "src/CDN.js",
+    "file"
+  ],
+  [
+    "src/cdn.js~cdn#[lib]",
+    "class/src/CDN.js~CDN.html#instance-member-[lib]",
+    "src/CDN.js~CDN#[lib]",
+    "member"
+  ],
+  [
+    "src/cdn.js~cdn#baseurl",
+    "class/src/CDN.js~CDN.html#instance-member-baseUrl",
+    "src/CDN.js~CDN#baseUrl",
+    "member"
+  ],
+  [
+    "src/cdn.js~cdn#constructor",
+    "class/src/CDN.js~CDN.html#instance-constructor-constructor",
+    "src/CDN.js~CDN#constructor",
+    "method"
+  ],
+  [
+    "src/cdn.js~cdn#getversion",
+    "class/src/CDN.js~CDN.html#instance-method-getVersion",
+    "src/CDN.js~CDN#getVersion",
+    "method"
+  ],
+  [
+    "src/cdn.js~cdn#libs",
+    "class/src/CDN.js~CDN.html#instance-member-libs",
+    "src/CDN.js~CDN#libs",
+    "member"
+  ],
+  [
+    "src/cdn.js~cdn#setbaseurl",
+    "class/src/CDN.js~CDN.html#instance-method-setBaseUrl",
+    "src/CDN.js~CDN#setBaseUrl",
+    "method"
+  ],
+  [
+    "src/cdn.js~cdn#updateurls",
+    "class/src/CDN.js~CDN.html#instance-method-updateUrls",
+    "src/CDN.js~CDN#updateUrls",
+    "method"
+  ],
+  [
+    "src/cdn.unit.js",
+    "file/src/CDN.unit.js.html",
+    "src/CDN.unit.js",
+    "file"
   ],
   [
     "src/embed.js",
