@@ -35,6 +35,7 @@ import wizardNavigateOrSaveOnEnter from '../test/forms/wizardNavigateOrSaveOnEnt
 import wizardWithFieldsValidationChild from '../test/forms/wizardWithFieldsValidationChild';
 import wizardWithFieldsValidationParent from '../test/forms/wizardWithFieldsValidationParent';
 import nestedConditionalWizard from '../test/forms/nestedConditionalWizard';
+import wizardWithPrefixComps from '../test/forms/wizardWithPrefixComps';
 
 describe('Wizard tests', () => {
   it('Should correctly reset values', function(done) {
@@ -401,6 +402,46 @@ describe('Wizard tests', () => {
             checkValues();
             done();
           }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should render values for prefix Components', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement, {
+      readOnly: true,
+    });
+    const form = _.cloneDeep(wizardWithPrefixComps.form);
+
+    wizard.setForm(form).then(() => {
+      const clickWizardBtn = (pathPart, clickError) => {
+        const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event('click');
+        btn.dispatchEvent(clickEvent);
+      };
+
+      const checkPage = (pageNumber) => {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+
+      const checkValues = () => {
+        wizard.refs[`wizard-${wizard.id}`].querySelectorAll('input').forEach((element, i)=> {
+          assert.equal(element.value, i ? `page${wizard.page+1}` : 'prefix', 'Should render value');
+        });
+      };
+      wizard.submission = _.cloneDeep(wizardWithPrefixComps.submission);
+
+      setTimeout(() => {
+        checkPage(0);
+        checkValues();
+        clickWizardBtn('next');
+
+        setTimeout(() => {
+          checkPage(1);
+          checkValues();
+          done();
         }, 200);
       }, 200);
     })
