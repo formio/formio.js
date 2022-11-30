@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.15.0-rc.16]
 ### Fixed
  - FIO-5627: fixed an issue where manual input does not work for date with full month format
+ - CDN Updates
 
 ## 4.15.0-rc.15
 ### Fixed
