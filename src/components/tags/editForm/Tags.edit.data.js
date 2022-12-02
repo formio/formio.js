@@ -20,6 +20,15 @@ export default [
     defaultValue: 0,
     tooltip: 'The maximum amount of tags that can be added. 0 for infinity.'
   },
+  {
+    type: 'checkbox',
+    label: 'Allow Duplicate',
+    key: 'allowDuplicate',
+    tooltip: 'Check if you want to allow duplicate data',
+    weight: 405,
+    input: true,
+    clearOnHide: false,
+  },
   // {
   //   weight: 24,
   //   type: 'selectF',   //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'

@@ -76,7 +76,7 @@ export default class TagsComponent extends Input {
       editItems: true,
       maxItemCount: this.component.maxTags,
       removeItemButton: true,
-      duplicateItemsAllowed: false,
+      duplicateItemsAllowed: this.component.allowDuplicate,
       shadowRoot: this.root ? this.root.shadowRoot : null,
       placeholder: hasPlaceholder,
       placeholderValue: hasPlaceholder ? this.t(this.component.placeholder, { _userInput: true }) : null,
@@ -86,7 +86,10 @@ export default class TagsComponent extends Input {
       const value = this.choices.input.value;
       const maxTagsNumber = this.component.maxTags;
       const valuesCount = this.choices.getValue(true).length;
-      const isRepeatedValue = this.choices.getValue(true).some(existingValue => existingValue.trim() === value.trim());
+      let isRepeatedValue = false;
+      if (!this.component.allowDuplicate) {
+        isRepeatedValue = this.choices.getValue(true).some(existingValue => existingValue.trim() === value.trim());
+      }
 
       if (value) {
         if (maxTagsNumber && valuesCount === maxTagsNumber) {
