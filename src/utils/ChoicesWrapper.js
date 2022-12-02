@@ -149,11 +149,11 @@ class ChoicesWrapper extends Choices {
     const hasCtrlDownKeyPressed = ctrlKey || metaKey;
 
     // If a user is typing and the dropdown is not active
-    if (!hasActiveDropdown && !this._isTextElement && /[a-zA-Z0-9-_ ]/.test(keyString)) {
-      const currentValue =  this.input.element.value;
-      this.input.element.value = currentValue ? `${currentValue}${keyString}` : keyString;
+    if (!hasActiveDropdown && !this._isTextElement && /[^\x00-\x1F]/.test(keyString) && event.key.length === 1) {//<---
+      var currentValue = this.input.element.value;
+      this.input.element.value = currentValue ? "".concat(currentValue).concat(event.key) : event.key;//<---
       this.showDropdown();
-    }
+      } 
 
     // Map keys to key actions
     const keyDownActions = {
