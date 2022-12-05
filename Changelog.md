@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - FIO-5627: fixed an issue where manual input does not work for date with full month format
  - CDN Updates
+ - FIO-5784: allow quick inline embed to pull in premium components from a deployed environment
 
 ## 4.15.0-rc.15
 ### Fixed
