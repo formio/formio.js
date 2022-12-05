@@ -1,0 +1,28 @@
+<div id="address" class="formio-form-group has-feedback formio-component formio-component-address formio-component-address formio-component-multiple " ref="component">
+  <label ref="label" class="col-form-label " for="address-address" id="l-address-address">
+    Address
+  </label>
+  <table class="table table-bordered">
+    <tbody>
+      <tr ref="row">
+        <td>
+          <div class="address-autocomplete-container">
+            <input ref="searchInput" name="data[address]" type="text" class="form-control" lang="en" tabindex="0" value="" autocomplete="off" aria-label="autocomplete">
+            <i class="address-autocomplete-remove-value-icon fa fa-times" tabindex="0" ref="removeValueIcon"></i>
+          </div>
+        </td>
+        <td>
+          <button type="button" class="btn btn-secondary" ref="removeRow">
+            <i class="fa fa-times-circle-o"></i>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+</div>

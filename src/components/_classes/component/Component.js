@@ -18,14 +18,6 @@ import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadA
 import enTranslation from '../../../translations/en';
 
 const isIEBrowser = FormioUtils.getBrowserInfo().ie;
-const CKEDITOR_URL = isIEBrowser
-      ? 'https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js'
-      : 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
-const QUILL_URL = isIEBrowser
-  ? 'https://cdn.quilljs.com/1.3.7'
-  : 'https://cdn.quilljs.com/2.0.0-dev.3';
-const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
-const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
 
 let Templates = Formio.Templates;
 
@@ -806,9 +798,10 @@ export default class Component extends Element {
       this.options.inputsOnly) && !this.builderMode;
   }
 
-  get transform() {
-    return Templates.current.hasOwnProperty('transform')
-      ? Templates.current.transform.bind(Templates.current)
+  transform(type, value) {
+    const frameworkTemplates = this.options.template ? Templates.templates[this.options.template] : Templates.current;
+    return frameworkTemplates.hasOwnProperty('transform')
+      ? frameworkTemplates.transform(type, value)
       : (type, value) => value;
   }
 
@@ -897,7 +890,7 @@ export default class Component extends Element {
     data.iconClass = this.iconClass.bind(this);
     data.size = this.size.bind(this);
     data.t = this.t.bind(this);
-    data.transform = this.transform;
+    data.transform = this.transform.bind(this);
     data.id = data.id || this.id;
     data.key = data.key || this.key;
     data.value = data.value || this.dataValue;
@@ -1477,7 +1470,7 @@ export default class Component extends Element {
    * @returns {string} - The class name of this component.
    */
   get className() {
-    let className = this.hasInput ? 'form-group has-feedback ' : '';
+    let className = this.hasInput ? `${this.transform('class', 'form-group')} has-feedback `: '';
     className += `formio-component formio-component-${this.component.type} `;
     // TODO: find proper way to avoid overriding of default type-based component styles
     if (this.key && this.key !== 'form') {
@@ -2187,7 +2180,7 @@ export default class Component extends Element {
       'ckeditor',
       isIEBrowser ? 'CKEDITOR' : 'ClassicEditor',
       _.get(this.options, 'editors.ckeditor.src',
-      CKEDITOR_URL
+      `${Formio.cdn.ckeditor}/ckeditor.js`
     ), true)
       .then(() => {
         if (!element.parentNode) {
@@ -2219,13 +2212,13 @@ export default class Component extends Element {
     };
     // Lazy load the quill css.
     Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
-      { type: 'styles', src: `${QUILL_URL}/quill.${settings.theme}.css` }
+      { type: 'styles', src: `${Formio.cdn.quill}/quill.${settings.theme}.css` }
     ], true);
 
     // Lazy load the quill library.
-    return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${QUILL_URL}/quill.min.js`), true)
+    return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${Formio.cdn.quill}/quill.min.js`), true)
       .then(() => {
-        return Formio.requireLibrary('quill-table', 'Quill', QUILL_TABLE_URL, true)
+        return Formio.requireLibrary('quill-table', 'Quill', `${Formio.cdn.baseUrl}/quill/quill-table.js`, true)
           .then(() => {
             if (!element.parentNode) {
               return NativePromise.reject();
@@ -2280,7 +2273,7 @@ export default class Component extends Element {
       }
     }
     settings = _.merge(this.wysiwygDefault.ace, _.get(this.options, 'editors.ace.settings', {}), settings || {});
-    return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
+    return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', `${Formio.cdn.ace}/ace.js`), true)
       .then((editor) => {
         editor = editor.edit(element);
         editor.removeAllListeners('change');

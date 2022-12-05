@@ -14,6 +14,7 @@ import _defaults from 'lodash/defaults';
 import { eachComponent } from './utils/utils';
 import jwtDecode from 'jwt-decode';
 import './polyfills';
+import CDN from './CDN';
 
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
@@ -1651,6 +1652,7 @@ Formio.Providers = Providers;
 Formio.version = '---VERSION---';
 Formio.pathType = '';
 Formio.events = new EventEmitter();
+Formio.cdn = new CDN();
 
 if (typeof global !== 'undefined') {
   Formio.addToGlobal(global);

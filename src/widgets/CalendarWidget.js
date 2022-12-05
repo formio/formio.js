@@ -20,14 +20,6 @@ import _ from 'lodash';
 
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
-const CDN_URL = (Formio?.version || '').includes('rc')
-  ? 'https://cdn.test-form.io/'
-  : 'https://cdn.form.io/';
-const JSDELIVR_CDN_URL = 'https://cdn.jsdelivr.net';
-const CDN_FLATPICKR_LOCALE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/l10n';
-const SHORTCUT_BUTTONS_PLUGIN_URL = '/npm/shortcut-buttons-flatpickr@0.1.0/dist/';
-const SHORTCUT_BUTTONS_CSS = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}themes/light.min.css`;
-const SHORTCUT_BUTTONS_PLUGIN = `${JSDELIVR_CDN_URL}${SHORTCUT_BUTTONS_PLUGIN_URL}shortcut-buttons-flatpickr.min.js`;
 
 const isIEBrowser = getBrowserInfo().ie;
 
@@ -73,6 +65,7 @@ export default class CalendarWidget extends InputWidget {
       this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
     }
     this.zoneLoading = false;
+    this.timezonesUrl = `${Formio.cdn.baseUrl}/timezones.json`;
   }
 
   /**
@@ -89,7 +82,7 @@ export default class CalendarWidget extends InputWidget {
 
     if (!zonesLoaded() && shouldLoadZones(timezone)) {
       this.zoneLoading = true;
-      loadZones(timezone).then(() => {
+      loadZones(this.timezonesUrl, timezone).then(() => {
         this.zoneLoading = false;
         this.emit('redraw');
       });
@@ -166,14 +159,8 @@ export default class CalendarWidget extends InputWidget {
     };
 
     Formio.requireLibrary('flatpickr-css', 'flatpickr', [
-      { type: 'styles', src: `${CDN_URL}${this.flatpickrType}/flatpickr.min.css` }
+      { type: 'styles', src: `${Formio.cdn[this.flatpickrType]}/flatpickr.min.css` }
     ], true);
-
-    const flatpickr = _.get(window, 'flatpickr');
-
-    if (flatpickr && this._input) {
-      return this.initFlatpickr(flatpickr);
-    }
 
     if (this.component.shortcutButtons) {
       this.component.shortcutButtons = this.component.shortcutButtons.filter((btn) => btn.label && btn.onClick);
@@ -181,7 +168,7 @@ export default class CalendarWidget extends InputWidget {
 
     if (this.component.shortcutButtons?.length) {
       Formio.requireLibrary('shortcut-buttons-flatpickr-css', 'ShortcutButtonsPlugin', [
-        { type: 'styles', src: SHORTCUT_BUTTONS_CSS }
+        { type: 'styles', src: `${Formio.cdn['shortcut-buttons-flatpickr']}/themes/light.min.css` }
       ], true);
     }
 
@@ -189,12 +176,12 @@ export default class CalendarWidget extends InputWidget {
       .then(() => {
         if (this.component.shortcutButtons?.length) {
           return Formio.requireLibrary(
-            'shortcut-buttons-flatpickr', 'ShortcutButtonsPlugin', SHORTCUT_BUTTONS_PLUGIN, true
+            'shortcut-buttons-flatpickr', 'ShortcutButtonsPlugin', `${Formio.cdn['shortcut-buttons-flatpickr']}/shortcut-buttons-flatpickr.min.js`, true
           );
         }
       })
       .then((ShortcutButtonsPlugin) => {
-        return Formio.requireLibrary('flatpickr', 'flatpickr', `${CDN_URL}${this.flatpickrType}/flatpickr.min.js`, true)
+        return Formio.requireLibrary('flatpickr', 'flatpickr', `${Formio.cdn[this.flatpickrType]}/flatpickr.min.js`, true)
           .then((Flatpickr) => {
             if (this.component.shortcutButtons?.length && ShortcutButtonsPlugin) {
               this.initShortcutButtonsPlugin(ShortcutButtonsPlugin);
@@ -209,7 +196,7 @@ export default class CalendarWidget extends InputWidget {
                 return Formio.requireLibrary(
                   `flatpickr-${locale}`,
                   `flatpickr-${locale}`,
-                  `${CDN_FLATPICKR_LOCALE_URL}/${locale}.min.js`,
+                  `${Formio.cdn.flatpickr}/l10n/${locale}.min.js`,
                   false,
                   () => this.initFlatpickr(Flatpickr)
                 );
@@ -242,6 +229,9 @@ export default class CalendarWidget extends InputWidget {
   }
 
   defineTimezone() {
+    if (!this.componentInstance.attached && this.componentInstance.submissionTimezone) {
+      return this.componentInstance.submissionTimezone;
+    }
     if (this.settings.timezone) {
       return this.settings.timezone;
     }
@@ -352,10 +342,6 @@ export default class CalendarWidget extends InputWidget {
     return moment(date).format(convertFormatToMoment(format));
   }
 
-  get flatpickrType() {
-    return 'flatpickr';
-  }
-
   /**
    * Return the value of the selected date.
    *
@@ -392,13 +378,13 @@ export default class CalendarWidget extends InputWidget {
   setValue(value) {
     const saveAsText = (this.settings.saveAs === 'text');
     if (!this.calendar) {
-      value = value ? formatDate(value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
+      value = value ? formatDate(this.timezonesUrl, value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
       return super.setValue(value);
     }
 
     const zonesLoading = this.loadZones();
     if (this.isValueISO8601(value)) {
-      this.calendar.setDate(moment(value).toDate(), false);
+      this.calendar.setDate(value, false);
     }
     else if (value) {
       if (!saveAsText && this.settings.readOnly && !zonesLoading) {
@@ -419,7 +405,7 @@ export default class CalendarWidget extends InputWidget {
     if (this.settings.saveAs === 'text' && this.componentInstance.parent && !this.settings.readOnly) {
       return moment(value, convertFormatToMoment(valueFormat)).format(convertFormatToMoment(valueFormat));
     }
-    return formatDate(value, inputFormat, this.timezone, convertFormatToMoment(valueFormat));
+    return formatDate(this.timezonesUrl, value, inputFormat, this.timezone, convertFormatToMoment(valueFormat));
   }
 
   setErrorClasses(hasErrors) {
@@ -487,7 +473,9 @@ export default class CalendarWidget extends InputWidget {
       }
     });
 
-    if (!this.settings.readOnly) {
+    const excludedFromMaskFormats = ['MMMM'];
+
+    if (!this.settings.readOnly && !_.some(excludedFromMaskFormats, format => _.includes(this.settings.format, format))) {
       // Enforce the input mask of the format.
       this.setInputMask(this.calendar._input, convertFormatToMask(this.settings.format));
     }
@@ -522,7 +510,7 @@ export default class CalendarWidget extends InputWidget {
 
       if (!(isIEBrowser && !relatedTarget) && !this.isCalendarElement(relatedTarget)) {
         const inputValue = this.calendar.input.value;
-        const dateValue = inputValue && this.settings.enableTime ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
+        const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
 
         this.calendar.setDate(dateValue, true, this.settings.altFormat);
       }
@@ -560,7 +548,7 @@ export default class CalendarWidget extends InputWidget {
   getFlatpickrFormatDate(Flatpickr) {
     return (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
-      if (this.settings.readOnly && (format === this.settings.altFormat)) {
+      if (this.settings.readOnly && (format === this.settings.altFormat) && (this.settings.submissionTimezone === this.timezone)) {
         if (this.loadZones()) {
           return Flatpickr.formatDate(date, format);
         }
@@ -571,9 +559,9 @@ export default class CalendarWidget extends InputWidget {
           if (Array.isArray(compValue)) {
             compValue = compValue[this.valueIndex];
           }
-          return formatOffset(Flatpickr.formatDate.bind(Flatpickr), new Date(compValue), format, this.timezone);
+          return formatOffset(this.timezonesUrl, Flatpickr.formatDate.bind(Flatpickr), new Date(compValue), format, this.timezone);
         }
-        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
+        return formatOffset(this.timezonesUrl, Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
       }
 
       return Flatpickr.formatDate(date, format);

@@ -45,6 +45,7 @@ export default class PDF extends Webform {
 
   render() {
     this.submitButton = this.addComponent({
+      disabled: this.form.disableWizardSubmit,
       input: true,
       type: 'button',
       action: 'submit',
