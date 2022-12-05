@@ -112,6 +112,10 @@ export function embed(config = {}) {
 
     debug('Embedding Configuration', config);
 
+    if (config.addPremiumLib) {
+      config.addPremiumLib(config, scriptSrc);
+    }
+
     // The id for this embedded form.
     const id = `formio-${Math.random().toString(36).substring(7)}`;
     config.id = id;
@@ -125,7 +129,7 @@ export function embed(config = {}) {
     thisScript.parentNode.insertBefore(wrapper, thisScript.parentNode.firstElementChild.nextSibling);
 
     // If we include the libraries, then we will attempt to run this in shadow dom.
-    if (config.includeLibs && (typeof wrapper.attachShadow === 'function')) {
+    if (config.includeLibs && (typeof wrapper.attachShadow === 'function') && !config.premium) {
       wrapper = wrapper.attachShadow({
         mode: 'open'
       });
@@ -364,9 +368,9 @@ export function embed(config = {}) {
         addStyles(config.libs.fontawesome.css, true);
         addStyles(config.libs.bootstrap.css);
       }
-      else if (config.libs.premium) {
-        addStyles(config.libs.premium.css);
-        addScript(config.libs.premium.js, 'premium', (premium) => {
+      if (config.premium) {
+        addStyles(config.premium.css);
+        addScript(config.premium.js, 'premium', (premium) => {
           debug('Using premium');
           Formio.use(premium);
           renderForm();
@@ -374,7 +378,7 @@ export function embed(config = {}) {
       }
 
       // Render the form if no template is provided.
-      if (!config.template && !config.libs.premium) {
+      if (!config.template && !config.premium) {
         renderForm();
       }
     });
