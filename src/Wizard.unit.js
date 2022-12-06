@@ -737,154 +737,153 @@ describe('Wizard tests', () => {
     })
     .catch((err) => done(err));
   });
- //TOFIX
-  // it('Should not create a new submission on submission of edited draft submission', function(done) {
-  //   const formElement = document.createElement('div');
-  //   const customizedWizard = new Wizard(formElement);
-  //   const expectedValues = {
-  //     '1': {
-  //       method: 'post',
-  //       urlEnd: 'submission',
-  //       state: 'draft',
-  //       data: {
-  //         number: '',
-  //         textArea1: '',
-  //         textField: 'test'
-  //       },
-  //       id: undefined
-  //     },
-  //     '2': {
-  //       method: 'put',
-  //       urlEnd: 'someId',
-  //       state: 'draft',
-  //       data: {
-  //         number: 111111,
-  //         textArea1: 'test1',
-  //         textField: 'test1'
-  //       },
-  //       id: 'someId'
-  //     },
-  //     '3': {
-  //       method: 'put',
-  //       urlEnd: 'someId',
-  //       state: 'draft',
-  //       data: {
-  //         number: 22222,
-  //         textArea1: 'test',
-  //         textField: 'test1'
-  //       },
-  //       id: 'someId'
-  //     },
-  //     '4': {
-  //       method: 'put',
-  //       urlEnd: 'someId',
-  //       state: 'draft',
-  //       data: {
-  //         number: 22222,
-  //         textArea1: 'test1',
-  //         textField: 'test1'
-  //       },
-  //       id: 'someId'
-  //     },
-  //     '5': {
-  //       method: 'put',
-  //       urlEnd: 'someId',
-  //       state: 'submitted',
-  //       data: {
-  //         number: 22222,
-  //         textArea1: 'test1',
-  //         textField: 'test1'
-  //       },
-  //       id: 'someId'
-  //     }
-  //   };
 
-  //   customizedWizard.setForm(customWizard).then(() => {
-  //     const formio = new Formio('http://test.localhost/draftwizardpages', {});
-  //     let number = 1;
+  it('Should not create a new submission on submission of edited draft submission', function(done) {
+    const formElement = document.createElement('div');
+    const customizedWizard = new Wizard(formElement);
+    const expectedValues = {
+      '1': {
+        method: 'post',
+        urlEnd: 'submission',
+        state: 'draft',
+        data: {
+          textArea1: '',
+          textField: 'test'
+        },
+        id: undefined
+      },
+      '2': {
+        method: 'put',
+        urlEnd: 'someId',
+        state: 'draft',
+        data: {
+          number: 111111,
+          textArea1: 'test1',
+          textField: 'test1'
+        },
+        id: 'someId'
+      },
+      '3': {
+        method: 'put',
+        urlEnd: 'someId',
+        state: 'draft',
+        data: {
+          number: 22222,
+          textArea1: 'test',
+          textField: 'test1'
+        },
+        id: 'someId'
+      },
+      '4': {
+        method: 'put',
+        urlEnd: 'someId',
+        state: 'draft',
+        data: {
+          number: 22222,
+          textArea1: 'test1',
+          textField: 'test1'
+        },
+        id: 'someId'
+      },
+      '5': {
+        method: 'put',
+        urlEnd: 'someId',
+        state: 'submitted',
+        data: {
+          number: 22222,
+          textArea1: 'test1',
+          textField: 'test1'
+        },
+        id: 'someId'
+      }
+    };
 
-  //     formio.makeRequest = (type, url, method, data) => {
-  //       assert.equal(method, expectedValues[number].method, `Should send ${expectedValues[number].method} request`);
-  //       assert.equal(data._id, expectedValues[number].id, `Submission data should ${expectedValues[number].id ? '' : 'not'} contain id of editted submission`);
-  //       assert.equal(url.endsWith(expectedValues[number].urlEnd), true, `Request url should end with ${expectedValues[number].urlEnd}`);
-  //       assert.equal(data.state, expectedValues[number].state, `Should set ${expectedValues[number].state} state for submission`);
-  //       _.each(expectedValues[number].data, function(value, key) {
-  //         assert.equal(data.data[key], value, `${key} field should contain "${value}" value in submission object`);
-  //       });
+    customizedWizard.setForm(customWizard).then(() => {
+      const formio = new Formio('http://test.localhost/draftwizardpages', {});
+      let number = 1;
 
-  //       number = number + 1;
+      formio.makeRequest = (type, url, method, data) => {
+        assert.equal(method, expectedValues[number].method, `Should send ${expectedValues[number].method} request`);
+        assert.equal(data._id, expectedValues[number].id, `Submission data should ${expectedValues[number].id ? '' : 'not'} contain id of editted submission`);
+        assert.equal(url.endsWith(expectedValues[number].urlEnd), true, `Request url should end with ${expectedValues[number].urlEnd}`);
+        assert.equal(data.state, expectedValues[number].state, `Should set ${expectedValues[number].state} state for submission`);
+        _.each(expectedValues[number].data, function(value, key) {
+          assert.equal(data.data[key], value, `${key} field should contain "${value}" value in submission object`);
+        });
 
-  //       return new Promise(resolve => resolve({
-  //         _id: 'someId',
-  //         data: {
-  //           number: 22222,
-  //           textArea1: 'test1',
-  //           textField: 'test1'
-  //         },
-  //         metadata:{},
-  //         state: data.state
-  //         })
-  //       );
-  //     };
+        number = number + 1;
 
-  //     customizedWizard.formio = formio;
+        return new Promise(resolve => resolve({
+          _id: 'someId',
+          data: {
+            number: 22222,
+            textArea1: 'test1',
+            textField: 'test1'
+          },
+          metadata:{},
+          state: data.state
+          })
+        );
+      };
 
-  //     customizedWizard.on('goToNextPage', function() {
-  //       customizedWizard.executeSubmit({ state: 'draft' }).then(() => customizedWizard.nextPage());
-  //     });
-  //     customizedWizard.on('goToPrevPage', function() {
-  //       customizedWizard.executeSubmit({ state: 'draft' }).then(() => customizedWizard.prevPage());
-  //     });
-  //     customizedWizard.on('saveSubmission', function() {
-  //       customizedWizard.executeSubmit();
-  //     });
+      customizedWizard.formio = formio;
 
-  //     const checkPage = (page) => {
-  //       assert.equal(customizedWizard.page, page, `Should set page ${page + 1}`);
-  //     };
+      customizedWizard.on('goToNextPage', function() {
+        customizedWizard.executeSubmit({ state: 'draft' }).then(() => customizedWizard.nextPage());
+      });
+      customizedWizard.on('goToPrevPage', function() {
+        customizedWizard.executeSubmit({ state: 'draft' }).then(() => customizedWizard.prevPage());
+      });
+      customizedWizard.on('saveSubmission', function() {
+        customizedWizard.executeSubmit();
+      });
 
-  //     const navigatePage = (btnKey) => {
-  //       const customBtn = customizedWizard.components[customizedWizard.page].getComponent(btnKey).refs.button;
-  //       const clickEvent = new Event('click');
-  //       customBtn.dispatchEvent(clickEvent);
-  //     };
+      const checkPage = (page) => {
+        assert.equal(customizedWizard.page, page, `Should set page ${page + 1}`);
+      };
 
-  //     const setPageCompValue = (compKey, value) => {
-  //       customizedWizard.components[customizedWizard.page].getComponent(compKey).setValue(value);
-  //     };
+      const navigatePage = (btnKey) => {
+        const customBtn = customizedWizard.components[customizedWizard.page].getComponent(btnKey).refs.button;
+        const clickEvent = new Event('click');
+        customBtn.dispatchEvent(clickEvent);
+      };
 
-  //     checkPage(0);
-  //     setPageCompValue('textField', 'test');
-  //     navigatePage('nextPage');
+      const setPageCompValue = (compKey, value) => {
+        customizedWizard.components[customizedWizard.page].getComponent(compKey).setValue(value);
+      };
 
-  //     setTimeout(() => {
-  //       checkPage(1);
-  //       setPageCompValue('number', 111111);
-  //       navigatePage('nextPage1');
+      checkPage(0);
+      setPageCompValue('textField', 'test');
+      navigatePage('nextPage');
 
-  //       setTimeout(() => {
-  //         checkPage(2);
-  //         setPageCompValue('textArea1', 'test');
-  //         navigatePage('prevPage1');
+      setTimeout(() => {
+        checkPage(1);
+        setPageCompValue('number', 111111);
+        navigatePage('nextPage1');
 
-  //         setTimeout(() => {
-  //           checkPage(1);
-  //           navigatePage('nextPage1');
+        setTimeout(() => {
+          checkPage(2);
+          setPageCompValue('textArea1', 'test');
+          navigatePage('prevPage1');
 
-  //           setTimeout(() => {
-  //             checkPage(2);
-  //             navigatePage('save');
-  //             setTimeout(() => {
-  //               customizedWizard.destroy();
-  //               done();
-  //             }, 200);
-  //           }, 200);
-  //         }, 200);
-  //       }, 200);
-  //     }, 200);
-  //   })
-  //   .catch((err) => done(err));
-  // });
+          setTimeout(() => {
+            checkPage(1);
+            navigatePage('nextPage1');
+
+            setTimeout(() => {
+              checkPage(2);
+              navigatePage('save');
+              setTimeout(() => {
+                customizedWizard.destroy();
+                done();
+              }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
 
   it('Should show validation alert and components` errors and navigate pages after clicking alert error', function(done) {
     const formElement = document.createElement('div');
