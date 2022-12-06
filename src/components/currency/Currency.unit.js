@@ -5,6 +5,7 @@ import {
   comp1,
   comp2,
   comp3,
+  comp4,
 } from './fixtures';
 
 describe('Currency Component', () => {
@@ -315,6 +316,13 @@ describe('Currency Component', () => {
       Harness.testSetInput(component, -1234567890.12, -1234567890.12, '-1.234.567.890,12 $');
       Harness.testSetInput(component, 1234567890.123456789, 1234567890.12, '1.234.567.890,12 $');
       Harness.testSetInput(component, -1234567890.123456789, -1234567890.12, '-1.234.567.890,12 $');
+    });
+  });
+
+  it('Should return value as string properly for multiple values', (done) => {
+    Harness.testCreate(CurrencyComponent, comp4).then((component) => {
+      assert.equal(component.getValueAsString([100, 200, 300, 500]), '$100.00, $200.00, $300.00, $500.00');
+      done();
     });
   });
 });

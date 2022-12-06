@@ -11,7 +11,8 @@ import {
   comp3,
   comp4,
   comp5,
-  comp6
+  comp6,
+  comp7,
 } from './fixtures';
 
 describe('Number Component', () => {
@@ -411,6 +412,13 @@ describe('Number Component', () => {
         assert.equal(component.defaultValue, null);
         done();
       });
+    });
+  });
+
+  it('Should return value as string properly for multiple values', (done) => {
+    Harness.testCreate(NumberComponent, comp7).then((component) => {
+      assert.equal(component.getValueAsString([1, 2, 3, 4, 5]), '1, 2, 3, 4, 5');
+      done();
     });
   });
 
