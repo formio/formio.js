@@ -48,6 +48,7 @@ import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditiona
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 import { fastCloneDeep } from '../lib/utils/utils';
+import dataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 
 import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
 import calculatedValue from '../test/forms/calculatedValue';
@@ -1660,7 +1661,7 @@ describe('Webform tests', function() {
     }).catch(done);
   };
 
-  //TOFIX
+  //TOFIX //TODISCUSS fio-4565
   // it('Should not fire validations when fields are either protected or not persistent.', (done) => {
   //   const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
   //   form.setForm(
@@ -2162,27 +2163,27 @@ describe('Webform tests', function() {
       }).catch(done);
     });
 
-    //TOFIX
-    // it('Should keep components inside DataGrid valid onChange', (done) => {
-    //   formElement.innerHTML = '';
-    //   const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
-    //   form.setForm(DataGridOnBlurValidation).then(() => {
-    //     const component = form.components[0];
-    //     Harness.setInputValue(component, 'data[dataGrid][0][textField]', '12');
-    //     const textField = component.iteratableRows[0].components.textField;
-    //     setTimeout(() => {
-    //       assert.equal(textField.error, '', 'Should stay valid on input');
-    //       const blur = new Event('blur', { bubbles: true, cancelable: true });
-    //       const input = textField.refs.input[0];
-    //       input.dispatchEvent(blur);
-    //       textField.element.dispatchEvent(blur);
-    //         setTimeout(() => {
-    //           assert(textField.error, 'Should be validated after blur');
-    //           done();
-    //         }, 250);
-    //     }, 250);
-    //   }).catch(done);
-    // });
+    it('Should keep components inside DataGrid valid onChange', (done) => {
+      formElement.innerHTML = '';
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(dataGridOnBlurValidation).then(() => {
+        const component = form.components[0];
+        Harness.setInputValue(component, 'data[dataGrid][0][textField]', '12');
+
+        setTimeout(() => {
+          const textField = component.iteratableRows[0].components.textField;
+          assert.equal(!!textField.error, false, 'Should stay valid on input');
+          const blur = new Event('blur', { bubbles: true, cancelable: true });
+          const input = textField.refs.input[0];
+          input.dispatchEvent(blur);
+          textField.element.dispatchEvent(blur);
+            setTimeout(() => {
+              assert(textField.error, 'Should be validated after blur');
+              done();
+            }, 250);
+        }, 250);
+      }).catch(done);
+    });
   });
 
   describe('Reset values', () => {
@@ -2780,7 +2781,7 @@ describe('Webform tests', function() {
     }).catch(done);
   }).timeout(3000);
 
-  //TOFIX
+  //TOFIX //TODISCUSS  https://github.com/formio/formio.js/commit/8510be8b664869c197173f67d4d446cc3cabd7fa
   // it('Should have number and currency fields in empty form submission', function(done) {
   //   const formElement = document.createElement('div');
   //   const form= new Webform(formElement);
@@ -2817,9 +2818,10 @@ describe('Webform tests', function() {
   //     submitBtn.dispatchEvent(clickEvent);
 
   //     setTimeout(() => {
+  //       console.log(5555, form.data, emptySubmissionData, form.submission.data)
   //       assert.deepEqual(form.data, emptySubmissionData);
   //       done();
-  //     }, 200);
+  //     }, 400);
   //   })
   //   .catch((err) => done(err));
   // });

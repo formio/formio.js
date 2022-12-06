@@ -105,9 +105,7 @@ describe('DateTime Component', () => {
       input.dispatchEvent(blurEvent);
 
       setTimeout(() => {
-        // assert.equal(dateTime.getValue().startsWith(expectedValueStart), true);
         assert.equal(input.value, expectedValue);
-console.log(22222, input.value, dateTime.getValue());
         document.innerHTML = '';
         done();
       }, 300);

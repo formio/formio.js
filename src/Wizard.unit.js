@@ -45,8 +45,7 @@ describe('Wizard tests', () => {
       const dataGrid = wizard.getComponent('dataGrid');
       const editGrid = wizard.getComponent('editGrid');
 
-      const checkComponents = (editGridRowsNumber, dataGridRowsNumber, editGridValue) => {
-      //const checkComponents = (editGridRowsNumber, dataGridRowsNumber, editGridValue, dataGridValue) => {
+      const checkComponents = (editGridRowsNumber, dataGridRowsNumber, editGridValue, dataGridValue) => {
         assert.equal(editGrid.editRows.length, editGridRowsNumber, `EditGrit should have ${dataGridRowsNumber} rows`);
         assert.equal(editGrid.components.length, editGridRowsNumber, `EditGrit should have ${dataGridRowsNumber} components`);
         assert.equal(dataGrid.rows.length, dataGridRowsNumber, `DataGrit should have ${dataGridRowsNumber} rows`);
@@ -55,10 +54,10 @@ describe('Wizard tests', () => {
         if (editGridValue) {
           assert.deepEqual(editGrid.dataValue, editGridValue, 'Should set correct editGrid value');
         }
-        //TOFIX
-        // if (dataGridValue) {
-        //   assert.deepEqual(dataGrid.dataValue, dataGridValue, 'Should set correct dataGrid value');
-        // }
+
+        if (dataGridValue) {
+          assert.deepEqual(dataGrid.dataValue, dataGridValue, 'Should set correct dataGrid value');
+        }
       };
 
       const event = (name, elem) => {
@@ -66,7 +65,7 @@ describe('Wizard tests', () => {
         elem.dispatchEvent(event);
       };
 
-      checkComponents(0, 1, [], [{ number: '' }]);
+      checkComponents(0, 1, [], [{}]);
 
       const submission = {
           data: {
@@ -82,7 +81,7 @@ describe('Wizard tests', () => {
         wizard.cancel(true);
 
         setTimeout(() => {
-          checkComponents(0, 1, [], [{ number: '' }]);
+          checkComponents(0, 1, [], [{}]);
           event('click', editGrid.refs['editgrid-editGrid-addRow'][0]);
 
           setTimeout(() => {
@@ -448,7 +447,7 @@ describe('Wizard tests', () => {
     })
     .catch((err) => done(err));
   });
- //TOFIX
+ //TOFIX //TOcheck prev versions
   // it('Should execute advanced logic for wizard pages', function(done) {
   //   const formElement = document.createElement('div');
   //   const wizard = new Wizard(formElement);
