@@ -19,6 +19,24 @@ describe('Form Component', () => {
     return Harness.testCreate(FormComponent, comp1);
   });
 
+  describe('Value inside Nested Form', () => {
+    it('Should be able to set value to Nested Form Component and check result', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(comp5)
+        .then(() => {
+            const textField = form.getComponent(['form', 'textField']);
+            textField.setValue('123', { modified: true });
+              assert.equal(textField.dataValue, '123', 'Should set value');
+              form.options.email = true;
+              const toString = form.getValueAsString(textField.dataValue);
+              assert.equal(toString, '[Complex Data]', 'Should check result');
+              done();
+        })
+        .catch(done);
+    });
+  });
+
   it('Test refreshOn inside NestedForm', (done) => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);

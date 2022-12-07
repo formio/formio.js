@@ -39,6 +39,44 @@ describe('TextField Component', () => {
     });
   });
 
+  it('Should check mask and value in the textfield component', (done) => {
+    const formJson =  {
+      components: [{
+          label: 'Text Field',
+          tableView: true,
+          allowMultipleMasks: true,
+          inputMasks: [{
+            label: 'mask1',
+            mask: 'mask1'
+          }],
+          key: 'textField',
+          type: 'textfield',
+          input: true
+       }]
+    };
+    const element = document.createElement('div');
+    Formio.createForm(element, formJson)
+      .then(form => {
+        form.setSubmission({
+          data: {
+            textField: {
+                value: 'mask1',
+                maskName: 'mask1'
+            }
+        },
+        });
+
+        const textField = form.getComponent('textField');
+
+        setTimeout(() => {
+          assert.equal(textField.data.textField.maskName, textField.dataValue.maskName, 'Should check the correct mask name');
+          assert.equal(textField.data.textField.value, textField.dataValue.value, 'Should check the correct mask value');
+          done();
+        }, 300);
+      })
+      .catch(done);
+  });
+
   it('Should provide required validation', () => {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { required: true }
