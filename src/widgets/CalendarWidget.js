@@ -159,7 +159,7 @@ export default class CalendarWidget extends InputWidget {
     };
 
     Formio.requireLibrary('flatpickr-css', 'flatpickr', [
-      { type: 'styles', src: `${Formio.cdn[this.flatpickrType]}/flatpickr.min.css` }
+      { type: 'styles', src: `${Formio.cdn['flatpickr-formio']}/flatpickr.min.css` }
     ], true);
 
     if (this.component.shortcutButtons) {
@@ -181,7 +181,7 @@ export default class CalendarWidget extends InputWidget {
         }
       })
       .then((ShortcutButtonsPlugin) => {
-        return Formio.requireLibrary('flatpickr', 'flatpickr', `${Formio.cdn[this.flatpickrType]}/flatpickr.min.js`, true)
+        return Formio.requireLibrary('flatpickr', 'flatpickr', `${Formio.cdn['flatpickr-formio']}/flatpickr.min.js`, true)
           .then((Flatpickr) => {
             if (this.component.shortcutButtons?.length && ShortcutButtonsPlugin) {
               this.initShortcutButtonsPlugin(ShortcutButtonsPlugin);
