@@ -6,7 +6,8 @@ import CheckBoxComponent from './Checkbox';
 import {
   comp1,
   customDefaultComponent,
-  comp2
+  comp2,
+  comp3,
 } from './fixtures';
 
 describe('Checkbox Component', () => {
@@ -57,5 +58,13 @@ describe('Checkbox Component', () => {
       Harness.clickElement(component, input);
       assert.equal(input.checked, false);
     });
+  });
+
+  it('Should render red asterisk for preview template of the modal required checkbox ', (done) => {
+    Harness.testCreate(CheckBoxComponent, comp3).then((component) => {
+      const label = component.element.querySelector('.control-label');
+      assert(label.className.includes('field-required'));
+      done();
+    }).catch(done);
   });
 });
