@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5784: allow quick inline embed to pull in premium components from a deployed environment
  - flatpickr-vpat replaced with flatpickr-formio
  - FIO-5999: flatpickrType replaced with flatpickr-formio
+ - FIO-5784: fixed adding links for libs
 
 ## 4.15.0-rc.15
 ### Fixed
