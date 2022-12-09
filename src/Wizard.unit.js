@@ -1512,7 +1512,7 @@ it('Should show tooltip for wizard pages', function(done) {
       })
       .catch(done);
   });
-//TOFIX
+//TOFIX - BUG - correct on 4.14.0-rc.34
   // it('Should render all pages as a part of wizard pagination', (done) => {
   //   const formElement = document.createElement('div');
   //   const wizard = new Wizard(formElement);
