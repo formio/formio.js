@@ -17,7 +17,7 @@ import wizardWithHiddenPanel from '../test/forms/wizardWithHiddenPanel';
 import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
 import wizardWithNestedWizard from '../test/forms/wizardWithNestedWizard';
 import formWithSignature from '../test/forms/formWithSignature';
-//import wizardWithTooltip from '../test/forms/wizardWithTooltip';
+import wizardWithTooltip from '../test/forms/wizardWithTooltip';
 import wizardForHtmlModeTest from '../test/forms/wizardForHtmlRenderModeTest';
 import wizardTestForm from '../test/forms/wizardTestForm';
 import formWithNestedWizard from '../test/forms/formWIthNestedWizard';
@@ -35,6 +35,9 @@ import wizardNavigateOrSaveOnEnter from '../test/forms/wizardNavigateOrSaveOnEnt
 import wizardWithFieldsValidationChild from '../test/forms/wizardWithFieldsValidationChild';
 import wizardWithFieldsValidationParent from '../test/forms/wizardWithFieldsValidationParent';
 import nestedConditionalWizard from '../test/forms/nestedConditionalWizard';
+
+global.requestAnimationFrame = (cb) => cb();
+global.cancelAnimationFrame = () => {};
 
 describe('Wizard tests', () => {
   it('Should correctly reset values', function(done) {
@@ -447,78 +450,77 @@ describe('Wizard tests', () => {
     })
     .catch((err) => done(err));
   });
- //TOFIX //TOcheck prev versions
-  // it('Should execute advanced logic for wizard pages', function(done) {
-  //   const formElement = document.createElement('div');
-  //   const wizard = new Wizard(formElement);
-  //   const form = _.cloneDeep(wizardTestForm.form);
-  //   _.each(form.components, (comp, index) => {
-  //     if (index === 1) {
-  //       comp.logic = [
-  //         {
-  //           name: 'simple logic',
-  //           trigger: { type: 'simple', simple: { show: true, when: 'textField', eq: 'tooltip' } },
-  //           actions: [
-  //             {
-  //               name: 'merge schema action',
-  //               type: 'mergeComponentSchema',
-  //               schemaDefinition: "schema = { tooltip: 'some tooltip'}"
-  //             }
-  //           ]
-  //         }
-  //       ];
-  //      }
-  //     if (index === 2) {
-  //       comp.logic = [
-  //         {
-  //           name: 'logic test',
-  //           trigger: { type: 'simple', simple: { show: true, when: 'checkbox', eq: 'true' } },
-  //           actions: [
-  //             {
-  //               name: 'disabled',
-  //               type: 'property',
-  //               property: { label: 'Disabled', value: 'disabled', type: 'boolean' },
-  //               state: true
-  //             }
-  //           ]
-  //         }
-  //       ];
-  //     }
-  //    });
 
-  //   wizard.setForm(form).then(() => {
-  //     const clickWizardBtn = (pathPart, clickError) => {
-  //       const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
-  //       const clickEvent = new Event('click');
-  //       btn.dispatchEvent(clickEvent);
-  //     };
+  it('Should execute advanced logic for wizard pages', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const form = _.cloneDeep(wizardTestForm.form);
+    _.each(form.components, (comp, index) => {
+      if (index === 1) {
+        comp.logic = [
+          {
+            name: 'simple logic',
+            trigger: { type: 'simple', simple: { show: true, when: 'textField', eq: 'tooltip' } },
+            actions: [
+              {
+                name: 'merge schema action',
+                type: 'mergeComponentSchema',
+                schemaDefinition: "schema = { tooltip: 'some tooltip'}"
+              }
+            ]
+          }
+        ];
+       }
+      if (index === 2) {
+        comp.logic = [
+          {
+            name: 'logic test',
+            trigger: { type: 'simple', simple: { show: true, when: 'checkbox', eq: 'true' } },
+            actions: [
+              {
+                name: 'disabled',
+                type: 'property',
+                property: { label: 'Disabled', value: 'disabled', type: 'boolean' },
+                state: true
+              }
+            ]
+          }
+        ];
+      }
+     });
 
-  //     const checkPage = (pageNumber) => {
-  //       assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
-  //     };
+    wizard.setForm(form).then(() => {
+      const clickWizardBtn = (pathPart, clickError) => {
+        const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event('click');
+        btn.dispatchEvent(clickEvent);
+      };
 
-  //     checkPage(0);
-  //     wizard.getComponent('textField').setValue('tooltip');
-  //     clickWizardBtn('next');
+      const checkPage = (pageNumber) => {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
 
-  //     setTimeout(() => {
-  //       checkPage(1);
-  //       assert.equal(wizard.tooltips.length, 1, 'Should have tooltip after advanced logic execution');
-  //       //TOFIX
-  //       //assert.equal(!!wizard.refs[`${wizard.wizardKey}-tooltip`][0], true, 'Should render tooltip icon');
+      checkPage(0);
+      wizard.getComponent('textField').setValue('tooltip');
+      clickWizardBtn('next');
 
-  //       wizard.getComponent('checkbox').setValue(true);
-  //       clickWizardBtn('next');
+      setTimeout(() => {
+        checkPage(1);
+        assert.equal(wizard.tooltips.length, 1, 'Should have tooltip after advanced logic execution');
+        assert.equal(!!wizard.refs[`${wizard.wizardKey}-tooltip`][0], true, 'Should render tooltip icon');
 
-  //       setTimeout(() => {
-  //         checkPage(2);
-  //         assert.equal(wizard.allPages[wizard.page].disabled, true, 'Should disable page components after advanced logic execution');
-  //         done();
-  //       }, 200);
-  //     }, 200);
-  //   })
-  //   .catch((err) => done(err));
-  // });
+        wizard.getComponent('checkbox').setValue(true);
+        clickWizardBtn('next');
+
+        setTimeout(() => {
+          checkPage(2);
+          assert.equal(wizard.allPages[wizard.page].disabled, true, 'Should disable page components after advanced logic execution');
+          done();
+        }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
 
   it('Should navigate next page according to advanced next page logic', function(done) {
     const formElement = document.createElement('div');
@@ -1099,31 +1101,31 @@ describe('Wizard tests', () => {
     })
     .catch((err) => done(err));
   });
-  //TOFIX
-  // it('Should show tooltip for wizard pages', function(done) {
-  //   const formElement = document.createElement('div');
-  //   const wizardWithPageTooltip = new Wizard(formElement);
 
-  //   wizardWithPageTooltip.setForm(wizardWithTooltip).then(() => {
-  //     const clickEvent = new Event('click');
+it('Should show tooltip for wizard pages', function(done) {
+    const formElement = document.createElement('div');
+    const wizardWithPageTooltip = new Wizard(formElement);
 
-  //     assert.equal(wizardWithPageTooltip.tooltips.length, 1);
+    wizardWithPageTooltip.setForm(wizardWithTooltip).then(() => {
+      const clickEvent = new Event('click');
 
-  //     const pageTooltipIcon = wizardWithPageTooltip.refs[`${wizardWithPageTooltip.wizardKey}-tooltip`][0];
+      assert.equal(wizardWithPageTooltip.tooltips.length, 1);
 
-  //     assert.equal(!!pageTooltipIcon, true);
+      const pageTooltipIcon = wizardWithPageTooltip.refs[`${wizardWithPageTooltip.wizardKey}-tooltip`][0];
 
-  //     pageTooltipIcon.dispatchEvent(clickEvent);
+      assert.equal(!!pageTooltipIcon, true);
 
-  //     setTimeout(() => {
-  //       const tooltipText = wizardWithPageTooltip.element.querySelector('.tooltip-inner').textContent;
-  //       assert.equal(tooltipText, wizardWithPageTooltip.currentPanel.tooltip);
+      pageTooltipIcon.dispatchEvent(clickEvent);
 
-  //       done();
-  //     }, 250);
-  //   })
-  //   .catch((err) => done(err));
-  // });
+      setTimeout(() => {
+        const tooltipText = wizardWithPageTooltip.element.querySelector('.tippy-content').textContent;
+        assert.equal(tooltipText, wizardWithPageTooltip.currentPanel.tooltip);
+
+        done();
+      }, 300);
+    })
+    .catch((err) => done(err));
+  });
 
   it('Should not clear wizard data when navigating between wizard pages with hidden panel', function(done) {
     const formElement = document.createElement('div');

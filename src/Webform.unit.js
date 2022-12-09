@@ -2781,50 +2781,46 @@ describe('Webform tests', function() {
     }).catch(done);
   }).timeout(3000);
 
-  //TOFIX //TODISCUSS  https://github.com/formio/formio.js/commit/8510be8b664869c197173f67d4d446cc3cabd7fa
-  // it('Should have number and currency fields in empty form submission', function(done) {
-  //   const formElement = document.createElement('div');
-  //   const form= new Webform(formElement);
-  //   const formJson = {
-  //     components: [
-  //       {
-  //         label: 'Number',
-  //         key: 'number',
-  //         type: 'number'
-  //       },
-  //       {
-  //         label: 'Currency',
-  //         key: 'currency',
-  //         type: 'currency'
-  //       },
-  //       {
-  //         type: 'button',
-  //         label: 'Submit',
-  //         key: 'submit'
-  //       },
-  //     ],
-  //   };
+  it('Should have number and currency fields in empty form submission', function(done) {
+    const formElement = document.createElement('div');
+    const form= new Webform(formElement);
+    const formJson = {
+      components: [
+        {
+          label: 'Number',
+          key: 'number',
+          type: 'number'
+        },
+        {
+          label: 'Currency',
+          key: 'currency',
+          type: 'currency'
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit'
+        },
+      ],
+    };
 
-  //   const emptySubmissionData = {
-  //     number: '',
-  //     currency: '',
-  //     submit: true
-  //   };
+    const emptySubmissionData = {
+      submit: true
+    };
 
-  //   form.setForm(formJson).then(() => {
-  //     const clickEvent = new Event('click');
-  //     const submitBtn = form.element.querySelector('[name="data[submit]"]');
+    form.setForm(formJson).then(() => {
+      const clickEvent = new Event('click');
+      const submitBtn = form.element.querySelector('[name="data[submit]"]');
 
-  //     submitBtn.dispatchEvent(clickEvent);
+      submitBtn.dispatchEvent(clickEvent);
 
-  //     setTimeout(() => {
-  //       console.log(5555, form.data, emptySubmissionData, form.submission.data)
-  //       assert.deepEqual(form.data, emptySubmissionData);
-  //       done();
-  //     }, 400);
-  //   })
-  //   .catch((err) => done(err));
-  // });
+      setTimeout(() => {
+        assert.deepEqual(form.data, emptySubmissionData);
+        done();
+      }, 400);
+    })
+    .catch((err) => done(err));
+  });
 
   it('Test Truncate Multiple Spaces', (done) => {
     const formElement = document.createElement('div');
