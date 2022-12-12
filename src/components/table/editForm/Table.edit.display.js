@@ -124,4 +124,8 @@ export default [
     tooltip: 'Condense the size of the table.',
     weight: 704
   },
+  {
+    key: 'hideLabel',
+    ignore: true
+  },
 ];

@@ -94,5 +94,9 @@ export default [
     tooltip: 'Will automatically adjust columns based on if nested components are hidden.',
     key: 'autoAdjust',
     input: true
-  }
+  },
+  {
+    key: 'hideLabel',
+    ignore: true
+  },
 ];
