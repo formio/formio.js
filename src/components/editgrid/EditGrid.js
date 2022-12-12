@@ -46,6 +46,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       icon: 'tasks',
       group: 'data',
       documentation: '/userguide/form-building/data-components#edit-grid',
+      showPreview: false,
       weight: 30,
       schema: EditGridComponent.schema(),
     };
