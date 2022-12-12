@@ -676,7 +676,6 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  //TOFIX
   // it('Should provide correct date in selected timezone after submission', (done) => {
   //   const form = _.cloneDeep(comp9);
   //   const element = document.createElement('div');

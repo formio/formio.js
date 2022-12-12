@@ -1082,30 +1082,24 @@ export default {
         done();
       }, 500);
     },
-    //TOFIX
-    // 'Should execute property action if logic event is emitted'(form, done, test) {
-    //   test.timeout(3500);
+    'Should execute property action if logic event is emitted'(form, done) {
+      const testComponents = form.components.filter(comp => !['basis', 'hideBtn'].includes(comp.component.key));
+      const clickEvent = new Event('click');
+      form.getComponent('hideBtn').refs.button.dispatchEvent(clickEvent);
 
-    //   const componentsWithBug = ['select', 'editgrid', 'tree'];//BUG: remove those components once bug is fixed
-    //   const testComponents = form.components.filter(comp => !['basis', 'hideBtn'].includes(comp.component.key) && !componentsWithBug.includes(comp.component.type));
-    //   const clickEvent = new Event('click');
-    //   form.getComponent('hideBtn').refs.button.dispatchEvent(clickEvent);
+      testComponents.forEach(comp => {
+        const compKey = comp.component.key;
+        const compType = comp.component.type;
 
-    //   setTimeout(() => {
-    //     testComponents.forEach(comp => {
-    //       const compKey = comp.component.key;
-    //       const compType = comp.component.type;
+        assert.equal(comp.visible, false, `Should set visible:false for ${compKey} (component ${compType})`);
 
-    //       assert.equal(comp.visible, false, `Should set visible:false for ${compKey} (component ${compType})`);
+        if (compType !== 'well') {
+          assert.equal(comp.element.classList.contains('formio-hidden'), true, `Should set formio-hidden class for ${compKey} (component ${compType})`);
+        }
+      });
 
-    //       if (compType !== 'well') {
-    //         assert.equal(comp.element.classList.contains('formio-hidden'), true, `Should set formio-hidden class for ${compKey} (component ${compType})`);
-    //       }
-    //     });
-
-    //     done();
-    //   }, 700);
-    // },
+      done();
+    },
   },
   'set_get_value': {
     'Should set and get components` value (including string value)'(form, done, test) {

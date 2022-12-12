@@ -1661,7 +1661,7 @@ describe('Webform tests', function() {
     }).catch(done);
   };
 
-  //TOFIX //TODISCUSS fio-4565
+  //BUG - uncomment once fixed (ticket FIO-6042)
   // it('Should not fire validations when fields are either protected or not persistent.', (done) => {
   //   const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
   //   form.setForm(
