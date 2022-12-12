@@ -27,4 +27,8 @@ export default [
     key: 'tableView',
     ignore: true
   },
+  {
+    key: 'hideLabel',
+    ignore: true
+  },
 ];
