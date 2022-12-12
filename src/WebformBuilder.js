@@ -1343,11 +1343,69 @@ export default class WebformBuilder extends Component {
     );
   }
 
+  attachEditComponentControls(component, parent, isNew, original, ComponentClass) {
+    const cancelButtons = this.componentEdit.querySelectorAll('[ref="cancelButton"]');
+    cancelButtons.forEach((cancelButton) => {
+      this.editForm.addEventListener(cancelButton, 'click', (event) => {
+        event.preventDefault();
+        this.editForm.detach();
+        this.emit('cancelComponent', component);
+        this.dialog.close();
+        this.highlightInvalidComponents();
+      });
+    });
+
+    const removeButtons = this.componentEdit.querySelectorAll('[ref="removeButton"]');
+    removeButtons.forEach((removeButton) => {
+      this.editForm.addEventListener(removeButton, 'click', (event) => {
+        event.preventDefault();
+        // Since we are already removing the component, don't trigger another remove.
+        this.saved = true;
+        this.editForm.detach();
+        this.removeComponent(component, parent, original);
+        this.dialog.close();
+        this.highlightInvalidComponents();
+      });
+    });
+
+    const saveButtons = this.componentEdit.querySelectorAll('[ref="saveButton"]');
+    saveButtons.forEach((saveButton) => {
+      this.editForm.addEventListener(saveButton, 'click', (event) => {
+        event.preventDefault();
+        if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
+          this.editForm.setPristine(false);
+          this.editForm.showErrors();
+          return false;
+        }
+        this.saved = true;
+        this.saveComponent(component, parent, isNew, original);
+      });
+    });
+
+    const previewButtons = this.componentEdit.querySelectorAll('[ref="previewButton"]');
+    previewButtons.forEach((previewButton) => {
+      this.editForm.addEventListener(previewButton, 'click', (event) => {
+        event.preventDefault();
+        this.showPreview = !this.showPreview;
+        this.editForm.detach();
+        this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
+          componentInfo: ComponentClass.builderInfo,
+          editForm: this.editForm.render(),
+          preview: this.preview ? this.preview.render() : false,
+          showPreview: this.showPreview,
+          helplinks: this.helplinks,
+        }));
+        this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
+        this.attachEditComponentControls(component, parent, isNew, original, ComponentClass);
+      });
+    });
+  }
+
   editComponent(component, parent, isNew, isJsonEdit, original, flags = {}) {
     if (!component.key) {
       return;
     }
-    let saved = false;
+    this.saved = false;
     const componentCopy = fastCloneDeep(component);
     let ComponentClass = Components.components[componentCopy.type];
     const isCustom = ComponentClass === undefined;
@@ -1435,12 +1493,15 @@ export default class WebformBuilder extends Component {
       this.hook('previewFormSettitngs', schema, isJsonEdit);
     }
 
+    this.showPreview = ComponentClass.builderInfo.showPreview ?? true;
+
     this.componentEdit = this.ce('div', { 'class': 'component-edit-container' });
     this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
       componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),
       preview: this.preview ? this.preview.render() : false,
-      helplinks: this.helplinks,
+      showPreview: this.showPreview,
+      helplinks: this.helplinks
     }));
 
     this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}));
@@ -1505,43 +1566,7 @@ export default class WebformBuilder extends Component {
       }
     });
 
-    const cancelButtons = this.componentEdit.querySelectorAll('[ref="cancelButton"]');
-    cancelButtons.forEach((cancelButton) => {
-      this.addEventListener(cancelButton, 'click', (event) => {
-        event.preventDefault();
-        this.editForm.detach();
-        this.emit('cancelComponent', component);
-        this.dialog.close();
-        this.highlightInvalidComponents();
-      });
-    });
-
-    const removeButtons = this.componentEdit.querySelectorAll('[ref="removeButton"]');
-    removeButtons.forEach((removeButton) => {
-      this.addEventListener(removeButton, 'click', (event) => {
-        event.preventDefault();
-        // Since we are already removing the component, don't trigger another remove.
-        saved = true;
-        this.editForm.detach();
-        this.removeComponent(component, parent, original);
-        this.dialog.close();
-        this.highlightInvalidComponents();
-      });
-    });
-
-    const saveButtons = this.componentEdit.querySelectorAll('[ref="saveButton"]');
-    saveButtons.forEach((saveButton) => {
-      this.addEventListener(saveButton, 'click', (event) => {
-        event.preventDefault();
-        if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
-          this.editForm.setPristine(false);
-          this.editForm.showErrors();
-          return false;
-        }
-        saved = true;
-        this.saveComponent(component, parent, isNew, original);
-      });
-    });
+    this.attachEditComponentControls(component, parent, isNew, original, ComponentClass);
 
     const dialogClose = () => {
       this.editForm.destroy(true);
@@ -1549,7 +1574,7 @@ export default class WebformBuilder extends Component {
         this.preview.destroy(true);
         this.preview = null;
       }
-      if (isNew && !saved) {
+      if (isNew && !this.saved) {
         this.removeComponent(component, parent, original);
         this.highlightInvalidComponents();
       }
