@@ -225,7 +225,7 @@ export function embed(config = {}) {
         libs.uswds.js = `${url}/uswds/${cdn.getVersion(&apos;uswds&apos;)}/uswds.min.js`;
         libs.uswds.css = `${url}/uswds/${cdn.getVersion(&apos;uswds&apos;)}/uswds.min.css`;
         libs.fontawesome.css = `${url}/font-awesome/${cdn.getVersion(&apos;font-awesome&apos;)}/css/font-awesome.min.css`;
-        libs.uswds.css = `${url}/bootstrap/${cdn.getVersion(&apos;bootstrap&apos;)}/css/bootstrap.min.css`;
+        libs.bootstrap.css = `${url}/bootstrap/${cdn.getVersion(&apos;bootstrap&apos;)}/css/bootstrap.min.css`;
       }
       return libs;
     };
@@ -392,7 +392,6 @@ export function embed(config = {}) {
     // Add the main formio script.
     addScript(config.script, &apos;Formio&apos;, (Formio) =&gt; {
       const renderForm = () =&gt; {
-        config.libs = resolveLibs(query.cdn || Formio.cdn);
         addStyles(config.style);
         const isReady = config.before(Formio, formElement, config) || Formio.Promise.resolve();
         const form = (config.form || config.src);
@@ -535,6 +534,8 @@ export function embed(config = {}) {
       }
       // Default bootstrap + fontawesome.
       else if (config.includeLibs) {
+        Formio.cdn = new CDN();
+        config.libs = resolveLibs(query.cdn || Formio.cdn);
         addStyles(config.libs.fontawesome.css, true);
         addStyles(config.libs.bootstrap.css);
       }
