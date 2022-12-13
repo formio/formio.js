@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.15.0-rc.17]
+### Fixed
+ - FIO-5995: Timezones url fixed
+
 ## 4.15.0-rc.16
 ### Fixed
  - FIO-5627: fixed an issue where manual input does not work for date with full month format
