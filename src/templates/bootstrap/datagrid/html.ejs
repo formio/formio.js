@@ -8,7 +8,7 @@
     <tr>
       {% ctx.columns.forEach(function(col) { %}
         <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
-          {{ col.hideLabel ? '' : ctx.t(col.label || col.title, { _userInput: true }) }}
+          {{ (col.hideLabel || (col.dataGridLabel===false && col.type === 'button')) ? '' : ctx.t(col.label || col.title, { _userInput: true }) }}
           {% if (col.tooltip) { %} <i ref="tooltip" tabindex="0" data-title="{{col.tooltip}}" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{col.tooltip}}"></i>{% } %}
         </th>
       {% }) %}
