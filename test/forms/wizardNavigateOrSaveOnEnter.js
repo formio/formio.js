@@ -6,7 +6,6 @@ const form = {
       type: "panel",
       key: "page1",
       navigateOnEnter: true,
-      saveOnEnter: true,
       components: [{
           label: "Text Field",
           tableView: true,
@@ -22,7 +21,6 @@ const form = {
       type: "panel",
       key: "page2",
       navigateOnEnter: true,
-      saveOnEnter: true,
       components: [{
           label: "Text Field",
           tableView: true,
@@ -37,7 +35,6 @@ const form = {
       label: "Page 3",
       type: "panel",
       key: "page3",
-      navigateOnEnter: true,
       saveOnEnter: true,
       components: [{
           label: "Text Field",

@@ -8,7 +8,7 @@ import sinon from 'sinon';
 import {
   comp1,
   comp2,
-  //comp3
+  comp3
 } from './fixtures';
 import Webform from '../../Webform';
 import formWithResetValue from '../../../test/formtest/formWithResetValue';
@@ -365,80 +365,78 @@ describe('Button Component', () => {
     }).catch(done);
   });
 
-  //TOFIX
-  // it('Test event, reset, post, save in state actions', (done) => {
-  //   const form = _.cloneDeep(comp3);
-  //   const element = document.createElement('div');
+  it('Test event, reset, post, save in state actions', (done) => {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement('div');
 
-  //   const originalMakeRequest = Formio.makeStaticRequest;
-  //   Formio.makeStaticRequest = function(url, method, data) {
-  //     assert.equal(url, 'https://test.com');
-  //     assert.equal(method, 'POST');
-  //     assert.deepEqual(data.data, {
-  //       event: false,
-  //       number: '',
-  //       post: true,
-  //       reset: false,
-  //       saveInState: false
-  //     });
+    const originalMakeRequest = Formio.makeStaticRequest;
+    Formio.makeStaticRequest = function(url, method, data) {
+      assert.equal(url, 'https://test.com');
+      assert.equal(method, 'POST');
+      assert.deepEqual(data.data, {
+        event: false,
+        post: true,
+        reset: false,
+        saveInState: false
+      });
 
-  //     return new Promise(resolve => {
-  //       resolve({
-  //         ...data
-  //       });
-  //     });
-  //   };
+      return new Promise(resolve => {
+        resolve({
+          ...data
+        });
+      });
+    };
 
-  //   Formio.createForm(element, form).then(form => {
-  //     const formio = new Formio('http://test.localhost/test', {});
+    Formio.createForm(element, form).then(form => {
+      const formio = new Formio('http://test.localhost/test', {});
 
-  //     formio.makeRequest = (type, url, method, data) => {
-  //       assert.equal(data.state, 'testState');
-  //       assert.equal(method.toUpperCase(), 'POST');
+      formio.makeRequest = (type, url, method, data) => {
+        assert.equal(data.state, 'testState');
+        assert.equal(method.toUpperCase(), 'POST');
 
-  //       return new Promise(resolve => resolve({
-  //         ...data
-  //       }));
-  //     };
+        return new Promise(resolve => resolve({
+          ...data
+        }));
+      };
 
-  //     form.formio = formio;
+      form.formio = formio;
 
-  //     const click = (btnComp) => {
-  //       const elem = btnComp.refs.button;
-  //       const clickEvent = new Event('click');
-  //       elem.dispatchEvent(clickEvent);
-  //     };
+      const click = (btnComp) => {
+        const elem = btnComp.refs.button;
+        const clickEvent = new Event('click');
+        elem.dispatchEvent(clickEvent);
+      };
 
-  //     const saveInStateBtn = form.getComponent('saveInState');
-  //     click(saveInStateBtn);
+      const saveInStateBtn = form.getComponent('saveInState');
+      click(saveInStateBtn);
 
-  //     setTimeout(() => {
-  //       const eventBtn = form.getComponent('event');
-  //       click(eventBtn);
+      setTimeout(() => {
+        const eventBtn = form.getComponent('event');
+        click(eventBtn);
 
-  //       setTimeout(() => {
-  //         const numberComp = form.getComponent('number');
-  //         assert.equal(numberComp.dataValue, 2);
-  //         assert.equal(numberComp.getValue(), 2);
+        setTimeout(() => {
+          const numberComp = form.getComponent('number');
+          assert.equal(numberComp.dataValue, 2);
+          assert.equal(numberComp.getValue(), 2);
 
-  //         const resetBtn = form.getComponent('reset');
-  //         click(resetBtn);
+          const resetBtn = form.getComponent('reset');
+          click(resetBtn);
 
-  //         setTimeout(() => {
-  //           const numberComp = form.getComponent('number');
-  //           assert.equal(numberComp.dataValue, '');
-  //           assert.equal(numberComp.getValue(), '');
+          setTimeout(() => {
+            const numberComp = form.getComponent('number');
+            assert.equal(numberComp.dataValue, null);
+            assert.equal(numberComp.getValue(), null);
 
-  //           const postBtn = form.getComponent('post');
-  //           click(postBtn);
+            const postBtn = form.getComponent('post');
+            click(postBtn);
 
-  //           setTimeout(() => {
-  //             Formio.makeStaticRequest = originalMakeRequest;
-  //             done();
-  //           }, 300);
-  //         }, 300);
-  //       }, 300);
-  //     }, 300);
-  //   }).catch(done);
-  // });
+            setTimeout(() => {
+              Formio.makeStaticRequest = originalMakeRequest;
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch(done);
+  });
 });
