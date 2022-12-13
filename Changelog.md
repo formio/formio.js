@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.16]
+## 4.15.0-rc.16
 ### Fixed
  - FIO-5627: fixed an issue where manual input does not work for date with full month format
  - CDN Updates
@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - flatpickr-vpat replaced with flatpickr-formio
  - FIO-5999: flatpickrType replaced with flatpickr-formio
  - FIO-5784: fixed adding links for libs
-
+ - FIO-5765: fixed render tests for Bootstrap 5 in html mode
+ - FIO-5765: fixed tests
 ## 4.15.0-rc.15
 ### Fixed
  - Revert change to always execute apis on pdf output.

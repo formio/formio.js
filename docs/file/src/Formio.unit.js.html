@@ -29,7 +29,8 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
@@ -171,8 +172,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Formio.unit.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Formio from &apos;./Formio&apos;;
-//import { fastCloneDeep } from &apos;./utils/utils&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { Formio } from &apos;./index&apos;;
+import { fastCloneDeep } from &apos;./utils/utils&apos;;
 import _each from &apos;lodash/each&apos;;
 import assert from &apos;power-assert&apos;;
 import sinon from &apos;sinon&apos;;
@@ -180,14 +181,13 @@ import fetchMock from &apos;fetch-mock/es5/server&apos;;
 import _ from &apos;lodash&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 
-//import Chance from &apos;chance&apos;;
-//const chance = Chance();
+import Chance from &apos;chance&apos;;
+const chance = Chance();
 const protocol = &apos;https&apos;;
 const domain = &apos;localhost:3000&apos;;
 const baseUrl = `${protocol}://api.${domain}`;
 Formio.setBaseUrl(baseUrl);
-//TOFIX
-//Formio.setToken(null);
+Formio.setToken(null);
 Formio.fetch = fetchMock.fetchHandler;
 
 const projectId = &apos;59bbe2ec8c246100079191aa&apos;;
@@ -195,9 +195,9 @@ const formId = &apos;59bbe2ec8c246100079191ab&apos;;
 const submissionId = &apos;59bbe2ec8c246100079191ac&apos;;
 const actionId = &apos;59bbe2ec8c246100079191ad&apos;;
 
-// const generateID = function() {
-//   return chance.string({ length: 24, pool: &apos;0123456789abcdef&apos; });
-// };
+const generateID = function() {
+  return chance.string({ length: 24, pool: &apos;0123456789abcdef&apos; });
+};
 
 const runTests = function(fn, options) {
   const tests = {};
@@ -933,12 +933,11 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
         url: &apos;https://api.localhost:3000/project&apos;,
         method: &apos;GET&apos;
       },
-      //TOFIX
-      // {
-      //   fnName: &apos;logout&apos;,
-      //   url: &apos;https://api.localhost:3000/logout&apos;,
-      //   method: &apos;GET&apos;
-      // }
+      {
+        fnName: &apos;logout&apos;,
+        url: &apos;https://api.localhost:3000/logout&apos;,
+        method: &apos;GET&apos;
+      }
     ];
 
     staticTests.forEach((test) =&gt; {
@@ -1089,1464 +1088,1463 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
       });
     };
 
-    // let user;
-    // let userPassword;
-    // let userToken = chance.string({ length: 450 });
-    // const userFormId = generateID();
-    // let project;
-    // let form;
-    // let submission;
-    //TOFIX
-    const tests = [
-      // {
-      //   name: &apos;Registering user.&apos;,
-      //   test() {
-      //     const req = {
-      //       data: {
-      //         &apos;user.name&apos;: chance.string({
-      //           length: 10,
-      //           pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
-      //         }),
-      //         &apos;user.email&apos;: chance.email(),
-      //         &apos;user.password&apos;: chance.string({ length: 12 })
-      //       }
-      //     };
-      //     Formio.setProjectUrl(Formio.getBaseUrl());
-      //     const formio = new Formio(`${Formio.getBaseUrl()}/user/register`);
-      //     return formio.saveSubmission(req)
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, user, &apos;saveSubmission response should match test user&apos;);
-      //         assert.equal(Formio.getToken(), userToken, &apos;Formio should save the user token&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return [
-      //       {
-      //         url: `${Formio.getBaseUrl()}/current`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             headers: {
-      //               &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //               &apos;x-jwt-token&apos;: userToken
-      //             },
-      //             body: user
-      //           };
-      //         }
-      //       },
-      //       {
-      //         url: `${Formio.getBaseUrl()}/user/register/submission`,
-      //         method: &apos;POST&apos;,
-      //         response(url, opts) {
-      //           const body = JSON.parse(opts.body);
-      //           const userId = generateID();
-      //           user = {
-      //             _id: userId,
-      //             created: new Date().toISOString(),
-      //             modified: new Date().toISOString(),
-      //             data: {
-      //               email: body.data[&apos;user.email&apos;],
-      //               name: body.data[&apos;user.name&apos;]
-      //             },
-      //             externalIds: [],
-      //             externalTokens: [],
-      //             form: userFormId,
-      //             owner: userId
-      //           };
-      //           userPassword = body.data[&apos;user.password&apos;];
-      //           return {
-      //             headers: {
-      //               &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //               &apos;x-jwt-token&apos;: userToken
-      //             },
-      //             body: user
-      //           };
-      //         }
-      //       }
-      //     ];
-      //   }
-      // },
-      // {
-      //   name: &apos;Logging in.&apos;,
-      //   test() {
-      //     const req = {
-      //       data: {
-      //         &apos;user.email&apos;: user.data.email,
-      //         &apos;user.password&apos;: userPassword
-      //       }
-      //     };
-      //     const formio = new Formio(`${Formio.getBaseUrl()}/user/login`);
-      //     return formio.saveSubmission(req)
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, user, &apos;saveSubmission response should match test user&apos;);
-      //         assert.equal(Formio.getToken(), userToken, &apos;Formio should save the user token&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/user/login/submission`,
-      //       method: &apos;POST&apos;,
-      //       response(url, opts) {
-      //         const body = JSON.parse(opts.body);
-      //         userToken = chance.string({ length: 450 });
-      //         assert.equal(body.data[&apos;user.email&apos;], user.data.email, &apos;Login email must be correct.&apos;);
-      //         assert.equal(body.data[&apos;user.password&apos;], userPassword, &apos;Login password must be correct.&apos;);
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: user
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Current user.&apos;,
-      //   test() {
-      //     return Formio.currentUser()
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, user, &apos;currentUser response should match test user&apos;);
-      //         return Formio.currentUser();
-      //       })
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, user, &apos;currentUser response should match test user&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     let called = false;
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/current`,
-      //       method: &apos;GET&apos;,
-      //       response() {
-      //         assert.ok(!called, &apos;User should be requested only once.&apos;);
-      //         called = true;
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: user
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Create Project&apos;,
-      //   test() {
-      //     const formio = new Formio();
-      //     const req = {
-      //       title: chance.string({
-      //         length: 10,
-      //         pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
-      //       }),
-      //       name: chance.string({
-      //         length: 10,
-      //         pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
-      //       }),
-      //       description: chance.paragraph({ sentences: 1 }),
-      //       settings: {
-      //         cors: &apos;*&apos;
-      //       },
-      //       template: &apos;http://help.form.io/templates/empty.json&apos;
-      //     };
-      //     return formio.saveProject(req)
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, project, &apos;saveProject response should match test user&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project`,
-      //       method: &apos;POST&apos;,
-      //       response(url, opts) {
-      //         const body = JSON.parse(opts.body);
-      //         const projectId = generateID();
-      //         project = {
-      //           _id: projectId,
-      //           created: new Date().toISOString(),
-      //           modified: new Date().toISOString(),
-      //           apiCalls: {
-      //             used: 0,
-      //             limit: 1000,
-      //             remaining: 1000,
-      //             reset: new Date(Date.now() + 2.628e9).toISOString() // ~1 month later
-      //           },
-      //           access: [],
-      //           title: body.title,
-      //           name: body.name,
-      //           description: body.description,
-      //           plan: &apos;basic&apos;,
-      //           owner: user._id
-      //         };
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: project
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Getting Projects&apos;,
-      //   test() {
-      //     return Formio.loadProjects()
-      //       .then((projects) =&gt; {
-      //         assert.equal(projects.length, 1, &apos;Should return only one project.&apos;);
-      //         assert.equal(projects.skip, 0, &apos;skip should be 0.&apos;);
-      //         assert.equal(projects.limit, 1, &apos;limit should be 1.&apos;);
-      //         assert.equal(projects.serverCount, 1, &apos;serverCount should be 1.&apos;);
-      //         assert.deepEqual(projects[0], project, &apos;Should match project&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project`,
-      //       method: &apos;GET&apos;,
-      //       response() {
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;Content-Range&apos;: &apos;0-0/1&apos;,
-      //             &apos;Range-Unit&apos;: &apos;items&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: [project]
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Read Project&apos;,
-      //   test() {
-      //     const formio = new Formio(`${Formio.getBaseUrl()}/project/${project._id}`);
-      //     return formio.loadProject()
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, project, &apos;Should match project&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}`,
-      //       method: &apos;GET&apos;,
-      //       response() {
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: project
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Update Project&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}`);
-      //     const newProject = fastCloneDeep(project);
-      //     newProject.name = chance.string({
-      //       length: 10,
-      //       pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
-      //     });
-      //     newProject.title = chance.string({
-      //       length: 10,
-      //       pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
-      //     });
-      //     newProject.description = chance.paragraph({ sentences: 1 });
-      //     return formio.saveProject(newProject)
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, project, &apos;Project should match&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}`,
-      //       method: &apos;PUT&apos;,
-      //       response(url, opts) {
-      //         const body = JSON.parse(opts.body);
-      //         project = body;
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: project
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Create Form&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}/form`);
-      //     const req = {
-      //       title: chance.string({
-      //         length: 10,
-      //         pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
-      //       }),
-      //       name: chance.string({
-      //         length: 10,
-      //         pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
-      //       }),
-      //       path: chance.string({
-      //         length: 10,
-      //         pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
-      //       }),
-      //       components: [
-      //         {
-      //           defaultValue: &apos;&apos;,
-      //           input: true,
-      //           inputMask: &apos;&apos;,
-      //           inputType: &apos;text&apos;,
-      //           isNew: false,
-      //           key: &apos;fieldLabel&apos;,
-      //           label: &apos;Field Label&apos;,
-      //           multiple: false,
-      //           persistent: true,
-      //           placeholder: &apos;&apos;,
-      //           prefix: &apos;&apos;,
-      //           protected: false,
-      //           suffix: &apos;&apos;,
-      //           tableView: true,
-      //           type: &apos;textfield&apos;,
-      //           unique: false,
-      //           validate: {
-      //             required: false,
-      //             minLength: &apos;&apos;,
-      //             maxLength: &apos;&apos;,
-      //             pattern: &apos;&apos;,
-      //             custom: &apos;&apos;,
-      //             customPrivate: false
-      //           }
-      //         },
-      //         {
-      //           action: &apos;submit&apos;,
-      //           block: false,
-      //           disableOnInvalid: true,
-      //           input: true,
-      //           key: &apos;submit&apos;,
-      //           label: &apos;Submit&apos;,
-      //           leftIcon: &apos;&apos;,
-      //           rightIcon: &apos;&apos;,
-      //           size: &apos;md&apos;,
-      //           tableView: false,
-      //           theme: &apos;primary&apos;,
-      //           type: &apos;button&apos;
-      //         }
-      //       ],
-      //       type: &apos;form&apos;,
-      //       access: [],
-      //       submissionAccess: []
-      //     };
-      //     return formio.saveForm(req)
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, form, &apos;Form should match&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}/form`,
-      //       method: &apos;POST&apos;,
-      //       response(url, opts) {
-      //         const body = JSON.parse(opts.body);
-      //         const formId = generateID();
-      //         form = fastCloneDeep(body);
-      //         _.assign(form, {
-      //           _id: formId,
-      //           created: new Date().toISOString(),
-      //           modified: new Date().toISOString(),
-      //           project: project._id,
-      //           owner: user._id
-      //         });
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: form
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Load Forms&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}/form`);
-      //     return formio.loadForms()
-      //       .then((forms) =&gt; {
-      //         assert.equal(forms.length, 1, &apos;Should return only one form.&apos;);
-      //         assert.equal(forms.skip, 0, &apos;skip should be 0.&apos;);
-      //         assert.equal(forms.limit, 1, &apos;limit should be 1.&apos;);
-      //         assert.equal(forms.serverCount, 1, &apos;serverCount should be 1.&apos;);
-      //         assert.deepEqual(forms[0], form, &apos;Should match form&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}/form`,
-      //       method: &apos;GET&apos;,
-      //       response() {
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;Content-Range&apos;: &apos;0-0/1&apos;,
-      //             &apos;Range-Unit&apos;: &apos;items&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: [form]
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Read Form&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}/form/${form._id}`);
-      //     return formio.loadForm()
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, form, &apos;Form should match&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}`,
-      //       method: &apos;GET&apos;,
-      //       response() {
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: form
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Update Form&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}/form/${form._id}`);
-      //     const newForm = fastCloneDeep(form);
-      //     newForm.title = chance.string({
-      //       length: 10,
-      //       pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
-      //     });
-      //     newForm.name = chance.string({
-      //       length: 10,
-      //       pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
-      //     });
-      //     newForm.path = chance.string({
-      //       length: 10,
-      //       pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
-      //     });
-      //     return formio.saveForm(newForm)
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, form, &apos;Form should match&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}`,
-      //       method: &apos;PUT&apos;,
-      //       response(url, opts) {
-      //         const body = JSON.parse(opts.body);
-      //         form = body;
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: form
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Create Submission&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}/form/${form._id}/submission`);
-      //     const req = {
-      //       data: {
-      //         fieldLabel: chance.string()
-      //       }
-      //     };
-      //     return formio.saveSubmission(req)
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, submission, &apos;Submission should match&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission`,
-      //       method: &apos;POST&apos;,
-      //       response(url, opts) {
-      //         const body = JSON.parse(opts.body);
-      //         const submissionId = generateID();
-      //         submission = {
-      //           _id: submissionId,
-      //           created: new Date().toISOString(),
-      //           modified: new Date().toISOString(),
-      //           data: body.data,
-      //           externalIds: [],
-      //           externalTokens: [],
-      //           form: form._id,
-      //           owner: user._id,
-      //           roles: []
-      //         };
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: submission
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Load Submissions&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}/form/${form._id}/submission`);
-      //     return formio.loadSubmissions()
-      //       .then((submissions) =&gt; {
-      //         assert.equal(submissions.length, 1, &apos;Should return only one submission.&apos;);
-      //         assert.equal(submissions.skip, 0, &apos;skip should be 0.&apos;);
-      //         assert.equal(submissions.limit, 1, &apos;limit should be 1.&apos;);
-      //         assert.equal(submissions.serverCount, 1, &apos;serverCount should be 1.&apos;);
-      //         assert.deepEqual(submissions[0], submission, &apos;Should match submission&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission`,
-      //       method: &apos;GET&apos;,
-      //       response() {
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;Content-Range&apos;: &apos;0-0/1&apos;,
-      //             &apos;Range-Unit&apos;: &apos;items&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: [submission]
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Read Submission&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
-      //     return formio.loadSubmission()
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, submission, &apos;Submission should match&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
-      //       method: &apos;GET&apos;,
-      //       response() {
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: submission
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Update Submission&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
-      //     const newSubmission = fastCloneDeep(submission);
-      //     newSubmission.data.fieldLabel = chance.string();
-      //     return formio.saveSubmission(newSubmission)
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, submission, &apos;Submission should match&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
-      //       method: &apos;PUT&apos;,
-      //       response(url, opts) {
-      //         const body = JSON.parse(opts.body);
-      //         submission = body;
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: submission
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Update Submission without ID&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}/form/${form._id}`);
-      //     const newSubmission = fastCloneDeep(submission);
-      //     newSubmission.data.fieldLabel = chance.string();
-      //     return formio.saveSubmission(newSubmission)
-      //       .then((response) =&gt; {
-      //         assert.deepEqual(response, submission, &apos;Submission should match&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
-      //       method: &apos;PUT&apos;,
-      //       response(url, opts) {
-      //         const body = JSON.parse(opts.body);
-      //         submission = body;
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: submission
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // // // Actions
-      // // // Available Actions
-      // // // Action Info
-      // {
-      //   name: &apos;Delete Submission&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
-      //     return formio.deleteSubmission()
-      //       .then((response) =&gt; {
-      //         assert.equal(response, &apos;OK&apos;, &apos;Submission should be deleted.&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
-      //       method: &apos;DELETE&apos;,
-      //       response: {
-      //         status: 200,
-      //         body: &apos;OK&apos;,
-      //         headers: {
-      //           &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
-      //           &apos;x-jwt-token&apos;: userToken
-      //         }
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Delete Form&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}/form/${form._id}`);
-      //     return formio.deleteForm()
-      //       .then((response) =&gt; {
-      //         assert.equal(response, &apos;OK&apos;, &apos;Submission should be deleted.&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}`,
-      //       method: &apos;DELETE&apos;,
-      //       response: {
-      //         status: 200,
-      //         body: &apos;OK&apos;,
-      //         headers: {
-      //           &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
-      //           &apos;x-jwt-token&apos;: userToken
-      //         }
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Delete Project&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}`);
-      //     return formio.deleteProject()
-      //       .then((response) =&gt; {
-      //         assert.equal(response, &apos;OK&apos;, &apos;Submission should be deleted.&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}`,
-      //       method: &apos;DELETE&apos;,
-      //       response: {
-      //         status: 200,
-      //         body: &apos;OK&apos;,
-      //         headers: {
-      //           &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
-      //           &apos;x-jwt-token&apos;: userToken
-      //         }
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Getting Projects&apos;,
-      //   test() {
-      //     return Formio.loadProjects()
-      //       .then((projects) =&gt; {
-      //         assert.equal(projects.length, 0, &apos;Should return no projects.&apos;);
-      //         assert.equal(projects.skip, undefined, &apos;skip should be undefined.&apos;);
-      //         assert.equal(projects.limit, undefined, &apos;limit should be undefined.&apos;);
-      //         assert.equal(projects.serverCount, 0, &apos;serverCount should be 0.&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project`,
-      //       method: &apos;GET&apos;,
-      //       response() {
-      //         return {
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;application/json&apos;,
-      //             &apos;Content-Range&apos;: &apos;*/0&apos;,
-      //             &apos;Range-Unit&apos;: &apos;items&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           },
-      //           body: []
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Temporary Token&apos;,
-      //   test() {
-      //     const formio = new Formio(`/project/${project._id}`);
-      //     return formio.getTempToken(200, &apos;GET:/current&apos;).then((tempToken) =&gt; {
-      //       assert.equal(tempToken, userToken);
-      //     });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/project/${project._id}/token`,
-      //       method: &apos;GET&apos;,
-      //       response() {
-      //         return {
-      //           status: 200,
-      //           body: userToken,
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
-      //             &apos;x-jwt-token&apos;: userToken
-      //           }
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;Logging Out&apos;,
-      //   test() {
-      //     return Formio.logout()
-      //       .then(() =&gt; {
-      //         assert.equal(Formio.getToken(), null, &apos;Logged out&apos;);
-      //       });
-      //   },
-      //   mock() {
-      //     return {
-      //       url: `${Formio.getBaseUrl()}/logout`,
-      //       method: &apos;GET&apos;,
-      //       response() {
-      //         userToken = null;
-      //         return {
-      //           status: 200,
-      //           body: &apos;OK&apos;,
-      //           headers: {
-      //             &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
-      //             &apos;x-jwt-token&apos;: &apos;&apos;
-      //           }
-      //         };
-      //       }
-      //     };
-      //   }
-      // },
-      // {
-      //   name: &apos;userPermissions method should give create_all permission&apos;,
-      //   test() {
-      //     const user = {
-      //       _id: &apos;test_user_id&apos;,
-      //       roles: [&apos;test_role_id&apos;]
-      //     };
+    let user;
+    let userPassword;
+    let userToken = chance.string({ length: 450 });
+    const userFormId = generateID();
+    let project;
+    let form;
+    let submission;
 
-      //     const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
-      //     return formio.userPermissions(user)
-      //       .then(permissions =&gt; {
-      //         assert.equal(permissions.create, true);
-      //         assert.equal(permissions.edit, false);
-      //         assert.equal(permissions.delete, false);
-      //         assert.equal(permissions.read, false);
-      //       });
-      //   },
-      //   mock() {
-      //     return [
-      //       {
-      //         url: `${Formio.getBaseUrl()}/testform`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               submissionAccess: [
-      //                 {
-      //                   type: &apos;create_all&apos;,
-      //                   roles: [&apos;test_role_id&apos;]
-      //                 }
-      //               ]
-      //             },
-      //           };
-      //         }
-      //       },
-      //       {
-      //         url: `${Formio.getBaseUrl()}/access`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               roles: []
-      //             }
-      //           };
-      //         }
-      //       },
-      //     ];
-      //   }
-      // },
-      // {
-      //   name: &apos;userPermissions method should give create_own permission&apos;,
-      //   test() {
-      //     const userId = &apos;test_user_id&apos;;
-      //     const user = {
-      //       _id: userId,
-      //       roles: [&apos;test_role_id&apos;]
-      //     };
-      //     const submission = {
-      //       owner: userId
-      //     };
-      //     const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
-      //     return formio.userPermissions(user, undefined, submission)
-      //       .then(permissions =&gt; {
-      //         assert.equal(permissions.create, true);
-      //         assert.equal(permissions.edit, false);
-      //         assert.equal(permissions.read, false);
-      //         assert.equal(permissions.delete, false);
-      //       });
-      //   },
-      //   mock() {
-      //     return [
-      //       {
-      //         url: `${Formio.getBaseUrl()}/testform`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               submissionAccess: [
-      //                 {
-      //                   type: &apos;create_own&apos;,
-      //                   roles: [&apos;test_role_id&apos;]
-      //                 }
-      //               ]
-      //             },
-      //           };
-      //         }
-      //       },
-      //       {
-      //         url: `${Formio.getBaseUrl()}/access`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               roles: []
-      //             }
-      //           };
-      //         }
-      //       },
-      //     ];
-      //   }
-      // },
-      // {
-      //   name: &apos;userPermissions method should give permissions for Anonymous role&apos;,
-      //   test() {
-      //     const user = {
-      //       _id: false,
-      //       roles: [],
-      //     };
-      //     const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
-      //     return formio.userPermissions(user)
-      //       .then(permissions =&gt; {
-      //         assert.equal(permissions.create, true);
-      //         assert.equal(permissions.edit, false);
-      //         assert.equal(permissions.read, false);
-      //         assert.equal(permissions.delete, false);
-      //       });
-      //   },
-      //   mock() {
-      //     return [
-      //       {
-      //         url: `${Formio.getBaseUrl()}/testform`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               submissionAccess: [
-      //                 {
-      //                   type: &apos;create_all&apos;,
-      //                   roles: [&apos;test_anonymous_role_id&apos;]
-      //                 }
-      //               ]
-      //             },
-      //           };
-      //         }
-      //       },
-      //       {
-      //         url: `${Formio.getBaseUrl()}/access`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               roles: [
-      //                 {
-      //                   _id: &apos;test_anonymous_role_id&apos;,
-      //                   default: true
-      //                 }
-      //               ]
-      //             }
-      //           };
-      //         }
-      //       },
-      //     ];
-      //   }
-      // },
-      // {
-      //   name: &apos;userPermissions method should give all permissions for admin role&apos;,
-      //   test() {
-      //     const user = {
-      //       roles: [&apos;test_admin_role&apos;],
-      //     };
-      //     const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
-      //     return formio.userPermissions(user)
-      //       .then(permissions =&gt; {
-      //         assert.equal(permissions.create, true);
-      //         assert.equal(permissions.read, true);
-      //         assert.equal(permissions.edit, true);
-      //         assert.equal(permissions.delete, true);
-      //       });
-      //   },
-      //   mock() {
-      //     return [
-      //       {
-      //         url: `${Formio.getBaseUrl()}/testform`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               submissionAccess: []
-      //             },
-      //           };
-      //         }
-      //       },
-      //       {
-      //         url: `${Formio.getBaseUrl()}/access`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               roles: [
-      //                 {
-      //                   _id: &apos;test_admin_role&apos;,
-      //                   admin: true
-      //                 }
-      //               ]
-      //             }
-      //           };
-      //         }
-      //       },
-      //     ];
-      //   }
-      // },
-      // {
-      //   name: &apos;userPermissions method should give only group read permission for `read` level&apos;,
-      //   test() {
-      //     const user = {
-      //       roles: [&apos;test_group_id&apos;],
-      //     };
-      //     const submission = {
-      //       data: {
-      //         groupField: {
-      //           _id: &apos;test_group_id&apos;
-      //         }
-      //       }
-      //     };
-      //     const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
-      //     return formio.userPermissions(user, undefined, submission)
-      //       .then(permissions =&gt; {
-      //         assert.equal(permissions.create, false);
-      //         assert.equal(permissions.read, true);
-      //         assert.equal(permissions.edit, false);
-      //         assert.equal(permissions.delete, false);
-      //       });
-      //   },
-      //   mock() {
-      //     return [
-      //       {
-      //         url: `${Formio.getBaseUrl()}/testform`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               submissionAccess: [],
-      //               components: [
-      //                 {
-      //                   defaultPermission: &apos;read&apos;,
-      //                   key: &apos;groupField&apos;
-      //                 }
-      //               ]
-      //             },
-      //           };
-      //         }
-      //       },
-      //       {
-      //         url: `${Formio.getBaseUrl()}/access`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               roles: []
-      //             }
-      //           };
-      //         }
-      //       },
-      //     ];
-      //   }
-      // },
-      // {
-      //   name: &apos;userPermissions method should give group read and create permissions for `create` level&apos;,
-      //   test() {
-      //     const user = {
-      //       roles: [&apos;test_group_id&apos;],
-      //     };
-      //     const submission = {
-      //       data: {
-      //         groupField: {
-      //           _id: &apos;test_group_id&apos;
-      //         }
-      //       }
-      //     };
-      //     const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
-      //     return formio.userPermissions(user, undefined, submission)
-      //       .then(permissions =&gt; {
-      //         assert.equal(permissions.create, true);
-      //         assert.equal(permissions.read, true);
-      //         assert.equal(permissions.edit, false);
-      //         assert.equal(permissions.delete, false);
-      //       });
-      //   },
-      //   mock() {
-      //     return [
-      //       {
-      //         url: `${Formio.getBaseUrl()}/testform`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               submissionAccess: [],
-      //               components: [
-      //                 {
-      //                   defaultPermission: &apos;create&apos;,
-      //                   key: &apos;groupField&apos;
-      //                 }
-      //               ]
-      //             },
-      //           };
-      //         }
-      //       },
-      //       {
-      //         url: `${Formio.getBaseUrl()}/access`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               roles: []
-      //             }
-      //           };
-      //         }
-      //       },
-      //     ];
-      //   }
-      // },
-      // {
-      //   name: &apos;userPermissions method should give group read, create and edit permissions for `write` level&apos;,
-      //   test() {
-      //     const user = {
-      //       roles: [&apos;test_group_id&apos;],
-      //     };
-      //     const submission = {
-      //       data: {
-      //         groupField: {
-      //           _id: &apos;test_group_id&apos;
-      //         }
-      //       }
-      //     };
-      //     const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
-      //     return formio.userPermissions(user, undefined, submission)
-      //       .then(permissions =&gt; {
-      //         assert.equal(permissions.create, true);
-      //         assert.equal(permissions.read, true);
-      //         assert.equal(permissions.edit, true);
-      //         assert.equal(permissions.delete, false);
-      //       });
-      //   },
-      //   mock() {
-      //     return [
-      //       {
-      //         url: `${Formio.getBaseUrl()}/testform`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               submissionAccess: [],
-      //               components: [
-      //                 {
-      //                   defaultPermission: &apos;write&apos;,
-      //                   key: &apos;groupField&apos;
-      //                 }
-      //               ]
-      //             },
-      //           };
-      //         }
-      //       },
-      //       {
-      //         url: `${Formio.getBaseUrl()}/access`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               roles: []
-      //             }
-      //           };
-      //         }
-      //       },
-      //     ];
-      //   }
-      // },
-      // {
-      //   name: &apos;userPermissions method should give all group permissions for `admin` level&apos;,
-      //   test() {
-      //     const user = {
-      //       roles: [&apos;test_group_id&apos;],
-      //     };
-      //     const submission = {
-      //       data: {
-      //         groupField: {
-      //           _id: &apos;test_group_id&apos;
-      //         }
-      //       }
-      //     };
-      //     const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
-      //     return formio.userPermissions(user, undefined, submission)
-      //       .then(permissions =&gt; {
-      //         assert.equal(permissions.create, true);
-      //         assert.equal(permissions.read, true);
-      //         assert.equal(permissions.edit, true);
-      //         assert.equal(permissions.delete, true);
-      //       });
-      //   },
-      //   mock() {
-      //     return [
-      //       {
-      //         url: `${Formio.getBaseUrl()}/testform`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               submissionAccess: [],
-      //               components: [
-      //                 {
-      //                   defaultPermission: &apos;admin&apos;,
-      //                   key: &apos;groupField&apos;
-      //                 }
-      //               ]
-      //             },
-      //           };
-      //         }
-      //       },
-      //       {
-      //         url: `${Formio.getBaseUrl()}/access`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               roles: []
-      //             }
-      //           };
-      //         }
-      //       },
-      //     ];
-      //   }
-      // },
-      // {
-      //   name: &apos;userPermissions method should handle submission with multiple groups&apos;,
-      //   test() {
-      //     const user1 = {
-      //       roles: [&apos;test_group_id1&apos;],
-      //     };
-      //     const user2 = {
-      //       roles: [&apos;test_group_id2&apos;],
-      //     };
-      //     const submission = {
-      //       data: {
-      //         groupField: [
-      //           {
-      //             _id: &apos;test_group_id1&apos;
-      //           },
-      //           {
-      //             _id: &apos;test_group_id2&apos;
-      //           }
-      //         ]
-      //       }
-      //     };
-      //     const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
-      //     return NativePromise.all([
-      //       formio.userPermissions(user1, undefined, submission)
-      //         .then(permissions =&gt; {
-      //           assert.equal(permissions.create, false);
-      //           assert.equal(permissions.read, true);
-      //           assert.equal(permissions.edit, false);
-      //           assert.equal(permissions.delete, false);
-      //         }),
-      //       formio.userPermissions(user2, undefined, submission)
-      //         .then(permissions =&gt; {
-      //           assert.equal(permissions.create, false);
-      //           assert.equal(permissions.read, true);
-      //           assert.equal(permissions.edit, false);
-      //           assert.equal(permissions.delete, false);
-      //         }),
-      //     ]);
-      //   },
-      //   mock() {
-      //     return [
-      //       {
-      //         url: `${Formio.getBaseUrl()}/testform`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               submissionAccess: [],
-      //               components: [
-      //                 {
-      //                   defaultPermission: &apos;read&apos;,
-      //                   key: &apos;groupField&apos;
-      //                 }
-      //               ]
-      //             },
-      //           };
-      //         }
-      //       },
-      //       {
-      //         url: `${Formio.getBaseUrl()}/access`,
-      //         method: &apos;GET&apos;,
-      //         response() {
-      //           return {
-      //             status: 200,
-      //             body: {
-      //               roles: []
-      //             }
-      //           };
-      //         }
-      //       },
-      //     ];
-      //   }
-      // },
+    const tests = [
+      {
+        name: &apos;Registering user.&apos;,
+        test() {
+          const req = {
+            data: {
+              &apos;user.name&apos;: chance.string({
+                length: 10,
+                pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
+              }),
+              &apos;user.email&apos;: chance.email(),
+              &apos;user.password&apos;: chance.string({ length: 12 })
+            }
+          };
+          Formio.setProjectUrl(Formio.getBaseUrl());
+          const formio = new Formio(`${Formio.getBaseUrl()}/user/register`);
+          return formio.saveSubmission(req)
+            .then((response) =&gt; {
+              assert.deepEqual(response, user, &apos;saveSubmission response should match test user&apos;);
+              assert.equal(Formio.getToken(), userToken, &apos;Formio should save the user token&apos;);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/current`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  headers: {
+                    &apos;Content-Type&apos;: &apos;application/json&apos;,
+                    &apos;x-jwt-token&apos;: userToken
+                  },
+                  body: user
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/user/register/submission`,
+              method: &apos;POST&apos;,
+              response(url, opts) {
+                const body = JSON.parse(opts.body);
+                const userId = generateID();
+                user = {
+                  _id: userId,
+                  created: new Date().toISOString(),
+                  modified: new Date().toISOString(),
+                  data: {
+                    email: body.data[&apos;user.email&apos;],
+                    name: body.data[&apos;user.name&apos;]
+                  },
+                  externalIds: [],
+                  externalTokens: [],
+                  form: userFormId,
+                  owner: userId
+                };
+                userPassword = body.data[&apos;user.password&apos;];
+                return {
+                  headers: {
+                    &apos;Content-Type&apos;: &apos;application/json&apos;,
+                    &apos;x-jwt-token&apos;: userToken
+                  },
+                  body: user
+                };
+              }
+            }
+          ];
+        }
+      },
+      {
+        name: &apos;Logging in.&apos;,
+        test() {
+          const req = {
+            data: {
+              &apos;user.email&apos;: user.data.email,
+              &apos;user.password&apos;: userPassword
+            }
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/user/login`);
+          return formio.saveSubmission(req)
+            .then((response) =&gt; {
+              assert.deepEqual(response, user, &apos;saveSubmission response should match test user&apos;);
+              assert.equal(Formio.getToken(), userToken, &apos;Formio should save the user token&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/user/login/submission`,
+            method: &apos;POST&apos;,
+            response(url, opts) {
+              const body = JSON.parse(opts.body);
+              userToken = chance.string({ length: 450 });
+              assert.equal(body.data[&apos;user.email&apos;], user.data.email, &apos;Login email must be correct.&apos;);
+              assert.equal(body.data[&apos;user.password&apos;], userPassword, &apos;Login password must be correct.&apos;);
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: user
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Current user.&apos;,
+        test() {
+          return Formio.currentUser()
+            .then((response) =&gt; {
+              assert.deepEqual(response, user, &apos;currentUser response should match test user&apos;);
+              return Formio.currentUser();
+            })
+            .then((response) =&gt; {
+              assert.deepEqual(response, user, &apos;currentUser response should match test user&apos;);
+            });
+        },
+        mock() {
+          let called = false;
+          return {
+            url: `${Formio.getBaseUrl()}/current`,
+            method: &apos;GET&apos;,
+            response() {
+              assert.ok(!called, &apos;User should be requested only once.&apos;);
+              called = true;
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: user
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Create Project&apos;,
+        test() {
+          const formio = new Formio();
+          const req = {
+            title: chance.string({
+              length: 10,
+              pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
+            }),
+            name: chance.string({
+              length: 10,
+              pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
+            }),
+            description: chance.paragraph({ sentences: 1 }),
+            settings: {
+              cors: &apos;*&apos;
+            },
+            template: &apos;http://help.form.io/templates/empty.json&apos;
+          };
+          return formio.saveProject(req)
+            .then((response) =&gt; {
+              assert.deepEqual(response, project, &apos;saveProject response should match test user&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project`,
+            method: &apos;POST&apos;,
+            response(url, opts) {
+              const body = JSON.parse(opts.body);
+              const projectId = generateID();
+              project = {
+                _id: projectId,
+                created: new Date().toISOString(),
+                modified: new Date().toISOString(),
+                apiCalls: {
+                  used: 0,
+                  limit: 1000,
+                  remaining: 1000,
+                  reset: new Date(Date.now() + 2.628e9).toISOString() // ~1 month later
+                },
+                access: [],
+                title: body.title,
+                name: body.name,
+                description: body.description,
+                plan: &apos;basic&apos;,
+                owner: user._id
+              };
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: project
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Getting Projects&apos;,
+        test() {
+          return Formio.loadProjects()
+            .then((projects) =&gt; {
+              assert.equal(projects.length, 1, &apos;Should return only one project.&apos;);
+              assert.equal(projects.skip, 0, &apos;skip should be 0.&apos;);
+              assert.equal(projects.limit, 1, &apos;limit should be 1.&apos;);
+              assert.equal(projects.serverCount, 1, &apos;serverCount should be 1.&apos;);
+              assert.deepEqual(projects[0], project, &apos;Should match project&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project`,
+            method: &apos;GET&apos;,
+            response() {
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;Content-Range&apos;: &apos;0-0/1&apos;,
+                  &apos;Range-Unit&apos;: &apos;items&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: [project]
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Read Project&apos;,
+        test() {
+          const formio = new Formio(`${Formio.getBaseUrl()}/project/${project._id}`);
+          return formio.loadProject()
+            .then((response) =&gt; {
+              assert.deepEqual(response, project, &apos;Should match project&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}`,
+            method: &apos;GET&apos;,
+            response() {
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: project
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Update Project&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}`);
+          const newProject = fastCloneDeep(project);
+          newProject.name = chance.string({
+            length: 10,
+            pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
+          });
+          newProject.title = chance.string({
+            length: 10,
+            pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
+          });
+          newProject.description = chance.paragraph({ sentences: 1 });
+          return formio.saveProject(newProject)
+            .then((response) =&gt; {
+              assert.deepEqual(response, project, &apos;Project should match&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}`,
+            method: &apos;PUT&apos;,
+            response(url, opts) {
+              const body = JSON.parse(opts.body);
+              project = body;
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: project
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Create Form&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}/form`);
+          const req = {
+            title: chance.string({
+              length: 10,
+              pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
+            }),
+            name: chance.string({
+              length: 10,
+              pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
+            }),
+            path: chance.string({
+              length: 10,
+              pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
+            }),
+            components: [
+              {
+                defaultValue: &apos;&apos;,
+                input: true,
+                inputMask: &apos;&apos;,
+                inputType: &apos;text&apos;,
+                isNew: false,
+                key: &apos;fieldLabel&apos;,
+                label: &apos;Field Label&apos;,
+                multiple: false,
+                persistent: true,
+                placeholder: &apos;&apos;,
+                prefix: &apos;&apos;,
+                protected: false,
+                suffix: &apos;&apos;,
+                tableView: true,
+                type: &apos;textfield&apos;,
+                unique: false,
+                validate: {
+                  required: false,
+                  minLength: &apos;&apos;,
+                  maxLength: &apos;&apos;,
+                  pattern: &apos;&apos;,
+                  custom: &apos;&apos;,
+                  customPrivate: false
+                }
+              },
+              {
+                action: &apos;submit&apos;,
+                block: false,
+                disableOnInvalid: true,
+                input: true,
+                key: &apos;submit&apos;,
+                label: &apos;Submit&apos;,
+                leftIcon: &apos;&apos;,
+                rightIcon: &apos;&apos;,
+                size: &apos;md&apos;,
+                tableView: false,
+                theme: &apos;primary&apos;,
+                type: &apos;button&apos;
+              }
+            ],
+            type: &apos;form&apos;,
+            access: [],
+            submissionAccess: []
+          };
+          return formio.saveForm(req)
+            .then((response) =&gt; {
+              assert.deepEqual(response, form, &apos;Form should match&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}/form`,
+            method: &apos;POST&apos;,
+            response(url, opts) {
+              const body = JSON.parse(opts.body);
+              const formId = generateID();
+              form = fastCloneDeep(body);
+              _.assign(form, {
+                _id: formId,
+                created: new Date().toISOString(),
+                modified: new Date().toISOString(),
+                project: project._id,
+                owner: user._id
+              });
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: form
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Load Forms&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}/form`);
+          return formio.loadForms()
+            .then((forms) =&gt; {
+              assert.equal(forms.length, 1, &apos;Should return only one form.&apos;);
+              assert.equal(forms.skip, 0, &apos;skip should be 0.&apos;);
+              assert.equal(forms.limit, 1, &apos;limit should be 1.&apos;);
+              assert.equal(forms.serverCount, 1, &apos;serverCount should be 1.&apos;);
+              assert.deepEqual(forms[0], form, &apos;Should match form&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}/form`,
+            method: &apos;GET&apos;,
+            response() {
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;Content-Range&apos;: &apos;0-0/1&apos;,
+                  &apos;Range-Unit&apos;: &apos;items&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: [form]
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Read Form&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}/form/${form._id}`);
+          return formio.loadForm()
+            .then((response) =&gt; {
+              assert.deepEqual(response, form, &apos;Form should match&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}`,
+            method: &apos;GET&apos;,
+            response() {
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: form
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Update Form&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}/form/${form._id}`);
+          const newForm = fastCloneDeep(form);
+          newForm.title = chance.string({
+            length: 10,
+            pool: &apos;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&apos;
+          });
+          newForm.name = chance.string({
+            length: 10,
+            pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
+          });
+          newForm.path = chance.string({
+            length: 10,
+            pool: &apos;abcdefghijklmnopqrstuvwxyz&apos;
+          });
+          return formio.saveForm(newForm)
+            .then((response) =&gt; {
+              assert.deepEqual(response, form, &apos;Form should match&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}`,
+            method: &apos;PUT&apos;,
+            response(url, opts) {
+              const body = JSON.parse(opts.body);
+              form = body;
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: form
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Create Submission&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}/form/${form._id}/submission`);
+          const req = {
+            data: {
+              fieldLabel: chance.string()
+            }
+          };
+          return formio.saveSubmission(req)
+            .then((response) =&gt; {
+              assert.deepEqual(response, submission, &apos;Submission should match&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission`,
+            method: &apos;POST&apos;,
+            response(url, opts) {
+              const body = JSON.parse(opts.body);
+              const submissionId = generateID();
+              submission = {
+                _id: submissionId,
+                created: new Date().toISOString(),
+                modified: new Date().toISOString(),
+                data: body.data,
+                externalIds: [],
+                externalTokens: [],
+                form: form._id,
+                owner: user._id,
+                roles: []
+              };
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: submission
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Load Submissions&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}/form/${form._id}/submission`);
+          return formio.loadSubmissions()
+            .then((submissions) =&gt; {
+              assert.equal(submissions.length, 1, &apos;Should return only one submission.&apos;);
+              assert.equal(submissions.skip, 0, &apos;skip should be 0.&apos;);
+              assert.equal(submissions.limit, 1, &apos;limit should be 1.&apos;);
+              assert.equal(submissions.serverCount, 1, &apos;serverCount should be 1.&apos;);
+              assert.deepEqual(submissions[0], submission, &apos;Should match submission&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission`,
+            method: &apos;GET&apos;,
+            response() {
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;Content-Range&apos;: &apos;0-0/1&apos;,
+                  &apos;Range-Unit&apos;: &apos;items&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: [submission]
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Read Submission&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
+          return formio.loadSubmission()
+            .then((response) =&gt; {
+              assert.deepEqual(response, submission, &apos;Submission should match&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
+            method: &apos;GET&apos;,
+            response() {
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: submission
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Update Submission&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
+          const newSubmission = fastCloneDeep(submission);
+          newSubmission.data.fieldLabel = chance.string();
+          return formio.saveSubmission(newSubmission)
+            .then((response) =&gt; {
+              assert.deepEqual(response, submission, &apos;Submission should match&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
+            method: &apos;PUT&apos;,
+            response(url, opts) {
+              const body = JSON.parse(opts.body);
+              submission = body;
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: submission
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Update Submission without ID&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}/form/${form._id}`);
+          const newSubmission = fastCloneDeep(submission);
+          newSubmission.data.fieldLabel = chance.string();
+          return formio.saveSubmission(newSubmission)
+            .then((response) =&gt; {
+              assert.deepEqual(response, submission, &apos;Submission should match&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
+            method: &apos;PUT&apos;,
+            response(url, opts) {
+              const body = JSON.parse(opts.body);
+              submission = body;
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: submission
+              };
+            }
+          };
+        }
+      },
+      // Actions
+      // Available Actions
+      // Action Info
+      {
+        name: &apos;Delete Submission&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
+          return formio.deleteSubmission()
+            .then((response) =&gt; {
+              assert.equal(response, &apos;OK&apos;, &apos;Submission should be deleted.&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
+            method: &apos;DELETE&apos;,
+            response: {
+              status: 200,
+              body: &apos;OK&apos;,
+              headers: {
+                &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              }
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Delete Form&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}/form/${form._id}`);
+          return formio.deleteForm()
+            .then((response) =&gt; {
+              assert.equal(response, &apos;OK&apos;, &apos;Submission should be deleted.&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}`,
+            method: &apos;DELETE&apos;,
+            response: {
+              status: 200,
+              body: &apos;OK&apos;,
+              headers: {
+                &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              }
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Delete Project&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}`);
+          return formio.deleteProject()
+            .then((response) =&gt; {
+              assert.equal(response, &apos;OK&apos;, &apos;Submission should be deleted.&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}`,
+            method: &apos;DELETE&apos;,
+            response: {
+              status: 200,
+              body: &apos;OK&apos;,
+              headers: {
+                &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              }
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Getting Projects&apos;,
+        test() {
+          return Formio.loadProjects()
+            .then((projects) =&gt; {
+              assert.equal(projects.length, 0, &apos;Should return no projects.&apos;);
+              assert.equal(projects.skip, undefined, &apos;skip should be undefined.&apos;);
+              assert.equal(projects.limit, undefined, &apos;limit should be undefined.&apos;);
+              assert.equal(projects.serverCount, 0, &apos;serverCount should be 0.&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project`,
+            method: &apos;GET&apos;,
+            response() {
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                  &apos;Content-Range&apos;: &apos;*/0&apos;,
+                  &apos;Range-Unit&apos;: &apos;items&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                },
+                body: []
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Temporary Token&apos;,
+        test() {
+          const formio = new Formio(`/project/${project._id}`);
+          return formio.getTempToken(200, &apos;GET:/current&apos;).then((tempToken) =&gt; {
+            assert.equal(tempToken, userToken);
+          });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/project/${project._id}/token`,
+            method: &apos;GET&apos;,
+            response() {
+              return {
+                status: 200,
+                body: userToken,
+                headers: {
+                  &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
+                  &apos;x-jwt-token&apos;: userToken
+                }
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;Logging Out&apos;,
+        test() {
+          return Formio.logout()
+            .then(() =&gt; {
+              assert.equal(Formio.getToken(), &apos;&apos;, &apos;Logged out&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: `${Formio.getBaseUrl()}/logout`,
+            method: &apos;GET&apos;,
+            response() {
+              userToken = null;
+              return {
+                status: 200,
+                body: &apos;OK&apos;,
+                headers: {
+                  &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
+                  &apos;x-jwt-token&apos;: &apos;&apos;
+                }
+              };
+            }
+          };
+        }
+      },
+      {
+        name: &apos;userPermissions method should give create_all permission&apos;,
+        test() {
+          const user = {
+            _id: &apos;test_user_id&apos;,
+            roles: [&apos;test_role_id&apos;]
+          };
+
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.edit, false);
+              assert.equal(permissions.delete, false);
+              assert.equal(permissions.read, false);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [
+                      {
+                        type: &apos;create_all&apos;,
+                        roles: [&apos;test_role_id&apos;]
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give create_own permission&apos;,
+        test() {
+          const userId = &apos;test_user_id&apos;;
+          const user = {
+            _id: userId,
+            roles: [&apos;test_role_id&apos;]
+          };
+          const submission = {
+            owner: userId
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user, undefined, submission)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.edit, false);
+              assert.equal(permissions.read, false);
+              assert.equal(permissions.delete, false);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [
+                      {
+                        type: &apos;create_own&apos;,
+                        roles: [&apos;test_role_id&apos;]
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give permissions for Anonymous role&apos;,
+        test() {
+          const user = {
+            _id: false,
+            roles: [],
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.edit, false);
+              assert.equal(permissions.read, false);
+              assert.equal(permissions.delete, false);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [
+                      {
+                        type: &apos;create_all&apos;,
+                        roles: [&apos;test_anonymous_role_id&apos;]
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: [
+                      {
+                        _id: &apos;test_anonymous_role_id&apos;,
+                        default: true
+                      }
+                    ]
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give all permissions for admin role&apos;,
+        test() {
+          const user = {
+            roles: [&apos;test_admin_role&apos;],
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.read, true);
+              assert.equal(permissions.edit, true);
+              assert.equal(permissions.delete, true);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: []
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: [
+                      {
+                        _id: &apos;test_admin_role&apos;,
+                        admin: true
+                      }
+                    ]
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give only group read permission for `read` level&apos;,
+        test() {
+          const user = {
+            roles: [&apos;test_group_id&apos;],
+          };
+          const submission = {
+            data: {
+              groupField: {
+                _id: &apos;test_group_id&apos;
+              }
+            }
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user, undefined, submission)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, false);
+              assert.equal(permissions.read, true);
+              assert.equal(permissions.edit, false);
+              assert.equal(permissions.delete, false);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [],
+                    components: [
+                      {
+                        defaultPermission: &apos;read&apos;,
+                        key: &apos;groupField&apos;
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give group read and create permissions for `create` level&apos;,
+        test() {
+          const user = {
+            roles: [&apos;test_group_id&apos;],
+          };
+          const submission = {
+            data: {
+              groupField: {
+                _id: &apos;test_group_id&apos;
+              }
+            }
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user, undefined, submission)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.read, true);
+              assert.equal(permissions.edit, false);
+              assert.equal(permissions.delete, false);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [],
+                    components: [
+                      {
+                        defaultPermission: &apos;create&apos;,
+                        key: &apos;groupField&apos;
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give group read, create and edit permissions for `write` level&apos;,
+        test() {
+          const user = {
+            roles: [&apos;test_group_id&apos;],
+          };
+          const submission = {
+            data: {
+              groupField: {
+                _id: &apos;test_group_id&apos;
+              }
+            }
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user, undefined, submission)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.read, true);
+              assert.equal(permissions.edit, true);
+              assert.equal(permissions.delete, false);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [],
+                    components: [
+                      {
+                        defaultPermission: &apos;write&apos;,
+                        key: &apos;groupField&apos;
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should give all group permissions for `admin` level&apos;,
+        test() {
+          const user = {
+            roles: [&apos;test_group_id&apos;],
+          };
+          const submission = {
+            data: {
+              groupField: {
+                _id: &apos;test_group_id&apos;
+              }
+            }
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return formio.userPermissions(user, undefined, submission)
+            .then(permissions =&gt; {
+              assert.equal(permissions.create, true);
+              assert.equal(permissions.read, true);
+              assert.equal(permissions.edit, true);
+              assert.equal(permissions.delete, true);
+            });
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [],
+                    components: [
+                      {
+                        defaultPermission: &apos;admin&apos;,
+                        key: &apos;groupField&apos;
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
+      {
+        name: &apos;userPermissions method should handle submission with multiple groups&apos;,
+        test() {
+          const user1 = {
+            roles: [&apos;test_group_id1&apos;],
+          };
+          const user2 = {
+            roles: [&apos;test_group_id2&apos;],
+          };
+          const submission = {
+            data: {
+              groupField: [
+                {
+                  _id: &apos;test_group_id1&apos;
+                },
+                {
+                  _id: &apos;test_group_id2&apos;
+                }
+              ]
+            }
+          };
+          const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
+          return NativePromise.all([
+            formio.userPermissions(user1, undefined, submission)
+              .then(permissions =&gt; {
+                assert.equal(permissions.create, false);
+                assert.equal(permissions.read, true);
+                assert.equal(permissions.edit, false);
+                assert.equal(permissions.delete, false);
+              }),
+            formio.userPermissions(user2, undefined, submission)
+              .then(permissions =&gt; {
+                assert.equal(permissions.create, false);
+                assert.equal(permissions.read, true);
+                assert.equal(permissions.edit, false);
+                assert.equal(permissions.delete, false);
+              }),
+          ]);
+        },
+        mock() {
+          return [
+            {
+              url: `${Formio.getBaseUrl()}/testform`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    submissionAccess: [],
+                    components: [
+                      {
+                        defaultPermission: &apos;read&apos;,
+                        key: &apos;groupField&apos;
+                      }
+                    ]
+                  },
+                };
+              }
+            },
+            {
+              url: `${Formio.getBaseUrl()}/access`,
+              method: &apos;GET&apos;,
+              response() {
+                return {
+                  status: 200,
+                  body: {
+                    roles: []
+                  }
+                };
+              }
+            },
+          ];
+        }
+      },
     ];
 
     tests.forEach(testCapability);
   });
 
-  //TOFIX
-  // describe(&apos;Formio.currentUser&apos;, () =&gt; {
-  //   let plugin = null;
-  //   beforeEach(() =&gt; {
-  //     plugin = {
-  //       wrapStaticRequestPromise: sinon.spy((promise) =&gt; promise),
-  //       staticRequest: sinon.spy(() =&gt; {
-  //         // Return dummy user
-  //         const userId = generateID();
-  //         return NativePromise.resolve({
-  //           _id: userId,
-  //           created: new Date().toISOString(),
-  //           modified: new Date().toISOString(),
-  //           data: {
-  //             email: &apos;user@place.com&apos;,
-  //             name: &apos;user&apos;
-  //           },
-  //           externalIds: [],
-  //           externalTokens: [],
-  //           form: generateID(),
-  //           owner: userId
-  //         });
-  //       })
-  //     };
-  //     Formio.registerPlugin(plugin, &apos;currentUserTestPlugin&apos;);
-  //   });
+  describe(&apos;Formio.currentUser&apos;, () =&gt; {
+    let plugin = null;
+    beforeEach(() =&gt; {
+      plugin = {
+        wrapStaticRequestPromise: sinon.spy((promise) =&gt; promise),
+        staticRequest: sinon.spy(() =&gt; {
+          // Return dummy user
+          const userId = generateID();
+          return NativePromise.resolve({
+            _id: userId,
+            created: new Date().toISOString(),
+            modified: new Date().toISOString(),
+            data: {
+              email: &apos;user@place.com&apos;,
+              name: &apos;user&apos;
+            },
+            externalIds: [],
+            externalTokens: [],
+            form: generateID(),
+            owner: userId
+          });
+        })
+      };
+      Formio.registerPlugin(plugin, &apos;currentUserTestPlugin&apos;);
+    });
 
-  //   afterEach(() =&gt; {
-  //     Formio.deregisterPlugin(plugin);
-  //   });
+    afterEach(() =&gt; {
+      Formio.deregisterPlugin(plugin);
+    });
 
-  //   it(&apos;Initial currentUser() should make static request&apos;, (done) =&gt; {
-  //     // Force token
-  //     Formio.token = chance.string({ length: 30 });
-  //     Formio.currentUser()
-  //       .then(() =&gt; {
-  //         assert.ok(plugin.staticRequest.calledOnce, &apos;staticRequest should be called once&apos;);
-  //         done();
-  //       });
-  //     assert.ok(plugin.wrapStaticRequestPromise.calledOnce, &apos;wrapStaticRequestPromise should be called once&apos;);
-  //   });
+    it(&apos;Initial currentUser() should make static request&apos;, (done) =&gt; {
+      // Force token
+      Formio.token = chance.string({ length: 30 });
+      Formio.currentUser()
+        .then(() =&gt; {
+          assert.ok(plugin.staticRequest.calledOnce, &apos;staticRequest should be called once&apos;);
+          done();
+        });
+      assert.ok(plugin.wrapStaticRequestPromise.calledOnce, &apos;wrapStaticRequestPromise should be called once&apos;);
+    });
 
-  //   it(&apos;Next currentUser() should return cached value&apos;, (done) =&gt; {
-  //     // Clear token
-  //     Formio.currentUser()
-  //       .then(() =&gt; {
-  //         assert.ok(!plugin.staticRequest.called, &apos;staticRequest should not be called&apos;);
-  //         done();
-  //       });
-  //     assert.ok(plugin.wrapStaticRequestPromise.calledOnce, &apos;wrapStaticRequestPromise should be called once&apos;);
-  //   });
+    it(&apos;Next currentUser() should return cached value&apos;, (done) =&gt; {
+      // Clear token
+      Formio.currentUser()
+        .then(() =&gt; {
+          assert.ok(!plugin.staticRequest.called, &apos;staticRequest should not be called&apos;);
+          done();
+        });
+      assert.ok(plugin.wrapStaticRequestPromise.calledOnce, &apos;wrapStaticRequestPromise should be called once&apos;);
+    });
 
-  //   it(&apos;Should render after form submission if renderMode = \&apos;html\&apos;&apos;, (done) =&gt; {
-  //     const formJson =  {
-  //       components: [{
-  //         label: &apos;Text Field&apos;,
-  //         tableView: true,
-  //         key: &apos;textField&apos;,
-  //         type: &apos;textfield&apos;,
-  //         input: true
-  //       },
-  //       {
-  //         label: &apos;Phone Number&apos;,
-  //         tableView: true,
-  //         key: &apos;phoneNumber&apos;,
-  //         type: &apos;phoneNumber&apos;,
-  //         input: true
-  //       }]
-  //     };
-  //     const element = document.createElement(&apos;div&apos;);
-  //     Formio.createForm(element, formJson, { renderMode: &apos;html&apos; })
-  //       .then(form =&gt; {
-  //         const textField = form.getComponent(&apos;textField&apos;);
-  //         const phoneNumber = form.getComponent(&apos;phoneNumber&apos;);
-  //         assert.equal(textField.element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;-&apos;);
-  //         assert.equal(phoneNumber.element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;-&apos;);
-  //         form.submission = {
-  //           data: {
-  //             textField: &apos;textField&apos;,
-  //             phoneNumber: &apos;88005553535&apos;
-  //           }
-  //         };
-  //         setTimeout(() =&gt; {
-  //           assert.equal(textField.element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;textField&apos;);
-  //           assert.equal(phoneNumber.element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;88005553535&apos;);
-  //           done();
-  //         }, 300);
-  //       })
-  //       .catch(done);
-  //   });
+    it(&apos;Should render after form submission if renderMode = \&apos;html\&apos;&apos;, (done) =&gt; {
+      const formJson =  {
+        components: [{
+          label: &apos;Text Field&apos;,
+          tableView: true,
+          key: &apos;textField&apos;,
+          type: &apos;textfield&apos;,
+          input: true
+        },
+        {
+          label: &apos;Phone Number&apos;,
+          tableView: true,
+          key: &apos;phoneNumber&apos;,
+          type: &apos;phoneNumber&apos;,
+          input: true
+        }]
+      };
+      const element = document.createElement(&apos;div&apos;);
+      Formio.createForm(element, formJson, { renderMode: &apos;html&apos; })
+        .then(form =&gt; {
+          const textField = form.getComponent(&apos;textField&apos;);
+          const phoneNumber = form.getComponent(&apos;phoneNumber&apos;);
+          assert.equal(textField.element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;-&apos;);
+          assert.equal(phoneNumber.element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;-&apos;);
+          form.submission = {
+            data: {
+              textField: &apos;textField&apos;,
+              phoneNumber: &apos;88005553535&apos;
+            }
+          };
+          setTimeout(() =&gt; {
+            assert.equal(textField.element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;textField&apos;);
+            assert.equal(phoneNumber.element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;88005553535&apos;);
+            done();
+          }, 300);
+        })
+        .catch(done);
+    });
 
-  //   it(&apos;Should render after form submission if renderMode = \&apos;html\&apos; with Nested Form&apos;, (done) =&gt; {
-  //     const formJson =  {
-  //       components: [
-  //         {
-  //           label: &apos;Form&apos;,
-  //           key: &apos;form&apos;,
-  //           type: &apos;form&apos;,
-  //           input: true,
-  //           components: [
-  //             {
-  //               label: &apos;Text Field&apos;,
-  //               key: &apos;textField&apos;,
-  //               type: &apos;textfield&apos;,
-  //               input: true,
-  //             },
-  //             {
-  //               label: &apos;Password&apos;,
-  //               key: &apos;password&apos;,
-  //               type: &apos;password&apos;,
-  //               input: true
-  //             },
-  //           ],
-  //         },
-  //         {
-  //           label: &apos;Checkbox&apos;,
-  //           type: &apos;checkbox&apos;,
-  //           input: true
-  //         },
-  //       ]
-  //     };
-  //     const element = document.createElement(&apos;div&apos;);
-  //     Formio.createForm(element, formJson, { renderMode: &apos;html&apos; })
-  //       .then(form =&gt; {
-  //         assert.equal(form.getComponent(&apos;textField&apos;).element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;-&apos;);
-  //         assert.equal(form.getComponent(&apos;password&apos;).element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;-&apos;);
-  //         form.submission = {
-  //           data: {
-  //             form: {
-  //               data: {
-  //                 textField: &apos;textField&apos;,
-  //                 password: &apos;password&apos;
-  //               }
-  //             }
-  //           }
-  //         };
-  //         setTimeout(() =&gt; {
-  //           assert.equal(form.getComponent(&apos;textField&apos;).element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;textField&apos;);
-  //           assert.equal(form.getComponent(&apos;password&apos;).element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;password&apos;);
-  //           done();
-  //         }, 300);
-  //       })
-  //       .catch(done);
-  //   });
-  // });
+    it(&apos;Should render after form submission if renderMode = \&apos;html\&apos; with Nested Form&apos;, (done) =&gt; {
+      const formJson =  {
+        components: [
+          {
+            label: &apos;Form&apos;,
+            key: &apos;form&apos;,
+            type: &apos;form&apos;,
+            input: true,
+            components: [
+              {
+                label: &apos;Text Field&apos;,
+                key: &apos;textField&apos;,
+                type: &apos;textfield&apos;,
+              input: true,
+              },
+              {
+                label: &apos;Password&apos;,
+                key: &apos;password&apos;,
+                type: &apos;password&apos;,
+                input: true
+              },
+            ],
+          },
+          {
+            label: &apos;Checkbox&apos;,
+            type: &apos;checkbox&apos;,
+            input: true
+          },
+        ]
+      };
+      const element = document.createElement(&apos;div&apos;);
+      Formio.createForm(element, formJson, { renderMode: &apos;html&apos; })
+        .then(form =&gt; {
+          assert.equal(form.getComponent(&apos;textField&apos;).element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;-&apos;);
+          assert.equal(form.getComponent(&apos;password&apos;).element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;-&apos;);
+          form.submission = {
+            data: {
+              form: {
+                data: {
+                  textField: &apos;textField&apos;,
+                  password: &apos;password&apos;
+                }
+              }
+            }
+          };
+          setTimeout(() =&gt; {
+            assert.equal(form.getComponent(&apos;textField&apos;).element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;textField&apos;);
+            assert.equal(form.getComponent(&apos;password&apos;).element.querySelector(&apos;[ref=value]&apos;).innerHTML, &apos;password&apos;);
+            done();
+          }, 300);
+        })
+        .catch(done);
+    });
+  });
 });
 </code></pre>
 
