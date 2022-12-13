@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5784: fixed adding links for libs
  - FIO-5765: fixed render tests for Bootstrap 5 in html mode
  - FIO-5765: fixed tests
+
 ## 4.15.0-rc.15
 ### Fixed
  - Revert change to always execute apis on pdf output.
