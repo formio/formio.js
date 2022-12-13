@@ -1,6 +1,7 @@
 // All external libs URLs should be injected through this class.
 // CDN libs URLs are accessible throuh CDN object properties
-// like Formio.cdn.ace === 'http://cdn.form.io/ace/1.4.12'
+// like Formio.cdn.ace === 'http://cdn.form.io/ace/1.4.12'.
+// For latest version use empty string
 class CDN {
   constructor(baseUrl) {
     this.baseUrl = baseUrl || 'https://cdn.form.io';
@@ -12,7 +13,7 @@ class CDN {
       'flatpickr-formio': '4.6.13-formio.1',
       'font-awesome': '4.7.0',
       'grid': '',
-      'moment-timezone': '0.5.38',
+      'moment-timezone': '',
       'quill': '1.3.7',
       'shortcut-buttons-flatpickr': '0.4.0',
       'uswds': '2.4.8',

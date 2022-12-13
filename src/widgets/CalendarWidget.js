@@ -65,7 +65,7 @@ export default class CalendarWidget extends InputWidget {
       this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
     }
     this.zoneLoading = false;
-    this.timezonesUrl = `${Formio.cdn.baseUrl}/timezones.json`;
+    this.timezonesUrl = `${Formio.cdn['moment-timezone']}/data/packed/latest.json`;
   }
 
   /**
