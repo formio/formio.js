@@ -844,6 +844,7 @@ export default class SelectComponent extends ListComponent {
         containerInner: this.transform('class', 'form-control ui fluid selection dropdown')
       },
       addItemText: false,
+      allowHTML: true,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
       noResultsText: this.t('No results found'),
