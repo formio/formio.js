@@ -43,7 +43,7 @@ This library has a very powerful JSON form builder, and can be used like the fol
 
 This will create a robust Form builder embedded right within your own application. See [Our Demo Page](https://formio.github.io/formio.js/app/builder) for an example.
  
-### Form Builder Documenation
+### Form Builder Documentation
 Go to the [Form Builder Documentation](https://help.form.io/developers/form-builder) for a full documentation on how the open source form builder works. 
  
 ## Form Rendering
