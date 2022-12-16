@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.15.0-rc.17]
 ### Fixed
  - FIO-5995: Timezones url fixed
+ - FIO-6005: Fixing multiple issues with DateTime not showing correct ti
 
 ## 4.15.0-rc.16
 ### Fixed
