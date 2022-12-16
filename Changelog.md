@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.14.11-rc.15]
+## 4.14.11-rc.15
 ### Fixed
  - FIO-6005: Fixing issues when getting date time without timezone.
 
