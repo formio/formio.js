@@ -262,7 +262,6 @@ export default class DateTimeComponent extends Input {
       type: &apos;calendar&apos;,
       timezone,
       displayInTimezone: _.get(this.component, &apos;displayInTimezone&apos;, &apos;viewer&apos;),
-      submissionTimezone: this.submissionTimezone,
       locale: this.options.language,
       useLocaleSettings: _.get(this.component, &apos;useLocaleSettings&apos;, false),
       allowInput: _.get(this.component, &apos;allowInput&apos;, true),
@@ -286,13 +285,6 @@ export default class DateTimeComponent extends Input {
 
     // Add the validators date.
     this.validators.push(&apos;date&apos;);
-  }
-
-  performInputMapping(input) {
-    if (input.widget &amp;&amp; input.widget.settings) {
-      input.widget.settings.submissionTimezone = this.submissionTimezone;
-    }
-    return input;
   }
 
   get defaultSchema() {

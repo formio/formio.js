@@ -3666,12 +3666,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/components/datetime/datetime.js~datetimecomponent#performinputmapping",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-performInputMapping",
-    "src/components/datetime/DateTime.js~DateTimeComponent#performInputMapping",
-    "method"
-  ],
-  [
     "src/components/datetime/datetime.js~datetimecomponent.builderinfo",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#static-get-builderInfo",
     "src/components/datetime/DateTime.js~DateTimeComponent.builderInfo",
