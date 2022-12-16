@@ -601,6 +601,9 @@ export function loadZones(url, timezone) {
  */
 export function momentDate(value, format, timezone) {
   const momentDate = moment(value);
+  if (!timezone) {
+    return momentDate;
+  }
   if (timezone === 'UTC') {
     timezone = 'Etc/UTC';
   }
