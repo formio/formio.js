@@ -4,7 +4,6 @@ import {
   convertFormatToFlatpickr,
   convertFormatToMask,
   convertFormatToMoment,
-  currentTimezone,
   formatDate,
   formatOffset,
   getBrowserInfo,
@@ -228,23 +227,8 @@ export default class CalendarWidget extends InputWidget {
     });
   }
 
-  defineTimezone() {
-    if (this.settings.timezone) {
-      return this.settings.timezone;
-    }
-    if (this.settings.displayInTimezone === 'submission') {
-      return this.componentInstance.submissionTimezone;
-    }
-    if (this.settings.displayInTimezone === 'utc') {
-      return 'UTC';
-    }
-
-    // Return current timezone if none are provided.
-    return currentTimezone();
-  }
-
   get timezone() {
-    return this.defineTimezone();
+    return this.componentInstance.timezone;
   }
 
   get defaultSettings() {
