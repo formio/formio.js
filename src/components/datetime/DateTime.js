@@ -168,10 +168,12 @@ export default class DateTimeComponent extends Input {
   }
 
   getValueAsString(value) {
-    const format = FormioUtils.convertFormatToMoment(this.component.format);
-    if (value && !this.attached && this.submissionTimezone) {
-      return FormioUtils.momentDate(value, format, this.submissionTimezone).format(format);
+    let format = FormioUtils.convertFormatToMoment(this.component.format);
+    format += format.match(/z$/) ? '' : ' z';
+    const timezone = this.timezone;
+    if (value && !this.attached && timezone) {
+      return _.trim(FormioUtils.momentDate(value, format, timezone).format(format));
     }
-    return (value ? moment(value).format(format) : value) || '';
+    return (value ? _.trim(moment(value).format(format)) : value) || '';
   }
 }
