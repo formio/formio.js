@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.11-rc.16
+### Changed
+ - FIO-5750: Fixing timezones in emails.
+
 ## 4.14.11-rc.15
 ### Fixed
  - FIO-6005: Fixing issues when getting date time without timezone.
