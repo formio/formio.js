@@ -8,7 +8,7 @@ import { GlobalFormio as Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import {
-  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent,
+  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent, currentTimezone
 } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
@@ -1030,6 +1030,28 @@ export default class Component extends Element {
   get submissionTimezone() {
     this.options.submissionTimezone = this.options.submissionTimezone || _.get(this.root, 'options.submissionTimezone');
     return this.options.submissionTimezone;
+  }
+
+  get timezone() {
+    if (this.component.timezone) {
+      return this.component.timezone;
+    }
+    if (this.component.displayInTimezone === 'utc') {
+      return 'UTC';
+    }
+    const submissionTimezone = this.submissionTimezone;
+    if (
+      submissionTimezone &&
+      (
+        (this.component.displayInTimezone === 'submission') ||
+        ((this.options.pdf || this.options.server) && (this.component.displayInTimezone === 'viewer'))
+      )
+    ) {
+      return submissionTimezone;
+    }
+
+    // Return current timezone if none are provided.
+    return currentTimezone();
   }
 
   loadRefs(element, refs) {
