@@ -527,6 +527,10 @@ export default class SelectComponent extends ListComponent {
   loadItems(url, search, headers, options, method, body) {
     options = options || {};
 
+    if (this.isEntireObjectDisplay() && typeof search === 'object') {
+      search = JSON.stringify(search);
+    }
+
     // See if we should load items or not.
     if (!this.shouldLoad || (!this.itemsFromUrl && this.options.readOnly)) {
       this.isScrollLoading = false;
@@ -1378,7 +1382,12 @@ export default class SelectComponent extends ListComponent {
     // Add the value options.
     this.itemsLoaded.then(() => {
       this.addValueOptions();
-      this.setChoicesValue(value, hasPreviousValue, flags);
+      if (this.isEntireObjectDisplay() && typeof value === 'object') {
+        this.setChoicesValue(JSON.stringify(value), hasPreviousValue, flags);
+      }
+      else {
+        this.setChoicesValue(value, hasPreviousValue, flags);
+      }
     });
 
     return changed;
@@ -1602,6 +1611,10 @@ export default class SelectComponent extends ListComponent {
       return data;
     };
 
+    if (this.isEntireObjectDisplay() && typeof value === 'object') {
+      value = JSON.stringify(value);
+    }
+
     value = convertToString(value);
 
     if (['values', 'custom'].includes(this.component.dataSrc) && !this.asyncCustomValues()) {
@@ -1671,5 +1684,12 @@ export default class SelectComponent extends ListComponent {
     else {
       super.setErrorClasses([this.refs.selectContainer], dirty, hasError, hasMessages, element);
     }
+  }
+
+  beforeSubmit() {
+    if (this.isEntireObjectDisplay() && typeof this.dataValue === 'string') {
+      this.dataValue = JSON.parse(this.dataValue);
+    }
+    return super.beforeSubmit();
   }
 }
