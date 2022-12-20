@@ -9,6 +9,7 @@ export default [
     input: true,
     key: 'delimeter',
     label: 'Delimiter',
+    builderEdit:true,
     tooltip: 'What is used to separate the tags.</a>'
   },
   {
@@ -17,6 +18,7 @@ export default [
     input: true,
     key: 'maxTags',
     label: 'Max Tags',
+    builderEdit:true,
     defaultValue: 0,
     tooltip: 'The maximum amount of tags that can be added. 0 for infinity.'
   },

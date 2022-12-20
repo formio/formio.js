@@ -21,6 +21,7 @@ export default [
     key: 'rows',
     label: 'Rows',
     weight: 210,
+    builderEdit:true,
     tooltip: 'This allows control over how many rows are visible in the text area.',
     placeholder: 'Enter the amount of rows'
   },
