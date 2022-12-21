@@ -36,8 +36,8 @@ export default class NestedComponent extends Field {
 
   collapse(value) {
     const promise = this.redraw();
-    if (!value && !this.pristine) {
-      this.checkValidity(this.data, true);
+    if (!value) {
+      this.checkValidity(this.data, !this.pristine, null, this.pristine);
     }
     return promise;
   }
