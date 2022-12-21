@@ -81,7 +81,6 @@ export default class WebformBuilder extends Component {
       .filter(group => group && !group.ignore)
       .sort((a, b) => a.weight - b.weight)
       .map(group => group.key);
-
     for (const type in Components.components) {
       const component = Components.components[type];
       if (component.builderInfo && component.builderInfo.schema) {
@@ -549,9 +548,9 @@ export default class WebformBuilder extends Component {
   }
 
   render() {
-    this.basicGroups = [this.groupOrder[4], this.groupOrder[3], this.groupOrder[5]];
-    this.customGroups = [this.groupOrder[0], this.groupOrder[1], this.groupOrder[2]];
-    this.otherGroups = [this.groupOrder[6]];
+    this.basicGroups = [this.groupOrder[5], this.groupOrder[4], this.groupOrder[6]];
+    this.customGroups = [this.groupOrder[1], this.groupOrder[2], this.groupOrder[3],this.groupOrder[0]];
+    this.otherGroups = [this.groupOrder[7]];
     this.groups[this.customGroups[0]].default = true;
     this.groups[this.otherGroups[0]].default = true;
 
