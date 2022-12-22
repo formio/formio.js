@@ -218,7 +218,7 @@ export default class SelectComponent extends Field {
     };
     const template = this.sanitize(
       this.component.template
-        ? this.interpolate(this.component.template, { item: data })
+        ? this.interpolate(this.component.template, { item: data }, options)
         : data.label,
       this.shouldSanitizeValue,
     );
