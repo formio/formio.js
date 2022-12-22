@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5995: Timezones url fixed
  - FIO-6005: Fixing multiple issues with DateTime not showing correct ti
  - FIO-5750: Fixing timezones in emails.
+ - FIO-6088: Fixing datetime issues with the calendar widget.
 
 ## 4.15.0-rc.16
 ### Fixed
