@@ -228,7 +228,7 @@ export default class CalendarWidget extends InputWidget {
   }
 
   get timezone() {
-    return this.componentInstance.timezone;
+    return this.componentInstance.getTimezone(this.settings);
   }
 
   get defaultSettings() {
