@@ -1033,18 +1033,22 @@ export default class Component extends Element {
   }
 
   get timezone() {
-    if (this.component.timezone) {
-      return this.component.timezone;
+    return this.getTimezone(this.component);
+  }
+
+  getTimezone(settings) {
+    if (settings.timezone) {
+      return settings.timezone;
     }
-    if (this.component.displayInTimezone === 'utc') {
+    if (settings.displayInTimezone === 'utc') {
       return 'UTC';
     }
     const submissionTimezone = this.submissionTimezone;
     if (
       submissionTimezone &&
       (
-        (this.component.displayInTimezone === 'submission') ||
-        ((this.options.pdf || this.options.server) && (this.component.displayInTimezone === 'viewer'))
+        (settings.displayInTimezone === 'submission') ||
+        ((this.options.pdf || this.options.server) && (settings.displayInTimezone === 'viewer'))
       )
     ) {
       return submissionTimezone;
