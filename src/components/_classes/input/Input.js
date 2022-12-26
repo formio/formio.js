@@ -360,7 +360,7 @@ export default class Input extends Multivalue {
         if (this.component.type==='textfield' || this.component.type==='textarea' || this.component.type==='number') {
           const elem=document.getElementById(`voice-check-${this.component.id}`);
           elem.style.display='grid';
-          element.parentElement.appendChild(elem);
+          //element.parentElement.appendChild(elem);
           elem.onclick=this.startVoiceRecognition.bind(this);
         }
     }
