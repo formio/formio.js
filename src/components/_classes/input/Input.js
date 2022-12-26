@@ -313,9 +313,6 @@ export default class Input extends Multivalue {
     }
     this.refs.input = [];
   }
-  insert(str, index, value) {
-    return str.substr(0, index) + value + str.substr(index);
-}
   startVoiceRecognition(event) {
     try {
         event.stopImmediatePropagation();
@@ -337,7 +334,6 @@ export default class Input extends Multivalue {
           const idd=`${this.component.id}-${this.component.key}`;
           const el1=document.getElementById(idd);
           const start = el1?.selectionStart;
-          const end = el1?.selectionEnd;
           if (this.component.type==='number') {
             content += transcript;
             content =Number(content);
