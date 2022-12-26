@@ -313,23 +313,74 @@ export default class Input extends Multivalue {
     }
     this.refs.input = [];
   }
+  startVoiceRecognition(event) {
+    try {
+        event.stopImmediatePropagation();
+        const micIcon=document.getElementById(`voice-check-${this.component.id}`);
+        micIcon.style.color='#388e3c';
+				const SpeechRecognition = window.webkitSpeechRecognition;
 
-  addFocusBlurEvents(element) {
-    this.addEventListener(element, 'focus', () => {
-      if (this.root.focusedComponent !== this) {
-        if (this.root.pendingBlur) {
-          this.root.pendingBlur();
+				const recognition = new SpeechRecognition();
+				recognition.continuous = true;
+				recognition.start();
+				recognition.onresult =function(event) {
+          const current = event.resultIndex;
+          const transcript = event.results[current][0].transcript;
+          let content = this.getValue();
+          if (content === null && this.component.type==='number') {
+            content='';
+          }
+          //content += transcript;
+          const idd=`${this.component.id}-${this.component.key}`;
+          const el1=document.getElementById(idd);
+          const start = el1?.selectionStart;
+          if (this.component.type==='number') {
+            content += transcript;
+            content =Number(content);
+          }
+          else {
+            content=content.substring(0, start) + transcript + content.substr(start);
+          }
+          micIcon.style.display='none';
+          const result = recognition.stop();
+          this.updateValue(content, { modified:true });
+          this.redraw();
+        }.bind(this);
+		}
+    catch (error) {
+			console.log('error', error);
+		}
+  }
+  onfocusEvent(event, element) {
+    if (!this.builderMode && !this.component.builderEdit) {
+      try {
+        if (this.component.type==='textfield' || this.component.type==='textarea' || this.component.type==='number') {
+          const elem=document.getElementById(`voice-check-${this.component.id}`);
+          elem.style.display='grid';
+          //element.parentElement.appendChild(elem);
+          elem.onclick=this.startVoiceRecognition.bind(this);
         }
-
-        this.root.focusedComponent = this;
-
-        this.emit('focus', this);
+      } catch (error) {
+        
       }
-      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
-        this.root.pendingBlur.cancel();
-        this.root.pendingBlur = null;
+        
+    }
+    if (this.root.focusedComponent !== this) {
+      if (this.root.pendingBlur) {
+        this.root.pendingBlur();
       }
-    });
+
+      this.root.focusedComponent = this;
+
+      this.emit('focus', this);
+    }
+    else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+      this.root.pendingBlur.cancel();
+      this.root.pendingBlur = null;
+    }
+  }
+  addFocusBlurEvents(element) {
+    this.addEventListener(element, 'focus', (event)=>this.onfocusEvent(event, element));
     this.addEventListener(element, 'blur', () => {
       this.root.pendingBlur = delay(() => {
         this.emit('blur', this);
