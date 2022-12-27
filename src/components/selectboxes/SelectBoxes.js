@@ -205,7 +205,7 @@ export default class SelectBoxesComponent extends RadioComponent {
     const maxCount = this.component.validate.maxSelectedCount;
     const isValid = this.isValid(data, dirty);
 
-    if (maxCount || minCount) {
+    if ((maxCount || minCount) && this.visible) {
       const count = Object.keys(this.validationValue).reduce((total, key) => {
         if (this.validationValue[key]) {
           total++;
@@ -213,6 +213,9 @@ export default class SelectBoxesComponent extends RadioComponent {
         return total;
       }, 0);
 
+      if (minCount && count < minCount) {
+        this.component.validate.required = true;
+      }
       // Disable the rest of inputs if the max amount is already checked
       if (maxCount && count >= maxCount) {
         this.setInputsDisabled(true, true);
