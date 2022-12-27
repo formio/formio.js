@@ -12,6 +12,7 @@ const uniqueApiKeysLayout = require('./uniqueApiKeysLayout.json');
 const uniqueApiKeysSameLevel = require('./uniqueApiKeysSameLevel.json');
 const validationOnBlur = require('./validationOnBlur.json');
 const calculateValueWithManualOverride = require('./calculateValueWithManualOverride.json');
+const calculateValueWithSubmissionMetadata = require('./calculateValueWithSubmissionMetadata.json');
 const displayAsModalEditGrid = require('./displayAsModalEditGrid.json');
 const formWithAdvancedLogic = require('./advancedLogicForm.json');
 const formWithConditionalLogic = require('./conditionalLogicForm.json');
@@ -54,6 +55,7 @@ module.exports = {
   uniqueApiKeysSameLevel,
   validationOnBlur,
   calculateValueWithManualOverride,
+  calculateValueWithSubmissionMetadata,
   displayAsModalEditGrid,
   formWithAdvancedLogic,
   formWithPatternValidation,
