@@ -503,6 +503,17 @@ class Formio {
     return Formio.accessInfo(this);
   }
 
+  
+
+  /**
+   * Sets OAuth Logout URL.
+   *
+   * @return {*}
+   */
+   oauthLogoutURI(uri, options) {
+    return Formio.oauthLogoutURI(uri, Object.assign({ formio: this }, this.options, options));
+  }
+
   /**
    * Returns the JWT token for this instance.
    *
@@ -1153,6 +1164,14 @@ class Formio {
       Formio.tokens[tokenName] = cookies.get(tokenName);
       return Formio.tokens[tokenName];
     }
+  }
+
+  static oauthLogoutURI(uri, options) {
+    options = (typeof options === 'string') ? { namespace: options } : options || {};
+    const logoutURIName = `${options.namespace || Formio.namespace || 'formio'}LogoutAuthUrl`;
+    Formio.tokens[logoutURIName];
+    localStorage.setItem(logoutURIName, uri);
+    return Formio.tokens[logoutURIName];
   }
 
   static setUser(user, opts = {}) {

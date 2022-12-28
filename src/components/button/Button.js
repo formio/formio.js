@@ -456,6 +456,9 @@ export default class ButtonComponent extends Field {
             const submission = { data: {}, oauth: {} };
             submission.oauth[settings.provider] = params;
             submission.oauth[settings.provider].redirectURI = originalRedirectUri;
+            if(settings.logoutURI) {
+              this.root.formio.oauthLogoutURI(settings.logoutURI);
+            }
 
             // Needs for the exclude oAuth Actions that not related to this button
             submission.oauth[settings.provider].triggeredBy = this.key;
