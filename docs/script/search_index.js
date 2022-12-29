@@ -4632,12 +4632,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/panel/panel.unit.js",
-    "file/src/components/panel/Panel.unit.js.html",
-    "src/components/panel/Panel.unit.js",
-    "file"
-  ],
-  [
     "src/components/panel/editform/panel.edit.conditional.js",
     "file/src/components/panel/editForm/Panel.edit.conditional.js.html",
     "src/components/panel/editForm/Panel.edit.conditional.js",
@@ -4653,6 +4647,12 @@ window.esdocSearchIndex = [
     "src/components/panel/fixtures/comp1.js",
     "file/src/components/panel/fixtures/comp1.js.html",
     "src/components/panel/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/panel/fixtures/comp2.js",
+    "file/src/components/panel/fixtures/comp2.js.html",
+    "src/components/panel/fixtures/comp2.js",
     "file"
   ],
   [
