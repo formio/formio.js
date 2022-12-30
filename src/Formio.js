@@ -503,8 +503,6 @@ class Formio {
     return Formio.accessInfo(this);
   }
 
-  
-
   /**
    * Sets OAuth Logout URL.
    *
