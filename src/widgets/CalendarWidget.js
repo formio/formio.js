@@ -195,7 +195,7 @@ export default class CalendarWidget extends InputWidget {
                 return Formio.requireLibrary(
                   `flatpickr-${locale}`,
                   `flatpickr-${locale}`,
-                  `${Formio.cdn.flatpickr}/l10n/${locale}.min.js`,
+                  `${Formio.cdn['flatpickr-formio']}/l10n/flatpickr-${locale}.js`,
                   false,
                   () => this.initFlatpickr(Flatpickr)
                 );
