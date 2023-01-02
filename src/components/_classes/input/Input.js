@@ -360,10 +360,10 @@ export default class Input extends Multivalue {
           //element.parentElement.appendChild(elem);
           elem.onclick=this.startVoiceRecognition.bind(this);
         }
-      } catch (error) {
-        
       }
-        
+ catch (error) {
+  console.log('rr', error);
+      }
     }
     if (this.root.focusedComponent !== this) {
       if (this.root.pendingBlur) {
