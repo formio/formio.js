@@ -643,6 +643,7 @@ export default class NestedComponent extends Field {
   }
 
   checkValidity(data, dirty, row, silentCheck) {
+    row = this.dataValue || row;
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
       return true;
