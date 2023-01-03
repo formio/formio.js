@@ -8,7 +8,7 @@ export default class CurrencyComponent extends NumberComponent {
   static schema(...extend) {
     return NumberComponent.schema({
       type: 'currency',
-      label: 'Currency',
+      label: '',
       key: 'currency'
     }, ...extend);
   }

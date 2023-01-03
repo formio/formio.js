@@ -8,7 +8,7 @@ export default class ButtonComponent extends Field {
   static schema(...extend) {
     return Input.schema({
       type: 'button',
-      label: 'Submit',
+      label: '',
       key: 'submit',
       size: 'md',
       leftIcon: '',

@@ -6,7 +6,7 @@ export default class SurveyComponent extends Field {
   static schema(...extend) {
     return Field.schema({
       type: 'survey',
-      label: 'Survey',
+      label: '',
       key: 'survey',
       questions: [],
       values: []

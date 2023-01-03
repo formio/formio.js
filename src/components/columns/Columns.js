@@ -4,7 +4,7 @@ import NestedComponent from '../_classes/nested/NestedComponent';
 export default class ColumnsComponent extends NestedComponent {
   static schema(...extend) {
     return NestedComponent.schema({
-      label: 'Columns',
+      label: '',
       key: 'columns',
       type: 'columns',
       columns: [

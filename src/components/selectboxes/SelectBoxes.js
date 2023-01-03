@@ -5,7 +5,7 @@ export default class SelectBoxesComponent extends RadioComponent {
   static schema(...extend) {
     return RadioComponent.schema({
       type: 'selectboxes',
-      label: 'Select Boxes',
+      label: '',
       key: 'selectBoxes',
       inline: false
     }, ...extend);

@@ -5,7 +5,7 @@ import NativePromise from 'native-promise-only';
 export default class ContentComponent extends Component {
   static schema(...extend) {
     return Component.schema({
-      label: 'Content',
+      label: '',
       type: 'content',
       key: 'content',
       input: false,

@@ -8,7 +8,7 @@ export default class TimeComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
       type: 'time',
-      label: 'Time',
+      label: '',
       key: 'time',
       inputType: 'time',
       format: 'HH:mm',

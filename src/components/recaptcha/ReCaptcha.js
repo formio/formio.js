@@ -9,7 +9,7 @@ export default class ReCaptchaComponent extends Component {
     return Component.schema({
       type: 'recaptcha',
       key: 'recaptcha',
-      label: 'reCAPTCHA'
+      label: ''
     }, ...extend);
   }
 

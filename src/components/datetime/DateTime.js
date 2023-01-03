@@ -7,7 +7,7 @@ export default class DateTimeComponent extends Input {
   static schema(...extend) {
     return Input.schema({
       type: 'datetime',
-      label: 'Date / Time',
+      label: '',
       key: 'dateTime',
       format: 'yyyy-MM-dd hh:mm a',
       useLocaleSettings: false,

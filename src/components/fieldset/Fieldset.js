@@ -3,7 +3,7 @@ import NestedComponent from '../_classes/nested/NestedComponent';
 export default class FieldsetComponent extends NestedComponent {
   static schema(...extend) {
     return NestedComponent.schema({
-      label: 'Field Set',
+      label: '',
       key: 'fieldSet',
       type: 'fieldset',
       legend: '',
