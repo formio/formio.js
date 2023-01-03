@@ -80,6 +80,17 @@ export default class ContainerComponent extends NestedDataComponent {
     }, Component.prototype.checkData.call(this, data, flags, row));
   }
 
+  checkChildComponentsValidity(data, dirty, row, silentCheck, isParentValid) {
+    return super.checkChildComponentsValidity(data, dirty, this.dataValue, silentCheck, isParentValid);
+  }
+
+  focus() {
+    const focusableElements = getFocusableElements(this.element);
+      if (focusableElements && focusableElements[0]) {
+        focusableElements[0].focus();
+      }
+  }
+
   checkConditions(data, flags, row) {
     // check conditions of parent component first, because it may influence on visibility of it's children
     const check = Field.prototype.checkConditions.call(this, data, flags, row);
