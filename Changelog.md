@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.12-rc.2
+### Changed
+ - FIO-6084: fixed CalendarWidget locale loading
+
 ## 4.14.12-rc.1
 ### Changed
  - FIO-5937: fixed an issue where validation errors donot keep for panel child components after expanding collapsible panel
