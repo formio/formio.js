@@ -70,6 +70,7 @@ export default [
     input: true,
     key: 'inputMask',
     label: 'Input Mask',
+    builderEdit:true,
     tooltip: 'inputMask',
     customConditional(context) {
       return !context.data.allowMultipleMasks;
@@ -81,6 +82,7 @@ export default [
     input: true,
     key: 'displayMask',
     label: 'Display Mask',
+    builderEdit:true,
     tooltip: 'displayMask',
     customConditional(context) {
       return !context.data.allowMultipleMasks;
@@ -93,6 +95,7 @@ export default [
     key: 'inputMaskPlaceholderChar',
     label: 'Input Mask Placeholder Char',
     tooltip: 'inputMaskPlaceholderChar',
+    builderEdit:true,
     validation: {
       maxLength: 1
     },
@@ -145,6 +148,7 @@ export default [
     type: 'textfield',
     input: true,
     key: 'prefix',
+    builderEdit:true,
     label: 'Prefix'
   },
   {
@@ -152,6 +156,7 @@ export default [
     type: 'textfield',
     input: true,
     key: 'suffix',
+    builderEdit:true,
     label: 'Suffix'
   },
   // {

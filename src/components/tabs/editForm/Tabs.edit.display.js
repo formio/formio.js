@@ -43,6 +43,7 @@ export default [
         type: 'textfield',
         input: true,
         key: 'label',
+        builderEdit:true,
         label: 'Label'
       },
       {
@@ -50,6 +51,7 @@ export default [
         input: true,
         key: 'key',
         label: 'Key',
+        builderEdit:true,
         allowCalculateOverride: true,
         calculateValue: { _camelCase: [{ var: 'row.label' }] }
       }

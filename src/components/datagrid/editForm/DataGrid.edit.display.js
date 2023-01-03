@@ -80,6 +80,7 @@ export default [
     tooltip: 'Set the text of the Add Another button.',
     placeholder: 'Add Another',
     weight: 410,
+    builderEdit:true,
     input: true,
     customConditional(context) {
       return !context.data.disableAddingRows;
@@ -145,6 +146,7 @@ export default [
         alwaysEnabled: false,
         type: 'textfield',
         input: true,
+        builderEdit:true,
         key: 'label',
         widget: {
           type: ''
@@ -158,6 +160,7 @@ export default [
         alwaysEnabled: false,
         type: 'number',
         input: true,
+        builderEdit:true,
         key: 'numberOfRows',
         row: '0-1'
       }

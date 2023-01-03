@@ -17,6 +17,7 @@ export default [
     key: 'defaultValue',
     weight: 5,
     placeholder: 'Default Value',
+    builderEdit:true,
     tooltip: 'The will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
     input: true
   },

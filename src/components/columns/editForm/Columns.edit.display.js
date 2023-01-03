@@ -74,24 +74,28 @@ export default [
         type: 'number',
         key: 'width',
         defaultValue: 6,
+        builderEdit:true,
         label: 'Width'
       },
       {
         type: 'number',
         key: 'offset',
         defaultValue: 0,
+        builderEdit:true,
         label: 'Offset'
       },
       {
         type: 'number',
         key: 'push',
         defaultValue: 0,
+        builderEdit:true,
         label: 'Push'
       },
       {
         type: 'number',
         key: 'pull',
         defaultValue: 0,
+        builderEdit:true,
         label: 'Pull'
       }
     ]
