@@ -4,7 +4,7 @@ import _ from 'lodash';
 export default class HTMLComponent extends Component {
   static schema(...extend) {
     return Component.schema({
-      label: 'HTML',
+      label: '',
       type: 'htmlelement',
       tag: 'p',
       attrs: [],

@@ -15,7 +15,7 @@ import Form from '../../Form';
 export default class FormComponent extends Component {
   static schema(...extend) {
     return Component.schema({
-      label: 'Form',
+      label: '',
       type: 'form',
       key: 'form',
       src: '',

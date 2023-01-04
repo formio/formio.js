@@ -7,7 +7,7 @@ import { uniqueKey } from '../../utils/utils';
 export default class DataMapComponent extends DataGridComponent {
   static schema(...extend) {
     return Component.schema({
-      label: 'Data Map',
+      label: '',
       key: 'dataMap',
       type: 'datamap',
       clearOnHide: true,

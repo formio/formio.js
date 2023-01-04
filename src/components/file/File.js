@@ -41,7 +41,7 @@ export default class FileComponent extends Field {
   static schema(...extend) {
     return Field.schema({
       type: 'file',
-      label: 'Upload',
+      label: '',
       key: 'file',
       image: false,
       privateDownload: false,

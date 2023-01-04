@@ -8,7 +8,7 @@ import NativePromise from 'native-promise-only';
 export default class TreeComponent extends NestedDataComponent {
   static schema(...extend) {
     return NestedDataComponent.schema({
-      label: 'Tree',
+      label: '',
       key: 'tree',
       type: 'tree',
       clearOnHide: true,

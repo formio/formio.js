@@ -4,7 +4,7 @@ export default class ResourceComponent extends SelectComponent {
   static schema(...extend) {
     return SelectComponent.schema({
       type: 'resource',
-      label: 'Resource',
+      label: '',
       key: 'resource',
       dataSrc: 'resource',
       resource: '',

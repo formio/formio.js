@@ -7,7 +7,7 @@ import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
 export default class ContainerComponent extends NestedDataComponent {
   static schema(...extend) {
     return NestedDataComponent.schema({
-      label: 'Container',
+      label: '',
       type: 'container',
       key: 'container',
       clearOnHide: true,

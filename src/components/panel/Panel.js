@@ -5,7 +5,7 @@ import FormComponent from '../form/Form';
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {
     return NestedComponent.schema({
-      label: 'Panel',
+      label: '',
       type: 'panel',
       key: 'panel',
       title: 'Panel',

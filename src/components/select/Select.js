@@ -14,7 +14,7 @@ export default class SelectComponent extends Field {
   static schema(...extend) {
     return Field.schema({
       type: 'selectF',  //select is a custom component , in order to differentiate between form.io 's select component we have used 'selectF'
-      label: 'Select',
+      label: '',
       key: 'select',
       idPath: 'id',
       data: {

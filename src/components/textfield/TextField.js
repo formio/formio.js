@@ -6,7 +6,7 @@ import NativePromise from 'native-promise-only';
 export default class TextFieldComponent extends Input {
   static schema(...extend) {
     return Input.schema({
-      label: 'Text Field',
+      label: '',
       key: 'textField',
       type: 'textfield',
       mask: false,

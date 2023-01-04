@@ -4,7 +4,7 @@ export default class UrlComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
       type: 'url',
-      label: 'Url',
+      label: '',
       key: 'url',
       inputType: 'url'
     }, ...extend);

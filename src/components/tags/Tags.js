@@ -9,7 +9,7 @@ export default class TagsComponent extends Input {
   static schema(...extend) {
     return Input.schema({
       type: 'tags',
-      label: 'Tags',
+      label: '',
       key: 'tags',
       delimeter: ',',
       storeas: 'string',
