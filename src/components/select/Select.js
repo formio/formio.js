@@ -292,9 +292,18 @@ export default class SelectComponent extends ListComponent {
   addValueOptions(items) {
     items = items || [];
     let added = false;
+    let data = this.dataValue;
+
+    // preset submission value with value property before request.
+    if (this.options.pdf && !items.length && this.component.dataSrc === 'url' && this.valueProperty) {
+      data = Array.isArray(data)
+        ? data.map(item => _.set({}, this.valueProperty, item))
+        : _.set({}, this.valueProperty, data);
+    }
+
     if (!this.selectOptions.length) {
       // Add the currently selected choices if they don't already exist.
-      const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
+      const currentChoices = Array.isArray(data) ? data : [data];
       added = this.addCurrentChoices(currentChoices, items);
       if (!added && !this.component.multiple) {
         this.addPlaceholder();
