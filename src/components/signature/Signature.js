@@ -35,7 +35,6 @@ export default class SignatureComponent extends Input {
     super.init();
     this.currentWidth = 0;
     this.scale = 1;
-    this.ratio = 1;
 
     if (!this.component.width) {
       this.component.width = '100%';
@@ -147,9 +146,10 @@ export default class SignatureComponent extends Input {
       this.scale = force ? scale : this.scale;
       this.currentWidth = this.refs.padBody.offsetWidth;
       const width = this.currentWidth * this.scale;
-      this.refs.canvas.width = width;
       const height = this.ratio ? width / this.ratio : this.refs.padBody.offsetHeight * this.scale;
-      const maxHeight = this.refs.padBody.offsetHeight * this.scale;
+      const maxHeight = this.ratio ? height : this.refs.padBody.offsetHeight * this.scale;
+
+      this.refs.canvas.width = width;
       this.refs.canvas.height = height > maxHeight ? maxHeight : height;
       this.refs.canvas.style.maxWidth = `${this.currentWidth * this.scale}px`;
       this.refs.canvas.style.maxHeight = `${maxHeight}px`;
