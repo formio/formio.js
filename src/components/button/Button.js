@@ -424,7 +424,7 @@ export default class ButtonComponent extends Field {
       try {
         const popupHost = popup.location.host;
         const currentHost = window.location.host;
-        if (popup && !popup.closed && popupHost === currentHost && popup.location.search) {
+        if (popup && !popup.closed && popupHost === currentHost) {
           popup.close();
           const params = popup.location.search.substr(1).split('&').reduce((params, param) => {
             const split = param.split('=');
