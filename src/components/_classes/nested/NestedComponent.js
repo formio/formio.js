@@ -642,20 +642,16 @@ export default class NestedComponent extends Field {
     );
   }
 
-  checkChildComponentsValidity(data, dirty, row, silentCheck, isParentValid) {
-    return this.getComponents().reduce(
-      (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,
-      isParentValid
-    );
-  }
-
   checkValidity(data, dirty, row, silentCheck) {
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
       return true;
     }
 
-    const isValid = this.checkChildComponentsValidity(data, dirty, row, silentCheck, super.checkValidity(data, dirty, row, silentCheck));
+    const isValid = this.getComponents().reduce(
+      (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,
+      super.checkValidity(data, dirty, row, silentCheck)
+    );
     this.checkModal(isValid, dirty);
     return isValid;
   }
