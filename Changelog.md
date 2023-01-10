@@ -101,7 +101,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 4.14.10-rc.3
 ### Changed
  - FIO-5430 Fixed datetime not being initialized when there are multiple…
- - FIO-5430 Fixed datetime not being initialized when there are multiple…
 
 ## 4.14.10-rc.2
 ### Changed
@@ -147,8 +146,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - FIO-4684: Fixes extra pdf redraw after resources fetch
  - FIO-3268 fixed submit button for viewer
- - FIO-3268 fixed submit button for viewer
- - FIO-3268 fixed submit button for viewer
  - FIO-5044: Removed Dropbox for Next Portal
  - FIO-5069: API driven dataTable
  - FIO-5107: fix button loader icon removal at unexpected event (#4714)
@@ -171,7 +168,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 4.14.9-rc.9
 ### Changed
  - FIO-5234: avoid lazy load flatpickr if it is already available in the…
- - FIO-5234: avoid lazy load flatpickr if it is already available in the…
 
 ## 4.14.9-rc.8
 ### Changed
@@ -189,7 +185,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 4.14.9-rc.5
 ### Changed
  - FIO-4705: fixed an issue with bad request error in console when rende…
- - FIO-4705: fixed an issue with bad request error in console when rende…
  - FIO-5361: Fixes can not get user info when sesion token configured and session token config not dropped on log out
  - FIO-4392 fixed Help links
  - FIO-5149: fixed the structure of the custom component with tree parameter
@@ -198,7 +193,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 4.14.9-rc.4
 ### Changed
  - FIO-4218: fixed an issue where error message isn't showing in modal window
- - FIO-4500: Fixes an issue where a wrong delimiter is shown in the Submission view and expoted data
  - FIO-4500: Fixes an issue where a wrong delimiter is shown in the Submission view and expoted data
  - fixed Help links
  - FIO-4704: fixed an issue with form builder where custom group in the …
@@ -212,7 +206,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 4.14.9-rc.3
 ### Changed
  - FIO-4218: fixed an issue where error message isn't showing in modal window
- - FIO-4500: Fixes an issue where a wrong delimiter is shown in the Submission view and expoted data
  - FIO-4500: Fixes an issue where a wrong delimiter is shown in the Submission view and expoted data
  - fixed Help links
  - FIO-4704: fixed an issue with form builder where custom group in the …
@@ -229,7 +222,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.14.9-rc.2
 ### Changed
- - FIO-5152: fixed an issue where value of html element displays differe…
  - FIO-5152: fixed an issue where value of html element displays differe…
 
 ## 4.14.9-rc.1
