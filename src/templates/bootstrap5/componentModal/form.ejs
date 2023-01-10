@@ -1,0 +1,26 @@
+<div class="formio-component-modal-wrapper formio-component-modal-wrapper-{{ ctx.component.type }}" ref="componentModalWrapper">
+  <div ref="openModalWrapper"></div>
+  <div class="formio-dialog formio-dialog-theme-default component-rendering-hidden" ref="modalWrapper">
+    <div class="formio-dialog-overlay" ref="modalOverlay"></div>
+    <div class="formio-dialog-content" aria-labelledby="ml-{{ctx.instance.id}}-{{ctx.component.key}}" {% if (!ctx.self.isIE()) { %} role="dialog" {% } %} ref="modalContents">
+      <label class="visually-hidden" id="ml-{{ctx.instance.id}}-{{ctx.component.key}}">{{ ctx.t(ctx.component.label) }}{{ctx.self.isIE() ? ', dialog' : ''}}</label>
+      {% if (ctx.options.vpat) { %}
+      <button class="formio-dialog-close float-end" title="Close" aria-label="Close button. Click to get back to the form" ref="modalCloseButton"></button>
+      {% } else { %}
+      <button class="formio-dialog-close float-end btn btn-secondary btn-sm" aria-label="Close button. Click to get back to the form" ref="modalClose"></button>
+      {% } %}
+      <div ref="modalContents">
+        {% if (ctx.visible) { %}
+        {{ctx.children}}
+        {% } %}
+        <div class="formio-dialog-buttons">
+          {% if (ctx.options.vpat) { %}
+          <button class="btn btn-secondary formio-dialog-button" aria-label="Cancel button. Click to cancel the changes and get back to the form." ref="modalClose">{{ctx.t('Cancel')}}</button>
+          {% } %}
+          <button class="btn btn-success formio-dialog-button" ref="modalSave" aria-label="Save button. Click to save the changes and get back to the form.">{{ctx.t('Save')}}</button>
+        </div>
+      </div>
+    </div>
+    <span class="visually-hidden" ref="modalLiveRegion" aria-live="assertive"></span>
+  </div>
+</div>

@@ -48,6 +48,7 @@ import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditiona
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 import { fastCloneDeep } from '../lib/utils/utils';
+import dataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 
 import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
 import calculatedValue from '../test/forms/calculatedValue';
@@ -67,6 +68,7 @@ import * as FormioUtils from './utils/utils';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
 import optionalSanitize from '../test/forms/optionalSanitize';
 import formWithCheckboxRadioaType from '../test/forms/formWithCheckboxRadioType';
+import formWithRadioInsideDataGrid from '../test/forms/formWithRadioInsideDataGrid';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -74,6 +76,18 @@ global.cancelAnimationFrame = () => {};
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should set radio components value inside data grid correctly', function(done) {
+    Formio.createForm(formWithRadioInsideDataGrid).then((form) => {
+      const dataGridData =  [{ radio: 'two' },{ radio: 'two' } ,{ radio: 'three' }];
+      form.setValue({ data: { dataGrid: fastCloneDeep(dataGridData) } });
+      setTimeout(() => {
+          const dataGrid = form.getComponent('dataGrid');
+          assert.deepEqual(dataGrid.dataValue, dataGridData);
+          done();
+      }, 200);
+    }).catch((err) => done(err));
+  });
 
   it('Should return correct strign value for checkbox radio type', function(done) {
     Formio.createForm(formWithCheckboxRadioaType).then((form) => {
@@ -1647,7 +1661,7 @@ describe('Webform tests', function() {
     }).catch(done);
   };
 
-  //TOFIX
+  //BUG - uncomment once fixed (ticket FIO-6042)
   // it('Should not fire validations when fields are either protected or not persistent.', (done) => {
   //   const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
   //   form.setForm(
@@ -2149,27 +2163,27 @@ describe('Webform tests', function() {
       }).catch(done);
     });
 
-    //TOFIX
-    // it('Should keep components inside DataGrid valid onChange', (done) => {
-    //   formElement.innerHTML = '';
-    //   const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
-    //   form.setForm(DataGridOnBlurValidation).then(() => {
-    //     const component = form.components[0];
-    //     Harness.setInputValue(component, 'data[dataGrid][0][textField]', '12');
-    //     const textField = component.iteratableRows[0].components.textField;
-    //     setTimeout(() => {
-    //       assert.equal(textField.error, '', 'Should stay valid on input');
-    //       const blur = new Event('blur', { bubbles: true, cancelable: true });
-    //       const input = textField.refs.input[0];
-    //       input.dispatchEvent(blur);
-    //       textField.element.dispatchEvent(blur);
-    //         setTimeout(() => {
-    //           assert(textField.error, 'Should be validated after blur');
-    //           done();
-    //         }, 250);
-    //     }, 250);
-    //   }).catch(done);
-    // });
+    it('Should keep components inside DataGrid valid onChange', (done) => {
+      formElement.innerHTML = '';
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(dataGridOnBlurValidation).then(() => {
+        const component = form.components[0];
+        Harness.setInputValue(component, 'data[dataGrid][0][textField]', '12');
+
+        setTimeout(() => {
+          const textField = component.iteratableRows[0].components.textField;
+          assert.equal(!!textField.error, false, 'Should stay valid on input');
+          const blur = new Event('blur', { bubbles: true, cancelable: true });
+          const input = textField.refs.input[0];
+          input.dispatchEvent(blur);
+          textField.element.dispatchEvent(blur);
+            setTimeout(() => {
+              assert(textField.error, 'Should be validated after blur');
+              done();
+            }, 250);
+        }, 250);
+      }).catch(done);
+    });
   });
 
   describe('Reset values', () => {
@@ -2767,49 +2781,46 @@ describe('Webform tests', function() {
     }).catch(done);
   }).timeout(3000);
 
-  //TOFIX
-  // it('Should have number and currency fields in empty form submission', function(done) {
-  //   const formElement = document.createElement('div');
-  //   const form= new Webform(formElement);
-  //   const formJson = {
-  //     components: [
-  //       {
-  //         label: 'Number',
-  //         key: 'number',
-  //         type: 'number'
-  //       },
-  //       {
-  //         label: 'Currency',
-  //         key: 'currency',
-  //         type: 'currency'
-  //       },
-  //       {
-  //         type: 'button',
-  //         label: 'Submit',
-  //         key: 'submit'
-  //       },
-  //     ],
-  //   };
+  it('Should have number and currency fields in empty form submission', function(done) {
+    const formElement = document.createElement('div');
+    const form= new Webform(formElement);
+    const formJson = {
+      components: [
+        {
+          label: 'Number',
+          key: 'number',
+          type: 'number'
+        },
+        {
+          label: 'Currency',
+          key: 'currency',
+          type: 'currency'
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit'
+        },
+      ],
+    };
 
-  //   const emptySubmissionData = {
-  //     number: '',
-  //     currency: '',
-  //     submit: true
-  //   };
+    const emptySubmissionData = {
+      submit: true
+    };
 
-  //   form.setForm(formJson).then(() => {
-  //     const clickEvent = new Event('click');
-  //     const submitBtn = form.element.querySelector('[name="data[submit]"]');
+    form.setForm(formJson).then(() => {
+      const clickEvent = new Event('click');
+      const submitBtn = form.element.querySelector('[name="data[submit]"]');
 
-  //     submitBtn.dispatchEvent(clickEvent);
+      submitBtn.dispatchEvent(clickEvent);
 
-  //     setTimeout(() => {
-  //       assert.deepEqual(form.data, emptySubmissionData);
-  //       done();
-  //     }, 200);
-  //   })
-  //   .catch((err) => done(err));
-  // });
+      setTimeout(() => {
+        assert.deepEqual(form.data, emptySubmissionData);
+        done();
+      }, 400);
+    })
+    .catch((err) => done(err));
+  });
 
   it('Test Truncate Multiple Spaces', (done) => {
     const formElement = document.createElement('div');

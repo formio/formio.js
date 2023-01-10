@@ -1,0 +1,26 @@
+<div id="phoneNumber" class="formio-form-group has-feedback formio-component formio-component-phoneNumber formio-component-phoneNumber formio-component-multiple " ref="component">
+  <label ref="label" class="col-form-label " for="phoneNumber-phoneNumber" id="l-phoneNumber-phoneNumber">
+    Phone Number
+    <span class="visually-hidden">, numeric only,</span>
+  </label>
+  <table class="table table-bordered">
+    <tbody>
+      <tr ref="row">
+        <td>
+          <input ref="input" name="data[phoneNumber]" type="text" class="form-control" lang="en" inputmode="decimal" spellcheck="true" value="" id="phoneNumber-phoneNumber" aria-labelledby="l-phoneNumber-phoneNumber " aria-required="false"></input>
+        </td>
+        <td>
+          <button type="button" class="btn btn-secondary" ref="removeRow">
+            <i class="fa fa-times-circle-o"></i>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+</div>

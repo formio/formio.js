@@ -101,7 +101,7 @@ export default class ButtonComponent extends Field {
 
   get className() {
     let className = super.className;
-    className += ' form-group';
+    className += ` ${this.transform('class', 'form-group')}`;
     return className;
   }
 
@@ -424,7 +424,7 @@ export default class ButtonComponent extends Field {
       try {
         const popupHost = popup.location.host;
         const currentHost = window.location.host;
-        if (popup && !popup.closed && popupHost === currentHost && popup.location.search) {
+        if (popup && !popup.closed && popupHost === currentHost) {
           popup.close();
           const params = popup.location.search.substr(1).split('&').reduce((params, param) => {
             const split = param.split('=');
@@ -456,6 +456,9 @@ export default class ButtonComponent extends Field {
             const submission = { data: {}, oauth: {} };
             submission.oauth[settings.provider] = params;
             submission.oauth[settings.provider].redirectURI = originalRedirectUri;
+            if(settings.logoutURI) {
+              this.root.formio.oauthLogoutURI(settings.logoutURI);
+            }
 
             // Needs for the exclude oAuth Actions that not related to this button
             submission.oauth[settings.provider].triggeredBy = this.key;

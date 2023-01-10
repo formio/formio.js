@@ -1,0 +1,33 @@
+<div id="dataMap" class="formio-form-group has-feedback formio-component formio-component-datamap formio-component-dataMap " ref="component">
+  <label ref="label" class="col-form-label " for="dataMap-dataMap" id="l-dataMap-dataMap">
+    Data Map
+  </label>
+  <table class="table datagrid-table table-bordered
+    ">
+    <thead>
+      <tr>
+        <th class="">
+          Key
+        </th>
+        <th class="">
+          Value
+        </th>
+        <th>
+          <span class="visually-hidden">Add/Remove</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody ref="datagrid-dataMap-tbody" data-key="datagrid-dataMap">
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4">
+          <button class="btn btn-primary formio-button-add-row" ref="datagrid-dataMap-addRow" tabindex="0">
+            <i class="fa fa-plus"></i> Add Another
+          </button>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+</div>

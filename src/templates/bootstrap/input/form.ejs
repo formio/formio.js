@@ -3,13 +3,13 @@
   {% } %}
   {% if (ctx.prefix) { %}
     <div class="input-group-prepend" ref="prefix">
-    <span class="input-group-text">
-      {% if(ctx.prefix instanceof HTMLElement){ %}
-        {{ ctx.t(ctx.prefix.outerHTML, { _userInput: true }) }}
-      {% } else{ %}
-        {{ ctx.t(ctx.prefix, { _userInput: true }) }}
-      {% } %}
-    </span>
+      <span class="input-group-text">
+        {% if(ctx.prefix instanceof HTMLElement){ %}
+          {{ ctx.t(ctx.prefix.outerHTML, { _userInput: true }) }}
+        {% } else{ %}
+          {{ ctx.t(ctx.prefix, { _userInput: true }) }}
+        {% } %}
+      </span>
     </div>
   {% } %}
   {% if (!ctx.component.editor && !ctx.component.wysiwyg) { %}
