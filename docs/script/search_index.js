@@ -3144,6 +3144,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/container/container.js~containercomponent#checkchildcomponentsvalidity",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-method-checkChildComponentsValidity",
+    "src/components/container/Container.js~ContainerComponent#checkChildComponentsValidity",
+    "method"
+  ],
+  [
     "src/components/container/container.js~containercomponent#checkconditions",
     "class/src/components/container/Container.js~ContainerComponent.html#instance-method-checkConditions",
     "src/components/container/Container.js~ContainerComponent#checkConditions",

@@ -192,6 +192,7 @@ import formWithSignature from &apos;../test/forms/formWithSignature&apos;;
 import wizardWithTooltip from &apos;../test/forms/wizardWithTooltip&apos;;
 import wizardForHtmlModeTest from &apos;../test/forms/wizardForHtmlRenderModeTest&apos;;
 import wizardTestForm from &apos;../test/forms/wizardTestForm&apos;;
+import wizardTestFormWithNestedComponents from &apos;../test/forms/wizardTestFormWithNestedComponents&apos;;
 import formWithNestedWizard from &apos;../test/forms/formWIthNestedWizard&apos;;
 import wizardWithDataGridAndEditGrid from &apos;../test/forms/wizardWithDataGridAndEditGrid&apos;;
 import customWizard from &apos;../test/forms/customWizard&apos;;
@@ -733,6 +734,36 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
             done();
           }, 200);
         }, 200);
+      }, 200);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should NOT navigate to next page if it contains invalid nested component&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+    const form = _.cloneDeep(wizardTestFormWithNestedComponents.form);
+
+    wizard.setForm(form).then(() =&gt; {
+      const checkPage = (pageNumber) =&gt; {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+      checkPage(0);
+      wizard.submission = {
+        data: {
+          outerContainer: {
+            firstComponent: &apos;c&apos;,
+            secondComponent: &apos;q&apos;,
+          }
+        }
+      };
+      wizard.nextPage();
+      setTimeout(() =&gt; {
+        const errors = wizard.errors;
+        checkPage(0);
+        assert(errors.length &gt; 0, &apos;Must err before next page&apos;);
+        assert.equal(errors[0].message, &apos;Required Component is required&apos;);
+        done();
       }, 200);
     })
     .catch((err) =&gt; done(err));

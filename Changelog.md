@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.13-rc.1
+### Changed
+ - FIO-5511: ensure contextual row data is validated correctly for nested components
+
 ## 4.14.12
 ### Changed
  - Official Release
