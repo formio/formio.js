@@ -428,7 +428,17 @@ describe('Wizard tests', () => {
 
       const checkValues = () => {
         wizard.refs[`wizard-${wizard.id}`].querySelectorAll('input').forEach((element, i)=> {
-          assert.equal(element.value, i ? `page${wizard.page+1}` : 'prefix', 'Should render value');
+          switch (i) {
+            case 0:
+              assert.equal(element.value, 'prefix', 'Should render value');
+              break;
+            case 1:
+              assert.equal(element.value, `page${wizard.page+1}`, 'Should render value');
+              break;
+            case 2:
+              assert.equal(element.value, 'suffix', 'Should render value');
+              break;
+          }
         });
       };
       wizard.submission = _.cloneDeep(wizardWithPrefixComps.submission);

@@ -43,6 +43,13 @@ const form = {
       }],
       "input": false,
       "tableView": false
+    },
+    {
+      "label": "Suffix Text Field",
+      "tableView": true,
+      "key": "suffixTextField",
+      "type": "textfield",
+      "input": true
     }],
 };
 
@@ -50,7 +57,8 @@ const submission = {
   data: {
     "prefixTextField":"prefix",
     "page1TextField":"page1",
-    "page2TextField":"page2"
+    "page2TextField":"page2",
+    "suffixTextField":"suffix",
   }
 };
 
