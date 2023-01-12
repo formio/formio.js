@@ -26,8 +26,8 @@ export default class Input extends Multivalue {
       lang: this.options.language
     };
 
-    if (this.options.attachMode === 'builder' || this.options.building) {
-      attr.autocomplete = 'off';
+    if (this.options.attachMode === 'builder' || this.options.building || _.get(this.root, 'form.settings.disableAutocomplete')) {
+      attr.autocomplete = this.component.type === 'password'? 'new-password': 'off';
     }
 
     if (this.component.inputMode) {
