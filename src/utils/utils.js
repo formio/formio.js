@@ -469,7 +469,7 @@ export function getDateSetting(date) {
     return date.isValid() ? date.toDate() : null;
   }
 
-  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date) : null;
+  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(new Date(date)) : null;
   if (dateSetting && dateSetting.isValid()) {
     return dateSetting.toDate();
   }
