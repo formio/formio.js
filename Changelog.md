@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6088: Fixing datetime issues with the calendar widget.
  - FIO-5937: fixed an issue where validation errors donot keep for panel child components after expanding collapsible panel
  - FIO-6084: fixed CalendarWidget locale loading
+ - FIO-5511: ensure contextual row data is validated correctly for nested components
 
 ## 4.15.0-rc.16
 ### Fixed
