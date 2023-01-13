@@ -526,8 +526,7 @@ export default class SelectComponent extends ListComponent {
 
   loadItems(url, search, headers, options, method, body) {
     options = options || {};
-
-    if (this.isEntireObjectDisplay() && typeof search === 'object') {
+    if (this.isEntireObjectDisplay() && search && typeof search === 'object') {
       search = JSON.stringify(search);
     }
 
@@ -1152,7 +1151,7 @@ export default class SelectComponent extends ListComponent {
             return false;
           }
           const itemValue = keyValue ? choice.value : this.itemValue(choice, isSelectOptions);
-          found |= _.isEqual(itemValue, value);
+            found |= _.isEqual(itemValue, (this.isEntireObjectDisplay() && typeof itemValue !== typeof value) ? JSON.parse(value) : value);
           return found ? false : true;
         });
       }
@@ -1686,10 +1685,10 @@ export default class SelectComponent extends ListComponent {
     }
   }
 
-  beforeSubmit() {
-    if (this.isEntireObjectDisplay() && typeof this.dataValue === 'string') {
-      this.dataValue = JSON.parse(this.dataValue);
-    }
-    return super.beforeSubmit();
-  }
+  // beforeSubmit() {
+  //   if (this.isEntireObjectDisplay() && typeof this.dataValue === 'string') {
+  //     this.dataValue = JSON.parse(this.dataValue);
+  //   }
+  //   return super.beforeSubmit();
+  // }
 }

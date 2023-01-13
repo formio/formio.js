@@ -903,7 +903,7 @@ describe('Select Component with Entire Object Value Property', () => {
 
     Formio.createForm(element, form).then(form => {
       const select = form.getComponent('select');
-      const value = { 'textField':'rgd','submit':true,'number':11 };
+      const value = '{"textField":"rgd","submit":true,"number":11}';
       select.setValue(value);
 
       setTimeout(() => {
@@ -915,7 +915,7 @@ describe('Select Component with Entire Object Value Property', () => {
         submitBtn.dispatchEvent(clickEvent);
 
         setTimeout(() => {
-          assert.equal(select.dataValue, value);
+          assert.equal(select.getValue(), value);
           done();
         }, 200);
       }, 200);
