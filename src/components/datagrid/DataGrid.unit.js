@@ -405,7 +405,7 @@ describe('DataGrid Panels', () => {
   });
 
   it('Should have unique IDs inside data grid', () => {
-    return Harness.testCreate(DataGridComponent, comp6).then((component) => {
+    return Harness.testCreate(DataGridComponent, comp7).then((component) => {
       component.addRow();
       const idArr = [];
       component.components.forEach((row, i) => {
