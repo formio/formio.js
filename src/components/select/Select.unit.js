@@ -167,6 +167,29 @@ describe('Select Component', () => {
     });
   });
 
+  it('should allow quotes in options', function(done) {
+    comp5.template = '<span>{{ item.label }}</span>';
+    comp5.uniqueOptions = true;
+    Harness.testCreate(SelectComponent, comp5).then((component) => {
+      component.setItems([{
+        'label': 'Label "1"',
+        'value': 'value1'
+      }, {
+        'label': "Label \"2\"",
+        'value': 'value2'
+      }, {
+        'label': 'Label \"3\"',
+        'value': 'value3'
+      }], false);
+
+      assert.equal(component.selectOptions.length, 3);
+      assert.equal(component.selectOptions[0].label, 'Label "1"');
+      assert.equal(component.selectOptions[1].label, 'Label "2"');
+      assert.equal(component.selectOptions[2].label, 'Label "3"');
+      done();
+    });
+  });
+
   it('should format unlisted values', function(done) {
     comp5.template = '<span>{{ item.label }}</span>';
     Harness.testCreate(SelectComponent, comp5).then((component) => {
