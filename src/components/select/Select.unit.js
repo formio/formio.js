@@ -178,14 +178,14 @@ describe('Select Component', () => {
         'label': "Label \"2\"",
         'value': 'value2'
       }, {
-        'label': 'Label \"3\"',
+        'label': 'Label \'3\'',
         'value': 'value3'
       }], false);
 
       assert.equal(component.selectOptions.length, 3);
       assert.equal(component.selectOptions[0].label, 'Label "1"');
       assert.equal(component.selectOptions[1].label, 'Label "2"');
-      assert.equal(component.selectOptions[2].label, 'Label "3"');
+      assert.equal(component.selectOptions[2].label, 'Label \'3\'');
       done();
     });
   });
