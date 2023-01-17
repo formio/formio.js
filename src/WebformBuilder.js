@@ -682,8 +682,8 @@ export default class WebformBuilder extends Component {
       const filteredComponents = [];
 
       for (const key in components) {
-        const isMatchedToTitle = components[key].title.toLowerCase().match(searchValue);
-        const isMatchedToKey = components[key].key.toLowerCase().match(searchValue);
+        const isMatchedToTitle = this.t(components[key].title).toLowerCase().match(searchValue);
+        const isMatchedToKey = this.t(components[key].key).toLowerCase().match(searchValue);
 
         if (isMatchedToTitle || isMatchedToKey) {
           filteredComponents.push(components[key]);

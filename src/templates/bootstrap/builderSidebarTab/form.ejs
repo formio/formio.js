@@ -3,13 +3,13 @@
 <div id="myTab" ref="builder-sidebar-tabs" role="tablist">
     <div class="container" style="display: flex;">
       <div class="col-sm border-bottom{{ctx.tab == 1 ? ' border-info text-center' : 'border-info text-center'}}" style="border-width: 2px !important; cursor: pointer; padding: 0px;" ref="basicTab">  
-        <i class="fa fa-align-center" data-toggle="tooltip" title="Components" ></i>
+        <i class="fa fa-align-center" data-toggle="tooltip" title="{{ctx.t('Components')}}" ></i>
       </div>
       <div class="col-sm border-bottom{{ctx.tab == 2 ? ' border-info text-center' : 'border-info text-center'}}" style="border-width: 2px !important; cursor: pointer; padding: 0px;" ref="customTab">
-        <i class="fa fa-server" data-toggle="tooltip" title="Data"></i>
+        <i class="fa fa-server" data-toggle="tooltip" title="{{ctx.t('Data')}}"></i>
       </div>
       <div class="col-sm border-bottom{{ctx.tab == 3 ? ' border-info text-center' : 'border-info text-center'}}" style="border-width: 2px !important; cursor: pointer; padding: 0px;" ref="othersTab">
-        <i class="fa fa-th" data-toggle="tooltip" title="Layout"></i>
+        <i class="fa fa-th" data-toggle="tooltip" title="{{ctx.t('Layout')}}"></i>
       </div>
     </div>
 
