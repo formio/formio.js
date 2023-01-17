@@ -198,10 +198,10 @@ export default class SelectComponent extends ListComponent {
   }
 
   selectValueAndLabel(data) {
-    const value = this.getOptionValue(this.itemValue(data));
+    const value = this.getOptionValue((this.isEntireObjectDisplay() && !this.itemValue(data)) ? data : this.itemValue(data) );
     return {
       value,
-      label: this.itemTemplate(data, value)
+      label: this.itemTemplate((this.isEntireObjectDisplay() && !_.isObject(data.data)) ? { data: data } : data, value)
     };
   }
 
@@ -1151,7 +1151,7 @@ export default class SelectComponent extends ListComponent {
             return false;
           }
           const itemValue = keyValue ? choice.value : this.itemValue(choice, isSelectOptions);
-            found |= _.isEqual(itemValue, (this.isEntireObjectDisplay() && typeof itemValue !== typeof value) ? JSON.parse(value) : value);
+          found |= _.isEqual(itemValue, value);
           return found ? false : true;
         });
       }
@@ -1289,10 +1289,6 @@ export default class SelectComponent extends ListComponent {
       },
 
       object() {
-        if (_.isObject(this.value) && displayEntireObject && !retainObject) {
-          this.value = JSON.stringify(this.value);
-        }
-
         return this;
       },
 
@@ -1381,12 +1377,7 @@ export default class SelectComponent extends ListComponent {
     // Add the value options.
     this.itemsLoaded.then(() => {
       this.addValueOptions();
-      if (this.isEntireObjectDisplay() && typeof value === 'object') {
-        this.setChoicesValue(JSON.stringify(value), hasPreviousValue, flags);
-      }
-      else {
-        this.setChoicesValue(value, hasPreviousValue, flags);
-      }
+      this.setChoicesValue(value, hasPreviousValue, flags);
     });
 
     return changed;
@@ -1684,11 +1675,4 @@ export default class SelectComponent extends ListComponent {
       super.setErrorClasses([this.refs.selectContainer], dirty, hasError, hasMessages, element);
     }
   }
-
-  // beforeSubmit() {
-  //   if (this.isEntireObjectDisplay() && typeof this.dataValue === 'string') {
-  //     this.dataValue = JSON.parse(this.dataValue);
-  //   }
-  //   return super.beforeSubmit();
-  // }
 }
