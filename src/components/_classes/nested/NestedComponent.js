@@ -450,6 +450,10 @@ export default class NestedComponent extends Field {
       childPromise = this.attachComponents(this.refs[this.nestedKey]);
     }
 
+    if (!this.visible) {
+      this.attachComponentsLogic();
+    }
+
     if (this.component.collapsible && this.refs.header) {
       this.addEventListener(this.refs.header, 'click', () => {
         this.collapsed = !this.collapsed;
@@ -466,6 +470,18 @@ export default class NestedComponent extends Field {
       superPromise,
       childPromise,
     ]);
+  }
+
+  attachComponentsLogic(components) {
+    components = components || this.components;
+
+    _.each(components, (comp) => {
+      comp.attachLogic();
+
+      if  (_.isFunction(comp.attachComponentsLogic)) {
+        comp.attachComponentsLogic();
+      }
+    });
   }
 
   attachComponents(element, components, container) {
