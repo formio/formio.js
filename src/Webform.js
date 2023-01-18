@@ -40,7 +40,8 @@ function getOptions(options) {
     saveDraft: false,
     alwaysDirty: false,
     saveDraftThrottle: 5000,
-    display: 'form'
+    display: 'form',
+    cdnUrl: Formio.cdn.baseUrl
   });
   if (!options.events) {
     options.events = new EventEmitter();

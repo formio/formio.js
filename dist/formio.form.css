@@ -131,6 +131,10 @@ dialog.fixed {
   color: #004085;
 }
 
+.formio-form-group {
+  margin-bottom: 1rem;
+}
+
 .formio-wysiwyg-editor {
   min-height: 200px;
   background-color: #fff;
@@ -298,7 +302,8 @@ dialog.fixed {
   outline: auto;
 }
 
-td > .form-group {
+td > .form-group,
+td > .formio-form-group {
   margin-bottom: 0;
 }
 
@@ -893,7 +898,8 @@ body.formio-dialog-open {
   display: block;
 }
 
-.formio-choices.form-group {
+.formio-choices.form-group,
+.formio-choices.formio-form-group {
   margin-bottom: 0;
 }
 
@@ -916,6 +922,10 @@ body.formio-dialog-open {
 
 .formio-component .table {
   margin-bottom: 0;
+}
+
+.formio-component-htmlelement {
+  word-wrap: break-word;
 }
 
 .editgrid-table-container {
@@ -979,6 +989,13 @@ body.formio-dialog-open {
   transition: opacity 200ms linear, visibility 0ms 200ms;
 }
 
+.formio-component-datagrid {
+  overflow-x: auto;
+}
+.formio-component-datagrid .datagrid-table, .formio-component-datagrid .datagrid-table td, .formio-component-datagrid .datagrid-table th {
+  border: 3px solid #ddd !important;
+  padding: 10px;
+}
 .formio-component-datagrid .datagrid-table > tbody > tr > td:last-child {
   position: relative;
 }
@@ -1421,6 +1438,7 @@ div[data-oembed-url] {
 
 .formio-form > div > nav > ul.pagination {
   flex-flow: wrap row;
+  justify-content: flex-start;
 }
 .formio-form > div > nav > ul.pagination .page-link {
   cursor: pointer;
@@ -1627,6 +1645,10 @@ div[data-oembed-url] {
 }
 .formio-tooltip__wrapper > span {
   font-weight: normal;
+}
+
+.ace_editor, .ace_editor div, .ace_editor span {
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", "Droid Sans Mono", "Consolas", monospace !important;
 }
 
 span[role=link] {

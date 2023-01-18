@@ -36,8 +36,8 @@ export default class NestedComponent extends Field {
 
   collapse(value) {
     const promise = this.redraw();
-    if (!value && !this.pristine) {
-      this.checkValidity(this.data, true);
+    if (!value) {
+      this.checkValidity(this.data, !this.pristine, null, this.pristine);
     }
     return promise;
   }
@@ -450,6 +450,10 @@ export default class NestedComponent extends Field {
       childPromise = this.attachComponents(this.refs[this.nestedKey]);
     }
 
+    if (!this.visible) {
+      this.attachComponentsLogic();
+    }
+
     if (this.component.collapsible && this.refs.header) {
       this.addEventListener(this.refs.header, 'click', () => {
         this.collapsed = !this.collapsed;
@@ -466,6 +470,18 @@ export default class NestedComponent extends Field {
       superPromise,
       childPromise,
     ]);
+  }
+
+  attachComponentsLogic(components) {
+    components = components || this.components;
+
+    _.each(components, (comp) => {
+      comp.attachLogic();
+
+      if  (_.isFunction(comp.attachComponentsLogic)) {
+        comp.attachComponentsLogic();
+      }
+    });
   }
 
   attachComponents(element, components, container) {
@@ -642,16 +658,20 @@ export default class NestedComponent extends Field {
     );
   }
 
+  checkChildComponentsValidity(data, dirty, row, silentCheck, isParentValid) {
+    return this.getComponents().reduce(
+      (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,
+      isParentValid
+    );
+  }
+
   checkValidity(data, dirty, row, silentCheck) {
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
       return true;
     }
 
-    const isValid = this.getComponents().reduce(
-      (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,
-      super.checkValidity(data, dirty, row, silentCheck)
-    );
+    const isValid = this.checkChildComponentsValidity(data, dirty, row, silentCheck, super.checkValidity(data, dirty, row, silentCheck));
     this.checkModal(isValid, dirty);
     return isValid;
   }

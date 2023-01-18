@@ -39,6 +39,7 @@ const wizardWithHiddenPanel = require('./wizardWithHiddenPanel.json');
 const wizardWithSimpleConditionalPage = require('./wizardWithSimpleConditionalPage.json');
 const wizardWithTooltip = require('./wizardWithTooltip.json');
 const resourceKeyCamelCase = require('./resourceKeyCamelCase.json');
+const tooltipActivateCheckbox = require('./tooltipActivateCheckbox.json');
 
 module.exports = {
   advanced,
@@ -82,4 +83,5 @@ module.exports = {
   wizardWithSimpleConditionalPage,
   wizardWithTooltip,
   resourceKeyCamelCase,
+  tooltipActivateCheckbox,
 };

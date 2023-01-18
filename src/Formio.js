@@ -14,6 +14,7 @@ import _defaults from 'lodash/defaults';
 import { eachComponent } from './utils/utils';
 import jwtDecode from 'jwt-decode';
 import './polyfills';
+import CDN from './CDN';
 
 const { fetch, Headers } = fetchPonyfill({
   Promise: NativePromise
@@ -500,6 +501,17 @@ class Formio {
 
   accessInfo() {
     return Formio.accessInfo(this);
+  }
+
+  
+
+  /**
+   * Sets OAuth Logout URL.
+   *
+   * @return {*}
+   */
+   oauthLogoutURI(uri, options) {
+    return Formio.oauthLogoutURI(uri, Object.assign({ formio: this }, this.options, options));
   }
 
   /**
@@ -1154,6 +1166,14 @@ class Formio {
     }
   }
 
+  static oauthLogoutURI(uri, options) {
+    options = (typeof options === 'string') ? { namespace: options } : options || {};
+    const logoutURIName = `${options.namespace || Formio.namespace || 'formio'}LogoutAuthUrl`;
+    Formio.tokens[logoutURIName];
+    localStorage.setItem(logoutURIName, uri);
+    return Formio.tokens[logoutURIName];
+  }
+
   static setUser(user, opts = {}) {
     const userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
     const storage = localStorage.getItem('useSessionToken') ? sessionStorage : localStorage;
@@ -1556,7 +1576,10 @@ class Formio {
           }
 
           if (onload) {
-            element.addEventListener('load', () => onload(Formio.libraries[name].ready));
+            element.addEventListener('load', () => {
+              Formio.libraries[name].loaded = true;
+              onload(Formio.libraries[name].ready);
+            });
           }
 
           const { head } = document;
@@ -1578,9 +1601,9 @@ class Formio {
       }
     }
 
-    const lib = Formio.libraries[name].ready;
+    const lib = Formio.libraries[name];
 
-    return onload ? onload(lib) : lib;
+    return onload && lib.loaded ? onload(lib.ready) : lib.ready;
   }
 
   static libraryReady(name) {
@@ -1648,6 +1671,7 @@ Formio.Providers = Providers;
 Formio.version = '---VERSION---';
 Formio.pathType = '';
 Formio.events = new EventEmitter();
+Formio.cdn = new CDN();
 
 if (typeof global !== 'undefined') {
   Formio.addToGlobal(global);
