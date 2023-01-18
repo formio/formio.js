@@ -849,6 +849,7 @@ body.formio-dialog-open {
 
 .editgrid-listgroup {
   margin-bottom: 10px;
+  overflow-wrap: break-word;
 }
 
 .tree-listgroup {
@@ -883,6 +884,7 @@ body.formio-dialog-open {
 
 .formio-component .table {
   margin-bottom: 0;
+  word-break: break-all;
 }
 
 .formio-component-htmlelement {
@@ -974,6 +976,12 @@ body.formio-dialog-open {
   // .edittable-group-label {
   //   background-color: #ddd;
   // }
+}
+
+.datagrid-table {
+  &>tbody>tr>td {
+    word-break: break-all;
+  }
 }
 
 .formio-component-modaledit {
@@ -1092,6 +1100,7 @@ body.formio-dialog-open {
 
   &__node-content {
     margin-bottom: 10px;
+    overflow-wrap: break-word;
   }
 
   &__node-children {
