@@ -1369,8 +1369,6 @@ class Formio {
         options
       });
     }
-
-    authUrl = `${Formio.baseUrl}/current`;
     this.currentUserResolved = false;
     return Formio.makeRequest(formio, 'currentUser', authUrl, 'GET', null, options)
       .then((response) => {
