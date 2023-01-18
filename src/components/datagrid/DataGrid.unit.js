@@ -17,7 +17,8 @@ import {
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
   withConditionalFieldsAndValidations,
-  withLogic
+  withLogic,
+  withCollapsibleRowGroups
 } from './fixtures';
 
 describe('DataGrid Component', () => {
@@ -219,6 +220,27 @@ describe('DataGrid Component', () => {
           expect(spyFunc.callCount).to.be.lessThan(4);
           done();
         }, 1500);
+      });
+  });
+
+  it('Should collapse group rows on group header click', (done) => {
+    Formio.createForm(document.createElement('div'), withCollapsibleRowGroups)
+      .then((form) => {
+        const groupHeadersRefName= 'datagrid-dataGrid-group-header';
+        const datagrid = form.getComponent('dataGrid');
+        assert.equal(datagrid.refs[groupHeadersRefName][0]?.classList?.contains('collapsed'), false);
+        assert.equal(datagrid.refs.chunks[0][0].classList?.contains('hidden'), false);
+        assert.equal(datagrid.refs.chunks[0][1].classList?.contains('hidden'), false);
+
+        const clickEvent = new Event('click');
+        datagrid.refs[groupHeadersRefName][0].dispatchEvent(clickEvent);
+        setTimeout(() => {
+          const collapedGroupRows = datagrid.refs.chunks[0] || [];
+          assert.equal(datagrid.refs[groupHeadersRefName][0]?.classList?.contains('collapsed'), true);
+          assert.equal(collapedGroupRows[0]?.classList?.contains('hidden'), true);
+          assert.equal(collapedGroupRows[1]?.classList?.contains('hidden'), true);
+          done();
+        }, 300);
       });
   });
 
