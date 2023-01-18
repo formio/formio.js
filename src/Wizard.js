@@ -792,6 +792,7 @@ export default class Wizard extends Webform {
     }
     else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
+      this.element.scrollIntoView();
       return NativePromise.reject(this.showErrors([], true));
     }
   }
