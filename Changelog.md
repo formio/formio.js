@@ -14,6 +14,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6084: fixed CalendarWidget locale loading
  - FIO-5511: ensure contextual row data is validated correctly for nested components
  - FIO-5369: fixed an issue where clicking on the tooltip enables the checkboxes on the component settings page
+ - FIO-5246: fixed unique validation for submission with draft state
+ - FIO-5335: fixed an issue where logic triggered by events does not work for hidden nested components
+ - FIO-5288: fixed an issue where existing resource not saving property name correctly
+ - FIO-4956: fixed an issue where on view submission tab long text values not split up by spaces are displayed in one line
+ - FIO-5408 added ability to drag the pages icons
+ - Reverts FIO-4705: fixed an issue with bad request error in console when render pdf form
+ - FIO-5460: fixed an issue where blur and focus events are not fired for select and address components
+ - FIO-5811: added scrollup to button next wizard if has error
+ - FIO-5904: fixed saving data for Components outside of Wizards
+ - FIO-3295: fixed an issue where data grid group rows were not hidden on the row click when bootstrap 4 is used
+ - FIO-5785: Fixed Select component submission showing id instead of template for URL data source
+ - FIO-6078: Hidden Select Boxes validation do not prevent submission
+ - FIO-6100: Provide submission object to value calculation (eg. To relate to submission metadata in calculation)
+ - FIO-4343: Fixes datagrid reorder, remove row and drop new component columns using much space
+ - FIO-6001: fixed an issue where oauth action does not work for buttons inside layout/data components
+ - FIO-4664: Added tests for conditionals based on Address component
 
 ## 4.15.0-rc.16
 ### Fixed
