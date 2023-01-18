@@ -3,7 +3,7 @@ import NativePromise from 'native-promise-only';
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
 import Builders from '../lib/builders';
-import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm } from '../test/formtest';
+import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase } from '../test/formtest';
 import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
 
@@ -34,6 +34,15 @@ describe('WebformBuilder tests', function() {
       builder.highlightInvalidComponents();
       const component = builder.webform.getComponent(['textField']);
       assert.equal(component.errors.length, 1);
+      done();
+    }).catch(done);
+  });
+
+  it('Should not overwrite existing resource key in camelCase', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm(resourceKeyCamelCase).then(() => {
+      const component = builder.webform.getComponent('CalendarID');
+      assert.equal(!!document.querySelector(`[name='data[${component.key}]']`), true);
       done();
     }).catch(done);
   });

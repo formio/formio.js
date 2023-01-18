@@ -38,7 +38,8 @@ const formWithCustomFormatDate = require('./formWithCustomFormatDate.json');
 const wizardWithHiddenPanel = require('./wizardWithHiddenPanel.json');
 const wizardWithSimpleConditionalPage = require('./wizardWithSimpleConditionalPage.json');
 const wizardWithTooltip = require('./wizardWithTooltip.json');
-const tooltipActivateCheckbox = require('./tooltipActivateCheckbox.json')
+const resourceKeyCamelCase = require('./resourceKeyCamelCase.json');
+const tooltipActivateCheckbox = require('./tooltipActivateCheckbox.json');
 
 module.exports = {
   advanced,
@@ -81,5 +82,6 @@ module.exports = {
   wizardWithHiddenPanel,
   wizardWithSimpleConditionalPage,
   wizardWithTooltip,
+  resourceKeyCamelCase,
   tooltipActivateCheckbox,
 };
