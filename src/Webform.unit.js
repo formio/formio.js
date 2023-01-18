@@ -15,6 +15,7 @@ import {
   manualOverride,
   validationOnBlur,
   calculateValueWithManualOverride,
+  calculateValueWithSubmissionMetadata,
   formWithAdvancedLogic,
   formWithPatternValidation,
   calculatedSelectboxes,
@@ -2450,6 +2451,30 @@ describe('Webform tests', function() {
               });
             }, 250);
           }, 250);
+        }, 250);
+      }).catch(done);
+    });
+
+    it('Should apply submission metadata value in calculation.', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(calculateValueWithSubmissionMetadata).then(() => {
+        const textField = form.getComponent('textField');
+
+        textField.setValue('test value');
+
+        form.submit(false, {});
+
+        setTimeout(() => {
+          expect(form.submission.metadata).to.exist;
+          expect(form.submission.metadata.timezone).to.be.not.empty;
+          expect(form.submission.data.textField).to.be.not.empty;
+          expect(form.submission.data.textArea).to.be.not.empty;
+          expect(form.submission.data.textArea).to.equal(
+            form.submission.data.textField + form.submission.metadata.timezone
+          );
+
+          done();
         }, 250);
       }).catch(done);
     });
