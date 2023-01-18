@@ -437,8 +437,8 @@ describe('DataGrid Panels', () => {
       assert.equal(idArr[0] !== idArr[1], true);
     });
   });
-  
-  it('Should hide label in header for Button component when dataGridLabel is false.', () => {
+
+  it('Should hide label in header for Button component when hideLabel is true.', () => {
     const formElement = document.createElement('div');
     return Formio.createForm(formElement, {
       display: 'form',
