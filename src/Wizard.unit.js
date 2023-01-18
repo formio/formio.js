@@ -36,6 +36,7 @@ import wizardNavigateOrSaveOnEnter from '../test/forms/wizardNavigateOrSaveOnEnt
 import wizardWithFieldsValidationChild from '../test/forms/wizardWithFieldsValidationChild';
 import wizardWithFieldsValidationParent from '../test/forms/wizardWithFieldsValidationParent';
 import nestedConditionalWizard from '../test/forms/nestedConditionalWizard';
+import wizardWithPrefixComps from '../test/forms/wizardWithPrefixComps';
 import wizardPermission from '../test/forms/wizardPermission';
 
 global.requestAnimationFrame = (cb) => cb();
@@ -419,6 +420,56 @@ describe('Wizard tests', () => {
             checkValues();
             done();
           }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should render values for prefix Components', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement, {
+      readOnly: true,
+    });
+    const form = _.cloneDeep(wizardWithPrefixComps.form);
+
+    wizard.setForm(form).then(() => {
+      const clickWizardBtn = (pathPart, clickError) => {
+        const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event('click');
+        btn.dispatchEvent(clickEvent);
+      };
+
+      const checkPage = (pageNumber) => {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+
+      const checkValues = () => {
+        wizard.refs[`wizard-${wizard.id}`].querySelectorAll('input').forEach((element, i)=> {
+          switch (i) {
+            case 0:
+              assert.equal(element.value, 'prefix', 'Should render value');
+              break;
+            case 1:
+              assert.equal(element.value, `page${wizard.page+1}`, 'Should render value');
+              break;
+            case 2:
+              assert.equal(element.value, 'suffix', 'Should render value');
+              break;
+          }
+        });
+      };
+      wizard.submission = _.cloneDeep(wizardWithPrefixComps.submission);
+
+      setTimeout(() => {
+        checkPage(0);
+        checkValues();
+        clickWizardBtn('next');
+
+        setTimeout(() => {
+          checkPage(1);
+          checkValues();
+          done();
         }, 200);
       }, 200);
     })

@@ -897,8 +897,10 @@ export default class Wizard extends Webform {
 
   setValue(submission, flags = {}, ignoreEstablishment) {
     this._submission = submission;
-
-    if (flags && flags.fromSubmission && (this.options.readOnly || this.editMode) && !this.isHtmlRenderMode()) {
+    if (
+      (flags && flags.fromSubmission && (this.options.readOnly || this.editMode) && !this.isHtmlRenderMode()) ||
+      (flags && flags.fromSubmission && (this.prefixComps.length || this.suffixComps.length) && submission._id)
+      ) {
       this._data = submission.data;
     }
 
@@ -995,6 +997,9 @@ export default class Wizard extends Webform {
     // If the next page changes, then make sure to redraw navigation.
     if (currentNextPage !== this.getNextPage()) {
       this.redrawNavigation();
+    }
+    if (this.options.readOnly && (this.prefixComps.length || this.suffixComps.length)) {
+      this.redraw();
     }
   }
 
