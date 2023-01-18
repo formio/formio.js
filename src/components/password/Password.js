@@ -32,4 +32,8 @@ export default class PasswordComponent extends TextFieldComponent {
     info.attr.type = 'password';
     return info;
   }
+
+  get autocompleteDisableAttrName() {
+    return 'new-password';
+  }
 }
