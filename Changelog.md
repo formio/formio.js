@@ -30,6 +30,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4343: Fixes datagrid reorder, remove row and drop new component columns using much space
  - FIO-6001: fixed an issue where oauth action does not work for buttons inside layout/data components
  - FIO-4664: Added tests for conditionals based on Address component
+ - FIO-5853: added setting to disable autocomplete
+ - FIO-5963: preset submission value with value property before request for pdf
+ - FIO-5685: made Data in Select with Entire Object to set as an object
 
 ## 4.15.0-rc.16
 ### Fixed
