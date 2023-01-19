@@ -26,26 +26,31 @@ class CDN {
     return this.libs[lib];
   }
 
+  // Sets a specific library version
   setVersion(lib, version) {
     this.libs[lib] = version;
     this.updateUrls();
   }
 
+  // Sets base CDN url for all libraries
   setBaseUrl(url) {
     this.baseUrl = url;
     this.updateUrls();
   }
 
+  // Allows to override CDN url for a specific library
   setOverrideUrl(lib, url) {
     this.overrides[lib] = url;
     this.updateUrls();
   }
 
+  // Removes override for a specific library
   removeOverride(lib) {
     delete this.overrides[lib];
     this.updateUrls();
   }
 
+  // Removes all overrides
   removeOverrides() {
     this.overrides = {};
     this.updateUrls();
