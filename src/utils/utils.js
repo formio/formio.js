@@ -515,7 +515,13 @@ export function getDateSetting(date) {
     return date.isValid() ? date.toDate() : null;
   }
 
-  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date, 'YYYY-MM-DD') : null;
+  let dateSetting = null;
+  if (typeof date !== 'string') {
+    dateSetting = moment(date);
+  }
+  else if (date.indexOf('moment(') === -1) {
+    dateSetting = moment(date, 'YYYY-MM-DD');
+  }
   if (dateSetting && dateSetting.isValid()) {
     return dateSetting.toDate();
   }
