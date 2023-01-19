@@ -5,6 +5,7 @@
 class CDN {
   constructor(baseUrl) {
     this.baseUrl = baseUrl || 'https://cdn.form.io';
+    this.overrides = {};
     this.libs = {
       'ace': '1.4.12',
       'bootstrap': '4.6.2',
@@ -12,8 +13,8 @@ class CDN {
       'flatpickr': '4.6.8',
       'flatpickr-formio': '4.6.13-formio.1',
       'font-awesome': '4.7.0',
-      'grid': '',
-      'moment-timezone': '',
+      'grid': 'latest',
+      'moment-timezone': 'latest',
       'quill': '1.3.7',
       'shortcut-buttons-flatpickr': '0.4.0',
       'uswds': '2.4.8',
@@ -26,18 +27,49 @@ class CDN {
     return this.libs[lib];
   }
 
+  setVersion(lib, version) {
+    this.libs[lib] = version;
+    this.updateUrls();
+  }
+
   setBaseUrl(url) {
     this.baseUrl = url;
     this.updateUrls();
   }
 
+  setOverrideUrl(lib, url) {
+    this.overrides[lib] = url;
+    this.updateUrls();
+  }
+
+  removeOverride(lib) {
+    delete this.overrides[lib];
+    this.updateUrls();
+  }
+
+  removeOverrides() {
+    this.overrides = {};
+    this.updateUrls();
+  }
+
+  buildUrl(cdnUrl, lib, version) {
+    let url;
+    if (version === 'latest' || version === '') {
+      url = `${cdnUrl}/${lib}`;
+    }
+    else {
+      url = `${cdnUrl}/${lib}/${version}`;
+    }
+    return url;
+  }
+
   updateUrls() {
     for (const lib in this.libs) {
-      if (this.libs[lib] === '') {
-        this[lib] = `${this.baseUrl}/${lib}`;
+      if (lib in this.overrides) {
+        this[lib] = this.buildUrl(this.overrides[lib], lib, this.libs[lib]);
       }
       else {
-        this[lib] = `${this.baseUrl}/${lib}/${this.libs[lib]}`;
+        this[lib] = this.buildUrl(this.baseUrl, lib, this.libs[lib]);
       }
     }
   }
