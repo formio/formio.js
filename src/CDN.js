@@ -17,6 +17,7 @@ class CDN {
       'quill': '1.3.7',
       'shortcut-buttons-flatpickr': '0.4.0',
       'uswds': '2.4.8',
+      'core': ''
     };
     this.updateUrls();
   }
