@@ -26,8 +26,8 @@ export default class Input extends Multivalue {
       lang: this.options.language
     };
 
-    if (this.options.attachMode === 'builder' || this.options.building) {
-      attr.autocomplete = 'off';
+    if (this.options.attachMode === 'builder' || this.options.building || _.get(this.root, 'form.settings.disableAutocomplete')) {
+      attr.autocomplete = this.autocompleteDisableAttrName;
     }
 
     if (this.component.inputMode) {
@@ -59,6 +59,10 @@ export default class Input extends Multivalue {
       content: '',
       attr
     };
+  }
+
+  get autocompleteDisableAttrName() {
+    return 'off';
   }
 
   get maskOptions() {
