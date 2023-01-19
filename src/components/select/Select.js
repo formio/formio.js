@@ -198,10 +198,10 @@ export default class SelectComponent extends ListComponent {
   }
 
   selectValueAndLabel(data) {
-    const value = this.getOptionValue(this.itemValue(data));
+    const value = this.getOptionValue((this.isEntireObjectDisplay() && !this.itemValue(data)) ? data : this.itemValue(data));
     return {
       value,
-      label: this.itemTemplate(data, value)
+      label: this.itemTemplate((this.isEntireObjectDisplay() && !_.isObject(data.data)) ? { data: data } : data, value)
     };
   }
 
@@ -1296,10 +1296,6 @@ export default class SelectComponent extends ListComponent {
       },
 
       object() {
-        if (_.isObject(this.value) && displayEntireObject && !retainObject) {
-          this.value = JSON.stringify(this.value);
-        }
-
         return this;
       },
 
