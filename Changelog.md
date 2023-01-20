@@ -33,6 +33,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5853: added setting to disable autocomplete
  - FIO-5963: preset submission value with value property before request for pdf
  - FIO-5685: made Data in Select with Entire Object to set as an object
+ - FIO-5262: added option not to make new api requests when scrolling through search results
+ - FIO-4551: added unique IDs for components inside nested components
 
 ## 4.15.0-rc.16
 ### Fixed
