@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Field from '../field/Field';
 import Components from '../../Components';
 import NativePromise from 'native-promise-only';
-import { getArrayFromComponentPath, getStringFromComponentPath } from '../../../utils/utils';
+import { getArrayFromComponentPath, getStringFromComponentPath, getRandomComponentId } from '../../../utils/utils';
 
 export default class NestedComponent extends Field {
   static schema(...extend) {
@@ -323,6 +323,7 @@ export default class NestedComponent extends Field {
     options.root = options?.root || this.root || this;
     options.localRoot = this.localRoot;
     options.skipInit = true;
+    component.id = getRandomComponentId();
     if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
       component.shouldIncludeSubFormPath = true;
     }
