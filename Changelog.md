@@ -38,6 +38,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - fixed eslint errors and warnings
  - fixed render tests based on changes in latest PRs
  - FIO-5811: added scroll up if got error in wizard (improved solution)
+ - FIO-5992 added formio/core library
+ - FIO-6220: added some new methods to CDN class
+ - FIO-6621: added rc version determination for cdn url
 
 
 ## 4.15.0-rc.16
