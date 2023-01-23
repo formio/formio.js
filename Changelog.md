@@ -35,6 +35,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5685: made Data in Select with Entire Object to set as an object
  - FIO-5262: added option not to make new api requests when scrolling through search results
  - FIO-4551: added unique IDs for components inside nested components
+ - fixed eslint errors and warnings
+ - fixed render tests based on changes in latest PRs
+ - FIO-5811: added scroll up if got error in wizard (improved solution)
+
 
 ## 4.15.0-rc.16
 ### Fixed
