@@ -1241,7 +1241,7 @@ export default class SelectComponent extends ListComponent {
     return done;
   }
 
-  normalizeSingleValue(value, retainObject) {
+  normalizeSingleValue(value) {
     if (_.isNil(value)) {
       return;
     }
@@ -1262,7 +1262,6 @@ export default class SelectComponent extends ListComponent {
       _.set(submission.metadata.selectData, this.path, this.templateData[value]);
     }
 
-    const displayEntireObject = this.isEntireObjectDisplay();
     const dataType = this.component.dataType || 'auto';
     const normalize = {
       value,
