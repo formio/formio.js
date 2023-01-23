@@ -1668,6 +1668,9 @@ Formio.version = '---VERSION---';
 Formio.pathType = '';
 Formio.events = new EventEmitter();
 Formio.cdn = new CDN();
+if ((Formio.version || '').includes('rc')) {
+  Formio.cdn.setBaseUrl('https://cdn.test-form.io');
+}
 
 if (typeof global !== 'undefined') {
   Formio.addToGlobal(global);
