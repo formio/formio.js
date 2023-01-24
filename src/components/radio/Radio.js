@@ -102,7 +102,7 @@ export default class RadioComponent extends ListComponent {
 
   render() {
     if (!_.isString(this.dataValue)) {
-            this.dataValue = _.toString(this.dataValue);
+       this.dataValue = _.toString(this.dataValue);
     }
     return super.render(this.renderTemplate('radio', {
       input: this.inputInfo,
