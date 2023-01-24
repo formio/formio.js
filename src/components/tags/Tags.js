@@ -82,7 +82,7 @@ export default class TagsComponent extends Input {
       addItemText: (value) => {
         return `${this.t('Press Enter to add')} <b>"${value}"</b>`;
       },
-  
+
       placeholderValue: hasPlaceholder ? this.t(this.component.placeholder, { _userInput: true }) : null,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
