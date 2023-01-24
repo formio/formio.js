@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.17]
+## 4.15.0-rc.17
+### Changed
+ - Updated @formio/bootstrap3@2.12.3-rc.1
+ - Updated @formio/semantic@2.6.1-rc.1
+ - Updated @formio/choices.js@10.2.0
+
 ### Added
  - FIO-5474: added new simple conditionals
 

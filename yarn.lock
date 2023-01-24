@@ -1140,26 +1140,26 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@formio/bootstrap3@^2.12.2":
-  version "2.12.2"
-  resolved "https://registry.yarnpkg.com/@formio/bootstrap3/-/bootstrap3-2.12.2.tgz#19f0e336c845e544cdb6a3c17940d00795608335"
-  integrity sha512-Y1WD/U22HHKRl1MzUt65bXeFHYO9Wlt+wefRqXFrOhIgbmkfTjCx6e0n2b8t/IYz9FUMg+/GTKdqaBrTZgjrTA==
+"@formio/bootstrap3@2.12.3-rc.1":
+  version "2.12.3-rc.1"
+  resolved "https://registry.yarnpkg.com/@formio/bootstrap3/-/bootstrap3-2.12.3-rc.1.tgz#74327fd34002cc9b03b293ab524121a9bde1b690"
+  integrity sha512-Xe3LRv7wdsP3hwkwMeIi87X7u0bZORA+RFwqnXG7gLLH+ur+YF0df6YJURGw3lSMoXvo7eHxaJAx7Vky/F+raQ==
   dependencies:
     resize-observer-polyfill "^1.5.1"
 
-"@formio/choices.js@^9.0.1":
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/@formio/choices.js/-/choices.js-9.0.1.tgz#edc36a2e66b50957dc5f77ff0f4337e39dd61ba4"
-  integrity sha512-+JQRWH0yhaeemVJGE1L4oPe9KPFhipzDlms3Pd31gePXpy8q7Mf3Is54/f0fc88+mWeMjK4GyIhcKIKmuGx5Xw==
+"@formio/choices.js@10.2.0":
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/@formio/choices.js/-/choices.js-10.2.0.tgz#cfd089873ce3fae1e679570b4f471d25b5153593"
+  integrity sha512-dEF+es4yj3pstKHif7Ck14vQCZdN+b1Afojl0ufTmKw5WIjqas1KXEIBBgtsg4eY6bxqFkgEjtxsK4ecvEeZsA==
   dependencies:
-    deepmerge "^4.2.0"
-    fuse.js "^3.4.5"
-    redux "^4.0.4"
+    deepmerge "^4.2.2"
+    fuse.js "^6.6.2"
+    redux "^4.2.0"
 
-"@formio/semantic@^2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@formio/semantic/-/semantic-2.6.0.tgz#b506de32b6d8ec3fecb3ce6c59eca846c99ea858"
-  integrity sha512-RwMEVXkyz+B6RivflrrKIqvvnGR/eZDLQs74u67StcrzO6n3/5D2J8XqTQRSUzQzr5QV6Wq0eZ51z/+mGm6THw==
+"@formio/semantic@2.6.1-rc.1":
+  version "2.6.1-rc.1"
+  resolved "https://registry.yarnpkg.com/@formio/semantic/-/semantic-2.6.1-rc.1.tgz#26d40f52fb5767876443629831c3841d18498ecc"
+  integrity sha512-cvdjSkt1P6crWwZzjUhIK/3+yz6DjLSXxXqoPNvbYZt8tuxMS3cHDhPIy/psKnEXLAMEnGtm9I5i8gOQCcalFg==
 
 "@formio/text-mask-addons@^3.8.0-formio.2":
   version "3.8.0-formio.2"
@@ -3096,7 +3096,7 @@ deep-is@^0.1.3, deep-is@~0.1.3:
   resolved "https://registry.yarnpkg.com/deep-is/-/deep-is-0.1.4.tgz#a6f2dce612fadd2ef1f519b73551f17e85199831"
   integrity sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==
 
-deepmerge@^4.2.0:
+deepmerge@^4.2.2:
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.2.2.tgz#44d2ea3679b8f4d4ffba33f03d865fc1e7bf4955"
   integrity sha512-FJ3UgI4gIl+PHZm53knsuSFpE+nESMr7M4v9QcgB7S63Kj/6WqMiFQJpBBYz1Pt+66bZpP3Q7Lye0Oo9MPKEdg==
@@ -4579,10 +4579,10 @@ functions-have-names@^1.2.2:
   resolved "https://registry.yarnpkg.com/functions-have-names/-/functions-have-names-1.2.3.tgz#0404fe4ee2ba2f607f0e0ec3c80bae994133b834"
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
 
-fuse.js@^3.4.5:
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.6.1.tgz#7de85fdd6e1b3377c23ce010892656385fd9b10c"
-  integrity sha512-hT9yh/tiinkmirKrlv4KWOjztdoZo1mx9Qh4KvWqC7isoXwdUY3PNWUxceF4/qO9R6riA2C29jdTOeQOIROjgw==
+fuse.js@^6.6.2:
+  version "6.6.2"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-6.6.2.tgz#fe463fed4b98c0226ac3da2856a415576dc9a111"
+  integrity sha512-cJaJkxCCxC8qIIcPBF9yGxY0W/tVZS3uEISDxhYIdtk8OL93pe+6Zj7LjCqVV4dzbqcriOZ+kQ/NE4RXZHsIGA==
 
 gensync@^1.0.0-beta.2:
   version "1.0.0-beta.2"
@@ -6645,7 +6645,7 @@ moment-timezone@^0.5.40:
   dependencies:
     moment ">= 2.9.0"
 
-"moment@>= 2.9.0", moment@^2.29.2:
+"moment@>= 2.9.0", moment@^2.29.4:
   version "2.29.4"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
@@ -7699,7 +7699,7 @@ rechoir@^0.6.2:
   dependencies:
     resolve "^1.1.6"
 
-redux@^4.0.4:
+redux@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.2.0.tgz#46f10d6e29b6666df758780437651eeb2b969f13"
   integrity sha512-oSBmcKKIuIR4ME29/AeNUnl5L+hvBq7OaJWzaptTQJAntaPvxIJqfnjbaEiCzzaIz+XmVILfqAM3Ob0aXLPfjA==
