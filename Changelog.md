@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 4.15.0-rc.17]
+### Added
+ - FIO-5474: added new simple conditionals
+
 ### Fixed
  - FIO-5995: Timezones url fixed
  - FIO-6005: Fixing multiple issues with DateTime not showing correct ti
@@ -41,7 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5992 added formio/core library
  - FIO-6220: added some new methods to CDN class
  - FIO-6621: added rc version determination for cdn url
-
+ - FIO-6029: update choices.js
 
 ## 4.15.0-rc.16
 ### Fixed
