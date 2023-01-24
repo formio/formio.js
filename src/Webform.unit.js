@@ -70,6 +70,8 @@ import formWithEventLogicInHiddenComponent from '../test/forms/formWithEventLogi
 import * as FormioUtils from './utils/utils';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
 import optionalSanitize from '../test/forms/optionalSanitize';
+import formWithCheckboxRadioaType from '../test/forms/formWithCheckboxRadioType';
+import formsWithNewSimpleConditions from '../test/forms/formsWithNewSimpleConditions';
 import formWithRadioInsideDataGrid from '../test/forms/formWithRadioInsideDataGrid';
 import formWithCheckboxRadioType from '../test/forms/formWithCheckboxRadioType';
 
@@ -2383,6 +2385,270 @@ describe('Webform tests', function() {
           });
         });
       });
+    });
+  });
+
+  describe('New Simple Conditions', () => {
+    it('Should show field if all conditions are met', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+
+      form.setForm(formsWithNewSimpleConditions.form1).then(() => {
+        const conditionalComponent = form.getComponent('conditionalField');
+        assert.equal(conditionalComponent.visible, false, '(1) Component should be conditionally hidden');
+
+        form.setValue({ data: { number: 11, email: 'test@form.io', radio: 'one' } });
+
+        setTimeout(() => {
+          assert.equal(conditionalComponent.visible, true, '(2) Component should be conditionally visible');
+          const emailComponent = form.getComponent('email');
+
+          emailComponent.setValue('test@form1.io');
+
+          setTimeout(() => {
+            assert.equal(conditionalComponent.visible, false, '(3) Component should be conditionally hidden');
+            done();
+          }, 300);
+        }, 300);
+      }).catch((err) => done(err));
+    });
+
+    it('Should show field if any condition is met', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const formCopy = fastCloneDeep(formsWithNewSimpleConditions.form1);
+      _.set(formCopy, 'components[0].conditional.conjunction', 'any');
+
+      form.setForm(formCopy).then(() => {
+        const conditionalComponent = form.getComponent('conditionalField');
+        assert.equal(conditionalComponent.visible, false, '(1) Component should be conditionally hidden');
+
+        form.setValue({ data: { number: 1100, email: 'test@form.io' } });
+
+        setTimeout(() => {
+          assert.equal(conditionalComponent.visible, true, '(2) Component should be conditionally visible');
+          form.setValue({ data: { number: 10 , email: 'test@form1.io' } });
+
+          setTimeout(() => {
+            assert.equal(conditionalComponent.visible, true, '(3) Component should be conditionally visible');
+            form.setValue({ data: { number: 10000 } });
+
+            setTimeout(() => {
+              assert.equal(conditionalComponent.visible, false, '(4) Component should be conditionally hidden');
+              form.setValue({ data: { radio: 'one' } });
+
+              setTimeout(() => {
+                assert.equal(conditionalComponent.visible, true, '(5) Component should be conditionally visible');
+
+                done();
+              }, 450);
+            }, 400);
+          }, 350);
+        }, 300);
+      }).catch((err) => done(err));
+    });
+
+    it('Should hide field if any condition is met', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const formCopy = fastCloneDeep(formsWithNewSimpleConditions.form1);
+      _.set(formCopy, 'components[0].conditional.show', false);
+      _.set(formCopy, 'components[0].conditional.conjunction', 'any');
+
+      form.setForm(formCopy).then(() => {
+        const conditionalComponent = form.getComponent('conditionalField');
+        assert.equal(conditionalComponent.visible, true, 'Component should be conditionally visible');
+
+        form.setValue({ data: { number: 1100, email: 'test@form.io' } });
+
+        setTimeout(() => {
+          assert.equal(conditionalComponent.visible, false, 'Component should be conditionally hidden');
+          form.setValue({ data: { number: 10 , email: 'test@form1.io' } });
+
+          setTimeout(() => {
+            assert.equal(conditionalComponent.visible, false, 'Component should be conditionally hidden');
+            form.setValue({ data: { number: 10000 } });
+
+            setTimeout(() => {
+              assert.equal(conditionalComponent.visible, true, 'Component should be conditionally visible');
+              form.setValue({ data: { radio: 'one' } });
+
+              setTimeout(() => {
+                assert.equal(conditionalComponent.visible, false, 'Component should be conditionally hidden');
+                done();
+              }, 300);
+            }, 300);
+          }, 300);
+        }, 300);
+      }).catch((err) => done(err));
+    });
+
+    it('Should hide field if all conditions are met', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const formCopy = fastCloneDeep(formsWithNewSimpleConditions.form1);
+      _.set(formCopy, 'components[0].conditional.show', false);
+
+      form.setForm(formCopy).then(() => {
+        const conditionalComponent = form.getComponent('conditionalField');
+        assert.equal(conditionalComponent.visible, true, 'Component should be conditionally visible');
+
+        form.setValue({ data: { number: 11, email: 'test@form.io', radio: 'one' } });
+
+        setTimeout(() => {
+          assert.equal(conditionalComponent.visible, false, 'Component should be conditionally hidden');
+          const emailComponent = form.getComponent('email');
+
+          emailComponent.setValue('test@form1.io');
+
+          setTimeout(() => {
+            assert.equal(conditionalComponent.visible, true, 'Component should be conditionally visible');
+            done();
+          }, 300);
+        }, 300);
+      }).catch((err) => done(err));
+    });
+
+    it('Should show field if all conditions are met (test with different component types + multiple components)', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+
+      form.setForm(formsWithNewSimpleConditions.form2).then(() => {
+        const conditionalComponent = form.getComponent('conditionalField');
+        assert.equal(conditionalComponent.visible, false, 'Component should be conditionally hidden');
+
+        form.setValue({
+          data: {
+            email: 'test@form.io',
+            day: '10/06/2022',
+            survey: {
+              q1: 'true',
+            },
+            number: [100, 25, 350],
+            checkbox: true,
+            selectBoxes: {
+              one: true,
+              two: false,
+              three: false,
+              four: false,
+              five: false,
+            },
+            radio: 'two',
+            tags: 'test,newtag',
+            selectValues: 'one',
+            selectCustomWithValuesOfNumberType: 1,
+            submit: true,
+            currency: 35,
+          }
+        });
+
+        setTimeout(() => {
+          assert.equal(conditionalComponent.visible, true, 'Component should be conditionally visible');
+          const dayComponent = form.getComponent('day');
+
+          dayComponent.setValue('8/09/2022');
+
+          setTimeout(() => {
+            assert.equal(conditionalComponent.visible, false, 'Component should be conditionally hidden');
+            done();
+          }, 300);
+        }, 300);
+      }).catch((err) => done(err));
+    });
+
+    it('Should show/hide field inside datagrid rows', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+
+      form.setForm(formsWithNewSimpleConditions.form4).then(() => {
+        const dataGrid = form.getComponent('dataGrid');
+
+        dataGrid.setValue([
+          { number: 50 },
+          { number: 55 },
+          { number: 12 },
+          { number: 105 },
+        ]);
+
+        setTimeout(() => {
+          const expectedValues = {
+            '0': true,
+            '1': false,
+            '2': true,
+            '3': false
+          };
+
+          _.each(dataGrid.rows, (row, index) => {
+            assert.equal(row['textField'].visible, expectedValues[`${index}`], `Component should be conditionally ${expectedValues[`${index}`] ? 'visible': 'hidden'} in row ${index}`);
+          });
+          done();
+        }, 300);
+      }).catch((err) => done(err));
+    });
+
+    it('Should set component value through logic triggered by simple condition', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+
+      form.setForm(formsWithNewSimpleConditions.form3).then(() => {
+        const componentWithLogic = form.getComponent('fieldWithLogic');
+        assert.equal(componentWithLogic.isEmpty(), true, 'Component should be empty');
+
+        form.setValue({
+          data: {
+            number: 2,
+            radio: 'two'
+          }
+        });
+
+        setTimeout(() => {
+          assert.equal(componentWithLogic.dataValue, 'logic works', 'Component should have value set by logic');
+          done();
+        }, 300);
+      }).catch((err) => done(err));
+    });
+
+    it('Should show field if all conditions are met (test all operators)', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+
+      form.setForm(formsWithNewSimpleConditions.form5).then(() => {
+        const conditionalComponent = form.getComponent('conditionalField');
+        assert.equal(conditionalComponent.visible, false, '(1) Component should be conditionally hidden');
+
+        form.setValue({ data: {
+          dateTime: '2022-09-29T12:00:00+03:00',
+          day: '09/29/2022',
+          dateTime1: '2022-09-29T12:00:00+03:00',
+          day1: '09/29/2022',
+          url: 'portal.form.io',
+          number: 100,
+          currency: 100,
+          textField1: 'some test text',
+          day2: '09/29/2022',
+          select: '',
+          radio: 'one',
+          dateTime3: '2022-09-12T12:00:00+03:00',
+          textArea: 'test',
+          textField2: 'test2',
+          number2: [100],
+          currency2: 100,
+          email: 'some@form.io',
+          url2: 'portal.form.io',
+        } });
+
+        setTimeout(() => {
+          assert.equal(conditionalComponent.visible, true, '(2) Component should be conditionally visible');
+          const selectComponent = form.getComponent('select');
+
+          selectComponent.setValue('one');
+
+          setTimeout(() => {
+            assert.equal(conditionalComponent.visible, false, '(3) Component should be conditionally hidden');
+            done();
+          }, 300);
+        }, 300);
+      }).catch((err) => done(err));
     });
   });
 
