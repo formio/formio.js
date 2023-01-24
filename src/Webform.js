@@ -805,6 +805,7 @@ export default class Webform extends NestedDataComponent {
         }
         this.submissionSet = true;
         this.triggerChange(flags);
+        this.emit('beforeSetSubmission', submission);
         this.setValue(submission, flags);
         return this.submissionReadyResolve(submission);
       },
