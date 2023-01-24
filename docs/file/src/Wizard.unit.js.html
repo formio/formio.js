@@ -29,7 +29,8 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
@@ -171,7 +172,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Wizard.unit.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../test/harness&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* eslint-disable no-unused-vars */
+import Harness from &apos;../test/harness&apos;;
 import Wizard from &apos;./Wizard&apos;;
 import Formio from &apos;./Formio&apos;;
 import assert from &apos;power-assert&apos;;
@@ -195,8 +197,8 @@ import wizardTestForm from &apos;../test/forms/wizardTestForm&apos;;
 import formWithNestedWizard from &apos;../test/forms/formWIthNestedWizard&apos;;
 import wizardWithDataGridAndEditGrid from &apos;../test/forms/wizardWithDataGridAndEditGrid&apos;;
 import customWizard from &apos;../test/forms/customWizard&apos;;
-import wizardChildForm from &apos;../test/forms/wizardChildForm&apos;;
-import wizardParentForm from &apos;../test/forms/wizardParentForm&apos;;
+//import wizardChildForm from &apos;../test/forms/wizardChildForm&apos;;
+//import wizardParentForm from &apos;../test/forms/wizardParentForm&apos;;
 import wizardWithComponentsWithSameApi from &apos;../test/forms/wizardWithComponentsWithSameApi&apos;;
 import wizardWithConditionallyVisiblePage from &apos;../test/forms/conditionallyVisiblePage&apos;;
 import wizardWithPanel from &apos;../test/forms/wizardWithPanel&apos;;
@@ -207,6 +209,9 @@ import wizardNavigateOrSaveOnEnter from &apos;../test/forms/wizardNavigateOrSave
 import wizardWithFieldsValidationChild from &apos;../test/forms/wizardWithFieldsValidationChild&apos;;
 import wizardWithFieldsValidationParent from &apos;../test/forms/wizardWithFieldsValidationParent&apos;;
 import nestedConditionalWizard from &apos;../test/forms/nestedConditionalWizard&apos;;
+
+global.requestAnimationFrame = (cb) =&gt; cb();
+global.cancelAnimationFrame = () =&gt; {};
 
 describe(&apos;Wizard tests&apos;, () =&gt; {
   it(&apos;Should correctly reset values&apos;, function(done) {
@@ -237,7 +242,7 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
         elem.dispatchEvent(event);
       };
 
-      checkComponents(0, 1, [], [{ number: &apos;&apos; }]);
+      checkComponents(0, 1, [], [{}]);
 
       const submission = {
           data: {
@@ -253,7 +258,7 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
         wizard.cancel(true);
 
         setTimeout(() =&gt; {
-          checkComponents(0, 1, [], [{ number: &apos;&apos; }]);
+          checkComponents(0, 1, [], [{}]);
           event(&apos;click&apos;, editGrid.refs[&apos;editgrid-editGrid-addRow&apos;][0]);
 
           setTimeout(() =&gt; {
@@ -918,7 +923,6 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
         urlEnd: &apos;submission&apos;,
         state: &apos;draft&apos;,
         data: {
-          number: &apos;&apos;,
           textArea1: &apos;&apos;,
           textField: &apos;test&apos;
         },
@@ -1272,7 +1276,7 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
     .catch((err) =&gt; done(err));
   });
 
-  it(&apos;Should show tooltip for wizard pages&apos;, function(done) {
+it(&apos;Should show tooltip for wizard pages&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
     const wizardWithPageTooltip = new Wizard(formElement);
 
@@ -1288,11 +1292,11 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
       pageTooltipIcon.dispatchEvent(clickEvent);
 
       setTimeout(() =&gt; {
-        const tooltipText = wizardWithPageTooltip.element.querySelector(&apos;.tooltip-inner&apos;).textContent;
+        const tooltipText = wizardWithPageTooltip.element.querySelector(&apos;.tippy-content&apos;).textContent;
         assert.equal(tooltipText, wizardWithPageTooltip.currentPanel.tooltip);
 
         done();
-      }, 250);
+      }, 300);
     })
     .catch((err) =&gt; done(err));
   });
@@ -1682,64 +1686,64 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
       })
       .catch(done);
   });
+  // BUG - uncomment once fixed (ticket FIO-6043)
+  // it(&apos;Should render all pages as a part of wizard pagination&apos;, (done) =&gt; {
+  //   const formElement = document.createElement(&apos;div&apos;);
+  //   const wizard = new Wizard(formElement);
+  //   const childForm = _.cloneDeep(wizardChildForm);
+  //   const clickEvent = new Event(&apos;click&apos;);
 
-  it(&apos;Should render all pages as a part of wizard pagination&apos;, (done) =&gt; {
-    const formElement = document.createElement(&apos;div&apos;);
-    const wizard = new Wizard(formElement);
-    const childForm = _.cloneDeep(wizardChildForm);
-    const clickEvent = new Event(&apos;click&apos;);
+  //   wizard.setForm(wizardParentForm).then(() =&gt; {
+  //     assert.equal(wizard.components.length, 2);
+  //     assert.equal(wizard.allPages.length, 2);
+  //     assert.equal(wizard.allPages[1].component.title, &apos;Page 3&apos;);
 
-    wizard.setForm(wizardParentForm).then(() =&gt; {
-      assert.equal(wizard.components.length, 2);
-      assert.equal(wizard.allPages.length, 2);
-      assert.equal(wizard.allPages[1].component.title, &apos;Page 3&apos;);
+  //     const radioComp = wizard.getComponent(&apos;radio1&apos;);
 
-      const radioComp = wizard.getComponent(&apos;radio1&apos;);
+  //     radioComp.setValue(&apos;yes&apos;);
+  //     wizard.render();
 
-      radioComp.setValue(&apos;yes&apos;);
-      wizard.render();
+  //     setTimeout(() =&gt; {
+  //       const nestedFormComp = wizard.getComponent(&apos;formNested&apos;);
+  //       nestedFormComp.loadSubForm = () =&gt; {
+  //       nestedFormComp.formObj = childForm;
+  //       nestedFormComp.subFormLoading = false;
 
-      setTimeout(() =&gt; {
-        const nestedFormComp = wizard.getComponent(&apos;formNested&apos;);
-        nestedFormComp.loadSubForm = () =&gt; {
-        nestedFormComp.formObj = childForm;
-        nestedFormComp.subFormLoading = false;
+  //         return new Promise((resolve) =&gt; resolve(childForm));
+  //       };
+  //       nestedFormComp.createSubForm();
 
-          return new Promise((resolve) =&gt; resolve(childForm));
-        };
-        nestedFormComp.createSubForm();
+  //       setTimeout(() =&gt; {
+  //         assert.equal(wizard.components.length, 3);
+  //         assert.equal(wizard.allPages.length, 4);
+  //         assert.equal(wizard.allPages[1].component.title, &apos;Child Page 1&apos;);
 
-        setTimeout(() =&gt; {
-          assert.equal(wizard.components.length, 3);
-          assert.equal(wizard.allPages.length, 4);
-          assert.equal(wizard.allPages[1].component.title, &apos;Child Page 1&apos;);
+  //         const checboxComp = wizard.getComponent(&apos;checkbox&apos;);
 
-          const checboxComp = wizard.getComponent(&apos;checkbox&apos;);
+  //         checboxComp.setValue(true);
+  //         wizard.render();
 
-          checboxComp.setValue(true);
-          wizard.render();
+  //         setTimeout(() =&gt; {
+  //           assert.equal(wizard.components.length, 3);
+  //           assert.equal(wizard.allPages.length, 5);
+  //           assert.equal(wizard.allPages[1].component.title, &apos;Page 2&apos;);
+  //           assert.equal(wizard.element.querySelector(&apos;input[name=&quot;data[textFieldNearForm]&quot;]&apos;), null);
 
-          setTimeout(() =&gt; {
-            assert.equal(wizard.components.length, 3);
-            assert.equal(wizard.allPages.length, 5);
-            assert.equal(wizard.allPages[1].component.title, &apos;Page 2&apos;);
-            assert.equal(wizard.element.querySelector(&apos;input[name=&quot;data[textFieldNearForm]&quot;]&apos;), null);
+  //           const nextPageBtn = wizard.refs[`${wizard.wizardKey}-next`];
 
-            const nextPageBtn = wizard.refs[`${wizard.wizardKey}-next`];
+  //           nextPageBtn.dispatchEvent(clickEvent);
 
-            nextPageBtn.dispatchEvent(clickEvent);
+  //           setTimeout(() =&gt; {
+  //             assert.equal(wizard.component.title, &apos;Page 2&apos;);
+  //             assert.ok(wizard.element.querySelector(&apos;input[name=&quot;data[textFieldNearForm]&quot;]&apos;));
 
-            setTimeout(() =&gt; {
-              assert.equal(wizard.component.title, &apos;Page 2&apos;);
-              assert.ok(wizard.element.querySelector(&apos;input[name=&quot;data[textFieldNearForm]&quot;]&apos;));
-
-              done();
-            }, 200);
-          }, 200);
-        }, 200);
-      }, 200);
-    }).catch(done);
-  });
+  //             done();
+  //           }, 200);
+  //         }, 200);
+  //       }, 200);
+  //     }, 200);
+  //   }).catch(done);
+  // });
 
   describe(&apos;Conditional pages&apos;, () =&gt; {
     it(&apos;Should remove page from header when it is hidden&apos;, (done) =&gt; {

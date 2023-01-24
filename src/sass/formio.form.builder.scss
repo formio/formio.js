@@ -151,7 +151,7 @@
 .builder-sidebar {
   &_scroll {
     position: sticky;
-    top: 30px;
+    top: 15px;
     max-height: 100vh;
     overflow-y: auto;
   }
@@ -170,6 +170,28 @@
 
 .formio-wizard-position {
   position: relative;
+}
+
+.wizard-page-container {
+  display: flex;
+}
+
+.wizard-pages{
+  display: flex;
+  list-style-type: none;
+  margin-bottom: 0;
+  padding-left: 0;
+  li:not(:first-child) {
+    margin-left: 20px;
+  }
+}
+
+.wizard-add-page{
+  margin-left: 20px;
+}
+
+.gu-mirror {
+  list-style-type: none;
 }
 
 .formio-settings-help {

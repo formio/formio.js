@@ -614,7 +614,7 @@ export function shouldLoadZones(timezone) {
  *
  * @return {Promise<any> | *}
  */
-export function loadZones(timezone) {
+export function loadZones(url, timezone) {
   if (timezone && !shouldLoadZones(timezone)) {
     // Return non-resolving promise.
     return new NativePromise(_.noop);
@@ -623,9 +623,8 @@ export function loadZones(timezone) {
   if (moment.zonesPromise) {
     return moment.zonesPromise;
   }
-  return moment.zonesPromise = fetch(
-    'https://cdn.form.io/moment-timezone/data/packed/latest.json',
-  ).then(resp => resp.json().then(zones => {
+  return moment.zonesPromise = fetch(url)
+  .then(resp => resp.json().then(zones => {
     moment.tz.load(zones);
     moment.zonesLoaded = true;
 
@@ -648,6 +647,9 @@ export function loadZones(timezone) {
  */
 export function momentDate(value, format, timezone) {
   const momentDate = moment(value);
+  if (!timezone) {
+    return momentDate;
+  }
   if (timezone === 'UTC') {
     timezone = 'Etc/UTC';
   }
@@ -665,12 +667,12 @@ export function momentDate(value, format, timezone) {
  * @param timezone
  * @return {string}
  */
-export function formatDate(value, format, timezone, flatPickrInputFormat) {
+export function formatDate(timezonesUrl, value, format, timezone, flatPickrInputFormat) {
   const momentDate = moment(value, flatPickrInputFormat || undefined);
   if (timezone === currentTimezone()) {
     // See if our format contains a "z" timezone character.
     if (format.match(/\s(z$|z\s)/)) {
-      loadZones();
+      loadZones(timezonesUrl);
       if (moment.zonesLoaded) {
         return momentDate.tz(timezone).format(convertFormatToMoment(format));
       }
@@ -688,7 +690,7 @@ export function formatDate(value, format, timezone, flatPickrInputFormat) {
   }
 
   // Load the zones since we need timezone information.
-  loadZones();
+  loadZones(timezonesUrl);
   if (moment.zonesLoaded && timezone) {
     return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
   }
@@ -706,7 +708,7 @@ export function formatDate(value, format, timezone, flatPickrInputFormat) {
  * @param timezone
  * @return {string}
  */
-export function formatOffset(formatFn, date, format, timezone) {
+export function formatOffset(timezonesUrl, formatFn, date, format, timezone) {
   if (timezone === currentTimezone()) {
     return formatFn(date, format);
   }
@@ -715,7 +717,7 @@ export function formatOffset(formatFn, date, format, timezone) {
   }
 
   // Load the zones since we need timezone information.
-  loadZones();
+  loadZones(timezonesUrl);
   if (moment.zonesLoaded) {
     const offset = offsetDate(date, timezone);
     return `${formatFn(offset.date, format)} ${offset.abbr}`;

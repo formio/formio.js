@@ -4,10 +4,76 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.15]
+## [Unreleased: 4.15.0-rc.17]
+### Fixed
+ - FIO-5995: Timezones url fixed
+ - FIO-6005: Fixing multiple issues with DateTime not showing correct ti
+ - FIO-5750: Fixing timezones in emails.
+ - FIO-6088: Fixing datetime issues with the calendar widget.
+ - FIO-5937: fixed an issue where validation errors donot keep for panel child components after expanding collapsible panel
+ - FIO-6084: fixed CalendarWidget locale loading
+ - FIO-5511: ensure contextual row data is validated correctly for nested components
+ - FIO-5369: fixed an issue where clicking on the tooltip enables the checkboxes on the component settings page
+ - FIO-5246: fixed unique validation for submission with draft state
+ - FIO-5335: fixed an issue where logic triggered by events does not work for hidden nested components
+ - FIO-5288: fixed an issue where existing resource not saving property name correctly
+ - FIO-4956: fixed an issue where on view submission tab long text values not split up by spaces are displayed in one line
+ - FIO-5408 added ability to drag the pages icons
+ - Reverts FIO-4705: fixed an issue with bad request error in console when render pdf form
+ - FIO-5460: fixed an issue where blur and focus events are not fired for select and address components
+ - FIO-5811: added scrollup to button next wizard if has error
+ - FIO-5904: fixed saving data for Components outside of Wizards
+ - FIO-3295: fixed an issue where data grid group rows were not hidden on the row click when bootstrap 4 is used
+ - FIO-5785: Fixed Select component submission showing id instead of template for URL data source
+ - FIO-6078: Hidden Select Boxes validation do not prevent submission
+ - FIO-6100: Provide submission object to value calculation (eg. To relate to submission metadata in calculation)
+ - FIO-4343: Fixes datagrid reorder, remove row and drop new component columns using much space
+ - FIO-6001: fixed an issue where oauth action does not work for buttons inside layout/data components
+ - FIO-4664: Added tests for conditionals based on Address component
+ - FIO-5853: added setting to disable autocomplete
+ - FIO-5963: preset submission value with value property before request for pdf
+ - FIO-5685: made Data in Select with Entire Object to set as an object
+ - FIO-5262: added option not to make new api requests when scrolling through search results
+ - FIO-4551: added unique IDs for components inside nested components
+ - fixed eslint errors and warnings
+ - fixed render tests based on changes in latest PRs
+ - FIO-5811: added scroll up if got error in wizard (improved solution)
+ - FIO-5992 added formio/core library
+ - FIO-6220: added some new methods to CDN class
+ - FIO-6621: added rc version determination for cdn url
+
+
+## 4.15.0-rc.16
+### Fixed
+ - FIO-5627: fixed an issue where manual input does not work for date with full month format
+ - CDN Updates
+ - FIO-5784: allow quick inline embed to pull in premium components from a deployed environment
+ - flatpickr-vpat replaced with flatpickr-formio
+ - FIO-5999: flatpickrType replaced with flatpickr-formio
+ - FIO-5784: fixed adding links for libs
+ - FIO-5765: fixed render tests for Bootstrap 5 in html mode
+ - FIO-5765: fixed tests
+
+## 4.15.0-rc.15
 ### Fixed
  - Revert change to always execute apis on pdf output.
  - FIO-5431: Fixed Quill editor losing data after switching to source view and back.
+ - FIO-5674: fixed broken positioning of the data table on the submission
+ - FIO-4194: fixed submit button for PDF in FVP
+ - FIO-5430: Fixed datetime not being initialized when there are multiple ones on the form while translations are enabled
+ - FIO-4777: Fixed issue where a loader icon is showing when file component is used in PDF first forms.
+ - FIO-4777: added test
+ - FIO-5697: fixed PDF is not showing borders in Data Grids
+ - FIO-4824: added overflow property to the datagrid component
+ - FIO-5792: fixed Caret position for ACE editor
+ - FIO-5233: fixed an issue where users in different timezones have diff
+ - FIO-4824: fixed tests for datagrid component
+ - FIO-5784: Allow Quick Inline Embed to pull Premium
+ - FIO-5895: fixed an issue where value of radio component inside data grid disappears after submission
+ - FIO-5872: fixed an issue where Wizard page navigation buttons are centered in some templates
+ - FIO-5628: fixed an issue where datetime component value is changed on blur when time is disabled
+ - FIO-5949: fixed data presentation on View submission
+ - FIO-4447: Bootstrap 5 support
 
 ## 4.15.0-rc.14
 ### Added

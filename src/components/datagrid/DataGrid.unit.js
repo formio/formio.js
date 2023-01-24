@@ -12,11 +12,14 @@ import {
   comp3,
   comp4,
   comp5,
+  comp6,
+  comp7,
   withDefValue,
- // withRowGroupsAndDefValue,
+  withRowGroupsAndDefValue,
   modalWithRequiredFields,
   withConditionalFieldsAndValidations,
-  withLogic
+  withLogic,
+  withCollapsibleRowGroups
 } from './fixtures';
 
 describe('DataGrid Component', () => {
@@ -104,6 +107,17 @@ describe('DataGrid Component', () => {
     });
   });
 
+  it('Should build a data grid component with formio-component-datagrid class property', done => {
+    Harness.testCreate(DataGridComponent, comp6).then((component) => {
+      const element = component.element.component.components[0].element;
+      setTimeout(() => {
+        assert.deepEqual(element.className.includes('formio-component-datagrid'), true);
+        done();
+      }, 200);
+    }, done)
+    .catch(done);
+  });
+
   it('Should not skip validation on input nested components', done => {
     Harness.testCreate(DataGridComponent, comp1)
       .then(cmp => {
@@ -130,31 +144,29 @@ describe('DataGrid Component', () => {
     });
   });
 
-  //TOFIX
-  // it('Should be able to add another row.', () => {
-  //   return Harness.testCreate(DataGridComponent, comp1).then((component) => {
-  //     Harness.testSetGet(component, [
-  //       {
-  //         make: 'Jeep',
-  //         model: 'Wrangler',
-  //         year: 1997
-  //       }
-  //     ]);
-  //     component.addRow();
-  //     assert.deepEqual(component.getValue(), [
-  //       {
-  //         make: 'Jeep',
-  //         model: 'Wrangler',
-  //         year: 1997
-  //       },
-  //       {
-  //         make: '',
-  //         model: '',
-  //         year: ''
-  //       }
-  //     ]);
-  //   });
-  // });
+  it('Should be able to add another row.', () => {
+    return Harness.testCreate(DataGridComponent, comp1).then((component) => {
+      Harness.testSetGet(component, [
+        {
+          make: 'Jeep',
+          model: 'Wrangler',
+          year: 1997
+        }
+      ]);
+      component.addRow();
+      assert.deepEqual(component.getValue(), [
+        {
+          make: 'Jeep',
+          model: 'Wrangler',
+          year: 1997
+        },
+        {
+          make: '',
+          model: '',
+        }
+      ]);
+    });
+  });
 
   it('Should allow provide default value', function(done) {
     try {
@@ -173,26 +185,26 @@ describe('DataGrid Component', () => {
       done(err);
     }
   });
-  //TOFIX
-  // it('Should allow provide default value in row-groups model', function(done) {
-  //   try {
-  //     Harness.testCreate(DataGridComponent, withRowGroupsAndDefValue)
-  //       .then((datagrid) => {
-  //         expect(datagrid.getValue()).to.deep.equal([
-  //           { name: 'Alex', age: 1 },
-  //           { name: 'Bob',  age: 2 },
-  //           { name: 'Conny', age: 3 },
-  //           { name: '', age: '' },
-  //           { name: '', age: '' }
-  //         ]);
-  //         done();
-  //       }, done)
-  //       .catch(done);
-  //   }
-  //   catch (err) {
-  //     done(err);
-  //   }
-  // });
+
+  it('Should allow provide default value in row-groups model', function(done) {
+    try {
+      Harness.testCreate(DataGridComponent, withRowGroupsAndDefValue)
+        .then((datagrid) => {
+          expect(datagrid.getValue()).to.deep.equal([
+            { name: 'Alex', age: 1 },
+            { name: 'Bob',  age: 2 },
+            { name: 'Conny', age: 3 },
+            { name: '' },
+            { name: '' }
+          ]);
+          done();
+        }, done)
+        .catch(done);
+    }
+    catch (err) {
+      done(err);
+    }
+  });
 
   it('Should not cause setValue loops when logic within hidden component is set', function(done) {
     Formio.createForm(document.createElement('div'), withLogic)
@@ -209,6 +221,27 @@ describe('DataGrid Component', () => {
           expect(spyFunc.callCount).to.be.lessThan(4);
           done();
         }, 1500);
+      });
+  });
+
+  it('Should collapse group rows on group header click', (done) => {
+    Formio.createForm(document.createElement('div'), withCollapsibleRowGroups)
+      .then((form) => {
+        const groupHeadersRefName= 'datagrid-dataGrid-group-header';
+        const datagrid = form.getComponent('dataGrid');
+        assert.equal(datagrid.refs[groupHeadersRefName][0]?.classList?.contains('collapsed'), false);
+        assert.equal(datagrid.refs.chunks[0][0].classList?.contains('hidden'), false);
+        assert.equal(datagrid.refs.chunks[0][1].classList?.contains('hidden'), false);
+
+        const clickEvent = new Event('click');
+        datagrid.refs[groupHeadersRefName][0].dispatchEvent(clickEvent);
+        setTimeout(() => {
+          const collapedGroupRows = datagrid.refs.chunks[0] || [];
+          assert.equal(datagrid.refs[groupHeadersRefName][0]?.classList?.contains('collapsed'), true);
+          assert.equal(collapedGroupRows[0]?.classList?.contains('hidden'), true);
+          assert.equal(collapedGroupRows[1]?.classList?.contains('hidden'), true);
+          done();
+        }, 300);
       });
   });
 
@@ -390,6 +423,17 @@ describe('DataGrid Panels', () => {
           lastName: ''
         }
       ]);
+    });
+  });
+
+  it('Should have unique IDs inside data grid', () => {
+    return Harness.testCreate(DataGridComponent, comp7).then((component) => {
+      component.addRow();
+      const idArr = [];
+      component.components.forEach((row, i) => {
+        idArr[i] = row.element.component.components[0].id;
+      });
+      assert.equal(idArr[0] !== idArr[1], true);
     });
   });
 });

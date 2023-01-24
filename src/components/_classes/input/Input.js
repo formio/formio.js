@@ -1,5 +1,5 @@
 import Multivalue from '../multivalue/Multivalue';
-import { delay, convertStringToHTMLElement } from '../../../utils/utils';
+import { convertStringToHTMLElement } from '../../../utils/utils';
 import Widgets from '../../../widgets';
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
@@ -26,8 +26,8 @@ export default class Input extends Multivalue {
       lang: this.options.language
     };
 
-    if (this.options.attachMode === 'builder' || this.options.building) {
-      attr.autocomplete = 'off';
+    if (this.options.attachMode === 'builder' || this.options.building || _.get(this.root, 'form.settings.disableAutocomplete')) {
+      attr.autocomplete = this.autocompleteDisableAttrName;
     }
 
     if (this.component.inputMode) {
@@ -59,6 +59,10 @@ export default class Input extends Multivalue {
       content: '',
       attr
     };
+  }
+
+  get autocompleteDisableAttrName() {
+    return 'off';
   }
 
   get maskOptions() {
@@ -316,38 +320,5 @@ export default class Input extends Multivalue {
       }
     }
     this.refs.input = [];
-  }
-
-  addFocusBlurEvents(element) {
-    this.addEventListener(element, 'focus', () => {
-      if (this.root.focusedComponent !== this) {
-        if (this.root.pendingBlur) {
-          this.root.pendingBlur();
-        }
-
-        this.root.focusedComponent = this;
-
-        this.emit('focus', this);
-      }
-      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
-        this.root.pendingBlur.cancel();
-        this.root.pendingBlur = null;
-      }
-    });
-    this.addEventListener(element, 'blur', () => {
-      this.root.pendingBlur = delay(() => {
-        this.emit('blur', this);
-        if (this.component.validateOn === 'blur') {
-          this.root.triggerChange({ fromBlur: true }, {
-            instance: this,
-            component: this.component,
-            value: this.dataValue,
-            flags: { fromBlur: true }
-          });
-        }
-        this.root.focusedComponent = null;
-        this.root.pendingBlur = null;
-      });
-    });
   }
 }

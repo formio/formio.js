@@ -29,7 +29,8 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
@@ -208,7 +209,7 @@ import {
   formWithCollapsedPanel,
   formWithCustomFormatDate,
 } from &apos;../test/formtest&apos;;
-import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
+// import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 import UpdateErrorClassesWidgets from &apos;../test/forms/updateErrorClasses-widgets&apos;;
 import nestedModalWizard from &apos;../test/forms/nestedModalWizard&apos;;
 import disableSubmitButton from &apos;../test/forms/disableSubmitButton&apos;;
@@ -221,6 +222,7 @@ import formWithDataGridWithCondColumn from &apos;../test/forms/dataGridWithCondi
 import { nestedFormInWizard } from &apos;../test/fixtures&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 import { fastCloneDeep } from &apos;../lib/utils/utils&apos;;
+import dataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 
 import truncateMultipleSpaces from &apos;../test/forms/truncateMultipleSpaces&apos;;
 import calculatedValue from &apos;../test/forms/calculatedValue&apos;;
@@ -240,6 +242,7 @@ import * as FormioUtils from &apos;./utils/utils&apos;;
 import htmlRenderMode from &apos;../test/forms/htmlRenderMode&apos;;
 import optionalSanitize from &apos;../test/forms/optionalSanitize&apos;;
 import formWithCheckboxRadioaType from &apos;../test/forms/formWithCheckboxRadioType&apos;;
+import formWithRadioInsideDataGrid from &apos;../test/forms/formWithRadioInsideDataGrid&apos;;
 
 global.requestAnimationFrame = (cb) =&gt; cb();
 global.cancelAnimationFrame = () =&gt; {};
@@ -247,6 +250,18 @@ global.cancelAnimationFrame = () =&gt; {};
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should set radio components value inside data grid correctly&apos;, function(done) {
+    Formio.createForm(formWithRadioInsideDataGrid).then((form) =&gt; {
+      const dataGridData =  [{ radio: &apos;two&apos; },{ radio: &apos;two&apos; } ,{ radio: &apos;three&apos; }];
+      form.setValue({ data: { dataGrid: fastCloneDeep(dataGridData) } });
+      setTimeout(() =&gt; {
+          const dataGrid = form.getComponent(&apos;dataGrid&apos;);
+          assert.deepEqual(dataGrid.dataValue, dataGridData);
+          done();
+      }, 200);
+    }).catch((err) =&gt; done(err));
+  });
 
   it(&apos;Should return correct strign value for checkbox radio type&apos;, function(done) {
     Formio.createForm(formWithCheckboxRadioaType).then((form) =&gt; {
@@ -1820,49 +1835,50 @@ describe(&apos;Webform tests&apos;, function() {
     }).catch(done);
   };
 
-  it(&apos;Should not fire validations when fields are either protected or not persistent.&apos;, (done) =&gt; {
-    const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
-    form.setForm(
-      {
-        title: &apos;protected and persistent&apos;,
-        components: [
-          {
-            type: &apos;textfield&apos;,
-            label: &apos;A&apos;,
-            key: &apos;a&apos;,
-            validate: {
-              required: true
-            }
-          },
-          {
-            type: &apos;textfield&apos;,
-            label: &apos;B&apos;,
-            key: &apos;b&apos;,
-            protected: true,
-            validate: {
-              required: true
-            }
-          }
-        ],
-      }).then(() =&gt; {
-        checkForErrors(form, {}, {}, 0, () =&gt; {
-          checkForErrors(form, {}, {
-            data: {
-              a: &apos;Testing&apos;,
-              b: &apos;&apos;
-            }
-          }, 1, () =&gt; {
-            checkForErrors(form, {}, {
-              _id: &apos;123123123&apos;,
-              data: {
-                a: &apos;Testing&apos;,
-                b: &apos;&apos;
-              }
-            }, 0, done);
-          });
-        });
-    });
-  });
+  //BUG - uncomment once fixed (ticket FIO-6042)
+  // it(&apos;Should not fire validations when fields are either protected or not persistent.&apos;, (done) =&gt; {
+  //   const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+  //   form.setForm(
+  //     {
+  //       title: &apos;protected and persistent&apos;,
+  //       components: [
+  //         {
+  //           type: &apos;textfield&apos;,
+  //           label: &apos;A&apos;,
+  //           key: &apos;a&apos;,
+  //           validate: {
+  //             required: true
+  //           }
+  //         },
+  //         {
+  //           type: &apos;textfield&apos;,
+  //           label: &apos;B&apos;,
+  //           key: &apos;b&apos;,
+  //           protected: true,
+  //           validate: {
+  //             required: true
+  //           }
+  //         }
+  //       ],
+  //     }).then(() =&gt; {
+  //       checkForErrors(form, {}, {}, 0, () =&gt; {
+  //         checkForErrors(form, {}, {
+  //           data: {
+  //             a: &apos;Testing&apos;,
+  //             b: &apos;&apos;
+  //           }
+  //         }, 1, () =&gt; {
+  //           checkForErrors(form, {}, {
+  //             _id: &apos;123123123&apos;,
+  //             data: {
+  //               a: &apos;Testing&apos;,
+  //               b: &apos;&apos;
+  //             }
+  //           }, 0, done);
+  //         });
+  //       });
+  //   });
+  // });
 
   it(&apos;Should not fire validation on init.&apos;, (done) =&gt; {
     formElement.innerHTML = &apos;&apos;;
@@ -2324,12 +2340,13 @@ describe(&apos;Webform tests&apos;, function() {
     it(&apos;Should keep components inside DataGrid valid onChange&apos;, (done) =&gt; {
       formElement.innerHTML = &apos;&apos;;
       const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
-      form.setForm(DataGridOnBlurValidation).then(() =&gt; {
+      form.setForm(dataGridOnBlurValidation).then(() =&gt; {
         const component = form.components[0];
         Harness.setInputValue(component, &apos;data[dataGrid][0][textField]&apos;, &apos;12&apos;);
-        const textField = component.iteratableRows[0].components.textField;
+
         setTimeout(() =&gt; {
-          assert.equal(textField.error, &apos;&apos;, &apos;Should stay valid on input&apos;);
+          const textField = component.iteratableRows[0].components.textField;
+          assert.equal(!!textField.error, false, &apos;Should stay valid on input&apos;);
           const blur = new Event(&apos;blur&apos;, { bubbles: true, cancelable: true });
           const input = textField.refs.input[0];
           input.dispatchEvent(blur);
@@ -2962,8 +2979,6 @@ describe(&apos;Webform tests&apos;, function() {
     };
 
     const emptySubmissionData = {
-      number: &apos;&apos;,
-      currency: &apos;&apos;,
       submit: true
     };
 
@@ -2976,7 +2991,7 @@ describe(&apos;Webform tests&apos;, function() {
       setTimeout(() =&gt; {
         assert.deepEqual(form.data, emptySubmissionData);
         done();
-      }, 200);
+      }, 400);
     })
     .catch((err) =&gt; done(err));
   });

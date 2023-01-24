@@ -29,7 +29,8 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
@@ -171,16 +172,16 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Formio.unit.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Formio from &apos;./Formio&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { Formio } from &apos;./index&apos;;
 import { fastCloneDeep } from &apos;./utils/utils&apos;;
 import _each from &apos;lodash/each&apos;;
 import assert from &apos;power-assert&apos;;
 import sinon from &apos;sinon&apos;;
-import Chance from &apos;chance&apos;;
 import fetchMock from &apos;fetch-mock/es5/server&apos;;
 import _ from &apos;lodash&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 
+import Chance from &apos;chance&apos;;
 const chance = Chance();
 const protocol = &apos;https&apos;;
 const domain = &apos;localhost:3000&apos;;
@@ -1729,9 +1730,9 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
           };
         }
       },
-      // // Actions
-      // // Available Actions
-      // // Action Info
+      // Actions
+      // Available Actions
+      // Action Info
       {
         name: &apos;Delete Submission&apos;,
         test() {
@@ -1863,7 +1864,7 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
         test() {
           return Formio.logout()
             .then(() =&gt; {
-              assert.equal(Formio.getToken(), null, &apos;Logged out&apos;);
+              assert.equal(Formio.getToken(), &apos;&apos;, &apos;Logged out&apos;);
             });
         },
         mock() {
@@ -2503,7 +2504,7 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
                 label: &apos;Text Field&apos;,
                 key: &apos;textField&apos;,
                 type: &apos;textfield&apos;,
-                input: true,
+              input: true,
               },
               {
                 label: &apos;Password&apos;,

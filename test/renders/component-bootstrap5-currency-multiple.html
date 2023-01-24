@@ -1,0 +1,26 @@
+<div id="currency" class="formio-form-group has-feedback formio-component formio-component-currency formio-component-currency formio-component-multiple " ref="component">
+  <label ref="label" class="col-form-label " for="currency-currency" id="l-currency-currency">
+    Currency
+    <span class="visually-hidden">, numeric only,</span>
+  </label>
+  <table class="table table-bordered">
+    <tbody>
+      <tr ref="row">
+        <td>
+          <input ref="input" name="data[currency]" type="text" class="form-control" lang="en" inputmode="decimal" value="" id="currency-currency" aria-labelledby="l-currency-currency " aria-required="false"></input>
+        </td>
+        <td>
+          <button type="button" class="btn btn-secondary" ref="removeRow">
+            <i class="fa fa-times-circle-o"></i>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <button class="btn btn-primary formio-button-add-another" ref="addButton"><i class="fa fa-plus"></i> Add Another</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
+</div>

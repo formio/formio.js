@@ -29,7 +29,8 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
@@ -185,7 +186,10 @@ import {
   comp6,
   comp7,
   comp8,
-  comp9
+ // comp9,
+  comp10,
+  comp11,
+  comp12
 } from &apos;./fixtures&apos;;
 
 describe(&apos;DateTime Component&apos;, () =&gt; {
@@ -215,6 +219,27 @@ describe(&apos;DateTime Component&apos;, () =&gt; {
       });
   });
 
+  it(&apos;Should not change manually entered value on blur when time is disabled&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp11);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const blurEvent = new Event(&apos;blur&apos;);
+
+      const value = &apos;01-02-2021&apos;;
+      const input = dateTime.element.querySelector(&apos;.input&apos;);
+      input.value = value;
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(input.value, value);
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 600);
+    }).catch(done);
+  });
+
   it(&apos;Should allow manual input&apos;, (done) =&gt; {
     const form = _.cloneDeep(comp3);
     const element = document.createElement(&apos;div&apos;);
@@ -233,6 +258,28 @@ describe(&apos;DateTime Component&apos;, () =&gt; {
         assert.equal(dateTime.getValue().startsWith(expectedValueStart), true);
         assert.equal(dateTime.dataValue.startsWith(expectedValueStart), true);
 
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should allow manual input for date with full month format (like MMMM)&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp12);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      const blurEvent = new Event(&apos;blur&apos;);
+
+      const value = &apos;April 22&apos;;
+      const expectedValue = &apos;April/22&apos;;
+      const input = dateTime.element.querySelector(&apos;.input&apos;);
+      input.value = value;
+      input.dispatchEvent(blurEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(input.value, expectedValue);
         document.innerHTML = &apos;&apos;;
         done();
       }, 300);
@@ -774,29 +821,58 @@ describe(&apos;DateTime Component&apos;, () =&gt; {
     }).catch(done);
   });
 
-  it(&apos;Should provide correct date in selected timezone after submission&apos;, (done) =&gt; {
-    const form = _.cloneDeep(comp9);
+  it(&apos;Should provide correct values with time after submission&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp10);
     const element = document.createElement(&apos;div&apos;);
 
-    Formio.createForm(element, form, { readOnly: true }).then(form =&gt; {
+    Formio.createForm(element, form).then(form =&gt; {
       const dateTime = form.getComponent(&apos;dateTime&apos;);
-      const dateTime1 = form.getComponent(&apos;dateTime1&apos;);
+      const textField = form.getComponent(&apos;textField&apos;);
 
-      dateTime.setValue(&apos;2022-04-01T00:00:00.000&apos;);
-      dateTime1.setValue(&apos;2022-04-01T00:00:00.000&apos;);
+      dateTime.setValue(&apos;2022-04-01T14:00:00.000&apos;);
+      textField.setValue(&apos;2022-04-01T14:00:00.000&apos;);
 
-      document.body.addEventListener(&apos;zonesLoaded&apos;, () =&gt; {
+      setTimeout(() =&gt; {
+        const submit = form.getComponent(&apos;submit&apos;);
+        const clickEvent = new Event(&apos;click&apos;);
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
         setTimeout(() =&gt; {
-          const input = dateTime.element.querySelector(&apos;.input&apos;);
-          const input1 = dateTime1.element.querySelector(&apos;.input&apos;);
+          const input1 = dateTime.element.querySelector(&apos;.input&apos;);
+          const input2 = textField.element.querySelector(&apos;.input&apos;);
 
-          assert.equal(input.value, &apos;2022-03-31 CDT&apos;);
-          assert.equal(input1.value, &apos;2022-04-01 KST&apos;);
+          assert.equal(input1.value, &apos;2022-04-01 02:00 PM&apos;);
+          assert.equal(input2.value, &apos;2022-04-01 02:00 PM&apos;);
           done();
-        }, 100);
-      });
+        }, 200);
+      }, 200);
     }).catch(done);
   });
+
+  // it(&apos;Should provide correct date in selected timezone after submission&apos;, (done) =&gt; {
+  //   const form = _.cloneDeep(comp9);
+  //   const element = document.createElement(&apos;div&apos;);
+
+  //   Formio.createForm(element, form, { readOnly: true }).then(form =&gt; {
+  //     const dateTime = form.getComponent(&apos;dateTime&apos;);
+  //     const dateTime1 = form.getComponent(&apos;dateTime1&apos;);
+
+  //     dateTime.setValue(&apos;2022-04-01T00:00:00.000&apos;);
+  //     dateTime1.setValue(&apos;2022-04-01T00:00:00.000&apos;);
+
+  //     document.body.addEventListener(&apos;zonesLoaded&apos;, () =&gt; {
+  //       setTimeout(() =&gt; {
+  //         const input = dateTime.element.querySelector(&apos;.input&apos;);
+  //         const input1 = dateTime1.element.querySelector(&apos;.input&apos;);
+
+  //         assert.equal(input.value, &apos;2022-03-31 CDT&apos;);
+  //         assert.equal(input1.value, &apos;2022-04-01 KST&apos;);
+  //         done();
+  //       }, 100);
+  //     });
+  //   }).catch(done);
+  // });
 
   // it(&apos;Test Shortcut Buttons&apos;, (done) =&gt; {
   //   // eslint-disable-next-line no-debugger

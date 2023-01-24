@@ -267,7 +267,11 @@ export default class RadioComponent extends ListComponent {
       this.setSelectedClasses();
     }
 
-    if (!flags || (!flags.modified && value === this.defaultValue) || !this.isRadio) {
+    if (!flags || !flags.modified || !this.isRadio) {
+      if (changed) {
+        this.previousValue = this.dataValue;
+      }
+
       return changed;
     }
 

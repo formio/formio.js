@@ -29,7 +29,8 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
@@ -172,6 +173,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/templates/index.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import bootstrap from &apos;./bootstrap&apos;;
+import bootstrap5 from &apos;./bootstrap5&apos;;
 
 // Deprecated. Semantic and bootstrap3 will be removed in 5.x.
 // Use external modules instead.
@@ -180,6 +182,7 @@ import semantic from &apos;@formio/semantic&apos;;
 export default {
   bootstrap,
   bootstrap3: bootstrap3.templates.bootstrap3,
+  bootstrap5,
   semantic: semantic.templates.semantic,
 };
 </code></pre>

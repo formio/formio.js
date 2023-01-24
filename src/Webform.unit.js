@@ -15,6 +15,7 @@ import {
   manualOverride,
   validationOnBlur,
   calculateValueWithManualOverride,
+  calculateValueWithSubmissionMetadata,
   formWithAdvancedLogic,
   formWithPatternValidation,
   calculatedSelectboxes,
@@ -34,6 +35,7 @@ import {
   formWithDateTimeComponents,
   formWithCollapsedPanel,
   formWithCustomFormatDate,
+  tooltipActivateCheckbox,
 } from '../test/formtest';
 // import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import UpdateErrorClassesWidgets from '../test/forms/updateErrorClasses-widgets';
@@ -48,7 +50,8 @@ import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditiona
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
 import { fastCloneDeep } from '../lib/utils/utils';
-
+import dataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
+import checkBlurFocusEventForm from '../test/forms/checkBlurFocusEventForm';
 import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
 import calculatedValue from '../test/forms/calculatedValue';
 import conditionalDataGridWithTableAndRadio from '../test/forms/conditionalDataGridWithTableAndRadio';
@@ -63,11 +66,14 @@ import formWithCalcValue from '../test/forms/formWithCalcValue';
 import formWithAllowCalculateOverride from '../test/forms/formWithAllowCalculateOverride';
 import testClearOnHideInsideEditGrid from '../test/forms/clearOnHideInsideEditGrid';
 import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithInitEmpty';
+import formWithEventLogicInHiddenComponent from '../test/forms/formWithEventLogicInHiddenComponent';
 import * as FormioUtils from './utils/utils';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
 import optionalSanitize from '../test/forms/optionalSanitize';
 import formWithCheckboxRadioaType from '../test/forms/formWithCheckboxRadioType';
 import formsWithNewSimpleConditions from '../test/forms/formsWithNewSimpleConditions';
+import formWithRadioInsideDataGrid from '../test/forms/formWithRadioInsideDataGrid';
+import formWithCheckboxRadioType from '../test/forms/formWithCheckboxRadioType';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -76,8 +82,67 @@ global.cancelAnimationFrame = () => {};
 describe('Webform tests', function() {
   this.retries(3);
 
-  it('Should return correct strign value for checkbox radio type', function(done) {
-    Formio.createForm(formWithCheckboxRadioaType).then((form) => {
+  it('Should set radio components value inside data grid correctly', function(done) {
+    Formio.createForm(formWithRadioInsideDataGrid).then((form) => {
+      const dataGridData =  [{ radio: 'two' },{ radio: 'two' } ,{ radio: 'three' }];
+      form.setValue({ data: { dataGrid: fastCloneDeep(dataGridData) } });
+      setTimeout(() => {
+          const dataGrid = form.getComponent('dataGrid');
+          assert.deepEqual(dataGrid.dataValue, dataGridData);
+          done();
+      }, 200);
+    }).catch((err) => done(err));
+  });
+
+  it('Should fire blur and focus events for address and select components', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(checkBlurFocusEventForm).then(() => {
+      let blurEvents = 0;
+      let focusEvents = 0;
+      form.on('blur', () => {
+        blurEvents = blurEvents + 1;
+      });
+
+      form.on('focus', () => {
+        focusEvents = focusEvents + 1;
+      });
+
+      const focusEvent = new Event('focus');
+      const blurEvent = new Event('blur');
+
+      const selectChoices = form.getComponent('selectChoices');
+      selectChoices.focusableElement.dispatchEvent(focusEvent);
+
+      setTimeout(() => {
+        selectChoices.focusableElement.dispatchEvent(blurEvent);
+
+        const selectHtml = form.getComponent('selectHtml');
+        selectHtml.refs.selectContainer.dispatchEvent(focusEvent);
+
+        setTimeout(() => {
+          selectHtml.refs.selectContainer.dispatchEvent(blurEvent);
+
+          const address = form.getComponent('address');
+          address.refs.searchInput[0].dispatchEvent(focusEvent);
+
+          setTimeout(() => {
+            address.refs.searchInput[0].dispatchEvent(blurEvent);
+
+            setTimeout(() => {
+              assert.equal(focusEvents, 3);
+              assert.equal(blurEvents, 3);
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should return correct string value for checkbox radio type', function(done) {
+    Formio.createForm(formWithCheckboxRadioType).then((form) => {
       form.setValue({ data: { radio: 'value1', checkbox: true } });
       setTimeout(() => {
         const stringValues = {
@@ -109,6 +174,38 @@ describe('Webform tests', function() {
     }).catch((err) => done(err));
   });
 
+  it('Should set value for hidden nested component through the logic triggered by event', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formWithEventLogicInHiddenComponent).then(() => {
+      const regesteredAddress = form.getComponent('registeredAddressInformation').getComponent('streetAddress')[0];
+      const address =  form.getComponent('addressInformation').getComponent('streetAddress')[0];
+
+      assert.equal(address.visible, true);
+      assert.equal(regesteredAddress.visible, false);
+
+      const value = 'Dallas';
+      address.setValue(value);
+
+      setTimeout(() => {
+        assert.equal(address.dataValue, value);
+        assert.equal(regesteredAddress.dataValue, value);
+
+        const role =  form.getComponent('role');
+        role.setValue(['client']);
+
+        setTimeout(() => {
+          assert.equal(address.visible, false);
+          assert.equal(regesteredAddress.visible, true);
+          assert.equal(regesteredAddress.dataValue, value);
+          assert.equal(address.dataValue, value);
+          done();
+        }, 500);
+      }, 500);
+    }).catch((err) => done(err));
+  });
+
   it('Should recalculate value when submission is being set in edit mode', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
@@ -131,6 +228,22 @@ describe('Webform tests', function() {
         }, 500);
       });
     }).catch((err) => done(err));
+  });
+
+  it('Should not activate checkbox when clicking tooltip icon', function(done) {
+    const element = document.createElement('div');
+    const form = new Webform(element);
+
+    form.setForm(tooltipActivateCheckbox).then(() => {
+    const checkboxValue = form.element.querySelector('[name="data[checkbox]"]').value;
+    Harness.clickElement(form, form.element.querySelector('[ref="tooltip"]'));
+
+    setTimeout(() => {
+      assert.equal(form.element.querySelector('[name="data[checkbox]"]').value, checkboxValue);
+      done();
+    }, 200);
+    })
+    .catch((err) => done(err));
   });
 
   it('Should show survey values in html render mode', function(done) {
@@ -1648,7 +1761,7 @@ describe('Webform tests', function() {
     }).catch(done);
   };
 
-  //TOFIX
+  //BUG - uncomment once fixed (ticket FIO-6042)
   // it('Should not fire validations when fields are either protected or not persistent.', (done) => {
   //   const form = new Webform(formElement,{ language: 'en', template: 'bootstrap3' });
   //   form.setForm(
@@ -2150,27 +2263,27 @@ describe('Webform tests', function() {
       }).catch(done);
     });
 
-    //TOFIX
-    // it('Should keep components inside DataGrid valid onChange', (done) => {
-    //   formElement.innerHTML = '';
-    //   const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
-    //   form.setForm(DataGridOnBlurValidation).then(() => {
-    //     const component = form.components[0];
-    //     Harness.setInputValue(component, 'data[dataGrid][0][textField]', '12');
-    //     const textField = component.iteratableRows[0].components.textField;
-    //     setTimeout(() => {
-    //       assert.equal(textField.error, '', 'Should stay valid on input');
-    //       const blur = new Event('blur', { bubbles: true, cancelable: true });
-    //       const input = textField.refs.input[0];
-    //       input.dispatchEvent(blur);
-    //       textField.element.dispatchEvent(blur);
-    //         setTimeout(() => {
-    //           assert(textField.error, 'Should be validated after blur');
-    //           done();
-    //         }, 250);
-    //     }, 250);
-    //   }).catch(done);
-    // });
+    it('Should keep components inside DataGrid valid onChange', (done) => {
+      formElement.innerHTML = '';
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(dataGridOnBlurValidation).then(() => {
+        const component = form.components[0];
+        Harness.setInputValue(component, 'data[dataGrid][0][textField]', '12');
+
+        setTimeout(() => {
+          const textField = component.iteratableRows[0].components.textField;
+          assert.equal(!!textField.error, false, 'Should stay valid on input');
+          const blur = new Event('blur', { bubbles: true, cancelable: true });
+          const input = textField.refs.input[0];
+          input.dispatchEvent(blur);
+          textField.element.dispatchEvent(blur);
+            setTimeout(() => {
+              assert(textField.error, 'Should be validated after blur');
+              done();
+            }, 250);
+        }, 250);
+      }).catch(done);
+    });
   });
 
   describe('Reset values', () => {
@@ -2608,6 +2721,30 @@ describe('Webform tests', function() {
       }).catch(done);
     });
 
+    it('Should apply submission metadata value in calculation.', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
+      form.setForm(calculateValueWithSubmissionMetadata).then(() => {
+        const textField = form.getComponent('textField');
+
+        textField.setValue('test value');
+
+        form.submit(false, {});
+
+        setTimeout(() => {
+          expect(form.submission.metadata).to.exist;
+          expect(form.submission.metadata.timezone).to.be.not.empty;
+          expect(form.submission.data.textField).to.be.not.empty;
+          expect(form.submission.data.textArea).to.be.not.empty;
+          expect(form.submission.data.textArea).to.equal(
+            form.submission.data.textField + form.submission.metadata.timezone
+          );
+
+          done();
+        }, 250);
+      }).catch(done);
+    });
+
     it('Should allow to change value.', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en', template: 'bootstrap3' });
@@ -3032,49 +3169,46 @@ describe('Webform tests', function() {
     }).catch(done);
   }).timeout(3000);
 
-  //TOFIX
-  // it('Should have number and currency fields in empty form submission', function(done) {
-  //   const formElement = document.createElement('div');
-  //   const form= new Webform(formElement);
-  //   const formJson = {
-  //     components: [
-  //       {
-  //         label: 'Number',
-  //         key: 'number',
-  //         type: 'number'
-  //       },
-  //       {
-  //         label: 'Currency',
-  //         key: 'currency',
-  //         type: 'currency'
-  //       },
-  //       {
-  //         type: 'button',
-  //         label: 'Submit',
-  //         key: 'submit'
-  //       },
-  //     ],
-  //   };
+  it('Should have number and currency fields in empty form submission', function(done) {
+    const formElement = document.createElement('div');
+    const form= new Webform(formElement);
+    const formJson = {
+      components: [
+        {
+          label: 'Number',
+          key: 'number',
+          type: 'number'
+        },
+        {
+          label: 'Currency',
+          key: 'currency',
+          type: 'currency'
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit'
+        },
+      ],
+    };
 
-  //   const emptySubmissionData = {
-  //     number: '',
-  //     currency: '',
-  //     submit: true
-  //   };
+    const emptySubmissionData = {
+      submit: true
+    };
 
-  //   form.setForm(formJson).then(() => {
-  //     const clickEvent = new Event('click');
-  //     const submitBtn = form.element.querySelector('[name="data[submit]"]');
+    form.setForm(formJson).then(() => {
+      const clickEvent = new Event('click');
+      const submitBtn = form.element.querySelector('[name="data[submit]"]');
 
-  //     submitBtn.dispatchEvent(clickEvent);
+      submitBtn.dispatchEvent(clickEvent);
 
-  //     setTimeout(() => {
-  //       assert.deepEqual(form.data, emptySubmissionData);
-  //       done();
-  //     }, 200);
-  //   })
-  //   .catch((err) => done(err));
-  // });
+      setTimeout(() => {
+        assert.deepEqual(form.data, emptySubmissionData);
+        done();
+      }, 400);
+    })
+    .catch((err) => done(err));
+  });
 
   it('Test Truncate Multiple Spaces', (done) => {
     const formElement = document.createElement('div');

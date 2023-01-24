@@ -59,6 +59,10 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   }
 }
 
+.formio-form-group {
+  margin-bottom: 1rem;
+}
+
 .formio-wysiwyg-editor {
   min-height: 200px;
   background-color: #fff;
@@ -234,7 +238,8 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   }
 }
 
-td > .form-group {
+td > .form-group,
+td > .formio-form-group {
   margin-bottom: 0;
 }
 
@@ -844,6 +849,7 @@ body.formio-dialog-open {
 
 .editgrid-listgroup {
   margin-bottom: 10px;
+  overflow-wrap: break-word;
 }
 
 .tree-listgroup {
@@ -854,7 +860,8 @@ body.formio-dialog-open {
   display: block;
 }
 
-.formio-choices.form-group {
+.formio-choices.form-group,
+.formio-choices.formio-form-group {
   margin-bottom: 0;
 }
 
@@ -877,6 +884,7 @@ body.formio-dialog-open {
 
 .formio-component .table {
   margin-bottom: 0;
+  word-break: break-all;
 }
 
 .formio-component-htmlelement {
@@ -946,7 +954,14 @@ body.formio-dialog-open {
 }
 
 .formio-component-datagrid {
+  overflow-x: auto;
+
   .datagrid-table {
+    &, td, th {
+      border: 3px solid #ddd !important;
+      padding: 10px;
+    }
+
     &>tbody>tr>td:last-child {
       position: relative;
     }
@@ -961,6 +976,12 @@ body.formio-dialog-open {
   // .edittable-group-label {
   //   background-color: #ddd;
   // }
+}
+
+.datagrid-table {
+  &>tbody>tr>td {
+    word-break: break-all;
+  }
 }
 
 .formio-component-modaledit {
@@ -1079,6 +1100,7 @@ body.formio-dialog-open {
 
   &__node-content {
     margin-bottom: 10px;
+    overflow-wrap: break-word;
   }
 
   &__node-children {
@@ -1449,6 +1471,7 @@ div[data-oembed-url] {
 
 .formio-form > div > nav > ul.pagination {
   flex-flow: wrap row;
+  justify-content: flex-start;
 
   .page-link {
     cursor: pointer;
@@ -1706,7 +1729,15 @@ div[data-oembed-url] {
   }
 }
 
+.ace_editor, .ace_editor div, .ace_editor span {
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", "Droid Sans Mono", "Consolas", monospace !important;
+}
+
 span[role="link"] {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.hidden {
+  display: none !important;
 }
