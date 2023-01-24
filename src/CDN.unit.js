@@ -25,7 +25,7 @@ describe('Formio.js CDN class Tests', () => {
   it('Shoudl override CDN urls', () => {
     cdn.setOverrideUrl('grid', 'http://cdn.test-form.io');
     cdn.setVersion('grid', 'latest');
-    assert.equal(cdn.grid, 'http://cdn.test-form.io/grid');
+    assert.equal(cdn.grid, `http://cdn.test-form.io/grid`);
 
     cdn.setOverrideUrl('ace', 'http://cdn.test-form.io');
   });

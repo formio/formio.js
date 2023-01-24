@@ -175,39 +175,11 @@
 import assert from &apos;power-assert&apos;;
 
 describe(&apos;Formio.js CDN class Tests&apos;, () =&gt; {
-  let cdn;
-  before(() =&gt; {
-    cdn = new CDN(&apos;https://cdn.form.io&apos;);
-  });
-
-  it(&apos;Should give correct CDN URLs&apos;, () =&gt; {
+  it(&apos;Should give correct cdn URLs&apos;, () =&gt; {
+    const cdn = new CDN(&apos;https://cdn.form.io&apos;);
     for (const lib in cdn.libs) {
       let expectedUrl = `${cdn.baseUrl}/${lib}/${cdn.libs[lib]}`;
-      if (cdn.libs[lib] === &apos;&apos; || cdn.libs[lib] === &apos;latest&apos;) {
-        expectedUrl = `${cdn.baseUrl}/${lib}`;
-      }
-      assert.equal(cdn[lib], expectedUrl);
-    }
-  });
-
-  it(&apos;Should update lib versions&apos;, () =&gt; {
-    cdn.setVersion(&apos;grid&apos;, &apos;1.1.1&apos;);
-    assert.equal(cdn.grid, &apos;https://cdn.form.io/grid/1.1.1&apos;);
-  });
-
-  it(&apos;Shoudl override CDN urls&apos;, () =&gt; {
-    cdn.setOverrideUrl(&apos;grid&apos;, &apos;http://cdn.test-form.io&apos;);
-    cdn.setVersion(&apos;grid&apos;, &apos;latest&apos;);
-    assert.equal(cdn.grid, &apos;http://cdn.test-form.io/grid&apos;);
-
-    cdn.setOverrideUrl(&apos;ace&apos;, &apos;http://cdn.test-form.io&apos;);
-  });
-
-  it(&apos;Should remove overrides&apos;, () =&gt; {
-    cdn.removeOverrides();
-    for (const lib in cdn.libs) {
-      let expectedUrl = `${cdn.baseUrl}/${lib}/${cdn.libs[lib]}`;
-      if (cdn.libs[lib] === &apos;&apos; || cdn.libs[lib] === &apos;latest&apos;) {
+      if (cdn.libs[lib] === &apos;&apos;) {
         expectedUrl = `${cdn.baseUrl}/${lib}`;
       }
       assert.equal(cdn[lib], expectedUrl);

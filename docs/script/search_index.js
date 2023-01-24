@@ -1122,12 +1122,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/cdn.js~cdn#buildurl",
-    "class/src/CDN.js~CDN.html#instance-method-buildUrl",
-    "src/CDN.js~CDN#buildUrl",
-    "method"
-  ],
-  [
     "src/cdn.js~cdn#constructor",
     "class/src/CDN.js~CDN.html#instance-constructor-constructor",
     "src/CDN.js~CDN#constructor",
@@ -1146,39 +1140,9 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/cdn.js~cdn#overrides",
-    "class/src/CDN.js~CDN.html#instance-member-overrides",
-    "src/CDN.js~CDN#overrides",
-    "member"
-  ],
-  [
-    "src/cdn.js~cdn#removeoverride",
-    "class/src/CDN.js~CDN.html#instance-method-removeOverride",
-    "src/CDN.js~CDN#removeOverride",
-    "method"
-  ],
-  [
-    "src/cdn.js~cdn#removeoverrides",
-    "class/src/CDN.js~CDN.html#instance-method-removeOverrides",
-    "src/CDN.js~CDN#removeOverrides",
-    "method"
-  ],
-  [
     "src/cdn.js~cdn#setbaseurl",
     "class/src/CDN.js~CDN.html#instance-method-setBaseUrl",
     "src/CDN.js~CDN#setBaseUrl",
-    "method"
-  ],
-  [
-    "src/cdn.js~cdn#setoverrideurl",
-    "class/src/CDN.js~CDN.html#instance-method-setOverrideUrl",
-    "src/CDN.js~CDN#setOverrideUrl",
-    "method"
-  ],
-  [
-    "src/cdn.js~cdn#setversion",
-    "class/src/CDN.js~CDN.html#instance-method-setVersion",
-    "src/CDN.js~CDN#setVersion",
     "method"
   ],
   [
