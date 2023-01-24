@@ -82,9 +82,9 @@ export default class TabsComponent extends NestedComponent {
     });
     }
 else {
-      this.components = this.components || [];
+      this.components =  [];
       const tempComponents=  _.cloneDeep(this.component.components);
-      this.tabs =   this.tabs || [];
+      this.tabs =  [];
       _.each(tempComponents, (tab, index) => {
         // Initialize empty tabs.
         tab.components = index===this.currentTab || !_.isEmpty(this.tabs[index])? tab.components : [] ;
