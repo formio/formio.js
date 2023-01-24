@@ -79,6 +79,10 @@ export default class TagsComponent extends Input {
       duplicateItemsAllowed: this.component.allowDuplicate,
       shadowRoot: this.root ? this.root.shadowRoot : null,
       placeholder: hasPlaceholder,
+      addItemText: (value) => {
+        return `${this.t('Press Enter to add')} <b>"${value}"</b>`;
+      },
+  
       placeholderValue: hasPlaceholder ? this.t(this.component.placeholder, { _userInput: true }) : null,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
