@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6220: added some new methods to CDN class
  - FIO-6621: added rc version determination for cdn url
  - FIO-6029: update choices.js
+ - Fixing the formio.js build with choices.js minified styles being malf
 
 ## 4.15.0-rc.16
 ### Fixed
