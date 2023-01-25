@@ -227,16 +227,32 @@ export default class PDFBuilder extends WebformBuilder {
       }
     }, `${this.projectUrl}/upload`, {}, 'file')
       .then((result) => {
-        _.set(this.webform.form, 'settings.pdf', {
-          id: result.data.file,
-          src: `${result.data.filesServer}${result.data.path}`
-        });
+        let autoConversionComponentsAssigned = false;
+
+        if (result.data.formfields?.components && result.data.formfields.components.length) {
+          const formInitState = this.webform.form.components[0]?.key === 'submit';
+          const wizardInitState = this.webform.form.components[0]?.key === 'page1' &&
+                                  this.webform.form.components[0]?.components.length === 0;
+          const emptyFormState = this.webform.form.components.length === 0;
+
+          if (formInitState || wizardInitState || emptyFormState) {
+            autoConversionComponentsAssigned = true;
+            this.webform.form.components = result.data.formfields.components;
+          }
+        }
         if (this.refs.dragDropText) {
           this.refs.dragDropText.style.display = 'inherit';
         }
         if (this.refs.uploadProgressWrapper) {
           this.refs.uploadProgressWrapper.style.display = 'none';
         }
+
+        _.set(this.webform.form, 'settings.pdf', {
+          id: result.data.file,
+          src: `${result.data.filesServer}${result.data.path}`,
+          nonFillableConversionUsed: autoConversionComponentsAssigned && result.data.formfields.nonFillableConversionUsed
+        });
+
         this.emit('pdfUploaded', result.data);
         this.redraw();
       })
