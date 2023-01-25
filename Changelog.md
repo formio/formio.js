@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.15.0-rc.18
+### Changed
+ - Fixing the formio.js build with choices.js minified styles being malf…
+
 ## 4.15.0-rc.17
 ### Changed
  - Updated @formio/bootstrap3@2.12.3-rc.1
