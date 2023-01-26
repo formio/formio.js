@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.13.2-patch.1]
+## 4.13.2-patch.1
 ### Changes
  - Update fast-json-patch to 3.1.1
 
