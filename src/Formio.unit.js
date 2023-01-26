@@ -637,6 +637,11 @@ describe('Formio.js Tests', () => {
         type: 'form'
       },
       {
+        url: '/project/myproject/form/0123456789ABCDEF01234567',
+        method: 'PUT',
+        type: 'form'
+      },
+      {
         url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567',
         method: 'DELETE',
         type: 'form'
