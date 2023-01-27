@@ -281,6 +281,8 @@ export default class Component extends Element {
     // Add the id to the component.
     this.component.id = this.id;
 
+    this.afterComponentAssign();
+
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
 
@@ -517,6 +519,10 @@ export default class Component extends Element {
     if (this.component.addons?.length) {
       this.component.addons.forEach((addon) => this.createAddon(addon));
     }
+  }
+
+  afterComponentAssign() {
+    //implement in extended classes
   }
 
   createAddon(addonConfiguration) {
@@ -2727,7 +2733,10 @@ export default class Component extends Element {
       return this.evaluate(this.component.calculateValue, {
         value: dataValue,
         data,
-        row: row || this.data
+        row: row || this.data,
+        submission: this.root?._submission || {
+          data: this.rootValue
+        }
       }, 'value');
   }
 
@@ -3068,6 +3077,39 @@ export default class Component extends Element {
       if (input?.widget && input.widget.setErrorClasses) {
         input.widget.setErrorClasses(hasErrors);
       }
+    });
+  }
+
+  addFocusBlurEvents(element) {
+    this.addEventListener(element, 'focus', () => {
+      if (this.root.focusedComponent !== this) {
+        if (this.root.pendingBlur) {
+          this.root.pendingBlur();
+        }
+
+        this.root.focusedComponent = this;
+
+        this.emit('focus', this);
+      }
+      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+        this.root.pendingBlur.cancel();
+        this.root.pendingBlur = null;
+      }
+    });
+    this.addEventListener(element, 'blur', () => {
+      this.root.pendingBlur = FormioUtils.delay(() => {
+        this.emit('blur', this);
+        if (this.component.validateOn === 'blur') {
+          this.root.triggerChange({ fromBlur: true }, {
+            instance: this,
+            component: this.component,
+            value: this.dataValue,
+            flags: { fromBlur: true }
+          });
+        }
+        this.root.focusedComponent = null;
+        this.root.pendingBlur = null;
+      });
     });
   }
 
