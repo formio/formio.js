@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6229: fixed displaying html value on Data tab for inputFormat plain
  - FIO-6191: fixed an issue where addons are not created
  - FIO-6148: fixed an issue where boxsign returns an error when editing submission
+ - Fixing an issue where Radio button fragility would sometimes reset the value erroneously.
  
 ## 4.15.0-rc.17
 ### Added
