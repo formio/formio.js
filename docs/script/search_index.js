@@ -306,6 +306,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "formiojs/src/components/_classes/list/listcomponent.form.js~listcomponent",
+    "function/index.html#static-function-ListComponent",
+    "<span>ListComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/list/ListComponent.form.js</span>",
+    "function"
+  ],
+  [
     "formiojs/src/contrib/location/location.form.js~location",
     "function/index.html#static-function-Location",
     "<span>Location</span> <span class=\"search-result-import-path\">formiojs/src/contrib/location/Location.form.js</span>",
@@ -2752,6 +2758,18 @@ window.esdocSearchIndex = [
     "class/src/components/_classes/field/Field.js~Field.html#instance-method-render",
     "src/components/_classes/field/Field.js~Field#render",
     "method"
+  ],
+  [
+    "src/components/_classes/list/listcomponent.form.js",
+    "file/src/components/_classes/list/ListComponent.form.js.html",
+    "src/components/_classes/list/ListComponent.form.js",
+    "file"
+  ],
+  [
+    "src/components/_classes/list/editform/listcomponent.edit.data.js",
+    "file/src/components/_classes/list/editForm/ListComponent.edit.data.js.html",
+    "src/components/_classes/list/editForm/ListComponent.edit.data.js",
+    "file"
   ],
   [
     "src/components/_classes/nested/nestedcomponent.form.js",

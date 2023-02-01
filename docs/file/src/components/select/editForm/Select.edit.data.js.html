@@ -45,6 +45,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-list">components/_classes/list</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ListComponent">ListComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
@@ -175,14 +176,7 @@
 
 export default [
   {
-    type: &apos;select&apos;,
-    input: true,
-    weight: 0,
-    tooltip: &apos;The source to use for the select data. Values lets you provide your own values and labels. JSON lets you provide raw JSON data. URL lets you provide a URL to retrieve the JSON data from.&apos;,
     key: &apos;dataSrc&apos;,
-    defaultValue: &apos;values&apos;,
-    label: &apos;Data Source Type&apos;,
-    dataSrc: &apos;values&apos;,
     data: {
       values: [
         { label: &apos;Values&apos;, value: &apos;values&apos; },
@@ -244,18 +238,6 @@ export default [
     },
   },
   {
-    type: &apos;textfield&apos;,
-    input: true,
-    key: &apos;data.url&apos;,
-    weight: 10,
-    label: &apos;Data Source URL&apos;,
-    placeholder: &apos;Data Source URL&apos;,
-    tooltip: &apos;A URL that returns a JSON array to use as the data source.&apos;,
-    conditional: {
-      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] },
-    },
-  },
-  {
     type: &apos;checkbox&apos;,
     input: true,
     label: &apos;Lazy Load Data&apos;,
@@ -282,31 +264,6 @@ export default [
           }
         ]
       },
-    },
-  },
-  {
-    type: &apos;datagrid&apos;,
-    input: true,
-    label: &apos;Request Headers&apos;,
-    key: &apos;data.headers&apos;,
-    tooltip: &apos;Set any headers that should be sent along with the request to the url. This is useful for authentication.&apos;,
-    weight: 11,
-    components: [
-      {
-        label: &apos;Key&apos;,
-        key: &apos;key&apos;,
-        input: true,
-        type: &apos;textfield&apos;,
-      },
-      {
-        label: &apos;Value&apos;,
-        key: &apos;value&apos;,
-        input: true,
-        type: &apos;textfield&apos;,
-      },
-    ],
-    conditional: {
-      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] },
     },
   },
   {
@@ -453,29 +410,6 @@ export default [
     label: &apos;ID Path&apos;,
     placeholder: &apos;id&apos;,
     tooltip: &apos;Path to the select option id.&apos;
-  },
-  {
-    type: &apos;textfield&apos;,
-    input: true,
-    label: &apos;Value Property&apos;,
-    key: &apos;valueProperty&apos;,
-    skipMerge: true,
-    clearOnHide: false,
-    weight: 13,
-    description: &quot;The selected item&apos;s property to save.&quot;,
-    tooltip: &apos;The property of each item in the data source to use as the select value. If not specified, the item itself will be used.&apos;,
-    conditional: {
-      json: {
-        in: [
-          { var: &apos;data.dataSrc&apos; },
-          [
-            &apos;json&apos;,
-            &apos;url&apos;,
-            &apos;custom&apos;
-          ],
-        ],
-      },
-    },
   },
   {
     type: &apos;textfield&apos;,
@@ -651,27 +585,6 @@ export default [
     },
   },
   {
-    type: &apos;textarea&apos;,
-    input: true,
-    key: &apos;template&apos;,
-    label: &apos;Item Template&apos;,
-    editor: &apos;ace&apos;,
-    as: &apos;html&apos;,
-    rows: 3,
-    weight: 18,
-    tooltip: &apos;The HTML template for the result data items.&apos;,
-    allowCalculateOverride: true,
-    calculateValue:(context) =&gt; {
-      if (!context.data.template) {
-        if (context.instance &amp;&amp; context.instance._currentForm.options.editComponent) {
-          return context.instance._currentForm.options.editComponent.template;
-        }
-      }
-
-      return context.data.template;
-    }
-  },
-  {
     type: &apos;select&apos;,
     input: true,
     key: &apos;refreshOn&apos;,
@@ -778,6 +691,29 @@ export default [
     tooltip: &apos;When checked, the select dropdown will allow for searching within the static list of items provided.&apos;,
   },
   {
+    type: &apos;checkbox&apos;,
+    input: true,
+    weight: 21,
+    key: &apos;noRefreshOnScroll&apos;,
+    label: &apos;Disable Options Refresh When Scrolling&apos;,
+    defaultValue: false,
+    tooltip: &apos;When checked, the select with search input won\&apos;t perform new api requests when scrolling through the list of options.&apos;,
+    conditional: {
+      json: {
+        and: [
+          {  in: [
+              { var: &apos;data.dataSrc&apos; },
+              [
+                &apos;url&apos;,
+                &apos;resource&apos;
+              ],
+            ] },
+          { &apos;===&apos;: [{ var: &apos;data.searchEnabled&apos; }, true] }
+        ]
+      },
+    },
+  },
+  {
     label: &apos;Search Threshold&apos;,
     mask: false,
     tableView: true,
@@ -840,17 +776,6 @@ export default [
   {
     type: &apos;checkbox&apos;,
     input: true,
-    weight: 26,
-    key: &apos;authenticate&apos;,
-    label: &apos;Formio Authenticate&apos;,
-    tooltip: &apos;Check this if you would like to use Formio Authentication with the request.&apos;,
-    conditional: {
-      json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] },
-    },
-  },
-  {
-    type: &apos;checkbox&apos;,
-    input: true,
     weight: 27,
     key: &apos;readOnlyValue&apos;,
     label: &apos;Read Only Value&apos;,
@@ -874,21 +799,7 @@ export default [
     key: &apos;useExactSearch&apos;,
     label: &apos;Use exact search&apos;,
     tooltip: &apos;Disables search algorithm threshold.&apos;,
-  },
-  {
-    type: &apos;checkbox&apos;,
-    input: true,
-    weight: 29,
-    key: &apos;ignoreCache&apos;,
-    label: &apos;Disables Storing Request Result in the Cache&apos;,
-    tooltip: &apos;Check it if you don\&apos;t want the requests and its results to be stored in the cache. By default, it is stored and if the Select tries to make the request to the same URL with the same paremetrs, the cached data will be returned. It allows to increase performance, but if the remote source\&apos;s data is changing quite often and you always need to keep it up-to-date, uncheck this option.&apos;,
-    conditional: {
-      json: { &apos;or&apos;: [
-        { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] },
-        { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;resource&apos;] },
-      ] },
-    },
-  },
+  }
 ];
 </code></pre>
 
