@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 4.16.0-rc.1]
 ### Fixed
-
+ - FIO-6229: fixed displaying html value on Data tab for inputFormat plain
+ - FIO-6191: fixed an issue where addons are not created
+ 
 ## 4.15.0-rc.17
 ### Added
  - FIO-5474: added new simple conditionals
@@ -49,8 +51,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6621: added rc version determination for cdn url
  - FIO-6029: update choices.js
  - Fixing the formio.js build with choices.js minified styles being malf
- - FIO-6229: fixed displaying html value on Data tab for inputFormat plain
- - FIO-6191: fixed an issue where addons are not created
 
 ## 4.15.0-rc.16
 ### Fixed
