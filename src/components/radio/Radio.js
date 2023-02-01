@@ -271,6 +271,8 @@ export default class RadioComponent extends ListComponent {
       if (changed) {
         this.previousValue = this.dataValue;
       }
+
+      return changed;
     }
 
     // If they clicked on the radio that is currently selected, it needs to reset the value.
