@@ -40,6 +40,13 @@ export default class ListComponent extends Field {
     return headers;
   }
 
+  // Must be implemented in child classes.
+  setItems() {}
+
+  updateCustomItems() {}
+
+  loadItems() {}
+
   getOptionTemplate(data, value) {
     if (!this.component.template) {
       return data.label;

@@ -32,12 +32,31 @@ describe('Radio Component', () => {
   });
 
   it('Should build a radio component with URL DataSrc', (done) => {
-    Harness.testCreate(RadioComponent, comp9).then((component) => {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        const values = [
+          { name : 'Alabama', abbreviation : 'AL' },
+          { name : 'Alaska', abbreviation: 'AK' },
+          { name: 'American Samoa', abbreviation: 'AS' }
+        ];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const radio = form.getComponent('radio');
+
       setTimeout(()=>{
-        assert.equal(component.refs.input.length, 59);
+        assert.equal(radio.loadedOptions.length, 3);
+
+        Formio.makeRequest = originalMakeRequest;
         done();
-      }, 1000);
-    });
+      }, 200);
+    }).catch(done);
   });
 
   it('Should save checked value after redrawing if storage type is Number', (done) => {
