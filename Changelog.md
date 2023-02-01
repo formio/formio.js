@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.17]
+## [Unreleased: 4.16.0-rc.1]
+### Fixed
+
+## 4.15.0-rc.17
 ### Added
  - FIO-5474: added new simple conditionals
 
