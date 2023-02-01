@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.13-rc.9
+### Changed
+ - Fixing an issue where Radio button fragility would sometimes reset th…
+
 ## 4.14.13-rc.8
 ### Fixed
  - FIO-5460: fixed an issue where blur and focus events are not fired for select and address components 
