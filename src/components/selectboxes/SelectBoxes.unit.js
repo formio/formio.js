@@ -1,5 +1,6 @@
 import assert from 'power-assert';
 import Harness from '../../../test/harness';
+import _ from 'lodash';
 import SelectBoxesComponent from './SelectBoxes';
 import Formio from './../../Formio';
 
@@ -19,12 +20,31 @@ describe('SelectBoxes Component', () => {
   });
 
   it('Should build a SelectBoxes component with URL DataSrc', (done) => {
-    Harness.testCreate(SelectBoxesComponent, comp5).then((component) => {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        const values = [
+          { name : 'Alabama', abbreviation : 'AL' },
+          { name : 'Alaska', abbreviation: 'AK' },
+          { name: 'American Samoa', abbreviation: 'AS' }
+        ];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const selectBoxes = form.getComponent('selectBoxes');
+
       setTimeout(()=>{
-        assert.equal(component.refs.input.length, 59);
+        assert.equal(selectBoxes.loadedOptions.length, 3);
+
+        Formio.makeRequest = originalMakeRequest;
         done();
-      }, 1000);
-    });
+      }, 200);
+    }).catch(done);
   });
 
   describe('error messages', () => {
