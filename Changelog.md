@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.14.13-rc.7]
+## 4.14.13-rc.7
 ### Fixed
  - Fixing the updateValue routine for the radio component.
 
