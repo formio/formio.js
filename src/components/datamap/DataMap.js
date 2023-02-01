@@ -333,6 +333,14 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   checkColumns() {
+    if (this.builderMode || (!this.dataValue || !Object.keys(this.dataValue).length)) {
+      return { rebuild: false, show: true };
+    }
+
+    if (Object.keys(this.dataValue).length > (this.rows || []).length) {
+      return { rebuild: true, show: true };
+    }
+
     return { rebuild: false, show: true };
   }
 }
