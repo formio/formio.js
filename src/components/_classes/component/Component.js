@@ -532,7 +532,7 @@ export default class Component extends Element {
     }
 
     const settings = addonConfiguration.settings?.data || {};
-    const Addon = Addons[name];
+    const Addon = Addons[name.value];
 
     let addon = null;
 
@@ -545,7 +545,7 @@ export default class Component extends Element {
         this.addons.push(addon);
       }
       else {
-        console.warn(`Addon ${name} does not support component of type ${this.component.type}.`);
+        console.warn(`Addon ${name.label} does not support component of type ${this.component.type}.`);
       }
     }
 
