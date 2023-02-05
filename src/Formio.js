@@ -1389,6 +1389,9 @@ class Formio {
     return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`)
       .then(function(result) {
         logout();
+        if (result.shouldRedirect && result.url) {
+          window.location.href = result.url;
+        }
         return result;
       })
       .catch(function(err) {
