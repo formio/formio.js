@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixing an issue where Radio button fragility would sometimes reset the value erroneously.
  - FIO-6193: Moved plan info into tooltips for encrypted fields
  - FIO-3957: Fixed an issue where Data Map inside conditionally shown Panel does not show its values in the view mode
+ - Ensure that url requests to relative root should prepend the base url.
  
 ## 4.15.0-rc.17
 ### Added
