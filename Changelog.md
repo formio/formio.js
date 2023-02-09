@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.14.13-rc.10]
-### Changed
- - FIO-6193	Rename the 'Encrypted (Enterprise Only)' checkbox in the component settings
+## 4.14.13-rc.10
+### Fixed
+ - FIO-6193: Rename the 'Encrypted (Enterprise Only)' checkbox in the component settings
 
 ## 4.14.13-rc.9
 ### Changed
