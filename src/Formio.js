@@ -917,7 +917,7 @@ class Formio {
     }
 
     if (url[0] === '/') {
-      url = Formio.baseUrl() + url;
+      url = Formio.baseUrl + url;
     }
 
     // Set up and fetch request
