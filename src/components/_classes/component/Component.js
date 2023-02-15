@@ -807,7 +807,7 @@ export default class Component extends Element {
   transform(type, value) {
     const frameworkTemplates = this.options.template ? Templates.templates[this.options.template] : Templates.current;
     return frameworkTemplates.hasOwnProperty('transform')
-      ? frameworkTemplates.transform(type, value)
+      ? frameworkTemplates.transform(type, value, this)
       : (type, value) => value;
   }
 
