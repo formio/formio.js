@@ -625,8 +625,9 @@ export default class FileComponent extends Field {
           });
         });
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
+        const escapedFileName = file.name ? file.name.replaceAll('<', '&lt;').replaceAll('>', '&gt;') : file.name;
         const fileUpload = {
-          originalName: file.name,
+          originalName: escapedFileName,
           name: fileName,
           size: file.size,
           status: 'info',
@@ -768,7 +769,7 @@ export default class FileComponent extends Field {
               if (index !== -1) {
                 this.statuses.splice(index, 1);
               }
-              fileInfo.originalName = file.name;
+              fileInfo.originalName = escapedFileName;
               fileInfo.hash = fileUpload.hash;
               if (!this.hasValue()) {
                 this.dataValue = [];
