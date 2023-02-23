@@ -21,15 +21,16 @@ export class Wizard extends Webform {
    *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not
    */
   constructor() {
-    let element, options;
+    let element, options, data;
     if (arguments[0] instanceof HTMLElement || arguments[1]) {
       element = arguments[0];
       options = arguments[1];
+      data = arguments[2];
     }
     else {
       options = arguments[0];
     }
-    super(element, options);
+    super(element, options, data);
     this.pages = [];
     this.prefixComps = [];
     this.suffixComps = [];
