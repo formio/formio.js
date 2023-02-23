@@ -29,7 +29,7 @@ export class Form extends Base {
      * @param {string} display - The display of the form, either "wizard", "form", or "pdf"
      * @return {*}
      */
-    create(display: string): any;
+    create(display: string, incomingSubmission: any): any;
     /**
      * Sets the form. Either as JSON or a URL to a form JSON schema.
      *
@@ -58,7 +58,7 @@ export class Form extends Base {
             content: any;
         }[];
     };
-    setForm(formParam: any): any;
+    setForm(formParam: any, incomingSubmission: any): any;
     _form: any;
     getSubmission(formio: any): any;
     /**
