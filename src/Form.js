@@ -44,7 +44,7 @@ export class Form extends Base {
       this.element = args[0];
       this.options = args[2] || {};
       this.options.events = this.events;
-      this.setForm(args[1])
+      this.setForm(args[1], args[3])
         .then(() => this.readyResolve(this.instance))
         .catch(this.readyReject);
     }
@@ -52,7 +52,7 @@ export class Form extends Base {
       this.element = null;
       this.options = args[1] || {};
       this.options.events = this.events;
-      this.setForm(args[0])
+      this.setForm(args[0], args[3])
         .then(() => this.readyResolve(this.instance))
         .catch(this.readyReject);
     }
@@ -70,17 +70,17 @@ export class Form extends Base {
    * @param {string} display - The display of the form, either "wizard", "form", or "pdf"
    * @return {*}
    */
-  create(display) {
+  create(display, incomingSubmission) {
     if (this.options && (this.options.flatten || this.options.renderMode === 'flat')) {
       display = 'form';
     }
     this.display = display;
     if (Displays.displays[display]) {
-      return new Displays.displays[display](this.element, this.options);
+      return new Displays.displays[display](this.element, this.options, incomingSubmission?.data);
     }
     else {
       // eslint-disable-next-line new-cap
-      return new Displays.displays['webform'](this.element, this.options);
+      return new Displays.displays['webform'](this.element, this.options, incomingSubmission?.data);
     }
   }
 
@@ -116,7 +116,7 @@ export class Form extends Base {
     };
   }
 
-  setForm(formParam) {
+  setForm(formParam, incomingSubmission) {
     let result;
     formParam = formParam || this.form;
     if (typeof formParam === 'string') {
@@ -137,12 +137,12 @@ export class Form extends Base {
               if (error) {
                 form = this.errorForm(error);
               }
-              this.instance = this.instance || this.create(form.display);
+              this.instance = this.instance || this.create(form.display, submission || incomingSubmission);
               this.instance.url = formParam;
               this.instance.nosubmit = false;
               this._form = this.instance.form = form;
-              if (submission) {
-                this.instance.submission = submission;
+              if (submission || incomingSubmission) {
+                this.instance.submission = submission || incomingSubmission;
               }
               if (error) {
                 throw error;
@@ -152,7 +152,7 @@ export class Form extends Base {
         });
     }
     else {
-      this.instance = this.instance || this.create(formParam.display);
+      this.instance = this.instance || this.create(formParam.display, incomingSubmission);
       this._form = this.instance.form = formParam;
       result = this.instance.ready;
     }
