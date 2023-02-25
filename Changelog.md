@@ -9,7 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6229: fixed displaying html value on Data tab for inputFormat plain
  - FIO-6191: fixed an issue where addons are not created
  - FIO-6148: fixed an issue where boxsign returns an error when editing submission
- - Fixing an issue where Radio button fragility would sometimes reset the value erroneously.
+ - Fixed an issue where Radio button fragility would sometimes reset the value erroneously.
+ - FIO-6193: Moved plan info into tooltips for encrypted fields
+ - FIO-3957: Fixed an issue where Data Map inside conditionally shown Panel does not show its values in the view mode
+ - Ensure that url requests to relative root should prepend the base url.
+ - FIO-6164: Fixed an issue with date/time component localization #5031
+ - FIO-6339: Fixes an issue where self-XSS is possible through the File upload component
  
 ## 4.15.0-rc.17
 ### Added

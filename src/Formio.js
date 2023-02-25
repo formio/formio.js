@@ -916,6 +916,10 @@ class Formio {
       return NativePromise.resolve(cloneResponse(_Formio.cache[cacheKey]));
     }
 
+    if (url[0] === '/') {
+      url = Formio.baseUrl() + url;
+    }
+
     // Set up and fetch request
     const headers = header || new Headers(opts.headers || {
       'Accept': 'application/json',
