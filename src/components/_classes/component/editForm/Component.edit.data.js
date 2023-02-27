@@ -53,7 +53,7 @@ export default [
     weight: 400,
     type: 'checkbox',
     label: 'Encrypted',
-    tooltip: 'Enterprise Only. Encrypt this field on the server. This is two way encryption which is not suitable for passwords.',
+    tooltip: 'Encrypt this field on the server. This is two way encryption which is not suitable for passwords.',
     key: 'encrypted',
     input: true,
     logic: [
@@ -91,7 +91,7 @@ export default [
               value: 'tooltip',
               type: 'string'
             },
-            text: 'Enterprise Only. Encryption is not available with your current plan. Please contact sales@form.io.'
+            text: 'Only available with Security Module. Contact sales@form.io for more information.'
           }
         ]
       }
