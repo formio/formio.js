@@ -1,7 +1,7 @@
 import assert from 'power-assert';
 import Harness from '../../../test/harness';
 import DateTimeComponent from './DateTime';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import _ from 'lodash';
 import 'flatpickr';
 import {

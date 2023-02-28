@@ -1,7 +1,7 @@
 import assert from 'power-assert';
 import Harness from '../../../test/harness';
 import SelectBoxesComponent from './SelectBoxes';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 
 import {
   comp1,

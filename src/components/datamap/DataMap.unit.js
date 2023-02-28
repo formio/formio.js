@@ -1,4 +1,4 @@
-import Formio from '../../Formio';
+import { Formio } from '../../Formio';
 import Harness from '../../../test/harness';
 import DataMapComponent from './DataMap';
 import { comp1, formWithConditionalPanel } from './fixtures';

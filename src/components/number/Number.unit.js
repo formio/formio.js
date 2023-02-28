@@ -2,7 +2,7 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import _merge from 'lodash/merge';
 import Harness from '../../../test/harness';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import NumberComponent from './Number';
 
 import {

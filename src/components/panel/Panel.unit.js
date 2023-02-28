@@ -3,7 +3,7 @@ import Harness from '../../../test/harness';
 import { flattenComponents } from '../../utils/formUtils';
 import PanelComponent from './Panel';
 import panelEditForm from './Panel.form';
-import Formio from '../../Formio';
+import { Formio } from '../../Formio';
 import {
   comp1,
   comp2

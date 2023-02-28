@@ -8,7 +8,7 @@ import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
 import 'flatpickr';
-import Formio from './Formio';
+import { Formio } from './Formio';
 import {
   settingErrors,
   clearOnHide,

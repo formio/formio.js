@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Formio from './Formio';
+import { Formio } from './Formio';
 import AllComponents from './components';
 import Builders from './builders/Builders';
 import Components from './components/Components';
