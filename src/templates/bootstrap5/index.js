@@ -23,12 +23,12 @@ export default {
       case 'class':
         var additionalClasses = '';
         if (text === 'form-group') {
-          additionalClasses = 'mb-2';
+          additionalClasses = 'mb-2 ';
           if (instance && instance.component.block) {
-            additionalClasses += ' d-grid';
+            additionalClasses += 'd-grid ';
           }
         }
-        return `${additionalClasses} ${this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text}`;
+        return `${additionalClasses}${this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text}`;
     }
     return text;
   },
