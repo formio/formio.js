@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3957: Fixed an issue where Data Map inside conditionally shown Panel does not show its values in the view mode
  - Ensure that url requests to relative root should prepend the base url.
  - FIO-6164: Fixed an issue with date/time component localization #5031
- - FIO-6339: Fixes an issue where self-XSS is possible through the File upload component
+ - FIO-6339: File upload component fix
+ - FIO-6193 Changed tooltip copy for encrypted fields
  
 ## 4.15.0-rc.17
 ### Added
