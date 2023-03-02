@@ -28,6 +28,10 @@ export default class TagsComponent extends Input {
     };
   }
 
+  static get operators() {
+    return [...Input.operators, 'includes', 'notIncludes'];
+  }
+
   init() {
     super.init();
   }

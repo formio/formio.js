@@ -207,7 +207,15 @@ export default class Component extends Element {
   static get Validator() {
     return Validator;
   }
-
+  /**
+   * Return the operators as part of the component.
+   *
+   * @return {string[]}
+   * @constructor
+   */
+  static get operators() {
+    return ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'];
+  }
   /**
    * Provides a table view for this component. Override if you wish to do something different than using getView
    * method of your instance.

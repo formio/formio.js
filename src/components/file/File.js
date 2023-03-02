@@ -65,6 +65,10 @@ export default class FileComponent extends Field {
     };
   }
 
+  static get operators() {
+    return ['isEmpty', 'isNotEmpty', 'Contains'];
+  }
+
   init() {
     super.init();
     webViewCamera = navigator.camera || Camera;

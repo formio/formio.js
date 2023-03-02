@@ -5,6 +5,10 @@ export default class IsDateEqual extends DateGeaterThan {
         return 'isDateEqual';
     }
 
+    static get queryKey() {
+        return 'equal';
+    }
+
     static get displayedName() {
         return 'Is Equal To';
     }

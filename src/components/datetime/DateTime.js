@@ -53,6 +53,10 @@ export default class DateTimeComponent extends Input {
     };
   }
 
+  static get operators() {
+    return ['isDateEqual', 'isNotDateEqual', 'isEmpty', 'isNotEmpty','dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'];
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     const timezone = (this.component.timezone || this.options.timezone);

@@ -5,6 +5,10 @@ export default class DateGreaterThanOrEqual extends DateGeaterThan {
         return 'dateGreaterThanOrEqual';
     }
 
+    static get queryKey() {
+        return 'gte';
+    }
+
     static get displayedName() {
         return 'Greater Than Or Equal To';
     }

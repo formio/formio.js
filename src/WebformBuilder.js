@@ -465,6 +465,10 @@ export default class WebformBuilder extends Component {
         title: 'Premium',
         weight: 40
       },
+      reporting: {
+        title: 'Reporting',
+        weight: 50
+      },
     };
   }
 
@@ -1109,9 +1113,9 @@ export default class WebformBuilder extends Component {
           'autofocus',
           'customConditional',
         ])],
-        config: this.options.formConfig || {}
+        config: this.options.formConfig || {},
+        rootForm: this.form || {}
       };
-
       const fieldsToRemoveDoubleQuotes = ['label', 'tooltip', 'placeholder'];
       this.preview.form.components.forEach(component => this.replaceDoubleQuotes(component, fieldsToRemoveDoubleQuotes));
 
@@ -1375,7 +1379,9 @@ export default class WebformBuilder extends Component {
         }
       ]
     } : ComponentClass.editForm(_.cloneDeep(overrides));
-    const instanceOptions = {};
+    const instanceOptions = {
+      rootForm: this.form
+    };
 
     this.hook('instanceOptionsPreview', instanceOptions);
 

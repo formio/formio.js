@@ -40,6 +40,10 @@ export default class DayComponent extends Field {
     };
   }
 
+  static get operators() {
+    return ['isDateEqual', 'isNotDateEqual', 'isEmpty', 'isNotEmpty','dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'];
+  }
+
   /**
    * The empty value for day component.
    *

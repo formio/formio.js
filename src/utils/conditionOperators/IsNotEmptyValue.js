@@ -5,6 +5,10 @@ export default class IsNotEmptyValue extends IsEmptyValue {
         return 'isNotEmpty';
     }
 
+    static get queryKey() {
+        return 'exist';
+    }
+
     static get displayedName() {
         return 'Is Not Empty';
     }

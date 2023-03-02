@@ -6,6 +6,10 @@ export default class LessThanOrEqual extends ConditionOperator {
         return 'lessThanOrEqual';
     }
 
+    static get queryKey() {
+        return 'lte';
+    }
+
     static get displayedName() {
         return 'Less Than Or Equal To';
     }

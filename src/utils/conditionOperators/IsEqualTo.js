@@ -6,6 +6,10 @@ export default class IsEqualTo extends ConditionOperator {
         return 'isEqual';
     }
 
+    static get queryKey() {
+        return 'equal';
+    }
+
     static get displayedName() {
         return 'Is Equal To';
     }

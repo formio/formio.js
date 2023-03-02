@@ -25,7 +25,9 @@ export default class CheckBoxComponent extends Field {
       schema: CheckBoxComponent.schema()
     };
   }
-
+  static get operators() {
+    return ['isEqual'];
+  }
   get defaultSchema() {
     return CheckBoxComponent.schema();
   }

@@ -5,6 +5,10 @@ export default class DateGeaterThan extends ConditionOperator {
         return 'dateGreaterThan';
     }
 
+    static get queryKey() {
+        return 'gt';
+    }
+
     static get displayedName() {
         return 'Greater Than';
     }

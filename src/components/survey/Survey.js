@@ -24,6 +24,10 @@ export default class SurveyComponent extends Field {
     };
   }
 
+  static get operators() {
+    return ['isEmpty', 'isNotEmpty'];
+  }
+
   get defaultSchema() {
     return SurveyComponent.schema();
   }

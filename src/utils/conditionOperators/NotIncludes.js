@@ -5,6 +5,10 @@ export default class NotIncludes extends Includes {
         return 'notIncludes';
     }
 
+    static get queryKey() {
+        return 'notContain';
+    }
+
     static get displayedName() {
         return 'Not Includes';
     }

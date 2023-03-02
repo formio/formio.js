@@ -6,6 +6,10 @@ export default class GeaterThan extends ConditionOperator {
         return 'greaterThan';
     }
 
+    static get queryKey() {
+        return 'gt';
+    }
+
     static get displayedName() {
         return 'Greater Than';
     }
