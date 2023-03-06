@@ -122,6 +122,11 @@ export default class WizardBuilder extends WebformBuilder {
       const components = this._form.components.filter((component) => component.type !== 'button');
       this._form.components = [this.getPageConfig(1, components)];
     }
+    else {
+      const components = this._form.components
+        .filter((component) => component.type !== 'button' || component.action !== 'submit');
+      this._form.components = components;
+    }
     this.rebuild();
   }
 
