@@ -202,8 +202,8 @@ export function embed(config = {}) {
       config.formioPath(scriptSrc);
     }
     scriptSrc = scriptSrc.join(&apos;/&apos;);
-    query.script = query.script || (`${scriptSrc}/formio.form.min.js`);
-    query.styles = query.styles || (`${scriptSrc}/formio.form.min.css`);
+    query.script = query.script || (`${config.updatePath ? config.updatePath() :scriptSrc}/formio.form.min.js`);
+    query.styles = query.styles || (`${config.updatePath ? config.updatePath() :scriptSrc}/formio.form.min.css`);
     const cdn = query.cdn || &apos;https://cdn.jsdelivr.net/npm&apos;;
 
     const resolveLibs = (cdn) =&gt; {
@@ -365,7 +365,7 @@ export function embed(config = {}) {
     };
 
     // Create a loader
-    addStyles(`${scriptSrc}/formio.embed.min.css`);
+    addStyles(`${config.updatePath ? config.updatePath() : scriptSrc}/formio.embed.min.css`);
     debug(&apos;Creating loader&apos;);
     const loader = createElement(&apos;div&apos;, {
       &apos;class&apos;: &apos;formio-loader&apos;
