@@ -28,8 +28,8 @@ export function embed(config = {}) {
       config.formioPath(scriptSrc);
     }
     scriptSrc = scriptSrc.join('/');
-    query.script = query.script || (`${scriptSrc}/formio.form.min.js`);
-    query.styles = query.styles || (`${scriptSrc}/formio.form.min.css`);
+    query.script = query.script || (`${config.updatePath ? config.updatePath() :scriptSrc}/formio.form.min.js`);
+    query.styles = query.styles || (`${config.updatePath ? config.updatePath() :scriptSrc}/formio.form.min.css`);
     const cdn = query.cdn || 'https://cdn.jsdelivr.net/npm';
 
     const resolveLibs = (cdn) => {
@@ -52,7 +52,7 @@ export function embed(config = {}) {
         libs.uswds.js = `${url}/uswds/${cdn.getVersion('uswds')}/uswds.min.js`;
         libs.uswds.css = `${url}/uswds/${cdn.getVersion('uswds')}/uswds.min.css`;
         libs.fontawesome.css = `${url}/font-awesome/${cdn.getVersion('font-awesome')}/css/font-awesome.min.css`;
-        libs.uswds.css = `${url}/bootstrap/${cdn.getVersion('bootstrap')}/css/bootstrap.min.css`;
+        libs.bootstrap.css = `${url}/bootstrap/${cdn.getVersion('bootstrap')}/css/bootstrap.min.css`;
       }
       return libs;
     };
@@ -75,9 +75,6 @@ export function embed(config = {}) {
       before: () => {},
       after: () => {}
     }, config);
-    if (config.addPremiumLib) {
-      config.addPremiumLib(config.libs, scriptSrc);
-    }
 
     /**
      * Print debug statements.
@@ -112,6 +109,10 @@ export function embed(config = {}) {
 
     debug('Embedding Configuration', config);
 
+    if (config.addPremiumLib) {
+      config.addPremiumLib(config, scriptSrc);
+    }
+
     // The id for this embedded form.
     const id = `formio-${Math.random().toString(36).substring(7)}`;
     config.id = id;
@@ -125,7 +126,7 @@ export function embed(config = {}) {
     thisScript.parentNode.insertBefore(wrapper, thisScript.parentNode.firstElementChild.nextSibling);
 
     // If we include the libraries, then we will attempt to run this in shadow dom.
-    if (config.includeLibs && (typeof wrapper.attachShadow === 'function')) {
+    if (config.includeLibs && (typeof wrapper.attachShadow === 'function') && !config.premium) {
       wrapper = wrapper.attachShadow({
         mode: 'open'
       });
@@ -190,7 +191,7 @@ export function embed(config = {}) {
     };
 
     // Create a loader
-    addStyles(`${scriptSrc}/formio.embed.min.css`);
+    addStyles(`${config.updatePath ? config.updatePath() : scriptSrc}/formio.embed.min.css`);
     debug('Creating loader');
     const loader = createElement('div', {
       'class': 'formio-loader'
@@ -218,7 +219,6 @@ export function embed(config = {}) {
     // Add the main formio script.
     addScript(config.script, 'Formio', (Formio) => {
       const renderForm = () => {
-        config.libs = resolveLibs(query.cdn || Formio.cdn);
         addStyles(config.style);
         const isReady = config.before(Formio, formElement, config) || Formio.Promise.resolve();
         const form = (config.form || config.src);
@@ -361,12 +361,14 @@ export function embed(config = {}) {
       }
       // Default bootstrap + fontawesome.
       else if (config.includeLibs) {
+        Formio.cdn = new CDN();
+        config.libs = resolveLibs(query.cdn || Formio.cdn);
         addStyles(config.libs.fontawesome.css, true);
         addStyles(config.libs.bootstrap.css);
       }
-      else if (config.libs.premium) {
-        addStyles(config.libs.premium.css);
-        addScript(config.libs.premium.js, 'premium', (premium) => {
+      if (config.premium) {
+        addStyles(config.premium.css);
+        addScript(config.premium.js, 'premium', (premium) => {
           debug('Using premium');
           Formio.use(premium);
           renderForm();
@@ -374,7 +376,7 @@ export function embed(config = {}) {
       }
 
       // Render the form if no template is provided.
-      if (!config.template && !config.libs.premium) {
+      if (!config.template && !config.premium) {
         renderForm();
       }
     });

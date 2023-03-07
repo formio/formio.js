@@ -504,6 +504,15 @@ class Formio {
   }
 
   /**
+   * Sets OAuth Logout URL.
+   *
+   * @return {*}
+   */
+   oauthLogoutURI(uri, options) {
+    return Formio.oauthLogoutURI(uri, Object.assign({ formio: this }, this.options, options));
+  }
+
+  /**
    * Returns the JWT token for this instance.
    *
    * @return {*}
@@ -907,6 +916,10 @@ class Formio {
       return NativePromise.resolve(cloneResponse(_Formio.cache[cacheKey]));
     }
 
+    if (url[0] === '/') {
+      url = Formio.baseUrl() + url;
+    }
+
     // Set up and fetch request
     const headers = header || new Headers(opts.headers || {
       'Accept': 'application/json',
@@ -1155,6 +1168,14 @@ class Formio {
     }
   }
 
+  static oauthLogoutURI(uri, options) {
+    options = (typeof options === 'string') ? { namespace: options } : options || {};
+    const logoutURIName = `${options.namespace || Formio.namespace || 'formio'}LogoutAuthUrl`;
+    Formio.tokens[logoutURIName];
+    localStorage.setItem(logoutURIName, uri);
+    return Formio.tokens[logoutURIName];
+  }
+
   static setUser(user, opts = {}) {
     const userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
     const storage = localStorage.getItem('useSessionToken') ? sessionStorage : localStorage;
@@ -1350,8 +1371,6 @@ class Formio {
         options
       });
     }
-
-    authUrl = `${Formio.baseUrl}/current`;
     this.currentUserResolved = false;
     return Formio.makeRequest(formio, 'currentUser', authUrl, 'GET', null, options)
       .then((response) => {
@@ -1653,6 +1672,9 @@ Formio.version = '---VERSION---';
 Formio.pathType = '';
 Formio.events = new EventEmitter();
 Formio.cdn = new CDN();
+if ((Formio.version || '').includes('rc')) {
+  Formio.cdn.setBaseUrl('https://cdn.test-form.io');
+}
 
 if (typeof global !== 'undefined') {
   Formio.addToGlobal(global);

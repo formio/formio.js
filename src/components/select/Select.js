@@ -198,10 +198,10 @@ export default class SelectComponent extends ListComponent {
   }
 
   selectValueAndLabel(data) {
-    const value = this.getOptionValue(this.itemValue(data));
+    const value = this.getOptionValue((this.isEntireObjectDisplay() && !this.itemValue(data)) ? data : this.itemValue(data));
     return {
       value,
-      label: this.itemTemplate(data, value)
+      label: this.itemTemplate((this.isEntireObjectDisplay() && !_.isObject(data.data)) ? { data: data } : data, value)
     };
   }
 
@@ -292,9 +292,18 @@ export default class SelectComponent extends ListComponent {
   addValueOptions(items) {
     items = items || [];
     let added = false;
+    let data = this.dataValue;
+
+    // preset submission value with value property before request.
+    if (this.options.pdf && !items.length && this.component.dataSrc === 'url' && this.valueProperty) {
+      data = Array.isArray(data)
+        ? data.map(item => _.set({}, this.valueProperty, item))
+        : _.set({}, this.valueProperty, data);
+    }
+
     if (!this.selectOptions.length) {
       // Add the currently selected choices if they don't already exist.
-      const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
+      const currentChoices = Array.isArray(data) ? data : [data];
       added = this.addCurrentChoices(currentChoices, items);
       if (!added && !this.component.multiple) {
         this.addPlaceholder();
@@ -844,6 +853,7 @@ export default class SelectComponent extends ListComponent {
         containerInner: this.transform('class', 'form-control ui fluid selection dropdown')
       },
       addItemText: false,
+      allowHTML: true,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
       noResultsText: this.t('No results found'),
@@ -901,6 +911,7 @@ export default class SelectComponent extends ListComponent {
     this.attachRefreshOnBlur();
 
     if (this.component.widget === 'html5') {
+      this.addFocusBlurEvents(input);
       this.triggerUpdate(null, true);
 
       if (this.visible) {
@@ -942,12 +953,12 @@ export default class SelectComponent extends ListComponent {
       else {
         this.focusableElement = this.choices.containerInner.element;
         this.choices.containerOuter.element.setAttribute('tabIndex', '-1');
-        if (choicesOptions.searchEnabled) {
-          this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
-        }
+        this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
       }
 
-      if (this.itemsFromUrl) {
+      this.addFocusBlurEvents(this.focusableElement);
+
+      if (this.itemsFromUrl && !this.component.noRefreshOnScroll) {
         this.scrollList = this.choices.choiceList.element;
         this.addEventListener(this.scrollList, 'scroll', () => this.onScroll());
       }
@@ -1231,7 +1242,7 @@ export default class SelectComponent extends ListComponent {
     return done;
   }
 
-  normalizeSingleValue(value, retainObject) {
+  normalizeSingleValue(value) {
     if (_.isNil(value)) {
       return;
     }
@@ -1252,7 +1263,6 @@ export default class SelectComponent extends ListComponent {
       _.set(submission.metadata.selectData, this.path, this.templateData[value]);
     }
 
-    const displayEntireObject = this.isEntireObjectDisplay();
     const dataType = this.component.dataType || 'auto';
     const normalize = {
       value,
@@ -1286,10 +1296,6 @@ export default class SelectComponent extends ListComponent {
       },
 
       object() {
-        if (_.isObject(this.value) && displayEntireObject && !retainObject) {
-          this.value = JSON.stringify(this.value);
-        }
-
         return this;
       },
 

@@ -7,6 +7,7 @@ export default [
     title: 'Simple',
     key: 'simple-conditional',
     theme: 'default',
+    weight: 105,
     components: [
       {
         type: 'select',

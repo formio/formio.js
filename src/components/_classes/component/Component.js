@@ -8,7 +8,7 @@ import { GlobalFormio as Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import {
-  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent,
+  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent, currentTimezone
 } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
@@ -281,6 +281,8 @@ export default class Component extends Element {
     // Add the id to the component.
     this.component.id = this.id;
 
+    this.afterComponentAssign();
+
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
 
@@ -519,6 +521,10 @@ export default class Component extends Element {
     }
   }
 
+  afterComponentAssign() {
+    //implement in extended classes
+  }
+
   createAddon(addonConfiguration) {
     const name = addonConfiguration.name;
     if (!name) {
@@ -526,7 +532,7 @@ export default class Component extends Element {
     }
 
     const settings = addonConfiguration.settings?.data || {};
-    const Addon = Addons[name];
+    const Addon = Addons[name.value];
 
     let addon = null;
 
@@ -539,7 +545,7 @@ export default class Component extends Element {
         this.addons.push(addon);
       }
       else {
-        console.warn(`Addon ${name} does not support component of type ${this.component.type}.`);
+        console.warn(`Addon ${name.label} does not support component of type ${this.component.type}.`);
       }
     }
 
@@ -1030,6 +1036,32 @@ export default class Component extends Element {
   get submissionTimezone() {
     this.options.submissionTimezone = this.options.submissionTimezone || _.get(this.root, 'options.submissionTimezone');
     return this.options.submissionTimezone;
+  }
+
+  get timezone() {
+    return this.getTimezone(this.component);
+  }
+
+  getTimezone(settings) {
+    if (settings.timezone) {
+      return settings.timezone;
+    }
+    if (settings.displayInTimezone === 'utc') {
+      return 'UTC';
+    }
+    const submissionTimezone = this.submissionTimezone;
+    if (
+      submissionTimezone &&
+      (
+        (settings.displayInTimezone === 'submission') ||
+        ((this.options.pdf || this.options.server) && (settings.displayInTimezone === 'viewer'))
+      )
+    ) {
+      return submissionTimezone;
+    }
+
+    // Return current timezone if none are provided.
+    return currentTimezone();
   }
 
   loadRefs(element, refs) {
@@ -2701,7 +2733,10 @@ export default class Component extends Element {
       return this.evaluate(this.component.calculateValue, {
         value: dataValue,
         data,
-        row: row || this.data
+        row: row || this.data,
+        submission: this.root?._submission || {
+          data: this.rootValue
+        }
       }, 'value');
   }
 
@@ -3042,6 +3077,39 @@ export default class Component extends Element {
       if (input?.widget && input.widget.setErrorClasses) {
         input.widget.setErrorClasses(hasErrors);
       }
+    });
+  }
+
+  addFocusBlurEvents(element) {
+    this.addEventListener(element, 'focus', () => {
+      if (this.root.focusedComponent !== this) {
+        if (this.root.pendingBlur) {
+          this.root.pendingBlur();
+        }
+
+        this.root.focusedComponent = this;
+
+        this.emit('focus', this);
+      }
+      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+        this.root.pendingBlur.cancel();
+        this.root.pendingBlur = null;
+      }
+    });
+    this.addEventListener(element, 'blur', () => {
+      this.root.pendingBlur = FormioUtils.delay(() => {
+        this.emit('blur', this);
+        if (this.component.validateOn === 'blur') {
+          this.root.triggerChange({ fromBlur: true }, {
+            instance: this,
+            component: this.component,
+            value: this.dataValue,
+            flags: { fromBlur: true }
+          });
+        }
+        this.root.focusedComponent = null;
+        this.root.pendingBlur = null;
+      });
     });
   }
 

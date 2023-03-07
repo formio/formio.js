@@ -4,10 +4,74 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.15.0-rc.16]
+## [Unreleased: 4.16.0-rc.1]
+### Fixed
+ - FIO-6229: fixed displaying html value on Data tab for inputFormat plain
+ - FIO-6191: fixed an issue where addons are not created
+ - FIO-6148: fixed an issue where boxsign returns an error when editing submission
+ - Fixed an issue where Radio button fragility would sometimes reset the value erroneously.
+ - FIO-6193: Moved plan info into tooltips for encrypted fields
+ - FIO-3957: Fixed an issue where Data Map inside conditionally shown Panel does not show its values in the view mode
+ - Ensure that url requests to relative root should prepend the base url.
+ - FIO-6164: Fixed an issue with date/time component localization #5031
+ - FIO-6339: File upload component fix
+ - FIO-6193: Changed tooltip copy for encrypted fields
+ - FIO-6431: fixed display of premium components using Quick Inline Embed link
+ 
+## 4.15.0-rc.17
+### Added
+ - FIO-5474: added new simple conditionals
+
+### Fixed
+ - FIO-5995: Timezones url fixed
+ - FIO-6005: Fixing multiple issues with DateTime not showing correct ti
+ - FIO-5750: Fixing timezones in emails.
+ - FIO-6088: Fixing datetime issues with the calendar widget.
+ - FIO-5937: fixed an issue where validation errors donot keep for panel child components after expanding collapsible panel
+ - FIO-6084: fixed CalendarWidget locale loading
+ - FIO-5511: ensure contextual row data is validated correctly for nested components
+ - FIO-5369: fixed an issue where clicking on the tooltip enables the checkboxes on the component settings page
+ - FIO-5246: fixed unique validation for submission with draft state
+ - FIO-5335: fixed an issue where logic triggered by events does not work for hidden nested components
+ - FIO-5288: fixed an issue where existing resource not saving property name correctly
+ - FIO-4956: fixed an issue where on view submission tab long text values not split up by spaces are displayed in one line
+ - FIO-5408 added ability to drag the pages icons
+ - Reverts FIO-4705: fixed an issue with bad request error in console when render pdf form
+ - FIO-5460: fixed an issue where blur and focus events are not fired for select and address components
+ - FIO-5811: added scrollup to button next wizard if has error
+ - FIO-5904: fixed saving data for Components outside of Wizards
+ - FIO-3295: fixed an issue where data grid group rows were not hidden on the row click when bootstrap 4 is used
+ - FIO-5785: Fixed Select component submission showing id instead of template for URL data source
+ - FIO-6078: Hidden Select Boxes validation do not prevent submission
+ - FIO-6100: Provide submission object to value calculation (eg. To relate to submission metadata in calculation)
+ - FIO-4343: Fixes datagrid reorder, remove row and drop new component columns using much space
+ - FIO-6001: fixed an issue where oauth action does not work for buttons inside layout/data components
+ - FIO-4664: Added tests for conditionals based on Address component
+ - FIO-5853: added setting to disable autocomplete
+ - FIO-5963: preset submission value with value property before request for pdf
+ - FIO-5685: made Data in Select with Entire Object to set as an object
+ - FIO-5262: added option not to make new api requests when scrolling through search results
+ - FIO-4551: added unique IDs for components inside nested components
+ - fixed eslint errors and warnings
+ - fixed render tests based on changes in latest PRs
+ - FIO-5811: added scroll up if got error in wizard (improved solution)
+ - FIO-5992 added formio/core library
+ - FIO-6220: added some new methods to CDN class
+ - FIO-6621: added rc version determination for cdn url
+ - FIO-6029: update choices.js
+ - Fixing the formio.js build with choices.js minified styles being malf
+ - FIO-5302: added ability to choose when to apply mask between change and blur events
+
+## 4.15.0-rc.16
 ### Fixed
  - FIO-5627: fixed an issue where manual input does not work for date with full month format
  - CDN Updates
+ - FIO-5784: allow quick inline embed to pull in premium components from a deployed environment
+ - flatpickr-vpat replaced with flatpickr-formio
+ - FIO-5999: flatpickrType replaced with flatpickr-formio
+ - FIO-5784: fixed adding links for libs
+ - FIO-5765: fixed render tests for Bootstrap 5 in html mode
+ - FIO-5765: fixed tests
 
 ## 4.15.0-rc.15
 ### Fixed

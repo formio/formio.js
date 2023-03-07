@@ -6,6 +6,7 @@ module.exports = {
   exit: true,
   require: [
     '@babel/register',
+    'mock-local-storage',
     'jsdom-global/register'
   ]
 };
