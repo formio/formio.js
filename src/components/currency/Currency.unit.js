@@ -321,8 +321,9 @@ describe('Currency Component', () => {
 
   it('Should return value as string properly for multiple values', (done) => {
     Harness.testCreate(CurrencyComponent, comp4).then((component) => {
+      component.refs.input = null;
       assert.equal(component.getValueAsString([100, 200, 300, 500]), '$100.00, $200.00, $300.00, $500.00');
       done();
-    });
+    }).catch(done);
   });
 });
