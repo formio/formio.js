@@ -83,7 +83,7 @@ export default (iconset, name, spinning) => {
             biName = 'window-stack';
             break;
         case 'cubes':
-            biName = 'bricks';
+            biName = 'boxes';
             break;
         case 'plus':
             biName = 'plus-lg';
