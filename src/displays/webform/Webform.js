@@ -943,7 +943,7 @@ export class Webform extends NestedDataComponent {
    * Build the form.
    */
   init() {
-    this._submission = this._submission || { data: {} };
+    this._submission = this._submission || { data: this._data || {} };
 
     // Remove any existing components.
     if (this.components && this.components.length) {
