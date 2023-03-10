@@ -103,6 +103,7 @@ export default class Wizard extends Webform {
   resetValue() {
     this.getPages({ all: true }).forEach((page) => page.resetValue());
     this.setPristine(true);
+    localStorage.removeItem(`wizard-data-${this._form._id}`);
   }
 
   init() {
@@ -643,7 +644,6 @@ export default class Wizard extends Webform {
     if (num === this.page) {
       return NativePromise.resolve();
     }
-
     if (num >= 0 && num < this.pages.length) {
       this.page = num;
 
@@ -905,10 +905,18 @@ export default class Wizard extends Webform {
     }
 
     if (!ignoreEstablishment) {
-      this.establishPages(submission.data);
+      if (!submission._id && localStorage.getItem(`wizard-data-${this._form._id}`)) {
+        this.establishPages(JSON.parse(localStorage.getItem(`wizard-data-${this._form._id}`)));
+      }
+      else {
+        this.establishPages(submission.data);
+      }
     }
     const changed = this.getPages({ all: true }).reduce((changed, page) => {
-      return this.setNestedValue(page, submission.data, flags, changed) || changed;
+      if (_.isEmpty(submission.data) && localStorage.getItem(`wizard-data-${this._form._id}`)) {
+        return  this.setNestedValue(page, JSON.parse(localStorage.getItem(`wizard-data-${this._form._id}`)), flags, changed) || changed;
+      }
+      return this.setNestedValue(page,  submission.data, flags, changed) || changed;
     }, false);
 
     if (changed) {
@@ -1001,6 +1009,9 @@ export default class Wizard extends Webform {
     if (this.options.readOnly && (this.prefixComps.length || this.suffixComps.length)) {
       this.redraw();
     }
+    if (!_.isEmpty(changes) && modified && !this.editMode) {
+      localStorage.setItem(`wizard-data-${this._form._id}`, JSON.stringify(this._data));
+    }
   }
 
   redraw() {
@@ -1056,6 +1067,11 @@ export default class Wizard extends Webform {
       });
     }
     return super.focusOnComponent(key);
+  }
+
+  onSubmit(submission, saved) {
+    super.onSubmit(submission,saved);
+    localStorage.removeItem(`wizard-data-${this._form._id}`);
   }
 }
 

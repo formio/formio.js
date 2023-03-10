@@ -38,6 +38,7 @@ import wizardWithFieldsValidationParent from '../test/forms/wizardWithFieldsVali
 import nestedConditionalWizard from '../test/forms/nestedConditionalWizard';
 import wizardWithPrefixComps from '../test/forms/wizardWithPrefixComps';
 import wizardPermission from '../test/forms/wizardPermission';
+import wizardWithSaveDraft from '../test/forms/wizardWithSaveDraft';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -1922,5 +1923,22 @@ it('Should show tooltip for wizard pages', function(done) {
         }, 200);
       }, 200);
     });
+  });
+});
+
+describe('Wizard tests 2', () => {
+  it('Should save data and page after reload', (done) => {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const form = _.cloneDeep(wizardWithSaveDraft.form);
+    wizard.setForm(form).then(() => {
+      wizard.data = wizardWithSaveDraft.data;
+      wizard.onChange();
+      window.location.reload();
+      setTimeout(() => {
+        assert.equal(wizard.data, wizardWithSaveDraft.data, 'Should check data after reload');
+        done();
+      }, 500);
+    }).catch((err) => done(err));
   });
 });
