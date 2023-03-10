@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Ensure that url requests to relative root should prepend the base url.
  - FIO-6164: Fixed an issue with date/time component localization #5031
  - FIO-6339: File upload component fix
- - FIO-6193 Changed tooltip copy for encrypted fields
+ - FIO-6193: Changed tooltip copy for encrypted fields
+ - FIO-6431: fixed display of premium components using Quick Inline Embed link
  
 ## 4.15.0-rc.17
 ### Added
