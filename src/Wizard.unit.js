@@ -1927,7 +1927,7 @@ it('Should show tooltip for wizard pages', function(done) {
 });
 
 describe('Wizard tests 2', () => {
-  it('Should save data and page after reload', (done) => {
+  it('Should save draft after reload', (done) => {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
     const form = _.cloneDeep(wizardWithSaveDraft.form);
