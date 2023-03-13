@@ -191,6 +191,24 @@ export default class Form extends Element {
       return NativePromise.resolve(this.instance);
     }
 
+    if (this.form?.components?.length && (!this.display || this.display === 'form') && display === 'wizard') {
+      const panels =  this.form.components.filter(comp => comp.type === 'panel');
+      if (panels.length < this.form.components.length) {
+        const message = 'Switching to the Wizard will remove all the components outside Panels. Are you sure you want to do this?';
+        const changeDisplay = window.confirm(this.t(message));
+        if (!changeDisplay) {
+          return;
+        }
+        else {
+          const form = {
+            ...this.form,
+            components: panels,
+          };
+          this.form = form;
+        }
+      }
+    }
+
     this.form.display = display;
     this.instance.destroy();
     this.instance = this.create(display);
