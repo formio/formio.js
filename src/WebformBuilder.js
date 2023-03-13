@@ -1112,7 +1112,7 @@ export default class WebformBuilder extends Component {
         config: this.options.formConfig || {}
       };
 
-      const fieldsToRemoveDoubleQuotes = ['label', 'tooltip', 'placeholder'];
+      const fieldsToRemoveDoubleQuotes = ['label', 'tooltip'];
       this.preview.form.components.forEach(component => this.replaceDoubleQuotes(component, fieldsToRemoveDoubleQuotes));
 
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
@@ -1254,7 +1254,7 @@ export default class WebformBuilder extends Component {
     if (index !== -1) {
       let submissionData = this.editForm.submission.data;
       submissionData = submissionData.componentJson || submissionData;
-      const fieldsToRemoveDoubleQuotes = ['label', 'tooltip', 'placeholder'];
+      const fieldsToRemoveDoubleQuotes = ['label', 'tooltip'];
 
       this.replaceDoubleQuotes(submissionData, fieldsToRemoveDoubleQuotes);
 
