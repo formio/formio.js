@@ -191,7 +191,7 @@ export default class Form extends Element {
       return NativePromise.resolve(this.instance);
     }
 
-    if (this.form?.components?.length && (!this.display || this.display === 'form') && display === 'wizard') {
+    if (this.options?.building && this.form?.components?.length && display === 'wizard') {
       const panels =  this.form.components.filter(comp => comp.type === 'panel');
       if (panels.length < this.form.components.length) {
         const message = 'Switching to the Wizard will remove all the components outside Panels. Are you sure you want to do this?';
