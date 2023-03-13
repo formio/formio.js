@@ -48,6 +48,10 @@ const Harness = {
     done();
   },
 
+  getFormBuilderObject() {
+    return formBuilder;
+  },
+
   getBuilder() {
     return formBuilder.instance;
   },

@@ -3,7 +3,14 @@ import NativePromise from 'native-promise-only';
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
 import Builders from '../lib/builders';
-import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase } from '../test/formtest';
+import {
+  uniqueApiKeys,
+  uniqueApiKeysLayout,
+  uniqueApiKeysSameLevel,
+  columnsForm,
+  resourceKeyCamelCase,
+  formWithComponentsOutsidePanels,
+} from '../test/formtest';
 import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
 
@@ -179,6 +186,29 @@ describe('WebformBuilder tests', function() {
           done();
         }, 150);
       }, 150);
+    }).catch(done);
+  });
+
+  it('Should ask for the confirmation and remove all the components outside panels when switch to Wizard', (done) => {
+    const builder = Harness.getFormBuilderObject();
+    builder.setForm(formWithComponentsOutsidePanels).then(() => {
+      let confirmMessage = null;
+      const confirm = window.confirm;
+      window.confirm = (message) => {
+        confirmMessage = message;
+        return true;
+      };
+
+      builder.setDisplay('wizard');
+
+      assert.equal(confirmMessage, 'Switching to the Wizard will remove all the components outside Panels. Are you' +
+        ' sure you want to do this?', 'Should call confirm method');
+      assert.equal(builder.form.components.length, 2, 'Should remove components outside panels when switch to the' +
+        ' Wizard display and confirm');
+
+      window.confirm = confirm;
+      builder.setDisplay('form');
+      done();
     }).catch(done);
   });
 });

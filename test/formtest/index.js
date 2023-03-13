@@ -41,6 +41,7 @@ const wizardWithSimpleConditionalPage = require('./wizardWithSimpleConditionalPa
 const wizardWithTooltip = require('./wizardWithTooltip.json');
 const resourceKeyCamelCase = require('./resourceKeyCamelCase.json');
 const tooltipActivateCheckbox = require('./tooltipActivateCheckbox.json');
+const formWithComponentsOutsidePanels = require('./formWithComponentsOutsidePanels.json');
 
 module.exports = {
   advanced,
@@ -86,4 +87,5 @@ module.exports = {
   wizardWithTooltip,
   resourceKeyCamelCase,
   tooltipActivateCheckbox,
+  formWithComponentsOutsidePanels,
 };
