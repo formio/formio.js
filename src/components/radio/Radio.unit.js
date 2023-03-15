@@ -12,7 +12,8 @@ import {
   comp5,
   comp6,
   comp7,
-  comp8
+  comp8,
+  comp9
 } from './fixtures';
 
 describe('Radio Component', () => {
@@ -28,6 +29,34 @@ describe('Radio Component', () => {
       assert.equal(component.getValueAsString(1), 'one');
       assert.equal(component.getValueAsString(2), 'two');
     });
+  });
+
+  it('Should build a radio component with URL DataSrc', (done) => {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        const values = [
+          { name : 'Alabama', abbreviation : 'AL' },
+          { name : 'Alaska', abbreviation: 'AK' },
+          { name: 'American Samoa', abbreviation: 'AS' }
+        ];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const radio = form.getComponent('radio');
+
+      setTimeout(()=>{
+        assert.equal(radio.loadedOptions.length, 3);
+
+        Formio.makeRequest = originalMakeRequest;
+        done();
+      }, 200);
+    }).catch(done);
   });
 
   it('Should save checked value after redrawing if storage type is Number', (done) => {
