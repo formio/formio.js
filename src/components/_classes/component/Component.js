@@ -880,10 +880,13 @@ export default class Component extends Element {
     return null;
   }
 
+  getFormattedAttribute(attr) {
+    return attr ? this.t(attr, { _userInput: true }).replace(/"/g, '&quot;') : '';
+  }
+
   getFormattedTooltip(tooltipValue) {
     const tooltip = this.interpolate(tooltipValue || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
-
-    return tooltip ? this.t(tooltip, { _userInput: true }).replace(/"/g, '&quot;') : '';
+    return this.getFormattedAttribute(tooltip);
   }
 
   isHtmlRenderMode() {
