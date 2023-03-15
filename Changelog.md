@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 4.16.0-rc.1]
+### Added
+ - FIO-4429: Add support for pdf auto conversion fields assignment
+ - Added basic keyboard accessibility for formbuilder
+ 
 ### Fixed
  - FIO-6229: fixed displaying html value on Data tab for inputFormat plain
  - FIO-6191: fixed an issue where addons are not created
@@ -17,7 +21,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6339: File upload component fix
  - FIO-6193: Changed tooltip copy for encrypted fields
  - FIO-6431: fixed display of premium components using Quick Inline Embed link
- 
+ - FIO-6301: Fixed Signature component UI when label is shown and it is required
+ - FIO-6323: updated version of the quill library
+ - FIO-5272: use the url data source type for radio buttons and select boxes
+ - FIO-5027: fixes an issue where an asterisk is not shown for the required modal Checkbox 
+
 ## 4.15.0-rc.17
 ### Added
  - FIO-5474: added new simple conditionals
