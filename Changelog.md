@@ -24,7 +24,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6301: Fixed Signature component UI when label is shown and it is required
  - FIO-6323: updated version of the quill library
  - FIO-5272: use the url data source type for radio buttons and select boxes
- - FIO-5027: fixes an issue where an asterisk is not shown for the required modal Checkbox 
+ - FIO-5027: fixes an issue where an asterisk is not shown for the required modal Checkbox
+ - FIO-6469: fixed an issue where Double quotes turned to single quotes in placeholder text
+ - fixed render tests
 
 ## 4.15.0-rc.17
 ### Added
