@@ -881,7 +881,7 @@ export default class Component extends Element {
   }
 
   getFormattedAttribute(attr) {
-    return this.t(attr, { _userInput: true }).replace(/"/g, '&quot;');
+    return attr ? this.t(attr, { _userInput: true }).replace(/"/g, '&quot;') : '';
   }
 
   getFormattedTooltip(tooltipValue) {
