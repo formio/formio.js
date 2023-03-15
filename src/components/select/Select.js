@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { GlobalFormio as Formio } from '../../Formio';
+import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';

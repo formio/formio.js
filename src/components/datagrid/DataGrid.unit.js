@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import Harness from '../../../test/harness';
 import DataGridComponent from './DataGrid';
-import Formio from '../../Formio';
+import { Formio } from '../../Formio';
 
 import {
   comp1,

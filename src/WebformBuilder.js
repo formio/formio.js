@@ -3,7 +3,7 @@ import Component from './components/_classes/component/Component';
 import tippy from 'tippy.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
-import { GlobalFormio as Formio } from './Formio';
+import { Formio } from './Formio';
 import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';

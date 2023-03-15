@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import Harness from '../test/harness';
 import Wizard from './Wizard';
-import Formio from './Formio';
+import { Formio } from './Formio';
 import assert from 'power-assert';
 import _ from 'lodash';
 import wizardCond from '../test/forms/wizardConditionalPages';

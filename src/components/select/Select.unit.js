@@ -4,7 +4,7 @@ import Harness from '../../../test/harness';
 import SelectComponent from './Select';
 import { expect } from 'chai';
 import NativePromise from 'native-promise-only';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import _ from 'lodash';
 
 import {
