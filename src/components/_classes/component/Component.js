@@ -882,7 +882,7 @@ export default class Component extends Element {
 
   getFormattedTooltip(tooltipValue) {
     const tooltip = this.interpolate(tooltipValue || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
-    return tooltip ? this.getFormattedAttribute(tooltip) : '';
+    return this.getFormattedAttribute(tooltip);
   }
 
   isHtmlRenderMode() {
