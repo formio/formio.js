@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 5.0.0-rc.1]
+### Breaking Change
+ - Upgrade to Bootstrap 5
+ - Replace SDK with @formio/core SDK.
+ - Remove Semantic template and Bootstrap 3 template from build.  Use import @formio/bootstrap3 or @formio/semantic instead.
 
 ## 4.16.0-rc.1
 ### Added

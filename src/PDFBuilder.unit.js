@@ -1,7 +1,7 @@
 import { fake } from 'sinon';
 import { expect } from 'chai';
 
-import { GlobalFormio as Formio } from './Formio';
+import { Formio } from './Formio';
 import FormBuilder from './FormBuilder';
 
 describe('PDF Builder tests', () => {

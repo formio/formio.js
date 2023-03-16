@@ -14,9 +14,16 @@ const insert = require('gulp-insert');
 const template = require('gulp-template');
 const packageJson = require('./package.json');
 const _ = require('lodash');
+const clean = require('gulp-clean');
 
 // Clean lib folder.
-gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
+gulp.task('clean:dist', () => {
+  return gulp.src('dist', { read: false, allowEmpty: true }).pipe(clean());
+});
+gulp.task('clean:lib', () => {
+  return gulp.src('lib', { read: false, allowEmpty: true }).pipe(clean());
+});
+gulp.task('clean', gulp.parallel('clean:dist', 'clean:lib'));
 
 // ESLint
 gulp.task('eslint', function eslintTask() {

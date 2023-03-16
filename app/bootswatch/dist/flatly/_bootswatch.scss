@@ -1,198 +1,30 @@
-// Flatly 4.6.2
+// Flatly 5.2.2
 // Bootswatch
 
 
-// Variables ===================================================================
+// Variables
 
 $web-font-path: "https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" !default;
 @if $web-font-path {
   @import url($web-font-path);
 }
-// Navbar =======================================================================
+
+:root {
+  color-scheme: light;
+}
+
+// Navbar
 
 .bg-primary {
-  .navbar-nav .active > .nav-link,
-  .navbar-nav .nav-link:hover,
-  .navbar-nav .nav-link:focus,
   .navbar-nav .show > .nav-link,
-  .navbar-nav .nav-link.show,
-  .navbar-nav .nav-link.active {
+  .navbar-nav .nav-link.active,
+  .navbar-nav .nav-link:hover,
+  .navbar-nav .nav-link:focus {
     color: $success !important;
   }
 }
 
-// Buttons =====================================================================
-
-.btn {
-  &-secondary,
-  &-secondary:hover,
-  &-warning,
-  &-warning:hover {
-    color: $white;
-  }
-}
-
-// Tables ======================================================================
-
-.table {
-  &-primary,
-  &-secondary,
-  &-success,
-  &-info,
-  &-warning,
-  &-danger {
-    color: $white;
-  }
-
-  &-primary {
-    &,
-    > th,
-    > td {
-      background-color: $primary;
-    }
-  }
-
-  &-secondary {
-    &,
-    > th,
-    > td {
-      background-color: $secondary;
-    }
-  }
-
-  &-light {
-    &,
-    > th,
-    > td {
-      background-color: $light;
-    }
-  }
-
-  &-dark {
-    &,
-    > th,
-    > td {
-      background-color: $dark;
-    }
-  }
-
-  &-success {
-    &,
-    > th,
-    > td {
-      background-color: $success;
-    }
-  }
-
-  &-info {
-    &,
-    > th,
-    > td {
-      background-color: $info;
-    }
-  }
-
-  &-danger {
-    &,
-    > th,
-    > td {
-      background-color: $danger;
-    }
-  }
-
-  &-warning {
-    &,
-    > th,
-    > td {
-      background-color: $warning;
-    }
-  }
-
-  &-active {
-    &,
-    > th,
-    > td {
-      background-color: $table-active-bg;
-    }
-  }
-
-  &-hover {
-    .table-primary:hover {
-      &,
-      > th,
-      > td {
-        background-color: darken($primary, 5%);
-      }
-    }
-
-    .table-secondary:hover {
-      &,
-      > th,
-      > td {
-        background-color: darken($secondary, 5%);
-      }
-    }
-
-    .table-light:hover {
-      &,
-      > th,
-      > td {
-        background-color: darken($light, 5%);
-      }
-    }
-
-    .table-dark:hover {
-      &,
-      > th,
-      > td {
-        background-color: darken($dark, 5%);
-      }
-    }
-
-    .table-success:hover {
-      &,
-      > th,
-      > td {
-        background-color: darken($success, 5%);
-      }
-    }
-
-    .table-info:hover {
-      &,
-      > th,
-      > td {
-        background-color: darken($info, 5%);
-      }
-    }
-
-    .table-danger:hover {
-      &,
-      > th,
-      > td {
-        background-color: darken($danger, 5%);
-      }
-    }
-
-    .table-warning:hover {
-      &,
-      > th,
-      > td {
-        background-color: darken($warning, 5%);
-      }
-    }
-
-    .table-active:hover {
-      &,
-      > th,
-      > td {
-        background-color: $table-active-bg;
-      }
-    }
-
-  }
-}
-
-// Navs ========================================================================
+// Navs
 
 .nav-tabs {
   .nav-link.active,
@@ -211,28 +43,17 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0
   }
 }
 
-// Indicators ==================================================================
-
-.close {
-  text-decoration: none;
-  opacity: .4;
-
-  &:hover,
-  &:focus {
-    opacity: 1;
-  }
-}
+// Indicators
 
 .badge {
-  &-secondary,
-  &-warning {
-    color: $white;
+  &.bg-light {
+    color: $dark;
   }
 }
 
 .alert {
-  border: none;
   color: $white;
+  border: none;
 
   a,
   .alert-link {
@@ -259,16 +80,12 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0
   }
 }
 
-// Containers ==================================================================
+// Containers
 
 .modal,
-.toast {
-  .close {
-    color: $black;
-
-    &:not(:disabled):not(.disabled):hover,
-    &:not(:disabled):not(.disabled):focus {
-      color: $black;
-    }
+.toast,
+.offcanvas {
+  .btn-close {
+    background-image: escape-svg(url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$black}'><path d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/></svg>"));
   }
 }

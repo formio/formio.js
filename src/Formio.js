@@ -5,6 +5,7 @@ import Providers from './providers';
 
 Formio.cdn = new CDN();
 Formio.Templates = Templates;
+Formio.Providers = Providers;
 
 const isNil = (val) => val === null || val === undefined;
 Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback, abortCallback) {
