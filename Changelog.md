@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Replace SDK with @formio/core SDK.
  - Remove Semantic template and Bootstrap 3 template from build.  Use import @formio/bootstrap3 or @formio/semantic instead.
 
+### Fixed
+ - FIO-6512: cannot drag and drop components on to pdf first forms using mac
+
 ## 4.16.0-rc.1
 ### Added
  - FIO-4429: Add support for pdf auto conversion fields assignment
