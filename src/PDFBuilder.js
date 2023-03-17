@@ -441,7 +441,8 @@ export default class PDFBuilder extends WebformBuilder {
       if (getBrowserInfo().chrome && global.navigator.userAgentData.platform === 'macOS' && iframeRect.left < e.clientX && iframeRect.top < e.clientY) {
         this.dropEvent = e;
         this.dropEvent.dataTransfer.effectAllowed = 'all';
-      } else {
+      }
+      else {
         return;
       }
     }
