@@ -1545,7 +1545,6 @@ describe(&apos;Webform tests&apos;, function() {
   it(&apos;Should translate a form from options&apos;, done =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
     const translateForm = new Webform(formElement, {
-      template: &apos;bootstrap3&apos;,
       language: &apos;es&apos;,
       i18n: {
         es: {
@@ -1636,7 +1635,6 @@ describe(&apos;Webform tests&apos;, function() {
   it(&apos;Should translate a form after instantiate&apos;, done =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
     const translateForm = new Webform(formElement, {
-      template: &apos;bootstrap3&apos;,
       i18n: {
         es: {
           &apos;Default Label&apos;: &apos;Spanish Label&apos;
@@ -1666,7 +1664,6 @@ describe(&apos;Webform tests&apos;, function() {
   it(&apos;Should add a translation after instantiate&apos;, done =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
     const translateForm = new Webform(formElement, {
-      template: &apos;bootstrap3&apos;,
       i18n: {
         language: &apos;es&apos;,
         es: {
@@ -1699,9 +1696,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should switch a translation after instantiate&apos;, done =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
-    const translateForm = new Webform(formElement, {
-      template: &apos;bootstrap3&apos;,
-    });
+    const translateForm = new Webform(formElement);
     translateForm.setForm({
       title: &apos;Translate Form&apos;,
       components: [
@@ -1724,9 +1719,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should keep translation after redraw&apos;, done =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
-    const form = new Webform(formElement, {
-      template: &apos;bootstrap3&apos;,
-    });
+    const form = new Webform(formElement);
     const schema = {
       title: &apos;Translate Form&apos;,
       components: [
@@ -1765,9 +1758,7 @@ describe(&apos;Webform tests&apos;, function() {
   it(&apos;Should fire languageChanged event when language is set&apos;, done =&gt; {
     let isLanguageChangedEventFired = false;
     const formElement = document.createElement(&apos;div&apos;);
-    const form = new Webform(formElement, {
-      template: &apos;bootstrap3&apos;,
-    });
+    const form = new Webform(formElement);
     const schema = {
       title: &apos;Translate Form&apos;,
       components: [
@@ -1851,7 +1842,6 @@ describe(&apos;Webform tests&apos;, function() {
 
     const formElement = document.createElement(&apos;div&apos;);
     const translateForm = new Webform(formElement, {
-      template: &apos;bootstrap3&apos;,
       language: &apos;es&apos;,
       i18next: instance,
       i18n: {
@@ -1885,7 +1875,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should keep components valid if they are pristine&apos;, (done) =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
-    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    const form = new Webform(formElement, { language: &apos;en&apos; });
     form.setForm(settingErrors).then(() =&gt; {
       const inputEvent = new Event(&apos;input&apos;, { bubbles: true, cancelable: true });
       const input = form.element.querySelector(&apos;input[name=&quot;data[textField]&quot;]&apos;);
@@ -1907,7 +1897,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should delete value of hidden component if clearOnHide is turned on&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
-    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    const form = new Webform(formElement, { language: &apos;en&apos; });
     form.setForm(clearOnHide).then(() =&gt; {
       const visibleData = {
         data: {
@@ -1955,7 +1945,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   //BUG - uncomment once fixed (ticket FIO-6042)
   // it(&apos;Should not fire validations when fields are either protected or not persistent.&apos;, (done) =&gt; {
-  //   const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+  //   const form = new Webform(formElement,{ language: &apos;en&apos; });
   //   form.setForm(
   //     {
   //       title: &apos;protected and persistent&apos;,
@@ -2000,7 +1990,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should not fire validation on init.&apos;, (done) =&gt; {
     formElement.innerHTML = &apos;&apos;;
-    const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    const form = new Webform(formElement,{ language: &apos;en&apos; });
     form.setForm(
       { title: &apos;noValidation flag&apos;,
         components: [{
@@ -2031,7 +2021,6 @@ describe(&apos;Webform tests&apos;, function() {
     formElement.innerHTML = &apos;&apos;;
     const form = new Webform(formElement, {
       language: &apos;en&apos;,
-      template: &apos;bootstrap3&apos;,
       alwaysDirty: true
     });
     form.setForm(
@@ -2064,7 +2053,6 @@ describe(&apos;Webform tests&apos;, function() {
     formElement.innerHTML = &apos;&apos;;
     const form = new Webform(formElement, {
       language: &apos;en&apos;,
-      template: &apos;bootstrap3&apos;
     });
     form.setForm(
       { title: &apos;noValidation flag&apos;,
@@ -2096,7 +2084,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should not show any errors on setSubmission when providing an empty data object&apos;, (done) =&gt; {
     formElement.innerHTML = &apos;&apos;;
-    const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    const form = new Webform(formElement,{ language: &apos;en&apos; });
     form.setForm(
       { title: &apos;noValidation flag&apos;,
         components: [{
@@ -2126,7 +2114,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should not show errors when providing empty data object with data set.&apos;, (done) =&gt; {
     formElement.innerHTML = &apos;&apos;;
-    const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    const form = new Webform(formElement,{ language: &apos;en&apos; });
     form.setForm(
       { title: &apos;noValidation flag&apos;,
         components: [{
@@ -2156,7 +2144,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should show errors on setSubmission when providing explicit data values.&apos;, (done) =&gt; {
     formElement.innerHTML = &apos;&apos;;
-    const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    const form = new Webform(formElement,{ language: &apos;en&apos; });
     form.setForm(
       { title: &apos;noValidation flag&apos;,
         components: [{
@@ -2191,7 +2179,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should not show errors on setSubmission with noValidate:TRUE&apos;, (done) =&gt; {
     formElement.innerHTML = &apos;&apos;;
-    const form = new Webform(formElement,{ language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    const form = new Webform(formElement,{ language: &apos;en&apos; });
     form.setForm(
       { title: &apos;noValidation flag&apos;,
         components: [{
@@ -2331,7 +2319,7 @@ describe(&apos;Webform tests&apos;, function() {
   describe(&apos;getValue and setValue&apos;, () =&gt; {
     it(&apos;should setValue and getValue&apos;, (done) =&gt; {
       formElement.innerHTML = &apos;&apos;;
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      const form = new Webform(formElement, { language: &apos;en&apos; });
       form.setForm({
         components: [
           {
@@ -2404,8 +2392,7 @@ describe(&apos;Webform tests&apos;, function() {
       const formElement = document.createElement(&apos;div&apos;);
       const form = new Webform(formElement, {
         readOnly: true,
-        language: &apos;en&apos;,
-        template: &apos;bootstrap3&apos;
+        language: &apos;en&apos;
       });
       form.setForm(Conditions.form).then(() =&gt; {
         Harness.testConditionals(form, {
@@ -2429,7 +2416,7 @@ describe(&apos;Webform tests&apos;, function() {
   describe(&apos;Validate onBlur&apos;, () =&gt; {
     it(&apos;Should keep component valid onChange&apos;, (done) =&gt; {
       formElement.innerHTML = &apos;&apos;;
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      const form = new Webform(formElement, { language: &apos;en&apos; });
       form.setForm(validationOnBlur).then(() =&gt; {
         const field = form.components[0];
         const field2 = form.components[1];
@@ -2457,7 +2444,7 @@ describe(&apos;Webform tests&apos;, function() {
 
     it(&apos;Should keep components inside DataGrid valid onChange&apos;, (done) =&gt; {
       formElement.innerHTML = &apos;&apos;;
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      const form = new Webform(formElement, { language: &apos;en&apos; });
       form.setForm(dataGridOnBlurValidation).then(() =&gt; {
         const component = form.components[0];
         Harness.setInputValue(component, &apos;data[dataGrid][0][textField]&apos;, &apos;12&apos;);
@@ -2481,7 +2468,7 @@ describe(&apos;Webform tests&apos;, function() {
   describe(&apos;Reset values&apos;, () =&gt; {
     it(&apos;Should reset all values correctly.&apos;, () =&gt; {
       formElement.innerHTML = &apos;&apos;;
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      const form = new Webform(formElement, { language: &apos;en&apos; });
       return form.setForm(
         {
           components: [
@@ -2880,7 +2867,7 @@ describe(&apos;Webform tests&apos;, function() {
     };
     it(&apos;Should reset all values correctly.&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      const form = new Webform(formElement, { language: &apos;en&apos; });
       form.setForm(calculateValueWithManualOverride).then(() =&gt; {
         const dataGrid = form.getComponent(&apos;dataGrid&apos;);
         dataGrid.setValue([{ label: &apos;yes&apos; }, { label: &apos;no&apos; }]);
@@ -2915,7 +2902,7 @@ describe(&apos;Webform tests&apos;, function() {
 
     it(&apos;Should apply submission metadata value in calculation.&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      const form = new Webform(formElement, { language: &apos;en&apos; });
       form.setForm(calculateValueWithSubmissionMetadata).then(() =&gt; {
         const textField = form.getComponent(&apos;textField&apos;);
 
@@ -2939,7 +2926,7 @@ describe(&apos;Webform tests&apos;, function() {
 
     it(&apos;Should allow to change value.&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      const form = new Webform(formElement, { language: &apos;en&apos; });
       form.setForm(calculatedSelectboxes).then(() =&gt; {
         const radio = form.getComponent([&apos;radio&apos;]);
         radio.setValue(&apos;a&apos;);
@@ -2988,7 +2975,7 @@ describe(&apos;Webform tests&apos;, function() {
     };
     it(&apos;Test rendering previews after the submission is set&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      const form = new Webform(formElement, { language: &apos;en&apos; });
       form.setForm(modalEditComponents).then(() =&gt; {
         return form.setSubmission(submission, { fromSubmission: true }).then(() =&gt; {
           componentsKeys.forEach((key) =&gt; {
@@ -3005,7 +2992,7 @@ describe(&apos;Webform tests&apos;, function() {
 
     it(&apos;Test updating previews after aboting changes&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+      const form = new Webform(formElement, { language: &apos;en&apos; });
       form.setForm(modalEditComponents).then(() =&gt; {
         return form.setSubmission(submission, { fromSubmission: true }).then(() =&gt; {
           const comp = form.getComponent([&apos;textfield&apos;]);
@@ -3029,7 +3016,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   describe(&apos;Initially Collapsed Panel&apos;, () =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
-    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    const form = new Webform(formElement, { language: &apos;en&apos; });
     form.setForm(initiallyCollapsedPanel).then(() =&gt; {
       it(&apos;Should be collapsed&apos;, (done) =&gt; {
         try {
@@ -3059,7 +3046,7 @@ describe(&apos;Webform tests&apos;, function() {
   describe(&apos;Calculate Value&apos;, () =&gt; {
     it(&apos;Should calculate value when set submission if the component is not persistent&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos;, pdf: true });
+      const form = new Webform(formElement, { language: &apos;en&apos;, pdf: true });
       form.setForm(calculatedNotPersistentValue).then(() =&gt; {
         form.setSubmission({
           data:
@@ -3079,7 +3066,7 @@ describe(&apos;Webform tests&apos;, function() {
     });
     it(&apos;Should calculate value by datasouce component when editing mode is on&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos;, pdf: true });
+      const form = new Webform(formElement, { language: &apos;en&apos;, pdf: true });
       form.setForm(calculateValueInEditingMode).then(() =&gt; {
         form.editing = true;
         form.setSubmission({
@@ -3104,7 +3091,7 @@ describe(&apos;Webform tests&apos;, function() {
     });
     it(&apos;Should calculate value properly in editing mode&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos;, pdf: true });
+      const form = new Webform(formElement, { language: &apos;en&apos;, pdf: true });
       form.setForm(calculatedValue).then(() =&gt; {
         form.editing = true;
         form.setSubmission({
@@ -3132,7 +3119,7 @@ describe(&apos;Webform tests&apos;, function() {
     });
     it(&apos;Should not override value which was set from submission&apos;, (done) =&gt; {
       const formElement = document.createElement(&apos;div&apos;);
-      const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos;, pdf: true });
+      const form = new Webform(formElement, { language: &apos;en&apos;, pdf: true });
       form.setForm(calculateValueWithManualOverrideLableValueDataGrid).then(() =&gt; {
         form.editing = true;
         form.setSubmission({
@@ -3160,7 +3147,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should set different ids for components inside different Table rows&apos;, (done) =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
-    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos;, pdf: true });
+    const form = new Webform(formElement, { language: &apos;en&apos;, pdf: true });
     form.setForm(conditionalDataGridWithTableAndRadio).then(() =&gt; {
       const radioInspection0 = form.getComponent([&apos;inspectionDataGrid&apos;, 0, &apos;initialExam&apos;]);
       Harness.dispatchEvent(
@@ -3227,7 +3214,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should render components properly&apos;, (done) =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
-    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    const form = new Webform(formElement, { language: &apos;en&apos; });
     form.setForm(multipleTextareaInsideConditionalComponent).then(() =&gt; {
       form.setSubmission({
         data: {
@@ -3252,7 +3239,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should disable all the components inside Nested Form if it is disabled&apos;, (done) =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
-    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    const form = new Webform(formElement, { language: &apos;en&apos; });
     form.setForm(disabledNestedForm).then(() =&gt; {
       assert.equal(form.components[0].disabled, false, &apos;Component that is outside of disabled Nested Form should be editable&apos;);
       const subFormComponents = form.components[1].subForm.components;
@@ -3263,7 +3250,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should restore value correctly if NestedForm is saved as reference&apos;, (done) =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
-    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    const form = new Webform(formElement, { language: &apos;en&apos; });
     form.setForm(nestedFormInsideDataGrid).then(() =&gt; {
       const nestedForm = form.getComponent([&apos;dataGrid&apos;, 0, &apos;form1&apos;]);
       const submissionWithIdOnly = { _id: &apos;1232&apos;, data: {} };
@@ -3304,7 +3291,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should add and clear input error classes correctly&apos;, (done) =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
-    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    const form = new Webform(formElement, { language: &apos;en&apos; });
 
     form.setForm(UpdateErrorClassesWidgets).then(() =&gt; {
       const checkbox = form.getComponent(&apos;showDate&apos;);
@@ -3760,7 +3747,7 @@ describe(&apos;Webform tests&apos;, function() {
 
   it(&apos;Should execute clearOnHide if visibility of the component inside an EditGrid has changed&apos;, (done) =&gt; {
     const formElement = document.createElement(&apos;div&apos;);
-    const form = new Webform(formElement, { language: &apos;en&apos;, template: &apos;bootstrap3&apos; });
+    const form = new Webform(formElement, { language: &apos;en&apos; });
 
     form.setForm(testClearOnHideInsideEditGrid).then(() =&gt; {
       form.submission = {
@@ -4015,7 +4002,7 @@ describe(&apos;Webform tests&apos;, function() {
         each(formTest.tests, (formTestTest, title) =&gt; {
           it(title, function() {
             const formElement = document.createElement(&apos;div&apos;);
-            const form = new Webform(formElement, { template: &apos;bootstrap3&apos;, language: &apos;en&apos; });
+            const form = new Webform(formElement, { language: &apos;en&apos; });
             return form.setForm(formTest.form).then(function() {
               formTestTest(form, function(error) {
                 form.destroy();
