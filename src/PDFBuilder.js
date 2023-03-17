@@ -3,7 +3,7 @@ import NativePromise from 'native-promise-only';
 import { Formio } from './Formio';
 
 import WebformBuilder from './WebformBuilder';
-import { fastCloneDeep, getElementRect } from './utils/utils';
+import { fastCloneDeep, getElementRect , getBrowserInfo } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import PDF from './PDF';
@@ -443,6 +443,7 @@ export default class PDFBuilder extends WebformBuilder {
   onDragEnd(e) {
     // IMPORTANT - must retrieve offsets BEFORE disabling the dropzone - offsets will
     // reflect absolute positioning if accessed after the target element is hidden
+    const iframeRect = this.webform.refs.iframeContainer.getBoundingClientRect();
     const layerX = this.dropEvent ? this.dropEvent.layerX : null;
     const layerY = this.dropEvent ? this.dropEvent.layerY : null;
     const WIDTH = 100;
@@ -452,7 +453,14 @@ export default class PDFBuilder extends WebformBuilder {
 
     // If there hasn't been a drop event on the dropzone, we're done
     if (!this.dropEvent) {
-      return;
+      // a 'drop' event may not be emited in the chrome browser when using a Mac, therefore an additional check has been added
+      if (getBrowserInfo().chrome && global.navigator.userAgentData.platform === 'macOS' && iframeRect.left < e.clientX && iframeRect.top < e.clientY) {
+        this.dropEvent = e;
+        this.dropEvent.dataTransfer.effectAllowed = 'all';
+      }
+      else {
+        return;
+      }
     }
 
     const element = e.target;
@@ -471,8 +479,8 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform._form.components.push(schema);
 
     schema.overlay = {
-      top: layerY - this.itemOffsetY + HEIGHT,
-      left: layerX - this.itemOffsetX,
+      top: layerY ? (layerY - this.itemOffsetY + HEIGHT) : (e.clientY - iframeRect.top - (this.itemOffsetY - HEIGHT )*2),
+      left: layerX ? (layerX - this.itemOffsetX) : (e.clientX - iframeRect.left - this.itemOffsetX*2),
       width: WIDTH,
       height: HEIGHT
     };
