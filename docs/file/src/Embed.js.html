@@ -34,7 +34,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-GlobalFormio">GlobalFormio</a></span></span></li>
@@ -222,8 +221,8 @@ export function embed(config = {}) {
       config.formioPath(scriptSrc);
     }
     scriptSrc = scriptSrc.join(&apos;/&apos;);
-    query.script = query.script || (`${scriptSrc}/formio.form.min.js`);
-    query.styles = query.styles || (`${scriptSrc}/formio.form.min.css`);
+    query.script = query.script || (`${config.updatePath ? config.updatePath() :scriptSrc}/formio.form.min.js`);
+    query.styles = query.styles || (`${config.updatePath ? config.updatePath() :scriptSrc}/formio.form.min.css`);
     const cdn = query.cdn || &apos;https://cdn.jsdelivr.net/npm&apos;;
 
     const resolveLibs = (cdn) =&gt; {
@@ -385,7 +384,7 @@ export function embed(config = {}) {
     };
 
     // Create a loader
-    addStyles(`${scriptSrc}/formio.embed.min.css`);
+    addStyles(`${config.updatePath ? config.updatePath() : scriptSrc}/formio.embed.min.css`);
     debug(&apos;Creating loader&apos;);
     const loader = createElement(&apos;div&apos;, {
       &apos;class&apos;: &apos;formio-loader&apos;

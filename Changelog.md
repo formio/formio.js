@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.15.0-rc.19
+### Fixed
+ - Added basic keyboard accessibility for formbuilder
+ - FIO-5027: Fixes an issue where an asterisk is not shown for the required modal Checkbox
+ - Fio 5272 use the url data source type for radio buttons and select boxes
+ - FIO-6148: fixed an issue where boxsign returns an error when editing submission
+ - FIO-6191: Fixed an issue where addons are not created
+ - FIO-4429: Add support for pdf auto conversion fields assignment
+ - FIO-6229 fixed displaying html value on Data tab for inputFormat plain
+ - Fixing an issue where Radio button fragility would sometimes reset th…
+ - FIO-6193 Moved plan info into tooltips for encrypted fields
+ - FIO-6301 Fixed Signature component UI when label is shown and it is r…
+ - FIO-6323 updated version of the quill library
+ - FIO-6339: Ensure file upload titles formatted correctly
+ - FIO-6193 Changed tooltip copy for encrypted fields
+ - FIO-6431 fixed display of premium components using Quick Inline Embed link
+ - FIO-6469-Double quotes (") turned to single quotes (') in placeholder text
+ - FIO-6468-Custom_validation_on_Day_component_confusing_Day_and_Year
+ - Fio 6512 cannot drag and drop components on to pdf first forms using mac
+
 ## 4.15.0-rc.18
 ### Changed
  - Fixing the formio.js build with choices.js minified styles being malf…

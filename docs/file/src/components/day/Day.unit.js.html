@@ -34,7 +34,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/PDFBuilder.js~PDFBuilder.html">PDFBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-GlobalFormio">GlobalFormio</a></span></span></li>
@@ -367,6 +366,40 @@ describe(&apos;Day Component&apos;, () =&gt; {
       Harness.testElements(component, &apos;[disabled]&apos;, 4);
       done();
     });
+  });
+
+  it(&apos;Should use the default day value if the day field is hidden&apos;, (done) =&gt; {
+    comp1.dayFirst = false;
+    comp1.defaultValue = &apos;00/01/0000&apos;;
+    comp1.fields.day.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) =&gt; {
+      component.setValue(&apos;12/2023&apos;);
+      assert.equal(component.data.date, &apos;12/01/2023&apos;);
+      done();
+    });
+    comp1.fields.day.hide = false;
+  });
+
+  it(&apos;Should use the default month value if the month field is hidden&apos;, (done) =&gt; {
+    comp1.defaultValue = &apos;03/00/0000&apos;;
+    comp1.fields.month.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) =&gt; {
+      component.setValue(&apos;12/2023&apos;);
+      assert.equal(component.data.date, &apos;03/12/2023&apos;);
+      done();
+    });
+    comp1.fields.month.hide = false;
+  });
+
+  it(&apos;Should use the default year value if the year field is hidden&apos;, (done) =&gt; {
+    comp1.defaultValue = &apos;00/00/2023&apos;;
+    comp1.fields.year.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) =&gt; {
+      component.setValue(&apos;12/21&apos;);
+      assert.equal(component.data.date, &apos;12/21/2023&apos;);
+      done();
+    });
+    comp1.fields.year.hide = false;
   });
 });
 </code></pre>

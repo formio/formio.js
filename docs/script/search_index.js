@@ -480,12 +480,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "formiojs/src/pdfbuilder.js~pdfbuilder",
-    "class/src/PDFBuilder.js~PDFBuilder.html",
-    "<span>PDFBuilder</span> <span class=\"search-result-import-path\">formiojs/src/PDFBuilder.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/components/panel/panel.form.js~panel",
     "function/index.html#static-function-Panel",
     "<span>Panel</span> <span class=\"search-result-import-path\">formiojs/src/components/panel/Panel.form.js</span>",
@@ -2274,195 +2268,15 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/pdfbuilder.js",
-    "file/src/PDFBuilder.js.html",
-    "src/PDFBuilder.js",
-    "file"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#afterattach",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-afterAttach",
-    "src/PDFBuilder.js~PDFBuilder#afterAttach",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#attach",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-attach",
-    "src/PDFBuilder.js~PDFBuilder#attach",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#classname",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-className",
-    "src/PDFBuilder.js~PDFBuilder#className",
-    "member"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#constructor",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-constructor-constructor",
-    "src/PDFBuilder.js~PDFBuilder#constructor",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#createform",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-createForm",
-    "src/PDFBuilder.js~PDFBuilder#createForm",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#defaultgroups",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-get-defaultGroups",
-    "src/PDFBuilder.js~PDFBuilder#defaultGroups",
-    "member"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#destroy",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-destroy",
-    "src/PDFBuilder.js~PDFBuilder#destroy",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#dragdropenabled",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-dragDropEnabled",
-    "src/PDFBuilder.js~PDFBuilder#dragDropEnabled",
-    "member"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#dropevent",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-dropEvent",
-    "src/PDFBuilder.js~PDFBuilder#dropEvent",
-    "member"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#getparentcontainer",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-getParentContainer",
-    "src/PDFBuilder.js~PDFBuilder#getParentContainer",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#haspdf",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-get-hasPDF",
-    "src/PDFBuilder.js~PDFBuilder#hasPDF",
-    "member"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#highlightinvalidcomponents",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-highlightInvalidComponents",
-    "src/PDFBuilder.js~PDFBuilder#highlightInvalidComponents",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#init",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-init",
-    "src/PDFBuilder.js~PDFBuilder#init",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#initdropzoneevents",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-initDropzoneEvents",
-    "src/PDFBuilder.js~PDFBuilder#initDropzoneEvents",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#initiframeevents",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-initIframeEvents",
-    "src/PDFBuilder.js~PDFBuilder#initIframeEvents",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#itemoffsetx",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-itemOffsetX",
-    "src/PDFBuilder.js~PDFBuilder#itemOffsetX",
-    "member"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#itemoffsety",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-itemOffsetY",
-    "src/PDFBuilder.js~PDFBuilder#itemOffsetY",
-    "member"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#ondragend",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-onDragEnd",
-    "src/PDFBuilder.js~PDFBuilder#onDragEnd",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#ondragstart",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-onDragStart",
-    "src/PDFBuilder.js~PDFBuilder#onDragStart",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#ondropzonedrop",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-onDropzoneDrop",
-    "src/PDFBuilder.js~PDFBuilder#onDropzoneDrop",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#pdfloaded",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-pdfLoaded",
-    "src/PDFBuilder.js~PDFBuilder#pdfLoaded",
-    "member"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#prepsidebarcomponentsfordrag",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-prepSidebarComponentsForDrag",
-    "src/PDFBuilder.js~PDFBuilder#prepSidebarComponentsForDrag",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#projecturl",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-get-projectUrl",
-    "src/PDFBuilder.js~PDFBuilder#projectUrl",
-    "member"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#render",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-render",
-    "src/PDFBuilder.js~PDFBuilder#render",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#repeatablepaths",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-repeatablePaths",
-    "src/PDFBuilder.js~PDFBuilder#repeatablePaths",
-    "member"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#setuploaderror",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-setUploadError",
-    "src/PDFBuilder.js~PDFBuilder#setUploadError",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#updatedraganddrop",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-updateDragAndDrop",
-    "src/PDFBuilder.js~PDFBuilder#updateDragAndDrop",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#updatedropzonedimensions",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-updateDropzoneDimensions",
-    "src/PDFBuilder.js~PDFBuilder#updateDropzoneDimensions",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#upload",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-method-upload",
-    "src/PDFBuilder.js~PDFBuilder#upload",
-    "method"
-  ],
-  [
-    "src/pdfbuilder.js~pdfbuilder#webform",
-    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-webform",
-    "src/PDFBuilder.js~PDFBuilder#webform",
-    "member"
-  ],
-  [
     "src/pdfbuilder.spec.js",
     "file/src/PDFBuilder.spec.js.html",
     "src/PDFBuilder.spec.js",
+    "file"
+  ],
+  [
+    "src/pdfbuilder.unit.js",
+    "file/src/PDFBuilder.unit.js.html",
+    "src/PDFBuilder.unit.js",
     "file"
   ],
   [
@@ -3261,6 +3075,12 @@ window.esdocSearchIndex = [
     "src/components/checkbox/fixtures/comp2.js",
     "file/src/components/checkbox/fixtures/comp2.js.html",
     "src/components/checkbox/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/checkbox/fixtures/comp3.js",
+    "file/src/components/checkbox/fixtures/comp3.js.html",
+    "src/components/checkbox/fixtures/comp3.js",
     "file"
   ],
   [
@@ -5100,6 +4920,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/radio/fixtures/comp9.js",
+    "file/src/components/radio/fixtures/comp9.js.html",
+    "src/components/radio/fixtures/comp9.js",
+    "file"
+  ],
+  [
     "src/components/radio/fixtures/index.js",
     "file/src/components/radio/fixtures/index.js.html",
     "src/components/radio/fixtures/index.js",
@@ -5475,6 +5301,12 @@ window.esdocSearchIndex = [
     "src/components/selectboxes/fixtures/comp4.js",
     "file/src/components/selectboxes/fixtures/comp4.js.html",
     "src/components/selectboxes/fixtures/comp4.js",
+    "file"
+  ],
+  [
+    "src/components/selectboxes/fixtures/comp5.js",
+    "file/src/components/selectboxes/fixtures/comp5.js.html",
+    "src/components/selectboxes/fixtures/comp5.js",
     "file"
   ],
   [

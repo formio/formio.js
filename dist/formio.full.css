@@ -2672,6 +2672,12 @@ td > .formio-form-group {
   overflow: hidden;
   position: relative;
 }
+.signature-pad-body .form-control-feedback {
+  position: absolute;
+  font-size: 0.8rem;
+  top: 1px;
+  right: 3px;
+}
 
 .signature-pad-canvas {
   border-radius: 4px;
