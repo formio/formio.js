@@ -49,7 +49,7 @@ export default class CheckMatrix extends (FieldComponent as any) {
   static builderInfo = {
     title: 'Check Matrix',
     group: 'basic',
-    icon: 'fa fa-table',
+    icon: 'bi bi-table',
     weight: 70,
     documentation: 'http://help.form.io/userguide/#table',
     schema: CheckMatrix.schema()

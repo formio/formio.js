@@ -1,8 +1,9 @@
-export comp1 from './comp1';
-export comp2 from './comp2';
-export comp3 from './comp3';
-export comp4 from './comp4';
-export comp5 from './comp5';
-export comp6 from './comp6';
-export withDisplayAndInputMasks from './comp-with-display-and-value-masks';
-export comp7 from './comp7';
+import comp1 from './comp1';
+import comp2 from './comp2';
+import comp3 from './comp3';
+import comp4 from './comp4';
+import comp5 from './comp5';
+import comp6 from './comp6';
+import withDisplayAndInputMasks from './comp-with-display-and-value-masks';
+import comp7 from './comp7';
+export { comp1, comp2, comp3, comp4, comp5, comp6, comp7, withDisplayAndInputMasks };

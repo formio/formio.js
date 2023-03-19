@@ -64,17 +64,24 @@ import errorsList from './errorsList';
 import alert from './alert';
 
 export default {
-  transform(type, text) {
+  transform(type, text, instance) {
     if (!text) {
       return text;
     }
     switch (type) {
       case 'class':
-        return this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text;
+        var additionalClasses = '';
+        if (text === 'form-group') {
+          additionalClasses = 'mb-2 ';
+          if (instance && instance.component.block) {
+            additionalClasses += 'd-grid ';
+          }
+        }
+        return `${additionalClasses}${this.cssClasses.hasOwnProperty(text.toString()) ? this.cssClasses[text.toString()] : text}`;
     }
     return text;
   },
-  defaultIconset: 'fa',
+  defaultIconset: 'bi',
   iconClass,
   cssClasses,
   address,

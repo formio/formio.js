@@ -1,11 +1,10 @@
 import { Formio } from '@formio/core';
 import CDN from './CDN';
-import Templates from './templates/Templates';
 import Providers from './providers';
-
 Formio.cdn = new CDN();
-Formio.Templates = Templates;
 Formio.Providers = Providers;
+// eslint-disable-next-line no-undef
+Formio.version = typeof FORMIO_VERSION === 'undefined' ? '' : FORMIO_VERSION;
 
 const isNil = (val) => val === null || val === undefined;
 Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback, abortCallback) {

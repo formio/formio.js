@@ -7,6 +7,7 @@ import i18nDefaults from './i18n';
 import { Formio } from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
+import Templates from './templates/Templates';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
 import {
   fastCloneDeep,
@@ -18,6 +19,9 @@ import {
   getArrayFromComponentPath
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
+
+// Set the templates.
+Formio.Templates = Templates;
 
 // Initialize the available forms.
 Formio.forms = {};
