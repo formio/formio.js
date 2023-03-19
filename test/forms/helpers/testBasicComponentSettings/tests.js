@@ -162,7 +162,7 @@ export default {
 
         switch (comp.component.type) {
           case 'checkbox':
-            label = comp.element.querySelector('.form-check-label').children[1];
+            label = comp.element.querySelector('.form-check-label span');
             break;
           case 'panel':
             label = comp.element.querySelector('.card-title');
@@ -279,7 +279,7 @@ export default {
     },
   },
   redrawOn: {
-    'Should redrow on checkbox value change'(form, done) {
+    'Should redraw on checkbox value change'(form, done) {
       const checkboxValue = form.data.checkbox;
 
       assert.deepEqual(checkboxValue, false, 'Should set checkbox value to false');

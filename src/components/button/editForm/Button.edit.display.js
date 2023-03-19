@@ -194,7 +194,7 @@ export default [
     label: 'Left Icon',
     input: true,
     placeholder: 'Enter icon classes',
-    tooltip: "This is the full icon class string to show the icon. Example: 'fa fa-plus'",
+    tooltip: "This is the full icon class string to show the icon. Example: 'bi bi-plus'",
     weight: 160,
   },
   {
@@ -203,7 +203,7 @@ export default [
     label: 'Right Icon',
     input: true,
     placeholder: 'Enter icon classes',
-    tooltip: "This is the full icon class string to show the icon. Example: 'fa fa-plus'",
+    tooltip: "This is the full icon class string to show the icon. Example: 'bi bi-plus'",
     weight: 170,
   },
   {

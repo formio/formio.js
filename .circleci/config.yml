@@ -2,16 +2,14 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:14-browsers
-        environment:
-            CHROME_BIN: "/usr/bin/google-chrome"
+      - image: cimg/node:lts
     steps:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
-          name: Install npm
-          command: npm install
+          name: Install modules
+          command: yarn install
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:

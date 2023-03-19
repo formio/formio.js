@@ -9,12 +9,11 @@
   {% } %}
 >
   {% ctx.values.forEach(function(item) { %}
-  <div class="{{ctx.input.attr.type}} {{ ctx.component.optionsLabelPosition && ctx.component.optionsLabelPosition !== 'right' ? 'pl-0' : ''}} form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
-    <label class="form-check-label label-position-{{ ctx.component.optionsLabelPosition }}" for="{{ctx.instance.root && ctx.instance.root.id}}-{{ctx.id}}-{{ctx.row}}-{{item.value}}">
-      {% if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { %}
-      <span>{{ctx.t(item.label, { _userInput: true })}}</span>
-      {% } %}
-      <{{ctx.input.type}}
+  <div class="{{ctx.input.attr.type}} {{ ctx.component.optionsLabelPosition && ctx.component.optionsLabelPosition !== 'right' ? 'ps-0' : ''}} form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
+    {% if (['left', 'top'].includes(ctx.component.optionsLabelPosition)) { %}
+    <label class="form-check-label label-position-{{ ctx.component.optionsLabelPosition }}" for="{{ctx.instance.root && ctx.instance.root.id}}-{{ctx.id}}-{{ctx.row}}-{{item.value}}"><span>{{ctx.t(item.label, { _userInput: true })}}</span></label>
+    {% } %}
+    <{{ctx.input.type}}
         ref="input"
         {% for (var attr in ctx.input.attr) { %}
         {{attr}}="{{ctx.input.attr[attr]}}"
@@ -29,10 +28,9 @@
         id="{{ctx.instance.root && ctx.instance.root.id}}-{{ctx.id}}-{{ctx.row}}-{{item.value}}"
         role="{{ctx.component.type === 'selectboxes' ? 'checkbox' : 'radio'}}"
       >
-      {% if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { %}
-      <span>{{ctx.t(item.label, { _userInput: true })}}</span>
-      {% } %}
-    </label>
+    {% if (!ctx.component.optionsLabelPosition || ['right', 'bottom'].includes(ctx.component.optionsLabelPosition)) { %}
+    <label class="form-check-label label-position-{{ ctx.component.optionsLabelPosition }}" for="{{ctx.instance.root && ctx.instance.root.id}}-{{ctx.id}}-{{ctx.row}}-{{item.value}}"><span>{{ctx.t(item.label, { _userInput: true })}}</span></label>
+    {% } %}
   </div>
   {% }) %}
 </div>
