@@ -1189,7 +1189,7 @@ export default class Webform extends NestedDataComponent {
       errors = super.errors;
     }
 
-    errors = errors.concat(this.customErrors);
+    errors = errors.concat(this.serverErrors);
 
     if (!errors.length) {
       this.setAlert(false);
@@ -1340,7 +1340,13 @@ export default class Webform extends NestedDataComponent {
       return false;
     }
 
-    const errors = this.showErrors(error, true);
+    let errors;
+    if (this.submitted) {
+      errors = this.showErrors();
+    }
+    else {
+      errors = this.showErrors(error, true);
+    }
     if (this.root && this.root.alert) {
       this.scrollIntoView(this.root.alert);
     }
@@ -1381,7 +1387,7 @@ export default class Webform extends NestedDataComponent {
       this.triggerSaveDraft();
     }
 
-    if (!flags || !flags.noEmit) {
+    if (!flags || !flags.noEmit && !flags.fromSubmission) {
       this.emit('change', value, flags, modified);
       isChangeEventEmitted = true;
     }
@@ -1550,6 +1556,9 @@ export default class Webform extends NestedDataComponent {
         err.fromServer = true;
         return err;
       });
+    }
+    else if (typeof error === 'string') {
+      this.serverErrors = [{ fromServer: true, level: 'error', message: error }];
     }
   }
 
