@@ -952,4 +952,42 @@ describe('Select Component with Entire Object Value Property', () => {
       }, 200);
     }).catch(done);
   });
+
+  it('Should provide correct html value for Resource DataSrc Type and Entire Object Value Property', (done) => {
+    const form = _.cloneDeep(comp15);
+    const testItems = [
+      { textField: 'Jone', number: 1 },
+      { textField: 'Mary', number: 2 },
+      { textField: 'Sally', number: 3 }
+    ];
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      select.setItems(testItems.map(item => ({ data: item })));
+      const selectContainer = element.querySelector('[ref="selectContainer"]');
+      assert.notEqual(selectContainer, null);
+      const options = selectContainer.childNodes;
+      assert.equal(options.length, 4);
+      options.forEach((option) => {
+        assert.notEqual(option.value, '[object Object]');
+      });
+      const value = { textField: 'Jone', number: 1 };
+      select.setValue(value);
+      assert.equal(select.selectOptions.length, 3);
+
+      setTimeout(() => {
+        assert.equal(select.dataValue, value);
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(typeof select.dataValue, 'object');
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
 });
