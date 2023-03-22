@@ -281,7 +281,7 @@ export default class SelectComponent extends ListComponent {
         option,
         attrs,
         id,
-        useId: (this.valueProperty === '') && _.isObject(value) && id,
+        useId: (this.valueProperty === '' || this.isEntireObjectDisplay()) && _.isObject(value) && id,
       }), this.shouldSanitizeValue).trim();
 
       option.element = div.firstChild;
@@ -1215,7 +1215,7 @@ export default class SelectComponent extends ListComponent {
     else if (this.refs.selectContainer) {
       value = this.refs.selectContainer.value;
 
-      if (this.valueProperty === '') {
+      if (this.valueProperty === '' || this.isEntireObjectDisplay()) {
         if (value === '') {
           return {};
         }
