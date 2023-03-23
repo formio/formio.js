@@ -19,6 +19,7 @@ import {
   comp15,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
+  compWithCustomDefaultValue,
 } from './fixtures';
 import formsWithEditGridAndConditions from './fixtures/formsWithEditGridAndConditions';
 
@@ -1493,6 +1494,33 @@ describe('EditGrid Open when Empty', () => {
             }, 250);
           }, 250);
         }, 250);
+      })
+      .catch(done);
+  });
+
+  it('Should restore focus on the proper component after change event', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, compWithCustomDefaultValue)
+      .then((form) => {
+        const editGrid = form.getComponent(['selectedFunds2']);
+        editGrid.removeRow(2, true);
+        setTimeout(() => {
+          assert.equal(editGrid.editRows.length, 4, 'Should remove a row');
+          editGrid.editRow(2);
+
+          setTimeout(() => {
+            const currency = form.getComponent(['selectedFunds2', 2, 'allocationAmount2']);
+            currency.focus();
+            currency.setValue(250);
+            editGrid.redraw();
+
+            setTimeout(() => {
+              assert.equal(editGrid.editRows[2].state, 'editing', 'Should keep the row in the editing state');
+              assert.equal(editGrid.editRows[3].state, 'saved', 'Should keep the next row in the saved state');
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
       })
       .catch(done);
   });

@@ -15,3 +15,4 @@ export comp14 from './comp14';
 export comp15 from './comp15';
 export withOpenWhenEmptyAndConditions from './comp-with-conditions-and-openWhenEmpty';
 export compOpenWhenEmpty from './comp-openWhenEmpty';
+export compWithCustomDefaultValue from './comp-with-custom-default-value';
