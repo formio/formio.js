@@ -177,7 +177,7 @@ import NativePromise from &apos;native-promise-only&apos;;
 import { GlobalFormio as Formio } from &apos;./Formio&apos;;
 
 import WebformBuilder from &apos;./WebformBuilder&apos;;
-import { fastCloneDeep, getElementRect , getBrowserInfo } from &apos;./utils/utils&apos;;
+import { fastCloneDeep, getElementRect } from &apos;./utils/utils&apos;;
 import { eachComponent } from &apos;./utils/formUtils&apos;;
 import BuilderUtils from &apos;./utils/builder&apos;;
 import PDF from &apos;./PDF&apos;;
@@ -601,7 +601,6 @@ export default class PDFBuilder extends WebformBuilder {
   onDragEnd(e) {
     // IMPORTANT - must retrieve offsets BEFORE disabling the dropzone - offsets will
     // reflect absolute positioning if accessed after the target element is hidden
-    const iframeRect = this.webform.refs.iframeContainer.getBoundingClientRect();
     const layerX = this.dropEvent ? this.dropEvent.layerX : null;
     const layerY = this.dropEvent ? this.dropEvent.layerY : null;
     const WIDTH = 100;
@@ -611,14 +610,7 @@ export default class PDFBuilder extends WebformBuilder {
 
     // If there hasn&apos;t been a drop event on the dropzone, we&apos;re done
     if (!this.dropEvent) {
-      // a &apos;drop&apos; event may not be emited in the chrome browser when using a Mac, therefore an additional check has been added
-      if (getBrowserInfo().chrome &amp;&amp; global.navigator.userAgentData.platform === &apos;macOS&apos; &amp;&amp; iframeRect.left &lt; e.clientX &amp;&amp; iframeRect.top &lt; e.clientY) {
-        this.dropEvent = e;
-        this.dropEvent.dataTransfer.effectAllowed = &apos;all&apos;;
-      }
-      else {
-        return;
-      }
+      return;
     }
 
     const element = e.target;
@@ -637,8 +629,8 @@ export default class PDFBuilder extends WebformBuilder {
     this.webform._form.components.push(schema);
 
     schema.overlay = {
-      top: layerY ? (layerY - this.itemOffsetY + HEIGHT) : (e.clientY - iframeRect.top - (this.itemOffsetY - HEIGHT )*2),
-      left: layerX ? (layerX - this.itemOffsetX) : (e.clientX - iframeRect.left - this.itemOffsetX*2),
+      top: layerY - this.itemOffsetY + HEIGHT,
+      left: layerX - this.itemOffsetX,
       width: WIDTH,
       height: HEIGHT
     };

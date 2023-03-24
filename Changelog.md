@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.14.13-rc.15
+### Changed
+ - Revert "Fio 6512 cannot drag and drop components on to pdf first forms using mac"
+
 ## 4.14.13-rc.14
 ### Changed
  - Fio 6512 cannot drag and drop components on to pdf first forms using mac
