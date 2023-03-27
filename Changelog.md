@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## [Unreleased: 4.14.13-rc.16]
+## 4.14.13-rc.16
 ### Changed
  - Reapply FIO-6512 cannot drag and drop components on to pdf first forms using mac
  

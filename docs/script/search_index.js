@@ -2196,6 +2196,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/pdfbuilder.js~pdfbuilder#dropemitted",
+    "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-dropEmitted",
+    "src/PDFBuilder.js~PDFBuilder#dropEmitted",
+    "member"
+  ],
+  [
     "src/pdfbuilder.js~pdfbuilder#dropevent",
     "class/src/PDFBuilder.js~PDFBuilder.html#instance-member-dropEvent",
     "src/PDFBuilder.js~PDFBuilder#dropEvent",
