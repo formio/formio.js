@@ -416,9 +416,11 @@ export default class PDFBuilder extends WebformBuilder {
     e.dataTransfer.setData('text', '');
     this.updateDropzoneDimensions();
     this.addClass(this.refs.iframeDropzone, 'enabled');
+    this.dropEmitted = false;
   }
 
   onDropzoneDrop(e) {
+    this.dropEmitted = true;
     this.dropEvent = e;
     e.preventDefault();
     return false;
@@ -438,9 +440,10 @@ export default class PDFBuilder extends WebformBuilder {
     // If there hasn't been a drop event on the dropzone, we're done
     if (!this.dropEvent) {
       // a 'drop' event may not be emited in the chrome browser when using a Mac, therefore an additional check has been added
-      if (getBrowserInfo().chrome && global.navigator.userAgentData.platform === 'macOS' && iframeRect.left < e.clientX && iframeRect.top < e.clientY) {
+      if (!this.dropEmitted && getBrowserInfo().chrome && global.navigator.userAgentData.platform === 'macOS' && iframeRect.left < e.clientX && iframeRect.top < e.clientY ) {
         this.dropEvent = e;
         this.dropEvent.dataTransfer.effectAllowed = 'all';
+        this.dropEmitted = true;
       }
       else {
         return;
