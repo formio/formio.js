@@ -492,5 +492,21 @@
     "tableView": false,
     "label": "Submit",
     "input": true
+  },
+  {
+    "label": "Tagpad",
+    "tableView": false,
+    "key": "tagpad",
+    "type": "tagpad",
+    "input": true,
+    "components": [
+      {
+        "label": "Text Field",
+        "tableView": true,
+        "key": "a",
+        "type": "textfield",
+        "input": true
+      }
+    ]
   }
 ]
