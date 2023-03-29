@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.14.13-rc.17]
+## 4.14.13-rc.17
 ### Changed
  - FIO-5967: Fixing issues with selectData saving correctly for pdf download and save as reference
  
