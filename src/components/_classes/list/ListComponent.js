@@ -49,9 +49,10 @@ export default class ListComponent extends Field {
       data: {}
     };
     const template = this.interpolate(this.component.template, { item: data }, options);
-    if (value && !_.isObject(value) && options.data.item) {
+    const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
+    if (templateValue && !_.isObject(templateValue) && options.data.item) {
       // If the value is not an object, then we need to save the template data off for when it is selected.
-      this.templateData[value] = options.data.item;
+      this.templateData[templateValue] = options.data.item;
     }
     return template;
   }

@@ -220,14 +220,15 @@ export default class SelectComponent extends ListComponent {
       const value = (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
       return this.sanitize(value, this.shouldSanitizeValue);
     }
+
+    const selectData = this.selectData;
+    if (selectData) {
+      const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
+      data = this.component.multiple ? selectData[templateValue] : selectData;
+    }
+
     if (typeof data === 'string' || typeof data === 'number') {
-      const selectData = this.selectData;
-      if (selectData) {
-        data = selectData;
-      }
-      else {
-        return this.sanitize(this.t(data, { _userInput: true }), this.shouldSanitizeValue);
-      }
+      return this.sanitize(this.t(data, { _userInput: true }), this.shouldSanitizeValue);
     }
 
     if (data.data) {
@@ -1242,15 +1243,19 @@ export default class SelectComponent extends ListComponent {
       return value;
     }
     // Check to see if we need to save off the template data into our metadata.
-    if (value && !valueIsObject && (this.templateData && this.templateData[value]) && this.root?.submission) {
-      const submission = this.root.submission;
-      if (!submission.metadata) {
-        submission.metadata = {};
+    if (retainObject) {
+      const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
+      const shouldSaveData = !valueIsObject || this.component.reference;
+      if (templateValue && shouldSaveData && (this.templateData && this.templateData[templateValue]) && this.root?.submission) {
+        const submission = this.root.submission;
+        if (!submission.metadata) {
+          submission.metadata = {};
+        }
+        if (!submission.metadata.selectData) {
+          submission.metadata.selectData = {};
+        }
+        _.set(submission.metadata.selectData, this.path, this.component.multiple ? this.templateData : this.templateData[templateValue]);
       }
-      if (!submission.metadata.selectData) {
-        submission.metadata.selectData = {};
-      }
-      _.set(submission.metadata.selectData, this.path, this.templateData[value]);
     }
 
     const displayEntireObject = this.isEntireObjectDisplay();
