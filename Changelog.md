@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 4.14.13-rc.18]
-###Fixed
+### Fixed
  - FIO-6616: Fixed issue where the select templates were not getting set
  
 ## 4.14.13-rc.17
