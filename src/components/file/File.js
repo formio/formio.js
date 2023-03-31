@@ -635,15 +635,21 @@ export default class FileComponent extends Field {
         };
 
         // Check if file with the same name is being uploaded
+        if (!this.filesUploading) {
+          this.filesUploading = [];
+        }
+        const fileWithSameNameUploading = this.filesUploading.some(fileUploading => fileUploading === file.name);
+        this.filesUploading.push(file.name);
+
         const fileWithSameNameUploaded = this.dataValue.some(fileStatus => fileStatus.originalName === file.name);
         const fileWithSameNameUploadedWithError = this.statuses.findIndex(fileStatus =>
           fileStatus.originalName === file.name
           && fileStatus.status === 'error'
         );
 
-        if (fileWithSameNameUploaded) {
+        if (fileWithSameNameUploaded || fileWithSameNameUploading) {
           fileUpload.status = 'error';
-          fileUpload.message = this.t('File with the same name is already uploaded');
+          fileUpload.message = this.t(`File with the same name is already ${fileWithSameNameUploading ? 'being ' : ''}uploaded`);
         }
 
         if (fileWithSameNameUploadedWithError !== -1) {
@@ -774,6 +780,7 @@ export default class FileComponent extends Field {
                 this.dataValue = [];
               }
               this.dataValue.push(fileInfo);
+              _.pull(this.filesUploading, fileInfo.originalName);
               this.fileDropHidden = false;
               this.redraw();
               this.triggerChange();
@@ -784,9 +791,13 @@ export default class FileComponent extends Field {
               fileUpload.message = typeof response === 'string' ? response : response.toString();
               delete fileUpload.progress;
               this.fileDropHidden = false;
+              _.pull(this.filesUploading, file.name);
               this.redraw();
               this.emit('fileUploadingEnd', filePromise);
             });
+        }
+        else {
+          this.filesUploading.splice(this.filesUploading.indexOf(file.name),1);
         }
       });
     }
