@@ -295,11 +295,41 @@ export default class DayComponent extends Field {
       this.addEventListener(this.refs.input, this.info.changeEvent, () => this.updateValue(null, {
         modified: true
       }));
+      this.addFocusBlurEvents();
     }
+    this.restoreFocus();
     this.setValue(this.dataValue);
     // Force the disabled state with getters and setters.
     this.disabled = this.shouldDisabled;
     return superAttach;
+  }
+
+  addFocusBlurEvents() {
+    this.addEventListener(this.refs.day, 'focus', () => {
+      this.focusedElement = this.refs.day;
+    });
+    this.addEventListener(this.refs.day, 'blur', () => {
+      this.focusedElement = '';
+    });
+    this.addEventListener(this.refs.year, 'focus', () => {
+      this.focusedElement = this.refs.year;
+    });
+    this.addEventListener(this.refs.year, 'blur', () => {
+      this.focusedElement = '';
+    });
+    this.addEventListener(this.refs.month, 'focus', () => {
+      this.focusedElement = this.refs.month;
+    });
+    this.addEventListener(this.refs.month, 'blur', () => {
+      this.focusedElement = '';
+    });
+  }
+
+  restoreFocus() {
+    if (this.focusedElement && !this.root?.focusedComponent) {
+      const focusedElement = document.getElementById(this.focusedElement.id);
+      focusedElement.focus();
+    }
   }
 
   validateRequired(setting, value) {
