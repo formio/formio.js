@@ -129,6 +129,9 @@
 
 .component-settings .formio-dialog-content {
   max-height: 100%;
+  .ck-editor__editable ol {
+    padding-inline-start: 40px;
+  }
 }
 
 .component-btn-group .btn.component-settings-button-paste {
