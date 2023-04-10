@@ -25,6 +25,7 @@ import {
   comp14,
   comp15,
   comp16,
+  comp17
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -879,6 +880,37 @@ describe('Select Component', () => {
       }, 200);
     }).catch(done);
   });
+
+  it('Should provide metadata.selectData for Select component pointed to a resource where value property is set to a field', (done) => {
+    const form = _.cloneDeep(comp17);
+    const testItems = [
+      { textField: 'John' },
+      { textField: 'Mary' },
+      { textField: 'Sally' }
+    ];
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      select.setItems(testItems.map(item => ({ data: item })));
+      const value = 'John';
+      select.setValue(value);
+
+      setTimeout(() => {
+        assert.equal(select.dataValue, value);
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(_.isEqual(form.submission.metadata.selectData.select.data, testItems[0]), true);
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
   // it('should reset input value when called with empty value', () => {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;
