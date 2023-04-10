@@ -615,15 +615,6 @@ export default class FileComponent extends Field {
       // files is not really an array and does not have a forEach method, so fake it.
       /* eslint-disable max-statements */
       Array.prototype.forEach.call(files, async(file) => {
-        const bmf = new BMF();
-        const hash = await new Promise((resolve, reject) => {
-          bmf.md5(file, (err, md5)=>{
-            if (err) {
-              return reject(err);
-            }
-            return resolve(md5);
-          });
-        });
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const escapedFileName = file.name ? file.name.replaceAll('<', '&lt;').replaceAll('>', '&gt;') : file.name;
         const fileUpload = {
@@ -632,8 +623,25 @@ export default class FileComponent extends Field {
           size: file.size,
           status: 'info',
           message: this.t('Processing file. Please wait...'),
-          hash
+          hash: '',
         };
+
+        if (this.root.form.submissionRevisions === 'true') {
+          this.statuses.push(fileUpload);
+          this.redraw();
+          const bmf = new BMF();
+          const hash = await new Promise((resolve, reject) => {
+            this.emit('fileUploadingStart');
+            bmf.md5(file, (err, md5)=>{
+              if (err) {
+                return reject(err);
+              }
+              return resolve(md5);
+            });
+          });
+          this.emit('fileUploadingEnd');
+          fileUpload.hash = hash;
+        }
 
         // Check if file with the same name is being uploaded
         const fileWithSameNameUploaded = this.dataValue.some(fileStatus => fileStatus.originalName === file.name);
@@ -684,8 +692,10 @@ export default class FileComponent extends Field {
           fileUpload.message = this.t('File Service not provided.');
         }
 
-        this.statuses.push(fileUpload);
-        this.redraw();
+        if (this.root.form.submissionRevisions !== 'true') {
+          this.statuses.push(fileUpload);
+          this.redraw();
+        }
 
         if (fileUpload.status !== 'error') {
           if (this.component.privateDownload) {
