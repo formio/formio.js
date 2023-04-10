@@ -10,10 +10,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Replace SDK with @formio/core SDK.
  - Remove Semantic template and Bootstrap 3 template from build.  Use import @formio/bootstrap3 or @formio/semantic instead.
 
+### Added
+ - FIO-5986: added check for identical uploaded file
+ - FIO-6453: added sanitization inside error message container
+ 
 ### Fixed
  - FIO-6512: cannot drag and drop components on to pdf first forms using mac
  - FIO-6468: fixed an issue where Custom validation on Day component is confusing Day and Year
  - Revert "Fio 6512 cannot drag and drop components on to pdf first forms using mac"
+ - FIO-6616: fixed issue where the select templates were not getting set correctly in selectData
+ - FIO-6533: fixed an issue where file upload hash causing delays in file uploads
+ - FIO-6407: updated tests for Select Component
+ - FIO-5967: fixed issue with setting [object Object] to html options
+ - FIO-6009: fixed an issue where when checkboxes set as radio, conditional logic is triggered upon deselect
+ - FIO-5318: fixed an issue where wrong attributes appear for Radio component during performance
+ - FIO-5086: fixed an issue where Date/Time component allows to submit any string and the server-side validation is not triggered
 
 ## 4.16.0-rc.1
 ### Added
