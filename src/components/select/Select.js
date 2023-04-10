@@ -221,10 +221,22 @@ export default class SelectComponent extends ListComponent {
       return this.sanitize(value, this.shouldSanitizeValue);
     }
 
-    const selectData = this.selectData;
-    if (selectData) {
-      const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
-      data = this.component.multiple ? selectData[templateValue] : selectData;
+    if (this.component.multiple ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
+      const selectData = this.selectData;
+      if (selectData) {
+        const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
+        if (!this.templateData || !this.templateData[templateValue]) {
+          this.getOptionTemplate(data, value);
+        }
+        if (this.component.multiple) {
+          if (selectData[templateValue]) {
+            data = selectData[templateValue];
+          }
+        }
+        else {
+          data = selectData;
+        }
+      }
     }
 
     if (typeof data === 'string' || typeof data === 'number') {
@@ -1243,7 +1255,7 @@ export default class SelectComponent extends ListComponent {
     return done;
   }
 
-  normalizeSingleValue(value) {
+  normalizeSingleValue(value, retainObject) {
     if (_.isNil(value)) {
       return;
     }
@@ -1264,7 +1276,20 @@ export default class SelectComponent extends ListComponent {
         if (!submission.metadata.selectData) {
           submission.metadata.selectData = {};
         }
-        _.set(submission.metadata.selectData, this.path, this.component.multiple ? this.templateData : this.templateData[templateValue]);
+
+        let templateData = this.templateData[templateValue];
+        if (this.component.multiple) {
+          templateData = {};
+          const dataValue = this.dataValue;
+          if (dataValue && dataValue.length) {
+            dataValue.forEach((dataValueItem) => {
+              const dataValueItemValue = this.component.reference ? dataValueItem._id.toString() : dataValueItem;
+              templateData[dataValueItemValue] = this.templateData[dataValueItemValue];
+            });
+          }
+        }
+
+        _.set(submission.metadata.selectData, this.path, templateData);
       }
     }
 
