@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6009: fixed an issue where when checkboxes set as radio, conditional logic is triggered upon deselect
  - FIO-5318: fixed an issue where wrong attributes appear for Radio component during performance
  - FIO-5086: fixed an issue where Date/Time component allows to submit any string and the server-side validation is not triggered
+ - FIO-6009: fixed test
 
 ## 4.16.0-rc.1
 ### Added
