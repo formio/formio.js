@@ -281,6 +281,7 @@ export default class RadioComponent extends ListComponent {
     if (shouldResetValue) {
       this.resetValue();
       this.triggerChange(flags);
+      this.setSelectedClasses();
     }
     this.previousValue = this.dataValue;
     return changed;

@@ -538,7 +538,16 @@ class ValidationChecker {
           });
         },
         check(component, setting, value) {
-          return (value !== 'Invalid date');
+          if (!value) {
+            return true;
+          }
+          if (value === 'Invalid date' || value === 'Invalid Date') {
+            return false;
+          }
+          if (typeof value === 'string') {
+            value = new Date(value);
+          }
+          return value instanceof Date === true && value.toString() !== 'Invalid Date';
         }
       },
       day: {
