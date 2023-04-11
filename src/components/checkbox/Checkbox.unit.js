@@ -2,7 +2,7 @@ import assert from 'power-assert';
 import _ from 'lodash';
 
 import Harness from '../../../test/harness';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import CheckBoxComponent from './Checkbox';
 
 import {
@@ -72,7 +72,7 @@ describe('Checkbox Component', () => {
   });
 
   it('Should hide component with conditional logic when checkbox component with the radio input type is unchecked', (done) =>  {
-    const form = _.cloneDeep(comp3);
+    const form = _.cloneDeep(comp4);
     const element = document.createElement('div');
 
     Formio.createForm(element, form).then(form => {
