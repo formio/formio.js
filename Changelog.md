@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - FIO-5986: added check for identical uploaded file
  - FIO-6453: added sanitization inside error message container
+ - FIO-6345: Add rel=noopener to Links to Docs / External Links
  
 ### Fixed
  - FIO-6512: cannot drag and drop components on to pdf first forms using mac
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5318: fixed an issue where wrong attributes appear for Radio component during performance
  - FIO-5086: fixed an issue where Date/Time component allows to submit any string and the server-side validation is not triggered
  - FIO-6009: fixed test
+ - FIO-5048: Number currency components mutiple modal do not show preview
 
 ## 4.16.0-rc.1
 ### Added
