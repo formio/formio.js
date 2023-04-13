@@ -442,7 +442,7 @@ describe('TextArea Component', () => {
           input: true,
         }
       ];
-      const testForm = {...formWithCKEditor, components: testComponents};
+      const testForm = { ...formWithCKEditor, components: testComponents };
 
       Formio.createForm(element, testForm).then(form => {
           const textArea = form.getComponent('textArea');
