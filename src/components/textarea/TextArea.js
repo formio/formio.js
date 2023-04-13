@@ -591,6 +591,8 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.editors[0].editing.view.focus();
           }
           this.element.scrollIntoView();
+        }).catch((err) => {
+          console.warn('An editor did not initialize properly when trying to focus:', err);
         });
         break;
       }
@@ -598,12 +600,16 @@ export default class TextAreaComponent extends TextFieldComponent {
         this.editorsReady[0].then(() => {
           this.editors[0].focus();
           this.element.scrollIntoView();
+        }).catch((err) => {
+          console.warn('An editor did not initialize properly when trying to focus:', err);
         });
         break;
       }
       case 'quill': {
         this.editorsReady[0].then(() => {
           this.editors[0].focus();
+        }).catch((err) => {
+          console.warn('An editor did not initialize properly when trying to focus:', err);
         });
         break;
       }
