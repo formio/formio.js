@@ -376,6 +376,82 @@ describe(&apos;Radio Component&apos;, () =&gt; {
       })
       .catch(done);
   });
+
+  it(&apos;Should show correct attributes during performance&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+
+    const JSON = {
+      components: [
+        {
+          key: &apos;whichOneIsYourFavoriteFruit&apos;,
+          type: &apos;radio&apos;,
+          input: true,
+          label: &apos;Which one is your favorite fruit?&apos;,
+          inline: false,
+          values: [
+            {
+              label: &apos;Apple &apos;,
+              value: &apos;apple&apos;,
+              shortcut: &apos;&apos;,
+            },
+            {
+              label: &apos;Orange&apos;,
+              value: &apos;orange&apos;,
+              shortcut: &apos;&apos;,
+            },
+            {
+              label: &apos;Banana&apos;,
+              value: &apos;banana&apos;,
+              shortcut: &apos;&apos;,
+            },
+          ],
+          tableView: false,
+          optionsLabelPosition: &apos;right&apos;,
+        },
+      ],
+    };
+
+    Formio.createForm(formElement, JSON)
+      .then((form) =&gt; {
+        const component = form.getComponent(&apos;whichOneIsYourFavoriteFruit&apos;);
+
+        const appleRadioInput = component.refs.input[0];
+        const appleComponentWrapper = formElement.querySelector(&apos;.form-check&apos;);
+        const isContainClass =
+          appleComponentWrapper.classList.contains(&apos;radio-selected&apos;);
+
+        assert.equal(
+          appleRadioInput.checked,
+          false,
+          &apos;should be false by default&apos;
+        );
+        assert.equal(isContainClass, false, &apos;should be false by default&apos;);
+
+        appleRadioInput.click();
+
+        setTimeout(() =&gt; {
+          assert.equal(appleRadioInput.checked, true);
+
+          const elementWrapper = formElement.querySelector(&apos;.form-check&apos;);
+          const isContainClass =
+            elementWrapper.classList.contains(&apos;radio-selected&apos;);
+          assert.equal(isContainClass, true);
+
+          appleRadioInput.click();
+
+          setTimeout(() =&gt; {
+            assert.equal(appleRadioInput.checked, false);
+            const elementWrapper = formElement.querySelector(&apos;.form-check&apos;);
+            const isContainClass =
+              elementWrapper.classList.contains(&apos;radio-selected&apos;);
+            assert.equal(isContainClass, false);
+
+            done();
+          }, 200);
+        }, 200);
+      })
+      .catch(done);
+  });
 });
 </code></pre>
 

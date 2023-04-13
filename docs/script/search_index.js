@@ -3084,6 +3084,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/checkbox/fixtures/comp4.js",
+    "file/src/components/checkbox/fixtures/comp4.js.html",
+    "src/components/checkbox/fixtures/comp4.js",
+    "file"
+  ],
+  [
     "src/components/checkbox/fixtures/customdefaultcomponent.js",
     "file/src/components/checkbox/fixtures/customDefaultComponent.js.html",
     "src/components/checkbox/fixtures/customDefaultComponent.js",
@@ -3453,6 +3459,12 @@ window.esdocSearchIndex = [
     "src/components/currency/fixtures/comp3.js",
     "file/src/components/currency/fixtures/comp3.js.html",
     "src/components/currency/fixtures/comp3.js",
+    "file"
+  ],
+  [
+    "src/components/currency/fixtures/comp4.js",
+    "file/src/components/currency/fixtures/comp4.js.html",
+    "src/components/currency/fixtures/comp4.js",
     "file"
   ],
   [
@@ -4644,6 +4656,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/number/fixtures/comp7.js",
+    "file/src/components/number/fixtures/comp7.js.html",
+    "src/components/number/fixtures/comp7.js",
+    "file"
+  ],
+  [
     "src/components/number/fixtures/index.js",
     "file/src/components/number/fixtures/index.js.html",
     "src/components/number/fixtures/index.js",
@@ -5199,6 +5217,12 @@ window.esdocSearchIndex = [
     "src/components/select/fixtures/comp16.js",
     "file/src/components/select/fixtures/comp16.js.html",
     "src/components/select/fixtures/comp16.js",
+    "file"
+  ],
+  [
+    "src/components/select/fixtures/comp17.js",
+    "file/src/components/select/fixtures/comp17.js.html",
+    "src/components/select/fixtures/comp17.js",
     "file"
   ],
   [
@@ -9022,12 +9046,6 @@ window.esdocSearchIndex = [
     "class/src/validator/Rules.js~Rules.html#static-member-rules",
     "src/validator/Rules.js~Rules.rules",
     "member"
-  ],
-  [
-    "src/validator/validator.unit.js",
-    "file/src/validator/Validator.unit.js.html",
-    "src/validator/Validator.unit.js",
-    "file"
   ],
   [
     "src/validator/conjunctions/index.js",

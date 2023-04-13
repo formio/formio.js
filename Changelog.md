@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.15.0-rc.20
+### Fixed
+ - FIO-5048:  Number currency components mutiple modal do not show preview
+ - FIO-5086: Date/Time component allows to submit any string and the server-side validation is not triggered
+ - FIO-6345: Add rel=noopener to Portal Application Links to Docs / External Links
+ - FIO-6453 adding sanitization inside error message container
+ - FIO-5967: fixed issue with setting [object Object] to html options
+ - FIO-6533: fixed an issue where file upload hash causing delays in file uploads
+ - FIO-5318: Fixes wrong attributes appearing for Radio component during performance
+ - FIO-6009 When checkboxes set as radio, conditional logic is triggered upon deselect
+ - FIO-5967: Fixing issues with selectData saving correctly for pdf down…
+ - FIO-6616: Fixed issue where the select templates were not getting set…
+ - FIO-5986 Added check for identical uploaded file
+ - FIO-6407 Updated tests for Select Component
+ - Fio 6009 when checkboxes set as radio, conditional logic isn't triggered upon deselect
+
 ## 4.15.0-rc.19
 ### Fixed
  - Added basic keyboard accessibility for formbuilder

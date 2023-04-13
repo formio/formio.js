@@ -334,6 +334,9 @@ export default class CurrencyComponent extends NumberComponent {
 
     // eslint-disable-next-line eqeqeq
     if (value || value == &apos;0&apos;) {
+      if (Array.isArray(value)) {
+        return value.map((val) =&gt; this.addZerosAndFormatValue(super.getValueAsString(val, options))).join(&apos;, &apos;);
+      }
       return this.addZerosAndFormatValue(stringValue);
     }
 

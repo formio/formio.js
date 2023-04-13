@@ -204,7 +204,8 @@ import {
   comp3,
   comp4,
   comp5,
-  comp6
+  comp6,
+  comp7,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Number Component&apos;, () =&gt; {
@@ -605,6 +606,14 @@ describe(&apos;Number Component&apos;, () =&gt; {
         done();
       });
     });
+  });
+
+  it(&apos;Should return value as string properly for multiple values&apos;, (done) =&gt; {
+    Harness.testCreate(NumberComponent, comp7).then((component) =&gt; {
+      component.refs.input = null;
+      assert.equal(component.getValueAsString([1, 2, 3, 4, 5]), &apos;1, 2, 3, 4, 5&apos;);
+      done();
+    }).catch(done);
   });
 
   // it(&apos;Should add trailing zeros on blur, if decimal required&apos;, (done) =&gt; {

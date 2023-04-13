@@ -198,6 +198,7 @@ import {
   comp1,
   comp2,
   comp3,
+  comp4,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Currency Component&apos;, () =&gt; {
@@ -509,6 +510,14 @@ describe(&apos;Currency Component&apos;, () =&gt; {
       Harness.testSetInput(component, 1234567890.123456789, 1234567890.12, &apos;1.234.567.890,12&#xA0;$&apos;);
       Harness.testSetInput(component, -1234567890.123456789, -1234567890.12, &apos;-1.234.567.890,12&#xA0;$&apos;);
     });
+  });
+
+  it(&apos;Should return value as string properly for multiple values&apos;, (done) =&gt; {
+    Harness.testCreate(CurrencyComponent, comp4).then((component) =&gt; {
+      component.refs.input = null;
+      assert.equal(component.getValueAsString([100, 200, 300, 500]), &apos;$100.00, $200.00, $300.00, $500.00&apos;);
+      done();
+    }).catch(done);
   });
 });
 </code></pre>
