@@ -446,6 +446,7 @@ describe('TextArea Component', () => {
 
       Formio.createForm(element, testForm).then(form => {
           const textArea = form.getComponent('textArea');
+          // since prior to this fix the focus function will throw, we'll make sure it doesn't
           expect(textArea.focus.bind(textArea)).to.not.throw();
 
           done();
