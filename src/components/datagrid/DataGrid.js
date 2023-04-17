@@ -11,7 +11,7 @@ if (typeof window !== 'undefined') {
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
     return NestedArrayComponent.schema({
-      label: '',
+      label: 'Data Grid',
       key: 'dataGrid',
       type: 'datagrid',
       clearOnHide: true,

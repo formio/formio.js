@@ -8,7 +8,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
       type: 'textarea',
-      label: '',
+      label: 'Text Area',
       key: 'textArea',
       rows: 1,
       wysiwyg: false,

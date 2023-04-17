@@ -4,7 +4,7 @@ import NestedComponent from '../_classes/nested/NestedComponent';
 export default class TabsComponent extends NestedComponent {
   static schema(...extend) {
     return NestedComponent.schema({
-      label: '',
+      label: 'Tabs',
       type: 'tabs',
       input: false,
       key: 'tabs',

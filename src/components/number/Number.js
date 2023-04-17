@@ -8,7 +8,7 @@ export default class NumberComponent extends Input {
   static schema(...extend) {
     return Input.schema({
       type: 'number',
-      label: '',
+      label: 'Number',
       key: 'number',
       validate: {
         min: '',
