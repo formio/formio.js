@@ -7,7 +7,7 @@ export default class RadioComponent extends Field {
     return Field.schema({
       type: 'radio',
       inputType: 'radio',
-      label: '',
+      label: 'Radio',
       key: 'radio',
       values: [{ label: '', value: '' }],
       validate: {

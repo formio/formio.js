@@ -5,7 +5,7 @@ export default class CheckBoxComponent extends Field {
     return Field.schema({
       type: 'checkbox',
       inputType: 'checkbox',
-      label: '',
+      label: 'Checkbox',
       key: 'checkbox',
       dataGridLabel: true,
       labelPosition: 'right',
