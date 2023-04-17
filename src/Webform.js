@@ -1189,6 +1189,7 @@ export default class Webform extends NestedDataComponent {
       errors = super.errors;
     }
 
+    errors = errors.concat(this.customErrors);
     errors = errors.concat(this.serverErrors);
 
     if (!errors.length) {
