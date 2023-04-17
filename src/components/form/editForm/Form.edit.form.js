@@ -23,7 +23,7 @@ export default [
     label: 'Lazy Load',
     inputType: 'checkbox',
     defaultValue: true,
-    clearOnHide: true,
+    clearOnHide: false,
     errorLabel: '',
     key: 'lazyLoad',
     type: 'checkbox',

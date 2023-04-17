@@ -10,7 +10,7 @@ export default class ContainerComponent extends NestedDataComponent {
       label: '',
       type: 'container',
       key: 'container',
-      clearOnHide: true,
+      clearOnHide: false,
       input: true,
       tree: true,
       hideLabel: true,

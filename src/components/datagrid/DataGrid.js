@@ -14,7 +14,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       label: '',
       key: 'dataGrid',
       type: 'datagrid',
-      clearOnHide: true,
+      clearOnHide: false,
       input: true,
       tree: true,
       components: []

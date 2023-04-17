@@ -383,35 +383,36 @@ export default class Input extends Multivalue {
       console.log('Error occurred here',error);
     }
   }.bind(this)
+  // eslint-disable-next-line no-unused-vars
   onfocusEvent(event, element) {
-    if (!this.builderMode && !this.component.builderEdit) {
-      try {
-        if (this.component.type==='textfield' || this.component.type==='textarea') {
-          const currentElemId=`voice-check-${this.path}`;
-          const elem=document.getElementById(currentElemId);
-          const elemFocus = JSON.parse(sessionStorage.getItem('focusedElement'));
-          if (elemFocus) {
-            if (currentElemId!==elemFocus.elemIdIndexDB) {
-              try {
-                const elementL=document.getElementById(elemFocus.elemIdIndexDB);
-                elementL.style.display='none';
-                sessionStorage.removeItem('focusedElement');
-              }
-              catch (error) {
-                console.log('Error here:',error);
-              }
-            }
-          }
-          const compInSession = { elemIdIndexDB:`voice-check-${this.path}`, componentType: this.component.type };
-          sessionStorage.setItem('focusedElement', JSON.stringify(compInSession));
-          elem.style.display='grid';
-          elem.onclick=this.showModal.bind(this);
-        }
-      }
-      catch (error) {
-        console.log('Error occurred here', error);
-      }
-    }
+    // if (!this.builderMode && !this.component.builderEdit) {
+    //   try {
+    //     if (this.component.type==='textfield' || this.component.type==='textarea') {
+    //       const currentElemId=`voice-check-${this.path}`;
+    //       const elem=document.getElementById(currentElemId);
+    //       const elemFocus = JSON.parse(sessionStorage.getItem('focusedElement'));
+    //       if (elemFocus) {
+    //         if (currentElemId!==elemFocus.elemIdIndexDB) {
+    //           try {
+    //             const elementL=document.getElementById(elemFocus.elemIdIndexDB);
+    //             elementL.style.display='none';
+    //             sessionStorage.removeItem('focusedElement');
+    //           }
+    //           catch (error) {
+    //             console.log('Error here:',error);
+    //           }
+    //         }
+    //       }
+    //       const compInSession = { elemIdIndexDB:`voice-check-${this.path}`, componentType: this.component.type };
+    //       sessionStorage.setItem('focusedElement', JSON.stringify(compInSession));
+    //       elem.style.display='grid';
+    //       elem.onclick=this.showModal.bind(this);
+    //     }
+    //   }
+    //   catch (error) {
+    //     console.log('Error occurred here', error);
+    //   }
+    // }
     if (this.root.focusedComponent !== this) {
       if (this.root.pendingBlur) {
         this.root.pendingBlur();

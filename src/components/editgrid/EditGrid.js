@@ -21,7 +21,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       type: 'editgrid',
       label: '',
       key: 'editGrid',
-      clearOnHide: true,
+      clearOnHide: false,
       input: true,
       tree: true,
       removeRow: 'Cancel',
