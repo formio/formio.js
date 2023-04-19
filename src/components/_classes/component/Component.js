@@ -4,7 +4,7 @@ import NativePromise from 'native-promise-only';
 import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import { GlobalFormio as Formio } from '../../../Formio';
+import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import {
@@ -501,6 +501,13 @@ export default class Component extends Element {
     return NativePromise.resolve(this);
   }
 
+  get isPDFReadOnlyMode() {
+    return this.parent &&
+      this.parent.form &&
+      (this.parent.form.display === 'pdf') &&
+      this.options.readOnly;
+  }
+
   get labelInfo() {
     const label = {};
     label.hidden = this.labelIsHidden();
@@ -509,10 +516,7 @@ export default class Component extends Element {
     label.labelPosition = this.component.labelPosition;
     label.tooltipClass = `${this.iconClass('question-sign')} text-muted`;
 
-    const isPDFReadOnlyMode = this.parent &&
-      this.parent.form &&
-      (this.parent.form.display === 'pdf') &&
-      this.options.readOnly;
+    const isPDFReadOnlyMode = this.isPDFReadOnlyMode;
 
     if (this.hasInput && this.component.validate && boolValue(this.component.validate.required) && !isPDFReadOnlyMode) {
       label.className += ' field-required';
@@ -820,7 +824,7 @@ export default class Component extends Element {
   transform(type, value) {
     const frameworkTemplates = this.options.template ? Templates.templates[this.options.template] : Templates.current;
     return frameworkTemplates.hasOwnProperty('transform')
-      ? frameworkTemplates.transform(type, value)
+      ? frameworkTemplates.transform(type, value, this)
       : (type, value) => value;
   }
 
@@ -889,10 +893,13 @@ export default class Component extends Element {
     return null;
   }
 
+  getFormattedAttribute(attr) {
+    return attr ? this.t(attr, { _userInput: true }).replace(/"/g, '&quot;') : '';
+  }
+
   getFormattedTooltip(tooltipValue) {
     const tooltip = this.interpolate(tooltipValue || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
-
-    return tooltip ? this.t(tooltip, { _userInput: true }).replace(/"/g, '&quot;') : '';
+    return this.getFormattedAttribute(tooltip);
   }
 
   isHtmlRenderMode() {
@@ -921,7 +928,7 @@ export default class Component extends Element {
       pass pre-compiled template A (use this.renderTemplate('template_A_name') as template context variable for template B`);
       return this.renderTemplate(...args);
     };
-    data.label = this.labelInfo;
+    data.label = data.labelInfo || this.labelInfo;
     data.tooltip = this.getFormattedTooltip(this.component.tooltip);
 
     // Allow more specific template names
@@ -1104,9 +1111,16 @@ export default class Component extends Element {
       message: this.error.message,
     } : '';
 
+    let modalLabel;
+
+    if (this.hasInput && this.component.validate?.required && !this.isPDFReadOnlyMode) {
+      modalLabel = { className: 'field-required' };
+    }
+
     return this.renderTemplate('modalPreview', {
       previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value'),
-      messages: message && this.renderTemplate('message', message)
+      messages: message && this.renderTemplate('message', message),
+      labelInfo: modalLabel,
     });
   }
 
@@ -2044,8 +2058,12 @@ export default class Component extends Element {
     messages = _.uniqBy(messages, message => message.message);
 
     if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, messages.map((message) =>
-        this.renderTemplate('message', message)
+      this.setContent(this.refs.messageContainer, messages.map((message) => {
+        if (message.message && typeof message.message === 'string') {
+          message.message = message.message.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+        }
+        return this.renderTemplate('message', message);
+      }
       ).join(''));
     }
   }

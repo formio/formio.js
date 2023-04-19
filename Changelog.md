@@ -4,7 +4,36 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.16.0-rc.1]
+## [Unreleased: 5.0.0-rc.1]
+### Breaking Change
+ - Upgrade to Bootstrap 5
+ - Replace SDK with @formio/core SDK.
+ - Remove Semantic template and Bootstrap 3 template from build.  Use import @formio/bootstrap3 or @formio/semantic instead.
+
+### Added
+ - FIO-5986: added check for identical uploaded file
+ - FIO-6453: added sanitization inside error message container
+ - FIO-6345: Add rel=noopener to Links to Docs / External Links
+ 
+### Fixed
+ - FIO-6512: cannot drag and drop components on to pdf first forms using mac
+ - FIO-6468: fixed an issue where Custom validation on Day component is confusing Day and Year
+ - Revert "Fio 6512 cannot drag and drop components on to pdf first forms using mac"
+ - FIO-6616: fixed issue where the select templates were not getting set correctly in selectData
+ - FIO-6533: fixed an issue where file upload hash causing delays in file uploads
+ - FIO-6407: updated tests for Select Component
+ - FIO-5967: fixed issue with setting [object Object] to html options
+ - FIO-6009: fixed an issue where when checkboxes set as radio, conditional logic is triggered upon deselect
+ - FIO-5318: fixed an issue where wrong attributes appear for Radio component during performance
+ - FIO-5086: fixed an issue where Date/Time component allows to submit any string and the server-side validation is not triggered
+ - FIO-6009: fixed test
+ - FIO-5048: Number currency components mutiple modal do not show preview
+
+## 4.16.0-rc.1
+### Added
+ - FIO-4429: Add support for pdf auto conversion fields assignment
+ - Added basic keyboard accessibility for formbuilder
+ 
 ### Fixed
  - FIO-6229: fixed displaying html value on Data tab for inputFormat plain
  - FIO-6191: fixed an issue where addons are not created
@@ -14,7 +43,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3957: Fixed an issue where Data Map inside conditionally shown Panel does not show its values in the view mode
  - Ensure that url requests to relative root should prepend the base url.
  - FIO-6164: Fixed an issue with date/time component localization #5031
- 
+ - FIO-6339: File upload component fix
+ - FIO-6193: Changed tooltip copy for encrypted fields
+ - FIO-6431: fixed display of premium components using Quick Inline Embed link
+ - FIO-6301: Fixed Signature component UI when label is shown and it is required
+ - FIO-6323: updated version of the quill library
+ - FIO-5272: use the url data source type for radio buttons and select boxes
+ - FIO-5027: fixes an issue where an asterisk is not shown for the required modal Checkbox
+ - FIO-6469: fixed an issue where Double quotes turned to single quotes in placeholder text
+ - fixed render tests
+
 ## 4.15.0-rc.17
 ### Added
  - FIO-5474: added new simple conditionals

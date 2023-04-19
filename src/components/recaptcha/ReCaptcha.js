@@ -1,6 +1,6 @@
 /*globals grecaptcha*/
 import Component from '../_classes/component/Component';
-import { GlobalFormio as Formio } from '../../Formio';
+import { Formio } from '../../Formio';
 import _get from 'lodash/get';
 import _debounce from 'lodash/debounce';
 import NativePromise from 'native-promise-only';

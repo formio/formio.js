@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import Validator from '../../../validator/Validator';
 import Component from '../../../components/_classes/component/Component';
-import { GlobalFormio as Formio } from '../../../Formio';
+import { Formio } from '../../../Formio';
 import NativePromise from 'native-promise-only';
 
 // Register a custom validor to use card validition from Stripe

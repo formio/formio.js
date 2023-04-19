@@ -1,12 +1,14 @@
 import assert from 'power-assert';
 import Harness from '../../../test/harness';
+import _ from 'lodash';
 import SelectBoxesComponent from './SelectBoxes';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 
 import {
   comp1,
   comp3,
-  comp4
+  comp4,
+  comp5
 } from './fixtures';
 import wizardWithSelectBoxes from '../../../test/forms/wizardWithSelectBoxes';
 
@@ -15,6 +17,34 @@ describe('SelectBoxes Component', () => {
     return Harness.testCreate(SelectBoxesComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="checkbox"]', 8);
     });
+  });
+
+  it('Should build a SelectBoxes component with URL DataSrc', (done) => {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        const values = [
+          { name : 'Alabama', abbreviation : 'AL' },
+          { name : 'Alaska', abbreviation: 'AK' },
+          { name: 'American Samoa', abbreviation: 'AS' }
+        ];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const selectBoxes = form.getComponent('selectBoxes');
+
+      setTimeout(()=>{
+        assert.equal(selectBoxes.loadedOptions.length, 3);
+
+        Formio.makeRequest = originalMakeRequest;
+        done();
+      }, 200);
+    }).catch(done);
   });
 
   describe('error messages', () => {

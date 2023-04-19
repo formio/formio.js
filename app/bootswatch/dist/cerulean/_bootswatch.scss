@@ -1,29 +1,29 @@
-// Cerulean 4.6.2
+// Cerulean 5.2.2
 // Bootswatch
 
 
-// Variables ===================================================================
+// Variables
 
 $text-shadow: 0 1px 0 rgba(0, 0, 0, .05) !default;
 
-// Mixins ======================================================================
+:root {
+  color-scheme: light;
+}
+
+// Mixins
 
 @mixin btn-shadow($color){
-  @include gradient-y-three-colors(lighten($color, 8%), $color, 60%, darken($color, 4%));
+  @include gradient-y-three-colors(tint-color($color, 16%), $color, 60%, shade-color($color, 6%));
 }
 
-// Navbar ======================================================================
+// Navbar
 
-.bg-primary {
-  @include btn-shadow($primary);
-}
-
-.bg-dark {
-  @include btn-shadow($blue);
-}
-
-.bg-light {
-  @include gradient-y-three-colors(lighten($gray-200, 8%), $gray-200, 60%, darken($gray-200, 2%));
+.navbar {
+  @each $color, $value in $theme-colors {
+    &.bg-#{$color} {
+      @include btn-shadow($value);
+    }
+  }
 }
 
 .navbar-brand,
@@ -31,47 +31,24 @@ $text-shadow: 0 1px 0 rgba(0, 0, 0, .05) !default;
   text-shadow: $text-shadow;
 }
 
-// Buttons =====================================================================
+// Buttons
 
 .btn {
   text-shadow: $text-shadow;
 }
 
-.btn-primary {
-  @include btn-shadow($primary);
-}
-
-.btn-secondary {
-  @include btn-shadow($secondary);
+.btn-secondary,
+.btn-outline-secondary {
   color: $gray-700;
 }
 
-.btn-success {
-  @include btn-shadow($success);
+@each $color, $value in $theme-colors {
+  .btn-#{$color} {
+    @include btn-shadow($value);
+  }
 }
 
-.btn-info {
-  @include btn-shadow($info);
-}
-
-.btn-warning {
-  @include btn-shadow($warning);
-}
-
-.btn-danger {
-  @include btn-shadow($danger);
-}
-
-.btn-light {
-  @include btn-shadow($light);
-}
-
-.btn-dark {
-  @include btn-shadow($dark);
-}
-
-
-// Typography ==================================================================
+// Typography
 
 .text-secondary {
   color: $gray-500 !important;
@@ -93,10 +70,19 @@ $text-shadow: 0 1px 0 rgba(0, 0, 0, .05) !default;
   }
 }
 
-// Navs ========================================================================
+// Navs
 
 .dropdown-menu {
   .dropdown-header {
     color: $gray-600;
+  }
+}
+
+// Indicators
+
+.badge {
+  &.bg-secondary,
+  &.bg-light {
+    color: $dark;
   }
 }

@@ -9,7 +9,7 @@ import {
   comp3
 } from './fixtures';
 
-import Formio from '../../Formio';
+import { Formio } from '../../Formio';
 
 describe('Container Component', () => {
   it('Should build a container component', () => {

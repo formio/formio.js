@@ -1,5 +1,5 @@
 import Field from '../field/Field';
-import { GlobalFormio as Formio } from '../../../Formio';
+import { Formio } from '../../../Formio';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
@@ -40,6 +40,13 @@ export default class ListComponent extends Field {
     return headers;
   }
 
+  // Must be implemented in child classes.
+  setItems() {}
+
+  updateCustomItems() {}
+
+  loadItems() {}
+
   getOptionTemplate(data, value) {
     if (!this.component.template) {
       return data.label;
@@ -54,9 +61,10 @@ export default class ListComponent extends Field {
         : data.label,
       this.shouldSanitizeValue,
     );
-    if (value && !_.isObject(value) && options.data.item) {
+    const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
+    if (templateValue && !_.isObject(templateValue) && options.data.item) {
       // If the value is not an object, then we need to save the template data off for when it is selected.
-      this.templateData[value] = options.data.item;
+      this.templateData[templateValue] = options.data.item;
     }
     return template;
   }

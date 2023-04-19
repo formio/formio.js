@@ -15,7 +15,7 @@ class CDN {
       'font-awesome': '4.7.0',
       'grid': 'latest',
       'moment-timezone': 'latest',
-      'quill': '1.3.7',
+      'quill': '2.0.0-dev.3',
       'shortcut-buttons-flatpickr': '0.4.0',
       'uswds': '2.4.8',
       'core': ''
