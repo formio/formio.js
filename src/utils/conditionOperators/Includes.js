@@ -6,10 +6,6 @@ export default class Includes extends ConditionOperator {
         return 'includes';
     }
 
-    static get queryKey() {
-        return 'contain';
-    }
-
     static get displayedName() {
         return 'Includes';
     }

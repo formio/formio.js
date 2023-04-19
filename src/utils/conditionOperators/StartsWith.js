@@ -6,10 +6,6 @@ export default class StartsWith extends ConditionOperator {
         return 'startsWith';
     }
 
-    static get queryKey() {
-        return 'startsWith';
-    }
-
     static get displayedName() {
         return 'Starts With';
     }

@@ -208,13 +208,18 @@ export default class Component extends Element {
     return Validator;
   }
   /**
-   * Return the operators as part of the component.
+   * Return the simple condition settings as part of the component.
    *
-   * @return {string[]}
+   * @return {Object}
    * @constructor
    */
-  static get operators() {
-    return ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'];
+  static get conditionOperatorsSettings() {
+    return {
+      operators: ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'],
+      valueComponent() {
+        return { type: 'textfield' };
+      }
+    };
   }
   /**
    * Provides a table view for this component. Override if you wish to do something different than using getView

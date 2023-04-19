@@ -65,8 +65,11 @@ export default class FileComponent extends Field {
     };
   }
 
-  static get operators() {
-    return ['isEmpty', 'isNotEmpty', 'Contains'];
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
   }
 
   init() {

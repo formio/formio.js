@@ -6,10 +6,6 @@ export default class IsEmptyValue extends ConditionOperator {
         return 'isEmpty';
     }
 
-    static get queryKey() {
-        return 'notExist';
-    }
-
     static get displayedName() {
         return 'Is Empty';
     }

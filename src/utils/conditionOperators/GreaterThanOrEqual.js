@@ -6,10 +6,6 @@ export default class GreaterThanOrEqual extends ConditionOperator {
         return 'greaterThanOrEqual';
     }
 
-    static get queryKey() {
-        return 'gte';
-    }
-
     static get displayedName() {
         return 'Greater Than Or Equal To';
     }

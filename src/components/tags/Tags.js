@@ -28,8 +28,11 @@ export default class TagsComponent extends Input {
     };
   }
 
-  static get operators() {
-    return [...Input.operators, 'includes', 'notIncludes'];
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: [...super.conditionOperatorsSettings.operators, 'includes', 'notIncludes'],
+    };
   }
 
   init() {

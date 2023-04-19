@@ -25,9 +25,26 @@ export default class CheckBoxComponent extends Field {
       schema: CheckBoxComponent.schema()
     };
   }
-  static get operators() {
-    return ['isEqual'];
+
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isEqual'],
+      valueComponent() {
+        return {
+          valueType: 'boolean',
+          data: {
+            values: [
+                { label: 'Checked', value: 'true' },
+                { label: 'Not Checked', value: 'false' },
+              ]
+          },
+          type: 'select'
+        };
+      }
+    };
   }
+
   get defaultSchema() {
     return CheckBoxComponent.schema();
   }

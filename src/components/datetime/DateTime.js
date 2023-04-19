@@ -53,8 +53,17 @@ export default class DateTimeComponent extends Input {
     };
   }
 
-  static get operators() {
-    return ['isDateEqual', 'isNotDateEqual', 'isEmpty', 'isNotEmpty','dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'];
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isDateEqual', 'isNotDateEqual', 'isEmpty', 'isNotEmpty','dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'],
+      valueComponent(classComp) {
+        return {
+          ...classComp,
+          type: 'datetime',
+        };
+      }
+    };
   }
 
   constructor(component, options, data) {

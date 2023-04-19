@@ -5,10 +5,6 @@ export default class DateLessThanOrEqual extends DateGeaterThan {
         return 'dateLessThanOrEqual';
     }
 
-    static get queryKey() {
-        return 'lte';
-    }
-
     static get displayedName() {
         return 'Less Than Or Equal To';
     }

@@ -24,8 +24,11 @@ export default class SurveyComponent extends Field {
     };
   }
 
-  static get operators() {
-    return ['isEmpty', 'isNotEmpty'];
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
   }
 
   get defaultSchema() {

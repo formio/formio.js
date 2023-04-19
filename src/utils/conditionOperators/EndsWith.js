@@ -6,10 +6,6 @@ export default class EndsWith extends ConditionOperator {
         return 'endsWith';
     }
 
-    static get queryKey() {
-        return 'endsWith';
-    }
-
     static get displayedName() {
         return 'Ends With';
     }

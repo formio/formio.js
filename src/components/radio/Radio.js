@@ -30,6 +30,25 @@ export default class RadioComponent extends ListComponent {
     };
   }
 
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      valueComponent(classComp) {
+        return {
+          type: 'select',
+          dataSrc: 'custom',
+          valueProperty: 'value',
+          dataType: classComp.dataType || '',
+          data: {
+            custom() {
+              return classComp.values;
+            }
+          },
+        };
+      }
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.previousValue = this.dataValue || null;
