@@ -28,6 +28,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5086: fixed an issue where Date/Time component allows to submit any string and the server-side validation is not triggered
  - FIO-6009: fixed test
  - FIO-5048: Number currency components mutiple modal do not show preview
+ - FIO-5967: fixed getting option value for html5 options
+ - FIO-4876: fixed the display of current submission for pdf download
+ - FIO-6475: fixed an issue for archieved plan where error message is not displayed when the user tries to add a new action
+ - FIO-4230: fixed label display for Button component inside DataGrid
+ - FIO-6668: fixed display of choices__list dropdown
+ - FIO-6582: don't focus textareas until editors are ready
 
 ## 4.16.0-rc.1
 ### Added
