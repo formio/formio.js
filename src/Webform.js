@@ -1291,6 +1291,7 @@ export default class Webform extends NestedDataComponent {
     this.loading = false;
     this.submitting = false;
     this.setPristine(true);
+    const redirectUrl = _.get(this.root, 'form.settings.redirect');
     // We want to return the submitted submission and setValue will mutate the submission so cloneDeep it here.
     this.setValue(fastCloneDeep(submission), {
       noValidate: true,
@@ -1304,6 +1305,9 @@ export default class Webform extends NestedDataComponent {
     this.emit('submit', submission, saved);
     if (saved) {
       this.emit('submitDone', submission);
+      if (redirectUrl) {
+        window.location.assign(redirectUrl);
+      }
     }
     return submission;
   }
