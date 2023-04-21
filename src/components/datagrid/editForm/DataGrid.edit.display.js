@@ -121,6 +121,13 @@ export default [
     input: true
   },
   {
+    key: 'hideRowGroupsInitially',
+    type: 'checkbox',
+    label: 'Hide Row Groups Initially',
+    weight: 441,
+    input: true
+  },
+  {
     label: 'Groups',
     disableAddingRemovingRows: false,
     disableAddingRows: false,
@@ -165,7 +172,7 @@ export default [
         row: '0-1'
       }
     ],
-    weight: 441,
+    weight: 442,
     conditional: { json: { var: 'data.enableRowGroups' } }
   },
   {
