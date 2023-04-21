@@ -1,5 +1,5 @@
 import Field from '../_classes/field/Field';
-import { uniqueName } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypesBasedOnCommonSettings, uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
@@ -70,6 +70,12 @@ export default class FileComponent extends Field {
       ...super.conditionOperatorsSettings,
       operators: ['isEmpty', 'isNotEmpty'],
     };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+
+    return  getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.object];
   }
 
   init() {

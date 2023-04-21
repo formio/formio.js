@@ -211,7 +211,7 @@ export default class Component extends Element {
    * Return the simple condition settings as part of the component.
    *
    * @return {Object}
-   * @constructor
+   *
    */
   static get conditionOperatorsSettings() {
     return {
@@ -220,6 +220,19 @@ export default class Component extends Element {
         return { type: 'textfield' };
       }
     };
+  }
+  /**
+   * Return the array of possible types of component value absed on its schema.
+   *
+   * @param schema
+   * @return {Array}
+   *
+   */
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+
+    return FormioUtils.getComponentSavedTypesBasedOnCommonSettings(schema) || [FormioUtils.componentValueTypes.any];
   }
   /**
    * Provides a table view for this component. Override if you wish to do something different than using getView

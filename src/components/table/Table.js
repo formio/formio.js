@@ -46,6 +46,10 @@ export default class TableComponent extends NestedComponent {
     };
   }
 
+  static savedValueTypes() {
+    return [];
+  }
+
   get defaultSchema() {
     return TableComponent.schema();
   }

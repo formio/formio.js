@@ -1,3 +1,4 @@
+import { componentValueTypes, getComponentSavedTypesBasedOnCommonSettings } from '../../utils/utils';
 import Input from '../_classes/input/Input';
 
 let Choices;
@@ -33,6 +34,12 @@ export default class TagsComponent extends Input {
       ...super.conditionOperatorsSettings,
       operators: [...super.conditionOperatorsSettings.operators, 'includes', 'notIncludes'],
     };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+
+    return  getComponentSavedTypesBasedOnCommonSettings(schema) ||[componentValueTypes[schema.storeas] || componentValueTypes.string];
   }
 
   init() {

@@ -22,6 +22,10 @@ export default class WellComponent extends NestedComponent {
     };
   }
 
+  static savedValueTypes() {
+    return [];
+  }
+
   get defaultSchema() {
     return WellComponent.schema();
   }

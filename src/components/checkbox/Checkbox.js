@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { componentValueTypes, getComponentSavedTypesBasedOnCommonSettings } from '../../utils/utils';
 import Field from '../_classes/field/Field';
 
 export default class CheckBoxComponent extends Field {
@@ -43,6 +44,21 @@ export default class CheckBoxComponent extends Field {
         };
       }
     };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+    const types = getComponentSavedTypesBasedOnCommonSettings(schema);
+
+    if (_.isArray(types)) {
+      return types;
+    }
+
+    if (schema.inputType === 'radio') {
+      return [componentValueTypes.string];
+    }
+
+    return [componentValueTypes.boolean];
   }
 
   get defaultSchema() {

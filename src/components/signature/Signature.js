@@ -2,6 +2,7 @@ import SignaturePad from 'signature_pad';
 import _ResizeObserver from 'resize-observer-polyfill';
 import Input from '../_classes/input/Input';
 import _ from 'lodash';
+import { componentValueTypes, getComponentSavedTypesBasedOnCommonSettings } from '../../utils/utils';
 
 export default class SignatureComponent extends Input {
   static schema(...extend) {
@@ -36,6 +37,11 @@ export default class SignatureComponent extends Input {
       ...super.conditionOperatorsSettings,
       operators: ['isEmpty', 'isNotEmpty'],
     };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+    return getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.string];
   }
 
   init() {

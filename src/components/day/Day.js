@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Field from '../_classes/field/Field';
-import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypesBasedOnCommonSettings, getLocaleDateFormatInfo } from '../../utils/utils';
 
 export default class DayComponent extends Field {
   static schema(...extend) {
@@ -45,6 +45,11 @@ export default class DayComponent extends Field {
       ...super.conditionOperatorsSettings,
       operators: ['isDateEqual', 'isNotDateEqual', 'isEmpty', 'isNotEmpty','dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'],
     };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+    return getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.string];
   }
 
   /**

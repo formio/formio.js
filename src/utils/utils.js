@@ -1546,3 +1546,27 @@ export function getFocusableElements(element) {
 
 // Export lodash to save space with other libraries.
 export { _ };
+
+export const componentValueTypes = {
+  number: 'number',
+  string: 'string',
+  boolean: 'boolean',
+  array: 'array',
+  object: 'object',
+  date: 'date',
+  any: 'any',
+};
+
+export function getComponentSavedTypesBasedOnCommonSettings(fullSchema) {
+  const schema = fullSchema || {};
+
+  if (schema.persistent !== true) {
+    return [];
+  }
+
+  if (schema.multiple) {
+    return [componentValueTypes.array];
+  }
+
+  return null;
+}

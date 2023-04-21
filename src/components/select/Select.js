@@ -3,7 +3,7 @@ import { GlobalFormio as Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
-import { getRandomComponentId, boolValue, isPromise } from '../../utils/utils';
+import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypesBasedOnCommonSettings } from '../../utils/utils';
 
 let Choices;
 if (typeof window !== 'undefined') {
@@ -68,6 +68,30 @@ export default class SelectComponent extends ListComponent {
         return { ... classComp, type: 'select' };
       }
     };
+  }
+
+  static savedValueTypes(schema) {
+    const { boolean, string, number, object, array } = componentValueTypes;
+    const { dataType, reference } = schema;
+    const types = getComponentSavedTypesBasedOnCommonSettings(schema);
+
+    if (types) {
+      return types;
+    }
+
+    if (reference) {
+      return [object];
+    }
+
+    if (dataType === 'object') {
+      return [object, array];
+    }
+
+    if (componentValueTypes[dataType]) {
+      return [componentValueTypes[dataType]];
+    }
+
+    return [boolean, string, number, object, array];
   }
 
   init() {
