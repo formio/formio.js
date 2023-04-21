@@ -10,7 +10,7 @@ import {
   getArrayFromComponentPath,
   componentValueTypes
 } from '../../utils/utils';
-import { GlobalFormio as Formio } from '../../Formio';
+import { Formio } from '../../Formio';
 import Form from '../../Form';
 
 export default class FormComponent extends Component {

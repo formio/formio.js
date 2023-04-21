@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import ListComponent from '../_classes/list/ListComponent';
 import NativePromise from 'native-promise-only';
-import { GlobalFormio as Formio } from '../../Formio';
+import { Formio } from '../../Formio';
 import { boolValue, componentValueTypes, getComponentSavedTypesBasedOnCommonSettings } from '../../utils/utils';
 
 export default class RadioComponent extends ListComponent {
@@ -320,6 +320,7 @@ export default class RadioComponent extends ListComponent {
     if (shouldResetValue) {
       this.resetValue();
       this.triggerChange(flags);
+      this.setSelectedClasses();
     }
     this.previousValue = this.dataValue;
     return changed;

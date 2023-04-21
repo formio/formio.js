@@ -1,7 +1,7 @@
 import Harness from '../../../test/harness';
 import TextAreaComponent from './TextArea';
 import sinon from 'sinon';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import assert from 'power-assert';
 import { expect } from 'chai';
 import _ from 'lodash';

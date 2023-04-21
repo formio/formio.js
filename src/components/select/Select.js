@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { GlobalFormio as Formio } from '../../Formio';
+import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
@@ -253,14 +253,27 @@ export default class SelectComponent extends ListComponent {
       const value = (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
       return this.sanitize(value, this.shouldSanitizeValue);
     }
-    if (typeof data === 'string' || typeof data === 'number') {
+
+    if (this.component.multiple ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
       const selectData = this.selectData;
       if (selectData) {
-        data = selectData;
+        const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
+        if (!this.templateData || !this.templateData[templateValue]) {
+          this.getOptionTemplate(data, value);
+        }
+        if (this.component.multiple) {
+          if (selectData[templateValue]) {
+            data = selectData[templateValue];
+          }
+        }
+        else {
+          data = selectData;
+        }
       }
-      else {
-        return this.sanitize(this.t(data, { _userInput: true }), this.shouldSanitizeValue);
-      }
+    }
+
+    if (typeof data === 'string' || typeof data === 'number') {
+      return this.sanitize(this.t(data, { _userInput: true }), this.shouldSanitizeValue);
     }
 
     if (data.data) {
@@ -314,7 +327,7 @@ export default class SelectComponent extends ListComponent {
         option,
         attrs,
         id,
-        useId: (this.valueProperty === '') && _.isObject(value) && id,
+        useId: (this.valueProperty === '' || this.isEntireObjectDisplay()) && _.isObject(value) && id,
       }), this.shouldSanitizeValue).trim();
 
       option.element = div.firstChild;
@@ -1248,7 +1261,7 @@ export default class SelectComponent extends ListComponent {
     else if (this.refs.selectContainer) {
       value = this.refs.selectContainer.value;
 
-      if (this.valueProperty === '') {
+      if (this.valueProperty === '' || this.isEntireObjectDisplay()) {
         if (value === '') {
           return {};
         }
@@ -1275,7 +1288,7 @@ export default class SelectComponent extends ListComponent {
     return done;
   }
 
-  normalizeSingleValue(value) {
+  normalizeSingleValue(value, retainObject) {
     if (_.isNil(value)) {
       return;
     }
@@ -1285,15 +1298,32 @@ export default class SelectComponent extends ListComponent {
       return value;
     }
     // Check to see if we need to save off the template data into our metadata.
-    if (value && !valueIsObject && (this.templateData && this.templateData[value]) && this.root?.submission) {
-      const submission = this.root.submission;
-      if (!submission.metadata) {
-        submission.metadata = {};
+    if (retainObject) {
+      const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
+      const shouldSaveData = !valueIsObject || this.component.reference;
+      if (templateValue && shouldSaveData && (this.templateData && this.templateData[templateValue]) && this.root?.submission) {
+        const submission = this.root.submission;
+        if (!submission.metadata) {
+          submission.metadata = {};
+        }
+        if (!submission.metadata.selectData) {
+          submission.metadata.selectData = {};
+        }
+
+        let templateData = this.templateData[templateValue];
+        if (this.component.multiple) {
+          templateData = {};
+          const dataValue = this.dataValue;
+          if (dataValue && dataValue.length) {
+            dataValue.forEach((dataValueItem) => {
+              const dataValueItemValue = this.component.reference ? dataValueItem._id.toString() : dataValueItem;
+              templateData[dataValueItemValue] = this.templateData[dataValueItemValue];
+            });
+          }
+        }
+
+        _.set(submission.metadata.selectData, this.path, templateData);
       }
-      if (!submission.metadata.selectData) {
-        submission.metadata.selectData = {};
-      }
-      _.set(submission.metadata.selectData, this.path, this.templateData[value]);
     }
 
     const dataType = this.component.dataType || 'auto';

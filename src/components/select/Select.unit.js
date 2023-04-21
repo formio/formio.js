@@ -4,7 +4,7 @@ import Harness from '../../../test/harness';
 import SelectComponent from './Select';
 import { expect } from 'chai';
 import NativePromise from 'native-promise-only';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import _ from 'lodash';
 
 import {
@@ -25,6 +25,7 @@ import {
   comp14,
   comp15,
   comp16,
+  comp17
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -879,6 +880,37 @@ describe('Select Component', () => {
       }, 200);
     }).catch(done);
   });
+
+  it('Should provide metadata.selectData for Select component pointed to a resource where value property is set to a field', (done) => {
+    const form = _.cloneDeep(comp17);
+    const testItems = [
+      { textField: 'John' },
+      { textField: 'Mary' },
+      { textField: 'Sally' }
+    ];
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      select.setItems(testItems.map(item => ({ data: item })));
+      const value = 'John';
+      select.setValue(value);
+
+      setTimeout(() => {
+        assert.equal(select.dataValue, value);
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(_.isEqual(form.submission.metadata.selectData.select.data, testItems[0]), true);
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
   // it('should reset input value when called with empty value', () => {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;
@@ -934,6 +966,44 @@ describe('Select Component with Entire Object Value Property', () => {
     Formio.createForm(element, form).then(form => {
       const select = form.getComponent('select');
       select.setItems(testItems.map(item => ({ data: item })));
+      const value = { textField: 'Jone', number: 1 };
+      select.setValue(value);
+      assert.equal(select.selectOptions.length, 3);
+
+      setTimeout(() => {
+        assert.equal(select.dataValue, value);
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(typeof select.dataValue, 'object');
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should provide correct html value for Resource DataSrc Type and Entire Object Value Property', (done) => {
+    const form = _.cloneDeep(comp15);
+    const testItems = [
+      { textField: 'Jone', number: 1 },
+      { textField: 'Mary', number: 2 },
+      { textField: 'Sally', number: 3 }
+    ];
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      select.setItems(testItems.map(item => ({ data: item })));
+      const selectContainer = element.querySelector('[ref="selectContainer"]');
+      assert.notEqual(selectContainer, null);
+      const options = selectContainer.childNodes;
+      assert.equal(options.length, 4);
+      options.forEach((option) => {
+        assert.notEqual(option.value, '[object Object]');
+      });
       const value = { textField: 'Jone', number: 1 };
       select.setValue(value);
       assert.equal(select.selectOptions.length, 3);
