@@ -75,8 +75,7 @@ describe('WizardBuilder tests', function() {
       window.confirm = () => {
         return true;
       };
-      // const parent = builder.instance.getParentElement(panel.element);
-      // builder.instance.editComponent(panel.schema, parent, false, false, panel.component, { inDataGrid: false });
+     
       Harness.clickElement(panel, editComponentRef);
       setTimeout(() => {
         assert(builder.instance.editForm, 'Should create the settings form on component edit');
