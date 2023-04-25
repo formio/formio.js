@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4230: fixed label display for Button component inside DataGrid
  - FIO-6668: fixed display of choices__list dropdown
  - FIO-6582: don't focus textareas until editors are ready
+ - FIO-6675/6676: Fixes issues where wizard page is getting removed regardless user confirmed removement or canceled it
 
 ## 4.16.0-rc.1
 ### Added
