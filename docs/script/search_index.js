@@ -2856,12 +2856,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/button/editform/button.edit.display.js",
-    "file/src/components/button/editForm/Button.edit.display.js.html",
-    "src/components/button/editForm/Button.edit.display.js",
-    "file"
-  ],
-  [
     "src/components/button/fixtures/comp1.js",
     "file/src/components/button/fixtures/comp1.js.html",
     "src/components/button/fixtures/comp1.js",
@@ -3585,6 +3579,12 @@ window.esdocSearchIndex = [
     "src/components/datagrid/fixtures/comp7.js",
     "file/src/components/datagrid/fixtures/comp7.js.html",
     "src/components/datagrid/fixtures/comp7.js",
+    "file"
+  ],
+  [
+    "src/components/datagrid/fixtures/comp8.js",
+    "file/src/components/datagrid/fixtures/comp8.js.html",
+    "src/components/datagrid/fixtures/comp8.js",
     "file"
   ],
   [

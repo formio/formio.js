@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.15.0-rc.21
+### Changed
+ - FIO-4230 Fixed label display for Button component inside DataGrid
+ - FIO-6475: fixed an issue for archieved plan where error message is no…
+ - FIO-6668: fixed display of choices__list dropdown
+ - FIO-6582: Eliminates race condition between text editor events. 
+ - FIO-4876 fixed the display of current submission for pdf download
+
 ## 4.15.0-rc.20
 ### Fixed
  - FIO-5048:  Number currency components mutiple modal do not show preview
