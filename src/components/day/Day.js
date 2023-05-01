@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import Field from '../_classes/field/Field';
 import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
 
@@ -38,6 +39,16 @@ export default class DayComponent extends Field {
       weight: 50,
       schema: DayComponent.schema()
     };
+  }
+
+  constructor(component, options, data) {
+    if (component.maxDate) {
+      component.maxDate = moment(component.maxDate, 'YYYY-MM-DD').toISOString();
+    }
+    if (component.minDate) {
+      component.minDate = moment(component.minDate, 'YYYY-MM-DD').toISOString();
+    }
+    super(component, options, data);
   }
 
   /**
