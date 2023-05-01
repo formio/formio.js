@@ -75,7 +75,7 @@ describe('WizardBuilder tests', function() {
       window.confirm = () => {
         return true;
       };
-     
+
       Harness.clickElement(panel, editComponentRef);
       setTimeout(() => {
         assert(builder.instance.editForm, 'Should create the settings form on component edit');
