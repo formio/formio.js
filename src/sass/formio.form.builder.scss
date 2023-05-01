@@ -172,6 +172,28 @@
   position: relative;
 }
 
+.wizard-page-container {
+  display: flex;
+}
+
+.wizard-pages{
+  display: flex;
+  list-style-type: none;
+  margin-bottom: 0;
+  padding-left: 0;
+  li:not(:first-child) {
+    margin-left: 20px;
+  }
+}
+
+.wizard-add-page{
+  margin-left: 20px;
+}
+
+.gu-mirror {
+  list-style-type: none;
+}
+
 .formio-settings-help {
   color: #8a6d3b;
   background-color: #fcf8e3;

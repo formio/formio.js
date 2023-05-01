@@ -517,6 +517,29 @@ export default [
     tooltip: 'When checked, the select dropdown will allow for searching within the static list of items provided.',
   },
   {
+    type: 'checkbox',
+    input: true,
+    weight: 21,
+    key: 'noRefreshOnScroll',
+    label: 'Disable Options Refresh When Scrolling',
+    defaultValue: false,
+    tooltip: 'When checked, the select with search input won\'t perform new api requests when scrolling through the list of options.',
+    conditional: {
+      json: {
+        and: [
+          {  in: [
+              { var: 'data.dataSrc' },
+              [
+                'url',
+                'resource'
+              ],
+            ] },
+          { '===': [{ var: 'data.searchEnabled' }, true] }
+        ]
+      },
+    },
+  },
+  {
     label: 'Search Threshold',
     mask: false,
     tableView: true,

@@ -26,7 +26,7 @@ export default [
       },
       {
         label: 'Max Entropy',
-        description: "Specifies the top boundary of the password's entropy(strength) which belongth to this level.\nCommon entropy values are:\n<ul>\n  <li>&lt; 28 bits = Very Weak;</li>\n  <li>28 - 35 bits = Weak; should keep out most people;</li>\n  <li>36 - 59 bits = Reasonable; fairly secure passwords for network and company passwords;</li>\n  <li>60 - 127 bits = Strong; can be good for guarding financial information;</li>\n  <li>&gt; 128 bits = Very Strong; often overkill;</li>\n</ul>\n",
+        description: "Specifies the top boundary of the password's entropy(strength) which belongs to this level.\nCommon entropy values are:\n<ul>\n  <li>&lt; 28 bits = Very Weak;</li>\n  <li>28 - 35 bits = Weak; should keep out most people;</li>\n  <li>36 - 59 bits = Reasonable; fairly secure passwords for network and company passwords;</li>\n  <li>60 - 127 bits = Strong; can be good for guarding financial information;</li>\n  <li>&gt; 128 bits = Very Strong; often overkill;</li>\n</ul>\n",
         mask: false,
         spellcheck: true,
         tableView: false,
@@ -44,7 +44,7 @@ export default [
       },
       {
         label: 'Style',
-        tooltip: 'Specifies the backgounf color style using bootstrap classes',
+        tooltip: 'Specifies the background color style using bootstrap classes',
         tableView: true,
         data: {
           values: [

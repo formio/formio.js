@@ -1,7 +1,7 @@
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
-import { GlobalFormio as Formio } from './Formio';
+import { Formio } from './Formio';
 import {
   fastCloneDeep,
   checkCondition,
@@ -792,6 +792,7 @@ export default class Wizard extends Webform {
     }
     else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
+      this.scrollIntoView(this.element);
       return NativePromise.reject(this.showErrors([], true));
     }
   }
@@ -896,8 +897,10 @@ export default class Wizard extends Webform {
 
   setValue(submission, flags = {}, ignoreEstablishment) {
     this._submission = submission;
-
-    if (flags && flags.fromSubmission && (this.options.readOnly || this.editMode) && !this.isHtmlRenderMode()) {
+    if (
+      (flags && flags.fromSubmission && (this.options.readOnly || this.editMode) && !this.isHtmlRenderMode()) ||
+      (flags && flags.fromSubmission && (this.prefixComps.length || this.suffixComps.length) && submission._id)
+      ) {
       this._data = submission.data;
     }
 
@@ -994,6 +997,9 @@ export default class Wizard extends Webform {
     // If the next page changes, then make sure to redraw navigation.
     if (currentNextPage !== this.getNextPage()) {
       this.redrawNavigation();
+    }
+    if (this.options.readOnly && (this.prefixComps.length || this.suffixComps.length)) {
+      this.redraw();
     }
   }
 

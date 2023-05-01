@@ -27,10 +27,12 @@
       {% if (ctx.group.componentOrder.length || ctx.subgroups.length) { %}
         {% !ctx.group.componentOrder || ctx.group.componentOrder.forEach(function(componentKey) { %}
           <span
+            ref="sidebar-component"
             data-group="{{ctx.groupKey}}"
             data-key="{{ctx.group.components[componentKey].key}}"
             data-type="{{ctx.group.components[componentKey].schema.type}}"
             class="btn btn-primary btn-sm btn-block formcomponent drag-copy"
+            tabindex="{{ctx.keyboardActionsEnabled ? -1 : 0}}"
           >
             {% if (ctx.group.components[componentKey].icon) { %}
               <i class="{{ctx.iconClass(ctx.group.components[componentKey].icon)}}" style="margin-right: 5px;"></i>

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import ListComponent from '../_classes/list/ListComponent';
 import NativePromise from 'native-promise-only';
-import { GlobalFormio as Formio } from '../../Formio';
+import { Formio } from '../../Formio';
 import { boolValue } from '../../utils/utils';
 
 export default class RadioComponent extends ListComponent {
@@ -277,11 +277,11 @@ export default class RadioComponent extends ListComponent {
 
     // If they clicked on the radio that is currently selected, it needs to reset the value.
     this.currentValue = this.dataValue;
-    const shouldResetValue = !(flags && flags.noUpdateEvent)
-      && this.previousValue === this.currentValue;
+    const shouldResetValue = flags && flags.modified && !flags.noUpdateEvent && this.previousValue === this.currentValue;
     if (shouldResetValue) {
       this.resetValue();
       this.triggerChange(flags);
+      this.setSelectedClasses();
     }
     this.previousValue = this.dataValue;
     return changed;

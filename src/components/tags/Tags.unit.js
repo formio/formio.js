@@ -11,7 +11,7 @@ import {
   comp4,
   comp5,
 } from './fixtures';
-import Formio from '../../Formio';
+import { Formio } from '../../Formio';
 
 describe('Tags Component', function() {
   it('Should build a tags component', function() {

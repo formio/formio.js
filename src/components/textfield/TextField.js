@@ -199,6 +199,13 @@ export default class TextFieldComponent extends Input {
     };
   }
 
+  getValueAsString(value, options) {
+    if (value && this.component.inputFormat === 'plain' && /<[^<>]+>/g.test(value)) {
+      value = value.replaceAll('<','&lt;').replaceAll('>', '&gt;');
+    }
+    return super.getValueAsString(value, options);
+  }
+
   isHtmlRenderMode() {
     return super.isHtmlRenderMode() ||
       ((this.options.readOnly || this.disabled) &&

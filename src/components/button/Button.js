@@ -2,7 +2,7 @@ import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
-import { eachComponent } from '../../utils/utils';
+import { eachComponent, getArrayFromComponentPath } from '../../utils/utils';
 
 export default class ButtonComponent extends Field {
   static schema(...extend) {
@@ -449,19 +449,19 @@ export default class ButtonComponent extends Field {
             params.redirectURI = originalRedirectUri;
 
             // Needs for the exclude oAuth Actions that not related to this button
-            params.triggeredBy = this.key;
+            params.triggeredBy = this.oauthComponentPath;
             requestPromise = this.root.formio.makeRequest('oauth', `${this.root.formio.projectUrl}/oauth2`, 'POST', params);
           }
           else {
             const submission = { data: {}, oauth: {} };
             submission.oauth[settings.provider] = params;
             submission.oauth[settings.provider].redirectURI = originalRedirectUri;
-            if(settings.logoutURI) {
+            if (settings.logoutURI) {
               this.root.formio.oauthLogoutURI(settings.logoutURI);
             }
 
             // Needs for the exclude oAuth Actions that not related to this button
-            submission.oauth[settings.provider].triggeredBy = this.key;
+            submission.oauth[settings.provider].triggeredBy = this.oauthComponentPath;
             requestPromise = this.root.formio.saveSubmission(submission);
           }
           requestPromise.then((result) => {
@@ -481,6 +481,11 @@ export default class ButtonComponent extends Field {
         clearInterval(interval);
       }
     }, 100);
+  }
+
+  get oauthComponentPath() {
+    const pathArray = getArrayFromComponentPath(this.path);
+    return _.chain(pathArray).filter(pathPart => !_.isNumber(pathPart)).join('.').value();
   }
 
   focus() {
