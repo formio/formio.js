@@ -444,7 +444,7 @@ describe('DataGrid Panels', () => {
       display: 'form',
       components: [comp8]
     })
-    .then((form) => {
+    .then(() => {
       assert.equal(formElement.getElementsByTagName('th')[0].textContent.trim(), '', 'Should hide a label');
       assert.equal(formElement.getElementsByTagName('th')[1].textContent.trim(), 'Text Field', 'Should show a label');
     });
