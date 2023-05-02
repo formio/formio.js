@@ -456,7 +456,8 @@ export default class PDFBuilder extends WebformBuilder {
     // If there hasn't been a drop event on the dropzone, we're done
     if (!this.dropEvent) {
       // a 'drop' event may not be emited in the chrome browser when using a Mac, therefore an additional check has been added
-      if (!this.dropEmitted && getBrowserInfo().chrome && global.navigator.userAgentData.platform === 'macOS' && iframeRect.left < e.clientX && iframeRect.top < e.clientY ) {
+      // eslint-disable-next-line no-undef
+      if (!this.dropEmitted && getBrowserInfo().chrome && globalThis.navigator.userAgentData.platform === 'macOS' && iframeRect.left < e.clientX && iframeRect.top < e.clientY ) {
         this.dropEvent = e;
         this.dropEvent.dataTransfer.effectAllowed = 'all';
         this.dropEmitted = true;
