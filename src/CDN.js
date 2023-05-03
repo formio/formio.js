@@ -11,7 +11,7 @@ class CDN {
       'bootstrap': '4.6.2',
       'ckeditor': '19.0.0',
       'flatpickr': '4.6.8',
-      'flatpickr-formio': '4.6.13-formio.1',
+      'flatpickr-formio': '4.6.13-formio.2',
       'font-awesome': '4.7.0',
       'grid': 'latest',
       'moment-timezone': 'latest',
