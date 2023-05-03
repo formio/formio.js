@@ -1388,7 +1388,7 @@ export default class Webform extends NestedDataComponent {
       this.triggerSaveDraft();
     }
 
-    if (!flags || !flags.noEmit && !flags.fromSubmission) {
+    if (!flags || !flags.noEmit) {
       this.emit('change', value, flags, modified);
       isChangeEventEmitted = true;
     }
