@@ -70,7 +70,7 @@ export default class DateTimeComponent extends Input {
   static savedValueTypes(schema) {
     schema = schema || {};
 
-    return  getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.date, componentValueTypes.string];
+    return  getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.date];
   }
 
   constructor(component, options, data) {
