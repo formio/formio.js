@@ -70,7 +70,6 @@ import formWithEventLogicInHiddenComponent from '../test/forms/formWithEventLogi
 import * as FormioUtils from './utils/utils';
 import htmlRenderMode from '../test/forms/htmlRenderMode';
 import optionalSanitize from '../test/forms/optionalSanitize';
-import formWithCheckboxRadioaType from '../test/forms/formWithCheckboxRadioType';
 import formsWithNewSimpleConditions from '../test/forms/formsWithNewSimpleConditions';
 import formWithRadioInsideDataGrid from '../test/forms/formWithRadioInsideDataGrid';
 import formWithCheckboxRadioType from '../test/forms/formWithCheckboxRadioType';
