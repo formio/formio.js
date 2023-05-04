@@ -1046,7 +1046,7 @@ export default class WebformBuilder extends Component {
 
   populateRecaptchaSettings(form) {
     //populate isEnabled for recaptcha form settings
-    var isRecaptchaEnabled = false;
+    let isRecaptchaEnabled = false;
     if (this.form.components) {
       eachComponent(form.components, component => {
         if (isRecaptchaEnabled) {

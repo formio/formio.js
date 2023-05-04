@@ -73,6 +73,7 @@ import optionalSanitize from '../test/forms/optionalSanitize';
 import formsWithNewSimpleConditions from '../test/forms/formsWithNewSimpleConditions';
 import formWithRadioInsideDataGrid from '../test/forms/formWithRadioInsideDataGrid';
 import formWithCheckboxRadioType from '../test/forms/formWithCheckboxRadioType';
+import formWithFormController from '../test/forms/formWithFormController';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -80,6 +81,20 @@ global.cancelAnimationFrame = () => {};
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should execute form controller', function(done) {
+    Formio.createForm(formWithFormController).then((form) => {
+      setTimeout(() => {
+        const textField = form.getComponent('textField');
+
+        assert.equal(textField.getValue(), 'Hello World');
+        assert.equal(textField.disabled, true);
+        assert.equal(form.components[0].disabled, true);
+
+        done();
+      }, 300);
+    }).catch((err) => done(err));
+  });
 
   it('Should set radio components value inside data grid correctly', function(done) {
     Formio.createForm(formWithRadioInsideDataGrid).then((form) => {
