@@ -25,7 +25,8 @@ import {
   comp14,
   comp15,
   comp16,
-  comp17
+  comp17,
+  comp18
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -926,6 +927,39 @@ describe('Select Component', () => {
   //     assert.equal(component.refs.input[0].value, '');
   //   });
   // });
+});
+
+describe('Select Component', () => {
+  it('Select Component should work correctly with the values in the form of an array', (done) => {
+    const form = _.cloneDeep(comp18);
+    const testItems = [
+      { textField: ['one','two'] },
+      { textField: ['three','four'] },
+      { textField: ['five','six'] },
+    ];
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      select.setItems(testItems.map(item => ({ data: item })));
+      const value = ['three','four'];
+      select.setValue(value);
+      assert.equal(select.selectOptions.length, 3);
+      setTimeout(() => {
+        assert.deepEqual(select.getValue(), value);
+        assert.deepEqual(select.dataValue, value);
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(select.dataValue, value);
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
 });
 
 describe('Select Component with Entire Object Value Property', () => {

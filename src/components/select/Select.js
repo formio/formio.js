@@ -198,7 +198,7 @@ export default class SelectComponent extends ListComponent {
   }
 
   selectValueAndLabel(data) {
-    const value = this.getOptionValue((this.isEntireObjectDisplay() && !this.itemValue(data)) ? data : this.itemValue(data));
+    const value = this.getOptionValue((this.isEntireObjectDisplay() || !this.itemValue(data)) ? data : this.itemValue(data));
     return {
       value,
       label: this.itemTemplate((this.isEntireObjectDisplay() && !_.isObject(data.data)) ? { data: data } : data, value)
@@ -241,6 +241,14 @@ export default class SelectComponent extends ListComponent {
 
     if (typeof data === 'string' || typeof data === 'number') {
       return this.sanitize(this.t(data, { _userInput: true }), this.shouldSanitizeValue);
+    }
+    if (Array.isArray(data)) {
+      return data.map((val) => {
+        if (typeof val === 'string' || typeof val === 'number') {
+          return this.sanitize(this.t(val, { _userInput: true }), this.shouldSanitizeValue);
+        }
+        return val;
+      });
     }
 
     if (data.data) {
@@ -316,7 +324,7 @@ export default class SelectComponent extends ListComponent {
 
     if (!this.selectOptions.length) {
       // Add the currently selected choices if they don't already exist.
-      const currentChoices = Array.isArray(data) ? data : [data];
+      const currentChoices = Array.isArray(data) && this.component.multiple ? data : [data];
       added = this.addCurrentChoices(currentChoices, items);
       if (!added && !this.component.multiple) {
         this.addPlaceholder();
@@ -1439,11 +1447,11 @@ export default class SelectComponent extends ListComponent {
       if (hasValue) {
         this.choices.removeActiveItems();
         // Add the currently selected choices if they don't already exist.
-        const currentChoices = Array.isArray(value) ? value : [value];
+        const currentChoices = Array.isArray(value) && this.component.multiple ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
           this.choices.setChoices(this.selectOptions, 'value', 'label', true);
         }
-        this.choices.setChoiceByValue(value);
+        this.choices.setChoiceByValue(currentChoices);
       }
       else if (hasPreviousValue || flags.resetValue) {
         this.choices.removeActiveItems();
@@ -1674,7 +1682,15 @@ export default class SelectComponent extends ListComponent {
     if (Array.isArray(value)) {
       const items = [];
       value.forEach(item => items.push(this.itemTemplate(item)));
-      return items.length > 0 ? items.join('<br />') : '-';
+      if (this.component.dataSrc === 'resource' &&  items.length > 0 ) {
+        return items.join(', ');
+      }
+      else if ( items.length > 0) {
+        return items.join('<br />');
+      }
+      else {
+        return '-';
+      }
     }
 
     return !_.isNil(value)
