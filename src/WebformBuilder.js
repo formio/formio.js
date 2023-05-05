@@ -49,7 +49,6 @@ export default class WebformBuilder extends Component {
 
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
-    this.keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false);
     this.dragDropEnabled = true;
 
     // Setup the builder options.
@@ -1011,6 +1010,12 @@ export default class WebformBuilder extends Component {
       form.components = [];
     }
 
+    if (form && form.properties) {
+      this.options.properties = form.properties;
+    }
+
+    this.keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false) || this.options.properties?.keyboardBuilder;
+
     const isShowSubmitButton = !this.options.noDefaultSubmitButton
       && !form.components.length;
 
@@ -1313,6 +1318,12 @@ export default class WebformBuilder extends Component {
         );
         this.emit('change', this.form);
         this.highlightInvalidComponents();
+
+        if (this.isComponentCreated) {
+          const component = parent.formioComponent.components[0];
+          this.moveComponent(component);
+          this.isComponentCreated = false;
+        }
       });
     }
 
@@ -1562,9 +1573,8 @@ export default class WebformBuilder extends Component {
   }
 
   moveComponent(component) {
-    if (component) {
-      component.element.focus();
-    }
+    component.element.focus();
+    component.element.classList.add('builder-selected');
     this.selectedElement = component;
     this.removeEventListener(component.element, 'keydown');
     this.addEventListener(component.element, 'keydown', this.moveHandler.bind(this));
@@ -1593,9 +1603,9 @@ export default class WebformBuilder extends Component {
       const sibling = direction ? element.previousElementSibling : element.nextElementSibling;
       const source = element.parentNode;
 
-      const containerLenght = source.formioContainer.length;
+      const containerLength = source.formioContainer.length;
 
-      if (containerLenght && containerLenght <= 1) {
+      if (containerLength && containerLength <= 1) {
         return;
       }
 
@@ -1653,6 +1663,7 @@ export default class WebformBuilder extends Component {
     }
 
     if (isNew && !this.options.noNewEdit && !info.noNewEdit) {
+      BuilderUtils.uniquify(this.findNamespaceRoot(source.formioComponent), info);
       this.editComponent(info, source, isNew, null, null);
     }
 
@@ -1665,7 +1676,9 @@ export default class WebformBuilder extends Component {
       source.formioContainer.push(info);
     }
 
-    source.formioComponent.rebuild();
+    source.formioComponent.rebuild().then(() => {
+      this.isComponentCreated = true;
+    });
   }
 
   /**
