@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6668: fixed display of choices__list dropdown
  - FIO-6582: don't focus textareas until editors are ready
  - FIO-6675/6676: Fixes issues where wizard page is getting removed regardless user confirmed removement or canceled it
+ - FIO-6766: fixed an issue where default Value is displayed as an input field after saving the settings.
 
 ## 4.16.0-rc.1
 ### Added
