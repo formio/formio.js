@@ -720,12 +720,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "formiojs/src/wizardbuilder.js~wizardbuilder",
-    "class/src/WizardBuilder.js~WizardBuilder.html",
-    "<span>WizardBuilder</span> <span class=\"search-result-import-path\">formiojs/src/WizardBuilder.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/providers/storage/xhr.js~xhr",
     "variable/index.html#static-variable-XHR",
     "<span>XHR</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/xhr.js</span>",
@@ -2304,118 +2298,10 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/wizardbuilder.js",
-    "file/src/WizardBuilder.js.html",
-    "src/WizardBuilder.js",
+    "src/wizardbuilder.unit.js",
+    "file/src/WizardBuilder.unit.js.html",
+    "src/WizardBuilder.unit.js",
     "file"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#_form",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-member-_form",
-    "src/WizardBuilder.js~WizardBuilder#_form",
-    "member"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#addpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-method-addPage",
-    "src/WizardBuilder.js~WizardBuilder#addPage",
-    "method"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#allowdrop",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-method-allowDrop",
-    "src/WizardBuilder.js~WizardBuilder#allowDrop",
-    "method"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#attach",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-method-attach",
-    "src/WizardBuilder.js~WizardBuilder#attach",
-    "method"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#constructor",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-constructor-constructor",
-    "src/WizardBuilder.js~WizardBuilder#constructor",
-    "method"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
-    "src/WizardBuilder.js~WizardBuilder#currentPage",
-    "member"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#form",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-form",
-    "src/WizardBuilder.js~WizardBuilder#form",
-    "member"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#form",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-form",
-    "src/WizardBuilder.js~WizardBuilder#form",
-    "member"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#getpageconfig",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-method-getPageConfig",
-    "src/WizardBuilder.js~WizardBuilder#getPageConfig",
-    "method"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#onreorder",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-method-onReorder",
-    "src/WizardBuilder.js~WizardBuilder#onReorder",
-    "method"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#page",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-member-page",
-    "src/WizardBuilder.js~WizardBuilder#page",
-    "member"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#pages",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-pages",
-    "src/WizardBuilder.js~WizardBuilder#pages",
-    "member"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#pastecomponent",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-method-pasteComponent",
-    "src/WizardBuilder.js~WizardBuilder#pasteComponent",
-    "method"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#rebuild",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-method-rebuild",
-    "src/WizardBuilder.js~WizardBuilder#rebuild",
-    "method"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#removepage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-method-removePage",
-    "src/WizardBuilder.js~WizardBuilder#removePage",
-    "method"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#render",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-method-render",
-    "src/WizardBuilder.js~WizardBuilder#render",
-    "method"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#schema",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-schema",
-    "src/WizardBuilder.js~WizardBuilder#schema",
-    "member"
-  ],
-  [
-    "src/wizardbuilder.js~wizardbuilder#setpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-method-setPage",
-    "src/WizardBuilder.js~WizardBuilder#setPage",
-    "method"
   ],
   [
     "src/addons/formioaddon.js",

@@ -34,7 +34,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-GlobalFormio">GlobalFormio</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#addons">addons</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/addons/FormioAddon.js~FormioAddon.html">FormioAddon</a></span></span></li>
@@ -263,10 +262,10 @@ import formWithEventLogicInHiddenComponent from &apos;../test/forms/formWithEven
 import * as FormioUtils from &apos;./utils/utils&apos;;
 import htmlRenderMode from &apos;../test/forms/htmlRenderMode&apos;;
 import optionalSanitize from &apos;../test/forms/optionalSanitize&apos;;
-import formWithCheckboxRadioaType from &apos;../test/forms/formWithCheckboxRadioType&apos;;
 import formsWithNewSimpleConditions from &apos;../test/forms/formsWithNewSimpleConditions&apos;;
 import formWithRadioInsideDataGrid from &apos;../test/forms/formWithRadioInsideDataGrid&apos;;
 import formWithCheckboxRadioType from &apos;../test/forms/formWithCheckboxRadioType&apos;;
+import formWithFormController from &apos;../test/forms/formWithFormController&apos;;
 
 global.requestAnimationFrame = (cb) =&gt; cb();
 global.cancelAnimationFrame = () =&gt; {};
@@ -274,6 +273,20 @@ global.cancelAnimationFrame = () =&gt; {};
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should execute form controller&apos;, function(done) {
+    Formio.createForm(formWithFormController).then((form) =&gt; {
+      setTimeout(() =&gt; {
+        const textField = form.getComponent(&apos;textField&apos;);
+
+        assert.equal(textField.getValue(), &apos;Hello World&apos;);
+        assert.equal(textField.disabled, true);
+        assert.equal(form.components[0].disabled, true);
+
+        done();
+      }, 300);
+    }).catch((err) =&gt; done(err));
+  });
 
   it(&apos;Should set radio components value inside data grid correctly&apos;, function(done) {
     Formio.createForm(formWithRadioInsideDataGrid).then((form) =&gt; {

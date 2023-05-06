@@ -34,7 +34,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/WizardBuilder.js~WizardBuilder.html">WizardBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-GlobalFormio">GlobalFormio</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#addons">addons</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/addons/FormioAddon.js~FormioAddon.html">FormioAddon</a></span></span></li>
@@ -199,6 +198,7 @@ import Builders from &apos;../lib/builders&apos;;
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase } from &apos;../test/formtest&apos;;
 import sameApiKeysLayoutComps from &apos;../test/forms/sameApiKeysLayoutComps&apos;;
 import testApiKeysUniquifying from &apos;../test/forms/testApiKeysUniquifying&apos;;
+import formWithFormController from &apos;../test/forms/formWithFormController&apos;;
 
 describe(&apos;WebformBuilder tests&apos;, function() {
   this.retries(3);
@@ -209,6 +209,19 @@ describe(&apos;WebformBuilder tests&apos;, function() {
     const builder = Harness.getBuilder();
     assert(builder instanceof WebformBuilder, &apos;Builder must be an instance of FormioFormBuilder&apos;);
     done();
+  });
+
+  it(&apos;Should execute form controller&apos;, (done) =&gt; {
+    const builder = Harness.getBuilder();
+    builder.webform.form = formWithFormController;
+
+    setTimeout(() =&gt; {
+      const textF = builder.webform.getComponent(&apos;textField&apos;);
+      assert.equal(textF.getValue(), &apos;Hello World&apos;);
+      assert.equal(textF.disabled, true);
+      assert.equal(builder.webform.components[0].disabled, true);
+      done();
+    }, 500);
   });
 
   it(&apos;Should not show unique API error when components with same keys are inside and outside of the Data component&apos;, (done) =&gt; {

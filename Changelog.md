@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.15.0-rc.22
+### Changed
+ - FIO-6675/6676: Fixes issues where wizard page is getting removed regardless user confirmed removement or canceled it…
+ - FIO-6711: FormIo-angular can edit PDF form in Chrome
+ - FIO-2088: updated formio-flatpickr version and fixed eslint warnings
+ - FIO-6766: Removed from submission flag check
+ - FIO-4232: fixed an issue where form controller does not work for wizard forms in builder
+ - FIO-6761 removed Storage Type setting for Radio
+
 ## 4.15.0-rc.21
 ### Changed
  - FIO-4230 Fixed label display for Button component inside DataGrid
