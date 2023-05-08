@@ -294,39 +294,20 @@ export default class RadioComponent extends ListComponent {
    * @return {*}
    */
   normalizeValue(value) {
-    const dataType = this.component.dataType || 'auto';
-
     if (value === this.emptyValue) {
       return value;
     }
 
-    switch (dataType) {
-      case 'auto':
-        if (!isNaN(parseFloat(value)) && isFinite(value)) {
-          value = +value;
-        }
-        if (value === 'true') {
-          value = true;
-        }
-        if (value === 'false') {
-          value = false;
-        }
-        break;
-      case 'number':
-        value = +value;
-        break;
-      case 'string':
-        if (typeof value === 'object') {
-          value = JSON.stringify(value);
-        }
-        else {
-          value = String(value);
-        }
-        break;
-      case 'boolean':
-        value = !(!value || value.toString() === 'false');
-        break;
+    if (!isNaN(parseFloat(value)) && isFinite(value)) {
+      value = +value;
     }
+    if (value === 'true') {
+      value = true;
+    }
+    if (value === 'false') {
+      value = false;
+    }
+
     return super.normalizeValue(value);
   }
 }
