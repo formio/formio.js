@@ -45,18 +45,6 @@ export default class WizardBuilder extends WebformBuilder {
       }
     }
 
-    this.options.hooks.attachPanel = (element, component) => {
-      if (component.refs.removeComponent) {
-        this.addEventListener(component.refs.removeComponent, 'click', () => {
-          const pageIndex = this.pages.findIndex((page) => page.key === component.key);
-          const componentIndex = this._form.components.findIndex((comp) => comp.key === component.key);
-          if (pageIndex !== -1) {
-            this.removePage(pageIndex, componentIndex);
-          }
-        });
-      }
-    };
-
     const originalRenderComponentsHook = this.options.hooks.renderComponents;
     this.options.hooks.renderComponents = (html, { components, self }) => {
       if (self.type === 'form' && !self.root) {
@@ -96,6 +84,19 @@ export default class WizardBuilder extends WebformBuilder {
         }
       }
     }, true);
+  }
+
+  removeComponent(component, parent, original) {
+    const remove = super.removeComponent(component, parent, original);
+    // If user agrees to remove the whole group of the components and it could be a Wizard page, find it and remove
+    if (remove && component.type === 'panel') {
+      const pageIndex = this.pages.findIndex((page) => page.key === component.key);
+      const componentIndex = this._form.components.findIndex((comp) => comp.key === component.key);
+      if (pageIndex !== -1) {
+        this.removePage(pageIndex, componentIndex);
+      }
+    }
+    return remove;
   }
 
   allowDrop(element) {

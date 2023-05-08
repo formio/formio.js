@@ -10,10 +10,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Replace SDK with @formio/core SDK.
  - Remove Semantic template and Bootstrap 3 template from build.  Use import @formio/bootstrap3 or @formio/semantic instead.
 
+### Added
+ - FIO-5986: added check for identical uploaded file
+ - FIO-6453: added sanitization inside error message container
+ - FIO-6345: Add rel=noopener to Links to Docs / External Links
+ 
 ### Fixed
  - FIO-6512: cannot drag and drop components on to pdf first forms using mac
  - FIO-6468: fixed an issue where Custom validation on Day component is confusing Day and Year
  - Revert "Fio 6512 cannot drag and drop components on to pdf first forms using mac"
+ - FIO-6616: fixed issue where the select templates were not getting set correctly in selectData
+ - FIO-6533: fixed an issue where file upload hash causing delays in file uploads
+ - FIO-6407: updated tests for Select Component
+ - FIO-5967: fixed issue with setting [object Object] to html options
+ - FIO-6009: fixed an issue where when checkboxes set as radio, conditional logic is triggered upon deselect
+ - FIO-5318: fixed an issue where wrong attributes appear for Radio component during performance
+ - FIO-5086: fixed an issue where Date/Time component allows to submit any string and the server-side validation is not triggered
+ - FIO-6009: fixed test
+ - FIO-5048: Number currency components mutiple modal do not show preview
+ - FIO-5967: fixed getting option value for html5 options
+ - FIO-4876: fixed the display of current submission for pdf download
+ - FIO-6475: fixed an issue for archieved plan where error message is not displayed when the user tries to add a new action
+ - FIO-4230: fixed label display for Button component inside DataGrid
+ - FIO-6668: fixed display of choices__list dropdown
+ - FIO-6582: don't focus textareas until editors are ready
+ - FIO-6675/6676: Fixes issues where wizard page is getting removed regardless user confirmed removement or canceled it
+ - FIO-6766: fixed an issue where default Value is displayed as an input field after saving the settings.
 
 ## 4.16.0-rc.1
 ### Added
