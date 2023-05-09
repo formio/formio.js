@@ -36,6 +36,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6582: don't focus textareas until editors are ready
  - FIO-6675/6676: Fixes issues where wizard page is getting removed regardless user confirmed removement or canceled it
  - FIO-6766: fixed an issue where default Value is displayed as an input field after saving the settings.
+ - FIO-6761: removed Storage Type setting for Radio
+ - FIO-6711: FormIo-angular can edit PDF form in Chrome
+ - FIO-4232: fixed an issue where form controller does not work for wizard forms in builder
 
 ## 4.16.0-rc.1
 ### Added
