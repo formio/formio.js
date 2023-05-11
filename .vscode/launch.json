@@ -21,6 +21,14 @@
             "skipFiles": [
               "<node_internals>/**"
             ]
-          }
+          },
+          {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Mocha Tests via Yarn",
+            "runtimeExecutable": "yarn",
+            "cwd": "${workspaceFolder}",
+            "runtimeArgs": ["test:unit"],
+        }
     ]
 }

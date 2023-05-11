@@ -1421,10 +1421,12 @@ describe('Webform tests', function() {
         }
       ]
     }).then(() => {
-      const label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.col-form-label');
       assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
-    }).catch(done);
+    }).catch((err) => {
+      done(err);
+    });
   });
 
   it('Should treat double colons as i18next namespace separators', (done) => {
@@ -1512,7 +1514,7 @@ describe('Webform tests', function() {
       ]
     }).then(() => {
       translateForm.language = 'es';
-      const label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.col-form-label');
       assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
     }).catch(done);
@@ -1546,7 +1548,7 @@ describe('Webform tests', function() {
       ]
     }).then(() => {
       translateForm.language = 'fr';
-      const label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.col-form-label');
       assert.equal(label.innerHTML.trim(), 'French Label');
       done();
     }).catch(done);
@@ -1571,7 +1573,7 @@ describe('Webform tests', function() {
       ]
     }).then(() => {
       translateForm.addLanguage('es', { 'Default Label': 'Spanish Label' }, true);
-      const label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.col-form-label');
       assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
     }).catch(done);
@@ -1604,10 +1606,10 @@ describe('Webform tests', function() {
         }, done)
         .then(() => {
           expect(form.options.language).to.equal('ru');
-          expect(formElement.querySelector('.control-label').innerHTML.trim()).to.equal('Russian Label');
+          expect(formElement.querySelector('.col-form-label').innerHTML.trim()).to.equal('Russian Label');
           form.redraw();
           expect(form.options.language).to.equal('ru');
-          expect(formElement.querySelector('.control-label').innerHTML.trim()).to.equal('Russian Label');
+          expect(formElement.querySelector('.col-form-label').innerHTML.trim()).to.equal('Russian Label');
           done();
         }, done)
         .catch(done);
@@ -1733,7 +1735,7 @@ describe('Webform tests', function() {
       assert.equal(translateForm.i18next.language, 'es');
       assert.equal(translateForm.i18next, instance);
 
-      const label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.col-form-label');
       assert.equal(label.innerHTML.trim(), 'Spanish Label');
     });
   });
