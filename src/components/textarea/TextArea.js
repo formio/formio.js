@@ -583,34 +583,37 @@ export default class TextAreaComponent extends TextFieldComponent {
     switch (this.component.editor) {
       case 'ckeditor': {
         // Wait for the editor to be ready.
-        // TODO: I'm defaulting to the first element of the editorsReady array because we are defaulting to the first element
-        // of the editors array when we focus, but is there a scenario in which the editorsReady array would have more than
-        // one element?
-        this.editorsReady[0].then(() => {
-          if (this.editors[0].editing?.view?.focus) {
-            this.editors[0].editing.view.focus();
-          }
-          this.element.scrollIntoView();
-        }).catch((err) => {
-          console.warn('An editor did not initialize properly when trying to focus:', err);
-        });
+        if (this.editorsReady[0]) {
+          this.editorsReady[0].then(() => {
+            if (this.editors[0].editing?.view?.focus) {
+              this.editors[0].editing.view.focus();
+            }
+            this.element.scrollIntoView();
+           }).catch((err) => {
+              console.warn('An editor did not initialize properly when trying to focus:', err);
+           });
+        }
         break;
       }
       case 'ace': {
-        this.editorsReady[0].then(() => {
-          this.editors[0].focus();
-          this.element.scrollIntoView();
-        }).catch((err) => {
-          console.warn('An editor did not initialize properly when trying to focus:', err);
-        });
+        if (this.editorsReady[0]) {
+          this.editorsReady[0].then(() => {
+            this.editors[0].focus();
+            this.element.scrollIntoView();
+          }).catch((err) => {
+            console.warn('An editor did not initialize properly when trying to focus:', err);
+          });
+        }
         break;
       }
       case 'quill': {
-        this.editorsReady[0].then(() => {
-          this.editors[0].focus();
-        }).catch((err) => {
-          console.warn('An editor did not initialize properly when trying to focus:', err);
-        });
+        if (this.editorsReady[0]) {
+          this.editorsReady[0].then(() => {
+            this.editors[0].focus();
+          }).catch((err) => {
+            console.warn('An editor did not initialize properly when trying to focus:', err);
+          });
+        }
         break;
       }
     }
