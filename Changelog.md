@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.15.0-rc.22
+### Added
+ - FIO-5042: Logout feature for OIDC
+ 
 ### Changed
  - FIO-6675/6676: Fixes issues where wizard page is getting removed regardless user confirmed removement or canceled it…
  - FIO-6711: FormIo-angular can edit PDF form in Chrome
@@ -12,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6766: Removed from submission flag check
  - FIO-4232: fixed an issue where form controller does not work for wizard forms in builder
  - FIO-6761 removed Storage Type setting for Radio
+ - FIO-4500: Fixes an issue where specified in the component settings delimiter is not used for CSVExport of Tags component data
+ - FIO-6512 cannot drag and drop components on to pdf first forms using mac
+
 
 ## 4.15.0-rc.21
 ### Changed
