@@ -5328,6 +5328,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/selectboxes/fixtures/comp4.js",
+    "file/src/components/selectboxes/fixtures/comp4.js.html",
+    "src/components/selectboxes/fixtures/comp4.js",
+    "file"
+  ],
+  [
     "src/components/selectboxes/fixtures/index.js",
     "file/src/components/selectboxes/fixtures/index.js.html",
     "src/components/selectboxes/fixtures/index.js",

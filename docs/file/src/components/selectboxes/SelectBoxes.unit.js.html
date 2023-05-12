@@ -179,7 +179,8 @@ import Formio from &apos;./../../Formio&apos;;
 
 import {
   comp1,
-  comp3
+  comp3,
+  comp4
 } from &apos;./fixtures&apos;;
 import wizardWithSelectBoxes from &apos;../../../test/forms/wizardWithSelectBoxes&apos;;
 
@@ -264,6 +265,23 @@ describe(&apos;SelectBoxes Component&apos;, () =&gt; {
             );
           }, 300);
         });
+    });
+
+    it(&apos;Hidden SelectBoxes validation should not prevent submission&apos;, (done) =&gt; {
+      const element = document.createElement(&apos;div&apos;);
+      Formio.createForm(element, comp4)
+        .then(async form =&gt; {
+          const submit = form.getComponent(&apos;submit&apos;);
+          const clickEvent = new Event(&apos;click&apos;);
+          const submitBtn = submit.refs.button;
+          submitBtn.dispatchEvent(clickEvent);
+          setTimeout(() =&gt; {
+            assert.equal(form.submission.state, &apos;submitted&apos;);
+            assert.equal(form.errors.length, 0);
+            done();
+          }, 500);
+        })
+        .catch(done);
     });
 
     it(&apos;Should have a maxSelectedCount validation message&apos;, () =&gt; {
