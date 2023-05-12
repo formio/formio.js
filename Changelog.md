@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5986: added check for identical uploaded file
  - FIO-6453: added sanitization inside error message container
  - FIO-6345: Add rel=noopener to Links to Docs / External Links
+ - FIO-5042: Logout feature for OIDC
  
 ### Fixed
  - FIO-6512: cannot drag and drop components on to pdf first forms using mac
