@@ -2807,6 +2807,10 @@ export default class Component extends Element {
     // Calculate the new value.
     let calculatedValue = this.doValueCalculation(dataValue, data, row, flags);
 
+    if (this.options.readOnly && dataValue && !calculatedValue) {
+      return false;
+    }
+
     if (_.isNil(calculatedValue)) {
       calculatedValue = this.emptyValue;
     }
