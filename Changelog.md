@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.14.14-rc.2]
+## 4.14.14-rc.2
 ### Changed
  - FIO-6668 fixed display of choices__list dropdown
 
