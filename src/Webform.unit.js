@@ -3798,11 +3798,8 @@ describe('Webform tests', function() {
 
     if (useDoneInsteadOfPromise) {
       describe(formTest.title || '', () => {
-        each(formTest.tests, (formTestTest, title) => {
-          if (title === 'Email Action Test') {
-            console.log('Email Action Test');
-          }
-
+        for (const title in formTest.tests) {
+          const formTestTest = formTest.tests[title];
           it(title, function(done) {
             const self = this;
             const formElement = document.createElement('div');
@@ -3812,18 +3809,19 @@ describe('Webform tests', function() {
                 form = null;
                 formElement.innerHTML = '';
                 if (error) {
-                  throw new Error(error);
+                  return done(error);
                 }
                 done();
               }, self);
             });
           });
-        });
+        }
       });
     }
     else {
       describe(formTest.title || '', () => {
-        each(formTest.tests, (formTestTest, title) => {
+        for (const title in formTest.tests) {
+          const formTestTest = formTest.tests[title];
           it(title, function() {
             const formElement = document.createElement('div');
             const form = new Webform(formElement, { language: 'en' });
@@ -3836,7 +3834,7 @@ describe('Webform tests', function() {
               });
             });
           });
-        });
+        }
       });
     }
   });
