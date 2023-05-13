@@ -3793,7 +3793,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  each(FormTests, (formTest) => {
+  for (const formTest of FormTests) {
     const useDoneInsteadOfPromise = formTest.useDone;
 
     if (useDoneInsteadOfPromise) {
@@ -3837,7 +3837,7 @@ describe('Webform tests', function() {
         }
       });
     }
-  });
+  }
 });
 
 // describe('Test the saveDraft and restoreDraft feature', () => {
