@@ -696,6 +696,7 @@ export default class Webform extends NestedDataComponent {
     // See if they pass a module, and evaluate it if so.
     if (form && form.module) {
       let formModule = null;
+      console.log(444);
       if (typeof form.module === 'string') {
         try {
           formModule = this.evaluate(`return ${form.module}`);
