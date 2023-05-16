@@ -52,7 +52,7 @@ export default class ListComponent extends Field {
       return data.label;
     }
     const options = {
-      noeval: true,
+      noeval: _.get(this.component, 'noeval', true),
       data: {}
     };
     const template = this.sanitize(
