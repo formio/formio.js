@@ -39,7 +39,7 @@ describe('TextField Component', () => {
     });
   });
 
-  it('Should check mask and value in the textfield component', (done) => {
+  it('Should check mask and value in the textfield component in the email template', (done) => {
     const formJson =  {
       components: [{
           label: 'Text Field',
@@ -61,7 +61,7 @@ describe('TextField Component', () => {
           data: {
             textField: {
                 value: 'mask1',
-                maskName: 'mask1'
+                maskName: 'mask2'
             }
         },
         });
@@ -69,8 +69,12 @@ describe('TextField Component', () => {
         const textField = form.getComponent('textField');
 
         setTimeout(() => {
-          assert.equal(textField.data.textField.maskName, textField.dataValue.maskName, 'Should check the correct mask name');
-          assert.equal(textField.data.textField.value, textField.dataValue.value, 'Should check the correct mask value');
+          assert.equal(textField.dataValue.value, 'mask1', 'Should check value');
+          assert.equal(textField.dataValue.maskName, 'mask2', 'Should check maskName');
+          const toString = textField.getValueAsString(textField.dataValue, { email: true });
+          assert.ok(toString.includes('table'), 'Email template should render html table');
+          assert.ok(toString.includes(textField.dataValue.maskName), 'Email template should have Text Field mackName');
+          assert.ok(toString.includes(textField.dataValue.value), 'Email template should have Text Field value');
           done();
         }, 300);
       })

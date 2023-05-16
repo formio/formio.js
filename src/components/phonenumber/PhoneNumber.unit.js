@@ -14,7 +14,7 @@ describe('PhoneNumber Component', () => {
     });
   });
 
-  it('Should check mask and value in the phone component', (done) => {
+  it('Should check mask and value in the phone component in the email template', (done) => {
     const formJson =  {
       components: [{
           label: 'Phone Number',
@@ -36,7 +36,7 @@ describe('PhoneNumber Component', () => {
           data: {
             phoneNumber: {
                 value: 'mask1',
-                maskName: 'mask1'
+                maskName: 'mask2'
             }
         },
         });
@@ -44,8 +44,12 @@ describe('PhoneNumber Component', () => {
         const phoneNumber = form.getComponent('phoneNumber');
 
         setTimeout(() => {
-          assert.equal(phoneNumber.data.phoneNumber.maskName, phoneNumber.dataValue.maskName, 'Should check the correct mask name');
-          assert.equal(phoneNumber.data.phoneNumber.value, phoneNumber.dataValue.value, 'Should check the correct mask value');
+          assert.equal(phoneNumber.dataValue.value, 'mask1', 'Should check value');
+          assert.equal(phoneNumber.dataValue.maskName, 'mask2', 'Should check maskName');
+          const toString = phoneNumber.getValueAsString(phoneNumber.dataValue, { email: true });
+          assert.ok(toString.includes('table'), 'Email template should render html table');
+          assert.ok(toString.includes(phoneNumber.dataValue.maskName), 'Email template should have Phone Number mackName');
+          assert.ok(toString.includes(phoneNumber.dataValue.value), 'Email template should have Phone Number value');
           done();
         }, 300);
       })
