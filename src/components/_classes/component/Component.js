@@ -2266,7 +2266,7 @@ export default class Component extends Element {
     ], true);
 
     // Lazy load the quill library.
-    return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${Formio.cdn.quill}/quill.min.js`), true)
+    return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${Formio.cdn.quill}/quill.js`), true)
       .then(() => {
         return Formio.requireLibrary('quill-table', 'Quill', `${Formio.cdn.baseUrl}/quill/quill-table.js`, true)
           .then(() => {
