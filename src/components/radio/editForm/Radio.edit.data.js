@@ -7,6 +7,23 @@ export default [
     ignore: true,
   },
   {
+    key: 'dataSrc',
+    data: {
+      values: [
+        { label: 'Values', value: 'values' },
+        { label: 'URL', value: 'url' },
+      ],
+    },
+    'validate': {
+      'required': true
+    },
+    onChange(context) {
+      if (context && context.flags && context.flags && context.flags.modified) {
+        context.data.values = [{ label: '', value: '' }];
+      }
+    },
+  },
+  {
     type: 'datagrid',
     input: true,
     label: 'Values',
@@ -54,25 +71,14 @@ export default [
         },
       },
     ],
-  },
-  {
-    type: 'select',
-    input: true,
-    label: 'Storage Type',
-    key: 'dataType',
-    clearOnHide: true,
-    tooltip: 'The type to store the data. If you select something other than autotype, it will force it to that type.',
-    weight: 12,
-    template: '<span>{{ item.label }}</span>',
-    dataSrc: 'values',
-    data: {
-      values: [
-        { label: 'Autotype', value: 'auto' },
-        { label: 'String', value: 'string' },
-        { label: 'Number', value: 'number' },
-        { label: 'Boolean', value: 'boolean' },
-        { label: 'Object', value: 'object' },
-      ],
+    conditional: {
+      json: { '===': [{ var: 'data.dataSrc' }, 'values'] },
     },
   },
+  {
+    key: 'template',
+    conditional: {
+      json: { '===': [{ var: 'data.dataSrc' }, 'url'] },
+    },
+  }
 ];

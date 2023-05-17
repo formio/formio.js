@@ -5,9 +5,9 @@ export default class Field extends Component {
     if (this.noField) {
       return super.render(element);
     }
-    else if (this.isAdvancedLabel) {
+    else if (this.isAdvancedLabel || this.options.condensedMode) {
       return super.render(this.renderTemplate('field', {
-        ...this.getLabelInfo(),
+        ...this.getLabelInfo(this.options.condensedMode),
         labelMarkup: this.renderTemplate('label'),
         element: element
       }, 'align'));

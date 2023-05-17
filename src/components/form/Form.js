@@ -9,7 +9,7 @@ import {
   getStringFromComponentPath,
   getArrayFromComponentPath
 } from '../../utils/utils';
-import { GlobalFormio as Formio } from '../../Formio';
+import { Formio } from '../../Formio';
 import Form from '../../Form';
 
 export default class FormComponent extends Component {
@@ -437,7 +437,7 @@ export default class FormComponent extends Component {
       return NativePromise.resolve();
     }
 
-    if (this.hasLoadedForm && !this.isRevisionChanged) {
+    if (this.hasLoadedForm && !this.isRevisionChanged && !(this.options.pdf && _.isUndefined(this.subFormRevision))) {
       // Pass config down to sub forms.
       if (this.root && this.root.form && this.root.form.config && !this.formObj.config) {
         this.formObj.config = this.root.form.config;

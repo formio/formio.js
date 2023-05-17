@@ -1,5 +1,5 @@
 import NativePromise from 'native-promise-only';
-import { GlobalFormio as Formio } from './Formio';
+import { Formio } from './Formio';
 import Webform from './Webform';
 import { fastCloneDeep, eachComponent } from './utils/utils';
 
@@ -45,6 +45,7 @@ export default class PDF extends Webform {
 
   render() {
     this.submitButton = this.addComponent({
+      disabled: this.form.disableWizardSubmit,
       input: true,
       type: 'button',
       action: 'submit',

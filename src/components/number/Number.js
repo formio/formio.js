@@ -1,6 +1,6 @@
 import { maskInput, conformToMask } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
-import { createNumberMask } from 'text-mask-addons';
+import { createNumberMask } from '@formio/text-mask-addons';
 import Input from '../_classes/input/Input';
 import { getNumberSeparators, getNumberDecimalLimit } from '../../utils/utils';
 
@@ -203,7 +203,7 @@ export default class NumberComponent extends Input {
     }
     value = this.getWidgetValueAsString(value, options);
     if (Array.isArray(value)) {
-      return value.map(this.getMaskedValue).join(', ');
+      return value.map((val) => this.getMaskedValue(val)).join(', ');
     }
     return this.getMaskedValue(value);
   }

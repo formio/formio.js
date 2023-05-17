@@ -10,6 +10,7 @@ import NativePromise from 'native-promise-only';
 import dompurify from 'dompurify';
 import { getValue } from './formUtils';
 import Evaluator from './Evaluator';
+import ConditionOperators from './conditionOperators';
 const interpolate = Evaluator.interpolate;
 const { fetch } = fetchPonyfill({
   Promise: NativePromise
@@ -35,7 +36,7 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, moment };
+export { jsonLogic, moment, ConditionOperators };
 
 function setPathToComponentAndPerentSchema(component) {
   component.path = getComponentPath(component);
@@ -206,34 +207,75 @@ export function checkCalculated(component, submission, rowData) {
  * @param condition
  * @param row
  * @param data
+ * @param instance
  * @returns {boolean}
  */
-export function checkSimpleConditional(component, condition, row, data) {
+ export function checkSimpleConditional(component, condition, row, data, instance) {
+  if (condition.when) {
+    const value = getComponentActualValue(condition.when, data, row);
+
+    const eq = String(condition.eq);
+    const show = String(condition.show);
+
+    // Special check for selectboxes component.
+    if (_.isObject(value) && _.has(value, condition.eq)) {
+      return String(value[condition.eq]) === show;
+    }
+    // FOR-179 - Check for multiple values.
+    if (Array.isArray(value) && value.map(String).includes(eq)) {
+      return show === 'true';
+    }
+
+    return (String(value) === eq) === (show === 'true');
+  }
+  else {
+    const { conditions = [], conjunction = 'all',  show = true } = condition;
+
+    if (!conditions.length) {
+      return true;
+    }
+
+    const conditionsResult = _.map(conditions, (cond) => {
+      const { value: comparedValue, operator, component: conditionComponentPath } = cond;
+      if (!conditionComponentPath) {
+        return true;
+      }
+      const value = getComponentActualValue(conditionComponentPath, data, row);
+
+      const СonditionOperator = ConditionOperators[operator];
+      return СonditionOperator
+        ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+        : true;
+    });
+
+    let result = false;
+
+    switch (conjunction) {
+      case 'any':
+        result = _.some(conditionsResult, res => !!res);
+        break;
+      default:
+        result = _.every(conditionsResult, res => !!res);
+    }
+
+    return show ? result : !result;
+  }
+}
+
+export function getComponentActualValue(compPath, data, row) {
   let value = null;
+
   if (row) {
-    value = getValue({ data: row }, condition.when);
+    value = getValue({ data: row }, compPath);
   }
   if (data && _.isNil(value)) {
-    value = getValue({ data }, condition.when);
+    value = getValue({ data }, compPath);
   }
   // FOR-400 - Fix issue where falsey values were being evaluated as show=true
   if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
     value = '';
   }
-
-  const eq = String(condition.eq);
-  const show = String(condition.show);
-
-  // Special check for selectboxes component.
-  if (_.isObject(value) && _.has(value, condition.eq)) {
-    return String(value[condition.eq]) === show;
-  }
-  // FOR-179 - Check for multiple values.
-  if (Array.isArray(value) && value.map(String).includes(eq)) {
-    return show === 'true';
-  }
-
-  return (String(value) === eq) === (show === 'true');
+  return value;
 }
 
 /**
@@ -282,7 +324,11 @@ function getRow(component, row, instance, conditional) {
   }
   const dataParent = getDataParentComponent(instance);
   const parentPath = dataParent ? getComponentPath(dataParent) : null;
-  if (dataParent && condition.when?.startsWith(parentPath)) {
+  const isTriggerCondtionComponentPath = condition.when || !condition.conditions
+    ? condition.when?.startsWith(parentPath)
+    : _.some(condition.conditions, cond => cond.component.startsWith(parentPath));
+
+  if (dataParent && isTriggerCondtionComponentPath) {
     const newRow = {};
     _.set(newRow, parentPath, row);
     row = newRow;
@@ -308,9 +354,9 @@ export function checkCondition(component, row, data, form, instance) {
   if (customConditional) {
     return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
   }
-  else if (conditional && conditional.when) {
+  else if (conditional && (conditional.when || _.some(conditional.conditions || [], condition => condition.component && condition.operator))) {
     row = getRow(component, row, instance);
-    return checkSimpleConditional(component, conditional, row, data);
+    return checkSimpleConditional(component, conditional, row, data, instance);
   }
   else if (conditional && conditional.json) {
     return checkJsonConditional(component, conditional.json, row, data, form, true);
@@ -338,7 +384,7 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
   switch (trigger.type) {
     case 'simple':
       row = getRow(component, row, instance, trigger.simple);
-      return checkSimpleConditional(component, trigger.simple, row, data);
+      return checkSimpleConditional(component, trigger.simple, row, data, instance);
     case 'javascript':
       return checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
     case 'json':
@@ -568,7 +614,7 @@ export function shouldLoadZones(timezone) {
  *
  * @return {Promise<any> | *}
  */
-export function loadZones(timezone) {
+export function loadZones(url, timezone) {
   if (timezone && !shouldLoadZones(timezone)) {
     // Return non-resolving promise.
     return new NativePromise(_.noop);
@@ -577,9 +623,8 @@ export function loadZones(timezone) {
   if (moment.zonesPromise) {
     return moment.zonesPromise;
   }
-  return moment.zonesPromise = fetch(
-    'https://cdn.form.io/moment-timezone/data/packed/latest.json',
-  ).then(resp => resp.json().then(zones => {
+  return moment.zonesPromise = fetch(url)
+  .then(resp => resp.json().then(zones => {
     moment.tz.load(zones);
     moment.zonesLoaded = true;
 
@@ -602,6 +647,9 @@ export function loadZones(timezone) {
  */
 export function momentDate(value, format, timezone) {
   const momentDate = moment(value);
+  if (!timezone) {
+    return momentDate;
+  }
   if (timezone === 'UTC') {
     timezone = 'Etc/UTC';
   }
@@ -619,12 +667,12 @@ export function momentDate(value, format, timezone) {
  * @param timezone
  * @return {string}
  */
-export function formatDate(value, format, timezone, flatPickrInputFormat) {
+export function formatDate(timezonesUrl, value, format, timezone, flatPickrInputFormat) {
   const momentDate = moment(value, flatPickrInputFormat || undefined);
   if (timezone === currentTimezone()) {
     // See if our format contains a "z" timezone character.
     if (format.match(/\s(z$|z\s)/)) {
-      loadZones();
+      loadZones(timezonesUrl);
       if (moment.zonesLoaded) {
         return momentDate.tz(timezone).format(convertFormatToMoment(format));
       }
@@ -642,7 +690,7 @@ export function formatDate(value, format, timezone, flatPickrInputFormat) {
   }
 
   // Load the zones since we need timezone information.
-  loadZones();
+  loadZones(timezonesUrl);
   if (moment.zonesLoaded && timezone) {
     return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
   }
@@ -660,7 +708,7 @@ export function formatDate(value, format, timezone, flatPickrInputFormat) {
  * @param timezone
  * @return {string}
  */
-export function formatOffset(formatFn, date, format, timezone) {
+export function formatOffset(timezonesUrl, formatFn, date, format, timezone) {
   if (timezone === currentTimezone()) {
     return formatFn(date, format);
   }
@@ -669,7 +717,7 @@ export function formatOffset(formatFn, date, format, timezone) {
   }
 
   // Load the zones since we need timezone information.
-  loadZones();
+  loadZones(timezonesUrl);
   if (moment.zonesLoaded) {
     const offset = offsetDate(date, timezone);
     return `${formatFn(offset.date, format)} ${offset.abbr}`;
@@ -1110,11 +1158,12 @@ export function observeOverload(callback, options = {}) {
   };
 }
 
-export function getContextComponents(context) {
+export function getContextComponents(context, excludeNested, excludedTypes = []) {
   const values = [];
 
   context.utils.eachComponent(context.instance.options.editForm.components, (component, path) => {
-    if (component.key !== context.data.key) {
+    const addToContextComponents = excludeNested ? !component.tree : true;
+    if (component.key !== context.data.key && addToContextComponents && !_.includes(excludedTypes, component.type)) {
       values.push({
         label: `${component.label || component.key} (${path})`,
         value: path,

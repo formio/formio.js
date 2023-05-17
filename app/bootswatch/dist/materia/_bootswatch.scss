@@ -1,34 +1,39 @@
-// Materia 4.6.1
+// Materia 5.2.2
 // Bootswatch
 
 
-// Variables ===================================================================
+// Variables
 
 $web-font-path: "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" !default;
 @if $web-font-path {
   @import url($web-font-path);
 }
-// Mixins ======================================================================
 
-@mixin ripple($color){
+:root {
+  color-scheme: light;
+}
+
+// Mixins
+
+@mixin ripple($color) {
   position: relative;
 
   &::before {
-    content: "";
-    display: block;
     position: absolute;
-    width: 100%;
-    height: 100%;
     top: 0;
     left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
     margin-left: 0;
-    @include gradient-radial($color 10%, transparent 10.01%);
-    background-size: 1000% 1000%;
+    pointer-events: none;
+    content: "";
     background-position: 50%;
+    background-size: 1000% 1000%;
     border: none;
     opacity: 0;
-    pointer-events: none;
     transition: background .5s, opacity 1s;
+    @include gradient-radial($color 10%, transparent 10.01%);
   }
 
   &:active::before {
@@ -45,20 +50,20 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;50
   }
 }
 
-@mixin btn($class,$bg,$color){
+@mixin btn($class,$bg,$color) {
   .btn-#{$class} {
     &:focus {
       background-color: $bg;
-      box-shadow: $btn-focus-box-shadow;
+      box-shadow: 0 0 0 2px rgba(204, 204, 204, .5);
     }
 
     &:hover,
     &:active:hover {
-      background-color: darken($bg, 6%);
+      background-color: shade-color($bg, 12%);
     }
 
     &:active {
-      box-shadow: $btn-active-box-shadow;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, .4);
     }
 
     @include ripple($color);
@@ -71,16 +76,16 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;50
 
 .dropdown-toggle::after,
 .dropup .dropdown-toggle::after,
-.dropright .dropdown-toggle::after,
-.dropleft .dropdown-toggle::after {
+.dropstart .dropdown-toggle::after,
+.dropend .dropdown-toggle::after {
   border-width: 4px;
 }
 
-// Navbar ======================================================================
+// Navbar
 
 .navbar {
   border: none;
-  box-shadow: 0 1px 2px rgba($black, .3);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
 
   &-brand {
     font-size: 24px;
@@ -93,26 +98,37 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;50
 
   &.bg-dark,
   &.bg-primary {
+    input[type="search"],
     input[type="text"],
     input[type="password"],
     input[type="email"],
     input[type="number"],
     input[type="tel"] {
       color: $white;
-      box-shadow: inset 0 -1px 0 rgba($white, .5);
+      box-shadow: inset 0 -1px 0 rgba(255, 255, 255, .5);
 
       &:focus {
         box-shadow: inset 0 -2px 0 $white;
       }
 
       &::placeholder {
-        color: rgba($white, .5);
+        color: rgba(255, 255, 255, .5);
       }
     }
   }
 }
 
-// Buttons =====================================================================
+.bg-primary,
+.bg-success,
+.bg-info,
+.bg-warning,
+.bg-danger,
+.bg-dark,
+.bg-black {
+  color-scheme: dark;
+}
+
+// Buttons
 
 @include btn(primary, $primary, $white);
 @include btn(secondary, $secondary, $gray-500);
@@ -126,18 +142,18 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;50
 .btn {
   text-transform: uppercase;
   border: none;
-  box-shadow: $btn-box-shadow;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .4);
   transition: color .4s, background-color .4s, border-color .4s, box-shadow .4s;
 
   &-link {
-    box-shadow: none;
     color: $link-color;
+    box-shadow: none;
 
     &:hover,
     &:focus {
-      box-shadow: none;
       color: $link-hover-color;
       text-decoration: $link-hover-decoration;
+      box-shadow: none;
     }
 
     &.disabled, // Although btn-link is intended for buttons, which want to look like link, I include here a.disable for the sake of consistency
@@ -155,20 +171,20 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;50
     &.disabled,
     &[disabled],
     fieldset[disabled] & {
-      background-color: rgba($black, .1);
-      color: rgba($black, .4);
+      color: rgba(0, 0, 0, .4);
+      background-color: rgba(0, 0, 0, .1);
       opacity: 1;
 
       &:hover,
       &:focus {
-        background-color: rgba($black, .1);
+        background-color: rgba(0, 0, 0, .1);
       }
     }
   }
 
   &-outline-secondary {
-    border-color: $gray-200;
     color: $gray-300;
+    border-color: $gray-200;
   }
 
   &-warning {
@@ -195,25 +211,19 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;50
 
   .btn + .btn,
   .btn + .btn-group > .dropdown-toggle {
-    box-shadow: 1px 1px 4px rgba($black, .4);
-  }
-
-  .btn:not(:disabled):not(.disabled):active,
-  .btn:not(:disabled):not(.disabled).active {
-    box-shadow: $btn-box-shadow;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, .4);
   }
 }
 
 .border-secondary {
-  border: 1px solid mix($white, $black, 86.7%) !important;
+  border: 1px solid #dfdfdf !important;
 }
 
-// Typography ==================================================================
+// Typography
 
 body,
 input,
 button {
-  -webkit-font-smoothing: antialiased;
   letter-spacing: .1px;
 }
 
@@ -225,7 +235,7 @@ p {
   color: $gray-500 !important;
 }
 
-// Tables ======================================================================
+// Tables
 
 .table-hover {
   > tbody > tr,
@@ -236,11 +246,11 @@ p {
 }
 
 .thead-inverse th {
-  background-color: $primary;
   color: $white;
+  background-color: $primary;
 }
 
-// Forms =======================================================================
+// Forms
 
 .col-form-label {
   font-size: 16px;
@@ -252,6 +262,10 @@ p {
   &-lg {
     font-size: $font-size-lg;
   }
+}
+
+.form-control {
+  color-scheme: inherit;
 }
 
 textarea,
@@ -266,42 +280,34 @@ input[type="number"],
 [type="email"].form-control,
 [type="tel"].form-control,
 [contenteditable].form-control {
-  box-shadow: $input-box-shadow;
+  box-shadow: inset 0 -1px 0 #ddd;
   transition: box-shadow .2s;
 
   &:focus {
-    box-shadow: $input-focus-box-shadow;
+    box-shadow: inset 0 -2px 0 $primary;
   }
 
   &[disabled],
   &[readonly] {
+    border-bottom: 1px dotted #ddd;
     box-shadow: none;
-    border-bottom: 1px dotted mix($white, $black, 86.7%);
   }
 
   &[disabled],
   &[disabled]::placeholder {
-    color: mix($white, $black, 86.7%);
-  }
-
-  &::-ms-clear {
-    display: none;
+    color: #ddd;
   }
 }
 
 select,
 select.form-control {
-  appearance: none;
   padding: .5rem 0;
-  background-image: escape-svg(url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 4'%3e%3cpolygon fill='#{$gray-600}' points='8 0 4 4 0 0'/%3e%3c/svg%3e%0a"));
-  background-size: 8px 4px;
+  background-image: escape-svg(url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 4'><path fill='#{$gray-600}' d='M8 0 4 4 0 0z'/></svg>"));
   background-repeat: no-repeat;
   background-position: right center;
-  box-shadow: $input-box-shadow;
-
-  &::-ms-expand {
-    display: none;
-  }
+  background-size: 8px 4px;
+  box-shadow: inset 0 -1px 0 #ddd;
+  appearance: none;
 
   &.input {
     &-sm {
@@ -314,8 +320,8 @@ select.form-control {
   }
 
   &:focus {
-    box-shadow: $input-focus-box-shadow;
-    background-image: escape-svg(url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 4'%3e%3cpolygon fill='#{$gray-900}' points='8 0 4 4 0 0'/%3e%3c/svg%3e%0a"));
+    background-image: escape-svg(url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 4'><path fill='#{$gray-900}' d='M8 0 4 4 0 0z'/></svg>"));
+    box-shadow: inset 0 -2px 0 $primary;
   }
 
   &[multiple] {
@@ -323,108 +329,107 @@ select.form-control {
   }
 }
 
-.custom-control {
-  min-height: 1.5rem;
-}
+.form-check-input {
+  width: 1.25em;
+  height: 1.25em;
+  margin-top: 1px;
+  border: 2px solid $gray-400;
 
-.custom-control-label {
-  &::before {
-    top: 0;
-    border: 2px solid $gray-400;
-    box-shadow: none;
-  }
-  &::after {
-    top: 0;
-  }
-
-  .custom-control-input:checked ~ &::before {
-    border-color: $primary;
+  &:checked[type="radio"] {
+    background-image: escape-svg(url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='2' fill='#{$blue}' stroke='#{$white}'/></svg>")), var(--bs-gradient);
+    background-size: 1.8em;
   }
 }
 
-.custom-checkbox .custom-control-input:checked {
-  ~ .custom-control-label::before {
+.form-switch {
+  .form-check-input {
+    position: relative;
+    height: .8em;
+    margin-top: .29em;
+    background-color: $gray-400;
     background-image: none;
-  }
-
-  ~ .custom-control-label::after {
-    transform: scale(1.5);
-  }
-}
-
-.custom-radio .custom-control-input {
-  ~ .custom-control-label::after {
-    transform: scale(.75);
-  }
-
-  &:checked {
-    ~ .custom-control-label::before {
-      background-color: $white;
-      background-image: none;
-      transition: border-color .24s;
-    }
-    ~ .custom-control-label::after {
-      transform: scale(1.125);
-      transition: background-image .24s, transform .24s;
-    }
-  }
-}
-
-.custom-switch {
-  .custom-control-label::before {
-    top: .125rem;
-    height: .875rem;
-    background-color: $gray-500;
     border: none;
-  }
 
-  .custom-control-input:disabled ~ .custom-control-label {
-    opacity: .7;
-  }
+    &:focus {
+      box-shadow: none;
+    }
 
-  .custom-control-input:disabled ~ .custom-control-label::before {
-    background-color: $gray-500;
-  }
+    &::before {
+      position: absolute;
+      top: -.2em;
+      left: -.2em;
+      width: 1.2em;
+      height: 1.2em;
+      content: "";
+      background-color: $white;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+      transition: left .15s ease-in-out;
+    }
 
-  .custom-control-label::after {
-    background-color: $white;
-    box-shadow: 0 1px 4px rgba($black, .3);
-  }
+    &::after {
+      position: absolute;
+      top: -.2em;
+      left: -.2em;
+      z-index: -1;
+      width: 1.2em;
+      height: 1.2em;
+      content: "";
+      border-radius: 50%;
+      box-shadow: 0 0 0 9px rgba(0, 0, 0, .05);
+      transition: left .15s ease-in-out, transform .15s ease-in-out, box-shadow .15s ease-in-out;
+      transform: scale(0);
+    }
 
-  .custom-control-input:checked ~ .custom-control-label::before {
-    opacity: .38;
-  }
+    &:hover:not(.disabled),
+    &:focus:not(.disabled) {
 
-  .custom-control-input:checked ~ .custom-control-label::after {
-    background-color: $primary;
-  }
+      &::after {
+        transform: scale(.9);
+      }
+    }
 
-  .custom-control-input:hover:not(:disabled) ~ .custom-control-label::after {
-    box-shadow: 0 1px 4px rgba($black, .3), 0 0 0 9px rgba($black, .05);
-  }
+    &:focus:not(.disabled) {
+      &::after {
+        box-shadow: 0 0 0 9px rgba(0, 0, 0, .1);
+      }
+    }
 
-  .custom-control-input:focus:not(:disabled) ~ .custom-control-label::after {
-    box-shadow: 0 1px 4px rgba($black, .3), 0 0 0 9px rgba($black, .09);
-  }
+    &:checked {
+      background-color: rgba(33, 150, 243, .3);
 
-  .custom-control-input:active:not(:disabled) ~ .custom-control-label::after {
-    box-shadow: 0 1px 4px rgba($black, .3), 0 0 0 9px rgba($black, .16);
-  }
+      &::before {
+        left: calc(100% - .8em);
+        background-color: rgba(33, 150, 243, 1);
+      }
 
-  .custom-control-input:hover:checked:not(:disabled) ~ .custom-control-label::after {
-    box-shadow: 0 1px 4px rgba($black, .3), 0 0 0 9px rgba(33, 150, 243, .05);
-  }
+      &::after {
+        left: calc(100% - .8em);
+        box-shadow: 0 0 0 9px rgba(33, 150, 243, .1);
+      }
 
-  .custom-control-input:focus:checked:not(:disabled) ~ .custom-control-label::after {
-    box-shadow: 0 1px 4px rgba($black, .3), 0 0 0 9px rgba(33, 150, 243, .09);
-  }
+      &:hover:not(.disabled),
+      &:focus:not(.disabled) {
+        &::after {
+          transform: scale(.9);
+        }
+      }
 
-  .custom-control-input:active:checked:not(:disabled) ~ .custom-control-label::after {
-    box-shadow: 0 1px 4px rgba($black, .3), 0 0 0 9px rgba(33, 150, 243, .16);
+      &:focus:not(.disabled) {
+        &::after {
+          box-shadow: 0 0 0 9px rgba(33, 150, 243, .2);
+        }
+      }
+    }
   }
+}
 
-  .custom-control-input:active:not(:checked) ~ .custom-control-label::before {
-    background-color: $gray-500;
+.form-check:not(.form-switch) {
+  .form-check-input {
+    &:checked[type="checkbox"] {
+      background-image: escape-svg(url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path fill='none' stroke='#{$white}' stroke-width='2' d='m6 10 3 3 6-6'/></svg>")), var(--bs-gradient);
+      background-size: 1.6em;
+    }
   }
 }
 
@@ -473,76 +478,10 @@ select.form-control {
   .has-danger &,
   .has-success & {
     color: $input-color;
-    border-color: $input-group-addon-border-color;
     background-color: $input-group-addon-bg;
+    border-color: $input-group-addon-border-color;
   }
 }
-
-.input-group {
-  > .input-group-prepend > .input-group-text {
-    padding-right: .25rem;
-  }
-
-  > .input-group-append > .input-group-text {
-    padding-left: .25rem;
-  }
-
-  .form-control {
-    padding-left: .25rem;
-    padding-right: .25rem;
-  }
-}
-
-.input-group-sm {
-  > .input-group-prepend > .btn,
-  > .input-group-append > .btn {
-    padding: $input-btn-padding-y-sm $input-btn-padding-x-sm;
-  }
-
-  > .input-group-prepend > .input-group-text {
-    padding: 0 $input-btn-padding-x-sm $input-btn-padding-y-sm $input-btn-padding-x-sm;
-  }
-
-  > .input-group-append > .input-group-text {
-    padding: 0 $input-btn-padding-x-sm $input-btn-padding-y-sm $input-btn-padding-x-sm;
-  }
-
-  > .input-group-prepend > .btn {
-    border-top-left-radius: $btn-border-radius-sm;
-    border-bottom-left-radius: $btn-border-radius-sm;
-  }
-
-  > .input-group-append > .btn {
-    border-top-right-radius: $btn-border-radius-sm;
-    border-bottom-right-radius: $btn-border-radius-sm;
-  }
-}
-
-.input-group-lg {
-  > .input-group-prepend > .btn,
-  > .input-group-append > .btn {
-    padding: $input-btn-padding-y-lg $input-btn-padding-x-lg;
-  }
-
-  > .input-group-prepend > .input-group-text {
-    padding: $input-btn-padding-y-lg $input-btn-padding-x-lg $input-btn-padding-y-lg 0;
-  }
-
-  > .input-group-append > .input-group-text {
-    padding: $input-btn-padding-y-lg 0 $input-btn-padding-y-lg $input-btn-padding-x-lg;
-  }
-
-  > .input-group-prepend > .btn {
-    border-top-left-radius: $btn-border-radius-lg;
-    border-bottom-left-radius: $btn-border-radius-lg;
-  }
-
-  > .input-group-append > .btn {
-    border-top-right-radius: $btn-border-radius-lg;
-    border-bottom-right-radius: $btn-border-radius-lg;
-  }
-}
-
 
 .form-group-lg {
   select,
@@ -551,7 +490,7 @@ select.form-control {
   }
 }
 
-// Navs ========================================================================
+// Navs
 
 .nav-tabs {
   .nav-item + .nav-item {
@@ -561,33 +500,33 @@ select.form-control {
   .nav-link,
   .nav-link:focus {
     margin-right: 0;
+    color: $body-color;
     background-color: transparent;
     border: none;
-    color: $body-color;
-    box-shadow: inset 0 -1px 0 mix($white, $black, 86.7%);
+    box-shadow: inset 0 -1px 0 #ddd;
     transition: color .2s, box-shadow .2s;
 
     &:hover {
+      color: $primary;
       background-color: transparent;
       box-shadow: inset 0 -2px 0 $primary;
-      color: $primary;
     }
   }
 
   .nav-link.active,
   .nav-link.active:focus {
+    color: $primary;
     border: none;
     box-shadow: inset 0 -2px 0 $primary;
-    color: $primary;
 
     &:hover {
-      border: none;
       color: $primary;
+      border: none;
     }
   }
 
   .nav-link.disabled {
-    box-shadow: inset 0 -1px 0 mix($white, $black, 86.7%);
+    box-shadow: inset 0 -1px 0 #ddd;
   }
 
   &.nav-justified {
@@ -609,10 +548,10 @@ select.form-control {
 .dropdown-menu {
   margin-top: 0;
   border: none;
-  box-shadow: 0 1px 4px rgba($black, .3);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
 }
 
-// Indicators ==================================================================
+// Indicators
 
 .alert {
   padding-right: 2.5rem;
@@ -640,11 +579,7 @@ select.form-control {
 
   a:not(.btn),
   .alert-link {
-    color: $white;
     font-weight: 700;
-  }
-
-  .close {
     color: $white;
   }
 
@@ -659,38 +594,16 @@ select.form-control {
 }
 
 .badge {
-  &-secondary {
-    background-color: $gray-500;
-    color: $white;
-  }
-
-  &-light {
-    background-color: $gray-200;
-  }
-
-  &-warning {
-    color: $white;
+  &.bg-secondary,
+  &.bg-light {
+    color: $dark;
   }
 }
 
-.tag {
-  padding: 4px 6px;
-}
-
-// Containers ==================================================================
-
-.close {
-  line-height: .5;
-  opacity: .6;
-  transition: opacity .2s;
-
-  &:hover {
-    opacity: 1;
-  }
-}
+// Containers
 
 .card {
-  box-shadow: 0 1px 4px rgba($black, .4);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .4);
 
   &.border-primary,
   &.border-secondary,
@@ -701,12 +614,6 @@ select.form-control {
   &.border-light,
   &.border-dark {
     border-width: 1px;
-  }
-}
-
-.alert-dismissible {
-  .close {
-    padding: .5rem .75rem;
   }
 }
 
@@ -725,12 +632,20 @@ select.form-control {
 
 .modal-content {
   border-radius: .2rem;
-  box-shadow: 0 6px 36px rgba($black, .3);
+  box-shadow: 0 6px 36px rgba(0, 0, 0, .3);
+}
+
+.modal,
+.toast,
+.offcanvas {
+  .btn-close {
+    background-image: escape-svg(url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$black}'><path d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/></svg>"));
+  }
 }
 
 .popover {
   border: none;
-  box-shadow: 0 1px 4px rgba($black, .3);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
 }
 
 .carousel {

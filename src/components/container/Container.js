@@ -55,21 +55,6 @@ export default class ContainerComponent extends NestedDataComponent {
     return this.dataValue;
   }
 
-  setValue(value, flags = {}) {
-    let changed = false;
-    const hasValue = this.hasValue();
-    if (hasValue && _.isEmpty(this.dataValue)) {
-      flags.noValidate = true;
-    }
-    if (!value || !_.isObject(value) || !hasValue) {
-      changed = true;
-      this.dataValue = this.defaultValue;
-    }
-    changed = super.setValue(value, flags) || changed;
-    this.updateOnChange(flags, changed);
-    return changed;
-  }
-
   checkData(data, flags, row, components) {
     data = data || this.rootValue;
     flags = flags || {};
@@ -79,6 +64,10 @@ export default class ContainerComponent extends NestedDataComponent {
     return components.reduce((valid, comp) => {
       return comp.checkData(data, flags, this.dataValue) && valid;
     }, Component.prototype.checkData.call(this, data, flags, row));
+  }
+
+  checkChildComponentsValidity(data, dirty, row, silentCheck, isParentValid) {
+    return super.checkChildComponentsValidity(data, dirty, this.dataValue, silentCheck, isParentValid);
   }
 
   focus() {

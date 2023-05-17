@@ -1,5 +1,7 @@
-// United 4.6.1
+// United 5.2.2
 // Bootswatch
+
+$theme: "united" !default;
 
 //
 // Color system
@@ -37,7 +39,7 @@ $danger:        $red !default;
 $light:         $gray-200 !default;
 $dark:          $purple !default;
 
-$yiq-contrasted-threshold: 200 !default;
+$min-contrast-ratio:   1.8 !default;
 
 // Body
 

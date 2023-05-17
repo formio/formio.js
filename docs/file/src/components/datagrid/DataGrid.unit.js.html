@@ -29,7 +29,8 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
@@ -44,6 +45,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-list">components/_classes/list</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ListComponent">ListComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-button">components/button</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Button">Button</a></span></span></li>
@@ -184,6 +186,7 @@ import {
   comp3,
   comp4,
   comp5,
+  comp6,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
@@ -276,6 +279,17 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
     });
   });
 
+  it(&apos;Should build a data grid component with formio-component-datagrid class property&apos;, done =&gt; {
+    Harness.testCreate(DataGridComponent, comp6).then((component) =&gt; {
+      const element = component.element.component.components[0].element;
+      setTimeout(() =&gt; {
+        assert.deepEqual(element.className.includes(&apos;formio-component-datagrid&apos;), true);
+        done();
+      }, 200);
+    }, done)
+    .catch(done);
+  });
+
   it(&apos;Should not skip validation on input nested components&apos;, done =&gt; {
     Harness.testCreate(DataGridComponent, comp1)
       .then(cmp =&gt; {
@@ -321,7 +335,6 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
         {
           make: &apos;&apos;,
           model: &apos;&apos;,
-          year: &apos;&apos;
         }
       ]);
     });
@@ -353,8 +366,8 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
             { name: &apos;Alex&apos;, age: 1 },
             { name: &apos;Bob&apos;,  age: 2 },
             { name: &apos;Conny&apos;, age: 3 },
-            { name: &apos;&apos;, age: &apos;&apos; },
-            { name: &apos;&apos;, age: &apos;&apos; }
+            { name: &apos;&apos; },
+            { name: &apos;&apos; }
           ]);
           done();
         }, done)

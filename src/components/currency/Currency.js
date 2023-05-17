@@ -1,4 +1,4 @@
-import { createNumberMask } from 'text-mask-addons';
+import { createNumberMask } from '@formio/text-mask-addons';
 import { maskInput } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
 import { getCurrencyAffixes } from '../../utils/utils';
@@ -141,6 +141,9 @@ export default class CurrencyComponent extends NumberComponent {
 
     // eslint-disable-next-line eqeqeq
     if (value || value == '0') {
+      if (Array.isArray(value)) {
+        return value.map((val) => this.addZerosAndFormatValue(super.getValueAsString(val, options))).join(', ');
+      }
       return this.addZerosAndFormatValue(stringValue);
     }
 

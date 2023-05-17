@@ -154,6 +154,7 @@ class ValidationChecker {
             }
             // Only search for non-deleted items
             query.deleted = { $eq: null };
+            query.state = 'submitted';
             // Try to find an existing value within the form
             this.config.db.findOne(query, (err, result) => {
               if (err) {
@@ -537,7 +538,16 @@ class ValidationChecker {
           });
         },
         check(component, setting, value) {
-          return (value !== 'Invalid date');
+          if (!value) {
+            return true;
+          }
+          if (value === 'Invalid date' || value === 'Invalid Date') {
+            return false;
+          }
+          if (typeof value === 'string') {
+            value = new Date(value);
+          }
+          return value instanceof Date === true && value.toString() !== 'Invalid Date';
         }
       },
       day: {

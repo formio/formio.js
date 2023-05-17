@@ -71,6 +71,7 @@ export default class TagsComponent extends Input {
     this.choices = new Choices(element, {
       delimiter: this.delimiter,
       editItems: true,
+      allowHTML: true,
       maxItemCount: this.component.maxTags,
       removeItemButton: true,
       duplicateItemsAllowed: false,
