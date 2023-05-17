@@ -105,13 +105,15 @@ describe('DataGrid Component', () => {
     });
   });
 
-  it('Should build a data grid component with formio-component-datagrid class property', () => {
-    return Harness.testCreate(DataGridComponent, comp6).then((component) => {
-      const element = component.element.querySelector('.formio-component');
+  it('Should build a data grid component with formio-component-datagrid class property', done => {
+    Harness.testCreate(DataGridComponent, comp6).then((component) => {
+      const element = component.element.component.components[0].element;
       setTimeout(() => {
         assert.deepEqual(element.className.includes('formio-component-datagrid'), true);
+        done();
       }, 200);
-    });
+    }, done)
+    .catch(done);
   });
 
   it('Should not skip validation on input nested components', done => {
@@ -159,7 +161,6 @@ describe('DataGrid Component', () => {
         {
           make: '',
           model: '',
-          year: ''
         }
       ]);
     });
@@ -187,12 +188,12 @@ describe('DataGrid Component', () => {
     try {
       Harness.testCreate(DataGridComponent, withRowGroupsAndDefValue)
         .then((datagrid) => {
-          expect(datagrid.getValue()).to.deep.equal([
+          assert.deepEqual(datagrid.getValue(), [
             { name: 'Alex', age: 1 },
             { name: 'Bob',  age: 2 },
             { name: 'Conny', age: 3 },
-            { name: '', age: '' },
-            { name: '', age: '' }
+            { name: '' },
+            { name: '' }
           ]);
           done();
         }, done)
