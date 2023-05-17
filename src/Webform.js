@@ -492,6 +492,7 @@ export default class Webform extends NestedDataComponent {
         (form) => {
           const setForm = this.setForm(form);
           this.loadSubmission();
+
           return setForm;
         }).catch((err) => {
         console.warn(err);
