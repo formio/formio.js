@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Upgrade to Bootstrap 5
  - Replace SDK with @formio/core SDK.
  - Remove Semantic template and Bootstrap 3 template from build.  Use import @formio/bootstrap3 or @formio/semantic instead.
-
+ 
 ### Added
  - FIO-5986: added check for identical uploaded file
  - FIO-6453: added sanitization inside error message container
