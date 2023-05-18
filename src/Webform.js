@@ -303,7 +303,7 @@ export default class Webform extends NestedDataComponent {
         if (err) {
           return;
         }
-        this.redraw();
+        this.rebuild();
         this.emit('languageChanged');
       });
     }
