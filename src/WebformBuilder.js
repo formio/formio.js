@@ -61,7 +61,7 @@ export default class WebformBuilder extends Component {
       }
     });
 
-    // Add the groups.
+    // Add the groups.//
     this.groups = {};
     this.groupOrder = [];
     for (const group in this.builder) {
