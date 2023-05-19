@@ -1233,7 +1233,7 @@ export default class SelectComponent extends ListComponent {
           return {};
         }
 
-        const option = this.selectOptions[value];
+        const option = this.selectOptions[value] || this.selectOptions.find(option => option.id === value);
         if (option && _.isObject(option.value)) {
           value = option.value;
         }

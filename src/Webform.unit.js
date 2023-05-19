@@ -3827,7 +3827,7 @@ describe('Webform tests', function() {
                 }
                 done();
               }, self);
-            });
+            }).catch(done);
           });
         });
       });
