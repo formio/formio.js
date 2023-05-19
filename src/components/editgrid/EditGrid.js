@@ -933,6 +933,9 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     if (this.saveEditMode) {
       const dataValue = this.dataValue;
+      if (this.root?.focusedComponent?.component.typeChangeEnabled) {
+        this.root.focusedComponent = null;
+      }
       switch (editRow.state) {
         case EditRowState.New: {
           const newIndex = dataValue.length;
