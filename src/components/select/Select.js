@@ -592,12 +592,11 @@ export default class SelectComponent extends ListComponent {
 
     // Add search capability.
     if (this.component.searchField && search) {
-      if (Array.isArray(search)) {
-        query[`${this.component.searchField}`] = search.join(',');
-      }
-      else {
-        query[`${this.component.searchField}`] = search;
-      }
+      const searchValue = Array.isArray(search) ? search.join(',') : search;
+
+      query[this.component.searchField] = this.component.searchField.endsWith('__regex')
+        ? _.escapeRegExp(searchValue)
+        : searchValue;
     }
 
     // If they wish to return only some fields.

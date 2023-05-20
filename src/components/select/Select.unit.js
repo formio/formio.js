@@ -1,5 +1,7 @@
+/* eslint-disable max-statements */
 import assert from 'power-assert';
 import cloneDeep from 'lodash/cloneDeep';
+import sinon from 'sinon';
 import Harness from '../../../test/harness';
 import SelectComponent from './Select';
 import { expect } from 'chai';
@@ -907,6 +909,38 @@ describe('Select Component', () => {
           assert.equal(_.isEqual(form.submission.metadata.selectData.select.data, testItems[0]), true);
           done();
         }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should escape special characters in regex search field', done => {
+    const form = _.cloneDeep(comp17);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
+      const focusEvent = new Event('focus');
+      searchField.dispatchEvent(focusEvent);
+
+      setTimeout(() => {
+        const keyupEvent = new Event('keyup');
+        searchField.value = '^$.*+?()[]{}|';
+        searchField.dispatchEvent(keyupEvent);
+
+        const spy = sinon.spy(Formio, 'makeRequest');
+
+        setTimeout(() => {
+          assert.equal(spy.callCount, 1);
+
+          const urlArg = spy.args[0][2];
+
+          assert.ok(urlArg && typeof urlArg === 'string' && urlArg.startsWith('http'), 'A URL should be passed as the third argument to "Formio.makeRequest()"');
+
+          assert.ok(urlArg.includes('__regex=%5C%5E%5C%24%5C.%5C*%5C%2B%5C%3F%5C(%5C)%5C%5B%5C%5D%5C%7B%5C%7D%5C%7C'), 'The URL should contain escaped and encoded search value regex');
+
+          done();
+        }, 500);
       }, 200);
     }).catch(done);
   });
