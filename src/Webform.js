@@ -19,7 +19,7 @@ import {
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
-// Initialize the available forms.
+// Initialize the available forms.//
 Formio.forms = {};
 
 // Allow people to register components.
