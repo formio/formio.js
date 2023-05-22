@@ -101,7 +101,7 @@ export default class SelectComponent extends ListComponent {
       this.defaultDownloadedResources = [];
     }
 
-    // If this component has been activated.
+    // If this component has been activated.//
     this.activated = false;
     this.itemsLoaded = new NativePromise((resolve) => {
       this.itemsLoadedResolve = resolve;
