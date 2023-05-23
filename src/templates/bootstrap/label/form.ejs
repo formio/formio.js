@@ -3,6 +3,7 @@
   class="col-form-label {{ctx.label.className}}"
   for="{{ctx.instance.id}}-{{ctx.component.key}}"
   id="l-{{ctx.instance.id}}-{{ctx.component.key}}"
+  {% if (ctx.component.type === 'datagrid') { %} style="font-weight: bold;font-size: 18px;"{% } %} 
 >
   {{ ctx.t(ctx.component.label, { _userInput: true }) }}
   {% if (ctx.component.type === 'number' || ctx.component.type === 'phoneNumber' || ctx.component.type === 'currency') { %}
