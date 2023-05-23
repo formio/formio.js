@@ -2,7 +2,6 @@ import assert from 'power-assert';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import _ from 'lodash';
-import each from 'lodash/each';
 import i18next from 'i18next';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
@@ -2254,15 +2253,15 @@ describe('Webform tests', function() {
           fieldInput.dispatchEvent(blurEvent);
 
           setTimeout(() => {
-            assert(field.error, 'Should set error aftre component was blured');
+            assert(field.error, 'Should set error after component was blurred');
             Harness.setInputValue(field2, 'data[textField1]', 'ab');
 
             setTimeout(() => {
               assert(field.error, 'Should keep error when editing another component');
               done();
-            }, 250);
-          }, 250);
-        }, 250);
+            }, 200);
+          }, 200);
+        }, 200);
       }).catch(done);
     });
 

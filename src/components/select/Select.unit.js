@@ -25,9 +25,11 @@ import {
   comp14,
   comp15,
   comp16,
-  comp17
+  comp17,
+  comp18,
 } from './fixtures';
 
+// eslint-disable-next-line max-statements
 describe('Select Component', () => {
   it('should not stringify select option value', function(done) {
     Harness.testCreate(SelectComponent, comp6).then((component) => {
@@ -911,6 +913,27 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
+  it('OnBlur validation should work properly with Select component', function(done) {
+    this.timeout(0);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, comp18).then(form => {
+      const select = form.components[0];
+      select.setValue('banana');
+      select.focusableElement.focus();
+      select.pristine = false;
+
+      setTimeout(() => {
+        assert(!select.error, 'Select should be valid while changing');
+        select.focusableElement.dispatchEvent(new Event('blur'));
+
+        setTimeout(() => {
+          assert(select.error, 'Should set error after Select component was blurred');
+          done();
+        }, 500);
+      }, 200);
+    }).catch(done);
+  });
   // it('should reset input value when called with empty value', () => {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;
