@@ -5112,6 +5112,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/select/fixtures/comp18.js",
+    "file/src/components/select/fixtures/comp18.js.html",
+    "src/components/select/fixtures/comp18.js",
+    "file"
+  ],
+  [
     "src/components/select/fixtures/comp2.js",
     "file/src/components/select/fixtures/comp2.js.html",
     "src/components/select/fixtures/comp2.js",

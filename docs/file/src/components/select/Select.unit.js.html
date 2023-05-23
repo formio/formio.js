@@ -190,8 +190,10 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/select/Select.unit.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* eslint-disable max-statements */
+import assert from &apos;power-assert&apos;;
 import cloneDeep from &apos;lodash/cloneDeep&apos;;
+import sinon from &apos;sinon&apos;;
 import Harness from &apos;../../../test/harness&apos;;
 import SelectComponent from &apos;./Select&apos;;
 import { expect } from &apos;chai&apos;;
@@ -217,7 +219,8 @@ import {
   comp14,
   comp15,
   comp16,
-  comp17
+  comp17,
+  comp18
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Select Component&apos;, () =&gt; {
@@ -1103,6 +1106,38 @@ describe(&apos;Select Component&apos;, () =&gt; {
     }).catch(done);
   });
 
+  it(&apos;Should escape special characters in regex search field&apos;, done =&gt; {
+    const form = _.cloneDeep(comp17);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const select = form.getComponent(&apos;select&apos;);
+      const searchField = select.element.querySelector(&apos;.choices__input.choices__input--cloned&apos;);
+      const focusEvent = new Event(&apos;focus&apos;);
+      searchField.dispatchEvent(focusEvent);
+
+      setTimeout(() =&gt; {
+        const keyupEvent = new Event(&apos;keyup&apos;);
+        searchField.value = &apos;^$.*+?()[]{}|&apos;;
+        searchField.dispatchEvent(keyupEvent);
+
+        const spy = sinon.spy(Formio, &apos;makeRequest&apos;);
+
+        setTimeout(() =&gt; {
+          assert.equal(spy.callCount, 1);
+
+          const urlArg = spy.args[0][2];
+
+          assert.ok(urlArg &amp;&amp; typeof urlArg === &apos;string&apos; &amp;&amp; urlArg.startsWith(&apos;http&apos;), &apos;A URL should be passed as the third argument to &quot;Formio.makeRequest()&quot;&apos;);
+
+          assert.ok(urlArg.includes(&apos;__regex=%5C%5E%5C%24%5C.%5C*%5C%2B%5C%3F%5C(%5C)%5C%5B%5C%5D%5C%7B%5C%7D%5C%7C&apos;), &apos;The URL should contain escaped and encoded search value regex&apos;);
+
+          done();
+        }, 500);
+      }, 200);
+    }).catch(done);
+  });
+
   // it(&apos;should reset input value when called with empty value&apos;, () =&gt; {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;
@@ -1118,6 +1153,39 @@ describe(&apos;Select Component&apos;, () =&gt; {
   //     assert.equal(component.refs.input[0].value, &apos;&apos;);
   //   });
   // });
+});
+
+describe(&apos;Select Component&apos;, () =&gt; {
+  it(&apos;Select Component should work correctly with the values in the form of an array&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp18);
+    const testItems = [
+      { textField: [&apos;one&apos;,&apos;two&apos;] },
+      { textField: [&apos;three&apos;,&apos;four&apos;] },
+      { textField: [&apos;five&apos;,&apos;six&apos;] },
+    ];
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const select = form.getComponent(&apos;select&apos;);
+      select.setItems(testItems.map(item =&gt; ({ data: item })));
+      const value = [&apos;three&apos;,&apos;four&apos;];
+      select.setValue(value);
+      assert.equal(select.selectOptions.length, 3);
+      setTimeout(() =&gt; {
+        assert.deepEqual(select.getValue(), value);
+        assert.deepEqual(select.dataValue, value);
+        const submit = form.getComponent(&apos;submit&apos;);
+        const clickEvent = new Event(&apos;click&apos;);
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(select.dataValue, value);
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
 });
 
 describe(&apos;Select Component with Entire Object Value Property&apos;, () =&gt; {
