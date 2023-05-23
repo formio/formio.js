@@ -7,7 +7,7 @@ export default {
       tableView: false,
       storeas: 'array',
       validate: {
-        custom: "valid = value && value.length <= 2 ? true : 'You cannot add more than 2 items'"
+        custom: "valid = data && data.tags.length <= 2 ? true : 'You cannot add more than 2 items'"
       },
       validateOn: 'blur',
       key: 'tags',

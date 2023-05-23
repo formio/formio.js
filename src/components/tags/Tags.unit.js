@@ -29,8 +29,9 @@ describe('Tags Component', function() {
   });
 
   it('Should not allow to add non-unique tags on blur', function(done) {
-    Harness.testCreate(TagsComponent, comp2).then((component) => {
-      component.root = {};
+    const element = document.createElement('div');
+    Formio.createForm(element, { type: 'form', display: 'form', components: [comp2] }).then(form => {
+      const component = form.getComponent(['tags']);
       const values = ['test', 'test1', 'test'];
       Harness.setTagsValue(values, component);
       assert.equal(component.choices.getValue(true).length, 2);
@@ -39,13 +40,16 @@ describe('Tags Component', function() {
   });
 
   it('Should not exceed maxTags limit', function(done) {
-    Harness.testCreate(TagsComponent, comp2).then((component) => {
-      component.root = {};
+    const element = document.createElement('div');
+    Formio.createForm(element, { type: 'form', display: 'form', components: [comp2] }).then(form => {
+      const component = form.getComponent(['tags']);
       const values = ['1', '2', '3', '4', '5'];
       Harness.setTagsValue(values, component);
 
-      assert.equal(component.choices.getValue(true).length, 4);
-      done();
+      setTimeout(() => {
+        assert.equal(component.choices.getValue(true).length, 4);
+        done();
+      }, 400);
     }).catch(done);
   });
 
@@ -140,9 +144,9 @@ describe('Tags Component', function() {
 
     Formio.createForm(element, comp6).then(form => {
       const tags = form.getComponent('tags');
-      tags.setValue(['1', '2', '3']);
+      // tags.setValue(['1', '2', '3']);
+      Harness.setTagsValue(['test', 'test1', 'test2'], tags);
       tags.choices.input.element.focus();
-      tags.pristine = false;
 
       setTimeout(() => {
         assert(!tags.error, 'Tags should be valid while changing');
@@ -151,7 +155,7 @@ describe('Tags Component', function() {
         setTimeout(() => {
           assert(tags.error, 'Should set error after Tags component was blurred');
           done();
-        }, 300);
+        }, 500);
       }, 300);
     }).catch(done);
   });
