@@ -58,7 +58,7 @@ export default class NestedComponent extends Field {
     const forceHide = this.options.hide && this.options.hide[this.component.key];
     this.components.forEach(component => {
       // Set the parent visibility first since we may have nested components within nested components
-      // and they need to be able to determine their visibility based on the parent visibility.//
+      // and they need to be able to determine their visibility based on the parent visibility.
       component.parentVisible = isVisible;
 
       const conditionallyVisible = component.conditionallyVisible();
@@ -323,7 +323,7 @@ export default class NestedComponent extends Field {
     options.root = options?.root || this.root || this;
     options.localRoot = this.localRoot;
     options.skipInit = true;
-    if (options.display !== 'pdf') {
+    if (options.display !== 'pdf' && this.builderMode) {
       component.id = getRandomComponentId();
     }
     if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
