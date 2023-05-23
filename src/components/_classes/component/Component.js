@@ -1437,7 +1437,7 @@ export default class Component extends Element {
    * @return {*}
    */
   itemValue(data, forceUseValue = false) {
-    if (_.isObject(data)) {
+    if (_.isObject(data) && !_.isArray(data)) {
       if (this.valueProperty) {
         return _.get(data, this.valueProperty);
       }
