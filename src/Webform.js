@@ -19,7 +19,7 @@ import {
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
-// Initialize the available forms.
+// Initialize the available forms.//
 Formio.forms = {};
 
 // Allow people to register components.
@@ -303,7 +303,7 @@ export default class Webform extends NestedDataComponent {
         if (err) {
           return;
         }
-        this.redraw();
+        this.rebuild();
         this.emit('languageChanged');
       });
     }
