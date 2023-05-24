@@ -302,7 +302,7 @@ export default class FileComponent extends Field {
   deleteFile(fileInfo) {
     const { options = {} } = this.component;
 
-    if (fileInfo && (['url', 'indexeddb'].includes(this.component.storage))) {
+    if (fileInfo && (['url', 'indexeddb', 's3','googledrive', 'azure'].includes(this.component.storage))) {
       const { fileService } = this;
       if (fileService && typeof fileService.deleteFile === 'function') {
         fileService.deleteFile(fileInfo, options);
