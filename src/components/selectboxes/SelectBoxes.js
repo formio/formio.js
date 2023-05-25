@@ -17,7 +17,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       group: 'basic',
       icon: 'plus-square',
       weight: 60,
-      documentation: '/userguide/forms/form-components#select-boxes',
+      documentation: '/userguide/form-building/form-components#select-box',
       schema: SelectBoxesComponent.schema()
     };
   }

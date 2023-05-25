@@ -56,7 +56,7 @@ export default class SelectComponent extends ListComponent {
       group: 'basic',
       icon: 'th-list',
       weight: 70,
-      documentation: '/userguide/forms/form-components#select',
+      documentation: '/userguide/form-building/form-components#select',
       schema: SelectComponent.schema()
     };
   }

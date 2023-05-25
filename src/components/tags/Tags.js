@@ -22,7 +22,7 @@ export default class TagsComponent extends Input {
       title: 'Tags',
       icon: 'tags',
       group: 'advanced',
-      documentation: '/userguide/forms/form-components#tags',
+      documentation: '/userguide/form-building/advanced-components#tags',
       weight: 30,
       schema: TagsComponent.schema()
     };
