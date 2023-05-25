@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import ComponentEditAddons from './editForm/Component.edit.addons';
 import ComponentEditConditional from './editForm/Component.edit.conditional';
 import ComponentEditData from './editForm/Component.edit.data';
 import ComponentEditAPI from './editForm/Component.edit.api';
@@ -57,12 +56,6 @@ export default function(...extend) {
           key: 'layout',
           weight: 60,
           components: ComponentEditLayout
-        },
-        {
-          label: 'Addons',
-          key: 'addons',
-          weight: 70,
-          components: ComponentEditAddons
         },
       ]
     }

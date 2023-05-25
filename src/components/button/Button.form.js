@@ -15,9 +15,5 @@ export default function(...extend) {
       key: 'validation',
       ignore: true,
     },
-    {
-      key: 'addons',
-      ignore: true
-    },
   ], ...extend);
 }

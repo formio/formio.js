@@ -13,9 +13,5 @@ export default function(...extend) {
       key: 'conditional',
       components: PanelEditConditional,
     },
-    {
-      key: 'addons',
-      ignore: true
-    },
   ], ...extend);
 }
