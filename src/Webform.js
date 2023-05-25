@@ -19,7 +19,7 @@ import {
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
-// Initialize the available forms.
+// Initialize the available forms.//
 Formio.forms = {};
 
 // Allow people to register components.
@@ -303,7 +303,7 @@ export default class Webform extends NestedDataComponent {
         if (err) {
           return;
         }
-        this.redraw();
+        this.rebuild();
         this.emit('languageChanged');
       });
     }
@@ -1190,7 +1190,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     errors = errors.concat(this.customErrors);
-    errors = errors.concat(this.serverErrors);
+    errors = errors.concat(this.serverErrors || []);
 
     if (!errors.length) {
       this.setAlert(false);
@@ -1388,7 +1388,7 @@ export default class Webform extends NestedDataComponent {
       this.triggerSaveDraft();
     }
 
-    if (!flags || !flags.noEmit && !flags.fromSubmission) {
+    if (!flags || !flags.noEmit) {
       this.emit('change', value, flags, modified);
       isChangeEventEmitted = true;
     }

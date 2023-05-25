@@ -2,6 +2,8 @@ import FormBuilder from './FormBuilder';
 import assert from 'power-assert';
 import Harness from '../test/harness';
 import simpleWizard from '../test/forms/simpleWizard';
+import formWithFormController from '../test/forms/formWithFormController';
+import { fastCloneDeep } from './utils/utils';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -75,7 +77,7 @@ describe('WizardBuilder tests', function() {
       window.confirm = () => {
         return true;
       };
-     
+
       Harness.clickElement(panel, editComponentRef);
       setTimeout(() => {
         assert(builder.instance.editForm, 'Should create the settings form on component edit');
@@ -88,6 +90,21 @@ describe('WizardBuilder tests', function() {
           done();
         }, 300);
       }, 300);
+    }, 500);
+  });
+
+  it('Should execute form controller', (done) => {
+    const form = fastCloneDeep(formWithFormController);
+    form.display = 'wizard';
+    const builder = createWizardBuilder(form).instance;
+
+    setTimeout(() => {
+      const textF = builder.webform.getComponent('textField');
+      assert.equal(textF.getValue(), 'Hello World');
+      assert.equal(textF.disabled, true);
+      assert.equal(builder.webform.components[0].disabled, true);
+
+      done();
     }, 500);
   });
 });

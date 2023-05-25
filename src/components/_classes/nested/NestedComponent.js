@@ -323,7 +323,9 @@ export default class NestedComponent extends Field {
     options.root = options?.root || this.root || this;
     options.localRoot = this.localRoot;
     options.skipInit = true;
-    component.id = getRandomComponentId();
+    if (!(options.display === 'pdf' && this.builderMode)) {
+      component.id = getRandomComponentId();
+    }
     if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
       component.shouldIncludeSubFormPath = true;
     }
