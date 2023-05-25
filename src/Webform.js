@@ -1469,6 +1469,11 @@ export default class Webform extends NestedDataComponent {
 
       submission.state = options.state || 'submitted';
 
+      if (this.form._vid) {
+        submission._fvid = this.form._vid;
+        this.data._fvid = this.form._vid;
+      }
+
       const isDraft = (submission.state === 'draft');
       this.hook('beforeSubmit', { ...submission, component: options.component }, (err , data) => {
         if (err) {

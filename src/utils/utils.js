@@ -242,9 +242,9 @@ export function checkCalculated(component, submission, rowData) {
       }
       const value = getComponentActualValue(conditionComponentPath, data, row);
 
-      const СonditionOperator = ConditionOperators[operator];
-      return СonditionOperator
-        ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+      const ConditionOperator = ConditionOperators[operator];
+      return ConditionOperator
+        ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
         : true;
     });
 
