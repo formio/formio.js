@@ -453,7 +453,7 @@ describe('TextArea Component', () => {
       }).catch(done);
     });
 
-    it('Should not autofocus until if the form is readOnly', (done) => {
+    it('Should not autofocus if the form is readOnly', (done) => {
       const element = document.createElement('div');
       const testComponents = [
         {
