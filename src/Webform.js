@@ -296,20 +296,30 @@ export default class Webform extends NestedDataComponent {
     if (!this.i18next) {
       return;
     }
-    this.options.language = lang;
-    if (this.i18next.language === lang) {
+    let cleanupThis = this;
+    if (!cleanupThis) {
+      return;
+    }
+    cleanupThis.options.language = lang;
+    if (cleanupThis.i18next.language === lang) {
+      cleanupThis = null;
       return;
     }
     try {
-      this.i18next.changeLanguage(lang, (err) => {
+      cleanupThis.i18next.changeLanguage(lang, (err) => {
         if (err) {
+          cleanupThis = null;
           return;
         }
-        this.rebuild();
-        this.emit('languageChanged');
+        if (cleanupThis) {
+          cleanupThis.rebuild();
+          cleanupThis.emit('languageChanged');
+          cleanupThis = null;
+        }
       });
     }
     catch (err) {
+      cleanupThis = null;
       return;
     }
   }
@@ -352,21 +362,32 @@ export default class Webform extends NestedDataComponent {
       return NativePromise.resolve(this.i18next);
     }
     this.i18next.initialized = true;
+    let cleanupThis = this;
     return new NativePromise((resolve, reject) => {
       try {
-        this.i18next.init({
-          ...this.options.i18n,
+        if (!cleanupThis) {
+          return;
+        }
+        cleanupThis.i18next.init({
+          ...cleanupThis.options.i18n,
           ...{ compatibilityJSON: 'v3' }
         }, (err) => {
+          if (!cleanupThis) {
+            reject(new Error('Lost reference to `this` while initializing i18next.'));
+          }
           // Get language but remove any ;q=1 that might exist on it.
-          this.options.language = this.i18next.language.split(';')[0];
+          cleanupThis.options.language = cleanupThis.i18next.language.split(';')[0];
           if (err) {
+            cleanupThis = null;
             return reject(err);
           }
-          resolve(this.i18next);
+          const i18next = cleanupThis.i18next;
+          cleanupThis = null;
+          resolve(i18next);
         });
       }
       catch (err) {
+        cleanupThis = null;
         return reject(err);
       }
     });
