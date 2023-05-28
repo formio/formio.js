@@ -309,6 +309,12 @@ export default class Form extends Element {
         return param;
       });
   }
+
+  teardown() {
+    super.teardown();
+    delete this.instance;
+    delete this.ready;
+  }
 }
 
 // Allow simple embedding.

@@ -996,6 +996,8 @@ export default class Webform extends NestedDataComponent {
   teardown() {
     this.emit('formDelete', this.id);
     delete Formio.forms[this.id];
+    delete this.executeShortcuts;
+    delete this.triggerSaveDraft;
     super.teardown();
   }
 

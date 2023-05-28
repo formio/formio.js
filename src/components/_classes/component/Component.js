@@ -564,6 +564,8 @@ export default class Component extends Element {
     delete this._currentForm;
     delete this.parent;
     delete this.root;
+    delete this.triggerChange;
+    delete this.triggerRedraw;
     if (this.options) {
       delete this.options.root;
       delete this.options.parent;
@@ -573,7 +575,7 @@ export default class Component extends Element {
   }
 
   destroy(all = false) {
-    super.destroy();
+    super.destroy(all);
     this.detach();
     this.addons.forEach((addon) => addon.destroy());
     if (all) {
