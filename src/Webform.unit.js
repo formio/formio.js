@@ -2,12 +2,12 @@ import assert from 'power-assert';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import _ from 'lodash';
-import each from 'lodash/each';
 import i18next from 'i18next';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
 import 'flatpickr';
+import AllComponents from './components';
 import { Formio } from './Formio';
 import {
   settingErrors,
@@ -37,7 +37,6 @@ import {
   formWithCustomFormatDate,
   tooltipActivateCheckbox,
 } from '../test/formtest';
-// import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import UpdateErrorClassesWidgets from '../test/forms/updateErrorClasses-widgets';
 import nestedModalWizard from '../test/forms/nestedModalWizard';
 import disableSubmitButton from '../test/forms/disableSubmitButton';
@@ -74,9 +73,14 @@ import formsWithNewSimpleConditions from '../test/forms/formsWithNewSimpleCondit
 import formWithRadioInsideDataGrid from '../test/forms/formWithRadioInsideDataGrid';
 import formWithCheckboxRadioType from '../test/forms/formWithCheckboxRadioType';
 import formWithFormController from '../test/forms/formWithFormController';
+import calculateValueOnServerForEditGrid from '../test/forms/calculateValueOnServerForEditGrid';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
+
+if (_.has(Formio, 'Components.setComponents')) {
+  Formio.Components.setComponents(AllComponents);
+}
 
 /* eslint-disable max-statements */
 describe('Webform tests', function() {
@@ -106,6 +110,34 @@ describe('Webform tests', function() {
           done();
       }, 200);
     }).catch((err) => done(err));
+  });
+
+  it('Should not fall into setValue calls loop when doing value calculation on server', done => {
+    const formElement = document.createElement('div');
+    // Set a spy for Edit Grid setValue method
+    const spy = sinon.spy(Formio.Components.components.editgrid.prototype, 'setValue');
+
+    Formio.createForm(formElement, calculateValueOnServerForEditGrid, { server: true, noDefaults: true } )
+      .then(form => {
+        assert.deepEqual(form.data, { editGrid: [{ fielda: undefined, fieldb: 'test' }] });
+        assert.equal(spy.callCount, 1);
+
+        const first = form.getComponent('first');
+
+        first.setValue('test value');
+
+        setTimeout(() => {
+          assert.deepEqual(form.data, {
+            first: 'test value',
+            editGrid: [{ fielda: 'test value', fieldb: 'test' }]
+          });
+          assert.equal(spy.callCount, 2);
+          // Remove the spy from setValue method
+          Formio.Components.components.editgrid.prototype.setValue.restore();
+          done();
+        }, 300);
+      })
+      .catch(done);
   });
 
   it('Should fire blur and focus events for address and select components', function(done) {
