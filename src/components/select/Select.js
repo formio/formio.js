@@ -221,7 +221,7 @@ export default class SelectComponent extends ListComponent {
       return this.sanitize(value, this.shouldSanitizeValue);
     }
 
-    if (this.component.multiple ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
+    if (this.component.multiple && _.isArray(this.dataValue) ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
       const selectData = this.selectData;
       if (selectData) {
         const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
@@ -1250,7 +1250,7 @@ export default class SelectComponent extends ListComponent {
         if (this.component.multiple) {
           templateData = {};
           const dataValue = this.dataValue;
-          if (dataValue && dataValue.length) {
+          if (dataValue && _.isArray(dataValue) && dataValue.length) {
             dataValue.forEach((dataValueItem) => {
               const dataValueItemValue = this.component.reference ? dataValueItem._id.toString() : dataValueItem;
               templateData[dataValueItemValue] = this.templateData[dataValueItemValue];
