@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.15.0-rc.24]
+## Fixed
+ - FIO-6871: fixed tests
+ 
 ## 4.15.0-rc.23
 ### Changed
  - FIO-6760:fixed an issue where in select component when use resource multiple values data isn't rendered correctly
