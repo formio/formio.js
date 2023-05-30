@@ -82,7 +82,7 @@ if (_.has(Formio, 'Components.setComponents')) {
   Formio.Components.setComponents(AllComponents);
 }
 
-/* eslint-disable max-statements */
+/* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
 
