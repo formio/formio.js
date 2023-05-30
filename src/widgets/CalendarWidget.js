@@ -498,6 +498,15 @@ export default class CalendarWidget extends InputWidget {
       }
     });
 
+    // If other fields are used to calculate disabled dates, we need to redraw calendar to refresh disabled dates
+    if (this.settings.disableFunction && this.componentInstance && this.componentInstance.root) {
+      this.componentInstance.root.on('change', (e) => {
+        if (e.changed && this.calendar) {
+          this.calendar.redraw();
+        }
+      });
+    }
+
     // Restore the calendar value from the component value.
     this.setValue(this.componentValue);
   }

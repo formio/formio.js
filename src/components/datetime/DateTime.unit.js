@@ -15,7 +15,8 @@ import {
  // comp9,
   comp10,
   comp11,
-  comp12
+  comp12,
+  comp13,
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -673,6 +674,33 @@ describe('DateTime Component', () => {
           done();
         }, 200);
       }, 200);
+    }).catch(done);
+  });
+
+  it('Should refresh disabled dates when other fields values change', (done) => {
+    const form = _.cloneDeep(comp13);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const minDate = form.getComponent('minDate');
+      const maxDate = form.getComponent('maxDate');
+      minDate.setValue('2023-05-21T12:00:00+03:00');
+      maxDate.setValue('2023-06-03T12:00:00+03:00');
+
+      setTimeout(() => {
+        const inBetweenDate = form.getComponent('inBetweenDate');
+        const calendar = inBetweenDate.element.querySelector('.flatpickr-input').widget.calendar;
+        assert.equal(calendar.days.querySelectorAll('.flatpickr-disabled').length, 29, 'Only dates between selected' +
+          ' min and max dates should be enabled');
+
+        minDate.setValue('2023-05-14T12:00:00+03:00', { modified: true });
+        setTimeout(() => {
+          assert.equal(calendar.days.querySelectorAll('.flatpickr-disabled').length, 22, 'Should recalculate' +
+            ' disabled dates after value change');
+
+          done();
+        }, 400);
+      }, 400);
     }).catch(done);
   });
 
