@@ -345,21 +345,23 @@ export default class DayComponent extends Field {
     }
     const dateParts = [];
     const valueParts = value.split('/');
+    const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+    const defaultValue = this.component.defaultValue ? this.component.defaultValue.split('/') : '';
 
     const getNextPart = (shouldTake, defaultValue) =>
       dateParts.push(shouldTake ? valueParts.shift() : defaultValue);
 
     if (this.dayFirst) {
-      getNextPart(this.showDay, '00');
+      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '00');
     }
 
-    getNextPart(this.showMonth, '00');
+    getNextPart(this.showMonth, defaultValue ? defaultValue[MONTH] : '00');
 
     if (!this.dayFirst) {
-      getNextPart(this.showDay, '00');
+      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '00');
     }
 
-    getNextPart(this.showYear, '0000');
+    getNextPart(this.showYear, defaultValue ? defaultValue[YEAR] : '0000');
 
     return dateParts.join('/');
   }

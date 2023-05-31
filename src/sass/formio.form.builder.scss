@@ -225,6 +225,7 @@
 }
 
 .component-edit-tabs.col-sm-6 {
+  min-height: 87vh;
   height: 100%;
   overflow-y: auto;
 }
@@ -254,4 +255,9 @@
     opacity: 0.65;
     box-shadow: none;
   }
+}
+
+.builder-component-selected {
+  border: 2px dashed #e8e8e8;
+  outline: none !important;
 }

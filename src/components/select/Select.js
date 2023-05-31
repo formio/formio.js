@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { GlobalFormio as Formio } from '../../Formio';
+import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
@@ -101,7 +101,7 @@ export default class SelectComponent extends ListComponent {
       this.defaultDownloadedResources = [];
     }
 
-    // If this component has been activated.
+    // If this component has been activated.//
     this.activated = false;
     this.itemsLoaded = new NativePromise((resolve) => {
       this.itemsLoadedResolve = resolve;
@@ -220,14 +220,35 @@ export default class SelectComponent extends ListComponent {
       const value = (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
       return this.sanitize(value, this.shouldSanitizeValue);
     }
-    if (typeof data === 'string' || typeof data === 'number') {
+
+    if (this.component.multiple ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
       const selectData = this.selectData;
       if (selectData) {
-        data = selectData;
+        const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
+        if (!this.templateData || !this.templateData[templateValue]) {
+          this.getOptionTemplate(data, value);
+        }
+        if (this.component.multiple) {
+          if (selectData[templateValue]) {
+            data = selectData[templateValue];
+          }
+        }
+        else {
+          data = selectData;
+        }
       }
-      else {
-        return this.sanitize(this.t(data, { _userInput: true }), this.shouldSanitizeValue);
-      }
+    }
+
+    if (typeof data === 'string' || typeof data === 'number') {
+      return this.sanitize(this.t(data, { _userInput: true }), this.shouldSanitizeValue);
+    }
+    if (Array.isArray(data)) {
+      return data.map((val) => {
+        if (typeof val === 'string' || typeof val === 'number') {
+          return this.sanitize(this.t(val, { _userInput: true }), this.shouldSanitizeValue);
+        }
+        return val;
+      });
     }
 
     if (data.data) {
@@ -281,7 +302,7 @@ export default class SelectComponent extends ListComponent {
         option,
         attrs,
         id,
-        useId: (this.valueProperty === '') && _.isObject(value) && id,
+        useId: (this.valueProperty === '' || this.isEntireObjectDisplay()) && _.isObject(value) && id,
       }), this.shouldSanitizeValue).trim();
 
       option.element = div.firstChild;
@@ -303,7 +324,7 @@ export default class SelectComponent extends ListComponent {
 
     if (!this.selectOptions.length) {
       // Add the currently selected choices if they don't already exist.
-      const currentChoices = Array.isArray(data) ? data : [data];
+      const currentChoices = Array.isArray(data) && this.component.multiple ? data : [data];
       added = this.addCurrentChoices(currentChoices, items);
       if (!added && !this.component.multiple) {
         this.addPlaceholder();
@@ -579,12 +600,11 @@ export default class SelectComponent extends ListComponent {
 
     // Add search capability.
     if (this.component.searchField && search) {
-      if (Array.isArray(search)) {
-        query[`${this.component.searchField}`] = search.join(',');
-      }
-      else {
-        query[`${this.component.searchField}`] = search;
-      }
+      const searchValue = Array.isArray(search) ? search.join(',') : search;
+
+      query[this.component.searchField] = this.component.searchField.endsWith('__regex')
+        ? _.escapeRegExp(searchValue)
+        : searchValue;
     }
 
     // If they wish to return only some fields.
@@ -1215,12 +1235,13 @@ export default class SelectComponent extends ListComponent {
     else if (this.refs.selectContainer) {
       value = this.refs.selectContainer.value;
 
-      if (this.valueProperty === '') {
+      if (this.valueProperty === '' || this.isEntireObjectDisplay()) {
         if (value === '') {
           return {};
         }
 
-        const option = this.selectOptions[value];
+        const option = this.selectOptions[value] ||
+          this.selectOptions.find(option => option.id === value);
         if (option && _.isObject(option.value)) {
           value = option.value;
         }
@@ -1242,7 +1263,7 @@ export default class SelectComponent extends ListComponent {
     return done;
   }
 
-  normalizeSingleValue(value) {
+  normalizeSingleValue(value, retainObject) {
     if (_.isNil(value)) {
       return;
     }
@@ -1252,15 +1273,32 @@ export default class SelectComponent extends ListComponent {
       return value;
     }
     // Check to see if we need to save off the template data into our metadata.
-    if (value && !valueIsObject && (this.templateData && this.templateData[value]) && this.root?.submission) {
-      const submission = this.root.submission;
-      if (!submission.metadata) {
-        submission.metadata = {};
+    if (retainObject) {
+      const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
+      const shouldSaveData = !valueIsObject || this.component.reference;
+      if (templateValue && shouldSaveData && (this.templateData && this.templateData[templateValue]) && this.root?.submission) {
+        const submission = this.root.submission;
+        if (!submission.metadata) {
+          submission.metadata = {};
+        }
+        if (!submission.metadata.selectData) {
+          submission.metadata.selectData = {};
+        }
+
+        let templateData = this.templateData[templateValue];
+        if (this.component.multiple) {
+          templateData = {};
+          const dataValue = this.dataValue;
+          if (dataValue && dataValue.length) {
+            dataValue.forEach((dataValueItem) => {
+              const dataValueItemValue = this.component.reference ? dataValueItem._id.toString() : dataValueItem;
+              templateData[dataValueItemValue] = this.templateData[dataValueItemValue];
+            });
+          }
+        }
+
+        _.set(submission.metadata.selectData, this.path, templateData);
       }
-      if (!submission.metadata.selectData) {
-        submission.metadata.selectData = {};
-      }
-      _.set(submission.metadata.selectData, this.path, this.templateData[value]);
     }
 
     const dataType = this.component.dataType || 'auto';
@@ -1408,11 +1446,11 @@ export default class SelectComponent extends ListComponent {
       if (hasValue) {
         this.choices.removeActiveItems();
         // Add the currently selected choices if they don't already exist.
-        const currentChoices = Array.isArray(value) ? value : [value];
+        const currentChoices = Array.isArray(value) && this.component.multiple ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
           this.choices.setChoices(this.selectOptions, 'value', 'label', true);
         }
-        this.choices.setChoiceByValue(value);
+        this.choices.setChoiceByValue(currentChoices);
       }
       else if (hasPreviousValue || flags.resetValue) {
         this.choices.removeActiveItems();
@@ -1643,7 +1681,15 @@ export default class SelectComponent extends ListComponent {
     if (Array.isArray(value)) {
       const items = [];
       value.forEach(item => items.push(this.itemTemplate(item)));
-      return items.length > 0 ? items.join('<br />') : '-';
+      if (this.component.dataSrc === 'resource' &&  items.length > 0 ) {
+        return items.join(', ');
+      }
+      else if ( items.length > 0) {
+        return items.join('<br />');
+      }
+      else {
+        return '-';
+      }
     }
 
     return !_.isNil(value)

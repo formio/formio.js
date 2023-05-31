@@ -4,7 +4,7 @@ import NativePromise from 'native-promise-only';
 import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import { GlobalFormio as Formio } from '../../../Formio';
+import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import {
@@ -811,7 +811,7 @@ export default class Component extends Element {
   transform(type, value) {
     const frameworkTemplates = this.options.template ? Templates.templates[this.options.template] : Templates.current;
     return frameworkTemplates.hasOwnProperty('transform')
-      ? frameworkTemplates.transform(type, value)
+      ? frameworkTemplates.transform(type, value, this)
       : (type, value) => value;
   }
 
@@ -1437,7 +1437,7 @@ export default class Component extends Element {
    * @return {*}
    */
   itemValue(data, forceUseValue = false) {
-    if (_.isObject(data)) {
+    if (_.isObject(data) && !_.isArray(data)) {
       if (this.valueProperty) {
         return _.get(data, this.valueProperty);
       }
@@ -2045,8 +2045,12 @@ export default class Component extends Element {
     messages = _.uniqBy(messages, message => message.message);
 
     if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, messages.map((message) =>
-        this.renderTemplate('message', message)
+      this.setContent(this.refs.messageContainer, messages.map((message) => {
+        if (message.message && typeof message.message === 'string') {
+          message.message = message.message.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+        }
+        return this.renderTemplate('message', message);
+      }
       ).join(''));
     }
   }

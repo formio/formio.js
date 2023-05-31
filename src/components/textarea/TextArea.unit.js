@@ -1,7 +1,7 @@
 import Harness from '../../../test/harness';
 import TextAreaComponent from './TextArea';
 import sinon from 'sinon';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import assert from 'power-assert';
 import { expect } from 'chai';
 import _ from 'lodash';
@@ -427,6 +427,29 @@ describe('TextArea Component', () => {
 
           done();
         }, 300);
+      }).catch(done);
+    });
+
+    it('Should not autofocus until the editor is ready', (done) => {
+      const element = document.createElement('div');
+      const testComponents = [
+        {
+          type: 'textarea',
+          autofocus: true,
+          editor: 'ckeditor',
+          key: 'textArea',
+          label: 'Text Area',
+          input: true,
+        }
+      ];
+      const testForm = { ...formWithCKEditor, components: testComponents };
+
+      Formio.createForm(element, testForm).then(form => {
+          const textArea = form.getComponent('textArea');
+          // since prior to this fix the focus function will throw, we'll make sure it doesn't
+          expect(textArea.focus.bind(textArea)).to.not.throw();
+
+          done();
       }).catch(done);
     });
   });
