@@ -73,7 +73,7 @@ export default class RadioComponent extends ListComponent {
     this.templateData = {};
     this.validators = this.validators.concat(['select', 'onlyAvailableItems', 'availableValueProperty']);
 
-    // Trigger an update.
+    // Trigger an update.//
     let updateArgs = [];
     const triggerUpdate = _.debounce((...args) => {
       updateArgs = [];
