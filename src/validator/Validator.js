@@ -862,6 +862,24 @@ class ValidationChecker {
           return moment(value, component.component.format).isValid();
         }
       },
+      availableValueProperty: {
+        key: 'validate.availableValueProperty',
+        method: 'validateValueProperty',
+        messageText: 'Invalid Value Property',
+        hasLabel: true,
+        message(component) {
+          return component.t(component.errorMessage(this.validators.availableValueProperty.messageText), {
+            field: component.errorLabel,
+          });
+        },
+        check(component, setting, value) {
+          if (component.component.dataSrc === 'url' && (_.isUndefined(value) || _.isObject(value))) {
+            return false;
+          }
+
+          return true;
+        }
+      }
     };
   }
 
