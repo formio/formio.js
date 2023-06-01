@@ -873,13 +873,10 @@ class ValidationChecker {
           });
         },
         check(component, setting, value) {
-          if (component.component.dataSrc === 'values') {
-            return true;
-          }
-
-          if (_.isUndefined(value) || _.isObject(value)) {
+          if (component.component.dataSrc === 'url' && (_.isUndefined(value) || _.isObject(value))) {
             return false;
           }
+
           return true;
         }
       }
