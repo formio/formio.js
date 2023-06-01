@@ -2355,7 +2355,7 @@ export default class Component extends Element {
    *
    */
   hasValue(data) {
-    return _.has(data || this.data, this.key);
+    return !_.isUndefined(_.get(data || this.data, this.key));
   }
 
   /**
@@ -2760,6 +2760,10 @@ export default class Component extends Element {
 
   /* eslint-disable max-statements */
   calculateComponentValue(data, flags, row) {
+    // Skip value calculation for the component if we don't have entire form data set
+    if (_.isUndefined(_.get(this, 'root.data'))) {
+      return false;
+    }
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
     const { clearOnHide } = this.component;
