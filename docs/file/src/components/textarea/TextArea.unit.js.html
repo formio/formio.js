@@ -644,6 +644,29 @@ describe(&apos;TextArea Component&apos;, () =&gt; {
           done();
       }).catch(done);
     });
+
+    it(&apos;Should not autofocus if the form is readOnly&apos;, (done) =&gt; {
+      const element = document.createElement(&apos;div&apos;);
+      const testComponents = [
+        {
+          type: &apos;textarea&apos;,
+          autofocus: true,
+          editor: &apos;ckeditor&apos;,
+          key: &apos;textArea&apos;,
+          label: &apos;Text Area&apos;,
+          input: true,
+        }
+      ];
+      const testForm = { ...formWithCKEditor, components: testComponents };
+
+      Formio.createForm(element, testForm, { readOnly: true }).then(form =&gt; {
+          const textArea = form.getComponent(&apos;textArea&apos;);
+          // since prior to this fix the focus function will throw if readOnly, we&apos;ll make sure it doesn&apos;t
+          expect(textArea.focus.bind(textArea)).to.not.throw();
+
+          done();
+      }).catch(done);
+    });
   });
 });
 </code></pre>

@@ -192,7 +192,6 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/_classes/component/Component.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 
-import ComponentEditAddons from &apos;./editForm/Component.edit.addons&apos;;
 import ComponentEditConditional from &apos;./editForm/Component.edit.conditional&apos;;
 import ComponentEditData from &apos;./editForm/Component.edit.data&apos;;
 import ComponentEditAPI from &apos;./editForm/Component.edit.api&apos;;
@@ -249,12 +248,6 @@ export default function(...extend) {
           key: &apos;layout&apos;,
           weight: 60,
           components: ComponentEditLayout
-        },
-        {
-          label: &apos;Addons&apos;,
-          key: &apos;addons&apos;,
-          weight: 70,
-          components: ComponentEditAddons
         },
       ]
     }

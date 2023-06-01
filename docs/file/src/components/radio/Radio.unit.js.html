@@ -324,6 +324,49 @@ describe(&apos;Radio Component&apos;, () =&gt; {
       }, 200);
     }).catch(done);
   });
+
+  it(&apos;Should provide validation for ValueProperty&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement(&apos;div&apos;);
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve =&gt; {
+        const values = [
+          { name : &apos;Alabama&apos;, abbreviation : &apos;AL&apos; },
+          { name : &apos;Alaska&apos;, abbreviation: { a:2, b: &apos;c&apos; } }
+        ];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const radio = form.getComponent(&apos;radio&apos;);
+      radio.setValue({ a:2, b: &apos;c&apos; });
+
+      setTimeout(()=&gt;{
+        const submit = form.getComponent(&apos;submit&apos;);
+        const clickEvent = new Event(&apos;click&apos;);
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(form.errors.length, 1);
+          assert.equal(radio.error.message, &apos;Invalid Value Property&apos;);
+          radio.setValue(&apos;AL&apos;);
+
+          setTimeout(() =&gt; {
+            assert.equal(form.errors.length, 0);
+            assert.equal(!!radio.error, false);
+            document.innerHTML = &apos;&apos;;
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 300);
+        }, 300);
+      }, 200);
+    }).catch(done);
+  });
+
   it(&apos;Should not have default values in schema&apos;, (done) =&gt; {
     const form = _.cloneDeep(comp6);
     const element = document.createElement(&apos;div&apos;);

@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.15.0-rc.25
+### Changed
+ - FIO-6156 Updated help links according to the new documentation structure
+ - FIO-6892: Temporarely hide the Addons tab
+ - FIO-6762 added ValueProperty validation
+ - FIO 6582 - fix bug in auto-focused TextArea components
+
+
 ## 4.15.0-rc.24
 ## Fixed
  - FIO-6871: fixed tests

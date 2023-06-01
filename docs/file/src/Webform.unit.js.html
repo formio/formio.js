@@ -201,6 +201,7 @@ import FormTests from &apos;../test/forms&apos;;
 import Webform from &apos;./Webform&apos;;
 import &apos;flatpickr&apos;;
 import Formio from &apos;./Formio&apos;;
+import AllComponents from &apos;./components&apos;;
 import {
   settingErrors,
   clearOnHide,
@@ -229,7 +230,6 @@ import {
   formWithCustomFormatDate,
   tooltipActivateCheckbox,
 } from &apos;../test/formtest&apos;;
-// import DataGridOnBlurValidation from &apos;../test/forms/dataGridOnBlurValidation&apos;;
 import UpdateErrorClassesWidgets from &apos;../test/forms/updateErrorClasses-widgets&apos;;
 import nestedModalWizard from &apos;../test/forms/nestedModalWizard&apos;;
 import disableSubmitButton from &apos;../test/forms/disableSubmitButton&apos;;
@@ -266,9 +266,14 @@ import formsWithNewSimpleConditions from &apos;../test/forms/formsWithNewSimpleC
 import formWithRadioInsideDataGrid from &apos;../test/forms/formWithRadioInsideDataGrid&apos;;
 import formWithCheckboxRadioType from &apos;../test/forms/formWithCheckboxRadioType&apos;;
 import formWithFormController from &apos;../test/forms/formWithFormController&apos;;
+import calculateValueOnServerForEditGrid from &apos;../test/forms/calculateValueOnServerForEditGrid&apos;;
 
 global.requestAnimationFrame = (cb) =&gt; cb();
 global.cancelAnimationFrame = () =&gt; {};
+
+if (_.has(Formio, &apos;Components.setComponents&apos;)) {
+  Formio.Components.setComponents(AllComponents);
+}
 
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
@@ -298,6 +303,34 @@ describe(&apos;Webform tests&apos;, function() {
           done();
       }, 200);
     }).catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should not fall into setValue calls loop when doing value calculation on server&apos;, done =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    // Set a spy for Edit Grid setValue method
+    const spy = sinon.spy(Formio.Components.components.editgrid.prototype, &apos;setValue&apos;);
+
+    Formio.createForm(formElement, calculateValueOnServerForEditGrid, { server: true, noDefaults: true } )
+      .then(form =&gt; {
+        assert.deepEqual(form.data, { editGrid: [{ fielda: undefined, fieldb: &apos;test&apos; }] });
+        assert.equal(spy.callCount, 1);
+
+        const first = form.getComponent(&apos;first&apos;);
+
+        first.setValue(&apos;test value&apos;);
+
+        setTimeout(() =&gt; {
+          assert.deepEqual(form.data, {
+            first: &apos;test value&apos;,
+            editGrid: [{ fielda: &apos;test value&apos;, fieldb: &apos;test&apos; }]
+          });
+          assert.equal(spy.callCount, 2);
+          // Remove the spy from setValue method
+          Formio.Components.components.editgrid.prototype.setValue.restore();
+          done();
+        }, 300);
+      })
+      .catch(done);
   });
 
   it(&apos;Should fire blur and focus events for address and select components&apos;, function(done) {
