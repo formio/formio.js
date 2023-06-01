@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Field from '../field/Field';
 import Components from '../../Components';
 import NativePromise from 'native-promise-only';
-import { getArrayFromComponentPath, getStringFromComponentPath } from '../../../utils/utils';
+import { getArrayFromComponentPath, getStringFromComponentPath, getRandomComponentId } from '../../../utils/utils';
 
 export default class NestedComponent extends Field {
   static schema(...extend) {
@@ -36,8 +36,8 @@ export default class NestedComponent extends Field {
 
   collapse(value) {
     const promise = this.redraw();
-    if (!value && !this.pristine) {
-      this.checkValidity(this.data, true);
+    if (!value) {
+      this.checkValidity(this.data, !this.pristine, null, this.pristine);
     }
     return promise;
   }
@@ -312,7 +312,7 @@ export default class NestedComponent extends Field {
    * @param component
    * @param data
    */
-  createComponent(component, options, data, before) {
+   createComponent(component, options, data, before, replacedComp) {
     if (!component) {
       return;
     }
@@ -323,6 +323,9 @@ export default class NestedComponent extends Field {
     options.root = options?.root || this.root || this;
     options.localRoot = this.localRoot;
     options.skipInit = true;
+    if (!(options.display === 'pdf' && this.builderMode)) {
+      component.id = getRandomComponentId();
+    }
     if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
       component.shouldIncludeSubFormPath = true;
     }
@@ -341,6 +344,15 @@ export default class NestedComponent extends Field {
       const index = _.findIndex(this.components, { id: before.id });
       if (index !== -1) {
         this.components.splice(index, 0, comp);
+      }
+      else {
+        this.components.push(comp);
+      }
+    }
+    else if (replacedComp) {
+      const index = _.findIndex(this.components, { id: replacedComp.id });
+      if (index !== -1) {
+        this.components[index] = comp;
       }
       else {
         this.components.push(comp);
@@ -450,6 +462,10 @@ export default class NestedComponent extends Field {
       childPromise = this.attachComponents(this.refs[this.nestedKey]);
     }
 
+    if (!this.visible) {
+      this.attachComponentsLogic();
+    }
+
     if (this.component.collapsible && this.refs.header) {
       this.addEventListener(this.refs.header, 'click', () => {
         this.collapsed = !this.collapsed;
@@ -466,6 +482,18 @@ export default class NestedComponent extends Field {
       superPromise,
       childPromise,
     ]);
+  }
+
+  attachComponentsLogic(components) {
+    components = components || this.components;
+
+    _.each(components, (comp) => {
+      comp.attachLogic();
+
+      if  (_.isFunction(comp.attachComponentsLogic)) {
+        comp.attachComponentsLogic();
+      }
+    });
   }
 
   attachComponents(element, components, container) {
@@ -642,16 +670,20 @@ export default class NestedComponent extends Field {
     );
   }
 
+  checkChildComponentsValidity(data, dirty, row, silentCheck, isParentValid) {
+    return this.getComponents().reduce(
+      (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,
+      isParentValid
+    );
+  }
+
   checkValidity(data, dirty, row, silentCheck) {
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
       return true;
     }
 
-    const isValid = this.getComponents().reduce(
-      (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,
-      super.checkValidity(data, dirty, row, silentCheck)
-    );
+    const isValid = this.checkChildComponentsValidity(data, dirty, row, silentCheck, super.checkValidity(data, dirty, row, silentCheck));
     this.checkModal(isValid, dirty);
     return isValid;
   }

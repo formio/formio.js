@@ -1,10 +1,9 @@
-import { GlobalFormio as Formio } from '../Formio';
+import { Formio } from '../Formio';
 import InputWidget from './InputWidget';
 import {
   convertFormatToFlatpickr,
   convertFormatToMask,
   convertFormatToMoment,
-  currentTimezone,
   formatDate,
   formatOffset,
   getBrowserInfo,
@@ -65,7 +64,7 @@ export default class CalendarWidget extends InputWidget {
       this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
     }
     this.zoneLoading = false;
-    this.timezonesUrl = `${Formio.cdn.baseUrl}/timezones.json`;
+    this.timezonesUrl = `${Formio.cdn['moment-timezone']}/data/packed/latest.json`;
   }
 
   /**
@@ -196,10 +195,8 @@ export default class CalendarWidget extends InputWidget {
                 return Formio.requireLibrary(
                   `flatpickr-${locale}`,
                   `flatpickr-${locale}`,
-                  `${Formio.cdn.flatpickr}/l10n/${locale}.min.js`,
-                  false,
-                  () => this.initFlatpickr(Flatpickr)
-                );
+                  `${Formio.cdn['flatpickr-formio']}/l10n/flatpickr-${locale}.js`,
+                  true).then(() => this.initFlatpickr(Flatpickr));
               }
               else {
                 this.initFlatpickr(Flatpickr);
@@ -228,26 +225,8 @@ export default class CalendarWidget extends InputWidget {
     });
   }
 
-  defineTimezone() {
-    if (!this.componentInstance.attached && this.componentInstance.submissionTimezone) {
-      return this.componentInstance.submissionTimezone;
-    }
-    if (this.settings.timezone) {
-      return this.settings.timezone;
-    }
-    if (this.settings.displayInTimezone === 'submission' && this.settings.submissionTimezone) {
-      return this.settings.submissionTimezone;
-    }
-    if (this.settings.displayInTimezone === 'utc') {
-      return 'UTC';
-    }
-
-    // Return current timezone if none are provided.
-    return currentTimezone();
-  }
-
   get timezone() {
-    return this.defineTimezone();
+    return this.componentInstance.getTimezone(this.settings);
   }
 
   get defaultSettings() {
@@ -383,12 +362,12 @@ export default class CalendarWidget extends InputWidget {
     }
 
     const zonesLoading = this.loadZones();
-    if (this.isValueISO8601(value)) {
-      this.calendar.setDate(value, false);
-    }
-    else if (value) {
+    if (value) {
       if (!saveAsText && this.settings.readOnly && !zonesLoading) {
-        this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).toDate(), false);
+        this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).format(), false);
+      }
+      else if (this.isValueISO8601(value)) {
+        this.calendar.setDate(value, false);
       }
       else {
         this.calendar.setDate(moment(value, this.valueMomentFormat).toDate(), false);
@@ -443,19 +422,8 @@ export default class CalendarWidget extends InputWidget {
   }
 
   initFlatpickr(Flatpickr) {
-    const dateValue = this._input.value;
     // Create a new flatpickr.
     this.calendar = new Flatpickr(this._input, { ...this.settings, disableMobile: true });
-
-    if (dateValue) {
-      if (this.isValueISO8601(dateValue)) {
-        this.calendar.setDate(moment(dateValue).toDate(), false, this.settings.altFormat);
-      }
-      else {
-        this.calendar.setDate(moment(dateValue, convertFormatToMoment(this.dateFormat)).toDate(), false, this.settings.altFormat);
-      }
-    }
-
     this.calendar.altInput.addEventListener('input', (event) => {
       if (this.settings.allowInput && this.settings.currentValue !== event.target.value) {
         this.settings.manualInputValue = event.target.value;
@@ -529,6 +497,9 @@ export default class CalendarWidget extends InputWidget {
         }
       }
     });
+
+    // Restore the calendar value from the component value.
+    this.setValue(this.componentValue);
   }
 
   initShortcutButtonsPlugin(ShortcutButtonsPlugin) {
@@ -545,21 +516,25 @@ export default class CalendarWidget extends InputWidget {
     ];
   }
 
+  get componentValue() {
+    let compValue = this.componentInstance.dataValue;
+    if (Array.isArray(compValue)) {
+      compValue = compValue[this.valueIndex];
+    }
+    return compValue;
+  }
+
   getFlatpickrFormatDate(Flatpickr) {
     return (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
-      if (this.settings.readOnly && (format === this.settings.altFormat) && (this.settings.submissionTimezone === this.timezone)) {
+      if (this.settings.readOnly && (format === this.settings.altFormat)) {
         if (this.loadZones()) {
           return Flatpickr.formatDate(date, format);
         }
 
         const currentValue = new Date(this.getValue());
         if (currentValue.toString() === date.toString()) {
-          let compValue = this.componentInstance.dataValue;
-          if (Array.isArray(compValue)) {
-            compValue = compValue[this.valueIndex];
-          }
-          return formatOffset(this.timezonesUrl, Flatpickr.formatDate.bind(Flatpickr), new Date(compValue), format, this.timezone);
+          return formatOffset(this.timezonesUrl, Flatpickr.formatDate.bind(Flatpickr), new Date(this.componentValue), format, this.timezone);
         }
         return formatOffset(this.timezonesUrl, Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
       }

@@ -1,13 +1,14 @@
 import Harness from '../../../test/harness';
 import AddressComponent from './Address';
 import assert from 'power-assert';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import _ from 'lodash';
 
 import {
   comp1,
   comp2,
   comp3,
+  comp4,
 } from './fixtures';
 
 describe('Address Component', () => {
@@ -175,5 +176,58 @@ describe('Address Component', () => {
         }, 200);
       }, 200);
     }).catch(done);
+  });
+
+  it('Should correctly display component that has a conditional based on the Address component', (done) => {
+    const value = {
+      'place_id': 298032694,
+      licence: 'Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright',
+      'osm_type': 'relation',
+      'osm_id': 1180520,
+      boundingbox: [
+        37.4148293,
+        37.907822,
+        -93.191483,
+        -92.845795
+      ],
+      lat: 37.6832712,
+      lon: -93.0219376,
+      'display_name': 'Dallas County, Missouri, United States',
+      class: 'boundary',
+      type: 'administrative',
+      importance: 0.6131235182618818,
+      icon: 'https://nominatim.openstreetmap.org/ui/mapicons/poi_boundary_administrative.p.20.png',
+      address: {
+        county: 'Dallas County',
+        state: 'Missouri',
+        'ISO3166-2-lvl4': 'US-MO',
+        country: 'United States',
+        'country_code': 'us'
+      }
+    };
+
+    const form = _.cloneDeep(comp4);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const address = form.getComponent('address');
+      const textfield = form.getComponent('textField');
+
+      setTimeout(() => {
+        address.setValue(value);
+
+        setTimeout(() => {
+          assert.equal(textfield.visible, true);
+          const clearIcon = address.refs.removeValueIcon[0];
+          const clickEvent = new Event('click');
+          clearIcon.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(textfield.visible, false);
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    });
   });
 });

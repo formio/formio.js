@@ -1,7 +1,7 @@
 {
   "name": "bootswatch",
   "description": "Bootswatch is a collection of themes for Bootstrap.",
-  "version": "4.6.2",
+  "version": "5.2.3",
   "author": "Thomas Park",
   "homepage": "https://bootswatch.com",
   "license": "MIT",
@@ -16,7 +16,7 @@
     "build": "grunt swatch",
     "docs": "grunt docs",
     "htmllint": "grunt htmllint",
-    "stylelint": "stylelint \"**/*.scss\" --rd",
+    "stylelint": "stylelint \"dist/**/*.scss\" --rd",
     "release": "grunt release",
     "test": "npm run stylelint"
   },
@@ -24,10 +24,10 @@
     "dist/**/*.{css,scss}"
   ],
   "devDependencies": {
-    "@lodder/grunt-postcss": "^3.1.0",
-    "autoprefixer": "^10.4.7",
-    "bootstrap": "^4.6.2",
-    "font-awesome": "^4.7.0",
+    "@lodder/grunt-postcss": "^3.1.1",
+    "autoprefixer": "^10.4.12",
+    "bootstrap": "^5.2.3",
+    "bootstrap-icons": "^1.9.1",
     "grunt": "^1.5.3",
     "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-concat": "^2.0.0",
@@ -37,10 +37,10 @@
     "grunt-contrib-watch": "^1.1.0",
     "grunt-html": "^15.1.0",
     "grunt-sass": "^3.1.0",
-    "jquery": "^3.5.1",
-    "node-sass": "^7.0.1",
-    "postcss": "^8.4.14",
-    "stylelint": "^13.13.1",
-    "stylelint-config-twbs-bootstrap": "^2.2.4"
+    "postcss": "^8.4.17",
+    "prismjs": "^1.25.0",
+    "sass": "^1.55.0",
+    "stylelint": "^14.11.0",
+    "stylelint-config-twbs-bootstrap": "^3.0.0"
   }
 }

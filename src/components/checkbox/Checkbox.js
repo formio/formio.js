@@ -196,6 +196,7 @@ export default class CheckBoxComponent extends Field {
       this.input.checked = 0;
       this.input.value = 0;
       this.dataValue = '';
+      this.updateOnChange(flags, true);
     }
 
     const changed = super.updateValue(value, flags);

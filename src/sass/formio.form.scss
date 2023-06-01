@@ -246,6 +246,13 @@ td > .formio-form-group {
 .signature-pad-body {
   overflow: hidden;
   position: relative;
+
+  .form-control-feedback {
+    position: absolute;
+    font-size: 0.8rem;
+    top: 1px;
+    right: 3px;
+  }
 }
 
 .signature-pad-canvas {
@@ -293,7 +300,7 @@ td > .formio-form-group {
   color: #C3C3C3;
 }
 
-.choices__list--dropdown {
+.is-active.choices__list--dropdown {
   z-index: 100;
 }
 
@@ -849,6 +856,7 @@ body.formio-dialog-open {
 
 .editgrid-listgroup {
   margin-bottom: 10px;
+  overflow-wrap: break-word;
 }
 
 .tree-listgroup {
@@ -883,6 +891,7 @@ body.formio-dialog-open {
 
 .formio-component .table {
   margin-bottom: 0;
+  word-break: break-all;
 }
 
 .formio-component-htmlelement {
@@ -974,6 +983,12 @@ body.formio-dialog-open {
   // .edittable-group-label {
   //   background-color: #ddd;
   // }
+}
+
+.datagrid-table {
+  &>tbody>tr>td {
+    word-break: break-all;
+  }
 }
 
 .formio-component-modaledit {
@@ -1092,6 +1107,7 @@ body.formio-dialog-open {
 
   &__node-content {
     margin-bottom: 10px;
+    overflow-wrap: break-word;
   }
 
   &__node-children {
@@ -1727,4 +1743,8 @@ div[data-oembed-url] {
 span[role="link"] {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.hidden {
+  display: none !important;
 }

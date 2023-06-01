@@ -3,7 +3,7 @@ import Component from './components/_classes/component/Component';
 import tippy from 'tippy.js';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
-import { GlobalFormio as Formio } from './Formio';
+import { Formio } from './Formio';
 import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
@@ -61,7 +61,7 @@ export default class WebformBuilder extends Component {
       }
     });
 
-    // Add the groups.
+    // Add the groups.////
     this.groups = {};
     this.groupOrder = [];
     for (const group in this.builder) {
@@ -392,6 +392,11 @@ export default class WebformBuilder extends Component {
 
     if (component.refs.moveComponent) {
       this.attachTooltip(component.refs.moveComponent, this.t('Move'));
+      if (this.keyboardActionsEnabled) {
+        component.addEventListener(component.refs.moveComponent, 'click', () => {
+          this.moveComponent(component);
+        });
+      }
     }
 
     const parent = this.getParentElement(element);
@@ -547,6 +552,7 @@ export default class WebformBuilder extends Component {
             groupId: `group-container-${groupKey}`,
             subgroups: []
           })),
+          keyboardActionsEnabled: this.keyboardActionsEnabled,
         })),
       }),
       form: this.webform.render(),
@@ -567,6 +573,7 @@ export default class WebformBuilder extends Component {
         'sidebar-anchor': 'multiple',
         'sidebar-group': 'multiple',
         'sidebar-container': 'multiple',
+        'sidebar-component': 'multiple',
       });
 
       if (this.sideBarScroll && Templates.current.handleBuilderSidebarScroll) {
@@ -610,6 +617,16 @@ export default class WebformBuilder extends Component {
         });
       }
 
+      if (this.keyboardActionsEnabled) {
+        this.refs['sidebar-component'].forEach((component) => {
+          this.addEventListener(component, 'keydown', (event) => {
+            if (event.keyCode === 13) {
+              this.addNewComponent(component);
+            }
+          });
+        });
+      }
+
       this.addEventListener(this.refs['sidebar-search'], 'input',
         _.debounce((e) => {
           const searchString = e.target.value;
@@ -629,7 +646,7 @@ export default class WebformBuilder extends Component {
           maxSpeed: 6,
           scrollWhenOutside: true,
           autoScroll: function() {
-              return this.down && drake.dragging;
+              return this.down && drake?.dragging;
           }
         });
 
@@ -993,6 +1010,12 @@ export default class WebformBuilder extends Component {
       form.components = [];
     }
 
+    if (form && form.properties) {
+      this.options.properties = form.properties;
+    }
+
+    this.keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false) || this.options.properties?.keyboardBuilder;
+
     const isShowSubmitButton = !this.options.noDefaultSubmitButton
       && !form.components.length;
 
@@ -1028,7 +1051,7 @@ export default class WebformBuilder extends Component {
 
   populateRecaptchaSettings(form) {
     //populate isEnabled for recaptcha form settings
-    var isRecaptchaEnabled = false;
+    let isRecaptchaEnabled = false;
     if (this.form.components) {
       eachComponent(form.components, component => {
         if (isRecaptchaEnabled) {
@@ -1112,7 +1135,7 @@ export default class WebformBuilder extends Component {
         config: this.options.formConfig || {}
       };
 
-      const fieldsToRemoveDoubleQuotes = ['label', 'tooltip', 'placeholder'];
+      const fieldsToRemoveDoubleQuotes = ['label', 'tooltip'];
       this.preview.form.components.forEach(component => this.replaceDoubleQuotes(component, fieldsToRemoveDoubleQuotes));
 
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
@@ -1254,7 +1277,7 @@ export default class WebformBuilder extends Component {
     if (index !== -1) {
       let submissionData = this.editForm.submission.data;
       submissionData = submissionData.componentJson || submissionData;
-      const fieldsToRemoveDoubleQuotes = ['label', 'tooltip', 'placeholder'];
+      const fieldsToRemoveDoubleQuotes = ['label', 'tooltip'];
 
       this.replaceDoubleQuotes(submissionData, fieldsToRemoveDoubleQuotes);
 
@@ -1295,6 +1318,12 @@ export default class WebformBuilder extends Component {
         );
         this.emit('change', this.form);
         this.highlightInvalidComponents();
+
+        if (this.isComponentCreated) {
+          const component = parent.formioComponent.components[0];
+          this.moveComponent(component);
+          this.isComponentCreated = false;
+        }
       });
     }
 
@@ -1543,6 +1572,115 @@ export default class WebformBuilder extends Component {
     ).replace(/^[0-9]*/, '');
   }
 
+  moveComponent(component) {
+    component.element.focus();
+    component.element.classList.add('builder-selected');
+    this.selectedElement = component;
+    this.removeEventListener(component.element, 'keydown');
+    this.addEventListener(component.element, 'keydown', this.moveHandler.bind(this));
+  }
+
+  moveHandler = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (e.keyCode === 38) {
+      this.updateComponentPlacement(true);
+    }
+    if (e.keyCode === 40) {
+      this.updateComponentPlacement(false);
+    }
+    if (e.keyCode === 13) {
+      this.stopMoving(this.selectedElement);
+    }
+  };
+
+  updateComponentPlacement(direction) {
+    const component = this.selectedElement;
+    let index, info;
+    const step = direction ? -1 : 1;
+    if (component) {
+      const element = component.element;
+      const sibling = direction ? element.previousElementSibling : element.nextElementSibling;
+      const source = element.parentNode;
+
+      const containerLength = source.formioContainer.length;
+
+      if (containerLength && containerLength <= 1) {
+        return;
+      }
+
+      if (source.formioContainer) {
+        index = _.findIndex(source.formioContainer, { key: element.formioComponent.component.key });
+
+        if (index !== -1) {
+          info = source.formioContainer.splice(
+            _.findIndex(source.formioContainer, { key: element.formioComponent.component.key }), 1
+          );
+          info = info[0];
+          source.removeChild(element);
+        }
+      }
+
+      const len = source.formioComponent.components.length;
+        index = (index === -1) ? 0 : index + step;
+
+        if (index === -1) {
+          source.formioContainer.push(info);
+          source.appendChild(element);
+        }
+        else if (index === len) {
+          const key = source.formioContainer[0].key;
+          index = _.findIndex(source.formioComponent.components, { key: key });
+          const firstElement = source.formioComponent.components[index].element;
+          source.formioContainer.splice(0, 0, info);
+          source.insertBefore(element, firstElement);
+        }
+        else if (index !== -1) {
+          source.formioContainer.splice(index, 0, info);
+          direction
+          ? source.insertBefore(element, sibling)
+          : source.insertBefore(element, sibling.nextElementSibling);
+        }
+        element.focus();
+    }
+  }
+
+  stopMoving(comp) {
+    const parent = comp.element.parentNode;
+    parent.formioComponent.rebuild();
+  }
+
+  addNewComponent(element) {
+    const source = document.querySelector('.formio-builder-form');
+    const key = element.getAttribute('data-key');
+    const group = element.getAttribute('data-group');
+
+    const isNew = true;
+    let info;
+
+    if (key && group) {
+      info = this.getComponentInfo(key, group);
+    }
+
+    if (isNew && !this.options.noNewEdit && !info.noNewEdit) {
+      BuilderUtils.uniquify(this.findNamespaceRoot(source.formioComponent), info);
+      this.editComponent(info, source, isNew, null, null);
+    }
+
+    const firstComponent = source.formioComponent.components[0]?.element;
+
+    if (firstComponent) {
+      source.formioContainer.splice(0, 0, info);
+    }
+    else {
+      source.formioContainer.push(info);
+    }
+
+    source.formioComponent.rebuild().then(() => {
+      this.isComponentCreated = true;
+    });
+  }
+
   /**
    * Creates copy of component schema and stores it under sessionStorage.
    * @param {Component} component
@@ -1659,8 +1797,7 @@ export default class WebformBuilder extends Component {
   }
 
   generateKey(info) {
-    return _.camelCase(
-      info.key ||
+    return info.key || _.camelCase(
       info.title ||
       info.label ||
       info.placeholder ||

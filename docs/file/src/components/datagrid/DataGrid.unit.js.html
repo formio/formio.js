@@ -29,7 +29,8 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
@@ -187,7 +188,7 @@ import {
   comp5,
   comp6,
   withDefValue,
- // withRowGroupsAndDefValue,
+  withRowGroupsAndDefValue,
   modalWithRequiredFields,
   withConditionalFieldsAndValidations,
   withLogic
@@ -315,31 +316,29 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
     });
   });
 
-  //TOFIX
-  // it(&apos;Should be able to add another row.&apos;, () =&gt; {
-  //   return Harness.testCreate(DataGridComponent, comp1).then((component) =&gt; {
-  //     Harness.testSetGet(component, [
-  //       {
-  //         make: &apos;Jeep&apos;,
-  //         model: &apos;Wrangler&apos;,
-  //         year: 1997
-  //       }
-  //     ]);
-  //     component.addRow();
-  //     assert.deepEqual(component.getValue(), [
-  //       {
-  //         make: &apos;Jeep&apos;,
-  //         model: &apos;Wrangler&apos;,
-  //         year: 1997
-  //       },
-  //       {
-  //         make: &apos;&apos;,
-  //         model: &apos;&apos;,
-  //         year: &apos;&apos;
-  //       }
-  //     ]);
-  //   });
-  // });
+  it(&apos;Should be able to add another row.&apos;, () =&gt; {
+    return Harness.testCreate(DataGridComponent, comp1).then((component) =&gt; {
+      Harness.testSetGet(component, [
+        {
+          make: &apos;Jeep&apos;,
+          model: &apos;Wrangler&apos;,
+          year: 1997
+        }
+      ]);
+      component.addRow();
+      assert.deepEqual(component.getValue(), [
+        {
+          make: &apos;Jeep&apos;,
+          model: &apos;Wrangler&apos;,
+          year: 1997
+        },
+        {
+          make: &apos;&apos;,
+          model: &apos;&apos;,
+        }
+      ]);
+    });
+  });
 
   it(&apos;Should allow provide default value&apos;, function(done) {
     try {
@@ -358,26 +357,26 @@ describe(&apos;DataGrid Component&apos;, () =&gt; {
       done(err);
     }
   });
-  //TOFIX
-  // it(&apos;Should allow provide default value in row-groups model&apos;, function(done) {
-  //   try {
-  //     Harness.testCreate(DataGridComponent, withRowGroupsAndDefValue)
-  //       .then((datagrid) =&gt; {
-  //         expect(datagrid.getValue()).to.deep.equal([
-  //           { name: &apos;Alex&apos;, age: 1 },
-  //           { name: &apos;Bob&apos;,  age: 2 },
-  //           { name: &apos;Conny&apos;, age: 3 },
-  //           { name: &apos;&apos;, age: &apos;&apos; },
-  //           { name: &apos;&apos;, age: &apos;&apos; }
-  //         ]);
-  //         done();
-  //       }, done)
-  //       .catch(done);
-  //   }
-  //   catch (err) {
-  //     done(err);
-  //   }
-  // });
+
+  it(&apos;Should allow provide default value in row-groups model&apos;, function(done) {
+    try {
+      Harness.testCreate(DataGridComponent, withRowGroupsAndDefValue)
+        .then((datagrid) =&gt; {
+          expect(datagrid.getValue()).to.deep.equal([
+            { name: &apos;Alex&apos;, age: 1 },
+            { name: &apos;Bob&apos;,  age: 2 },
+            { name: &apos;Conny&apos;, age: 3 },
+            { name: &apos;&apos; },
+            { name: &apos;&apos; }
+          ]);
+          done();
+        }, done)
+        .catch(done);
+    }
+    catch (err) {
+      done(err);
+    }
+  });
 
   it(&apos;Should not cause setValue loops when logic within hidden component is set&apos;, function(done) {
     Formio.createForm(document.createElement(&apos;div&apos;), withLogic)

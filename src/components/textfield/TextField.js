@@ -54,7 +54,7 @@ export default class TextFieldComponent extends Input {
     else {
       info.attr.type = (this.component.inputType === 'password') ? 'password' : 'text';
     }
-    info.changeEvent = 'input';
+    info.changeEvent = (this.component.applyMaskOn === 'blur') ? 'blur' : 'input';
     return info;
   }
 
@@ -197,6 +197,13 @@ export default class TextFieldComponent extends Input {
       value: textInput ? textInput.value : undefined,
       maskName: maskInput ? maskInput.value : undefined
     };
+  }
+
+  getValueAsString(value, options) {
+    if (value && this.component.inputFormat === 'plain' && /<[^<>]+>/g.test(value)) {
+      value = value.replaceAll('<','&lt;').replaceAll('>', '&gt;');
+    }
+    return super.getValueAsString(value, options);
   }
 
   isHtmlRenderMode() {

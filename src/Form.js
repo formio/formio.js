@@ -1,5 +1,5 @@
 import Element from './Element';
-import { GlobalFormio as Formio } from './Formio';
+import { Formio } from './Formio';
 import Displays from './displays';
 import templates from './templates';
 import * as FormioUtils from './utils/utils';
