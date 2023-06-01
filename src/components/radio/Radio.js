@@ -25,7 +25,7 @@ export default class RadioComponent extends ListComponent {
       group: 'basic',
       icon: 'dot-circle-o',
       weight: 80,
-      documentation: '/userguide/forms/form-components#radio',
+      documentation: '/userguide/form-building/form-components#radio',
       schema: RadioComponent.schema()
     };
   }
