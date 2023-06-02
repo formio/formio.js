@@ -12,7 +12,10 @@
     "mocha": true
   },
   "ignorePatterns": [
-    "!.*rc.js"
+    "!.*rc.js",
+    "lib",
+    "dist",
+    "node_modules"
   ],
   "rules": {
     "max-len": [

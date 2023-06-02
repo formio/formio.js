@@ -2,7 +2,6 @@ import assert from 'power-assert';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import _ from 'lodash';
-import each from 'lodash/each';
 import i18next from 'i18next';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
