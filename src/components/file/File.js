@@ -887,8 +887,8 @@ export default class FileComponent extends Field {
     }
   }
 
-  destroy() {
+  destroy(all = false) {
     this.stopVideo();
-    super.destroy();
+    super.destroy(all);
   }
 }

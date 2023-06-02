@@ -41,6 +41,9 @@ export default class Form extends Element {
 
     this.instance = null;
     if (args[0] instanceof HTMLElement) {
+      if (this.element) {
+        delete this.element.component;
+      }
       this.element = args[0];
       this.options = args[2] || {};
       this.options.events = this.events;
@@ -91,7 +94,7 @@ export default class Form extends Element {
    * @return {*}
    */
   set form(formParam) {
-    return this.setForm(formParam);
+    this.setForm(formParam);
   }
 
   errorForm(err) {
@@ -159,6 +162,9 @@ export default class Form extends Element {
 
     // A redraw has occurred so save off the new element in case of a setDisplay causing a rebuild.
     return result.then(() => {
+      if (this.element) {
+        delete this.element.component;
+      }
       this.element = this.instance.element;
       return this.instance;
     });
@@ -293,12 +299,21 @@ export default class Form extends Element {
     if (!this.instance) {
       return NativePromise.reject('Form not ready. Use form.ready promise');
     }
+    if (this.element) {
+      delete this.element.component;
+    }
     this.element = element;
     return this.instance.attach(this.element)
       .then((param) => {
         this.emit('attach', param);
         return param;
       });
+  }
+
+  teardown() {
+    super.teardown();
+    delete this.instance;
+    delete this.ready;
   }
 }
 

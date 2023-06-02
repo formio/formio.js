@@ -173,8 +173,8 @@ export default class ColumnsComponent extends NestedComponent {
     super.detach(all);
   }
 
-  destroy() {
-    super.destroy();
+  destroy(all = false) {
+    super.destroy(all);
     this.columns = [];
   }
 }

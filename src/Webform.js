@@ -2,7 +2,6 @@ import _ from 'lodash';
 import moment from 'moment';
 import compareVersions from 'compare-versions';
 import EventEmitter from './EventEmitter';
-import i18next from 'i18next';
 import i18nDefaults from './i18n';
 import { GlobalFormio as Formio } from './Formio';
 import NativePromise from 'native-promise-only';
@@ -36,7 +35,7 @@ function getOptions(options) {
   options = _.defaults(options, {
     submitOnEnter: false,
     iconset: getIconSet((options && options.icons) ? options.icons : Formio.icons),
-    i18next,
+    i18next: null,
     saveDraft: false,
     alwaysDirty: false,
     saveDraftThrottle: 5000,
@@ -76,7 +75,7 @@ export default class Webform extends NestedDataComponent {
     }
     super(null, getOptions(options));
 
-    this.element = element;
+    this.setElement(element);
 
     // Keep track of all available forms globally.
     Formio.forms[this.id] = this;
@@ -294,20 +293,33 @@ export default class Webform extends NestedDataComponent {
    * @return {Promise}
    */
   set language(lang) {
-    this.options.language = lang;
-    if (this.i18next.language === lang) {
+    if (!this.i18next) {
+      return;
+    }
+    let cleanupThis = this;
+    if (!cleanupThis) {
+      return;
+    }
+    cleanupThis.options.language = lang;
+    if (cleanupThis.i18next.language === lang) {
+      cleanupThis = null;
       return;
     }
     try {
-      this.i18next.changeLanguage(lang, (err) => {
+      cleanupThis.i18next.changeLanguage(lang, (err) => {
         if (err) {
+          cleanupThis = null;
           return;
         }
-        this.rebuild();
-        this.emit('languageChanged');
+        if (cleanupThis) {
+          cleanupThis.rebuild();
+          cleanupThis.emit('languageChanged');
+          cleanupThis = null;
+        }
       });
     }
     catch (err) {
+      cleanupThis = null;
       return;
     }
   }
@@ -329,10 +341,12 @@ export default class Webform extends NestedDataComponent {
    * @return {*}
    */
   addLanguage(code, lang, active = false) {
-    var translations = _.assign(fastCloneDeep(i18nDefaults.resources.en.translation), lang);
-    this.i18next.addResourceBundle(code, 'translation', translations, true, true);
-    if (active) {
-      this.language = code;
+    if (this.i18next) {
+      var translations = _.assign(fastCloneDeep(i18nDefaults.resources.en.translation), lang);
+      this.i18next.addResourceBundle(code, 'translation', translations, true, true);
+      if (active) {
+        this.language = code;
+      }
     }
   }
 
@@ -341,25 +355,39 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   localize() {
+    if (!this.i18next) {
+      return NativePromise.resolve(null);
+    }
     if (this.i18next.initialized) {
       return NativePromise.resolve(this.i18next);
     }
     this.i18next.initialized = true;
+    let cleanupThis = this;
     return new NativePromise((resolve, reject) => {
       try {
-        this.i18next.init({
-          ...this.options.i18n,
+        if (!cleanupThis) {
+          return;
+        }
+        cleanupThis.i18next.init({
+          ...cleanupThis.options.i18n,
           ...{ compatibilityJSON: 'v3' }
         }, (err) => {
+          if (!cleanupThis) {
+            reject(new Error('Lost reference to `this` while initializing i18next.'));
+          }
           // Get language but remove any ;q=1 that might exist on it.
-          this.options.language = this.i18next.language.split(';')[0];
+          cleanupThis.options.language = cleanupThis.i18next.language.split(';')[0];
           if (err) {
+            cleanupThis = null;
             return reject(err);
           }
-          resolve(this.i18next);
+          const i18next = cleanupThis.i18next;
+          cleanupThis = null;
+          resolve(i18next);
         });
       }
       catch (err) {
+        cleanupThis = null;
         return reject(err);
       }
     });
@@ -987,7 +1015,15 @@ export default class Webform extends NestedDataComponent {
     });
   }
 
-  destroy(deleteFromGlobal = false) {
+  teardown() {
+    this.emit('formDelete', this.id);
+    delete Formio.forms[this.id];
+    delete this.executeShortcuts;
+    delete this.triggerSaveDraft;
+    super.teardown();
+  }
+
+  destroy(all = false) {
     this.off('submitButton');
     this.off('checkValidity');
     this.off('requestUrl');
@@ -995,12 +1031,7 @@ export default class Webform extends NestedDataComponent {
     this.off('deleteSubmission');
     this.off('refreshData');
 
-    if (deleteFromGlobal) {
-      this.emit('formDelete', this.id);
-      delete Formio.forms[this.id];
-    }
-
-    return super.destroy();
+    return super.destroy(all);
   }
 
   build(element) {
@@ -1039,7 +1070,7 @@ export default class Webform extends NestedDataComponent {
   }
 
   attach(element) {
-    this.element = element;
+    this.setElement(element);
     this.loadRefs(element, { webform: 'single' });
     const childPromise = this.attachComponents(this.refs.webform);
     this.addEventListener(document, 'keydown', this.executeShortcuts);

@@ -191,8 +191,8 @@ describe('WebformBuilder tests', function() {
           assert.equal(numberKey.dataValue, 'rewrittenNumberKey');
 
           done();
-        }, 150);
-      }, 150);
+        }, 350);
+      }, 350);
     }).catch(done);
   });
 

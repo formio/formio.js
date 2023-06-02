@@ -68,8 +68,16 @@ export default class PDF extends Webform {
     return this.builderMode ? NativePromise.resolve() : super.redraw();
   }
 
+  destroy(all = false) {
+    if (this.iframeElement) {
+      delete this.iframeElement.formioComponent;
+      this.iframeElement.formioComponent = null;
+    }
+    super.destroy(all);
+  }
+
   rebuild() {
-    if (this.builderMode && this.component.components) {
+    if (this.attached && this.builderMode && this.component.components) {
       this.destroyComponents();
       this.addComponents();
       return NativePromise.resolve();
