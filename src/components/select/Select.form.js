@@ -17,9 +17,5 @@ export default function(...extend) {
       key: 'validation',
       components: SelectEditValidation
     },
-    {
-      key: 'addons',
-      ignore: true
-    },
   ], ...extend);
 }

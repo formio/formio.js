@@ -1432,7 +1432,7 @@ export default class Component extends Element {
    * @return {*}
    */
   itemValue(data, forceUseValue = false) {
-    if (_.isObject(data)) {
+    if (_.isObject(data) && !_.isArray(data)) {
       if (this.valueProperty) {
         return _.get(data, this.valueProperty);
       }
@@ -2040,8 +2040,12 @@ export default class Component extends Element {
     messages = _.uniqBy(messages, message => message.message);
 
     if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, messages.map((message) =>
-        this.renderTemplate('message', message)
+      this.setContent(this.refs.messageContainer, messages.map((message) => {
+        if (message.message && typeof message.message === 'string') {
+          message.message = message.message.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+        }
+        return this.renderTemplate('message', message);
+      }
       ).join(''));
     }
   }
@@ -2346,7 +2350,7 @@ export default class Component extends Element {
    *
    */
   hasValue(data) {
-    return _.has(data || this.data, this.key);
+    return !_.isUndefined(_.get(data || this.data, this.key));
   }
 
   /**
@@ -2751,6 +2755,10 @@ export default class Component extends Element {
 
   /* eslint-disable max-statements */
   calculateComponentValue(data, flags, row) {
+    // Skip value calculation for the component if we don't have entire form data set
+    if (_.isUndefined(_.get(this, 'root.data'))) {
+      return false;
+    }
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
     const { clearOnHide } = this.component;

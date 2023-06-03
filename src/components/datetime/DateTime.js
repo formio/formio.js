@@ -47,7 +47,7 @@ export default class DateTimeComponent extends Input {
       title: 'Date / Time',
       group: 'advanced',
       icon: 'calendar',
-      documentation: '/userguide/forms/form-components#date-time',
+      documentation: '/userguide/form-building/advanced-components#date-and-time',
       weight: 40,
       schema: DateTimeComponent.schema()
     };

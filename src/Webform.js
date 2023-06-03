@@ -20,9 +20,6 @@ import {
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
-// Set the templates.
-Formio.Templates = Templates;
-
 // Initialize the available forms.
 Formio.forms = {};
 
@@ -307,7 +304,7 @@ export default class Webform extends NestedDataComponent {
         if (err) {
           return;
         }
-        this.redraw();
+        this.rebuild();
         this.emit('languageChanged');
       });
     }
@@ -1194,6 +1191,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     errors = errors.concat(this.customErrors);
+    errors = errors.concat(this.serverErrors || []);
 
     if (!errors.length) {
       this.setAlert(false);
@@ -1344,7 +1342,13 @@ export default class Webform extends NestedDataComponent {
       return false;
     }
 
-    const errors = this.showErrors(error, true);
+    let errors;
+    if (this.submitted) {
+      errors = this.showErrors();
+    }
+    else {
+      errors = this.showErrors(error, true);
+    }
     if (this.root && this.root.alert) {
       this.scrollIntoView(this.root.alert);
     }
@@ -1554,6 +1558,9 @@ export default class Webform extends NestedDataComponent {
         err.fromServer = true;
         return err;
       });
+    }
+    else if (typeof error === 'string') {
+      this.serverErrors = [{ fromServer: true, level: 'error', message: error }];
     }
   }
 

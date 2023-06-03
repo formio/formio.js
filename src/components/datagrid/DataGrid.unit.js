@@ -14,6 +14,7 @@ import {
   comp5,
   comp6,
   comp7,
+  comp8,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
@@ -434,6 +435,18 @@ describe('DataGrid Panels', () => {
         idArr[i] = row.element.component.components[0].id;
       });
       assert.equal(idArr[0] !== idArr[1], true);
+    });
+  });
+
+  it('Should hide label in header for Button component when hideLabel is true.', () => {
+    const formElement = document.createElement('div');
+    return Formio.createForm(formElement, {
+      display: 'form',
+      components: [comp8]
+    })
+    .then(() => {
+      assert.equal(formElement.getElementsByTagName('th')[0].textContent.trim(), '', 'Should hide a label');
+      assert.equal(formElement.getElementsByTagName('th')[1].textContent.trim(), 'Text Field', 'Should show a label');
     });
   });
 });

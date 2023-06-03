@@ -20,7 +20,7 @@ export default class CheckBoxComponent extends Field {
       title: 'Checkbox',
       group: 'basic',
       icon: 'check-square',
-      documentation: '/userguide/forms/form-components#check-box',
+      documentation: '/userguide/form-building/form-components#check-box',
       weight: 50,
       schema: CheckBoxComponent.schema()
     };
@@ -196,6 +196,7 @@ export default class CheckBoxComponent extends Field {
       this.input.checked = 0;
       this.input.value = 0;
       this.dataValue = '';
+      this.updateOnChange(flags, true);
     }
 
     const changed = super.updateValue(value, flags);

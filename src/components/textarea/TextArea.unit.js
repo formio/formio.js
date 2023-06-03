@@ -429,5 +429,51 @@ describe('TextArea Component', () => {
         }, 300);
       }).catch(done);
     });
+
+    it('Should not autofocus until the editor is ready', (done) => {
+      const element = document.createElement('div');
+      const testComponents = [
+        {
+          type: 'textarea',
+          autofocus: true,
+          editor: 'ckeditor',
+          key: 'textArea',
+          label: 'Text Area',
+          input: true,
+        }
+      ];
+      const testForm = { ...formWithCKEditor, components: testComponents };
+
+      Formio.createForm(element, testForm).then(form => {
+          const textArea = form.getComponent('textArea');
+          // since prior to this fix the focus function will throw, we'll make sure it doesn't
+          expect(textArea.focus.bind(textArea)).to.not.throw();
+
+          done();
+      }).catch(done);
+    });
+
+    it('Should not autofocus if the form is readOnly', (done) => {
+      const element = document.createElement('div');
+      const testComponents = [
+        {
+          type: 'textarea',
+          autofocus: true,
+          editor: 'ckeditor',
+          key: 'textArea',
+          label: 'Text Area',
+          input: true,
+        }
+      ];
+      const testForm = { ...formWithCKEditor, components: testComponents };
+
+      Formio.createForm(element, testForm, { readOnly: true }).then(form => {
+          const textArea = form.getComponent('textArea');
+          // since prior to this fix the focus function will throw if readOnly, we'll make sure it doesn't
+          expect(textArea.focus.bind(textArea)).to.not.throw();
+
+          done();
+      }).catch(done);
+    });
   });
 });

@@ -34,7 +34,7 @@ export default class DayComponent extends Field {
       title: 'Day',
       group: 'advanced',
       icon: 'calendar',
-      documentation: '/userguide/forms/form-components#day',
+      documentation: '/userguide/form-building/advanced-components#day',
       weight: 50,
       schema: DayComponent.schema()
     };

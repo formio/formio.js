@@ -45,7 +45,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       title: 'Edit Grid',
       icon: 'tasks',
       group: 'data',
-      documentation: '/userguide/forms/data-components#edit-grid',
+      documentation: '/userguide/form-building/data-components#edit-grid',
       weight: 30,
       schema: EditGridComponent.schema(),
     };
@@ -176,7 +176,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   /**
    * Returns true if the component has nested components which don't trigger changes on the root level
-   */
+   *///
   get hasScopedChildren() {
     return !this.inlineEditMode;
   }
@@ -933,6 +933,9 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     if (this.saveEditMode) {
       const dataValue = this.dataValue;
+      if (this.root?.focusedComponent?.component.typeChangeEnabled) {
+        this.root.focusedComponent = null;
+      }
       switch (editRow.state) {
         case EditRowState.New: {
           const newIndex = dataValue.length;

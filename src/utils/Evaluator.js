@@ -22,6 +22,9 @@ const Evaluator = {
   },
   template(template, hash) {
     hash = hash || stringHash(template);
+    if (Evaluator.cache[hash]) {
+      return Evaluator.cache[hash];
+    }
     try {
       // Ensure we handle copied templates from the ejs files.
       template = template.replace(/ctx\./g, '');
@@ -45,13 +48,8 @@ const Evaluator = {
     }
 
     rawTemplate = String(rawTemplate);
-
-    const hash = stringHash(rawTemplate);
     let template;
-    if (Evaluator.cache[hash]) {
-      template = Evaluator.cache[hash];
-    }
-    else if (Evaluator.noeval || options.noeval) {
+    if (Evaluator.noeval || options.noeval) {
       // No cached template methods available. Use poor-mans interpolate without eval.
       return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => {
         // Allow for conditional values.
@@ -72,7 +70,7 @@ const Evaluator = {
       });
     }
     else {
-      template = Evaluator.template(rawTemplate, hash);
+      template = Evaluator.template(rawTemplate);
     }
     if (typeof template === 'function') {
       try {
