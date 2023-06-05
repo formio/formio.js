@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "5.0.0-rc.4",
+  "version": "5.0.0-rc.5",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "index.js",
   "types": "index.d.ts",
@@ -36,7 +36,7 @@
     "lint": "gulp eslint",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "npm run test:unit",
-    "test:unit": "npm run lib && npm run templates && mocha 'lib/**/*.unit.js'",
+    "test:unit": "npm run lib && npm run templates && mocha 'src/**/*.unit.js'",
     "test:updateRenders": "npm run lib && TZ=UTC node --require jsdom-global/register test/updateRenders.js",
     "test:e2e": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --verbose --single-run"
   },
