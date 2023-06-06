@@ -30,7 +30,7 @@ export default class Form extends Element {
 
     super(options);
 
-    if (this.options.useSessionToken) {
+    if (this.options.useSessionToken && !this.options.server) {
       Formio.useSessionToken(this.options);
     }
 
