@@ -3001,6 +3001,15 @@ describe('Webform tests', function() {
     });
   });
 
+  it('Should not setup session token on server environment', done => {
+    Formio.createForm({ components: [] }, { useSessionToken: true, server: true })
+      .then(() => {
+        expect(localStorage.getItem('useSessionToken')).to.be.null;
+        done();
+      })
+      .catch((err) => done(err));
+  });
+
   it('Should set different ids for components inside different Table rows', (done) => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { language: 'en', pdf: true });
