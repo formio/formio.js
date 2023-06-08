@@ -25,14 +25,10 @@
     "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
   },
   "include": [
-    "src/templates/ejs.d.ts",
-    "src/*.js",
-    "src/*.ejs",
-    "src/**/*.js",
-    "src/**/*.ejs"
+    "src/**/*.js"
   ],
   "exclude": [
-    "node_modules/**/*",
+    "node_modules",
     "test",
     "dist",
     "lib",

@@ -89,31 +89,11 @@ gulp.task('icons', () => gulp.src('./node_modules/bootstrap-icons/**/*.*').pipe(
 gulp.task('bootstrap', () => gulp.src('./node_modules/bootstrap/dist/**/*.*').pipe(gulp.dest('./app/bootstrap')));
 gulp.task('bootswatch', () => gulp.src('./node_modules/bootswatch/**/*.*').pipe(gulp.dest('./app/bootswatch')));
 
-// Copy the version and dependencies into the distribution package.json file.
-gulp.task('package-version', function() {
-  const pkg = require('./package.json');
-  return gulp.src([
-    'src/package.json'
-  ])
-    .pipe(replace(/"version": ""/, `"version": "${pkg.version}"`))
-    .pipe(replace(/"dependencies": {}/, `"dependencies": ${JSON.stringify(pkg.dependencies)}`))
-    .pipe(gulp.dest('lib'));
-});
-
-// Copy over the types folder and index.d.ts into the lib folder.
-gulp.task('types-index', () => gulp.src(['index.d.ts']).pipe(gulp.dest('lib')));
-gulp.task('types-folder', () => gulp.src(['types/**/*.*']).pipe(gulp.dest('lib/types')));
-gulp.task('types', gulp.parallel('types-index', 'types-folder'));
-
-// Copy over the readme and changelog files
-gulp.task('readme', () => gulp.src(['README.md', 'Changelog.md']).pipe(gulp.dest('lib')));
-
 // Copy over the moment-timezones to the resource folder.
 gulp.task('timezones', () => gulp.src('./node_modules/moment-timezone/data/packed/latest.json').pipe(gulp.dest('./resources')));
 
 // Create a new build.
 gulp.task('build', gulp.series(
-  'package-version',
   gulp.parallel(
     'timezones',
     'icons',
@@ -125,7 +105,5 @@ gulp.task('build', gulp.series(
     'styles-form',
     'styles-builder',
     'styles-full'
-  ),
-  'types',
-  'readme'
+  )
 ));

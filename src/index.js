@@ -1,3 +1,13 @@
 import FormBuilder from './FormBuilder';
-export { Builders, Components, Displays, Providers, Rules, Widgets, Templates, Utils, Form, Conjunctions, Operators, QuickRules, Transformers, ValueSources, Formio } from './formio.form';
-export { FormBuilder };
+import Builders from './builders/Builders';
+import { Formio, useModule } from './formio.form';
+Formio.Builders = Builders;
+Formio.use = useModule((key, mod) => {
+    if (key === 'builders') {
+        Formio.Builders.addBuilders(mod.builders);
+        return true;
+    }
+    return false;
+});
+export * from './formio.form';
+export { FormBuilder, Builders };
