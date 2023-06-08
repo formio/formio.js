@@ -20,8 +20,7 @@ const url = require('./Url');
 const minYear = require('./MinYear');
 const maxYear = require('./MaxYear');
 const time = require('./Time');
-
-module.exports = {
+export default {
   custom,
   date,
   day,
