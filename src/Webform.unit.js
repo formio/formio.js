@@ -48,7 +48,7 @@ import translationTestForm from '../test/forms/translationTestForm';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
 import { nestedFormInWizard } from '../test/fixtures';
 import NativePromise from 'native-promise-only';
-import { fastCloneDeep } from '../lib/utils/utils';
+import { fastCloneDeep } from './utils/utils';
 import dataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import checkBlurFocusEventForm from '../test/forms/checkBlurFocusEventForm';
 import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';

@@ -2,9 +2,9 @@ import { escapeRegExCharacters } from '../../utils/utils';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
-const Rule = require('./Rule');
+import Rule from './Rule';
 
-module.exports = class Unique extends Rule {
+export default class Unique extends Rule {
   defaultMessage = '{{field}} must be unique';
 
   check(value) {
@@ -69,4 +69,4 @@ module.exports = class Unique extends Rule {
       });
     }).catch(() => false);
   }
-};
+}

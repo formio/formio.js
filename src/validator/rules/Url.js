@@ -1,6 +1,6 @@
-const Rule = require('./Rule');
+import Rule from './Rule';
 
-module.exports = class Url extends Rule {
+export default class Url extends Rule {
   defaultMessage = '{{field}} must be a valid url.';
 
   check(value) {
@@ -14,4 +14,4 @@ module.exports = class Url extends Rule {
     // Allow urls to be valid if the component is pristine and no value is provided.
     return !value || (re.test(value) && !emailRe.test(value));
   }
-};
+}

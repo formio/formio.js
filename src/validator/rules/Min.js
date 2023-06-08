@@ -1,6 +1,6 @@
-const Rule = require('./Rule');
+import Rule from './Rule';
 
-module.exports = class Min extends Rule {
+export default class Min extends Rule {
   defaultMessage = '{{field}} cannot be less than {{settings.limit}}.';
 
   check(value) {
@@ -13,4 +13,4 @@ module.exports = class Min extends Rule {
 
     return parsedValue >= min;
   }
-};
+}
