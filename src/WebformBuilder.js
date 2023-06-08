@@ -10,13 +10,8 @@ import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import autoScroll from 'dom-autoscroller';
 import Templates from './templates/Templates';
-require('./components/builder');
-
-let dragula;
-if (typeof window !== 'undefined') {
-  // Import from "dist" because it would require and "global" would not be defined in Angular apps.
-  dragula = require('dragula/dist/dragula');
-}
+import './components/builder';
+import dragula from 'dragula';
 
 export default class WebformBuilder extends Component {
   // eslint-disable-next-line max-statements
