@@ -1,12 +1,7 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
-
-let dragula;
-if (typeof window !== 'undefined') {
-  // Import from "dist" because it would require and "global" would not be defined in Angular apps.
-  dragula = require('dragula/dist/dragula');
-}
+import dragula from 'dragula';
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
