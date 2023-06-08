@@ -7,8 +7,6 @@ const replace = require('gulp-replace');
 const rename = require('gulp-rename');
 const cleanCSS = require('gulp-clean-css');
 const eslint = require('gulp-eslint');
-const insert = require('gulp-insert');
-const template = require('gulp-template');
 const clean = require('gulp-clean');
 
 // Clean lib folder.
@@ -27,25 +25,6 @@ gulp.task('eslint', function eslintTask() {
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
 });
-
-// Compile all *.ejs files to pre-compiled templates and append *.js to the filename.
-gulp.task('templates', () =>
-  gulp.src('./src/**/*.ejs')
-    .pipe(template.precompile({
-      evaluate: /\{%([\s\S]+?)%\}/g,
-      interpolate: /\{\{([\s\S]+?)\}\}/g,
-      escape: /\{\{\{([\s\S]+?)\}\}\}/g,
-      variable: 'ctx'
-    }))
-    .pipe(insert.prepend('Object.defineProperty(exports, "__esModule", {\n' +
-      '  value: true\n' +
-      '});\n' +
-      'exports.default='))
-    .pipe(rename({
-      extname: '.ejs.js'
-    }))
-    .pipe(gulp.dest('lib'))
-);
 
 // Move font-awesome fonts into dist folder.
 gulp.task('builder-fonts', function builderFonts() {
@@ -121,9 +100,6 @@ gulp.task('package-version', function() {
     .pipe(gulp.dest('lib'));
 });
 
-// Copy over the dist folder into the lib folder.
-gulp.task('dist', () => gulp.src(['dist/**/*.*']).pipe(gulp.dest('lib/dist')));
-
 // Copy over the types folder and index.d.ts into the lib folder.
 gulp.task('types-index', () => gulp.src(['index.d.ts']).pipe(gulp.dest('lib')));
 gulp.task('types-folder', () => gulp.src(['types/**/*.*']).pipe(gulp.dest('lib/types')));
@@ -137,7 +113,6 @@ gulp.task('timezones', () => gulp.src('./node_modules/moment-timezone/data/packe
 
 // Create a new build.
 gulp.task('build', gulp.series(
-  'templates',
   'package-version',
   gulp.parallel(
     'timezones',
@@ -151,7 +126,6 @@ gulp.task('build', gulp.series(
     'styles-builder',
     'styles-full'
   ),
-  'dist',
   'types',
   'readme'
 ));

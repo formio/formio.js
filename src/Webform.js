@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import compareVersions from 'compare-versions';
+import { compareVersions } from 'compare-versions';
 import EventEmitter from './EventEmitter';
 import i18nDefaults from './i18n';
 import { Formio } from './Formio';
