@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED: 4.15.0-rc.26]
+### Fixed
+ - FIO-6895: fixed interpolation for falsy values
+
 ## 4.15.0-rc.25
 ### Changed
  - FIO-6156 Updated help links according to the new documentation structure
