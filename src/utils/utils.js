@@ -1081,6 +1081,9 @@ export function bootstrapVersion(options) {
   if ((typeof $ === 'function') && (typeof $().collapse === 'function')) {
     return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);
   }
+  if (window.bootstrap && window.bootstrap.Collapse) {
+    return parseInt(window.bootstrap.Collapse.VERSION.split('.')[0], 10);
+  }
   return 0;
 }
 

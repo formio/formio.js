@@ -4,7 +4,7 @@ import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import Alert from '../alert/Alert';
 import { fastCloneDeep, Evaluator, getArrayFromComponentPath, eachComponent } from '../../utils/utils';
-import templates from './templates';
+import { editgrid as templates } from '@formio/bootstrap/components';
 
 const EditRowState = {
   New: 'new',

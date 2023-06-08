@@ -14,8 +14,9 @@
               "-t",
               "20000",
               "--colors",
-              "${workspaceFolder}/lib/**/*.unit.js",
-
+              "${workspaceFolder}/src/**/*.unit.js",
+              "-t",
+              "30000"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "skipFiles": [
