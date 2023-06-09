@@ -8,7 +8,6 @@ import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFr
 import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
-
 require('./components/builder');
 
 let Templates = Formio.Templates;
@@ -1706,25 +1705,6 @@ export default class WebformBuilder extends Component {
 
           this.emitSaveComponentEvent(schema, schema, parent.formioComponent.component, path, (index + 1), true, schema);
         }
-        if (component.type==='datagrid' && component.enableRowGroups) {
-          let item;
-           if (component.defaultValue.length===1) {
-            item = component.defaultValue[0];
-            component.defaultValue.pop();
-           }
-          const rowGroups=component.rowGroups;
-          let sum =0;
-          rowGroups.map((row)=>{
-          const  noofrowingroup=row.numberOfRows;
-           sum +=noofrowingroup;
-          for (let j=0; j<noofrowingroup; j++) {
-               if (component.defaultValue.length<sum) {
-                component.defaultValue.push({ ...item });
-               }
-              }
-          });
-            component.totalRows=sum ;
-          }
         this.emit('change', this.form);
       }
     }
