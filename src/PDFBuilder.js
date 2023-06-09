@@ -249,7 +249,7 @@ export default class PDFBuilder extends WebformBuilder {
 
         _.set(this.webform.form, 'settings.pdf', {
           id: result.data.file,
-          src: `${result.data.filesServer}${result.data.path}`,
+          src: result.data.filesServer ? `${result.data.filesServer}${result.data.path}` : `${new URL(this.projectUrl).origin}/pdf-proxy${result.data.path}`,
           nonFillableConversionUsed: autoConversionComponentsAssigned && result.data.formfields.nonFillableConversionUsed
         });
 
