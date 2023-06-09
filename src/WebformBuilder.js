@@ -1714,11 +1714,9 @@ export default class WebformBuilder extends Component {
            }
           const rowGroups=component.rowGroups;
           let sum =0;
-      
           rowGroups.map((row)=>{
           const  noofrowingroup=row.numberOfRows;
            sum +=noofrowingroup;
-      
           for (let j=0; j<noofrowingroup; j++) {
                if (component.defaultValue.length<sum) {
                 component.defaultValue.push({ ...item });
