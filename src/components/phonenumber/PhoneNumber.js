@@ -4,7 +4,7 @@ export default class PhoneNumberComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
       type: 'phoneNumber',
-      label: '',
+      label: 'Phone Number',
       key: 'phoneNumber',
       inputType: 'tel',
       inputMask: '(999) 999-9999',

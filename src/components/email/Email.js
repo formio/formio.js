@@ -4,7 +4,7 @@ export default class EmailComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
       type: 'email',
-      label: '',
+      label: 'Email',
       key: 'email',
       inputType: 'email',
       kickbox: {

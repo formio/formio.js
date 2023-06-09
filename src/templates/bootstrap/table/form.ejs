@@ -5,7 +5,7 @@
     {{ ctx.component.condensed ? 'table-sm' : ''}}
   ">
   {% if (!ctx.component.hideLabel) { %}
-  {{ ctx.t(ctx.component.label, { _userInput: true }) }}
+  <div style="font-weight: bold;font-size: 18px;">{{ ctx.t(ctx.component.label, { _userInput: true }) }}</div>
   {% } %}
   {% if (ctx.component.header && ctx.component.header.length > 0) { %}
   <thead>

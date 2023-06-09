@@ -202,7 +202,7 @@ export default [
     label: 'Save As',
     dataSrc: 'values',
     tooltip: 'This setting determines how the value should be entered and stored in the database.',
-    clearOnHide: true,
+    clearOnHide: false,
     data: {
       values: [
         { label: 'String', value: 'string' },

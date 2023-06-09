@@ -962,7 +962,6 @@ export default class Webform extends NestedDataComponent {
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
     if (
       !this.form || !this.form.controller
-      || ((!this.visible || this.component.hidden) && this.component.clearOnHide && !this.rootPristine)
     ) {
       return false;
     }

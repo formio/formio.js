@@ -11,10 +11,10 @@ if (typeof window !== 'undefined') {
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
     return NestedArrayComponent.schema({
-      label: '',
+      label: 'Data Grid',
       key: 'dataGrid',
       type: 'datagrid',
-      clearOnHide: true,
+      clearOnHide: false,
       input: true,
       tree: true,
       components: []
@@ -51,6 +51,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.visibleColumns = {};
     this.prevHasAddButton = this.hasAddButton();
     this.checkColumns();
+    this.initialHide = this.component.hideRowGroupsInitially;
   }
 
   get dataValue() {
@@ -400,9 +401,13 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (this.hasRowGroups()) {
       this.refs.chunks = this.getRowChunks(this.getGroupSizes(), this.refs[`${this.datagridKey}-row`]);
       this.refs[`${this.datagridKey}-group-header`].forEach((header, index) => {
-        this.toggleGroup(header, index);
+        if (this.initialHide) {
+          this.toggleGroup(header, index);
+        }
+
         this.addEventListener(header, 'click', () => this.toggleGroup(header, index));
       });
+      this.initialHide = false;
     }
 
     const columns = this.getColumns();

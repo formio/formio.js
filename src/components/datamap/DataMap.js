@@ -10,7 +10,7 @@ export default class DataMapComponent extends DataGridComponent {
       label: '',
       key: 'dataMap',
       type: 'datamap',
-      clearOnHide: true,
+      clearOnHide: false,
       addAnother: 'Add Another',
       disableAddingRemovingRows: false,
       keyBeforeValue: true,
@@ -73,8 +73,7 @@ export default class DataMapComponent extends DataGridComponent {
 
   get dataValue() {
     if (
-      !this.key ||
-      (!this.visible && this.component.clearOnHide)
+      !this.key
     ) {
       return this.emptyValue;
     }

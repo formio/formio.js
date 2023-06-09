@@ -11,7 +11,7 @@ export default class TreeComponent extends NestedDataComponent {
       label: '',
       key: 'tree',
       type: 'tree',
-      clearOnHide: true,
+      clearOnHide: false,
       input: true,
       tree: true,
       components: [],
