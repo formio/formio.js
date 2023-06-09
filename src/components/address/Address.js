@@ -20,7 +20,7 @@ export default class AddressComponent extends ContainerComponent {
   static schema(...extend) {
     return ContainerComponent.schema({
       type: 'address',
-      label: 'Address',
+      label: '',
       key: 'address',
       switchToManualModeLabel: 'Can\'t find address? Switch to manual mode.',
       provider: '',

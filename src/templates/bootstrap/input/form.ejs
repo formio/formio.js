@@ -23,7 +23,10 @@
       aria-labelledby="l-{{ctx.instance.id}}-{{ctx.component.key}} {% if (ctx.component.description) { %}d-{{ctx.instance.id}}-{{ctx.component.key}}{% } %}"
       aria-required="{{ctx.input.ref === 'input' || !ctx.input.ref ? ctx.component.validate.required : ctx.component.fields[ctx.input.ref].required}}"
     >{{ctx.input.content}}</{{ctx.input.type}}>
-    {% if (ctx.hasValueMaskInput) { %}
+    <i id="voice-check-{{ctx.instance.path}}" aria-hidden="true" class="fa fa-microphone fa-beat" style="margin-right:0.1875rem;
+    margin-top:-2.2625rem;position:relative;
+    float:right;z-index:10;display:none;height:2.125rem;width:1.5625rem;
+    background-color: white;align-items:center;justify-content:center;color:#0000008a;cursor:pointer;"></i>    {% if (ctx.hasValueMaskInput) { %}
       <input ref="valueMaskInput" />
     {% } %}
 {% } %}

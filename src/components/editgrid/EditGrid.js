@@ -19,9 +19,9 @@ export default class EditGridComponent extends NestedArrayComponent {
   static schema(...extend) {
     return NestedArrayComponent.schema({
       type: 'editgrid',
-      label: 'Edit Grid',
+      label: '',
       key: 'editGrid',
-      clearOnHide: true,
+      clearOnHide: false,
       input: true,
       tree: true,
       removeRow: 'Cancel',

@@ -9,6 +9,7 @@ export default [
     input: true,
     key: 'delimeter',
     label: 'Delimiter',
+    builderEdit:true,
     tooltip: 'What is used to separate the tags.</a>'
   },
   {
@@ -17,8 +18,18 @@ export default [
     input: true,
     key: 'maxTags',
     label: 'Max Tags',
+    builderEdit:true,
     defaultValue: 0,
     tooltip: 'The maximum amount of tags that can be added. 0 for infinity.'
+  },
+  {
+    type: 'checkbox',
+    label: 'Allow Duplicate',
+    key: 'allowDuplicate',
+    tooltip: 'Check if you want to allow duplicate data',
+    weight: 405,
+    input: true,
+    clearOnHide: false,
   },
   // {
   //   weight: 24,

@@ -37,6 +37,7 @@ export default [
     key: 'numRows',
     input: true,
     weight: 1,
+    builderEdit:true,
     placeholder: 'Number of Rows',
     tooltip: 'Enter the number or rows that should be displayed by this table.'
   },
@@ -46,6 +47,7 @@ export default [
     key: 'numCols',
     input: true,
     weight: 2,
+    builderEdit:true,
     placeholder: 'Number of Columns',
     tooltip: 'Enter the number or columns that should be displayed by this table.'
   },

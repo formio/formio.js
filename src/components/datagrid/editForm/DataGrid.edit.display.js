@@ -80,6 +80,7 @@ export default [
     tooltip: 'Set the text of the Add Another button.',
     placeholder: 'Add Another',
     weight: 410,
+    builderEdit:true,
     input: true,
     customConditional(context) {
       return !context.data.disableAddingRows;
@@ -120,6 +121,13 @@ export default [
     input: true
   },
   {
+    key: 'hideRowGroupsInitially',
+    type: 'checkbox',
+    label: 'Hide Row Groups Initially',
+    weight: 441,
+    input: true
+  },
+  {
     label: 'Groups',
     disableAddingRemovingRows: false,
     disableAddingRows: false,
@@ -145,6 +153,7 @@ export default [
         alwaysEnabled: false,
         type: 'textfield',
         input: true,
+        builderEdit:true,
         key: 'label',
         widget: {
           type: ''
@@ -158,11 +167,12 @@ export default [
         alwaysEnabled: false,
         type: 'number',
         input: true,
+        builderEdit:true,
         key: 'numberOfRows',
         row: '0-1'
       }
     ],
-    weight: 441,
+    weight: 442,
     conditional: { json: { var: 'data.enableRowGroups' } }
   },
   {

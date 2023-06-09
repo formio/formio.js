@@ -7,7 +7,7 @@ export default class SignatureComponent extends Input {
   static schema(...extend) {
     return Input.schema({
       type: 'signature',
-      label: 'Signature',
+      label: '',
       key: 'signature',
       footer: 'Sign above',
       width: '100%',

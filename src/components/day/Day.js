@@ -8,7 +8,7 @@ export default class DayComponent extends Field {
   static schema(...extend) {
     return Field.schema({
       type: 'day',
-      label: 'Day',
+      label: '',
       key: 'day',
       fields: {
         day: {

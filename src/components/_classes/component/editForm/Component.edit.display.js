@@ -9,6 +9,7 @@ export default [
     input: true,
     key: 'label',
     label: 'Label',
+    builderEdit:true,
     placeholder: 'Field Label',
     tooltip: 'The label for this field that will appear next to it.',
     validate: {
@@ -87,6 +88,7 @@ export default [
     input: true,
     key: 'placeholder',
     label: 'Placeholder',
+    builderEdit:true,
     placeholder: 'Placeholder',
     tooltip: 'The placeholder text that will appear when this field is empty.'
   },

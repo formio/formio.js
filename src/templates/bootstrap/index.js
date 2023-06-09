@@ -63,6 +63,7 @@ import cssClasses from './cssClasses';
 import errorsList from './errorsList';
 import alert from './alert';
 import builderSidebarTab from './builderSidebarTab';
+import voiceModal from './voiceModal';
 
 export default {
   transform(type, text) {
@@ -130,6 +131,7 @@ export default {
   tab,
   table,
   tree,
+  voiceModal,
   ...treePartials,
   webform,
   well,

@@ -313,23 +313,122 @@ export default class Input extends Multivalue {
     }
     this.refs.input = [];
   }
+  showModal = function(event) {
+    try {
+      event.stopImmediatePropagation();
+      let content='',contentUpdated=this.getValue();
+      const dialog = this.ce('div');
+      this.setContent(dialog, this.renderTemplate('voiceModal'));
 
+      // Add refs to dialog, not "this".
+      dialog.refs = {};
+      this.loadRefs.call(dialog, dialog, {
+        modalMain: 'single',
+        modalSub: 'single',
+        modalOk: 'single',
+        modalCancel: 'single',
+        modalTranscriptContent: 'single',
+      });
+      document.body.appendChild(dialog);
+      dialog.refs.modalMain.style.display = 'flex';
+
+      const micIcon = document.getElementById(`voice-check-${this.path}`);
+      const el1 = document.getElementsByName(this.info?.attr?.name);
+      const start = el1[0]?.selectionStart;
+      micIcon.style.color = '#388e3c';
+      dialog.refs.modalTranscriptContent.value ='';
+      const SpeechRecognition = window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.start();
+      recognition.onresult = function(event) {
+        const current = event.resultIndex;
+        const transcript = event.results[current][0].transcript;
+        // let content = this.getValue();
+        // if (content === null && this.component.type === 'number') {
+        //   content = '';
+        // }
+        content += transcript;
+        micIcon.style.display = 'none';
+        recognition.stop();
+        console.log('content=--', content);
+        dialog.refs.modalTranscriptContent.value =content;
+      }.bind(this);
+      dialog.refs.modalOk.addEventListener('click', () => {
+        dialog.refs.modalMain.style.display = 'none';
+        // if (this.component.type === 'number') {
+        //   contentUpdated += dialog.refs.modalTranscriptContent.value;
+        //   contentUpdated = Number(contentUpdated);
+        // }
+        // else {
+        contentUpdated= contentUpdated.substring(0, start) + dialog.refs.modalTranscriptContent.value + contentUpdated.substr(start);
+        // }
+        this.removeChildFrom(dialog, document.body);
+        this.updateValue(contentUpdated, { modified: true });
+        this.redraw();
+        return;
+      });
+
+      dialog.refs.modalCancel.addEventListener('click', () => {
+        dialog.refs.modalMain.style.display = 'none';
+        content='';
+        micIcon.style.color ='rgba(0, 0, 0, 0.54)';
+        micIcon.style.display = 'none';
+        recognition.stop();
+        this.removeChildFrom(dialog, document.body);
+        return;
+      });
+    }
+    catch (error) {
+      console.log('Error occurred here',error);
+    }
+  }.bind(this)
+  // eslint-disable-next-line no-unused-vars
+  onfocusEvent(event, element) {
+    // if (!this.builderMode && !this.component.builderEdit) {
+    //   try {
+    //     if (this.component.type==='textfield' || this.component.type==='textarea') {
+    //       const currentElemId=`voice-check-${this.path}`;
+    //       const elem=document.getElementById(currentElemId);
+    //       const elemFocus = JSON.parse(sessionStorage.getItem('focusedElement'));
+    //       if (elemFocus) {
+    //         if (currentElemId!==elemFocus.elemIdIndexDB) {
+    //           try {
+    //             const elementL=document.getElementById(elemFocus.elemIdIndexDB);
+    //             elementL.style.display='none';
+    //             sessionStorage.removeItem('focusedElement');
+    //           }
+    //           catch (error) {
+    //             console.log('Error here:',error);
+    //           }
+    //         }
+    //       }
+    //       const compInSession = { elemIdIndexDB:`voice-check-${this.path}`, componentType: this.component.type };
+    //       sessionStorage.setItem('focusedElement', JSON.stringify(compInSession));
+    //       elem.style.display='grid';
+    //       elem.onclick=this.showModal.bind(this);
+    //     }
+    //   }
+    //   catch (error) {
+    //     console.log('Error occurred here', error);
+    //   }
+    // }
+    if (this.root.focusedComponent !== this) {
+      if (this.root.pendingBlur) {
+        this.root.pendingBlur();
+      }
+
+      this.root.focusedComponent = this;
+
+      this.emit('focus', this);
+    }
+    else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+      this.root.pendingBlur.cancel();
+      this.root.pendingBlur = null;
+    }
+  }
   addFocusBlurEvents(element) {
-    this.addEventListener(element, 'focus', () => {
-      if (this.root.focusedComponent !== this) {
-        if (this.root.pendingBlur) {
-          this.root.pendingBlur();
-        }
-
-        this.root.focusedComponent = this;
-
-        this.emit('focus', this);
-      }
-      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
-        this.root.pendingBlur.cancel();
-        this.root.pendingBlur = null;
-      }
-    });
+    this.addEventListener(element, 'focus', (event)=>this.onfocusEvent(event, element));
     this.addEventListener(element, 'blur', () => {
       this.root.pendingBlur = delay(() => {
         this.emit('blur', this);

@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 /* globals Quill, ClassicEditor, CKEDITOR */
 import { conformToMask } from '@formio/vanilla-text-mask';
 import NativePromise from 'native-promise-only';
@@ -8,7 +9,7 @@ import { GlobalFormio as Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import {
-  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent,
+  fastCloneDeep, boolValue, getComponentPath,
 } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
@@ -103,7 +104,7 @@ export default class Component extends Element {
       /**
        * If the component should be cleared when hidden.
        */
-      clearOnHide: true,
+      clearOnHide: false,
 
       /**
        * This will refresh this component options when this field changes.
@@ -446,7 +447,7 @@ export default class Component extends Element {
       if (this.allowData && this.key) {
         this.options.name += `[${this.key}]`;
         // If component is visible or not set to clear on hide, set the default value.
-        if (this.visible || !this.component.clearOnHide) {
+        if (this.visible ) {
           if (!this.hasValue()) {
             if (this.shouldAddDefaultValue) {
               this.dataValue = this.defaultValue;
@@ -2035,24 +2036,7 @@ export default class Component extends Element {
   }
 
   clearOnHide() {
-    // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (
-      // if change happens inside EditGrid's row, it doesn't trigger change on the root level, so rootPristine will be true
-      (!this.rootPristine || this.options.server || isInsideScopingComponent(this)) &&
-      this.component.clearOnHide !== false &&
-      !this.options.readOnly &&
-      !this.options.showHiddenFields
-    ) {
-      if (!this.visible) {
-        this.deleteValue();
-      }
-      else if (!this.hasValue() && this.shouldAddDefaultValue) {
-        // If shown, ensure the default is set.
-        this.setValue(this.defaultValue, {
-          noUpdateEvent: true
-        });
-      }
-    }
+
   }
 
   triggerRootChange(...args) {
@@ -2316,7 +2300,7 @@ export default class Component extends Element {
   get dataValue() {
     if (
       !this.key ||
-      (!this.visible && this.component.clearOnHide && !this.rootPristine)
+      (!this.visible && false && !this.rootPristine)
     ) {
       return this.emptyValue;
     }
@@ -2693,7 +2677,7 @@ export default class Component extends Element {
   calculateComponentValue(data, flags, row) {
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-    const { clearOnHide } = this.component;
+    const clearOnHide = false;
     const shouldBeCleared = !this.visible && clearOnHide;
     const allowOverride = _.get(this.component, 'allowCalculateOverride', false);
 

@@ -20,6 +20,7 @@ export default [
     weight: 80,
     key: 'decimalLimit',
     label: 'Decimal Places',
+    builderEdit:true,
     tooltip: 'The maximum number of decimal places.'
   },
   {

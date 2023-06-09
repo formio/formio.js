@@ -5,7 +5,7 @@ export default class PasswordComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
       type: 'password',
-      label: 'Password',
+      label: '',
       key: 'password',
       protected: true,
       tableView: false,

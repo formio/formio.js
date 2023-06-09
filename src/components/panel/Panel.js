@@ -1,11 +1,10 @@
 import NestedComponent from '../_classes/nested/NestedComponent';
-import { hasInvalidComponent } from '../../utils/utils';
 import FormComponent from '../form/Form';
 
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {
     return NestedComponent.schema({
-      label: 'Panel',
+      label: '',
       type: 'panel',
       key: 'panel',
       title: 'Panel',
@@ -41,11 +40,14 @@ export default class PanelComponent extends NestedComponent {
   constructor(...args) {
     super(...args);
     this.noField = true;
-    this.on('componentError', () => {
-      //change collapsed value only when the panel is collapsed to avoid additional redrawing that prevents validation messages
-      if (hasInvalidComponent(this) && this.collapsed) {
+    this.on('change',()=>{
+      if (this.options.flatten && this.collapsed) {
         this.collapsed = false;
       }
+    });
+    this.on('componentError', () => {
+
+      //change collapsed value only when the panel is collapsed to avoid additional redrawing that prevents validation messages
     });
   }
 
