@@ -17,6 +17,7 @@ import {
   getArrayFromComponentPath
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
+import { validate } from '@formio/core';
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -1501,7 +1502,7 @@ export default class Webform extends NestedDataComponent {
       submission.state = options.state || 'submitted';
 
       const isDraft = (submission.state === 'draft');
-      this.hook('beforeSubmit', { ...submission, component: options.component }, (err , data) => {
+      this.hook('beforeSubmit', { ...submission, component: options.component }, async(err , data) => {
         if (err) {
           return reject(err);
         }
@@ -1512,8 +1513,15 @@ export default class Webform extends NestedDataComponent {
           return reject('Invalid Submission');
         }
 
-        if (!isDraft && !this.checkValidity(submission.data, true)) {
-          return reject();
+        if (!isDraft) {
+          const errors = await validate(this.component.components, submission);
+          const interpolatedErrors = errors.map((error) => {
+            return { message: this.t(error.errorKeyOrMessage, { field: error.field, data: {} }) };
+          });
+          if (interpolatedErrors.length > 0) {
+            this.setComponentValidity(interpolatedErrors, true, false);
+            reject();
+          }
         }
 
         this.everyComponent((comp) => {
