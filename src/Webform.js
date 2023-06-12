@@ -1520,7 +1520,7 @@ export default class Webform extends NestedDataComponent {
           });
           if (interpolatedErrors.length > 0) {
             this.setComponentValidity(interpolatedErrors, true, false);
-            reject();
+            return reject();
           }
         }
 
