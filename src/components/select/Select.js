@@ -421,7 +421,7 @@ export default class SelectComponent extends ListComponent {
     }
 
     // Add the value options.
-    if (!fromSearch) {
+    if (!fromSearch || this.component.widget === 'html5') {
       this.addValueOptions(items);
     }
 
