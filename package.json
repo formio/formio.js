@@ -50,7 +50,7 @@
     "lint": "gulp eslint",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "npm run test:unit",
-    "test:unit": "npm run lib && mocha --require ts-node/register 'src/**/*.unit.js'",
+    "test:unit": "mocha --require ts-node/register 'src/**/*.unit.js'",
     "test:updateRenders": "npm run lib && TZ=UTC node --require jsdom-global/register test/updateRenders.js",
     "test:e2e": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --verbose --single-run"
   },

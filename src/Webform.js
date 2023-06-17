@@ -17,7 +17,7 @@ import {
   getArrayFromComponentPath
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
-import { validate } from '@formio/core';
+import { process, Utils } from '@formio/core';
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -1509,19 +1509,45 @@ export default class Webform extends NestedDataComponent {
 
         submission._vnote = data && data._vnote ? data._vnote : '';
 
-        if (!isDraft && !submission.data) {
-          return reject('Invalid Submission');
-        }
-
         if (!isDraft) {
-          const errors = await validate(this.component.components, submission);
-          const interpolatedErrors = errors.map((error) => {
-            return { message: this.t(error.errorKeyOrMessage, { field: error.field, data: {} }) };
-          });
-          if (interpolatedErrors.length > 0) {
-            this.setComponentValidity(interpolatedErrors, true, false);
-            return reject();
+          if (!submission.data) {
+            return reject('Invalid Submission');
           }
+          const errors = [];
+          await Utils.eachComponentDataAsync(this.component.components, submission.data, async(component, data, path) => {
+            const newErrors = await process({
+              component,
+              data,
+              path,
+              process: 'validation',
+              metaProcess: 'submit',
+            });
+            // TODO: this is a cheatcode
+            const interpolatedErrors = newErrors.map((error) => {
+              return { ...error, message: this.t(error.errorKeyOrMessage, { field: error.field, data: {} }) };
+            });
+            if (interpolatedErrors.length > 0) {
+              // TODO: THIS IS THE PROBLEM LINE
+              const comp = this.getComponent(component.key);
+              comp.setComponentValidity(interpolatedErrors, true, false);
+              errors.push(...interpolatedErrors);
+            }
+          });
+          // TODO: this is a cheatcode and should be done by another processor
+          // const interpolatedErrors = errors.map((error) => {
+          //   return { ...error, message: this.t(error.errorKeyOrMessage, { field: error.field, data: {} }) };
+          // });
+          // if (interpolatedErrors.length > 0) {
+          //   for (const error of interpolatedErrors) {
+          //     for (const comp of this.components) {
+          //       if (comp.key === error.path) {
+          //         comp.setComponentValidity(interpolatedErrors, true, false);
+          //       }
+          //     }
+          //   }
+          //   return reject();
+          // }
+          if (errors.length > 0) return reject();
         }
 
         this.everyComponent((comp) => {

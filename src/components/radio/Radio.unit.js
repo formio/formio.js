@@ -142,7 +142,7 @@ describe('Radio Component', () => {
       return new Promise(resolve => {
         const values = [
           { name : 'Alabama', abbreviation : 'AL' },
-          { name : 'Alaska', abbreviation: { a:2, b: 'c' } }
+          { name : 'Alaska', abbreviation: { a: 2, b: 'c' } }
         ];
         resolve(values);
       });

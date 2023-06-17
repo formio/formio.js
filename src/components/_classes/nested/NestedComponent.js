@@ -17,6 +17,7 @@ export default class NestedComponent extends Field {
     super(component, options, data);
     this.type = 'components';
     this._collapsed = !!this.component.collapsed;
+    this.children = {};
   }
 
   get defaultSchema() {
@@ -360,6 +361,7 @@ export default class NestedComponent extends Field {
     }
     else {
       this.components.push(comp);
+      this.children[comp.id] = comp;
     }
     return comp;
   }
@@ -520,7 +522,7 @@ export default class NestedComponent extends Field {
   }
 
   /**
-   * Remove a component from the components array.
+   * Remove a component from the components array and from the children object
    *
    * @param {Component} component - The component to remove from the components.
    * @param {Array<Component>} components - An array of components to remove this component from.
@@ -529,6 +531,9 @@ export default class NestedComponent extends Field {
     components = components || this.components;
     component.destroy(all);
     _.remove(components, { id: component.id });
+    if (this.children[component.id]) {
+      delete this.children[component.id];
+    }
   }
 
   /**
