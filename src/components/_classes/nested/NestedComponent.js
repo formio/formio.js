@@ -361,8 +361,8 @@ export default class NestedComponent extends Field {
     }
     else {
       this.components.push(comp);
-      this.children[comp.id] = comp;
     }
+    this.localRoot.children[comp.path] = comp;
     return comp;
   }
 
@@ -531,8 +531,8 @@ export default class NestedComponent extends Field {
     components = components || this.components;
     component.destroy(all);
     _.remove(components, { id: component.id });
-    if (this.children[component.id]) {
-      delete this.children[component.id];
+    if (this.localRoot.children[component.path]) {
+      delete this.localRoot.children[component.path];
     }
   }
 
