@@ -1529,7 +1529,11 @@ export default class Webform extends NestedDataComponent {
                 const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
                 return { ...error, message: this.t(toInterpolate, error.context) };
               });
-              const comp = this.children[path] || this.children[component.key] || this.getComponent(component.key);
+              if (component.multiple) {
+                // take away the final index (e.g. `[0]`)
+                path = path.replace(/\[\d\]$/, '');
+              }
+              const comp = this.children[path];
               comp.setComponentValidity(interpolatedErrors, true, false);
               errors.push(...interpolatedErrors);
             }
