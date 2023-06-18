@@ -1531,6 +1531,7 @@ export default class Webform extends NestedDataComponent {
               });
               if (component.multiple) {
                 // take away the final index (e.g. `[0]`)
+                // TODO: we can do better
                 path = path.replace(/\[\d\]$/, '');
               }
               const comp = this.children[path];

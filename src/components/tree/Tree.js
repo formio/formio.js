@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import Component from '../_classes/component/Component';
-import Components from '../Components';
 import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
 import Node from './Node';
 import NativePromise from 'native-promise-only';
@@ -88,7 +87,8 @@ export default class TreeComponent extends NestedDataComponent {
   createComponents(data, node) {
     const components = this.componentComponents.map(
       (component) => {
-        const componentInstance = Components.create(component, this.componentOptions, data);
+        // const componentInstance = Components.create(component, this.componentOptions, data);
+        const componentInstance = this.createComponent(component, this.componentOptions, data);
         componentInstance.init();
         componentInstance.parentDisabled = this.disabled;
         return componentInstance;
