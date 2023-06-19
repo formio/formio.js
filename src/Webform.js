@@ -1515,28 +1515,74 @@ export default class Webform extends NestedDataComponent {
           }
           const errors = [];
           await Utils.eachComponentDataAsync(this.component.components, submission.data, async(component, data, path) => {
-            const newErrors = await validate({
-              component,
-              data,
-              path,
-              process: 'validation',
-              metaProcess: 'submit',
-            });
-            if (newErrors.length > 0) {
-              // TODO: this is a cheatcode
-              const interpolatedErrors = newErrors.map((error) => {
-                const { errorKeyOrMessage } = error;
-                const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
-                return { ...error, message: this.t(toInterpolate, error.context) };
-              });
-              if (component.multiple) {
-                // take away the final index (e.g. `[0]`)
-                // TODO: we can do better
-                path = path.replace(/\[\d\]$/, '');
+            const comp = this.children[path];
+            if (component.multiple) {
+              const contextualData = _.get(data, path);
+              if (contextualData.length > 0) {
+                const componentErrors = [];
+                for (let index = 0; index < _.get(data, path).length; index++) {
+                  const amendedPath = `${path}[${index}]`;
+                  const newErrors = await validate({
+                    component,
+                    data,
+                    path: amendedPath,
+                    processor: 'validation',
+                    process: 'submit',
+                  });
+                  if (newErrors.length > 0) {
+                    // TODO: this is a cheatcode
+                    const interpolatedErrors = newErrors.map((error) => {
+                      const { errorKeyOrMessage, context } = error;
+                      const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+                      const ref = comp.refs.input?.[index];
+                      return { ...error, message: this.t(toInterpolate, context), context: { ...context, input: ref } };
+                    });
+                    componentErrors.push(...interpolatedErrors);
+                  }
+                }
+                comp.setComponentValidity(componentErrors, true, false);
+                errors.push(...componentErrors);
               }
-              const comp = this.children[path];
-              comp.setComponentValidity(interpolatedErrors, true, false);
-              errors.push(...interpolatedErrors);
+              else {
+                const newErrors = await validate({
+                  component,
+                  data,
+                  path,
+                  processor: 'validation',
+                  process: 'submit',
+                });
+                if (newErrors.length > 0) {
+                  // TODO: this is a cheatcode
+                  const interpolatedErrors = newErrors.map((error) => {
+                    const { errorKeyOrMessage, context } = error;
+                    const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+                    const ref = comp.refs.input?.[0];
+                    return { ...error, message: this.t(toInterpolate, context), context: { ...context, input: ref } };
+                  });
+                  comp.setComponentValidity(interpolatedErrors, true, false);
+                  errors.push(...interpolatedErrors);
+                }
+              }
+            }
+            else {
+              const newErrors = await validate({
+                component,
+                data,
+                path,
+                processor: 'validation',
+                process: 'submit',
+              });
+              if (newErrors.length > 0) {
+                // TODO: this is a cheatcode
+                const interpolatedErrors = newErrors.map((error) => {
+                  const { errorKeyOrMessage, context } = error;
+                  const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+                  const ref = comp.refs.input?.[0];
+                  return { ...error, message: this.t(toInterpolate, context), context: { ...context, input: ref } };
+                });
+                comp.setComponentValidity(interpolatedErrors, true, false);
+                errors.push(...interpolatedErrors);
+              }
             }
           });
           if (errors.length > 0) return reject();
