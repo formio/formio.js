@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.15.0
+### Changed
+ - Official Release
+ - Updated @formio/bootstrap3@2.12.3
+ - Updated @formio/semantic@2.6.1
+
 ## [Unreleased: 4.15.0]
 ### Changed
  - Official Release
