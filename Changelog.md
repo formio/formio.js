@@ -44,7 +44,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6862: Fixes some cases when component value is calculated in loop causing stack overflow
  - FIO-6892: Temporarely hide the Addons tab
  - FIO 5954: Backport Travis' memory leak fixes from m release to master
- - FIO-6895: fixed interpolation for falsy values 
+ - FIO-6895: fixed interpolation for falsy values
+ - FIO-6965: fixed file upload via pdf proxy
+ - FIO-6165: Updated help link for signature component
 
 ## 5.0.0-rc.4
 ### Fixed
