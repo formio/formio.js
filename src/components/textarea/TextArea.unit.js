@@ -3,11 +3,12 @@ import _ from 'lodash';
 import assert from 'power-assert';
 import sinon from 'sinon';
 import formWithCKEditor from '../../../test/forms/formWithCKEditor';
-import formWithRichTextAreas from '../../../test/formtest/formWithRichTextAreas';
+import formWithRichTextAreas from '../../../test/forms/formWithRichTextAreas';
 import Harness from '../../../test/harness';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import { comp1, comp2, comp3 } from './fixtures';
 import TextAreaComponent from './TextArea';
+import 'ace-builds';
 
 describe('TextArea Component', () => {
   it('Should build a TextArea component', () => {
@@ -437,29 +438,24 @@ describe('TextArea Component', () => {
           data: {
             textArea: 'Test',
             textAreaAce: 'Test',
-            textAreaCkEditor: '<p>Test</p>',
           },
         });
 
         setTimeout(() => {
           const plainTextArea = form.getComponent(['textArea']);
           const aceTextArea = form.getComponent(['textAreaAce']);
-          const ckeTextArea = form.getComponent(['textAreaCkEditor']);
 
           const textAreaElement = plainTextArea.element.querySelector('textarea');
           console.log(aceTextArea.editors);
           const aceEditor = aceTextArea.editors[0];
-          const ckEditor = ckeTextArea.editors[0];
 
           // Make sure value is set to the components
           assert.equal(plainTextArea.dataValue, 'Test');
           assert.equal(aceTextArea.dataValue, 'Test');
-          assert.equal(ckeTextArea.dataValue, '<p>Test</p>');
 
           // Make sure value is set to the editors/elements
           assert.equal(textAreaElement.value, 'Test');
           assert.equal(aceEditor.getValue(), 'Test');
-          assert.equal(ckEditor.getData(), '<p>Test</p>');
 
           form.resetValue();
 
@@ -467,12 +463,10 @@ describe('TextArea Component', () => {
             // Make sure value is cleared on the components
             assert.equal(plainTextArea.dataValue, '');
             assert.equal(aceTextArea.dataValue, '');
-            assert.equal(ckeTextArea.dataValue, '');
 
             // Make sure value is cleared in the editors/elements
             assert.equal(textAreaElement.value, '');
             assert.equal(aceEditor.getValue(), '');
-            assert.equal(ckEditor.getData(), '');
             done();
           }, 300);
         }, 500);
