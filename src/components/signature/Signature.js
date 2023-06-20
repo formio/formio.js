@@ -26,7 +26,7 @@ export default class SignatureComponent extends Input {
       group: 'advanced',
       icon: 'pencil',
       weight: 120,
-      documentation: '/userguide/forms/form-components#signature',
+      documentation: '/developers/integrations/esign/esign-integrations#signature-component',
       schema: SignatureComponent.schema()
     };
   }

@@ -56,7 +56,7 @@ export default class SelectComponent extends ListComponent {
       group: 'basic',
       icon: 'th-list',
       weight: 70,
-      documentation: '/userguide/forms/form-components#select',
+      documentation: '/userguide/form-building/form-components#select',
       schema: SelectComponent.schema()
     };
   }
@@ -953,7 +953,9 @@ export default class SelectComponent extends ListComponent {
 
     const tabIndex = input.tabIndex;
     this.addPlaceholder();
-    input.setAttribute('dir', this.i18next.dir());
+    if (this.i18next) {
+      input.setAttribute('dir', this.i18next.dir());
+    }
     if (this.choices?.containerOuter?.element?.parentNode) {
       this.choices.destroy();
     }
@@ -1698,7 +1700,6 @@ export default class SelectComponent extends ListComponent {
   }
 
   detach() {
-    super.detach();
     this.off('blur');
     if (this.choices) {
       if (this.choices.containerOuter?.element?.parentNode) {
@@ -1706,6 +1707,7 @@ export default class SelectComponent extends ListComponent {
       }
       this.choices = null;
     }
+    super.detach();
   }
 
   focus() {

@@ -30,7 +30,7 @@ export default class TextFieldComponent extends Input {
       title: 'Text Field',
       icon: 'terminal',
       group: 'basic',
-      documentation: '/userguide/forms/form-components#text-field',
+      documentation: '/userguide/form-building/form-components#text-field',
       weight: 0,
       schema: TextFieldComponent.schema()
     };

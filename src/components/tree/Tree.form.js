@@ -6,9 +6,5 @@ export default function(...extend) {
       key: 'data',
       components: TreeEditData,
     },
-    {
-      key: 'addons',
-      ignore: true
-    },
   ], ...extend);
 }

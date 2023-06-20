@@ -25,7 +25,7 @@ export default class RadioComponent extends ListComponent {
       group: 'basic',
       icon: 'dot-circle-o',
       weight: 80,
-      documentation: '/userguide/forms/form-components#radio',
+      documentation: '/userguide/form-building/form-components#radio',
       schema: RadioComponent.schema()
     };
   }
@@ -71,9 +71,9 @@ export default class RadioComponent extends ListComponent {
   init() {
     super.init();
     this.templateData = {};
-    this.validators = this.validators.concat(['select', 'onlyAvailableItems']);
+    this.validators = this.validators.concat(['select', 'onlyAvailableItems', 'availableValueProperty']);
 
-    // Trigger an update.
+    // Trigger an update.//
     let updateArgs = [];
     const triggerUpdate = _.debounce((...args) => {
       updateArgs = [];
@@ -129,7 +129,7 @@ export default class RadioComponent extends ListComponent {
           dataValue = _.toString(this.dataValue);
         }
 
-        input.checked = (dataValue === input.value);
+        input.checked = (dataValue === input.value && (input.value || this.component.dataSrc !== 'url'));
         this.addEventListener(input, 'keyup', (event) => {
           if (event.key === ' ' && dataValue === input.value) {
             event.preventDefault();
@@ -168,6 +168,14 @@ export default class RadioComponent extends ListComponent {
       }
     });
     return value;
+  }
+
+  validateValueProperty() {
+    if (this.component.dataSrc === 'values') {
+      return true;
+    }
+
+    return !_.some(this.refs.wrapper, (wrapper, index) => this.refs.input[index].checked && this.loadedOptions[index].invalid);
   }
 
   validateValueAvailability(setting, value) {
@@ -236,7 +244,16 @@ export default class RadioComponent extends ListComponent {
 
   setItems(items) {
     items?.forEach((item, i) => {
-      this.loadedOptions[i] = { value: item[this.component.valueProperty], label: this.itemTemplate(item, item[this.component.valueProperty]) };
+      this.loadedOptions[i] = {
+        value: item[this.component.valueProperty],
+        label: this.itemTemplate(item, item[this.component.valueProperty])
+      };
+      if (_.isUndefined(item[this.component.valueProperty]) ||
+        _.isObject(item[this.component.valueProperty]) ||
+        (!this.isRadio && _.isBoolean(item[this.component.valueProperty]))
+        ) {
+        this.loadedOptions[i].invalid = true;
+      }
     });
   }
 

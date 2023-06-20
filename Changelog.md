@@ -39,6 +39,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6661: Fixed DateTime widget throwing an error and not switching languages after changing the language of the form
  - FIO-6654: fixed UI issue with Checkbox condition
  - FIO-5398: Fixes special characters not escaped in regex is Select search field
+ - FIO-6156: Updated help links according to the new documentation structure
+ - FIO-6762: added ValueProperty validation
+ - FIO 6582: fix bug in auto-focused TextArea components
+ - FIO-6862: Fixes some cases when component value is calculated in loop causing stack overflow
+ - FIO-6892: Temporarely hide the Addons tab
+ - FIO 5954: Backport Travis' memory leak fixes from m release to master
+ - FIO-6895: fixed interpolation for falsy values
+ - FIO-6965: fixed file upload via pdf proxy
+ - FIO-6165: Updated help link for signature component
 
 ## 5.0.0-rc.4
 ### Fixed

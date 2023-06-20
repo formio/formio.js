@@ -38,9 +38,5 @@ export default function(...extend) {
       weight: 3,
       components: DayEditYear
     },
-    {
-      key: 'addons',
-      ignore: true
-    },
   ], ...extend);
 }
