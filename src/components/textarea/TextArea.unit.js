@@ -1,16 +1,14 @@
-import Harness from '../../../test/harness';
-import TextAreaComponent from './TextArea';
-import sinon from 'sinon';
-import { Formio } from './../../Formio';
-import assert from 'power-assert';
 import { expect } from 'chai';
 import _ from 'lodash';
-import {
-  comp1,
-  comp2,
-  comp3
-} from './fixtures';
+import assert from 'power-assert';
+import sinon from 'sinon';
 import formWithCKEditor from '../../../test/forms/formWithCKEditor';
+import formWithRichTextAreas from '../../../test/forms/formWithRichTextAreas';
+import Harness from '../../../test/harness';
+import { Formio } from './../../Formio';
+import { comp1, comp2, comp3 } from './fixtures';
+import TextAreaComponent from './TextArea';
+import 'ace-builds';
 
 describe('TextArea Component', () => {
   it('Should build a TextArea component', () => {
@@ -391,42 +389,87 @@ describe('TextArea Component', () => {
     }).catch(done);
   });
 
-  describe('CKEditor', () => {
-    it('Should allow to insert media fiels and show the in the read-only mode', (done) => {
-      const element = document.createElement('div');
+  describe('Rich text editors', () => {
+    describe('CKEditor', () => {
+      it('Should allow to insert media fiels and show the in them read-only mode', (done) => {
+        const element = document.createElement('div');
 
-      Formio.createForm(element, formWithCKEditor, { readOnly: true }).then(form => {
-        form.submission = {
-          data: {
-            textArea: `
-              <figure class="media">
-                <div data-oembed-url="https://www.youtube.com/watch?v=GsLRrmnJXF8">
+        Formio.createForm(element, formWithCKEditor, { readOnly: true }).then(form => {
+          form.submission = {
+            data: {
+              textArea: `
+                <figure class="media">
+                  <div data-oembed-url="https://www.youtube.com/watch?v=GsLRrmnJXF8">
+                    <div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">
+                      <iframe src="https://www.youtube.com/embed/GsLRrmnJXF8" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">
+                      </iframe>
+                    </div>
+                  </div>
+                </figure>
+                <figure class="media">
+                <div data-oembed-url="https://www.youtube.com/watch?v=FmA6U5rXl38&amp;t=111s">
                   <div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">
-                    <iframe src="https://www.youtube.com/embed/GsLRrmnJXF8" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">
+                    <iframe src="https://www.youtube.com/embed/FmA6U5rXl38" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">
                     </iframe>
                   </div>
                 </div>
-              </figure>
-              <figure class="media">
-              <div data-oembed-url="https://www.youtube.com/watch?v=FmA6U5rXl38&amp;t=111s">
-                <div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">
-                  <iframe src="https://www.youtube.com/embed/FmA6U5rXl38" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">
-                  </iframe>
-                </div>
-              </div>
-            </figure>`,
+              </figure>`,
+            },
+            state: 'submitted',
+          };
+
+          setTimeout(() => {
+            const mediaA = form.element.querySelector('iframe[src="https://www.youtube.com/embed/GsLRrmnJXF8"]');
+            const mediaB = form.element.querySelector('iframe[src="https://www.youtube.com/embed/FmA6U5rXl38"]');
+            assert(mediaA, 'Should not remove embedded media');
+            assert(mediaB, 'Should not remove embedded media');
+
+            done();
+          }, 300);
+        }).catch(done);
+      });
+    });
+
+    it('Should clear value in the editor on Reset', (done) => {
+      const element = document.createElement('div');
+
+      Formio.createForm(element, formWithRichTextAreas).then(form => {
+        form.setValue({
+          data: {
+            textArea: 'Test',
+            textAreaAce: 'Test',
           },
-          state: 'submitted',
-        };
+        });
 
         setTimeout(() => {
-          const mediaA = form.element.querySelector('iframe[src="https://www.youtube.com/embed/GsLRrmnJXF8"]');
-          const mediaB = form.element.querySelector('iframe[src="https://www.youtube.com/embed/FmA6U5rXl38"]');
-          assert(mediaA, 'Should not remove embedded media');
-          assert(mediaB, 'Should not remove embedded media');
+          const plainTextArea = form.getComponent(['textArea']);
+          const aceTextArea = form.getComponent(['textAreaAce']);
 
-          done();
-        }, 300);
+          const textAreaElement = plainTextArea.element.querySelector('textarea');
+          console.log(aceTextArea.editors);
+          const aceEditor = aceTextArea.editors[0];
+
+          // Make sure value is set to the components
+          assert.equal(plainTextArea.dataValue, 'Test');
+          assert.equal(aceTextArea.dataValue, 'Test');
+
+          // Make sure value is set to the editors/elements
+          assert.equal(textAreaElement.value, 'Test');
+          assert.equal(aceEditor.getValue(), 'Test');
+
+          form.resetValue();
+
+          setTimeout(() => {
+            // Make sure value is cleared on the components
+            assert.equal(plainTextArea.dataValue, '');
+            assert.equal(aceTextArea.dataValue, '');
+
+            // Make sure value is cleared in the editors/elements
+            assert.equal(textAreaElement.value, '');
+            assert.equal(aceEditor.getValue(), '');
+            done();
+          }, 300);
+        }, 500);
       }).catch(done);
     });
 
