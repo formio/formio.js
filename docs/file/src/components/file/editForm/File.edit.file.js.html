@@ -271,8 +271,11 @@ export default [
     input: true,
     weight: 15,
     placeholder: `{
-  &quot;withCredentials&quot;: true
-}`,
+      &quot;withCredentials&quot;: true,
+      &quot;headers&quot;: {
+        &quot;Authorization&quot;: &quot;Basic &lt;key&gt;&quot;
+      }
+    }`,
     conditional: {
       json: {
         &apos;===&apos;: [{

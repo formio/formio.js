@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.15.1-rc.1
+### Changed
+ - FIO-5527: Fixed an issue where value in TextArea with wysiwyg editor is not getting cleared on reset
+ - FIO-6901 Fixed custom headers not being passed through custom request…
+
 ## 4.15.0
 ### Changed
  - Official Release

@@ -190,19 +190,17 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/textarea/TextArea.unit.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
-import TextAreaComponent from &apos;./TextArea&apos;;
-import sinon from &apos;sinon&apos;;
-import Formio from &apos;./../../Formio&apos;;
-import assert from &apos;power-assert&apos;;
-import { expect } from &apos;chai&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { expect } from &apos;chai&apos;;
 import _ from &apos;lodash&apos;;
-import {
-  comp1,
-  comp2,
-  comp3
-} from &apos;./fixtures&apos;;
+import assert from &apos;power-assert&apos;;
+import sinon from &apos;sinon&apos;;
 import formWithCKEditor from &apos;../../../test/forms/formWithCKEditor&apos;;
+import formWithRichTextAreas from &apos;../../../test/forms/formWithRichTextAreas&apos;;
+import Harness from &apos;../../../test/harness&apos;;
+import { Formio } from &apos;./../../Formio&apos;;
+import { comp1, comp2, comp3 } from &apos;./fixtures&apos;;
+import TextAreaComponent from &apos;./TextArea&apos;;
+import &apos;ace-builds&apos;;
 
 describe(&apos;TextArea Component&apos;, () =&gt; {
   it(&apos;Should build a TextArea component&apos;, () =&gt; {
@@ -583,42 +581,87 @@ describe(&apos;TextArea Component&apos;, () =&gt; {
     }).catch(done);
   });
 
-  describe(&apos;CKEditor&apos;, () =&gt; {
-    it(&apos;Should allow to insert media fiels and show the in the read-only mode&apos;, (done) =&gt; {
-      const element = document.createElement(&apos;div&apos;);
+  describe(&apos;Rich text editors&apos;, () =&gt; {
+    describe(&apos;CKEditor&apos;, () =&gt; {
+      it(&apos;Should allow to insert media fiels and show the in them read-only mode&apos;, (done) =&gt; {
+        const element = document.createElement(&apos;div&apos;);
 
-      Formio.createForm(element, formWithCKEditor, { readOnly: true }).then(form =&gt; {
-        form.submission = {
-          data: {
-            textArea: `
-              &lt;figure class=&quot;media&quot;&gt;
-                &lt;div data-oembed-url=&quot;https://www.youtube.com/watch?v=GsLRrmnJXF8&quot;&gt;
+        Formio.createForm(element, formWithCKEditor, { readOnly: true }).then(form =&gt; {
+          form.submission = {
+            data: {
+              textArea: `
+                &lt;figure class=&quot;media&quot;&gt;
+                  &lt;div data-oembed-url=&quot;https://www.youtube.com/watch?v=GsLRrmnJXF8&quot;&gt;
+                    &lt;div style=&quot;position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;&quot;&gt;
+                      &lt;iframe src=&quot;https://www.youtube.com/embed/GsLRrmnJXF8&quot; style=&quot;position: absolute; width: 100%; height: 100%; top: 0; left: 0;&quot; frameborder=&quot;0&quot; allow=&quot;autoplay; encrypted-media&quot; allowfullscreen=&quot;&quot;&gt;
+                      &lt;/iframe&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/figure&gt;
+                &lt;figure class=&quot;media&quot;&gt;
+                &lt;div data-oembed-url=&quot;https://www.youtube.com/watch?v=FmA6U5rXl38&amp;amp;t=111s&quot;&gt;
                   &lt;div style=&quot;position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;&quot;&gt;
-                    &lt;iframe src=&quot;https://www.youtube.com/embed/GsLRrmnJXF8&quot; style=&quot;position: absolute; width: 100%; height: 100%; top: 0; left: 0;&quot; frameborder=&quot;0&quot; allow=&quot;autoplay; encrypted-media&quot; allowfullscreen=&quot;&quot;&gt;
+                    &lt;iframe src=&quot;https://www.youtube.com/embed/FmA6U5rXl38&quot; style=&quot;position: absolute; width: 100%; height: 100%; top: 0; left: 0;&quot; frameborder=&quot;0&quot; allow=&quot;autoplay; encrypted-media&quot; allowfullscreen=&quot;&quot;&gt;
                     &lt;/iframe&gt;
                   &lt;/div&gt;
                 &lt;/div&gt;
-              &lt;/figure&gt;
-              &lt;figure class=&quot;media&quot;&gt;
-              &lt;div data-oembed-url=&quot;https://www.youtube.com/watch?v=FmA6U5rXl38&amp;amp;t=111s&quot;&gt;
-                &lt;div style=&quot;position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;&quot;&gt;
-                  &lt;iframe src=&quot;https://www.youtube.com/embed/FmA6U5rXl38&quot; style=&quot;position: absolute; width: 100%; height: 100%; top: 0; left: 0;&quot; frameborder=&quot;0&quot; allow=&quot;autoplay; encrypted-media&quot; allowfullscreen=&quot;&quot;&gt;
-                  &lt;/iframe&gt;
-                &lt;/div&gt;
-              &lt;/div&gt;
-            &lt;/figure&gt;`,
+              &lt;/figure&gt;`,
+            },
+            state: &apos;submitted&apos;,
+          };
+
+          setTimeout(() =&gt; {
+            const mediaA = form.element.querySelector(&apos;iframe[src=&quot;https://www.youtube.com/embed/GsLRrmnJXF8&quot;]&apos;);
+            const mediaB = form.element.querySelector(&apos;iframe[src=&quot;https://www.youtube.com/embed/FmA6U5rXl38&quot;]&apos;);
+            assert(mediaA, &apos;Should not remove embedded media&apos;);
+            assert(mediaB, &apos;Should not remove embedded media&apos;);
+
+            done();
+          }, 300);
+        }).catch(done);
+      });
+    });
+
+    it(&apos;Should clear value in the editor on Reset&apos;, (done) =&gt; {
+      const element = document.createElement(&apos;div&apos;);
+
+      Formio.createForm(element, formWithRichTextAreas).then(form =&gt; {
+        form.setValue({
+          data: {
+            textArea: &apos;Test&apos;,
+            textAreaAce: &apos;Test&apos;,
           },
-          state: &apos;submitted&apos;,
-        };
+        });
 
         setTimeout(() =&gt; {
-          const mediaA = form.element.querySelector(&apos;iframe[src=&quot;https://www.youtube.com/embed/GsLRrmnJXF8&quot;]&apos;);
-          const mediaB = form.element.querySelector(&apos;iframe[src=&quot;https://www.youtube.com/embed/FmA6U5rXl38&quot;]&apos;);
-          assert(mediaA, &apos;Should not remove embedded media&apos;);
-          assert(mediaB, &apos;Should not remove embedded media&apos;);
+          const plainTextArea = form.getComponent([&apos;textArea&apos;]);
+          const aceTextArea = form.getComponent([&apos;textAreaAce&apos;]);
 
-          done();
-        }, 300);
+          const textAreaElement = plainTextArea.element.querySelector(&apos;textarea&apos;);
+          console.log(aceTextArea.editors);
+          const aceEditor = aceTextArea.editors[0];
+
+          // Make sure value is set to the components
+          assert.equal(plainTextArea.dataValue, &apos;Test&apos;);
+          assert.equal(aceTextArea.dataValue, &apos;Test&apos;);
+
+          // Make sure value is set to the editors/elements
+          assert.equal(textAreaElement.value, &apos;Test&apos;);
+          assert.equal(aceEditor.getValue(), &apos;Test&apos;);
+
+          form.resetValue();
+
+          setTimeout(() =&gt; {
+            // Make sure value is cleared on the components
+            assert.equal(plainTextArea.dataValue, &apos;&apos;);
+            assert.equal(aceTextArea.dataValue, &apos;&apos;);
+
+            // Make sure value is cleared in the editors/elements
+            assert.equal(textAreaElement.value, &apos;&apos;);
+            assert.equal(aceEditor.getValue(), &apos;&apos;);
+            done();
+          }, 300);
+        }, 500);
       }).catch(done);
     });
 
