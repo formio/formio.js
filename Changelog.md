@@ -10,10 +10,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Updated @formio/bootstrap3@2.12.3
  - Updated @formio/semantic@2.6.1
 
-## [Unreleased: 4.15.0]
-### Changed
- - Official Release
-
 ## 4.15.0-rc.27
 ### Changed
  - FIO-6965 fixed file upload via pdf proxy
