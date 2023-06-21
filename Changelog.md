@@ -48,6 +48,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6895: fixed interpolation for falsy values
  - FIO-6965: fixed file upload via pdf proxy
  - FIO-6165: Updated help link for signature component
+ - FIO-5527: Fixed an issue where value in TextArea with wysiwyg editor is not getting cleared on reset
+ - FIO-6901: Fixed custom headers not being passed through custom request options in File component
 
 ## 5.0.0-rc.4
 ### Fixed
