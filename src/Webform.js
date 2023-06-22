@@ -17,7 +17,7 @@ import {
   getArrayFromComponentPath
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
-import { process } from '@formio/core';
+import { process, validate } from '@formio/core';
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -1392,7 +1392,7 @@ export default class Webform extends NestedDataComponent {
    * @param changed
    * @param flags
    */
-  onChange(flags, changed, modified, changes) {
+  async onChange(flags, changed, modified, changes) {
     flags = flags || {};
     let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
@@ -1409,7 +1409,23 @@ export default class Webform extends NestedDataComponent {
       this.pristine = false;
     }
 
-    value.isValid = this.checkData(value.data, flags);
+    await process({
+      components: this.component.components,
+      data: value.data,
+      process: 'change',
+      after: [
+        ({ component, path, errors }) => {
+          const interpolatedErrors = errors.map((error) => {
+            const { errorKeyOrMessage, context } = error;
+            const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+            return { ...error, message: this.t(toInterpolate, context), context: { ...context } };
+          });
+          const componentInstance = this.children[path];
+          componentInstance.setComponentValidity(interpolatedErrors, !!componentInstance.alwaysDirty, false);
+          return [];
+        },
+      ]
+    });
     this.loading = false;
     if (this.submitted) {
       this.showErrors();
@@ -1516,15 +1532,19 @@ export default class Webform extends NestedDataComponent {
           const errors = await process({
             components: this.component.components,
             data: submission.data,
-            process: 'submit'
-          }, (component, data, path, components, errors) => {
-            const interpolatedErrors = errors.map((error) => {
-              const { errorKeyOrMessage, context } = error;
-              const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
-              return { ...error, message: this.t(toInterpolate, context), context: { ...context } };
-            });
-            const componentInstance = this.children[path];
-            componentInstance.setComponentValidity(interpolatedErrors, true, false);
+            process: 'submit',
+            after: [
+              ({ component, path, errors }) => {
+                const interpolatedErrors = errors.map((error) => {
+                  const { errorKeyOrMessage, context } = error;
+                  const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+                  return { ...error, message: this.t(toInterpolate, context), context: { ...context } };
+                });
+                const componentInstance = this.children[path];
+                componentInstance.setComponentValidity(interpolatedErrors, true, false);
+                return [];
+              },
+            ]
           });
           if (errors.length > 0) return reject();
         }
