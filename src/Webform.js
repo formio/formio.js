@@ -1409,10 +1409,11 @@ export default class Webform extends NestedDataComponent {
       this.pristine = false;
     }
 
+    // value.isValid = this.checkData(value.data, flags);
     await process({
+      process: 'change',
       components: this.component.components,
       data: value.data,
-      process: 'change',
       after: [
         ({ component, path, errors }) => {
           const interpolatedErrors = errors.map((error) => {
@@ -1421,11 +1422,12 @@ export default class Webform extends NestedDataComponent {
             return { ...error, message: this.t(toInterpolate, context), context: { ...context } };
           });
           const componentInstance = this.children[path];
-          componentInstance.setComponentValidity(interpolatedErrors, !!componentInstance.alwaysDirty, false);
+          componentInstance.setComponentValidity(interpolatedErrors, componentInstance.options.alwaysDirty || false, false);
           return [];
-        },
+        }
       ]
     });
+
     this.loading = false;
     if (this.submitted) {
       this.showErrors();
@@ -1530,9 +1532,9 @@ export default class Webform extends NestedDataComponent {
             return reject('Invalid Submission');
           }
           const errors = await process({
+            process: 'submit',
             components: this.component.components,
             data: submission.data,
-            process: 'submit',
             after: [
               ({ component, path, errors }) => {
                 const interpolatedErrors = errors.map((error) => {
@@ -1543,7 +1545,7 @@ export default class Webform extends NestedDataComponent {
                 const componentInstance = this.children[path];
                 componentInstance.setComponentValidity(interpolatedErrors, true, false);
                 return [];
-              },
+              }
             ]
           });
           if (errors.length > 0) return reject();
