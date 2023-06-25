@@ -3199,9 +3199,9 @@ export default class Component extends Element {
       });
       this.setInputWidgetErrorClasses(inputRefsArray, false);
 
-      invalidInputRefs = inputRefsArray.filter((ref) => {
+      invalidInputRefs = inputRefsArray.filter((ref, index) => {
         return messages.some?.((msg) => {
-          return msg?.context?.input === ref;
+          return msg?.context?.index === index;
         });
       });
     }
