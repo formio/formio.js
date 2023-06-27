@@ -50,6 +50,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6165: Updated help link for signature component
  - FIO-5527: Fixed an issue where value in TextArea with wysiwyg editor is not getting cleared on reset
  - FIO-6901: Fixed custom headers not being passed through custom request options in File component
+ - FIO-5566: Fixes an issue where deprication warning appears in the console when using Day component with dateFirst setting
+ - FIO-4809: Fixes an issue where value of Wizard suffix/prefix components will be deleted during validation on serve
+ - FIO-6604: fixed padding for Numbers inside Content
 
 ## 5.0.0-rc.4
 ### Fixed
