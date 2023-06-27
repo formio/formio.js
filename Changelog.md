@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.16.0-rc.1]
+
 ## 4.15.1-rc.1
 ### Changed
  - FIO-5527: Fixed an issue where value in TextArea with wysiwyg editor is not getting cleared on reset
