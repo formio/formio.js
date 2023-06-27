@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.16.0-rc.1]
+## 4.16.0-rc.1
+### Changed
+ - FIO-5566: Fixes an issue where deprication warning appears in the console when using Day component with dateFirst setting
+ - FIO-6164 Fixed an issue with date/time component localization
+ - FIO-3345: Added tests for the eachComponent function that were not including Tagpad key to the components paths
+ - FIO-6604 fixed padding for Numbers inside Content
+ - FIO-4809: Fixes an issue where value of Wizard suffix/prefix components will be deleted during validation on server
+ - Fix build 4.15.x
+
 
 ## 4.15.1-rc.1
 ### Changed

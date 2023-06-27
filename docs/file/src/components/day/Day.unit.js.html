@@ -354,9 +354,20 @@ describe(&apos;Day Component&apos;, () =&gt; {
     });
   });
 
-  it(&apos;should normalize min-max dates on dayFirst&apos;, () =&gt; {
+  it(&apos;Should properly validate min-max dates when dayFirst is checked&apos;, (done) =&gt; {
     Harness.testCreate(DayComponent, comp3).then((component) =&gt; {
-      assert.deepEqual(component.normalizeMinMaxDates(), [&apos;04/02/2020&apos;, &apos;09/02/2020&apos;]);
+      component.setValue(&apos;01/02/2020&apos;);
+      assert(!component.checkValidity(component.data, true), &apos;Component should not be valid&apos;);
+
+      component.setValue(&apos;04/01/2021&apos;);
+      assert(!component.checkValidity(component.data, true), &apos;Component should not be valid&apos;);
+
+      component.setValue(&apos;03/01/2021&apos;);
+      assert(component.checkValidity(component.data, true), &apos;Component should be valid&apos;);
+
+      component.setValue(&apos;01/03/2020&apos;);
+      assert(component.checkValidity(component.data, true), &apos;Component should be valid&apos;);
+      done();
     });
   });
 

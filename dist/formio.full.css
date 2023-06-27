@@ -3701,6 +3701,9 @@ div[data-oembed-url] {
 .formio-component-content .text-huge {
   font-size: 1.8em;
 }
+.formio-component-content ol {
+  padding-inline-start: 40px;
+}
 
 .formio-component-address.formio-component-label-hidden > label.field-required {
   z-index: 1;
@@ -4163,6 +4166,9 @@ span[role=link] {
 
 .component-settings .formio-dialog-content {
   max-height: 100%;
+}
+.component-settings .formio-dialog-content .ck-editor__editable ol {
+  padding-inline-start: 40px;
 }
 
 .component-btn-group .btn.component-settings-button-paste {
