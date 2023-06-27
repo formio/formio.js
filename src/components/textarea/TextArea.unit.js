@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import formWithCKEditor from '../../../test/forms/formWithCKEditor';
 import formWithRichTextAreas from '../../../test/forms/formWithRichTextAreas';
 import Harness from '../../../test/harness';
-import { Formio } from './../../Formio';
+import Formio from '../../Formio';
 import { comp1, comp2, comp3 } from './fixtures';
 import TextAreaComponent from './TextArea';
 import 'ace-builds';
