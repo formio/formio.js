@@ -578,8 +578,8 @@ export default class Wizard extends Webform {
             item.key = item.title;
           }
           let page = currentPages[item.key];
-          const forceShow = this.options.show ? this.options.show[item.key] : false;
-          const forceHide = this.options.hide ? this.options.hide[item.key] : false;
+          const forceShow = this.shouldForceShow(item);
+          const forceHide = this.shouldForceHide(item);
 
           let isVisible = !page
             ? checkCondition(item, data, data, this.component, this) && !item.hidden
