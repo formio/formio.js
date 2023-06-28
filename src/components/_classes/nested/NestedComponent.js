@@ -54,8 +54,8 @@ export default class NestedComponent extends Field {
     const visibilityChanged = this._visible !== value;
     this._visible = value;
     const isVisible = this.visible;
-    const forceShow = this.options.show && this.options.show[this.component.key];
-    const forceHide = this.options.hide && this.options.hide[this.component.key];
+    const forceShow = this.shouldForceShow();
+    const forceHide = this.shouldForceHide();
     this.components.forEach(component => {
       // Set the parent visibility first since we may have nested components within nested components
       // and they need to be able to determine their visibility based on the parent visibility.
