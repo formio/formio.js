@@ -170,7 +170,7 @@ export default class WizardBuilder extends WebformBuilder {
     });
 
     if (dragula) {
-      dragula([this.element.querySelector('.wizard-pages')], {
+      this.navigationDragula = dragula([this.element.querySelector('.wizard-pages')], {
         // Don't move Add Page button
         moves: (el) => (!el.classList.contains('wizard-add-page')),
         // Don't allow dragging components after Add Page button
@@ -194,6 +194,15 @@ export default class WizardBuilder extends WebformBuilder {
     });
 
     return super.attach(element);
+  }
+
+  detach() {
+    if (this.navigationDragula) {
+      this.navigationDragula.destroy();
+    }
+    this.navigationDragula = null;
+
+    super.detach();
   }
 
   rebuild() {
