@@ -54,6 +54,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4809: Fixes an issue where value of Wizard suffix/prefix components will be deleted during validation on serve
  - FIO-6604: fixed padding for Numbers inside Content
  - FIO-7030: Fixes an issue where Wizard pages are displayed in one line in the for builder
+ - FIO-5857 Update flatpickr to a version with the latest changes
 
 ## 5.0.0-rc.4
 ### Fixed
