@@ -53,6 +53,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5566: Fixes an issue where deprication warning appears in the console when using Day component with dateFirst setting
  - FIO-4809: Fixes an issue where value of Wizard suffix/prefix components will be deleted during validation on serve
  - FIO-6604: fixed padding for Numbers inside Content
+ - FIO-7030: Fixes an issue where Wizard pages are displayed in one line in the for builder
 
 ## 5.0.0-rc.4
 ### Fixed
