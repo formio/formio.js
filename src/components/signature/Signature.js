@@ -261,6 +261,9 @@ export default class SignatureComponent extends Input {
   }
 
   getValueAsString(value) {
+    if (_.isUndefined(value) && this.inDataTable) {
+      return '';
+    }
     return value ? 'Yes' : 'No';
   }
 
