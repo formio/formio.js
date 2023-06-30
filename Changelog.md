@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.15-rc.1]
+### Changed
+ - FIO-6840: change unique validation for email comps and certain textfield comps
+
 ## 4.14.14
 ### Changed
  - Official Release
