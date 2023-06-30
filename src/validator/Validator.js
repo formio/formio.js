@@ -121,10 +121,21 @@ class ValidationChecker {
 
             // Build the query
             const query = { form: form._id };
+            let collationOptions = {};
 
             if (_.isString(value)) {
               if (component.component.dbIndex) {
                 addPathQueryParams(value, query, path);
+              }
+              // These are kind of hacky but provides for a more efficient "unique" validation when the string is an email,
+              // because we (by and large) only have to worry about ASCII and partial unicode; this way, we can use collation-
+              // aware indexes with case insensitive email searches to make things like login and registration a whole lot faster
+              else if (
+                component.component.type === 'email' ||
+                (component.component.type === 'textfield' && component.component.validate?.pattern === '[A-Za-z0-9]+')
+              ) {
+                addPathQueryParams(value, query, path);
+                collationOptions = { collation: { locale: 'en', strength: 2 } };
               }
               else {
                 addPathQueryParams({
@@ -154,8 +165,8 @@ class ValidationChecker {
             }
             // Only search for non-deleted items
             query.deleted = { $eq: null };
-            // Try to find an existing value within the form
-            this.config.db.findOne(query, (err, result) => {
+            query.state = 'submitted';
+            const uniqueValidationCallback = (err, result) => {
               if (err) {
                 return resolve(false);
               }
@@ -171,6 +182,21 @@ class ValidationChecker {
               }
               else {
                 return resolve(true);
+              }
+            };
+            // Try to find an existing value within the form
+            this.config.db.findOne(query, null, collationOptions, (err, result) => {
+              if (err && collationOptions.collation) {
+                // presume this error comes from db compatibility, try again as regex
+                delete query[path];
+                addPathQueryParams({
+                  $regex: new RegExp(`^${escapeRegExCharacters(value)}$`),
+                  $options: 'i'
+                }, query, path);
+                this.config.db.findOne(query, uniqueValidationCallback);
+              }
+              else {
+                return uniqueValidationCallback(err, result);
               }
             });
           }).catch(() => false);
