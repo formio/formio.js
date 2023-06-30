@@ -55,6 +55,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6604: fixed padding for Numbers inside Content
  - FIO-7030: Fixes an issue where Wizard pages are displayed in one line in the for builder
  - FIO-5857 Update flatpickr to a version with the latest changes
+ - FIO-7049: fixed data populating in the Data Table
 
 ## 5.0.0-rc.4
 ### Fixed
