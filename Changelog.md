@@ -56,6 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7030: Fixes an issue where Wizard pages are displayed in one line in the for builder
  - FIO-5857 Update flatpickr to a version with the latest changes
  - FIO-7049: fixed data populating in the Data Table
+ - FIO-6840: change unique validation for email comps and certain textfield comps
 
 ## 5.0.0-rc.4
 ### Fixed
