@@ -299,6 +299,21 @@ describe(&apos;WizardBuilder tests&apos;, function() {
       done();
     }, 500);
   });
+
+  it(&apos;Test pages reorder&apos;, (done) =&gt; {
+    const builder = createWizardBuilder(simpleWizard);
+
+    setTimeout(() =&gt; {
+      const drake = builder.instance.navigationDragula;
+      const addPageBtn = builder.instance.element.querySelector(&apos;.wizard-add-page&apos;);
+      assert.equal(drake.canMove(addPageBtn), false, &apos;Should not be able to move Add Page button&apos;);
+      const pagesElements = builder.instance.element.querySelectorAll(&apos;.wizard-pages li&apos;);
+      assert.equal(pagesElements.length, 6, &apos;Should contain all buttons for all the pages + Add Page button&apos;);
+      const firstPage = pagesElements[0];
+      assert.equal(drake.canMove(firstPage), true, &apos;Should be able to move page button&apos;);
+      done();
+    }, 500);
+  });
 });
 </code></pre>
 
