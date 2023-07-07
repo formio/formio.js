@@ -123,6 +123,17 @@ export default class SelectBoxesComponent extends RadioComponent {
       });
     }
 
+    const checkedValues = _.keys(_.pickBy(value, (val) => val));
+    if (this.isSelectURL && this.templateData && _.every(checkedValues, (val) => this.templateData[val])) {
+      const submission = this.root.submission;
+      if (!submission.metadata.selectData) {
+        submission.metadata.selectData = {};
+      }
+      const selectData = [];
+      checkedValues.forEach((value) => selectData.push(this.templateData[value]));
+      _.set(submission.metadata.selectData, this.path, selectData);
+    }
+
     return value;
   }
 
@@ -176,7 +187,7 @@ export default class SelectBoxesComponent extends RadioComponent {
           key = valuesKeys.find((k) => input?.value.toString() === k);
         }
         const isChecked = value[key];
-        if (isChecked && key) {
+        if ((isChecked && key) || (this.isSelectURL && !this.shouldLoad && _.findIndex(this.selectData, this.listData[index]) !== -1)) {
           //add class to container when selected
           this.addClass(wrapper, this.optionSelectedClass);
           //change "checked" attribute
