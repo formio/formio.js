@@ -5832,6 +5832,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/textarea/fixtures/comp4.js",
+    "file/src/components/textarea/fixtures/comp4.js.html",
+    "src/components/textarea/fixtures/comp4.js",
+    "file"
+  ],
+  [
     "src/components/textarea/fixtures/index.js",
     "file/src/components/textarea/fixtures/index.js.html",
     "src/components/textarea/fixtures/index.js",
