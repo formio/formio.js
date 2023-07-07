@@ -6,7 +6,7 @@ import formWithCKEditor from '../../../test/forms/formWithCKEditor';
 import formWithRichTextAreas from '../../../test/forms/formWithRichTextAreas';
 import Harness from '../../../test/harness';
 import { Formio } from './../../Formio';
-import { comp1, comp2, comp3 } from './fixtures';
+import { comp1, comp2, comp3, comp4 } from './fixtures';
 import TextAreaComponent from './TextArea';
 import 'ace-builds';
 
@@ -470,6 +470,16 @@ describe('TextArea Component', () => {
             done();
           }, 300);
         }, 500);
+      }).catch(done);
+    });
+
+    it('Should set empty value properly when save as JSON', (done) => {
+      const element = document.createElement('div');
+
+      Formio.createForm(element, comp4).then(form => {
+        const aceTextArea = form.getComponent(['jsonTextarea']);
+        assert.equal(aceTextArea.data.jsonTextarea, '', 'The value should be empty');
+        done();
       }).catch(done);
     });
 
