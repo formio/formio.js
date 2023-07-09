@@ -1527,7 +1527,7 @@ export default class Webform extends NestedDataComponent {
                   return { ...error, message: this.t(toInterpolate, context), context: { ...context } };
                 });
                 const componentInstance = this.children[path];
-                componentInstance.setComponentValidity(interpolatedErrors, true, false);
+                componentInstance?.setComponentValidity(interpolatedErrors, true, false);
                 return [];
               }
             ]
