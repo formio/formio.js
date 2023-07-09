@@ -7,7 +7,7 @@ import fileProcessor from '../../providers/processor/fileProcessor';
 import BMF from 'browser-md5-file';
 
 let Camera;
-let webViewCamera = navigator.camera || Camera;
+let webViewCamera = 'undefined' !== typeof window ? navigator.camera : Camera;
 
 // canvas.toBlob polyfill.
 
