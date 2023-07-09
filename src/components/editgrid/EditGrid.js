@@ -1269,6 +1269,18 @@ export default class EditGridComponent extends NestedArrayComponent {
     return superValid;
   }
 
+  setRowInvalid(ref, index) {
+    const editRow = this.editRows[index];
+    const errorContainer = ref.querySelector('.editgrid-row-error');
+    if (errorContainer && (!this.component.rowDrafts || this.shouldValidateDraft(editRow))) {
+      this.addClass(errorContainer,  'help-block' );
+      errorContainer.textContent = this.t(this.errorMessage('invalidRowError'));
+    }
+    else if (errorContainer) {
+      errorContainer.textContent = '';
+    }
+  }
+
   changeState(changed, flags) {
     if (changed || (flags.resetValue && this.component.modalEdit)) {
       this.rebuild();

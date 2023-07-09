@@ -344,6 +344,13 @@ export default class Component extends Element {
      */
     this.parent = this.options.parent;
 
+    /**
+       * Points to a flat map of child components (if applicable).
+       *
+       * @type {Object}
+       */
+    this.children = {};
+
     this.options.name = this.options.name || 'data';
 
     /**
@@ -3192,18 +3199,45 @@ export default class Component extends Element {
     const hasErrors = !!messages.filter(message => message.level === 'error').length;
 
     let invalidInputRefs = inputRefs;
+    // Filter the invalid input refs in multiple components
     if (this.component.multiple) {
-      const inputRefsArray = Array.from(inputRefs);
-      inputRefsArray.forEach((input) => {
+      const refsArray = Array.from(inputRefs);
+      refsArray.forEach((input) => {
         this.setElementInvalid(this.performInputMapping(input), false);
       });
-      this.setInputWidgetErrorClasses(inputRefsArray, false);
+      this.setInputWidgetErrorClasses(refsArray, false);
 
-      invalidInputRefs = inputRefsArray.filter((ref, index) => {
+      invalidInputRefs = refsArray.filter((ref, index) => {
         return messages.some?.((msg) => {
           return msg?.context?.index === index;
         });
       });
+    }
+    else if (this.inEditGrid) {
+      let rowsValid = true;
+      let rowsEditing = false;
+      const rowRefs = this.parent?.rowRefs || [];
+      rowRefs.forEach((ref, index) => {
+        const editRow = this.parent?.editRows[index];
+        const invalidRow = messages.some((message) => message.context?.index === index);
+        if (invalidRow) {
+          rowsValid = false;
+          this.parent?.setRowInvalid(ref, index);
+        }
+        // If this is a dirty check, and any rows are still editing, we need to throw validation error.
+        rowsEditing |= (dirty && this.parent.isOpen(editRow));
+      });
+
+      if (!rowsValid) {
+        if (!this.parent?.component.rowDrafts || this.root?.submitted) {
+          this.parent?.setCustomValidity(this.t(this.errorMessage('invalidRowsError')), dirty);
+          // Delete this class, because otherwise all the components inside EditGrid will has red border even if they are valid
+          this.parent?.removeClass(this.element, 'has-error');
+        }
+      }
+      else if (rowsEditing && this.parent?.saveEditMode) {
+        this.parent?.setCustomValidity(this.t(this.parent?.errorMessage('unsavedRowsError')), dirty);
+      }
     }
     if (messages.length) {
       if (this.refs.messageContainer) {

@@ -35,6 +35,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   init() {
     this.components = this.components || [];
+    this.children = this.children || {};
 
     // Add new values based on minLength.
     this.rows = [];

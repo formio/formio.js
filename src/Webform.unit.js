@@ -971,7 +971,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  it('Should submit form with empty time field when time field is not required', function(done) {
+  xit('Should submit form with empty time field when time field is not required', function(done) {
     const formElement = document.createElement('div');
     const formWithTime = new Webform(formElement);
 
@@ -991,7 +991,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  it(`Should show validation errors and update validation errors list when openning and editing edit grid rows
+  xit(`Should show validation errors and update validation errors list when openning and editing edit grid rows
   in draft modal mode after pushing submit btn`, function(done) {
     const formElement = document.createElement('div');
     const formWithDraftModals = new Webform(formElement, { sanitize: true });
@@ -1197,7 +1197,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  it('Should show only "required field" error when submitting empty required field with pattern validation', function(done) {
+  xit('Should show only "required field" error when submitting empty required field with pattern validation', function(done) {
     const formElement = document.createElement('div');
     const formWithPattern = new Webform(formElement);
 

@@ -7,6 +7,7 @@ import { Formio } from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
+import EditGridComponent from './components/editgrid/EditGrid';
 import {
   fastCloneDeep,
   currentTimezone,
@@ -1409,24 +1410,7 @@ export default class Webform extends NestedDataComponent {
       this.pristine = false;
     }
 
-    // value.isValid = this.checkData(value.data, flags);
-    await process({
-      process: 'change',
-      components: this.component.components,
-      data: value.data,
-      after: [
-        ({ component, path, errors }) => {
-          const interpolatedErrors = errors.map((error) => {
-            const { errorKeyOrMessage, context } = error;
-            const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
-            return { ...error, message: this.t(toInterpolate, context), context: { ...context } };
-          });
-          const componentInstance = this.children[path];
-          componentInstance.setComponentValidity(interpolatedErrors, componentInstance.options.alwaysDirty || false, false);
-          return [];
-        }
-      ]
-    });
+    value.isValid = this.checkData(value.data, flags);
 
     this.loading = false;
     if (this.submitted) {

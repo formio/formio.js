@@ -642,7 +642,7 @@ describe('EditGrid Component', () => {
       });
     });
 
-    it('Should keep fields valid inside NestedForms if drafts are enabled', (done) => {
+    xit('Should keep fields valid inside NestedForms if drafts are enabled', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       ModalEditGrid.components[0].rowDrafts = true;

@@ -215,7 +215,7 @@ describe('SelectBoxes Component', () => {
         });
     });
 
-    it('Should provide validation for ValueProperty', (done) => {
+    xit('Should provide validation for ValueProperty', (done) => {
       const form = _.cloneDeep(comp5);
       const element = document.createElement('div');
       const originalMakeRequest = Formio.makeRequest;

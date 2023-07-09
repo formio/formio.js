@@ -362,7 +362,12 @@ export default class NestedComponent extends Field {
     else {
       this.components.push(comp);
     }
-    this.root.children[comp.path] = comp;
+    if (this.root) {
+      this.root.children[comp.path] = comp;
+    }
+    else {
+      this.children[comp.path] = comp;
+    }
     return comp;
   }
 
@@ -384,6 +389,7 @@ export default class NestedComponent extends Field {
 
   init() {
     this.components = this.components || [];
+    this.children = this.children || {};
     this.addComponents();
     return super.init();
   }
@@ -531,9 +537,9 @@ export default class NestedComponent extends Field {
     components = components || this.components;
     component.destroy(all);
     _.remove(components, { id: component.id });
-    // if (this.root.children[component.path]) {
-    //   delete this.root.children[component.path];
-    // }
+    if (this.root?.children[component.path]) {
+      delete this.root.children[component.path];
+    }
   }
 
   /**
