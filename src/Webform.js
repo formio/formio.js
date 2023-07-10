@@ -1525,7 +1525,7 @@ export default class Webform extends NestedDataComponent {
                   const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
                   return { ...error, message: unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
                 });
-                const componentInstance = this.children[path];
+                const componentInstance = this.componentsMap[path];
                 componentInstance?.setComponentValidity(interpolatedErrors, true, false);
                 return [];
               }

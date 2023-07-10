@@ -17,7 +17,6 @@ export default class NestedComponent extends Field {
     super(component, options, data);
     this.type = 'components';
     this._collapsed = !!this.component.collapsed;
-    this.children = {};
   }
 
   get defaultSchema() {
@@ -363,10 +362,10 @@ export default class NestedComponent extends Field {
       this.components.push(comp);
     }
     if (this.root) {
-      this.root.children[comp.path] = comp;
+      this.root.componentsMap[comp.path] = comp;
     }
     else {
-      this.children[comp.path] = comp;
+      this.componentsMap[comp.path] = comp;
     }
     return comp;
   }
@@ -389,7 +388,6 @@ export default class NestedComponent extends Field {
 
   init() {
     this.components = this.components || [];
-    this.children = this.children || {};
     this.addComponents();
     return super.init();
   }
