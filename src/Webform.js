@@ -7,7 +7,6 @@ import { Formio } from './Formio';
 import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
-import EditGridComponent from './components/editgrid/EditGrid';
 import {
   fastCloneDeep,
   currentTimezone,
@@ -1524,7 +1523,7 @@ export default class Webform extends NestedDataComponent {
                 const interpolatedErrors = errors.map((error) => {
                   const { errorKeyOrMessage, context } = error;
                   const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
-                  return { ...error, message: this.t(toInterpolate, context), context: { ...context } };
+                  return { ...error, message: unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
                 });
                 const componentInstance = this.children[path];
                 componentInstance?.setComponentValidity(interpolatedErrors, true, false);
