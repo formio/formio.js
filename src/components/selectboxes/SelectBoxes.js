@@ -187,7 +187,7 @@ export default class SelectBoxesComponent extends RadioComponent {
           key = valuesKeys.find((k) => input?.value.toString() === k);
         }
         const isChecked = value[key];
-        if ((isChecked && key) || (this.isSelectURL && !this.shouldLoad && _.findIndex(this.selectData, this.listData[index]) !== -1)) {
+        if ((isChecked && key) || (this.isSelectURL && !this.shouldLoad && this.listData && _.findIndex(this.selectData, this.listData[index]) !== -1)) {
           //add class to container when selected
           this.addClass(wrapper, this.optionSelectedClass);
           //change "checked" attribute
