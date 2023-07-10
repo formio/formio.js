@@ -2,6 +2,7 @@ export default {
   unsavedRowsError: 'Please save all rows before proceeding.',
   invalidRowsError: 'Please correct invalid rows before proceeding.',
   invalidRowError: 'Invalid row. Please correct it or delete.',
+  invalidOption: '{{field}} is an invalid value.',
   alertMessageWithLabel: '{{label}}: {{message}}',
   alertMessage: '{{message}}',
   complete: 'Submission Complete',
