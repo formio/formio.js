@@ -818,9 +818,9 @@ export default class Component extends Element {
     if (text in enTranslation && params._userInput) {
       return text;
     }
-    params.data = this.rootValue;
-    params.row = this.data;
-    params.component = this.component;
+    params.data = params.data || this.rootValue;
+    params.row = params.row || this.data;
+    params.component = params.component || this.component;
     return super.t(text, params, ...args);
   }
 
