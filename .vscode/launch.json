@@ -10,10 +10,6 @@
             "name": "Mocha Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
-              "--require",
-              "@babel/register",
-              "--require",
-              "jsdom-global/register",
               "-b",
               "-t",
               "20000",
@@ -25,6 +21,14 @@
             "skipFiles": [
               "<node_internals>/**"
             ]
-          }
+          },
+          {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Mocha Tests via Yarn",
+            "runtimeExecutable": "yarn",
+            "cwd": "${workspaceFolder}",
+            "runtimeArgs": ["test"],
+        }
     ]
 }

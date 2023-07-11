@@ -286,7 +286,7 @@ export default class Wizard extends Webform {
   }
 
   attach(element) {
-    this.element = element;
+    this.setElement(element);
     this.loadRefs(element, {
       [this.wizardKey]: 'single',
       [`${this.wizardKey}-header`]: 'single',
@@ -899,8 +899,9 @@ export default class Wizard extends Webform {
     this._submission = submission;
     if (
       (flags && flags.fromSubmission && (this.options.readOnly || this.editMode) && !this.isHtmlRenderMode()) ||
-      (flags && flags.fromSubmission && (this.prefixComps.length || this.suffixComps.length) && submission._id)
-      ) {
+      (flags && flags.fromSubmission && (this.prefixComps.length || this.suffixComps.length) && submission._id) ||
+      (this.options.server && (this.prefixComps.length || this.suffixComps.length))
+    ) {
       this._data = submission.data;
     }
 

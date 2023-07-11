@@ -3,13 +3,13 @@
     {{ctx.sidebar}}
   </div>
   <div class="col-xs-8 col-sm-9 col-md-10 formarea">
-    <ol class="breadcrumb">
+    <ol class="breadcrumb wizard-pages">
       {% ctx.pages.forEach(function(page, pageIndex) { %}
       <li>
         <span title="{{page.title}}" class="me-2 badge {% if (pageIndex === ctx.self.page) { %}bg-primary{% } else { %}bg-info{% } %} wizard-page-label" ref="gotoPage">{{page.title}}</span>
       </li>
       {% }) %}
-      <li>
+      <li class="wizard-add-page">
         <span title="{{ctx.t('Create Page')}}" class="me-2 badge bg-success wizard-page-label" ref="addPage">
           <i class="{{ctx.iconClass('plus')}}"></i> {{ctx.t('Page')}}
         </span>

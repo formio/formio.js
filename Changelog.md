@@ -4,21 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0-rc.1]
-### Breaking Change
- - Upgrade to Bootstrap 5
- - Replace SDK with @formio/core SDK.
- - Remove Semantic template and Bootstrap 3 template from build.  Use import @formio/bootstrap3 or @formio/semantic instead.
-
+## [Unreleased: 5.0.0-rc.5]
 ### Added
  - FIO-5986: added check for identical uploaded file
  - FIO-6453: added sanitization inside error message container
  - FIO-6345: Add rel=noopener to Links to Docs / External Links
+ - FIO-5042: Logout feature for OIDC
  
 ### Fixed
- - FIO-6512: cannot drag and drop components on to pdf first forms using mac
- - FIO-6468: fixed an issue where Custom validation on Day component is confusing Day and Year
- - Revert "Fio 6512 cannot drag and drop components on to pdf first forms using mac"
  - FIO-6616: fixed issue where the select templates were not getting set correctly in selectData
  - FIO-6533: fixed an issue where file upload hash causing delays in file uploads
  - FIO-6407: updated tests for Select Component
@@ -39,13 +32,63 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6761: removed Storage Type setting for Radio
  - FIO-6711: FormIo-angular can edit PDF form in Chrome
  - FIO-4232: fixed an issue where form controller does not work for wizard forms in builder
+ - FIO-6760: fixed an issue where in select component when use resource multiple values data isn't rendered correctly
+ - FIO-5263: Fixed issues with keyboard controls for formbuilder
+ - FIO-6800: fixed issue where select dropdowns go behind the component settings modal
+ - FIO-6600: fixed opening of the settings window
+ - FIO-6661: Fixed DateTime widget throwing an error and not switching languages after changing the language of the form
+ - FIO-6654: fixed UI issue with Checkbox condition
+ - FIO-5398: Fixes special characters not escaped in regex is Select search field
+ - FIO-6156: Updated help links according to the new documentation structure
+ - FIO-6762: added ValueProperty validation
+ - FIO 6582: fix bug in auto-focused TextArea components
+ - FIO-6862: Fixes some cases when component value is calculated in loop causing stack overflow
+ - FIO-6892: Temporarely hide the Addons tab
+ - FIO 5954: Backport Travis' memory leak fixes from m release to master
+ - FIO-6895: fixed interpolation for falsy values
+ - FIO-6965: fixed file upload via pdf proxy
+ - FIO-6165: Updated help link for signature component
+ - FIO-5527: Fixed an issue where value in TextArea with wysiwyg editor is not getting cleared on reset
+ - FIO-6901: Fixed custom headers not being passed through custom request options in File component
+ - FIO-5566: Fixes an issue where deprication warning appears in the console when using Day component with dateFirst setting
+ - FIO-4809: Fixes an issue where value of Wizard suffix/prefix components will be deleted during validation on serve
+ - FIO-6604: fixed padding for Numbers inside Content
+ - FIO-7030: Fixes an issue where Wizard pages are displayed in one line in the for builder
+ - FIO-5857 Update flatpickr to a version with the latest changes
+ - FIO-7049: fixed data populating in the Data Table
 
-## 4.16.0-rc.1
+## 5.0.0-rc.4
+### Fixed
+ - Version export to work with compilation as well as unit tests.
+
+## 5.0.0-rc.3
+### Fixed
+ - Re-introduce the old types folder until we can resolve issues with Angular dependencies.
+
+## 5.0.0-rc.2
+### Breaking Change
+ - Removed default Bootstrap 4 template and replaced with Bootstrap 5. If you need Bootstrap 4, you can use the following.
+
+npm install --save @formio/bootstrap
+
+import bootstrap4 from '@formio/bootstrap/bootstrap4';
+import { Formio } from 'formiojs';
+Formio.use(bootstrap4);
+
+## 5.0.0-rc.1
+### Breaking Change
+ - Upgrade to Bootstrap 5
+ - Replace SDK with @formio/core SDK.
+ - Remove Semantic template and Bootstrap 3 template from build.  Use import @formio/bootstrap3 or @formio/semantic instead.
+
 ### Added
  - FIO-4429: Add support for pdf auto conversion fields assignment
  - Added basic keyboard accessibility for formbuilder
  
 ### Fixed
+ - FIO-6512: cannot drag and drop components on to pdf first forms using mac
+ - FIO-6468: fixed an issue where Custom validation on Day component is confusing Day and Year
+ - Revert "Fio 6512 cannot drag and drop components on to pdf first forms using mac"
  - FIO-6229: fixed displaying html value on Data tab for inputFormat plain
  - FIO-6191: fixed an issue where addons are not created
  - FIO-6148: fixed an issue where boxsign returns an error when editing submission

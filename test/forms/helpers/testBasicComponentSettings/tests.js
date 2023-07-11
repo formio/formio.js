@@ -278,8 +278,9 @@ export default {
       done();
     },
   },
+  
   redrawOn: {
-    'Should redrow on checkbox value change'(form, done) {
+    'Should redraw on checkbox value change'(form, done) {
       const checkboxValue = form.data.checkbox;
 
       assert.deepEqual(checkboxValue, false, 'Should set checkbox value to false');
@@ -308,6 +309,7 @@ export default {
       });
     },
   },
+
   multiple: {
     'Should render component in multiple mode and able to add/remove value'(form, done) {
       const testComponents = form.components.filter(comp => !['select', 'file'].includes(comp.component.type));
