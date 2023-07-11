@@ -623,12 +623,41 @@ export default class Component extends Element {
     return this._parentDisabled;
   }
 
+  shouldForceVisibility(component, visibility) {
+    if (!this.options[visibility]) {
+      return false;
+    }
+    if (!component) {
+      component = this.component;
+    }
+    if (_.isArray(this.options[visibility])) {
+      return this.options[visibility].includes(component.key);
+    }
+    return this.options[visibility][component.key];
+  }
+
+  shouldForceHide(component) {
+    return this.shouldForceVisibility(component, 'hide');
+  }
+
+  shouldForceShow(component) {
+    return this.shouldForceVisibility(component, 'show');
+  }
+
   /**
    *
    * @param value {boolean}
    */
   set visible(value) {
     if (this._visible !== value) {
+      // Skip if this component is set to visible and is supposed to be hidden.
+      if (value && this.shouldForceHide()) {
+        return;
+      }
+      // Skip if this component is set to hidden and is supposed to be shown.
+      if (!value && this.shouldForceShow()) {
+        return;
+      }
       this._visible = value;
       this.clearOnHide();
       this.redraw();
@@ -644,19 +673,12 @@ export default class Component extends Element {
     if (this.builderMode || this.previewMode || this.options.showHiddenFields) {
       return true;
     }
-    if (
-      this.options.hide &&
-      this.options.hide[this.component.key]
-    ) {
+    if (this.shouldForceHide()) {
       return false;
     }
-    if (
-      this.options.show &&
-      this.options.show[this.component.key]
-    ) {
+    if (this.shouldForceShow()) {
       return true;
     }
-
     return this._visible && this._parentVisible;
   }
 
