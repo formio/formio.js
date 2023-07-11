@@ -59,6 +59,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6840: change unique validation for email comps and certain textfield comps
  - Task/remove dist lib docs
  - FIO-7054: Fixes an issue where after saving Wizard Panel settings, some of them disappear
+ - FIO-7002: Fixing hide and show options to change visibility of components
 
 ## 5.0.0-rc.4
 ### Fixed
