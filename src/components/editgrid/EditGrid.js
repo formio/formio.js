@@ -553,7 +553,9 @@ export default class EditGridComponent extends NestedArrayComponent {
             if (this.options.readOnly && _.intersection(element.classList, ['editRow', 'removeRow']).length) {
               element.style.display = 'none';
             }
-            this.addEventListener(element, event, action);
+            else {
+              this.addEventListener(element, event, action);
+            }
           });
         });
       }
