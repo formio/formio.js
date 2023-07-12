@@ -62,6 +62,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7002: Fixing hide and show options to change visibility of components
  - FIO-6659: added warnings for Tree and Resource
  - FIO-5730: fixed template for Select on PDF download
+ - FIO-5303: fixed Edit and Delete buttons in readOnly
 
 ## 5.0.0-rc.4
 ### Fixed
