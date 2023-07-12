@@ -79,8 +79,11 @@ export default [
     input: true,
     weight: 15,
     placeholder: `{
-  "withCredentials": true
-}`,
+      "withCredentials": true,
+      "headers": {
+        "Authorization": "Basic <key>"
+      }
+    }`,
     conditional: {
       json: {
         '===': [{

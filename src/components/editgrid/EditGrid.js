@@ -45,7 +45,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       title: 'Edit Grid',
       icon: 'tasks',
       group: 'data',
-      documentation: '/userguide/forms/data-components#edit-grid',
+      documentation: '/userguide/form-building/data-components#edit-grid',
       weight: 30,
       schema: EditGridComponent.schema(),
     };
@@ -176,7 +176,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   /**
    * Returns true if the component has nested components which don't trigger changes on the root level
-   */
+   *///
   get hasScopedChildren() {
     return !this.inlineEditMode;
   }
@@ -550,7 +550,12 @@ export default class EditGridComponent extends NestedArrayComponent {
         }) => {
           const elements = row.getElementsByClassName(className);
           Array.prototype.forEach.call(elements, (element) => {
-            this.addEventListener(element, event, action);
+            if (this.options.readOnly && _.intersection(element.classList, ['editRow', 'removeRow']).length) {
+              element.style.display = 'none';
+            }
+            else {
+              this.addEventListener(element, event, action);
+            }
           });
         });
       }
@@ -664,17 +669,17 @@ export default class EditGridComponent extends NestedArrayComponent {
     return this.builderMode
       ? super.getComponents()
       : _.isNumber(rowIndex)
-        ? (this.editRows[rowIndex].components || [])
+        ? (this.editRows[rowIndex]?.components || [])
         : this.editRows.reduce((result, row) => result.concat(row.components || []), []);
   }
 
-  destroyComponents(rowIndex) {
+  destroyComponents(all = false, rowIndex = 0) {
     if (this.builderMode) {
-      return super.destroyComponents();
+      return super.destroyComponents(all);
     }
 
     const components = this.getComponents(rowIndex).slice();
-    components.forEach((comp) => this.removeComponent(comp, this.components));
+    components.forEach((comp) => this.removeComponent(comp, this.components, all));
   }
 
   createRow(dataObj, rowIndex) {
@@ -875,7 +880,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         editRow.state = EditRowState.Removed;
 
         this.clearErrors(rowIndex);
-        this.destroyComponents(rowIndex);
+        this.destroyComponents(false, rowIndex);
         if (this.inlineEditMode) {
           this.splice(rowIndex);
         }
@@ -933,6 +938,9 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     if (this.saveEditMode) {
       const dataValue = this.dataValue;
+      if (this.root?.focusedComponent?.component.typeChangeEnabled) {
+        this.root.focusedComponent = null;
+      }
       switch (editRow.state) {
         case EditRowState.New: {
           const newIndex = dataValue.length;
@@ -1012,7 +1020,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     const editRow = this.editRows[rowIndex];
 
     editRow.state = EditRowState.Removed;
-    this.destroyComponents(rowIndex);
+    this.destroyComponents(false, rowIndex);
 
     return editRow;
   }
@@ -1039,6 +1047,15 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   createRowComponents(row, rowIndex, recreatePartially) {
+    // Iterate through existing components and destroy the ones with the same rowIndex.
+    if (this.components) {
+      for (let i = 0; i < this.components.length; i++) {
+        if (this.components[i].rowIndex === rowIndex) {
+          this.components[i].destroy();
+          this.components.splice(i, 1);
+        }
+      }
+    }
     const currentRowComponents = _.get(this.editRows, `[${rowIndex}].components`, null);
     return this.component.components.map((col, colIndex) => {
       if (recreatePartially && currentRowComponents && this.variableTypeComponentsIndexes.length) {
@@ -1342,7 +1359,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   emptyRows() {
-    this.editRows.forEach((editRow, index) => this.destroyComponents(index));
+    this.editRows.forEach((editRow, index) => this.destroyComponents(false, index));
     this.editRows = [];
   }
 

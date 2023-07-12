@@ -7,7 +7,7 @@ import fileProcessor from '../../providers/processor/fileProcessor';
 import BMF from 'browser-md5-file';
 
 let Camera;
-let webViewCamera = navigator.camera || Camera;
+let webViewCamera = 'undefined' !== typeof window ? navigator.camera : Camera;
 
 // canvas.toBlob polyfill.
 
@@ -59,7 +59,7 @@ export default class FileComponent extends Field {
       title: 'File',
       group: 'premium',
       icon: 'file',
-      documentation: '/userguide/forms/premium-components#file',
+      documentation: '/userguide/form-building/premium-components#file',
       weight: 100,
       schema: FileComponent.schema(),
     };
@@ -863,8 +863,8 @@ export default class FileComponent extends Field {
     }
   }
 
-  destroy() {
+  destroy(all = false) {
     this.stopVideo();
-    super.destroy();
+    super.destroy(all);
   }
 }

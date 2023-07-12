@@ -12,6 +12,12 @@ export default [
   },
   {
     key: 'hideLabel',
+    customConditional(context) {
+      return context.instance.options?.flags?.inDataGrid;
+    },
+  },
+  {
+    key: 'dataGridLabel',
     ignore: true,
   },
   {

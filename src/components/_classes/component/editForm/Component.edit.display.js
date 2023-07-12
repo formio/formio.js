@@ -164,7 +164,7 @@ export default [
     weight: 1370,
     type: 'checkbox',
     label: 'Show Label in DataGrid',
-    tooltip: 'Show the label when in a Datagrid.',
+    tooltip: 'Show the label inside each row when in a Datagrid.',
     key: 'dataGridLabel',
     input: true,
     customConditional(context) {

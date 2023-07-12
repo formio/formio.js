@@ -19,7 +19,7 @@ export default class SurveyComponent extends Field {
       group: 'advanced',
       icon: 'list',
       weight: 110,
-      documentation: '/userguide/forms/form-components#survey',
+      documentation: '/userguide/form-building/advanced-components#survey',
       schema: SurveyComponent.schema()
     };
   }

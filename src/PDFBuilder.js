@@ -249,7 +249,7 @@ export default class PDFBuilder extends WebformBuilder {
 
         _.set(this.webform.form, 'settings.pdf', {
           id: result.data.file,
-          src: `${result.data.filesServer}${result.data.path}`,
+          src: result.data.filesServer ? `${result.data.filesServer}${result.data.path}` : `${new URL(this.projectUrl).origin}/pdf-proxy${result.data.path}`,
           nonFillableConversionUsed: autoConversionComponentsAssigned && result.data.formfields.nonFillableConversionUsed
         });
 
@@ -281,9 +281,9 @@ export default class PDFBuilder extends WebformBuilder {
     return this.webform;
   }
 
-  destroy(deleteFromGlobal) {
-    super.destroy(deleteFromGlobal);
-    this.webform.destroy(deleteFromGlobal);
+  destroy(all = false) {
+    super.destroy(all);
+    this.webform.destroy(all);
   }
 
   // d8b 8888888888                                                                              888
@@ -456,7 +456,8 @@ export default class PDFBuilder extends WebformBuilder {
     // If there hasn't been a drop event on the dropzone, we're done
     if (!this.dropEvent) {
       // a 'drop' event may not be emited in the chrome browser when using a Mac, therefore an additional check has been added
-      if (!this.dropEmitted && getBrowserInfo().chrome && global.navigator.userAgentData.platform === 'macOS' && iframeRect.left < e.clientX && iframeRect.top < e.clientY ) {
+      // eslint-disable-next-line no-undef
+      if (!this.dropEmitted && getBrowserInfo().chrome && globalThis.navigator.userAgentData.platform === 'macOS' && iframeRect.left < e.clientX && iframeRect.top < e.clientY ) {
         this.dropEvent = e;
         this.dropEvent.dataTransfer.effectAllowed = 'all';
         this.dropEmitted = true;

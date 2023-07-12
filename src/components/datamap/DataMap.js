@@ -33,7 +33,7 @@ export default class DataMapComponent extends DataGridComponent {
       title: 'Data Map',
       icon: 'th-list',
       group: 'data',
-      documentation: '/userguide/forms/data-components#data-map',
+      documentation: '/userguide/form-building/data-components#data-map',
       weight: 20,
       schema: DataMapComponent.schema()
     };
