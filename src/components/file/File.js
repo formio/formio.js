@@ -1,5 +1,5 @@
 import Field from '../_classes/field/Field';
-import { componentValueTypes, getComponentSavedTypesBasedOnCommonSettings, uniqueName } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
@@ -75,7 +75,7 @@ export default class FileComponent extends Field {
   static savedValueTypes(schema) {
     schema = schema || {};
 
-    return  getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.object];
+    return  getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   init() {

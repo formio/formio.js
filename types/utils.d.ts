@@ -7,7 +7,7 @@ export namespace Utils {
   const componentValueTypes: { [key: string]: string };
   const Evaluator: any;
   const _: any;
-  function getComponentSavedTypesBasedOnCommonSettings(schema: object): Array<any> | null;
+  function getComponentSavedTypes(schema: object): Array<any> | null;
   function evaluate(
     func: any,
     args: { component: any; form: any; instance: any; row: any; data: any } | any,

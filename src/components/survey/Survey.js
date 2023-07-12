@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Field from '../_classes/field/Field';
-import { boolValue, componentValueTypes, getComponentSavedTypesBasedOnCommonSettings } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 
 export default class SurveyComponent extends Field {
   static schema(...extend) {
@@ -32,7 +32,7 @@ export default class SurveyComponent extends Field {
   }
 
   static savedValueTypes(schema) {
-    return getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.object];
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   get defaultSchema() {

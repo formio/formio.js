@@ -1558,7 +1558,7 @@ export const componentValueTypes = {
   any: 'any',
 };
 
-export function getComponentSavedTypesBasedOnCommonSettings(fullSchema) {
+export function getComponentSavedTypes(fullSchema) {
   const schema = fullSchema || {};
 
   if (schema.persistent !== true) {

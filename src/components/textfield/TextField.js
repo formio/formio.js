@@ -44,7 +44,7 @@ export default class TextFieldComponent extends Input {
   }
 
   static savedValueTypes(schema) {
-    return  FormioUtils.getComponentSavedTypesBasedOnCommonSettings(schema) || [FormioUtils.componentValueTypes.string];
+    return  FormioUtils.getComponentSavedTypes(schema) || [FormioUtils.componentValueTypes.string];
   }
 
   get defaultSchema() {

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypesBasedOnCommonSettings } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Field from '../_classes/field/Field';
 
 export default class CheckBoxComponent extends Field {
@@ -48,7 +48,7 @@ export default class CheckBoxComponent extends Field {
 
   static savedValueTypes(schema) {
     schema = schema || {};
-    const types = getComponentSavedTypesBasedOnCommonSettings(schema);
+    const types = getComponentSavedTypes(schema);
 
     if (_.isArray(types)) {
       return types;

@@ -1,4 +1,4 @@
-import { componentValueTypes, getComponentSavedTypesBasedOnCommonSettings } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Input from '../_classes/input/Input';
 
 let Choices;
@@ -39,7 +39,7 @@ export default class TagsComponent extends Input {
   static savedValueTypes(schema) {
     schema = schema || {};
 
-    return  getComponentSavedTypesBasedOnCommonSettings(schema) ||[componentValueTypes[schema.storeas] || componentValueTypes.string];
+    return  getComponentSavedTypes(schema) ||[componentValueTypes[schema.storeas] || componentValueTypes.string];
   }
 
   init() {

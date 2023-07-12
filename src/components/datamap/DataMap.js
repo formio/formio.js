@@ -2,7 +2,7 @@ import Component from '../_classes/component/Component';
 import DataGridComponent from '../datagrid/DataGrid';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter3';
-import { componentValueTypes, getComponentSavedTypesBasedOnCommonSettings, uniqueKey } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, uniqueKey } from '../../utils/utils';
 
 export default class DataMapComponent extends DataGridComponent {
   static schema(...extend) {
@@ -48,7 +48,7 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   static savedValueTypes(schema) {
-    return getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.object];
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   constructor(component, options, data) {

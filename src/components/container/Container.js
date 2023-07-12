@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypesBasedOnCommonSettings, getFocusableElements } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, getFocusableElements } from '../../utils/utils';
 
 import Component from '../_classes/component/Component';
 import Field from '../_classes/field/Field';
@@ -36,7 +36,7 @@ export default class ContainerComponent extends NestedDataComponent {
   }
 
   static savedValueTypes(schema) {
-    return  getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.object];
+    return  getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   addComponents(data, options) {

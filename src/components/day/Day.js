@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import Field from '../_classes/field/Field';
-import { boolValue, componentValueTypes, getComponentSavedTypesBasedOnCommonSettings, getLocaleDateFormatInfo } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypes, getLocaleDateFormatInfo } from '../../utils/utils';
 
 export default class DayComponent extends Field {
   static schema(...extend) {
@@ -50,7 +50,7 @@ export default class DayComponent extends Field {
 
   static savedValueTypes(schema) {
     schema = schema || {};
-    return getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.string];
+    return getComponentSavedTypes(schema) || [componentValueTypes.string];
   }
 
   constructor(component, options, data) {

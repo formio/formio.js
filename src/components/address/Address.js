@@ -7,7 +7,7 @@ import { GoogleAddressProvider } from '../../providers/address/GoogleAddressProv
 import Field from '../_classes/field/Field';
 import NestedComponent from '../_classes/nested/NestedComponent';
 import ContainerComponent from '../container/Container';
-import { componentValueTypes, getComponentSavedTypesBasedOnCommonSettings } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 
 export const AddressComponentMode = {
   Autocomplete: 'autocomplete',
@@ -86,7 +86,7 @@ export default class AddressComponent extends ContainerComponent {
   static savedValueTypes(schema) {
     schema = schema || {};
 
-    return getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.object];
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   static get builderInfo() {

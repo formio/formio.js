@@ -232,7 +232,7 @@ export default class Component extends Element {
   static savedValueTypes(schema) {
     schema = schema || {};
 
-    return FormioUtils.getComponentSavedTypesBasedOnCommonSettings(schema) || [FormioUtils.componentValueTypes.any];
+    return FormioUtils.getComponentSavedTypes(schema) || [FormioUtils.componentValueTypes.any];
   }
   /**
    * Provides a table view for this component. Override if you wish to do something different than using getView

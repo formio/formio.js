@@ -2,7 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import Input from '../_classes/input/Input';
 import FormioUtils from '../../utils';
-import { componentValueTypes, getComponentSavedTypesBasedOnCommonSettings } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 
 export default class DateTimeComponent extends Input {
   static schema(...extend) {
@@ -70,7 +70,7 @@ export default class DateTimeComponent extends Input {
   static savedValueTypes(schema) {
     schema = schema || {};
 
-    return  getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.date];
+    return  getComponentSavedTypes(schema) || [componentValueTypes.date];
   }
 
   constructor(component, options, data) {

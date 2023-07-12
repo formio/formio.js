@@ -2,7 +2,7 @@
 import Component from '../component/Component';
 import NestedComponent from '../nested/NestedComponent';
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypesBasedOnCommonSettings } from '../../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../../utils/utils';
 
 export default class NestedDataComponent extends NestedComponent {
   hasChanged(newValue, oldValue) {
@@ -18,7 +18,7 @@ export default class NestedDataComponent extends NestedComponent {
   }
 
   static savedValueTypes(schema) {
-    return getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.object];
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   get allowData() {

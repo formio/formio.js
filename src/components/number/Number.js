@@ -2,7 +2,7 @@ import { maskInput, conformToMask } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
 import { createNumberMask } from '@formio/text-mask-addons';
 import Input from '../_classes/input/Input';
-import { getNumberSeparators, getNumberDecimalLimit, componentValueTypes, getComponentSavedTypesBasedOnCommonSettings } from '../../utils/utils';
+import { getNumberSeparators, getNumberDecimalLimit, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 
 export default class NumberComponent extends Input {
   static schema(...extend) {
@@ -42,7 +42,7 @@ export default class NumberComponent extends Input {
 
   static savedValueTypes(schema) {
     schema = schema || {};
-    return getComponentSavedTypesBasedOnCommonSettings(schema) || [componentValueTypes.number];
+    return getComponentSavedTypes(schema) || [componentValueTypes.number];
   }
 
   constructor(...args) {
