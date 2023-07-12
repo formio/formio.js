@@ -535,8 +535,8 @@ export default class NestedComponent extends Field {
     components = components || this.components;
     component.destroy(all);
     _.remove(components, { id: component.id });
-    if (this.root?.children[component.path]) {
-      delete this.root.children[component.path];
+    if (this.root?.componentsMap[component.path]) {
+      delete this.root.componentsMap[component.path];
     }
   }
 
