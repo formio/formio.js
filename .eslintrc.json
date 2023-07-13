@@ -1,6 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": "formio",
+  "extends": ["formio", "prettier"],
   "parserOptions": {
     "ecmaVersion": 2015,
     "sourceType": "module"
@@ -29,10 +29,6 @@
     "no-console": "off",
     "no-prototype-builtins": "off",
     "prefer-const": "error",
-    "prefer-template": "error",
-    "object-curly-spacing": [
-      "error",
-      "always"
-    ]
+    "prefer-template": "error"
   }
 }
