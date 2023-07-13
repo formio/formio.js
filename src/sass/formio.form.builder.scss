@@ -129,6 +129,9 @@
 
 .component-settings .formio-dialog-content {
   max-height: 100%;
+  .ck-editor__editable ol {
+    padding-inline-start: 40px;
+  }
 }
 
 .component-btn-group .btn.component-settings-button-paste {
@@ -170,24 +173,6 @@
 
 .formio-wizard-position {
   position: relative;
-}
-
-.wizard-page-container {
-  display: flex;
-}
-
-.wizard-pages{
-  display: flex;
-  list-style-type: none;
-  margin-bottom: 0;
-  padding-left: 0;
-  li:not(:first-child) {
-    margin-left: 20px;
-  }
-}
-
-.wizard-add-page{
-  margin-left: 20px;
 }
 
 .gu-mirror {

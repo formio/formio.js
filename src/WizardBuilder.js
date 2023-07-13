@@ -185,6 +185,15 @@ export default class WizardBuilder extends WebformBuilder {
     return super.attach(element);
   }
 
+  detach() {
+    if (this.navigationDragula) {
+      this.navigationDragula.destroy();
+    }
+    this.navigationDragula = null;
+
+    super.detach();
+  }
+
   rebuild() {
     const page = this.currentPage;
     this.webform.setForm({
@@ -236,13 +245,15 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   onReorder(element, _target, _source, sibling) {
-    if (!element.dragInfo || (sibling && !sibling.dragInfo)) {
+    const isSiblingAnAddPageButton = sibling?.classList.contains('wizard-add-page');
+    // We still can paste before Add Page button
+    if (!element.dragInfo || (sibling && !sibling.dragInfo && !isSiblingAnAddPageButton)) {
       console.warn('There is no Drag Info available for either dragged or sibling element');
       return;
     }
     const oldPosition = element.dragInfo.index;
     //should drop at next sibling position; no next sibling means drop to last position
-    const newPosition = (sibling ? sibling.dragInfo.index : this.pages.length);
+    const newPosition = (sibling && sibling.dragInfo ? sibling.dragInfo.index : this.pages.length);
     const movedBelow = newPosition > oldPosition;
     const formComponents = fastCloneDeep(this._form.components);
     const draggedRowData = this._form.components[oldPosition];
