@@ -33,7 +33,8 @@
     "lint"
   ],
   "scripts": {
-    "build": "yarn lib && yarn dist",
+    "build": "yarn doc && yarn lib && yarn dist",
+    "doc": "esdoc",
     "dist": "gulp clean:dist && webpack --config webpack.config.js && webpack --config webpack.prod.js && gulp build",
     "lib": "gulp clean:lib && tsc --project tsconfig.cjs.json && tsc --project tsconfig.mjs.json && npm run lib:package",
     "lib:package": "node ./libpackage.js",
