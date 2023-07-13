@@ -2,7 +2,6 @@ import Field from '../_classes/field/Field';
 import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
 import fileProcessor from '../../providers/processor/fileProcessor';
 import BMF from 'browser-md5-file';
 
@@ -91,7 +90,7 @@ export default class FileComponent extends Field {
   }
 
   get dataReady() {
-    return this.filesReady || NativePromise.resolve();
+    return this.filesReady || Promise.resolve();
   }
 
   get defaultSchema() {
@@ -172,7 +171,7 @@ export default class FileComponent extends Field {
   }
 
   getFrame(videoPlayer) {
-    return new NativePromise((resolve) => {
+    return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
       canvas.height = videoPlayer.videoHeight;
       canvas.width = videoPlayer.videoWidth;
@@ -233,7 +232,7 @@ export default class FileComponent extends Field {
   }
 
   browseFiles(attrs = {}) {
-    return new NativePromise((resolve) => {
+    return new Promise((resolve) => {
       const fileInput = this.ce('input', {
         type: 'file',
         style: 'height: 0; width: 0; visibility: hidden;',
@@ -500,7 +499,7 @@ export default class FileComponent extends Field {
     const fileService = this.fileService;
     if (fileService) {
       const loadingImages = [];
-      this.filesReady = new NativePromise((resolve, reject) => {
+      this.filesReady = new Promise((resolve, reject) => {
         this.filesReadyResolve = resolve;
         this.filesReadyReject = reject;
       });
@@ -508,7 +507,7 @@ export default class FileComponent extends Field {
         loadingImages.push(this.loadImage(this.dataValue[index]).then((url) => (image.src = url)));
       });
       if (loadingImages.length) {
-        NativePromise.all(loadingImages).then(() => {
+        Promise.all(loadingImages).then(() => {
           this.filesReadyResolve();
         }).catch(() => this.filesReadyReject());
       }

@@ -1,7 +1,6 @@
 import Field from '../field/Field';
 import { Formio } from '../../../Formio';
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
 
 export default class ListComponent extends Field {
   static schema(...extend) {
@@ -122,9 +121,8 @@ export default class ListComponent extends Field {
     const template = this.sanitize(this.getOptionTemplate(data, value), this.shouldSanitizeValue);
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
-      const hasTranslator = this.i18next?.translator;
-      if (!label || (hasTranslator && !this.t(label, { _userInput: true }))) return;
-      return hasTranslator ? template.replace(label, this.t(label, { _userInput: true })) : label;
+      if (!label) return;
+      return template.replace(label, this.t(label, { _userInput: true }));
     }
     else {
       return this.sanitize(JSON.stringify(data), this.shouldSanitizeValue);
@@ -256,7 +254,7 @@ export default class ListComponent extends Field {
             const db = event.target.result;
             const transaction = db.transaction(this.component.indexeddb.table, 'readwrite');
             const objectStore = transaction.objectStore(this.component.indexeddb.table);
-            new NativePromise((resolve) => {
+            new Promise((resolve) => {
               const responseItems = [];
               objectStore.getAll().onsuccess = (event) => {
                 event.target.result.forEach((item) => {

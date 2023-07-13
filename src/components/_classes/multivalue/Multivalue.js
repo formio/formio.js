@@ -1,5 +1,4 @@
 import Field from '../field/Field';
-import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
 export default class Multivalue extends Field {
@@ -94,7 +93,7 @@ export default class Multivalue extends Field {
     });
 
     if (!this.component.multiple) {
-      return NativePromise.all(promises);
+      return Promise.all(promises);
     }
 
     this.refs.removeRow.forEach((removeButton, index) => {
@@ -112,7 +111,7 @@ export default class Multivalue extends Field {
       });
     });
     return superAttach.then(() => {
-      return NativePromise.all(promises);
+      return Promise.all(promises);
     });
   }
 

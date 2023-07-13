@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import ListComponent from '../_classes/list/ListComponent';
-import NativePromise from 'native-promise-only';
 import { Formio } from '../../Formio';
 import { boolValue } from '../../utils/utils';
 
@@ -89,7 +88,7 @@ export default class RadioComponent extends ListComponent {
       if (typeof this.itemsLoadedResolve === 'function') {
         this.itemsLoadedResolve();
       }
-      this.itemsLoaded = new NativePromise((resolve) => {
+      this.itemsLoaded = new Promise((resolve) => {
         this.itemsLoadedResolve = resolve;
       });
       if (args.length) {
@@ -98,7 +97,7 @@ export default class RadioComponent extends ListComponent {
       return triggerUpdate(...updateArgs);
     };
 
-    this.itemsLoaded = new NativePromise((resolve) => {
+    this.itemsLoaded = new Promise((resolve) => {
       this.itemsLoadedResolve = resolve;
     });
     this.optionsLoaded = false;

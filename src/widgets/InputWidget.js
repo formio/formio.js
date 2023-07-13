@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import Element from '../Element';
-import NativePromise from 'native-promise-only';
 export default class InputWidget extends Element {
   static get defaultSettings() {
     return {
@@ -19,7 +18,7 @@ export default class InputWidget extends Element {
 
   attach(input) {
     this._input = input;
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   get defaultSettings() {

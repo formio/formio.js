@@ -1,7 +1,6 @@
 import Input from '../_classes/input/Input';
 import { conformToMask } from '@formio/vanilla-text-mask';
 import * as FormioUtils from '../../utils/utils';
-import NativePromise from 'native-promise-only';
 
 export default class TextFieldComponent extends Input {
   static schema(...extend) {
@@ -246,10 +245,10 @@ export default class TextFieldComponent extends Input {
     let value = this.dataValue;
 
     if (!this.component.truncateMultipleSpaces || !value) {
-      return NativePromise.resolve(value);
+      return Promise.resolve(value);
     }
     value = this.truncateMultipleSpaces(value);
     this.dataValue = value;
-    return NativePromise.resolve(value).then(() => super.beforeSubmit());
+    return Promise.resolve(value).then(() => super.beforeSubmit());
   }
 }

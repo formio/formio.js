@@ -1,5 +1,4 @@
 import assert from 'power-assert';
-import NativePromise from 'native-promise-only';
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
 import Builders from './builders';
@@ -103,7 +102,7 @@ describe('WebformBuilder tests', function() {
     builder.webform.setForm(testApiKeysUniquifying).then(() => {
       const ERROR_MSG = 'Should add a number to the api key of the second component of the same type';
       let containerTestsReady;
-      const containerTestsPromise = new NativePromise((resolve) => containerTestsReady = resolve);
+      const containerTestsPromise = new Promise((resolve) => containerTestsReady = resolve);
 
       const container = builder.webform.element.querySelector(['[ref="container-container"]']);
       Harness.buildComponent('editgrid', container);

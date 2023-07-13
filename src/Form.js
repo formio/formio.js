@@ -3,7 +3,6 @@ import { Formio } from './Formio';
 import Displays from './displays';
 import templates from './templates';
 import * as FormioUtils from './utils/utils';
-import NativePromise from 'native-promise-only';
 
 export default class Form extends Element {
   /**
@@ -34,7 +33,7 @@ export default class Form extends Element {
       Formio.useSessionToken(this.options);
     }
 
-    this.ready = new NativePromise((resolve, reject) => {
+    this.ready = new Promise((resolve, reject) => {
       this.readyResolve = resolve;
       this.readyReject = reject;
     });
@@ -219,7 +218,7 @@ export default class Form extends Element {
     if (formio.submissionId) {
       return formio.loadSubmission(null, opts);
     }
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   /**
@@ -239,7 +238,7 @@ export default class Form extends Element {
    */
   setDisplay(display) {
     if ((this.display === display) && this.instance) {
-      return NativePromise.resolve(this.instance);
+      return Promise.resolve(this.instance);
     }
 
     this.form.display = display;
@@ -257,7 +256,7 @@ export default class Form extends Element {
   }
 
   static embed(embed) {
-    return new NativePromise((resolve) => {
+    return new Promise((resolve) => {
       if (!embed || !embed.src) {
         resolve();
       }
@@ -307,11 +306,11 @@ export default class Form extends Element {
    */
   build() {
     if (!this.instance) {
-      return NativePromise.reject('Form not ready. Use form.ready promise');
+      return Promise.reject('Form not ready. Use form.ready promise');
     }
 
     if (!this.element) {
-      return NativePromise.reject('No DOM element for form.');
+      return Promise.reject('No DOM element for form.');
     }
 
     // Add temporary loader.
@@ -331,9 +330,9 @@ export default class Form extends Element {
 
   render() {
     if (!this.instance) {
-      return NativePromise.reject('Form not ready. Use form.ready promise');
+      return Promise.reject('Form not ready. Use form.ready promise');
     }
-    return NativePromise.resolve(this.instance.render())
+    return Promise.resolve(this.instance.render())
       .then((param) => {
         this.emit('render', param);
         return param;
@@ -342,7 +341,7 @@ export default class Form extends Element {
 
   attach(element) {
     if (!this.instance) {
-      return NativePromise.reject('Form not ready. Use form.ready promise');
+      return Promise.reject('Form not ready. Use form.ready promise');
     }
     if (this.element) {
       delete this.element.component;
