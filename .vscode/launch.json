@@ -17,6 +17,9 @@
               "${workspaceFolder}/src/**/*.unit.js",
               "-t",
               "30000"
+              "${workspaceFolder}/src/**/*.unit.js",
+              "-t",
+              "30000"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "skipFiles": [
@@ -36,7 +39,7 @@
           "request": "launch",
           "name": "Mocha: current file",
           "program": "${workspaceFolder}/node_modules/.bin/mocha",
-          "args": ["-r", "ts-node/register", "-b", "-t", "0", "'${file}'"],
+          "args": ["-b", "-t", "0", "'${file}'"],
           "console": "integratedTerminal",
       }
     ]

@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
-import dragula from 'dragula';
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -319,8 +318,8 @@ export default class DataGridComponent extends NestedArrayComponent {
         row.dragInfo = { index };
       });
 
-      if (dragula) {
-        this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
+      if (this.root.dragulaLib) {
+        this.dragula = this.root.dragulaLib([this.refs[`${this.datagridKey}-tbody`]], {
           moves: (_draggedElement, _oldParent, clickedElement) => {
             const clickedElementKey = clickedElement.getAttribute('data-key');
             const oldParentKey = _oldParent.getAttribute('data-key');

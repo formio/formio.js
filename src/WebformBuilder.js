@@ -11,7 +11,12 @@ import _ from 'lodash';
 import autoScroll from 'dom-autoscroller';
 import Templates from './templates/Templates';
 import './components/builder';
-import dragula from 'dragula';
+
+// We need this here because dragula pulls in CustomEvent class that requires global to exist.
+if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
+  window.global = window;
+}
+import dragula from 'dragula/dist/dragula.min.js';
 
 export default class WebformBuilder extends Component {
   // eslint-disable-next-line max-statements
@@ -31,6 +36,7 @@ export default class WebformBuilder extends Component {
     super(null, options);
 
     this.setElement(element);
+    this.dragulaLib = dragula;
 
     this.builderHeight = 0;
     this.schemas = {};

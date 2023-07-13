@@ -44,7 +44,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6862: Fixes some cases when component value is calculated in loop causing stack overflow
  - FIO-6892: Temporarely hide the Addons tab
  - FIO 5954: Backport Travis' memory leak fixes from m release to master
- - FIO-6895: fixed interpolation for falsy values 
+ - FIO-6895: fixed interpolation for falsy values
+ - FIO-6965: fixed file upload via pdf proxy
+ - FIO-6165: Updated help link for signature component
+ - FIO-5527: Fixed an issue where value in TextArea with wysiwyg editor is not getting cleared on reset
+ - FIO-6901: Fixed custom headers not being passed through custom request options in File component
+ - FIO-5566: Fixes an issue where deprication warning appears in the console when using Day component with dateFirst setting
+ - FIO-4809: Fixes an issue where value of Wizard suffix/prefix components will be deleted during validation on serve
+ - FIO-6604: fixed padding for Numbers inside Content
+ - FIO-7030: Fixes an issue where Wizard pages are displayed in one line in the for builder
+ - FIO-5857 Update flatpickr to a version with the latest changes
+ - FIO-7049: fixed data populating in the Data Table
+ - FIO-6840: change unique validation for email comps and certain textfield comps
+ - Task/remove dist lib docs
+ - FIO-7054: Fixes an issue where after saving Wizard Panel settings, some of them disappear
+ - FIO-7002: Fixing hide and show options to change visibility of components
+ - FIO-6659: added warnings for Tree and Resource
+ - FIO-5730: fixed template for Select on PDF download
+ - FIO-5303: fixed Edit and Delete buttons in readOnly
 
 ## 5.0.0-rc.4
 ### Fixed
