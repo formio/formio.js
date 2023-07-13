@@ -164,7 +164,10 @@ export default class WizardBuilder extends WebformBuilder {
     });
 
     if (this.dragulaLib) {
-      this.dragulaLib([this.element.querySelector('.wizard-pages')])
+      this.navigationDragula = this.dragulaLib([this.element.querySelector('.wizard-pages')], {
+        moves: (el) => (!el.classList.contains('wizard-add-page')),
+        accepts: (el, target, source, sibling) => (sibling ? true : false),
+      })
         .on('drop', this.onReorder.bind(this));
     }
 
