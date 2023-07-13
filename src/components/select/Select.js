@@ -4,11 +4,7 @@ import ListComponent from '../_classes/list/ListComponent';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
 import { getRandomComponentId, boolValue, isPromise } from '../../utils/utils';
-
-let Choices;
-if (typeof window !== 'undefined') {
-  Choices = require('../../utils/ChoicesWrapper').default;
-}
+import Choices from '../../utils/ChoicesWrapper';
 
 export default class SelectComponent extends ListComponent {
   static schema(...extend) {
