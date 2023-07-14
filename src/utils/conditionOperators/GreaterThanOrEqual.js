@@ -11,6 +11,9 @@ export default class GreaterThanOrEqual extends ConditionOperator {
     }
 
     execute({ value, comparedValue }) {
-        return  _.isNumber(value) && (value > comparedValue || _.isEqual(value, comparedValue));
+        return (
+            _.isNumber(value) &&
+            (value > comparedValue || _.isEqual(value, comparedValue))
+        );
     }
 }

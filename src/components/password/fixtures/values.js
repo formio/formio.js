@@ -1,4 +1,1 @@
-export default [
-  'secret',
-  'supersecret',
-];
+export default ['secret', 'supersecret'];

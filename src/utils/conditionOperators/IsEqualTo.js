@@ -11,12 +11,17 @@ export default class IsEqualTo extends ConditionOperator {
     }
 
     execute({ value, comparedValue }) {
-        if (value && comparedValue && typeof value !== typeof comparedValue && _.isString(comparedValue)) {
+        if (
+            value &&
+            comparedValue &&
+            typeof value !== typeof comparedValue &&
+            _.isString(comparedValue)
+        ) {
             try {
                 comparedValue = JSON.parse(comparedValue);
+            } catch (e) {
+                // eslint-disable-next-line no-empty
             }
-            // eslint-disable-next-line no-empty
-            catch (e) {}
         }
 
         //special check for select boxes
@@ -24,6 +29,6 @@ export default class IsEqualTo extends ConditionOperator {
             return value[comparedValue];
         }
 
-        return  _.isEqual(value, comparedValue);
+        return _.isEqual(value, comparedValue);
     }
 }

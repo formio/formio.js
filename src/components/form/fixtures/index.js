@@ -6,4 +6,3 @@ import comp4 from './comp4';
 import comp5 from './comp5';
 import comp6 from './comp6';
 export { formModalEdit, comp1, comp2, comp3, comp4, comp5, comp6 };
-

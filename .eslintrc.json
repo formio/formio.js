@@ -1,34 +1,52 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "extends": ["formio", "prettier"],
-  "parserOptions": {
-    "ecmaVersion": 2015,
-    "sourceType": "module"
-  },
-  "plugins": ["@typescript-eslint"],
-  "env": {
-    "browser": true,
-    "es6": true,
-    "node": true,
-    "mocha": true
-  },
-  "ignorePatterns": [
-    "!.*rc.js"
-  ],
-  "rules": {
-    "max-len": [
-      "off",
-      {
-        "code": 160,
-        "ignoreComments": true,
-        "ignoreStrings": true
-      }
-    ],
-    "max-statements": [2, 40],
-    "max-depth": [2, 10],
-    "no-console": "off",
-    "no-prototype-builtins": "off",
-    "prefer-const": "error",
-    "prefer-template": "error"
-  }
+    "parser": "@typescript-eslint/parser",
+    "extends": ["formio", "prettier"],
+    "parserOptions": {
+        "ecmaVersion": 2015,
+        "sourceType": "module"
+    },
+    "plugins": ["@typescript-eslint"],
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true,
+        "mocha": true
+    },
+    "ignorePatterns": ["!.*rc.js"],
+    "rules": {
+        "max-len": [
+            "off",
+            {
+                "code": 160,
+                "ignoreComments": true,
+                "ignoreStrings": true
+            }
+        ],
+        "max-statements": [2, 40],
+        "max-depth": [2, 10],
+        "no-console": "off",
+        "no-prototype-builtins": "off",
+        "prefer-const": "error",
+        "prefer-template": "error",
+        "camelcase": [
+            "error",
+            {
+                "allow": [
+                    "time_24hr",
+                    "address_components",
+                    "long_name",
+                    "short_name",
+                    "formatted_address",
+                    "place_id",
+                    "osm_type",
+                    "osm_id",
+                    "display_name",
+                    "country_code"
+                ]
+            }
+        ]
+    },
+    "globals": {
+        "globalThis": "writable"
+    }
 }

@@ -10,6 +10,6 @@ export default class NotIncludes extends Includes {
     }
 
     execute(options) {
-        return  !super.execute(options);
+        return !super.execute(options);
     }
 }

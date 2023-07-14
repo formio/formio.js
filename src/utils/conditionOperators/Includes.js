@@ -11,6 +11,6 @@ export default class Includes extends ConditionOperator {
     }
 
     execute({ value, comparedValue }) {
-        return  _.includes(value, comparedValue);
+        return _.includes(value, comparedValue);
     }
 }

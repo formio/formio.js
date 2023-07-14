@@ -1,5 +1,1 @@
-export default [
-  true,
-  false,
-];
-
+export default [true, false];

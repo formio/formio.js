@@ -11,6 +11,6 @@ export default class StartsWith extends ConditionOperator {
     }
 
     execute({ value, comparedValue }) {
-        return  _.startsWith(value, comparedValue);
+        return _.startsWith(value, comparedValue);
     }
 }

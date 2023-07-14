@@ -11,6 +11,6 @@ export default class IsNotEqualTo extends ConditionOperator {
     }
 
     execute({ value, comparedValue }) {
-        return  !_.isEqual(value, comparedValue);
+        return !_.isEqual(value, comparedValue);
     }
 }

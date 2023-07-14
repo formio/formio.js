@@ -7,24 +7,24 @@ export default {
             key: 'radio',
             dataSrc: 'url',
             data: {
-                url: 'https://cdn.rawgit.com/mshafrir/2646763/raw/states_titlecase.json'
+                url: 'https://cdn.rawgit.com/mshafrir/2646763/raw/states_titlecase.json',
             },
             valueProperty: 'abbreviation',
             template: '<span>{{ item.name }}</span>',
-            input: true
+            input: true,
         },
         {
-			label: 'Submit',
-			showValidations: false,
-			alwaysEnabled: false,
-			tableView: false,
-			key: 'submit',
-			type: 'button',
-			input: true
-		}
+            label: 'Submit',
+            showValidations: false,
+            alwaysEnabled: false,
+            tableView: false,
+            key: 'submit',
+            type: 'button',
+            input: true,
+        },
     ],
     title: 'test radio Url',
-	display: 'form',
-	name: 'testRadioUrl',
-	path: 'testRadioUrl',
+    display: 'form',
+    name: 'testRadioUrl',
+    path: 'testRadioUrl',
 };

@@ -41,75 +41,79 @@ declare namespace form {
                 label: string;
                 input: boolean;
                 tableView: boolean;
-                components: ({
-                    legend: string;
-                    key: string;
-                    type: string;
-                    label: string;
-                    input: boolean;
-                    tableView: boolean;
-                    components: {
-                        label: string;
-                        optionsLabelPosition: string;
-                        inline: boolean;
-                        tableView: boolean;
-                        values: {
-                            label: string;
-                            value: string;
-                            shortcut: string;
-                        }[];
-                        validate: {
-                            required: boolean;
-                        };
-                        key: string;
-                        type: string;
-                        input: boolean;
-                    }[];
-                } | {
-                    legend: string;
-                    key: string;
-                    customConditional: string;
-                    type: string;
-                    label: string;
-                    input: boolean;
-                    tableView: boolean;
-                    components: {
-                        label: string;
-                        optionsLabelPosition: string;
-                        inline: boolean;
-                        tableView: boolean;
-                        values: {
-                            label: string;
-                            value: string;
-                            shortcut: string;
-                        }[];
-                        validate: {
-                            required: boolean;
-                        };
-                        key: string;
-                        type: string;
-                        input: boolean;
-                    }[];
-                } | {
-                    legend: string;
-                    key: string;
-                    customConditional: string;
-                    type: string;
-                    label: string;
-                    input: boolean;
-                    tableView: boolean;
-                    components: {
-                        label: string;
-                        tableView: boolean;
-                        defaultValue: boolean;
-                        validate: {
-                            required: boolean;
-                        };
-                        key: string;
-                        type: string;
-                        input: boolean;
-                    }[];
-                })[];
+                components: (
+                    | {
+                          legend: string;
+                          key: string;
+                          type: string;
+                          label: string;
+                          input: boolean;
+                          tableView: boolean;
+                          components: {
+                              label: string;
+                              optionsLabelPosition: string;
+                              inline: boolean;
+                              tableView: boolean;
+                              values: {
+                                  label: string;
+                                  value: string;
+                                  shortcut: string;
+                              }[];
+                              validate: {
+                                  required: boolean;
+                              };
+                              key: string;
+                              type: string;
+                              input: boolean;
+                          }[];
+                      }
+                    | {
+                          legend: string;
+                          key: string;
+                          customConditional: string;
+                          type: string;
+                          label: string;
+                          input: boolean;
+                          tableView: boolean;
+                          components: {
+                              label: string;
+                              optionsLabelPosition: string;
+                              inline: boolean;
+                              tableView: boolean;
+                              values: {
+                                  label: string;
+                                  value: string;
+                                  shortcut: string;
+                              }[];
+                              validate: {
+                                  required: boolean;
+                              };
+                              key: string;
+                              type: string;
+                              input: boolean;
+                          }[];
+                      }
+                    | {
+                          legend: string;
+                          key: string;
+                          customConditional: string;
+                          type: string;
+                          label: string;
+                          input: boolean;
+                          tableView: boolean;
+                          components: {
+                              label: string;
+                              tableView: boolean;
+                              defaultValue: boolean;
+                              validate: {
+                                  required: boolean;
+                              };
+                              key: string;
+                              type: string;
+                              input: boolean;
+                          }[];
+                      }
+                )[];
             }[];
         }[];
     }[];
@@ -122,13 +126,16 @@ declare namespace form {
     namespace config {
         const containerDataSource: {
             firstComponent: string;
-            types: ({
-                secondComponent: string;
-                requiredComponent: string;
-            } | {
-                secondComponent: string;
-                requiredComponent: {};
-            })[];
+            types: (
+                | {
+                      secondComponent: string;
+                      requiredComponent: string;
+                  }
+                | {
+                      secondComponent: string;
+                      requiredComponent: {};
+                  }
+            )[];
         }[];
     }
 }

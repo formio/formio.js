@@ -3,65 +3,71 @@ declare namespace _default {
     const type: string;
     const tags: never[];
     const owner: string;
-    const components: ({
-        label: string;
-        tableView: boolean;
-        modal: boolean;
-        validate: {
-            required: boolean;
-        };
-        key: string;
-        type: string;
-        input: boolean;
-        components: {
-            label: string;
-            tableView: boolean;
-            components: ({
-                label: string;
-                components: {
-                    label: string;
-                    key: string;
-                    components: {
-                        label: string;
-                        tableView: boolean;
-                        validate: {
-                            required: boolean;
-                        };
-                        key: string;
-                        type: string;
-                        input: boolean;
-                    }[];
-                }[];
-                tableView: boolean;
-                key: string;
-                type: string;
-                input: boolean;
-                showValidations?: undefined;
-            } | {
-                label: string;
-                showValidations: boolean;
-                tableView: boolean;
-                key: string;
-                type: string;
-                input: boolean;
-                components?: undefined;
-            })[];
-            key: string;
-            type: string;
-            input: boolean;
-        }[];
-        showValidations?: undefined;
-    } | {
-        label: string;
-        showValidations: boolean;
-        tableView: boolean;
-        key: string;
-        type: string;
-        input: boolean;
-        modal?: undefined;
-        validate?: undefined;
-        components?: undefined;
-    })[];
+    const components: (
+        | {
+              label: string;
+              tableView: boolean;
+              modal: boolean;
+              validate: {
+                  required: boolean;
+              };
+              key: string;
+              type: string;
+              input: boolean;
+              components: {
+                  label: string;
+                  tableView: boolean;
+                  components: (
+                      | {
+                            label: string;
+                            components: {
+                                label: string;
+                                key: string;
+                                components: {
+                                    label: string;
+                                    tableView: boolean;
+                                    validate: {
+                                        required: boolean;
+                                    };
+                                    key: string;
+                                    type: string;
+                                    input: boolean;
+                                }[];
+                            }[];
+                            tableView: boolean;
+                            key: string;
+                            type: string;
+                            input: boolean;
+                            showValidations?: undefined;
+                        }
+                      | {
+                            label: string;
+                            showValidations: boolean;
+                            tableView: boolean;
+                            key: string;
+                            type: string;
+                            input: boolean;
+                            components?: undefined;
+                        }
+                  )[];
+                  key: string;
+                  type: string;
+                  input: boolean;
+              }[];
+              showValidations?: undefined;
+          }
+        | {
+              label: string;
+              showValidations: boolean;
+              tableView: boolean;
+              key: string;
+              type: string;
+              input: boolean;
+              modal?: undefined;
+              validate?: undefined;
+              components?: undefined;
+          }
+    )[];
     const controller: string;
     const revisions: string;
     const _vid: number;

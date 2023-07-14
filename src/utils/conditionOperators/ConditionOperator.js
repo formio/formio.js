@@ -22,7 +22,9 @@ export default class ConditionOperator {
         const { value } = options;
 
         if (_.isArray(value)) {
-            return _.some(value, valueItem => this.execute({ ...options, value: valueItem }));
+            return _.some(value, (valueItem) =>
+                this.execute({ ...options, value: valueItem }),
+            );
         }
 
         return this.execute(options);
