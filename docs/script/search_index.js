@@ -5832,6 +5832,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/textarea/fixtures/comp4.js",
+    "file/src/components/textarea/fixtures/comp4.js.html",
+    "src/components/textarea/fixtures/comp4.js",
+    "file"
+  ],
+  [
     "src/components/textarea/fixtures/index.js",
     "file/src/components/textarea/fixtures/index.js.html",
     "src/components/textarea/fixtures/index.js",
@@ -6393,6 +6399,12 @@ window.esdocSearchIndex = [
     "src/components/tree/editform/tree.edit.data.js",
     "file/src/components/tree/editForm/Tree.edit.data.js.html",
     "src/components/tree/editForm/Tree.edit.data.js",
+    "file"
+  ],
+  [
+    "src/components/tree/editform/tree.edit.display.js",
+    "file/src/components/tree/editForm/Tree.edit.display.js.html",
+    "src/components/tree/editForm/Tree.edit.display.js",
     "file"
   ],
   [

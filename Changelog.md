@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.16.0-rc.4
+### Changed
+ - FIO-5303 fixed Edit and Delete buttons
+ - FIO-5730 fixed template for Select on PDF download
+ - FIO-6659 added warnings for Tree and Resource
+ - FIO-7030: Fixes an issue where Wizard pages are displayed in one line in the for builder
+ - FIO-5857 Update flatpickr to a version with the latest changes
+ - FIO-6840: change unique validation for email comps and certain textfield comps
+ - FIO-7054: Fixes an issue where after saving Wizard Panel settings, some of them disappear
+
 ## 4.16.0-rc.3
 ### Changed
  - FIO-7002: Fixing hide and show options to change visibility of components.
