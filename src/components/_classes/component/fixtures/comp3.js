@@ -1,12 +1,12 @@
 export default {
-  label: 'Text Field',
-  tableView: true,
-  modalEdit: true,
-  multiple: true,
-  validate: {
+    label: 'Text Field',
+    tableView: true,
+    modalEdit: true,
     multiple: true,
-  },
-  key: 'textField',
-  type: 'textfield',
-  input: true,
+    validate: {
+        multiple: true,
+    },
+    key: 'textField',
+    type: 'textfield',
+    input: true,
 };

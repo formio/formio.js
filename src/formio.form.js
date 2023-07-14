@@ -17,12 +17,12 @@ import Utils from './utils';
 import Evaluator from './utils/Evaluator';
 
 Formio.loadModules = (
-  path = `${Formio.getApiUrl()}/externalModules.js`,
-  name = 'externalModules',
+    path = `${Formio.getApiUrl()}/externalModules.js`,
+    name = 'externalModules',
 ) => {
-  Formio.requireLibrary(name, name, path, true).then((modules) => {
-    Formio.use(modules);
-  });
+    Formio.requireLibrary(name, name, path, true).then((modules) => {
+        Formio.use(modules);
+    });
 };
 
 // This is needed to maintain correct imports using the "dist" file.
@@ -53,86 +53,90 @@ Formio.Components.setComponents(AllComponents);
  * @returns
  */
 export function registerModule(mod, defaultFn = null) {
-  // Sanity check.
-  if (typeof mod !== 'object') {
-    return;
-  }
-  for (const key of Object.keys(mod)) {
-    const current = mod.framework || Formio.Templates.framework || 'bootstrap';
-    switch (key) {
-      case 'options':
-        Formio.options = _.merge(Formio.options, mod.options);
-        break;
-      case 'templates':
-        for (const framework of Object.keys(mod.templates)) {
-          Formio.Templates.extendTemplate(framework, mod.templates[framework]);
-        }
-        if (mod.templates[current]) {
-          Formio.Templates.current = mod.templates[current];
-        }
-        break;
-      case 'components':
-        Formio.Components.setComponents(mod.components);
-        break;
-      case 'framework':
-        Formio.Templates.framework = mod.framework;
-        break;
-      case 'fetch':
-        for (const name of Object.keys(mod.fetch)) {
-          Formio.registerPlugin(mod.fetch[name], name);
-        }
-        break;
-      case 'providers':
-        for (const type of Object.keys(mod.providers)) {
-          Formio.Providers.addProviders(type, mod.providers[type]);
-        }
-        break;
-      case 'displays':
-        Formio.Displays.addDisplays(mod.displays);
-        break;
-      case 'rules':
-        Formio.Rules.addRules(mod.rules);
-        break;
-      case 'evaluator':
-        Formio.Evaluator.registerEvaluator(mod.evaluator);
-        break;
-      case 'conjunctions':
-        Formio.Conjunctions.addConjunctions(mod.conjunctions);
-        break;
-      case 'operators':
-        Formio.Operators.addOperators(mod.operators);
-        break;
-      case 'quickRules':
-        Formio.QuickRules.addQuickRules(mod.quickRules);
-        break;
-      case 'transformers':
-        Formio.Transformers.addTransformers(mod.transformers);
-        break;
-      case 'valueSources':
-        Formio.ValueSources.addValueSources(mod.valueSources);
-        break;
-      default:
-        if (defaultFn) {
-          if (!defaultFn(key, mod)) {
-            console.warn('Unknown module option', key);
-          }
-          break;
-        }
-        console.log('Unknown module option', key);
+    // Sanity check.
+    if (typeof mod !== 'object') {
+        return;
     }
-  }
+    for (const key of Object.keys(mod)) {
+        const current =
+            mod.framework || Formio.Templates.framework || 'bootstrap';
+        switch (key) {
+            case 'options':
+                Formio.options = _.merge(Formio.options, mod.options);
+                break;
+            case 'templates':
+                for (const framework of Object.keys(mod.templates)) {
+                    Formio.Templates.extendTemplate(
+                        framework,
+                        mod.templates[framework],
+                    );
+                }
+                if (mod.templates[current]) {
+                    Formio.Templates.current = mod.templates[current];
+                }
+                break;
+            case 'components':
+                Formio.Components.setComponents(mod.components);
+                break;
+            case 'framework':
+                Formio.Templates.framework = mod.framework;
+                break;
+            case 'fetch':
+                for (const name of Object.keys(mod.fetch)) {
+                    Formio.registerPlugin(mod.fetch[name], name);
+                }
+                break;
+            case 'providers':
+                for (const type of Object.keys(mod.providers)) {
+                    Formio.Providers.addProviders(type, mod.providers[type]);
+                }
+                break;
+            case 'displays':
+                Formio.Displays.addDisplays(mod.displays);
+                break;
+            case 'rules':
+                Formio.Rules.addRules(mod.rules);
+                break;
+            case 'evaluator':
+                Formio.Evaluator.registerEvaluator(mod.evaluator);
+                break;
+            case 'conjunctions':
+                Formio.Conjunctions.addConjunctions(mod.conjunctions);
+                break;
+            case 'operators':
+                Formio.Operators.addOperators(mod.operators);
+                break;
+            case 'quickRules':
+                Formio.QuickRules.addQuickRules(mod.quickRules);
+                break;
+            case 'transformers':
+                Formio.Transformers.addTransformers(mod.transformers);
+                break;
+            case 'valueSources':
+                Formio.ValueSources.addValueSources(mod.valueSources);
+                break;
+            default:
+                if (defaultFn) {
+                    if (!defaultFn(key, mod)) {
+                        console.warn('Unknown module option', key);
+                    }
+                    break;
+                }
+                console.log('Unknown module option', key);
+        }
+    }
 }
 
 export function useModule(defaultFn = null) {
-  return (...plugins) => {
-    plugins.forEach((plugin) => {
-      if (Array.isArray(plugin)) {
-        plugin.forEach((p) => registerModule(p, defaultFn));
-      } else {
-        registerModule(plugin, defaultFn);
-      }
-    });
-  };
+    return (...plugins) => {
+        plugins.forEach((plugin) => {
+            if (Array.isArray(plugin)) {
+                plugin.forEach((p) => registerModule(p, defaultFn));
+            } else {
+                registerModule(plugin, defaultFn);
+            }
+        });
+    };
 }
 
 /**
@@ -145,18 +149,18 @@ Formio.use = useModule();
 
 // Export the components.
 export {
-  Components,
-  Displays,
-  Providers,
-  Rules,
-  Widgets,
-  Templates,
-  Conjunctions,
-  Operators,
-  QuickRules,
-  Transformers,
-  ValueSources,
-  Utils,
-  Form,
-  Formio,
+    Components,
+    Displays,
+    Providers,
+    Rules,
+    Widgets,
+    Templates,
+    Conjunctions,
+    Operators,
+    QuickRules,
+    Transformers,
+    ValueSources,
+    Utils,
+    Form,
+    Formio,
 };

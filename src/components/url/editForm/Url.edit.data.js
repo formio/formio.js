@@ -1,6 +1,6 @@
 export default [
-  {
-    key: 'case',
-    ignore: true,
-  },
+    {
+        key: 'case',
+        ignore: true,
+    },
 ];
