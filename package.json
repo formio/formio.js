@@ -177,7 +177,7 @@
         "written-number": "^0.11.1"
     },
     "lint-staged": {
-        "*.js": "eslint --cache --fix",
+        "src/**/*.js": "eslint --fix",
         "*.{js,json,css}": "prettier --write"
     }
 }
