@@ -1,5 +1,7 @@
 import assert from 'power-assert';
 import _ from 'lodash';
+import FormioUtils from '../../../../src/utils';
+
 import settings from './settings';
 import values from './values';
 
@@ -886,14 +888,19 @@ export default {
       test.timeout(6000);
       const testComponents = [];
       const treeComponent = form.getComponent('tree');
-      form.everyComponent((comp) => {
-        const component = comp.component;
-        //BUG: exclude datagrid from the check once it required validation issue is fixed
-        if (!component.validate_nested_components && ![...layoutComponents, 'datagrid'].includes(component.type) && (!treeComponent || !treeComponent.getComponents().includes(comp))) {
-          _.set(component, 'validate.required', true);
-          testComponents.push(comp);
+      FormioUtils.eachComponent(form.component.components, (component) => {
+        const componentInstance = form.getComponent(component.key);
+        if (component.type === 'datagrid') {
+          componentInstance.component.components.forEach((comp) => _.set(comp, 'validate.required', true));
         }
-      });
+        if (!component.validate_nested_components && ![...layoutComponents, 'datagrid'].includes(component.type) && (!treeComponent || !treeComponent.getComponents().includes(componentInstance))) {
+          if (componentInstance) {
+            _.set(componentInstance.component, 'validate.required', true);
+            testComponents.push(componentInstance);
+          }
+          _.set(component, 'validate.required', true);
+        }
+      }, true);
       setTimeout(() => {
         const clickEvent = new Event('click');
         form.getComponent('submit').refs.button.dispatchEvent(clickEvent);
@@ -940,8 +947,8 @@ export default {
 
             done();
           }, 700);
-        }, 300);
-      }, 300);
+        }, 700);
+      }, 700);
     },
   },
   conditional: {
