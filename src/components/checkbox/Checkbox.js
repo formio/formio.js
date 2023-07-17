@@ -26,6 +26,25 @@ export default class CheckBoxComponent extends Field {
     };
   }
 
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      operators: ['isEqual'],
+      valueComponent() {
+        return {
+          valueType: 'boolean',
+          data: {
+            values: [
+              { label: 'Checked', value: 'true' },
+              { label: 'Not Checked', value: 'false' },
+            ]
+          },
+          type: 'select',
+        };
+      },
+    };
+  }
+
   get defaultSchema() {
     return CheckBoxComponent.schema();
   }
