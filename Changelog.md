@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.16.0-rc.5
+### Changed
+ - Revert "FIO-4876 fixed the display of current submission for pdf download"
+
 ## 4.16.0-rc.4
 ### Changed
  - FIO-5303 fixed Edit and Delete buttons
