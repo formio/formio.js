@@ -1,8 +1,8 @@
-import { maskInput, conformToMask } from '@formio/vanilla-text-mask';
-import _ from 'lodash';
 import { createNumberMask } from '@formio/text-mask-addons';
+import { conformToMask,maskInput } from '@formio/vanilla-text-mask';
+import _ from 'lodash';
+import { getNumberDecimalLimit,getNumberSeparators } from '../../utils/utils';
 import Input from '../_classes/input/Input';
-import { getNumberSeparators, getNumberDecimalLimit } from '../../utils/utils';
 
 export default class NumberComponent extends Input {
   static schema(...extend) {
@@ -27,6 +27,24 @@ export default class NumberComponent extends Input {
       documentation: '/userguide/form-building/form-components#number',
       weight: 30,
       schema: NumberComponent.schema()
+    };
+  }
+
+  static get serverConditionSettings() {
+    return {
+      operators: [
+        'isEqual',
+        'isNotEqual',
+        'isEmpty',
+        'isNotEmpty',
+        'greaterThan',
+        'greaterThanOrEqual',
+        'lessThan',
+        'lessThanOrEqual',
+      ],
+      valueComponent(classComp) {
+        return { ...classComp, type: 'number' };
+      },
     };
   }
 

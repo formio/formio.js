@@ -65,6 +65,13 @@ export default class FileComponent extends Field {
     };
   }
 
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
+  }
+
   init() {
     super.init();
     webViewCamera = navigator.camera || Camera;

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
-import Input from '../_classes/input/Input';
 import FormioUtils from '../../utils';
+import Input from '../_classes/input/Input';
 
 export default class DateTimeComponent extends Input {
   static schema(...extend) {
@@ -50,6 +50,28 @@ export default class DateTimeComponent extends Input {
       documentation: '/userguide/form-building/advanced-components#date-and-time',
       weight: 40,
       schema: DateTimeComponent.schema()
+    };
+  }
+
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      operators: [
+        'isDateEqual',
+        'isNotDateEqual',
+        'isEmpty',
+        'isNotEmpty',
+        'dateLessThan',
+        'dateGreaterThan',
+        'dateLessThanOrEqual',
+        'dateGreaterThanOrEqual',
+      ],
+      valueComponent(classComp) {
+        return {
+          ...classComp,
+          type: 'datetime',
+        };
+      },
     };
   }
 

@@ -31,6 +31,13 @@ export default class SignatureComponent extends Input {
     };
   }
 
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
+  }
+
   init() {
     super.init();
     this.currentWidth = 0;

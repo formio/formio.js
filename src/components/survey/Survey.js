@@ -24,6 +24,13 @@ export default class SurveyComponent extends Field {
     };
   }
 
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
+  }
+
   get defaultSchema() {
     return SurveyComponent.schema();
   }
