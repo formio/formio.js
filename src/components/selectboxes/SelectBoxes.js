@@ -32,9 +32,7 @@ export default class SelectBoxesComponent extends RadioComponent {
           valueProperty: 'value',
           valueType: 'string',
           data: {
-            custom() {
-              return classComp.values;
-            }
+            custom: `values = ${classComp && classComp.values ? JSON.stringify(classComp.values) : []}`
           },
         };
       }
