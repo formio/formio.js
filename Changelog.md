@@ -3,6 +3,17 @@ All notable changes to this project will be documented in this file
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+## [UNRELEASED - 5.0.0-rc.6]
+### Added
+- FIO-5748: added collapsible preview for Form Builder
+  
+### Fixed
+- FIO-6950: fixed test
+- FIO-6669: fixed tooltips cutting off in the component settings modal
+- FIO-6156: fixed help link for Time component
+
+
+
 ## 5.0.0-rc.5
 ### Added
  - FIO-5986: added check for identical uploaded file
