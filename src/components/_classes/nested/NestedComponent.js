@@ -300,7 +300,9 @@ export default class NestedComponent extends Field {
       }
       const rowIndex = component.row ? `[${Number.parseInt(component.row)}]` : '';
       path = thisPath.path ? `${thisPath.path}${rowIndex}.` : '';
-      path += component._parentPath && component.component.shouldIncludeSubFormPath ? component._parentPath : '';
+      if (!path.includes(component._parentPath)) {
+        path += (component._parentPath && component.component.shouldIncludeSubFormPath) ? component._parentPath : '';
+      }
       path += component.component.key;
       return path;
     }
@@ -362,10 +364,10 @@ export default class NestedComponent extends Field {
       this.components.push(comp);
     }
     if (this.root) {
-      this.root.componentsMap[comp.path] = comp;
+      this.root.childComponentsMap[comp.path] = comp;
     }
     else {
-      this.componentsMap[comp.path] = comp;
+      this.childComponentsMap[comp.path] = comp;
     }
     return comp;
   }
@@ -535,8 +537,8 @@ export default class NestedComponent extends Field {
     components = components || this.components;
     component.destroy(all);
     _.remove(components, { id: component.id });
-    if (this.root?.componentsMap[component.path]) {
-      delete this.root.componentsMap[component.path];
+    if (this.root?.childComponentsMap[component.path]) {
+      delete this.root.childComponentsMap[component.path];
     }
   }
 

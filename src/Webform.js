@@ -1,10 +1,12 @@
 import _ from 'lodash';
 import moment from 'moment';
+import NativePromise from 'native-promise-only';
+import { process, validate } from '@formio/core';
 import { compareVersions } from 'compare-versions';
+
 import EventEmitter from './EventEmitter';
 import i18nDefaults from './i18n';
 import { Formio } from './Formio';
-import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
 import {
@@ -17,7 +19,6 @@ import {
   getArrayFromComponentPath
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
-import { process, validate } from '@formio/core';
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -1514,9 +1515,11 @@ export default class Webform extends NestedDataComponent {
           if (!submission.data) {
             return reject('Invalid Submission');
           }
+          // Wizard forms store their component JSON in `originalComponents`
+          const components = this.originalComponents || this.component.components;
           const errors = await process({
             process: 'submit',
-            components: this.component.components,
+            components,
             data: submission.data,
             after: [
               ({ component, path, errors }) => {

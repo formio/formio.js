@@ -349,7 +349,7 @@ export default class Component extends Element {
        *
        * @type {Object}
        */
-    this.componentsMap = {};
+    this.childComponentsMap = {};
 
     this.options.name = this.options.name || 'data';
 
