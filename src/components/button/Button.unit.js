@@ -2,7 +2,7 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import Harness from '../../../test/harness';
 import ButtonComponent from './Button';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import sinon from 'sinon';
 
 import {

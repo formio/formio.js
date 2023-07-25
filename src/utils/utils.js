@@ -36,7 +36,8 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, moment, ConditionOperators };
+export { jsonLogic, ConditionOperators };
+export * as moment from 'moment-timezone/moment-timezone';
 
 function setPathToComponentAndPerentSchema(component) {
   component.path = getComponentPath(component);
@@ -1079,6 +1080,9 @@ export function bootstrapVersion(options) {
   }
   if ((typeof $ === 'function') && (typeof $().collapse === 'function')) {
     return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);
+  }
+  if (window.bootstrap && window.bootstrap.Collapse) {
+    return parseInt(window.bootstrap.Collapse.VERSION.split('.')[0], 10);
   }
   return 0;
 }

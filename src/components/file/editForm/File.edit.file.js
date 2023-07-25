@@ -1,4 +1,4 @@
-import { GlobalFormio as Formio } from '../../../Formio';
+import { Formio } from '../../../Formio';
 import _ from 'lodash';
 
 export default [
@@ -79,8 +79,11 @@ export default [
     input: true,
     weight: 15,
     placeholder: `{
-  "withCredentials": true
-}`,
+      "withCredentials": true,
+      "headers": {
+        "Authorization": "Basic <key>"
+      }
+    }`,
     conditional: {
       json: {
         '===': [{

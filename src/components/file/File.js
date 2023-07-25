@@ -7,7 +7,7 @@ import fileProcessor from '../../providers/processor/fileProcessor';
 import BMF from 'browser-md5-file';
 
 let Camera;
-let webViewCamera = navigator.camera || Camera;
+let webViewCamera = 'undefined' !== typeof window ? navigator.camera : Camera;
 
 // canvas.toBlob polyfill.
 
@@ -59,7 +59,7 @@ export default class FileComponent extends Field {
       title: 'File',
       group: 'premium',
       icon: 'file',
-      documentation: '/userguide/forms/premium-components#file',
+      documentation: '/userguide/form-building/premium-components#file',
       weight: 100,
       schema: FileComponent.schema(),
     };
@@ -615,15 +615,6 @@ export default class FileComponent extends Field {
       // files is not really an array and does not have a forEach method, so fake it.
       /* eslint-disable max-statements */
       Array.prototype.forEach.call(files, async(file) => {
-        const bmf = new BMF();
-        const hash = await new Promise((resolve, reject) => {
-          bmf.md5(file, (err, md5)=>{
-            if (err) {
-              return reject(err);
-            }
-            return resolve(md5);
-          });
-        });
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const escapedFileName = file.name ? file.name.replaceAll('<', '&lt;').replaceAll('>', '&gt;') : file.name;
         const fileUpload = {
@@ -632,19 +623,42 @@ export default class FileComponent extends Field {
           size: file.size,
           status: 'info',
           message: this.t('Processing file. Please wait...'),
-          hash
+          hash: '',
         };
 
+        if (this.root.form.submissionRevisions === 'true') {
+          this.statuses.push(fileUpload);
+          this.redraw();
+          const bmf = new BMF();
+          const hash = await new Promise((resolve, reject) => {
+            this.emit('fileUploadingStart');
+            bmf.md5(file, (err, md5)=>{
+              if (err) {
+                return reject(err);
+              }
+              return resolve(md5);
+            });
+          });
+          this.emit('fileUploadingEnd');
+          fileUpload.hash = hash;
+        }
+
         // Check if file with the same name is being uploaded
+        if (!this.filesUploading) {
+          this.filesUploading = [];
+        }
+        const fileWithSameNameUploading = this.filesUploading.some(fileUploading => fileUploading === file.name);
+        this.filesUploading.push(file.name);
+
         const fileWithSameNameUploaded = this.dataValue.some(fileStatus => fileStatus.originalName === file.name);
         const fileWithSameNameUploadedWithError = this.statuses.findIndex(fileStatus =>
           fileStatus.originalName === file.name
           && fileStatus.status === 'error'
         );
 
-        if (fileWithSameNameUploaded) {
+        if (fileWithSameNameUploaded || fileWithSameNameUploading) {
           fileUpload.status = 'error';
-          fileUpload.message = this.t('File with the same name is already uploaded');
+          fileUpload.message = this.t(`File with the same name is already ${fileWithSameNameUploading ? 'being ' : ''}uploaded`);
         }
 
         if (fileWithSameNameUploadedWithError !== -1) {
@@ -684,8 +698,10 @@ export default class FileComponent extends Field {
           fileUpload.message = this.t('File Service not provided.');
         }
 
-        this.statuses.push(fileUpload);
-        this.redraw();
+        if (this.root.form.submissionRevisions !== 'true') {
+          this.statuses.push(fileUpload);
+          this.redraw();
+        }
 
         if (fileUpload.status !== 'error') {
           if (this.component.privateDownload) {
@@ -775,6 +791,7 @@ export default class FileComponent extends Field {
                 this.dataValue = [];
               }
               this.dataValue.push(fileInfo);
+              _.pull(this.filesUploading, fileInfo.originalName);
               this.fileDropHidden = false;
               this.redraw();
               this.triggerChange();
@@ -785,9 +802,13 @@ export default class FileComponent extends Field {
               fileUpload.message = typeof response === 'string' ? response : response.toString();
               delete fileUpload.progress;
               this.fileDropHidden = false;
+              _.pull(this.filesUploading, file.name);
               this.redraw();
               this.emit('fileUploadingEnd', filePromise);
             });
+        }
+        else {
+          this.filesUploading.splice(this.filesUploading.indexOf(file.name),1);
         }
       });
     }
@@ -829,8 +850,8 @@ export default class FileComponent extends Field {
     }
   }
 
-  destroy() {
+  destroy(all = false) {
     this.stopVideo();
-    super.destroy();
+    super.destroy(all);
   }
 }

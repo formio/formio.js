@@ -6,9 +6,5 @@ export default function(...extend) {
       key: 'display',
       components: FieldSetEditDisplay
     },
-    {
-      key: 'addons',
-      ignore: true
-    },
   ], ...extend);
 }

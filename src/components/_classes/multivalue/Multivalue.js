@@ -205,12 +205,8 @@ export default class Multivalue extends Field {
         this.addEventListener(element, this.inputInfo.changeEvent, () => {
           applyMask();
           this.dataValue = this.refs.input[0].value;
-          let submitBtnDisabled = document.querySelector('[name="data[submit]"]')?.disabled;
-          submitBtnDisabled = true;
-
           if (this.checkComponentValidity()) {
             this.updateComponentValue(this.refs.input[0].value);
-            submitBtnDisabled = false;
           }
         });
       }

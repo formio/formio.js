@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import Harness from '../test/harness';
 import Wizard from './Wizard';
-import Formio from './Formio';
+import { Formio } from './Formio';
 import assert from 'power-assert';
 import _ from 'lodash';
 import wizardCond from '../test/forms/wizardConditionalPages';
@@ -38,11 +38,30 @@ import wizardWithFieldsValidationParent from '../test/forms/wizardWithFieldsVali
 import nestedConditionalWizard from '../test/forms/nestedConditionalWizard';
 import wizardWithPrefixComps from '../test/forms/wizardWithPrefixComps';
 import wizardPermission from '../test/forms/wizardPermission';
+import formWithFormController from '../test/forms/formWithFormController';
+import { fastCloneDeep } from './utils/utils';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
 
+// eslint-disable-next-line max-statements
 describe('Wizard tests', () => {
+  it('Should execute form controller', function(done) {
+    const form = fastCloneDeep(formWithFormController);
+    form.display = 'wizard';
+    Formio.createForm(form).then((form) => {
+      setTimeout(() => {
+        const textField = form.getComponent('textField');
+
+        assert.equal(textField.getValue(), 'Hello World');
+        assert.equal(textField.disabled, true);
+        assert.equal(form.components[0].disabled, true);
+
+        done();
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
   it('Should check correctly Permissions and disabled sumbit button', (done) => {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);

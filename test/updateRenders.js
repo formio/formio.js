@@ -4,10 +4,10 @@ const pretty = require('pretty');
 // Fake a browser environment
 require('browser-env')();
 
-const Form = require('../lib/Form').default;
-const AllComponents = require('../lib/components').default;
-const Components = require('../lib/components/Components').default;
-const templates = require('../lib/templates').default;
+const Form = require('../src/Form').default;
+const AllComponents = require('../src/components').default;
+const Components = require('../src/components/Components').default;
+const templates = require('../src/templates').default;
 const forms = require('./formtest');
 // const formtests = require('./forms').default;
 

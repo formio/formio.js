@@ -1,4 +1,3 @@
-import ComponentEditAddons from '../_classes/component/editForm/Component.edit.addons';
 import textEditForm from '../textfield/TextField.form';
 
 import PasswordEditDisplay from './editForm/Password.edit.display';
@@ -18,12 +17,6 @@ export default function(...extend) {
     {
       key: 'validation',
       components: PasswordEditValidation
-    },
-    {
-      label: 'Addons',
-      key: 'addons',
-      weight: 70,
-      components: ComponentEditAddons
     },
   ], ...extend);
 }

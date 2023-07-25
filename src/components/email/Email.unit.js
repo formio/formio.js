@@ -1,6 +1,6 @@
 import Harness from '../../../test/harness';
 import EmailComponent from './Email';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import assert from 'power-assert';
 import _ from 'lodash';
 

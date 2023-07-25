@@ -11,11 +11,11 @@ class CDN {
       'bootstrap': '4.6.2',
       'ckeditor': '19.0.0',
       'flatpickr': '4.6.8',
-      'flatpickr-formio': '4.6.13-formio.1',
+      'flatpickr-formio': '4.6.13-formio.3',
       'font-awesome': '4.7.0',
       'grid': 'latest',
       'moment-timezone': 'latest',
-      'quill': '1.3.7',
+      'quill': '2.0.0-dev.3',
       'shortcut-buttons-flatpickr': '0.4.0',
       'uswds': '2.4.8',
       'core': ''

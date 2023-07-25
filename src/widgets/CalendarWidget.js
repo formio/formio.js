@@ -1,4 +1,4 @@
-import { GlobalFormio as Formio } from '../Formio';
+import { Formio } from '../Formio';
 import InputWidget from './InputWidget';
 import {
   convertFormatToFlatpickr,
@@ -543,10 +543,10 @@ export default class CalendarWidget extends InputWidget {
     };
   }
 
-  destroy() {
-    super.destroy();
+  destroy(all = false) {
     if (this.calendar) {
       this.calendar.destroy();
     }
+    super.destroy(all);
   }
 }

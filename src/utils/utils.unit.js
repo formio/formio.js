@@ -104,7 +104,9 @@ describe('Util Tests', () => {
         'k.m',
         'k.l',
         'r',
-        'submit'
+        'submit',
+        'tagpad',
+        'tagpad.a',
       ];
       const testPaths = [];
       utils.eachComponent(components2, (component, path) => {
@@ -131,7 +133,9 @@ describe('Util Tests', () => {
         'k.m',
         'k.l',
         'r',
-        'submit'
+        'submit',
+        'tagpad',
+        'tagpad.a',
       ];
       const testPaths = [];
       utils.eachComponent(components2, (component, path) => {

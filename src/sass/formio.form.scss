@@ -246,6 +246,13 @@ td > .formio-form-group {
 .signature-pad-body {
   overflow: hidden;
   position: relative;
+
+  .form-control-feedback {
+    position: absolute;
+    font-size: 0.8rem;
+    top: 1px;
+    right: 3px;
+  }
 }
 
 .signature-pad-canvas {
@@ -293,7 +300,7 @@ td > .formio-form-group {
   color: #C3C3C3;
 }
 
-.choices__list--dropdown {
+.is-active.choices__list--dropdown {
   z-index: 100;
 }
 
@@ -1334,6 +1341,10 @@ div[data-oembed-url] {
 
   & .text-huge {
     font-size: 1.8em;
+  }
+
+  ol {
+    padding-inline-start: 40px;
   }
 }
 

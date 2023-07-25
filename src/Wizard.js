@@ -1,7 +1,7 @@
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
-import { GlobalFormio as Formio } from './Formio';
+import { Formio } from './Formio';
 import {
   fastCloneDeep,
   checkCondition,
@@ -286,7 +286,7 @@ export default class Wizard extends Webform {
   }
 
   attach(element) {
-    this.element = element;
+    this.setElement(element);
     this.loadRefs(element, {
       [this.wizardKey]: 'single',
       [`${this.wizardKey}-header`]: 'single',
@@ -578,8 +578,8 @@ export default class Wizard extends Webform {
             item.key = item.title;
           }
           let page = currentPages[item.key];
-          const forceShow = this.options.show ? this.options.show[item.key] : false;
-          const forceHide = this.options.hide ? this.options.hide[item.key] : false;
+          const forceShow = this.shouldForceShow(item);
+          const forceHide = this.shouldForceHide(item);
 
           let isVisible = !page
             ? checkCondition(item, data, data, this.component, this) && !item.hidden
@@ -899,8 +899,9 @@ export default class Wizard extends Webform {
     this._submission = submission;
     if (
       (flags && flags.fromSubmission && (this.options.readOnly || this.editMode) && !this.isHtmlRenderMode()) ||
-      (flags && flags.fromSubmission && (this.prefixComps.length || this.suffixComps.length) && submission._id)
-      ) {
+      (flags && flags.fromSubmission && (this.prefixComps.length || this.suffixComps.length) && submission._id) ||
+      (this.options.server && (this.prefixComps.length || this.suffixComps.length))
+    ) {
       this._data = submission.data;
     }
 
