@@ -16,14 +16,9 @@ import Widgets from '../../../widgets';
 import Addons from '../../../addons';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 import enTranslation from '../../../translations/en';
+import Templates from '../../../templates/Templates';
 
 const isIEBrowser = FormioUtils.getBrowserInfo().ie;
-
-let Templates = Formio.Templates;
-
-if (!Templates) {
-  Templates = require('../../../templates/Templates').default;
-}
 
 /**
  * This is the Component class

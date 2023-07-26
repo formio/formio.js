@@ -1,4 +1,4 @@
-/* global $ */
+/* global jQuery */
 
 import _ from 'lodash';
 import fetchPonyfill from 'fetch-ponyfill';
@@ -378,7 +378,7 @@ export function checkCondition(component, row, data, form, instance) {
  */
 export function checkTrigger(component, trigger, row, data, form, instance) {
   // If trigger is empty, don't fire it
-  if (!trigger[trigger.type]) {
+  if (!trigger || !trigger[trigger.type]) {
     return false;
   }
 
@@ -930,7 +930,7 @@ export function getNumberDecimalLimit(component, defaultLimit) {
 }
 
 export function getCurrencyAffixes({
-   currency = 'USD',
+   currency,
    decimalLimit,
    decimalSeparator,
    lang,
@@ -943,7 +943,7 @@ export function getCurrencyAffixes({
   regex += '(.*)?';
   const parts = (100).toLocaleString(lang, {
     style: 'currency',
-    currency,
+    currency: currency ? currency : 'USD',
     useGrouping: true,
     maximumFractionDigits: decimalLimit || 0,
     minimumFractionDigits: decimalLimit || 0
@@ -1078,8 +1078,11 @@ export function bootstrapVersion(options) {
   if (options.bootstrap) {
     return options.bootstrap;
   }
-  if ((typeof $ === 'function') && (typeof $().collapse === 'function')) {
-    return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);
+  if ((typeof jQuery === 'function') && (typeof jQuery().collapse === 'function')) {
+    return parseInt(jQuery.fn.collapse.Constructor.VERSION.split('.')[0], 10);
+  }
+  if (window.bootstrap && window.bootstrap.Collapse) {
+    return parseInt(window.bootstrap.Collapse.VERSION.split('.')[0], 10);
   }
   return 0;
 }

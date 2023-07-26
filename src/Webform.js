@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import compareVersions from 'compare-versions';
+import { compareVersions } from 'compare-versions';
 import EventEmitter from './EventEmitter';
 import i18nDefaults from './i18n';
 import { Formio } from './Formio';
@@ -18,7 +18,7 @@ import {
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
-// Initialize the available forms.//
+// Initialize the available forms.
 Formio.forms = {};
 
 // Allow people to register components.
@@ -922,7 +922,10 @@ export default class Webform extends NestedDataComponent {
 
   setValue(submission, flags = {}) {
     if (!submission || !submission.data) {
-      submission = { data: {} };
+      submission = {
+        data: {},
+        metadata: submission.metadata,
+      };
     }
     // Metadata needs to be available before setValue
     this._submission.metadata = submission.metadata || {};
@@ -963,7 +966,14 @@ export default class Webform extends NestedDataComponent {
    * Build the form.
    */
   init() {
-    this._submission = this._submission || { data: {} };
+    if (this.options.submission) {
+      const submission = _.extend({}, this.options.submission);
+      this._submission = submission;
+      this._data = submission.data;
+    }
+    else {
+      this._submission = this._submission || { data: {} };
+    }
 
     // Remove any existing components.
     if (this.components && this.components.length) {
@@ -1677,10 +1687,11 @@ export default class Webform extends NestedDataComponent {
           this.emit('requestDone');
           this.setAlert('success', '<p> Success </p>');
         }).catch((e) => {
-          this.showErrors(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
-          this.emit('error',`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
-          console.error(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
-          this.setAlert('danger', `<p> ${e.statusText ? e.statusText : ''} ${e.status ? e.status : e} </p>`);
+          const message = `${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`;
+          this.emit('error', message);
+          console.error(message);
+          this.setAlert('danger', `<p> ${message} </p>`);
+          return Promise.reject(this.onSubmissionError(e));
         });
     }
     else {
