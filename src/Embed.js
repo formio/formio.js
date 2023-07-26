@@ -225,7 +225,10 @@ export function embed(config = {}) {
         debug('Creating form', form, config.config);
         isReady.then(() => {
           Formio.license = true;
-          Formio.createForm(formElement, form, config.config).then((instance) => {
+          Formio.createForm(formElement, form, {
+            ...config.config,
+            ...{ noLoader: true }
+          }).then((instance) => {
             const submitDone = (submission) => {
               debug('Submision Complete', submission);
               let returnUrl = config.redirect;
