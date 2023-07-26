@@ -12,7 +12,7 @@ import {
   comp4,
   comp5,
   comp6,
-  comp7
+  comp8
 } from './fixtures';
 
 describe('Number Component', () => {
@@ -416,7 +416,7 @@ describe('Number Component', () => {
   });
 
   it('Should provide custom validation for number component inside dataGrid component', (done) => {
-    const form = _.cloneDeep(comp7);
+    const form = _.cloneDeep(comp8);
     const element = document.createElement('div');
 
     Formio.createForm(element, form).then(form => {
