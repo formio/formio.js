@@ -12,9 +12,5 @@ export default function(...extend) {
       key: 'validation',
       components: EmailEditFormValidation,
     },
-    {
-      key: 'addons',
-      ignore: true
-    },
   ], ...extend);
 }

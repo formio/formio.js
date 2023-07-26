@@ -24,7 +24,7 @@ export default class NumberComponent extends Input {
       title: 'Number',
       icon: 'hashtag',
       group: 'basic',
-      documentation: '/userguide/forms/form-components#number',
+      documentation: '/userguide/form-building/form-components#number',
       weight: 30,
       schema: NumberComponent.schema()
     };
@@ -203,7 +203,7 @@ export default class NumberComponent extends Input {
     }
     value = this.getWidgetValueAsString(value, options);
     if (Array.isArray(value)) {
-      return value.map(this.getMaskedValue).join(', ');
+      return value.map((val) => this.getMaskedValue(val)).join(', ');
     }
     return this.getMaskedValue(value);
   }

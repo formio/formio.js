@@ -1,7 +1,7 @@
 import assert from 'power-assert';
 import Harness from '../../../test/harness';
 import DateTimeComponent from './DateTime';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import _ from 'lodash';
 import 'flatpickr';
 import {
@@ -105,9 +105,7 @@ describe('DateTime Component', () => {
       input.dispatchEvent(blurEvent);
 
       setTimeout(() => {
-        // assert.equal(dateTime.getValue().startsWith(expectedValueStart), true);
         assert.equal(input.value, expectedValue);
-console.log(22222, input.value, dateTime.getValue());
         document.innerHTML = '';
         done();
       }, 300);
@@ -678,7 +676,6 @@ console.log(22222, input.value, dateTime.getValue());
     }).catch(done);
   });
 
-  //TOFIX
   // it('Should provide correct date in selected timezone after submission', (done) => {
   //   const form = _.cloneDeep(comp9);
   //   const element = document.createElement('div');
