@@ -930,7 +930,7 @@ export function getNumberDecimalLimit(component, defaultLimit) {
 }
 
 export function getCurrencyAffixes({
-   currency = 'USD',
+   currency,
    decimalLimit,
    decimalSeparator,
    lang,
@@ -943,7 +943,7 @@ export function getCurrencyAffixes({
   regex += '(.*)?';
   const parts = (100).toLocaleString(lang, {
     style: 'currency',
-    currency,
+    currency: currency ? currency : "USD",
     useGrouping: true,
     maximumFractionDigits: decimalLimit || 0,
     minimumFractionDigits: decimalLimit || 0
