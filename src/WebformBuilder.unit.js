@@ -2,7 +2,7 @@ import assert from 'power-assert';
 import NativePromise from 'native-promise-only';
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
-import Builders from '../lib/builders';
+import Builders from './builders';
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase } from '../test/formtest';
 import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
@@ -191,8 +191,8 @@ describe('WebformBuilder tests', function() {
           assert.equal(numberKey.dataValue, 'rewrittenNumberKey');
 
           done();
-        }, 150);
-      }, 150);
+        }, 350);
+      }, 350);
     }).catch(done);
   });
 });

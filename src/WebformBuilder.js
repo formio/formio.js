@@ -9,20 +9,14 @@ import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import autoScroll from 'dom-autoscroller';
+import Templates from './templates/Templates';
+import './components/builder';
 
-require('./components/builder');
-
-let Templates = Formio.Templates;
-
-if (!Templates) {
-  Templates = require('./templates/Templates').default;
+// We need this here because dragula pulls in CustomEvent class that requires global to exist.
+if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
+  window.global = window;
 }
-
-let dragula;
-if (typeof window !== 'undefined') {
-  // Import from "dist" because it would require and "global" would not be defined in Angular apps.
-  dragula = require('dragula/dist/dragula');
-}
+import dragula from 'dragula/dist/dragula.min.js';
 
 export default class WebformBuilder extends Component {
   // eslint-disable-next-line max-statements
@@ -41,7 +35,8 @@ export default class WebformBuilder extends Component {
 
     super(null, options);
 
-    this.element = element;
+    this.setElement(element);
+    this.dragulaLib = dragula;
 
     this.builderHeight = 0;
     this.schemas = {};
@@ -49,7 +44,6 @@ export default class WebformBuilder extends Component {
 
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
-    this.keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false);
     this.dragDropEnabled = true;
 
     // Setup the builder options.
@@ -62,7 +56,7 @@ export default class WebformBuilder extends Component {
       }
     });
 
-    // Add the groups.
+    // Add the groups.////
     this.groups = {};
     this.groupOrder = [];
     for (const group in this.builder) {
@@ -239,14 +233,14 @@ export default class WebformBuilder extends Component {
     const isResourcesDisabled = this.options.builder && this.options.builder.resource === false;
 
     formio.loadProject().then((project) => {
-      if (project && (_.get(project, 'settings.addConfigToForms', false) ||  _.get(project, 'addConfigToForms', false))) {
+      if (project && (_.get(project, 'settings.addConfigToForms', false) || _.get(project, 'addConfigToForms', false))) {
         const config = project.config || {};
         this.options.formConfig = config;
 
         const pathToFormConfig = 'webform._form.config';
         const webformConfig = _.get(this, pathToFormConfig);
 
-        if (this.webform  && !webformConfig) {
+        if (this.webform && !webformConfig) {
           _.set(this, pathToFormConfig, config);
         }
       }
@@ -254,7 +248,7 @@ export default class WebformBuilder extends Component {
       console.warn(`Could not load project settings: ${err.message || err}`);
     });
 
-    if (!formio.noProject && !isResourcesDisabled) {
+    if (!formio.noProject && !isResourcesDisabled && formio.formsUrl) {
       const resourceOptions = this.options.builder && this.options.builder.resource;
       formio.loadForms(query)
         .then((resources) => {
@@ -590,29 +584,40 @@ export default class WebformBuilder extends Component {
       }
 
       if (!bootstrapVersion(this.options)) {
+        const getAttribute = (anchor, attribute) => {
+          let elem = anchor.getAttribute(`data-${attribute}`);
+          if (!elem) {
+            elem = anchor.getAttribute(`data-bs-${attribute}`);
+          }
+          return elem;
+        };
+
+        const hideShow = (group, show) => {
+          if (show) {
+            group.classList.add(['show']);
+            group.style.display = 'inherit';
+          }
+          else {
+            group.classList.remove(['show']);
+            group.style.display = 'none';
+          }
+        };
+
         // Initialize
         this.refs['sidebar-group'].forEach((group) => {
-          group.style.display = (group.getAttribute('data-default') === 'true') ? 'inherit' : 'none';
+          hideShow(group, getAttribute(group, 'default') === 'true');
         });
 
         // Click event
         this.refs['sidebar-anchor'].forEach((anchor, index) => {
           this.addEventListener(anchor, 'click', () => {
-            const clickedParentId = anchor.getAttribute('data-parent').slice('#builder-sidebar-'.length);
-            const clickedId = anchor.getAttribute('data-target').slice('#group-'.length);
-
+            const clickedParentId = getAttribute(anchor, 'parent').slice('#builder-sidebar-'.length);
+            const clickedId = getAttribute(anchor, 'target').slice('#group-'.length);
             this.refs['sidebar-group'].forEach((group, groupIndex) => {
-              const openByDefault = group.getAttribute('data-default') === 'true';
+              const openByDefault = getAttribute(group, 'default') === 'true';
               const groupId = group.getAttribute('id').slice('group-'.length);
-              const groupParent = group.getAttribute('data-parent').slice('#builder-sidebar-'.length);
-
-              group.style.display =
-                (
-                  (openByDefault && groupParent === clickedId) ||
-                  groupId === clickedParentId ||
-                  groupIndex === index
-                )
-                  ? 'inherit' : 'none';
+              const groupParent = getAttribute(group, 'parent').slice('#builder-sidebar-'.length);
+              hideShow(group, ((openByDefault && groupParent === clickedId) || groupId === clickedParentId || groupIndex === index));
             });
           }, true);
         });
@@ -647,7 +652,7 @@ export default class WebformBuilder extends Component {
           maxSpeed: 6,
           scrollWhenOutside: true,
           autoScroll: function() {
-              return this.down && drake?.dragging;
+            return this.down && drake?.dragging;
           }
         });
 
@@ -697,8 +702,8 @@ export default class WebformBuilder extends Component {
     const filterSubgroups = (groups, searchValue) => {
       const result = _.clone(groups);
       return result
-            .map(subgroup => filterGroupBy(subgroup, searchValue))
-            .filter(subgroup => !_.isNull(subgroup));
+        .map(subgroup => filterGroupBy(subgroup, searchValue))
+        .filter(subgroup => !_.isNull(subgroup));
     };
 
     const toTemplate = groupKey => {
@@ -707,18 +712,18 @@ export default class WebformBuilder extends Component {
         groupKey,
         groupId: sidebar.id || sidebarGroups.id,
         subgroups: filterSubgroups(this.groups[groupKey].subgroups, searchValue)
-                  .map((group) => this.renderTemplate('builderSidebarGroup', {
-                    group,
-                    groupKey: group.key,
-                    groupId: `group-container-${groupKey}`,
-                    subgroups: []
-                  })),
+          .map((group) => this.renderTemplate('builderSidebarGroup', {
+            group,
+            groupKey: group.key,
+            groupId: `group-container-${groupKey}`,
+            subgroups: []
+          })),
       };
     };
 
     sidebarGroups.innerHTML = filterGroupOrder(this.groupOrder, searchValue)
-                              .map(groupKey => this.renderTemplate('builderSidebarGroup', toTemplate(groupKey)))
-                              .join('');
+      .map(groupKey => this.renderTemplate('builderSidebarGroup', toTemplate(groupKey)))
+      .join('');
 
     this.loadRefs(this.element, {
       'sidebar-groups': 'single',
@@ -1010,6 +1015,12 @@ export default class WebformBuilder extends Component {
     if (!form.components) {
       form.components = [];
     }
+
+    if (form && form.properties) {
+      this.options.properties = form.properties;
+    }
+
+    this.keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false) || this.options.properties?.keyboardBuilder;
 
     const isShowSubmitButton = !this.options.noDefaultSubmitButton
       && !form.components.length;
@@ -1313,6 +1324,12 @@ export default class WebformBuilder extends Component {
         );
         this.emit('change', this.form);
         this.highlightInvalidComponents();
+
+        if (this.isComponentCreated) {
+          const component = parent.formioComponent.components[0];
+          this.moveComponent(component);
+          this.isComponentCreated = false;
+        }
       });
     }
 
@@ -1332,11 +1349,69 @@ export default class WebformBuilder extends Component {
     );
   }
 
+  attachEditComponentControls(component, parent, isNew, original, ComponentClass) {
+    const cancelButtons = this.componentEdit.querySelectorAll('[ref="cancelButton"]');
+    cancelButtons.forEach((cancelButton) => {
+      this.editForm.addEventListener(cancelButton, 'click', (event) => {
+        event.preventDefault();
+        this.editForm.detach();
+        this.emit('cancelComponent', component);
+        this.dialog.close();
+        this.highlightInvalidComponents();
+      });
+    });
+
+    const removeButtons = this.componentEdit.querySelectorAll('[ref="removeButton"]');
+    removeButtons.forEach((removeButton) => {
+      this.editForm.addEventListener(removeButton, 'click', (event) => {
+        event.preventDefault();
+        // Since we are already removing the component, don't trigger another remove.
+        this.saved = true;
+        this.editForm.detach();
+        this.removeComponent(component, parent, original);
+        this.dialog.close();
+        this.highlightInvalidComponents();
+      });
+    });
+
+    const saveButtons = this.componentEdit.querySelectorAll('[ref="saveButton"]');
+    saveButtons.forEach((saveButton) => {
+      this.editForm.addEventListener(saveButton, 'click', (event) => {
+        event.preventDefault();
+        if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
+          this.editForm.setPristine(false);
+          this.editForm.showErrors();
+          return false;
+        }
+        this.saved = true;
+        this.saveComponent(component, parent, isNew, original);
+      });
+    });
+
+    const previewButtons = this.componentEdit.querySelectorAll('[ref="previewButton"]');
+    previewButtons.forEach((previewButton) => {
+      this.editForm.addEventListener(previewButton, 'click', (event) => {
+        event.preventDefault();
+        this.showPreview = !this.showPreview;
+        this.editForm.detach();
+        this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
+          componentInfo: ComponentClass.builderInfo,
+          editForm: this.editForm.render(),
+          preview: this.preview ? this.preview.render() : false,
+          showPreview: this.showPreview,
+          helplinks: this.helplinks,
+        }));
+        this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
+        this.attachEditComponentControls(component, parent, isNew, original, ComponentClass);
+      });
+    });
+  }
+
   editComponent(component, parent, isNew, isJsonEdit, original, flags = {}) {
     if (!component.key) {
       return;
     }
-    let saved = false;
+    this.saved = false;
     const componentCopy = fastCloneDeep(component);
     let ComponentClass = Components.components[componentCopy.type];
     const isCustom = ComponentClass === undefined;
@@ -1406,8 +1481,8 @@ export default class WebformBuilder extends Component {
         showFullSchema: this.options.showFullJsonSchema
       },
     } : {
-        data: instance.component,
-      };
+      data: instance.component,
+    };
 
     if (this.preview) {
       this.preview.destroy();
@@ -1424,12 +1499,15 @@ export default class WebformBuilder extends Component {
       this.hook('previewFormSettitngs', schema, isJsonEdit);
     }
 
+    this.showPreview = ComponentClass.builderInfo.showPreview ?? true;
+
     this.componentEdit = this.ce('div', { 'class': 'component-edit-container' });
     this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
       componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),
       preview: this.preview ? this.preview.render() : false,
-      helplinks: this.helplinks,
+      showPreview: this.showPreview,
+      helplinks: this.helplinks
     }));
 
     this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}));
@@ -1494,43 +1572,7 @@ export default class WebformBuilder extends Component {
       }
     });
 
-    const cancelButtons = this.componentEdit.querySelectorAll('[ref="cancelButton"]');
-    cancelButtons.forEach((cancelButton) => {
-      this.addEventListener(cancelButton, 'click', (event) => {
-        event.preventDefault();
-        this.editForm.detach();
-        this.emit('cancelComponent', component);
-        this.dialog.close();
-        this.highlightInvalidComponents();
-      });
-    });
-
-    const removeButtons = this.componentEdit.querySelectorAll('[ref="removeButton"]');
-    removeButtons.forEach((removeButton) => {
-      this.addEventListener(removeButton, 'click', (event) => {
-        event.preventDefault();
-        // Since we are already removing the component, don't trigger another remove.
-        saved = true;
-        this.editForm.detach();
-        this.removeComponent(component, parent, original);
-        this.dialog.close();
-        this.highlightInvalidComponents();
-      });
-    });
-
-    const saveButtons = this.componentEdit.querySelectorAll('[ref="saveButton"]');
-    saveButtons.forEach((saveButton) => {
-      this.addEventListener(saveButton, 'click', (event) => {
-        event.preventDefault();
-        if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
-          this.editForm.setPristine(false);
-          this.editForm.showErrors();
-          return false;
-        }
-        saved = true;
-        this.saveComponent(component, parent, isNew, original);
-      });
-    });
+    this.attachEditComponentControls(component, parent, isNew, original, ComponentClass);
 
     const dialogClose = () => {
       this.editForm.destroy(true);
@@ -1538,7 +1580,7 @@ export default class WebformBuilder extends Component {
         this.preview.destroy(true);
         this.preview = null;
       }
-      if (isNew && !saved) {
+      if (isNew && !this.saved) {
         this.removeComponent(component, parent, original);
         this.highlightInvalidComponents();
       }
@@ -1562,9 +1604,8 @@ export default class WebformBuilder extends Component {
   }
 
   moveComponent(component) {
-    if (component) {
-      component.element.focus();
-    }
+    component.element.focus();
+    component.element.classList.add('builder-selected');
     this.selectedElement = component;
     this.removeEventListener(component.element, 'keydown');
     this.addEventListener(component.element, 'keydown', this.moveHandler.bind(this));
@@ -1593,9 +1634,9 @@ export default class WebformBuilder extends Component {
       const sibling = direction ? element.previousElementSibling : element.nextElementSibling;
       const source = element.parentNode;
 
-      const containerLenght = source.formioContainer.length;
+      const containerLength = source.formioContainer.length;
 
-      if (containerLenght && containerLenght <= 1) {
+      if (containerLength && containerLength <= 1) {
         return;
       }
 
@@ -1612,26 +1653,26 @@ export default class WebformBuilder extends Component {
       }
 
       const len = source.formioComponent.components.length;
-        index = (index === -1) ? 0 : index + step;
+      index = (index === -1) ? 0 : index + step;
 
-        if (index === -1) {
-          source.formioContainer.push(info);
-          source.appendChild(element);
-        }
-        else if (index === len) {
-          const key = source.formioContainer[0].key;
-          index = _.findIndex(source.formioComponent.components, { key: key });
-          const firstElement = source.formioComponent.components[index].element;
-          source.formioContainer.splice(0, 0, info);
-          source.insertBefore(element, firstElement);
-        }
-        else if (index !== -1) {
-          source.formioContainer.splice(index, 0, info);
-          direction
+      if (index === -1) {
+        source.formioContainer.push(info);
+        source.appendChild(element);
+      }
+      else if (index === len) {
+        const key = source.formioContainer[0].key;
+        index = _.findIndex(source.formioComponent.components, { key: key });
+        const firstElement = source.formioComponent.components[index].element;
+        source.formioContainer.splice(0, 0, info);
+        source.insertBefore(element, firstElement);
+      }
+      else if (index !== -1) {
+        source.formioContainer.splice(index, 0, info);
+        direction
           ? source.insertBefore(element, sibling)
           : source.insertBefore(element, sibling.nextElementSibling);
-        }
-        element.focus();
+      }
+      element.focus();
     }
   }
 
@@ -1653,6 +1694,7 @@ export default class WebformBuilder extends Component {
     }
 
     if (isNew && !this.options.noNewEdit && !info.noNewEdit) {
+      BuilderUtils.uniquify(this.findNamespaceRoot(source.formioComponent), info);
       this.editComponent(info, source, isNew, null, null);
     }
 
@@ -1665,7 +1707,9 @@ export default class WebformBuilder extends Component {
       source.formioContainer.push(info);
     }
 
-    source.formioComponent.rebuild();
+    source.formioComponent.rebuild().then(() => {
+      this.isComponentCreated = true;
+    });
   }
 
   /**
@@ -1758,11 +1802,11 @@ export default class WebformBuilder extends Component {
     }
   }
 
-  destroy(deleteFromGlobal) {
+  destroy(all = false) {
     if (this.webform.initialized) {
-      this.webform.destroy(deleteFromGlobal);
+      this.webform.destroy(all);
     }
-    super.destroy(deleteFromGlobal);
+    super.destroy(all);
   }
 
   addBuilderGroup(name, group) {

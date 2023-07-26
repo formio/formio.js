@@ -31,7 +31,7 @@ export default class FormComponent extends Component {
       title: 'Nested Form',
       icon: 'wpforms',
       group: 'premium',
-      documentation: '/userguide/forms/premium-components#nested-form',
+      documentation: '/userguide/form-building/premium-components#nested-form',
       weight: 110,
       schema: FormComponent.schema()
     };
@@ -324,13 +324,13 @@ export default class FormComponent extends Component {
     && this.formObj._vid !== this.subFormRevision;
   }
 
-  destroy() {
+  destroy(all = false) {
     if (this.subForm) {
-      this.subForm.destroy();
+      this.subForm.destroy(all);
       this.subForm = null;
       this.subFormReady = null;
     }
-    super.destroy();
+    super.destroy(all);
   }
 
   redraw() {
@@ -437,7 +437,7 @@ export default class FormComponent extends Component {
       return NativePromise.resolve();
     }
 
-    if (this.hasLoadedForm && !this.isRevisionChanged && !(this.options.pdf && _.isUndefined(this.subFormRevision))) {
+    if (this.hasLoadedForm && !this.isRevisionChanged) {
       // Pass config down to sub forms.
       if (this.root && this.root.form && this.root.form.config && !this.formObj.config) {
         this.formObj.config = this.root.form.config;

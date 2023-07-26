@@ -107,4 +107,19 @@ describe('WizardBuilder tests', function() {
       done();
     }, 500);
   });
+
+  it('Test pages reorder', (done) => {
+    const builder = createWizardBuilder(simpleWizard);
+
+    setTimeout(() => {
+      const drake = builder.instance.navigationDragula;
+      const addPageBtn = builder.instance.element.querySelector('.wizard-add-page');
+      assert.equal(drake.canMove(addPageBtn), false, 'Should not be able to move Add Page button');
+      const pagesElements = builder.instance.element.querySelectorAll('.wizard-pages li');
+      assert.equal(pagesElements.length, 6, 'Should contain all buttons for all the pages + Add Page button');
+      const firstPage = pagesElements[0];
+      assert.equal(drake.canMove(firstPage), true, 'Should be able to move page button');
+      done();
+    }, 500);
+  });
 });

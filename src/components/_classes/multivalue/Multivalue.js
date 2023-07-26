@@ -205,12 +205,8 @@ export default class Multivalue extends Field {
         this.addEventListener(element, this.inputInfo.changeEvent, () => {
           applyMask();
           this.dataValue = this.refs.input[0].value;
-          let submitBtnDisabled = document.querySelector('[name="data[submit]"]')?.disabled;
-          submitBtnDisabled = true;
-
           if (this.checkComponentValidity()) {
             this.updateComponentValue(this.refs.input[0].value);
-            submitBtnDisabled = false;
           }
         });
       }
@@ -223,7 +219,14 @@ export default class Multivalue extends Field {
   // Saves current caret position to restore it after the component is redrawn
   saveCaretPosition(element, index) {
     if (this.root?.focusedComponent?.path === this.path) {
-      this.root.currentSelection = { selection: [element.selectionStart, element.selectionEnd], index };
+      try {
+        this.root.currentSelection = { selection: [element.selectionStart, element.selectionEnd], index };
+      }
+      catch (e) {
+        if (!(e instanceof DOMException)) {
+          console.debug(e);
+        }
+      }
     }
   }
 

@@ -1,9 +1,5 @@
 import Input from '../_classes/input/Input';
-
-let Choices;
-if (typeof window !== 'undefined') {
-  Choices = require('@formio/choices.js');
-}
+import Choices from '@formio/choices.js';
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -22,7 +18,7 @@ export default class TagsComponent extends Input {
       title: 'Tags',
       icon: 'tags',
       group: 'advanced',
-      documentation: '/userguide/forms/form-components#tags',
+      documentation: '/userguide/form-building/advanced-components#tags',
       weight: 30,
       schema: TagsComponent.schema()
     };
@@ -57,7 +53,9 @@ export default class TagsComponent extends Input {
     if (!element) {
       return;
     }
-    element.setAttribute('dir', this.i18next.dir());
+    if (this.i18next) {
+      element.setAttribute('dir', this.i18next.dir());
+    }
     if (this.choices) {
       this.choices.destroy();
     }
@@ -109,11 +107,11 @@ export default class TagsComponent extends Input {
   }
 
   detach() {
-    super.detach();
     if (this.choices) {
       this.choices.destroy();
       this.choices = null;
     }
+    super.detach();
   }
 
   normalizeValue(value) {
