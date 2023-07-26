@@ -6,7 +6,6 @@ Formio.Providers = Providers;
 Formio.version = 'FORMIO_VERSION';
 
 const isNil = (val) => val === null || val === undefined;
-
 Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback, abortCallback) {
   const requestArgs = {
     provider: storage,
