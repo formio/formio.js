@@ -1,4 +1,4 @@
-/* global $ */
+/* global jQuery */
 
 import _ from 'lodash';
 import fetchPonyfill from 'fetch-ponyfill';
@@ -1078,8 +1078,8 @@ export function bootstrapVersion(options) {
   if (options.bootstrap) {
     return options.bootstrap;
   }
-  if ((typeof $ === 'function') && (typeof $().collapse === 'function')) {
-    return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);
+  if ((typeof jQuery === 'function') && (typeof jQuery().collapse === 'function')) {
+    return parseInt(jQuery.fn.collapse.Constructor.VERSION.split('.')[0], 10);
   }
   if (window.bootstrap && window.bootstrap.Collapse) {
     return parseInt(window.bootstrap.Collapse.VERSION.split('.')[0], 10);
