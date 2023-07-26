@@ -7894,7 +7894,7 @@
     "__docId__": 430,
     "kind": "file",
     "name": "src/components/container/Container.js",
-    "content": "import _ from 'lodash';\nimport { getFocusableElements } from '../../utils/utils';\n\nimport Component from '../_classes/component/Component';\nimport Field from '../_classes/field/Field';\nimport NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';\n\nexport default class ContainerComponent extends NestedDataComponent {\n  static schema(...extend) {\n    return NestedDataComponent.schema({\n      label: 'Container',\n      type: 'container',\n      key: 'container',\n      clearOnHide: true,\n      input: true,\n      tree: true,\n      hideLabel: true,\n      components: []\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Container',\n      icon: 'folder-open',\n      group: 'data',\n      documentation: '/userguide/form-building/data-components#container',\n      weight: 10,\n      schema: ContainerComponent.schema()\n    };\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.type = 'container';\n  }\n\n  addComponents(data, options) {\n    return super.addComponents(this.dataValue, options);\n  }\n\n  get defaultSchema() {\n    return ContainerComponent.schema();\n  }\n\n  get emptyValue() {\n    return {};\n  }\n\n  get templateName() {\n    return 'container';\n  }\n\n  componentContext() {\n    return this.dataValue;\n  }\n\n  checkData(data, flags, row, components) {\n    data = data || this.rootValue;\n    flags = flags || {};\n    row = row || this.data;\n    components = components && _.isArray(components) ? components : this.getComponents();\n\n    return components.reduce((valid, comp) => {\n      return comp.checkData(data, flags, this.dataValue) && valid;\n    }, Component.prototype.checkData.call(this, data, flags, row));\n  }\n\n  checkChildComponentsValidity(data, dirty, row, silentCheck, isParentValid) {\n    return super.checkChildComponentsValidity(data, dirty, this.dataValue, silentCheck, isParentValid);\n  }\n\n  focus() {\n    const focusableElements = getFocusableElements(this.element);\n      if (focusableElements && focusableElements[0]) {\n        focusableElements[0].focus();\n      }\n  }\n\n  checkConditions(data, flags, row) {\n    // check conditions of parent component first, because it may influence on visibility of it's children\n    const check = Field.prototype.checkConditions.call(this, data, flags, row);\n    this.getComponents().forEach(comp => comp.checkConditions(data, flags, this.dataValue));\n    return check;\n  }\n}\n",
+    "content": "import _ from 'lodash';\nimport { getFocusableElements } from '../../utils/utils';\n\nimport Component from '../_classes/component/Component';\nimport Field from '../_classes/field/Field';\nimport NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';\n\nexport default class ContainerComponent extends NestedDataComponent {\n  static schema(...extend) {\n    return NestedDataComponent.schema({\n      label: 'Container',\n      type: 'container',\n      key: 'container',\n      clearOnHide: true,\n      input: true,\n      tree: true,\n      hideLabel: true,\n      components: []\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Container',\n      icon: 'folder-open',\n      group: 'data',\n      documentation: '/userguide/form-building/data-components#container',\n      showPreview: false,\n      weight: 10,\n      schema: ContainerComponent.schema()\n    };\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.type = 'container';\n  }\n\n  addComponents(data, options) {\n    return super.addComponents(this.dataValue, options);\n  }\n\n  get defaultSchema() {\n    return ContainerComponent.schema();\n  }\n\n  get emptyValue() {\n    return {};\n  }\n\n  get templateName() {\n    return 'container';\n  }\n\n  componentContext() {\n    return this.dataValue;\n  }\n\n  checkData(data, flags, row, components) {\n    data = data || this.rootValue;\n    flags = flags || {};\n    row = row || this.data;\n    components = components && _.isArray(components) ? components : this.getComponents();\n\n    return components.reduce((valid, comp) => {\n      return comp.checkData(data, flags, this.dataValue) && valid;\n    }, Component.prototype.checkData.call(this, data, flags, row));\n  }\n\n  checkChildComponentsValidity(data, dirty, row, silentCheck, isParentValid) {\n    return super.checkChildComponentsValidity(data, dirty, this.dataValue, silentCheck, isParentValid);\n  }\n\n  focus() {\n    const focusableElements = getFocusableElements(this.element);\n      if (focusableElements && focusableElements[0]) {\n        focusableElements[0].focus();\n      }\n  }\n\n  checkConditions(data, flags, row) {\n    // check conditions of parent component first, because it may influence on visibility of it's children\n    const check = Field.prototype.checkConditions.call(this, data, flags, row);\n    this.getComponents().forEach(comp => comp.checkConditions(data, flags, this.dataValue));\n    return check;\n  }\n}\n",
     "static": true,
     "longname": "/home/lanedoughtie/cicd/formio.js/src/components/container/Container.js",
     "access": "public",
@@ -7963,7 +7963,7 @@
     "undocument": true,
     "type": {
       "types": [
-        "{\"title\": string, \"icon\": string, \"group\": string, \"documentation\": string, \"weight\": number, \"schema\": *}"
+        "{\"title\": string, \"icon\": string, \"group\": string, \"documentation\": string, \"showPreview\": *, \"weight\": number, \"schema\": *}"
       ]
     }
   },
@@ -7978,7 +7978,7 @@
     "longname": "src/components/container/Container.js~ContainerComponent#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 34,
     "undocument": true
   },
   {
@@ -7990,7 +7990,7 @@
     "longname": "src/components/container/Container.js~ContainerComponent#type",
     "access": "public",
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 36,
     "undocument": true,
     "type": {
       "types": [
@@ -8009,7 +8009,7 @@
     "longname": "src/components/container/Container.js~ContainerComponent#addComponents",
     "access": "public",
     "description": null,
-    "lineNumber": 38,
+    "lineNumber": 39,
     "undocument": true,
     "params": [
       {
@@ -8042,7 +8042,7 @@
     "longname": "src/components/container/Container.js~ContainerComponent#defaultSchema",
     "access": "public",
     "description": null,
-    "lineNumber": 42,
+    "lineNumber": 43,
     "undocument": true,
     "type": {
       "types": [
@@ -8061,7 +8061,7 @@
     "longname": "src/components/container/Container.js~ContainerComponent#emptyValue",
     "access": "public",
     "description": null,
-    "lineNumber": 46,
+    "lineNumber": 47,
     "undocument": true,
     "type": {
       "types": [
@@ -8080,7 +8080,7 @@
     "longname": "src/components/container/Container.js~ContainerComponent#templateName",
     "access": "public",
     "description": null,
-    "lineNumber": 50,
+    "lineNumber": 51,
     "undocument": true,
     "type": {
       "types": [
@@ -8099,7 +8099,7 @@
     "longname": "src/components/container/Container.js~ContainerComponent#componentContext",
     "access": "public",
     "description": null,
-    "lineNumber": 54,
+    "lineNumber": 55,
     "undocument": true,
     "params": [],
     "return": {
@@ -8119,7 +8119,7 @@
     "longname": "src/components/container/Container.js~ContainerComponent#checkData",
     "access": "public",
     "description": null,
-    "lineNumber": 58,
+    "lineNumber": 59,
     "undocument": true,
     "params": [
       {
@@ -8164,7 +8164,7 @@
     "longname": "src/components/container/Container.js~ContainerComponent#checkChildComponentsValidity",
     "access": "public",
     "description": null,
-    "lineNumber": 69,
+    "lineNumber": 70,
     "undocument": true,
     "params": [
       {
@@ -8215,7 +8215,7 @@
     "longname": "src/components/container/Container.js~ContainerComponent#focus",
     "access": "public",
     "description": null,
-    "lineNumber": 73,
+    "lineNumber": 74,
     "undocument": true,
     "params": [],
     "return": null
@@ -8231,7 +8231,7 @@
     "longname": "src/components/container/Container.js~ContainerComponent#checkConditions",
     "access": "public",
     "description": null,
-    "lineNumber": 80,
+    "lineNumber": 81,
     "undocument": true,
     "params": [
       {
@@ -10738,7 +10738,7 @@
     "__docId__": 612,
     "kind": "file",
     "name": "src/components/fieldset/Fieldset.js",
-    "content": "import NestedComponent from '../_classes/nested/NestedComponent';\n\nexport default class FieldsetComponent extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      label: 'Field Set',\n      key: 'fieldSet',\n      type: 'fieldset',\n      legend: '',\n      components: [],\n      input: false,\n      persistent: false\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Field Set',\n      icon: 'th-large',\n      group: 'layout',\n      documentation: '/userguide/form-building/layout-components#field-set',\n      weight: 20,\n      schema: FieldsetComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return FieldsetComponent.schema();\n  }\n\n  get className() {\n    return `${this.transform('class', 'form-group')} ${super.className}`;\n  }\n\n  get templateName() {\n    return 'fieldset';\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.noField = true;\n  }\n}\n",
+    "content": "import NestedComponent from '../_classes/nested/NestedComponent';\n\nexport default class FieldsetComponent extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      label: 'Field Set',\n      key: 'fieldSet',\n      type: 'fieldset',\n      legend: '',\n      components: [],\n      input: false,\n      persistent: false\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Field Set',\n      icon: 'th-large',\n      group: 'layout',\n      documentation: '/userguide/form-building/layout-components#field-set',\n      showPreview: false,\n      weight: 20,\n      schema: FieldsetComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return FieldsetComponent.schema();\n  }\n\n  get className() {\n    return `${this.transform('class', 'form-group')} ${super.className}`;\n  }\n\n  get templateName() {\n    return 'fieldset';\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.noField = true;\n  }\n}\n",
     "static": true,
     "longname": "/home/lanedoughtie/cicd/formio.js/src/components/fieldset/Fieldset.js",
     "access": "public",
@@ -10807,7 +10807,7 @@
     "undocument": true,
     "type": {
       "types": [
-        "{\"title\": string, \"icon\": string, \"group\": string, \"documentation\": string, \"weight\": number, \"schema\": *}"
+        "{\"title\": string, \"icon\": string, \"group\": string, \"documentation\": string, \"showPreview\": *, \"weight\": number, \"schema\": *}"
       ]
     }
   },
@@ -10822,7 +10822,7 @@
     "longname": "src/components/fieldset/Fieldset.js~FieldsetComponent#defaultSchema",
     "access": "public",
     "description": null,
-    "lineNumber": 27,
+    "lineNumber": 28,
     "undocument": true,
     "type": {
       "types": [
@@ -10841,7 +10841,7 @@
     "longname": "src/components/fieldset/Fieldset.js~FieldsetComponent#className",
     "access": "public",
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 32,
     "undocument": true,
     "type": {
       "types": [
@@ -10860,7 +10860,7 @@
     "longname": "src/components/fieldset/Fieldset.js~FieldsetComponent#templateName",
     "access": "public",
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 36,
     "undocument": true,
     "type": {
       "types": [
@@ -10879,7 +10879,7 @@
     "longname": "src/components/fieldset/Fieldset.js~FieldsetComponent#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 39,
+    "lineNumber": 40,
     "undocument": true
   },
   {
@@ -10891,7 +10891,7 @@
     "longname": "src/components/fieldset/Fieldset.js~FieldsetComponent#noField",
     "access": "public",
     "description": null,
-    "lineNumber": 41,
+    "lineNumber": 42,
     "undocument": true,
     "type": {
       "types": [
@@ -11304,7 +11304,7 @@
     "__docId__": 652,
     "kind": "file",
     "name": "src/components/hidden/Hidden.js",
-    "content": "import Input from '../_classes/input/Input';\n\nexport default class HiddenComponent extends Input {\n  static schema(...extend) {\n    return Input.schema({\n      type: 'hidden',\n      tableView: false,\n      inputType: 'hidden'\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Hidden',\n      group: 'data',\n      icon: 'user-secret',\n      weight: 0,\n      documentation: '/userguide/form-building/data-components#hidden',\n      schema: HiddenComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return HiddenComponent.schema();\n  }\n\n  get inputInfo() {\n    const info = super.elementInfo();\n    info.type = 'input';\n    info.attr.type = 'hidden';\n    info.changeEvent = 'change';\n    return info;\n  }\n\n  get skipInEmail() {\n    return true;\n  }\n\n  /**\n   * Check if a component is eligible for multiple validation\n   *\n   * @return {boolean}\n   */\n  validateMultiple() {\n    // Since \"arrays\" are able to be stored in hidden components, we need to turn off multiple validation.\n    return false;\n  }\n\n  labelIsHidden() {\n    return true;\n  }\n\n  get emptyValue() {\n    return '';\n  }\n\n  setValue(value, flags = {}) {\n    return this.updateValue(value, flags);\n  }\n\n  getValue() {\n    return this.dataValue;\n  }\n}\n",
+    "content": "import Input from '../_classes/input/Input';\n\nexport default class HiddenComponent extends Input {\n  static schema(...extend) {\n    return Input.schema({\n      type: 'hidden',\n      tableView: false,\n      inputType: 'hidden'\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Hidden',\n      group: 'data',\n      icon: 'user-secret',\n      weight: 0,\n      documentation: '/userguide/form-building/data-components#hidden',\n      showPreview: false,\n      schema: HiddenComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return HiddenComponent.schema();\n  }\n\n  get inputInfo() {\n    const info = super.elementInfo();\n    info.type = 'input';\n    info.attr.type = 'hidden';\n    info.changeEvent = 'change';\n    return info;\n  }\n\n  get skipInEmail() {\n    return true;\n  }\n\n  /**\n   * Check if a component is eligible for multiple validation\n   *\n   * @return {boolean}\n   */\n  validateMultiple() {\n    // Since \"arrays\" are able to be stored in hidden components, we need to turn off multiple validation.\n    return false;\n  }\n\n  labelIsHidden() {\n    return true;\n  }\n\n  get emptyValue() {\n    return '';\n  }\n\n  setValue(value, flags = {}) {\n    return this.updateValue(value, flags);\n  }\n\n  getValue() {\n    return this.dataValue;\n  }\n}\n",
     "static": true,
     "longname": "/home/lanedoughtie/cicd/formio.js/src/components/hidden/Hidden.js",
     "access": "public",
@@ -11373,7 +11373,7 @@
     "undocument": true,
     "type": {
       "types": [
-        "{\"title\": string, \"group\": string, \"icon\": string, \"weight\": *, \"documentation\": string, \"schema\": *}"
+        "{\"title\": string, \"group\": string, \"icon\": string, \"weight\": *, \"documentation\": string, \"showPreview\": *, \"schema\": *}"
       ]
     }
   },
@@ -11388,7 +11388,7 @@
     "longname": "src/components/hidden/Hidden.js~HiddenComponent#defaultSchema",
     "access": "public",
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 24,
     "undocument": true,
     "type": {
       "types": [
@@ -11407,7 +11407,7 @@
     "longname": "src/components/hidden/Hidden.js~HiddenComponent#inputInfo",
     "access": "public",
     "description": null,
-    "lineNumber": 27,
+    "lineNumber": 28,
     "undocument": true,
     "type": {
       "types": [
@@ -11426,7 +11426,7 @@
     "longname": "src/components/hidden/Hidden.js~HiddenComponent#skipInEmail",
     "access": "public",
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 36,
     "undocument": true,
     "type": {
       "types": [
@@ -11445,7 +11445,7 @@
     "longname": "src/components/hidden/Hidden.js~HiddenComponent#validateMultiple",
     "access": "public",
     "description": "Check if a component is eligible for multiple validation",
-    "lineNumber": 44,
+    "lineNumber": 45,
     "return": {
       "nullable": null,
       "types": [
@@ -11467,7 +11467,7 @@
     "longname": "src/components/hidden/Hidden.js~HiddenComponent#labelIsHidden",
     "access": "public",
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 50,
     "undocument": true,
     "params": [],
     "return": {
@@ -11487,7 +11487,7 @@
     "longname": "src/components/hidden/Hidden.js~HiddenComponent#emptyValue",
     "access": "public",
     "description": null,
-    "lineNumber": 53,
+    "lineNumber": 54,
     "undocument": true,
     "type": {
       "types": [
@@ -11506,7 +11506,7 @@
     "longname": "src/components/hidden/Hidden.js~HiddenComponent#setValue",
     "access": "public",
     "description": null,
-    "lineNumber": 57,
+    "lineNumber": 58,
     "undocument": true,
     "params": [
       {
@@ -11542,7 +11542,7 @@
     "longname": "src/components/hidden/Hidden.js~HiddenComponent#getValue",
     "access": "public",
     "description": null,
-    "lineNumber": 61,
+    "lineNumber": 62,
     "undocument": true,
     "params": [],
     "return": {
@@ -11663,7 +11663,7 @@
     "__docId__": 672,
     "kind": "file",
     "name": "src/components/html/HTML.js",
-    "content": "import Component from '../_classes/component/Component';\nimport _ from 'lodash';\n\nexport default class HTMLComponent extends Component {\n  static schema(...extend) {\n    return Component.schema({\n      label: 'HTML',\n      type: 'htmlelement',\n      tag: 'p',\n      attrs: [],\n      content: '',\n      input: false,\n      persistent: false\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'HTML Element',\n      group: 'layout',\n      icon: 'code',\n      weight: 0,\n      documentation: '/userguide/form-building/layout-components#html-element',\n      schema: HTMLComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return HTMLComponent.schema();\n  }\n\n  get content() {\n    if (this.builderMode) {\n      return this.component.content;\n    }\n\n    // i18n returns error exactly with word 'select', spaces will be trimmed\n    if (this.component.content.replace(/(<(\\/?[^>]+)>)/g, '').trim() === 'select') {\n      return ` ${this.component.content} `;\n    }\n\n    const submission = _.get(this.root, 'submission', {});\n    const content = this.component.content ? this.interpolate(this.component.content, {\n      metadata: submission.metadata || {},\n      submission: submission,\n      data: this.rootValue,\n      row: this.data\n    }) : '';\n    return this.sanitize(content, this.shouldSanitizeValue);\n  }\n\n  get singleTags() {\n    return ['br', 'img', 'hr'];\n  }\n\n  checkRefreshOn(changed) {\n    super.checkRefreshOn(changed);\n    if (!this.builderMode && this.component.refreshOnChange && this.element &&\n      !_.isUndefined(changed) && ((_.isBoolean(changed) && changed) || !_.isEmpty(changed)) &&\n      this.conditionallyVisible(this.data, this.row)) {\n      this.setContent(this.element, this.renderContent());\n    }\n  }\n\n  renderContent() {\n    const submission = _.get(this.root, 'submission', {});\n    return this.renderTemplate('html', {\n      component: this.component,\n      tag: this.component.tag,\n      attrs: (this.component.attrs || []).map((attr) => {\n        return {\n          attr: attr.attr,\n          value: this.interpolate(attr.value, {\n            metadata: submission.metadata || {},\n            submission: submission,\n            data: this.rootValue,\n            row: this.data\n          })\n        };\n      }),\n      content: this.content,\n      singleTags: this.singleTags,\n    });\n  }\n\n  render() {\n    return super.render(this.renderContent());\n  }\n\n  attach(element) {\n    this.loadRefs(element, { html: 'single' });\n    return super.attach(element);\n  }\n}\n",
+    "content": "import Component from '../_classes/component/Component';\nimport _ from 'lodash';\n\nexport default class HTMLComponent extends Component {\n  static schema(...extend) {\n    return Component.schema({\n      label: 'HTML',\n      type: 'htmlelement',\n      tag: 'p',\n      attrs: [],\n      content: '',\n      input: false,\n      persistent: false\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'HTML Element',\n      group: 'layout',\n      icon: 'code',\n      weight: 0,\n      documentation: '/userguide/form-building/layout-components#html-element',\n      showPreview: false,\n      schema: HTMLComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return HTMLComponent.schema();\n  }\n\n  get content() {\n    if (this.builderMode) {\n      return this.component.content;\n    }\n\n    // i18n returns error exactly with word 'select', spaces will be trimmed\n    if (this.component.content.replace(/(<(\\/?[^>]+)>)/g, '').trim() === 'select') {\n      return ` ${this.component.content} `;\n    }\n\n    const submission = _.get(this.root, 'submission', {});\n    const content = this.component.content ? this.interpolate(this.component.content, {\n      metadata: submission.metadata || {},\n      submission: submission,\n      data: this.rootValue,\n      row: this.data\n    }) : '';\n    return this.sanitize(content, this.shouldSanitizeValue);\n  }\n\n  get singleTags() {\n    return ['br', 'img', 'hr'];\n  }\n\n  checkRefreshOn(changed) {\n    super.checkRefreshOn(changed);\n    if (!this.builderMode && this.component.refreshOnChange && this.element &&\n      !_.isUndefined(changed) && ((_.isBoolean(changed) && changed) || !_.isEmpty(changed)) &&\n      this.conditionallyVisible(this.data, this.row)) {\n      this.setContent(this.element, this.renderContent());\n    }\n  }\n\n  renderContent() {\n    const submission = _.get(this.root, 'submission', {});\n    return this.renderTemplate('html', {\n      component: this.component,\n      tag: this.component.tag,\n      attrs: (this.component.attrs || []).map((attr) => {\n        return {\n          attr: attr.attr,\n          value: this.interpolate(attr.value, {\n            metadata: submission.metadata || {},\n            submission: submission,\n            data: this.rootValue,\n            row: this.data\n          })\n        };\n      }),\n      content: this.content,\n      singleTags: this.singleTags,\n    });\n  }\n\n  render() {\n    return super.render(this.renderContent());\n  }\n\n  attach(element) {\n    this.loadRefs(element, { html: 'single' });\n    return super.attach(element);\n  }\n}\n",
     "static": true,
     "longname": "/home/lanedoughtie/cicd/formio.js/src/components/html/HTML.js",
     "access": "public",
@@ -11732,7 +11732,7 @@
     "undocument": true,
     "type": {
       "types": [
-        "{\"title\": string, \"group\": string, \"icon\": string, \"weight\": *, \"documentation\": string, \"schema\": *}"
+        "{\"title\": string, \"group\": string, \"icon\": string, \"weight\": *, \"documentation\": string, \"showPreview\": *, \"schema\": *}"
       ]
     }
   },
@@ -11747,7 +11747,7 @@
     "longname": "src/components/html/HTML.js~HTMLComponent#defaultSchema",
     "access": "public",
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 29,
     "undocument": true,
     "type": {
       "types": [
@@ -11766,7 +11766,7 @@
     "longname": "src/components/html/HTML.js~HTMLComponent#content",
     "access": "public",
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 33,
     "undocument": true,
     "type": {
       "types": [
@@ -11785,7 +11785,7 @@
     "longname": "src/components/html/HTML.js~HTMLComponent#singleTags",
     "access": "public",
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 53,
     "undocument": true,
     "type": {
       "types": [
@@ -11804,7 +11804,7 @@
     "longname": "src/components/html/HTML.js~HTMLComponent#checkRefreshOn",
     "access": "public",
     "description": null,
-    "lineNumber": 56,
+    "lineNumber": 57,
     "undocument": true,
     "params": [
       {
@@ -11827,7 +11827,7 @@
     "longname": "src/components/html/HTML.js~HTMLComponent#renderContent",
     "access": "public",
     "description": null,
-    "lineNumber": 65,
+    "lineNumber": 66,
     "undocument": true,
     "params": [],
     "return": {
@@ -11847,7 +11847,7 @@
     "longname": "src/components/html/HTML.js~HTMLComponent#render",
     "access": "public",
     "description": null,
-    "lineNumber": 86,
+    "lineNumber": 87,
     "undocument": true,
     "params": [],
     "return": {
@@ -11867,7 +11867,7 @@
     "longname": "src/components/html/HTML.js~HTMLComponent#attach",
     "access": "public",
     "description": null,
-    "lineNumber": 90,
+    "lineNumber": 91,
     "undocument": true,
     "params": [
       {
@@ -14432,7 +14432,7 @@
     "__docId__": 862,
     "kind": "file",
     "name": "src/components/table/Table.js",
-    "content": "import _ from 'lodash';\nimport BuilderUtils from '../../utils/builder';\nimport NestedComponent from '../_classes/nested/NestedComponent';\n\nexport default class TableComponent extends NestedComponent {\n  static emptyTable(numRows, numCols) {\n    const rows = [];\n    for (let i = 0; i < numRows; i++) {\n      const cols = [];\n      for (let j = 0; j < numCols; j++) {\n        cols.push({ components: [] });\n      }\n      rows.push(cols);\n    }\n    return rows;\n  }\n\n  static schema(...extend) {\n    return NestedComponent.schema({\n      label: 'Table',\n      type: 'table',\n      input: false,\n      key: 'table',\n      numRows: 3,\n      numCols: 3,\n      rows: TableComponent.emptyTable(3, 3),\n      header: [],\n      caption: '',\n      cloneRows: false,\n      striped: false,\n      bordered: false,\n      hover: false,\n      condensed: false,\n      persistent: false\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Table',\n      group: 'layout',\n      icon: 'table',\n      weight: 40,\n      documentation: '/userguide/form-building/layout-components#table',\n      schema: TableComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return TableComponent.schema();\n  }\n\n  get schema() {\n    const schema = _.omit(super.schema, 'components');\n    schema.rows = [];\n    this.eachComponent((component) => {\n      if (!schema.rows || !schema.rows.length) {\n        schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);\n      }\n      if (!schema.rows[component.tableRow]) {\n        schema.rows[component.tableRow] = [];\n      }\n      if (!schema.rows[component.tableRow][component.tableColumn]) {\n        schema.rows[component.tableRow][component.column] = { components: [] };\n      }\n      schema.rows[component.tableRow][component.tableColumn].components.push(component.schema);\n    });\n    if (!schema.rows.length) {\n      schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);\n    }\n    return schema;\n  }\n\n  get className() {\n    let name = `table-responsive ${super.className}`;\n    if (!this.component.bordered) {\n      name += ' no-top-border-table';\n    }\n    return name;\n  }\n\n  get cellClassName() {\n    let name = '';\n    if (this.component.cellAlignment) {\n      name = `cell-align-${this.component.cellAlignment}`;\n    }\n    return name;\n  }\n\n  get tableKey() {\n    return `table-${this.key}`;\n  }\n\n  get colWidth() {\n    const { numCols } = this.component;\n    if (!numCols || typeof numCols !== 'number') {\n      return '';\n    }\n    return Math.floor(12 / numCols).toString();\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.noField = true;\n  }\n\n  init() {\n    super.init();\n    // Ensure component.rows has the correct number of rows and columns.\n    for (let rowIndex = 0; rowIndex < this.component.numRows; rowIndex++) {\n      this.component.rows[rowIndex] = this.component.rows[rowIndex] || [];\n      for (let colIndex = 0; colIndex < this.component.numCols; colIndex++) {\n        this.component.rows[rowIndex][colIndex] = this.component.rows[rowIndex][colIndex] || { components: [] };\n      }\n      this.component.rows[rowIndex] = this.component.rows[rowIndex].slice(0, this.component.numCols);\n    }\n    this.component.rows = this.component.rows.slice(0, this.component.numRows);\n\n    const lastNonEmptyRow = [];\n    this.table = [];\n    _.each(this.component.rows, (row, rowIndex) => {\n      this.table[rowIndex] = [];\n      _.each(row, (column, colIndex) => {\n        this.table[rowIndex][colIndex] = [];\n        if (this.component.cloneRows) {\n          if (column.components.length) {\n            lastNonEmptyRow[colIndex] = column;\n          }\n          else if (lastNonEmptyRow[colIndex]) {\n            column.components = _.cloneDeep(lastNonEmptyRow[colIndex].components);\n            BuilderUtils.uniquify(this.root._form.components, column);\n          }\n        }\n        _.each(column.components, (comp) => {\n          let columnComponent;\n\n          if (this.builderMode) {\n            comp.id = comp.id + rowIndex;\n            columnComponent = comp;\n          }\n          else {\n            columnComponent = { ...comp, id: (comp.id + rowIndex) };\n          }\n\n          const component = this.createComponent(columnComponent);\n          component.tableRow = rowIndex;\n          component.tableColumn = colIndex;\n          this.table[rowIndex][colIndex].push(component);\n        });\n      });\n    });\n  }\n\n  render() {\n    return super.render(this.renderTemplate('table', {\n      cellClassName: this.cellClassName,\n      tableKey: this.tableKey,\n      colWidth: this.colWidth,\n      tableComponents: this.table.map(row =>\n        row.map(column =>\n          this.renderComponents(column)\n        )\n      )\n    }));\n  }\n\n  attach(element) {\n    const keys = this.table.reduce((prev, row, rowIndex) => {\n      prev[`${this.tableKey}-${rowIndex}`] = 'multiple';\n      return prev;\n    }, {});\n    this.loadRefs(element, keys);\n    const superAttach = super.attach(element);\n    this.table.forEach((row, rowIndex) => {\n      row.forEach((column, columnIndex) => {\n        this.attachComponents(this.refs[`${this.tableKey}-${rowIndex}`][columnIndex], this.table[rowIndex][columnIndex], this.component.rows[rowIndex][columnIndex].components);\n      });\n    });\n    return superAttach;\n  }\n\n  destroy(all) {\n    super.destroy(all);\n    delete this.table;\n  }\n}\n",
+    "content": "import _ from 'lodash';\nimport BuilderUtils from '../../utils/builder';\nimport NestedComponent from '../_classes/nested/NestedComponent';\n\nexport default class TableComponent extends NestedComponent {\n  static emptyTable(numRows, numCols) {\n    const rows = [];\n    for (let i = 0; i < numRows; i++) {\n      const cols = [];\n      for (let j = 0; j < numCols; j++) {\n        cols.push({ components: [] });\n      }\n      rows.push(cols);\n    }\n    return rows;\n  }\n\n  static schema(...extend) {\n    return NestedComponent.schema({\n      label: 'Table',\n      type: 'table',\n      input: false,\n      key: 'table',\n      numRows: 3,\n      numCols: 3,\n      rows: TableComponent.emptyTable(3, 3),\n      header: [],\n      caption: '',\n      cloneRows: false,\n      striped: false,\n      bordered: false,\n      hover: false,\n      condensed: false,\n      persistent: false\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Table',\n      group: 'layout',\n      icon: 'table',\n      weight: 40,\n      documentation: '/userguide/form-building/layout-components#table',\n      showPreview: false,\n      schema: TableComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return TableComponent.schema();\n  }\n\n  get schema() {\n    const schema = _.omit(super.schema, 'components');\n    schema.rows = [];\n    this.eachComponent((component) => {\n      if (!schema.rows || !schema.rows.length) {\n        schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);\n      }\n      if (!schema.rows[component.tableRow]) {\n        schema.rows[component.tableRow] = [];\n      }\n      if (!schema.rows[component.tableRow][component.tableColumn]) {\n        schema.rows[component.tableRow][component.column] = { components: [] };\n      }\n      schema.rows[component.tableRow][component.tableColumn].components.push(component.schema);\n    });\n    if (!schema.rows.length) {\n      schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);\n    }\n    return schema;\n  }\n\n  get className() {\n    let name = `table-responsive ${super.className}`;\n    if (!this.component.bordered) {\n      name += ' no-top-border-table';\n    }\n    return name;\n  }\n\n  get cellClassName() {\n    let name = '';\n    if (this.component.cellAlignment) {\n      name = `cell-align-${this.component.cellAlignment}`;\n    }\n    return name;\n  }\n\n  get tableKey() {\n    return `table-${this.key}`;\n  }\n\n  get colWidth() {\n    const { numCols } = this.component;\n    if (!numCols || typeof numCols !== 'number') {\n      return '';\n    }\n    return Math.floor(12 / numCols).toString();\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.noField = true;\n  }\n\n  init() {\n    super.init();\n    // Ensure component.rows has the correct number of rows and columns.\n    for (let rowIndex = 0; rowIndex < this.component.numRows; rowIndex++) {\n      this.component.rows[rowIndex] = this.component.rows[rowIndex] || [];\n      for (let colIndex = 0; colIndex < this.component.numCols; colIndex++) {\n        this.component.rows[rowIndex][colIndex] = this.component.rows[rowIndex][colIndex] || { components: [] };\n      }\n      this.component.rows[rowIndex] = this.component.rows[rowIndex].slice(0, this.component.numCols);\n    }\n    this.component.rows = this.component.rows.slice(0, this.component.numRows);\n\n    const lastNonEmptyRow = [];\n    this.table = [];\n    _.each(this.component.rows, (row, rowIndex) => {\n      this.table[rowIndex] = [];\n      _.each(row, (column, colIndex) => {\n        this.table[rowIndex][colIndex] = [];\n        if (this.component.cloneRows) {\n          if (column.components.length) {\n            lastNonEmptyRow[colIndex] = column;\n          }\n          else if (lastNonEmptyRow[colIndex]) {\n            column.components = _.cloneDeep(lastNonEmptyRow[colIndex].components);\n            BuilderUtils.uniquify(this.root._form.components, column);\n          }\n        }\n        _.each(column.components, (comp) => {\n          let columnComponent;\n\n          if (this.builderMode) {\n            comp.id = comp.id + rowIndex;\n            columnComponent = comp;\n          }\n          else {\n            columnComponent = { ...comp, id: (comp.id + rowIndex) };\n          }\n\n          const component = this.createComponent(columnComponent);\n          component.tableRow = rowIndex;\n          component.tableColumn = colIndex;\n          this.table[rowIndex][colIndex].push(component);\n        });\n      });\n    });\n  }\n\n  render() {\n    return super.render(this.renderTemplate('table', {\n      cellClassName: this.cellClassName,\n      tableKey: this.tableKey,\n      colWidth: this.colWidth,\n      tableComponents: this.table.map(row =>\n        row.map(column =>\n          this.renderComponents(column)\n        )\n      )\n    }));\n  }\n\n  attach(element) {\n    const keys = this.table.reduce((prev, row, rowIndex) => {\n      prev[`${this.tableKey}-${rowIndex}`] = 'multiple';\n      return prev;\n    }, {});\n    this.loadRefs(element, keys);\n    const superAttach = super.attach(element);\n    this.table.forEach((row, rowIndex) => {\n      row.forEach((column, columnIndex) => {\n        this.attachComponents(this.refs[`${this.tableKey}-${rowIndex}`][columnIndex], this.table[rowIndex][columnIndex], this.component.rows[rowIndex][columnIndex].components);\n      });\n    });\n    return superAttach;\n  }\n\n  destroy(all) {\n    super.destroy(all);\n    delete this.table;\n  }\n}\n",
     "static": true,
     "longname": "/home/lanedoughtie/cicd/formio.js/src/components/table/Table.js",
     "access": "public",
@@ -14534,7 +14534,7 @@
     "undocument": true,
     "type": {
       "types": [
-        "{\"title\": string, \"group\": string, \"icon\": string, \"weight\": number, \"documentation\": string, \"schema\": *}"
+        "{\"title\": string, \"group\": string, \"icon\": string, \"weight\": number, \"documentation\": string, \"showPreview\": *, \"schema\": *}"
       ]
     }
   },
@@ -14549,7 +14549,7 @@
     "longname": "src/components/table/Table.js~TableComponent#defaultSchema",
     "access": "public",
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 50,
     "undocument": true,
     "type": {
       "types": [
@@ -14568,7 +14568,7 @@
     "longname": "src/components/table/Table.js~TableComponent#schema",
     "access": "public",
     "description": null,
-    "lineNumber": 53,
+    "lineNumber": 54,
     "undocument": true,
     "type": {
       "types": [
@@ -14587,7 +14587,7 @@
     "longname": "src/components/table/Table.js~TableComponent#className",
     "access": "public",
     "description": null,
-    "lineNumber": 74,
+    "lineNumber": 75,
     "undocument": true,
     "type": {
       "types": [
@@ -14606,7 +14606,7 @@
     "longname": "src/components/table/Table.js~TableComponent#cellClassName",
     "access": "public",
     "description": null,
-    "lineNumber": 82,
+    "lineNumber": 83,
     "undocument": true,
     "type": {
       "types": [
@@ -14625,7 +14625,7 @@
     "longname": "src/components/table/Table.js~TableComponent#tableKey",
     "access": "public",
     "description": null,
-    "lineNumber": 90,
+    "lineNumber": 91,
     "undocument": true,
     "type": {
       "types": [
@@ -14644,7 +14644,7 @@
     "longname": "src/components/table/Table.js~TableComponent#colWidth",
     "access": "public",
     "description": null,
-    "lineNumber": 94,
+    "lineNumber": 95,
     "undocument": true,
     "type": {
       "types": [
@@ -14663,7 +14663,7 @@
     "longname": "src/components/table/Table.js~TableComponent#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 102,
+    "lineNumber": 103,
     "undocument": true
   },
   {
@@ -14675,7 +14675,7 @@
     "longname": "src/components/table/Table.js~TableComponent#noField",
     "access": "public",
     "description": null,
-    "lineNumber": 104,
+    "lineNumber": 105,
     "undocument": true,
     "type": {
       "types": [
@@ -14694,7 +14694,7 @@
     "longname": "src/components/table/Table.js~TableComponent#init",
     "access": "public",
     "description": null,
-    "lineNumber": 107,
+    "lineNumber": 108,
     "undocument": true,
     "params": [],
     "return": null
@@ -14708,7 +14708,7 @@
     "longname": "src/components/table/Table.js~TableComponent#table",
     "access": "public",
     "description": null,
-    "lineNumber": 120,
+    "lineNumber": 121,
     "undocument": true,
     "type": {
       "types": [
@@ -14727,7 +14727,7 @@
     "longname": "src/components/table/Table.js~TableComponent#render",
     "access": "public",
     "description": null,
-    "lineNumber": 154,
+    "lineNumber": 155,
     "undocument": true,
     "params": [],
     "return": {
@@ -14747,7 +14747,7 @@
     "longname": "src/components/table/Table.js~TableComponent#attach",
     "access": "public",
     "description": null,
-    "lineNumber": 167,
+    "lineNumber": 168,
     "undocument": true,
     "params": [
       {
@@ -14774,7 +14774,7 @@
     "longname": "src/components/table/Table.js~TableComponent#destroy",
     "access": "public",
     "description": null,
-    "lineNumber": 182,
+    "lineNumber": 183,
     "undocument": true,
     "params": [
       {
@@ -14876,7 +14876,7 @@
     "__docId__": 886,
     "kind": "file",
     "name": "src/components/tabs/Tabs.js",
-    "content": "import _ from 'lodash';\nimport NestedComponent from '../_classes/nested/NestedComponent';\n\nexport default class TabsComponent extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      label: 'Tabs',\n      type: 'tabs',\n      input: false,\n      key: 'tabs',\n      persistent: false,\n      tableView: false,\n      components: [\n        {\n          label: 'Tab 1',\n          key: 'tab1',\n          components: [],\n        },\n      ],\n      verticalLayout: false,\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Tabs',\n      group: 'layout',\n      icon: 'folder-o',\n      weight: 50,\n      documentation: '/userguide/form-building/layout-components#tabs',\n      schema: TabsComponent.schema(),\n    };\n  }\n\n  get defaultSchema() {\n    return TabsComponent.schema();\n  }\n\n  get schema() {\n    const schema = super.schema;\n    // We need to clone this because the builder uses the \"components\" reference and this would reset that reference.\n    const components = _.cloneDeep(this.component.components);\n    schema.components = components.map((tab, index) => {\n      tab.components = this.tabs[index].map((component) => component.schema);\n      return tab;\n    });\n\n    return schema;\n  }\n\n  get tabKey() {\n    return `tab-${this.key}`;\n  }\n\n  get tabLikey() {\n    return `tabLi-${this.key}`;\n  }\n\n  get tabLinkKey() {\n    return `tabLink-${this.key}`;\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.currentTab = 0;\n    this.noField = true;\n  }\n\n  init() {\n    this.components = [];\n    this.tabs = [];\n    _.each(this.component.components, (tab, index) => {\n      this.tabs[index] = [];\n      // Initialize empty tabs.\n      tab.components = tab.components || [];\n      _.each(tab.components, (comp) => {\n        const component = this.createComponent(comp);\n        component.tab = index;\n        this.tabs[index].push(component);\n      });\n    });\n  }\n\n  render() {\n    return super.render(this.renderTemplate(\n      'tab',\n      {\n        tabKey: this.tabKey,\n        tabLikey: this.tabLikey,\n        tabLinkKey: this.tabLinkKey,\n        currentTab: this.currentTab,\n        tabComponents: this.tabs.map(tab => this.renderComponents(tab)),\n      },\n      (\n        this.options.flatten || this.options.pdf ? 'flat' : null\n      ),\n    ));\n  }\n\n  attach(element) {\n    this.loadRefs(\n      element,\n      {\n        [this.tabLinkKey]: 'multiple',\n        [this.tabKey]: 'multiple',\n        [this.tabLikey]: 'multiple',\n      },\n    );\n    ['change', 'error'].forEach(event => this.on(event, this.handleTabsValidation.bind(this)));\n    const superAttach = super.attach(element);\n    this.refs[this.tabLinkKey].forEach((tabLink, index) => {\n      this.addEventListener(tabLink, 'click', (event) => {\n        event.preventDefault();\n        this.setTab(index);\n      });\n    });\n    this.refs[this.tabKey].forEach((tab, index) => {\n      this.attachComponents(tab, this.tabs[index], this.component.components[index].components);\n    });\n    return superAttach;\n  }\n\n  detach(all) {\n    super.detach(all);\n  }\n\n  /**\n   * Set the current tab.\n   *\n   * @param index\n   */\n  setTab(index) {\n    if (!this.tabs || !this.tabs[index] || !this.refs[this.tabKey] || !this.refs[this.tabKey][index]) {\n      return;\n    }\n\n    this.currentTab = index;\n\n    _.each(this.refs[this.tabKey], (tab) => {\n      this.removeClass(tab, 'formio-tab-panel-active');\n      tab.style.display = 'none';\n    });\n    this.addClass(this.refs[this.tabKey][index], 'formio-tab-panel-active');\n    this.refs[this.tabKey][index].style.display = 'block';\n\n    _.each(this.refs[this.tabLinkKey], (tabLink, tabIndex) => {\n      if (this.refs[this.tabLinkKey][tabIndex]) {\n        this.removeClass(tabLink, 'formio-tab-link-active');\n      }\n      if (this.refs[this.tabLikey][tabIndex]) {\n        this.removeClass(this.refs[this.tabLikey][tabIndex], 'formio-tab-link-container-active');\n      }\n    });\n    if (this.refs[this.tabLikey][index]) {\n      this.addClass(this.refs[this.tabLikey][index], 'formio-tab-link-container-active');\n    }\n    if (this.refs[this.tabLinkKey][index]) {\n      this.addClass(this.refs[this.tabLinkKey][index], 'formio-tab-link-active');\n    }\n    this.triggerChange();\n  }\n\n  beforeFocus(component) {\n    if ('beforeFocus' in this.parent) {\n      this.parent.beforeFocus(this);\n    }\n    const tabIndex = this.tabs.findIndex((tab) => {\n      return tab.some((comp) => comp === component);\n    });\n    if (tabIndex !== -1 && this.currentTab !== tabIndex) {\n      this.setTab(tabIndex);\n    }\n  }\n\n  setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {\n    if (this.component.modalEdit) {\n      super.setErrorClasses(elements, dirty, hasErrors, hasMessages, element);\n    }\n\n    elements.forEach((element) => {\n      this.addClass(element, 'is-invalid');\n\n      if (element.getAttribute('ref') !== 'openModal') {\n        if (this.options.highlightErrors) {\n          this.addClass(element, 'tab-error');\n        }\n        else {\n          this.addClass(element, 'has-error');\n        }\n      }\n    });\n  }\n\n  clearErrorClasses(elements) {\n    if (this.options.server || !this.rendered) {\n      return;\n    }\n\n    if (this.component.modalEdit) {\n      const element = Array.isArray(elements) || elements instanceof NodeList ? this.element : elements;\n      super.clearErrorClasses(element);\n    }\n\n    elements = Array.isArray(elements) || elements instanceof NodeList ? elements : [elements];\n\n    elements.forEach((element) => {\n      this.removeClass(element, 'is-invalid');\n      this.removeClass(element, 'tab-error');\n      this.removeClass(element, 'has-error');\n    });\n  }\n\n  handleTabsValidation() {\n    if (!this.refs[this.tabLinkKey] || !this.refs[this.tabLinkKey].length || !this.tabs.length) {\n      return;\n    }\n\n    this.clearErrorClasses(this.refs[this.tabLinkKey]);\n\n    const invalidTabsIndexes = this.tabs.reduce((invalidTabs, tab, tabIndex) => {\n      const hasComponentWithError = tab.some(comp => !!comp.error);\n      return hasComponentWithError ? [...invalidTabs, tabIndex] : invalidTabs;\n    }, []);\n\n    if (!invalidTabsIndexes.length) {\n      return;\n    }\n\n    const invalidTabs = [...this.refs[this.tabLinkKey]].filter((_, tabIndex) => invalidTabsIndexes.includes(tabIndex));\n    this.setErrorClasses(invalidTabs);\n  }\n}\n",
+    "content": "import _ from 'lodash';\nimport NestedComponent from '../_classes/nested/NestedComponent';\n\nexport default class TabsComponent extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      label: 'Tabs',\n      type: 'tabs',\n      input: false,\n      key: 'tabs',\n      persistent: false,\n      tableView: false,\n      components: [\n        {\n          label: 'Tab 1',\n          key: 'tab1',\n          components: [],\n        },\n      ],\n      verticalLayout: false,\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Tabs',\n      group: 'layout',\n      icon: 'folder-o',\n      weight: 50,\n      documentation: '/userguide/form-building/layout-components#tabs',\n      showPreview: false,\n      schema: TabsComponent.schema(),\n    };\n  }\n\n  get defaultSchema() {\n    return TabsComponent.schema();\n  }\n\n  get schema() {\n    const schema = super.schema;\n    // We need to clone this because the builder uses the \"components\" reference and this would reset that reference.\n    const components = _.cloneDeep(this.component.components);\n    schema.components = components.map((tab, index) => {\n      tab.components = this.tabs[index].map((component) => component.schema);\n      return tab;\n    });\n\n    return schema;\n  }\n\n  get tabKey() {\n    return `tab-${this.key}`;\n  }\n\n  get tabLikey() {\n    return `tabLi-${this.key}`;\n  }\n\n  get tabLinkKey() {\n    return `tabLink-${this.key}`;\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.currentTab = 0;\n    this.noField = true;\n  }\n\n  init() {\n    this.components = [];\n    this.tabs = [];\n    _.each(this.component.components, (tab, index) => {\n      this.tabs[index] = [];\n      // Initialize empty tabs.\n      tab.components = tab.components || [];\n      _.each(tab.components, (comp) => {\n        const component = this.createComponent(comp);\n        component.tab = index;\n        this.tabs[index].push(component);\n      });\n    });\n  }\n\n  render() {\n    return super.render(this.renderTemplate(\n      'tab',\n      {\n        tabKey: this.tabKey,\n        tabLikey: this.tabLikey,\n        tabLinkKey: this.tabLinkKey,\n        currentTab: this.currentTab,\n        tabComponents: this.tabs.map(tab => this.renderComponents(tab)),\n      },\n      (\n        this.options.flatten || this.options.pdf ? 'flat' : null\n      ),\n    ));\n  }\n\n  attach(element) {\n    this.loadRefs(\n      element,\n      {\n        [this.tabLinkKey]: 'multiple',\n        [this.tabKey]: 'multiple',\n        [this.tabLikey]: 'multiple',\n      },\n    );\n    ['change', 'error'].forEach(event => this.on(event, this.handleTabsValidation.bind(this)));\n    const superAttach = super.attach(element);\n    this.refs[this.tabLinkKey].forEach((tabLink, index) => {\n      this.addEventListener(tabLink, 'click', (event) => {\n        event.preventDefault();\n        this.setTab(index);\n      });\n    });\n    this.refs[this.tabKey].forEach((tab, index) => {\n      this.attachComponents(tab, this.tabs[index], this.component.components[index].components);\n    });\n    return superAttach;\n  }\n\n  detach(all) {\n    super.detach(all);\n  }\n\n  /**\n   * Set the current tab.\n   *\n   * @param index\n   */\n  setTab(index) {\n    if (!this.tabs || !this.tabs[index] || !this.refs[this.tabKey] || !this.refs[this.tabKey][index]) {\n      return;\n    }\n\n    this.currentTab = index;\n\n    _.each(this.refs[this.tabKey], (tab) => {\n      this.removeClass(tab, 'formio-tab-panel-active');\n      tab.style.display = 'none';\n    });\n    this.addClass(this.refs[this.tabKey][index], 'formio-tab-panel-active');\n    this.refs[this.tabKey][index].style.display = 'block';\n\n    _.each(this.refs[this.tabLinkKey], (tabLink, tabIndex) => {\n      if (this.refs[this.tabLinkKey][tabIndex]) {\n        this.removeClass(tabLink, 'formio-tab-link-active');\n      }\n      if (this.refs[this.tabLikey][tabIndex]) {\n        this.removeClass(this.refs[this.tabLikey][tabIndex], 'formio-tab-link-container-active');\n      }\n    });\n    if (this.refs[this.tabLikey][index]) {\n      this.addClass(this.refs[this.tabLikey][index], 'formio-tab-link-container-active');\n    }\n    if (this.refs[this.tabLinkKey][index]) {\n      this.addClass(this.refs[this.tabLinkKey][index], 'formio-tab-link-active');\n    }\n    this.triggerChange();\n  }\n\n  beforeFocus(component) {\n    if ('beforeFocus' in this.parent) {\n      this.parent.beforeFocus(this);\n    }\n    const tabIndex = this.tabs.findIndex((tab) => {\n      return tab.some((comp) => comp === component);\n    });\n    if (tabIndex !== -1 && this.currentTab !== tabIndex) {\n      this.setTab(tabIndex);\n    }\n  }\n\n  setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {\n    if (this.component.modalEdit) {\n      super.setErrorClasses(elements, dirty, hasErrors, hasMessages, element);\n    }\n\n    elements.forEach((element) => {\n      this.addClass(element, 'is-invalid');\n\n      if (element.getAttribute('ref') !== 'openModal') {\n        if (this.options.highlightErrors) {\n          this.addClass(element, 'tab-error');\n        }\n        else {\n          this.addClass(element, 'has-error');\n        }\n      }\n    });\n  }\n\n  clearErrorClasses(elements) {\n    if (this.options.server || !this.rendered) {\n      return;\n    }\n\n    if (this.component.modalEdit) {\n      const element = Array.isArray(elements) || elements instanceof NodeList ? this.element : elements;\n      super.clearErrorClasses(element);\n    }\n\n    elements = Array.isArray(elements) || elements instanceof NodeList ? elements : [elements];\n\n    elements.forEach((element) => {\n      this.removeClass(element, 'is-invalid');\n      this.removeClass(element, 'tab-error');\n      this.removeClass(element, 'has-error');\n    });\n  }\n\n  handleTabsValidation() {\n    if (!this.refs[this.tabLinkKey] || !this.refs[this.tabLinkKey].length || !this.tabs.length) {\n      return;\n    }\n\n    this.clearErrorClasses(this.refs[this.tabLinkKey]);\n\n    const invalidTabsIndexes = this.tabs.reduce((invalidTabs, tab, tabIndex) => {\n      const hasComponentWithError = tab.some(comp => !!comp.error);\n      return hasComponentWithError ? [...invalidTabs, tabIndex] : invalidTabs;\n    }, []);\n\n    if (!invalidTabsIndexes.length) {\n      return;\n    }\n\n    const invalidTabs = [...this.refs[this.tabLinkKey]].filter((_, tabIndex) => invalidTabsIndexes.includes(tabIndex));\n    this.setErrorClasses(invalidTabs);\n  }\n}\n",
     "static": true,
     "longname": "/home/lanedoughtie/cicd/formio.js/src/components/tabs/Tabs.js",
     "access": "public",
@@ -14945,7 +14945,7 @@
     "undocument": true,
     "type": {
       "types": [
-        "{\"title\": string, \"group\": string, \"icon\": string, \"weight\": number, \"documentation\": string, \"schema\": *}"
+        "{\"title\": string, \"group\": string, \"icon\": string, \"weight\": number, \"documentation\": string, \"showPreview\": *, \"schema\": *}"
       ]
     }
   },
@@ -14960,7 +14960,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#defaultSchema",
     "access": "public",
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 36,
     "undocument": true,
     "type": {
       "types": [
@@ -14979,7 +14979,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#schema",
     "access": "public",
     "description": null,
-    "lineNumber": 39,
+    "lineNumber": 40,
     "undocument": true,
     "type": {
       "types": [
@@ -14998,7 +14998,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#tabKey",
     "access": "public",
     "description": null,
-    "lineNumber": 51,
+    "lineNumber": 52,
     "undocument": true,
     "type": {
       "types": [
@@ -15017,7 +15017,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#tabLikey",
     "access": "public",
     "description": null,
-    "lineNumber": 55,
+    "lineNumber": 56,
     "undocument": true,
     "type": {
       "types": [
@@ -15036,7 +15036,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#tabLinkKey",
     "access": "public",
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 60,
     "undocument": true,
     "type": {
       "types": [
@@ -15055,7 +15055,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 63,
+    "lineNumber": 64,
     "undocument": true
   },
   {
@@ -15067,7 +15067,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#currentTab",
     "access": "public",
     "description": null,
-    "lineNumber": 65,
+    "lineNumber": 66,
     "undocument": true,
     "type": {
       "types": [
@@ -15084,7 +15084,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#noField",
     "access": "public",
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 67,
     "undocument": true,
     "type": {
       "types": [
@@ -15103,7 +15103,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#init",
     "access": "public",
     "description": null,
-    "lineNumber": 69,
+    "lineNumber": 70,
     "undocument": true,
     "params": [],
     "return": null
@@ -15117,7 +15117,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#components",
     "access": "public",
     "description": null,
-    "lineNumber": 70,
+    "lineNumber": 71,
     "undocument": true,
     "type": {
       "types": [
@@ -15134,7 +15134,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#tabs",
     "access": "public",
     "description": null,
-    "lineNumber": 71,
+    "lineNumber": 72,
     "undocument": true,
     "type": {
       "types": [
@@ -15153,7 +15153,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#render",
     "access": "public",
     "description": null,
-    "lineNumber": 84,
+    "lineNumber": 85,
     "undocument": true,
     "params": [],
     "return": {
@@ -15173,7 +15173,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#attach",
     "access": "public",
     "description": null,
-    "lineNumber": 100,
+    "lineNumber": 101,
     "undocument": true,
     "params": [
       {
@@ -15200,7 +15200,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#detach",
     "access": "public",
     "description": null,
-    "lineNumber": 123,
+    "lineNumber": 124,
     "undocument": true,
     "params": [
       {
@@ -15223,7 +15223,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#setTab",
     "access": "public",
     "description": "Set the current tab.",
-    "lineNumber": 132,
+    "lineNumber": 133,
     "params": [
       {
         "nullable": null,
@@ -15249,7 +15249,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#beforeFocus",
     "access": "public",
     "description": null,
-    "lineNumber": 163,
+    "lineNumber": 164,
     "undocument": true,
     "params": [
       {
@@ -15272,7 +15272,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#setErrorClasses",
     "access": "public",
     "description": null,
-    "lineNumber": 175,
+    "lineNumber": 176,
     "undocument": true,
     "params": [
       {
@@ -15320,7 +15320,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#clearErrorClasses",
     "access": "public",
     "description": null,
-    "lineNumber": 194,
+    "lineNumber": 195,
     "undocument": true,
     "params": [
       {
@@ -15343,7 +15343,7 @@
     "longname": "src/components/tabs/Tabs.js~TabsComponent#handleTabsValidation",
     "access": "public",
     "description": null,
-    "lineNumber": 213,
+    "lineNumber": 214,
     "undocument": true,
     "params": [],
     "return": null
@@ -18312,7 +18312,7 @@
     "__docId__": 1106,
     "kind": "file",
     "name": "src/components/well/Well.js",
-    "content": "import NestedComponent from '../_classes/nested/NestedComponent';\n\nexport default class WellComponent extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      type: 'well',\n      key: 'well',\n      input: false,\n      persistent: false,\n      components: []\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Well',\n      icon: 'square-o',\n      group: 'layout',\n      documentation: '/userguide/form-building/layout-components#well',\n      weight: 60,\n      schema: WellComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return WellComponent.schema();\n  }\n\n  get className() {\n    return `${this.component.customClass}`;\n  }\n\n  get templateName() {\n    return 'well';\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.noField = true;\n  }\n}\n",
+    "content": "import NestedComponent from '../_classes/nested/NestedComponent';\n\nexport default class WellComponent extends NestedComponent {\n  static schema(...extend) {\n    return NestedComponent.schema({\n      type: 'well',\n      key: 'well',\n      input: false,\n      persistent: false,\n      components: []\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'Well',\n      icon: 'square-o',\n      group: 'layout',\n      documentation: '/userguide/form-building/layout-components#well',\n      showPreview: false,\n      weight: 60,\n      schema: WellComponent.schema()\n    };\n  }\n\n  get defaultSchema() {\n    return WellComponent.schema();\n  }\n\n  get className() {\n    return `${this.component.customClass}`;\n  }\n\n  get templateName() {\n    return 'well';\n  }\n\n  constructor(...args) {\n    super(...args);\n    this.noField = true;\n  }\n}\n",
     "static": true,
     "longname": "/home/lanedoughtie/cicd/formio.js/src/components/well/Well.js",
     "access": "public",
@@ -18381,7 +18381,7 @@
     "undocument": true,
     "type": {
       "types": [
-        "{\"title\": string, \"icon\": string, \"group\": string, \"documentation\": string, \"weight\": number, \"schema\": *}"
+        "{\"title\": string, \"icon\": string, \"group\": string, \"documentation\": string, \"showPreview\": *, \"weight\": number, \"schema\": *}"
       ]
     }
   },
@@ -18396,7 +18396,7 @@
     "longname": "src/components/well/Well.js~WellComponent#defaultSchema",
     "access": "public",
     "description": null,
-    "lineNumber": 25,
+    "lineNumber": 26,
     "undocument": true,
     "type": {
       "types": [
@@ -18415,7 +18415,7 @@
     "longname": "src/components/well/Well.js~WellComponent#className",
     "access": "public",
     "description": null,
-    "lineNumber": 29,
+    "lineNumber": 30,
     "undocument": true,
     "type": {
       "types": [
@@ -18434,7 +18434,7 @@
     "longname": "src/components/well/Well.js~WellComponent#templateName",
     "access": "public",
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 34,
     "undocument": true,
     "type": {
       "types": [
@@ -18453,7 +18453,7 @@
     "longname": "src/components/well/Well.js~WellComponent#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 38,
     "undocument": true
   },
   {
@@ -18465,7 +18465,7 @@
     "longname": "src/components/well/Well.js~WellComponent#noField",
     "access": "public",
     "description": null,
-    "lineNumber": 39,
+    "lineNumber": 40,
     "undocument": true,
     "type": {
       "types": [
@@ -31850,7 +31850,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.16.0-rc.6\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc && gulp build\",\n    \"create-app-yml\": \"node -e 'var fs=require(`fs`);fs.writeFileSync(`./_config.app.yml`, `baseurl: https://formiojs.test-form.io/` + require(`./package.json`).version);'\",\n    \"rm-app-yml\": \"rm ./_config.app.yml\",\n    \"build-app\": \"npm run create-app-yml && jekyll build --config _config.yml,_config.app.yml && npm run rm-app-yml\",\n    \"deploy-s3\": \"$(node -e 'console.log(`aws s3 cp _site s3://formiojs.test-form.io/` + require(`./package.json`).version + `/ --recursive`)')\",\n    \"invalidate\": \"aws cloudfront create-invalidation --distribution-id E1MXNA5A4ZKRMZ --paths '/*'\",\n    \"release\": \"npm run build-app && npm run deploy-s3\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib --tag=rc;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"mocha 'lib/**/*.unit.js'\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"2.12.3\",\n    \"@formio/choices.js\": \"10.2.0\",\n    \"@formio/semantic\": \"2.6.1\",\n    \"@formio/text-mask-addons\": \"^3.8.0-formio.2\",\n    \"@formio/vanilla-text-mask\": \"^5.1.1-formio.1\",\n    \"autocompleter\": \"^7.0.1\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"browser-md5-file\": \"^1.1.1\",\n    \"compare-versions\": \"^5.0.1\",\n    \"core-js\": \"^3.26.1\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.6\",\n    \"dom-autoscroller\": \"^2.3.4\",\n    \"dompurify\": \"^2.4.1\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter3\": \"^4.0.7\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^3.1.1\",\n    \"fetch-ponyfill\": \"^7.1.0\",\n    \"i18next\": \"22.4.12\",\n    \"idb\": \"^7.1.1\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^2.0.2\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^3.1.2\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.29.4\",\n    \"moment-timezone\": \"^0.5.40\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"signature_pad\": \"^4.1.4\",\n    \"string-hash\": \"^1.1.3\",\n    \"tippy.js\": \"^6.3.7\",\n    \"uuid\": \"^9.0.0\",\n    \"vanilla-picker\": \"^2.12.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.19.3\",\n    \"@babel/core\": \"^7.20.5\",\n    \"@babel/eslint-parser\": \"^7.18.2\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.16.7\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.16.7\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.16.7\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.20.2\",\n    \"@babel/register\": \"^7.17.7\",\n    \"async-limiter\": \"^2.0.0\",\n    \"ace-builds\": \"^1.4.12\",\n    \"babel-loader\": \"^9.1.0\",\n    \"bootstrap\": \"^4.6.0\",\n    \"bootswatch\": \"^4.6.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.3.7\",\n    \"chance\": \"^1.1.9\",\n    \"del\": \"6.1.1\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^5.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^8.29.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.11.0\",\n    \"file-loader\": \"^6.2.0\",\n    \"flatpickr\": \"^4.6.13\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^7.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.1.3\",\n    \"gulp-sass\": \"^5.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^20.0.3\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^6.4.0\",\n    \"karma-chrome-launcher\": \"^3.1.1\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^5.0.0\",\n    \"marked\": \"^4.2.4\",\n    \"mocha\": \"^10.2.0\",\n    \"mock-local-storage\": \"^1.1.23\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.2\",\n    \"sass\": \"^1.56.2\",\n    \"shortcut-buttons-flatpickr\": \"^0.4.0\",\n    \"sinon\": \"^14.0.2\",\n    \"webpack\": \"^5.75.0\",\n    \"webpack-stream\": \"^7.0.0\",\n    \"written-number\": \"^0.11.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.16.0-rc.7\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc && gulp build\",\n    \"create-app-yml\": \"node -e 'var fs=require(`fs`);fs.writeFileSync(`./_config.app.yml`, `baseurl: https://formiojs.test-form.io/` + require(`./package.json`).version);'\",\n    \"rm-app-yml\": \"rm ./_config.app.yml\",\n    \"build-app\": \"npm run create-app-yml && jekyll build --config _config.yml,_config.app.yml && npm run rm-app-yml\",\n    \"deploy-s3\": \"$(node -e 'console.log(`aws s3 cp _site s3://formiojs.test-form.io/` + require(`./package.json`).version + `/ --recursive`)')\",\n    \"invalidate\": \"aws cloudfront create-invalidation --distribution-id E1MXNA5A4ZKRMZ --paths '/*'\",\n    \"release\": \"npm run build-app && npm run deploy-s3\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib --tag=rc;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"mocha 'lib/**/*.unit.js'\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"2.12.3\",\n    \"@formio/choices.js\": \"10.2.0\",\n    \"@formio/semantic\": \"2.6.1\",\n    \"@formio/text-mask-addons\": \"^3.8.0-formio.2\",\n    \"@formio/vanilla-text-mask\": \"^5.1.1-formio.1\",\n    \"autocompleter\": \"^7.0.1\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"browser-md5-file\": \"^1.1.1\",\n    \"compare-versions\": \"^5.0.1\",\n    \"core-js\": \"^3.26.1\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.6\",\n    \"dom-autoscroller\": \"^2.3.4\",\n    \"dompurify\": \"^2.4.1\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter3\": \"^4.0.7\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^3.1.1\",\n    \"fetch-ponyfill\": \"^7.1.0\",\n    \"i18next\": \"22.4.12\",\n    \"idb\": \"^7.1.1\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^2.0.2\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^3.1.2\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.29.4\",\n    \"moment-timezone\": \"^0.5.40\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"signature_pad\": \"^4.1.4\",\n    \"string-hash\": \"^1.1.3\",\n    \"tippy.js\": \"^6.3.7\",\n    \"uuid\": \"^9.0.0\",\n    \"vanilla-picker\": \"^2.12.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.19.3\",\n    \"@babel/core\": \"^7.20.5\",\n    \"@babel/eslint-parser\": \"^7.18.2\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.16.7\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.16.7\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.16.7\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.20.2\",\n    \"@babel/register\": \"^7.17.7\",\n    \"async-limiter\": \"^2.0.0\",\n    \"ace-builds\": \"^1.4.12\",\n    \"babel-loader\": \"^9.1.0\",\n    \"bootstrap\": \"^4.6.0\",\n    \"bootswatch\": \"^4.6.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.3.7\",\n    \"chance\": \"^1.1.9\",\n    \"del\": \"6.1.1\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^5.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^8.29.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.11.0\",\n    \"file-loader\": \"^6.2.0\",\n    \"flatpickr\": \"^4.6.13\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^7.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.1.3\",\n    \"gulp-sass\": \"^5.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^20.0.3\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^6.4.0\",\n    \"karma-chrome-launcher\": \"^3.1.1\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^5.0.0\",\n    \"marked\": \"^4.2.4\",\n    \"mocha\": \"^10.2.0\",\n    \"mock-local-storage\": \"^1.1.23\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.2\",\n    \"sass\": \"^1.56.2\",\n    \"shortcut-buttons-flatpickr\": \"^0.4.0\",\n    \"sinon\": \"^14.0.2\",\n    \"webpack\": \"^5.75.0\",\n    \"webpack-stream\": \"^7.0.0\",\n    \"written-number\": \"^0.11.1\"\n  }\n}\n",
     "longname": "/home/lanedoughtie/cicd/formio.js/package.json",
     "name": "package.json",
     "static": true,

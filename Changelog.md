@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.16.0-rc.7
+### Changed
+ - FIO-5748 Collapsible preview for Form Builder
+ - FIO-6950 fixed test
+ - FIO-6669 Fixed tooltips cutting off in the component settings modal
+
 ## 4.16.0-rc.6
 ### Changed
  - FIO-6156 Fixed help link for Time component
