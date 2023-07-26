@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.16-rc.1]
+### Fixed
+ - Fixed an issue where an error appears when reordering datagrid rows: https://github.com/formio/formio.js/pull/4669
+
 ## 4.14.15
 ### Changed
  - Official Release
