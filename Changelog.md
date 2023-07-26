@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Hide removeItemButton on choicesjs select when the placeholder is selected. https://github.com/formio/formio.js/pull/4842
  - use jQuery instead of $. https://github.com/formio/formio.js/pull/4854
  - follow the error handling of executeSubmit(). https://github.com/formio/formio.js/pull/4863
+ - Multi upload: abort the correct file when clicking the cancel upload button. https://github.com/formio/formio.js/pull/4957
 
 ## 5.0.0-rc.6
 ### Added
