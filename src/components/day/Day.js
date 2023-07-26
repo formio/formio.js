@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import Field from '../_classes/field/Field';
 import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
 
@@ -34,10 +35,20 @@ export default class DayComponent extends Field {
       title: 'Day',
       group: 'advanced',
       icon: 'calendar',
-      documentation: '/userguide/forms/form-components#day',
+      documentation: '/userguide/form-building/advanced-components#day',
       weight: 50,
       schema: DayComponent.schema()
     };
+  }
+
+  constructor(component, options, data) {
+    if (component.maxDate) {
+      component.maxDate = moment(component.maxDate, 'YYYY-MM-DD').toISOString();
+    }
+    if (component.minDate) {
+      component.minDate = moment(component.minDate, 'YYYY-MM-DD').toISOString();
+    }
+    super(component, options, data);
   }
 
   /**
@@ -345,21 +356,23 @@ export default class DayComponent extends Field {
     }
     const dateParts = [];
     const valueParts = value.split('/');
+    const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+    const defaultValue = this.component.defaultValue ? this.component.defaultValue.split('/') : '';
 
     const getNextPart = (shouldTake, defaultValue) =>
       dateParts.push(shouldTake ? valueParts.shift() : defaultValue);
 
     if (this.dayFirst) {
-      getNextPart(this.showDay, '00');
+      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '00');
     }
 
-    getNextPart(this.showMonth, '00');
+    getNextPart(this.showMonth, defaultValue ? defaultValue[MONTH] : '00');
 
     if (!this.dayFirst) {
-      getNextPart(this.showDay, '00');
+      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '00');
     }
 
-    getNextPart(this.showYear, '0000');
+    getNextPart(this.showYear, defaultValue ? defaultValue[YEAR] : '0000');
 
     return dateParts.join('/');
   }
@@ -516,19 +529,12 @@ export default class DayComponent extends Field {
     return this.getDate();
   }
 
-  normalizeMinMaxDates() {
-   return [this.component.minDate, this.component.maxDate]
-      .map(date => date ? date.split('-').reverse().join('/') : date);
-  }
-
   /**
    * Return the raw value.
    *
    * @returns {Date}
    */
   get validationValue() {
-    [this.component.minDate, this.component.maxDate] = this.dayFirst ? this.normalizeMinMaxDates()
-      : [this.component.minDate, this.component.maxDate];
     return this.dataValue;
   }
 

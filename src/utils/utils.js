@@ -1,4 +1,4 @@
-/* global $ */
+/* global jQuery */
 
 import _ from 'lodash';
 import fetchPonyfill from 'fetch-ponyfill';
@@ -10,6 +10,7 @@ import NativePromise from 'native-promise-only';
 import dompurify from 'dompurify';
 import { getValue } from './formUtils';
 import Evaluator from './Evaluator';
+import ConditionOperators from './conditionOperators';
 const interpolate = Evaluator.interpolate;
 const { fetch } = fetchPonyfill({
   Promise: NativePromise
@@ -35,7 +36,8 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, moment };
+export { jsonLogic, ConditionOperators };
+export * as moment from 'moment-timezone/moment-timezone';
 
 function setPathToComponentAndPerentSchema(component) {
   component.path = getComponentPath(component);
@@ -206,34 +208,75 @@ export function checkCalculated(component, submission, rowData) {
  * @param condition
  * @param row
  * @param data
+ * @param instance
  * @returns {boolean}
  */
-export function checkSimpleConditional(component, condition, row, data) {
+ export function checkSimpleConditional(component, condition, row, data, instance) {
+  if (condition.when) {
+    const value = getComponentActualValue(condition.when, data, row);
+
+    const eq = String(condition.eq);
+    const show = String(condition.show);
+
+    // Special check for selectboxes component.
+    if (_.isObject(value) && _.has(value, condition.eq)) {
+      return String(value[condition.eq]) === show;
+    }
+    // FOR-179 - Check for multiple values.
+    if (Array.isArray(value) && value.map(String).includes(eq)) {
+      return show === 'true';
+    }
+
+    return (String(value) === eq) === (show === 'true');
+  }
+  else {
+    const { conditions = [], conjunction = 'all',  show = true } = condition;
+
+    if (!conditions.length) {
+      return true;
+    }
+
+    const conditionsResult = _.map(conditions, (cond) => {
+      const { value: comparedValue, operator, component: conditionComponentPath } = cond;
+      if (!conditionComponentPath) {
+        return true;
+      }
+      const value = getComponentActualValue(conditionComponentPath, data, row);
+
+      const СonditionOperator = ConditionOperators[operator];
+      return СonditionOperator
+        ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+        : true;
+    });
+
+    let result = false;
+
+    switch (conjunction) {
+      case 'any':
+        result = _.some(conditionsResult, res => !!res);
+        break;
+      default:
+        result = _.every(conditionsResult, res => !!res);
+    }
+
+    return show ? result : !result;
+  }
+}
+
+export function getComponentActualValue(compPath, data, row) {
   let value = null;
+
   if (row) {
-    value = getValue({ data: row }, condition.when);
+    value = getValue({ data: row }, compPath);
   }
   if (data && _.isNil(value)) {
-    value = getValue({ data }, condition.when);
+    value = getValue({ data }, compPath);
   }
   // FOR-400 - Fix issue where falsey values were being evaluated as show=true
   if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
     value = '';
   }
-
-  const eq = String(condition.eq);
-  const show = String(condition.show);
-
-  // Special check for selectboxes component.
-  if (_.isObject(value) && _.has(value, condition.eq)) {
-    return String(value[condition.eq]) === show;
-  }
-  // FOR-179 - Check for multiple values.
-  if (Array.isArray(value) && value.map(String).includes(eq)) {
-    return show === 'true';
-  }
-
-  return (String(value) === eq) === (show === 'true');
+  return value;
 }
 
 /**
@@ -282,7 +325,11 @@ function getRow(component, row, instance, conditional) {
   }
   const dataParent = getDataParentComponent(instance);
   const parentPath = dataParent ? getComponentPath(dataParent) : null;
-  if (dataParent && condition.when?.startsWith(parentPath)) {
+  const isTriggerCondtionComponentPath = condition.when || !condition.conditions
+    ? condition.when?.startsWith(parentPath)
+    : _.some(condition.conditions, cond => cond.component.startsWith(parentPath));
+
+  if (dataParent && isTriggerCondtionComponentPath) {
     const newRow = {};
     _.set(newRow, parentPath, row);
     row = newRow;
@@ -308,9 +355,9 @@ export function checkCondition(component, row, data, form, instance) {
   if (customConditional) {
     return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
   }
-  else if (conditional && conditional.when) {
+  else if (conditional && (conditional.when || _.some(conditional.conditions || [], condition => condition.component && condition.operator))) {
     row = getRow(component, row, instance);
-    return checkSimpleConditional(component, conditional, row, data);
+    return checkSimpleConditional(component, conditional, row, data, instance);
   }
   else if (conditional && conditional.json) {
     return checkJsonConditional(component, conditional.json, row, data, form, true);
@@ -331,14 +378,14 @@ export function checkCondition(component, row, data, form, instance) {
  */
 export function checkTrigger(component, trigger, row, data, form, instance) {
   // If trigger is empty, don't fire it
-  if (!trigger[trigger.type]) {
+  if (!trigger || !trigger[trigger.type]) {
     return false;
   }
 
   switch (trigger.type) {
     case 'simple':
       row = getRow(component, row, instance, trigger.simple);
-      return checkSimpleConditional(component, trigger.simple, row, data);
+      return checkSimpleConditional(component, trigger.simple, row, data, instance);
     case 'javascript':
       return checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
     case 'json':
@@ -885,7 +932,7 @@ export function getNumberDecimalLimit(component, defaultLimit) {
 }
 
 export function getCurrencyAffixes({
-   currency = 'USD',
+   currency,
    decimalLimit,
    decimalSeparator,
    lang,
@@ -898,7 +945,7 @@ export function getCurrencyAffixes({
   regex += '(.*)?';
   const parts = (100).toLocaleString(lang, {
     style: 'currency',
-    currency,
+    currency: currency ? currency : "USD",
     useGrouping: true,
     maximumFractionDigits: decimalLimit || 0,
     minimumFractionDigits: decimalLimit || 0
@@ -1033,8 +1080,11 @@ export function bootstrapVersion(options) {
   if (options.bootstrap) {
     return options.bootstrap;
   }
-  if ((typeof $ === 'function') && (typeof $().collapse === 'function')) {
-    return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);
+  if ((typeof jQuery === 'function') && (typeof jQuery().collapse === 'function')) {
+    return parseInt(jQuery.fn.collapse.Constructor.VERSION.split('.')[0], 10);
+  }
+  if (window.bootstrap && window.bootstrap.Collapse) {
+    return parseInt(window.bootstrap.Collapse.VERSION.split('.')[0], 10);
   }
   return 0;
 }
@@ -1114,11 +1164,12 @@ export function observeOverload(callback, options = {}) {
   };
 }
 
-export function getContextComponents(context) {
+export function getContextComponents(context, excludeNested, excludedTypes = []) {
   const values = [];
 
   context.utils.eachComponent(context.instance.options.editForm.components, (component, path) => {
-    if (component.key !== context.data.key) {
+    const addToContextComponents = excludeNested ? !component.tree : true;
+    if (component.key !== context.data.key && addToContextComponents && !_.includes(excludedTypes, component.type)) {
       values.push({
         label: `${component.label || component.key} (${path})`,
         value: path,

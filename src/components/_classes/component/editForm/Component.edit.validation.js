@@ -114,7 +114,7 @@ export default [
         type: 'htmlelement',
         tag: 'div',
         /* eslint-disable prefer-template */
-        content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' +
+        content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank" rel="noopener noreferrer">JSONLogic</a>.</p>' +
           '<h5>Example:</h5>' +
           '<pre>' + JSON.stringify({
             "if": [

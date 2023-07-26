@@ -2,7 +2,7 @@ import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
 import ContentComponent from './Content';
-import Formio from '../../Formio';
+import { Formio } from '../../Formio';
 
 import {
   comp1

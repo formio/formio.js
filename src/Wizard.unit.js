@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import Harness from '../test/harness';
 import Wizard from './Wizard';
-import Formio from './Formio';
+import { Formio } from './Formio';
 import assert from 'power-assert';
 import _ from 'lodash';
 import wizardCond from '../test/forms/wizardConditionalPages';
@@ -20,6 +20,7 @@ import formWithSignature from '../test/forms/formWithSignature';
 import wizardWithTooltip from '../test/forms/wizardWithTooltip';
 import wizardForHtmlModeTest from '../test/forms/wizardForHtmlRenderModeTest';
 import wizardTestForm from '../test/forms/wizardTestForm';
+import wizardTestFormWithNestedComponents from '../test/forms/wizardTestFormWithNestedComponents';
 import formWithNestedWizard from '../test/forms/formWIthNestedWizard';
 import wizardWithDataGridAndEditGrid from '../test/forms/wizardWithDataGridAndEditGrid';
 import customWizard from '../test/forms/customWizard';
@@ -35,11 +36,46 @@ import wizardNavigateOrSaveOnEnter from '../test/forms/wizardNavigateOrSaveOnEnt
 import wizardWithFieldsValidationChild from '../test/forms/wizardWithFieldsValidationChild';
 import wizardWithFieldsValidationParent from '../test/forms/wizardWithFieldsValidationParent';
 import nestedConditionalWizard from '../test/forms/nestedConditionalWizard';
+import wizardWithPrefixComps from '../test/forms/wizardWithPrefixComps';
+import wizardPermission from '../test/forms/wizardPermission';
+import formWithFormController from '../test/forms/formWithFormController';
+import { fastCloneDeep } from './utils/utils';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
 
+// eslint-disable-next-line max-statements
 describe('Wizard tests', () => {
+  it('Should execute form controller', function(done) {
+    const form = fastCloneDeep(formWithFormController);
+    form.display = 'wizard';
+    Formio.createForm(form).then((form) => {
+      setTimeout(() => {
+        const textField = form.getComponent('textField');
+
+        assert.equal(textField.getValue(), 'Hello World');
+        assert.equal(textField.disabled, true);
+        assert.equal(form.components[0].disabled, true);
+
+        done();
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should check correctly Permissions and disabled sumbit button', (done) => {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+
+    wizard.setForm(wizardPermission).then(() => {
+      wizard.form.disableWizardSubmit = true;
+      wizard.redraw();
+      const btn = wizard.element.querySelector('.btn-wizard-nav-submit');
+      assert.equal(btn.disabled, true);
+
+      done();
+    }).catch(err => done(err));
+  });
+
   it('Should correctly reset values', function(done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
@@ -409,6 +445,56 @@ describe('Wizard tests', () => {
     .catch((err) => done(err));
   });
 
+  it('Should render values for prefix Components', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement, {
+      readOnly: true,
+    });
+    const form = _.cloneDeep(wizardWithPrefixComps.form);
+
+    wizard.setForm(form).then(() => {
+      const clickWizardBtn = (pathPart, clickError) => {
+        const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event('click');
+        btn.dispatchEvent(clickEvent);
+      };
+
+      const checkPage = (pageNumber) => {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+
+      const checkValues = () => {
+        wizard.refs[`wizard-${wizard.id}`].querySelectorAll('input').forEach((element, i)=> {
+          switch (i) {
+            case 0:
+              assert.equal(element.value, 'prefix', 'Should render value');
+              break;
+            case 1:
+              assert.equal(element.value, `page${wizard.page+1}`, 'Should render value');
+              break;
+            case 2:
+              assert.equal(element.value, 'suffix', 'Should render value');
+              break;
+          }
+        });
+      };
+      wizard.submission = _.cloneDeep(wizardWithPrefixComps.submission);
+
+      setTimeout(() => {
+        checkPage(0);
+        checkValues();
+        clickWizardBtn('next');
+
+        setTimeout(() => {
+          checkPage(1);
+          checkValues();
+          done();
+        }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
   it('Should redirect to the correct page from the Error list', function(done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement, {
@@ -564,6 +650,36 @@ describe('Wizard tests', () => {
             done();
           }, 200);
         }, 200);
+      }, 200);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should NOT navigate to next page if it contains invalid nested component', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const form = _.cloneDeep(wizardTestFormWithNestedComponents.form);
+
+    wizard.setForm(form).then(() => {
+      const checkPage = (pageNumber) => {
+        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+      };
+      checkPage(0);
+      wizard.submission = {
+        data: {
+          outerContainer: {
+            firstComponent: 'c',
+            secondComponent: 'q',
+          }
+        }
+      };
+      wizard.nextPage();
+      setTimeout(() => {
+        const errors = wizard.errors;
+        checkPage(0);
+        assert(errors.length > 0, 'Must err before next page');
+        assert.equal(errors[0].message, 'Required Component is required');
+        done();
       }, 200);
     })
     .catch((err) => done(err));

@@ -1,4 +1,4 @@
-import { GlobalFormio as Formio } from '../Formio';
+import { Formio } from '../Formio';
 import InputWidget from './InputWidget';
 import {
   convertFormatToFlatpickr,
@@ -195,10 +195,8 @@ export default class CalendarWidget extends InputWidget {
                 return Formio.requireLibrary(
                   `flatpickr-${locale}`,
                   `flatpickr-${locale}`,
-                  `${Formio.cdn.flatpickr}/l10n/${locale}.min.js`,
-                  false,
-                  () => this.initFlatpickr(Flatpickr)
-                );
+                  `${Formio.cdn['flatpickr-formio']}/l10n/flatpickr-${locale}.js`,
+                  true).then(() => this.initFlatpickr(Flatpickr));
               }
               else {
                 this.initFlatpickr(Flatpickr);
@@ -545,10 +543,10 @@ export default class CalendarWidget extends InputWidget {
     };
   }
 
-  destroy() {
-    super.destroy();
+  destroy(all = false) {
     if (this.calendar) {
       this.calendar.destroy();
     }
+    super.destroy(all);
   }
 }

@@ -1,12 +1,16 @@
 import assert from 'power-assert';
+import _ from 'lodash';
 
 import Harness from '../../../test/harness';
+import { Formio } from './../../Formio';
 import CheckBoxComponent from './Checkbox';
 
 import {
   comp1,
   customDefaultComponent,
-  comp2
+  comp2,
+  comp3,
+  comp4
 } from './fixtures';
 
 describe('Checkbox Component', () => {
@@ -57,5 +61,34 @@ describe('Checkbox Component', () => {
       Harness.clickElement(component, input);
       assert.equal(input.checked, false);
     });
+  });
+
+  it('Should render red asterisk for preview template of the modal required checkbox ', (done) => {
+    Harness.testCreate(CheckBoxComponent, comp3).then((component) => {
+      const label = component.element.querySelector('.control-label');
+      assert(label.className.includes('field-required'));
+      done();
+    }).catch(done);
+  });
+
+  it('Should hide component with conditional logic when checkbox component with the radio input type is unchecked', (done) =>  {
+    const form = _.cloneDeep(comp4);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const radioCheckbox = form.getComponent('p1');
+      const contentComp = form.getComponent('p1Content');
+      assert.equal(contentComp.visible, false);
+      const radio = Harness.testElements(radioCheckbox, 'input[type="radio"]', 1)[0];
+      Harness.clickElement(radioCheckbox, radio);
+      setTimeout(() => {
+        assert.equal(contentComp.visible, true);
+        Harness.clickElement(radioCheckbox, radio);
+        setTimeout(() => {
+          assert.equal(contentComp.visible, false);
+          done();
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
   });
 });

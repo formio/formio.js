@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { GlobalFormio as Formio } from '../../../Formio';
+import { Formio } from '../../../Formio';
 
 export default [
   {

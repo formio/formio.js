@@ -10,12 +10,12 @@ const indexeddb = () => ({
     }
 
     return new NativePromise((resolve) => {
-      const request = indexedDB.open(options.indexeddb, 3);
-      request.onsuccess = function(event) {
+      const request = indexedDB.open(options.indexeddb);
+      request.onsuccess = function (event) {
         const db = event.target.result;
         resolve(db);
       };
-      request.onupgradeneeded = function(e) {
+      request.onupgradeneeded = function (e) {
         const db = e.target.result;
         db.createObjectStore(options.indexeddbTable);
       };
@@ -40,12 +40,12 @@ const indexeddb = () => ({
           const trans = db.transaction([options.indexeddbTable], 'readwrite');
           const addReq = trans.objectStore(options.indexeddbTable).put(data, id);
 
-          addReq.onerror = function(e) {
+          addReq.onerror = function (e) {
             console.log('error storing data');
             console.error(e);
           };
 
-          trans.oncomplete = function() {
+          trans.oncomplete = function () {
             resolve({
               storage: 'indexeddb',
               name: file.name,
@@ -67,9 +67,9 @@ const indexeddb = () => ({
   },
   downloadFile(file, options) {
     return new NativePromise((resolve) => {
-      const request = indexedDB.open(options.indexeddb, 3);
+      const request = indexedDB.open(options.indexeddb);
 
-      request.onsuccess = function(event) {
+      request.onsuccess = function (event) {
         const db = event.target.result;
         resolve(db);
       };
@@ -107,9 +107,9 @@ const indexeddb = () => ({
   },
   deleteFile(file, options) {
     return new NativePromise((resolve) => {
-      const request = indexedDB.open(options.indexeddb, 3);
+      const request = indexedDB.open(options.indexeddb);
 
-      request.onsuccess = function(event) {
+      request.onsuccess = function (event) {
         const db = event.target.result;
         resolve(db);
       };

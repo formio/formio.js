@@ -4,8 +4,8 @@
       <div class="card">
         <div class="card-header">
           <ul class="nav nav-tabs card-header-tabs" role="tablist">
-            <li class="nav-item active" role="tab" ref="tabLi-tabs">
-              <a class="nav-link active" href="#tab1" ref="tabLink-tabs">
+            <li class="nav-item" role="tab" ref="tabLi-tabs">
+              <a class="nav-link" href="#tab1" ref="tabLink-tabs">
                 Tab 1
               </a>
             </li>
@@ -16,8 +16,8 @@
             </li>
           </ul>
         </div>
-        <div role="tabpanel" class="card-body tab-pane active" style="display: block" ref="tab-tabs">
-          <div id="checkbox" class="formio-form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
+        <div role="tabpanel" class="card-body tab-pane" style="display: block" ref="tab-tabs">
+          <div id="checkbox" class="mb-2 formio-form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
             <div class="form-check checkbox">
               <label class=" form-check-label">
                 <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false">
@@ -29,7 +29,7 @@
           </div>
         </div>
         <div role="tabpanel" class="card-body tab-pane" style="display: none" ref="tab-tabs">
-          <div id="dataGrid" class="formio-form-group has-feedback formio-component formio-component-datagrid formio-component-dataGrid " ref="component">
+          <div id="dataGrid" class="mb-2 formio-form-group has-feedback formio-component formio-component-datagrid formio-component-dataGrid " ref="component">
             <label ref="label" class="col-form-label " for="dataGrid-dataGrid" id="l-dataGrid-dataGrid">
               grid
             </label>
@@ -51,7 +51,7 @@
               <tbody ref="datagrid-dataGrid-tbody" data-key="datagrid-dataGrid">
                 <tr ref="datagrid-dataGrid-row">
                   <td ref="datagrid-dataGrid">
-                    <div id="label" class="formio-form-group has-feedback formio-component formio-component-textfield formio-component-label  formio-component-label-hidden" ref="component">
+                    <div id="label" class="mb-2 formio-form-group has-feedback formio-component formio-component-textfield formio-component-label  formio-component-label-hidden" ref="component">
                       <div ref="element">
                         <input ref="input" name="data[dataGrid][0][label]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="label-label" aria-labelledby="l-label-label " aria-required="false"></input>
                       </div>
@@ -59,7 +59,7 @@
                     </div>
                   </td>
                   <td ref="datagrid-dataGrid">
-                    <div id="value" class="formio-form-group has-feedback formio-component formio-component-textfield formio-component-value  formio-component-label-hidden" ref="component">
+                    <div id="value" class="mb-2 formio-form-group has-feedback formio-component formio-component-textfield formio-component-value  formio-component-label-hidden" ref="component">
                       <div ref="element">
                         <input ref="input" name="data[dataGrid][0][value]" type="text" class="form-control" lang="en" spellcheck="true" value="" id="value-value" aria-labelledby="l-value-value " aria-required="false"></input>
                       </div>
@@ -89,7 +89,7 @@
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
-    <div id="submit" class="formio-form-group has-feedback formio-component formio-component-button formio-component-submit  formio-form-group" ref="component">
+    <div id="submit" class="mb-2 formio-form-group has-feedback formio-component formio-component-button formio-component-submit  mb-2 formio-form-group" ref="component">
       <button ref="button" name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en">
         Submit
       </button>
