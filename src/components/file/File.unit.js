@@ -4,6 +4,7 @@ import FileComponent from './File';
 import { comp1, comp2 } from './fixtures';
 import { Formio } from './../../Formio';
 import _ from 'lodash';
+import BMF from 'browser-md5-file';
 
 describe('File Component', () => {
   it('Should create a File Component', () => {
@@ -38,6 +39,74 @@ describe('File Component', () => {
       Harness.testElements(component, 'ul.list-group-striped li.list-group-item', 3);
       Harness.testElements(component, 'a.browse', 0);
       assert(component.checkValidity(component.getValue()), 'Item should be valid');
+    });
+  });
+
+  it('Should abort the correct file when user clicks the file remove button', (done) => {
+    const md5Proto = BMF.prototype.md5;
+    BMF.prototype.md5 = function(f, callback) {
+        callback(null, '');
+    };
+    const cmp =  _.cloneDeep(comp1);
+    const abortedFiles = [];
+    cmp.multiple = true;
+    cmp.storage = 'url';
+
+    const options = {
+      fileService: {
+        uploadFile: function(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback, abortCallbackSetter) {
+          uploadStartCallback();
+          return new Promise((resolve) => {
+            var cnt = 0;
+            var interval = setInterval(function() {
+              progressCallback({ loaded: ++cnt, total: 10 });
+              if (cnt === 9) {
+                clearInterval(interval);
+                const uploadResponse = {
+                  name: fileName,
+                  size: file.size,
+                  type: 'application/pdf',
+                  url: `fake/url/${fileName}`
+                };
+                resolve(uploadResponse);
+              }
+            }, 1000);
+
+            abortCallbackSetter(function() {
+              abortedFiles.push(file.name);
+              clearInterval(interval);
+            });
+          });
+        }
+      }
+    };
+
+    Harness.testCreate(FileComponent, cmp, options).then((component) => {
+      component.root = { everyComponent: () => {}, options: {} };
+      const parentNode = document.createElement('div');
+      const element = document.createElement('div');
+      parentNode.appendChild(element);
+      component.build(element);
+
+      const content = [1];
+      const files = [new File(content, 'file.0'), new File([content], 'file.1'), new File([content], 'file.2')];
+
+      component.upload(files);
+
+      setTimeout(function() {
+        Harness.testElements(component, 'div.file .fileName', 3);
+
+        component.element.querySelectorAll('i[ref="fileStatusRemove"]')[1].click();
+
+        setTimeout(() => {
+          assert(component !== null);
+          assert(abortedFiles[0] === 'file.1' && abortedFiles.length === 1);
+
+          Harness.testElements(component, 'div.file .fileName', 2);
+          BMF.prototype.md5 = md5Proto;
+          done();
+        }, 100);
+      }, 100);
     });
   });
 
