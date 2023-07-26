@@ -1,4 +1,3 @@
-import { Formio } from '../../Formio';
 import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
@@ -8,8 +7,7 @@ import {
   comp1,
   comp2,
   comp3,
-  comp4,
-  comp5,
+  comp4
 } from './fixtures';
 import PanelComponent from '../panel/Panel';
 
@@ -220,30 +218,5 @@ describe('Day Component', () => {
       done();
     });
     comp1.fields.year.hide = false;
-  });
-
-  it('OnBlur validation should work properly with Day component', (done) => {
-    const element = document.createElement('div');
-
-    Formio.createForm(element, comp5).then(form => {
-      const dayComponent = form.components[0];
-      dayComponent.setValue('03/12/2023');
-
-      setTimeout(() => {
-        dayComponent.refs.day.focus();
-        dayComponent.refs.day.value = '';
-        dayComponent.refs.day.dispatchEvent(new Event('input'));
-
-        setTimeout(() => {
-          assert(!dayComponent.error, 'Day should be valid while changing');
-          dayComponent.refs.day.dispatchEvent(new Event('blur'));
-
-          setTimeout(() => {
-            assert(dayComponent.error, 'Should set error after Day component was blurred');
-            done();
-          }, 200);
-        }, 200);
-      }, 200);
-    }).catch(done);
   });
 });

@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
 import Field from '../_classes/field/Field';
-import Input from '../_classes/input/Input';
 import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
 
 export default class DayComponent extends Field {
@@ -307,9 +306,6 @@ export default class DayComponent extends Field {
       this.addEventListener(this.refs.input, this.info.changeEvent, () => this.updateValue(null, {
         modified: true
       }));
-      [this.refs.day, this.refs.month, this.refs.year].forEach((element) => {
-        Input.prototype.addFocusBlurEvents.call(this, element);
-      });
     }
     this.setValue(this.dataValue);
     // Force the disabled state with getters and setters.
