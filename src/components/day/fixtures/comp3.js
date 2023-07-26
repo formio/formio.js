@@ -11,8 +11,8 @@ export default {
   'validate': {
     'custom': ''
   },
-  'minDate': '2020-02-04',
-  'maxDate': '2020-02-09',
+  'minDate': '2020-03-01',
+  'maxDate': '2021-01-03',
   'clearOnHide': true,
   'persistent': true,
   'protected': false,

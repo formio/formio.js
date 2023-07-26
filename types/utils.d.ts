@@ -3,6 +3,7 @@ import * as moment from 'moment';
 export type AnyForJSON = { [key: string]: any } | any;
 
 export namespace Utils {
+  const ConditionOperators: any;
   const Evaluator: any;
   const _: any;
   function evaluate(
@@ -22,6 +23,7 @@ export namespace Utils {
     condition: { eq: any; show: any; when: any } & any,
     row: any,
     data: any,
+    instance: any
   ): boolean;
   function checkCustomConditional(
     component: any /* unused */,
@@ -107,7 +109,7 @@ export namespace Utils {
   const firstNonNil: any;
   function withSwitch(a: any, b: any): [Function, Function];
   function observeOverload(callback: Function, options?: { limit?: number; delay?: number }): any;
-  function getContextComponents(context: any): any;
+  function getContextComponents(context: any, excludeNested?: any, excludedTypes?: any): any;
   function sanitize(string: string, options: any): any;
 
   // Form Utils
@@ -118,6 +120,7 @@ export namespace Utils {
   function searchComponents(components: any[], query: any): any;
   function findComponent(components: any[], key: any, path: any, fn: Function): boolean;
   function removeComponent(components: any[], path: any): void;
+  function fastCloneDeep(json: any): any;
   function generateFormChange(
     type: string | any,
     data: { schema: any; parent: { key: any } | any; originalComponent: any },

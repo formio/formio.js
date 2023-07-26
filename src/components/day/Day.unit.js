@@ -162,9 +162,20 @@ describe('Day Component', () => {
     });
   });
 
-  it('should normalize min-max dates on dayFirst', () => {
+  it('Should properly validate min-max dates when dayFirst is checked', (done) => {
     Harness.testCreate(DayComponent, comp3).then((component) => {
-      assert.deepEqual(component.normalizeMinMaxDates(), ['04/02/2020', '09/02/2020']);
+      component.setValue('01/02/2020');
+      assert(!component.checkValidity(component.data, true), 'Component should not be valid');
+
+      component.setValue('04/01/2021');
+      assert(!component.checkValidity(component.data, true), 'Component should not be valid');
+
+      component.setValue('03/01/2021');
+      assert(component.checkValidity(component.data, true), 'Component should be valid');
+
+      component.setValue('01/03/2020');
+      assert(component.checkValidity(component.data, true), 'Component should be valid');
+      done();
     });
   });
 
@@ -173,5 +184,39 @@ describe('Day Component', () => {
       Harness.testElements(component, '[disabled]', 4);
       done();
     });
+  });
+
+  it('Should use the default day value if the day field is hidden', (done) => {
+    comp1.dayFirst = false;
+    comp1.defaultValue = '00/01/0000';
+    comp1.fields.day.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue('12/2023');
+      assert.equal(component.data.date, '12/01/2023');
+      done();
+    });
+    comp1.fields.day.hide = false;
+  });
+
+  it('Should use the default month value if the month field is hidden', (done) => {
+    comp1.defaultValue = '03/00/0000';
+    comp1.fields.month.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue('12/2023');
+      assert.equal(component.data.date, '03/12/2023');
+      done();
+    });
+    comp1.fields.month.hide = false;
+  });
+
+  it('Should use the default year value if the year field is hidden', (done) => {
+    comp1.defaultValue = '00/00/2023';
+    comp1.fields.year.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue('12/21');
+      assert.equal(component.data.date, '12/21/2023');
+      done();
+    });
+    comp1.fields.year.hide = false;
   });
 });

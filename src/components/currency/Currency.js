@@ -18,7 +18,7 @@ export default class CurrencyComponent extends NumberComponent {
       title: 'Currency',
       group: 'advanced',
       icon: 'usd',
-      documentation: '/userguide/forms/form-components#currency',
+      documentation: '/userguide/form-building/advanced-components#currency',
       weight: 70,
       schema: CurrencyComponent.schema()
     };
@@ -141,6 +141,9 @@ export default class CurrencyComponent extends NumberComponent {
 
     // eslint-disable-next-line eqeqeq
     if (value || value == '0') {
+      if (Array.isArray(value)) {
+        return value.map((val) => this.addZerosAndFormatValue(super.getValueAsString(val, options))).join(', ');
+      }
       return this.addZerosAndFormatValue(stringValue);
     }
 

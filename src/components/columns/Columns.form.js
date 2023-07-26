@@ -8,9 +8,5 @@ export default function(...extend) {
       key: 'display',
       components: ColumnsEditDisplay
     },
-    {
-      key: 'addons',
-      ignore: true
-    },
   ], ...extend);
 }

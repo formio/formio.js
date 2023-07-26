@@ -39,18 +39,6 @@ export default class WizardBuilder extends WebformBuilder {
       }
     }
 
-    this.options.hooks.attachPanel = (element, component) => {
-      if (component.refs.removeComponent) {
-        this.addEventListener(component.refs.removeComponent, 'click', () => {
-          const pageIndex = this.pages.findIndex((page) => page.key === component.key);
-          const componentIndex = this._form.components.findIndex((comp) => comp.key === component.key);
-          if (pageIndex !== -1) {
-            this.removePage(pageIndex, componentIndex);
-          }
-        });
-      }
-    };
-
     const originalRenderComponentsHook = this.options.hooks.renderComponents;
     this.options.hooks.renderComponents = (html, { components, self }) => {
       if (self.type === 'form' && !self.root) {
@@ -90,6 +78,19 @@ export default class WizardBuilder extends WebformBuilder {
         }
       }
     }, true);
+  }
+
+  removeComponent(component, parent, original) {
+    const remove = super.removeComponent(component, parent, original);
+    // If user agrees to remove the whole group of the components and it could be a Wizard page, find it and remove
+    if (remove && component.type === 'panel') {
+      const pageIndex = this.pages.findIndex((page) => page.key === component.key);
+      const componentIndex = this._form.components.findIndex((comp) => comp.key === component.key);
+      if (pageIndex !== -1) {
+        this.removePage(pageIndex, componentIndex);
+      }
+    }
+    return remove;
   }
 
   allowDrop(element) {
@@ -158,6 +159,18 @@ export default class WizardBuilder extends WebformBuilder {
       gotoPage: 'multiple',
     });
 
+    this.refs.gotoPage.forEach((page, index) => {
+      page.parentNode.dragInfo = { index };
+    });
+
+    if (this.dragulaLib) {
+      this.navigationDragula = this.dragulaLib([this.element.querySelector('.wizard-pages')], {
+        moves: (el) => (!el.classList.contains('wizard-add-page')),
+        accepts: (el, target, source, sibling) => (sibling ? true : false),
+      })
+        .on('drop', this.onReorder.bind(this));
+    }
+
     this.refs.addPage.forEach(link => {
       this.addEventListener(link, 'click', (event) => {
         event.preventDefault();
@@ -175,12 +188,22 @@ export default class WizardBuilder extends WebformBuilder {
     return super.attach(element);
   }
 
+  detach() {
+    if (this.navigationDragula) {
+      this.navigationDragula.destroy();
+    }
+    this.navigationDragula = null;
+
+    super.detach();
+  }
+
   rebuild() {
     const page = this.currentPage;
     this.webform.setForm({
       display: 'form',
       type: 'form',
       components: page ? [page] : [],
+      controller: this._form?.controller || ''
     }, { keepAsReference: true });
     return this.redraw();
   }
@@ -222,6 +245,31 @@ export default class WizardBuilder extends WebformBuilder {
     else {
       return this.rebuild();
     }
+  }
+
+  onReorder(element, _target, _source, sibling) {
+    const isSiblingAnAddPageButton = sibling?.classList.contains('wizard-add-page');
+    // We still can paste before Add Page button
+    if (!element.dragInfo || (sibling && !sibling.dragInfo && !isSiblingAnAddPageButton)) {
+      console.warn('There is no Drag Info available for either dragged or sibling element');
+      return;
+    }
+    const oldPosition = element.dragInfo.index;
+    //should drop at next sibling position; no next sibling means drop to last position
+    const newPosition = (sibling && sibling.dragInfo ? sibling.dragInfo.index : this.pages.length);
+    const movedBelow = newPosition > oldPosition;
+    const formComponents = fastCloneDeep(this._form.components);
+    const draggedRowData = this._form.components[oldPosition];
+
+    //insert element at new position
+    formComponents.splice(newPosition, 0, draggedRowData);
+    //remove element from old position (if was moved above, after insertion it's at +1 index)
+    formComponents.splice(movedBelow ? oldPosition : oldPosition + 1, 1);
+    this._form.components = fastCloneDeep(formComponents);
+
+    return this.rebuild().then(() => {
+        this.emit('change', this._form);
+    });
   }
 
   setPage(index) {

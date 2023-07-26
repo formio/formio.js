@@ -4,11 +4,11 @@ import NativePromise from 'native-promise-only';
 import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import { GlobalFormio as Formio } from '../../../Formio';
+import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import {
-  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent,
+  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent, currentTimezone
 } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
@@ -16,22 +16,9 @@ import Widgets from '../../../widgets';
 import Addons from '../../../addons';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 import enTranslation from '../../../translations/en';
+import Templates from '../../../templates/Templates';
 
 const isIEBrowser = FormioUtils.getBrowserInfo().ie;
-const CKEDITOR_URL = isIEBrowser
-      ? 'https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js'
-      : 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
-const QUILL_URL = isIEBrowser
-  ? 'https://cdn.quilljs.com/1.3.7'
-  : 'https://cdn.quilljs.com/2.0.0-dev.3';
-const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
-const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
-
-let Templates = Formio.Templates;
-
-if (!Templates) {
-  Templates = require('../../../templates/Templates').default;
-}
 
 /**
  * This is the Component class
@@ -289,6 +276,8 @@ export default class Component extends Element {
     // Add the id to the component.
     this.component.id = this.id;
 
+    this.afterComponentAssign();
+
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
 
@@ -494,6 +483,13 @@ export default class Component extends Element {
     return NativePromise.resolve(this);
   }
 
+  get isPDFReadOnlyMode() {
+    return this.parent &&
+      this.parent.form &&
+      (this.parent.form.display === 'pdf') &&
+      this.options.readOnly;
+  }
+
   get labelInfo() {
     const label = {};
     label.hidden = this.labelIsHidden();
@@ -502,10 +498,7 @@ export default class Component extends Element {
     label.labelPosition = this.component.labelPosition;
     label.tooltipClass = `${this.iconClass('question-sign')} text-muted`;
 
-    const isPDFReadOnlyMode = this.parent &&
-      this.parent.form &&
-      (this.parent.form.display === 'pdf') &&
-      this.options.readOnly;
+    const isPDFReadOnlyMode = this.isPDFReadOnlyMode;
 
     if (this.hasInput && this.component.validate && boolValue(this.component.validate.required) && !isPDFReadOnlyMode) {
       label.className += ' field-required';
@@ -527,6 +520,10 @@ export default class Component extends Element {
     }
   }
 
+  afterComponentAssign() {
+    //implement in extended classes
+  }
+
   createAddon(addonConfiguration) {
     const name = addonConfiguration.name;
     if (!name) {
@@ -534,7 +531,7 @@ export default class Component extends Element {
     }
 
     const settings = addonConfiguration.settings?.data || {};
-    const Addon = Addons[name];
+    const Addon = Addons[name.value];
 
     let addon = null;
 
@@ -547,17 +544,38 @@ export default class Component extends Element {
         this.addons.push(addon);
       }
       else {
-        console.warn(`Addon ${name} does not support component of type ${this.component.type}.`);
+        console.warn(`Addon ${name.label} does not support component of type ${this.component.type}.`);
       }
     }
 
     return addon;
   }
 
-  destroy() {
-    super.destroy();
+  teardown() {
+    if (this.element) {
+      delete this.element.component;
+      delete this.element;
+    }
+    delete this._currentForm;
+    delete this.parent;
+    delete this.root;
+    delete this.triggerChange;
+    delete this.triggerRedraw;
+    if (this.options) {
+      delete this.options.root;
+      delete this.options.parent;
+      delete this.options.i18next;
+    }
+    super.teardown();
+  }
+
+  destroy(all = false) {
+    super.destroy(all);
     this.detach();
     this.addons.forEach((addon) => addon.destroy());
+    if (all) {
+      this.teardown();
+    }
   }
 
   get shouldDisabled() {
@@ -600,12 +618,41 @@ export default class Component extends Element {
     return this._parentDisabled;
   }
 
+  shouldForceVisibility(component, visibility) {
+    if (!this.options[visibility]) {
+      return false;
+    }
+    if (!component) {
+      component = this.component;
+    }
+    if (_.isArray(this.options[visibility])) {
+      return this.options[visibility].includes(component.key);
+    }
+    return this.options[visibility][component.key];
+  }
+
+  shouldForceHide(component) {
+    return this.shouldForceVisibility(component, 'hide');
+  }
+
+  shouldForceShow(component) {
+    return this.shouldForceVisibility(component, 'show');
+  }
+
   /**
    *
    * @param value {boolean}
    */
   set visible(value) {
     if (this._visible !== value) {
+      // Skip if this component is set to visible and is supposed to be hidden.
+      if (value && this.shouldForceHide()) {
+        return;
+      }
+      // Skip if this component is set to hidden and is supposed to be shown.
+      if (!value && this.shouldForceShow()) {
+        return;
+      }
       this._visible = value;
       this.clearOnHide();
       this.redraw();
@@ -621,19 +668,12 @@ export default class Component extends Element {
     if (this.builderMode || this.previewMode || this.options.showHiddenFields) {
       return true;
     }
-    if (
-      this.options.hide &&
-      this.options.hide[this.component.key]
-    ) {
+    if (this.shouldForceHide()) {
       return false;
     }
-    if (
-      this.options.show &&
-      this.options.show[this.component.key]
-    ) {
+    if (this.shouldForceShow()) {
       return true;
     }
-
     return this._visible && this._parentVisible;
   }
 
@@ -806,9 +846,10 @@ export default class Component extends Element {
       this.options.inputsOnly) && !this.builderMode;
   }
 
-  get transform() {
-    return Templates.current.hasOwnProperty('transform')
-      ? Templates.current.transform.bind(Templates.current)
+  transform(type, value) {
+    const frameworkTemplates = this.options.template ? Templates.templates[this.options.template] : Templates.current;
+    return frameworkTemplates.hasOwnProperty('transform')
+      ? frameworkTemplates.transform(type, value, this)
       : (type, value) => value;
   }
 
@@ -877,10 +918,13 @@ export default class Component extends Element {
     return null;
   }
 
+  getFormattedAttribute(attr) {
+    return attr ? this.t(attr, { _userInput: true }).replace(/"/g, '&quot;') : '';
+  }
+
   getFormattedTooltip(tooltipValue) {
     const tooltip = this.interpolate(tooltipValue || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
-
-    return tooltip ? this.t(tooltip, { _userInput: true }).replace(/"/g, '&quot;') : '';
+    return this.getFormattedAttribute(tooltip);
   }
 
   isHtmlRenderMode() {
@@ -897,7 +941,7 @@ export default class Component extends Element {
     data.iconClass = this.iconClass.bind(this);
     data.size = this.size.bind(this);
     data.t = this.t.bind(this);
-    data.transform = this.transform;
+    data.transform = this.transform.bind(this);
     data.id = data.id || this.id;
     data.key = data.key || this.key;
     data.value = data.value || this.dataValue;
@@ -909,7 +953,7 @@ export default class Component extends Element {
       pass pre-compiled template A (use this.renderTemplate('template_A_name') as template context variable for template B`);
       return this.renderTemplate(...args);
     };
-    data.label = this.labelInfo;
+    data.label = data.labelInfo || this.labelInfo;
     data.tooltip = this.getFormattedTooltip(this.component.tooltip);
 
     // Allow more specific template names
@@ -1039,6 +1083,32 @@ export default class Component extends Element {
     return this.options.submissionTimezone;
   }
 
+  get timezone() {
+    return this.getTimezone(this.component);
+  }
+
+  getTimezone(settings) {
+    if (settings.timezone) {
+      return settings.timezone;
+    }
+    if (settings.displayInTimezone === 'utc') {
+      return 'UTC';
+    }
+    const submissionTimezone = this.submissionTimezone;
+    if (
+      submissionTimezone &&
+      (
+        (settings.displayInTimezone === 'submission') ||
+        ((this.options.pdf || this.options.server) && (settings.displayInTimezone === 'viewer'))
+      )
+    ) {
+      return submissionTimezone;
+    }
+
+    // Return current timezone if none are provided.
+    return currentTimezone();
+  }
+
   loadRefs(element, refs) {
     for (const ref in refs) {
       const refType = refs[ref];
@@ -1066,9 +1136,16 @@ export default class Component extends Element {
       message: this.error.message,
     } : '';
 
+    let modalLabel;
+
+    if (this.hasInput && this.component.validate?.required && !this.isPDFReadOnlyMode) {
+      modalLabel = { className: 'field-required' };
+    }
+
     return this.renderTemplate('modalPreview', {
       previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value'),
-      messages: message && this.renderTemplate('message', message)
+      messages: message && this.renderTemplate('message', message),
+      labelInfo: modalLabel,
     });
   }
 
@@ -1144,7 +1221,7 @@ export default class Component extends Element {
     }
 
     this.attached = true;
-    this.element = element;
+    this.setElement(element);
     element.component = this;
 
     // If this already has an id, get it from the dom. If SSR, it could be different from the initiated id.
@@ -1218,6 +1295,17 @@ export default class Component extends Element {
    * Remove all event handlers.
    */
   detach() {
+    // First iterate through each ref and delete the component so there are no dangling component references.
+    _.each(this.refs, (ref) => {
+      if (typeof ref === NodeList) {
+        ref.forEach((elem) => {
+          delete elem.component;
+        });
+      }
+      else if (ref) {
+        delete ref.component;
+      }
+    });
     this.refs = {};
     this.removeEventListeners();
     this.detachLogic();
@@ -1314,10 +1402,18 @@ export default class Component extends Element {
     return this.options.readOnly && this.options.viewAsHtml;
   }
 
+  setElement(element) {
+    if (this.element) {
+      delete this.element.component;
+      delete this.element;
+    }
+    this.element = element;
+  }
+
   createViewOnlyElement() {
-    this.element = this.ce('dl', {
+    this.setElement(this.ce('dl', {
       id: this.id
-    });
+    }));
 
     if (this.element) {
       // Ensure you can get the component info from the element.
@@ -1398,7 +1494,7 @@ export default class Component extends Element {
    * @return {*}
    */
   itemValue(data, forceUseValue = false) {
-    if (_.isObject(data)) {
+    if (_.isObject(data) && !_.isArray(data)) {
       if (this.valueProperty) {
         return _.get(data, this.valueProperty);
       }
@@ -1477,7 +1573,7 @@ export default class Component extends Element {
    * @returns {string} - The class name of this component.
    */
   get className() {
-    let className = this.hasInput ? 'form-group has-feedback ' : '';
+    let className = this.hasInput ? `${this.transform('class', 'form-group')} has-feedback `: '';
     className += `formio-component formio-component-${this.component.type} `;
     // TODO: find proper way to avoid overriding of default type-based component styles
     if (this.key && this.key !== 'form') {
@@ -1667,7 +1763,7 @@ export default class Component extends Element {
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
     this.element.outerHTML = this.sanitize(this.render());
-    this.element = parent.children[index];
+    this.setElement(parent.children[index]);
     return this.attach(this.element);
   }
 
@@ -2006,8 +2102,12 @@ export default class Component extends Element {
     messages = _.uniqBy(messages, message => message.message);
 
     if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, messages.map((message) =>
-        this.renderTemplate('message', message)
+      this.setContent(this.refs.messageContainer, messages.map((message) => {
+        if (message.message && typeof message.message === 'string') {
+          message.message = message.message.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+        }
+        return this.renderTemplate('message', message);
+      }
       ).join(''));
     }
   }
@@ -2187,7 +2287,7 @@ export default class Component extends Element {
       'ckeditor',
       isIEBrowser ? 'CKEDITOR' : 'ClassicEditor',
       _.get(this.options, 'editors.ckeditor.src',
-      CKEDITOR_URL
+      `${Formio.cdn.ckeditor}/ckeditor.js`
     ), true)
       .then(() => {
         if (!element.parentNode) {
@@ -2219,13 +2319,13 @@ export default class Component extends Element {
     };
     // Lazy load the quill css.
     Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
-      { type: 'styles', src: `${QUILL_URL}/quill.${settings.theme}.css` }
+      { type: 'styles', src: `${Formio.cdn.quill}/quill.${settings.theme}.css` }
     ], true);
 
     // Lazy load the quill library.
-    return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${QUILL_URL}/quill.min.js`), true)
+    return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${Formio.cdn.quill}/quill.min.js`), true)
       .then(() => {
-        return Formio.requireLibrary('quill-table', 'Quill', QUILL_TABLE_URL, true)
+        return Formio.requireLibrary('quill-table', 'Quill', `${Formio.cdn.baseUrl}/quill/quill-table.js`, true)
           .then(() => {
             if (!element.parentNode) {
               return NativePromise.reject();
@@ -2241,7 +2341,7 @@ export default class Component extends Element {
               this.addEventListener(qlSource, 'click', (event) => {
                 event.preventDefault();
                 if (txtArea.style.display === 'inherit') {
-                  this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
+                  this.quill.setContents(this.quill.clipboard.convert({ html: txtArea.value }));
                 }
                 txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
               });
@@ -2280,7 +2380,7 @@ export default class Component extends Element {
       }
     }
     settings = _.merge(this.wysiwygDefault.ace, _.get(this.options, 'editors.ace.settings', {}), settings || {});
-    return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
+    return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', `${Formio.cdn.ace}/ace.js`), true)
       .then((editor) => {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
@@ -2312,7 +2412,7 @@ export default class Component extends Element {
    *
    */
   hasValue(data) {
-    return _.has(data || this.data, this.key);
+    return !_.isUndefined(_.get(data || this.data, this.key));
   }
 
   /**
@@ -2708,12 +2808,19 @@ export default class Component extends Element {
       return this.evaluate(this.component.calculateValue, {
         value: dataValue,
         data,
-        row: row || this.data
+        row: row || this.data,
+        submission: this.root?._submission || {
+          data: this.rootValue
+        }
       }, 'value');
   }
 
   /* eslint-disable max-statements */
   calculateComponentValue(data, flags, row) {
+    // Skip value calculation for the component if we don't have entire form data set
+    if (_.isUndefined(_.get(this, 'root.data'))) {
+      return false;
+    }
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
     const { clearOnHide } = this.component;
@@ -3049,6 +3156,39 @@ export default class Component extends Element {
       if (input?.widget && input.widget.setErrorClasses) {
         input.widget.setErrorClasses(hasErrors);
       }
+    });
+  }
+
+  addFocusBlurEvents(element) {
+    this.addEventListener(element, 'focus', () => {
+      if (this.root.focusedComponent !== this) {
+        if (this.root.pendingBlur) {
+          this.root.pendingBlur();
+        }
+
+        this.root.focusedComponent = this;
+
+        this.emit('focus', this);
+      }
+      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+        this.root.pendingBlur.cancel();
+        this.root.pendingBlur = null;
+      }
+    });
+    this.addEventListener(element, 'blur', () => {
+      this.root.pendingBlur = FormioUtils.delay(() => {
+        this.emit('blur', this);
+        if (this.component.validateOn === 'blur') {
+          this.root.triggerChange({ fromBlur: true }, {
+            instance: this,
+            component: this.component,
+            value: this.dataValue,
+            flags: { fromBlur: true }
+          });
+        }
+        this.root.focusedComponent = null;
+        this.root.pendingBlur = null;
+      });
     });
   }
 

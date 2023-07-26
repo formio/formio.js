@@ -3,10 +3,10 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter3';
 import { expect } from 'chai';
-import i18Defaults from '../lib/i18n';
-import FormBuilder from '../lib/FormBuilder';
-import AllComponents from '../lib/components';
-import Components from '../lib/components/Components';
+import i18Defaults from '../src/i18n';
+import FormBuilder from '../src/FormBuilder';
+import AllComponents from '../src/components';
+import Components from '../src/components/Components';
 
 Components.setComponents(AllComponents);
 
