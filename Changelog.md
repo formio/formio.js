@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - fix issue: when submission.data doesn't exist, the submission.metadata is removed
  - Default value for Radio and Checkbox components to set correctly.  https://github.com/formio/formio.js/pull/4464
  - Edit Grid performance improvements. https://github.com/formio/formio.js/pull/4480
+ - FIO-4477: Errors on customer form creation/update
 
 ## 5.0.0-rc.6
 ### Added
