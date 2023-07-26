@@ -21,9 +21,5 @@ export default function(...extend) {
       weight: 10,
       components: FormEditData
     },
-    {
-      key: 'addons',
-      ignore: true
-    },
   ], ...extend);
 }

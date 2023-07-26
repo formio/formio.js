@@ -2,10 +2,12 @@ import assert from 'power-assert';
 import NativePromise from 'native-promise-only';
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
-import Builders from '../lib/builders';
+import Builders from './builders';
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase } from '../test/formtest';
 import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
+import formBasedOnWizard from '../test/forms/formBasedOnWizard';
+import formWithFormController from '../test/forms/formWithFormController';
 
 describe('WebformBuilder tests', function() {
   this.retries(3);
@@ -16,6 +18,19 @@ describe('WebformBuilder tests', function() {
     const builder = Harness.getBuilder();
     assert(builder instanceof WebformBuilder, 'Builder must be an instance of FormioFormBuilder');
     done();
+  });
+
+  it('Should execute form controller', (done) => {
+    const builder = Harness.getBuilder();
+    builder.webform.form = formWithFormController;
+
+    setTimeout(() => {
+      const textF = builder.webform.getComponent('textField');
+      assert.equal(textF.getValue(), 'Hello World');
+      assert.equal(textF.disabled, true);
+      assert.equal(builder.webform.components[0].disabled, true);
+      done();
+    }, 500);
   });
 
   it('Should not show unique API error when components with same keys are inside and outside of the Data component', (done) => {
@@ -177,8 +192,19 @@ describe('WebformBuilder tests', function() {
           assert.equal(numberKey.dataValue, 'rewrittenNumberKey');
 
           done();
-        }, 150);
-      }, 150);
+        }, 350);
+      }, 350);
+    }).catch(done);
+  });
+
+  it('Should add submit button after switching from wizard form', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm(formBasedOnWizard).then(() => {
+      const components = builder.webform.components;
+      const submit = components[components.length - 1];
+
+      assert.equal(submit.key, 'submit');
+      done();
     }).catch(done);
   });
 });

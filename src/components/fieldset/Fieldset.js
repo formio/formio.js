@@ -18,7 +18,8 @@ export default class FieldsetComponent extends NestedComponent {
       title: 'Field Set',
       icon: 'th-large',
       group: 'layout',
-      documentation: '/userguide/forms/layout-components#field-set',
+      documentation: '/userguide/form-building/layout-components#field-set',
+      showPreview: false,
       weight: 20,
       schema: FieldsetComponent.schema()
     };

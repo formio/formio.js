@@ -40,7 +40,7 @@ export default [
         editor: 'ace',
         key: 'datePicker.disableFunction',
         label: 'Disabling dates by a function',
-        description: 'For more information check out the <a href="https://flatpickr.js.org/examples/#disabling-dates" target="_blank">Docs</a>',
+        description: 'For more information check out the <a href="https://flatpickr.js.org/examples/#disabling-dates" target="_blank" rel="noopener noreferrer">Docs</a>',
         weight: 22
       },
       {

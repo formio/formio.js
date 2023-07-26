@@ -33,8 +33,8 @@ Formio.createForm(document.getElementById('formio'), {
             '{% raw %}  {% }) %}{% endraw %}' +
             '  <div class="col-sm-2">' +
             '    <div class="btn-group pull-right">' +
-            '      <div class="btn btn-default btn-sm editRow"><i class="fa fa-edit"></i></div>' +
-            '      <div class="btn btn-danger btn-sm removeRow"><i class="fa fa-trash"></i></div>' +
+            '      <div class="btn btn-default btn-sm editRow"><i class="bi bi-edit"></i></div>' +
+            '      <div class="btn btn-danger btn-sm removeRow"><i class="bi bi-trash"></i></div>' +
             '    </div>' +
             '  </div>' +
             '</div>',
@@ -176,8 +176,8 @@ Formio.createForm(document.getElementById('formio'), {
             '{% raw %}  {% }) %}{% endraw %}' +
             '  <div class="col-sm-2">' +
             '    <div class="btn-group pull-right">' +
-            '      <div class="btn btn-default btn-sm editRow"><i class="fa fa-edit"></i></div>' +
-            '      <div class="btn btn-danger btn-sm removeRow"><i class="fa fa-trash"></i></div>' +
+            '      <div class="btn btn-default btn-sm editRow"><i class="bi bi-edit"></i></div>' +
+            '      <div class="btn btn-danger btn-sm removeRow"><i class="bi bi-trash"></i></div>' +
             '    </div>' +
             '  </div>' +
             '</div>',
