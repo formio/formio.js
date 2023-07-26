@@ -1,5 +1,5 @@
 import Element from './Element';
-import { GlobalFormio as Formio } from './Formio';
+import { Formio } from './Formio';
 import Displays from './displays';
 import templates from './templates';
 import * as FormioUtils from './utils/utils';
@@ -27,7 +27,13 @@ export default class Form extends Element {
     if (Formio.options && Formio.options.form) {
       options = Object.assign(options, Formio.options.form);
     }
+
     super(options);
+
+    if (this.options.useSessionToken) {
+      Formio.useSessionToken(this.options);
+    }
+
     this.ready = new NativePromise((resolve, reject) => {
       this.readyResolve = resolve;
       this.readyReject = reject;
@@ -35,6 +41,9 @@ export default class Form extends Element {
 
     this.instance = null;
     if (args[0] instanceof HTMLElement) {
+      if (this.element) {
+        delete this.element.component;
+      }
       this.element = args[0];
       this.options = args[2] || {};
       this.options.events = this.events;
@@ -85,7 +94,7 @@ export default class Form extends Element {
    * @return {*}
    */
   set form(formParam) {
-    return this.setForm(formParam);
+    this.setForm(formParam);
   }
 
   errorForm(err) {
@@ -116,7 +125,7 @@ export default class Form extends Element {
     if (typeof formParam === 'string') {
       const formio = new Formio(formParam);
       let error;
-      result = this.getSubmission(formio)
+      result = this.getSubmission(formio, this.options)
         .catch((err) => {
           error = err;
         })
@@ -153,14 +162,17 @@ export default class Form extends Element {
 
     // A redraw has occurred so save off the new element in case of a setDisplay causing a rebuild.
     return result.then(() => {
+      if (this.element) {
+        delete this.element.component;
+      }
       this.element = this.instance.element;
       return this.instance;
     });
   }
 
-  getSubmission(formio) {
+  getSubmission(formio, opts) {
     if (formio.submissionId) {
-      return formio.loadSubmission();
+      return formio.loadSubmission(null, opts);
     }
     return NativePromise.resolve();
   }
@@ -287,12 +299,21 @@ export default class Form extends Element {
     if (!this.instance) {
       return NativePromise.reject('Form not ready. Use form.ready promise');
     }
+    if (this.element) {
+      delete this.element.component;
+    }
     this.element = element;
     return this.instance.attach(this.element)
       .then((param) => {
         this.emit('attach', param);
         return param;
       });
+  }
+
+  teardown() {
+    super.teardown();
+    delete this.instance;
+    delete this.ready;
   }
 }
 

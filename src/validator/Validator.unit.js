@@ -1,4 +1,7 @@
 'use strict';
+import DateTimeComponent from '../components/datetime/DateTime';
+import { comp1 } from '../components/datetime/fixtures';
+import Harness from '../../test/harness';
 import Validator from './Validator';
 import Component from '../components/_classes/component/Component';
 import assert from 'power-assert';
@@ -64,6 +67,36 @@ describe('Legacy Validator Tests', () => {
     assert.equal(Validator.validators.json.check(baseComponent, {
       or: [{ '_isEqual': [{ var: 'data.test' }, ['1', '2', '3']] }, 'Should be false.']
     }, null, { test: ['1', '2', '4'] }), 'Should be false.');
+  });
+
+  it('Should test for date', (done) => {
+    Harness.testCreate(DateTimeComponent, comp1).then((dateTime) => {
+      const pass = [];
+      const assertFail = (checkResults, message = 'Should fail') => {
+        assert.equal(checkResults?.length, 1, message);
+        assert.equal(checkResults[0].message, 'Date is not a valid date.', message);
+      };
+
+      dateTime.dataValue = '01/02/2000';
+      assert.deepEqual(Validator.checkComponent(dateTime, {}), pass, 'Should be valid');
+      dateTime.dataValue = 'January 23, 2012';
+      assert.deepEqual(Validator.checkComponent(dateTime, {}), pass, 'Should be valid');
+      dateTime.dataValue = '2010-10-10T10:10:10.626Z';
+      assert.deepEqual(Validator.checkComponent(dateTime, {}), pass, 'Should be valid');
+      dateTime.dataValue = new Date();
+      assert.deepEqual(Validator.checkComponent(dateTime, {}), pass, 'Should be valid');
+      dateTime.dataValue = null;
+      assert.deepEqual(Validator.checkComponent(dateTime, {}), pass, 'Should be valid');
+      dateTime.dataValue = undefined;
+      assert.deepEqual(Validator.checkComponent(dateTime, {}), pass, 'Should be valid');
+      dateTime.dataValue = '';
+      assert.deepEqual(Validator.checkComponent(dateTime, {}), pass, 'Should be valid');
+      dateTime.dataValue = 'Some string';
+      assertFail(Validator.checkComponent(dateTime, {}), 'Should fail with a string');
+      dateTime.dataValue = new Date('Some string');
+      assertFail(Validator.checkComponent(dateTime, {}), 'Should fail with an invalid Date object');
+      done();
+    }).catch(done);
   });
 });
 

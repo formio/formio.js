@@ -27,7 +27,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       title: 'Text Area',
       group: 'basic',
       icon: 'font',
-      documentation: '/userguide/#textarea',
+      documentation: '/userguide/form-building/form-components#text-area',
       weight: 20,
       schema: TextAreaComponent.schema()
     };
@@ -327,7 +327,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         this.setConvertedValue(value);
       return super.setValue(value, flags);
     }
-    flags.skipWysiwyg = _.isEqual(value, this.getValue());
+    flags.skipWysiwyg = value === '' && flags.resetValue ? false : _.isEqual(value, this.getValue());
     return super.setValue(value, flags);
   }
 
@@ -582,19 +582,32 @@ export default class TextAreaComponent extends TextFieldComponent {
     super.focus();
     switch (this.component.editor) {
       case 'ckeditor': {
-        if (this.editors[0].editing?.view?.focus) {
-          this.editors[0].editing.view.focus();
-        }
-        this.element.scrollIntoView();
+        // Wait for the editor to be ready.
+        this.editorsReady[0]?.then(() => {
+          if (this.editors[0].editing?.view?.focus) {
+            this.editors[0].editing.view.focus();
+          }
+          this.element.scrollIntoView();
+        }).catch((err) => {
+          console.warn('An editor did not initialize properly when trying to focus:', err);
+        });
         break;
       }
       case 'ace': {
-        this.editors[0].focus();
-        this.element.scrollIntoView();
+        this.editorsReady[0]?.then(() => {
+          this.editors[0].focus();
+          this.element.scrollIntoView();
+        }).catch((err) => {
+          console.warn('An editor did not initialize properly when trying to focus:', err);
+        });
         break;
       }
       case 'quill': {
-        this.editors[0].focus();
+        this.editorsReady[0]?.then(() => {
+          this.editors[0].focus();
+        }).catch((err) => {
+          console.warn('An editor did not initialize properly when trying to focus:', err);
+        });
         break;
       }
     }

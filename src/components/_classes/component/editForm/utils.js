@@ -52,8 +52,8 @@ const EditFormUtils = {
       '<tr><th>instance</th><td>The current component instance.</td></tr>' +
       '<tr><th>value</th><td>The current value of the component.</td></tr>' +
       '<tr><th>moment</th><td>The moment.js library for date manipulation.</td></tr>' +
-      '<tr><th>_</th><td>An instance of <a href="https://lodash.com/docs/" target="_blank">Lodash</a>.</td></tr>' +
-      '<tr><th>utils</th><td>An instance of the <a href="http://formio.github.io/formio.js/docs/identifiers.html#utils" target="_blank">FormioUtils</a> object.</td></tr>' +
+      '<tr><th>_</th><td>An instance of <a href="https://lodash.com/docs/" target="_blank" rel="noopener noreferrer">Lodash</a>.</td></tr>' +
+      '<tr><th>utils</th><td>An instance of the <a href="http://formio.github.io/formio.js/docs/identifiers.html#utils" target="_blank" rel="noopener noreferrer">FormioUtils</a> object.</td></tr>' +
       '<tr><th>util</th><td>An alias for "utils".</td></tr>' +
       '</table><br/>'
       /* eslint-enable prefer-template */
@@ -100,8 +100,8 @@ const EditFormUtils = {
             type: 'htmlelement',
             tag: 'div',
             /* eslint-disable prefer-template */
-            content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' +
-              '<p>Full <a href="https://lodash.com/docs" target="_blank">Lodash</a> support is provided using an "_" before each operation, such as <code>{"_sum": {var: "data.a"}}</code></p>' +
+            content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank" rel="noopener noreferrer">JSONLogic</a>.</p>' +
+              '<p>Full <a href="https://lodash.com/docs" target="_blank" rel="noopener noreferrer">Lodash</a> support is provided using an "_" before each operation, such as <code>{"_sum": {var: "data.a"}}</code></p>' +
                exampleJSON
             /* eslint-enable prefer-template */
           },

@@ -190,13 +190,28 @@ export default class Multivalue extends Field {
     });
 
     if (!this.attachMultiMask(index)) {
-      this.setInputMask(element);
+      const applyMask = () => {
+        this.setInputMask(element);
 
-      const valueMask = this.component.inputMask;
-      const displayMask = this.component.displayMask;
+        const valueMask = this.component.inputMask;
+        const displayMask = this.component.displayMask;
 
-      if (valueMask && displayMask && displayMask !== valueMask && this.refs.valueMaskInput) {
-        this.setInputMask(this.refs.valueMaskInput, valueMask);
+        if (valueMask && displayMask && displayMask !== valueMask && this.refs.valueMaskInput) {
+          this.setInputMask(this.refs.valueMaskInput, valueMask);
+        }
+      };
+
+      if (this.inputInfo.changeEvent === 'blur') {
+        this.addEventListener(element, this.inputInfo.changeEvent, () => {
+          applyMask();
+          this.dataValue = this.refs.input[0].value;
+          if (this.checkComponentValidity()) {
+            this.updateComponentValue(this.refs.input[0].value);
+          }
+        });
+      }
+      else {
+        applyMask();
       }
     }
   }

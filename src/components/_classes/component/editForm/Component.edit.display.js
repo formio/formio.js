@@ -10,7 +10,8 @@ export default [
     tooltip: 'The label for this field that will appear next to it.',
     validate: {
       required: true
-    }
+    },
+    autofocus: true,
   },
   {
     type: 'select',
@@ -163,7 +164,7 @@ export default [
     weight: 1370,
     type: 'checkbox',
     label: 'Show Label in DataGrid',
-    tooltip: 'Show the label when in a Datagrid.',
+    tooltip: 'Show the label inside each row when in a Datagrid.',
     key: 'dataGridLabel',
     input: true,
     customConditional(context) {

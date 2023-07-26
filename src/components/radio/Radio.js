@@ -1,17 +1,19 @@
 import _ from 'lodash';
-import Field from '../_classes/field/Field';
+import ListComponent from '../_classes/list/ListComponent';
+import NativePromise from 'native-promise-only';
+import { Formio } from '../../Formio';
 import { boolValue } from '../../utils/utils';
 
-export default class RadioComponent extends Field {
+export default class RadioComponent extends ListComponent {
   static schema(...extend) {
-    return Field.schema({
+    return ListComponent.schema({
       type: 'radio',
       inputType: 'radio',
       label: 'Radio',
       key: 'radio',
       values: [{ label: '', value: '' }],
-      validate: {
-        onlyAvailableItems: false
+      data: {
+        url: '',
       },
       fieldSet: false
     }, ...extend);
@@ -23,7 +25,7 @@ export default class RadioComponent extends Field {
       group: 'basic',
       icon: 'dot-circle-o',
       weight: 80,
-      documentation: '/userguide/#radio',
+      documentation: '/userguide/form-building/form-components#radio',
       schema: RadioComponent.schema()
     };
   }
@@ -68,14 +70,41 @@ export default class RadioComponent extends Field {
 
   init() {
     super.init();
-    this.validators = this.validators.concat(['select', 'onlyAvailableItems']);
+    this.templateData = {};
+    this.validators = this.validators.concat(['select', 'onlyAvailableItems', 'availableValueProperty']);
+
+    // Trigger an update.//
+    let updateArgs = [];
+    const triggerUpdate = _.debounce((...args) => {
+      updateArgs = [];
+      return this.updateItems.apply(this, args);
+    }, 100);
+    this.triggerUpdate = (...args) => {
+      // Make sure we always resolve the previous promise before reassign it
+      if (typeof this.itemsLoadedResolve === 'function') {
+        this.itemsLoadedResolve();
+      }
+      this.itemsLoaded = new NativePromise((resolve) => {
+        this.itemsLoadedResolve = resolve;
+      });
+      if (args.length) {
+        updateArgs = args;
+      }
+      return triggerUpdate(...updateArgs);
+    };
+
+    this.itemsLoaded = new NativePromise((resolve) => {
+      this.itemsLoadedResolve = resolve;
+    });
+    this.shouldLoad = true;
+    this.loadedOptions = [];
   }
 
   render() {
     return super.render(this.renderTemplate('radio', {
       input: this.inputInfo,
       inline: this.component.inline,
-      values: this.component.values,
+      values: this.component.dataSrc === 'values' ? this.component.values : this.loadedOptions,
       value: this.dataValue,
       row: this.row,
     }));
@@ -89,7 +118,9 @@ export default class RadioComponent extends Field {
           modified: true,
         });
       });
-      this.addShortcut(input, this.component.values[index].shortcut);
+      if (this.component.values[index]) {
+        this.addShortcut(input, this.component.values[index].shortcut);
+      }
 
       if (this.isRadio) {
         let dataValue = this.dataValue;
@@ -98,7 +129,7 @@ export default class RadioComponent extends Field {
           dataValue = _.toString(this.dataValue);
         }
 
-        input.checked = (dataValue === input.value);
+        input.checked = (dataValue === input.value && (input.value || this.component.dataSrc !== 'url'));
         this.addEventListener(input, 'keyup', (event) => {
           if (event.key === ' ' && dataValue === input.value) {
             event.preventDefault();
@@ -110,6 +141,7 @@ export default class RadioComponent extends Field {
         });
       }
     });
+    this.triggerUpdate();
     this.setSelectedClasses();
     return super.attach(element);
   }
@@ -117,7 +149,9 @@ export default class RadioComponent extends Field {
   detach(element) {
     if (element && this.refs.input) {
       this.refs.input.forEach((input, index) => {
-        this.removeShortcut(input, this.component.values[index].shortcut);
+        if (this.component.values[index]) {
+          this.removeShortcut(input, this.component.values[index].shortcut);
+        }
       });
     }
     super.detach();
@@ -136,6 +170,14 @@ export default class RadioComponent extends Field {
     return value;
   }
 
+  validateValueProperty() {
+    if (this.component.dataSrc === 'values') {
+      return true;
+    }
+
+    return !_.some(this.refs.wrapper, (wrapper, index) => this.refs.input[index].checked && this.loadedOptions[index].invalid);
+  }
+
   validateValueAvailability(setting, value) {
     if (!boolValue(setting) || !value) {
       return true;
@@ -150,14 +192,18 @@ export default class RadioComponent extends Field {
   }
 
   getValueAsString(value) {
-    if (!value) {
-      return '';
-    }
     if (!_.isString(value)) {
       value = _.toString(value);
     }
+    if (this.component.dataSrc !== 'values') {
+      return value;
+    }
 
     const option = _.find(this.component.values, (v) => v.value === value);
+
+    if (!value) {
+      return _.get(option, 'label', '');
+    }
 
     return _.get(option, 'label', '');
   }
@@ -167,6 +213,48 @@ export default class RadioComponent extends Field {
       const inputValue = this.refs.input[index].value;
       this.refs.input[index].checked = (inputValue === value.toString());
     }
+  }
+
+  loadItems(url, search, headers, options, method, body) {
+    // Ensure we have a method and remove any body if method is get
+    method = method || 'GET';
+    if (method.toUpperCase() === 'GET') {
+      body = null;
+    }
+
+    // Set ignoreCache if it is
+    options.ignoreCache = this.component.ignoreCache;
+    // Make the request.
+    options.header = headers;
+    if (this.shouldLoad) {
+      this.loading = true;
+      Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
+      .then((response) => {
+        this.loading = false;
+        this.error = null;
+        this.setItems(response);
+        this.shouldLoad = false;
+        this.redraw();
+      })
+      .catch((err) => {
+        this.handleLoadingError(err);
+      });
+    }
+  }
+
+  setItems(items) {
+    items?.forEach((item, i) => {
+      this.loadedOptions[i] = {
+        value: item[this.component.valueProperty],
+        label: this.itemTemplate(item, item[this.component.valueProperty])
+      };
+      if (_.isUndefined(item[this.component.valueProperty]) ||
+        _.isObject(item[this.component.valueProperty]) ||
+        (!this.isRadio && _.isBoolean(item[this.component.valueProperty]))
+        ) {
+        this.loadedOptions[i].invalid = true;
+      }
+    });
   }
 
   setSelectedClasses() {
@@ -197,16 +285,20 @@ export default class RadioComponent extends Field {
     }
 
     if (!flags || !flags.modified || !this.isRadio) {
+      if (changed) {
+        this.previousValue = this.dataValue;
+      }
+
       return changed;
     }
 
     // If they clicked on the radio that is currently selected, it needs to reset the value.
     this.currentValue = this.dataValue;
-    const shouldResetValue = !(flags && flags.noUpdateEvent)
-      && this.previousValue === this.currentValue;
+    const shouldResetValue = flags && flags.modified && !flags.noUpdateEvent && this.previousValue === this.currentValue;
     if (shouldResetValue) {
       this.resetValue();
       this.triggerChange(flags);
+      this.setSelectedClasses();
     }
     this.previousValue = this.dataValue;
     return changed;
@@ -219,39 +311,20 @@ export default class RadioComponent extends Field {
    * @return {*}
    */
   normalizeValue(value) {
-    const dataType = this.component.dataType || 'auto';
-
     if (value === this.emptyValue) {
       return value;
     }
 
-    switch (dataType) {
-      case 'auto':
-        if (!isNaN(parseFloat(value)) && isFinite(value)) {
-          value = +value;
-        }
-        if (value === 'true') {
-          value = true;
-        }
-        if (value === 'false') {
-          value = false;
-        }
-        break;
-      case 'number':
-        value = +value;
-        break;
-      case 'string':
-        if (typeof value === 'object') {
-          value = JSON.stringify(value);
-        }
-        else {
-          value = String(value);
-        }
-        break;
-      case 'boolean':
-        value = !(!value || value.toString() === 'false');
-        break;
+    if (!isNaN(parseFloat(value)) && isFinite(value)) {
+      value = +value;
     }
+    if (value === 'true') {
+      value = true;
+    }
+    if (value === 'false') {
+      value = false;
+    }
+
     return super.normalizeValue(value);
   }
 }

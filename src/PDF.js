@@ -1,5 +1,5 @@
 import NativePromise from 'native-promise-only';
-import { GlobalFormio as Formio } from './Formio';
+import { Formio } from './Formio';
 import Webform from './Webform';
 import { fastCloneDeep, eachComponent } from './utils/utils';
 
@@ -45,6 +45,7 @@ export default class PDF extends Webform {
 
   render() {
     this.submitButton = this.addComponent({
+      disabled: this.form.disableWizardSubmit,
       input: true,
       type: 'button',
       action: 'submit',
@@ -67,8 +68,16 @@ export default class PDF extends Webform {
     return this.builderMode ? NativePromise.resolve() : super.redraw();
   }
 
+  destroy(all = false) {
+    if (this.iframeElement) {
+      delete this.iframeElement.formioComponent;
+      this.iframeElement.formioComponent = null;
+    }
+    super.destroy(all);
+  }
+
   rebuild() {
-    if (this.builderMode && this.component.components) {
+    if (this.attached && this.builderMode && this.component.components) {
       this.destroyComponents();
       this.addComponents();
       return NativePromise.resolve();

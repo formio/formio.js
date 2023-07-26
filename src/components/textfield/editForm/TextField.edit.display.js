@@ -85,6 +85,25 @@ export default [
     },
   },
   {
+    weight: 410,
+    type: 'select',
+    input: true,
+    key: 'applyMaskOn',
+    label: 'Apply Mask On',
+    tooltip: 'Select the type of applying mask.',
+    defaultValue: 'change',
+    dataSrc: 'values',
+    data: {
+      values: [
+        { label: 'Change', value: 'change' },
+        { label: 'Blur', value: 'blur' },
+      ],
+    },
+    customConditional(context) {
+      return !context.data.allowMultipleMasks;
+    },
+  },
+  {
     weight: 411,
     type: 'textfield',
     input: true,

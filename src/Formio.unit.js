@@ -1,13 +1,12 @@
-import Formio from './Formio';
+import { Formio } from './index';
 import { fastCloneDeep } from './utils/utils';
-import _each from 'lodash/each';
 import assert from 'power-assert';
 import sinon from 'sinon';
-import Chance from 'chance';
 import fetchMock from 'fetch-mock/es5/server';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 
+import Chance from 'chance';
 const chance = Chance();
 const protocol = 'https';
 const domain = 'localhost:3000';
@@ -35,7 +34,7 @@ const runTests = function(fn, options) {
       Formio.projectUrl = 'https://api.form.io';
     });
   }
-  _each(tests, (test, path) => {
+  _.each(tests, (test, path) => {
     it(`Should initialize for ${path}`, (done) => {
       if (typeof test === 'function') {
         test();
@@ -633,6 +632,11 @@ describe('Formio.js Tests', () => {
       },
       {
         url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567',
+        method: 'PUT',
+        type: 'form'
+      },
+      {
+        url: '/project/myproject/form/0123456789ABCDEF01234567',
         method: 'PUT',
         type: 'form'
       },
@@ -1556,9 +1560,9 @@ describe('Formio.js Tests', () => {
           };
         }
       },
-      // // Actions
-      // // Available Actions
-      // // Action Info
+      // Actions
+      // Available Actions
+      // Action Info
       {
         name: 'Delete Submission',
         test() {
@@ -1690,7 +1694,7 @@ describe('Formio.js Tests', () => {
         test() {
           return Formio.logout()
             .then(() => {
-              assert.equal(Formio.getToken(), null, 'Logged out');
+              assert.equal(Formio.getToken(), '', 'Logged out');
             });
         },
         mock() {
@@ -2330,7 +2334,7 @@ describe('Formio.js Tests', () => {
                 label: 'Text Field',
                 key: 'textField',
                 type: 'textfield',
-                input: true,
+              input: true,
               },
               {
                 label: 'Password',

@@ -19,7 +19,7 @@ export default class ContentComponent extends Component {
       group: 'layout',
       icon: 'html5',
       preview: false,
-      documentation: '/userguide/#content-component',
+      documentation: '/userguide/form-building/layout-components#content',
       weight: 5,
       schema: ContentComponent.schema()
     };
@@ -31,7 +31,7 @@ export default class ContentComponent extends Component {
 
   get content() {
     if (this.builderMode) {
-      return this.component.html;
+      return this.component.html || 'Content';
     }
     const submission = _.get(this.root, 'submission', {});
     return this.component.html ? this.interpolate(this.component.html, {

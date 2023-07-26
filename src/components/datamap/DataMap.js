@@ -33,7 +33,8 @@ export default class DataMapComponent extends DataGridComponent {
       title: 'Data Map',
       icon: 'th-list',
       group: 'data',
-      documentation: '/userguide/#datamap',
+      documentation: '/userguide/form-building/data-components#data-map',
+      showPreview: false,
       weight: 20,
       schema: DataMapComponent.schema()
     };
@@ -328,6 +329,14 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   checkColumns() {
+    if (this.builderMode || (!this.dataValue || !Object.keys(this.dataValue).length)) {
+      return { rebuild: false, show: true };
+    }
+
+    if (Object.keys(this.dataValue).length > (this.rows || []).length) {
+      return { rebuild: true, show: true };
+    }
+
     return { rebuild: false, show: true };
   }
 }

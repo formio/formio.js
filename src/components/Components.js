@@ -3,7 +3,7 @@ import EditFormUtils from './_classes/component/editForm/utils';
 import BaseEditForm from './_classes/component/Component.form';
 import _ from 'lodash';
 export default class Components {
-  static _editFormUtils = EditFormUtils
+  static _editFormUtils = EditFormUtils;
 
   static _baseEditForm = BaseEditForm;
 
