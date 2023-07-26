@@ -966,7 +966,14 @@ export default class Webform extends NestedDataComponent {
    * Build the form.
    */
   init() {
-    this._submission = this._submission || { data: {} };
+    if (this.options.submission) {
+      const submission = _.extend({}, this.options.submission);
+      this._submission = submission;
+      this._data = submission.data;
+    }
+    else {
+      this._submission = this._submission || { data: {} };
+    }
 
     // Remove any existing components.
     if (this.components && this.components.length) {
