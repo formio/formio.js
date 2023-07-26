@@ -403,13 +403,9 @@ export default class FileComponent extends Field {
     this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
       this.addEventListener(fileStatusRemove, 'click', (event) => {
         event.preventDefault();
-
-        const status = this.statuses[index];
-
-        if (status.abort) {
-          status.abort();
+        if (this.abortUpload) {
+          this.abortUpload();
         }
-
         this.statuses.splice(index, 1);
         this.redraw();
       });
@@ -637,7 +633,6 @@ export default class FileComponent extends Field {
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const escapedFileName = file.name ? file.name.replaceAll('<', '&lt;').replaceAll('>', '&gt;') : file.name;
         const fileUpload = {
-          abort: () => null,
           originalName: escapedFileName,
           name: fileName,
           size: file.size,
@@ -693,6 +688,7 @@ export default class FileComponent extends Field {
             pattern: this.component.filePattern,
           });
         }
+
         // Check file minimum size
         if (this.component.fileMinSize && !this.validateMinSize(file, this.component.fileMinSize)) {
           fileUpload.status = 'error';
@@ -746,6 +742,7 @@ export default class FileComponent extends Field {
               });
             }
           });
+
           const fileKey = this.component.fileKey || 'file';
           const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
           let processedFile = null;
@@ -772,7 +769,7 @@ export default class FileComponent extends Field {
             }
           }
 
-          fileUpload.message = this.t('Starting upload...');
+          fileUpload.message = this.t('Starting upload.');
           this.redraw();
 
           const filePromise = fileService.uploadFile(
@@ -796,7 +793,8 @@ export default class FileComponent extends Field {
             () => {
               this.emit('fileUploadingStart', filePromise);
             },
-            (abort) => fileUpload.abort = abort,
+            // Abort upload callback
+            (abort) => this.abortUpload = abort,
           ).then((fileInfo) => {
               const index = this.statuses.indexOf(fileUpload);
               if (index !== -1) {
