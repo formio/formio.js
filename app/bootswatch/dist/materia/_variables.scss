@@ -1,5 +1,7 @@
-// Materia 4.6.1
+// Materia 5.3.0
 // Bootswatch
+
+$theme: "materia" !default;
 
 //
 // Color system
@@ -34,10 +36,10 @@ $success:       $green !default;
 $info:          $cyan !default;
 $warning:       $yellow !default;
 $danger:        $red !default;
-$light:         $white !default;
+$light:         $gray-100 !default;
 $dark:          $gray-800 !default;
 
-$yiq-contrasted-threshold:  170 !default;
+$min-contrast-ratio:   2.15 !default;
 
 $enable-gradients: true !default;
 
@@ -49,7 +51,7 @@ $body-color:    $gray-700 !default;
 
 // stylelint-disable-next-line value-keyword-case
 $font-family-sans-serif:    Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif !default;
-$font-size-base:            .8125rem !default;
+$font-size-base:            1rem !default;
 $font-weight-base:          400 !default;
 
 // Buttons
@@ -75,15 +77,6 @@ $input-border-radius-lg:         0 !default;
 $input-border-radius-sm:         0 !default;
 $input-placeholder-color:        rgba(0, 0, 0, .4) !default;
 $input-group-addon-bg:           transparent !default;
-$custom-control-gutter:          1.75rem !default;
-$custom-control-indicator-focus-box-shadow: 0 !default;
-$custom-control-indicator-size:  1.25rem !default;
-$custom-control-indicator-bg:    $white !default;
-$custom-checkbox-indicator-border-radius: 2px !default;
-$custom-control-indicator-disabled-bg: $gray-100 !default;
-$custom-radio-indicator-icon-checked: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='4' fill='#{$blue}'/></svg>") !default;
-$custom-select-border-radius:       0 !default;
-$custom-select-box-shadow:          none !default;
 
 // Navs
 
@@ -116,14 +109,6 @@ $progress-border-radius:        0 !default;
 
 // Close
 
-$close-font-size:             2.125rem !default;
-$close-font-weight:           300 !default;
-
-// Box shadows
-
-$enable-shadows: true !default;
-$btn-box-shadow:         0 1px 4px rgba($black, .4) !default;
-$btn-active-box-shadow:  2px 2px 4px rgba($black, .4) !default;
-$btn-focus-box-shadow:   0 0 0 2px mix(rgba($white, .5), rgba($black, .5), 80%) !default;
-$input-box-shadow:       inset 0 -1px 0 mix($white, $black, 86.7%) !default;
-$input-focus-box-shadow: inset 0 -2px 0 $primary !default;
+$btn-close-color:            $white !default;
+$btn-close-opacity:          .6 !default;
+$btn-close-hover-opacity:    1 !default;

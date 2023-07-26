@@ -2,7 +2,7 @@ import _ from 'lodash';
 import NativePromise from 'native-promise-only';
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
-import { eachComponent } from '../../utils/utils';
+import { eachComponent, getArrayFromComponentPath } from '../../utils/utils';
 
 export default class ButtonComponent extends Field {
   static schema(...extend) {
@@ -27,7 +27,7 @@ export default class ButtonComponent extends Field {
       title: 'Button',
       group: 'basic',
       icon: 'stop',
-      documentation: '/userguide/forms/form-components#button',
+      documentation: '/userguide/form-building/form-components#button',
       weight: 110,
       schema: ButtonComponent.schema()
     };
@@ -101,7 +101,7 @@ export default class ButtonComponent extends Field {
 
   get className() {
     let className = super.className;
-    className += ' form-group';
+    className += ` ${this.transform('class', 'form-group')}`;
     return className;
   }
 
@@ -214,7 +214,6 @@ export default class ButtonComponent extends Field {
         isValid = flags.rootValidity || (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true);
         flags.rootValidity = isValid;
       }
-      this.loading = false;
       this.isDisabledOnInvalid = this.component.disableOnInvalid && (isSilent || !isValid);
       this.disabled = this.shouldDisabled;
       this.setDisabled(this.refs.button, this.disabled);
@@ -425,7 +424,7 @@ export default class ButtonComponent extends Field {
       try {
         const popupHost = popup.location.host;
         const currentHost = window.location.host;
-        if (popup && !popup.closed && popupHost === currentHost && popup.location.search) {
+        if (popup && !popup.closed && popupHost === currentHost) {
           popup.close();
           const params = popup.location.search.substr(1).split('&').reduce((params, param) => {
             const split = param.split('=');
@@ -450,16 +449,19 @@ export default class ButtonComponent extends Field {
             params.redirectURI = originalRedirectUri;
 
             // Needs for the exclude oAuth Actions that not related to this button
-            params.triggeredBy = this.key;
+            params.triggeredBy = this.oauthComponentPath;
             requestPromise = this.root.formio.makeRequest('oauth', `${this.root.formio.projectUrl}/oauth2`, 'POST', params);
           }
           else {
             const submission = { data: {}, oauth: {} };
             submission.oauth[settings.provider] = params;
             submission.oauth[settings.provider].redirectURI = originalRedirectUri;
+            if (settings.logoutURI) {
+              this.root.formio.oauthLogoutURI(settings.logoutURI);
+            }
 
             // Needs for the exclude oAuth Actions that not related to this button
-            submission.oauth[settings.provider].triggeredBy = this.key;
+            submission.oauth[settings.provider].triggeredBy = this.oauthComponentPath;
             requestPromise = this.root.formio.saveSubmission(submission);
           }
           requestPromise.then((result) => {
@@ -479,6 +481,11 @@ export default class ButtonComponent extends Field {
         clearInterval(interval);
       }
     }, 100);
+  }
+
+  get oauthComponentPath() {
+    const pathArray = getArrayFromComponentPath(this.path);
+    return _.chain(pathArray).filter(pathPart => !_.isNumber(pathPart)).join('.').value();
   }
 
   focus() {

@@ -55,7 +55,7 @@ export default [
     key: 'cloneRows',
     input: true,
     weight: 3,
-    tooltip: 'Check this if you would like to "clone" the first row of components to all additional empty rows of the table.'
+    tooltip: 'Check this if you would like to \'clone\' the first row of components to all additional empty rows of the table.'
   },
   {
     type: 'select',

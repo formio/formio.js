@@ -410,8 +410,8 @@ export function flattenComponents(components, includeAll) {
 export function hasCondition(component) {
   return Boolean(
     (component.customConditional) ||
-    (component.conditional && (
-      component.conditional.when ||
+    (component.conditional && (component.conditional.when ||
+      (_.some(component.conditional.conditions || [], (condition => condition.component && condition.operator))) ||
       component.conditional.json ||
       component.conditional.condition
     ))

@@ -1,5 +1,5 @@
-import templates from './index';
 import _ from 'lodash';
+import templates from './index';
 
 export default class Templates {
   static get templates() {
@@ -35,7 +35,7 @@ export default class Templates {
   }
 
   static get defaultTemplates() {
-    return Templates.templates.bootstrap;
+    return Templates.templates.hasOwnProperty('bootstrap') ? Templates.templates.bootstrap : {};
   }
 
   static set framework(framework) {

@@ -1,5 +1,0 @@
-<{{ctx.tag}} class="{{ ctx.component.className }}" ref="html"
-  {% ctx.attrs.forEach(function(attr) { %}
-    {{attr.attr}}="{{attr.value}}"
-  {% }) %}
->{{ctx.t(ctx.content)}}{% if (!ctx.singleTags || ctx.singleTags.indexOf(ctx.tag) === -1) { %}</{{ctx.tag}}>{% } %}

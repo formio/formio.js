@@ -52,7 +52,7 @@ export default [
   {
     weight: 400,
     type: 'checkbox',
-    label: 'Encrypted (Enterprise Only)',
+    label: 'Encrypted',
     tooltip: 'Encrypt this field on the server. This is two way encryption which is not suitable for passwords.',
     key: 'encrypted',
     input: true,
@@ -91,7 +91,7 @@ export default [
               value: 'tooltip',
               type: 'string'
             },
-            text: 'Encryption is not available with your current plan. Please contact sales@form.io.'
+            text: 'Only available with Security Module. Contact sales@form.io for more information.'
           }
         ]
       }
@@ -140,7 +140,7 @@ export default [
   ),
   EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 'calculateValue', 1100,
     '<p><h4>Example:</h4><pre>value = data.a + data.b + data.c;</pre></p>',
-    '<p><h4>Example:</h4><pre>{"+": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a target="_blank" href="http://formio.github.io/formio.js/app/examples/calculated.html">Click here for an example</a></p>',
+    '<p><h4>Example:</h4><pre>{"+": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a href="http://formio.github.io/formio.js/app/examples/calculated.html" target="_blank" rel="noopener noreferrer">Click here for an example</a></p>',
 '<tr><th>token</th><td>The decoded JWT token for the authenticated user.</td></tr>'
   ),
   {

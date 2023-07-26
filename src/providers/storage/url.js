@@ -71,7 +71,15 @@ const url = (formio) => {
       if (options) {
         const parsedOptions = typeof options === 'string' ? JSON.parse(options) : options;
         for (const prop in parsedOptions) {
-          xhr[prop] = parsedOptions[prop];
+          if (prop === 'headers') {
+            const headers = parsedOptions['headers'];
+            for (const header in headers) {
+              xhr.setRequestHeader(header, headers[header]);
+            }
+          }
+          else {
+            xhr[prop] = parsedOptions[prop];
+          }
         }
       }
       xhr.send(json ? data : fd);
