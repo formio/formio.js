@@ -1,14 +1,10 @@
 import _ from 'lodash';
-import { GlobalFormio as Formio } from '../../Formio';
+import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
 import { getRandomComponentId, boolValue, isPromise } from '../../utils/utils';
-
-let Choices;
-if (typeof window !== 'undefined') {
-  Choices = require('../../utils/ChoicesWrapper').default;
-}
+import Choices from '../../utils/ChoicesWrapper';
 
 export default class SelectComponent extends ListComponent {
   static schema(...extend) {
@@ -56,7 +52,7 @@ export default class SelectComponent extends ListComponent {
       group: 'basic',
       icon: 'th-list',
       weight: 70,
-      documentation: '/userguide/forms/form-components#select',
+      documentation: '/userguide/form-building/form-components#select',
       schema: SelectComponent.schema()
     };
   }
@@ -101,7 +97,7 @@ export default class SelectComponent extends ListComponent {
       this.defaultDownloadedResources = [];
     }
 
-    // If this component has been activated.
+    // If this component has been activated.//
     this.activated = false;
     this.itemsLoaded = new NativePromise((resolve) => {
       this.itemsLoadedResolve = resolve;
@@ -198,10 +194,10 @@ export default class SelectComponent extends ListComponent {
   }
 
   selectValueAndLabel(data) {
-    const value = this.getOptionValue(this.itemValue(data));
+    const value = this.getOptionValue((this.isEntireObjectDisplay() && !this.itemValue(data)) ? data : this.itemValue(data));
     return {
       value,
-      label: this.itemTemplate(data, value)
+      label: this.itemTemplate((this.isEntireObjectDisplay() && !_.isObject(data.data)) ? { data: data } : data, value)
     };
   }
 
@@ -220,14 +216,35 @@ export default class SelectComponent extends ListComponent {
       const value = (typeof itemLabel === 'string') ? this.t(itemLabel, { _userInput: true }) : itemLabel;
       return this.sanitize(value, this.shouldSanitizeValue);
     }
-    if (typeof data === 'string' || typeof data === 'number') {
+
+    if (this.component.multiple ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
       const selectData = this.selectData;
       if (selectData) {
-        data = selectData;
+        const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
+        if (!this.templateData || !this.templateData[templateValue]) {
+          this.getOptionTemplate(data, value);
+        }
+        if (this.component.multiple) {
+          if (selectData[templateValue]) {
+            data = selectData[templateValue];
+          }
+        }
+        else {
+          data = selectData;
+        }
       }
-      else {
-        return this.sanitize(this.t(data, { _userInput: true }), this.shouldSanitizeValue);
-      }
+    }
+
+    if (typeof data === 'string' || typeof data === 'number') {
+      return this.sanitize(this.t(data, { _userInput: true }), this.shouldSanitizeValue);
+    }
+    if (Array.isArray(data)) {
+      return data.map((val) => {
+        if (typeof val === 'string' || typeof val === 'number') {
+          return this.sanitize(this.t(val, { _userInput: true }), this.shouldSanitizeValue);
+        }
+        return val;
+      });
     }
 
     if (data.data) {
@@ -281,7 +298,7 @@ export default class SelectComponent extends ListComponent {
         option,
         attrs,
         id,
-        useId: (this.valueProperty === '') && _.isObject(value) && id,
+        useId: (this.valueProperty === '' || this.isEntireObjectDisplay()) && _.isObject(value) && id,
       }), this.shouldSanitizeValue).trim();
 
       option.element = div.firstChild;
@@ -292,9 +309,18 @@ export default class SelectComponent extends ListComponent {
   addValueOptions(items) {
     items = items || [];
     let added = false;
+    let data = this.dataValue;
+
+    // preset submission value with value property before request.
+    if (this.options.pdf && !items.length && this.component.dataSrc === 'url' && this.valueProperty) {
+      data = Array.isArray(data)
+        ? data.map(item => _.set({}, this.valueProperty, item))
+        : _.set({}, this.valueProperty, data);
+    }
+
     if (!this.selectOptions.length) {
       // Add the currently selected choices if they don't already exist.
-      const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
+      const currentChoices = Array.isArray(data) && this.component.multiple ? data : [data];
       added = this.addCurrentChoices(currentChoices, items);
       if (!added && !this.component.multiple) {
         this.addPlaceholder();
@@ -570,12 +596,11 @@ export default class SelectComponent extends ListComponent {
 
     // Add search capability.
     if (this.component.searchField && search) {
-      if (Array.isArray(search)) {
-        query[`${this.component.searchField}`] = search.join(',');
-      }
-      else {
-        query[`${this.component.searchField}`] = search;
-      }
+      const searchValue = Array.isArray(search) ? search.join(',') : search;
+
+      query[this.component.searchField] = this.component.searchField.endsWith('__regex')
+        ? _.escapeRegExp(searchValue)
+        : searchValue;
     }
 
     // If they wish to return only some fields.
@@ -844,6 +869,7 @@ export default class SelectComponent extends ListComponent {
         containerInner: this.transform('class', 'form-control ui fluid selection dropdown')
       },
       addItemText: false,
+      allowHTML: true,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
       noResultsText: this.t('No results found'),
@@ -901,6 +927,7 @@ export default class SelectComponent extends ListComponent {
     this.attachRefreshOnBlur();
 
     if (this.component.widget === 'html5') {
+      this.addFocusBlurEvents(input);
       this.triggerUpdate(null, true);
 
       if (this.visible) {
@@ -922,7 +949,9 @@ export default class SelectComponent extends ListComponent {
 
     const tabIndex = input.tabIndex;
     this.addPlaceholder();
-    input.setAttribute('dir', this.i18next.dir());
+    if (this.i18next) {
+      input.setAttribute('dir', this.i18next.dir());
+    }
     if (this.choices?.containerOuter?.element?.parentNode) {
       this.choices.destroy();
     }
@@ -942,12 +971,12 @@ export default class SelectComponent extends ListComponent {
       else {
         this.focusableElement = this.choices.containerInner.element;
         this.choices.containerOuter.element.setAttribute('tabIndex', '-1');
-        if (choicesOptions.searchEnabled) {
-          this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
-        }
+        this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
       }
 
-      if (this.itemsFromUrl) {
+      this.addFocusBlurEvents(this.focusableElement);
+
+      if (this.itemsFromUrl && !this.component.noRefreshOnScroll) {
         this.scrollList = this.choices.choiceList.element;
         this.addEventListener(this.scrollList, 'scroll', () => this.onScroll());
       }
@@ -1204,12 +1233,13 @@ export default class SelectComponent extends ListComponent {
     else if (this.refs.selectContainer) {
       value = this.refs.selectContainer.value;
 
-      if (this.valueProperty === '') {
+      if (this.valueProperty === '' || this.isEntireObjectDisplay()) {
         if (value === '') {
           return {};
         }
 
-        const option = this.selectOptions[value];
+        const option = this.selectOptions[value] ||
+          this.selectOptions.find(option => option.id === value);
         if (option && _.isObject(option.value)) {
           value = option.value;
         }
@@ -1241,18 +1271,34 @@ export default class SelectComponent extends ListComponent {
       return value;
     }
     // Check to see if we need to save off the template data into our metadata.
-    if (value && !valueIsObject && (this.templateData && this.templateData[value]) && this.root?.submission) {
-      const submission = this.root.submission;
-      if (!submission.metadata) {
-        submission.metadata = {};
+    if (retainObject) {
+      const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
+      const shouldSaveData = !valueIsObject || this.component.reference;
+      if (templateValue && shouldSaveData && (this.templateData && this.templateData[templateValue]) && this.root?.submission) {
+        const submission = this.root.submission;
+        if (!submission.metadata) {
+          submission.metadata = {};
+        }
+        if (!submission.metadata.selectData) {
+          submission.metadata.selectData = {};
+        }
+
+        let templateData = this.templateData[templateValue];
+        if (this.component.multiple) {
+          templateData = {};
+          const dataValue = this.dataValue;
+          if (dataValue && dataValue.length) {
+            dataValue.forEach((dataValueItem) => {
+              const dataValueItemValue = this.component.reference ? dataValueItem._id.toString() : dataValueItem;
+              templateData[dataValueItemValue] = this.templateData[dataValueItemValue];
+            });
+          }
+        }
+
+        _.set(submission.metadata.selectData, this.path, templateData);
       }
-      if (!submission.metadata.selectData) {
-        submission.metadata.selectData = {};
-      }
-      _.set(submission.metadata.selectData, this.path, this.templateData[value]);
     }
 
-    const displayEntireObject = this.isEntireObjectDisplay();
     const dataType = this.component.dataType || 'auto';
     const normalize = {
       value,
@@ -1286,10 +1332,6 @@ export default class SelectComponent extends ListComponent {
       },
 
       object() {
-        if (_.isObject(this.value) && displayEntireObject && !retainObject) {
-          this.value = JSON.stringify(this.value);
-        }
-
         return this;
       },
 
@@ -1330,7 +1372,7 @@ export default class SelectComponent extends ListComponent {
 
   setValue(value, flags = {}) {
     const previousValue = this.dataValue;
-    if (this.component.widget === 'html5' && (_.isEqual(value, previousValue) || _.isEqual(previousValue, {}) && _.isEqual(flags, {}))) {
+    if (this.component.widget === 'html5' && (_.isEqual(value, previousValue) || _.isEqual(previousValue, {}) && _.isEqual(flags, {})) && !flags.fromSubmission ) {
       return false;
     }
     const changed = this.updateValue(value, flags);
@@ -1402,11 +1444,11 @@ export default class SelectComponent extends ListComponent {
       if (hasValue) {
         this.choices.removeActiveItems();
         // Add the currently selected choices if they don't already exist.
-        const currentChoices = Array.isArray(value) ? value : [value];
+        const currentChoices = Array.isArray(value) && this.component.multiple ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
           this.choices.setChoices(this.selectOptions, 'value', 'label', true);
         }
-        this.choices.setChoiceByValue(value);
+        this.choices.setChoiceByValue(currentChoices);
       }
       else if (hasPreviousValue || flags.resetValue) {
         this.choices.removeActiveItems();
@@ -1415,7 +1457,8 @@ export default class SelectComponent extends ListComponent {
     else {
       if (hasValue) {
         const values = Array.isArray(value) ? value : [value];
-        if (!_.isEqual(this.dataValue, this.defaultValue) && this.selectOptions.length < 2) {
+        if (!_.isEqual(this.dataValue, this.defaultValue) && this.selectOptions.length < 2
+        || (this.selectData && flags.fromSubmission)) {
           const { value, label } = this.selectValueAndLabel(this.dataValue);
           this.addOption(value, label);
         }
@@ -1637,7 +1680,15 @@ export default class SelectComponent extends ListComponent {
     if (Array.isArray(value)) {
       const items = [];
       value.forEach(item => items.push(this.itemTemplate(item)));
-      return items.length > 0 ? items.join('<br />') : '-';
+      if (this.component.dataSrc === 'resource' &&  items.length > 0 ) {
+        return items.join(', ');
+      }
+      else if ( items.length > 0) {
+        return items.join('<br />');
+      }
+      else {
+        return '-';
+      }
     }
 
     return !_.isNil(value)
@@ -1646,7 +1697,6 @@ export default class SelectComponent extends ListComponent {
   }
 
   detach() {
-    super.detach();
     this.off('blur');
     if (this.choices) {
       if (this.choices.containerOuter?.element?.parentNode) {
@@ -1654,6 +1704,7 @@ export default class SelectComponent extends ListComponent {
       }
       this.choices = null;
     }
+    super.detach();
   }
 
   focus() {

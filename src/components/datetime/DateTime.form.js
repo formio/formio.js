@@ -31,9 +31,5 @@ export default function(...extend) {
       key: 'validation',
       components: DateTimeEditValidation
     },
-    {
-      key: 'addons',
-      ignore: true
-    },
   ], ...extend);
 }

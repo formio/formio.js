@@ -2,7 +2,7 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import Harness from '../../../test/harness';
 import TextFieldComponent from './TextField';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import 'flatpickr';
 
 import {
@@ -12,6 +12,7 @@ import {
   comp5,
   comp6,
   withDisplayAndInputMasks,
+  comp7,
 } from './fixtures';
 
 describe('TextField Component', () => {
@@ -227,6 +228,83 @@ describe('TextField Component', () => {
     }).then((component) => {
       return Harness.testValid(component, 'Joe').then(() => component);
     });
+  });
+
+  it('Should provide number input mask only after blur event if applyMaskOn setting on blur', (done) => {
+    const form = _.cloneDeep(comp7);
+    const element = document.createElement('div');
+    form.components[0].inputMask = '99-99';
+    const value = 999;
+
+    Formio.createForm(element, form).then(form => {
+      const component = form.getComponent('textField');
+      const changed = component.setValue(value);
+
+      if (value) {
+        assert.equal(changed, true, 'Should set value');
+        assert.equal(component.getValue(), value);
+      }
+
+      setTimeout(() => {
+        const textFieldInput = component.element.querySelector('.form-control');
+        const event = new Event('blur');
+        textFieldInput.dispatchEvent(event);
+
+        setTimeout(() => {
+          assert.equal(component.getValue(), '99-9_');
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should provide validation of number input mask only after blur event if applyMaskOn setting on blur', (done) => {
+    const form = _.cloneDeep(comp7);
+    const element = document.createElement('div');
+    form.components[0].inputMask = '99-99';
+    let value = 999;
+
+    Formio.createForm(element, form).then(form => {
+      const component = form.getComponent('textField');
+      let changed = component.setValue(value);
+      const error = 'Text Field does not match the mask.';
+
+      if (value) {
+        assert.equal(changed, true, 'Should set value');
+      }
+
+      setTimeout(() => {
+        assert.equal(!!component.error, false, 'Should not contain error');
+
+        const textFieldInput = component.element.querySelector('.form-control');
+        const event = new Event('blur');
+        textFieldInput.dispatchEvent(event);
+
+        setTimeout(() => {
+          assert.equal(!!component.error, true, 'Should contain error');
+          assert.equal(component.error.message, error, 'Should contain error message');
+          assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
+          assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+
+          value = 9999;
+          changed = component.setValue(value);
+
+          setTimeout(() => {
+            assert.equal(!!component.error, true, 'Should contain error');
+            assert.equal(component.error.message, error, 'Should contain error message');
+            assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
+            assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+
+            textFieldInput.dispatchEvent(event);
+
+            setTimeout(() => {
+              assert.equal(!!component.error, false, 'Should not contain error');
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch(done);
   });
 
   it('Should provide validation of number input mask after setting value', (done) => {

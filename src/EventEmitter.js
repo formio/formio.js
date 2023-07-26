@@ -24,9 +24,9 @@ export default class EventEmitter extends EventEmitter3 {
 
   onAny = (fn) => {
     this.on('any', fn);
-  }
+  };
 
   offAny = (fn) => {
     this.off('any', fn);
-  }
+  };
 }

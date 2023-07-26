@@ -5,7 +5,7 @@ export default [
     type: 'htmlelement',
     tag: 'div',
     className: 'alert alert-danger',
-    content: 'The Resource component is deprecated. Use the Select component with data source of "Resource" instead.',
+    content: 'This component has been deprecated and will be removed in a future version of Formio.js.',
   },
   {
     type: 'select',
