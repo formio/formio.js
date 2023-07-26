@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.14.7-patch.5]
+### Fixed
+ - FIO-5799 fixed height for signature on View Page. https://github.com/formio/formio.js/pull/4922
+
 ## 4.14.7-patch.4
 ### Fixed
  - Used correct tag.
