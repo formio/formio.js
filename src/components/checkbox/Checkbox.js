@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Field from '../_classes/field/Field';
 
 export default class CheckBoxComponent extends Field {
@@ -19,7 +20,7 @@ export default class CheckBoxComponent extends Field {
       title: 'Checkbox',
       group: 'basic',
       icon: 'check-square',
-      documentation: '/userguide/#checkbox',
+      documentation: '/userguide/form-building/form-components#check-box',
       weight: 50,
       schema: CheckBoxComponent.schema()
     };
@@ -141,8 +142,7 @@ export default class CheckBoxComponent extends Field {
     }
     if (this.component.name) {
       this.input.value = (value === this.component.value) ? this.component.value : 0;
-      this.input.checked = (value === this.component.value && value !== this.dataValue) ? 1 : 0;
-      value = value !== this.dataValue ? value : this.emptyValue;
+      this.input.checked = (value === this.component.value) ? 1 : 0;
     }
     else if (value === 'on') {
       this.input.value = 1;
@@ -172,23 +172,33 @@ export default class CheckBoxComponent extends Field {
   setValue(value, flags = {}) {
     if (
       this.setCheckedState(value) !== undefined ||
-      (!this.input && value !== undefined && (this.visible || !this.component.clearOnHide))
+      (!this.input && value !== undefined && (this.visible || this.conditionallyVisible() || !this.component.clearOnHide))
     ) {
       const changed = this.updateValue(value, flags);
-
       if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
         this.redraw();
-        return changed;
       }
+      return changed;
     }
     return false;
   }
 
   getValueAsString(value) {
-    return value ? 'Yes' : 'No';
+    const { name: componentName, value: componentValue } = this.component;
+    const hasValue = componentName ? _.isEqual(value, componentValue) : value;
+
+    return this.t(hasValue ? 'Yes' : 'No');
   }
 
   updateValue(value, flags) {
+    // If this is a radio and is alredy checked, uncheck it.
+    if (this.component.name && flags.modified && (this.dataValue === this.component.value)) {
+      this.input.checked = 0;
+      this.input.value = 0;
+      this.dataValue = '';
+      this.updateOnChange(flags, true);
+    }
+
     const changed = super.updateValue(value, flags);
 
     // Update attributes of the input element

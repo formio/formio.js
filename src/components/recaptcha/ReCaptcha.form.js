@@ -22,6 +22,6 @@ export default function() {
     {
       key: 'logic',
       ignore: true
-    }
+    },
   ]);
 }

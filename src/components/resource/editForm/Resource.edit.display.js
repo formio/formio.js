@@ -5,14 +5,14 @@ export default [
     type: 'htmlelement',
     tag: 'div',
     className: 'alert alert-danger',
-    content: 'The Resource component is deprecated. Use the Select component with data source of "Resource" instead.',
+    content: 'This component has been deprecated and will be removed in a future version of Formio.js.',
   },
   {
     type: 'select',
     input: true,
     dataSrc: 'url',
     data: {
-      url: '/form?type=resource&limit=4294967295&select=_id,title',
+      url: '/form?type=resource&limit=1000000&select=_id,title',
     },
     authenticate: true,
     template: '<span>{{ item.title }}</span>',

@@ -11,6 +11,6 @@ export default function(...extend) {
     {
       key: 'data',
       components: DataMapEditData
-    }
+    },
   ], ...extend);
 }

@@ -29,7 +29,7 @@ export default [
     valueProperty: 'name',
     dataSrc: 'url',
     data: {
-      url: 'https://cdn.form.io/timezones.json'
+      url: '{{options.cdnUrl}}/timezones.json'
     },
     template: '<span>{{ item.label }}</span>',
     conditional: {
@@ -58,7 +58,7 @@ export default [
     key: 'format',
     label: 'Format',
     placeholder: 'Format',
-    description: 'Use formats provided by <a href="https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes" target="_blank">DateParser Codes</a>',
+    description: 'Use formats provided by <a href="https://github.com/angular-ui/bootstrap/tree/master/src/dateparser/docs#uibdateparsers-format-codes" target="_blank" rel="noopener noreferrer">DateParser Codes</a>',
     tooltip: 'The date format for displaying the datetime value.',
     weight: 52
   },

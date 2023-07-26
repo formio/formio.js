@@ -20,6 +20,6 @@ export default function(...extend) {
     {
       key: 'validation',
       components: PhoneNumberEditValidation
-    }
+    },
   ], ...extend);
 }

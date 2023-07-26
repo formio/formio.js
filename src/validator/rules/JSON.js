@@ -1,6 +1,6 @@
-const Rule = require('./Rule');
+import Rule from './Rule';
 
-module.exports = class JSON extends Rule {
+export default class JSON extends Rule {
   defaultMessage = '{{error}}';
 
   check(value, data, row, index) {
@@ -23,4 +23,4 @@ module.exports = class JSON extends Rule {
 
     return valid;
   }
-};
+}

@@ -6,6 +6,6 @@ export default function(...extend) {
     {
       key: 'display',
       components: ResourceEditDisplay
-    }
+    },
   ], ...extend);
 }

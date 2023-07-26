@@ -30,7 +30,7 @@ export default class TextFieldComponent extends Input {
       title: 'Text Field',
       icon: 'terminal',
       group: 'basic',
-      documentation: '/userguide/#textfield',
+      documentation: '/userguide/form-building/form-components#text-field',
       weight: 0,
       schema: TextFieldComponent.schema()
     };
@@ -54,7 +54,7 @@ export default class TextFieldComponent extends Input {
     else {
       info.attr.type = (this.component.inputType === 'password') ? 'password' : 'text';
     }
-    info.changeEvent = 'input';
+    info.changeEvent = (this.component.applyMaskOn === 'blur') ? 'blur' : 'input';
     return info;
   }
 
@@ -66,13 +66,16 @@ export default class TextFieldComponent extends Input {
     super(component, options, data);
 
     const timezone = (this.component.widget?.timezone || this.options.timezone);
+    const displayInTimezone = (this.component.widget?.displayInTimezone || 'viewer');
 
     if (this.component.widget?.type === 'calendar') {
       this.component.widget = {
         ...this.component.widget,
         readOnly: this.options.readOnly,
         timezone,
-        locale: this.options.language,
+        displayInTimezone,
+        locale: this.component.widget.locale || this.options.language,
+        saveAs: 'text'
       };
     }
   }
@@ -194,6 +197,13 @@ export default class TextFieldComponent extends Input {
       value: textInput ? textInput.value : undefined,
       maskName: maskInput ? maskInput.value : undefined
     };
+  }
+
+  getValueAsString(value, options) {
+    if (value && this.component.inputFormat === 'plain' && /<[^<>]+>/g.test(value)) {
+      value = value.replaceAll('<','&lt;').replaceAll('>', '&gt;');
+    }
+    return super.getValueAsString(value, options);
   }
 
   isHtmlRenderMode() {

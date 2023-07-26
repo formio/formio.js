@@ -5,6 +5,6 @@ export default function(...extend) {
     {
       key: 'display',
       components: FieldSetEditDisplay
-    }
+    },
   ], ...extend);
 }

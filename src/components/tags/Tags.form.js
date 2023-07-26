@@ -7,6 +7,6 @@ export default function(...extend) {
     {
       key: 'data',
       components: TagsEditData
-    }
+    },
   ], ...extend);
 }

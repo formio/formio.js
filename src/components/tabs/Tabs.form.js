@@ -7,6 +7,6 @@ export default function(...extend) {
     {
       key: 'display',
       components: TabsEditDisplay
-    }
+    },
   ], ...extend);
 }

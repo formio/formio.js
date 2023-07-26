@@ -23,6 +23,6 @@ export default function(...extend) {
     {
       key: 'validation',
       components: EditGridEditValidation
-    }
+    },
   ], ...extend);
 }

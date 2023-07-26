@@ -1,5 +1,5 @@
 import assert from 'power-assert';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import _ from 'lodash';
 import Harness from '../../../test/harness';
 import RadioComponent from './Radio';
@@ -11,7 +11,9 @@ import {
   comp4,
   comp5,
   comp6,
-  comp7
+  comp7,
+  comp8,
+  comp9
 } from './fixtures';
 
 describe('Radio Component', () => {
@@ -27,6 +29,34 @@ describe('Radio Component', () => {
       assert.equal(component.getValueAsString(1), 'one');
       assert.equal(component.getValueAsString(2), 'two');
     });
+  });
+
+  it('Should build a radio component with URL DataSrc', (done) => {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        const values = [
+          { name : 'Alabama', abbreviation : 'AL' },
+          { name : 'Alaska', abbreviation: 'AK' },
+          { name: 'American Samoa', abbreviation: 'AS' }
+        ];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const radio = form.getComponent('radio');
+
+      setTimeout(()=>{
+        assert.equal(radio.loadedOptions.length, 3);
+
+        Formio.makeRequest = originalMakeRequest;
+        done();
+      }, 200);
+    }).catch(done);
   });
 
   it('Should save checked value after redrawing if storage type is Number', (done) => {
@@ -102,6 +132,49 @@ describe('Radio Component', () => {
       }, 200);
     }).catch(done);
   });
+
+  it('Should provide validation for ValueProperty', (done) => {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        const values = [
+          { name : 'Alabama', abbreviation : 'AL' },
+          { name : 'Alaska', abbreviation: { a:2, b: 'c' } }
+        ];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const radio = form.getComponent('radio');
+      radio.setValue({ a:2, b: 'c' });
+
+      setTimeout(()=>{
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(form.errors.length, 1);
+          assert.equal(radio.error.message, 'Invalid Value Property');
+          radio.setValue('AL');
+
+          setTimeout(() => {
+            assert.equal(form.errors.length, 0);
+            assert.equal(!!radio.error, false);
+            document.innerHTML = '';
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 300);
+        }, 300);
+      }, 200);
+    }).catch(done);
+  });
+
   it('Should not have default values in schema', (done) => {
     const form = _.cloneDeep(comp6);
     const element = document.createElement('div');
@@ -132,5 +205,101 @@ describe('Radio Component', () => {
         assert.deepEqual(!!getComputedStyle(i, ':before'), true);
       });
     });
+  });
+
+  it('Should not provide empty error message when hidden radio has storage type as string', (done) => {
+    const form = _.cloneDeep(comp8);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form)
+      .then(form => {
+        form.submission = {
+          data: {
+            radio: 'no'
+          }
+        };
+        const alerts = document.querySelectorAll('.alert-danger');
+        setTimeout(() => {
+          assert.equal(alerts.length, 0);
+          done();
+        }, 100);
+      })
+      .catch(done);
+  });
+
+  it('Should show correct attributes during performance', function(done) {
+    const formElement = document.createElement('div');
+
+    const JSON = {
+      components: [
+        {
+          key: 'whichOneIsYourFavoriteFruit',
+          type: 'radio',
+          input: true,
+          label: 'Which one is your favorite fruit?',
+          inline: false,
+          values: [
+            {
+              label: 'Apple ',
+              value: 'apple',
+              shortcut: '',
+            },
+            {
+              label: 'Orange',
+              value: 'orange',
+              shortcut: '',
+            },
+            {
+              label: 'Banana',
+              value: 'banana',
+              shortcut: '',
+            },
+          ],
+          tableView: false,
+          optionsLabelPosition: 'right',
+        },
+      ],
+    };
+
+    Formio.createForm(formElement, JSON)
+      .then((form) => {
+        const component = form.getComponent('whichOneIsYourFavoriteFruit');
+
+        const appleRadioInput = component.refs.input[0];
+        const appleComponentWrapper = formElement.querySelector('.form-check');
+        const isContainClass =
+          appleComponentWrapper.classList.contains('radio-selected');
+
+        assert.equal(
+          appleRadioInput.checked,
+          false,
+          'should be false by default'
+        );
+        assert.equal(isContainClass, false, 'should be false by default');
+
+        appleRadioInput.click();
+
+        setTimeout(() => {
+          assert.equal(appleRadioInput.checked, true);
+
+          const elementWrapper = formElement.querySelector('.form-check');
+          const isContainClass =
+            elementWrapper.classList.contains('radio-selected');
+          assert.equal(isContainClass, true);
+
+          appleRadioInput.click();
+
+          setTimeout(() => {
+            assert.equal(appleRadioInput.checked, false);
+            const elementWrapper = formElement.querySelector('.form-check');
+            const isContainClass =
+              elementWrapper.classList.contains('radio-selected');
+            assert.equal(isContainClass, false);
+
+            done();
+          }, 200);
+        }, 200);
+      })
+      .catch(done);
   });
 });

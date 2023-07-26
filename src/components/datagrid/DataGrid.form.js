@@ -16,6 +16,6 @@ export default function(...extend) {
     {
       key: 'validation',
       components: DataGridEditValidation
-    }
+    },
   ], ...extend);
 }

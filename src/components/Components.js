@@ -3,7 +3,7 @@ import EditFormUtils from './_classes/component/editForm/utils';
 import BaseEditForm from './_classes/component/Component.form';
 import _ from 'lodash';
 export default class Components {
-  static _editFormUtils = EditFormUtils
+  static _editFormUtils = EditFormUtils;
 
   static _baseEditForm = BaseEditForm;
 
@@ -21,6 +21,12 @@ export default class Components {
 
   static get baseEditForm() {
     return Components._baseEditForm;
+  }
+
+  static recalculateComponents() {
+    if (window && window.Formio && window.Formio.AllComponents) {
+      Components.setComponents(window.Formio.AllComponents);
+    }
   }
 
   static get components() {
@@ -67,7 +73,7 @@ export default class Components {
       // eslint-disable-next-line new-cap
       comp = new Components.components['nested'](component, options, data);
     }
-    else if (options.server) {
+    else if (options && options.server) {
       // eslint-disable-next-line new-cap
       comp = new Components.components['hidden'](component, options, data);
     }

@@ -12,6 +12,6 @@ export default function(...extend) {
     {
       key: 'conditional',
       components: PanelEditConditional,
-    }
+    },
   ], ...extend);
 }

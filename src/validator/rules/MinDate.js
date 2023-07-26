@@ -2,9 +2,9 @@ import { getDateSetting } from '../../utils/utils';
 import moment from 'moment';
 import _ from 'lodash';
 
-const Rule = require('./Rule');
+import Rule from './Rule';
 
-module.exports = class MinDate extends Rule {
+export default class MinDate extends Rule {
   defaultMessage = '{{field}} should not contain date before {{settings.dateLimit}}';
 
   check(value) {
@@ -24,4 +24,4 @@ module.exports = class MinDate extends Rule {
 
     return date.isAfter(minDate) || date.isSame(minDate);
   }
-};
+}
