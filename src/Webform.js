@@ -1687,10 +1687,10 @@ export default class Webform extends NestedDataComponent {
           this.emit('requestDone');
           this.setAlert('success', '<p> Success </p>');
         }).catch((e) => {
-          this.showErrors(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
-          this.emit('error',`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
-          console.error(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
-          this.setAlert('danger', `<p> ${e.statusText ? e.statusText : ''} ${e.status ? e.status : e} </p>`);
+          const message = `${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`;
+          this.emit('error', message);
+          console.error(message);
+          this.setAlert('danger', `<p> ${message} </p>`);
         });
     }
     else {
