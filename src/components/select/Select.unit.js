@@ -26,7 +26,7 @@ import {
   comp15,
   comp16,
   comp17,
-  comp18,
+  comp19,
 } from './fixtures';
 
 // eslint-disable-next-line max-statements
@@ -917,7 +917,7 @@ describe('Select Component', () => {
     this.timeout(0);
     const element = document.createElement('div');
 
-    Formio.createForm(element, comp18).then(form => {
+    Formio.createForm(element, comp19).then(form => {
       const select = form.components[0];
       select.setValue('banana');
       select.focusableElement.focus();
