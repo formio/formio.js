@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Default value for Radio and Checkbox components to set correctly.  https://github.com/formio/formio.js/pull/4464
  - Edit Grid performance improvements. https://github.com/formio/formio.js/pull/4480
  - FIO-4477: Errors on customer form creation/update
+ - Additional fix "The input element's type ('email') does not support selectionStart": https://github.com/formio/formio.js/pull/4704
+ - Remove pinning of db version for IndexDB: https://github.com/formio/formio.js/pull/4716
 
 ## 5.0.0-rc.6
 ### Added
