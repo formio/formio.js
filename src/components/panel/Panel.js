@@ -24,7 +24,7 @@ export default class PanelComponent extends NestedComponent {
       title: 'Panel',
       icon: 'list-alt',
       group: 'layout',
-      documentation: '/userguide/#panels',
+      documentation: '/userguide/form-building/layout-components#panel',
       weight: 30,
       schema: PanelComponent.schema()
     };

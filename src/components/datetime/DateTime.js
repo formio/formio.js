@@ -47,7 +47,7 @@ export default class DateTimeComponent extends Input {
       title: 'Date / Time',
       group: 'advanced',
       icon: 'calendar',
-      documentation: '/userguide/#datetime',
+      documentation: '/userguide/form-building/advanced-components#date-and-time',
       weight: 40,
       schema: DateTimeComponent.schema()
     };
@@ -89,7 +89,6 @@ export default class DateTimeComponent extends Input {
       type: 'calendar',
       timezone,
       displayInTimezone: _.get(this.component, 'displayInTimezone', 'viewer'),
-      submissionTimezone: this.submissionTimezone,
       locale: this.options.language,
       useLocaleSettings: _.get(this.component, 'useLocaleSettings', false),
       allowInput: _.get(this.component, 'allowInput', true),
@@ -113,13 +112,6 @@ export default class DateTimeComponent extends Input {
 
     // Add the validators date.
     this.validators.push('date');
-  }
-
-  performInputMapping(input) {
-    if (input.widget && input.widget.settings) {
-      input.widget.settings.submissionTimezone = this.submissionTimezone;
-    }
-    return input;
   }
 
   get defaultSchema() {
@@ -176,7 +168,12 @@ export default class DateTimeComponent extends Input {
   }
 
   getValueAsString(value) {
-    const format = FormioUtils.convertFormatToMoment(this.component.format);
-    return (value ? moment(value).format(format) : value) || '';
+    let format = FormioUtils.convertFormatToMoment(this.component.format);
+    format += format.match(/z$/) ? '' : ' z';
+    const timezone = this.timezone;
+    if (value && !this.attached && timezone) {
+      return _.trim(FormioUtils.momentDate(value, format, timezone).format(format));
+    }
+    return (value ? _.trim(moment(value).format(format)) : value) || '';
   }
 }

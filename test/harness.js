@@ -3,17 +3,17 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter3';
 import { expect } from 'chai';
-import i18Defaults from '../lib/i18n';
-import FormBuilder from '../lib/FormBuilder';
-import AllComponents from '../lib/components';
-import Components from '../lib/components/Components';
+import i18Defaults from '../src/i18n';
+import FormBuilder from '../src/FormBuilder';
+import AllComponents from '../src/components';
+import Components from '../src/components/Components';
 
 Components.setComponents(AllComponents);
 
 if (process) {
   // Do not handle unhandled rejections.
-  process.on('unhandledRejection', (err, p) => {
-    console.warn('Unhandled rejection!', err);
+  process.on('unhandledRejection', () => {
+    console.warn('Unhandled rejection!');
   });
 }
 
@@ -268,7 +268,7 @@ const Harness = {
     return component;
   },
   setInputValue(component, name, value) {
-    const inputEvent = new Event('input', {bubbles: true, cancelable: true});
+    const inputEvent = new Event('input', { bubbles: true, cancelable: true });
     const element = component.element.querySelector(`input[name="${name}"]`);
     assert(element, `${name} input not found`);
     element.value = value;
@@ -321,8 +321,10 @@ const Harness = {
   testValid(component, value) {
     return new Promise((resolve, reject) => {
       let resolved = false;
-      component.on('componentChange', (change) => {
-        if (resolved) {return}
+      component.on('componentChange', () => {
+        if (resolved) {
+          return;
+        }
         const valid = component.checkValidity();
         if (valid) {
           assert.equal(component.dataValue, value);
@@ -340,15 +342,19 @@ const Harness = {
   testInvalid(component, value, field, expectedError) {
     return new Promise((resolve, reject) => {
       let resolved = false;
-      component.on('componentChange', (change) => {
-        if (resolved) {return}
-        if(component.checkValidity()) {
+      component.on('componentChange', () => {
+        if (resolved) {
+          return;
+        }
+        if (component.checkValidity()) {
           reject('Component should not be valid');
           resolved = true;
         }
       });
       component.on('componentError', (error) => {
-        if (resolved) {return}
+        if (resolved) {
+          return;
+        }
         assert.equal(error.component.key, field);
         assert.equal(error.message, expectedError);
         resolve();

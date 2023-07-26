@@ -15,7 +15,7 @@ export default [
     key: 'defaultValue',
     weight: 5,
     placeholder: 'Default Value',
-    tooltip: 'The will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
+    tooltip: 'The Default Value will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
     input: true
   },
   {
@@ -52,10 +52,50 @@ export default [
   {
     weight: 400,
     type: 'checkbox',
-    label: 'Encrypted (Enterprise Only)',
+    label: 'Encrypted',
     tooltip: 'Encrypt this field on the server. This is two way encryption which is not suitable for passwords.',
     key: 'encrypted',
-    input: true
+    input: true,
+    logic: [
+      {
+        name: 'disabled',
+        trigger: {
+          type: 'javascript',
+          javascript: 'result = !instance.root.options.sac;'
+        },
+        actions: [
+          {
+            name: 'disabled',
+            type: 'property',
+            property: {
+              label: 'Disabled',
+              value: 'disabled',
+              type: 'boolean'
+            },
+            state: true
+          }
+        ]
+      },
+      {
+        name: 'disabledToolTip',
+        trigger: {
+          type: 'javascript',
+          javascript: 'result = !instance.root.options.sac;'
+        },
+        actions: [
+          {
+            name: 'addDisabledTooltip',
+            type: 'property',
+            property: {
+              label: 'Tooltip',
+              value: 'tooltip',
+              type: 'string'
+            },
+            text: 'Only available with Security Module. Contact sales@form.io for more information.'
+          }
+        ]
+      }
+    ]
   },
   {
     type: 'select',
@@ -92,12 +132,7 @@ export default [
     key: 'clearOnHide',
     defaultValue: true,
     tooltip: 'When a field is hidden, clear the value.',
-    input: true,
-    clearOnHide: false,
-    calculateValue: 'value = data.hidden ? false : value',
-    conditional: {
-      json: { '!' : [{ var: 'data.hidden' }] }
-    }
+    input: true
   },
   EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 'customDefaultValue', 1000,
     '<p><h4>Example:</h4><pre>value = data.firstName + " " + data.lastName;</pre></p>',
@@ -105,7 +140,7 @@ export default [
   ),
   EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 'calculateValue', 1100,
     '<p><h4>Example:</h4><pre>value = data.a + data.b + data.c;</pre></p>',
-    '<p><h4>Example:</h4><pre>{"+": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a target="_blank" href="http://formio.github.io/formio.js/app/examples/calculated.html">Click here for an example</a></p>',
+    '<p><h4>Example:</h4><pre>{"+": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a href="http://formio.github.io/formio.js/app/examples/calculated.html" target="_blank" rel="noopener noreferrer">Click here for an example</a></p>',
 '<tr><th>token</th><td>The decoded JWT token for the authenticated user.</td></tr>'
   ),
   {

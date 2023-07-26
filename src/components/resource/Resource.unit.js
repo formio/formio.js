@@ -1,7 +1,7 @@
 import Harness from '../../../test/harness';
 import ResourceComponent from './Resource';
 import assert from 'power-assert';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 import _ from 'lodash';
 
 import {

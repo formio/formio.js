@@ -1,4 +1,4 @@
-import SignaturePad from 'signature_pad/dist/signature_pad.js';
+import SignaturePad from 'signature_pad';
 import _ResizeObserver from 'resize-observer-polyfill';
 import Input from '../_classes/input/Input';
 import _ from 'lodash';
@@ -26,7 +26,7 @@ export default class SignatureComponent extends Input {
       group: 'advanced',
       icon: 'pencil',
       weight: 120,
-      documentation: '/userguide/#signature',
+      documentation: '/developers/integrations/esign/esign-integrations#signature-component',
       schema: SignatureComponent.schema()
     };
   }
@@ -35,6 +35,7 @@ export default class SignatureComponent extends Input {
     super.init();
     this.currentWidth = 0;
     this.scale = 1;
+    this.ratio = 1;
 
     if (!this.component.width) {
       this.component.width = '100%';
@@ -45,7 +46,7 @@ export default class SignatureComponent extends Input {
 
     if (
       this.component.keepOverlayRatio
-      && this.options.pdf
+      && this.options?.display === 'pdf'
       && this.component.overlay?.width
       && this.component.overlay?.height
     ) {
@@ -80,7 +81,7 @@ export default class SignatureComponent extends Input {
 
   setValue(value, flags = {}) {
     const changed = super.setValue(value, flags);
-    if (value && this.refs.signatureImage && (this.options.readOnly || this.disabled)) {
+    if (this.refs.signatureImage && (this.options.readOnly || this.disabled)) {
       this.refs.signatureImage.setAttribute('src', value);
       this.showCanvas(false);
     }
@@ -115,6 +116,7 @@ export default class SignatureComponent extends Input {
       }
       if (this.refs.signatureImage) {
         this.refs.signatureImage.style.display = 'inherit';
+        this.refs.signatureImage.style.maxHeight = '100%';
       }
     }
   }
@@ -147,9 +149,10 @@ export default class SignatureComponent extends Input {
       const width = this.currentWidth * this.scale;
       this.refs.canvas.width = width;
       const height = this.ratio ? width / this.ratio : this.refs.padBody.offsetHeight * this.scale;
-      this.refs.canvas.height = height;
+      const maxHeight = this.refs.padBody.offsetHeight * this.scale;
+      this.refs.canvas.height = height > maxHeight ? maxHeight : height;
       this.refs.canvas.style.maxWidth = `${this.currentWidth * this.scale}px`;
-      this.refs.canvas.style.maxHeight = `${this.refs.padBody.offsetHeight * this.scale}px`;
+      this.refs.canvas.style.maxHeight = `${maxHeight}px`;
       const ctx = this.refs.canvas.getContext('2d');
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale((1 / this.scale), (1 / this.scale));
@@ -160,6 +163,7 @@ export default class SignatureComponent extends Input {
       if (this.dataValue) {
         this.setDataToSigaturePad();
       }
+
       this.showCanvas(true);
     }
   }
@@ -200,7 +204,7 @@ export default class SignatureComponent extends Input {
         backgroundColor: this.component.backgroundColor
       });
 
-      this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL());
+      this.signaturePad.addEventListener('endStroke', () => this.setValue(this.signaturePad.toDataURL()));
       this.refs.signatureImage.setAttribute('src', this.signaturePad.toDataURL());
 
       this.onDisabled();
@@ -217,11 +221,10 @@ export default class SignatureComponent extends Input {
           });
 
           this.observer.observe(this.refs.padBody);
-        }
+         }
 
         this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 10));
 
-        this.showCanvas(false);
         setTimeout(function checkWidth() {
           if (this.refs.padBody && this.refs.padBody.offsetWidth) {
             this.checkSize();

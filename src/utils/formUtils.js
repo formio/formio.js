@@ -86,7 +86,7 @@ export function eachComponent(components, fn, includeAll, path, parent, inRecurs
         component.key &&
         !['panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form'].includes(component.type) &&
         (
-          ['datagrid', 'container', 'editgrid', 'address', 'dynamicWizard', 'datatable'].includes(component.type) ||
+          ['datagrid', 'container', 'editgrid', 'address', 'dynamicWizard', 'datatable', 'tagpad'].includes(component.type) ||
           component.tree
         )
       ) {
@@ -410,8 +410,8 @@ export function flattenComponents(components, includeAll) {
 export function hasCondition(component) {
   return Boolean(
     (component.customConditional) ||
-    (component.conditional && (
-      component.conditional.when ||
+    (component.conditional && (component.conditional.when ||
+      (_.some(component.conditional.conditions || [], (condition => condition.component && condition.operator))) ||
       component.conditional.json ||
       component.conditional.condition
     ))

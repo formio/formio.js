@@ -2,12 +2,6 @@ import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
 
-let dragula;
-if (typeof window !== 'undefined') {
-  // Import from "dist" because it would require and "global" would not be defined in Angular apps.
-  dragula = require('dragula/dist/dragula');
-}
-
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
     return NestedArrayComponent.schema({
@@ -26,7 +20,8 @@ export default class DataGridComponent extends NestedArrayComponent {
       title: 'Data Grid',
       icon: 'th',
       group: 'data',
-      documentation: '/userguide/#datagrid',
+      documentation: '/userguide/form-building/data-components#data-grid',
+      showPreview: false,
       weight: 30,
       schema: DataGridComponent.schema()
     };
@@ -43,6 +38,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     // Add new values based on minLength.
     this.rows = [];
+    this.columns = [...this.component.components];
 
     if (this.initRows || !_.isEqual(this.dataValue, this.emptyValue)) {
       this.createRows(true);
@@ -286,7 +282,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   getColumns() {
-    return this.component.components.filter((comp) => {
+    return this.columns.filter((comp) => {
       return (!this.visibleColumns.hasOwnProperty(comp.key) || this.visibleColumns[comp.key]);
     });
   }
@@ -323,8 +319,8 @@ export default class DataGridComponent extends NestedArrayComponent {
         row.dragInfo = { index };
       });
 
-      if (dragula) {
-        this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
+      if (this.root.dragulaLib) {
+        this.dragula = this.root.dragulaLib([this.refs[`${this.datagridKey}-tbody`]], {
           moves: (_draggedElement, _oldParent, clickedElement) => {
             const clickedElementKey = clickedElement.getAttribute('data-key');
             const oldParentKey = _oldParent.getAttribute('data-key');
@@ -338,7 +334,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
         this.dragula.on('cloned', (el, original) => {
           if (el && el.children && original && original.children) {
-            original.children.forEach((child, index) => {
+            _.each(original.children, (child, index) => {
               const styles = getComputedStyle(child, null);
 
               if (styles.cssText !== '') {
@@ -501,7 +497,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   setRowComponentsData(rowIndex, rowData) {
     _.each(this.rows[rowIndex], (component) => {
-      component.data = rowData;
+     component.data = rowData;
     });
   }
 
@@ -609,16 +605,27 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     const visibility = {};
 
+    let logicRebuild = false;
+
     const dataValue = this.dataValue;
     this.rows.forEach((row, rowIndex) => {
       _.each(row, (col, key) => {
         if (col && (typeof col.checkConditions === 'function')) {
+          const firstRowCheck = visibility[key] === undefined;
           visibility[key] = !!visibility[key] ||
             (col.checkConditions(data, flags, dataValue[rowIndex]) && col.type !== 'hidden');
+
+          if (col.component.logic && firstRowCheck) {
+            const compIndex = _.findIndex(this.columns, ['key', key]);
+            if (!_.isEqual(this.columns[compIndex], col.component)) {
+              logicRebuild = true;
+              this.columns[compIndex] = col.component;
+            }
+          }
         }
       });
     });
-    const rebuild = !_.isEqual(visibility, this.visibleColumns);
+    const rebuild = !_.isEqual(visibility, this.visibleColumns) || logicRebuild;
     _.each(visibility, (col) => {
       show |= col;
     });
@@ -671,7 +678,9 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.dataValue = value;
 
     if (this.initRows || isSettingSubmission) {
-      this.createRows();
+      if (!this.createRows() && changed) {
+        this.redraw();
+      }
     }
 
     if (this.componentModal && isSettingSubmission) {

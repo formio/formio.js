@@ -23,8 +23,9 @@ export default class TreeComponent extends NestedDataComponent {
     return {
       title: 'Tree',
       icon: 'indent',
-      group: 'data',
       weight: 40,
+      documentation: '/userguide/form-building/data-components#tree',
+      showPreview: false,
       schema: TreeComponent.schema(),
     };
   }
@@ -77,12 +78,11 @@ export default class TreeComponent extends NestedDataComponent {
     return !!this.options.editComponent && !!this.options.editForm && this.component.key === 'defaultValue';
   }
 
-  destroy() {
-    super.destroy();
-
+  destroy(all = false) {
     if (!this.builderMode) {
-      this.removeComponents(this._viewComponents);
+      this.removeComponents(this._viewComponents, all);
     }
+    super.destroy(all);
   }
 
   createComponents(data, node) {
@@ -102,8 +102,8 @@ export default class TreeComponent extends NestedDataComponent {
     return components;
   }
 
-  removeComponents(components) {
-    return components.map((component) => component.destroy());
+  removeComponents(components, all = false) {
+    return components.map((component) => component.destroy(all));
   }
 
   render() {

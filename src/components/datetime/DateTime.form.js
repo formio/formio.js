@@ -3,6 +3,7 @@ import DateTimeEditData from './editForm/DateTime.edit.data';
 import DateTimeEditDate from './editForm/DateTime.edit.date';
 import DateTimeEditDisplay from './editForm/DateTime.edit.display';
 import DateTimeEditTime from './editForm/DateTime.edit.time';
+import DateTimeEditValidation from './editForm/DateTime.edit.validation';
 
 export default function(...extend) {
   return Components.baseEditForm([
@@ -27,8 +28,8 @@ export default function(...extend) {
       components: DateTimeEditData
     },
     {
-      key: 'addons',
-      ignore: true
+      key: 'validation',
+      components: DateTimeEditValidation
     },
   ], ...extend);
 }

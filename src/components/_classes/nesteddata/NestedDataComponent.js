@@ -20,6 +20,14 @@ export default class NestedDataComponent extends NestedComponent {
     return true;
   }
 
+  get emptyValue() {
+    return {};
+  }
+
+  componentContext() {
+    return this.dataValue;
+  }
+
   getValueAsString(value, options) {
     if (options?.email) {
       let result = (`
@@ -65,12 +73,18 @@ export default class NestedDataComponent extends NestedComponent {
         <tbody>
     `);
 
+    const htmlTagRegExp = new RegExp('<(.*?)>');
+
     this.components.forEach((component) => {
       if (component.isInputComponent && component.visible && !component.skipInEmail) {
+        const componentValue = component.getView(component.dataValue, options);
         result += (`
           <tr>
             <th style="padding: 5px 10px;">${component.label}</th>
-            <td style="width:100%;padding:5px 10px;">${component.getView(component.dataValue, options)}</td>
+            <td style="width:100%;padding:5px 10px;">${component.component && component.component.inputFormat === 'html' && htmlTagRegExp.test(componentValue)
+            ?  componentValue
+            :  `<input type="text" value="${componentValue.replace(/"/g, '&quot;')}" readonly/>`
+            }</td>
           </tr>
         `);
       }
@@ -113,5 +127,24 @@ export default class NestedDataComponent extends NestedComponent {
     // Intentionally skip over nested component updateValue method to keep
     // recursive update from occurring with sub components.
     return Component.prototype.updateValue.call(this, value, flags);
+  }
+
+  setValue(value, flags = {}) {
+    let changed = false;
+
+    const hasValue = this.hasValue();
+    if (hasValue && _.isEmpty(this.dataValue)) {
+      flags.noValidate = true;
+    }
+
+    if (!value || !_.isObject(value) || !hasValue) {
+      changed = true;
+      this.dataValue = this.defaultValue;
+    }
+
+    changed = super.setValue(value, flags) || changed;
+
+    this.updateOnChange(flags, changed);
+    return changed;
   }
 }
