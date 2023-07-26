@@ -27,6 +27,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3448: Fixed an issue where Keep overlay aspect ratio feature of the Signature component in PDF form does not work
  - Fixed multilingual search. https://github.com/formio/formio.js/pull/5044
  - FIO-3884 Improved column comparison by excluding the id.
+ - FIO-6408 Fixed Default value field getting the same label settings as the preview component
+ - FIO-6234: added submit button to the webform builder after switching from the wizard builder
 
 ## 5.0.0-rc.6
 ### Added
