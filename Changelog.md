@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - use jQuery instead of $. https://github.com/formio/formio.js/pull/4854
  - follow the error handling of executeSubmit(). https://github.com/formio/formio.js/pull/4863
  - Multi upload: abort the correct file when clicking the cancel upload button. https://github.com/formio/formio.js/pull/4957
+ - Fix falsy currency defaults to USD. https://github.com/formio/formio.js/pull/4988
+ - FIO-3448: Fixed an issue where Keep overlay aspect ratio feature of the Signature component in PDF form does not work
+ - Fixed multilingual search. https://github.com/formio/formio.js/pull/5044
+ - FIO-3884 Improved column comparison by excluding the id.
 
 ## 5.0.0-rc.6
 ### Added
