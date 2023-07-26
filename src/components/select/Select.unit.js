@@ -28,9 +28,11 @@ import {
   comp15,
   comp16,
   comp17,
-  comp18
+  comp18,
+  comp19
 } from './fixtures';
 
+// eslint-disable-next-line max-statements
 describe('Select Component', () => {
   it('should not stringify select option value', function(done) {
     Harness.testCreate(SelectComponent, comp6).then((component) => {
@@ -914,6 +916,28 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
+  it('OnBlur validation should work properly with Select component', function(done) {
+    this.timeout(0);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, comp19).then(form => {
+      const select = form.components[0];
+      select.setValue('banana');
+      select.focusableElement.focus();
+      select.pristine = false;
+
+      setTimeout(() => {
+        assert(!select.error, 'Select should be valid while changing');
+        select.focusableElement.dispatchEvent(new Event('blur'));
+
+        setTimeout(() => {
+          assert(select.error, 'Should set error after Select component was blurred');
+          done();
+        }, 500);
+      }, 200);
+    }).catch(done);
+  });
+
   it('Should escape special characters in regex search field', done => {
     const form = _.cloneDeep(comp17);
     const element = document.createElement('div');
@@ -939,7 +963,6 @@ describe('Select Component', () => {
           assert.ok(urlArg && typeof urlArg === 'string' && urlArg.startsWith('http'), 'A URL should be passed as the third argument to "Formio.makeRequest()"');
 
           assert.ok(urlArg.includes('__regex=%5C%5E%5C%24%5C.%5C*%5C%2B%5C%3F%5C(%5C)%5C%5B%5C%5D%5C%7B%5C%7D%5C%7C'), 'The URL should contain escaped and encoded search value regex');
-
           done();
         }, 500);
       }, 200);
