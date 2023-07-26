@@ -114,6 +114,7 @@ export default class SignatureComponent extends Input {
       }
       if (this.refs.signatureImage) {
         this.refs.signatureImage.style.display = 'inherit';
+        this.refs.signatureImage.style.maxHeight = '100%';
       }
     }
   }
