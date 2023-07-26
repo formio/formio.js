@@ -4,23 +4,132 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0-rc.1]
+## [UNRELEASED - 5.0.0-rc.20]
+### Added
+ - Added mobile image, video, and camera capture feature. https://github.com/formio/formio.js/pull/4398
+ - Add submission as form creation option. https://github.com/formio/formio.js/pull/4580
+
+### Fixed
+ - fix issue: when submission.data doesn't exist, the submission.metadata is removed
+ - Default value for Radio and Checkbox components to set correctly.  https://github.com/formio/formio.js/pull/4464
+ - Edit Grid performance improvements. https://github.com/formio/formio.js/pull/4480
+ - FIO-4477: Errors on customer form creation/update
+ - Additional fix "The input element's type ('email') does not support selectionStart": https://github.com/formio/formio.js/pull/4704
+ - Remove pinning of db version for IndexDB: https://github.com/formio/formio.js/pull/4716
+ - Adding loader to createForm when src url is used. https://github.com/formio/formio.js/pull/4748
+ - Interpolate redirectURI in button oauth config. https://github.com/formio/formio.js/pull/4831
+ - Fix and cleanup form submission api error handling. https://github.com/formio/formio.js/pull/4841
+ - Hide removeItemButton on choicesjs select when the placeholder is selected. https://github.com/formio/formio.js/pull/4842
+ - use jQuery instead of $. https://github.com/formio/formio.js/pull/4854
+ - follow the error handling of executeSubmit(). https://github.com/formio/formio.js/pull/4863
+ - Multi upload: abort the correct file when clicking the cancel upload button. https://github.com/formio/formio.js/pull/4957
+ - Fix falsy currency defaults to USD. https://github.com/formio/formio.js/pull/4988
+ - FIO-3448: Fixed an issue where Keep overlay aspect ratio feature of the Signature component in PDF form does not work
+ - Fixed multilingual search. https://github.com/formio/formio.js/pull/5044
+ - FIO-3884 Improved column comparison by excluding the id.
+
+## 5.0.0-rc.6
+### Added
+ - FIO-5748: added collapsible preview for Form Builder
+  
+### Fixed
+ - FIO-6950: fixed test
+ - FIO-6669: fixed tooltips cutting off in the component settings modal
+ - FIO-6156: fixed help link for Time component
+
+## 5.0.0-rc.5
+### Added
+ - FIO-5986: added check for identical uploaded file
+ - FIO-6453: added sanitization inside error message container
+ - FIO-6345: Add rel=noopener to Links to Docs / External Links
+ - FIO-5042: Logout feature for OIDC
+ 
+### Fixed
+ - FIO-6616: fixed issue where the select templates were not getting set correctly in selectData
+ - FIO-6533: fixed an issue where file upload hash causing delays in file uploads
+ - FIO-6407: updated tests for Select Component
+ - FIO-5967: fixed issue with setting [object Object] to html options
+ - FIO-6009: fixed an issue where when checkboxes set as radio, conditional logic is triggered upon deselect
+ - FIO-5318: fixed an issue where wrong attributes appear for Radio component during performance
+ - FIO-5086: fixed an issue where Date/Time component allows to submit any string and the server-side validation is not triggered
+ - FIO-6009: fixed test
+ - FIO-5048: Number currency components mutiple modal do not show preview
+ - FIO-5967: fixed getting option value for html5 options
+ - FIO-4876: fixed the display of current submission for pdf download
+ - FIO-6475: fixed an issue for archieved plan where error message is not displayed when the user tries to add a new action
+ - FIO-4230: fixed label display for Button component inside DataGrid
+ - FIO-6668: fixed display of choices__list dropdown
+ - FIO-6582: don't focus textareas until editors are ready
+ - FIO-6675/6676: Fixes issues where wizard page is getting removed regardless user confirmed removement or canceled it
+ - FIO-6766: fixed an issue where default Value is displayed as an input field after saving the settings.
+ - FIO-6761: removed Storage Type setting for Radio
+ - FIO-6711: FormIo-angular can edit PDF form in Chrome
+ - FIO-4232: fixed an issue where form controller does not work for wizard forms in builder
+ - FIO-6760: fixed an issue where in select component when use resource multiple values data isn't rendered correctly
+ - FIO-5263: Fixed issues with keyboard controls for formbuilder
+ - FIO-6800: fixed issue where select dropdowns go behind the component settings modal
+ - FIO-6600: fixed opening of the settings window
+ - FIO-6661: Fixed DateTime widget throwing an error and not switching languages after changing the language of the form
+ - FIO-6654: fixed UI issue with Checkbox condition
+ - FIO-5398: Fixes special characters not escaped in regex is Select search field
+ - FIO-6156: Updated help links according to the new documentation structure
+ - FIO-6762: added ValueProperty validation
+ - FIO 6582: fix bug in auto-focused TextArea components
+ - FIO-6862: Fixes some cases when component value is calculated in loop causing stack overflow
+ - FIO-6892: Temporarely hide the Addons tab
+ - FIO 5954: Backport Travis' memory leak fixes from m release to master
+ - FIO-6895: fixed interpolation for falsy values
+ - FIO-6965: fixed file upload via pdf proxy
+ - FIO-6165: Updated help link for signature component
+ - FIO-5527: Fixed an issue where value in TextArea with wysiwyg editor is not getting cleared on reset
+ - FIO-6901: Fixed custom headers not being passed through custom request options in File component
+ - FIO-5566: Fixes an issue where deprication warning appears in the console when using Day component with dateFirst setting
+ - FIO-4809: Fixes an issue where value of Wizard suffix/prefix components will be deleted during validation on serve
+ - FIO-6604: fixed padding for Numbers inside Content
+ - FIO-7030: Fixes an issue where Wizard pages are displayed in one line in the for builder
+ - FIO-5857 Update flatpickr to a version with the latest changes
+ - FIO-7049: fixed data populating in the Data Table
+ - FIO-6840: change unique validation for email comps and certain textfield comps
+ - Task/remove dist lib docs
+ - FIO-7054: Fixes an issue where after saving Wizard Panel settings, some of them disappear
+ - FIO-7002: Fixing hide and show options to change visibility of components
+ - FIO-6659: added warnings for Tree and Resource
+ - FIO-5730: fixed template for Select on PDF download
+ - FIO-5303: fixed Edit and Delete buttons in readOnly
+ - Revert - FIO-4876: fixed the display of current submission for pdf download
+
+## 5.0.0-rc.4
+### Fixed
+ - Version export to work with compilation as well as unit tests.
+
+## 5.0.0-rc.3
+### Fixed
+ - Re-introduce the old types folder until we can resolve issues with Angular dependencies.
+
+## 5.0.0-rc.2
+### Breaking Change
+ - Removed default Bootstrap 4 template and replaced with Bootstrap 5. If you need Bootstrap 4, you can use the following.
+
+npm install --save @formio/bootstrap
+
+import bootstrap4 from '@formio/bootstrap/bootstrap4';
+import { Formio } from 'formiojs';
+Formio.use(bootstrap4);
+
+## 5.0.0-rc.1
 ### Breaking Change
  - Upgrade to Bootstrap 5
  - Replace SDK with @formio/core SDK.
  - Remove Semantic template and Bootstrap 3 template from build.  Use import @formio/bootstrap3 or @formio/semantic instead.
 
-### Fixed
- - FIO-6512: cannot drag and drop components on to pdf first forms using mac
- - FIO-6468: fixed an issue where Custom validation on Day component is confusing Day and Year
- - Revert "Fio 6512 cannot drag and drop components on to pdf first forms using mac"
-
-## 4.16.0-rc.1
 ### Added
  - FIO-4429: Add support for pdf auto conversion fields assignment
  - Added basic keyboard accessibility for formbuilder
  
 ### Fixed
+ - FIO-6512: cannot drag and drop components on to pdf first forms using mac
+ - FIO-6468: fixed an issue where Custom validation on Day component is confusing Day and Year
+ - Revert "Fio 6512 cannot drag and drop components on to pdf first forms using mac"
  - FIO-6229: fixed displaying html value on Data tab for inputFormat plain
  - FIO-6191: fixed an issue where addons are not created
  - FIO-6148: fixed an issue where boxsign returns an error when editing submission

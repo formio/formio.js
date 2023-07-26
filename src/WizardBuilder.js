@@ -4,12 +4,6 @@ import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import { fastCloneDeep } from './utils/utils';
 
-let dragula;
-if (typeof window !== 'undefined') {
-  // Import from "dist" because it would require and "global" would not be defined in Angular apps.
-  dragula = require('dragula/dist/dragula');
-}
-
 export default class WizardBuilder extends WebformBuilder {
   constructor() {
     let element, options;
@@ -44,18 +38,6 @@ export default class WizardBuilder extends WebformBuilder {
           .map(component => component.key);
       }
     }
-
-    this.options.hooks.attachPanel = (element, component) => {
-      if (component.refs.removeComponent) {
-        this.addEventListener(component.refs.removeComponent, 'click', () => {
-          const pageIndex = this.pages.findIndex((page) => page.key === component.key);
-          const componentIndex = this._form.components.findIndex((comp) => comp.key === component.key);
-          if (pageIndex !== -1) {
-            this.removePage(pageIndex, componentIndex);
-          }
-        });
-      }
-    };
 
     const originalRenderComponentsHook = this.options.hooks.renderComponents;
     this.options.hooks.renderComponents = (html, { components, self }) => {
@@ -98,6 +80,19 @@ export default class WizardBuilder extends WebformBuilder {
     }, true);
   }
 
+  removeComponent(component, parent, original) {
+    const remove = super.removeComponent(component, parent, original);
+    // If user agrees to remove the whole group of the components and it could be a Wizard page, find it and remove
+    if (remove && component.type === 'panel') {
+      const pageIndex = this.pages.findIndex((page) => page.key === component.key);
+      const componentIndex = this._form.components.findIndex((comp) => comp.key === component.key);
+      if (pageIndex !== -1) {
+        this.removePage(pageIndex, componentIndex);
+      }
+    }
+    return remove;
+  }
+
   allowDrop(element) {
     return (this.webform && this.webform.refs && this.webform.refs.webform === element) ? false : true;
   }
@@ -120,6 +115,11 @@ export default class WizardBuilder extends WebformBuilder {
     if (this.pages.length === 0) {
       const components = this._form.components.filter((component) => component.type !== 'button');
       this._form.components = [this.getPageConfig(1, components)];
+    }
+    else {
+      const components = this._form.components
+        .filter((component) => component.type !== 'button' || component.action !== 'submit');
+      this._form.components = components;
     }
     this.rebuild();
   }
@@ -168,8 +168,11 @@ export default class WizardBuilder extends WebformBuilder {
       page.parentNode.dragInfo = { index };
     });
 
-    if (dragula) {
-      dragula([this.element.querySelector('.wizard-pages')])
+    if (this.dragulaLib) {
+      this.navigationDragula = this.dragulaLib([this.element.querySelector('.wizard-pages')], {
+        moves: (el) => (!el.classList.contains('wizard-add-page')),
+        accepts: (el, target, source, sibling) => (sibling ? true : false),
+      })
         .on('drop', this.onReorder.bind(this));
     }
 
@@ -190,12 +193,22 @@ export default class WizardBuilder extends WebformBuilder {
     return super.attach(element);
   }
 
+  detach() {
+    if (this.navigationDragula) {
+      this.navigationDragula.destroy();
+    }
+    this.navigationDragula = null;
+
+    super.detach();
+  }
+
   rebuild() {
     const page = this.currentPage;
     this.webform.setForm({
       display: 'form',
       type: 'form',
       components: page ? [page] : [],
+      controller: this._form?.controller || ''
     }, { keepAsReference: true });
     return this.redraw();
   }
@@ -240,13 +253,15 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   onReorder(element, _target, _source, sibling) {
-    if (!element.dragInfo || (sibling && !sibling.dragInfo)) {
+    const isSiblingAnAddPageButton = sibling?.classList.contains('wizard-add-page');
+    // We still can paste before Add Page button
+    if (!element.dragInfo || (sibling && !sibling.dragInfo && !isSiblingAnAddPageButton)) {
       console.warn('There is no Drag Info available for either dragged or sibling element');
       return;
     }
     const oldPosition = element.dragInfo.index;
     //should drop at next sibling position; no next sibling means drop to last position
-    const newPosition = (sibling ? sibling.dragInfo.index : this.pages.length);
+    const newPosition = (sibling && sibling.dragInfo ? sibling.dragInfo.index : this.pages.length);
     const movedBelow = newPosition > oldPosition;
     const formComponents = fastCloneDeep(this._form.components);
     const draggedRowData = this._form.components[oldPosition];

@@ -1,10 +1,11 @@
 {
-  "parser": "@babel/eslint-parser",
+  "parser": "@typescript-eslint/parser",
   "extends": "formio",
   "parserOptions": {
     "ecmaVersion": 2015,
     "sourceType": "module"
   },
+  "plugins": ["@typescript-eslint"],
   "env": {
     "browser": true,
     "es6": true,

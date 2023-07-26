@@ -13,7 +13,16 @@ export default {
             type: 'selectboxes',
             input: true,
             inputType: 'checkbox',
-        }
+        },
+        {
+			label: 'Submit',
+			showValidations: false,
+			alwaysEnabled: false,
+			tableView: false,
+			key: 'submit',
+			type: 'button',
+			input: true
+		}
     ],
     title: 'test selectBoxes Url',
 	display: 'form',

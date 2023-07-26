@@ -38,7 +38,7 @@ lib: builder
   <div class="col-sm-10 offset-sm-1 text-center">
     <h3 class="text-center text-muted">which submits to our API Platform</h3>
     <p>hosted or on-premise</p>
-    <a href="https://form.io" target="_blank"><img style="width:100%" src="https://help.form.io/assets/img/formioapi2.png" /></a>
+    <a href="https://form.io" target="_blank"><img style="width:100%" src="{{ site.baseurl }}app/formioapi.png" /></a>
   </div>
 </div>
 <div class="row" style="margin-top: 40px;">
