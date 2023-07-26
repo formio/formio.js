@@ -1,5 +1,5 @@
 import Element from './Element';
-import { GlobalFormio as Formio } from './Formio';
+import { Formio } from './Formio';
 import Displays from './displays';
 import templates from './templates';
 import * as FormioUtils from './utils/utils';
@@ -41,6 +41,9 @@ export default class Form extends Element {
 
     this.instance = null;
     if (args[0] instanceof HTMLElement) {
+      if (this.element) {
+        delete this.element.component;
+      }
       this.element = args[0];
       this.options = args[2] || {};
       this.options.events = this.events;
@@ -62,6 +65,49 @@ export default class Form extends Element {
       this.options.events = this.events;
     }
     this.display = '';
+  }
+
+  createElement(tag, attrs, children) {
+    const element = document.createElement(tag);
+    for (const attr in attrs) {
+      if (attrs.hasOwnProperty(attr)) {
+        element.setAttribute(attr, attrs[attr]);
+      }
+    }
+    (children || []).forEach(child => {
+      element.appendChild(this.createElement(child.tag, child.attrs, child.children));
+    });
+    return element;
+  }
+
+  set loading(load) {
+    if (!this.element || this.options.noLoader) {
+      return;
+    }
+    if (load) {
+      if (this.loader) {
+        return;
+      }
+      this.loader = this.createElement('div', {
+        'class': 'formio-loader'
+      }, [{
+        tag: 'div',
+        attrs: {
+          class: 'loader-wrapper'
+        },
+        children: [{
+          tag: 'div',
+          attrs: {
+            class: 'loader text-center'
+          }
+        }]
+      }]);
+      this.element.appendChild(this.loader);
+    }
+    else if (this.loader) {
+      this.element.removeChild(this.loader);
+      this.loader = null;
+    }
   }
 
   /**
@@ -91,7 +137,7 @@ export default class Form extends Element {
    * @return {*}
    */
   set form(formParam) {
-    return this.setForm(formParam);
+    this.setForm(formParam);
   }
 
   errorForm(err) {
@@ -122,6 +168,7 @@ export default class Form extends Element {
     if (typeof formParam === 'string') {
       const formio = new Formio(formParam);
       let error;
+      this.loading = true;
       result = this.getSubmission(formio, this.options)
         .catch((err) => {
           error = err;
@@ -137,6 +184,7 @@ export default class Form extends Element {
               if (error) {
                 form = this.errorForm(error);
               }
+              this.loading = false;
               this.instance = this.instance || this.create(form.display);
               this.instance.url = formParam;
               this.instance.nosubmit = false;
@@ -159,6 +207,9 @@ export default class Form extends Element {
 
     // A redraw has occurred so save off the new element in case of a setDisplay causing a rebuild.
     return result.then(() => {
+      if (this.element) {
+        delete this.element.component;
+      }
       this.element = this.instance.element;
       return this.instance;
     });
@@ -293,12 +344,21 @@ export default class Form extends Element {
     if (!this.instance) {
       return NativePromise.reject('Form not ready. Use form.ready promise');
     }
+    if (this.element) {
+      delete this.element.component;
+    }
     this.element = element;
     return this.instance.attach(this.element)
       .then((param) => {
         this.emit('attach', param);
         return param;
       });
+  }
+
+  teardown() {
+    super.teardown();
+    delete this.instance;
+    delete this.ready;
   }
 }
 

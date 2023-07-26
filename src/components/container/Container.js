@@ -24,7 +24,8 @@ export default class ContainerComponent extends NestedDataComponent {
       title: 'Container',
       icon: 'folder-open',
       group: 'data',
-      documentation: '/userguide/forms/data-components#container',
+      documentation: '/userguide/form-building/data-components#container',
+      showPreview: false,
       weight: 10,
       schema: ContainerComponent.schema()
     };
@@ -64,6 +65,10 @@ export default class ContainerComponent extends NestedDataComponent {
     return components.reduce((valid, comp) => {
       return comp.checkData(data, flags, this.dataValue) && valid;
     }, Component.prototype.checkData.call(this, data, flags, row));
+  }
+
+  checkChildComponentsValidity(data, dirty, row, silentCheck, isParentValid) {
+    return super.checkChildComponentsValidity(data, dirty, this.dataValue, silentCheck, isParentValid);
   }
 
   focus() {

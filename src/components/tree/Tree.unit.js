@@ -9,7 +9,7 @@ import {
 } from './fixtures';
 import Webform from '../../Webform';
 import _ from 'lodash';
-import Formio from '../../Formio';
+import { Formio } from '../../Formio';
 
 describe('Tree Component', () => {
   it('Should set and render values in readOnly mode', function(done) {

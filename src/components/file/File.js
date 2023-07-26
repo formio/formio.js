@@ -7,7 +7,7 @@ import fileProcessor from '../../providers/processor/fileProcessor';
 import BMF from 'browser-md5-file';
 
 let Camera;
-let webViewCamera = navigator.camera || Camera;
+let webViewCamera = 'undefined' !== typeof window ? navigator.camera : Camera;
 
 // canvas.toBlob polyfill.
 
@@ -59,7 +59,7 @@ export default class FileComponent extends Field {
       title: 'File',
       group: 'premium',
       icon: 'file',
-      documentation: '/userguide/forms/premium-components#file',
+      documentation: '/userguide/form-building/premium-components#file',
       weight: 100,
       schema: FileComponent.schema(),
     };
@@ -280,9 +280,12 @@ export default class FileComponent extends Field {
     if (this.component.multiple) {
       options.multiple = true;
     }
+    if (this.component.capture) {
+      options.capture = this.component.capture;
+    }
     //use "accept" attribute only for desktop devices because of its limited support by mobile browsers
+    const filePattern = this.component.filePattern.trim() || '';
     if (!this.isMobile.any) {
-      const filePattern = this.component.filePattern.trim() || '';
       const imagesPattern = 'image/*';
 
       if (this.imageUpload && (!filePattern || filePattern === '*')) {
@@ -293,6 +296,18 @@ export default class FileComponent extends Field {
       }
       else {
         options.accept = filePattern;
+      }
+    }
+    // if input capture is set, we need the "accept" attribute to determine which device to launch
+    else if (this.component.capture) {
+      if (filePattern.includes('video')) {
+        options.accept = 'video/*';
+      }
+      else if (filePattern.includes('audio')) {
+        options.accept = 'audio/*';
+      }
+      else {
+        options.accept = 'image/*';
       }
     }
 
@@ -388,9 +403,13 @@ export default class FileComponent extends Field {
     this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
       this.addEventListener(fileStatusRemove, 'click', (event) => {
         event.preventDefault();
-        if (this.abortUpload) {
-          this.abortUpload();
+
+        const status = this.statuses[index];
+
+        if (status.abort) {
+          status.abort();
         }
+
         this.statuses.splice(index, 1);
         this.redraw();
       });
@@ -615,35 +634,51 @@ export default class FileComponent extends Field {
       // files is not really an array and does not have a forEach method, so fake it.
       /* eslint-disable max-statements */
       Array.prototype.forEach.call(files, async(file) => {
-        const bmf = new BMF();
-        const hash = await new Promise((resolve, reject) => {
-          bmf.md5(file, (err, md5)=>{
-            if (err) {
-              return reject(err);
-            }
-            return resolve(md5);
-          });
-        });
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
+        const escapedFileName = file.name ? file.name.replaceAll('<', '&lt;').replaceAll('>', '&gt;') : file.name;
         const fileUpload = {
-          originalName: file.name,
+          abort: () => null,
+          originalName: escapedFileName,
           name: fileName,
           size: file.size,
           status: 'info',
           message: this.t('Processing file. Please wait...'),
-          hash
+          hash: '',
         };
 
+        if (this.root.form.submissionRevisions === 'true') {
+          this.statuses.push(fileUpload);
+          this.redraw();
+          const bmf = new BMF();
+          const hash = await new Promise((resolve, reject) => {
+            this.emit('fileUploadingStart');
+            bmf.md5(file, (err, md5)=>{
+              if (err) {
+                return reject(err);
+              }
+              return resolve(md5);
+            });
+          });
+          this.emit('fileUploadingEnd');
+          fileUpload.hash = hash;
+        }
+
         // Check if file with the same name is being uploaded
+        if (!this.filesUploading) {
+          this.filesUploading = [];
+        }
+        const fileWithSameNameUploading = this.filesUploading.some(fileUploading => fileUploading === file.name);
+        this.filesUploading.push(file.name);
+
         const fileWithSameNameUploaded = this.dataValue.some(fileStatus => fileStatus.originalName === file.name);
         const fileWithSameNameUploadedWithError = this.statuses.findIndex(fileStatus =>
           fileStatus.originalName === file.name
           && fileStatus.status === 'error'
         );
 
-        if (fileWithSameNameUploaded) {
+        if (fileWithSameNameUploaded || fileWithSameNameUploading) {
           fileUpload.status = 'error';
-          fileUpload.message = this.t('File with the same name is already uploaded');
+          fileUpload.message = this.t(`File with the same name is already ${fileWithSameNameUploading ? 'being ' : ''}uploaded`);
         }
 
         if (fileWithSameNameUploadedWithError !== -1) {
@@ -658,7 +693,6 @@ export default class FileComponent extends Field {
             pattern: this.component.filePattern,
           });
         }
-
         // Check file minimum size
         if (this.component.fileMinSize && !this.validateMinSize(file, this.component.fileMinSize)) {
           fileUpload.status = 'error';
@@ -683,8 +717,10 @@ export default class FileComponent extends Field {
           fileUpload.message = this.t('File Service not provided.');
         }
 
-        this.statuses.push(fileUpload);
-        this.redraw();
+        if (this.root.form.submissionRevisions !== 'true') {
+          this.statuses.push(fileUpload);
+          this.redraw();
+        }
 
         if (fileUpload.status !== 'error') {
           if (this.component.privateDownload) {
@@ -710,7 +746,6 @@ export default class FileComponent extends Field {
               });
             }
           });
-
           const fileKey = this.component.fileKey || 'file';
           const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
           let processedFile = null;
@@ -737,7 +772,7 @@ export default class FileComponent extends Field {
             }
           }
 
-          fileUpload.message = this.t('Starting upload.');
+          fileUpload.message = this.t('Starting upload...');
           this.redraw();
 
           const filePromise = fileService.uploadFile(
@@ -761,19 +796,19 @@ export default class FileComponent extends Field {
             () => {
               this.emit('fileUploadingStart', filePromise);
             },
-            // Abort upload callback
-            (abort) => this.abortUpload = abort,
+            (abort) => fileUpload.abort = abort,
           ).then((fileInfo) => {
               const index = this.statuses.indexOf(fileUpload);
               if (index !== -1) {
                 this.statuses.splice(index, 1);
               }
-              fileInfo.originalName = file.name;
+              fileInfo.originalName = escapedFileName;
               fileInfo.hash = fileUpload.hash;
               if (!this.hasValue()) {
                 this.dataValue = [];
               }
               this.dataValue.push(fileInfo);
+              _.pull(this.filesUploading, fileInfo.originalName);
               this.fileDropHidden = false;
               this.redraw();
               this.triggerChange();
@@ -784,9 +819,13 @@ export default class FileComponent extends Field {
               fileUpload.message = typeof response === 'string' ? response : response.toString();
               delete fileUpload.progress;
               this.fileDropHidden = false;
+              _.pull(this.filesUploading, file.name);
               this.redraw();
               this.emit('fileUploadingEnd', filePromise);
             });
+        }
+        else {
+          this.filesUploading.splice(this.filesUploading.indexOf(file.name),1);
         }
       });
     }
@@ -828,8 +867,8 @@ export default class FileComponent extends Field {
     }
   }
 
-  destroy() {
+  destroy(all = false) {
     this.stopVideo();
-    super.destroy();
+    super.destroy(all);
   }
 }
