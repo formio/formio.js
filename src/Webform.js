@@ -1691,6 +1691,7 @@ export default class Webform extends NestedDataComponent {
           this.emit('error', message);
           console.error(message);
           this.setAlert('danger', `<p> ${message} </p>`);
+          return Promise.reject(this.onSubmissionError(e));
         });
     }
     else {
