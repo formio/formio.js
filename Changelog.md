@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED - 5.0.0-rc.20]
 ### Added
  - Added mobile image, video, and camera capture feature. https://github.com/formio/formio.js/pull/4398
+ - Add submission as form creation option. https://github.com/formio/formio.js/pull/4580
 
 ### Fixed
  - fix issue: when submission.data doesn't exist, the submission.metadata is removed
  - Default value for Radio and Checkbox components to set correctly.  https://github.com/formio/formio.js/pull/4464
+ - Edit Grid performance improvements. https://github.com/formio/formio.js/pull/4480
 
 ## 5.0.0-rc.6
 ### Added
