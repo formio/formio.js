@@ -27,7 +27,8 @@ export default class TabsComponent extends NestedComponent {
       group: 'layout',
       icon: 'folder-o',
       weight: 50,
-      documentation: '/userguide/#tabs',
+      documentation: '/userguide/form-building/layout-components#tabs',
+      showPreview: false,
       schema: TabsComponent.schema(),
     };
   }
@@ -82,17 +83,30 @@ export default class TabsComponent extends NestedComponent {
   }
 
   render() {
-    return super.render(this.renderTemplate('tab', {
-      tabKey: this.tabKey,
-      tabLikey: this.tabLikey,
-      tabLinkKey: this.tabLinkKey,
-      currentTab: this.currentTab,
-      tabComponents: this.tabs.map(tab => this.renderComponents(tab))
-    }, (this.options.flatten || this.options.pdf ? 'flat' : null)));
+    return super.render(this.renderTemplate(
+      'tab',
+      {
+        tabKey: this.tabKey,
+        tabLikey: this.tabLikey,
+        tabLinkKey: this.tabLinkKey,
+        currentTab: this.currentTab,
+        tabComponents: this.tabs.map(tab => this.renderComponents(tab)),
+      },
+      (
+        this.options.flatten || this.options.pdf ? 'flat' : null
+      ),
+    ));
   }
 
   attach(element) {
-    this.loadRefs(element, { [this.tabLinkKey]: 'multiple', [this.tabKey]: 'multiple', [this.tabLikey]: 'multiple' });
+    this.loadRefs(
+      element,
+      {
+        [this.tabLinkKey]: 'multiple',
+        [this.tabKey]: 'multiple',
+        [this.tabLikey]: 'multiple',
+      },
+    );
     ['change', 'error'].forEach(event => this.on(event, this.handleTabsValidation.bind(this)));
     const superAttach = super.attach(element);
     this.refs[this.tabLinkKey].forEach((tabLink, index) => {
@@ -117,12 +131,7 @@ export default class TabsComponent extends NestedComponent {
    * @param index
    */
   setTab(index) {
-    if (
-      !this.tabs ||
-      !this.tabs[index] ||
-      !this.refs[this.tabKey] ||
-      !this.refs[this.tabKey][index]
-    ) {
+    if (!this.tabs || !this.tabs[index] || !this.refs[this.tabKey] || !this.refs[this.tabKey][index]) {
       return;
     }
 
@@ -137,16 +146,20 @@ export default class TabsComponent extends NestedComponent {
 
     _.each(this.refs[this.tabLinkKey], (tabLink, tabIndex) => {
       if (this.refs[this.tabLinkKey][tabIndex]) {
+        this.removeClass(tabLink, 'active');
         this.removeClass(tabLink, 'formio-tab-link-active');
       }
       if (this.refs[this.tabLikey][tabIndex]) {
+        this.removeClass(this.refs[this.tabLikey][tabIndex], 'active');
         this.removeClass(this.refs[this.tabLikey][tabIndex], 'formio-tab-link-container-active');
       }
     });
     if (this.refs[this.tabLikey][index]) {
+      this.addClass(this.refs[this.tabLikey][index], 'active');
       this.addClass(this.refs[this.tabLikey][index], 'formio-tab-link-container-active');
     }
     if (this.refs[this.tabLinkKey][index]) {
+      this.addClass(this.refs[this.tabLinkKey][index], 'active');
       this.addClass(this.refs[this.tabLinkKey][index], 'formio-tab-link-active');
     }
     this.triggerChange();
@@ -159,7 +172,7 @@ export default class TabsComponent extends NestedComponent {
     const tabIndex = this.tabs.findIndex((tab) => {
       return tab.some((comp) => comp === component);
     });
-    if (tabIndex !== -1 &&  this.currentTab !== tabIndex) {
+    if (tabIndex !== -1 && this.currentTab !== tabIndex) {
       this.setTab(tabIndex);
     }
   }
@@ -184,6 +197,10 @@ export default class TabsComponent extends NestedComponent {
   }
 
   clearErrorClasses(elements) {
+    if (this.options.server || !this.rendered) {
+      return;
+    }
+
     if (this.component.modalEdit) {
       const element = Array.isArray(elements) || elements instanceof NodeList ? this.element : elements;
       super.clearErrorClasses(element);

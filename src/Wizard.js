@@ -1,7 +1,7 @@
 import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
-import { GlobalFormio as Formio } from './Formio';
+import { Formio } from './Formio';
 import {
   fastCloneDeep,
   checkCondition,
@@ -184,6 +184,7 @@ export default class Wizard extends Webform {
 
   get renderContext() {
     return {
+      disableWizardSubmit: this.form.disableWizardSubmit,
       wizardKey: this.wizardKey,
       isBreadcrumbClickable: this.isBreadcrumbClickable(),
       isSubForm: !!this.parent && !this.root?.component?.type === 'wizard',
@@ -285,7 +286,7 @@ export default class Wizard extends Webform {
   }
 
   attach(element) {
-    this.element = element;
+    this.setElement(element);
     this.loadRefs(element, {
       [this.wizardKey]: 'single',
       [`${this.wizardKey}-header`]: 'single',
@@ -461,18 +462,19 @@ export default class Wizard extends Webform {
       let hasNested = false;
 
       eachComponent(filteredComponents, (comp) => {
-        if (comp.component.type === 'panel' && comp?.parent.wizard && !getAllComponents(comp, compsArr, false)) {
-          if (pushAllowed) {
-            this.setRootPanelId(comp);
-            nestedPages.push(comp);
+        if (comp && comp.component) {
+          if (comp.component.type === 'panel' && comp?.parent.wizard && !getAllComponents(comp, compsArr, false)) {
+            if (pushAllowed) {
+              this.setRootPanelId(comp);
+              nestedPages.push(comp);
+            }
+            hasNested = true;
           }
-          hasNested = true;
-        }
-
-        if (comp && comp.isNestedWizard && comp.subForm) {
-          const hasNestedForm = getAllComponents(comp, nestedPages, pushAllowed);
-          if (!hasNested) {
-            hasNested = hasNestedForm;
+          if (comp.isNestedWizard && comp.subForm) {
+            const hasNestedForm = getAllComponents(comp, nestedPages, pushAllowed);
+            if (!hasNested) {
+              hasNested = hasNestedForm;
+            }
           }
         }
       }, true);
@@ -576,8 +578,8 @@ export default class Wizard extends Webform {
             item.key = item.title;
           }
           let page = currentPages[item.key];
-          const forceShow = this.options.show ? this.options.show[item.key] : false;
-          const forceHide = this.options.hide ? this.options.hide[item.key] : false;
+          const forceShow = this.shouldForceShow(item);
+          const forceHide = this.shouldForceHide(item);
 
           let isVisible = !page
             ? checkCondition(item, data, data, this.component, this) && !item.hidden
@@ -790,6 +792,7 @@ export default class Wizard extends Webform {
     }
     else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
+      this.scrollIntoView(this.element);
       return NativePromise.reject(this.showErrors([], true));
     }
   }
@@ -894,8 +897,11 @@ export default class Wizard extends Webform {
 
   setValue(submission, flags = {}, ignoreEstablishment) {
     this._submission = submission;
-
-    if (flags && flags.fromSubmission && (this.options.readOnly || this.editMode) && !this.isHtmlRenderMode()) {
+    if (
+      (flags && flags.fromSubmission && (this.options.readOnly || this.editMode) && !this.isHtmlRenderMode()) ||
+      (flags && flags.fromSubmission && (this.prefixComps.length || this.suffixComps.length) && submission._id) ||
+      (this.options.server && (this.prefixComps.length || this.suffixComps.length))
+    ) {
       this._data = submission.data;
     }
 
@@ -992,6 +998,9 @@ export default class Wizard extends Webform {
     // If the next page changes, then make sure to redraw navigation.
     if (currentNextPage !== this.getNextPage()) {
       this.redrawNavigation();
+    }
+    if (this.options.readOnly && (this.prefixComps.length || this.suffixComps.length)) {
+      this.redraw();
     }
   }
 

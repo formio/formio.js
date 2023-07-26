@@ -20,7 +20,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 
 This will then trigger the drafts to start periodically every 5 seconds once a user is established through the use of common Form.io authentication modules, such as the [one provided within Angular](https://github.com/formio/angular-formio/wiki/User-Authentication).
 
-If you wish to manually allow for "anonymous" drafts, then you will need to add the "Anonymous" role to your forms "Create All" permissions, and then provide the following logic within your application to trigger the saveDraft process.
+It is not possible to have Anonymous draft submissions because the platform does not know whom to associate the "draft" against. There must be a user and  they must be authenticated.
 
 
 ```js

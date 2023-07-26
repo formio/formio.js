@@ -24,9 +24,5 @@ export default function(...extend) {
       key: 'validation',
       components: FileEditValidation
     },
-    {
-      key: 'addons',
-      ignore: true
-    },
   ], ...extend);
 }

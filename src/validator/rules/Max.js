@@ -1,6 +1,6 @@
-const Rule = require('./Rule');
+import Rule from './Rule';
 
-module.exports = class Max extends Rule {
+export default class Max extends Rule {
   defaultMessage = '{{field}} cannot be greater than {{settings.limit}}.';
 
   check(value) {
@@ -13,4 +13,4 @@ module.exports = class Max extends Rule {
 
     return parsedValue <= max;
   }
-};
+}

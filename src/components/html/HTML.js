@@ -20,7 +20,8 @@ export default class HTMLComponent extends Component {
       group: 'layout',
       icon: 'code',
       weight: 0,
-      documentation: '/userguide/#html-element-component',
+      documentation: '/userguide/form-building/layout-components#html-element',
+      showPreview: false,
       schema: HTMLComponent.schema()
     };
   }
@@ -33,6 +34,12 @@ export default class HTMLComponent extends Component {
     if (this.builderMode) {
       return this.component.content;
     }
+
+    // i18n returns error exactly with word 'select', spaces will be trimmed
+    if (this.component.content.replace(/(<(\/?[^>]+)>)/g, '').trim() === 'select') {
+      return ` ${this.component.content} `;
+    }
+
     const submission = _.get(this.root, 'submission', {});
     const content = this.component.content ? this.interpolate(this.component.content, {
       metadata: submission.metadata || {},
@@ -50,6 +57,7 @@ export default class HTMLComponent extends Component {
   checkRefreshOn(changed) {
     super.checkRefreshOn(changed);
     if (!this.builderMode && this.component.refreshOnChange && this.element &&
+      !_.isUndefined(changed) && ((_.isBoolean(changed) && changed) || !_.isEmpty(changed)) &&
       this.conditionallyVisible(this.data, this.row)) {
       this.setContent(this.element, this.renderContent());
     }

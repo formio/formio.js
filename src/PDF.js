@@ -1,5 +1,5 @@
 import NativePromise from 'native-promise-only';
-import { GlobalFormio as Formio } from './Formio';
+import { Formio } from './Formio';
 import Webform from './Webform';
 import { fastCloneDeep, eachComponent } from './utils/utils';
 
@@ -45,6 +45,7 @@ export default class PDF extends Webform {
 
   render() {
     this.submitButton = this.addComponent({
+      disabled: this.form.disableWizardSubmit,
       input: true,
       type: 'button',
       action: 'submit',
@@ -67,8 +68,16 @@ export default class PDF extends Webform {
     return this.builderMode ? NativePromise.resolve() : super.redraw();
   }
 
+  destroy(all = false) {
+    if (this.iframeElement) {
+      delete this.iframeElement.formioComponent;
+      this.iframeElement.formioComponent = null;
+    }
+    super.destroy(all);
+  }
+
   rebuild() {
-    if (this.builderMode && this.component.components) {
+    if (this.attached && this.builderMode && this.component.components) {
       this.destroyComponents();
       this.addComponents();
       return NativePromise.resolve();
@@ -228,7 +237,9 @@ export default class PDF extends Webform {
     const changed = super.setValue(submission, flags);
     if (!flags || !flags.fromIframe) {
       this.once('iframe-ready', () => {
-        this.postMessage({ name: 'submission', data: submission });
+        if (changed) {
+          this.postMessage({ name: 'submission', data: submission });
+        }
       });
     }
     return changed;
@@ -245,8 +256,9 @@ export default class PDF extends Webform {
     }
 
     this.iframeReady.then(() => {
-      if (this.iframeElement && this.iframeElement.contentWindow) {
+      if (this.iframeElement && this.iframeElement.contentWindow && !(message.name === 'form' && this.iframeFormSetUp)) {
         this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
+        this.iframeFormSetUp = message.name === 'form';
       }
     });
   }

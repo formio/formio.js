@@ -1,9 +1,5 @@
 import Input from '../_classes/input/Input';
-
-let Choices;
-if (typeof window !== 'undefined') {
-  Choices = require('@formio/choices.js');
-}
+import Choices from '@formio/choices.js';
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -22,7 +18,7 @@ export default class TagsComponent extends Input {
       title: 'Tags',
       icon: 'tags',
       group: 'advanced',
-      documentation: '/userguide/#tags',
+      documentation: '/userguide/form-building/advanced-components#tags',
       weight: 30,
       schema: TagsComponent.schema()
     };
@@ -57,7 +53,9 @@ export default class TagsComponent extends Input {
     if (!element) {
       return;
     }
-    element.setAttribute('dir', this.i18next.dir());
+    if (this.i18next) {
+      element.setAttribute('dir', this.i18next.dir());
+    }
     if (this.choices) {
       this.choices.destroy();
     }
@@ -71,6 +69,7 @@ export default class TagsComponent extends Input {
     this.choices = new Choices(element, {
       delimiter: this.delimiter,
       editItems: true,
+      allowHTML: true,
       maxItemCount: this.component.maxTags,
       removeItemButton: true,
       duplicateItemsAllowed: false,
@@ -106,11 +105,11 @@ export default class TagsComponent extends Input {
   }
 
   detach() {
-    super.detach();
     if (this.choices) {
       this.choices.destroy();
       this.choices = null;
     }
+    super.detach();
   }
 
   normalizeValue(value) {
@@ -168,7 +167,7 @@ export default class TagsComponent extends Input {
     }
 
     if (Array.isArray(value)) {
-      return value.join(', ');
+      return value.join(`${this.delimiter || ','} `);
     }
 
     const stringValue = value.toString();

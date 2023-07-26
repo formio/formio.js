@@ -22,6 +22,9 @@ const Evaluator = {
   },
   template(template, hash) {
     hash = hash || stringHash(template);
+    if (Evaluator.cache[hash]) {
+      return Evaluator.cache[hash];
+    }
     try {
       // Ensure we handle copied templates from the ejs files.
       template = template.replace(/ctx\./g, '');
@@ -31,7 +34,9 @@ const Evaluator = {
       console.warn('Error while processing template', err, template);
     }
   },
-  interpolate(rawTemplate, data, noeval) {
+  interpolate(rawTemplate, data, _options) {
+    // Ensure reverse compatability.
+    const options = _.isObject(_options) ? _options : { noeval: _options };
     if (typeof rawTemplate === 'function') {
       try {
         return rawTemplate(data);
@@ -43,18 +48,29 @@ const Evaluator = {
     }
 
     rawTemplate = String(rawTemplate);
-
-    const hash = stringHash(rawTemplate);
     let template;
-    if (Evaluator.cache[hash]) {
-      template = Evaluator.cache[hash];
-    }
-    else if (Evaluator.noeval || noeval) {
+    if (Evaluator.noeval || options.noeval) {
       // No cached template methods available. Use poor-mans interpolate without eval.
-      return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => _.get(data, $2));
+      return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => {
+        // Allow for conditional values.
+        const parts = $2.split('||').map(item => item.trim());
+        let value = '';
+        let path = '';
+        for (let i = 0; i < parts.length; i++) {
+          path = parts[i];
+          value = _.get(data, path);
+          if (value) {
+            break;
+          }
+        }
+        if (options.data) {
+          _.set(options.data, path, value);
+        }
+        return value;
+      });
     }
     else {
-      template = Evaluator.template(rawTemplate, hash);
+      template = Evaluator.template(rawTemplate);
     }
     if (typeof template === 'function') {
       try {

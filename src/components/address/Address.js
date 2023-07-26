@@ -1,7 +1,7 @@
 import autocompleter from 'autocompleter';
 import _ from 'lodash';
 
-import { GlobalFormio as Formio } from '../../Formio';
+import { Formio } from '../../Formio';
 import { GoogleAddressProvider } from '../../providers/address/GoogleAddressProvider';
 
 import Field from '../_classes/field/Field';
@@ -87,7 +87,7 @@ export default class AddressComponent extends ContainerComponent {
       title: 'Address',
       group: 'advanced',
       icon: 'home',
-      documentation: '/userguide/#address',
+      documentation: '/userguide/form-building/advanced-components#address',
       weight: 35,
       schema: AddressComponent.schema(),
     };
@@ -541,6 +541,8 @@ export default class AddressComponent extends ContainerComponent {
           }
         });
       });
+
+      _.each(this.refs.searchInput || [], el => this.addFocusBlurEvents(el));
     }
 
     return result;

@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import Harness from '../../../test/harness';
 import DataGridComponent from './DataGrid';
-import Formio from '../../Formio';
+import { Formio } from '../../Formio';
 
 import {
   comp1,
@@ -12,11 +12,15 @@ import {
   comp3,
   comp4,
   comp5,
+  comp6,
+  comp7,
+  comp8,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
   withConditionalFieldsAndValidations,
-  withLogic
+  withLogic,
+  withCollapsibleRowGroups
 } from './fixtures';
 
 describe('DataGrid Component', () => {
@@ -104,6 +108,17 @@ describe('DataGrid Component', () => {
     });
   });
 
+  it('Should build a data grid component with formio-component-datagrid class property', done => {
+    Harness.testCreate(DataGridComponent, comp6).then((component) => {
+      const element = component.element.component.components[0].element;
+      setTimeout(() => {
+        assert.deepEqual(element.className.includes('formio-component-datagrid'), true);
+        done();
+      }, 200);
+    }, done)
+    .catch(done);
+  });
+
   it('Should not skip validation on input nested components', done => {
     Harness.testCreate(DataGridComponent, comp1)
       .then(cmp => {
@@ -149,7 +164,6 @@ describe('DataGrid Component', () => {
         {
           make: '',
           model: '',
-          year: ''
         }
       ]);
     });
@@ -181,8 +195,8 @@ describe('DataGrid Component', () => {
             { name: 'Alex', age: 1 },
             { name: 'Bob',  age: 2 },
             { name: 'Conny', age: 3 },
-            { name: '', age: '' },
-            { name: '', age: '' }
+            { name: '' },
+            { name: '' }
           ]);
           done();
         }, done)
@@ -208,6 +222,27 @@ describe('DataGrid Component', () => {
           expect(spyFunc.callCount).to.be.lessThan(4);
           done();
         }, 1500);
+      });
+  });
+
+  it('Should collapse group rows on group header click', (done) => {
+    Formio.createForm(document.createElement('div'), withCollapsibleRowGroups)
+      .then((form) => {
+        const groupHeadersRefName= 'datagrid-dataGrid-group-header';
+        const datagrid = form.getComponent('dataGrid');
+        assert.equal(datagrid.refs[groupHeadersRefName][0]?.classList?.contains('collapsed'), false);
+        assert.equal(datagrid.refs.chunks[0][0].classList?.contains('hidden'), false);
+        assert.equal(datagrid.refs.chunks[0][1].classList?.contains('hidden'), false);
+
+        const clickEvent = new Event('click');
+        datagrid.refs[groupHeadersRefName][0].dispatchEvent(clickEvent);
+        setTimeout(() => {
+          const collapedGroupRows = datagrid.refs.chunks[0] || [];
+          assert.equal(datagrid.refs[groupHeadersRefName][0]?.classList?.contains('collapsed'), true);
+          assert.equal(collapedGroupRows[0]?.classList?.contains('hidden'), true);
+          assert.equal(collapedGroupRows[1]?.classList?.contains('hidden'), true);
+          done();
+        }, 300);
       });
   });
 
@@ -389,6 +424,29 @@ describe('DataGrid Panels', () => {
           lastName: ''
         }
       ]);
+    });
+  });
+
+  it('Should have unique IDs inside data grid', () => {
+    return Harness.testCreate(DataGridComponent, comp7).then((component) => {
+      component.addRow();
+      const idArr = [];
+      component.components.forEach((row, i) => {
+        idArr[i] = row.element.component.components[0].id;
+      });
+      assert.equal(idArr[0] !== idArr[1], true);
+    });
+  });
+
+  it('Should hide label in header for Button component when hideLabel is true.', () => {
+    const formElement = document.createElement('div');
+    return Formio.createForm(formElement, {
+      display: 'form',
+      components: [comp8]
+    })
+    .then(() => {
+      assert.equal(formElement.getElementsByTagName('th')[0].textContent.trim(), '', 'Should hide a label');
+      assert.equal(formElement.getElementsByTagName('th')[1].textContent.trim(), 'Text Field', 'Should show a label');
     });
   });
 });

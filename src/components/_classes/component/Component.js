@@ -1,14 +1,14 @@
 /* globals Quill, ClassicEditor, CKEDITOR */
 import { conformToMask } from '@formio/vanilla-text-mask';
 import NativePromise from 'native-promise-only';
-import Tooltip from 'tooltip.js';
+import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import { GlobalFormio as Formio } from '../../../Formio';
+import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
 import {
-  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent,
+  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent, currentTimezone
 } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
@@ -16,22 +16,9 @@ import Widgets from '../../../widgets';
 import Addons from '../../../addons';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 import enTranslation from '../../../translations/en';
+import Templates from '../../../templates/Templates';
 
 const isIEBrowser = FormioUtils.getBrowserInfo().ie;
-const CKEDITOR_URL = isIEBrowser
-      ? 'https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js'
-      : 'https://cdn.form.io/ckeditor/19.0.0/ckeditor.js';
-const QUILL_URL = isIEBrowser
-  ? 'https://cdn.quilljs.com/1.3.7'
-  : 'https://cdn.quilljs.com/2.0.0-dev.3';
-const QUILL_TABLE_URL = 'https://cdn.form.io/quill/quill-table.js';
-const ACE_URL = 'https://cdn.form.io/ace/1.4.10/ace.js';
-
-let Templates = Formio.Templates;
-
-if (!Templates) {
-  Templates = require('../../../templates/Templates').default;
-}
 
 /**
  * This is the Component class
@@ -289,6 +276,8 @@ export default class Component extends Element {
     // Add the id to the component.
     this.component.id = this.id;
 
+    this.afterComponentAssign();
+
     // Save off the original component to be used in logic.
     this.originalComponent = fastCloneDeep(this.component);
 
@@ -494,6 +483,13 @@ export default class Component extends Element {
     return NativePromise.resolve(this);
   }
 
+  get isPDFReadOnlyMode() {
+    return this.parent &&
+      this.parent.form &&
+      (this.parent.form.display === 'pdf') &&
+      this.options.readOnly;
+  }
+
   get labelInfo() {
     const label = {};
     label.hidden = this.labelIsHidden();
@@ -502,10 +498,7 @@ export default class Component extends Element {
     label.labelPosition = this.component.labelPosition;
     label.tooltipClass = `${this.iconClass('question-sign')} text-muted`;
 
-    const isPDFReadOnlyMode = this.parent &&
-      this.parent.form &&
-      (this.parent.form.display === 'pdf') &&
-      this.options.readOnly;
+    const isPDFReadOnlyMode = this.isPDFReadOnlyMode;
 
     if (this.hasInput && this.component.validate && boolValue(this.component.validate.required) && !isPDFReadOnlyMode) {
       label.className += ' field-required';
@@ -527,6 +520,10 @@ export default class Component extends Element {
     }
   }
 
+  afterComponentAssign() {
+    //implement in extended classes
+  }
+
   createAddon(addonConfiguration) {
     const name = addonConfiguration.name;
     if (!name) {
@@ -534,7 +531,7 @@ export default class Component extends Element {
     }
 
     const settings = addonConfiguration.settings?.data || {};
-    const Addon = Addons[name];
+    const Addon = Addons[name.value];
 
     let addon = null;
 
@@ -547,17 +544,38 @@ export default class Component extends Element {
         this.addons.push(addon);
       }
       else {
-        console.warn(`Addon ${name} does not support component of type ${this.component.type}.`);
+        console.warn(`Addon ${name.label} does not support component of type ${this.component.type}.`);
       }
     }
 
     return addon;
   }
 
-  destroy() {
-    super.destroy();
+  teardown() {
+    if (this.element) {
+      delete this.element.component;
+      delete this.element;
+    }
+    delete this._currentForm;
+    delete this.parent;
+    delete this.root;
+    delete this.triggerChange;
+    delete this.triggerRedraw;
+    if (this.options) {
+      delete this.options.root;
+      delete this.options.parent;
+      delete this.options.i18next;
+    }
+    super.teardown();
+  }
+
+  destroy(all = false) {
+    super.destroy(all);
     this.detach();
     this.addons.forEach((addon) => addon.destroy());
+    if (all) {
+      this.teardown();
+    }
   }
 
   get shouldDisabled() {
@@ -600,12 +618,41 @@ export default class Component extends Element {
     return this._parentDisabled;
   }
 
+  shouldForceVisibility(component, visibility) {
+    if (!this.options[visibility]) {
+      return false;
+    }
+    if (!component) {
+      component = this.component;
+    }
+    if (_.isArray(this.options[visibility])) {
+      return this.options[visibility].includes(component.key);
+    }
+    return this.options[visibility][component.key];
+  }
+
+  shouldForceHide(component) {
+    return this.shouldForceVisibility(component, 'hide');
+  }
+
+  shouldForceShow(component) {
+    return this.shouldForceVisibility(component, 'show');
+  }
+
   /**
    *
    * @param value {boolean}
    */
   set visible(value) {
     if (this._visible !== value) {
+      // Skip if this component is set to visible and is supposed to be hidden.
+      if (value && this.shouldForceHide()) {
+        return;
+      }
+      // Skip if this component is set to hidden and is supposed to be shown.
+      if (!value && this.shouldForceShow()) {
+        return;
+      }
       this._visible = value;
       this.clearOnHide();
       this.redraw();
@@ -621,19 +668,12 @@ export default class Component extends Element {
     if (this.builderMode || this.previewMode || this.options.showHiddenFields) {
       return true;
     }
-    if (
-      this.options.hide &&
-      this.options.hide[this.component.key]
-    ) {
+    if (this.shouldForceHide()) {
       return false;
     }
-    if (
-      this.options.show &&
-      this.options.show[this.component.key]
-    ) {
+    if (this.shouldForceShow()) {
       return true;
     }
-
     return this._visible && this._parentVisible;
   }
 
@@ -690,12 +730,15 @@ export default class Component extends Element {
   }
 
   rightDirection(direction) {
+    if (this.options.condensedMode) {
+      return false;
+    }
     return direction === 'right';
   }
 
-  getLabelInfo() {
+  getLabelInfo(isCondensed = false) {
     const isRightPosition = this.rightDirection(this.labelPositions[0]);
-    const isLeftPosition = this.labelPositions[0] === 'left';
+    const isLeftPosition = this.labelPositions[0] === 'left' || isCondensed;
     const isRightAlign = this.rightDirection(this.labelPositions[1]);
 
     let contentMargin = '';
@@ -803,9 +846,10 @@ export default class Component extends Element {
       this.options.inputsOnly) && !this.builderMode;
   }
 
-  get transform() {
-    return Templates.current.hasOwnProperty('transform')
-      ? Templates.current.transform.bind(Templates.current)
+  transform(type, value) {
+    const frameworkTemplates = this.options.template ? Templates.templates[this.options.template] : Templates.current;
+    return frameworkTemplates.hasOwnProperty('transform')
+      ? frameworkTemplates.transform(type, value, this)
       : (type, value) => value;
   }
 
@@ -874,10 +918,13 @@ export default class Component extends Element {
     return null;
   }
 
+  getFormattedAttribute(attr) {
+    return attr ? this.t(attr, { _userInput: true }).replace(/"/g, '&quot;') : '';
+  }
+
   getFormattedTooltip(tooltipValue) {
     const tooltip = this.interpolate(tooltipValue || '').replace(/(?:\r\n|\r|\n)/g, '<br />');
-
-    return tooltip ? this.t(tooltip, { _userInput: true }).replace(/"/g, '&quot;') : '';
+    return this.getFormattedAttribute(tooltip);
   }
 
   isHtmlRenderMode() {
@@ -894,7 +941,7 @@ export default class Component extends Element {
     data.iconClass = this.iconClass.bind(this);
     data.size = this.size.bind(this);
     data.t = this.t.bind(this);
-    data.transform = this.transform;
+    data.transform = this.transform.bind(this);
     data.id = data.id || this.id;
     data.key = data.key || this.key;
     data.value = data.value || this.dataValue;
@@ -906,7 +953,7 @@ export default class Component extends Element {
       pass pre-compiled template A (use this.renderTemplate('template_A_name') as template context variable for template B`);
       return this.renderTemplate(...args);
     };
-    data.label = this.labelInfo;
+    data.label = data.labelInfo || this.labelInfo;
     data.tooltip = this.getFormattedTooltip(this.component.tooltip);
 
     // Allow more specific template names
@@ -932,12 +979,16 @@ export default class Component extends Element {
    * @param string
    * @returns {*}
    */
-  sanitize(dirty, forceSanitize) {
+  sanitize(dirty, forceSanitize, options) {
     // No need to sanitize when generating PDF'S since no users interact with the form.
     if ((!this.shouldSanitizeValue && !forceSanitize) || ((this.options.pdf) && !forceSanitize)) {
       return dirty;
     }
-    return FormioUtils.sanitize(dirty, this.options);
+    return FormioUtils.sanitize(
+      dirty,
+      {
+        sanitizeConfig: _.merge(this.options?.sanitizeConfig || {}, options || {}),
+      });
   }
 
   /**
@@ -1032,13 +1083,44 @@ export default class Component extends Element {
     return this.options.submissionTimezone;
   }
 
+  get timezone() {
+    return this.getTimezone(this.component);
+  }
+
+  getTimezone(settings) {
+    if (settings.timezone) {
+      return settings.timezone;
+    }
+    if (settings.displayInTimezone === 'utc') {
+      return 'UTC';
+    }
+    const submissionTimezone = this.submissionTimezone;
+    if (
+      submissionTimezone &&
+      (
+        (settings.displayInTimezone === 'submission') ||
+        ((this.options.pdf || this.options.server) && (settings.displayInTimezone === 'viewer'))
+      )
+    ) {
+      return submissionTimezone;
+    }
+
+    // Return current timezone if none are provided.
+    return currentTimezone();
+  }
+
   loadRefs(element, refs) {
     for (const ref in refs) {
-      if (refs[ref] === 'single') {
-        this.refs[ref] = element.querySelector(`[ref="${ref}"]`);
+      const refType = refs[ref];
+      const isString = typeof refType === 'string';
+
+      const selector = isString && refType.includes('scope') ? `:scope > [ref="${ref}"]` : `[ref="${ref}"]`;
+
+      if (isString && refType.startsWith('single')) {
+        this.refs[ref] = element.querySelector(selector);
       }
       else {
-        this.refs[ref] = element.querySelectorAll(`[ref="${ref}"]`);
+        this.refs[ref] = element.querySelectorAll(selector);
       }
     }
   }
@@ -1054,9 +1136,16 @@ export default class Component extends Element {
       message: this.error.message,
     } : '';
 
+    let modalLabel;
+
+    if (this.hasInput && this.component.validate?.required && !this.isPDFReadOnlyMode) {
+      modalLabel = { className: 'field-required' };
+    }
+
     return this.renderTemplate('modalPreview', {
       previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value'),
-      messages: message && this.renderTemplate('message', message)
+      messages: message && this.renderTemplate('message', message),
+      labelInfo: modalLabel,
     });
   }
 
@@ -1104,16 +1193,13 @@ export default class Component extends Element {
         const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
                                 .replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-        this.tooltips[index] = new Tooltip(tooltip, {
-          trigger: 'hover click focus',
+        this.tooltips[index] = tippy(tooltip, {
+          allowHTML: true,
+          trigger: 'mouseenter click focus',
           placement: 'right',
-          html: true,
-          title: this.t(tooltipText, { _userInput: true }),
-          template: `
-            <div class="tooltip" style="opacity: 1;" role="tooltip">
-              <div class="tooltip-arrow"></div>
-              <div class="tooltip-inner"></div>
-            </div>`,
+          zIndex: 10000,
+          interactive: true,
+          content: this.t(tooltipText, { _userInput: true }),
         });
       }
     });
@@ -1135,7 +1221,7 @@ export default class Component extends Element {
     }
 
     this.attached = true;
-    this.element = element;
+    this.setElement(element);
     element.component = this;
 
     // If this already has an id, get it from the dom. If SSR, it could be different from the initiated id.
@@ -1209,11 +1295,22 @@ export default class Component extends Element {
    * Remove all event handlers.
    */
   detach() {
+    // First iterate through each ref and delete the component so there are no dangling component references.
+    _.each(this.refs, (ref) => {
+      if (typeof ref === NodeList) {
+        ref.forEach((elem) => {
+          delete elem.component;
+        });
+      }
+      else if (ref) {
+        delete ref.component;
+      }
+    });
     this.refs = {};
     this.removeEventListeners();
     this.detachLogic();
     if (this.tooltip) {
-      this.tooltip.dispose();
+      this.tooltip.destroy();
     }
   }
 
@@ -1305,10 +1402,18 @@ export default class Component extends Element {
     return this.options.readOnly && this.options.viewAsHtml;
   }
 
+  setElement(element) {
+    if (this.element) {
+      delete this.element.component;
+      delete this.element;
+    }
+    this.element = element;
+  }
+
   createViewOnlyElement() {
-    this.element = this.ce('dl', {
+    this.setElement(this.ce('dl', {
       id: this.id
-    });
+    }));
 
     if (this.element) {
       // Ensure you can get the component info from the element.
@@ -1389,7 +1494,7 @@ export default class Component extends Element {
    * @return {*}
    */
   itemValue(data, forceUseValue = false) {
-    if (_.isObject(data)) {
+    if (_.isObject(data) && !_.isArray(data)) {
       if (this.valueProperty) {
         return _.get(data, this.valueProperty);
       }
@@ -1468,7 +1573,7 @@ export default class Component extends Element {
    * @returns {string} - The class name of this component.
    */
   get className() {
-    let className = this.hasInput ? 'form-group has-feedback ' : '';
+    let className = this.hasInput ? `${this.transform('class', 'form-group')} has-feedback `: '';
     className += `formio-component formio-component-${this.component.type} `;
     // TODO: find proper way to avoid overriding of default type-based component styles
     if (this.key && this.key !== 'form') {
@@ -1616,9 +1721,9 @@ export default class Component extends Element {
     return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] :  type;
   }
 
-  setContent(element, content, forceSanitize) {
+  setContent(element, content, forceSanitize, sanitizeOptions) {
     if (element instanceof HTMLElement) {
-      element.innerHTML = this.sanitize(content, forceSanitize);
+      element.innerHTML = this.sanitize(content, forceSanitize, sanitizeOptions);
       return true;
     }
     return false;
@@ -1658,7 +1763,7 @@ export default class Component extends Element {
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
     this.element.outerHTML = this.sanitize(this.render());
-    this.element = parent.children[index];
+    this.setElement(parent.children[index]);
     return this.attach(this.element);
   }
 
@@ -1671,7 +1776,7 @@ export default class Component extends Element {
 
   removeEventListeners() {
     super.removeEventListeners();
-    this.tooltips.forEach(tooltip => tooltip.dispose());
+    this.tooltips.forEach(tooltip => tooltip.destroy());
     this.tooltips = [];
   }
 
@@ -1897,7 +2002,7 @@ export default class Component extends Element {
             }
           );
 
-          if (!_.isEqual(oldValue, newValue)) {
+          if (!_.isEqual(oldValue, newValue) && !(this.component.clearOnHide && !this.visible)) {
             this.setValue(newValue);
 
             if (this.viewOnly) {
@@ -1942,7 +2047,7 @@ export default class Component extends Element {
           },
           'value');
 
-          if (!_.isEqual(oldValue, newValue)) {
+          if (!_.isEqual(oldValue, newValue) && !(this.component.clearOnHide && !this.visible)) {
             this.setValue(newValue);
 
             if (this.viewOnly) {
@@ -1997,8 +2102,12 @@ export default class Component extends Element {
     messages = _.uniqBy(messages, message => message.message);
 
     if (this.refs.messageContainer) {
-      this.setContent(this.refs.messageContainer, messages.map((message) =>
-        this.renderTemplate('message', message)
+      this.setContent(this.refs.messageContainer, messages.map((message) => {
+        if (message.message && typeof message.message === 'string') {
+          message.message = message.message.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+        }
+        return this.renderTemplate('message', message);
+      }
       ).join(''));
     }
   }
@@ -2178,7 +2287,7 @@ export default class Component extends Element {
       'ckeditor',
       isIEBrowser ? 'CKEDITOR' : 'ClassicEditor',
       _.get(this.options, 'editors.ckeditor.src',
-      CKEDITOR_URL
+      `${Formio.cdn.ckeditor}/ckeditor.js`
     ), true)
       .then(() => {
         if (!element.parentNode) {
@@ -2210,13 +2319,13 @@ export default class Component extends Element {
     };
     // Lazy load the quill css.
     Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
-      { type: 'styles', src: `${QUILL_URL}/quill.${settings.theme}.css` }
+      { type: 'styles', src: `${Formio.cdn.quill}/quill.${settings.theme}.css` }
     ], true);
 
     // Lazy load the quill library.
-    return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${QUILL_URL}/quill.min.js`), true)
+    return Formio.requireLibrary('quill', 'Quill', _.get(this.options, 'editors.quill.src', `${Formio.cdn.quill}/quill.min.js`), true)
       .then(() => {
-        return Formio.requireLibrary('quill-table', 'Quill', QUILL_TABLE_URL, true)
+        return Formio.requireLibrary('quill-table', 'Quill', `${Formio.cdn.baseUrl}/quill/quill-table.js`, true)
           .then(() => {
             if (!element.parentNode) {
               return NativePromise.reject();
@@ -2232,7 +2341,7 @@ export default class Component extends Element {
               this.addEventListener(qlSource, 'click', (event) => {
                 event.preventDefault();
                 if (txtArea.style.display === 'inherit') {
-                  this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
+                  this.quill.setContents(this.quill.clipboard.convert({ html: txtArea.value }));
                 }
                 txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
               });
@@ -2271,7 +2380,7 @@ export default class Component extends Element {
       }
     }
     settings = _.merge(this.wysiwygDefault.ace, _.get(this.options, 'editors.ace.settings', {}), settings || {});
-    return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', ACE_URL), true)
+    return Formio.requireLibrary('ace', 'ace', _.get(this.options, 'editors.ace.src', `${Formio.cdn.ace}/ace.js`), true)
       .then((editor) => {
         editor = editor.edit(element);
         editor.removeAllListeners('change');
@@ -2303,7 +2412,7 @@ export default class Component extends Element {
    *
    */
   hasValue(data) {
-    return _.has(data || this.data, this.key);
+    return !_.isUndefined(_.get(data || this.data, this.key));
   }
 
   /**
@@ -2597,9 +2706,11 @@ export default class Component extends Element {
   updateComponentValue(value, flags = {}) {
     let newValue = (!flags.resetValue && (value === undefined || value === null)) ? this.getValue() : value;
     newValue = this.normalizeValue(newValue, flags);
-    const changed = ((newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false);
+    const oldValue = this.dataValue;
+    let changed = ((newValue !== undefined) ? this.hasChanged(newValue, oldValue) : false);
     if (changed) {
       this.dataValue = newValue;
+      changed = this.dataValue !== oldValue;
       this.updateOnChange(flags, changed);
     }
     if (this.componentModal && flags && flags.fromSubmission) {
@@ -2697,11 +2808,19 @@ export default class Component extends Element {
       return this.evaluate(this.component.calculateValue, {
         value: dataValue,
         data,
-        row: row || this.data
+        row: row || this.data,
+        submission: this.root?._submission || {
+          data: this.rootValue
+        }
       }, 'value');
   }
 
+  /* eslint-disable max-statements */
   calculateComponentValue(data, flags, row) {
+    // Skip value calculation for the component if we don't have entire form data set
+    if (_.isUndefined(_.get(this, 'root.data'))) {
+      return false;
+    }
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
     const { clearOnHide } = this.component;
@@ -2710,7 +2829,7 @@ export default class Component extends Element {
 
     // Handle all cases when calculated values should not fire.
     if (
-      (this.options.readOnly && !this.options.pdf) ||
+      (this.options.readOnly && !this.options.pdf && !this.component.calculateValue) ||
       !(this.component.calculateValue || this.component.calculateValueVariable) ||
       shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
@@ -2731,14 +2850,26 @@ export default class Component extends Element {
 
     // Do not override calculations on server if they have calculateServer set.
     if (allowOverride) {
+      // The value is considered locked if it is not empty and comes from a submission value.
+      const fromSubmission = (flags.fromSubmission && this.component.persistent === true);
+      if (this.isEmpty(dataValue)) {
+        // Reset the calculation lock if ever the data is cleared.
+        this.calculationLocked = false;
+      }
+      else if (this.calculationLocked || fromSubmission) {
+        this.calculationLocked = true;
+        return false;
+      }
+
       const firstPass = (this.calculatedValue === undefined);
       if (firstPass) {
         this.calculatedValue = null;
       }
       const newCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(calculatedValue));
       const previousCalculatedValue = this.normalizeValue(this.convertNumberOrBoolToString(this.calculatedValue));
+      const normalizedDataValue = this.normalizeValue(this.convertNumberOrBoolToString(dataValue));
       const calculationChanged = !_.isEqual(previousCalculatedValue, newCalculatedValue);
-      const previousChanged = !_.isEqual(dataValue, previousCalculatedValue);
+      const previousChanged = !_.isEqual(normalizedDataValue, previousCalculatedValue);
 
       if (calculationChanged && previousChanged && !firstPass) {
         return false;
@@ -2753,11 +2884,11 @@ export default class Component extends Element {
         return false;
       }
 
-    if (flags.fromSubmission && this.component.persistent === true) {
-      // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
-      this.calculatedValue = calculatedValue;
-      return false;
-    }
+      if (fromSubmission) {
+        // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
+        this.calculatedValue = calculatedValue;
+        return false;
+      }
 
       // If this is the firstPass, and the dataValue is different than to the calculatedValue.
       if (firstPass && !this.isEmpty(dataValue) && changed && calculationChanged) {
@@ -2778,6 +2909,7 @@ export default class Component extends Element {
     }
     return false;
   }
+  /* eslint-enable max-statements */
 
   /**
    * Performs calculations in this component plus any child components.
@@ -2858,7 +2990,7 @@ export default class Component extends Element {
 
   setComponentValidity(messages, dirty, silentCheck) {
     const hasErrors = !!messages.filter(message => message.level === 'error' && !message.fromServer).length;
-    if (messages.length && (!silentCheck || this.error) && (dirty || !this.pristine)) {
+    if (messages.length && (!silentCheck || this.error) && (!this.isEmpty(this.defaultValue) || dirty || !this.pristine)) {
       this.setCustomValidity(messages, dirty);
     }
     else if (!silentCheck) {
@@ -3027,6 +3159,39 @@ export default class Component extends Element {
     });
   }
 
+  addFocusBlurEvents(element) {
+    this.addEventListener(element, 'focus', () => {
+      if (this.root.focusedComponent !== this) {
+        if (this.root.pendingBlur) {
+          this.root.pendingBlur();
+        }
+
+        this.root.focusedComponent = this;
+
+        this.emit('focus', this);
+      }
+      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+        this.root.pendingBlur.cancel();
+        this.root.pendingBlur = null;
+      }
+    });
+    this.addEventListener(element, 'blur', () => {
+      this.root.pendingBlur = FormioUtils.delay(() => {
+        this.emit('blur', this);
+        if (this.component.validateOn === 'blur') {
+          this.root.triggerChange({ fromBlur: true }, {
+            instance: this,
+            component: this.component,
+            value: this.dataValue,
+            flags: { fromBlur: true }
+          });
+        }
+        this.root.focusedComponent = null;
+        this.root.pendingBlur = null;
+      });
+    });
+  }
+
   setCustomValidity(messages, dirty, external) {
     const inputRefs = this.isInputComponent ? this.refs.input || [] : null;
 
@@ -3054,6 +3219,8 @@ export default class Component extends Element {
       inputRefsArray.forEach((input) => {
         this.setElementInvalid(this.performInputMapping(input), false);
       });
+      this.setInputWidgetErrorClasses(inputRefsArray, false);
+
       invalidInputRefs = inputRefsArray.filter((ref) => {
         return messages.some?.((msg) => {
           return msg?.context?.input === ref;
@@ -3076,7 +3243,7 @@ export default class Component extends Element {
         this.setErrorClasses(invalidInputRefs, dirty, hasErrors, !!messages.length);
       }
     }
-    else if (this.error && this.error.external === !!external) {
+    else if (!this.error || (this.error && this.error.external === !!external)) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
       }
@@ -3108,6 +3275,9 @@ export default class Component extends Element {
    * @return {boolean|*}
    */
   isValueHidden() {
+    if (this.component.protected && this.root.editing) {
+      return false;
+    }
     if (!this.root || !this.root.hasOwnProperty('editing')) {
       return false;
     }
@@ -3119,6 +3289,8 @@ export default class Component extends Element {
 
   shouldSkipValidation(data, dirty, row) {
     const rules = [
+      // Do not check custom validation for empty data if it is not required
+      () => this.component.validate.custom && !this.dataValue && !this.component.validate.required,
       // Force valid if component is read-only
       () => this.options.readOnly,
       // Do not check validations if component is not an input component.

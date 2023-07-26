@@ -1,6 +1,6 @@
 import { maskInput, conformToMask } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
-import { createNumberMask } from 'text-mask-addons';
+import { createNumberMask } from '@formio/text-mask-addons';
 import Input from '../_classes/input/Input';
 import { getNumberSeparators, getNumberDecimalLimit } from '../../utils/utils';
 
@@ -24,7 +24,7 @@ export default class NumberComponent extends Input {
       title: 'Number',
       icon: 'hashtag',
       group: 'basic',
-      documentation: '/userguide/#number',
+      documentation: '/userguide/form-building/form-components#number',
       weight: 30,
       schema: NumberComponent.schema()
     };
@@ -97,10 +97,6 @@ export default class NumberComponent extends Input {
     return defaultValue;
   }
 
-  get emptyValue() {
-    return '';
-  }
-
   isDecimalAllowed() {
     return _.get(this.component, 'allowDecimal', !(this.component.validate && this.component.validate.integer));
   }
@@ -149,8 +145,7 @@ export default class NumberComponent extends Input {
     }
 
     const val = this.refs.input[index].value;
-    // Check if just '-' was entered
-    return val && val !== '-_' ? this.parseNumber(val) : this.emptyValue;
+    return val && val !== '-_' ? this.parseNumber(val) : null;
   }
 
   setValueAt(index, value, flags = {}) {
@@ -208,7 +203,7 @@ export default class NumberComponent extends Input {
     }
     value = this.getWidgetValueAsString(value, options);
     if (Array.isArray(value)) {
-      return value.map(this.getMaskedValue).join(', ');
+      return value.map((val) => this.getMaskedValue(val)).join(', ');
     }
     return this.getMaskedValue(value);
   }
