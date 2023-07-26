@@ -1163,6 +1163,9 @@ export default class WebformBuilder extends Component {
         _.assign(defaultValueComponent.component, _.omit({ ...component }, [
           'key',
           'label',
+          'labelPosition',
+          'labelMargin',
+          'labelWidth',
           'placeholder',
           'tooltip',
           'hidden',
