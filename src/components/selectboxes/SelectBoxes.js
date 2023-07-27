@@ -185,6 +185,10 @@ export default class SelectBoxesComponent extends RadioComponent {
     if (!value) {
       return '';
     }
+
+    if (this.isSelectURL) {
+      return _(value).pickBy((val) => val).keys().join(', ');
+    }
     return _(this.component.values || [])
       .filter((v) => value[v.value])
       .map('label')
