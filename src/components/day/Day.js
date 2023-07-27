@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import Field from '../_classes/field/Field';
 import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
 
@@ -37,6 +38,32 @@ export default class DayComponent extends Field {
       documentation: '/userguide/form-building/advanced-components#day',
       weight: 50,
       schema: DayComponent.schema()
+    };
+  }
+
+  constructor(component, options, data) {
+    if (component.maxDate) {
+      component.maxDate = moment(component.maxDate, 'YYYY-MM-DD').toISOString();
+    }
+    if (component.minDate) {
+      component.minDate = moment(component.minDate, 'YYYY-MM-DD').toISOString();
+    }
+    super(component, options, data);
+  }
+
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      operators: [
+        'isDateEqual',
+        'isNotDateEqual',
+        'isEmpty',
+        'isNotEmpty',
+        'dateLessThan',
+        'dateGreaterThan',
+        'dateLessThanOrEqual',
+        'dateGreaterThanOrEqual',
+      ],
     };
   }
 
@@ -518,19 +545,12 @@ export default class DayComponent extends Field {
     return this.getDate();
   }
 
-  normalizeMinMaxDates() {
-   return [this.component.minDate, this.component.maxDate]
-      .map(date => date ? date.split('-').reverse().join('/') : date);
-  }
-
   /**
    * Return the raw value.
    *
    * @returns {Date}
    */
   get validationValue() {
-    [this.component.minDate, this.component.maxDate] = this.dayFirst ? this.normalizeMinMaxDates()
-      : [this.component.minDate, this.component.maxDate];
     return this.dataValue;
   }
 

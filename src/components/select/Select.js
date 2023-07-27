@@ -2,13 +2,8 @@ import _ from 'lodash';
 import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Form from '../../Form';
-import NativePromise from 'native-promise-only';
 import { getRandomComponentId, boolValue, isPromise } from '../../utils/utils';
-
-let Choices;
-if (typeof window !== 'undefined') {
-  Choices = require('../../utils/ChoicesWrapper').default;
-}
+import Choices from '../../utils/ChoicesWrapper';
 
 export default class SelectComponent extends ListComponent {
   static schema(...extend) {
@@ -61,6 +56,15 @@ export default class SelectComponent extends ListComponent {
     };
   }
 
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      valueComponent(classComp) {
+        return { ...classComp, type: 'select' };
+      },
+    };
+  }
+
   init() {
     super.init();
     this.templateData = {};
@@ -77,7 +81,7 @@ export default class SelectComponent extends ListComponent {
       if (typeof this.itemsLoadedResolve === 'function') {
         this.itemsLoadedResolve();
       }
-      this.itemsLoaded = new NativePromise((resolve) => {
+      this.itemsLoaded = new Promise((resolve) => {
         this.itemsLoadedResolve = resolve;
       });
       if (args.length) {
@@ -103,7 +107,7 @@ export default class SelectComponent extends ListComponent {
 
     // If this component has been activated.//
     this.activated = false;
-    this.itemsLoaded = new NativePromise((resolve) => {
+    this.itemsLoaded = new Promise((resolve) => {
       this.itemsLoadedResolve = resolve;
     });
 
@@ -123,7 +127,7 @@ export default class SelectComponent extends ListComponent {
       this.root.submissionSet &&
       !this.attached
     ) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
     return this.itemsLoaded;
   }
@@ -221,7 +225,7 @@ export default class SelectComponent extends ListComponent {
       return this.sanitize(value, this.shouldSanitizeValue);
     }
 
-    if (this.component.multiple ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
+    if (this.component.multiple && _.isArray(this.dataValue) ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
       const selectData = this.selectData;
       if (selectData) {
         const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
@@ -506,52 +510,8 @@ export default class SelectComponent extends ListComponent {
     return defaultValue;
   }
 
-  getTemplateKeys() {
-    this.templateKeys = [];
-    if (this.options.readOnly && this.component.template) {
-      const keys = this.component.template.match(/({{\s*(.*?)\s*}})/g);
-      if (keys) {
-        keys.forEach((key) => {
-          const propKey = key.match(/{{\s*item\.(.*?)\s*}}/);
-          if (propKey && propKey.length > 1) {
-            this.templateKeys.push(propKey[1]);
-          }
-        });
-      }
-    }
-  }
-
   get loadingError() {
     return !this.component.refreshOn && !this.component.refreshOnBlur && this.networkError;
-  }
-
-  get selectData() {
-    const selectData = _.get(this.root, 'submission.metadata.selectData', {});
-    return _.get(selectData, this.path);
-  }
-
-  get shouldLoad() {
-    if (this.loadingError) {
-      return false;
-    }
-    // Live forms should always load.
-    if (!this.options.readOnly) {
-      return true;
-    }
-
-    // If there are template keys, then we need to see if we have the data.
-    if (this.templateKeys && this.templateKeys.length) {
-      // See if we already have the data we need.
-      const dataValue = this.dataValue;
-      const selectData = this.selectData;
-      return this.templateKeys.reduce((shouldLoad, key) => {
-        const hasValue = _.has(dataValue, key) || _.has(selectData, key);
-        return shouldLoad || !hasValue;
-      }, false);
-    }
-
-    // Return that we should load.
-    return true;
   }
 
   loadItems(url, search, headers, options, method, body) {
@@ -1099,7 +1059,7 @@ export default class SelectComponent extends ListComponent {
     const items = this.choices._store.activeItems;
     if (!items.length) {
       this.choices._addItem({
-        value: placeholderValue,
+        value: '',
         label: placeholderValue,
         choiceId: 0,
         groupId: -1,
@@ -1291,7 +1251,7 @@ export default class SelectComponent extends ListComponent {
         if (this.component.multiple) {
           templateData = {};
           const dataValue = this.dataValue;
-          if (dataValue && dataValue.length) {
+          if (dataValue && _.isArray(dataValue) && dataValue.length) {
             dataValue.forEach((dataValueItem) => {
               const dataValueItemValue = this.component.reference ? dataValueItem._id.toString() : dataValueItem;
               templateData[dataValueItemValue] = this.templateData[dataValueItemValue];
@@ -1376,7 +1336,7 @@ export default class SelectComponent extends ListComponent {
 
   setValue(value, flags = {}) {
     const previousValue = this.dataValue;
-    if (this.component.widget === 'html5' && (_.isEqual(value, previousValue) || _.isEqual(previousValue, {}) && _.isEqual(flags, {}))) {
+    if (this.component.widget === 'html5' && (_.isEqual(value, previousValue) || _.isEqual(previousValue, {}) && _.isEqual(flags, {})) && !flags.fromSubmission ) {
       return false;
     }
     const changed = this.updateValue(value, flags);
@@ -1461,7 +1421,8 @@ export default class SelectComponent extends ListComponent {
     else {
       if (hasValue) {
         const values = Array.isArray(value) ? value : [value];
-        if (!_.isEqual(this.dataValue, this.defaultValue) && this.selectOptions.length < 2) {
+        if (!_.isEqual(this.dataValue, this.defaultValue) && this.selectOptions.length < 2
+        || (this.selectData && flags.fromSubmission)) {
           const { value, label } = this.selectValueAndLabel(this.dataValue);
           this.addOption(value, label);
         }
@@ -1490,7 +1451,7 @@ export default class SelectComponent extends ListComponent {
   }
 
   get itemsLoaded() {
-    return this._itemsLoaded || NativePromise.resolve();
+    return this._itemsLoaded || Promise.resolve();
   }
 
   set itemsLoaded(promise) {

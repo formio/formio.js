@@ -1,9 +1,5 @@
 import Input from '../_classes/input/Input';
-
-let Choices;
-if (typeof window !== 'undefined') {
-  Choices = require('@formio/choices.js');
-}
+import Choices from '@formio/choices.js';
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -25,6 +21,13 @@ export default class TagsComponent extends Input {
       documentation: '/userguide/form-building/advanced-components#tags',
       weight: 30,
       schema: TagsComponent.schema()
+    };
+  }
+
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      operators: [...super.serverConditionSettings.operators, 'includes', 'notIncludes'],
     };
   }
 

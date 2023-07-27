@@ -26,15 +26,27 @@ export default class CheckBoxComponent extends Field {
     };
   }
 
-  get defaultSchema() {
-    return CheckBoxComponent.schema();
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      operators: ['isEqual'],
+      valueComponent() {
+        return {
+          valueType: 'boolean',
+          data: {
+            values: [
+              { label: 'Checked', value: 'true' },
+              { label: 'Not Checked', value: 'false' },
+            ]
+          },
+          type: 'select',
+        };
+      },
+    };
   }
 
-  get defaultValue() {
-    const { name } = this.component;
-    const defaultValue = super.defaultValue;
-
-    return name ? (this.component[name] || this.emptyValue) : (defaultValue || this.component.defaultValue || false).toString() === 'true';
+  get defaultSchema() {
+    return CheckBoxComponent.schema();
   }
 
   get labelClass() {
@@ -186,6 +198,9 @@ export default class CheckBoxComponent extends Field {
   getValueAsString(value) {
     const { name: componentName, value: componentValue } = this.component;
     const hasValue = componentName ? _.isEqual(value, componentValue) : value;
+    if (_.isUndefined(value) && this.inDataTable) {
+      return '';
+    }
 
     return this.t(hasValue ? 'Yes' : 'No');
   }

@@ -16,6 +16,18 @@ export default class TimeComponent extends TextFieldComponent {
     }, ...extend);
   }
 
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      valueComponent(classComp) {
+        return {
+          ...classComp,
+          type: 'time',
+        };
+      },
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     const { edge: isEdgeBrowser, version: edgeVersion } = getBrowserInfo();
@@ -38,7 +50,7 @@ export default class TimeComponent extends TextFieldComponent {
       title: 'Time',
       icon: 'clock-o',
       group: 'advanced',
-      documentation: '/userguide/form-building/advanced-components#time',
+      documentation: '/userguide/form-building/advanced-components#time-1',
       weight: 55,
       schema: TimeComponent.schema(),
     };

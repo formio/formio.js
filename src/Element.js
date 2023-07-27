@@ -1,7 +1,7 @@
 import EventEmitter from './EventEmitter';
 import { Formio } from './Formio';
 import * as FormioUtils from './utils/utils';
-import i18next from 'i18next';
+import { I18n } from './utils/i18n';
 import _ from 'lodash';
 import moment from 'moment';
 import maskInput from '@formio/vanilla-text-mask';
@@ -37,7 +37,11 @@ export default class Element {
     this.eventHandlers = [];
 
     // Use the i18next that is passed in, otherwise use the global version.
-    this.i18next = this.options.i18next || i18next;
+    this.options.i18n = this.options.i18n || {};
+    if (this.options?.language) {
+      this.options.i18n.language = this.options.language;
+    }
+    this.options.i18next = this.i18next = this.options.i18next || I18n.init(this.options.i18n);
 
     /**
      * An instance of the EventEmitter class to handle the emitting and registration of events.

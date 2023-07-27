@@ -1,7 +1,6 @@
 /* global Quill */
 import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
 import { uniqueName, getBrowserInfo } from '../../utils/utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
@@ -130,7 +129,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       : this.component.wysiwyg;
 
     // Keep track of when this editor is ready.
-    this.editorsReady[index] = new NativePromise((editorReady) => {
+    this.editorsReady[index] = new Promise((editorReady) => {
       // Attempt to add a wysiwyg editor. In order to add one, it must be included on the global scope.
       switch (this.component.editor) {
         case 'ace':
@@ -327,7 +326,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         this.setConvertedValue(value);
       return super.setValue(value, flags);
     }
-    flags.skipWysiwyg = _.isEqual(value, this.getValue());
+    flags.skipWysiwyg = value === '' && flags.resetValue ? false : _.isEqual(value, this.getValue());
     return super.setValue(value, flags);
   }
 
@@ -398,12 +397,12 @@ export default class TextAreaComponent extends TextFieldComponent {
         });
     }
     else {
-      return NativePromise.resolve(value);
+      return Promise.resolve(value);
     }
   }
 
   setImagesUrl(images) {
-    return NativePromise.all(_.map(images, image => {
+    return Promise.all(_.map(images, image => {
       let requestData;
       try {
         requestData = JSON.parse(image.getAttribute('alt'));
