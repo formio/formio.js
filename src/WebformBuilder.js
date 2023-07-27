@@ -1404,7 +1404,9 @@ export default class WebformBuilder extends Component {
         }
       ]
     } : ComponentClass.editForm(_.cloneDeep(overrides));
-    const instanceOptions = {};
+    const instanceOptions = {
+      inFormBuilder: true,
+    };
 
     this.hook('instanceOptionsPreview', instanceOptions);
 
