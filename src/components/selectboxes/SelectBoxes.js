@@ -231,43 +231,43 @@ export default class SelectBoxesComponent extends RadioComponent {
   checkComponentValidity(data, dirty, rowData, options) {
     const minCount = this.component.validate.minSelectedCount;
     const maxCount = this.component.validate.maxSelectedCount;
-    const isValid = this.isValid(data, dirty);
+    if (!this.shouldSkipValidation(data, dirty, rowData)) {
+      const isValid = this.isValid(data, dirty);
+      if ((maxCount || minCount)) {
+        const count = Object.keys(this.validationValue).reduce((total, key) => {
+          if (this.validationValue[key]) {
+            total++;
+          }
+          return total;
+        }, 0);
 
-    if ((maxCount || minCount) && !this.shouldSkipValidation(data, dirty, rowData)) {
-      const count = Object.keys(this.validationValue).reduce((total, key) => {
-        if (this.validationValue[key]) {
-          total++;
+        // Disable the rest of inputs if the max amount is already checked
+        if (maxCount && count >= maxCount) {
+          this.setInputsDisabled(true, true);
         }
-        return total;
-      }, 0);
+        else if (maxCount && !this.shouldDisabled) {
+          this.setInputsDisabled(false);
+        }
 
-      // Disable the rest of inputs if the max amount is already checked
-      if (maxCount && count >= maxCount) {
-        this.setInputsDisabled(true, true);
-      }
-      else if (maxCount && !this.shouldDisabled) {
-        this.setInputsDisabled(false);
-      }
-
-      if (!isValid && maxCount && count > maxCount) {
-        const message = this.t(
-          this.component.maxSelectedCountMessage || 'You can only select up to {{maxCount}} items.',
-          { maxCount }
-        );
-        this.setCustomValidity(message, dirty);
-        return false;
-      }
-      else if (!isValid && minCount && count < minCount) {
-        this.setInputsDisabled(false);
-        const message = this.t(
-          this.component.minSelectedCountMessage || 'You must select at least {{minCount}} items.',
-          { minCount }
-        );
-        this.setCustomValidity(message, dirty);
-        return false;
+        if (!isValid && maxCount && count > maxCount) {
+          const message = this.t(
+            this.component.maxSelectedCountMessage || 'You can only select up to {{maxCount}} items.',
+            { maxCount }
+          );
+          this.setCustomValidity(message, dirty);
+          return false;
+        }
+        else if (!isValid && minCount && count < minCount) {
+          this.setInputsDisabled(false);
+          const message = this.t(
+            this.component.minSelectedCountMessage || 'You must select at least {{minCount}} items.',
+            { minCount }
+          );
+          this.setCustomValidity(message, dirty);
+          return false;
+        }
       }
     }
-
     return super.checkComponentValidity(data, dirty, rowData, options);
   }
 }
