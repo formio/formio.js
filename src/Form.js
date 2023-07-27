@@ -67,6 +67,49 @@ export default class Form extends Element {
     this.display = '';
   }
 
+  createElement(tag, attrs, children) {
+    const element = document.createElement(tag);
+    for (const attr in attrs) {
+      if (attrs.hasOwnProperty(attr)) {
+        element.setAttribute(attr, attrs[attr]);
+      }
+    }
+    (children || []).forEach(child => {
+      element.appendChild(this.createElement(child.tag, child.attrs, child.children));
+    });
+    return element;
+  }
+
+  set loading(load) {
+    if (!this.element || this.options.noLoader) {
+      return;
+    }
+    if (load) {
+      if (this.loader) {
+        return;
+      }
+      this.loader = this.createElement('div', {
+        'class': 'formio-loader'
+      }, [{
+        tag: 'div',
+        attrs: {
+          class: 'loader-wrapper'
+        },
+        children: [{
+          tag: 'div',
+          attrs: {
+            class: 'loader text-center'
+          }
+        }]
+      }]);
+      this.element.appendChild(this.loader);
+    }
+    else if (this.loader) {
+      this.element.removeChild(this.loader);
+      this.loader = null;
+    }
+  }
+
   /**
    * Create a new form instance provided the display of the form.
    *
@@ -125,6 +168,7 @@ export default class Form extends Element {
     if (typeof formParam === 'string') {
       const formio = new Formio(formParam);
       let error;
+      this.loading = true;
       result = this.getSubmission(formio, this.options)
         .catch((err) => {
           error = err;
@@ -140,6 +184,7 @@ export default class Form extends Element {
               if (error) {
                 form = this.errorForm(error);
               }
+              this.loading = false;
               this.instance = this.instance || this.create(form.display);
               this.instance.url = formParam;
               this.instance.nosubmit = false;

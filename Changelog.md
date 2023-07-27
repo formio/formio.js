@@ -4,7 +4,42 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0-rc.5]
+## [UNRELEASED - 5.0.0-rc.20]
+### Added
+ - Added mobile image, video, and camera capture feature. https://github.com/formio/formio.js/pull/4398
+ - Add submission as form creation option. https://github.com/formio/formio.js/pull/4580
+
+### Fixed
+ - fix issue: when submission.data doesn't exist, the submission.metadata is removed
+ - Default value for Radio and Checkbox components to set correctly.  https://github.com/formio/formio.js/pull/4464
+ - Edit Grid performance improvements. https://github.com/formio/formio.js/pull/4480
+ - FIO-4477: Errors on customer form creation/update
+ - Additional fix "The input element's type ('email') does not support selectionStart": https://github.com/formio/formio.js/pull/4704
+ - Remove pinning of db version for IndexDB: https://github.com/formio/formio.js/pull/4716
+ - Adding loader to createForm when src url is used. https://github.com/formio/formio.js/pull/4748
+ - Interpolate redirectURI in button oauth config. https://github.com/formio/formio.js/pull/4831
+ - Fix and cleanup form submission api error handling. https://github.com/formio/formio.js/pull/4841
+ - Hide removeItemButton on choicesjs select when the placeholder is selected. https://github.com/formio/formio.js/pull/4842
+ - use jQuery instead of $. https://github.com/formio/formio.js/pull/4854
+ - follow the error handling of executeSubmit(). https://github.com/formio/formio.js/pull/4863
+ - Multi upload: abort the correct file when clicking the cancel upload button. https://github.com/formio/formio.js/pull/4957
+ - Fix falsy currency defaults to USD. https://github.com/formio/formio.js/pull/4988
+ - FIO-3448: Fixed an issue where Keep overlay aspect ratio feature of the Signature component in PDF form does not work
+ - Fixed multilingual search. https://github.com/formio/formio.js/pull/5044
+ - FIO-3884 Improved column comparison by excluding the id.
+ - FIO-6408 Fixed Default value field getting the same label settings as the preview component
+ - FIO-6234: added submit button to the webform builder after switching from the wizard builder
+
+## 5.0.0-rc.6
+### Added
+ - FIO-5748: added collapsible preview for Form Builder
+  
+### Fixed
+ - FIO-6950: fixed test
+ - FIO-6669: fixed tooltips cutting off in the component settings modal
+ - FIO-6156: fixed help link for Time component
+
+## 5.0.0-rc.5
 ### Added
  - FIO-5986: added check for identical uploaded file
  - FIO-6453: added sanitization inside error message container
@@ -55,6 +90,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6604: fixed padding for Numbers inside Content
  - FIO-7030: Fixes an issue where Wizard pages are displayed in one line in the for builder
  - FIO-5857 Update flatpickr to a version with the latest changes
+ - FIO-7049: fixed data populating in the Data Table
+ - FIO-6840: change unique validation for email comps and certain textfield comps
+ - Task/remove dist lib docs
+ - FIO-7054: Fixes an issue where after saving Wizard Panel settings, some of them disappear
+ - FIO-7002: Fixing hide and show options to change visibility of components
+ - FIO-6659: added warnings for Tree and Resource
+ - FIO-5730: fixed template for Select on PDF download
+ - FIO-5303: fixed Edit and Delete buttons in readOnly
+ - Revert - FIO-4876: fixed the display of current submission for pdf download
 
 ## 5.0.0-rc.4
 ### Fixed

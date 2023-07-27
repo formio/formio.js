@@ -4,7 +4,7 @@ import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import Alert from '../alert/Alert';
 import { fastCloneDeep, Evaluator, getArrayFromComponentPath, eachComponent } from '../../utils/utils';
-import templates from './templates';
+import { editgrid as templates } from '@formio/bootstrap/components';
 
 const EditRowState = {
   New: 'new',
@@ -46,6 +46,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       icon: 'tasks',
       group: 'data',
       documentation: '/userguide/form-building/data-components#edit-grid',
+      showPreview: false,
       weight: 30,
       schema: EditGridComponent.schema(),
     };
@@ -550,7 +551,12 @@ export default class EditGridComponent extends NestedArrayComponent {
         }) => {
           const elements = row.getElementsByClassName(className);
           Array.prototype.forEach.call(elements, (element) => {
-            this.addEventListener(element, event, action);
+            if (this.options.readOnly && _.intersection(element.classList, ['editRow', 'removeRow']).length) {
+              element.style.display = 'none';
+            }
+            else {
+              this.addEventListener(element, event, action);
+            }
           });
         });
       }

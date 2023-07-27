@@ -321,13 +321,13 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags = {}) {
-    if (this.isPlain || this.options.readOnly || this.disabled || value === '') {
+    if (this.isPlain || this.options.readOnly || this.disabled) {
       value = (this.component.multiple && Array.isArray(value)) ?
         value.map((val, index) => this.setConvertedValue(val, index)) :
         this.setConvertedValue(value);
       return super.setValue(value, flags);
     }
-    flags.skipWysiwyg = _.isEqual(value, this.getValue());
+    flags.skipWysiwyg = value === '' && flags.resetValue ? false : _.isEqual(value, this.getValue());
     return super.setValue(value, flags);
   }
 

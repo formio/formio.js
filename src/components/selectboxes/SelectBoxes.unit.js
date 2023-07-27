@@ -58,6 +58,45 @@ describe('SelectBoxes Component', () => {
     });
   });
 
+  it('Should provide metadata.selectData for SelectBoxes component with URL DataSrc', (done) => {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        const values = [
+          { name : 'Alabama', abbreviation : 'AL' },
+          { name : 'Alaska', abbreviation: 'AK' },
+          { name: 'American Samoa', abbreviation: 'AS' }
+        ];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form => {
+      const selectBoxes = form.getComponent('selectBoxes');
+
+      setTimeout(()=>{
+        const value = { AL: false, AK: true, AS: true };
+        selectBoxes.setValue(value);
+        setTimeout(() => {
+          assert.equal(selectBoxes.dataValue, value);
+          const submit = form.getComponent('submit');
+          const clickEvent = new Event('click');
+          const submitBtn = submit.refs.button;
+          submitBtn.dispatchEvent(clickEvent);
+          setTimeout(() => {
+            assert.equal(_.isEqual(form.submission.metadata.selectData.selectBoxes, [{ name : 'Alaska' }, { name : 'American Samoa' }]), true);
+            assert.equal(form.submission.metadata.listData.selectBoxes.length, 3);
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          },200);
+        },200);
+      }, 200);
+    }).catch(done);
+  });
+
   describe('error messages', () => {
     it('Should have a minSelectedCount validation message', () => {
       const formJson = {

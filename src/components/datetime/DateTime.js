@@ -62,8 +62,15 @@ export default class DateTimeComponent extends Input {
     if (!this.component.enableDate) {
       this.component.format = this.component.format.replace(/yyyy-MM-dd /g, '');
     }
+    else if (this.component.enableDate && !/[yMd]/.test(this.component.format) && this.builderMode) {
+      this.component.format = `yyyy-MM-dd ${this.component.format}`;
+    }
+
     if (!this.component.enableTime) {
       this.component.format = this.component.format.replace(/ hh:mm a$/g, '');
+    }
+    else if (this.component.enableTime && !/[mhH]/.test(this.component.format) && this.builderMode) {
+      this.component.format = `${this.component.format} hh:mm a`;
     }
     else if (time24hr) {
       this.component.format = this.component.format.replace(/hh:mm a$/g, 'HH:mm');
