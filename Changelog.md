@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Added mobile image, video, and camera capture feature. https://github.com/formio/formio.js/pull/4398
  - Add submission as form creation option. https://github.com/formio/formio.js/pull/4580
+ - FIO-6630: Expanded Actions Logic UI
 
 ### Fixed
  - fix issue: when submission.data doesn't exist, the submission.metadata is removed
@@ -29,6 +30,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-3884 Improved column comparison by excluding the id.
  - FIO-6408 Fixed Default value field getting the same label settings as the preview component
  - FIO-6234: added submit button to the webform builder after switching from the wizard builder
+ - FI0-5429: added a condition to remove the decimal separator when the decimal digits are set to 0
+ - FIO-6735: added additional check to calculateComponentValue method
+ - FIO-6785: added style to ol and ul tag to html element and ckeditor fields.
+ - FIO-6807: fixed an issue with date time format after using enableDate or enableTime checkboxes
+ - FIO-3820: Ability to delete files inside the Storage Services
+ - FIO-6849: fixed issue where form components cannot be edited because of legacy format of multi select default value multiple values
+ - FIO-6974, FIO-6975: Removed some options from Currency and PhoneNumber settings that are not suited for the components
+ - FIO-6906: fixed value for Checkbox submission in Data Tab
+ - FIO-6919: fixed value for Signature submission in Data Tab
+ - FIO-7040: Enabled selectData for all List Based Components
+ - FIO-6933: Fixes for the formbuilder with keyboard actions
+ - FIO-7096: fixed adding components for PDF in the Microsoft Edge browser with Mac
+ - FIO-7035, FIO-7036: fixed issue with dragging layout resource component
+ - FIO-6841: fixed validation for hidden selectBoxes
+ - FIO-7043: Fixes an issue where {{}} values in DataSource headers are resolved in the form builder
 
 ## 5.0.0-rc.6
 ### Added
