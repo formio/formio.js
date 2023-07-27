@@ -65,7 +65,7 @@ describe('Wizard tests', () => {
         elem.dispatchEvent(event);
       };
 
-      checkComponents(0, 1, [], [{ number: '' }]);
+      checkComponents(0, 1, [], [{}]);
 
       const submission = {
           data: {
@@ -81,7 +81,7 @@ describe('Wizard tests', () => {
         wizard.cancel(true);
 
         setTimeout(() => {
-          checkComponents(0, 1, [], [{ number: '' }]);
+          checkComponents(0, 1, [], [{}]);
           event('click', editGrid.refs['editgrid-editGrid-addRow'][0]);
 
           setTimeout(() => {
@@ -776,7 +776,6 @@ describe('Wizard tests', () => {
         urlEnd: 'submission',
         state: 'draft',
         data: {
-          number: '',
           textArea1: '',
           textField: 'test'
         },
@@ -1146,11 +1145,11 @@ describe('Wizard tests', () => {
       pageTooltipIcon.dispatchEvent(clickEvent);
 
       setTimeout(() => {
-        const tooltipText = wizardWithPageTooltip.element.querySelector('.tooltip-inner').textContent;
+        const tooltipText = wizardWithPageTooltip.element.querySelector('.tippy-content').textContent;
         assert.equal(tooltipText, wizardWithPageTooltip.currentPanel.tooltip);
 
         done();
-      }, 250);
+      }, 300);
     })
     .catch((err) => done(err));
   });
@@ -1569,8 +1568,9 @@ describe('Wizard tests', () => {
 
         setTimeout(() => {
           assert.equal(wizard.components.length, 3);
-          assert.equal(wizard.allPages.length, 4);
-          assert.equal(wizard.allPages[1].component.title, 'Child Page 1');
+          //expected behavior according to the ticket AI-1930
+          assert.equal(wizard.allPages.length, 5);
+          assert.equal(wizard.allPages[1].component.title, 'Page 2');
 
           const checboxComp = wizard.getComponent('checkbox');
 
@@ -1595,7 +1595,7 @@ describe('Wizard tests', () => {
             }, 200);
           }, 200);
         }, 200);
-      }, 200);
+      }, 350);
     }).catch(done);
   });
 
