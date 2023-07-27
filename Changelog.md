@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED - 5.0.0-rc.20]
+### Changed
+ - Removed i18next and NativePromise in favor of a simple translation proxy.
+
 ### Added
  - Added mobile image, video, and camera capture feature. https://github.com/formio/formio.js/pull/4398
  - Add submission as form creation option. https://github.com/formio/formio.js/pull/4580
@@ -46,6 +49,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6841: fixed validation for hidden selectBoxes
  - FIO-7043: Fixes an issue where {{}} values in DataSource headers are resolved in the form builder
  - FIO-7007: fixed display of submitted values on DataTab
+ - FIO-6688: Fixes producing additional components when minLength is set up
+ - FIO-5918: fixed display of note on child form submission revision
 
 ## 5.0.0-rc.6
 ### Added
