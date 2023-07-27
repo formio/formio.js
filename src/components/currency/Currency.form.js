@@ -36,9 +36,5 @@ export default function(...extend) {
         },
       ]
     },
-    {
-      key: 'addons',
-      ignore: true
-    },
   ], ...extend);
 }

@@ -4,11 +4,7 @@ import ListComponent from '../_classes/list/ListComponent';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
 import { getRandomComponentId, boolValue, isPromise } from '../../utils/utils';
-
-let Choices;
-if (typeof window !== 'undefined') {
-  Choices = require('../../utils/ChoicesWrapper').default;
-}
+import Choices from '../../utils/ChoicesWrapper';
 
 export default class SelectComponent extends ListComponent {
   static schema(...extend) {
@@ -56,7 +52,7 @@ export default class SelectComponent extends ListComponent {
       group: 'basic',
       icon: 'th-list',
       weight: 70,
-      documentation: '/userguide/forms/form-components#select',
+      documentation: '/userguide/form-building/form-components#select',
       schema: SelectComponent.schema()
     };
   }
@@ -221,7 +217,7 @@ export default class SelectComponent extends ListComponent {
       return this.sanitize(value, this.shouldSanitizeValue);
     }
 
-    if (this.component.multiple ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
+    if (this.component.multiple && _.isArray(this.dataValue) ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
       const selectData = this.selectData;
       if (selectData) {
         const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
@@ -953,7 +949,9 @@ export default class SelectComponent extends ListComponent {
 
     const tabIndex = input.tabIndex;
     this.addPlaceholder();
-    input.setAttribute('dir', this.i18next.dir());
+    if (this.i18next) {
+      input.setAttribute('dir', this.i18next.dir());
+    }
     if (this.choices?.containerOuter?.element?.parentNode) {
       this.choices.destroy();
     }
@@ -1097,7 +1095,7 @@ export default class SelectComponent extends ListComponent {
     const items = this.choices._store.activeItems;
     if (!items.length) {
       this.choices._addItem({
-        value: placeholderValue,
+        value: '',
         label: placeholderValue,
         choiceId: 0,
         groupId: -1,
@@ -1289,7 +1287,7 @@ export default class SelectComponent extends ListComponent {
         if (this.component.multiple) {
           templateData = {};
           const dataValue = this.dataValue;
-          if (dataValue && dataValue.length) {
+          if (dataValue && _.isArray(dataValue) && dataValue.length) {
             dataValue.forEach((dataValueItem) => {
               const dataValueItemValue = this.component.reference ? dataValueItem._id.toString() : dataValueItem;
               templateData[dataValueItemValue] = this.templateData[dataValueItemValue];
@@ -1374,7 +1372,7 @@ export default class SelectComponent extends ListComponent {
 
   setValue(value, flags = {}) {
     const previousValue = this.dataValue;
-    if (this.component.widget === 'html5' && (_.isEqual(value, previousValue) || _.isEqual(previousValue, {}) && _.isEqual(flags, {}))) {
+    if (this.component.widget === 'html5' && (_.isEqual(value, previousValue) || _.isEqual(previousValue, {}) && _.isEqual(flags, {})) && !flags.fromSubmission ) {
       return false;
     }
     const changed = this.updateValue(value, flags);
@@ -1459,7 +1457,8 @@ export default class SelectComponent extends ListComponent {
     else {
       if (hasValue) {
         const values = Array.isArray(value) ? value : [value];
-        if (!_.isEqual(this.dataValue, this.defaultValue) && this.selectOptions.length < 2) {
+        if (!_.isEqual(this.dataValue, this.defaultValue) && this.selectOptions.length < 2
+        || (this.selectData && flags.fromSubmission)) {
           const { value, label } = this.selectValueAndLabel(this.dataValue);
           this.addOption(value, label);
         }
@@ -1698,7 +1697,6 @@ export default class SelectComponent extends ListComponent {
   }
 
   detach() {
-    super.detach();
     this.off('blur');
     if (this.choices) {
       if (this.choices.containerOuter?.element?.parentNode) {
@@ -1706,6 +1704,7 @@ export default class SelectComponent extends ListComponent {
       }
       this.choices = null;
     }
+    super.detach();
   }
 
   focus() {

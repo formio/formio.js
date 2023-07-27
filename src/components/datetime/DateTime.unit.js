@@ -704,6 +704,32 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
+  it('Should add date to format if enableDate is true', (done) => {
+    const form = _.cloneDeep(comp3);
+    form.components[0].format = 'hh:mm a';
+    form.components[0].enableDate = true;
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form, { attachMode: 'builder' }).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      assert.equal(dateTime.component.format, 'yyyy-MM-dd hh:mm a');
+      done();
+    }).catch(done);
+  });
+
+  it('Should add time to format if enableTime is true', (done) => {
+    const form = _.cloneDeep(comp3);
+    form.components[0].format = 'yyyy-MM-dd';
+    form.components[0].enableTime = true;
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form, { attachMode: 'builder' }).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      assert.equal(dateTime.component.format, 'yyyy-MM-dd hh:mm a');
+      done();
+    }).catch(done);
+  });
+
   // it('Should provide correct date in selected timezone after submission', (done) => {
   //   const form = _.cloneDeep(comp9);
   //   const element = document.createElement('div');

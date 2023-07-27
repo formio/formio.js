@@ -5,16 +5,13 @@
       <div class="formio-dialog formio-dialog-theme-default component-rendering-hidden" ref="modalWrapper">
         <div class="formio-dialog-overlay" ref="modalOverlay"></div>
         <div class="formio-dialog-content" aria-labelledby="ml-checkbox-checkbox" role="dialog" ref="modalContents">
-          <label class="sr-only" id="ml-checkbox-checkbox">Checkbox</label>
-          <button class="formio-dialog-close float-right btn btn-secondary btn-sm" aria-label="Close button. Click to get back to the form" ref="modalClose"></button>
+          <label class="visually-hidden" id="ml-checkbox-checkbox">Checkbox</label>
+          <button class="formio-dialog-close float-end btn btn-secondary btn-sm" aria-label="Close button. Click to get back to the form" ref="modalClose"></button>
           <div ref="modalContents">
-            <div id="checkbox" class="form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
+            <div id="checkbox" class="mb-2 formio-form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
               <div class="form-check checkbox">
-                <label class=" form-check-label">
-                  <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="0" aria-required="false">
-                  <span>Checkbox</span>
-                  </input>
-                </label>
+                <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="0" aria-required="false">
+                <label class=" form-check-label"><span>Checkbox</span></label>
               </div>
               <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
             </div>
@@ -23,7 +20,7 @@
             </div>
           </div>
         </div>
-        <span class="sr-only" ref="modalLiveRegion" aria-live="assertive"></span>
+        <span class="visually-hidden" ref="modalLiveRegion" aria-live="assertive"></span>
       </div>
     </div>
     <div class="formio-component-modal-wrapper formio-component-modal-wrapper-textfield" ref="componentModalWrapper">
@@ -31,10 +28,10 @@
       <div class="formio-dialog formio-dialog-theme-default component-rendering-hidden" ref="modalWrapper">
         <div class="formio-dialog-overlay" ref="modalOverlay"></div>
         <div class="formio-dialog-content" aria-labelledby="ml-textfield-textfield" role="dialog" ref="modalContents">
-          <label class="sr-only" id="ml-textfield-textfield">TextField</label>
-          <button class="formio-dialog-close float-right btn btn-secondary btn-sm" aria-label="Close button. Click to get back to the form" ref="modalClose"></button>
+          <label class="visually-hidden" id="ml-textfield-textfield">TextField</label>
+          <button class="formio-dialog-close float-end btn btn-secondary btn-sm" aria-label="Close button. Click to get back to the form" ref="modalClose"></button>
           <div ref="modalContents">
-            <div id="textfield" class="form-group has-feedback formio-component formio-component-textfield formio-component-textfield " ref="component">
+            <div id="textfield" class="mb-2 formio-form-group has-feedback formio-component formio-component-textfield formio-component-textfield " ref="component">
               <label ref="label" class="col-form-label " for="textfield-textfield" id="l-textfield-textfield">
                 TextField
               </label>
@@ -48,7 +45,7 @@
             </div>
           </div>
         </div>
-        <span class="sr-only" ref="modalLiveRegion" aria-live="assertive"></span>
+        <span class="visually-hidden" ref="modalLiveRegion" aria-live="assertive"></span>
       </div>
     </div>
     <div class="formio-component-modal-wrapper formio-component-modal-wrapper-selectboxes" ref="componentModalWrapper">
@@ -56,25 +53,21 @@
       <div class="formio-dialog formio-dialog-theme-default component-rendering-hidden" ref="modalWrapper">
         <div class="formio-dialog-overlay" ref="modalOverlay"></div>
         <div class="formio-dialog-content" aria-labelledby="ml-selectBoxes-selectBoxes" role="dialog" ref="modalContents">
-          <label class="sr-only" id="ml-selectBoxes-selectBoxes">Select Boxes</label>
-          <button class="formio-dialog-close float-right btn btn-secondary btn-sm" aria-label="Close button. Click to get back to the form" ref="modalClose"></button>
+          <label class="visually-hidden" id="ml-selectBoxes-selectBoxes">Select Boxes</label>
+          <button class="formio-dialog-close float-end btn btn-secondary btn-sm" aria-label="Close button. Click to get back to the form" ref="modalClose"></button>
           <div ref="modalContents">
-            <div id="selectBoxes" class="form-group has-feedback formio-component formio-component-selectboxes formio-component-selectBoxes " ref="component">
+            <div id="selectBoxes" class="mb-2 formio-form-group has-feedback formio-component formio-component-selectboxes formio-component-selectBoxes " ref="component">
               <label ref="label" class="col-form-label " for="selectBoxes-selectBoxes" id="l-selectBoxes-selectBoxes">
                 Select Boxes
               </label>
               <div class="form-radio radio" ref="radioGroup" role="group" aria-required="false" aria-labelledby="l-selectBoxes-selectBoxes">
                 <div class="checkbox  form-check" ref="wrapper">
-                  <label class="form-check-label label-position-right" for="-selectBoxes--a">
-                    <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="a" id="-selectBoxes--a" role="checkbox">
-                    <span>a</span>
-                  </label>
+                  <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="a" id="-selectBoxes--a" role="checkbox">
+                  <label class="form-check-label label-position-right" for="-selectBoxes--a"><span>a</span></label>
                 </div>
                 <div class="checkbox  form-check" ref="wrapper">
-                  <label class="form-check-label label-position-right" for="-selectBoxes--b">
-                    <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="b" id="-selectBoxes--b" role="checkbox">
-                    <span>b</span>
-                  </label>
+                  <input ref="input" name="data[selectBoxes][]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="b" id="-selectBoxes--b" role="checkbox">
+                  <label class="form-check-label label-position-right" for="-selectBoxes--b"><span>b</span></label>
                 </div>
               </div>
               <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
@@ -84,7 +77,7 @@
             </div>
           </div>
         </div>
-        <span class="sr-only" ref="modalLiveRegion" aria-live="assertive"></span>
+        <span class="visually-hidden" ref="modalLiveRegion" aria-live="assertive"></span>
       </div>
     </div>
     <div class="formio-component-modal-wrapper formio-component-modal-wrapper-select" ref="componentModalWrapper">
@@ -92,10 +85,10 @@
       <div class="formio-dialog formio-dialog-theme-default component-rendering-hidden" ref="modalWrapper">
         <div class="formio-dialog-overlay" ref="modalOverlay"></div>
         <div class="formio-dialog-content" aria-labelledby="ml-select-select" role="dialog" ref="modalContents">
-          <label class="sr-only" id="ml-select-select">Select</label>
-          <button class="formio-dialog-close float-right btn btn-secondary btn-sm" aria-label="Close button. Click to get back to the form" ref="modalClose"></button>
+          <label class="visually-hidden" id="ml-select-select">Select</label>
+          <button class="formio-dialog-close float-end btn btn-secondary btn-sm" aria-label="Close button. Click to get back to the form" ref="modalClose"></button>
           <div ref="modalContents">
-            <div id="select" class="form-group has-feedback formio-component formio-component-select formio-component-select " ref="component">
+            <div id="select" class="mb-2 formio-form-group has-feedback formio-component formio-component-select formio-component-select " ref="component">
               <label ref="label" class="col-form-label " for="select-select" id="l-select-select">
                 Select
               </label>
@@ -108,10 +101,10 @@
             </div>
           </div>
         </div>
-        <span class="sr-only" ref="modalLiveRegion" aria-live="assertive"></span>
+        <span class="visually-hidden" ref="modalLiveRegion" aria-live="assertive"></span>
       </div>
     </div>
-    <div id="submit" class="form-group has-feedback formio-component formio-component-button formio-component-submit  form-group" ref="component">
+    <div id="submit" class="mb-2 formio-form-group has-feedback formio-component formio-component-button formio-component-submit  mb-2 formio-form-group" ref="component">
       <button ref="button" name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en" disabled="disabled">
         Submit
       </button>

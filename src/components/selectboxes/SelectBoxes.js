@@ -17,14 +17,14 @@ export default class SelectBoxesComponent extends RadioComponent {
       group: 'basic',
       icon: 'plus-square',
       weight: 60,
-      documentation: '/userguide/forms/form-components#select-boxes',
+      documentation: '/userguide/form-building/form-components#select-box',
       schema: SelectBoxesComponent.schema()
     };
   }
 
   constructor(...args) {
     super(...args);
-    this.validators = this.validators.concat('minSelectedCount', 'maxSelectedCount');
+    this.validators = this.validators.concat('minSelectedCount', 'maxSelectedCount', 'availableValueProperty');
   }
 
   init() {

@@ -7,7 +7,7 @@ import fileProcessor from '../../providers/processor/fileProcessor';
 import BMF from 'browser-md5-file';
 
 let Camera;
-let webViewCamera = navigator.camera || Camera;
+let webViewCamera = 'undefined' !== typeof window ? navigator.camera : Camera;
 
 // canvas.toBlob polyfill.
 
@@ -59,7 +59,7 @@ export default class FileComponent extends Field {
       title: 'File',
       group: 'premium',
       icon: 'file',
-      documentation: '/userguide/forms/premium-components#file',
+      documentation: '/userguide/form-building/premium-components#file',
       weight: 100,
       schema: FileComponent.schema(),
     };
@@ -280,9 +280,12 @@ export default class FileComponent extends Field {
     if (this.component.multiple) {
       options.multiple = true;
     }
+    if (this.component.capture) {
+      options.capture = this.component.capture;
+    }
     //use "accept" attribute only for desktop devices because of its limited support by mobile browsers
+    const filePattern = this.component.filePattern.trim() || '';
     if (!this.isMobile.any) {
-      const filePattern = this.component.filePattern.trim() || '';
       const imagesPattern = 'image/*';
 
       if (this.imageUpload && (!filePattern || filePattern === '*')) {
@@ -295,6 +298,18 @@ export default class FileComponent extends Field {
         options.accept = filePattern;
       }
     }
+    // if input capture is set, we need the "accept" attribute to determine which device to launch
+    else if (this.component.capture) {
+      if (filePattern.includes('video')) {
+        options.accept = 'video/*';
+      }
+      else if (filePattern.includes('audio')) {
+        options.accept = 'audio/*';
+      }
+      else {
+        options.accept = 'image/*';
+      }
+    }
 
     return options;
   }
@@ -302,7 +317,7 @@ export default class FileComponent extends Field {
   deleteFile(fileInfo) {
     const { options = {} } = this.component;
 
-    if (fileInfo && (['url', 'indexeddb'].includes(this.component.storage))) {
+    if (fileInfo && (['url', 'indexeddb', 's3','googledrive', 'azure'].includes(this.component.storage))) {
       const { fileService } = this;
       if (fileService && typeof fileService.deleteFile === 'function') {
         fileService.deleteFile(fileInfo, options);
@@ -850,8 +865,8 @@ export default class FileComponent extends Field {
     }
   }
 
-  destroy() {
+  destroy(all = false) {
     this.stopVideo();
-    super.destroy();
+    super.destroy(all);
   }
 }

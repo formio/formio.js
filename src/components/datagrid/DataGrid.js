@@ -2,12 +2,6 @@ import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
 
-let dragula;
-if (typeof window !== 'undefined') {
-  // Import from "dist" because it would require and "global" would not be defined in Angular apps.
-  dragula = require('dragula/dist/dragula');
-}
-
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
     return NestedArrayComponent.schema({
@@ -26,7 +20,8 @@ export default class DataGridComponent extends NestedArrayComponent {
       title: 'Data Grid',
       icon: 'th',
       group: 'data',
-      documentation: '/userguide/forms/data-components#data-grid',
+      documentation: '/userguide/form-building/data-components#data-grid',
+      showPreview: false,
       weight: 30,
       schema: DataGridComponent.schema()
     };
@@ -324,8 +319,8 @@ export default class DataGridComponent extends NestedArrayComponent {
         row.dragInfo = { index };
       });
 
-      if (dragula) {
-        this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
+      if (this.root.dragulaLib) {
+        this.dragula = this.root.dragulaLib([this.refs[`${this.datagridKey}-tbody`]], {
           moves: (_draggedElement, _oldParent, clickedElement) => {
             const clickedElementKey = clickedElement.getAttribute('data-key');
             const oldParentKey = _oldParent.getAttribute('data-key');
@@ -622,7 +617,14 @@ export default class DataGridComponent extends NestedArrayComponent {
 
           if (col.component.logic && firstRowCheck) {
             const compIndex = _.findIndex(this.columns, ['key', key]);
-            if (!_.isEqual(this.columns[compIndex], col.component)) {
+            const equalColumns = _.isEqualWith(this.columns[compIndex], col.component, (col1, col2, key) => {
+              // Don't compare columns by their auto-generated ids.
+              if (key === 'id') {
+                return true;
+              }
+            });
+
+            if (!equalColumns) {
               logicRebuild = true;
               this.columns[compIndex] = col.component;
             }
