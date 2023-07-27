@@ -20,6 +20,51 @@ export default class ListComponent extends Field {
     return this.component.dataSrc === 'url';
   }
 
+  get selectData() {
+    const selectData = _.get(this.root, 'submission.metadata.selectData', {});
+    return _.get(selectData, this.path);
+  }
+
+  get shouldLoad() {
+    if (this.loadingError) {
+      return false;
+    }
+    // Live forms should always load.
+    if (!this.options.readOnly) {
+      return true;
+    }
+
+    // If there are template keys, then we need to see if we have the data.
+    if (this.templateKeys && this.templateKeys.length) {
+      // See if we already have the data we need.
+      const dataValue = this.dataValue;
+      const selectData = this.selectData;
+      return this.templateKeys.reduce((shouldLoad, key) => {
+        const hasValue =  _.has(dataValue, key) ||
+          (_.isArray(selectData) ? selectData.every((data) => _.has(data, key)) : _.has(selectData, key));
+        return shouldLoad || !hasValue;
+      }, false);
+    }
+
+    // Return that we should load.
+    return true;
+  }
+
+  getTemplateKeys() {
+    this.templateKeys = [];
+    if (this.options.readOnly && this.component.template) {
+      const keys = this.component.template.match(/({{\s*(.*?)\s*}})/g);
+      if (keys) {
+        keys.forEach((key) => {
+          const propKey = key.match(/{{\s*item\.(.*?)\s*}}/);
+          if (propKey && propKey.length > 1) {
+            this.templateKeys.push(propKey[1]);
+          }
+        });
+      }
+    }
+  }
+
   get requestHeaders() {
     // Create the headers object.
     const headers = new Formio.Headers();
