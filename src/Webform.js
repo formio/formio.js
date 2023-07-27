@@ -1426,6 +1426,9 @@ export default class Webform extends NestedDataComponent {
         }
 
         this.everyComponent((comp) => {
+          if (submission._vnote && comp.type === 'form' && comp.component.reference) {
+            _.get(submission.data, comp.path, {})._vnote = submission._vnote;
+          }
           const { persistent } = comp.component;
           if (persistent === 'client-only') {
             _.unset(submission.data, comp.path);
