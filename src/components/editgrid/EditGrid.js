@@ -239,7 +239,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   get minLength() {
-    return this.builderMode? 0: _.get(this.component, 'validate.minLength', 0);
+    return this.builderMode ? 0 : _.get(this.component, 'validate.minLength', 0);
   }
 
   get data() {
