@@ -357,6 +357,10 @@ export default class WebformBuilder extends Component {
   }
 
   attachComponent(element, component) {
+    if (component instanceof WebformBuilder) {
+      return;
+    }
+
     // Add component to element for later reference.
     element.formioComponent = component;
 
@@ -1607,29 +1611,39 @@ export default class WebformBuilder extends Component {
   }
 
   moveComponent(component) {
+    if (this.selectedComponent) {
+      const prevSelected = this.selectedComponent;
+      prevSelected.element?.classList.remove('builder-component-selected');
+      this.removeEventListener(document, 'keydown');
+    }
+
     component.element.focus();
-    component.element.classList.add('builder-selected');
-    this.selectedElement = component;
-    this.removeEventListener(component.element, 'keydown');
-    this.addEventListener(component.element, 'keydown', this.moveHandler.bind(this));
+    component.element.classList.add('builder-component-selected');
+    this.selectedComponent = component;
+    this.addEventListener(document, 'keydown', this.moveHandler.bind(this));
   }
 
   moveHandler = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+    if (e.keyCode === 38 || e.keyCode === 40 || e.keyCode === 13) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+
     if (e.keyCode === 38) {
       this.updateComponentPlacement(true);
     }
+
     if (e.keyCode === 40) {
       this.updateComponentPlacement(false);
     }
+
     if (e.keyCode === 13) {
-      this.stopMoving(this.selectedElement);
+      this.stopMoving(this.selectedComponent);
     }
   };
 
   updateComponentPlacement(direction) {
-    const component = this.selectedElement;
+    const component = this.selectedComponent;
     let index, info;
     const step = direction ? -1 : 1;
     if (component) {
@@ -1681,7 +1695,9 @@ export default class WebformBuilder extends Component {
 
   stopMoving(comp) {
     const parent = comp.element.parentNode;
+    this.removeEventListener(document, 'keydown');
     parent.formioComponent.rebuild();
+    this.selectedComponent = null;
   }
 
   addNewComponent(element) {
