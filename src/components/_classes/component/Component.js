@@ -1611,6 +1611,15 @@ export default class Component extends Element {
     return customCSS;
   }
 
+  static get serverConditionSettings() {
+    return {
+      operators: ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'],
+      valueComponent() {
+        return { type: 'textfield' };
+      },
+    };
+  }
+
   get isMobile() {
     return isMobile();
   }

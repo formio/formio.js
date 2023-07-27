@@ -22,6 +22,23 @@ export default class SelectBoxesComponent extends RadioComponent {
     };
   }
 
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      valueComponent(classComp) {
+        return {
+          type: 'select',
+          dataSrc: 'custom',
+          valueProperty: 'value',
+          valueType: 'string',
+          data: {
+            custom: `values = ${classComp && classComp.values ? JSON.stringify(classComp.values) : []}`
+          },
+        };
+      }
+    };
+  }
+
   constructor(...args) {
     super(...args);
     this.validators = this.validators.concat('minSelectedCount', 'maxSelectedCount', 'availableValueProperty');
