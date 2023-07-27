@@ -6,14 +6,13 @@ import jsonLogic from 'json-logic-js';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
-import NativePromise from 'native-promise-only';
 import dompurify from 'dompurify';
 import { getValue } from './formUtils';
 import Evaluator from './Evaluator';
 import ConditionOperators from './conditionOperators';
 const interpolate = Evaluator.interpolate;
 const { fetch } = fetchPonyfill({
-  Promise: NativePromise
+  Promise: Promise
 });
 
 export * from './formUtils';
@@ -618,7 +617,7 @@ export function shouldLoadZones(timezone) {
 export function loadZones(url, timezone) {
   if (timezone && !shouldLoadZones(timezone)) {
     // Return non-resolving promise.
-    return new NativePromise(_.noop);
+    return new Promise(_.noop);
   }
 
   if (moment.zonesPromise) {

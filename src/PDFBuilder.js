@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
 import { Formio } from './Formio';
 
 import WebformBuilder from './WebformBuilder';
@@ -169,7 +168,7 @@ export default class PDFBuilder extends WebformBuilder {
         });
       }
 
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
 
     // Normal PDF Builder

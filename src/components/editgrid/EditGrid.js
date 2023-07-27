@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import Alert from '../alert/Alert';
@@ -789,7 +788,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   showDialog(rowIndex) {
     const editRow = this.editRows[rowIndex];
     if (_.isEqual(editRow.backup, editRow.data)) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
 
     const wrapper = this.ce('div', { ref: 'confirmationDialog' });
@@ -812,7 +811,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     };
     let dialogResult;
 
-    const promise = new NativePromise((resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
       dialogResult = { resolve, reject };
     });
 
@@ -833,7 +832,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     const editRow = this.editRows[rowIndex];
     const isAlreadyEditing = editRow.state === EditRowState.Editing || editRow.state === EditRowState.New;
     if (!editRow || isAlreadyEditing) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
     editRow.prevState = editRow.state;
     editRow.state = this.options.readOnly ? EditRowState.Viewing : EditRowState.Editing;

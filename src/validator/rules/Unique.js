@@ -1,7 +1,5 @@
 import { escapeRegExCharacters } from '../../utils/utils';
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
-
 import Rule from './Rule';
 
 export default class Unique extends Rule {
@@ -18,7 +16,7 @@ export default class Unique extends Rule {
       return true;
     }
 
-    return new NativePromise(resolve => {
+    return new Promise(resolve => {
       const form = this.config.form;
       const submission = this.config.submission;
       const path = `data.${this.component.path}`;

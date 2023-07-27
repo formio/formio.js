@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Form from '../../Form';
-import NativePromise from 'native-promise-only';
 import { getRandomComponentId, boolValue, isPromise } from '../../utils/utils';
 import Choices from '../../utils/ChoicesWrapper';
 
@@ -82,7 +81,7 @@ export default class SelectComponent extends ListComponent {
       if (typeof this.itemsLoadedResolve === 'function') {
         this.itemsLoadedResolve();
       }
-      this.itemsLoaded = new NativePromise((resolve) => {
+      this.itemsLoaded = new Promise((resolve) => {
         this.itemsLoadedResolve = resolve;
       });
       if (args.length) {
@@ -108,7 +107,7 @@ export default class SelectComponent extends ListComponent {
 
     // If this component has been activated.//
     this.activated = false;
-    this.itemsLoaded = new NativePromise((resolve) => {
+    this.itemsLoaded = new Promise((resolve) => {
       this.itemsLoadedResolve = resolve;
     });
 
@@ -128,7 +127,7 @@ export default class SelectComponent extends ListComponent {
       this.root.submissionSet &&
       !this.attached
     ) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
     return this.itemsLoaded;
   }
@@ -1452,7 +1451,7 @@ export default class SelectComponent extends ListComponent {
   }
 
   get itemsLoaded() {
-    return this._itemsLoaded || NativePromise.resolve();
+    return this._itemsLoaded || Promise.resolve();
   }
 
   set itemsLoaded(promise) {

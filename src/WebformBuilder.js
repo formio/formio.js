@@ -1,7 +1,6 @@
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
 import tippy from 'tippy.js';
-import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import { Formio } from './Formio';
 import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
@@ -1005,7 +1004,7 @@ export default class WebformBuilder extends Component {
     }
 
     if (!rebuild) {
-      rebuild = NativePromise.resolve();
+      rebuild = Promise.resolve();
     }
 
     return rebuild.then(() => {
@@ -1057,7 +1056,7 @@ export default class WebformBuilder extends Component {
         return this.rebuild().then(() => this.form);
       });
     }
-    return NativePromise.resolve(form);
+    return Promise.resolve(form);
   }
 
   populateRecaptchaSettings(form) {
@@ -1111,7 +1110,7 @@ export default class WebformBuilder extends Component {
       else if (parent.formioComponent && parent.formioComponent.removeChildComponent) {
         parent.formioComponent.removeChildComponent(component);
       }
-      const rebuild = parent.formioComponent.rebuild() || NativePromise.resolve();
+      const rebuild = parent.formioComponent.rebuild() || Promise.resolve();
       rebuild.then(() => {
         this.emit('removeComponent', component, parent.formioComponent.schema, path, index);
         this.emit('change', this.form);
@@ -1318,7 +1317,7 @@ export default class WebformBuilder extends Component {
         parent.formioComponent.saveChildComponent(submissionData);
       }
 
-      const rebuild = parentComponent.rebuild() || NativePromise.resolve();
+      const rebuild = parentComponent.rebuild() || Promise.resolve();
       return rebuild.then(() => {
         const schema = parentContainer ? parentContainer[index] : (comp ? comp.schema : []);
         this.emitSaveComponentEvent(
@@ -1342,7 +1341,7 @@ export default class WebformBuilder extends Component {
     }
 
     this.highlightInvalidComponents();
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   emitSaveComponentEvent(schema, originalComp, parentComponentSchema, path, index, isNew, originalComponentSchema) {
