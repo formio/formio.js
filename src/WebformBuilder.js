@@ -819,22 +819,23 @@ export default class WebformBuilder extends Component {
 
   getComponentInfo(key, group) {
     let info;
+    // Need to check in first order as resource component key can be the same as from webform default components
+    if (group && group.slice(0, group.indexOf('-')) === 'resource') {
+      // This is an existing resource field.
+      const resourceGroups = this.groups.resource.subgroups;
+      const resourceGroup = _.find(resourceGroups, { key: group });
+      if (resourceGroup && resourceGroup.components.hasOwnProperty(`component-${key}`)) {
+        info = fastCloneDeep(resourceGroup.components[`component-${key}`].schema);
+      }
+    }
     // This is a new component
-    if (this.schemas.hasOwnProperty(key)) {
+    else if (this.schemas.hasOwnProperty(key)) {
       info = fastCloneDeep(this.schemas[key]);
     }
     else if (this.groups.hasOwnProperty(group)) {
       const groupComponents = this.groups[group].components;
       if (groupComponents.hasOwnProperty(key)) {
         info = fastCloneDeep(groupComponents[key].schema);
-      }
-    }
-    else if (group.slice(0, group.indexOf('-')) === 'resource') {
-      // This is an existing resource field.
-      const resourceGroups = this.groups.resource.subgroups;
-      const resourceGroup = _.find(resourceGroups, { key: group });
-      if (resourceGroup && resourceGroup.components.hasOwnProperty(`component-${key}`)) {
-        info = fastCloneDeep(resourceGroup.components[`component-${key}`].schema);
       }
     }
     else if (group === 'searchFields') {//Search components go into this group
