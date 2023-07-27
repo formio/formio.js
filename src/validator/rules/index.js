@@ -1,27 +1,26 @@
-const custom = require('./Custom');
-const date = require('./Date');
-const day = require('./Day');
-const email = require('./Email');
-const json = require('./JSON');
-const mask = require('./Mask');
-const max = require('./Max');
-const maxDate = require('./MaxDate');
-const maxLength = require('./MaxLength');
-const maxWords = require('./MaxWords');
-const min = require('./Min');
-const minDate = require('./MinDate');
-const minLength = require('./MinLength');
-const minWords = require('./MinWords');
-const pattern = require('./Pattern');
-const required = require('./Required');
-const select = require('./Select');
-const unique = require('./Unique');
-const url = require('./Url');
-const minYear = require('./MinYear');
-const maxYear = require('./MaxYear');
-const time = require('./Time');
-
-module.exports = {
+import custom from './Custom';
+import date from './Date';
+import day from './Day';
+import email from './Email';
+import json from './JSON';
+import mask from './Mask';
+import max from './Max';
+import maxDate from './MaxDate';
+import maxLength from './MaxLength';
+import maxWords from './MaxWords';
+import min from './Min';
+import minDate from './MinDate';
+import minLength from './MinLength';
+import minWords from './MinWords';
+import pattern from './Pattern';
+import required from './Required';
+import select from './Select';
+import unique from './Unique';
+import url from './Url';
+import minYear from './MinYear';
+import maxYear from './MaxYear';
+import time from './Time';
+export default {
   custom,
   date,
   day,

@@ -9,20 +9,14 @@ import { eachComponent, getComponent } from './utils/formUtils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import autoScroll from 'dom-autoscroller';
+import Templates from './templates/Templates';
+import './components/builder';
 
-require('./components/builder');
-
-let Templates = Formio.Templates;
-
-if (!Templates) {
-  Templates = require('./templates/Templates').default;
+// We need this here because dragula pulls in CustomEvent class that requires global to exist.
+if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
+  window.global = window;
 }
-
-let dragula;
-if (typeof window !== 'undefined') {
-  // Import from "dist" because it would require and "global" would not be defined in Angular apps.
-  dragula = require('dragula/dist/dragula');
-}
+import dragula from 'dragula/dist/dragula.min.js';
 
 export default class WebformBuilder extends Component {
   // eslint-disable-next-line max-statements
@@ -42,6 +36,7 @@ export default class WebformBuilder extends Component {
     super(null, options);
 
     this.setElement(element);
+    this.dragulaLib = dragula;
 
     this.builderHeight = 0;
     this.schemas = {};
@@ -238,14 +233,14 @@ export default class WebformBuilder extends Component {
     const isResourcesDisabled = this.options.builder && this.options.builder.resource === false;
 
     formio.loadProject().then((project) => {
-      if (project && (_.get(project, 'settings.addConfigToForms', false) ||  _.get(project, 'addConfigToForms', false))) {
+      if (project && (_.get(project, 'settings.addConfigToForms', false) || _.get(project, 'addConfigToForms', false))) {
         const config = project.config || {};
         this.options.formConfig = config;
 
         const pathToFormConfig = 'webform._form.config';
         const webformConfig = _.get(this, pathToFormConfig);
 
-        if (this.webform  && !webformConfig) {
+        if (this.webform && !webformConfig) {
           _.set(this, pathToFormConfig, config);
         }
       }
@@ -253,7 +248,7 @@ export default class WebformBuilder extends Component {
       console.warn(`Could not load project settings: ${err.message || err}`);
     });
 
-    if (!formio.noProject && !isResourcesDisabled) {
+    if (!formio.noProject && !isResourcesDisabled && formio.formsUrl) {
       const resourceOptions = this.options.builder && this.options.builder.resource;
       formio.loadForms(query)
         .then((resources) => {
@@ -362,6 +357,10 @@ export default class WebformBuilder extends Component {
   }
 
   attachComponent(element, component) {
+    if (component instanceof WebformBuilder) {
+      return;
+    }
+
     // Add component to element for later reference.
     element.formioComponent = component;
 
@@ -589,29 +588,40 @@ export default class WebformBuilder extends Component {
       }
 
       if (!bootstrapVersion(this.options)) {
+        const getAttribute = (anchor, attribute) => {
+          let elem = anchor.getAttribute(`data-${attribute}`);
+          if (!elem) {
+            elem = anchor.getAttribute(`data-bs-${attribute}`);
+          }
+          return elem;
+        };
+
+        const hideShow = (group, show) => {
+          if (show) {
+            group.classList.add(['show']);
+            group.style.display = 'inherit';
+          }
+          else {
+            group.classList.remove(['show']);
+            group.style.display = 'none';
+          }
+        };
+
         // Initialize
         this.refs['sidebar-group'].forEach((group) => {
-          group.style.display = (group.getAttribute('data-default') === 'true') ? 'inherit' : 'none';
+          hideShow(group, getAttribute(group, 'default') === 'true');
         });
 
         // Click event
         this.refs['sidebar-anchor'].forEach((anchor, index) => {
           this.addEventListener(anchor, 'click', () => {
-            const clickedParentId = anchor.getAttribute('data-parent').slice('#builder-sidebar-'.length);
-            const clickedId = anchor.getAttribute('data-target').slice('#group-'.length);
-
+            const clickedParentId = getAttribute(anchor, 'parent').slice('#builder-sidebar-'.length);
+            const clickedId = getAttribute(anchor, 'target').slice('#group-'.length);
             this.refs['sidebar-group'].forEach((group, groupIndex) => {
-              const openByDefault = group.getAttribute('data-default') === 'true';
+              const openByDefault = getAttribute(group, 'default') === 'true';
               const groupId = group.getAttribute('id').slice('group-'.length);
-              const groupParent = group.getAttribute('data-parent').slice('#builder-sidebar-'.length);
-
-              group.style.display =
-                (
-                  (openByDefault && groupParent === clickedId) ||
-                  groupId === clickedParentId ||
-                  groupIndex === index
-                )
-                  ? 'inherit' : 'none';
+              const groupParent = getAttribute(group, 'parent').slice('#builder-sidebar-'.length);
+              hideShow(group, ((openByDefault && groupParent === clickedId) || groupId === clickedParentId || groupIndex === index));
             });
           }, true);
         });
@@ -646,7 +656,7 @@ export default class WebformBuilder extends Component {
           maxSpeed: 6,
           scrollWhenOutside: true,
           autoScroll: function() {
-              return this.down && drake?.dragging;
+            return this.down && drake?.dragging;
           }
         });
 
@@ -670,7 +680,7 @@ export default class WebformBuilder extends Component {
       const filteredComponents = [];
 
       for (const key in components) {
-        const isMatchedToTitle = components[key].title.toLowerCase().match(searchValue);
+        const isMatchedToTitle = this.t(components[key].title).toLowerCase().match(searchValue);
         const isMatchedToKey = components[key].key.toLowerCase().match(searchValue);
 
         if (isMatchedToTitle || isMatchedToKey) {
@@ -696,8 +706,8 @@ export default class WebformBuilder extends Component {
     const filterSubgroups = (groups, searchValue) => {
       const result = _.clone(groups);
       return result
-            .map(subgroup => filterGroupBy(subgroup, searchValue))
-            .filter(subgroup => !_.isNull(subgroup));
+        .map(subgroup => filterGroupBy(subgroup, searchValue))
+        .filter(subgroup => !_.isNull(subgroup));
     };
 
     const toTemplate = groupKey => {
@@ -706,18 +716,18 @@ export default class WebformBuilder extends Component {
         groupKey,
         groupId: sidebar.id || sidebarGroups.id,
         subgroups: filterSubgroups(this.groups[groupKey].subgroups, searchValue)
-                  .map((group) => this.renderTemplate('builderSidebarGroup', {
-                    group,
-                    groupKey: group.key,
-                    groupId: `group-container-${groupKey}`,
-                    subgroups: []
-                  })),
+          .map((group) => this.renderTemplate('builderSidebarGroup', {
+            group,
+            groupKey: group.key,
+            groupId: `group-container-${groupKey}`,
+            subgroups: []
+          })),
       };
     };
 
     sidebarGroups.innerHTML = filterGroupOrder(this.groupOrder, searchValue)
-                              .map(groupKey => this.renderTemplate('builderSidebarGroup', toTemplate(groupKey)))
-                              .join('');
+      .map(groupKey => this.renderTemplate('builderSidebarGroup', toTemplate(groupKey)))
+      .join('');
 
     this.loadRefs(this.element, {
       'sidebar-groups': 'single',
@@ -809,22 +819,23 @@ export default class WebformBuilder extends Component {
 
   getComponentInfo(key, group) {
     let info;
+    // Need to check in first order as resource component key can be the same as from webform default components
+    if (group && group.slice(0, group.indexOf('-')) === 'resource') {
+      // This is an existing resource field.
+      const resourceGroups = this.groups.resource.subgroups;
+      const resourceGroup = _.find(resourceGroups, { key: group });
+      if (resourceGroup && resourceGroup.components.hasOwnProperty(`component-${key}`)) {
+        info = fastCloneDeep(resourceGroup.components[`component-${key}`].schema);
+      }
+    }
     // This is a new component
-    if (this.schemas.hasOwnProperty(key)) {
+    else if (this.schemas.hasOwnProperty(key)) {
       info = fastCloneDeep(this.schemas[key]);
     }
     else if (this.groups.hasOwnProperty(group)) {
       const groupComponents = this.groups[group].components;
       if (groupComponents.hasOwnProperty(key)) {
         info = fastCloneDeep(groupComponents[key].schema);
-      }
-    }
-    else if (group.slice(0, group.indexOf('-')) === 'resource') {
-      // This is an existing resource field.
-      const resourceGroups = this.groups.resource.subgroups;
-      const resourceGroup = _.find(resourceGroups, { key: group });
-      if (resourceGroup && resourceGroup.components.hasOwnProperty(`component-${key}`)) {
-        info = fastCloneDeep(resourceGroup.components[`component-${key}`].schema);
       }
     }
     else if (group === 'searchFields') {//Search components go into this group
@@ -1017,7 +1028,7 @@ export default class WebformBuilder extends Component {
     this.keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false) || this.options.properties?.keyboardBuilder;
 
     const isShowSubmitButton = !this.options.noDefaultSubmitButton
-      && !form.components.length;
+      && (!form.components.length || !form.components.find(comp => comp.key === 'submit'));
 
     // Ensure there is at least a submit button.
     if (isShowSubmitButton) {
@@ -1157,6 +1168,9 @@ export default class WebformBuilder extends Component {
         _.assign(defaultValueComponent.component, _.omit({ ...component }, [
           'key',
           'label',
+          'labelPosition',
+          'labelMargin',
+          'labelWidth',
           'placeholder',
           'tooltip',
           'hidden',
@@ -1343,11 +1357,69 @@ export default class WebformBuilder extends Component {
     );
   }
 
+  attachEditComponentControls(component, parent, isNew, original, ComponentClass) {
+    const cancelButtons = this.componentEdit.querySelectorAll('[ref="cancelButton"]');
+    cancelButtons.forEach((cancelButton) => {
+      this.editForm.addEventListener(cancelButton, 'click', (event) => {
+        event.preventDefault();
+        this.editForm.detach();
+        this.emit('cancelComponent', component);
+        this.dialog.close();
+        this.highlightInvalidComponents();
+      });
+    });
+
+    const removeButtons = this.componentEdit.querySelectorAll('[ref="removeButton"]');
+    removeButtons.forEach((removeButton) => {
+      this.editForm.addEventListener(removeButton, 'click', (event) => {
+        event.preventDefault();
+        // Since we are already removing the component, don't trigger another remove.
+        this.saved = true;
+        this.editForm.detach();
+        this.removeComponent(component, parent, original);
+        this.dialog.close();
+        this.highlightInvalidComponents();
+      });
+    });
+
+    const saveButtons = this.componentEdit.querySelectorAll('[ref="saveButton"]');
+    saveButtons.forEach((saveButton) => {
+      this.editForm.addEventListener(saveButton, 'click', (event) => {
+        event.preventDefault();
+        if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
+          this.editForm.setPristine(false);
+          this.editForm.showErrors();
+          return false;
+        }
+        this.saved = true;
+        this.saveComponent(component, parent, isNew, original);
+      });
+    });
+
+    const previewButtons = this.componentEdit.querySelectorAll('[ref="previewButton"]');
+    previewButtons.forEach((previewButton) => {
+      this.editForm.addEventListener(previewButton, 'click', (event) => {
+        event.preventDefault();
+        this.showPreview = !this.showPreview;
+        this.editForm.detach();
+        this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
+          componentInfo: ComponentClass.builderInfo,
+          editForm: this.editForm.render(),
+          preview: this.preview ? this.preview.render() : false,
+          showPreview: this.showPreview,
+          helplinks: this.helplinks,
+        }));
+        this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
+        this.attachEditComponentControls(component, parent, isNew, original, ComponentClass);
+      });
+    });
+  }
+
   editComponent(component, parent, isNew, isJsonEdit, original, flags = {}) {
     if (!component.key) {
       return;
     }
-    let saved = false;
+    this.saved = false;
     const componentCopy = fastCloneDeep(component);
     let ComponentClass = Components.components[componentCopy.type];
     const isCustom = ComponentClass === undefined;
@@ -1417,8 +1489,8 @@ export default class WebformBuilder extends Component {
         showFullSchema: this.options.showFullJsonSchema
       },
     } : {
-        data: instance.component,
-      };
+      data: instance.component,
+    };
 
     if (this.preview) {
       this.preview.destroy();
@@ -1435,12 +1507,15 @@ export default class WebformBuilder extends Component {
       this.hook('previewFormSettitngs', schema, isJsonEdit);
     }
 
+    this.showPreview = ComponentClass.builderInfo.showPreview ?? true;
+
     this.componentEdit = this.ce('div', { 'class': 'component-edit-container' });
     this.setContent(this.componentEdit, this.renderTemplate('builderEditForm', {
       componentInfo: ComponentClass.builderInfo,
       editForm: this.editForm.render(),
       preview: this.preview ? this.preview.render() : false,
-      helplinks: this.helplinks,
+      showPreview: this.showPreview,
+      helplinks: this.helplinks
     }));
 
     this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}));
@@ -1505,43 +1580,7 @@ export default class WebformBuilder extends Component {
       }
     });
 
-    const cancelButtons = this.componentEdit.querySelectorAll('[ref="cancelButton"]');
-    cancelButtons.forEach((cancelButton) => {
-      this.addEventListener(cancelButton, 'click', (event) => {
-        event.preventDefault();
-        this.editForm.detach();
-        this.emit('cancelComponent', component);
-        this.dialog.close();
-        this.highlightInvalidComponents();
-      });
-    });
-
-    const removeButtons = this.componentEdit.querySelectorAll('[ref="removeButton"]');
-    removeButtons.forEach((removeButton) => {
-      this.addEventListener(removeButton, 'click', (event) => {
-        event.preventDefault();
-        // Since we are already removing the component, don't trigger another remove.
-        saved = true;
-        this.editForm.detach();
-        this.removeComponent(component, parent, original);
-        this.dialog.close();
-        this.highlightInvalidComponents();
-      });
-    });
-
-    const saveButtons = this.componentEdit.querySelectorAll('[ref="saveButton"]');
-    saveButtons.forEach((saveButton) => {
-      this.addEventListener(saveButton, 'click', (event) => {
-        event.preventDefault();
-        if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
-          this.editForm.setPristine(false);
-          this.editForm.showErrors();
-          return false;
-        }
-        saved = true;
-        this.saveComponent(component, parent, isNew, original);
-      });
-    });
+    this.attachEditComponentControls(component, parent, isNew, original, ComponentClass);
 
     const dialogClose = () => {
       this.editForm.destroy(true);
@@ -1549,7 +1588,7 @@ export default class WebformBuilder extends Component {
         this.preview.destroy(true);
         this.preview = null;
       }
-      if (isNew && !saved) {
+      if (isNew && !this.saved) {
         this.removeComponent(component, parent, original);
         this.highlightInvalidComponents();
       }
@@ -1573,29 +1612,39 @@ export default class WebformBuilder extends Component {
   }
 
   moveComponent(component) {
+    if (this.selectedComponent) {
+      const prevSelected = this.selectedComponent;
+      prevSelected.element?.classList.remove('builder-component-selected');
+      this.removeEventListener(document, 'keydown');
+    }
+
     component.element.focus();
-    component.element.classList.add('builder-selected');
-    this.selectedElement = component;
-    this.removeEventListener(component.element, 'keydown');
-    this.addEventListener(component.element, 'keydown', this.moveHandler.bind(this));
+    component.element.classList.add('builder-component-selected');
+    this.selectedComponent = component;
+    this.addEventListener(document, 'keydown', this.moveHandler.bind(this));
   }
 
   moveHandler = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+    if (e.keyCode === 38 || e.keyCode === 40 || e.keyCode === 13) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+
     if (e.keyCode === 38) {
       this.updateComponentPlacement(true);
     }
+
     if (e.keyCode === 40) {
       this.updateComponentPlacement(false);
     }
+
     if (e.keyCode === 13) {
-      this.stopMoving(this.selectedElement);
+      this.stopMoving(this.selectedComponent);
     }
   };
 
   updateComponentPlacement(direction) {
-    const component = this.selectedElement;
+    const component = this.selectedComponent;
     let index, info;
     const step = direction ? -1 : 1;
     if (component) {
@@ -1622,32 +1671,34 @@ export default class WebformBuilder extends Component {
       }
 
       const len = source.formioComponent.components.length;
-        index = (index === -1) ? 0 : index + step;
+      index = (index === -1) ? 0 : index + step;
 
-        if (index === -1) {
-          source.formioContainer.push(info);
-          source.appendChild(element);
-        }
-        else if (index === len) {
-          const key = source.formioContainer[0].key;
-          index = _.findIndex(source.formioComponent.components, { key: key });
-          const firstElement = source.formioComponent.components[index].element;
-          source.formioContainer.splice(0, 0, info);
-          source.insertBefore(element, firstElement);
-        }
-        else if (index !== -1) {
-          source.formioContainer.splice(index, 0, info);
-          direction
+      if (index === -1) {
+        source.formioContainer.push(info);
+        source.appendChild(element);
+      }
+      else if (index === len) {
+        const key = source.formioContainer[0].key;
+        index = _.findIndex(source.formioComponent.components, { key: key });
+        const firstElement = source.formioComponent.components[index].element;
+        source.formioContainer.splice(0, 0, info);
+        source.insertBefore(element, firstElement);
+      }
+      else if (index !== -1) {
+        source.formioContainer.splice(index, 0, info);
+        direction
           ? source.insertBefore(element, sibling)
           : source.insertBefore(element, sibling.nextElementSibling);
-        }
-        element.focus();
+      }
+      element.focus();
     }
   }
 
   stopMoving(comp) {
     const parent = comp.element.parentNode;
+    this.removeEventListener(document, 'keydown');
     parent.formioComponent.rebuild();
+    this.selectedComponent = null;
   }
 
   addNewComponent(element) {

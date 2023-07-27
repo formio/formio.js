@@ -79,8 +79,11 @@ export default [
     input: true,
     weight: 15,
     placeholder: `{
-  "withCredentials": true
-}`,
+      "withCredentials": true,
+      "headers": {
+        "Authorization": "Basic <key>"
+      }
+    }`,
     conditional: {
       json: {
         '===': [{
@@ -204,6 +207,30 @@ export default [
     conditional: {
       json: { '==': [{ var: 'data.webcam' }, true] }
     }
+  },
+  {
+    type: 'radio',
+    input: true,
+    key: 'capture',
+    label: 'Enable device capture',
+    tooltip: 'This will allow a mobile device to open the camera or microphone directly in capture mode.',
+    optionsLabelPosition: 'right',
+    inline: true,
+    defaultValue: false,
+    values: [
+      {
+        label: 'Disabled',
+        value: 'false'
+      },
+      {
+        label: 'Environment (rear camera)',
+        value: 'environment'
+      },
+      {
+        label: 'User (front camera)',
+        value: 'user'
+      }
+    ]
   },
   {
     type: 'datagrid',

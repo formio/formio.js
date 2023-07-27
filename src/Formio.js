@@ -1,11 +1,9 @@
 import { Formio } from '@formio/core';
 import CDN from './CDN';
-import Templates from './templates/Templates';
 import Providers from './providers';
-
 Formio.cdn = new CDN();
-Formio.Templates = Templates;
 Formio.Providers = Providers;
+Formio.version = 'FORMIO_VERSION';
 
 const isNil = (val) => val === null || val === undefined;
 Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback, abortCallback) {
@@ -95,4 +93,6 @@ Formio.prototype.deleteFile = function(file, options) {
   return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
 };
 
+// For reverse compatability.
+Formio.Promise = Promise;
 export { Formio };

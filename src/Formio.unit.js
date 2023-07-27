@@ -1,6 +1,5 @@
 import { Formio } from './index';
 import { fastCloneDeep } from './utils/utils';
-import _each from 'lodash/each';
 import assert from 'power-assert';
 import sinon from 'sinon';
 import fetchMock from 'fetch-mock/es5/server';
@@ -35,7 +34,7 @@ const runTests = function(fn, options) {
       Formio.projectUrl = 'https://api.form.io';
     });
   }
-  _each(tests, (test, path) => {
+  _.each(tests, (test, path) => {
     it(`Should initialize for ${path}`, (done) => {
       if (typeof test === 'function') {
         test();
