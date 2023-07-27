@@ -179,6 +179,9 @@ export default class CheckBoxComponent extends Field {
   getValueAsString(value) {
     const { name: componentName, value: componentValue } = this.component;
     const hasValue = componentName ? _.isEqual(value, componentValue) : value;
+    if (_.isUndefined(value) && this.inDataTable) {
+      return '';
+    }
 
     return this.t(hasValue ? 'Yes' : 'No');
   }
