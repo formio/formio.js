@@ -193,6 +193,17 @@ export default class SelectComponent extends ListComponent {
     return super.shouldDisabled || this.parentDisabled;
   }
 
+  get shouldInitialLoad() {
+    if (this.component.widget === 'html5' &&
+        this.isEntireObjectDisplay() &&
+        this.component.searchField &&
+        this.dataValue) {
+          return false;
+    }
+
+    return super.shouldLoad;
+  }
+
   isEntireObjectDisplay() {
     return this.component.dataSrc === 'resource' && this.valueProperty === 'data';
   }
@@ -421,7 +432,7 @@ export default class SelectComponent extends ListComponent {
     }
 
     // Add the value options.
-    if (!fromSearch || this.component.widget === 'html5') {
+    if (!fromSearch) {
       this.addValueOptions(items);
     }
 
@@ -556,7 +567,11 @@ export default class SelectComponent extends ListComponent {
 
     // Add search capability.
     if (this.component.searchField && search) {
-      const searchValue = Array.isArray(search) ? search.join(',') : search;
+      const searchValue = Array.isArray(search)
+        ? search.join(',')
+        : typeof search === 'object'
+          ? JSON.stringify(search)
+          : search;
 
       query[this.component.searchField] = this.component.searchField.endsWith('__regex')
         ? _.escapeRegExp(searchValue)
@@ -1395,7 +1410,7 @@ export default class SelectComponent extends ListComponent {
       !this.active &&
       !this.selectOptions.length &&
       hasValue &&
-      this.shouldLoad &&
+      this.shouldInitialLoad &&
       this.visible && (this.component.searchField || this.component.valueProperty);
   }
 
