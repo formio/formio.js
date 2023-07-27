@@ -971,7 +971,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  xit('Should submit form with empty time field when time field is not required', function(done) {
+  it('Should submit form with empty time field when time field is not required', function(done) {
     const formElement = document.createElement('div');
     const formWithTime = new Webform(formElement);
 
@@ -991,7 +991,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  xit(`Should show validation errors and update validation errors list when openning and editing edit grid rows
+  it(`Should show validation errors and update validation errors list when opening and editing edit grid rows
   in draft modal mode after pushing submit btn`, function(done) {
     const formElement = document.createElement('div');
     const formWithDraftModals = new Webform(formElement, { sanitize: true });
@@ -1046,7 +1046,7 @@ describe('Webform tests', function() {
               assert.equal(editGridError, 'Please correct invalid rows before proceeding.');
 
               const rowEditBtn = editGridRows[0].querySelector('.editRow');
-              //open row modal again to check if there are errors
+              // open row modal again to check if there are errors
               rowEditBtn.dispatchEvent(clickEvent);
 
               setTimeout(() => {
@@ -1057,7 +1057,7 @@ describe('Webform tests', function() {
                 assert.equal(!!alertWithErrorText, true, 'Should show error alert');
 
                 const alertErrorMessages = rowModalAfterValidation.querySelectorAll('[ref="messageRef"]');
-                assert.equal(alertErrorMessages.length, 1);
+                assert.equal(alertErrorMessages.length, 2);
 
                 const numberComponentError = rowModalAfterValidation.querySelector('.formio-component-number').querySelector('.error').textContent;
                 //checking if error was shown for empty required field
@@ -1087,7 +1087,7 @@ describe('Webform tests', function() {
                       .querySelector(`.editgrid-row-modal-${editGrid.id}`)
                       .querySelectorAll('[ref="messageRef"]');
 
-                    assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length, 2);
+                    assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length, 3);
                     document.body.innerHTML = '';
 
                     done();
@@ -1197,7 +1197,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  xit('Should show only "required field" error when submitting empty required field with pattern validation', function(done) {
+  it('Should show only "required field" error when submitting empty required field with pattern validation', function(done) {
     const formElement = document.createElement('div');
     const formWithPattern = new Webform(formElement);
 
@@ -1205,8 +1205,8 @@ describe('Webform tests', function() {
     Harness.clickElement(formWithPattern, formWithPattern.element.querySelector('[name="data[submit]"]'));
 
     setTimeout(() => {
-      assert.equal(formWithPattern.element.querySelector('.formio-component-textField').querySelectorAll('.error').length, 1);
       assert.equal(formWithPattern.errors[0].messages.length, 1);
+      assert.equal(formWithPattern.element.querySelector('.formio-component-textField').querySelectorAll('.error').length, 1);
       assert.equal(formWithPattern.errors[0].messages[0].message, 'Text Field is required');
       assert.equal(formWithPattern.element.querySelector('[ref="errorRef"]').textContent.trim(), 'Text Field is required');
       done();

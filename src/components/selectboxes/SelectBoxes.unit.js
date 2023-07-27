@@ -215,7 +215,7 @@ describe('SelectBoxes Component', () => {
         });
     });
 
-    xit('Should provide validation for ValueProperty', (done) => {
+    it('Should provide validation for ValueProperty', (done) => {
       const form = _.cloneDeep(comp5);
       const element = document.createElement('div');
       const originalMakeRequest = Formio.makeRequest;
@@ -224,7 +224,7 @@ describe('SelectBoxes Component', () => {
         return new Promise(resolve => {
           const values = [
             { name : 'Alabama', abbreviation : 'AL' },
-            { name : 'Alaska', abbreviation: { a:2, b: 'c' } },
+            { name : 'Alaska', abbreviation: { a: 2, b: 'c' } },
             { name : 'American Samoa', abbreviation: true }
           ];
           resolve(values);

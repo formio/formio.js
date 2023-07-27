@@ -1511,33 +1511,40 @@ export default class Webform extends NestedDataComponent {
 
         submission._vnote = data && data._vnote ? data._vnote : '';
 
-        if (!isDraft) {
-          if (!submission.data) {
-            return reject('Invalid Submission');
-          }
-          // Wizard forms store their component JSON in `originalComponents`
-          const components = this.originalComponents || this.component.components;
-          const errors = await process({
-            process: 'submit',
-            components,
-            data: submission.data,
-            after: [
-              ({ component, path, errors }) => {
-                const interpolatedErrors = errors.map((error) => {
-                  const { errorKeyOrMessage, context } = error;
-                  const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
-                  return { ...error, message: unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
-                });
-                if (this.parent && this.parent.component && this.parent.component.type === 'form') {
-                  path = `${this.parent.component.key}.data.${path}`;
+        try {
+          if (!isDraft) {
+            if (!submission.data) {
+              return reject('Invalid Submission');
+            }
+            // Wizard forms store their component JSON in `originalComponents`
+            const components = this.originalComponents || this.component.components;
+            const errors = await process({
+              process: 'submit',
+              components,
+              data: submission.data,
+              after: [
+                ({ component, path, errors }) => {
+                  const interpolatedErrors = errors.map((error) => {
+                    const { errorKeyOrMessage, context } = error;
+                    const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+                    return { ...error, message: unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
+                  });
+                  if (this.parent && this.parent.component && this.parent.component.type === 'form') {
+                    path = `${this.parent.component.key}.data.${path}`;
+                  }
+                  const componentInstance = this.childComponentsMap[path];
+                  componentInstance?.setComponentValidity(interpolatedErrors, true, false);
+                  return [];
                 }
-                const componentInstance = this.componentsMap[path];
-                componentInstance?.setComponentValidity(interpolatedErrors, true, false);
-                return [];
-              }
-            ]
-          });
-          if (errors.length > 0) return reject();
+              ]
+            });
+            if (errors.length > 0 || options.beforeSubmitResults?.some((result) => result.status === 'rejected')) {
+              return reject();
+            }
+          }
+        }
+        catch (err) {
+          console.error(err);
         }
 
         this.everyComponent((comp) => {
@@ -1667,10 +1674,13 @@ export default class Webform extends NestedDataComponent {
    *
    * @returns {Promise} - A promise when the form is done submitting.
    */
-  submit(before, options) {
+  submit(before, options = {}) {
     this.submissionInProcess = true;
     if (!before) {
-      return this.beforeSubmit(options).then(() => this.executeSubmit(options));
+      return this.beforeSubmit(options).then((promiseSettledResult) => {
+        options.beforeSubmitResults = promiseSettledResult.flat();
+        return this.executeSubmit(options);
+      });
     }
     else {
       return this.executeSubmit(options);

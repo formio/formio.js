@@ -32,6 +32,7 @@ export default {
   invalid_regex: '{{field}} does not match the pattern {{regex}}.', // eslint-disable-line camelcase
   invalid_date: '{{field}} is not a valid date.', // eslint-disable-line camelcase
   invalid_day: '{{field}} is not a valid day.', // eslint-disable-line camelcase
+  invalidValueProperty: 'Invalid Value Property',
   mask: '{{field}} does not match the mask.',
   valueIsNotAvailable: '{{ field }} is an invalid value.',
   stripe: '{{stripe}}',

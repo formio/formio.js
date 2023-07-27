@@ -541,7 +541,7 @@ export default class FormComponent extends Component {
    *
    * @return {*}
    */
-  submitSubForm(rejectOnError) {
+  submitSubForm() {
     // If we wish to submit the form on next page, then do that here.
     if (this.shouldSubmit) {
       return this.subFormReady.then(() => {
@@ -556,13 +556,8 @@ export default class FormComponent extends Component {
           return this.dataValue;
         }).catch(err => {
           this.subForm.showAllErrors = true;
-          if (rejectOnError) {
-            this.subForm.onSubmissionError(err);
-            return NativePromise.reject(err);
-          }
-          else {
-            return {};
-          }
+          this.subForm.onSubmissionError(err);
+          return NativePromise.reject(err);
         });
       });
     }

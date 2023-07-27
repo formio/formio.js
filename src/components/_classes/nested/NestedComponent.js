@@ -658,7 +658,7 @@ export default class NestedComponent extends Field {
    * @return {*}
    */
   beforeSubmit() {
-    return NativePromise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
+    return NativePromise.allSettled(this.getComponents().map((comp) => comp.beforeSubmit()));
   }
 
   calculateValue(data, flags, row) {
