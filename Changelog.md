@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7035, FIO-7036: fixed issue with dragging layout resource component
  - FIO-6841: fixed validation for hidden selectBoxes
  - FIO-7043: Fixes an issue where {{}} values in DataSource headers are resolved in the form builder
+ - FIO-7007: fixed display of submitted values on DataTab
 
 ## 5.0.0-rc.6
 ### Added
