@@ -16,6 +16,7 @@ import {
   comp12,
   comp13,
   comp14,
+  comp15,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
   compWithCustomDefaultValue,
@@ -497,6 +498,21 @@ describe('EditGrid Component', () => {
           done();
         }, 150);
       }).catch(done);
+    });
+
+    it('Should not produce many components in Edit view when minLength validation set', done => {
+      const formElement = document.createElement('div');
+      Formio.createForm(formElement, comp15, { attachMode:'builder' } )
+        .then(form => {
+          const editGrid = form.components[0];
+          const elements = editGrid.element.querySelectorAll('[ref="input"]');
+
+          setTimeout(() => {
+            assert.equal(elements.length, 2);
+            done();
+          }, 200);
+        })
+        .catch(done);
     });
 
     it('Should close row when Display as Modal checked', (done) => {
