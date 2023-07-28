@@ -2,7 +2,6 @@ import assert from 'power-assert';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import _ from 'lodash';
-import i18next from 'i18next';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
@@ -47,8 +46,7 @@ import formWithDataGrid from '../test/forms/formWithDataGrid';
 import translationTestForm from '../test/forms/translationTestForm';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
 import { nestedFormInWizard } from '../test/fixtures';
-import NativePromise from 'native-promise-only';
-import { fastCloneDeep } from '../lib/utils/utils';
+import { fastCloneDeep } from './utils/utils';
 import dataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import checkBlurFocusEventForm from '../test/forms/checkBlurFocusEventForm';
 import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
@@ -290,6 +288,21 @@ describe('Webform tests', function() {
     }, 200);
     })
     .catch((err) => done(err));
+  });
+
+  it('Should show submission if passed as option', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { renderMode: 'html', readOnly: true, submission: { data: { survey: { question1: 'a3', question2: 'a1' } } } });
+
+    form.setForm(formWithSurvey).then(() => {
+      const survey = form.getComponent('survey');
+      const values = survey.element.querySelectorAll('td');
+
+      assert.equal(values.length, 2);
+      assert.equal(values[0].innerHTML.trim(), 'a3');
+      assert.equal(values[1].innerHTML.trim(), 'a1');
+      done();
+   }).catch((err) => done(err));
   });
 
   it('Should show survey values in html render mode', function(done) {
@@ -1427,22 +1440,6 @@ describe('Webform tests', function() {
     });
   });
 
-  it('Should treat double colons as i18next namespace separators', (done) => {
-    const formElement = document.createElement('div');
-    const form = new Webform(formElement);
-    form.setForm({
-      title: 'Test Form',
-      components: []
-    }).then(() => {
-      const str = 'Test: this is only a test';
-
-      assert.equal(form.t(str), str);
-      assert.equal(form.t(`Namespace::${str}`), str);
-
-      done();
-    }).catch(done);
-  });
-
   it('Should get the language passed via options', () => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, {
@@ -1689,43 +1686,6 @@ describe('Webform tests', function() {
     simpleForm.submit().then((submission) => {
       assert.deepEqual(submission.data, { name: 'noname' });
       done();
-    });
-  });
-
-  it('Should not mutate the global i18next if it gets an instance', async function() {
-    await i18next.init({ lng: 'en' });
-    const instance = i18next.createInstance();
-
-    const formElement = document.createElement('div');
-    const translateForm = new Webform(formElement, {
-      language: 'es',
-      i18next: instance,
-      i18n: {
-        es: {
-          'Default Label': 'Spanish Label'
-        }
-      }
-    });
-
-    return translateForm.setForm({
-      title: 'Translate Form',
-      components: [
-        {
-          type: 'textfield',
-          label: 'Default Label',
-          key: 'myfield',
-          input: true,
-          inputType: 'text',
-          validate: {}
-        }
-      ]
-    }).then(() => {
-      assert.equal(i18next.language, 'en');
-      assert.equal(translateForm.i18next.language, 'es');
-      assert.equal(translateForm.i18next, instance);
-
-      const label = formElement.querySelector('.col-form-label');
-      assert.equal(label.innerHTML.trim(), 'Spanish Label');
     });
   });
 
@@ -2125,7 +2085,7 @@ describe('Webform tests', function() {
       assert.equal(submitButton.disabled, false, 'Button should be enabled at the beginning');
 
       const simulateFileUploading = (comp, debounce = 250) => {
-        const filePromise = new NativePromise((resolve) => {
+        const filePromise = new Promise((resolve) => {
           setTimeout(() => resolve(), debounce);
         });
         filePromise.then(() => comp.emit('fileUploadingEnd', filePromise));

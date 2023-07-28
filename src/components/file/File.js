@@ -2,7 +2,6 @@ import Field from '../_classes/field/Field';
 import { componentValueTypes, getComponentSavedTypes, uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
 import fileProcessor from '../../providers/processor/fileProcessor';
 import BMF from 'browser-md5-file';
 
@@ -65,6 +64,13 @@ export default class FileComponent extends Field {
     };
   }
 
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
+  }
+  
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
@@ -77,7 +83,7 @@ export default class FileComponent extends Field {
 
     return  getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
-
+  
   init() {
     super.init();
     webViewCamera = navigator.camera || Camera;
@@ -97,7 +103,7 @@ export default class FileComponent extends Field {
   }
 
   get dataReady() {
-    return this.filesReady || NativePromise.resolve();
+    return this.filesReady || Promise.resolve();
   }
 
   get defaultSchema() {
@@ -178,7 +184,7 @@ export default class FileComponent extends Field {
   }
 
   getFrame(videoPlayer) {
-    return new NativePromise((resolve) => {
+    return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
       canvas.height = videoPlayer.videoHeight;
       canvas.width = videoPlayer.videoWidth;
@@ -239,7 +245,7 @@ export default class FileComponent extends Field {
   }
 
   browseFiles(attrs = {}) {
-    return new NativePromise((resolve) => {
+    return new Promise((resolve) => {
       const fileInput = this.ce('input', {
         type: 'file',
         style: 'height: 0; width: 0; visibility: hidden;',
@@ -293,9 +299,12 @@ export default class FileComponent extends Field {
     if (this.component.multiple) {
       options.multiple = true;
     }
+    if (this.component.capture) {
+      options.capture = this.component.capture;
+    }
     //use "accept" attribute only for desktop devices because of its limited support by mobile browsers
+    const filePattern = this.component.filePattern.trim() || '';
     if (!this.isMobile.any) {
-      const filePattern = this.component.filePattern.trim() || '';
       const imagesPattern = 'image/*';
 
       if (this.imageUpload && (!filePattern || filePattern === '*')) {
@@ -308,6 +317,18 @@ export default class FileComponent extends Field {
         options.accept = filePattern;
       }
     }
+    // if input capture is set, we need the "accept" attribute to determine which device to launch
+    else if (this.component.capture) {
+      if (filePattern.includes('video')) {
+        options.accept = 'video/*';
+      }
+      else if (filePattern.includes('audio')) {
+        options.accept = 'audio/*';
+      }
+      else {
+        options.accept = 'image/*';
+      }
+    }
 
     return options;
   }
@@ -315,7 +336,7 @@ export default class FileComponent extends Field {
   deleteFile(fileInfo) {
     const { options = {} } = this.component;
 
-    if (fileInfo && (['url', 'indexeddb'].includes(this.component.storage))) {
+    if (fileInfo && (['url', 'indexeddb', 's3','googledrive', 'azure'].includes(this.component.storage))) {
       const { fileService } = this;
       if (fileService && typeof fileService.deleteFile === 'function') {
         fileService.deleteFile(fileInfo, options);
@@ -491,7 +512,7 @@ export default class FileComponent extends Field {
     const fileService = this.fileService;
     if (fileService) {
       const loadingImages = [];
-      this.filesReady = new NativePromise((resolve, reject) => {
+      this.filesReady = new Promise((resolve, reject) => {
         this.filesReadyResolve = resolve;
         this.filesReadyReject = reject;
       });
@@ -499,7 +520,7 @@ export default class FileComponent extends Field {
         loadingImages.push(this.loadImage(this.dataValue[index]).then((url) => (image.src = url)));
       });
       if (loadingImages.length) {
-        NativePromise.all(loadingImages).then(() => {
+        Promise.all(loadingImages).then(() => {
           this.filesReadyResolve();
         }).catch(() => this.filesReadyReject());
       }

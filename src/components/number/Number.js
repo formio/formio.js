@@ -1,6 +1,6 @@
-import { maskInput, conformToMask } from '@formio/vanilla-text-mask';
-import _ from 'lodash';
 import { createNumberMask } from '@formio/text-mask-addons';
+import { conformToMask,maskInput } from '@formio/vanilla-text-mask';
+import _ from 'lodash';
 import Input from '../_classes/input/Input';
 import { getNumberSeparators, getNumberDecimalLimit, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 
@@ -29,7 +29,25 @@ export default class NumberComponent extends Input {
       schema: NumberComponent.schema()
     };
   }
-
+  
+  static get serverConditionSettings() {
+    return {
+      operators: [
+        'isEqual',
+        'isNotEqual',
+        'isEmpty',
+        'isNotEmpty',
+        'greaterThan',
+        'greaterThanOrEqual',
+        'lessThan',
+        'lessThanOrEqual',
+      ],
+      valueComponent(classComp) {
+        return { ...classComp, type: 'number' };
+      },
+    };
+  }
+  
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
@@ -45,15 +63,12 @@ export default class NumberComponent extends Input {
     return getComponentSavedTypes(schema) || [componentValueTypes.number];
   }
 
-  constructor(...args) {
+ constructor(...args) {
     super(...args);
     this.validators = this.validators.concat(['min', 'max']);
 
     const separators = getNumberSeparators(this.options.language || navigator.language);
-
-    this.decimalSeparator = this.options.decimalSeparator = this.options.decimalSeparator
-      || this.options.properties?.decimalSeparator
-      || separators.decimalSeparator;
+    const requireDecimal = _.get(this.component, 'requireDecimal', false);
 
     if (this.component.delimiter) {
       if (this.options.hasOwnProperty('thousandsSeparator')) {
@@ -66,8 +81,10 @@ export default class NumberComponent extends Input {
       this.delimiter = '';
     }
 
-    const requireDecimal = _.get(this.component, 'requireDecimal', false);
     this.decimalLimit = getNumberDecimalLimit(this.component, requireDecimal ? 2 : 20);
+    this.decimalSeparator = this.decimalLimit !== 0 ?
+      this.options.decimalSeparator || this.options.properties?.decimalSeparator || separators.decimalSeparator :
+      '';
 
     // Currencies to override BrowserLanguage Config. Object key {}
     if (_.has(this.options, `languageOverride.${this.options.language}`)) {

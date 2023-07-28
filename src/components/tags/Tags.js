@@ -1,10 +1,6 @@
 import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Input from '../_classes/input/Input';
-
-let Choices;
-if (typeof window !== 'undefined') {
-  Choices = require('@formio/choices.js');
-}
+import Choices from '@formio/choices.js';
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -29,6 +25,13 @@ export default class TagsComponent extends Input {
     };
   }
 
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      operators: [...super.serverConditionSettings.operators, 'includes', 'notIncludes'],
+    };
+  }
+  
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,

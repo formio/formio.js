@@ -122,6 +122,7 @@ export namespace Utils {
   function searchComponents(components: any[], query: any): any;
   function findComponent(components: any[], key: any, path: any, fn: Function): boolean;
   function removeComponent(components: any[], path: any): void;
+  function fastCloneDeep(json: any): any;
   function generateFormChange(
     type: string | any,
     data: { schema: any; parent: { key: any } | any; originalComponent: any },

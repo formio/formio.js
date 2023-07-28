@@ -4,12 +4,6 @@ import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import { fastCloneDeep } from './utils/utils';
 
-let dragula;
-if (typeof window !== 'undefined') {
-  // Import from "dist" because it would require and "global" would not be defined in Angular apps.
-  dragula = require('dragula/dist/dragula');
-}
-
 export default class WizardBuilder extends WebformBuilder {
   constructor() {
     let element, options;
@@ -122,6 +116,11 @@ export default class WizardBuilder extends WebformBuilder {
       const components = this._form.components.filter((component) => component.type !== 'button');
       this._form.components = [this.getPageConfig(1, components)];
     }
+    else {
+      const components = this._form.components
+        .filter((component) => component.type !== 'button' || component.action !== 'submit');
+      this._form.components = components;
+    }
     this.rebuild();
   }
 
@@ -169,11 +168,9 @@ export default class WizardBuilder extends WebformBuilder {
       page.parentNode.dragInfo = { index };
     });
 
-    if (dragula) {
-      this.navigationDragula = dragula([this.element.querySelector('.wizard-pages')], {
-        // Don't move Add Page button
+    if (this.dragulaLib) {
+      this.navigationDragula = this.dragulaLib([this.element.querySelector('.wizard-pages')], {
         moves: (el) => (!el.classList.contains('wizard-add-page')),
-        // Don't allow dragging components after Add Page button
         accepts: (el, target, source, sibling) => (sibling ? true : false),
       })
         .on('drop', this.onReorder.bind(this));

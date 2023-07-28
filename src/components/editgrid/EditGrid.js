@@ -1,10 +1,9 @@
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import Alert from '../alert/Alert';
 import { fastCloneDeep, Evaluator, getArrayFromComponentPath, eachComponent } from '../../utils/utils';
-import templates from './templates';
+import { editgrid as templates } from '@formio/bootstrap/components';
 
 const EditRowState = {
   New: 'new',
@@ -46,6 +45,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       icon: 'tasks',
       group: 'data',
       documentation: '/userguide/form-building/data-components#edit-grid',
+      showPreview: false,
       weight: 30,
       schema: EditGridComponent.schema(),
     };
@@ -238,7 +238,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   get minLength() {
-    return _.get(this.component, 'validate.minLength', 0);
+    return this.builderMode ? 0 : _.get(this.component, 'validate.minLength', 0);
   }
 
   get data() {
@@ -788,7 +788,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   showDialog(rowIndex) {
     const editRow = this.editRows[rowIndex];
     if (_.isEqual(editRow.backup, editRow.data)) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
 
     const wrapper = this.ce('div', { ref: 'confirmationDialog' });
@@ -811,7 +811,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     };
     let dialogResult;
 
-    const promise = new NativePromise((resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
       dialogResult = { resolve, reject };
     });
 
@@ -832,7 +832,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     const editRow = this.editRows[rowIndex];
     const isAlreadyEditing = editRow.state === EditRowState.Editing || editRow.state === EditRowState.New;
     if (!editRow || isAlreadyEditing) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
     editRow.prevState = editRow.state;
     editRow.state = this.options.readOnly ? EditRowState.Viewing : EditRowState.Editing;

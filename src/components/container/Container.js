@@ -25,6 +25,7 @@ export default class ContainerComponent extends NestedDataComponent {
       icon: 'folder-open',
       group: 'data',
       documentation: '/userguide/form-building/data-components#container',
+      showPreview: false,
       weight: 10,
       schema: ContainerComponent.schema()
     };
