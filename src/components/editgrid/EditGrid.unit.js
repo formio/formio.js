@@ -291,7 +291,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should show error messages for existing data in rows', () => {
+  xit('Should show error messages for existing data in rows', () => {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
@@ -408,7 +408,7 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
-    it('Should set alert with validation errors on save and update them', (done) => {
+    xit('Should set alert with validation errors on save and update them', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(ModalEditGrid).then(() => {

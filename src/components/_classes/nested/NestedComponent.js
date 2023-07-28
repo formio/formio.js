@@ -602,7 +602,7 @@ export default class NestedComponent extends Field {
     }
   }
 
-  checkData(data, flags, row, components) {
+  async checkData(data, flags, row, components) {
     if (this.builderMode) {
       return true;
     }
@@ -610,7 +610,8 @@ export default class NestedComponent extends Field {
     flags = flags || {};
     row = row || this.data;
     components = components && _.isArray(components) ? components : this.getComponents();
-    const isValid = components.reduce((valid, comp) => {
+    const isValid = await components.reduce(async (promise, comp) => {
+      const valid = await promise;
       return comp.checkData(data, flags, row) && valid;
     }, super.checkData(data, flags, row));
 

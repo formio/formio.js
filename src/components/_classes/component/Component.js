@@ -4,6 +4,8 @@ import NativePromise from 'native-promise-only';
 import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
+import { processOne } from '@formio/core';
+
 import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import Validator from '../../../validator/Validator';
@@ -3057,7 +3059,7 @@ export default class Component extends Element {
    *
    * @return boolean - If component is valid or not.
    */
-  checkData(data, flags, row) {
+  async checkData(data, flags, row) {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
@@ -3082,7 +3084,25 @@ export default class Component extends Element {
 
     if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
       if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
-        this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
+        // this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
+        await processOne({
+          component: this.component,
+          path: this.path,
+          instance: this,
+          process: 'change',
+          data,
+          after: [
+            ({ component, errors }) => {
+              const interpolatedErrors = errors.map((error) => {
+                const { errorKeyOrMessage, context } = error;
+                const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+                return { ...error, message: FormioUtils.unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
+              });
+              this.setComponentValidity(interpolatedErrors, !!this.options.alwaysDirty, false);
+              return [];
+            }
+          ]
+        });
       }
       return true;
     }
@@ -3104,9 +3124,27 @@ export default class Component extends Element {
     if (this.component.validateOn === 'blur' && flags.fromSubmission) {
       return true;
     }
-    const isValid = this.checkComponentValidity(data, isDirty, row, flags);
+    const errors = await processOne({
+      component: this.component,
+      path: this.path,
+      instance: this,
+      process: 'change',
+      data,
+      after: [
+        ({ component, errors }) => {
+          const interpolatedErrors = errors.map((error) => {
+            const { errorKeyOrMessage, context } = error;
+            const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+            return { ...error, message: FormioUtils.unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
+          });
+          this.setComponentValidity(interpolatedErrors, isDirty, flags.silentCheck);
+          return [];
+        }
+      ]
+    });
+    // const isValid = this.checkComponentValidity(data, isDirty, row, flags);
     this.checkModal();
-    return isValid;
+    return errors.length === 0;
   }
 
   checkModal(isValid = true, dirty = false) {

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import NativePromise from 'native-promise-only';
-import { process, validate } from '@formio/core';
+import { process } from '@formio/core';
 import { compareVersions } from 'compare-versions';
 
 import EventEmitter from './EventEmitter';
@@ -1410,7 +1410,7 @@ export default class Webform extends NestedDataComponent {
       this.pristine = false;
     }
 
-    value.isValid = this.checkData(value.data, flags);
+    value.isValid = await this.checkData(value.data, flags);
 
     this.loading = false;
     if (this.submitted) {
@@ -1434,8 +1434,8 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
-  checkData(data, flags = {}) {
-    const valid = super.checkData(data, flags);
+  async checkData(data, flags = {}) {
+    const valid = await super.checkData(data, flags);
     if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
       this.showErrors();
     }
