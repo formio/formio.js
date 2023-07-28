@@ -1,391 +1,292 @@
-import CDN from './CDN';
-// eslint-disable-next-line max-statements
-export function embed(config = {}) {
-  const scripts = document.getElementsByTagName('script');
-  config = Object.assign(config, window.FormioConfig);
-  let thisScript = null;
-  let i = scripts.length;
-  const scriptName = config.scriptName || 'formio.embed.';
-  while (i--) {
-    if (
-      scripts[i].src && (scripts[i].src.indexOf(scriptName) !== -1)
-    ) {
-      thisScript = scripts[i];
-      break;
+import CDN from './CDN.js';
+export class Formio {
+    static baseUrl;
+    static projectUrl;
+    static language;
+    static wrapper;
+    static element;
+    static config = {};
+    static loader = null;
+    static cdn = null;
+    static proxy = true;
+    static async setBaseUrl(url) {
+        Formio.baseUrl = url;
     }
-  }
-
-  if (thisScript) {
-    const query = {};
-    const queryString = thisScript.src.replace(/^[^?]+\??/, '');
-    queryString.replace(/\?/g, '&').split('&').forEach((item) => {
-      query[item.split('=')[0]] = item.split('=')[1] && decodeURIComponent(item.split('=')[1]);
-    });
-
-    let scriptSrc = thisScript.src.replace(/^([^?]+).*/, '$1').split('/');
-    scriptSrc.pop();
-    if (config.formioPath) {
-      config.formioPath(scriptSrc);
+    static async setProjectUrl(url) {
+        Formio.projectUrl = url;
     }
-    scriptSrc = scriptSrc.join('/');
-    query.script = query.script || (`${config.updatePath ? config.updatePath() :scriptSrc}/formio.form.min.js`);
-    query.styles = query.styles || (`${config.updatePath ? config.updatePath() :scriptSrc}/formio.form.min.css`);
-    const cdn = query.cdn || 'https://cdn.jsdelivr.net/npm';
 
-    const resolveLibs = (cdn) => {
-      const libs = {
-        uswds: {
-          fa: true,
-          js: `${cdn}/uswds@2.10.0/dist/js/uswds.min.js`,
-          css: `${cdn}/uswds@2.10.0/dist/css/uswds.min.css`
-        },
-        fontawesome: {
-          css: `${cdn}/font-awesome@4.7.0/css/font-awesome.min.css`
-        },
-        bootstrap: {
-          css: `${cdn}/bootstrap@4.6.0/dist/css/bootstrap.min.css`
+    static debug(...args) {
+        if (Formio.config.debug) {
+            console.log(...args);
         }
-      };
-      // Check if using cdn.form.io standart folders format
-      if (cdn instanceof CDN) {
-        const url = cdn.baseUrl;
-        libs.uswds.js = `${url}/uswds/${cdn.getVersion('uswds')}/uswds.min.js`;
-        libs.uswds.css = `${url}/uswds/${cdn.getVersion('uswds')}/uswds.min.css`;
-        libs.fontawesome.css = `${url}/font-awesome/${cdn.getVersion('font-awesome')}/css/font-awesome.min.css`;
-        libs.bootstrap.css = `${url}/bootstrap/${cdn.getVersion('bootstrap')}/css/bootstrap.min.css`;
-      }
-      return libs;
-    };
-
-    config = Object.assign({
-      script: query.script,
-      style: query.styles,
-      class: (query.class || 'formio-form-wrapper'),
-      src: query.src,
-      form: null,
-      submission: null,
-      project: query.project,
-      base: query.base,
-      submit: query.submit,
-      includeLibs: (query.libs === 'true' || query.libs === '1'),
-      template: query.template,
-      debug: (query.debug === 'true' || query.debug === '1'),
-      config: {},
-      redirect: (query.return || query.redirect),
-      before: () => {},
-      after: () => {}
-    }, config);
-
-    /**
-     * Print debug statements.
-     *
-     * @param  {...any} args Arguments to pass to the console.log method.
-     */
-    const debug = (...args) => {
-      if (config.debug) {
-        console.log(...args);
-      }
-    };
-
-    /**
-     * Creates a new DOM element.
-     *
-     * @param {string} tag The HTMLElement to add to the wrapper or shadow dom.
-     * @param {Object} attrs The attributes to add to this element.
-     * @param {Array<Object>} children The children attached to this element.
-     */
-    const createElement = (tag, attrs, children) => {
-      const element = document.createElement(tag);
-      for (const attr in attrs) {
-        if (attrs.hasOwnProperty(attr)) {
-          element.setAttribute(attr, attrs[attr]);
-        }
-      }
-      (children || []).forEach(child => {
-        element.appendChild(createElement(child.tag, child.attrs, child.children));
-      });
-      return element;
-    };
-
-    debug('Embedding Configuration', config);
-
-    if (config.addPremiumLib) {
-      config.addPremiumLib(config, scriptSrc);
     }
 
-    // The id for this embedded form.
-    const id = `formio-${Math.random().toString(36).substring(7)}`;
-    config.id = id;
-
-    debug('Creating form wrapper');
-    let wrapper = createElement('div', {
-         'id': `"${id}-wrapper"`
-    });
-
-    // insertAfter doesn't exist, but effect is identical.
-    thisScript.parentNode.insertBefore(wrapper, thisScript.parentNode.firstElementChild.nextSibling);
-
-    // If we include the libraries, then we will attempt to run this in shadow dom.
-    if (config.includeLibs && (typeof wrapper.attachShadow === 'function') && !config.premium) {
-      wrapper = wrapper.attachShadow({
-        mode: 'open'
-      });
-      config.config.shadowRoot = wrapper;
+    static global(prop) {
+        const globalValue = window[prop];
+        if (globalValue && globalValue.proxy) {
+            return null;
+        }
+        Formio.debug(`Getting global ${prop}`, globalValue);
+        return globalValue;
     }
 
-    const global = (name) => {
-      const globalValue = window[name];
-      debug(`Getting global ${name}`, globalValue);
-      return globalValue;
-    };
+    static createElement(type, attrs, children) {
+        const element = document.createElement(type);
+        Object.keys(attrs).forEach(key => {
+            element.setAttribute(key, attrs[key]);
+        });
+        (children || []).forEach(child => {
+            element.appendChild(Formio.createElement(child.tag, child.attrs, child.children));
+        });
+        return element;
+    }
 
-    const addStyles = (href, global) => {
-      if (!href) {
-        return;
-      }
-      if (typeof href !== 'string' && href.length) {
-        href.forEach(ref => addStyles(ref));
-        return;
-      }
-      debug('Adding Styles', href);
-      const link = createElement('link', {
-        rel: 'stylesheet',
-        href
-      });
-      if (global) {
-        // Add globally as well.
-        document.head.appendChild(link);
-      }
-      wrapper.appendChild(createElement('link', {
-        rel: 'stylesheet',
-        href
-      }));
-    };
-
-    const addScript = (src, globalProp, onReady) => {
-      if (!src) {
-        return;
-      }
-      if (typeof src !== 'string' && src.length) {
-        src.forEach(ref => addScript(ref));
-        return;
-      }
-      if (globalProp && global(globalProp)) {
-        debug(`${globalProp} already loaded.`);
-        return global(globalProp);
-      }
-      debug('Adding Script', src);
-      wrapper.appendChild(createElement('script', {
-        src
-      }));
-      if (globalProp && onReady) {
-        debug(`Waiting to load ${globalProp}`);
-        const wait = setInterval(() => {
-          if (global(globalProp)) {
-            clearInterval(wait);
-            debug(`${globalProp} loaded.`);
-            onReady(global(globalProp));
-          }
-        }, 100);
-      }
-    };
-
-    // Create a loader
-    addStyles(`${config.updatePath ? config.updatePath() : scriptSrc}/formio.embed.min.css`);
-    debug('Creating loader');
-    const loader = createElement('div', {
-      'class': 'formio-loader'
-    }, [{
-      tag: 'div',
-      attrs: {
-        class: 'loader-wrapper'
-      },
-      children: [{
-        tag: 'div',
-        attrs: {
-          class: 'loader text-center'
+    static async addScript(src, name) {
+        if (!src) {
+            return Promise.resolve();
         }
-      }]
-    }]);
-    wrapper.appendChild(loader);
+        if (typeof src !== 'string' && src.length) {
+            return Promise.all(src.map(ref => Formio.addScript(ref)));
+        }
+        if (name && Formio.global(name)) {
+            Formio.debug(`${name} already loaded.`);
+            return Promise.resolve(Formio.global(name));
+        }
+        Formio.debug('Adding Script', src);
+        Formio.wrapper.appendChild(Formio.createElement('script', {
+            src
+        }));
+        if (!name) {
+            return Promise.resolve();
+        }
+        return new Promise((resolve) => {
+            Formio.debug(`Waiting to load ${name}`);
+            const wait = setInterval(() => {
+                if (Formio.global(name)) {
+                    clearInterval(wait);
+                    Formio.debug(`${name} loaded.`);
+                    resolve(Formio.global(name));
+                }
+            }, 100);
+        });
+    }
 
-    // Add the wrapper for the rendered form.
-    debug('Creating form element');
-    const formElement = createElement('div', {
-      class: config.class
-    });
-    wrapper.appendChild(formElement);
+    static async addStyles(href, addGlobally = false) {
+        if (!href) {
+            return;
+        }
+        if (typeof href !== 'string' && href.length) {
+            href.forEach(ref => Formio.addStyles(ref));
+            return;
+        }
+        Formio.debug('Adding Styles', href);
+        const link = Formio.createElement('link', {
+            rel: 'stylesheet',
+            href
+        });
+        if (addGlobally) {
+            // Add globally as well.
+            document.head.appendChild(link);
+        }
+        Formio.wrapper.appendChild(Formio.createElement('link', {
+            rel: 'stylesheet',
+            href
+        }));
+    }
 
-    // Add the main formio script.
-    addScript(config.script, 'Formio', (Formio) => {
-      const renderForm = () => {
-        addStyles(config.style);
-        const isReady = config.before(Formio, formElement, config) || Formio.Promise.resolve();
-        const form = (config.form || config.src);
-        debug('Creating form', form, config.config);
-        isReady.then(() => {
-          Formio.license = true;
-          Formio.createForm(formElement, form, {
-            ...config.config,
-            ...{ noLoader: true }
-          }).then((instance) => {
-            const submitDone = (submission) => {
-              debug('Submision Complete', submission);
-              let returnUrl = config.redirect;
+    static async submitDone(instance, submission) {
+        Formio.debug('Submision Complete', submission);
+        let returnUrl = Formio.config.redirect;
 
-              // Allow form based configuration for return url.
-              if (
-                !returnUrl &&
+        // Allow form based configuration for return url.
+        if (
+            !returnUrl &&
+            (
+                instance._form &&
+                instance._form.settings &&
                 (
-                  instance._form &&
-                  instance._form.settings &&
-                  (
                     instance._form.settings.returnUrl ||
                     instance._form.settings.redirect
-                  )
                 )
-              ) {
-                debug('Return url found in form configuration');
-                returnUrl = instance._form.settings.returnUrl || instance._form.settings.redirect;
-              }
+            )
+        ) {
+            Formio.debug('Return url found in form configuration');
+            returnUrl = instance._form.settings.returnUrl || instance._form.settings.redirect;
+        }
 
-              if (returnUrl) {
-                const formSrc = instance.formio ? instance.formio.formUrl : '';
-                const hasQuery = !!returnUrl.match(/\?/);
-                const isOrigin = returnUrl.indexOf(location.origin) === 0;
-                returnUrl += hasQuery ? '&' : '?';
-                returnUrl += `sub=${submission._id}`;
-                if (!isOrigin && formSrc) {
-                  returnUrl += `&form=${encodeURIComponent(formSrc)}`;
-                }
-                debug('Return URL', returnUrl);
-                window.location.href = returnUrl;
-                if (isOrigin) {
-                  window.location.reload();
-                }
-              }
-            };
+        if (returnUrl) {
+            const formSrc = instance.formio ? instance.formio.formUrl : '';
+            const hasQuery = !!returnUrl.match(/\?/);
+            const isOrigin = returnUrl.indexOf(location.origin) === 0;
+            returnUrl += hasQuery ? '&' : '?';
+            returnUrl += `sub=${submission._id}`;
+            if (!isOrigin && formSrc) {
+                returnUrl += `&form=${encodeURIComponent(formSrc)}`;
+            }
+            Formio.debug('Return URL', returnUrl);
+            window.location.href = returnUrl;
+            if (isOrigin) {
+                window.location.reload();
+            }
+        }
+    }
 
-            if (config.submit) {
-              instance.nosubmit = true;
+    static async renderForm(FormioClass, form, options) {
+        if (Formio.config.before) {
+            await Formio.config.before(FormioClass, Formio.element, Formio.config);
+        }
+        FormioClass.license = true;
+        FormioClass.createForm(Formio.element, form, {
+            ...options,
+            ...{ noLoader: true }
+        }).then((instance) => {
+            if (Formio.config.submit) {
+                instance.nosubmit = true;
             }
 
-            debug('Form created', instance);
+            Formio.debug('Form created', instance);
 
             // Remove the loader.
-            debug('Removing loader');
-            wrapper.removeChild(loader);
+            Formio.debug('Removing loader');
+            Formio.wrapper.removeChild(Formio.loader);
 
             // Set the default submission data.
-            if (config.submission) {
-              debug('Setting submission', config.submission);
-              instance.submission = config.submission;
+            if (Formio.config.submission) {
+                Formio.debug('Setting submission', Formio.config.submission);
+                instance.submission = Formio.config.submission;
             }
 
             // Allow them to provide additional configs.
-            debug('Triggering embed event');
-            Formio.events.emit('formEmbedded', instance);
+            Formio.debug('Triggering embed event');
+            FormioClass.events.emit('formEmbedded', instance);
 
-            debug('Calling ready callback');
-            config.after(instance, config);
+            if (Formio.config.after) {
+                Formio.debug('Calling ready callback');
+                Formio.config.after(instance, Formio.config);
+            }
 
             // Configure a redirect.
             instance.on('submit', (submission) => {
-              debug("on('submit')", submission);
-              if (config.submit) {
-                debug(`Sending submission to ${config.submit}`);
-                const headers = {
-                  'content-type': 'application/json'
-                };
-                const token = Formio.getToken();
-                if (token) {
-                  headers['x-jwt-token'] = token;
+                Formio.debug("on('submit')", submission);
+                if (Formio.config.submit) {
+                    Formio.debug(`Sending submission to ${Formio.config.submit}`);
+                    const headers = {
+                        'content-type': 'application/json'
+                    };
+                    const token = FormioClass.getToken();
+                    if (token) {
+                        headers['x-jwt-token'] = token;
+                    }
+                    FormioClass.fetch(Formio.config.submit, {
+                        body: JSON.stringify(submission),
+                        headers: headers,
+                        method: 'POST',
+                        mode: 'cors',
+                    })
+                        .then(resp => resp.json())
+                        .then(submission => Formio.submitDone(instance, submission));
                 }
-                Formio.fetch(config.submit, {
-                    body: JSON.stringify(submission),
-                    headers: headers,
-                    method: 'POST',
-                    mode: 'cors',
-                  })
-                  .then(resp => resp.json())
-                  .then(submission => submitDone(submission));
-              }
-              else {
-                submitDone(submission);
-              }
+                else {
+                    Formio.submitDone(instance, submission);
+                }
             });
-          });
         });
-      };
+    }
 
-      if (config.base) {
-        Formio.setBaseUrl(config.base);
-      }
-      if (config.project) {
-        Formio.setProjectUrl(config.project);
-      }
+    // eslint-disable-next-line max-statements
+    static async createForm(element, form, options) {
+        Formio.element = element;
+        Formio.cdn = new CDN(Formio.config.cdn);
+        Formio.config.libs = Formio.config.libs || {
+            uswds: {
+                fa: true,
+                js: `${Formio.cdn.uswds}/uswds.min.js`,
+                css: `${Formio.cdn.uswds}/uswds.min.css`,
+            },
+            fontawesome: {
+                css: `${Formio.cdn['font-awesome']}/css/font-awesome.min.css`
+            },
+            bootstrap: {
+                css: `${Formio.cdn.bootstrap}/css/bootstrap.min.css`
+            }
+        };
+        Formio.config.id = Formio.config.id || `formio-${Math.random().toString(36).substring(7)}`;
 
-      // Add premium modules
-      if (global('premium')) {
-        debug('Using premium module.');
-        Formio.use(global('premium'));
-      }
-
-      if (global('vpat')) {
-        debug('Using vpat module.');
-        Formio.use(global('vpat'));
-      }
-
-      if (config.template) {
-        if (config.includeLibs) {
-          addStyles(config.libs[config.template].css);
-          addScript(config.libs[config.template].js);
-          if (config.libs[config.template].fa) {
-            addStyles(config.libs.fontawesome.css, true);
-          }
-        }
-        let templateSrc;
-        if (cdn instanceof CDN) {
-          templateSrc = `${cdn[config.template]}/${config.template}.min`;
-        }
-        else {
-          templateSrc = `${cdn}/@formio/${config.template}@latest/dist/${config.template}.min`;
-        }
-        addStyles(`${templateSrc}.css`);
-        addScript(`${templateSrc}.js`, config.template, (template) => {
-          debug(`Using ${config.template}`);
-          Formio.use(template);
-          renderForm();
+        // Create a new wrapper and add the element inside of a new wrapper.
+        Formio.wrapper = Formio.createElement('div', {
+            'id': `"${Formio.config.id}-wrapper"`
         });
-      }
-      else if (global('uswds')) {
-        debug('Using uswds module.');
-        Formio.use(global('uswds'));
-      }
-      // Default bootstrap + fontawesome.
-      else if (config.includeLibs) {
-        Formio.cdn = new CDN();
-        config.libs = resolveLibs(query.cdn || Formio.cdn);
-        addStyles(config.libs.fontawesome.css, true);
-        addStyles(config.libs.bootstrap.css);
-      }
-      if (config.premium) {
-        addStyles(config.premium.css);
-        addScript(config.premium.js, 'premium', (premium) => {
-          debug('Using premium');
-          Formio.use(premium);
-          renderForm();
-        });
-      }
+        element.parentNode.insertBefore(Formio.wrapper, element);
+        element.parentNode.removeChild(element);
+        Formio.wrapper.appendChild(element);
 
-      // Render the form if no template is provided.
-      if (!config.template && !config.premium) {
-        renderForm();
-      }
-    });
-  }
-  else {
-    // Show an error if the script cannot be found.
-    document.write('<span>Could not locate the Embedded form.</span>');
-  }
+        // Load the renderer styles.
+        await Formio.addStyles(Formio.config.embedCSS || `${Formio.cdn.js}/formio.embed.css`);
+        Formio.loader = Formio.createElement('div', {
+            'class': 'formio-loader'
+        }, [{
+            tag: 'div',
+            attrs: {
+                class: 'loader-wrapper'
+            },
+            children: [{
+                tag: 'div',
+                attrs: {
+                    class: 'loader text-center'
+                }
+            }]
+        }]);
+        Formio.wrapper.appendChild(Formio.loader);
+
+        const FormioClass = await Formio.addScript(Formio.config.script || `${Formio.cdn.js}/formio.form.min.js`, 'Formio');
+        FormioClass.setBaseUrl(Formio.baseUrl || Formio.config.base);
+        FormioClass.setProjectUrl(Formio.projectUrl || Formio.config.project);
+        FormioClass.language = Formio.language;
+
+        // Add premium modules
+        if (Formio.global('premium')) {
+            Formio.debug('Using premium module.');
+            FormioClass.use(Formio.global('premium'));
+        }
+
+        if (Formio.global('vpat')) {
+            Formio.debug('Using vpat module.');
+            FormioClass.use(Formio.global('vpat'));
+        }
+
+        if (Formio.config.template) {
+            if (Formio.config.includeLibs) {
+                await Formio.addStyles(Formio.config.libs[Formio.config.template].css);
+                await Formio.addScript(Formio.config.libs[Formio.config.template].js);
+                if (Formio.config.libs[Formio.config.template].fa) {
+                    await Formio.addStyles(Formio.config.libs.fontawesome.css, true);
+                }
+            }
+
+            if (Formio.cdn[Formio.config.template]) {
+                const templateSrc = `${Formio.cdn[Formio.config.template]}/${Formio.config.template}.min`;
+                await Formio.addStyles(`${templateSrc}.css`);
+                Formio.debug(`Using ${Formio.config.template}`);
+                FormioClass.use(await Formio.addScript(`${templateSrc}.js`, Formio.config.template));
+            }
+        }
+        else if (Formio.global('uswds')) {
+            Formio.debug('Using uswds module.');
+            FormioClass.use(Formio.global('uswds'));
+        }
+        // Default bootstrap + fontawesome.
+        else if (Formio.config.includeLibs) {
+            await Formio.addStyles(Formio.config.libs.fontawesome.css, true);
+            await Formio.addStyles(Formio.config.libs.bootstrap.css);
+        }
+        if (Formio.config.premium) {
+            await Formio.addStyles(Formio.config.premium.css);
+            Formio.debug('Using premium');
+            FormioClass.use(await Formio.addScript(Formio.config.premium.js, 'premium'));
+        }
+
+        await Formio.addStyles(Formio.config.style || `${Formio.cdn.js}/formio.form.min.css`);
+        await Formio.renderForm(FormioClass, form, options);
+    }
 }

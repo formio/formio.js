@@ -17,7 +17,7 @@ For a full example of creating your own module that does this, please see the [C
  *
  * Get the base component class by referencing Formio.Components.components map.
  */
-import { Components } from 'formiojs';
+import { Components } from '@formio/js';
 const FieldComponent = (Components as any).components.field;
 import editForm from './CheckMatrix.form';
 
@@ -164,7 +164,7 @@ export default class CheckMatrix extends (FieldComponent as any) {
 These modules will then be compiled into a Module file that can either be imported within your own application, or using ```<script>``` tags in the browser like the following.
 
 ```js
-import { Formio } from 'formiojs';
+import { Formio } from '@formio/js';
 import YourModule from './yourmodule';
 Formio.use(YourModule);
 ```
