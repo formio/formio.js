@@ -158,7 +158,7 @@ export default class Webform extends NestedDataComponent {
      * @type {Promise}
      *
      * @example
-     * import Webform from 'formiojs/Webform';
+     * import Webform from '@formio/js/Webform';
      * let form = new Webform(document.getElementById('formio'));
      * form.formReady.then(() => {
      *   console.log('The form is ready!');
@@ -186,7 +186,7 @@ export default class Webform extends NestedDataComponent {
      * @type {Promise}
      *
      * @example
-     * import Webform from 'formiojs/Webform';
+     * import Webform from '@formio/js/Webform';
      * let form = new Webform(document.getElementById('formio'));
      * form.submissionReady.then(() => {
      *   console.log('The submission is ready!');
@@ -434,7 +434,7 @@ export default class Webform extends NestedDataComponent {
    * @param {string} value - The value of the form embed url.
    *
    * @example
-   * import Webform from 'formiojs/Webform';
+   * import Webform from '@formio/js/Webform';
    * let form = new Webform(document.getElementById('formio'));
    * form.formReady.then(() => {
    *   console.log('The form is formReady!');
@@ -549,7 +549,7 @@ export default class Webform extends NestedDataComponent {
    * Sets the JSON schema for the form to be rendered.
    *
    * @example
-   * import Webform from 'formiojs/Webform';
+   * import Webform from '@formio/js/Webform';
    * let form = new Webform(document.getElementById('formio'));
    * form.setForm({
    *   components: [
@@ -696,7 +696,7 @@ export default class Webform extends NestedDataComponent {
    * Sets the submission of a form.
    *
    * @example
-   * import Webform from 'formiojs/Webform';
+   * import Webform from '@formio/js/Webform';
    * let form = new Webform(document.getElementById('formio'));
    * form.src = 'https://examples.form.io/example';
    * form.submission = {data: {
@@ -1539,7 +1539,7 @@ export default class Webform extends NestedDataComponent {
    * Submits the form.
    *
    * @example
-   * import Webform from 'formiojs/Webform';
+   * import Webform from '@formio/js/Webform';
    * let form = new Webform(document.getElementById('formio'));
    * form.src = 'https://examples.form.io/example';
    * form.submission = {data: {

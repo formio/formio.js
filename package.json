@@ -9,6 +9,10 @@
       "import": "./lib/mjs/index.js",
       "require": "./lib/cjs/index.js"
     },
+    "./sdk": {
+      "import": "./lib/mjs/Formio.js",
+      "require": "./lib/cjs/Formio.js"
+    },
     "./utils": {
       "import": "./lib/mjs/utils/index.js",
       "require": "./lib/cjs/utils/index.js"

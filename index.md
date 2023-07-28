@@ -27,19 +27,27 @@ section: home
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
-    <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
-    <script type="text/javascript">
-      window.onload = function() {
-        Formio.icons = 'fontawesome';
-        Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
-      };
-    </script>
+    <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.form.min.css">
   </head>
   <body>
     <div id="formio"></div>
+    <script src="https://cdn.form.io/formiojs/formio.form.min.js"></script>
+    <script type="text/javascript">
+      Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
+    </script>
   </body>
 </html>
+```
+
+### Application Import
+Or you can import this within your own application as follows.
+```
+npm install --save @formio/js
+```
+
+```js
+import { Formio } from '@formio/js';
+Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
 ```
 
 ### Result

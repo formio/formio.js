@@ -17,7 +17,7 @@ export default class Form extends Element {
    * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.
    *
    * @example
-   * import Form from 'formiojs/Form';
+   * import Form from '@formio/js/Form';
    * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
    * form.build();
    */
