@@ -132,19 +132,15 @@ export class Formio {
         }
     }
 
-    static async renderForm(FormioClass, form, options) {
+    static async renderForm(form, options) {
         if (Formio.config.before) {
-            await Formio.config.before(FormioClass, Formio.element, Formio.config);
+            await Formio.config.before(Formio.FormioClass, Formio.element, Formio.config);
         }
-        FormioClass.license = true;
-        FormioClass.createForm(Formio.element, form, {
+        Formio.FormioClass.license = true;
+        return Formio.FormioClass.createForm(Formio.element, form, {
             ...options,
             ...{ noLoader: true }
         }).then((instance) => {
-            if (Formio.config.submit) {
-                instance.nosubmit = true;
-            }
-
             Formio.debug('Form created', instance);
 
             // Remove the loader.
@@ -159,38 +155,15 @@ export class Formio {
 
             // Allow them to provide additional configs.
             Formio.debug('Triggering embed event');
-            FormioClass.events.emit('formEmbedded', instance);
+            Formio.FormioClass.events.emit('formEmbedded', instance);
 
+            // Trigger the after handler.
             if (Formio.config.after) {
                 Formio.debug('Calling ready callback');
                 Formio.config.after(instance, Formio.config);
             }
 
-            // Configure a redirect.
-            instance.on('submit', (submission) => {
-                Formio.debug("on('submit')", submission);
-                if (Formio.config.submit) {
-                    Formio.debug(`Sending submission to ${Formio.config.submit}`);
-                    const headers = {
-                        'content-type': 'application/json'
-                    };
-                    const token = FormioClass.getToken();
-                    if (token) {
-                        headers['x-jwt-token'] = token;
-                    }
-                    FormioClass.fetch(Formio.config.submit, {
-                        body: JSON.stringify(submission),
-                        headers: headers,
-                        method: 'POST',
-                        mode: 'cors',
-                    })
-                        .then(resp => resp.json())
-                        .then(submission => Formio.submitDone(instance, submission));
-                }
-                else {
-                    Formio.submitDone(instance, submission);
-                }
-            });
+            return instance;
         });
     }
 
@@ -239,20 +212,20 @@ export class Formio {
         }]);
         Formio.wrapper.appendChild(Formio.loader);
 
-        const FormioClass = await Formio.addScript(Formio.config.script || `${Formio.cdn.js}/formio.form.min.js`, 'Formio');
-        FormioClass.setBaseUrl(Formio.baseUrl || Formio.config.base);
-        FormioClass.setProjectUrl(Formio.projectUrl || Formio.config.project);
-        FormioClass.language = Formio.language;
+        Formio.FormioClass = await Formio.addScript(Formio.config.script || `${Formio.cdn.js}/formio.form.min.js`, 'Formio');
+        Formio.FormioClass.setBaseUrl(Formio.baseUrl || Formio.config.base);
+        Formio.FormioClass.setProjectUrl(Formio.projectUrl || Formio.config.project);
+        Formio.FormioClass.language = Formio.language;
 
         // Add premium modules
         if (Formio.global('premium')) {
             Formio.debug('Using premium module.');
-            FormioClass.use(Formio.global('premium'));
+            Formio.FormioClass.use(Formio.global('premium'));
         }
 
         if (Formio.global('vpat')) {
             Formio.debug('Using vpat module.');
-            FormioClass.use(Formio.global('vpat'));
+            Formio.FormioClass.use(Formio.global('vpat'));
         }
 
         if (Formio.config.template) {
@@ -268,12 +241,12 @@ export class Formio {
                 const templateSrc = `${Formio.cdn[Formio.config.template]}/${Formio.config.template}.min`;
                 await Formio.addStyles(`${templateSrc}.css`);
                 Formio.debug(`Using ${Formio.config.template}`);
-                FormioClass.use(await Formio.addScript(`${templateSrc}.js`, Formio.config.template));
+                Formio.FormioClass.use(await Formio.addScript(`${templateSrc}.js`, Formio.config.template));
             }
         }
         else if (Formio.global('uswds')) {
             Formio.debug('Using uswds module.');
-            FormioClass.use(Formio.global('uswds'));
+            Formio.FormioClass.use(Formio.global('uswds'));
         }
         // Default bootstrap + fontawesome.
         else if (Formio.config.includeLibs) {
@@ -283,10 +256,10 @@ export class Formio {
         if (Formio.config.premium) {
             await Formio.addStyles(Formio.config.premium.css);
             Formio.debug('Using premium');
-            FormioClass.use(await Formio.addScript(Formio.config.premium.js, 'premium'));
+            Formio.FormioClass.use(await Formio.addScript(Formio.config.premium.js, 'premium'));
         }
 
         await Formio.addStyles(Formio.config.style || `${Formio.cdn.js}/formio.form.min.css`);
-        await Formio.renderForm(FormioClass, form, options);
+        return await Formio.renderForm(form, options);
     }
 }

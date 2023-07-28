@@ -27,8 +27,8 @@ if (thisScript) {
     }
     scriptSrc = scriptSrc.join('/');
     Formio.config = Object.assign({
-        script: query.script || (`${Formio.config.updatePath ? Formio.config.updatePath() : scriptSrc}/formio.form.min.js`),
-        style: query.styles || (`${Formio.config.updatePath ? Formio.config.updatePath() : scriptSrc}/formio.form.min.css`),
+        script: query.script || (`${config.updatePath ? config.updatePath() : scriptSrc}/formio.form.min.js`),
+        style: query.styles || (`${config.updatePath ? config.updatePath() : scriptSrc}/formio.form.min.css`),
         cdn: query.cdn,
         class: (query.class || 'formio-form-wrapper'),
         src: query.src,
@@ -42,7 +42,7 @@ if (thisScript) {
         debug: (query.debug === 'true' || query.debug === '1'),
         config: {},
         redirect: (query.return || query.redirect),
-        embedCSS: (`${Formio.config.updatePath ? Formio.config.updatePath() : scriptSrc}/formio.embed.css`),
+        embedCSS: (`${config.updatePath ? config.updatePath() : scriptSrc}/formio.embed.css`),
         before: null,
         after: null
     }, config);
@@ -63,7 +63,37 @@ if (thisScript) {
 
         // insertAfter doesn't exist, but effect is identical.
         thisScript.parentNode.insertBefore(element, thisScript.parentNode.firstElementChild.nextSibling);
-        Formio.createForm(element, form, Formio.config.config);
+        Formio.createForm(element, form, Formio.config.config).then((instance) => {
+            if (Formio.config.submit) {
+                instance.nosubmit = true;
+            }
+
+            // Configure a redirect.
+            instance.on('submit', (submission) => {
+                Formio.debug("on('submit')", submission);
+                if (Formio.config.submit) {
+                    Formio.debug(`Sending submission to ${Formio.config.submit}`);
+                    const headers = {
+                        'content-type': 'application/json'
+                    };
+                    const token = Formio.FormioClass.getToken();
+                    if (token) {
+                        headers['x-jwt-token'] = token;
+                    }
+                    Formio.FormioClass.fetch(Formio.config.submit, {
+                        body: JSON.stringify(submission),
+                        headers: headers,
+                        method: 'POST',
+                        mode: 'cors',
+                    })
+                        .then(resp => resp.json())
+                        .then(submission => Formio.submitDone(instance, submission));
+                }
+                else {
+                    Formio.submitDone(instance, submission);
+                }
+            });
+        });
     }
 }
 else {
