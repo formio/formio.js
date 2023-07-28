@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED - 5.0.0-rc.20]
 ### Changed
  - Removed i18next and NativePromise in favor of a simple translation proxy.
+ - Refactored the embed script so that it can be imported within an application using createForm.
 
 ### Added
  - Added mobile image, video, and camera capture feature. https://github.com/formio/formio.js/pull/4398
