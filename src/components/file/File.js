@@ -404,10 +404,11 @@ export default class FileComponent extends Field {
       this.addEventListener(fileStatusRemove, 'click', (event) => {
         event.preventDefault();
 
-        const status = this.statuses[index];
+        const fileUpload = this.statuses[index];
+        _.pull(this.filesUploading, fileUpload.originalName);
 
-        if (status.abort) {
-          status.abort();
+        if (fileUpload.abort) {
+          fileUpload.abort();
         }
 
         this.statuses.splice(index, 1);
