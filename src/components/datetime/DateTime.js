@@ -53,29 +53,11 @@ export default class DateTimeComponent extends Input {
       schema: DateTimeComponent.schema()
     };
   }
-  
+
   static get serverConditionSettings() {
-    return {
-      ...super.serverConditionSettings,
-      operators: [
-        'isDateEqual',
-        'isNotDateEqual',
-        'isEmpty',
-        'isNotEmpty',
-        'dateLessThan',
-        'dateGreaterThan',
-        'dateLessThanOrEqual',
-        'dateGreaterThanOrEqual',
-      ],
-      valueComponent(classComp) {
-        return {
-          ...classComp,
-          type: 'datetime',
-        };
-      },
-    };
+    return DateTimeComponent.conditionOperatorsSettings;
   }
-  
+
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,

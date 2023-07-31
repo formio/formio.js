@@ -65,12 +65,9 @@ export default class FileComponent extends Field {
   }
 
   static get serverConditionSettings() {
-    return {
-      ...super.serverConditionSettings,
-      operators: ['isEmpty', 'isNotEmpty'],
-    };
+    return FileComponent.conditionOperatorsSettings;
   }
-  
+
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
@@ -83,7 +80,7 @@ export default class FileComponent extends Field {
 
     return  getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
-  
+
   init() {
     super.init();
     webViewCamera = navigator.camera || Camera;

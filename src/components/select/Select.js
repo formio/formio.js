@@ -57,15 +57,10 @@ export default class SelectComponent extends ListComponent {
   }
 
   static get serverConditionSettings() {
-    return {
-      ...super.serverConditionSettings,
-      valueComponent(classComp) {
-        return { ...classComp, type: 'select' };
-      },
-    };
+    return SelectComponent.conditionOperatorsSettings;
   }
-  
-   static get conditionOperatorsSettings() {
+
+  static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
       valueComponent(classComp) {
@@ -97,7 +92,7 @@ export default class SelectComponent extends ListComponent {
 
     return [boolean, string, number, object, array];
   }
-  
+
   init() {
     super.init();
     this.templateData = {};

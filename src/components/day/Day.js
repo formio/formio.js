@@ -64,19 +64,7 @@ export default class DayComponent extends Field {
   }
 
   static get serverConditionSettings() {
-    return {
-      ...super.serverConditionSettings,
-      operators: [
-        'isDateEqual',
-        'isNotDateEqual',
-        'isEmpty',
-        'isNotEmpty',
-        'dateLessThan',
-        'dateGreaterThan',
-        'dateLessThanOrEqual',
-        'dateGreaterThanOrEqual',
-      ],
-    };
+    return DayComponent.conditionOperatorsSettings;
   }
 
   /**

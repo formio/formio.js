@@ -26,12 +26,9 @@ export default class TagsComponent extends Input {
   }
 
   static get serverConditionSettings() {
-    return {
-      ...super.serverConditionSettings,
-      operators: [...super.serverConditionSettings.operators, 'includes', 'notIncludes'],
-    };
+    return TagsComponent.conditionOperatorsSettings;
   }
-  
+
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,

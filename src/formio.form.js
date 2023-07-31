@@ -113,8 +113,8 @@ export function registerModule(mod, defaultFn = null, options = {}) {
         break;
       case 'library':
         options.license
-          ? Formio.Licenses.addLicense(plugin.library, options.license)
-          : Formio.Licenses.removeLicense(plugin.library);
+          ? Formio.Licenses.addLicense(mod.library, mod.license)
+          : Formio.Licenses.removeLicense(mod.library);
         break;
       default:
         if (defaultFn) {

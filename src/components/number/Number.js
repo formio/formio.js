@@ -29,25 +29,11 @@ export default class NumberComponent extends Input {
       schema: NumberComponent.schema()
     };
   }
-  
+
   static get serverConditionSettings() {
-    return {
-      operators: [
-        'isEqual',
-        'isNotEqual',
-        'isEmpty',
-        'isNotEmpty',
-        'greaterThan',
-        'greaterThanOrEqual',
-        'lessThan',
-        'lessThanOrEqual',
-      ],
-      valueComponent(classComp) {
-        return { ...classComp, type: 'number' };
-      },
-    };
+    return NumberComponent.conditionOperatorsSettings;
   }
-  
+
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,

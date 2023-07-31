@@ -33,12 +33,9 @@ export default class SignatureComponent extends Input {
   }
 
   static get serverConditionSettings() {
-    return {
-      ...super.serverConditionSettings,
-      operators: ['isEmpty', 'isNotEmpty'],
-    };
+    return SignatureComponent.conditionOperatorsSettings;
   }
-  
+
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,

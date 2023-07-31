@@ -1637,12 +1637,7 @@ export default class Component extends Element {
   }
 
   static get serverConditionSettings() {
-    return {
-      operators: ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'],
-      valueComponent() {
-        return { type: 'textfield' };
-      },
-    };
+    return Component.conditionOperatorsSettings;
   }
 
   get isMobile() {

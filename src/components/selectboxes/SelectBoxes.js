@@ -24,8 +24,12 @@ export default class SelectBoxesComponent extends RadioComponent {
   }
 
   static get serverConditionSettings() {
+    return SelectBoxesComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
     return {
-      ...super.serverConditionSettings,
+      ...super.conditionOperatorsSettings,
       valueComponent(classComp) {
         return {
           type: 'select',
@@ -39,31 +43,11 @@ export default class SelectBoxesComponent extends RadioComponent {
       }
     };
   }
-  
-  static get conditionOperatorsSettings() {
-    return {
-      ...super.conditionOperatorsSettings,
-      valueComponent(classComp) {
-        return {
-          type: 'select',
-          dataSrc: 'custom',
-          valueProperty: 'value',
-          valueType: 'string',
-          data: {
-            custom() {
-              return classComp.values;
-            }
-          },
-        };
-      }
-    };
-  }
 
   static savedValueTypes(schema) {
     return getComponentSavedTypes(schema) ||  [componentValueTypes.object];
   }
 
-  
   constructor(...args) {
     super(...args);
     this.validators = this.validators.concat('minSelectedCount', 'maxSelectedCount', 'availableValueProperty');

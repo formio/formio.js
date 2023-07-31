@@ -36,12 +36,9 @@ export default class TextFieldComponent extends Input {
   }
 
   static get serverConditionSettings() {
-    return {
-      ...super.serverConditionSettings,
-      operators: [...super.serverConditionSettings.operators, 'includes', 'notIncludes', 'endsWith', 'startsWith'],
-    };
+    return TextFieldComponent.conditionOperatorsSettings;
   }
-  
+
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
