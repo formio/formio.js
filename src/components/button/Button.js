@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
-import { eachComponent, getArrayFromComponentPath } from '../../utils/utils';
+import { componentValueTypes, eachComponent, getArrayFromComponentPath, getComponentSavedTypes } from '../../utils/utils';
 
 export default class ButtonComponent extends Field {
   static schema(...extend) {
@@ -30,6 +30,10 @@ export default class ButtonComponent extends Field {
       weight: 110,
       schema: ButtonComponent.schema()
     };
+  }
+
+  static savedValueTypes(schema) {
+    return getComponentSavedTypes(schema) || [componentValueTypes.boolean];
   }
 
   constructor(component, options, data) {

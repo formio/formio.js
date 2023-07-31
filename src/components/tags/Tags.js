@@ -1,3 +1,4 @@
+import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Input from '../_classes/input/Input';
 import Choices from '@formio/choices.js';
 
@@ -25,10 +26,20 @@ export default class TagsComponent extends Input {
   }
 
   static get serverConditionSettings() {
+    return TagsComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
     return {
-      ...super.serverConditionSettings,
-      operators: [...super.serverConditionSettings.operators, 'includes', 'notIncludes'],
+      ...super.conditionOperatorsSettings,
+      operators: [...super.conditionOperatorsSettings.operators, 'includes', 'notIncludes'],
     };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+
+    return  getComponentSavedTypes(schema) ||[componentValueTypes[schema.storeas] || componentValueTypes.string];
   }
 
   init() {

@@ -25,6 +25,10 @@ export default class FieldsetComponent extends NestedComponent {
     };
   }
 
+  static savedValueTypes() {
+    return [];
+  }
+
   get defaultSchema() {
     return FieldsetComponent.schema();
   }

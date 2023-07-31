@@ -15,6 +15,7 @@ import Widgets from './widgets';
 import Form from './Form';
 import Utils from './utils';
 import Evaluator from './utils/Evaluator';
+import Licenses from './licenses';
 
 Formio.loadModules = (path = `${Formio.getApiUrl()  }/externalModules.js`, name = 'externalModules') => {
   Formio.requireLibrary(name, name, path, true)
@@ -39,6 +40,7 @@ Formio.QuickRules = QuickRules;
 Formio.Transformers = Transformers;
 Formio.ValueSources = ValueSources;
 Formio.AllComponents = AllComponents;
+Formio.Licenses = Licenses;
 
 // This is strange, but is needed for "premium" components to import correctly.
 Formio.Formio = Formio;
@@ -50,7 +52,7 @@ Formio.Components.setComponents(AllComponents);
  * @param {*} plugin
  * @returns
  */
-export function registerModule(mod, defaultFn = null) {
+export function registerModule(mod, defaultFn = null, options = {}) {
   // Sanity check.
   if (typeof mod !== 'object') {
     return;
@@ -109,6 +111,11 @@ export function registerModule(mod, defaultFn = null) {
       case 'valueSources':
         Formio.ValueSources.addValueSources(mod.valueSources);
         break;
+      case 'library':
+        options.license
+          ? Formio.Licenses.addLicense(mod.library, mod.license)
+          : Formio.Licenses.removeLicense(mod.library);
+        break;
       default:
         if (defaultFn) {
           if (!defaultFn(key, mod)) {
@@ -122,25 +129,27 @@ export function registerModule(mod, defaultFn = null) {
 }
 
 export function useModule(defaultFn = null) {
-  return (...plugins) => {
+  return (plugins, options = {}) => {
+    plugins = _.isArray(plugins) ? plugins : [plugins];
+
     plugins.forEach((plugin) => {
       if (Array.isArray(plugin)) {
-        plugin.forEach(p => registerModule(p, defaultFn));
+        plugin.forEach(p => registerModule(p, defaultFn, options));
       }
       else {
-        registerModule(plugin, defaultFn);
+        registerModule(plugin, defaultFn, options);
       }
     });
   };
 }
 
 /**
- * Allows passing in plugins as multiple arguments or an array of plugins.
+ * Allows passing in plugins as an array of plugins or a single plugin.
  *
- * Formio.plugins(plugin1, plugin2, etc);
- * Formio.plugins([plugin1, plugin2, etc]);
+ * Formio.plugins(plugin1, options);
+ * Formio.plugins([plugin1, plugin2, etc], options);
  */
 Formio.use = useModule();
 
 // Export the components.
-export { Components, Displays, Providers, Rules, Widgets, Templates, Conjunctions, Operators, QuickRules, Transformers, ValueSources, Utils, Form, Formio };
+export { Components, Displays, Providers, Rules, Widgets, Templates, Conjunctions, Operators, QuickRules, Transformers, ValueSources, Utils, Form, Formio, Licenses };

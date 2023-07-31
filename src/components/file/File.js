@@ -1,5 +1,5 @@
 import Field from '../_classes/field/Field';
-import { uniqueName } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
 import fileProcessor from '../../providers/processor/fileProcessor';
@@ -65,10 +65,20 @@ export default class FileComponent extends Field {
   }
 
   static get serverConditionSettings() {
+    return FileComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
     return {
-      ...super.serverConditionSettings,
+      ...super.conditionOperatorsSettings,
       operators: ['isEmpty', 'isNotEmpty'],
     };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+
+    return  getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   init() {

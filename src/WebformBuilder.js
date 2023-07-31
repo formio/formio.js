@@ -467,7 +467,7 @@ export default class WebformBuilder extends Component {
       premium: {
         title: 'Premium',
         weight: 40
-      },
+      }
     };
   }
 
@@ -1146,6 +1146,7 @@ export default class WebformBuilder extends Component {
       };
 
       const fieldsToRemoveDoubleQuotes = ['label', 'tooltip'];
+
       this.preview.form.components.forEach(component => this.replaceDoubleQuotes(component, fieldsToRemoveDoubleQuotes));
 
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');

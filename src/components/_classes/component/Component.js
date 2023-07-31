@@ -201,7 +201,33 @@ export default class Component extends Element {
   static get Validator() {
     return Validator;
   }
+  /**
+   * Return the simple condition settings as part of the component.
+   *
+   * @return {Object}
+   *
+   */
+  static get conditionOperatorsSettings() {
+    return {
+      operators: ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'],
+      valueComponent() {
+        return { type: 'textfield' };
+      }
+    };
+  }
+  /**
+   * Return the array of possible types of component value absed on its schema.
+   *
+   * @param schema
+   * @return {Array}
+   *
+   */
 
+  static savedValueTypes(schema) {
+    schema = schema || {};
+
+    return FormioUtils.getComponentSavedTypes(schema) || [FormioUtils.componentValueTypes.any];
+  }
   /**
    * Provides a table view for this component. Override if you wish to do something different than using getView
    * method of your instance.
@@ -1611,12 +1637,7 @@ export default class Component extends Element {
   }
 
   static get serverConditionSettings() {
-    return {
-      operators: ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'],
-      valueComponent() {
-        return { type: 'textfield' };
-      },
-    };
+    return Component.conditionOperatorsSettings;
   }
 
   get isMobile() {

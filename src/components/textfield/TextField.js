@@ -36,10 +36,18 @@ export default class TextFieldComponent extends Input {
   }
 
   static get serverConditionSettings() {
+    return TextFieldComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
     return {
-      ...super.serverConditionSettings,
-      operators: [...super.serverConditionSettings.operators, 'includes', 'notIncludes', 'endsWith', 'startsWith'],
+      ...super.conditionOperatorsSettings,
+      operators: [...super.conditionOperatorsSettings.operators, 'includes', 'notIncludes', 'endsWith', 'startsWith'],
     };
+  }
+
+  static savedValueTypes(schema) {
+    return  FormioUtils.getComponentSavedTypes(schema) || [FormioUtils.componentValueTypes.string];
   }
 
   get defaultSchema() {

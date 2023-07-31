@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Form from '../../Form';
-import { getRandomComponentId, boolValue, isPromise } from '../../utils/utils';
+import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Choices from '../../utils/ChoicesWrapper';
 
 export default class SelectComponent extends ListComponent {
@@ -57,12 +57,40 @@ export default class SelectComponent extends ListComponent {
   }
 
   static get serverConditionSettings() {
+    return SelectComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
     return {
-      ...super.serverConditionSettings,
+      ...super.conditionOperatorsSettings,
       valueComponent(classComp) {
-        return { ...classComp, type: 'select' };
-      },
+        return { ... classComp, type: 'select' };
+      }
     };
+  }
+
+  static savedValueTypes(schema) {
+    const { boolean, string, number, object, array } = componentValueTypes;
+    const { dataType, reference } = schema;
+    const types = getComponentSavedTypes(schema);
+
+    if (types) {
+      return types;
+    }
+
+    if (reference) {
+      return [object];
+    }
+
+    if (dataType === 'object') {
+      return [object, array];
+    }
+
+    if (componentValueTypes[dataType]) {
+      return [componentValueTypes[dataType]];
+    }
+
+    return [boolean, string, number, object, array];
   }
 
   init() {

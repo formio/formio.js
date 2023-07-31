@@ -6,7 +6,8 @@ import {
   isMongoId,
   eachComponent,
   getStringFromComponentPath,
-  getArrayFromComponentPath
+  getArrayFromComponentPath,
+  componentValueTypes
 } from '../../utils/utils';
 import { Formio } from '../../Formio';
 import Form from '../../Form';
@@ -34,6 +35,10 @@ export default class FormComponent extends Component {
       weight: 110,
       schema: FormComponent.schema()
     };
+  }
+
+  static savedValueTypes() {
+    return [componentValueTypes.object];
   }
 
   init() {

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import RadioComponent from '../radio/Radio';
 
 export default class SelectBoxesComponent extends RadioComponent {
@@ -23,8 +24,12 @@ export default class SelectBoxesComponent extends RadioComponent {
   }
 
   static get serverConditionSettings() {
+    return SelectBoxesComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
     return {
-      ...super.serverConditionSettings,
+      ...super.conditionOperatorsSettings,
       valueComponent(classComp) {
         return {
           type: 'select',
@@ -37,6 +42,10 @@ export default class SelectBoxesComponent extends RadioComponent {
         };
       }
     };
+  }
+
+  static savedValueTypes(schema) {
+    return getComponentSavedTypes(schema) ||  [componentValueTypes.object];
   }
 
   constructor(...args) {

@@ -24,6 +24,10 @@ export default class ReCaptchaComponent extends Component {
     };
   }
 
+  static savedValueTypes() {
+    return [];
+  }
+
   render() {
     this.recaptchaResult = null;
     if (this.builderMode) {

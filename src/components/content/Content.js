@@ -24,6 +24,10 @@ export default class ContentComponent extends Component {
     };
   }
 
+  static savedValueTypes() {
+    return [];
+  }
+
   get defaultSchema() {
     return ContentComponent.schema();
   }

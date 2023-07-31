@@ -26,6 +26,10 @@ export default class HTMLComponent extends Component {
     };
   }
 
+  static savedValueTypes() {
+    return [];
+  }
+
   get defaultSchema() {
     return HTMLComponent.schema();
   }

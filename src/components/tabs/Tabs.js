@@ -33,6 +33,10 @@ export default class TabsComponent extends NestedComponent {
     };
   }
 
+  static savedValueTypes() {
+    return [];
+  }
+
   get defaultSchema() {
     return TabsComponent.schema();
   }
