@@ -16,6 +16,7 @@ import Widgets from './widgets';
 import Form from './Form';
 import Utils from './utils';
 import Evaluator from './utils/Evaluator';
+import Licenses from './licenses';
 
 Formio.loadModules = (path = `${Formio.getApiUrl()  }/externalModules.js`, name = 'externalModules') => {
   Formio.requireLibrary(name, name, path, true)
@@ -41,12 +42,20 @@ Formio.QuickRules = QuickRules;
 Formio.Transformers = Transformers;
 Formio.ValueSources = ValueSources;
 Formio.AllComponents = AllComponents;
+Formio.Licenses = Licenses;
 
 // This is strange, but is needed for "premium" components to import correctly.
 Formio.Formio = Formio;
 
 Formio.Components.setComponents(AllComponents);
-const registerPlugin = (plugin) => {
+
+/**
+ * Register a module
+ * @param {*} plugin
+ * @param {*} options
+ * @returns
+ */
+const registerPlugin = (plugin, options = {}) => {
   // Sanity check.
   if (typeof plugin !== 'object') {
     return;
@@ -108,6 +117,11 @@ const registerPlugin = (plugin) => {
       case 'valueSources':
         Formio.ValueSources.addValueSources(plugin.valueSources);
         break;
+      case 'library':
+        options.license
+          ? Formio.Licenses.addLicense(plugin.library, options.license)
+          : Formio.Licenses.removeLicense(plugin.library);
+        break;
       default:
         console.log('Unknown plugin option', key);
     }
@@ -115,21 +129,23 @@ const registerPlugin = (plugin) => {
 };
 
 /**
- * Allows passing in plugins as multiple arguments or an array of plugins.
+ * Allows passing in plugins as an array of plugins or a single plugin.
  *
- * Formio.plugins(plugin1, plugin2, etc);
- * Formio.plugins([plugin1, plugin2, etc]);
+ * Formio.plugins(plugin1, options);
+ * Formio.plugins([plugin1, plugin2, etc], options);
  */
-Formio.use = (...plugins) => {
+Formio.use = (plugins, options = {}) => {
+  plugins = _.isArray(plugins) ? plugins : [plugins];
+
   plugins.forEach((plugin) => {
     if (Array.isArray(plugin)) {
-      plugin.forEach(p => registerPlugin(p));
+      plugin.forEach(p => registerPlugin(p, options));
     }
     else {
-      registerPlugin(plugin);
+      registerPlugin(plugin, options);
     }
   });
 };
 
 // Export the components.
-export { Builders, Components, Displays, Providers, Rules, Widgets, Templates, Conjunctions, Operators, QuickRules, Transformers, ValueSources, Utils, Form, Formio };
+export { Builders, Components, Displays, Providers, Rules, Widgets, Templates, Conjunctions, Operators, QuickRules, Transformers, ValueSources, Utils, Form, Formio, Licenses };

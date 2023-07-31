@@ -31,6 +31,10 @@ export default class ColumnsComponent extends NestedComponent {
     };
   }
 
+  static savedValueTypes() {
+    return [];
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.rows = [];

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import Field from '../_classes/field/Field';
-import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypes, getLocaleDateFormatInfo } from '../../utils/utils';
 
 export default class DayComponent extends Field {
   static schema(...extend) {
@@ -41,6 +41,18 @@ export default class DayComponent extends Field {
     };
   }
 
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isDateEqual', 'isNotDateEqual', 'isEmpty', 'isNotEmpty','dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'],
+    };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+    return getComponentSavedTypes(schema) || [componentValueTypes.string];
+  }
+
   constructor(component, options, data) {
     if (component.maxDate) {
       component.maxDate = moment(component.maxDate, 'YYYY-MM-DD').toISOString();
@@ -52,19 +64,7 @@ export default class DayComponent extends Field {
   }
 
   static get serverConditionSettings() {
-    return {
-      ...super.serverConditionSettings,
-      operators: [
-        'isDateEqual',
-        'isNotDateEqual',
-        'isEmpty',
-        'isNotEmpty',
-        'dateLessThan',
-        'dateGreaterThan',
-        'dateLessThanOrEqual',
-        'dateGreaterThanOrEqual',
-      ],
-    };
+    return DayComponent.conditionOperatorsSettings;
   }
 
   /**
