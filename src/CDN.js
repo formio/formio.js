@@ -7,11 +7,12 @@ class CDN {
     this.baseUrl = baseUrl || 'https://cdn.form.io';
     this.overrides = {};
     this.libs = {
+      'js': '',
       'ace': '1.4.12',
       'bootstrap': '4.6.2',
       'ckeditor': '19.0.0',
       'flatpickr': '4.6.8',
-      'flatpickr-formio': '4.6.13-formio.2',
+      'flatpickr-formio': '4.6.13-formio.3',
       'font-awesome': '4.7.0',
       'grid': 'latest',
       'moment-timezone': 'latest',

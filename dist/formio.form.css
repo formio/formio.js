@@ -380,7 +380,7 @@ dialog.fixed {
 @charset "UTF-8";
 .formio-loader {
   position: relative;
-  min-height: 60px;
+  min-height: 100px;
 }
 
 .loader-wrapper {
@@ -390,7 +390,6 @@ dialog.fixed {
   left: 0px;
   bottom: 0px;
   right: 0px;
-  height: 120px;
   background-color: rgba(0, 0, 0, 0);
 }
 
@@ -703,7 +702,7 @@ td > .formio-form-group {
   color: #C3C3C3;
 }
 
-.choices__list--dropdown {
+.is-active.choices__list--dropdown {
   z-index: 100;
 }
 
@@ -1275,6 +1274,9 @@ body.formio-dialog-open {
 .formio-component-htmlelement {
   word-wrap: break-word;
 }
+.formio-component-htmlelement ol, .formio-component-htmlelement ul {
+  margin-left: 10px;
+}
 
 .editgrid-table-container {
   margin-bottom: 10px;
@@ -1500,6 +1502,9 @@ td .formio-component-modaledit .formio-modaledit-view-container {
 .formio-component-textarea .ck.ck-editor__editable .image .ck-progress-bar {
   height: 4px;
 }
+.formio-component-textarea .ck.ck-editor ul, .formio-component-textarea .ck.ck-editor ol {
+  margin-left: 10px;
+}
 
 div[data-oembed-url] {
   width: 100%;
@@ -1679,6 +1684,9 @@ div[data-oembed-url] {
 }
 .formio-component-content .text-huge {
   font-size: 1.8em;
+}
+.formio-component-content ol {
+  padding-inline-start: 40px;
 }
 
 .formio-component-address.formio-component-label-hidden > label.field-required {

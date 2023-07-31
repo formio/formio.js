@@ -1,4 +1,3 @@
-import NativePromise from 'native-promise-only';
 import { Formio } from './Formio';
 import Webform from './Webform';
 import { fastCloneDeep, eachComponent } from './utils/utils';
@@ -65,14 +64,22 @@ export default class PDF extends Webform {
 
   redraw() {
     this.postMessage({ name: 'redraw' });
-    return this.builderMode ? NativePromise.resolve() : super.redraw();
+    return this.builderMode ? Promise.resolve() : super.redraw();
+  }
+
+  destroy(all = false) {
+    if (this.iframeElement) {
+      delete this.iframeElement.formioComponent;
+      this.iframeElement.formioComponent = null;
+    }
+    super.destroy(all);
   }
 
   rebuild() {
-    if (this.builderMode && this.component.components) {
+    if (this.attached && this.builderMode && this.component.components) {
       this.destroyComponents();
       this.addComponents();
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
     this.postMessage({ name: 'redraw' });
     return super.rebuild();
@@ -100,7 +107,7 @@ export default class PDF extends Webform {
       this.submitButton.attachButton();
 
       // Reset the iframeReady promise.
-      this.iframeReady = new NativePromise((resolve, reject) => {
+      this.iframeReady = new Promise((resolve, reject) => {
         this.iframeReadyResolve = resolve;
         this.iframeReadyReject = reject;
       });
@@ -159,7 +166,7 @@ export default class PDF extends Webform {
    * @return {Promise<any>}
    */
   getSubmission() {
-    return new NativePromise((resolve) => {
+    return new Promise((resolve) => {
       this.once('iframe-submission', resolve);
       this.postMessage({ name: 'getSubmission' });
     });

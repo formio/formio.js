@@ -1,7 +1,6 @@
 import Input from '../_classes/input/Input';
 import { conformToMask } from '@formio/vanilla-text-mask';
 import * as FormioUtils from '../../utils/utils';
-import NativePromise from 'native-promise-only';
 
 export default class TextFieldComponent extends Input {
   static schema(...extend) {
@@ -30,10 +29,25 @@ export default class TextFieldComponent extends Input {
       title: 'Text Field',
       icon: 'terminal',
       group: 'basic',
-      documentation: '/userguide/forms/form-components#text-field',
+      documentation: '/userguide/form-building/form-components#text-field',
       weight: 0,
       schema: TextFieldComponent.schema()
     };
+  }
+
+  static get serverConditionSettings() {
+    return TextFieldComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: [...super.conditionOperatorsSettings.operators, 'includes', 'notIncludes', 'endsWith', 'startsWith'],
+    };
+  }
+
+  static savedValueTypes(schema) {
+    return  FormioUtils.getComponentSavedTypes(schema) || [FormioUtils.componentValueTypes.string];
   }
 
   get defaultSchema() {
@@ -239,10 +253,10 @@ export default class TextFieldComponent extends Input {
     let value = this.dataValue;
 
     if (!this.component.truncateMultipleSpaces || !value) {
-      return NativePromise.resolve(value);
+      return Promise.resolve(value);
     }
     value = this.truncateMultipleSpaces(value);
     this.dataValue = value;
-    return NativePromise.resolve(value).then(() => super.beforeSubmit());
+    return Promise.resolve(value).then(() => super.beforeSubmit());
   }
 }

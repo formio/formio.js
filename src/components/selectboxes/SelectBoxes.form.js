@@ -16,9 +16,5 @@ export default function(...extend) {
       key: 'validation',
       components: SelectBoxesEditValidation
     },
-    {
-      key: 'addons',
-      ignore: true
-    },
   ], ...extend);
 }

@@ -2,7 +2,6 @@
 import _ from 'lodash';
 import Field from '../field/Field';
 import Components from '../../Components';
-import NativePromise from 'native-promise-only';
 import { getArrayFromComponentPath, getStringFromComponentPath, getRandomComponentId } from '../../../utils/utils';
 
 export default class NestedComponent extends Field {
@@ -54,8 +53,8 @@ export default class NestedComponent extends Field {
     const visibilityChanged = this._visible !== value;
     this._visible = value;
     const isVisible = this.visible;
-    const forceShow = this.options.show && this.options.show[this.component.key];
-    const forceHide = this.options.hide && this.options.hide[this.component.key];
+    const forceShow = this.shouldForceShow();
+    const forceHide = this.shouldForceHide();
     this.components.forEach(component => {
       // Set the parent visibility first since we may have nested components within nested components
       // and they need to be able to determine their visibility based on the parent visibility.
@@ -113,7 +112,7 @@ export default class NestedComponent extends Field {
   }
 
   get ready() {
-    return NativePromise.all(this.getComponents().map(component => component.ready));
+    return Promise.all(this.getComponents().map(component => component.ready));
   }
 
   get currentForm() {
@@ -323,7 +322,9 @@ export default class NestedComponent extends Field {
     options.root = options?.root || this.root || this;
     options.localRoot = this.localRoot;
     options.skipInit = true;
-    component.id = getRandomComponentId();
+    if (!(options.display === 'pdf' && this.builderMode)) {
+      component.id = getRandomComponentId();
+    }
     if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
       component.shouldIncludeSubFormPath = true;
     }
@@ -391,6 +392,7 @@ export default class NestedComponent extends Field {
    */
   addComponents(data, options) {
     data = data || this.data;
+    this.components = this.components || [];
     options = options || this.options;
     if (options.components) {
       this.components = options.components;
@@ -411,6 +413,7 @@ export default class NestedComponent extends Field {
    */
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
+    this.components = this.components || [];
     if (this.options.parentPath) {
       component.shouldIncludeSubFormPath = true;
     }
@@ -455,7 +458,7 @@ export default class NestedComponent extends Field {
       [this.nestedKey]: 'single',
     });
 
-    let childPromise = NativePromise.resolve();
+    let childPromise = Promise.resolve();
     if (this.refs[this.nestedKey]) {
       childPromise = this.attachComponents(this.refs[this.nestedKey]);
     }
@@ -476,7 +479,7 @@ export default class NestedComponent extends Field {
       });
     }
 
-    return NativePromise.all([
+    return Promise.all([
       superPromise,
       childPromise,
     ]);
@@ -501,7 +504,7 @@ export default class NestedComponent extends Field {
     element = this.hook('attachComponents', element, components, container, this);
     if (!element) {
       // Return a non-resolving promise.
-      return (new NativePromise(() => {}));
+      return (new Promise(() => {}));
     }
 
     let index = 0;
@@ -512,7 +515,7 @@ export default class NestedComponent extends Field {
         index++;
       }
     });
-    return NativePromise.all(promises);
+    return Promise.all(promises);
   }
 
   /**
@@ -521,9 +524,9 @@ export default class NestedComponent extends Field {
    * @param {Component} component - The component to remove from the components.
    * @param {Array<Component>} components - An array of components to remove this component from.
    */
-  removeComponent(component, components) {
+  removeComponent(component, components, all = false) {
     components = components || this.components;
-    component.destroy();
+    component.destroy(all);
     _.remove(components, { id: component.id });
   }
 
@@ -634,7 +637,7 @@ export default class NestedComponent extends Field {
    * @return {*}
    */
   beforePage(next) {
-    return NativePromise.all(this.getComponents().map((comp) => comp.beforePage(next)));
+    return Promise.all(this.getComponents().map((comp) => comp.beforePage(next)));
   }
 
   /**
@@ -643,7 +646,7 @@ export default class NestedComponent extends Field {
    * @return {*}
    */
   beforeSubmit() {
-    return NativePromise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
+    return Promise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
   }
 
   calculateValue(data, flags, row) {
@@ -690,7 +693,7 @@ export default class NestedComponent extends Field {
     return this.ready.then(() => {
       const promises = [super.checkAsyncValidity(data, dirty, row, silentCheck)];
       this.eachComponent((component) => promises.push(component.checkAsyncValidity(data, dirty, row, silentCheck)));
-      return NativePromise.all(promises).then((results) => results.reduce((valid, result) => (valid && result), true));
+      return Promise.all(promises).then((results) => results.reduce((valid, result) => (valid && result), true));
     });
   }
 
@@ -721,14 +724,14 @@ export default class NestedComponent extends Field {
     super.clear();
   }
 
-  destroy() {
-    this.destroyComponents();
-    super.destroy();
+  destroy(all = false) {
+    this.destroyComponents(all);
+    super.destroy(all);
   }
 
-  destroyComponents() {
+  destroyComponents(all = false) {
     const components = this.getComponents().slice();
-    components.forEach((comp) => this.removeComponent(comp, this.components));
+    components.forEach((comp) => this.removeComponent(comp, this.components, all));
     this.components = [];
   }
 
@@ -750,7 +753,7 @@ export default class NestedComponent extends Field {
   }
 
   get dataReady() {
-    return NativePromise.all(this.getComponents().map((component) => component.dataReady));
+    return Promise.all(this.getComponents().map((component) => component.dataReady));
   }
 
   setNestedValue(component, value, flags = {}) {

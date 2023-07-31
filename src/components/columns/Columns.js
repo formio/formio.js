@@ -24,10 +24,15 @@ export default class ColumnsComponent extends NestedComponent {
       title: 'Columns',
       icon: 'columns',
       group: 'layout',
-      documentation: '/userguide/forms/layout-components#columns',
+      documentation: '/userguide/form-building/layout-components#columns',
+      showPreview: false,
       weight: 10,
       schema: ColumnsComponent.schema()
     };
+  }
+
+  static savedValueTypes() {
+    return [];
   }
 
   constructor(component, options, data) {
@@ -168,8 +173,8 @@ export default class ColumnsComponent extends NestedComponent {
     super.detach(all);
   }
 
-  destroy() {
-    super.destroy();
+  destroy(all = false) {
+    super.destroy(all);
     this.columns = [];
   }
 }

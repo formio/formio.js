@@ -129,6 +129,9 @@
 
 .component-settings .formio-dialog-content {
   max-height: 100%;
+  .ck-editor__editable ol {
+    padding-inline-start: 40px;
+  }
 }
 
 .component-btn-group .btn.component-settings-button-paste {
@@ -172,24 +175,6 @@
   position: relative;
 }
 
-.wizard-page-container {
-  display: flex;
-}
-
-.wizard-pages{
-  display: flex;
-  list-style-type: none;
-  margin-bottom: 0;
-  padding-left: 0;
-  li:not(:first-child) {
-    margin-left: 20px;
-  }
-}
-
-.wizard-add-page{
-  margin-left: 20px;
-}
-
 .gu-mirror {
   list-style-type: none;
 }
@@ -225,8 +210,8 @@
 }
 
 .component-edit-tabs.col-sm-6 {
+  min-height: 87vh;
   height: 100%;
-  overflow-y: auto;
 }
 
 .component-edit-tabs.col-sm-12 {
@@ -254,4 +239,9 @@
     opacity: 0.65;
     box-shadow: none;
   }
+}
+
+.builder-component-selected {
+  border: 2px dashed #919191;
+  outline: none !important;
 }

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Field from '../_classes/field/Field';
-import { boolValue } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 
 export default class SurveyComponent extends Field {
   static schema(...extend) {
@@ -19,9 +19,24 @@ export default class SurveyComponent extends Field {
       group: 'advanced',
       icon: 'list',
       weight: 110,
-      documentation: '/userguide/forms/form-components#survey',
+      documentation: '/userguide/form-building/advanced-components#survey',
       schema: SurveyComponent.schema()
     };
+  }
+
+  static get serverConditionSettings() {
+    return SurveyComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
+  }
+
+  static savedValueTypes(schema) {
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   get defaultSchema() {

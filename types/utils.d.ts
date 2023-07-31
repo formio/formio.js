@@ -4,8 +4,10 @@ export type AnyForJSON = { [key: string]: any } | any;
 
 export namespace Utils {
   const ConditionOperators: any;
+  const componentValueTypes: { [key: string]: string };
   const Evaluator: any;
   const _: any;
+  function getComponentSavedTypes(schema: object): Array<any> | null;
   function evaluate(
     func: any,
     args: { component: any; form: any; instance: any; row: any; data: any } | any,
@@ -120,6 +122,7 @@ export namespace Utils {
   function searchComponents(components: any[], query: any): any;
   function findComponent(components: any[], key: any, path: any, fn: Function): boolean;
   function removeComponent(components: any[], path: any): void;
+  function fastCloneDeep(json: any): any;
   function generateFormChange(
     type: string | any,
     data: { schema: any; parent: { key: any } | any; originalComponent: any },

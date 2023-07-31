@@ -1,8 +1,6 @@
-import NativePromise from 'native-promise-only';
-
 const url = (formio) => {
   const xhrRequest = (url, name, query, data, options, progressCallback, abortCallback) => {
-    return new NativePromise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       const json = (typeof data === 'string');
       const fd = new FormData();
@@ -71,7 +69,15 @@ const url = (formio) => {
       if (options) {
         const parsedOptions = typeof options === 'string' ? JSON.parse(options) : options;
         for (const prop in parsedOptions) {
-          xhr[prop] = parsedOptions[prop];
+          if (prop === 'headers') {
+            const headers = parsedOptions['headers'];
+            for (const header in headers) {
+              xhr.setRequestHeader(header, headers[header]);
+            }
+          }
+          else {
+            xhr[prop] = parsedOptions[prop];
+          }
         }
       }
       xhr.send(json ? data : fd);
@@ -115,7 +121,7 @@ const url = (formio) => {
       }
     },
     deleteFile(fileInfo) {
-      return new NativePromise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open('DELETE', fileInfo.url, true);
         xhr.onload = () => {
@@ -139,7 +145,7 @@ const url = (formio) => {
       }
 
       // Return the original as there is nothing to do.
-      return NativePromise.resolve(file);
+      return Promise.resolve(file);
     }
   };
 };

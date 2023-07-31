@@ -24,7 +24,7 @@ export default class PanelComponent extends NestedComponent {
       title: 'Panel',
       icon: 'list-alt',
       group: 'layout',
-      documentation: '/userguide/forms/layout-components#panel',
+      documentation: '/userguide/form-building/layout-components#panel',
       weight: 30,
       schema: PanelComponent.schema()
     };
@@ -36,6 +36,10 @@ export default class PanelComponent extends NestedComponent {
 
   get templateName() {
     return 'panel';
+  }
+
+  static savedValueTypes() {
+    return [];
   }
 
   constructor(...args) {
