@@ -196,4 +196,65 @@ describe('File Component', () => {
       }, 200);
     }).catch(done);
   });
+
+  it('Should abort the correct file when user clicks the file remove button', (done) => {
+    const cmp =  _.cloneDeep(comp1);
+    const abortedFiles = [];
+    cmp.multiple = true;
+    cmp.storage = 'url';
+
+    const options = {
+      fileService: {
+        uploadFile: function(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback, abortCallbackSetter) {
+          return new Promise((resolve) => {
+            // complete upload after 1s.
+            const timeout = setTimeout(function() {
+              progressCallback({ loaded: 1, total: 1 });
+              const uploadResponse = {
+                name: fileName,
+                size: file.size,
+                type: 'application/pdf',
+                url: `fake/url/${fileName}`
+              };
+              resolve(uploadResponse);
+            }, 1000);
+
+            abortCallbackSetter(function() {
+              abortedFiles.push(file.name);
+              clearTimeout(timeout);
+            });
+          });
+        }
+      }
+    };
+
+    Harness.testCreate(FileComponent, cmp, options).then((component) => {
+      component.root = { everyComponent: () => {}, options: options, form: { submissionRevisions: false, components: [cmp] } };
+      const parentNode = document.createElement('div');
+      const element = document.createElement('div');
+      parentNode.appendChild(element);
+      component.build(element);
+
+      const content = [1];
+      const files = [new File(content, 'file.0'), new File([content], 'file.1'), new File([content], 'file.2')];
+
+      component.upload(files);
+
+      setTimeout(function() {
+        Harness.testElements(component, 'div.file .fileName', 3);
+
+        component.element.querySelectorAll('i[ref="fileStatusRemove"]')[1].click();
+
+        setTimeout(() => {
+          assert(component !== null);
+          assert(abortedFiles[0] === 'file.1' && abortedFiles.length === 1);
+          assert(component.filesUploading.join(',') === 'file.0,file.2');
+
+          Harness.testElements(component, 'div.file .fileName', 2);
+          component.root = null;
+          done();
+        }, 20);
+      }, 50);
+    });
+  });
 });
