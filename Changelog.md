@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Added mobile image, video, and camera capture feature. https://github.com/formio/formio.js/pull/4398
  - Add submission as form creation option. https://github.com/formio/formio.js/pull/4580
  - FIO-6630: Expanded Actions Logic UI
+ - FIO-6493: changes needed for reporting-ui
 
 ### Fixed
  - fix issue: when submission.data doesn't exist, the submission.metadata is removed
@@ -52,6 +53,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7007: fixed display of submitted values on DataTab
  - FIO-6688: Fixes producing additional components when minLength is set up
  - FIO-5918: fixed display of note on child form submission revision
+ - FIO-5967: fixed issue with empty data for html 5 select component
+ - FIO-4905: File upload (multi) - aborting upload always cancels the last one in the list (FIO-4905)
 
 ## 5.0.0-rc.6
 ### Added
