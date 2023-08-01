@@ -199,6 +199,7 @@ import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm
 import sameApiKeysLayoutComps from &apos;../test/forms/sameApiKeysLayoutComps&apos;;
 import testApiKeysUniquifying from &apos;../test/forms/testApiKeysUniquifying&apos;;
 import formWithFormController from &apos;../test/forms/formWithFormController&apos;;
+import formBasedOnWizard from &apos;../test/forms/formBasedOnWizard&apos;;
 
 describe(&apos;WebformBuilder tests&apos;, function() {
   this.retries(3);
@@ -385,6 +386,17 @@ describe(&apos;WebformBuilder tests&apos;, function() {
           done();
         }, 150);
       }, 150);
+    }).catch(done);
+  });
+
+  it(&apos;Should add submit button after switching from wizard form&apos;, (done) =&gt; {
+    const builder = Harness.getBuilder();
+    builder.setForm(formBasedOnWizard).then(() =&gt; {
+      const components = builder.webform.components;
+      const submit = components[components.length - 1];
+
+      assert.equal(submit.key, &apos;submit&apos;);
+      done();
     }).catch(done);
   });
 });

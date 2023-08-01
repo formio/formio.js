@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.16.0-rc.8
+### Changed
+ - FIO-6688: Fixes producing additional components when minLength is set up
+ - FIO-7096: fixed adding components for PDF in the Microsoft Edge browser with Mac
+ - FIO-7035, FIO-7036: fixed issue with dragging layout resource component
+ - FIO-6735: added additional check to calculateComponentValue method
+ - FIO-6234: added submit button to the webform builder after switching from the wizard builder
+
+
 ## 4.16.0-rc.7
 ### Changed
  - FIO-5748 Collapsible preview for Form Builder

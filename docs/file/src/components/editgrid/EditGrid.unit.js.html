@@ -208,6 +208,7 @@ import {
   comp12,
   comp13,
   comp14,
+  comp15,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
 } from &apos;./fixtures&apos;;
@@ -688,6 +689,21 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
           done();
         }, 150);
       }).catch(done);
+    });
+
+    it(&apos;Should not produce many components in Edit view when minLength validation set&apos;, done =&gt; {
+      const formElement = document.createElement(&apos;div&apos;);
+      Formio.createForm(formElement, comp15, { attachMode:&apos;builder&apos; } )
+        .then(form =&gt; {
+          const editGrid = form.components[0];
+          const elements = editGrid.element.querySelectorAll(&apos;[ref=&quot;input&quot;]&apos;);
+
+          setTimeout(() =&gt; {
+            assert.equal(elements.length, 2);
+            done();
+          }, 200);
+        })
+        .catch(done);
     });
 
     it(&apos;Should close row when Display as Modal checked&apos;, (done) =&gt; {
