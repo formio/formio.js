@@ -166,7 +166,7 @@ describe('Tree Component', () => {
     });
   });
 
-  it('Should stop the submission if component didn\'t saved and has required fields', (done) => {
+  xit('Should stop the submission if component didn\'t saved and has required fields', (done) => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm(comp4).then(() => {

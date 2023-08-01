@@ -24,6 +24,7 @@ import ModalEditGrid from '../../../test/forms/modalEditGrid';
 import Webform from '../../Webform';
 import { displayAsModalEditGrid } from '../../../test/formtest';
 import { Formio } from '../../Formio';
+import { xit } from 'mocha';
 
 describe('EditGrid Component', () => {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
@@ -291,7 +292,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  xit('Should show error messages for existing data in rows', () => {
+  it('Should show error messages for existing data in rows', () => {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
@@ -408,7 +409,7 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
-    xit('Should set alert with validation errors on save and update them', (done) => {
+    it('Should set alert with validation errors on save and update them', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(ModalEditGrid).then(() => {
@@ -642,7 +643,7 @@ describe('EditGrid Component', () => {
       });
     });
 
-    xit('Should keep fields valid inside NestedForms if drafts are enabled', (done) => {
+    it('Should keep fields valid inside NestedForms if drafts are enabled', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       ModalEditGrid.components[0].rowDrafts = true;

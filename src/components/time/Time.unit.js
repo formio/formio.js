@@ -49,17 +49,11 @@ describe('Time Component', () => {
       timeInput.dispatchEvent(inputEvent);
 
       setTimeout(() => {
-        timeInput.value = '12:00';
-        timeInput.dispatchEvent(inputEvent);
-
+        component.setValue('12:00');
         setTimeout(() => {
-          component.checkData(component.data);
-
-          setTimeout(() => {
-            assert.equal(component.errors.length, 0);
-            done();
-          }, 700);
-        }, 600);
+          assert.equal(component.errors.length, 0);
+          done();
+        }, 700);
       }, 500);
     });
   });

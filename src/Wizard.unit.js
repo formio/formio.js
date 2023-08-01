@@ -1108,7 +1108,7 @@ describe('Wizard tests', () => {
       }, 100);
     })
     .catch((err) => done(err));
-  }).timeout(3500);
+  }); //.timeout(3500);
 
   it('Should navigate wizard pages using navigation buttons and breadcrumbs', function(done) {
     const formElement = document.createElement('div');

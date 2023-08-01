@@ -1266,7 +1266,7 @@ export default class Webform extends NestedDataComponent {
       if (err) {
         const createListItem = (message, index) => {
           const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
-          const keyOrPath = (messageFromIndex && messageFromIndex.formattedKeyOrPath || messageFromIndex.path) || (err.component && err.component.key) || err.fromServer && err.path;
+          const keyOrPath = (messageFromIndex?.formattedKeyOrPath || messageFromIndex?.path || messageFromIndex?.context?.path) || (err.context?.component && err.context?.component.key) || (err.component && err.component.key) || err.fromServer && err.path;
 
           let formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
           formattedKeyOrPath = this._parentPath + formattedKeyOrPath;
@@ -1393,7 +1393,7 @@ export default class Webform extends NestedDataComponent {
    * @param changed
    * @param flags
    */
-  async onChange(flags, changed, modified, changes) {
+  onChange(flags, changed, modified, changes) {
     flags = flags || {};
     let isChangeEventEmitted = false;
     // For any change events, clear any custom errors for that component.
@@ -1410,7 +1410,7 @@ export default class Webform extends NestedDataComponent {
       this.pristine = false;
     }
 
-    value.isValid = await this.checkData(value.data, flags);
+    value.isValid = this.checkData(value.data, flags);
 
     this.loading = false;
     if (this.submitted) {
@@ -1434,8 +1434,8 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
-  async checkData(data, flags = {}) {
-    const valid = await super.checkData(data, flags);
+  checkData(data, flags = {}) {
+    const valid = super.checkData(data, flags);
     if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
       this.showErrors();
     }
@@ -1529,8 +1529,11 @@ export default class Webform extends NestedDataComponent {
                     const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
                     return { ...error, message: unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
                   });
-                  if (this.parent && this.parent.component && this.parent.component.type === 'form') {
-                    path = `${this.parent.component.key}.data.${path}`;
+                  // TODO: now that validation is delegated to the child nested forms, this is a hack to deal with
+                  // _parentPath in nested forms being e.g. `form.data.${path}` or, worse yet, _parentPath in nested
+                  // forms that are nested in edit grids e.g. `editGrid[0].form.data.${path}`
+                  if (this._parentPath) {
+                    path = `${this._parentPath}${path}`;
                   }
                   const componentInstance = this.childComponentsMap[path];
                   componentInstance?.setComponentValidity(interpolatedErrors, true, false);

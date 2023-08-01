@@ -846,7 +846,7 @@ class ValidationChecker {
           }
           const { settings, enteredDate } = widget;
           const { minDate, maxDate, format } = settings;
-          const momentFormat = [convertFormatToMoment(format)];
+        const momentFormat = [convertFormatToMoment(format)];
 
           if (momentFormat[0].match(/M{3,}/g)) {
             momentFormat.push(momentFormat[0].replace(/M{3,}/g, 'MM'));

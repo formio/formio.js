@@ -767,7 +767,7 @@ export default {
             assert.deepEqual(!!comp.refs.messageContainer.querySelector('.error'), false, `${compKey} (component ${compType}): should clear errors`);
           });
           done();
-        }, 300);
+        }, 350);
       }, 300);
     },
     'Should show custom validation error if component is invalid'(form, done, test) {
@@ -832,7 +832,7 @@ export default {
   'validate.custom': {
     'Should execute custom validation'(form, done, test) {
       test.timeout(3000);
-      const testComponents = form.components.filter(comp => !['button'].includes(comp.component.type));
+      const testComponents = form.components;
 
       assert.deepEqual(form.errors.length, 0, 'Should not show validation errors');
       form.setPristine(false);

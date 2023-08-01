@@ -287,14 +287,13 @@ it('Should protect against change loops', function(done) {
   form.setForm(formJson).then(() => {
     const textField = form.getComponent('textField');
     const spy = sinon.spy(textField, 'calculateComponentValue');
-    form.onChange({ textField: 'test' }).then(() => {
-      setTimeout(() => {
-        console.log(spy.callCount);
-        expect(spy.calledOnce).to.be.true;
+    form.onChange({ textField: 'test' });
+    setTimeout(() => {
+      console.log(spy.callCount);
+      expect(spy.calledOnce).to.be.true;
 
-        done();
-      }, 500);
-    });
+      done();
+    }, 500);
   }).catch((err) => done(err));
 });
 

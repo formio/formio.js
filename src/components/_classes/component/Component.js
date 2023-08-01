@@ -3059,7 +3059,7 @@ export default class Component extends Element {
    *
    * @return boolean - If component is valid or not.
    */
-  async checkData(data, flags, row) {
+  checkData(data, flags, row) {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
@@ -3085,7 +3085,7 @@ export default class Component extends Element {
     if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
       if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
         // this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
-        await processOne({
+        processOne({
           component: this.component,
           path: this.path,
           instance: this,
@@ -3124,12 +3124,18 @@ export default class Component extends Element {
     if (this.component.validateOn === 'blur' && flags.fromSubmission) {
       return true;
     }
-    const errors = await processOne({
+
+    if (this.component.type === 'editgrid' || this.inEditGrid) {
+      const isValid = this.checkComponentValidity(data, isDirty, row, flags);
+      this.checkModal();
+      return isValid;
+    }
+    const errors = processOne({
       component: this.component,
-      path: this.path,
-      instance: this,
+      path: this._parentPath ? this.path.split(this._parentPath)[1] : this.path,
+      evalContext: this.evalContext(),
       process: 'change',
-      data,
+      data: data,
       after: [
         ({ component, errors }) => {
           const interpolatedErrors = errors.map((error) => {
@@ -3142,7 +3148,6 @@ export default class Component extends Element {
         }
       ]
     });
-    // const isValid = this.checkComponentValidity(data, isDirty, row, flags);
     this.checkModal();
     return errors.length === 0;
   }
@@ -3237,6 +3242,7 @@ export default class Component extends Element {
     });
   }
 
+  // eslint-disable-next-line max-statements
   setCustomValidity(messages, dirty, external) {
     const inputRefs = this.isInputComponent ? this.refs.input || [] : null;
 
@@ -3273,7 +3279,8 @@ export default class Component extends Element {
         });
       });
     }
-    else if (this.inEditGrid) {
+
+    if (this.inEditGrid) {
       let rowsValid = true;
       let rowsEditing = false;
       const rowRefs = this.parent?.rowRefs || [];
@@ -3286,6 +3293,9 @@ export default class Component extends Element {
         }
         // If this is a dirty check, and any rows are still editing, we need to throw validation error.
         rowsEditing |= (dirty && this.parent.isOpen(editRow));
+        if (this.parent?.rowDrafts || this.root?.submitted) {
+          this.parent?.showRowErrorAlerts(editRow, !invalidRow);
+        }
       });
 
       if (!rowsValid) {
