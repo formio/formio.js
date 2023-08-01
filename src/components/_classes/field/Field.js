@@ -19,4 +19,11 @@ export default class Field extends Component {
       }));
     }
   }
+
+  // Saves current caret position to restore it after the component is redrawn
+  saveCaretPosition(element, index) {
+    if (this.root?.focusedComponent?.path === this.path) {
+      this.root.currentSelection = { selection: [element.selectionStart, element.selectionEnd], index };
+    }
+  }
 }
