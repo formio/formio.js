@@ -437,7 +437,9 @@ export default class FormComponent extends Component {
       return NativePromise.resolve();
     }
 
-    if (this.hasLoadedForm && !this.isRevisionChanged && !(this.options.pdf && _.isUndefined(this.subFormRevision))) {
+    if (this.hasLoadedForm && !this.isRevisionChanged &&
+      !(this.options.pdf && this.useOriginalRevision && _.isNull(this.subForm) && !this.subFormLoading)
+    ) {
       // Pass config down to sub forms.
       if (this.root && this.root.form && this.root.form.config && !this.formObj.config) {
         this.formObj.config = this.root.form.config;
