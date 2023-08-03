@@ -3,7 +3,7 @@ import stringHash from 'string-hash';
 import { Evaluator as CoreEvaluator } from '@formio/core/utils';
 const Evaluator = {
   noeval: false,
-  protectedEval: false, // This property can be customized only by plugins
+  protectedEval: false, // This property can be customized only by plugins 
   cache: {},
   templateSettings: CoreEvaluator.templateSettings,
   evaluator: CoreEvaluator.evaluator,
