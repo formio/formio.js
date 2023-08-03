@@ -1,4 +1,5 @@
 import assert from 'power-assert';
+import Formio from './../../Formio';
 
 import Harness from '../../../test/harness';
 import DayComponent from './Day';
@@ -7,7 +8,8 @@ import {
   comp1,
   comp2,
   comp3,
-  comp4
+  comp4,
+  comp5,
 } from './fixtures';
 import PanelComponent from '../panel/Panel';
 
@@ -218,5 +220,25 @@ describe('Day Component', () => {
       done();
     });
     comp1.fields.year.hide = false;
+  });
+
+  it('Should restore focus after redraw', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, comp5).then(form => {
+      const textField = form.getComponent(['textField']);
+      textField.setValue('test');
+
+      setTimeout(() => {
+        const day = form.getComponent(['day']);
+        day.refs.month.value = 2;
+        day.refs.month.dispatchEvent(new Event('input'));
+
+        setTimeout(() => {
+          assert.equal(document.activeElement, day.refs.month, 'Should keep focus on the month select');
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
   });
 });
