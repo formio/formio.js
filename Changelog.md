@@ -55,6 +55,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5918: fixed display of note on child form submission revision
  - FIO-5967: fixed issue with empty data for html 5 select component
  - FIO-4905: File upload (multi) - aborting upload always cancels the last one in the list (FIO-4905)
+ - FIO-4782: added encodeURIComponent for filter query
+ - FIO-4856: Fixed an issue where onBlur validation does not work for Select, Tags and Day components
+ - FIO-7110: fixed display of nested form with Use Original Revision on PDF download
 
 ## 5.0.0-rc.6
 ### Added
