@@ -1086,9 +1086,12 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
 
         const editRow = this.editRows[rowIndex];
+        // Edit Grids take state management into their own hands, so we need to ensure that processes and processors get
+        // the attached state (i.e. the up-to-date picture) of the data
+        const ourData = this.getAttachedData();
 
         if (editRow?.alerts) {
-          this.checkData(null, {
+          this.checkData(ourData, {
             ...flags,
             changed,
             rowIndex,
@@ -1098,7 +1101,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           // If drafts allowed, perform validation silently if there was no attempt to submit a form
           const silentCheck = this.component.rowDrafts && !this.shouldValidateDraft(editRow);
 
-          this.checkRow('checkData', null, {
+          this.checkRow('checkData', ourData, {
             ...flags,
             changed,
             silentCheck
@@ -1126,6 +1129,16 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   hasOpenRows() {
     return this.editRows.some(row => this.isOpen(row));
+  }
+
+  getAttachedData(data = null) {
+    const ourData = fastCloneDeep(data || this._data || this.rootValue);
+    _.set(ourData, this.key, this.editRows.map((row) => row.data));
+    return ourData;
+  }
+
+  checkData(data, flags, row) {
+    return super.checkData(this.getAttachedData(data), flags, row);
   }
 
   shouldValidateDraft(editRow) {

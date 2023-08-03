@@ -2114,7 +2114,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  xit('Should set calculated value correctly', (done) => {
+  it('Should set calculated value correctly', (done) => {
     formElement.innerHTML = '';
     const form = new Webform(formElement);
     form.setForm(disableSubmitButton).then(() => {
