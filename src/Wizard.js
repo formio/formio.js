@@ -1,4 +1,3 @@
-import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import Webform from './Webform';
 import { Formio } from './Formio';
@@ -44,7 +43,7 @@ export default class Wizard extends Webform {
     this._seenPages = [0];
     this.subWizards = [];
     this.allPages = [];
-    this.lastPromise = NativePromise.resolve();
+    this.lastPromise = Promise.resolve();
     this.enabledIndex = 0;
     this.editMode = false;
     this.originalOptions = _.cloneDeep(this.options);
@@ -578,8 +577,8 @@ export default class Wizard extends Webform {
             item.key = item.title;
           }
           let page = currentPages[item.key];
-          const forceShow = this.options.show ? this.options.show[item.key] : false;
-          const forceHide = this.options.hide ? this.options.hide[item.key] : false;
+          const forceShow = this.shouldForceShow(item);
+          const forceHide = this.shouldForceHide(item);
 
           let isVisible = !page
             ? checkCondition(item, data, data, this.component, this) && !item.hidden
@@ -641,7 +640,7 @@ export default class Wizard extends Webform {
 
   setPage(num) {
     if (num === this.page) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
 
     if (num >= 0 && num < this.pages.length) {
@@ -667,13 +666,13 @@ export default class Wizard extends Webform {
       this.redraw().then(() => {
         this.checkData(this.submission.data);
       });
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
     else if (!this.pages.length) {
       this.redraw();
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
-    return NativePromise.reject('Page not found');
+    return Promise.reject('Page not found');
   }
 
   pageFieldLogic(page) {
@@ -737,14 +736,14 @@ export default class Wizard extends Webform {
   beforeSubmit() {
     const pages = this.getPages();
 
-    return NativePromise.all(pages.map((page) => {
+    return Promise.all(pages.map((page) => {
       page.options.beforeSubmit = true;
       return page.beforeSubmit();
     }));
   }
 
   beforePage(next) {
-    return new NativePromise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.hook(next ? 'beforeNext' : 'beforePrev', this.currentPage, this.submission, (err) => {
         if (err) {
           this.showErrors(err, true);
@@ -793,7 +792,7 @@ export default class Wizard extends Webform {
     else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
       this.scrollIntoView(this.element);
-      return NativePromise.reject(this.showErrors([], true));
+      return Promise.reject(this.showErrors([], true));
     }
   }
 
@@ -811,7 +810,7 @@ export default class Wizard extends Webform {
 
   cancel(noconfirm) {
     if (this.options.readOnly) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
 
     if (super.cancel(noconfirm)) {
@@ -825,7 +824,7 @@ export default class Wizard extends Webform {
         return this.page;
       });
     }
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   getPageIndexByKey(key) {

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Field from '../_classes/field/Field';
 
 export default class CheckBoxComponent extends Field {
@@ -26,15 +27,46 @@ export default class CheckBoxComponent extends Field {
     };
   }
 
-  get defaultSchema() {
-    return CheckBoxComponent.schema();
+  static get serverConditionSettings() {
+    return CheckBoxComponent.conditionOperatorsSettings;
   }
 
-  get defaultValue() {
-    const { name } = this.component;
-    const defaultValue = super.defaultValue;
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isEqual'],
+      valueComponent() {
+        return {
+          valueType: 'boolean',
+          data: {
+            values: [
+                { label: 'Checked', value: 'true' },
+                { label: 'Not Checked', value: 'false' },
+              ]
+          },
+          type: 'select'
+        };
+      }
+    };
+  }
 
-    return name ? (this.component[name] || this.emptyValue) : (defaultValue || this.component.defaultValue || false).toString() === 'true';
+  static savedValueTypes(schema) {
+    schema = schema || {};
+    const types = getComponentSavedTypes(schema);
+
+    if (_.isArray(types)) {
+      return types;
+    }
+
+    if (schema.inputType === 'radio') {
+      return [componentValueTypes.string];
+    }
+
+    return [componentValueTypes.boolean];
+  }
+
+  get defaultSchema() {
+    return CheckBoxComponent.schema();
   }
 
   get labelClass() {
@@ -186,6 +218,9 @@ export default class CheckBoxComponent extends Field {
   getValueAsString(value) {
     const { name: componentName, value: componentValue } = this.component;
     const hasValue = componentName ? _.isEqual(value, componentValue) : value;
+    if (_.isUndefined(value) && this.inDataTable) {
+      return '';
+    }
 
     return this.t(hasValue ? 'Yes' : 'No');
   }

@@ -5,7 +5,6 @@ import sinon from 'sinon';
 import Harness from '../../../test/harness';
 import SelectComponent from './Select';
 import { expect } from 'chai';
-import NativePromise from 'native-promise-only';
 import { Formio } from './../../Formio';
 import _ from 'lodash';
 
@@ -240,7 +239,7 @@ describe('Select Component', () => {
         Harness.testCreate(SelectComponent, c3),
       ];
 
-      return NativePromise
+      return Promise
         .all(comps)
         .then(([a, b, c]) => {
           expect(a.choices.config.fuseOptions.threshold).to.equal(0.2);
@@ -249,7 +248,7 @@ describe('Select Component', () => {
         });
     }
     catch (error) {
-      return NativePromise.reject(error);
+      return Promise.reject(error);
     }
   });
 
@@ -748,7 +747,7 @@ describe('Select Component', () => {
 
     Formio.createForm(element, formObj).then(form => {
       const select = form.getComponent('select');
-      assert.equal(select.choices.containerInner.element.children[1].children[0].dataset.value, formObj.components[0].placeholder);
+      assert.equal(select.choices.containerInner.element.children[1].children[0].dataset.value, '');
       select.choices.showDropdown();
 
       setTimeout(() => {
@@ -1088,6 +1087,31 @@ describe('Select Component with Entire Object Value Property', () => {
           done();
         }, 200);
       }, 200);
+    }).catch(done);
+  });
+
+  it('Should set submission value for Resource DataSrc Type and Entire Object Value Property', (done) => {
+    const form = _.cloneDeep(comp15);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const value = { textField: 'Jone', nubmer: 1 };
+      form.submission = {
+        data: {
+          select: value
+        }
+      };
+
+      setTimeout(() => {
+        assert.equal(typeof select.dataValue,  'object');
+        const selectContainer = element.querySelector('[ref="selectContainer"]');
+        assert.notEqual(selectContainer, null);
+        assert.notEqual(selectContainer.value, '');
+        const options = selectContainer.childNodes;
+        assert.equal(options.length, 2);
+        done();
+      }, 1000);
     }).catch(done);
   });
 });

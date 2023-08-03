@@ -2,7 +2,6 @@
 import { Formio } from '../../Formio';
 import _ from 'lodash';
 import { AddressProvider } from './AddressProvider';
-import NativePromise from 'native-promise-only';
 
 export class GoogleAddressProvider extends AddressProvider {
   static get name() {
@@ -125,11 +124,11 @@ export class GoogleAddressProvider extends AddressProvider {
   }
 
   search() {
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   makeRequest() {
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   getDisplayValue(address) {

@@ -1,25 +1,12 @@
 import _ from 'lodash';
 import stringHash from 'string-hash';
+import { Evaluator as CoreEvaluator } from '@formio/core/utils';
 const Evaluator = {
   noeval: false,
   protectedEval: false, // This property can be customized only by plugins
   cache: {},
-  templateSettings: {
-    evaluate: /\{%([\s\S]+?)%\}/g,
-    interpolate: /\{\{([\s\S]+?)\}\}/g,
-    escape: /\{\{\{([\s\S]+?)\}\}\}/g
-  },
-  evaluator(func, ...params) {
-    if (Evaluator.noeval) {
-      console.warn('No evaluations allowed for this renderer.');
-      return _.noop;
-    }
-
-    if (typeof params[0] === 'object') {
-      params = _.keys(params[0]);
-    }
-    return new Function(...params, func);
-  },
+  templateSettings: CoreEvaluator.templateSettings,
+  evaluator: CoreEvaluator.evaluator,
   template(template, hash) {
     hash = hash || stringHash(template);
     if (Evaluator.cache[hash]) {
@@ -50,24 +37,7 @@ const Evaluator = {
     rawTemplate = String(rawTemplate);
     let template;
     if (Evaluator.noeval || options.noeval) {
-      // No cached template methods available. Use poor-mans interpolate without eval.
-      return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => {
-        // Allow for conditional values.
-        const parts = $2.split('||').map(item => item.trim());
-        let value = '';
-        let path = '';
-        for (let i = 0; i < parts.length; i++) {
-          path = parts[i];
-          value = _.get(data, path);
-          if (value) {
-            break;
-          }
-        }
-        if (options.data) {
-          _.set(options.data, path, value);
-        }
-        return value;
-      });
+      return CoreEvaluator.interpolateString(rawTemplate, data, _options);
     }
     else {
       template = Evaluator.template(rawTemplate);

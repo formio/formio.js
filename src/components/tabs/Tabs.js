@@ -28,8 +28,13 @@ export default class TabsComponent extends NestedComponent {
       icon: 'folder-o',
       weight: 50,
       documentation: '/userguide/form-building/layout-components#tabs',
+      showPreview: false,
       schema: TabsComponent.schema(),
     };
+  }
+
+  static savedValueTypes() {
+    return [];
   }
 
   get defaultSchema() {

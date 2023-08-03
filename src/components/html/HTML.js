@@ -21,8 +21,13 @@ export default class HTMLComponent extends Component {
       icon: 'code',
       weight: 0,
       documentation: '/userguide/form-building/layout-components#html-element',
+      showPreview: false,
       schema: HTMLComponent.schema()
     };
+  }
+
+  static savedValueTypes() {
+    return [];
   }
 
   get defaultSchema() {

@@ -18,6 +18,15 @@ export default function(...extend) {
       ]
     },
     {
+      key: 'data',
+      components: [
+        {
+          key: 'case',
+          ignore: true
+        }
+      ]
+    },
+    {
       key: 'validation',
       components: PhoneNumberEditValidation
     },

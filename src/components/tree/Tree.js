@@ -3,7 +3,6 @@ import Component from '../_classes/component/Component';
 import Components from '../Components';
 import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
 import Node from './Node';
-import NativePromise from 'native-promise-only';
 
 export default class TreeComponent extends NestedDataComponent {
   static schema(...extend) {
@@ -23,9 +22,9 @@ export default class TreeComponent extends NestedDataComponent {
     return {
       title: 'Tree',
       icon: 'indent',
-      group: 'data',
       weight: 40,
       documentation: '/userguide/form-building/data-components#tree',
+      showPreview: false,
       schema: TreeComponent.schema(),
     };
   }
@@ -162,7 +161,7 @@ export default class TreeComponent extends NestedDataComponent {
       root: 'single',
     });
 
-    return NativePromise.all([
+    return Promise.all([
       super.attach(element),
       this.attachNode(this.refs.root, this.treeRoot),
     ]);
@@ -170,11 +169,11 @@ export default class TreeComponent extends NestedDataComponent {
 
   attachNode(element, node) {
     if (!element) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
 
-    let componentsPromise = NativePromise.resolve();
-    let childrenPromise = NativePromise.resolve();
+    let componentsPromise = Promise.resolve();
+    let childrenPromise = Promise.resolve();
 
     node.refs = _.reduce(
       element.children,
@@ -198,7 +197,7 @@ export default class TreeComponent extends NestedDataComponent {
       childrenPromise = this.attachChildren(node);
     }
 
-    return NativePromise.all([
+    return Promise.all([
       componentsPromise,
       childrenPromise,
     ]);
@@ -275,13 +274,13 @@ export default class TreeComponent extends NestedDataComponent {
 
     return node.refs.nodeEdit
       ? super.attachComponents(node.refs.nodeEdit, node.components)
-      : NativePromise.resolve();
+      : Promise.resolve();
   }
 
   attachChildren(node) {
     const childElements = node.refs.childNodes.children;
 
-    return NativePromise.all(
+    return Promise.all(
       _.map(
         childElements,
         (childElement, index) => this.attachNode(childElement, node.children[index]),

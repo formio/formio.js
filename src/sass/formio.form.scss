@@ -896,6 +896,11 @@ body.formio-dialog-open {
 
 .formio-component-htmlelement {
   word-wrap: break-word;
+
+  ol, ul {
+    margin-left: 10px;
+
+  }
 }
 
 .editgrid-table-container {
@@ -1172,6 +1177,12 @@ body.formio-dialog-open {
 
   .ck.ck-editor__editable .image .ck-progress-bar {
     height: 4px;
+  }
+
+  .ck.ck-editor {
+    ul, ol {
+      margin-left: 10px;
+    }
   }
 }
 

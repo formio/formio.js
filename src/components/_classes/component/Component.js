@@ -1,6 +1,5 @@
 /* globals Quill, ClassicEditor, CKEDITOR */
 import { conformToMask } from '@formio/vanilla-text-mask';
-import NativePromise from 'native-promise-only';
 import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
@@ -16,14 +15,9 @@ import Widgets from '../../../widgets';
 import Addons from '../../../addons';
 import { getFormioUploadAdapterPlugin } from '../../../providers/storage/uploadAdapter';
 import enTranslation from '../../../translations/en';
+import Templates from '../../../templates/Templates';
 
 const isIEBrowser = FormioUtils.getBrowserInfo().ie;
-
-let Templates = Formio.Templates;
-
-if (!Templates) {
-  Templates = require('../../../templates/Templates').default;
-}
 
 /**
  * This is the Component class
@@ -207,7 +201,33 @@ export default class Component extends Element {
   static get Validator() {
     return Validator;
   }
+  /**
+   * Return the simple condition settings as part of the component.
+   *
+   * @return {Object}
+   *
+   */
+  static get conditionOperatorsSettings() {
+    return {
+      operators: ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'],
+      valueComponent() {
+        return { type: 'textfield' };
+      }
+    };
+  }
+  /**
+   * Return the array of possible types of component value absed on its schema.
+   *
+   * @param schema
+   * @return {Array}
+   *
+   */
 
+  static savedValueTypes(schema) {
+    schema = schema || {};
+
+    return FormioUtils.getComponentSavedTypes(schema) || [FormioUtils.componentValueTypes.any];
+  }
   /**
    * Provides a table view for this component. Override if you wish to do something different than using getView
    * method of your instance.
@@ -485,7 +505,7 @@ export default class Component extends Element {
 
   // Allow componets to notify when ready.
   get ready() {
-    return NativePromise.resolve(this);
+    return Promise.resolve(this);
   }
 
   get isPDFReadOnlyMode() {
@@ -623,12 +643,41 @@ export default class Component extends Element {
     return this._parentDisabled;
   }
 
+  shouldForceVisibility(component, visibility) {
+    if (!this.options[visibility]) {
+      return false;
+    }
+    if (!component) {
+      component = this.component;
+    }
+    if (_.isArray(this.options[visibility])) {
+      return this.options[visibility].includes(component.key);
+    }
+    return this.options[visibility][component.key];
+  }
+
+  shouldForceHide(component) {
+    return this.shouldForceVisibility(component, 'hide');
+  }
+
+  shouldForceShow(component) {
+    return this.shouldForceVisibility(component, 'show');
+  }
+
   /**
    *
    * @param value {boolean}
    */
   set visible(value) {
     if (this._visible !== value) {
+      // Skip if this component is set to visible and is supposed to be hidden.
+      if (value && this.shouldForceHide()) {
+        return;
+      }
+      // Skip if this component is set to hidden and is supposed to be shown.
+      if (!value && this.shouldForceShow()) {
+        return;
+      }
       this._visible = value;
       this.clearOnHide();
       this.redraw();
@@ -644,19 +693,12 @@ export default class Component extends Element {
     if (this.builderMode || this.previewMode || this.options.showHiddenFields) {
       return true;
     }
-    if (
-      this.options.hide &&
-      this.options.hide[this.component.key]
-    ) {
+    if (this.shouldForceHide()) {
       return false;
     }
-    if (
-      this.options.show &&
-      this.options.show[this.component.key]
-    ) {
+    if (this.shouldForceShow()) {
       return true;
     }
-
     return this._visible && this._parentVisible;
   }
 
@@ -1039,7 +1081,7 @@ export default class Component extends Element {
    * @return {*}
    */
   beforePage() {
-    return NativePromise.resolve(true);
+    return Promise.resolve(true);
   }
 
   beforeNext() {
@@ -1053,7 +1095,7 @@ export default class Component extends Element {
    * @return {*}
    */
   beforeSubmit() {
-    return NativePromise.resolve(true);
+    return Promise.resolve(true);
   }
 
   /**
@@ -1236,7 +1278,7 @@ export default class Component extends Element {
 
     this.addons.forEach((addon) => addon.attach(element));
 
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   restoreFocus() {
@@ -1594,6 +1636,10 @@ export default class Component extends Element {
     return customCSS;
   }
 
+  static get serverConditionSettings() {
+    return Component.conditionOperatorsSettings;
+  }
+
   get isMobile() {
     return isMobile();
   }
@@ -1738,7 +1784,7 @@ export default class Component extends Element {
     // Don't bother if we have not built yet.
     if (!this.element || !this.element.parentNode || this.optimizeRedraw) {
       // Return a non-resolving promise.
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
     this.detach();
     this.emit('redraw');
@@ -2274,12 +2320,12 @@ export default class Component extends Element {
     ), true)
       .then(() => {
         if (!element.parentNode) {
-          return NativePromise.reject();
+          return Promise.reject();
         }
         if (isIEBrowser) {
           const editor = CKEDITOR.replace(element);
           editor.on('change', () => onChange(editor.getData()));
-          return NativePromise.resolve(editor);
+          return Promise.resolve(editor);
         }
         else {
           return ClassicEditor.create(element, settings).then(editor => {
@@ -2311,7 +2357,7 @@ export default class Component extends Element {
         return Formio.requireLibrary('quill-table', 'Quill', `${Formio.cdn.baseUrl}/quill/quill-table.js`, true)
           .then(() => {
             if (!element.parentNode) {
-              return NativePromise.reject();
+              return Promise.reject();
             }
             this.quill = new Quill(element, isIEBrowser ? { ...settings, modules: {} } : settings);
 
@@ -2825,6 +2871,10 @@ export default class Component extends Element {
     // Calculate the new value.
     let calculatedValue = this.doValueCalculation(dataValue, data, row, flags);
 
+    if (this.options.readOnly && dataValue && !calculatedValue) {
+      return false;
+    }
+
     if (_.isNil(calculatedValue)) {
       calculatedValue = this.emptyValue;
     }
@@ -2998,7 +3048,7 @@ export default class Component extends Element {
 
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
-      return async ? NativePromise.resolve(true) : true;
+      return async ? Promise.resolve(true) : true;
     }
 
     const check = Validator.checkComponent(this, data, row, true, async);
@@ -3021,7 +3071,7 @@ export default class Component extends Element {
   }
 
   checkAsyncValidity(data, dirty, row, silentCheck) {
-    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, { async: true, silentCheck }));
+    return Promise.resolve(this.checkComponentValidity(data, dirty, row, { async: true, silentCheck }));
   }
 
   /**
@@ -3296,7 +3346,7 @@ export default class Component extends Element {
   }
 
   get dataReady() {
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   /**
@@ -3567,7 +3617,7 @@ Component.externalLibraries = {};
 Component.requireLibrary = function(name, property, src, polling) {
   if (!Component.externalLibraries.hasOwnProperty(name)) {
     Component.externalLibraries[name] = {};
-    Component.externalLibraries[name].ready = new NativePromise((resolve, reject) => {
+    Component.externalLibraries[name].ready = new Promise((resolve, reject) => {
       Component.externalLibraries[name].resolve = resolve;
       Component.externalLibraries[name].reject = reject;
     });
@@ -3648,5 +3698,5 @@ Component.libraryReady = function(name) {
     return Component.externalLibraries[name].ready;
   }
 
-  return NativePromise.reject(`${name} library was not required.`);
+  return Promise.reject(`${name} library was not required.`);
 };

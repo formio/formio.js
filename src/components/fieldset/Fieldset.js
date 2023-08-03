@@ -19,9 +19,14 @@ export default class FieldsetComponent extends NestedComponent {
       icon: 'th-large',
       group: 'layout',
       documentation: '/userguide/form-building/layout-components#field-set',
+      showPreview: false,
       weight: 20,
       schema: FieldsetComponent.schema()
     };
+  }
+
+  static savedValueTypes() {
+    return [];
   }
 
   get defaultSchema() {
