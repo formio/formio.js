@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import NativePromise from 'native-promise-only';
-import { processSync } from '@formio/core';
+import { process, processSync } from '@formio/core';
 import { compareVersions } from 'compare-versions';
 
 import EventEmitter from './EventEmitter';
@@ -1415,7 +1415,9 @@ export default class Webform extends NestedDataComponent {
       value.isValid = true;
     }
     else {
-      value.isValid = this.validateOnChange(value.data, flags);
+      // TODO: Wizards store their components' JSON in `originalComponents` but there should be a better way
+      const components = this.originalComponents || this.component.components;
+      value.isValid = this.validateOnChange(components, value.data, flags);
     }
 
     this.loading = false;
@@ -1440,10 +1442,10 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
-  validateOnChange(data, flags) {
+  validateOnChange(components, data, flags) {
     const errors = processSync({
       process: 'change',
-      components: this.component.components,
+      components,
       instances: this.childComponentsMap,
       data: data,
       after: [

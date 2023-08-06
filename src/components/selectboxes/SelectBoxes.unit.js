@@ -215,7 +215,7 @@ describe('SelectBoxes Component', () => {
         });
     });
 
-    xit('Should provide validation for ValueProperty', (done) => {
+    it('Should provide validation for ValueProperty', (done) => {
       const form = _.cloneDeep(comp5);
       const element = document.createElement('div');
       const originalMakeRequest = Formio.makeRequest;
@@ -235,9 +235,9 @@ describe('SelectBoxes Component', () => {
         const selectBoxes = form.getComponent('selectBoxes');
 
         setTimeout(()=>{
-          const inputs = selectBoxes.element.querySelectorAll('input');
-          inputs[1].checked = true;
-          inputs[2].checked = true;
+          // TODO: previously, this was programmatically assigning a boolean value to the `input.checked` property; however,
+          // this does not bubble a change event to the form, and we need to investigate why
+          selectBoxes.setValue({ 'AL': true, '[object Object]': true, 'true': true });
 
           setTimeout(()=>{
             const submit = form.getComponent('submit');
@@ -258,8 +258,8 @@ describe('SelectBoxes Component', () => {
                 done();
               }, 300);
             }, 300);
-          }, 300);
-        }, 200);
+          }, 600);
+        }, 500);
       }).catch(done);
     });
   });

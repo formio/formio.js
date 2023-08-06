@@ -410,7 +410,7 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
-    xit('Should set alert with validation errors on save and update them', (done) => {
+    it('Should set alert with validation errors on save and update them', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(ModalEditGrid).then(() => {

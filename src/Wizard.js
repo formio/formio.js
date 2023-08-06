@@ -666,6 +666,7 @@ export default class Wizard extends Webform {
       }
       this.redraw().then(() => {
         this.checkData(this.submission.data);
+        this.checkValidity(this.submission.data);
       });
       return NativePromise.resolve();
     }
