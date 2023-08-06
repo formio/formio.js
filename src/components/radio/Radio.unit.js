@@ -133,7 +133,7 @@ describe('Radio Component', () => {
     }).catch(done);
   });
 
-  xit('Should provide validation for ValueProperty', (done) => {
+  it('Should provide validation for ValueProperty', (done) => {
     const form = _.cloneDeep(comp9);
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;

@@ -3082,74 +3082,33 @@ export default class Component extends Element {
       this.calculateComponentValue(data, flags, row);
     }
 
-    if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
-      if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
-        // this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
-        processOne({
-          component: this.component,
-          path: this.path,
-          instance: this,
-          process: 'change',
-          data,
-          after: [
-            ({ component, errors }) => {
-              const interpolatedErrors = errors.map((error) => {
-                const { errorKeyOrMessage, context } = error;
-                const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
-                return { ...error, message: FormioUtils.unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
-              });
-              this.setComponentValidity(interpolatedErrors, !!this.options.alwaysDirty, false);
-              return [];
-            }
-          ]
-        });
-      }
-      return true;
-    }
+    // TODO: reintegrate this weird change into validation
+    // if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
+    //   if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
+    //     this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
+    //   }
+    //   return true;
+    // }
 
-    let isDirty = false;
+    // let isDirty = false;
 
-    // We need to set dirty if they explicitly set noValidate to false.
-    if (this.options.alwaysDirty || flags.dirty) {
-      isDirty = true;
-    }
+    // // We need to set dirty if they explicitly set noValidate to false.
+    // if (this.options.alwaysDirty || flags.dirty) {
+    //   isDirty = true;
+    // }
 
-    // See if they explicitely set the values with setSubmission.
-    if (flags.fromSubmission && this.hasValue(data)) {
-      isDirty = true;
-    }
+    // // See if they explicitely set the values with setSubmission.
+    // if (flags.fromSubmission && this.hasValue(data)) {
+    //   isDirty = true;
+    // }
 
-    this.setDirty(isDirty);
+    // this.setDirty(isDirty);
 
-    if (this.component.validateOn === 'blur' && flags.fromSubmission) {
-      return true;
-    }
+    // if (this.component.validateOn === 'blur' && flags.fromSubmission) {
+    //   return true;
+    // }
 
-    if (this.component.type === 'editgrid' || this.inEditGrid) {
-      const isValid = this.checkComponentValidity(data, isDirty, row, flags);
-      this.checkModal();
-      return isValid;
-    }
-    const errors = processOne({
-      component: this.component,
-      path: this._parentPath ? this.path.split(this._parentPath)[1] : this.path,
-      evalContext: this.evalContext(),
-      process: 'change',
-      data: data,
-      after: [
-        ({ component, errors }) => {
-          const interpolatedErrors = errors.map((error) => {
-            const { errorKeyOrMessage, context } = error;
-            const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
-            return { ...error, message: FormioUtils.unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
-          });
-          this.setComponentValidity(interpolatedErrors, isDirty, flags.silentCheck);
-          return [];
-        }
-      ]
-    });
-    this.checkModal();
-    return errors.length === 0;
+    // return true;
   }
 
   checkModal(isValid = true, dirty = false) {

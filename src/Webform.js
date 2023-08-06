@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import NativePromise from 'native-promise-only';
-import { process } from '@formio/core';
+import { processSync } from '@formio/core';
 import { compareVersions } from 'compare-versions';
 
 import EventEmitter from './EventEmitter';
@@ -1410,7 +1410,13 @@ export default class Webform extends NestedDataComponent {
       this.pristine = false;
     }
 
-    value.isValid = this.checkData(value.data, flags);
+    this.checkData(value.data, flags);
+    if (flags.noValidate && !flags.validateOnInit && !flags.fromIFrame) {
+      value.isValid = true;
+    }
+    else {
+      value.isValid = this.validateOnChange(value.data, flags);
+    }
 
     this.loading = false;
     if (this.submitted) {
@@ -1434,12 +1440,47 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
+  validateOnChange(data, flags) {
+    const errors = processSync({
+      process: 'change',
+      components: this.component.components,
+      instances: this.childComponentsMap,
+      data: data,
+      after: [
+        ({ component, path, errors }) => {
+          const interpolatedErrors = errors.map((error) => {
+            const { errorKeyOrMessage, context } = error;
+            const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+            return { ...error, message: unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
+          });
+          // TODO: now that validation is delegated to the child nested forms, this is a hack to deal with
+          // _parentPath in nested forms being e.g. `form.data.${path}` or, worse yet, _parentPath in nested
+          // forms that are nested in edit grids e.g. `editGrid[0].form.data.${path}`
+          if (this._parentPath) {
+            path = `${this._parentPath}${path}`;
+          }
+          const componentInstance = this.childComponentsMap[path];
+          let isDirty = false;
+          if (componentInstance?.options.alwaysDirty || flags.dirty) {
+            isDirty = true;
+          }
+          if (flags.fromSubmission && componentInstance?.hasValue(data)) {
+            isDirty = true;
+          }
+          componentInstance?.setDirty(isDirty);
+          componentInstance?.setComponentValidity(interpolatedErrors, isDirty, flags.silentCheck);
+          return [];
+        }
+      ]
+    });
+    return errors.length === 0;
+  }
+
   checkData(data, flags = {}) {
-    const valid = super.checkData(data, flags);
+    super.checkData(data, flags);
     if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
       this.showErrors();
     }
-    return valid;
   }
 
   /**
@@ -1504,7 +1545,7 @@ export default class Webform extends NestedDataComponent {
       submission.state = options.state || 'submitted';
 
       const isDraft = (submission.state === 'draft');
-      this.hook('beforeSubmit', { ...submission, component: options.component }, async(err , data) => {
+      this.hook('beforeSubmit', { ...submission, component: options.component }, (err , data) => {
         if (err) {
           return reject(err);
         }
@@ -1518,7 +1559,7 @@ export default class Webform extends NestedDataComponent {
             }
             // Wizard forms store their component JSON in `originalComponents`
             const components = this.originalComponents || this.component.components;
-            const errors = await process({
+            const errors = processSync({
               process: 'submit',
               components,
               data: submission.data,

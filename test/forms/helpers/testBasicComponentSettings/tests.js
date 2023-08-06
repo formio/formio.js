@@ -832,7 +832,7 @@ export default {
   'validate.custom': {
     'Should execute custom validation'(form, done, test) {
       test.timeout(3000);
-      const testComponents = form.components;
+      const testComponents = form.components.filter(comp => !['button'].includes(comp.component.type));
 
       assert.deepEqual(form.errors.length, 0, 'Should not show validation errors');
       form.setPristine(false);

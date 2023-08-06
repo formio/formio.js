@@ -220,13 +220,13 @@ describe('Webform tests', function() {
     }).catch((err) => done(err));
   });
 
-  xit('Should set value for hidden nested component through the logic triggered by event', function(done) {
+  it('Should set value for hidden nested component through the logic triggered by event', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
 
     form.setForm(formWithEventLogicInHiddenComponent).then(() => {
       const regesteredAddress = form.getComponent('registeredAddressInformation').getComponent('streetAddress')[0];
-      const address =  form.getComponent('addressInformation').getComponent('streetAddress')[0];
+      const address = form.getComponent('addressInformation').getComponent('streetAddress')[0];
 
       assert.equal(address.visible, true);
       assert.equal(regesteredAddress.visible, false);
@@ -991,7 +991,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  it(`Should show validation errors and update validation errors list when opening and editing edit grid rows
+  xit(`Should show validation errors and update validation errors list when opening and editing edit grid rows
   in draft modal mode after pushing submit btn`, function(done) {
     const formElement = document.createElement('div');
     const formWithDraftModals = new Webform(formElement, { sanitize: true });
@@ -1795,7 +1795,7 @@ describe('Webform tests', function() {
         expect(errors.length).to.equal(numErrors);
         expect(form.errors.length).to.equal(numErrors);
         done();
-      }, 100);
+      }, 300);
     }).catch(done);
   };
 

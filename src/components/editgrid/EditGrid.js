@@ -1091,7 +1091,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         const ourData = this.getAttachedData();
 
         if (editRow?.alerts) {
-          this.checkData(ourData, {
+          this.checkData(null, {
             ...flags,
             changed,
             rowIndex,
@@ -1101,7 +1101,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           // If drafts allowed, perform validation silently if there was no attempt to submit a form
           const silentCheck = this.component.rowDrafts && !this.shouldValidateDraft(editRow);
 
-          this.checkRow('checkData', ourData, {
+          this.checkRow('checkData', null, {
             ...flags,
             changed,
             silentCheck

@@ -366,9 +366,7 @@ export default class NestedComponent extends Field {
     if (this.root) {
       this.root.childComponentsMap[comp.path] = comp;
     }
-    else {
-      this.childComponentsMap[comp.path] = comp;
-    }
+    this.childComponentsMap[comp.path] = comp;
     return comp;
   }
 
