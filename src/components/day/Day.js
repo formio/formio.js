@@ -297,9 +297,17 @@ export default class DayComponent extends Field {
       }
     }
     else {
-      this.addEventListener(this.refs.day, 'input', () => this.updateValue(null, {
-        modified: true
-      }));
+      this.addEventListener(this.refs.day, 'input', () => {
+        try {
+          this.saveCaretPosition(this.refs.day, 'day');
+        }
+        catch (err) {
+          console.warn('An error occurred while trying to save caret position', err);
+        }
+        this.updateValue(null, {
+          modified: true,
+        });
+      });
       // TODO: Need to rework this to work with day select as well.
       // Change day max input when month changes.
       this.addEventListener(this.refs.month, 'input', () => {
@@ -312,16 +320,33 @@ export default class DayComponent extends Field {
         if (maxDay && day > maxDay) {
           this.refs.day.value = this.refs.day.max;
         }
+        try {
+          this.saveCaretPosition(this.refs.month, 'month');
+        }
+        catch (err) {
+          console.warn('An error occurred while trying to save caret position', err);
+        }
         this.updateValue(null, {
           modified: true
         });
       });
-      this.addEventListener(this.refs.year, 'input', () => this.updateValue(null, {
-        modified: true
-      }));
+      this.addEventListener(this.refs.year, 'input', () => {
+        try {
+          this.saveCaretPosition(this.refs.year, 'year');
+        }
+        catch (err) {
+          console.warn('An error occurred while trying to save caret position', err);
+        }
+        this.updateValue(null, {
+          modified: true,
+        });
+      });
       this.addEventListener(this.refs.input, this.info.changeEvent, () => this.updateValue(null, {
         modified: true
       }));
+      [this.refs.day, this.refs.month, this.refs.year].filter((element) => !!element).forEach((element) => {
+        super.addFocusBlurEvents(element);
+      });
     }
     this.setValue(this.dataValue);
     // Force the disabled state with getters and setters.
@@ -587,8 +612,11 @@ export default class DayComponent extends Field {
     return this.getDate(value) || '';
   }
 
-  focus() {
-    if (this.dayFirst && this.showDay || !this.dayFirst && !this.showMonth && this.showDay) {
+  focus(field) {
+    if (field && typeof field === 'string' && this.refs[field]) {
+      this.refs[field].focus();
+    }
+    else if (this.dayFirst && this.showDay || !this.dayFirst && !this.showMonth && this.showDay) {
       this.refs.day?.focus();
     }
     else if (this.dayFirst && !this.showDay && this.showMonth || !this.dayFirst && this.showMonth) {
@@ -596,6 +624,19 @@ export default class DayComponent extends Field {
     }
     else if (!this.showDay && !this.showDay && this.showYear) {
       this.refs.year?.focus();
+    }
+  }
+
+  restoreCaretPosition() {
+    if (this.root?.currentSelection) {
+      const { selection, index } = this.root.currentSelection;
+      if (this.refs[index]) {
+        const input = this.refs[index];
+        const isInputRangeSelectable = (i) => /text|search|password|tel|url/i.test(i?.type || '');
+        if (isInputRangeSelectable(input)) {
+          input.setSelectionRange(...selection);
+        }
+      }
     }
   }
 
