@@ -288,6 +288,19 @@ export default class DayComponent extends Field {
   attach(element) {
     this.loadRefs(element, { day: 'single', month: 'single', year: 'single', input: 'multiple' });
     const superAttach = super.attach(element);
+
+    const updateValueAndSaveFocus = (element, name) => () => {
+      try {
+        this.saveCaretPosition(element, name);
+      }
+      catch (err) {
+        console.warn('An error occurred while trying to save caret position', err);
+      }
+      this.updateValue(null, {
+        modified: true,
+      });
+    };
+
     if (this.shouldDisabled) {
       this.setDisabled(this.refs.day, true);
       this.setDisabled(this.refs.month, true);
@@ -297,21 +310,14 @@ export default class DayComponent extends Field {
       }
     }
     else {
-      this.addEventListener(this.refs.day, 'input', () => {
-        try {
-          this.saveCaretPosition(this.refs.day, 'day');
-        }
-        catch (err) {
-          console.warn('An error occurred while trying to save caret position', err);
-        }
-        this.updateValue(null, {
-          modified: true,
-        });
-      });
+      this.addEventListener(this.refs.day, 'input', updateValueAndSaveFocus(this.refs.day, 'day'));
       // TODO: Need to rework this to work with day select as well.
       // Change day max input when month changes.
       this.addEventListener(this.refs.month, 'input', () => {
-        const maxDay = this.refs.year ? parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10)
+        const maxDay = this.refs.year ? parseInt(
+            new Date(this.refs.year.value, this.refs.month.value, 0).getDate(),
+            10
+          )
           : '';
         const day = this.getFieldValue('day');
         if (!this.component.fields.day.hide && maxDay) {
@@ -320,27 +326,9 @@ export default class DayComponent extends Field {
         if (maxDay && day > maxDay) {
           this.refs.day.value = this.refs.day.max;
         }
-        try {
-          this.saveCaretPosition(this.refs.month, 'month');
-        }
-        catch (err) {
-          console.warn('An error occurred while trying to save caret position', err);
-        }
-        this.updateValue(null, {
-          modified: true
-        });
+        updateValueAndSaveFocus(this.refs.month, 'month')();
       });
-      this.addEventListener(this.refs.year, 'input', () => {
-        try {
-          this.saveCaretPosition(this.refs.year, 'year');
-        }
-        catch (err) {
-          console.warn('An error occurred while trying to save caret position', err);
-        }
-        this.updateValue(null, {
-          modified: true,
-        });
-      });
+      this.addEventListener(this.refs.year, 'input', updateValueAndSaveFocus(this.refs.year, 'year'));
       this.addEventListener(this.refs.input, this.info.changeEvent, () => this.updateValue(null, {
         modified: true
       }));
