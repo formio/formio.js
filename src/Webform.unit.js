@@ -991,7 +991,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  xit(`Should show validation errors and update validation errors list when opening and editing edit grid rows
+  it(`Should show validation errors and update validation errors list when opening and editing edit grid rows
   in draft modal mode after pushing submit btn`, function(done) {
     const formElement = document.createElement('div');
     const formWithDraftModals = new Webform(formElement, { sanitize: true });
@@ -1057,7 +1057,7 @@ describe('Webform tests', function() {
                 assert.equal(!!alertWithErrorText, true, 'Should show error alert');
 
                 const alertErrorMessages = rowModalAfterValidation.querySelectorAll('[ref="messageRef"]');
-                assert.equal(alertErrorMessages.length, 2);
+                assert.equal(alertErrorMessages.length, 1);
 
                 const numberComponentError = rowModalAfterValidation.querySelector('.formio-component-number').querySelector('.error').textContent;
                 //checking if error was shown for empty required field
@@ -1087,7 +1087,7 @@ describe('Webform tests', function() {
                       .querySelector(`.editgrid-row-modal-${editGrid.id}`)
                       .querySelectorAll('[ref="messageRef"]');
 
-                    assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length, 3);
+                    assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length, 2);
                     document.body.innerHTML = '';
 
                     done();

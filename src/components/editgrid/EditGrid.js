@@ -3,8 +3,15 @@ import NativePromise from 'native-promise-only';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import Alert from '../alert/Alert';
-import { fastCloneDeep, Evaluator, getArrayFromComponentPath, eachComponent } from '../../utils/utils';
+import {
+  fastCloneDeep,
+  Evaluator,
+  getArrayFromComponentPath,
+  eachComponent,
+  unescapeHTML
+} from '../../utils/utils';
 import { editgrid as templates } from '@formio/bootstrap/components';
+import { processSync } from '@formio/core';
 
 const EditRowState = {
   New: 'new',
@@ -716,7 +723,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       component: this.component,
       row: editRow,
     });
-    this.checkRow('checkData', null, {}, editRow.data, editRow.components);
+    this.processRow('checkData', null, {}, editRow.data, editRow.components);
     if (this.component.modal) {
       this.addRowModal(rowIndex);
     }
@@ -1086,26 +1093,13 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
 
         const editRow = this.editRows[rowIndex];
-        // Edit Grids take state management into their own hands, so we need to ensure that processes and processors get
-        // the attached state (i.e. the up-to-date picture) of the data
-        const ourData = this.getAttachedData();
 
-        if (editRow?.alerts) {
-          this.checkData(null, {
+        if (editRow) {
+          this.processRow('checkData', null, {
             ...flags,
             changed,
-            rowIndex,
-          }, this.data);
-        }
-        else if (editRow) {
-          // If drafts allowed, perform validation silently if there was no attempt to submit a form
-          const silentCheck = this.component.rowDrafts && !this.shouldValidateDraft(editRow);
-
-          this.checkRow('checkData', null, {
-            ...flags,
-            changed,
-            silentCheck
-          }, editRow.data, editRow.components, silentCheck);
+          }, editRow.data, editRow.components);
+          this.validateRow(editRow, false);
         }
 
         if (this.variableTypeComponentsIndexes.length) {
@@ -1137,10 +1131,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     return ourData;
   }
 
-  checkData(data, flags, row) {
-    return super.checkData(this.getAttachedData(data), flags, row);
-  }
-
   shouldValidateDraft(editRow) {
     // Draft rows should be validated only when there was an attempt to submit a form
     return (editRow.state === EditRowState.Draft &&
@@ -1152,6 +1142,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   shouldValidateRow(editRow, dirty) {
     return this.shouldValidateDraft(editRow) ||
+      editRow.state === EditRowState.New ||
       editRow.state === EditRowState.Editing ||
       editRow.alerts ||
       dirty;
@@ -1162,13 +1153,34 @@ export default class EditGridComponent extends NestedArrayComponent {
     const errorsSnapshot = [...this.errors];
 
     if (this.shouldValidateRow(editRow, dirty)) {
-      editRow.components.forEach(comp => {
-        const silentCheck = (this.component.rowDrafts && !this.shouldValidateDraft(editRow)) || forceSilentCheck;
-
-        valid &= comp.checkValidity(null, dirty, null, silentCheck);
+      const silentCheck = (this.component.rowDrafts && !this.shouldValidateDraft(editRow)) || forceSilentCheck;
+      // TODO: since our new validation system requires component JSON, we'll have to iterate over the editRow's components
+      // until we can figure out a better way to "integrate" Edit Grids into a cohesive validation scheme
+      const components = editRow.components.map((comp) => comp.component);
+      const errors = processSync({
+        components,
+        data: editRow.data,
+        process: 'validateRow',
+        after: [
+          ({ component, errors }) => {
+            const interpolatedErrors = errors.map((error) => {
+              const { errorKeyOrMessage, context } = error;
+              const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+              return { ...error, message: unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
+            });
+            // TODO: we might use pathing here like we do in the WebForm validation but there are enough inconsistencies
+            // (e.g. a nested container component having a path like `editgrid[0].container[0].textField` rather than
+            // `editGrid[0].container.textField`) that it's easier to just look for the component in the row itself
+            const componentInstance = editRow.components.find((comp) => comp.id === component.id);
+            componentInstance?.setComponentValidity(interpolatedErrors, dirty, silentCheck);
+            return [];
+          }
+        ],
       });
+      valid = errors.length === 0;
     }
 
+    // TODO: this is essentially running its own custom validation and should be moved into a validation rule
     if (this.component.validate && this.component.validate.row) {
       valid = this.evaluate(this.component.validate.row, {
         valid,

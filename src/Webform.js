@@ -1455,9 +1455,9 @@ export default class Webform extends NestedDataComponent {
             const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
             return { ...error, message: unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
           });
-          // TODO: now that validation is delegated to the child nested forms, this is a hack to deal with
-          // _parentPath in nested forms being e.g. `form.data.${path}` or, worse yet, _parentPath in nested
-          // forms that are nested in edit grids e.g. `editGrid[0].form.data.${path}`
+          // TODO: now that validation is delegated to the child nested forms, this ensures that pathing deals with
+          // _parentPath in nested forms being (e.g. `form.data.${path}`) or _parentPath in nested forms that are
+          // nested in edit grids (e.g. `editGrid[0].form.data.${path}`)
           if (this._parentPath) {
             path = `${this._parentPath}${path}`;
           }
