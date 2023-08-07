@@ -215,20 +215,6 @@ export default class Multivalue extends Field {
     }
   }
 
-  // Saves current caret position to restore it after the component is redrawn
-  saveCaretPosition(element, index) {
-    if (this.root?.focusedComponent?.path === this.path) {
-      try {
-        this.root.currentSelection = { selection: [element.selectionStart, element.selectionEnd], index };
-      }
-      catch (e) {
-        if (!(e instanceof DOMException)) {
-          console.debug(e);
-        }
-      }
-    }
-  }
-
   onSelectMaskHandler(event) {
     this.updateMask(event.target.maskInput, this.getMaskPattern(event.target.value));
   }
