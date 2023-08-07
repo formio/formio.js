@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, boolValue } from '../../utils/utils';
 import RadioComponent from '../radio/Radio';
 
 export default class SelectBoxesComponent extends RadioComponent {
@@ -282,5 +282,17 @@ export default class SelectBoxesComponent extends RadioComponent {
     }
 
     return super.checkComponentValidity(data, dirty, rowData, options);
+  }
+
+  validateValueAvailability(setting, value) {
+    if (!boolValue(setting) || !value) {
+      return true;
+    }
+
+    const values = this.component.values;
+    const availableValueKeys = (values || []).map(({ value: optionValue }) => optionValue);
+    const valueKeys = Object.keys(value);
+
+    return valueKeys.every((key) => availableValueKeys.includes(key));
   }
 }
