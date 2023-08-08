@@ -3243,38 +3243,52 @@ export default class Component extends Element {
       // TODO: The case covered here is nested forms within Edit Grids; the idea is that since we're eliminating
       // Edit Grid-specific checkComponentValidity, that logic needs to be handled at the component level, and
       // nested forms within Edit Grids need to traverse upwards to find the parent Edit Grid
-      let thisPath = this;
-      while (thisPath.parent && thisPath.component.type !== 'editgrid') {
-        thisPath = thisPath.parent;
+      let parentEditGrid = this;
+      while (parentEditGrid.parent && parentEditGrid.component.type !== 'editgrid') {
+        parentEditGrid = parentEditGrid.parent;
       }
-      if (thisPath.component.type === 'editgrid') {
+      if (parentEditGrid.component.type === 'editgrid') {
         let rowsValid = true;
         let rowsEditing = false;
 
-        const rowRefs = thisPath.rowRefs || [];
+        const rowRefs = parentEditGrid.rowRefs || [];
         rowRefs.forEach((ref, index) => {
-          const editRow = thisPath.editRows[index];
-          const invalidRow = messages.some((message) => message.context?.index === index);
-          if (invalidRow) {
+          const editRow = parentEditGrid.editRows[index];
+          const invalidRow = messages.some((message) => message.context?.index === index || message.context?.component?.id === this.id);
+          const errorContainer = ref.querySelector('.editgrid-row-error');
+
+          const shouldValidateDraft = () => {
+            return (editRow.state === 'draft' &&
+              !this.pristine &&
+              !this.root?.pristine &&
+              !parentEditGrid.hasOpenRows()) ||
+              this.root?.submitted;
+          };
+          if (invalidRow && errorContainer && (!parentEditGrid.component.rowDrafts || shouldValidateDraft())) {
             rowsValid = false;
-            thisPath.setRowInvalid(ref, index);
+            this.addClass(errorContainer,  'help-block' );
+            errorContainer.textContent = this.t(this.errorMessage('invalidRowError'));
           }
+          else if (errorContainer) {
+            errorContainer.textContent = '';
+          }
+
           // If this is a dirty check, and any rows are still editing, we need to throw validation error.
-          rowsEditing |= (dirty && thisPath.isOpen(editRow));
-          if (thisPath.rowDrafts || this.root?.submitted) {
-            thisPath.showRowErrorAlerts(editRow, !invalidRow);
+          rowsEditing |= (dirty && parentEditGrid.isOpen(editRow));
+          if (parentEditGrid.rowDrafts || this.root?.submitted) {
+            parentEditGrid.showRowErrorAlerts(editRow, !invalidRow);
           }
         });
 
         if (!rowsValid) {
-          if (!thisPath.component.rowDrafts || this.root?.submitted) {
-            thisPath.setCustomValidity(this.t(this.errorMessage('invalidRowsError')), dirty);
+          if (!parentEditGrid.component.rowDrafts || this.root?.submitted) {
+            parentEditGrid.setCustomValidity(this.t(this.errorMessage('invalidRowsError')), dirty);
             // Delete this class, because otherwise all the components inside EditGrid will has red border even if they are valid
-            thisPath.removeClass(this.element, 'has-error');
+            parentEditGrid.removeClass(this.element, 'has-error');
           }
         }
-        else if (rowsEditing && thisPath.saveEditMode) {
-          thisPath.setCustomValidity(this.t(thisPath.errorMessage('unsavedRowsError')), dirty);
+        else if (rowsEditing && parentEditGrid.saveEditMode) {
+          parentEditGrid.setCustomValidity(this.t(parentEditGrid.errorMessage('unsavedRowsError')), dirty);
         }
       }
     }

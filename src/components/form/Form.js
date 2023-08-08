@@ -561,6 +561,7 @@ export default class FormComponent extends Component {
           return this.dataValue;
         }
         this.subForm.nosubmit = false;
+        this.subForm.submitted = true;
         return this.subForm.submitForm().then(result => {
           this.subForm.loading = false;
           this.subForm.showAllErrors = false;
