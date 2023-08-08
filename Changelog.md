@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.16.0-rc.9
+### Changed
+ - FIO-7040 Enabled selectData for all List Based Components
+
 ## 4.16.0-rc.8
 ### Changed
  - FIO-6688: Fixes producing additional components when minLength is set up

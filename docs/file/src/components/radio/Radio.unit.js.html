@@ -251,6 +251,45 @@ describe(&apos;Radio Component&apos;, () =&gt; {
     }).catch(done);
   });
 
+  it(&apos;Should provide metadata.selectData for radio component with URL DataSrc&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement(&apos;div&apos;);
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve =&gt; {
+        const values = [
+          { name : &apos;Alabama&apos;, abbreviation : &apos;AL&apos; },
+          { name : &apos;Alaska&apos;, abbreviation: &apos;AK&apos; },
+          { name: &apos;American Samoa&apos;, abbreviation: &apos;AS&apos; }
+        ];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const radio = form.getComponent(&apos;radio&apos;);
+
+      setTimeout(()=&gt;{
+        const value = &apos;AK&apos;;
+        radio.setValue(value);
+        setTimeout(() =&gt; {
+          assert.equal(radio.dataValue, value);
+          const submit = form.getComponent(&apos;submit&apos;);
+          const clickEvent = new Event(&apos;click&apos;);
+          const submitBtn = submit.refs.button;
+          submitBtn.dispatchEvent(clickEvent);
+          setTimeout(() =&gt; {
+            assert.equal(_.isEqual(form.submission.metadata.selectData.radio, { name : &apos;Alaska&apos; }), true);
+            assert.equal(form.submission.metadata.listData.radio.length, 3);
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          },200);
+        },200);
+      }, 200);
+    }).catch(done);
+  });
+
   it(&apos;Should save checked value after redrawing if storage type is Number&apos;, (done) =&gt; {
     Harness.testCreate(RadioComponent, comp3).then((component) =&gt; {
       component.setValue(22);

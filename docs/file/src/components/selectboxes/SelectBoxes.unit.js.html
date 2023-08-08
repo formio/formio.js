@@ -239,6 +239,45 @@ describe(&apos;SelectBoxes Component&apos;, () =&gt; {
     }).catch(done);
   });
 
+  it(&apos;Should provide metadata.selectData for SelectBoxes component with URL DataSrc&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement(&apos;div&apos;);
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve =&gt; {
+        const values = [
+          { name : &apos;Alabama&apos;, abbreviation : &apos;AL&apos; },
+          { name : &apos;Alaska&apos;, abbreviation: &apos;AK&apos; },
+          { name: &apos;American Samoa&apos;, abbreviation: &apos;AS&apos; }
+        ];
+        resolve(values);
+      });
+    };
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const selectBoxes = form.getComponent(&apos;selectBoxes&apos;);
+
+      setTimeout(()=&gt;{
+        const value = { AL: false, AK: true, AS: true };
+        selectBoxes.setValue(value);
+        setTimeout(() =&gt; {
+          assert.equal(selectBoxes.dataValue, value);
+          const submit = form.getComponent(&apos;submit&apos;);
+          const clickEvent = new Event(&apos;click&apos;);
+          const submitBtn = submit.refs.button;
+          submitBtn.dispatchEvent(clickEvent);
+          setTimeout(() =&gt; {
+            assert.equal(_.isEqual(form.submission.metadata.selectData.selectBoxes, [{ name : &apos;Alaska&apos; }, { name : &apos;American Samoa&apos; }]), true);
+            assert.equal(form.submission.metadata.listData.selectBoxes.length, 3);
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          },200);
+        },200);
+      }, 200);
+    }).catch(done);
+  });
+
   describe(&apos;error messages&apos;, () =&gt; {
     it(&apos;Should have a minSelectedCount validation message&apos;, () =&gt; {
       const formJson = {
