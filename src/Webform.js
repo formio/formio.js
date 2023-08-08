@@ -1724,7 +1724,13 @@ export default class Webform extends NestedDataComponent {
     this.submissionInProcess = true;
     if (!before) {
       return this.beforeSubmit(options).then((promiseSettledResult) => {
-        options.beforeSubmitResults = promiseSettledResult.flat();
+        // Nested components will have nested beforeSubmitResults, so we need to flatten this array
+        options.beforeSubmitResults = promiseSettledResult.reduce((acc, curr) => {
+          if (Array.isArray(curr.value)) {
+            return [...acc, ...curr.value];
+          }
+          return [...acc, curr];
+        }, []);
         return this.executeSubmit(options);
       });
     }

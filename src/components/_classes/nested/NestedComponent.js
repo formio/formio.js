@@ -366,6 +366,9 @@ export default class NestedComponent extends Field {
     if (this.root) {
       this.root.childComponentsMap[comp.path] = comp;
     }
+    if (this.parent) {
+      this.parent.childComponentsMap[comp.path] = comp;
+    }
     this.childComponentsMap[comp.path] = comp;
     return comp;
   }
@@ -537,6 +540,12 @@ export default class NestedComponent extends Field {
     _.remove(components, { id: component.id });
     if (this.root?.childComponentsMap[component.path]) {
       delete this.root.childComponentsMap[component.path];
+    }
+    if (this.parent?.childComponentsMap[component.path]) {
+      delete this.parent.childComponentsMap[component.path];
+    }
+    if (this.childComponentsMap[component.path]) {
+      delete this.childComponentsMap[component.path];
     }
   }
 

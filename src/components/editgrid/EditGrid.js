@@ -1080,6 +1080,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
+      options.inEditGrid = true;
       options.onChange = (flags = {}, changed, modified) => {
         if (changed.instance.root?.id && (this.root?.id !== changed.instance.root.id)) {
           changed.instance.root.triggerChange(flags, changed, modified);
@@ -1116,6 +1117,8 @@ export default class EditGridComponent extends NestedArrayComponent {
         recreatePartially && currentRowComponents ? currentRowComponents[colIndex] : null
       );
       comp.rowIndex = rowIndex;
+      // TODO: this probably should have been an option, and could be refactored to just be a component option rather
+      // than a stateful value on the component instance itself
       comp.inEditGrid = true;
       return comp;
     });
@@ -1156,22 +1159,28 @@ export default class EditGridComponent extends NestedArrayComponent {
       const silentCheck = (this.component.rowDrafts && !this.shouldValidateDraft(editRow)) || forceSilentCheck;
       // TODO: since our new validation system requires component JSON, we'll have to iterate over the editRow's components
       // until we can figure out a better way to "integrate" Edit Grids into a cohesive validation scheme
-      const components = editRow.components.map((comp) => comp.component);
+      const components = editRow.components.map((comp) => {
+        // TODO: we check for nested forms here in the case that the edit grid has nested forms, which often don't
+        // contain component JSON in their definition; this raises the spectre of nested forms more than one layer
+        // deep being incompatible
+        if (comp.component.type === 'form' && (!comp.component.components || comp.component.components?.length === 0)) {
+          comp.component.components = fastCloneDeep(comp.subForm.component.components);
+        }
+        return comp.component;
+      });
       const errors = processSync({
         components,
         data: editRow.data,
         process: 'validateRow',
         after: [
-          ({ component, errors }) => {
+          ({ component, path, errors }) => {
             const interpolatedErrors = errors.map((error) => {
               const { errorKeyOrMessage, context } = error;
               const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
               return { ...error, message: unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
             });
-            // TODO: we might use pathing here like we do in the WebForm validation but there are enough inconsistencies
-            // (e.g. a nested container component having a path like `editgrid[0].container[0].textField` rather than
-            // `editGrid[0].container.textField`) that it's easier to just look for the component in the row itself
-            const componentInstance = editRow.components.find((comp) => comp.id === component.id);
+            const updatedPath = `${this.path}[${editRow.rowIndex}].${path}`;
+            const componentInstance = this.childComponentsMap[updatedPath] || this.root?.childComponentsMap[updatedPath];
             componentInstance?.setComponentValidity(interpolatedErrors, dirty, silentCheck);
             return [];
           }

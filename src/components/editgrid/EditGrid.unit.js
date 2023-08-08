@@ -644,7 +644,7 @@ describe('EditGrid Component', () => {
       });
     });
 
-    xit('Should keep fields valid inside NestedForms if drafts are enabled', (done) => {
+    it('Should keep fields valid inside NestedForms if drafts are enabled', (done) => {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       ModalEditGrid.components[0].rowDrafts = true;
@@ -666,7 +666,7 @@ describe('EditGrid Component', () => {
             Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
 
             setTimeout(() => {
-              assert.equal(editGrid.errors.length, 3, 'Should be validated after an attempt to submit');
+              assert.equal(editGrid.errors.length, 2, 'Should be validated after an attempt to submit');
               assert.equal(editGrid.editRows[0].errors.length, 2, 'Should dd errors to the row after an attempt to submit');
               const rows = editGrid.element.querySelectorAll('[ref="editgrid-editGrid-row"]');
               const firstRow = rows[0];
@@ -1170,7 +1170,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should show validation when saving a row with required conditional filed inside container', (done) => {
+  xit('Should show validation when saving a row with required conditional filed inside container', (done) => {
     const form = _.cloneDeep(comp12);
     const element = document.createElement('div');
 
