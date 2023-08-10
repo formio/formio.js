@@ -58,6 +58,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4782: added encodeURIComponent for filter query
  - FIO-4856: Fixed an issue where onBlur validation does not work for Select, Tags and Day components
  - FIO-7110: fixed display of nested form with Use Original Revision on PDF download
+ - FIO-6578: Fixes an issue with losing focus on Year field when Day component has advanced logic
 
 ## 5.0.0-rc.6
 ### Added
