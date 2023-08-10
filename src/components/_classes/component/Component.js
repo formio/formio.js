@@ -3239,7 +3239,6 @@ export default class Component extends Element {
       });
     }
 
-   
     if (messages.length) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
@@ -3300,7 +3299,7 @@ export default class Component extends Element {
     return (this.component.protected || !this.component.persistent || (this.component.persistent === 'client-only'));
   }
 
-  shouldSkipValidation(data, dirty, row) {
+  shouldSkipValidation(data, row) {
     const rules = [
       // Do not check custom validation for empty data if it is not required
       () => this.component.validate.custom && !this.dataValue && !this.component.validate.required,
