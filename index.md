@@ -25,13 +25,12 @@ section: home
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.form.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+    <script src="https://cdn.form.io/js/formio.embed.js"></script>
   </head>
   <body>
     <div id="formio"></div>
-    <script src="https://cdn.form.io/formiojs/formio.form.min.js"></script>
     <script type="text/javascript">
       Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
     </script>
@@ -62,4 +61,4 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 
 ### JSFiddle
 To play around with this renderer, we recommend using JSFiddle. Here is an example you can fork and use as a sandbox.
-<script async src="//jsfiddle.net/travistidwell/v38du9y1/3/embed/"></script>
+<script async src="//jsfiddle.net/travistidwell/z63jvwkp/embed/"></script>

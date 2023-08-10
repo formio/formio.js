@@ -8,15 +8,13 @@ Not only is Form.io capable of hosting forms, it can also host submissions of th
 simply appends a "/submission/[SUBMISSION_ID]" to the end of the Form API like the following.
 
 ```html
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
-<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+<script src="https://cdn.form.io/js/formio.embed.js"></script>
 <div id="formio"></div>
 ```
 
 ```js
-Formio.icons = 'fontawesome';
 Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/wizard/submission/5a542c9e2a40bf0001e0f8a9', {
   readOnly: true
 });
