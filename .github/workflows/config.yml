@@ -3,11 +3,7 @@ name: Build & Test
 on: push
 
 jobs:
-
-  ###########################################################################
-  ## Build Job
-  ###########################################################################
-  test:
+  checkout:
     if: true
     runs-on: ubuntu-latest
     strategy:
@@ -33,17 +29,64 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: lint
+      
+      - name: Archive build workspace
+        run: |
+          STAGING_DIR="${{ runner.temp }}/project"
+          mkdir "$STAGING_DIR"
+          cp -a "${{ github.workspace }}"/. "$STAGING_DIR"/
+          tar -czf workspace.tar.gz -C "$STAGING_DIR" .
+      
+      - name: Upload workspace
+        uses: actions/upload-artifact@v3
+        with:
+          name: workspace
+          path: workspace.tar.gz
+  ###########################################################################
+  ## Build Job
+  ###########################################################################
+  build:
+    if: true
+    needs: ['checkout']
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - name: Download build workspace
+        uses: actions/download-artifact@v2
+        with:
+          name: workspace
+
+      - name: Extract workspace
+        run: tar -xzf workspace.tar.gz -C ${{ github.workspace }}
 
       - name: Build
         uses: borales/actions-yarn@v4
         with:
           cmd: build
 
+  ###########################################################################
+  ## Build Job
+  ###########################################################################
+  test:
+    if: true
+    needs: ['checkout']
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - name: Download build workspace
+        uses: actions/download-artifact@v2
+        with:
+          name: workspace
+
+      - name: Extract workspace
+        run: tar -xzf workspace.tar.gz -C ${{ github.workspace }}
+
       - name: Test
         uses: borales/actions-yarn@v4
         with:
           cmd: test
         
-      - name: List workspace contents
-        run: |
-          ls -al
