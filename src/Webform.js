@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import NativePromise from 'native-promise-only';
-import { process, processSync } from '@formio/core';
+import { processSync } from '@formio/core';
 import { compareVersions } from 'compare-versions';
 
 import EventEmitter from './EventEmitter';
@@ -984,7 +984,7 @@ export default class Webform extends NestedDataComponent {
 
     this.addComponents();
     this.on('submitButton', options => {
-      this.submit(false, options).catch(e => e !== false && console.log(e));
+      this.submit(false, options).catch(e => e !== false && e !== undefined && console.log(e));
     }, true);
 
     this.on('checkValidity', (data) => this.checkValidity(data, true, data), true);
@@ -1567,6 +1567,7 @@ export default class Webform extends NestedDataComponent {
             const errors = processSync({
               process: 'submit',
               components,
+              instances: this.childComponentsMap,
               data: submission.data,
               after: [
                 ({ component, path, errors }) => {
@@ -1733,7 +1734,7 @@ export default class Webform extends NestedDataComponent {
             return [...acc, ...curr.value];
           }
           return [...acc, curr];
-        }, []);
+        }, []).flat();
         return this.executeSubmit(options);
       });
     }

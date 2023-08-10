@@ -1,5 +1,8 @@
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
+import { processSync } from '@formio/core';
+import { editgrid as templates } from '@formio/bootstrap/components';
+
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import Alert from '../alert/Alert';
@@ -10,8 +13,6 @@ import {
   eachComponent,
   unescapeHTML
 } from '../../utils/utils';
-import { editgrid as templates } from '@formio/bootstrap/components';
-import { processSync } from '@formio/core';
 
 const EditRowState = {
   New: 'new',
@@ -1168,10 +1169,15 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
         return comp.component;
       });
+      const instances = {};
+      eachComponent(components, (comp, path) => {
+        instances[path] = this.childComponentsMap[`${this.path}[${editRow.rowIndex}].${path}`];
+      });
       const errors = processSync({
         components,
         data: editRow.data,
         process: 'validateRow',
+        instances,
         after: [
           ({ component, path, errors }) => {
             const interpolatedErrors = errors.map((error) => {
@@ -1240,6 +1246,57 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     return this.checkComponentValidity(data, dirty, row, { silentCheck });
+  }
+
+  setComponentValidity(messages, dirty) {
+    const errorsLength = this.errors.length;
+    let rowsValid = true;
+    let rowsEditing = false;
+
+    const rowRefs = this.rowRefs || [];
+    rowRefs.forEach((ref, index) => {
+      const editRow = this.editRows[index];
+      if (editRow) {
+        const rowIsInvalid = !this.validateRow(editRow, true);
+        const errorContainer = ref.querySelector('.editgrid-row-error');
+
+        if (rowIsInvalid && errorContainer && (!this.component.rowDrafts || this.shouldValidateDraft(editRow))) {
+          rowsValid = false;
+          this.addClass(errorContainer,  'help-block' );
+          errorContainer.textContent = this.t(this.errorMessage('invalidRowError'));
+        }
+        else if (errorContainer) {
+          errorContainer.textContent = '';
+        }
+
+        // If this is a dirty check, and any rows are still editing, we need to throw validation error.
+        rowsEditing |= (dirty && this.isOpen(editRow));
+        if (this.rowDrafts || this.root?.submitted) {
+          this.showRowErrorAlerts(editRow, !rowIsInvalid);
+        }
+      }
+    });
+
+    if (!rowsValid) {
+      if (!this.component.rowDrafts || this.root?.submitted) {
+        this.setCustomValidity(this.t(this.errorMessage('invalidRowsError')), dirty);
+        // Delete this class, because otherwise all the components inside EditGrid will has red border even if they are valid
+        this.removeClass(this.element, 'has-error');
+      }
+      return;
+    }
+    else if (rowsEditing && this.saveEditMode) {
+      this.setCustomValidity(this.t(this.errorMessage('unsavedRowsError')), dirty);
+    }
+    const message = this.invalid || this.invalidMessage(this.rootValue, dirty);
+    if (this.errors?.length !== errorsLength && this.root?.submitted && !message) {
+      this.setCustomValidity(message, dirty);
+      this.root.showErrors();
+    }
+    else {
+      this.setCustomValidity(message, dirty);
+    }
+    return messages.length === 0;
   }
 
   checkComponentValidity(data, dirty, row, options = {}) {

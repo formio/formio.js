@@ -4,7 +4,7 @@ import NativePromise from 'native-promise-only';
 import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import { processOne } from '@formio/core';
+import { processOneSync } from '@formio/core';
 
 import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
@@ -3239,59 +3239,7 @@ export default class Component extends Element {
       });
     }
 
-    if (this.options.inEditGrid) {
-      // TODO: The case covered here is nested forms within Edit Grids; the idea is that since we're eliminating
-      // Edit Grid-specific checkComponentValidity, that logic needs to be handled at the component level, and
-      // nested forms within Edit Grids need to traverse upwards to find the parent Edit Grid
-      let parentEditGrid = this;
-      while (parentEditGrid.parent && parentEditGrid.component.type !== 'editgrid') {
-        parentEditGrid = parentEditGrid.parent;
-      }
-      if (parentEditGrid.component.type === 'editgrid') {
-        let rowsValid = true;
-        let rowsEditing = false;
-
-        const rowRefs = parentEditGrid.rowRefs || [];
-        rowRefs.forEach((ref, index) => {
-          const editRow = parentEditGrid.editRows[index];
-          const invalidRow = messages.some((message) => message.context?.index === index || message.context?.component?.id === this.id);
-          const errorContainer = ref.querySelector('.editgrid-row-error');
-
-          const shouldValidateDraft = () => {
-            return (editRow.state === 'draft' &&
-              !this.pristine &&
-              !this.root?.pristine &&
-              !parentEditGrid.hasOpenRows()) ||
-              this.root?.submitted;
-          };
-          if (invalidRow && errorContainer && (!parentEditGrid.component.rowDrafts || shouldValidateDraft())) {
-            rowsValid = false;
-            this.addClass(errorContainer,  'help-block' );
-            errorContainer.textContent = this.t(this.errorMessage('invalidRowError'));
-          }
-          else if (errorContainer) {
-            errorContainer.textContent = '';
-          }
-
-          // If this is a dirty check, and any rows are still editing, we need to throw validation error.
-          rowsEditing |= (dirty && parentEditGrid.isOpen(editRow));
-          if (parentEditGrid.rowDrafts || this.root?.submitted) {
-            parentEditGrid.showRowErrorAlerts(editRow, !invalidRow);
-          }
-        });
-
-        if (!rowsValid) {
-          if (!parentEditGrid.component.rowDrafts || this.root?.submitted) {
-            parentEditGrid.setCustomValidity(this.t(this.errorMessage('invalidRowsError')), dirty);
-            // Delete this class, because otherwise all the components inside EditGrid will has red border even if they are valid
-            parentEditGrid.removeClass(this.element, 'has-error');
-          }
-        }
-        else if (rowsEditing && parentEditGrid.saveEditMode) {
-          parentEditGrid.setCustomValidity(this.t(parentEditGrid.errorMessage('unsavedRowsError')), dirty);
-        }
-      }
-    }
+   
     if (messages.length) {
       if (this.refs.messageContainer) {
         this.empty(this.refs.messageContainer);
