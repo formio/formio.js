@@ -10,26 +10,6 @@ jobs:
   test:
     if: true
     runs-on: ubuntu-latest
-    services:
-      mongodb:
-        image: mongo:4.4
-        ports:
-          - 27017:27017
-    env:
-      ENABLE_ARTIFACTS: false
-      NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-      NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
-      NPM_PASSWORD: ${{ secrets.NPM_PASSWORD }}
-      LICENSE_KEY: ${{ secrets.LICENSE_KEY }}
-      TEST_SUITE: 1
-      PDF_SERVER: http://localhost:4005
-      PROJECT_PLAN: trial
-      ADMIN_KEY: thisIsMyXAdminKey
-      FILTER_ACCESS: false
-      FORMIO_PDF_APIKEY: ${{ secrets.FORMIO_PDF_APIKEY }}
-      LICENSE_REMOTE: true
-      DROPBOX_CLIENTID: client123
-      DROPBOX_CLIENTSECRET: clientsecret123
     strategy:
       matrix:
         node-version: [18.x]
@@ -37,11 +17,6 @@ jobs:
       - run: echo "Triggered by ${{ github.event_name }} event."
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
         uses: actions/checkout@v3
-
-      - name: Set up SSH key
-        uses: webfactory/ssh-agent@v0.7.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -53,8 +28,6 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: install --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.PKG_TOKEN }}
 
       - name: Lint
         uses: borales/actions-yarn@v4
