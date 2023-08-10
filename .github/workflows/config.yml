@@ -1,26 +1,38 @@
-name: Build & Test
+name: Checkout -> Build && Test
 
 on: push
 
+env:
+  NODE_VERSION: 18.x
+
 jobs:
   checkout:
-    if: true
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
     steps:
       - run: echo "Triggered by ${{ github.event_name }} event."
+
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
         uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+      
+      - name: Cache node modules
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
       - name: Installing dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: borales/actions-yarn@v4
         with:
           cmd: install --frozen-lockfile
@@ -29,64 +41,39 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: lint
-      
-      - name: Archive build workspace
-        run: |
-          STAGING_DIR="${{ runner.temp }}/project"
-          mkdir "$STAGING_DIR"
-          cp -a "${{ github.workspace }}"/. "$STAGING_DIR"/
-          tar -czf workspace.tar.gz -C "$STAGING_DIR" .
-      
-      - name: Upload workspace
-        uses: actions/upload-artifact@v3
-        with:
-          name: workspace
-          path: workspace.tar.gz
-  ###########################################################################
-  ## Build Job
-  ###########################################################################
+
   build:
-    if: true
     needs: ['checkout']
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
     steps:
-      - name: Download build workspace
-        uses: actions/download-artifact@v2
-        with:
-          name: workspace
+      - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
+        uses: actions/checkout@v3
 
-      - name: Extract workspace
-        run: tar -xzf workspace.tar.gz -C ${{ github.workspace }}
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
       - name: Build
         uses: borales/actions-yarn@v4
         with:
           cmd: build
 
-  ###########################################################################
-  ## Build Job
-  ###########################################################################
   test:
-    if: true
     needs: ['checkout']
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
     steps:
-      - name: Download build workspace
-        uses: actions/download-artifact@v2
-        with:
-          name: workspace
+      - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
+        uses: actions/checkout@v3
 
-      - name: Extract workspace
-        run: tar -xzf workspace.tar.gz -C ${{ github.workspace }}
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
       - name: Test
         uses: borales/actions-yarn@v4
         with:
           cmd: test
-        
