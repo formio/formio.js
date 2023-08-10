@@ -1257,6 +1257,8 @@ export default class EditGridComponent extends NestedArrayComponent {
     rowRefs.forEach((ref, index) => {
       const editRow = this.editRows[index];
       if (editRow) {
+        // TODO: double validating here is a workaround for a particular corner case with nested forms as edit grid
+        // components and row drafts
         const rowIsInvalid = !this.validateRow(editRow, true);
         const errorContainer = ref.querySelector('.editgrid-row-error');
 
