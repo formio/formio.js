@@ -51,7 +51,7 @@
     "invalidate": "VERSION=$(yarn version);aws cloudfront create-invalidation --distribution-id E1MXNA5A4ZKRMZ --paths \"/$VERSION/*\"",
     "release": "yarn build-app && yarn deploy-s3",
     "tag": "VERSION=$(yarn version);git add -A; git commit -m \"Build $Version\";git push origin master;git tag v$VERSION;git push origin --tags;",
-    "dopublish": "npm test;gulp build;yarn tag;npm publish lib --tag=rc;",
+    "dopublish": "npm run build && npm run tag && npm publish",
     "lint": "gulp eslint",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "mocha 'src/**/*.unit.js'",
