@@ -364,13 +364,13 @@ describe('SelectBoxes Component', () => {
 
   it('Should perform OnlyAvailableItems check properly', (done) => {
     Harness.testCreate(SelectBoxesComponent, comp7).then(component => {
-      assert.equal(comp7.validateValueAvailability(true, { a: true }), true, 'Should be valid');
-      assert.equal(comp7.validateValueAvailability(true, { a: false, b: false, c: false }), true, 'Should be valid');
-      assert.equal(comp7.validateValueAvailability(true, { a: false, newKey: false }), false, 'Should not be valid');
-      assert.equal(comp7.validateValueAvailability(true, { newKey: false }), false, 'Should not be valid');
-      assert.equal(comp7.validateValueAvailability(true, {}), false, 'Should be valid');
-      assert.equal(comp7.validateValueAvailability(false, {}), false, 'Should be valid');
+      assert.equal(component.validateValueAvailability(true, { a: true }), true, 'Should be valid');
+      assert.equal(component.validateValueAvailability(true, { a: false, b: false, c: false }), true, 'Should be valid');
+      assert.equal(component.validateValueAvailability(true, { a: false, newKey: false }), false, 'Should not be valid');
+      assert.equal(component.validateValueAvailability(true, { newKey: false }), false, 'Should not be valid');
+      assert.equal(component.validateValueAvailability(true, {}), true, 'Should be valid');
+      assert.equal(component.validateValueAvailability(false, {}), true, 'Should be valid');
       done();
-    });
+    }).catch(done);
   });
 });
