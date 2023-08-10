@@ -1,4 +1,4 @@
-name: Checkout -> Build && Test
+name: Build & Test
 
 on: push
 
@@ -8,8 +8,6 @@ env:
 jobs:
   checkout:
     runs-on: ubuntu-latest
-    outputs:
-      cache-hit: ${{ steps.cache.outputs.cache-hit }}
     steps:
       - run: echo "Triggered by ${{ github.event_name }} event."
 
@@ -24,13 +22,12 @@ jobs:
       
       - name: Cache node modules
         uses: actions/cache@v2
-        id: cache
         with:
-          path: ~/.cache/yarn
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-
+            ${{ runner.os }}-node-
+            
       - name: Installing dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         uses: borales/actions-yarn@v4
@@ -42,18 +39,26 @@ jobs:
         with:
           cmd: lint
 
+      - name: Archive workspace
+        run: tar -czf workspace.tar.gz .
+      
+      - name: Upload workspace
+        uses: actions/upload-artifact@v3
+        with:
+          name: workspace
+          path: workspace.tar.gz
+
   build:
     needs: ['checkout']
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
+      - name: Download workspace
+        uses: actions/download-artifact@v3
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          name: workspace
+
+      - name: Extract workspace
+        run: tar -xzf workspace.tar.gz -C ${{ github.workspace }}
 
       - name: Build
         uses: borales/actions-yarn@v4
@@ -64,14 +69,13 @@ jobs:
     needs: ['checkout']
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
+      - name: Download workspace
+        uses: actions/download-artifact@v3
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          name: workspace
+
+      - name: Extract workspace
+        run: tar -xzf workspace.tar.gz -C ${{ github.workspace }}
 
       - name: Test
         uses: borales/actions-yarn@v4
