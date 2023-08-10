@@ -1364,6 +1364,8 @@ body.formio-dialog-open {
 
 .formio-component-datagrid {
   overflow-x: auto;
+  overflow-y: visible;
+  height: auto;
 }
 .formio-component-datagrid .datagrid-table, .formio-component-datagrid .datagrid-table td, .formio-component-datagrid .datagrid-table th {
   border: 3px solid #ddd !important;
