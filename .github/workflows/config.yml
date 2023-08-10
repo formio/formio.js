@@ -21,7 +21,7 @@ jobs:
           cache: 'npm'
       
       - name: Cache node modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
@@ -39,8 +39,12 @@ jobs:
         with:
           cmd: lint
 
-      - name: Archive workspace
-        run: tar -czf workspace.tar.gz .
+      - name: Archive build workspace
+        run: |
+          STAGING_DIR="${{ runner.temp }}/project"
+          mkdir "$STAGING_DIR"
+          cp -a "${{ github.workspace }}"/. "$STAGING_DIR"/
+          tar -czf workspace.tar.gz -C "$STAGING_DIR" .
       
       - name: Upload workspace
         uses: actions/upload-artifact@v3
