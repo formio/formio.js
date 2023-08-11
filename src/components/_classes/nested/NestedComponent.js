@@ -602,13 +602,13 @@ export default class NestedComponent extends Field {
     }, super.updateValue(value, flags));
   }
 
-  shouldSkipValidation(data, dirty, row) {
+  shouldSkipValidation(data, row) {
     // Nested components with no input should not be validated.
     if (!this.component.input) {
       return true;
     }
     else {
-      return super.shouldSkipValidation(data, dirty, row);
+      return super.shouldSkipValidation(data, row);
     }
   }
 

@@ -3046,7 +3046,7 @@ export default class Component extends Element {
     row = row || this.data;
     const { async = false, silentCheck = false } = options;
 
-    if (this.shouldSkipValidation(data, dirty, row)) {
+    if (this.shouldSkipValidation(data, row)) {
       this.setCustomValidity('');
       return async ? Promise.resolve(true) : true;
     }

@@ -243,7 +243,7 @@ export default class SelectBoxesComponent extends RadioComponent {
   checkComponentValidity(data, dirty, rowData, options) {
     const minCount = this.component.validate.minSelectedCount;
     const maxCount = this.component.validate.maxSelectedCount;
-    if (!this.shouldSkipValidation(data, dirty, rowData)) {
+    if (!this.shouldSkipValidation(data, rowData)) {
       const isValid = this.isValid(data, dirty);
       if ((maxCount || minCount)) {
         const count = Object.keys(this.validationValue).reduce((total, key) => {
