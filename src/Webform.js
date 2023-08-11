@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import moment from 'moment';
-import NativePromise from 'native-promise-only';
 import { processSync } from '@formio/core';
 import { compareVersions } from 'compare-versions';
 
