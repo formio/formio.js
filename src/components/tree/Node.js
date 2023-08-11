@@ -12,7 +12,8 @@ export default class Node {
       createComponents,
       isNew = true,
       removeComponents,
-      parentPath = ''
+      parentPath = '',
+      parentComponent = {}
     } = {},
   ) {
     this.parent = parent;
@@ -28,6 +29,7 @@ export default class Node {
     this.components = [];
     this.children = [];
     this.parentPath = parentPath;
+    this.parentComponent = parentComponent;
 
     this.resetData();
     this.children = children.map((child, index) => new Node(this, child, {
@@ -36,6 +38,7 @@ export default class Node {
       isNew: false,
       removeComponents,
       parentPath: this.getChildrenPath(index),
+      parentComponent: this.parentComponent,
     }));
 }
 
@@ -85,13 +88,8 @@ export default class Node {
     );
   }
 
-  validateNode() {
-    let valid = true;
-    this.getComponents().forEach(comp => {
-      comp.setPristine(false);
-      valid &= comp.checkValidity(null, false, this.persistentData);
-    });
-    return valid;
+  validateNode(dirty, silentCheck) {
+    return this.parentComponent.validateNode(this, dirty, silentCheck);
   }
 
   addChild() {
@@ -105,6 +103,7 @@ export default class Node {
       isNew: true,
       removeComponents: this.removeComponents,
       parentPath: this.getChildrenPath(this.children.length),
+      parentComponent: this.parentComponent,
     });
     this.children = this.children.concat(child);
     return child;
@@ -128,7 +127,7 @@ export default class Node {
   }
 
   save() {
-    const isValid = this.validateNode();
+    const isValid = this.validateNode(true);
     if (this.changing && isValid) {
       if (this.new) {
         this.new = false;

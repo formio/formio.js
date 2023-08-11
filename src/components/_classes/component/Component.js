@@ -4,11 +4,10 @@ import NativePromise from 'native-promise-only';
 import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import { processOneSync } from '@formio/core';
+import { processOne, processOneSync } from '@formio/core';
 
 import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
-import Validator from '../../../validator/Validator';
 import {
   fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent, currentTimezone
 } from '../../../utils/utils';
@@ -196,16 +195,6 @@ export default class Component extends Element {
   }
 
   /**
-   * Return the validator as part of the component.
-   *
-   * @return {ValidationChecker}
-   * @constructor
-   */
-  static get Validator() {
-    return Validator;
-  }
-
-  /**
    * Provides a table view for this component. Override if you wish to do something different than using getView
    * method of your instance.
    *
@@ -256,11 +245,6 @@ export default class Component extends Element {
     ) {
       _.merge(component, this.options.components[component.type]);
     }
-
-    /**
-     * Set the validator instance.
-     */
-    this.validator = Validator;
 
     /**
      * The data path to this specific component instance.
@@ -2983,7 +2967,20 @@ export default class Component extends Element {
       return '';
     }
 
-    return _.map(Validator.checkComponent(this, data), 'message').join('\n\n');
+    const errors = processOneSync({
+      component: this.component,
+      data,
+      row,
+      path: this.path || this.component.key,
+      instance: this
+    });
+    const interpolatedErrors = errors.map((error) => {
+      const { errorKeyOrMessage, context } = error;
+      const toInterpolate = this.component.errors && this.component.errors[errorKeyOrMessage] ? this.component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+      return { ...error, message: FormioUtils.unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
+    });
+
+    return _.map(interpolatedErrors, 'message').join('\n\n');
   }
 
   /**
@@ -3027,15 +3024,34 @@ export default class Component extends Element {
       return async ? NativePromise.resolve(true) : true;
     }
 
-    const check = Validator.checkComponent(this, data, row, true, async);
-    let validations = check;
+    const processContext = {
+      component: this.component,
+      data,
+      row,
+      path: this.path || this.component.key,
+      instance: this
+    };
 
-    if (this.serverErrors?.length) {
-      validations = check.concat(this.serverErrors);
+    if (async) {
+      return processOne(processContext).then((errors) => {
+        const interpolatedErrors = errors.map((error) => {
+          const { errorKeyOrMessage, context } = error;
+          const toInterpolate = this.component.errors && this.component.errors[errorKeyOrMessage] ? this.component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+          return { ...error, message: FormioUtils.unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
+        });
+        const allErrors = this.serverErrors?.length ? [...interpolatedErrors, ...this.serverErrors] : interpolatedErrors;
+        return this.setComponentValidity(allErrors, dirty, silentCheck);
+      });
     }
-    return async ?
-    validations.then((messages) => this.setComponentValidity(messages, dirty, silentCheck)) :
-      this.setComponentValidity(validations, dirty, silentCheck);
+
+    const errors = processOneSync(processContext);
+    const interpolatedErrors = errors.map((error) => {
+      const { errorKeyOrMessage, context } = error;
+      const toInterpolate = this.component.errors && this.component.errors[errorKeyOrMessage] ? this.component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+      return { ...error, message: FormioUtils.unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
+    });
+    const allErrors = this.serverErrors?.length ? [...interpolatedErrors, ...this.serverErrors] : interpolatedErrors;
+    return this.setComponentValidity(allErrors, dirty, silentCheck);
   }
 
   checkValidity(data, dirty, row, silentCheck) {
@@ -3081,34 +3097,6 @@ export default class Component extends Element {
     if (this.id !== flags.triggeredComponentId) {
       this.calculateComponentValue(data, flags, row);
     }
-
-    // TODO: reintegrate this weird change into validation
-    // if (flags.noValidate && !flags.validateOnInit && !flags.fromIframe) {
-    //   if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
-    //     this.checkComponentValidity(data, !!this.options.alwaysDirty, row, true);
-    //   }
-    //   return true;
-    // }
-
-    // let isDirty = false;
-
-    // // We need to set dirty if they explicitly set noValidate to false.
-    // if (this.options.alwaysDirty || flags.dirty) {
-    //   isDirty = true;
-    // }
-
-    // // See if they explicitely set the values with setSubmission.
-    // if (flags.fromSubmission && this.hasValue(data)) {
-    //   isDirty = true;
-    // }
-
-    // this.setDirty(isDirty);
-
-    // if (this.component.validateOn === 'blur' && flags.fromSubmission) {
-    //   return true;
-    // }
-
-    // return true;
   }
 
   checkModal(isValid = true, dirty = false) {

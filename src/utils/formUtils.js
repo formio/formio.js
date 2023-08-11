@@ -12,6 +12,7 @@ import chunk from 'lodash/chunk';
 import pad from 'lodash/pad';
 import { compare, applyPatch } from 'fast-json-patch';
 import _ from 'lodash';
+import { fastCloneDeep } from './utils';
 
 /**
  * Determine if a component is a layout component or not.
@@ -617,4 +618,17 @@ export function getStrings(form) {
   }, true);
 
   return strings;
+}
+
+/**
+ * Extract a components JSON schema array from an array of component instances
+ * @param {Object[]} components
+ */
+export function getComponentsSchema(components) {
+  return components.map((comp) => {
+    if (comp.component.type === 'form' && (!comp.component.components || comp.component.components.length === 0)) {
+      comp.component.components = getComponentsSchema(comp.subForm.components);
+    }
+    return comp.component;
+  });
 }

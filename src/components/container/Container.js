@@ -61,9 +61,8 @@ export default class ContainerComponent extends NestedDataComponent {
     row = row || this.data;
     components = components && _.isArray(components) ? components : this.getComponents();
 
-    return components.reduce((valid, comp) => {
-      return comp.checkData(data, flags, this.dataValue) && valid;
-    }, Component.prototype.checkData.call(this, data, flags, row));
+    Component.prototype.checkData.call(this, data, flags, row);
+    components.forEach((comp) => comp.checkData(data, flags, this.dataValue));
   }
 
   checkChildComponentsValidity(data, dirty, row, silentCheck, isParentValid) {

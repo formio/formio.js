@@ -987,7 +987,7 @@ export default class Webform extends NestedDataComponent {
       this.submit(false, options).catch(e => e !== false && e !== undefined && console.log(e));
     }, true);
 
-    this.on('checkValidity', (data) => this.checkValidity(data, true, data), true);
+    this.on('checkValidity', (data) => this.validate(this.component.components, data, { dirty: true }), true);
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
     this.on('resetForm', () => this.resetValue(), true);
     this.on('deleteSubmission', () => this.deleteSubmission(), true);
@@ -1413,14 +1413,14 @@ export default class Webform extends NestedDataComponent {
     this.checkData(value.data, flags);
     if (flags.noValidate && !flags.validateOnInit && !flags.fromIFrame) {
       if (flags.fromSubmission && this.rootPristine && this.pristine && this.error && flags.changed) {
-        this.validateOnChange(value.data, !!this.options.alwaysDirty, flags);
+        this.validate(value.data, !!this.options.alwaysDirty, flags);
       }
       value.isValid = true;
     }
     else {
       // TODO: Wizards store their components' JSON in `originalComponents` but there should be a better way
-      const components = this.originalComponents || this.component.components;
-      value.isValid = this.validateOnChange(components, value.data, flags);
+      const components = this.component.components;
+      value.isValid = this.validate(components, value.data, flags);
     }
 
     this.loading = false;
@@ -1445,7 +1445,7 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
-  validateOnChange(components, data, flags) {
+  validate(components, data, flags = {}) {
     const errors = processSync({
       process: 'change',
       components,

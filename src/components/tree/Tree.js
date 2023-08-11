@@ -1,8 +1,11 @@
 import _ from 'lodash';
+import NativePromise from 'native-promise-only';
+import { processSync } from '@formio/core';
+
 import Component from '../_classes/component/Component';
 import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
 import Node from './Node';
-import NativePromise from 'native-promise-only';
+import { eachComponent, unescapeHTML } from '../../utils/utils';
 
 export default class TreeComponent extends NestedDataComponent {
   static schema(...extend) {
@@ -86,8 +89,16 @@ export default class TreeComponent extends NestedDataComponent {
   createComponents(data, node) {
     const components = this.componentComponents.map(
       (component) => {
-        // const componentInstance = Components.create(component, this.componentOptions, data);
-        const componentInstance = this.createComponent(component, this.componentOptions, data);
+        // TODO: We're able to close over `node` here to track each component's parent node and effect
+        // onChange validation;
+        const options = {
+          ...this.componentOptions,
+          onChange: (flags = {}, changed, modified) => {
+            const { silentCheck, dirty } = flags;
+            this.validateNode(node, dirty, silentCheck);
+          }
+        };
+        const componentInstance = this.createComponent(component, options, data);
         componentInstance.init();
         componentInstance.parentDisabled = this.disabled;
         return componentInstance;
@@ -111,6 +122,15 @@ export default class TreeComponent extends NestedDataComponent {
     }
 
     return super.render(this.renderTree(this.treeRoot));
+  }
+
+  beforeSubmit() {
+    return new Promise((resolve, reject) => {
+      if (this.validateNodes(this.treeRoot, { dirty: true })) {
+        return resolve();
+      }
+      reject();
+    });
   }
 
   renderTree(node = {}, odd = true) {
@@ -438,6 +458,7 @@ export default class TreeComponent extends NestedDataComponent {
       checkNode: this.checkNode.bind(this, this.data),
       removeComponents: this.removeComponents,
       parentPath: this.isDefaultValueComponent ? (this.path || this.component.key) : null,
+      parentComponent: this
     });
     this.hook('tree.setRoot', {
       root: this.treeRoot,
@@ -456,13 +477,48 @@ export default class TreeComponent extends NestedDataComponent {
   }
 
   checkData(data, flags, row) {
-    return this.checkNode(data, this.treeRoot, flags, row);
+    this.checkNode(data, this.treeRoot, flags, row);
   }
 
   checkNode(data, node, flags, row) {
+    super.checkData(data, flags, node.data, node.components);
+    node.children.forEach((child) => this.checkNode(data, child, flags, row));
+  }
+
+  validateNode(node, dirty, silentCheck) {
+    const components = node.getComponents().map((comp) => comp.component);
+    const data = node.data;
+    const instances = {};
+    eachComponent(components, (_, path) => {
+      instances[path] = this.childComponentsMap[`${this.path}.${path}`];
+    });
+    const errors = processSync({
+      components,
+      data,
+      instances,
+      after: [
+        ({ component, path, errors }) => {
+          const interpolatedErrors = errors.map((error) => {
+            const { errorKeyOrMessage, context } = error;
+            const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+            return { ...error, message: unescapeHTML(this.t(toInterpolate, context)), context: { ...context } };
+          });
+          const updatedPath = `${this.path}.${path}`;
+          const componentInstance = this.childComponentsMap[updatedPath] || this.root?.childComponentsMap[updatedPath];
+          componentInstance?.setComponentValidity(interpolatedErrors, dirty, silentCheck);
+          return [];
+        }
+      ],
+    });
+    return errors.length === 0;
+  }
+
+  validateNodes(node, flags) {
+    const { dirty, silentCheck } = flags;
+    const isValid = this.validateNode(node, false);
     return node.children.reduce(
-      (result, child) => this.checkNode(data, child, flags, row) && result,
-      super.checkData(data, flags, node.data, node.components) && !node.editing && !node.new,
+      (result, child) => this.validateNode(child, dirty, silentCheck) && result,
+      isValid && !node.editing && !node.new,
     );
   }
 

@@ -3,6 +3,7 @@ export default {
   invalidRowsError: 'Please correct invalid rows before proceeding.',
   invalidRowError: 'Invalid row. Please correct it or delete.',
   invalidOption: '{{field}} is an invalid value.',
+  invalidDay: '{{field}} is not a valid day.',
   alertMessageWithLabel: '{{label}}: {{message}}',
   alertMessage: '{{message}}',
   complete: 'Submission Complete',

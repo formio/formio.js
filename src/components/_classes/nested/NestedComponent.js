@@ -621,12 +621,9 @@ export default class NestedComponent extends Field {
     flags = flags || {};
     row = row || this.data;
     components = components && _.isArray(components) ? components : this.getComponents();
-    const isValid = components.reduce((valid, comp) => {
-      return comp.checkData(data, flags, row) && valid;
-    }, super.checkData(data, flags, row));
-
-    this.checkModal(isValid, this.isDirty);
-    return isValid;
+    super.checkData(data, flags, row);
+    components.forEach((comp) => comp.checkData(data, flags, row));
+    this.checkModal();
   }
 
   checkConditions(data, flags, row) {

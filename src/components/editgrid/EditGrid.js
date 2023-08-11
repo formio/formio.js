@@ -11,7 +11,8 @@ import {
   Evaluator,
   getArrayFromComponentPath,
   eachComponent,
-  unescapeHTML
+  unescapeHTML,
+  getComponentsSchema
 } from '../../utils/utils';
 
 const EditRowState = {
@@ -1081,7 +1082,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
-      options.inEditGrid = true;
       options.onChange = (flags = {}, changed, modified) => {
         if (changed.instance.root?.id && (this.root?.id !== changed.instance.root.id)) {
           changed.instance.root.triggerChange(flags, changed, modified);
@@ -1118,8 +1118,6 @@ export default class EditGridComponent extends NestedArrayComponent {
         recreatePartially && currentRowComponents ? currentRowComponents[colIndex] : null
       );
       comp.rowIndex = rowIndex;
-      // TODO: this probably should have been an option, and could be refactored to just be a component option rather
-      // than a stateful value on the component instance itself
       comp.inEditGrid = true;
       return comp;
     });
@@ -1160,17 +1158,9 @@ export default class EditGridComponent extends NestedArrayComponent {
       const silentCheck = (this.component.rowDrafts && !this.shouldValidateDraft(editRow)) || forceSilentCheck;
       // TODO: since our new validation system requires component JSON, we'll have to iterate over the editRow's components
       // until we can figure out a better way to "integrate" Edit Grids into a cohesive validation scheme
-      const components = editRow.components.map((comp) => {
-        // TODO: we check for nested forms here in the case that the edit grid has nested forms, which often don't
-        // contain component JSON in their definition; this raises the spectre of nested forms more than one layer
-        // deep being incompatible
-        if (comp.component.type === 'form' && (!comp.component.components || comp.component.components?.length === 0)) {
-          comp.component.components = fastCloneDeep(comp.subForm.component.components);
-        }
-        return comp.component;
-      });
+      const components = getComponentsSchema(editRow.components);
       const instances = {};
-      eachComponent(components, (comp, path) => {
+      eachComponent(components, (_, path) => {
         instances[path] = this.childComponentsMap[`${this.path}[${editRow.rowIndex}].${path}`];
       });
       const errors = processSync({
@@ -1248,6 +1238,20 @@ export default class EditGridComponent extends NestedArrayComponent {
     return this.checkComponentValidity(data, dirty, row, { silentCheck });
   }
 
+  beforeSubmit() {
+    return new Promise((resolve, reject) => {
+      const result = this.editRows.reduce((acc, row) => {
+        const isValid = this.validateRow(row, true);
+        const rowIsSaved = !this.isOpen(row);
+        return isValid && rowIsSaved && acc;
+      }, true);
+      if (result) {
+        return resolve(true);
+      }
+      reject();
+    });
+  }
+
   setComponentValidity(messages, dirty) {
     const errorsLength = this.errors.length;
     let rowsValid = true;
@@ -1259,13 +1263,13 @@ export default class EditGridComponent extends NestedArrayComponent {
       if (editRow) {
         // TODO: double validating here is a workaround for a particular corner case with nested forms as edit grid
         // components and row drafts
-        const rowIsInvalid = !this.validateRow(editRow, true);
+        const rowIsInvalid = !this.validateRow(editRow, dirty);
         const errorContainer = ref.querySelector('.editgrid-row-error');
 
-        if (rowIsInvalid && errorContainer && (!this.component.rowDrafts || this.shouldValidateDraft(editRow))) {
+        if (rowIsInvalid && errorContainer && dirty && (!this.component.rowDrafts || this.shouldValidateDraft(editRow))) {
           rowsValid = false;
           this.addClass(errorContainer,  'help-block' );
-          errorContainer.textContent = this.t(this.errorMessage('invalidRowError'));
+          errorContainer.textContent = this.t(this.errorMessage(editRow.error || 'invalidRowError'));
         }
         else if (errorContainer) {
           errorContainer.textContent = '';
@@ -1280,7 +1284,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
 
     if (!rowsValid) {
-      if (!this.component.rowDrafts || this.root?.submitted) {
+      if ((!this.component.rowDrafts && dirty) || this.root?.submitted) {
         this.setCustomValidity(this.t(this.errorMessage('invalidRowsError')), dirty);
         // Delete this class, because otherwise all the components inside EditGrid will has red border even if they are valid
         this.removeClass(this.element, 'has-error');
@@ -1289,8 +1293,9 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
     else if (rowsEditing && this.saveEditMode) {
       this.setCustomValidity(this.t(this.errorMessage('unsavedRowsError')), dirty);
+      return;
     }
-    const message = this.invalid || this.invalidMessage(this.rootValue, dirty);
+    const message = this.invalid || this.invalidMessage(this.data, dirty);
     if (this.errors?.length !== errorsLength && this.root?.submitted && !message) {
       this.setCustomValidity(message, dirty);
       this.root.showErrors();
