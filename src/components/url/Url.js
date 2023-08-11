@@ -23,7 +23,6 @@ export default class UrlComponent extends TextFieldComponent {
 
   constructor(component, options, data) {
     super(component, options, data);
-    this.validators.push('url');
   }
 
   get defaultSchema() {

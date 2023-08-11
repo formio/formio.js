@@ -60,7 +60,6 @@ export default class SelectComponent extends ListComponent {
   init() {
     super.init();
     this.templateData = {};
-    this.validators = this.validators.concat(['select', 'onlyAvailableItems']);
 
     // Trigger an update.
     let updateArgs = [];

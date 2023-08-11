@@ -109,9 +109,6 @@ export default class DateTimeComponent extends Input {
       ...customOptions,
     };
     /* eslint-enable camelcase */
-
-    // Add the validators date.
-    this.validators.push('date');
   }
 
   get defaultSchema() {

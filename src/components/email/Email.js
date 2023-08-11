@@ -26,7 +26,6 @@ export default class EmailComponent extends TextFieldComponent {
 
   init() {
     super.init();
-    this.validators.push('email');
   }
 
   get defaultSchema() {

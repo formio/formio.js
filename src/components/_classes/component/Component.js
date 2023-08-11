@@ -339,12 +339,6 @@ export default class Component extends Element {
 
     this.options.name = this.options.name || 'data';
 
-    /**
-     * The validators that are assigned to this component.
-     * @type {[string]}
-     */
-    this.validators = ['required', 'minLength', 'maxLength', 'minWords', 'maxWords', 'custom', 'pattern', 'json', 'mask'];
-
     this._path = '';
     // Nested forms don't have parents so we need to pass their path in.
     this._parentPath = this.options.parentPath || '';

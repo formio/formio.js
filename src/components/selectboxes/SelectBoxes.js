@@ -24,7 +24,6 @@ export default class SelectBoxesComponent extends RadioComponent {
 
   constructor(...args) {
     super(...args);
-    this.validators = this.validators.concat('minSelectedCount', 'maxSelectedCount', 'availableValueProperty');
   }
 
   init() {
