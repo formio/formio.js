@@ -2,7 +2,6 @@
 import _ from 'lodash';
 import Field from '../field/Field';
 import Components from '../../Components';
-import NativePromise from 'native-promise-only';
 import { getArrayFromComponentPath, getStringFromComponentPath, getRandomComponentId } from '../../../utils/utils';
 
 export default class NestedComponent extends Field {
@@ -113,7 +112,7 @@ export default class NestedComponent extends Field {
   }
 
   get ready() {
-    return NativePromise.all(this.getComponents().map(component => component.ready));
+    return Promise.all(this.getComponents().map(component => component.ready));
   }
 
   get currentForm() {
@@ -472,7 +471,7 @@ export default class NestedComponent extends Field {
       [this.nestedKey]: 'single',
     });
 
-    let childPromise = NativePromise.resolve();
+    let childPromise = Promise.resolve();
     if (this.refs[this.nestedKey]) {
       childPromise = this.attachComponents(this.refs[this.nestedKey]);
     }
@@ -493,7 +492,7 @@ export default class NestedComponent extends Field {
       });
     }
 
-    return NativePromise.all([
+    return Promise.all([
       superPromise,
       childPromise,
     ]);
@@ -518,7 +517,7 @@ export default class NestedComponent extends Field {
     element = this.hook('attachComponents', element, components, container, this);
     if (!element) {
       // Return a non-resolving promise.
-      return (new NativePromise(() => {}));
+      return (new Promise(() => {}));
     }
 
     let index = 0;
@@ -529,7 +528,7 @@ export default class NestedComponent extends Field {
         index++;
       }
     });
-    return NativePromise.all(promises);
+    return Promise.all(promises);
   }
 
   /**
@@ -657,7 +656,7 @@ export default class NestedComponent extends Field {
    * @return {*}
    */
   beforePage(next) {
-    return NativePromise.all(this.getComponents().map((comp) => comp.beforePage(next)));
+    return Promise.all(this.getComponents().map((comp) => comp.beforePage(next)));
   }
 
   /**
@@ -666,7 +665,7 @@ export default class NestedComponent extends Field {
    * @return {*}
    */
   beforeSubmit() {
-    return NativePromise.allSettled(this.getComponents().map((comp) => comp.beforeSubmit()));
+    return Promise.allSettled(this.getComponents().map((comp) => comp.beforeSubmit()));
   }
 
   calculateValue(data, flags, row) {
@@ -713,7 +712,7 @@ export default class NestedComponent extends Field {
     return this.ready.then(() => {
       const promises = [super.checkAsyncValidity(data, dirty, row, silentCheck)];
       this.eachComponent((component) => promises.push(component.checkAsyncValidity(data, dirty, row, silentCheck)));
-      return NativePromise.all(promises).then((results) => results.reduce((valid, result) => (valid && result), true));
+      return Promise.all(promises).then((results) => results.reduce((valid, result) => (valid && result), true));
     });
   }
 
@@ -773,7 +772,7 @@ export default class NestedComponent extends Field {
   }
 
   get dataReady() {
-    return NativePromise.all(this.getComponents().map((component) => component.dataReady));
+    return Promise.all(this.getComponents().map((component) => component.dataReady));
   }
 
   setNestedValue(component, value, flags = {}) {

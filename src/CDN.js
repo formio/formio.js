@@ -7,6 +7,7 @@ class CDN {
     this.baseUrl = baseUrl || 'https://cdn.form.io';
     this.overrides = {};
     this.libs = {
+      'js': '',
       'ace': '1.4.12',
       'bootstrap': '4.6.2',
       'ckeditor': '19.0.0',

@@ -9,10 +9,9 @@ import {
   convertFormatToMoment, getArrayFromComponentPath, unescapeHTML
 } from '../utils/utils';
 import moment from 'moment';
-import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
 const { fetch, Headers, Request } = fetchPonyfill({
-  Promise: NativePromise
+  Promise: Promise
 });
 import {
   checkInvalidDate,
@@ -87,7 +86,7 @@ class ValidationChecker {
             return true;
           }
 
-          return new NativePromise(resolve => {
+          return new Promise(resolve => {
             const form = this.config.form;
             const submission = this.config.submission;
             const path = `data.${component.path}`;
@@ -932,7 +931,7 @@ class ValidationChecker {
     };
 
     if (async) {
-      return NativePromise.resolve(resultOrPromise).then(processResult);
+      return Promise.resolve(resultOrPromise).then(processResult);
     }
     else {
       return processResult(resultOrPromise);
@@ -977,7 +976,7 @@ class ValidationChecker {
     };
 
     if (async) {
-      return NativePromise.resolve(resultOrPromise).then(processResult);
+      return Promise.resolve(resultOrPromise).then(processResult);
     }
     else {
       return processResult(resultOrPromise);
@@ -991,7 +990,7 @@ class ValidationChecker {
 
     // If we're server-side and it's not a persistent component, don't run validation at all
     if (isServerSidePersistent || component.component.validate === false) {
-      return async ? NativePromise.resolve([]) : [];
+      return async ? Promise.resolve([]) : [];
     }
 
     data = data || component.rootValue;
@@ -1133,7 +1132,7 @@ class ValidationChecker {
     };
     // Wait for results if using async mode, otherwise process and return immediately
     if (async) {
-      return NativePromise.all(resultsOrPromises).then(formatResults);
+      return Promise.all(resultsOrPromises).then(formatResults);
     }
     else {
       return formatResults(resultsOrPromises);

@@ -6,19 +6,25 @@ const azure = (formio) => ({
       xhr.setRequestHeader('Content-Type', file.type);
       xhr.setRequestHeader('x-ms-blob-type', 'BlockBlob');
       return file;
-    }, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback).then(() => {
+    }, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback).then((response) => {
       return {
         storage: 'azure',
         name: XHR.path([dir, fileName]),
         size: file.size,
         type: file.type,
         groupPermissions,
-        groupId
+        groupId,
+        key: response.pathFile
       };
     });
   },
   downloadFile(file) {
     return formio.makeRequest('file', `${formio.formUrl}/storage/azure?name=${XHR.trim(file.name)}`, 'GET');
+  },
+
+  deleteFile: function deleteFile(fileInfo) {
+    var url = `${formio.formUrl}/storage/azure?name=${XHR.trim(fileInfo.name)}&key=${XHR.trim(fileInfo.key)}`;
+    return formio.makeRequest('', url, 'delete');
   }
 });
 

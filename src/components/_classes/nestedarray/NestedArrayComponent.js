@@ -1,6 +1,7 @@
 'use strict';
 
 import _ from 'lodash';
+import { componentValueTypes } from '../../../utils/utils';
 
 import Component from '../component/Component';
 import NestedDataComponent from '../nesteddata/NestedDataComponent';
@@ -10,6 +11,10 @@ export default class NestedArrayComponent extends NestedDataComponent {
     return NestedDataComponent.schema({
       disableAddingRemovingRows: false
     }, ...extend);
+  }
+
+  static savedValueTypes() {
+    return [componentValueTypes.array];
   }
 
   componentContext(component) {

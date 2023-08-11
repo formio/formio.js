@@ -2,7 +2,7 @@ import Component from '../_classes/component/Component';
 import DataGridComponent from '../datagrid/DataGrid';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter3';
-import { uniqueKey } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, uniqueKey } from '../../utils/utils';
 
 export default class DataMapComponent extends DataGridComponent {
   static schema(...extend) {
@@ -34,6 +34,7 @@ export default class DataMapComponent extends DataGridComponent {
       icon: 'th-list',
       group: 'data',
       documentation: '/userguide/form-building/data-components#data-map',
+      showPreview: false,
       weight: 20,
       schema: DataMapComponent.schema()
     };
@@ -45,6 +46,10 @@ export default class DataMapComponent extends DataGridComponent {
       schema.valueComponent = this.components[this.components.length - 1].schema;
     }
     return _.omit(schema, 'components');
+  }
+
+  static savedValueTypes(schema) {
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   constructor(component, options, data) {

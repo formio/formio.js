@@ -1,4 +1,3 @@
-import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 import { processSync } from '@formio/core';
 
@@ -47,7 +46,7 @@ export default class Wizard extends Webform {
     this._seenPages = [0];
     this.subWizards = [];
     this.allPages = [];
-    this.lastPromise = NativePromise.resolve();
+    this.lastPromise = Promise.resolve();
     this.enabledIndex = 0;
     this.editMode = false;
     this.originalOptions = _.cloneDeep(this.options);
@@ -651,7 +650,7 @@ export default class Wizard extends Webform {
 
   setPage(num) {
     if (num === this.page) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
 
     if (num >= 0 && num < this.pages.length) {
@@ -678,13 +677,13 @@ export default class Wizard extends Webform {
         this.checkData(this.submission.data);
         this.validateCurrentPage();
       });
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
     else if (!this.pages.length) {
       this.redraw();
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
-    return NativePromise.reject('Page not found');
+    return Promise.reject('Page not found');
   }
 
   pageFieldLogic(page) {
@@ -748,14 +747,14 @@ export default class Wizard extends Webform {
   beforeSubmit() {
     const pages = this.getPages();
 
-    return NativePromise.all(pages.map((page) => {
+    return Promise.all(pages.map((page) => {
       page.options.beforeSubmit = true;
       return page.beforeSubmit();
     }));
   }
 
   beforePage(next) {
-    return new NativePromise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.hook(next ? 'beforeNext' : 'beforePrev', this.currentPage, this.submission, (err) => {
         if (err) {
           this.showErrors(err, true);
@@ -805,7 +804,7 @@ export default class Wizard extends Webform {
     else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
       this.scrollIntoView(this.element);
-      return NativePromise.reject(this.showErrors([], true));
+      return Promise.reject(this.showErrors([], true));
     }
   }
 
@@ -828,7 +827,7 @@ export default class Wizard extends Webform {
 
   cancel(noconfirm) {
     if (this.options.readOnly) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
 
     if (super.cancel(noconfirm)) {
@@ -842,7 +841,7 @@ export default class Wizard extends Webform {
         return this.page;
       });
     }
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   getPageIndexByKey(key) {

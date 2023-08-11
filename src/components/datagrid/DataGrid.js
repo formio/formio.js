@@ -21,6 +21,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       icon: 'th',
       group: 'data',
       documentation: '/userguide/form-building/data-components#data-grid',
+      showPreview: false,
       weight: 30,
       schema: DataGridComponent.schema()
     };
@@ -616,7 +617,14 @@ export default class DataGridComponent extends NestedArrayComponent {
 
           if (col.component.logic && firstRowCheck) {
             const compIndex = _.findIndex(this.columns, ['key', key]);
-            if (!_.isEqual(this.columns[compIndex], col.component)) {
+            const equalColumns = _.isEqualWith(this.columns[compIndex], col.component, (col1, col2, key) => {
+              // Don't compare columns by their auto-generated ids.
+              if (key === 'id') {
+                return true;
+              }
+            });
+
+            if (!equalColumns) {
               logicRebuild = true;
               this.columns[compIndex] = col.component;
             }

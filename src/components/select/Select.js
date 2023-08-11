@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
+import Input from '../_classes/input/Input';
 import Form from '../../Form';
-import NativePromise from 'native-promise-only';
-import { getRandomComponentId, boolValue, isPromise } from '../../utils/utils';
+import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Choices from '../../utils/ChoicesWrapper';
 
 export default class SelectComponent extends ListComponent {
@@ -57,6 +57,43 @@ export default class SelectComponent extends ListComponent {
     };
   }
 
+  static get serverConditionSettings() {
+    return SelectComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      valueComponent(classComp) {
+        return { ... classComp, type: 'select' };
+      }
+    };
+  }
+
+  static savedValueTypes(schema) {
+    const { boolean, string, number, object, array } = componentValueTypes;
+    const { dataType, reference } = schema;
+    const types = getComponentSavedTypes(schema);
+
+    if (types) {
+      return types;
+    }
+
+    if (reference) {
+      return [object];
+    }
+
+    if (dataType === 'object') {
+      return [object, array];
+    }
+
+    if (componentValueTypes[dataType]) {
+      return [componentValueTypes[dataType]];
+    }
+
+    return [boolean, string, number, object, array];
+  }
+
   init() {
     super.init();
     this.templateData = {};
@@ -72,7 +109,7 @@ export default class SelectComponent extends ListComponent {
       if (typeof this.itemsLoadedResolve === 'function') {
         this.itemsLoadedResolve();
       }
-      this.itemsLoaded = new NativePromise((resolve) => {
+      this.itemsLoaded = new Promise((resolve) => {
         this.itemsLoadedResolve = resolve;
       });
       if (args.length) {
@@ -98,7 +135,7 @@ export default class SelectComponent extends ListComponent {
 
     // If this component has been activated.//
     this.activated = false;
-    this.itemsLoaded = new NativePromise((resolve) => {
+    this.itemsLoaded = new Promise((resolve) => {
       this.itemsLoadedResolve = resolve;
     });
 
@@ -118,7 +155,7 @@ export default class SelectComponent extends ListComponent {
       this.root.submissionSet &&
       !this.attached
     ) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
     return this.itemsLoaded;
   }
@@ -188,6 +225,17 @@ export default class SelectComponent extends ListComponent {
     return super.shouldDisabled || this.parentDisabled;
   }
 
+  get shouldInitialLoad() {
+    if (this.component.widget === 'html5' &&
+        this.isEntireObjectDisplay() &&
+        this.component.searchField &&
+        this.dataValue) {
+          return false;
+    }
+
+    return super.shouldLoad;
+  }
+
   isEntireObjectDisplay() {
     return this.component.dataSrc === 'resource' && this.valueProperty === 'data';
   }
@@ -216,7 +264,7 @@ export default class SelectComponent extends ListComponent {
       return this.sanitize(value, this.shouldSanitizeValue);
     }
 
-    if (this.component.multiple ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
+    if (this.component.multiple && _.isArray(this.dataValue) ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
       const selectData = this.selectData;
       if (selectData) {
         const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
@@ -501,52 +549,8 @@ export default class SelectComponent extends ListComponent {
     return defaultValue;
   }
 
-  getTemplateKeys() {
-    this.templateKeys = [];
-    if (this.options.readOnly && this.component.template) {
-      const keys = this.component.template.match(/({{\s*(.*?)\s*}})/g);
-      if (keys) {
-        keys.forEach((key) => {
-          const propKey = key.match(/{{\s*item\.(.*?)\s*}}/);
-          if (propKey && propKey.length > 1) {
-            this.templateKeys.push(propKey[1]);
-          }
-        });
-      }
-    }
-  }
-
   get loadingError() {
     return !this.component.refreshOn && !this.component.refreshOnBlur && this.networkError;
-  }
-
-  get selectData() {
-    const selectData = _.get(this.root, 'submission.metadata.selectData', {});
-    return _.get(selectData, this.path);
-  }
-
-  get shouldLoad() {
-    if (this.loadingError) {
-      return false;
-    }
-    // Live forms should always load.
-    if (!this.options.readOnly) {
-      return true;
-    }
-
-    // If there are template keys, then we need to see if we have the data.
-    if (this.templateKeys && this.templateKeys.length) {
-      // See if we already have the data we need.
-      const dataValue = this.dataValue;
-      const selectData = this.selectData;
-      return this.templateKeys.reduce((shouldLoad, key) => {
-        const hasValue = _.has(dataValue, key) || _.has(selectData, key);
-        return shouldLoad || !hasValue;
-      }, false);
-    }
-
-    // Return that we should load.
-    return true;
   }
 
   loadItems(url, search, headers, options, method, body) {
@@ -595,7 +599,11 @@ export default class SelectComponent extends ListComponent {
 
     // Add search capability.
     if (this.component.searchField && search) {
-      const searchValue = Array.isArray(search) ? search.join(',') : search;
+      const searchValue = Array.isArray(search)
+        ? search.join(',')
+        : typeof search === 'object'
+          ? JSON.stringify(search)
+          : search;
 
       query[this.component.searchField] = this.component.searchField.endsWith('__regex')
         ? _.escapeRegExp(searchValue)
@@ -973,7 +981,7 @@ export default class SelectComponent extends ListComponent {
         this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
       }
 
-      this.addFocusBlurEvents(this.focusableElement);
+      Input.prototype.addFocusBlurEvents.call(this, this.focusableElement);
 
       if (this.itemsFromUrl && !this.component.noRefreshOnScroll) {
         this.scrollList = this.choices.choiceList.element;
@@ -1094,7 +1102,7 @@ export default class SelectComponent extends ListComponent {
     const items = this.choices._store.activeItems;
     if (!items.length) {
       this.choices._addItem({
-        value: placeholderValue,
+        value: '',
         label: placeholderValue,
         choiceId: 0,
         groupId: -1,
@@ -1286,7 +1294,7 @@ export default class SelectComponent extends ListComponent {
         if (this.component.multiple) {
           templateData = {};
           const dataValue = this.dataValue;
-          if (dataValue && dataValue.length) {
+          if (dataValue && _.isArray(dataValue) && dataValue.length) {
             dataValue.forEach((dataValueItem) => {
               const dataValueItemValue = this.component.reference ? dataValueItem._id.toString() : dataValueItem;
               templateData[dataValueItemValue] = this.templateData[dataValueItemValue];
@@ -1431,7 +1439,7 @@ export default class SelectComponent extends ListComponent {
       !this.active &&
       !this.selectOptions.length &&
       hasValue &&
-      this.shouldLoad &&
+      this.shouldInitialLoad &&
       this.visible && (this.component.searchField || this.component.valueProperty);
   }
 
@@ -1486,7 +1494,7 @@ export default class SelectComponent extends ListComponent {
   }
 
   get itemsLoaded() {
-    return this._itemsLoaded || NativePromise.resolve();
+    return this._itemsLoaded || Promise.resolve();
   }
 
   set itemsLoaded(promise) {

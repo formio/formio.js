@@ -1,6 +1,5 @@
 /* globals Quill, ClassicEditor, CKEDITOR */
 import { conformToMask } from '@formio/vanilla-text-mask';
-import NativePromise from 'native-promise-only';
 import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
@@ -193,7 +192,33 @@ export default class Component extends Element {
       addons: [],
     }, ...sources);
   }
+  /**
+   * Return the simple condition settings as part of the component.
+   *
+   * @return {Object}
+   *
+   */
+  static get conditionOperatorsSettings() {
+    return {
+      operators: ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'],
+      valueComponent() {
+        return { type: 'textfield' };
+      }
+    };
+  }
+  /**
+   * Return the array of possible types of component value absed on its schema.
+   *
+   * @param schema
+   * @return {Array}
+   *
+   */
 
+  static savedValueTypes(schema) {
+    schema = schema || {};
+
+    return FormioUtils.getComponentSavedTypes(schema) || [FormioUtils.componentValueTypes.any];
+  }
   /**
    * Provides a table view for this component. Override if you wish to do something different than using getView
    * method of your instance.
@@ -467,7 +492,7 @@ export default class Component extends Element {
 
   // Allow componets to notify when ready.
   get ready() {
-    return NativePromise.resolve(this);
+    return Promise.resolve(this);
   }
 
   get isPDFReadOnlyMode() {
@@ -1043,7 +1068,7 @@ export default class Component extends Element {
    * @return {*}
    */
   beforePage() {
-    return NativePromise.resolve(true);
+    return Promise.resolve(true);
   }
 
   beforeNext() {
@@ -1057,7 +1082,7 @@ export default class Component extends Element {
    * @return {*}
    */
   beforeSubmit() {
-    return NativePromise.resolve(true);
+    return Promise.resolve(true);
   }
 
   /**
@@ -1240,7 +1265,7 @@ export default class Component extends Element {
 
     this.addons.forEach((addon) => addon.attach(element));
 
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   restoreFocus() {
@@ -1598,6 +1623,10 @@ export default class Component extends Element {
     return customCSS;
   }
 
+  static get serverConditionSettings() {
+    return Component.conditionOperatorsSettings;
+  }
+
   get isMobile() {
     return isMobile();
   }
@@ -1721,16 +1750,16 @@ export default class Component extends Element {
       if (this.refs.input?.length) {
         const { selection, index } = this.root.currentSelection;
         let input = this.refs.input[index];
-        const isInputRangeSelectable = /text|search|password|tel|url/i.test(input.type || '');
+        const isInputRangeSelectable = (i) => /text|search|password|tel|url/i.test(i?.type || '');
         if (input) {
-          if (isInputRangeSelectable) {
+          if (isInputRangeSelectable(input)) {
             input.setSelectionRange(...selection);
           }
         }
         else {
           input = this.refs.input[this.refs.input.length];
           const lastCharacter = input.value?.length || 0;
-          if (isInputRangeSelectable) {
+          if (isInputRangeSelectable(input)) {
             input.setSelectionRange(lastCharacter, lastCharacter);
           }
         }
@@ -1742,7 +1771,7 @@ export default class Component extends Element {
     // Don't bother if we have not built yet.
     if (!this.element || !this.element.parentNode || this.optimizeRedraw) {
       // Return a non-resolving promise.
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
     this.detach();
     this.emit('redraw');
@@ -2278,12 +2307,12 @@ export default class Component extends Element {
     ), true)
       .then(() => {
         if (!element.parentNode) {
-          return NativePromise.reject();
+          return Promise.reject();
         }
         if (isIEBrowser) {
           const editor = CKEDITOR.replace(element);
           editor.on('change', () => onChange(editor.getData()));
-          return NativePromise.resolve(editor);
+          return Promise.resolve(editor);
         }
         else {
           return ClassicEditor.create(element, settings).then(editor => {
@@ -2315,7 +2344,7 @@ export default class Component extends Element {
         return Formio.requireLibrary('quill-table', 'Quill', `${Formio.cdn.baseUrl}/quill/quill-table.js`, true)
           .then(() => {
             if (!element.parentNode) {
-              return NativePromise.reject();
+              return Promise.reject();
             }
             this.quill = new Quill(element, isIEBrowser ? { ...settings, modules: {} } : settings);
 
@@ -2829,6 +2858,10 @@ export default class Component extends Element {
     // Calculate the new value.
     let calculatedValue = this.doValueCalculation(dataValue, data, row, flags);
 
+    if (this.options.readOnly && dataValue && !calculatedValue) {
+      return false;
+    }
+
     if (_.isNil(calculatedValue)) {
       calculatedValue = this.emptyValue;
     }
@@ -3015,7 +3048,7 @@ export default class Component extends Element {
 
     if (this.shouldSkipValidation(data, dirty, row)) {
       this.setCustomValidity('');
-      return async ? NativePromise.resolve(true) : true;
+      return async ? Promise.resolve(true) : true;
     }
 
     const processContext = {
@@ -3057,7 +3090,7 @@ export default class Component extends Element {
   }
 
   checkAsyncValidity(data, dirty, row, silentCheck) {
-    return NativePromise.resolve(this.checkComponentValidity(data, dirty, row, { async: true, silentCheck }));
+    return Promise.resolve(this.checkComponentValidity(data, dirty, row, { async: true, silentCheck }));
   }
 
   /**
@@ -3307,7 +3340,7 @@ export default class Component extends Element {
   }
 
   get dataReady() {
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   /**
@@ -3578,7 +3611,7 @@ Component.externalLibraries = {};
 Component.requireLibrary = function(name, property, src, polling) {
   if (!Component.externalLibraries.hasOwnProperty(name)) {
     Component.externalLibraries[name] = {};
-    Component.externalLibraries[name].ready = new NativePromise((resolve, reject) => {
+    Component.externalLibraries[name].ready = new Promise((resolve, reject) => {
       Component.externalLibraries[name].resolve = resolve;
       Component.externalLibraries[name].reject = reject;
     });
@@ -3659,5 +3692,5 @@ Component.libraryReady = function(name) {
     return Component.externalLibraries[name].ready;
   }
 
-  return NativePromise.reject(`${name} library was not required.`);
+  return Promise.reject(`${name} library was not required.`);
 };
