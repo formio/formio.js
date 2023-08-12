@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.16.0-rc.10]
+## 4.16.0-rc.10
 ### Fixed
  - FIO-7209: Radio works without ValueProperty set
  - Revert "added submit button to the webform builder after switching from the wizard builder"
