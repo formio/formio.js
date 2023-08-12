@@ -214,7 +214,7 @@ export default class ButtonComponent extends Field {
       const isSilent = flags && flags.silent;
       //check root validity only if disableOnInvalid is set and when it is not possible to make submission because of validation errors
       if (flags && flags.noValidate && (this.component.disableOnInvalid || this.hasError)) {
-        isValid = flags.rootValidity || (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true);
+        isValid = flags.rootValidity || (this.root ? this.root.validate(this.root.component.components, this.root.data, { dirty: false, silentCheck: true }) : true);
         flags.rootValidity = isValid;
       }
       this.isDisabledOnInvalid = this.component.disableOnInvalid && (isSilent || !isValid);
