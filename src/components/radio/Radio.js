@@ -175,7 +175,12 @@ export default class RadioComponent extends ListComponent {
           dataValue = _.toString(this.dataValue);
         }
 
-        input.checked = (dataValue === input.value && (input.value || this.component.dataSrc !== 'url'));
+        if (this.isSelectURL && _.isObject(this.loadedOptions[index].value)) {
+          input.checked = _.isEqual(this.loadedOptions[index].value, this.dataValue);
+        }
+        else {
+          input.checked = (dataValue === input.value && (input.value || this.component.dataSrc !== 'url'));
+        }
         this.addEventListener(input, 'keyup', (event) => {
           if (event.key === ' ' && dataValue === input.value) {
             event.preventDefault();
@@ -208,9 +213,11 @@ export default class RadioComponent extends ListComponent {
       return this.dataValue;
     }
     let value = this.dataValue;
-    this.refs.input.forEach((input) => {
+    this.refs.input.forEach((input, index) => {
       if (input.checked) {
-        value = input.value;
+        value = (this.isSelectURL && _.isObject(this.loadedOptions[index].value)) ?
+          this.loadedOptions[index].value :
+          input.value;
       }
     });
     return value;
@@ -238,7 +245,10 @@ export default class RadioComponent extends ListComponent {
   }
 
   getValueAsString(value) {
-    if (!_.isString(value)) {
+    if (_.isObject(value)) {
+      value = JSON.stringify(value);
+    }
+    else if (!_.isString(value)) {
       value = _.toString(value);
     }
     if (this.component.dataSrc !== 'values') {
@@ -313,14 +323,15 @@ export default class RadioComponent extends ListComponent {
     const listData = [];
     items?.forEach((item, i) => {
       this.loadedOptions[i] = {
-        value: item[this.component.valueProperty],
+        value: this.component.valueProperty ? item[this.component.valueProperty] : item,
         label: this.itemTemplate(item, item[this.component.valueProperty])
       };
       listData.push(this.templateData[item[this.component.valueProperty]]);
-      if (_.isUndefined(item[this.component.valueProperty]) ||
-        _.isObject(item[this.component.valueProperty]) ||
+      if ((this.component.valueProperty || !this.isRadio) && (
+        _.isUndefined(item[this.component.valueProperty]) ||
+        (!this.isRadio && _.isObject(item[this.component.valueProperty])) ||
         (!this.isRadio && _.isBoolean(item[this.component.valueProperty]))
-        ) {
+      )) {
         this.loadedOptions[i].invalid = true;
       }
     });
