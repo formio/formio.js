@@ -221,7 +221,7 @@ export default class SelectComponent extends ListComponent {
       return this.sanitize(value, this.shouldSanitizeValue);
     }
 
-    if (this.component.multiple ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
+    if (this.component.multiple && _.isArray(this.dataValue) ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
       const selectData = this.selectData;
       if (selectData) {
         const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
@@ -453,7 +453,7 @@ export default class SelectComponent extends ListComponent {
 
     if (!searching) {
       // If a value is provided, then select it.
-      if (!this.isEmpty()) {
+      if (!this.isEmpty() || this.isRemoveButtonPressed) {
         this.setValue(this.dataValue, {
           noUpdateEvent: true
         });
@@ -983,6 +983,12 @@ export default class SelectComponent extends ListComponent {
       if (this.itemsFromUrl && !this.component.noRefreshOnScroll) {
         this.scrollList = this.choices.choiceList.element;
         this.addEventListener(this.scrollList, 'scroll', () => this.onScroll());
+      }
+
+      if (choicesOptions.removeItemButton) {
+        this.addEventListener(input, 'removeItem', () => {
+          this.isRemoveButtonPressed = true;
+        });
       }
     }
 
