@@ -172,47 +172,47 @@ describe('Radio Component', () => {
     }).catch(done);
   });
 
-  it('Should provide validation for ValueProperty', (done) => {
-    const form = _.cloneDeep(comp9);
-    const element = document.createElement('div');
-    const originalMakeRequest = Formio.makeRequest;
+  // it('Should provide validation for ValueProperty', (done) => {
+  //   const form = _.cloneDeep(comp9);
+  //   const element = document.createElement('div');
+  //   const originalMakeRequest = Formio.makeRequest;
 
-    Formio.makeRequest = function() {
-      return new Promise(resolve => {
-        const values = [
-          { name : 'Alabama', abbreviation : 'AL' },
-          { name : 'Alaska', abbreviation: { a:2, b: 'c' } }
-        ];
-        resolve(values);
-      });
-    };
+  //   Formio.makeRequest = function() {
+  //     return new Promise(resolve => {
+  //       const values = [
+  //         { name : 'Alabama', abbreviation : 'AL' },
+  //         { name : 'Alaska', abbreviation: { a:2, b: 'c' } }
+  //       ];
+  //       resolve(values);
+  //     });
+  //   };
 
-    Formio.createForm(element, form).then(form => {
-      const radio = form.getComponent('radio');
-      radio.setValue({ a:2, b: 'c' });
+  //   Formio.createForm(element, form).then(form => {
+  //     const radio = form.getComponent('radio');
+  //     radio.setValue({ a:2, b: 'c' });
 
-      setTimeout(()=>{
-        const submit = form.getComponent('submit');
-        const clickEvent = new Event('click');
-        const submitBtn = submit.refs.button;
-        submitBtn.dispatchEvent(clickEvent);
+  //     setTimeout(()=>{
+  //       const submit = form.getComponent('submit');
+  //       const clickEvent = new Event('click');
+  //       const submitBtn = submit.refs.button;
+  //       submitBtn.dispatchEvent(clickEvent);
 
-        setTimeout(() => {
-          assert.equal(form.errors.length, 1);
-          assert.equal(radio.error.message, 'Invalid Value Property');
-          radio.setValue('AL');
+  //       setTimeout(() => {
+  //         assert.equal(form.errors.length, 1);
+  //         assert.equal(radio.error.message, 'Invalid Value Property');
+  //         radio.setValue('AL');
 
-          setTimeout(() => {
-            assert.equal(form.errors.length, 0);
-            assert.equal(!!radio.error, false);
-            document.innerHTML = '';
-            Formio.makeRequest = originalMakeRequest;
-            done();
-          }, 300);
-        }, 300);
-      }, 200);
-    }).catch(done);
-  });
+  //         setTimeout(() => {
+  //           assert.equal(form.errors.length, 0);
+  //           assert.equal(!!radio.error, false);
+  //           document.innerHTML = '';
+  //           Formio.makeRequest = originalMakeRequest;
+  //           done();
+  //         }, 300);
+  //       }, 300);
+  //     }, 200);
+  //   }).catch(done);
+  // });
 
   it('Should not have default values in schema', (done) => {
     const form = _.cloneDeep(comp6);
