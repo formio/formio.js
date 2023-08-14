@@ -1185,7 +1185,7 @@ export default class WebformBuilder extends Component {
           });
         });
 
-        if (tabIndex !== -1 && index !== -1 && changed && changed.value) {
+        if (tabIndex !== -1 && index !== -1 && changed && !_.isNil(changed.value)) {
           const sibling = parentComponent.tabs[tabIndex][index + 1];
           parentComponent.removeComponent(defaultValueComponent);
           const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
