@@ -8,9 +8,9 @@
     aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}"
   {% } %}
 >
-  {% ctx.values.forEach(function(item) { %}
+  {% ctx.values.forEach(function(item, index) { %}
   <div class="{{ctx.input.attr.type}} {{ ctx.component.optionsLabelPosition && ctx.component.optionsLabelPosition !== 'right' ? 'pl-0' : ''}} form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
-    <label class="form-check-label label-position-{{ ctx.component.optionsLabelPosition }}" for="{{ctx.instance.root && ctx.instance.root.id}}-{{ctx.id}}-{{ctx.row}}-{{item.value}}">
+    <label class="form-check-label label-position-{{ ctx.component.optionsLabelPosition }}" for="{{ctx.instance.root && ctx.instance.root.id}}-{{ctx.id}}-{{ctx.row}}-{{(typeof item.value === 'object') ? item.value + '-' + index : item.value}}">
       {% if (ctx.component.optionsLabelPosition === 'left' || ctx.component.optionsLabelPosition === 'top') { %}
       <span>{{ctx.t(item.label, { _userInput: true })}}</span>
       {% } %}
@@ -26,7 +26,7 @@
         {% if (item.disabled) { %}
           disabled=true
         {% } %}
-        id="{{ctx.instance.root && ctx.instance.root.id}}-{{ctx.id}}-{{ctx.row}}-{{item.value}}"
+        id="{{ctx.instance.root && ctx.instance.root.id}}-{{ctx.id}}-{{ctx.row}}-{{(typeof item.value === 'object') ? item.value + '-' + index : item.value}}"
         role="{{ctx.component.type === 'selectboxes' ? 'checkbox' : 'radio'}}"
       >
       {% if (!ctx.component.optionsLabelPosition || ctx.component.optionsLabelPosition === 'right' || ctx.component.optionsLabelPosition === 'bottom') { %}
