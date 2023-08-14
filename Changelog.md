@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.16.0-rc.10]
+### Fixed
+ - FIO-7209: Radio works without ValueProperty set
+
 ## 4.16.0-rc.9
 ### Changed
  - FIO-7040 Enabled selectData for all List Based Components
