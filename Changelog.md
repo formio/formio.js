@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.0.0-rc.24]
+### Fixed
+ - FIO-7128: Fixed issues with multiple select
+ - FIO-7209: radio don't work without value property set when data source url
+ - FIO-6970: Fixes an issue where SelectBoxes Only Available Items validation always fails
+
 ## 5.0.0-rc.23
 ### Fixed
  - FIO-6578: Fixes an issue with losing focus on Year field when Day component has advanced logic
