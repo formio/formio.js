@@ -276,7 +276,7 @@ export default class RadioComponent extends ListComponent {
       return;
     }
 
-    if (!this.shouldLoad) {
+    if (!this.shouldLoad && this.listData) {
       this.loadItemsFromMetadata();
       return;
     }
@@ -311,7 +311,7 @@ export default class RadioComponent extends ListComponent {
       this.loadedOptions[i] = {
         label: this.itemTemplate(item)
       };
-      if (_.isEqual(item, this.selectData)) {
+      if (_.isEqual(item, this.selectData || _.pick(this.dataValue, _.keys(item)))) {
         this.loadedOptions[i].value = this.dataValue;
       }
     });
@@ -324,9 +324,10 @@ export default class RadioComponent extends ListComponent {
     items?.forEach((item, i) => {
       this.loadedOptions[i] = {
         value: this.component.valueProperty ? item[this.component.valueProperty] : item,
-        label: this.itemTemplate(item, item[this.component.valueProperty])
+        label: this.component.valueProperty ? this.itemTemplate(item, item[this.component.valueProperty]) : this.itemTemplate(item, item, i)
       };
-      listData.push(this.templateData[item[this.component.valueProperty]]);
+      listData.push(this.templateData[this.component.valueProperty ? item[this.component.valueProperty] : i]);
+
       if ((this.component.valueProperty || !this.isRadio) && (
         _.isUndefined(item[this.component.valueProperty]) ||
         (!this.isRadio && _.isObject(item[this.component.valueProperty])) ||
