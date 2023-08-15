@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.0.0-rc.24]
+### Fixed
+ - FIO-7128: Fixed issues with multiple select
+
 ## 5.0.0-rc.23
 ### Fixed
  - FIO-6578: Fixes an issue with losing focus on Year field when Day component has advanced logic
