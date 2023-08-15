@@ -12,7 +12,6 @@ This feature works along with our authentication system to attach a "draft" subm
 In order to enable this feature, you simply need to use the ```saveDraft``` parameter when you are rendering the form.
 
 ```js
-Formio.icons = 'fontawesome';
 Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example', {
   saveDraft: true
 });
@@ -24,8 +23,6 @@ It is not possible to have Anonymous draft submissions because the platform does
 
 
 ```js
-Formio.icons = 'fontawesome';
-
 // Create a new form with saveDraft enabled.
 Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example', {
   saveDraft: true
@@ -59,8 +56,6 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 You can also configure how regular the "save draft" is triggered using the ```saveDraftThrottle``` parameter. This defaults to 5 seconds, and is defined in milliseconds.
 
 ```js
-Formio.icons = 'fontawesome';
-
 // Save a draft every 10 seconds.
 Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example', {
   saveDraft: true,

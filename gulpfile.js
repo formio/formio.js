@@ -90,20 +90,13 @@ gulp.task('embed-css', () => gulp.src('./dist/formio.embed.min.css').pipe(rename
 gulp.task('clean:embed-js', () => gulp.src('./dist/formio.embed.js', { read: false, allowEmpty: true }).pipe(clean()));
 gulp.task('embed-js', () => gulp.src('./dist/formio.embed.min.js').pipe(rename('formio.embed.js')).pipe(gulp.dest('./dist')));
 
-gulp.task('icons', () => gulp.src('./node_modules/bootstrap-icons/**/*.*').pipe(gulp.dest('./app/bootstrap-icons')));
-gulp.task('bootstrap', () => gulp.src('./node_modules/bootstrap/dist/**/*.*').pipe(gulp.dest('./app/bootstrap')));
-gulp.task('bootswatch', () => gulp.src('./node_modules/bootswatch/**/*.*').pipe(gulp.dest('./app/bootswatch')));
-
 // Copy over the moment-timezones to the resource folder.
 gulp.task('timezones', () => gulp.src('./node_modules/moment-timezone/data/packed/latest.json').pipe(gulp.dest('./resources')));
 
 // Create a new build.
 gulp.task('build', gulp.series(
   gulp.parallel(
-    'timezones',
-    'icons',
-    'bootstrap',
-    'bootswatch'
+    'timezones'
   ),
   gulp.parallel(
     'styles-embed',
