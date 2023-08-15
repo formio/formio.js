@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0-rc.24]
+## 5.0.0-rc.24
+### Changed
+ - Removed unnecessary resize polyfill.
+ - Improved embed library experience.
+ - Fixed documentation to use new embed strategy.
+
 ### Fixed
  - FIO-7128: Fixed issues with multiple select
  - FIO-7209: radio don't work without value property set when data source url
