@@ -200,7 +200,8 @@ import {
   comp1,
   comp3,
   comp4,
-  comp5
+  comp5,
+  comp6
 } from &apos;./fixtures&apos;;
 import wizardWithSelectBoxes from &apos;../../../test/forms/wizardWithSelectBoxes&apos;;
 
@@ -237,6 +238,16 @@ describe(&apos;SelectBoxes Component&apos;, () =&gt; {
         done();
       }, 200);
     }).catch(done);
+  });
+
+  it(&apos;Should display values in DataTab&apos;, function(done) {
+    Harness.testCreate(SelectBoxesComponent, comp6).then((component) =&gt; {
+      const value1 = component.getView({ Alabama: false, Alaska: true });
+      const value2 = component.getView({ Alabama: true, Alaska: true });
+      assert.equal(value1, &apos;Alaska&apos;);
+      assert.equal(value2, &apos;Alabama, Alaska&apos;);
+      done();
+    });
   });
 
   it(&apos;Should provide metadata.selectData for SelectBoxes component with URL DataSrc&apos;, (done) =&gt; {

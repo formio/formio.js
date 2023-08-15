@@ -868,6 +868,32 @@ describe(&apos;DateTime Component&apos;, () =&gt; {
     }).catch(done);
   });
 
+  it(&apos;Should add date to format if enableDate is true&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    form.components[0].format = &apos;hh:mm a&apos;;
+    form.components[0].enableDate = true;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form, { attachMode: &apos;builder&apos; }).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      assert.equal(dateTime.component.format, &apos;yyyy-MM-dd hh:mm a&apos;);
+      done();
+    }).catch(done);
+  });
+
+  it(&apos;Should add time to format if enableTime is true&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp3);
+    form.components[0].format = &apos;yyyy-MM-dd&apos;;
+    form.components[0].enableTime = true;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form, { attachMode: &apos;builder&apos; }).then(form =&gt; {
+      const dateTime = form.getComponent(&apos;dateTime&apos;);
+      assert.equal(dateTime.component.format, &apos;yyyy-MM-dd hh:mm a&apos;);
+      done();
+    }).catch(done);
+  });
+
   // it(&apos;Should provide correct date in selected timezone after submission&apos;, (done) =&gt; {
   //   const form = _.cloneDeep(comp9);
   //   const element = document.createElement(&apos;div&apos;);

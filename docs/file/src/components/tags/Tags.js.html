@@ -220,6 +220,13 @@ export default class TagsComponent extends Input {
     };
   }
 
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      operators: [...super.serverConditionSettings.operators, &apos;includes&apos;, &apos;notIncludes&apos;],
+    };
+  }
+
   init() {
     super.init();
   }

@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.17.0-rc.1
+### Changed
+ - FIO-3448: Fixed an issue where Keep overlay aspect ratio feature of the Signature component in PDF form does not work
+ - FI0-5429: added a condition to remove the decimal separator when the decimal digits are set to 0
+ - added style to ol and ul tag
+ - FIO-6807:fixed an issue with date time format after using enableDate or enableTime checkboxes
+ - FIO-4782: added encodeURIComponent for filter query
+ - FIO-6849: fixed issue where form components cannot be edited because of legacy format of multi select default value multiple values
+ - FIO-5967: fixed issue with empty data for html 5 select component
+ - FIO-6906: fixed value for Checkbox submission in Data Tab
+ - FIO-6919: fixed value for Signature submission in Data Tab
+ - FIO-6630: Expanded Actions Logic UI
+ - FIO-6933: Fixes for the formbuilder with keyboard actions
+ - FIO-7043: Fixes an issue where {{}} values in DataSource headers are resolved in the form builder
+ - FIO-7007: fixed display of submitted values on DataTab
+ - FIO-7128: Fixed issues with multiple select
+
 ## 4.16.0-rc.9
 ### Changed
  - FIO-7040 Enabled selectData for all List Based Components

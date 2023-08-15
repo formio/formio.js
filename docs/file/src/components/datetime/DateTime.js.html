@@ -192,8 +192,8 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datetime/DateTime.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import moment from &apos;moment&apos;;
-import Input from &apos;../_classes/input/Input&apos;;
 import FormioUtils from &apos;../../utils&apos;;
+import Input from &apos;../_classes/input/Input&apos;;
 
 export default class DateTimeComponent extends Input {
   static schema(...extend) {
@@ -245,6 +245,28 @@ export default class DateTimeComponent extends Input {
     };
   }
 
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      operators: [
+        &apos;isDateEqual&apos;,
+        &apos;isNotDateEqual&apos;,
+        &apos;isEmpty&apos;,
+        &apos;isNotEmpty&apos;,
+        &apos;dateLessThan&apos;,
+        &apos;dateGreaterThan&apos;,
+        &apos;dateLessThanOrEqual&apos;,
+        &apos;dateGreaterThanOrEqual&apos;,
+      ],
+      valueComponent(classComp) {
+        return {
+          ...classComp,
+          type: &apos;datetime&apos;,
+        };
+      },
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     const timezone = (this.component.timezone || this.options.timezone);
@@ -254,8 +276,15 @@ export default class DateTimeComponent extends Input {
     if (!this.component.enableDate) {
       this.component.format = this.component.format.replace(/yyyy-MM-dd /g, &apos;&apos;);
     }
+    else if (this.component.enableDate &amp;&amp; !/[yMd]/.test(this.component.format) &amp;&amp; this.builderMode) {
+      this.component.format = `yyyy-MM-dd ${this.component.format}`;
+    }
+
     if (!this.component.enableTime) {
       this.component.format = this.component.format.replace(/ hh:mm a$/g, &apos;&apos;);
+    }
+    else if (this.component.enableTime &amp;&amp; !/[mhH]/.test(this.component.format) &amp;&amp; this.builderMode) {
+      this.component.format = `${this.component.format} hh:mm a`;
     }
     else if (time24hr) {
       this.component.format = this.component.format.replace(/hh:mm a$/g, &apos;HH:mm&apos;);

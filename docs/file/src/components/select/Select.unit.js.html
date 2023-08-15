@@ -1282,6 +1282,31 @@ describe(&apos;Select Component with Entire Object Value Property&apos;, () =&gt
       }, 200);
     }).catch(done);
   });
+
+  it(&apos;Should set submission value for Resource DataSrc Type and Entire Object Value Property&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp15);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const select = form.getComponent(&apos;select&apos;);
+      const value = { textField: &apos;Jone&apos;, nubmer: 1 };
+      form.submission = {
+        data: {
+          select: value
+        }
+      };
+
+      setTimeout(() =&gt; {
+        assert.equal(typeof select.dataValue,  &apos;object&apos;);
+        const selectContainer = element.querySelector(&apos;[ref=&quot;selectContainer&quot;]&apos;);
+        assert.notEqual(selectContainer, null);
+        assert.notEqual(selectContainer.value, &apos;&apos;);
+        const options = selectContainer.childNodes;
+        assert.equal(options.length, 2);
+        done();
+      }, 1000);
+    }).catch(done);
+  });
 });
 </code></pre>
 

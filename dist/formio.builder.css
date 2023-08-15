@@ -1298,6 +1298,9 @@ body.formio-dialog-open {
 .formio-component-htmlelement {
   word-wrap: break-word;
 }
+.formio-component-htmlelement ol, .formio-component-htmlelement ul {
+  margin-left: 10px;
+}
 
 .editgrid-table-container {
   margin-bottom: 10px;
@@ -1522,6 +1525,9 @@ td .formio-component-modaledit .formio-modaledit-view-container {
 }
 .formio-component-textarea .ck.ck-editor__editable .image .ck-progress-bar {
   height: 4px;
+}
+.formio-component-textarea .ck.ck-editor ul, .formio-component-textarea .ck.ck-editor ol {
+  margin-left: 10px;
 }
 
 div[data-oembed-url] {
@@ -2277,6 +2283,6 @@ span[role=link] {
 }
 
 .builder-component-selected {
-  border: 2px dashed #e8e8e8;
+  border: 2px dashed #919191;
   outline: none !important;
 }

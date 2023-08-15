@@ -2922,6 +2922,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/checkbox/checkbox.js~checkboxcomponent.serverconditionsettings",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#static-get-serverConditionSettings",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent.serverConditionSettings",
+    "member"
+  ],
+  [
     "src/components/checkbox/checkbox.unit.js",
     "file/src/components/checkbox/Checkbox.unit.js.html",
     "src/components/checkbox/Checkbox.unit.js",
@@ -3604,6 +3610,12 @@ window.esdocSearchIndex = [
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#static-method-schema",
     "src/components/datetime/DateTime.js~DateTimeComponent.schema",
     "method"
+  ],
+  [
+    "src/components/datetime/datetime.js~datetimecomponent.serverconditionsettings",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#static-get-serverConditionSettings",
+    "src/components/datetime/DateTime.js~DateTimeComponent.serverConditionSettings",
+    "member"
   ],
   [
     "src/components/datetime/datetime.unit.js",
@@ -5232,6 +5244,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/selectboxes/fixtures/comp6.js",
+    "file/src/components/selectboxes/fixtures/comp6.js.html",
+    "src/components/selectboxes/fixtures/comp6.js",
+    "file"
+  ],
+  [
     "src/components/selectboxes/fixtures/index.js",
     "file/src/components/selectboxes/fixtures/index.js.html",
     "src/components/selectboxes/fixtures/index.js",
@@ -5742,6 +5760,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/tags/tags.js~tagscomponent.serverconditionsettings",
+    "class/src/components/tags/Tags.js~TagsComponent.html#static-get-serverConditionSettings",
+    "src/components/tags/Tags.js~TagsComponent.serverConditionSettings",
+    "member"
+  ],
+  [
     "src/components/tags/tags.unit.js",
     "file/src/components/tags/Tags.unit.js.html",
     "src/components/tags/Tags.unit.js",
@@ -6094,6 +6118,12 @@ window.esdocSearchIndex = [
     "class/src/components/time/Time.js~TimeComponent.html#static-method-schema",
     "src/components/time/Time.js~TimeComponent.schema",
     "method"
+  ],
+  [
+    "src/components/time/time.js~timecomponent.serverconditionsettings",
+    "class/src/components/time/Time.js~TimeComponent.html#static-get-serverConditionSettings",
+    "src/components/time/Time.js~TimeComponent.serverConditionSettings",
+    "member"
   ],
   [
     "src/components/time/time.unit.js",
@@ -8334,10 +8364,22 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/utils/choiceswrapper.js~choiceswrapper#_ontouchend",
+    "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-_onTouchEnd",
+    "src/utils/ChoicesWrapper.js~ChoicesWrapper#_onTouchEnd",
+    "method"
+  ],
+  [
     "src/utils/choiceswrapper.js~choiceswrapper#_selecthighlightedchoice",
     "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-method-_selectHighlightedChoice",
     "src/utils/ChoicesWrapper.js~ChoicesWrapper#_selectHighlightedChoice",
     "method"
+  ],
+  [
+    "src/utils/choiceswrapper.js~choiceswrapper#_wastap",
+    "class/src/utils/ChoicesWrapper.js~ChoicesWrapper.html#instance-member-_wasTap",
+    "src/utils/ChoicesWrapper.js~ChoicesWrapper#_wasTap",
+    "member"
   ],
   [
     "src/utils/choiceswrapper.js~choiceswrapper#constructor",

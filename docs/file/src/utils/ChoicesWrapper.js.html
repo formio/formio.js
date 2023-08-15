@@ -246,6 +246,26 @@ class ChoicesWrapper extends Choices {
     this.shouldOpenDropDown = true;
   }
 
+  _onTouchEnd(event) {
+    var target = (event || event.touches[0]).target;
+    var touchWasWithinContainer = this._wasTap &amp;&amp; this.containerOuter.element.contains(target);
+    if (touchWasWithinContainer) {
+      var containerWasExactTarget = target === this.containerOuter.element || target === this.containerInner.element;
+      if (containerWasExactTarget) {
+        if (this._isTextElement) {
+          this.input.focus();
+        }
+        else if (this._isSelectMultipleElement) {
+          this.input.focus();
+          this.showDropdown();
+        }
+      }
+      // Prevents focus event firing
+      event.stopPropagation();
+    }
+    this._wasTap = true;
+  }
+
   _handleButtonAction(activeItems, element) {
     if (!this._isSelectOneElement) {
       return super._handleButtonAction(activeItems, element);
