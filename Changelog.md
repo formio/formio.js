@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.17.0-rc.2]
+
 ## 4.17.0-rc.1
 ### Changed
  - FIO-3448: Fixed an issue where Keep overlay aspect ratio feature of the Signature component in PDF form does not work
