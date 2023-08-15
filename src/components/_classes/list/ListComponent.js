@@ -110,7 +110,7 @@ export default class ListComponent extends Field {
       // If the value is not an object, then we need to save the template data off for when it is selected.
       this.templateData[templateValue] = options.data.item;
     }
-    if (_.isNumber(index)){
+    if (_.isNumber(index)) {
       this.templateData[index] = options.data.item;
     }
     return template;
