@@ -175,7 +175,12 @@ export default class RadioComponent extends ListComponent {
           dataValue = _.toString(this.dataValue);
         }
 
-        input.checked = (dataValue === input.value && (input.value || this.component.dataSrc !== 'url'));
+        if (this.isSelectURL && _.isObject(this.loadedOptions[index].value)) {
+          input.checked = _.isEqual(this.loadedOptions[index].value, this.dataValue);
+        }
+        else {
+          input.checked = (dataValue === input.value && (input.value || this.component.dataSrc !== 'url'));
+        }
         this.addEventListener(input, 'keyup', (event) => {
           if (event.key === ' ' && dataValue === input.value) {
             event.preventDefault();
@@ -208,9 +213,11 @@ export default class RadioComponent extends ListComponent {
       return this.dataValue;
     }
     let value = this.dataValue;
-    this.refs.input.forEach((input) => {
+    this.refs.input.forEach((input, index) => {
       if (input.checked) {
-        value = input.value;
+        value = (this.isSelectURL && _.isObject(this.loadedOptions[index].value)) ?
+          this.loadedOptions[index].value :
+          input.value;
       }
     });
     return value;
@@ -238,7 +245,10 @@ export default class RadioComponent extends ListComponent {
   }
 
   getValueAsString(value) {
-    if (!_.isString(value)) {
+    if (_.isObject(value)) {
+      value = JSON.stringify(value);
+    }
+    else if (!_.isString(value)) {
       value = _.toString(value);
     }
     if (this.component.dataSrc !== 'values') {
@@ -266,7 +276,7 @@ export default class RadioComponent extends ListComponent {
       return;
     }
 
-    if (!this.shouldLoad) {
+    if (!this.shouldLoad && this.listData) {
       this.loadItemsFromMetadata();
       return;
     }
@@ -301,7 +311,7 @@ export default class RadioComponent extends ListComponent {
       this.loadedOptions[i] = {
         label: this.itemTemplate(item)
       };
-      if (_.isEqual(item, this.selectData)) {
+      if (_.isEqual(item, this.selectData || _.pick(this.dataValue, _.keys(item)))) {
         this.loadedOptions[i].value = this.dataValue;
       }
     });
@@ -313,14 +323,16 @@ export default class RadioComponent extends ListComponent {
     const listData = [];
     items?.forEach((item, i) => {
       this.loadedOptions[i] = {
-        value: item[this.component.valueProperty],
-        label: this.itemTemplate(item, item[this.component.valueProperty])
+        value: this.component.valueProperty ? item[this.component.valueProperty] : item,
+        label: this.component.valueProperty ? this.itemTemplate(item, item[this.component.valueProperty]) : this.itemTemplate(item, item, i)
       };
-      listData.push(this.templateData[item[this.component.valueProperty]]);
-      if (_.isUndefined(item[this.component.valueProperty]) ||
-        _.isObject(item[this.component.valueProperty]) ||
+      listData.push(this.templateData[this.component.valueProperty ? item[this.component.valueProperty] : i]);
+
+      if ((this.component.valueProperty || !this.isRadio) && (
+        _.isUndefined(item[this.component.valueProperty]) ||
+        (!this.isRadio && _.isObject(item[this.component.valueProperty])) ||
         (!this.isRadio && _.isBoolean(item[this.component.valueProperty]))
-        ) {
+      )) {
         this.loadedOptions[i].invalid = true;
       }
     });

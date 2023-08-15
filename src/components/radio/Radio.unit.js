@@ -172,39 +172,42 @@ describe('Radio Component', () => {
     }).catch(done);
   });
 
-  it('Should provide validation for ValueProperty', (done) => {
+  it('Should use whole Object as value if URL DataSrc and ValueProperty is not set', (done) => {
     const form = _.cloneDeep(comp9);
+    delete form.components[0].valueProperty;
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
+    const values = [
+      { name : 'Alabama', abbreviation : 'AL' },
+      { name : 'Alaska', abbreviation: 'AK' }
+    ];
 
     Formio.makeRequest = function() {
       return new Promise(resolve => {
-        const values = [
-          { name : 'Alabama', abbreviation : 'AL' },
-          { name : 'Alaska', abbreviation: { a:2, b: 'c' } }
-        ];
         resolve(values);
       });
     };
 
     Formio.createForm(element, form).then(form => {
       const radio = form.getComponent('radio');
-      radio.setValue({ a:2, b: 'c' });
 
       setTimeout(()=>{
-        const submit = form.getComponent('submit');
-        const clickEvent = new Event('click');
-        const submitBtn = submit.refs.button;
-        submitBtn.dispatchEvent(clickEvent);
+        values.forEach((value, i) => {
+          assert.equal(_.isEqual(value, radio.loadedOptions[i].value), true);
+        });
+        radio.setValue(values[1]);
 
         setTimeout(() => {
-          assert.equal(form.errors.length, 1);
-          assert.equal(radio.error.message, 'Invalid Value Property');
-          radio.setValue('AL');
+          const submit = form.getComponent('submit');
+          const clickEvent = new Event('click');
+          const submitBtn = submit.refs.button;
+          submitBtn.dispatchEvent(clickEvent);
 
           setTimeout(() => {
             assert.equal(form.errors.length, 0);
             assert.equal(!!radio.error, false);
+            assert.equal(radio.getValue(), values[1]);
+            assert.equal(radio.dataValue, values[1]);
             document.innerHTML = '';
             Formio.makeRequest = originalMakeRequest;
             done();
