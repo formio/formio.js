@@ -91,7 +91,7 @@ export default class ListComponent extends Field {
 
   loadItems() {}
 
-  getOptionTemplate(data, value) {
+  getOptionTemplate(data, value, index) {
     if (!this.component.template) {
       return data.label;
     }
@@ -110,15 +110,18 @@ export default class ListComponent extends Field {
       // If the value is not an object, then we need to save the template data off for when it is selected.
       this.templateData[templateValue] = options.data.item;
     }
+    if (_.isNumber(index)) {
+      this.templateData[index] = options.data.item;
+    }
     return template;
   }
 
-  itemTemplate(data, value) {
+  itemTemplate(data, value, index) {
     if (_.isEmpty(data)) {
       return '';
     }
 
-    const template = this.sanitize(this.getOptionTemplate(data, value), this.shouldSanitizeValue);
+    const template = this.sanitize(this.getOptionTemplate(data, value, index), this.shouldSanitizeValue);
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
       if (!label) return;

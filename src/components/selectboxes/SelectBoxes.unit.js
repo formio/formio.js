@@ -9,7 +9,8 @@ import {
   comp3,
   comp4,
   comp5,
-  comp6
+  comp6,
+  comp7,
 } from './fixtures';
 import wizardWithSelectBoxes from '../../../test/forms/wizardWithSelectBoxes';
 
@@ -359,5 +360,17 @@ describe('SelectBoxes Component', () => {
         assert.deepEqual(!!getComputedStyle(i, ':before'), true);
       });
     });
+  });
+
+  it('Should perform OnlyAvailableItems check properly', (done) => {
+    Harness.testCreate(SelectBoxesComponent, comp7).then(component => {
+      assert.equal(component.validateValueAvailability(true, { a: true }), true, 'Should be valid');
+      assert.equal(component.validateValueAvailability(true, { a: false, b: false, c: false }), true, 'Should be valid');
+      assert.equal(component.validateValueAvailability(true, { a: false, newKey: false }), false, 'Should not be valid');
+      assert.equal(component.validateValueAvailability(true, { newKey: false }), false, 'Should not be valid');
+      assert.equal(component.validateValueAvailability(true, {}), true, 'Should be valid');
+      assert.equal(component.validateValueAvailability(false, {}), true, 'Should be valid');
+      done();
+    }).catch(done);
   });
 });
