@@ -92,6 +92,10 @@ export class Formio {
 
     static async submitDone(instance, submission) {
         Formio.debug('Submision Complete', submission);
+        const successMessage = (Formio.config.success || '').toString();
+        if (successMessage && successMessage.toLowerCase() !== 'false' && instance.element) {
+            instance.element.innerHTML = `<div class="alert-success" role="alert">${successMessage}</div>`;
+        }
         let returnUrl = Formio.config.redirect;
 
         // Allow form based configuration for return url.

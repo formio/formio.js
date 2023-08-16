@@ -43,6 +43,7 @@ if (thisScript) {
         config: {},
         redirect: (query.return || query.redirect),
         embedCSS: (`${config.updatePath ? config.updatePath() : scriptSrc}/formio.embed.css`),
+        success: query.success || 'Thank you for your submission!',
         before: null,
         after: null
     }, config);
