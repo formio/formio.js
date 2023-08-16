@@ -47,7 +47,7 @@
     "build-app:create-app": "node -e 'var fs=require(`fs`);fs.writeFileSync(`./_config.app.yml`, `baseurl: /` + require(`./package.json`).version + `/`);'",
     "build-app:remove-app": "rm ./_config.app.yml",
     "build-app:jekyll": "jekyll build --config _config.yml,_config.app.yml",
-    "gh-pages": "npm run build && jekyll build --config _config.yml && cd _site && git init && git remote add origin git@github.com:formio/formio.js.git && git checkout -b gh-pages && git add . && git commit -m \"Deploy to GitHub Pages\" && git push origin gh-pages --force && cd ..",
+    "gh-pages": "rm -rf _site && npm run build && jekyll build --config _config.yml && cd _site && git init && git remote add origin git@github.com:formio/formio.js.git && git checkout -b gh-pages && git add . && git commit -m \"Deploy to GitHub Pages\" && git push origin gh-pages --force && cd ..",
     "deploy-s3": "$(node -e 'process.stdout.write(`aws s3 cp _site s3://formiojs.test-form.io/` + require(`./package.json`).version + `/ --recursive`)')",
     "invalidate": "VERSION=$(yarn version);aws cloudfront create-invalidation --distribution-id E1MXNA5A4ZKRMZ --paths \"/$VERSION/*\"",
     "release": "yarn build-app && yarn deploy-s3",

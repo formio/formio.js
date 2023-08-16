@@ -6,6 +6,7 @@ export class Formio {
     static config = {};
     static cdn = null;
     static proxy = true;
+    static version = 'FORMIO_VERSION';
     static async setBaseUrl(url) {
         Formio.baseUrl = url;
     }
@@ -133,7 +134,11 @@ export class Formio {
 
     // Return the full script if the builder is being used.
     static formioScript(script, builder) {
-        return builder ? script.replace('formio.form', 'formio.full') : script;
+        if (Formio.fullAdded || builder) {
+            Formio.fullAdded = true;
+            return script.replace('formio.form', 'formio.full');
+        }
+        return script;
     }
 
     // eslint-disable-next-line max-statements

@@ -28,7 +28,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootswatch/dist/spacelab/bootstrap.min.css" rel="stylesheet">
   {% endif %}
   <script src="https://cdn.form.io/ace/ace.js"></script>
-  <script src="{{ site.baseurl }}app/bootstrap/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
   {% if page.formioFull == nil %}
     {% if page.noFormio == nil %}
       <script src="{{ site.baseurl }}dist/formio.embed.js"></script>
