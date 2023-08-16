@@ -3,10 +3,7 @@ export class Formio {
     static baseUrl;
     static projectUrl;
     static language;
-    static wrapper;
-    static element;
     static config = {};
-    static loader = null;
     static cdn = null;
     static proxy = true;
     static async setBaseUrl(url) {
@@ -19,6 +16,12 @@ export class Formio {
     static debug(...args) {
         if (Formio.config.debug) {
             console.log(...args);
+        }
+    }
+
+    static clearCache() {
+        if (Formio.FormioClass) {
+            Formio.FormioClass.clearCache();
         }
     }
 
@@ -42,19 +45,19 @@ export class Formio {
         return element;
     }
 
-    static async addScript(src, name) {
+    static async addScript(wrapper, src, name) {
         if (!src) {
             return Promise.resolve();
         }
         if (typeof src !== 'string' && src.length) {
-            return Promise.all(src.map(ref => Formio.addScript(ref)));
+            return Promise.all(src.map(ref => Formio.addScript(wrapper, ref)));
         }
         if (name && Formio.global(name)) {
             Formio.debug(`${name} already loaded.`);
             return Promise.resolve(Formio.global(name));
         }
         Formio.debug('Adding Script', src);
-        Formio.wrapper.appendChild(Formio.createElement('script', {
+        wrapper.appendChild(Formio.createElement('script', {
             src
         }));
         if (!name) {
@@ -72,16 +75,16 @@ export class Formio {
         });
     }
 
-    static async addStyles(href) {
+    static async addStyles(wrapper, href) {
         if (!href) {
             return;
         }
         if (typeof href !== 'string' && href.length) {
-            href.forEach(ref => Formio.addStyles(ref));
+            href.forEach(ref => Formio.addStyles(wrapper, ref));
             return;
         }
         Formio.debug('Adding Styles', href);
-        Formio.wrapper.appendChild(Formio.createElement('link', {
+        wrapper.appendChild(Formio.createElement('link', {
             rel: 'stylesheet',
             href
         }));
@@ -131,7 +134,6 @@ export class Formio {
 
     // eslint-disable-next-line max-statements
     static async init(element, builder = false) {
-        Formio.element = element;
         Formio.cdn = new CDN(Formio.config.cdn);
         Formio.config.libs = Formio.config.libs || {
             uswds: {
@@ -146,19 +148,21 @@ export class Formio {
                 css: `${Formio.cdn.bootstrap}/css/bootstrap.min.css`
             }
         };
-        Formio.config.id = Formio.config.id || `formio-${Math.random().toString(36).substring(7)}`;
+        const id = Formio.config.id || `formio-${Math.random().toString(36).substring(7)}`;
 
         // Create a new wrapper and add the element inside of a new wrapper.
-        Formio.wrapper = Formio.createElement('div', {
-            'id': `"${Formio.config.id}-wrapper"`
+        const wrapper = Formio.createElement('div', {
+            'id': `"${id}-wrapper"`
         });
-        element.parentNode.insertBefore(Formio.wrapper, element);
+        element.parentNode.insertBefore(wrapper, element);
         element.parentNode.removeChild(element);
-        Formio.wrapper.appendChild(element);
+        wrapper.appendChild(element);
 
         // Load the renderer styles.
-        await Formio.addStyles(Formio.config.embedCSS || `${Formio.cdn.js}/formio.embed.css`);
-        Formio.loader = Formio.createElement('div', {
+        await Formio.addStyles(wrapper, Formio.config.embedCSS || `${Formio.cdn.js}/formio.embed.css`);
+
+        // Add a loader.
+        wrapper.appendChild(Formio.createElement('div', {
             'class': 'formio-loader'
         }, [{
             tag: 'div',
@@ -171,10 +175,10 @@ export class Formio {
                     class: 'loader text-center'
                 }
             }]
-        }]);
-        Formio.wrapper.appendChild(Formio.loader);
+        }]));
 
         Formio.FormioClass = await Formio.addScript(
+            wrapper,
             Formio.formioScript(Formio.config.script || `${Formio.cdn.js}/formio.form.min.js`, builder),
             'Formio'
         );
@@ -195,18 +199,18 @@ export class Formio {
 
         if (Formio.config.template) {
             if (Formio.config.includeLibs) {
-                await Formio.addStyles(Formio.config.libs[Formio.config.template].css);
-                await Formio.addScript(Formio.config.libs[Formio.config.template].js);
+                await Formio.addStyles(wrapper, Formio.config.libs[Formio.config.template].css);
+                await Formio.addScript(wrapper, Formio.config.libs[Formio.config.template].js);
                 if (Formio.config.libs[Formio.config.template].fa) {
-                    await Formio.addStyles(Formio.config.libs.fontawesome.css);
+                    await Formio.addStyles(wrapper, Formio.config.libs.fontawesome.css);
                 }
             }
 
             if (Formio.cdn[Formio.config.template]) {
                 const templateSrc = `${Formio.cdn[Formio.config.template]}/${Formio.config.template}.min`;
-                await Formio.addStyles(`${templateSrc}.css`);
+                await Formio.addStyles(wrapper, `${templateSrc}.css`);
                 Formio.debug(`Using ${Formio.config.template}`);
-                Formio.FormioClass.use(await Formio.addScript(`${templateSrc}.js`, Formio.config.template));
+                Formio.FormioClass.use(await Formio.addScript(wrapper, `${templateSrc}.js`, Formio.config.template));
             }
         }
         else if (Formio.global('uswds')) {
@@ -215,25 +219,26 @@ export class Formio {
         }
         // Default bootstrap + fontawesome.
         else if (Formio.config.includeLibs) {
-            await Formio.addStyles(Formio.config.libs.fontawesome.css);
-            await Formio.addStyles(Formio.config.libs.bootstrap.css);
+            await Formio.addStyles(wrapper, Formio.config.libs.fontawesome.css);
+            await Formio.addStyles(wrapper, Formio.config.libs.bootstrap.css);
         }
         if (Formio.config.premium) {
-            await Formio.addStyles(Formio.config.premium.css);
+            await Formio.addStyles(wrapper, Formio.config.premium.css);
             Formio.debug('Using premium');
-            Formio.FormioClass.use(await Formio.addScript(Formio.config.premium.js, 'premium'));
+            Formio.FormioClass.use(await Formio.addScript(wrapper, Formio.config.premium.js, 'premium'));
         }
 
-        await Formio.addStyles(Formio.formioScript(Formio.config.style || `${Formio.cdn.js}/formio.form.min.css`, builder));
+        await Formio.addStyles(wrapper, Formio.formioScript(Formio.config.style || `${Formio.cdn.js}/formio.form.min.css`, builder));
         if (Formio.config.before) {
-            await Formio.config.before(Formio.FormioClass, Formio.element, Formio.config);
+            await Formio.config.before(Formio.FormioClass, element, Formio.config);
         }
         Formio.FormioClass.license = true;
+        return wrapper;
     }
 
     static async createForm(element, form, options) {
-        await Formio.init(element);
-        return Formio.FormioClass.createForm(Formio.element, form, {
+        const wrapper = await Formio.init(element);
+        return Formio.FormioClass.createForm(element, form, {
             ...options,
             ...{ noLoader: true }
         }).then((instance) => {
@@ -241,7 +246,7 @@ export class Formio {
 
             // Remove the loader.
             Formio.debug('Removing loader');
-            Formio.wrapper.removeChild(Formio.loader);
+            wrapper.removeChild(wrapper.querySelector('.formio-loader'));
 
             // Set the default submission data.
             if (Formio.config.submission) {
@@ -264,11 +269,11 @@ export class Formio {
     }
 
     static async builder(element, form, options) {
-        await Formio.init(element, true);
-        return Formio.FormioClass.builder(Formio.element, form, options).then((instance) => {
+        const wrapper = await Formio.init(element, true);
+        return Formio.FormioClass.builder(element, form, options).then((instance) => {
             Formio.debug('Builder created', instance);
             Formio.debug('Removing loader');
-            Formio.wrapper.removeChild(Formio.loader);
+            wrapper.removeChild(wrapper.querySelector('.formio-loader'));
             Formio.debug('Triggering embed event');
             Formio.FormioClass.events.emit('builderEmbedded', instance);
             if (Formio.config.after) {
@@ -279,3 +284,48 @@ export class Formio {
         });
     }
 }
+
+export class Form {
+    constructor(element, form, options) {
+        this.form = form;
+        this.element = element;
+        this.options = options || {};
+        this.init();
+        this.instance = {
+            proxy: true,
+            ready: this.ready,
+            destroy: () => {}
+        };
+    }
+
+    init() {
+        this.element.innerHTML = '';
+        this.ready = this.create().then((instance) => {
+            this.instance = instance;
+            this.form = instance.form;
+            return instance;
+        });
+    }
+
+    create() {
+        return Formio.createForm(this.element, this.form, this.options);
+    }
+
+    setDisplay(display) {
+        if (this.instance.proxy) {
+            return this.ready;
+        }
+        this.form.display = display;
+        this.init();
+        return this.ready;
+    }
+}
+
+export class FormBuilder extends Form {
+    create() {
+        return Formio.builder(this.element, this.form, this.options);
+    }
+}
+
+Formio.Form = Form;
+Formio.FormBuilder = FormBuilder;

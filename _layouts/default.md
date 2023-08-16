@@ -34,6 +34,9 @@
       <script src="{{ site.baseurl }}dist/formio.embed.js"></script>
     {% endif %}
   {% endif %}
+  {% if page.lodash %}
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script> 
+  {% endif %}
   {% if page.formioFull %}
     <link href="{{ site.baseurl }}dist/formio.full.css" rel="stylesheet">
     <script src="{{ site.baseurl }}dist/formio.full.js"></script>  
