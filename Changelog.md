@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - FIO-3448: Fixed an issue where Keep overlay aspect ratio feature of the Signature component in PDF form does not work
  - FI0-5429: added a condition to remove the decimal separator when the decimal digits are set to 0
- - added style to ol and ul tag
- - FIO-6807:fixed an issue with date time format after using enableDate or enableTime checkboxes
+ - FIO-6785: Content Field formatting not showing indentation
+ - FIO-6807: fixed an issue with date time format after using enableDate or enableTime checkboxes
  - FIO-4782: added encodeURIComponent for filter query
  - FIO-6849: fixed issue where form components cannot be edited because of legacy format of multi select default value multiple values
  - FIO-5967: fixed issue with empty data for html 5 select component
@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7043: Fixes an issue where {{}} values in DataSource headers are resolved in the form builder
  - FIO-7007: fixed display of submitted values on DataTab
  - FIO-7128: Fixed issues with multiple select
+ - FIO-7110 fixed display of nested form with Use Original Revision on PDF download
 
 ## 4.16.0-rc.9
 ### Changed
