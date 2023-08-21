@@ -423,7 +423,7 @@ export default class WebformBuilder extends Component {
       this.attachTooltip(component.refs.removeComponent, this.t('Remove'));
 
       component.addEventListener(component.refs.removeComponent, 'click', () =>
-        this.removeComponent(component.schema, parent, component.component));
+        this.removeComponent(component.schema, parent, component.component, component));
     }
 
     return element;
@@ -1076,7 +1076,7 @@ export default class WebformBuilder extends Component {
     }
   }
 
-  removeComponent(component, parent, original) {
+  removeComponent(component, parent, original, componentInstance) {
     if (!parent) {
       return;
     }
@@ -1104,6 +1104,9 @@ export default class WebformBuilder extends Component {
       }
       else if (parent.formioComponent && parent.formioComponent.removeChildComponent) {
         parent.formioComponent.removeChildComponent(component);
+      }
+      if (component.input && componentInstance && componentInstance.parent) {
+        _.unset(componentInstance._data, componentInstance.key);
       }
       const rebuild = parent.formioComponent.rebuild() || NativePromise.resolve();
       rebuild.then(() => {

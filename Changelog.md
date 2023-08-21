@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 4.21.0-rc.1]
  - FIO-6970: Fixes an issue where SelectBoxes Only Available Items validation always fails
+ - FIO-7206: Fixes an issue where removed components keys stay in the DataGrid defaultValue property
  
 ## 4.20.0-rc.4
 ### Changed

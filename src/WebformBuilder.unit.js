@@ -219,6 +219,45 @@ describe('WebformBuilder tests', function() {
       }, 150);
     }).catch(done);
   });
+
+  it('Should remove deletec components keys from default value', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('datagrid');
+
+      setTimeout(() => {
+        const dataGridDefaultValue = builder.editForm.getComponent('defaultValue');
+        dataGridDefaultValue.removeRow(0);
+
+        setTimeout(() => {
+          Harness.saveComponent();
+          setTimeout(() => {
+            const dataGridContainer = builder.webform.element.querySelector('[ref="dataGrid-container"]');
+            Harness.buildComponent('textfield', dataGridContainer);
+
+            setTimeout(() => {
+              Harness.saveComponent();
+
+              setTimeout(() => {
+                const textField = builder.webform.getComponent(['dataGrid', 'textField'])[0];
+                textField.refs.removeComponent.dispatchEvent( new MouseEvent('click', {
+                  view: window,
+                  bubbles: true,
+                  cancelable: true
+                }));
+
+                setTimeout(() => {
+                  const dataGrid = builder.webform.getComponent(['dataGrid']);
+                  assert.deepEqual(dataGrid.schema.defaultValue, [{}], 'Should remove TextField key');
+                  done();
+                }, 300);
+              });
+            }, 300);
+          }, 300);
+        }, 350);
+      }, 350);
+    }).catch(done);
+  });
 });
 
 describe('Select Component selectData property', () => {
