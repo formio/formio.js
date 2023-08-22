@@ -1678,6 +1678,10 @@ export default class SelectComponent extends ListComponent {
       }
     }
 
+    if (this.isEntireObjectDisplay() && _.isObject(value)) {
+      return JSON.stringify(value);
+    }
+
     return !_.isNil(value)
       ? this.itemTemplate(value)
       : '-';
