@@ -1137,4 +1137,16 @@ describe('Select Component with Entire Object Value Property', () => {
       }, 1000);
     }).catch(done);
   });
+
+  it('Should get string representation of value for Resource DataSrc Type and Entire Object Value Property', (done) => {
+    Harness.testCreate(SelectComponent, comp15.components[0]).then((component) => {
+      const entireObject = {
+        a: '1',
+        b: '2',
+      };
+      const formattedValue = component.getView(entireObject);
+      assert.equal(formattedValue, JSON.stringify(entireObject));
+      done();
+    });
+  });
 });
