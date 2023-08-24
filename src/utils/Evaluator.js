@@ -74,7 +74,7 @@ const Evaluator = {
     }
     if (typeof template === 'function') {
       try {
-        if (data.component.filter === rawTemplate && !data.options.building) {
+        if (data.component && data.component.filter === rawTemplate && !data.options.building) {
           data.data = _.mapValues(data.data, (val) => _.isString(val) ? encodeURIComponent(val) : val);
         }
         return template(data);
