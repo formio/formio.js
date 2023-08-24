@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED 5.0.0-rc.27]
+### Fixed
+ - FIO-5967: fixed issue with incorrect string representation for object type
+   
 ## 5.0.0-rc.26
 ### Changed
  - More improvements to the embed capabilities.
