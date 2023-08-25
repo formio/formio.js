@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.17.0-rc.4]
+### Fixed
+ - FIO-7110: when 'use original revision' is enabled for nested form, submission still displays in current form revision pdfs
+   
 ## 4.17.0-rc.3
 ### Fixed
  - FIO-7209: Radio works without ValueProperty set
