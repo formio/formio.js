@@ -478,7 +478,7 @@ export default class FormComponent extends Component {
     }
 
     if (this.hasLoadedForm && !this.isRevisionChanged &&
-      !(this.options.pdf && this.useOriginalRevision && _.isNull(this.subForm) && !this.subFormLoading)
+      !(this.options.pdf && this.component?.useOriginalRevision && _.isNull(this.subForm) && !this.subFormLoading)
     ) {
       // Pass config down to sub forms.
       if (this.root && this.root.form && this.root.form.config && !this.formObj.config) {
@@ -491,6 +491,9 @@ export default class FormComponent extends Component {
       return (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
         .then((formObj) => {
           this.formObj = formObj;
+          if (this.options.pdf && this.component.useOriginalRevision) {
+            this.formObj.display = 'form';
+          }
           this.subFormLoading = false;
           return formObj;
         })
