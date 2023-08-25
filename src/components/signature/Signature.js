@@ -1,5 +1,4 @@
 import SignaturePad from 'signature_pad';
-import _ResizeObserver from 'resize-observer-polyfill';
 import Input from '../_classes/input/Input';
 import _ from 'lodash';
 import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
@@ -233,7 +232,7 @@ export default class SignatureComponent extends Input {
         }
 
         if (!this.builderMode && !this.options.preview) {
-          this.observer = new _ResizeObserver(() => {
+          this.observer = new ResizeObserver(() => {
             this.checkSize();
           });
 

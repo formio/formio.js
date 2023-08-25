@@ -20,21 +20,26 @@
   <link rel="manifest" href="{{ site.baseurl }}app/favicon/site.webmanifest">
   <link href="{{ site.baseurl }}app/syntax.css" rel="stylesheet">
   <link href="{{ site.baseurl }}app/main.css" rel="stylesheet">
-  <link href="{{ site.baseurl }}app/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="{{ site.baseurl }}app/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   {% if page.template %}
-    <link href="{{ site.baseurl }}app/bootswatch/dist/{{ page.template }}/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch/dist/{{ page.template }}/bootstrap.min.css" rel="stylesheet">
   {% endif %}
   {% if page.template == nil %}
-    <link href="{{ site.baseurl }}app/bootswatch/dist/spacelab/bootstrap.min.css" rel="stylesheet">
-  {% endif %}
-  {% if page.noFormio == nil %}
-    <link href="{{ site.baseurl }}dist/formio.full.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch/dist/spacelab/bootstrap.min.css" rel="stylesheet">
   {% endif %}
   <script src="https://cdn.form.io/ace/ace.js"></script>
-  <script src="{{ site.baseurl }}app/bootstrap/js/bootstrap.min.js"></script>
-  {% if page.noFormio == nil %}
-    <script src="{{ site.baseurl }}dist/formio.full.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
+  {% if page.formioFull == nil %}
+    {% if page.noFormio == nil %}
+      <script src="{{ site.baseurl }}dist/formio.embed.js"></script>
+    {% endif %}
+  {% endif %}
+  {% if page.lodash %}
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script> 
+  {% endif %}
+  {% if page.formioFull %}
+    <link href="{{ site.baseurl }}dist/formio.full.css" rel="stylesheet">
+    <script src="{{ site.baseurl }}dist/formio.full.js"></script>  
   {% endif %}
   {% if page.contrib %}
     <script src="{{ site.baseurl }}dist/formio.contrib.min.js"></script>

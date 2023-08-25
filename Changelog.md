@@ -4,7 +4,33 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED - 5.0.0-rc.20]
+## [UNRELEASED 5.0.0-rc.27]
+### Fixed
+ - FIO-5967: fixed issue with incorrect string representation for object type
+   
+## 5.0.0-rc.26
+### Changed
+ - More improvements to the embed capabilities.
+
+### Fixed
+ - FIO-7074: Fixes an issue where setting submission to the Wizard from the form controller will not set values for all the pages
+
+## 5.0.0-rc.24
+### Changed
+ - Removed unnecessary resize polyfill.
+ - Improved embed library experience.
+ - Fixed documentation to use new embed strategy.
+
+### Fixed
+ - FIO-7128: Fixed issues with multiple select
+ - FIO-7209: radio don't work without value property set when data source url
+ - FIO-6970: Fixes an issue where SelectBoxes Only Available Items validation always fails
+
+## 5.0.0-rc.23
+### Fixed
+ - FIO-6578: Fixes an issue with losing focus on Year field when Day component has advanced logic
+
+## 5.0.0-rc.20
 ### Changed
  - Removed i18next and NativePromise in favor of a simple translation proxy.
  - Refactored the embed script so that it can be imported within an application using createForm.
@@ -55,6 +81,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5918: fixed display of note on child form submission revision
  - FIO-5967: fixed issue with empty data for html 5 select component
  - FIO-4905: File upload (multi) - aborting upload always cancels the last one in the list (FIO-4905)
+ - FIO-4782: added encodeURIComponent for filter query
+ - FIO-4856: Fixed an issue where onBlur validation does not work for Select, Tags and Day components
+ - FIO-7110: fixed display of nested form with Use Original Revision on PDF download
 
 ## 5.0.0-rc.6
 ### Added

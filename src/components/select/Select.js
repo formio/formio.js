@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
+import Input from '../_classes/input/Input';
 import Form from '../../Form';
 import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Choices from '../../utils/ChoicesWrapper';
@@ -496,7 +497,7 @@ export default class SelectComponent extends ListComponent {
 
     if (!searching) {
       // If a value is provided, then select it.
-      if (!this.isEmpty()) {
+      if (!this.isEmpty() || this.isRemoveButtonPressed) {
         this.setValue(this.dataValue, {
           noUpdateEvent: true
         });
@@ -981,11 +982,17 @@ export default class SelectComponent extends ListComponent {
         this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
       }
 
-      this.addFocusBlurEvents(this.focusableElement);
+      Input.prototype.addFocusBlurEvents.call(this, this.focusableElement);
 
       if (this.itemsFromUrl && !this.component.noRefreshOnScroll) {
         this.scrollList = this.choices.choiceList.element;
         this.addEventListener(this.scrollList, 'scroll', () => this.onScroll());
+      }
+
+      if (choicesOptions.removeItemButton) {
+        this.addEventListener(input, 'removeItem', () => {
+          this.isRemoveButtonPressed = true;
+        });
       }
     }
 
@@ -1696,6 +1703,10 @@ export default class SelectComponent extends ListComponent {
       else {
         return '-';
       }
+    }
+
+    if (this.isEntireObjectDisplay() && _.isObject(value)) {
+      return JSON.stringify(value);
     }
 
     return !_.isNil(value)
