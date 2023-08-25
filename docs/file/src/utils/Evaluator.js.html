@@ -266,7 +266,7 @@ const Evaluator = {
     }
     if (typeof template === &apos;function&apos;) {
       try {
-        if (data.component.filter === rawTemplate &amp;&amp; !data.options.building) {
+        if (data.component &amp;&amp; data.component.filter === rawTemplate &amp;&amp; !data.options.building) {
           data.data = _.mapValues(data.data, (val) =&gt; _.isString(val) ? encodeURIComponent(val) : val);
         }
         return template(data);

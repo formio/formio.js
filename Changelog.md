@@ -4,10 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.17.0-rc.4]
-### Fixed
+## 4.17.0-rc.4
+### Changed
+ - FIO-5967: fixed issue with incorrect string representation for object type
+ - Revert "FI0-5429: added a condition to remove the decimal separator when the decimal digits are set to 0"
  - FIO-7110: when 'use original revision' is enabled for nested form, submission still displays in current form revision pdfs
-   
+
 ## 4.17.0-rc.3
 ### Fixed
  - FIO-7209: Radio works without ValueProperty set
