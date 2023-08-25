@@ -54,7 +54,10 @@ export default class NumberComponent extends Input {
     this.validators = this.validators.concat(['min', 'max']);
 
     const separators = getNumberSeparators(this.options.language || navigator.language);
-    const requireDecimal = _.get(this.component, 'requireDecimal', false);
+
+    this.decimalSeparator = this.options.decimalSeparator = this.options.decimalSeparator
+      || this.options.properties?.decimalSeparator
+      || separators.decimalSeparator;
 
     if (this.component.delimiter) {
       if (this.options.hasOwnProperty('thousandsSeparator')) {
@@ -67,10 +70,8 @@ export default class NumberComponent extends Input {
       this.delimiter = '';
     }
 
+    const requireDecimal = _.get(this.component, 'requireDecimal', false);
     this.decimalLimit = getNumberDecimalLimit(this.component, requireDecimal ? 2 : 20);
-    this.decimalSeparator = this.decimalLimit !== 0 ?
-      this.options.decimalSeparator || this.options.properties?.decimalSeparator || separators.decimalSeparator :
-      '';
 
     // Currencies to override BrowserLanguage Config. Object key {}
     if (_.has(this.options, `languageOverride.${this.options.language}`)) {
