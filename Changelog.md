@@ -4,9 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED 5.0.0-rc.27]
+## [Unreleased: 5.0.0-rc.27]
 ### Fixed
  - FIO-5967: fixed issue with incorrect string representation for object type
+ - FIO-7110: when 'use original revision' is enabled for nested form, submission still displays in current form revision pdfs
+ - Revert "FI0-5429: added a condition to remove the decimal separator when the decimal digits are set to 0"
    
 ## 5.0.0-rc.26
 ### Changed
