@@ -3484,8 +3484,24 @@ export default class Component extends Element {
     };
   }
 
+  isParentFormPreview(parentForm) {
+    if (parentForm.parent?.options.preview) {
+      return true;
+    }
+
+    if (parentForm.parent) {
+      return this.isParentFormPreview(parentForm.parent);
+    }
+
+    return false;
+  }
+
   autofocus() {
-    const hasAutofocus = this.component.autofocus && !this.builderMode && !this.options.preview;
+    let hasAutofocus = this.component.autofocus && !this.builderMode && !this.options.preview;
+    if (hasAutofocus && this.isParentFormPreview(this.parent)) {
+      hasAutofocus = false;
+    }
+
     if (hasAutofocus) {
       this.on('render', () => this.focus(), true);
     }
