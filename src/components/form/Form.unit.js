@@ -27,12 +27,12 @@ describe('Form Component', () => {
         .then(() => {
             const textField = form.getComponent(['form', 'textField']);
             textField.setValue('123', { modified: true });
-              assert.equal(textField.dataValue, '123', 'Should set value');
-              const toString = form.getValueAsString(textField.data, { email: true });
-              assert.ok(toString.includes('table'), 'Email template should render html table');
-              assert.ok(toString.includes(textField.label), 'Email template should have Text Field label');
-              assert.ok(toString.includes(textField.dataValue), 'Email template should have Text Field value');
-              done();
+            assert.equal(textField.dataValue, '123', 'Should set value');
+            const toString = form.getValueAsString(textField.data, { email: true });
+            assert.ok(toString.includes('table'), 'Email template should render html table');
+            assert.ok(toString.includes(textField.label), 'Email template should have Text Field label');
+            assert.ok(toString.includes(textField.dataValue), 'Email template should have Text Field value');
+            done();
         })
         .catch(done);
     });
