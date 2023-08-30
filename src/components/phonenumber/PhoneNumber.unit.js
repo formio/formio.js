@@ -1,7 +1,7 @@
 import Harness from '../../../test/harness';
 import PhoneNumberComponent from './PhoneNumber';
 import assert from 'power-assert';
-import Formio from './../../Formio';
+import { Formio } from './../../Formio';
 
 import {
   comp1,
