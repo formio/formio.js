@@ -1,6 +1,7 @@
 import Input from '../_classes/input/Input';
 import { conformToMask } from '@formio/vanilla-text-mask';
 import * as FormioUtils from '../../utils/utils';
+import _ from 'lodash';
 
 export default class TextFieldComponent extends Input {
   static schema(...extend) {
@@ -213,13 +214,6 @@ export default class TextFieldComponent extends Input {
     };
   }
 
-  getValueAsString(value, options) {
-    if (value && this.component.inputFormat === 'plain' && /<[^<>]+>/g.test(value)) {
-      value = value.replaceAll('<','&lt;').replaceAll('>', '&gt;');
-    }
-    return super.getValueAsString(value, options);
-  }
-
   isHtmlRenderMode() {
     return super.isHtmlRenderMode() ||
       ((this.options.readOnly || this.disabled) &&
@@ -276,6 +270,9 @@ export default class TextFieldComponent extends Input {
       return result;
     }
 
+    if (value && this.component.inputFormat === 'plain' && /<[^<>]+>/g.test(value)) {
+      value = value.replaceAll('<','&lt;').replaceAll('>', '&gt;');
+    }
     return super.getValueAsString(value, options);
   }
 }
