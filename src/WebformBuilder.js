@@ -1,7 +1,6 @@
 import Webform from './Webform';
 import Component from './components/_classes/component/Component';
 import tippy from 'tippy.js';
-import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import { Formio } from './Formio';
 import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
@@ -357,6 +356,10 @@ export default class WebformBuilder extends Component {
   }
 
   attachComponent(element, component) {
+    if (component instanceof WebformBuilder) {
+      return;
+    }
+
     // Add component to element for later reference.
     element.formioComponent = component;
 
@@ -464,7 +467,7 @@ export default class WebformBuilder extends Component {
       premium: {
         title: 'Premium',
         weight: 40
-      },
+      }
     };
   }
 
@@ -676,7 +679,7 @@ export default class WebformBuilder extends Component {
       const filteredComponents = [];
 
       for (const key in components) {
-        const isMatchedToTitle = components[key].title.toLowerCase().match(searchValue);
+        const isMatchedToTitle = this.t(components[key].title).toLowerCase().match(searchValue);
         const isMatchedToKey = components[key].key.toLowerCase().match(searchValue);
 
         if (isMatchedToTitle || isMatchedToKey) {
@@ -815,22 +818,23 @@ export default class WebformBuilder extends Component {
 
   getComponentInfo(key, group) {
     let info;
+    // Need to check in first order as resource component key can be the same as from webform default components
+    if (group && group.slice(0, group.indexOf('-')) === 'resource') {
+      // This is an existing resource field.
+      const resourceGroups = this.groups.resource.subgroups;
+      const resourceGroup = _.find(resourceGroups, { key: group });
+      if (resourceGroup && resourceGroup.components.hasOwnProperty(`component-${key}`)) {
+        info = fastCloneDeep(resourceGroup.components[`component-${key}`].schema);
+      }
+    }
     // This is a new component
-    if (this.schemas.hasOwnProperty(key)) {
+    else if (this.schemas.hasOwnProperty(key)) {
       info = fastCloneDeep(this.schemas[key]);
     }
     else if (this.groups.hasOwnProperty(group)) {
       const groupComponents = this.groups[group].components;
       if (groupComponents.hasOwnProperty(key)) {
         info = fastCloneDeep(groupComponents[key].schema);
-      }
-    }
-    else if (group.slice(0, group.indexOf('-')) === 'resource') {
-      // This is an existing resource field.
-      const resourceGroups = this.groups.resource.subgroups;
-      const resourceGroup = _.find(resourceGroups, { key: group });
-      if (resourceGroup && resourceGroup.components.hasOwnProperty(`component-${key}`)) {
-        info = fastCloneDeep(resourceGroup.components[`component-${key}`].schema);
       }
     }
     else if (group === 'searchFields') {//Search components go into this group
@@ -1000,7 +1004,7 @@ export default class WebformBuilder extends Component {
     }
 
     if (!rebuild) {
-      rebuild = NativePromise.resolve();
+      rebuild = Promise.resolve();
     }
 
     return rebuild.then(() => {
@@ -1023,7 +1027,7 @@ export default class WebformBuilder extends Component {
     this.keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false) || this.options.properties?.keyboardBuilder;
 
     const isShowSubmitButton = !this.options.noDefaultSubmitButton
-      && !form.components.length;
+      && (!form.components.length || !form.components.find(comp => comp.key === 'submit'));
 
     // Ensure there is at least a submit button.
     if (isShowSubmitButton) {
@@ -1052,7 +1056,7 @@ export default class WebformBuilder extends Component {
         return this.rebuild().then(() => this.form);
       });
     }
-    return NativePromise.resolve(form);
+    return Promise.resolve(form);
   }
 
   populateRecaptchaSettings(form) {
@@ -1106,7 +1110,7 @@ export default class WebformBuilder extends Component {
       else if (parent.formioComponent && parent.formioComponent.removeChildComponent) {
         parent.formioComponent.removeChildComponent(component);
       }
-      const rebuild = parent.formioComponent.rebuild() || NativePromise.resolve();
+      const rebuild = parent.formioComponent.rebuild() || Promise.resolve();
       rebuild.then(() => {
         this.emit('removeComponent', component, parent.formioComponent.schema, path, index);
         this.emit('change', this.form);
@@ -1142,6 +1146,7 @@ export default class WebformBuilder extends Component {
       };
 
       const fieldsToRemoveDoubleQuotes = ['label', 'tooltip'];
+
       this.preview.form.components.forEach(component => this.replaceDoubleQuotes(component, fieldsToRemoveDoubleQuotes));
 
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
@@ -1163,6 +1168,9 @@ export default class WebformBuilder extends Component {
         _.assign(defaultValueComponent.component, _.omit({ ...component }, [
           'key',
           'label',
+          'labelPosition',
+          'labelMargin',
+          'labelWidth',
           'placeholder',
           'tooltip',
           'hidden',
@@ -1190,7 +1198,7 @@ export default class WebformBuilder extends Component {
           });
         });
 
-        if (tabIndex !== -1 && index !== -1 && changed && changed.value) {
+        if (tabIndex !== -1 && index !== -1 && changed && !_.isNil(changed.value)) {
           const sibling = parentComponent.tabs[tabIndex][index + 1];
           parentComponent.removeComponent(defaultValueComponent);
           const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
@@ -1310,7 +1318,7 @@ export default class WebformBuilder extends Component {
         parent.formioComponent.saveChildComponent(submissionData);
       }
 
-      const rebuild = parentComponent.rebuild() || NativePromise.resolve();
+      const rebuild = parentComponent.rebuild() || Promise.resolve();
       return rebuild.then(() => {
         const schema = parentContainer ? parentContainer[index] : (comp ? comp.schema : []);
         this.emitSaveComponentEvent(
@@ -1334,7 +1342,7 @@ export default class WebformBuilder extends Component {
     }
 
     this.highlightInvalidComponents();
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   emitSaveComponentEvent(schema, originalComp, parentComponentSchema, path, index, isNew, originalComponentSchema) {
@@ -1468,7 +1476,9 @@ export default class WebformBuilder extends Component {
         }
       ]
     } : ComponentClass.editForm(_.cloneDeep(overrides));
-    const instanceOptions = {};
+    const instanceOptions = {
+      inFormBuilder: true,
+    };
 
     this.hook('instanceOptionsPreview', instanceOptions);
 
@@ -1604,29 +1614,39 @@ export default class WebformBuilder extends Component {
   }
 
   moveComponent(component) {
+    if (this.selectedComponent) {
+      const prevSelected = this.selectedComponent;
+      prevSelected.element?.classList.remove('builder-component-selected');
+      this.removeEventListener(document, 'keydown');
+    }
+
     component.element.focus();
-    component.element.classList.add('builder-selected');
-    this.selectedElement = component;
-    this.removeEventListener(component.element, 'keydown');
-    this.addEventListener(component.element, 'keydown', this.moveHandler.bind(this));
+    component.element.classList.add('builder-component-selected');
+    this.selectedComponent = component;
+    this.addEventListener(document, 'keydown', this.moveHandler.bind(this));
   }
 
   moveHandler = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+    if (e.keyCode === 38 || e.keyCode === 40 || e.keyCode === 13) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+
     if (e.keyCode === 38) {
       this.updateComponentPlacement(true);
     }
+
     if (e.keyCode === 40) {
       this.updateComponentPlacement(false);
     }
+
     if (e.keyCode === 13) {
-      this.stopMoving(this.selectedElement);
+      this.stopMoving(this.selectedComponent);
     }
   };
 
   updateComponentPlacement(direction) {
-    const component = this.selectedElement;
+    const component = this.selectedComponent;
     let index, info;
     const step = direction ? -1 : 1;
     if (component) {
@@ -1678,7 +1698,9 @@ export default class WebformBuilder extends Component {
 
   stopMoving(comp) {
     const parent = comp.element.parentNode;
+    this.removeEventListener(document, 'keydown');
     parent.formioComponent.rebuild();
+    this.selectedComponent = null;
   }
 
   addNewComponent(element) {

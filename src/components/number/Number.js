@@ -1,8 +1,8 @@
-import { maskInput, conformToMask } from '@formio/vanilla-text-mask';
-import _ from 'lodash';
 import { createNumberMask } from '@formio/text-mask-addons';
+import { conformToMask,maskInput } from '@formio/vanilla-text-mask';
+import _ from 'lodash';
 import Input from '../_classes/input/Input';
-import { getNumberSeparators, getNumberDecimalLimit } from '../../utils/utils';
+import { getNumberSeparators, getNumberDecimalLimit, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 
 export default class NumberComponent extends Input {
   static schema(...extend) {
@@ -30,7 +30,26 @@ export default class NumberComponent extends Input {
     };
   }
 
-  constructor(...args) {
+  static get serverConditionSettings() {
+    return NumberComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: [...super.conditionOperatorsSettings.operators, 'lessThan', 'greaterThan', 'lessThanOrEqual','greaterThanOrEqual'],
+      valueComponent(classComp) {
+        return { ... classComp, type: 'number' };
+      }
+    };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+    return getComponentSavedTypes(schema) || [componentValueTypes.number];
+  }
+
+ constructor(...args) {
     super(...args);
     this.validators = this.validators.concat(['min', 'max']);
 

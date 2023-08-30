@@ -1,8 +1,7 @@
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
-import { eachComponent, getArrayFromComponentPath } from '../../utils/utils';
+import { componentValueTypes, eachComponent, getArrayFromComponentPath, getComponentSavedTypes } from '../../utils/utils';
 
 export default class ButtonComponent extends Field {
   static schema(...extend) {
@@ -31,6 +30,10 @@ export default class ButtonComponent extends Field {
       weight: 110,
       schema: ButtonComponent.schema()
     };
+  }
+
+  static savedValueTypes(schema) {
+    return getComponentSavedTypes(schema) || [componentValueTypes.boolean];
   }
 
   constructor(component, options, data) {
@@ -398,7 +401,7 @@ export default class ButtonComponent extends Field {
     let params = {
       response_type: 'code',
       client_id: settings.clientId,
-      redirect_uri: settings.redirectURI || window.location.origin || `${window.location.protocol}//${window.location.host}`,
+      redirect_uri: (settings.redirectURI && this.interpolate(settings.redirectURI)) || window.location.origin || `${window.location.protocol}//${window.location.host}`,
       state: settings.state,
       scope: settings.scope
     };
@@ -442,7 +445,7 @@ export default class ButtonComponent extends Field {
             return;
           }
           // Depending on where the settings came from, submit to either the submission endpoint (old) or oauth endpoint (new).
-          let requestPromise = NativePromise.resolve();
+          let requestPromise = Promise.resolve();
 
           if (_.has(this, 'root.form.config.oauth') && this.root.form.config.oauth[this.component.oauthProvider]) {
             params.provider = settings.provider;

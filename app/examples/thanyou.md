@@ -7,15 +7,13 @@ weight: 14
 You can respond to a submission event and change the page of the browser to a thank you page. This can be either another page of your website or can use your framework's routing system if you are using a framework.
 
 ```html
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
-<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+<script src="https://cdn.form.io/js/formio.embed.js"></script>
 <div id="formio"></div>
 ```
 
 ```js
-Formio.icons = 'fontawesome';
 Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example')
   .then(function(form) {
     // What to do when the submit begins.
