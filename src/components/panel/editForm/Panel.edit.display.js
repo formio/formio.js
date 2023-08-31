@@ -76,28 +76,23 @@ export default [
     input: false,
     components: [
       {
-        type: 'select',
-        input: true,
-        label: 'Breadcrumb Type',
-        key: 'breadcrumb',
-        dataSrc: 'values',
-        data: {
-          values: [
-            { label: 'Default', value: 'default' },
-            { label: 'Condensed', value: 'condensed' },
-            { label: 'Hidden', value: 'none' },
-          ]
-        }
-      },
-      {
         input: true,
         type: 'checkbox',
         label: 'Allow click on Breadcrumb',
         key: 'breadcrumbClickable',
         defaultValue: true,
-        conditional: {
-          json: { '!==': [{ var: 'data.breadcrumb' }, 'none'] }
+        customConditional({ data = {}, buildingForm = {} }) {
+          const formSettings = buildingForm.settings || {};
+          return ![data.breadcrumb, formSettings.wizardBreadcrumbsType].includes('none');
         }
+        // conditional: {
+        //   json: {
+        //     'and': [
+        //       { '!==': [{ var: 'data.breadcrumb' }, 'none'] },
+        //       { '!==': [{ var: 'buildingForm.settings.wizardBreadcrumbsType' }, 'none'] }
+        //     ]
+        //   }
+        // },
       },
       {
         input: true,
