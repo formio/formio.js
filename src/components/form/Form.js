@@ -216,6 +216,9 @@ export default class FormComponent extends Component {
     if (this.options.onChange) {
       options.onChange = this.options.onChange;
     }
+    if (this.options.preview) {
+      options.preview = this.options.preview;
+    }
     return options;
   }
 
