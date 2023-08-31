@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.18.0-rc.1]
+### Changed
+ - Increment minor version.
+
 ## 4.17.0-rc.4
 ### Changed
  - FIO-5967: fixed issue with incorrect string representation for object type
