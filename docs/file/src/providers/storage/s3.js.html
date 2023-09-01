@@ -231,8 +231,13 @@ const s3 = (formio) =&gt; ({
     else {
       return NativePromise.resolve(file);
     }
-  }
-});
+  },
+
+  deleteFile(fileInfo) {
+    const url = `${formio.formUrl}/file/${XHR.trim(fileInfo.name)}?bucket=${XHR.trim(fileInfo.bucket)}&amp;key=${XHR.trim(fileInfo.key)}`;
+    return formio.makeRequest(&apos;&apos;, url, &apos;delete&apos;);
+   }
+ });
 
 s3.title = &apos;S3&apos;;
 export default s3;
