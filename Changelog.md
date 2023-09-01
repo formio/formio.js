@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.17.0-rc.6]
+
 ## 4.17.0-rc.5
 ### Changed
  - FIO-3820: Ability to delete files inside the Storage Services
