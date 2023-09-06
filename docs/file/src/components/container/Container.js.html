@@ -116,6 +116,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#licenses">licenses</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/licenses/Licenses.js~Licenses.html">Licenses</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
@@ -191,7 +192,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/container/Container.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-import { getFocusableElements } from &apos;../../utils/utils&apos;;
+import { componentValueTypes, getComponentSavedTypes, getFocusableElements } from &apos;../../utils/utils&apos;;
 
 import Component from &apos;../_classes/component/Component&apos;;
 import Field from &apos;../_classes/field/Field&apos;;
@@ -226,6 +227,10 @@ export default class ContainerComponent extends NestedDataComponent {
   constructor(...args) {
     super(...args);
     this.type = &apos;container&apos;;
+  }
+
+  static savedValueTypes(schema) {
+    return  getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   addComponents(data, options) {

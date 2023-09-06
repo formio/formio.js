@@ -414,6 +414,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/licenses/licenses.js~licenses",
+    "class/src/licenses/Licenses.js~Licenses.html",
+    "<span>Licenses</span> <span class=\"search-result-import-path\">formiojs/src/licenses/Licenses.js</span>",
+    "class"
+  ],
+  [
     "formiojs/src/components/_classes/list/listcomponent.form.js~listcomponent",
     "function/index.html#static-function-ListComponent",
     "<span>ListComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/list/ListComponent.form.js</span>",
@@ -2916,6 +2922,18 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/checkbox/checkbox.js~checkboxcomponent.conditionoperatorssettings",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#static-get-conditionOperatorsSettings",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent.conditionOperatorsSettings",
+    "member"
+  ],
+  [
+    "src/components/checkbox/checkbox.js~checkboxcomponent.savedvaluetypes",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#static-method-savedValueTypes",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent.savedValueTypes",
+    "method"
+  ],
+  [
     "src/components/checkbox/checkbox.js~checkboxcomponent.schema",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#static-method-schema",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent.schema",
@@ -3118,6 +3136,12 @@ window.esdocSearchIndex = [
     "class/src/components/container/Container.js~ContainerComponent.html#static-get-builderInfo",
     "src/components/container/Container.js~ContainerComponent.builderInfo",
     "member"
+  ],
+  [
+    "src/components/container/container.js~containercomponent.savedvaluetypes",
+    "class/src/components/container/Container.js~ContainerComponent.html#static-method-savedValueTypes",
+    "src/components/container/Container.js~ContainerComponent.savedValueTypes",
+    "method"
   ],
   [
     "src/components/container/container.js~containercomponent.schema",
@@ -3604,6 +3628,18 @@ window.esdocSearchIndex = [
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#static-get-builderInfo",
     "src/components/datetime/DateTime.js~DateTimeComponent.builderInfo",
     "member"
+  ],
+  [
+    "src/components/datetime/datetime.js~datetimecomponent.conditionoperatorssettings",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#static-get-conditionOperatorsSettings",
+    "src/components/datetime/DateTime.js~DateTimeComponent.conditionOperatorsSettings",
+    "member"
+  ],
+  [
+    "src/components/datetime/datetime.js~datetimecomponent.savedvaluetypes",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#static-method-savedValueTypes",
+    "src/components/datetime/DateTime.js~DateTimeComponent.savedValueTypes",
+    "method"
   ],
   [
     "src/components/datetime/datetime.js~datetimecomponent.schema",
@@ -4110,6 +4146,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/fieldset/fieldset.js~fieldsetcomponent.savedvaluetypes",
+    "class/src/components/fieldset/Fieldset.js~FieldsetComponent.html#static-method-savedValueTypes",
+    "src/components/fieldset/Fieldset.js~FieldsetComponent.savedValueTypes",
+    "method"
+  ],
+  [
     "src/components/fieldset/fieldset.js~fieldsetcomponent.schema",
     "class/src/components/fieldset/Fieldset.js~FieldsetComponent.html#static-method-schema",
     "src/components/fieldset/Fieldset.js~FieldsetComponent.schema",
@@ -4444,6 +4486,12 @@ window.esdocSearchIndex = [
     "class/src/components/html/HTML.js~HTMLComponent.html#static-get-builderInfo",
     "src/components/html/HTML.js~HTMLComponent.builderInfo",
     "member"
+  ],
+  [
+    "src/components/html/html.js~htmlcomponent.savedvaluetypes",
+    "class/src/components/html/HTML.js~HTMLComponent.html#static-method-savedValueTypes",
+    "src/components/html/HTML.js~HTMLComponent.savedValueTypes",
+    "method"
   ],
   [
     "src/components/html/html.js~htmlcomponent.schema",
@@ -4948,6 +4996,12 @@ window.esdocSearchIndex = [
     "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#static-get-builderInfo",
     "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.builderInfo",
     "member"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent.savedvaluetypes",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#static-method-savedValueTypes",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.savedValueTypes",
+    "method"
   ],
   [
     "src/components/recaptcha/recaptcha.js~recaptchacomponent.schema",
@@ -5460,6 +5514,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/table/table.js~tablecomponent.savedvaluetypes",
+    "class/src/components/table/Table.js~TableComponent.html#static-method-savedValueTypes",
+    "src/components/table/Table.js~TableComponent.savedValueTypes",
+    "method"
+  ],
+  [
     "src/components/table/table.js~tablecomponent.schema",
     "class/src/components/table/Table.js~TableComponent.html#static-method-schema",
     "src/components/table/Table.js~TableComponent.schema",
@@ -5622,6 +5682,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/tabs/tabs.js~tabscomponent.savedvaluetypes",
+    "class/src/components/tabs/Tabs.js~TabsComponent.html#static-method-savedValueTypes",
+    "src/components/tabs/Tabs.js~TabsComponent.savedValueTypes",
+    "method"
+  ],
+  [
     "src/components/tabs/tabs.js~tabscomponent.schema",
     "class/src/components/tabs/Tabs.js~TabsComponent.html#static-method-schema",
     "src/components/tabs/Tabs.js~TabsComponent.schema",
@@ -5752,6 +5818,18 @@ window.esdocSearchIndex = [
     "class/src/components/tags/Tags.js~TagsComponent.html#static-get-builderInfo",
     "src/components/tags/Tags.js~TagsComponent.builderInfo",
     "member"
+  ],
+  [
+    "src/components/tags/tags.js~tagscomponent.conditionoperatorssettings",
+    "class/src/components/tags/Tags.js~TagsComponent.html#static-get-conditionOperatorsSettings",
+    "src/components/tags/Tags.js~TagsComponent.conditionOperatorsSettings",
+    "member"
+  ],
+  [
+    "src/components/tags/tags.js~tagscomponent.savedvaluetypes",
+    "class/src/components/tags/Tags.js~TagsComponent.html#static-method-savedValueTypes",
+    "src/components/tags/Tags.js~TagsComponent.savedValueTypes",
+    "method"
   ],
   [
     "src/components/tags/tags.js~tagscomponent.schema",
@@ -6666,6 +6744,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/well/well.js~wellcomponent.savedvaluetypes",
+    "class/src/components/well/Well.js~WellComponent.html#static-method-savedValueTypes",
+    "src/components/well/Well.js~WellComponent.savedValueTypes",
+    "method"
+  ],
+  [
     "src/components/well/well.js~wellcomponent.schema",
     "class/src/components/well/Well.js~WellComponent.html#static-method-schema",
     "src/components/well/Well.js~WellComponent.schema",
@@ -7395,6 +7479,48 @@ window.esdocSearchIndex = [
     "src/index.js",
     "file/src/index.js.html",
     "src/index.js",
+    "file"
+  ],
+  [
+    "src/licenses/licenses.js",
+    "file/src/licenses/Licenses.js.html",
+    "src/licenses/Licenses.js",
+    "file"
+  ],
+  [
+    "src/licenses/licenses.js~licenses.addlicense",
+    "class/src/licenses/Licenses.js~Licenses.html#static-method-addLicense",
+    "src/licenses/Licenses.js~Licenses.addLicense",
+    "method"
+  ],
+  [
+    "src/licenses/licenses.js~licenses.getlicense",
+    "class/src/licenses/Licenses.js~Licenses.html#static-method-getLicense",
+    "src/licenses/Licenses.js~Licenses.getLicense",
+    "method"
+  ],
+  [
+    "src/licenses/licenses.js~licenses.getlicenses",
+    "class/src/licenses/Licenses.js~Licenses.html#static-method-getLicenses",
+    "src/licenses/Licenses.js~Licenses.getLicenses",
+    "method"
+  ],
+  [
+    "src/licenses/licenses.js~licenses.licenses",
+    "class/src/licenses/Licenses.js~Licenses.html#static-member-licenses",
+    "src/licenses/Licenses.js~Licenses.licenses",
+    "member"
+  ],
+  [
+    "src/licenses/licenses.js~licenses.removelicense",
+    "class/src/licenses/Licenses.js~Licenses.html#static-method-removeLicense",
+    "src/licenses/Licenses.js~Licenses.removeLicense",
+    "method"
+  ],
+  [
+    "src/licenses/index.js",
+    "file/src/licenses/index.js.html",
+    "src/licenses/index.js",
     "file"
   ],
   [

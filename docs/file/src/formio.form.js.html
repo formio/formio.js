@@ -116,6 +116,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#licenses">licenses</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/licenses/Licenses.js~Licenses.html">Licenses</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
@@ -208,6 +209,7 @@ import Widgets from &apos;./widgets&apos;;
 import Form from &apos;./Form&apos;;
 import Utils from &apos;./utils&apos;;
 import Evaluator from &apos;./utils/Evaluator&apos;;
+import Licenses from &apos;./licenses&apos;;
 
 Formio.loadModules = (path = `${Formio.getApiUrl()  }/externalModules.js`, name = &apos;externalModules&apos;) =&gt; {
   Formio.requireLibrary(name, name, path, true)
@@ -233,12 +235,20 @@ Formio.QuickRules = QuickRules;
 Formio.Transformers = Transformers;
 Formio.ValueSources = ValueSources;
 Formio.AllComponents = AllComponents;
+Formio.Licenses = Licenses;
 
 // This is strange, but is needed for &quot;premium&quot; components to import correctly.
 Formio.Formio = Formio;
 
 Formio.Components.setComponents(AllComponents);
-const registerPlugin = (plugin) =&gt; {
+
+/**
+ * Register a module
+ * @param {*} plugin
+ * @param {*} options
+ * @returns
+ */
+const registerPlugin = (plugin, options = {}) =&gt; {
   // Sanity check.
   if (typeof plugin !== &apos;object&apos;) {
     return;
@@ -300,6 +310,11 @@ const registerPlugin = (plugin) =&gt; {
       case &apos;valueSources&apos;:
         Formio.ValueSources.addValueSources(plugin.valueSources);
         break;
+      case &apos;library&apos;:
+        options.license
+          ? Formio.Licenses.addLicense(plugin.library, options.license)
+          : Formio.Licenses.removeLicense(plugin.library);
+        break;
       default:
         console.log(&apos;Unknown plugin option&apos;, key);
     }
@@ -307,24 +322,26 @@ const registerPlugin = (plugin) =&gt; {
 };
 
 /**
- * Allows passing in plugins as multiple arguments or an array of plugins.
+ * Allows passing in plugins as an array of plugins or a single plugin.
  *
- * Formio.plugins(plugin1, plugin2, etc);
- * Formio.plugins([plugin1, plugin2, etc]);
+ * Formio.plugins(plugin1, options);
+ * Formio.plugins([plugin1, plugin2, etc], options);
  */
-Formio.use = (...plugins) =&gt; {
+Formio.use = (plugins, options = {}) =&gt; {
+  plugins = _.isArray(plugins) ? plugins : [plugins];
+
   plugins.forEach((plugin) =&gt; {
     if (Array.isArray(plugin)) {
-      plugin.forEach(p =&gt; registerPlugin(p));
+      plugin.forEach(p =&gt; registerPlugin(p, options));
     }
     else {
-      registerPlugin(plugin);
+      registerPlugin(plugin, options);
     }
   });
 };
 
 // Export the components.
-export { Builders, Components, Displays, Providers, Rules, Widgets, Templates, Conjunctions, Operators, QuickRules, Transformers, ValueSources, Utils, Form, Formio };
+export { Builders, Components, Displays, Providers, Rules, Widgets, Templates, Conjunctions, Operators, QuickRules, Transformers, ValueSources, Utils, Form, Formio, Licenses };
 </code></pre>
 
 </div>

@@ -116,6 +116,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#licenses">licenses</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/licenses/Licenses.js~Licenses.html">Licenses</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
@@ -193,6 +194,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import moment from &apos;moment&apos;;
 import FormioUtils from &apos;../../utils&apos;;
+import { componentValueTypes, getComponentSavedTypes } from &apos;../../utils/utils&apos;;
 import Input from &apos;../_classes/input/Input&apos;;
 
 export default class DateTimeComponent extends Input {
@@ -246,25 +248,26 @@ export default class DateTimeComponent extends Input {
   }
 
   static get serverConditionSettings() {
+    return DateTimeComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
     return {
-      ...super.serverConditionSettings,
-      operators: [
-        &apos;isDateEqual&apos;,
-        &apos;isNotDateEqual&apos;,
-        &apos;isEmpty&apos;,
-        &apos;isNotEmpty&apos;,
-        &apos;dateLessThan&apos;,
-        &apos;dateGreaterThan&apos;,
-        &apos;dateLessThanOrEqual&apos;,
-        &apos;dateGreaterThanOrEqual&apos;,
-      ],
+      ...super.conditionOperatorsSettings,
+      operators: [&apos;isDateEqual&apos;, &apos;isNotDateEqual&apos;, &apos;isEmpty&apos;, &apos;isNotEmpty&apos;,&apos;dateLessThan&apos;, &apos;dateGreaterThan&apos;, &apos;dateLessThanOrEqual&apos;,&apos;dateGreaterThanOrEqual&apos;],
       valueComponent(classComp) {
         return {
           ...classComp,
           type: &apos;datetime&apos;,
         };
-      },
+      }
     };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+
+    return  getComponentSavedTypes(schema) || [componentValueTypes.date];
   }
 
   constructor(component, options, data) {

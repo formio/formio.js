@@ -116,6 +116,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#displays">displays</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/displays/Displays.js~Displays.html">Displays</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#licenses">licenses</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/licenses/Licenses.js~Licenses.html">Licenses</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">providers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/Providers.js~Providers.html">Providers</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-address">providers/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AddressProvider.js~AddressProvider.html">AddressProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/providers/address/AzureAddressProvider.js~AzureAddressProvider.html">AzureAddressProvider</a></span></span></li>
@@ -191,6 +192,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/checkbox/Checkbox.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import { componentValueTypes, getComponentSavedTypes } from &apos;../../utils/utils&apos;;
 import Field from &apos;../_classes/field/Field&apos;;
 
 export default class CheckBoxComponent extends Field {
@@ -219,22 +221,41 @@ export default class CheckBoxComponent extends Field {
   }
 
   static get serverConditionSettings() {
+    return CheckBoxComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
     return {
-      ...super.serverConditionSettings,
+      ...super.conditionOperatorsSettings,
       operators: [&apos;isEqual&apos;],
       valueComponent() {
         return {
           valueType: &apos;boolean&apos;,
           data: {
             values: [
-              { label: &apos;Checked&apos;, value: &apos;true&apos; },
-              { label: &apos;Not Checked&apos;, value: &apos;false&apos; },
-            ]
+                { label: &apos;Checked&apos;, value: &apos;true&apos; },
+                { label: &apos;Not Checked&apos;, value: &apos;false&apos; },
+              ]
           },
-          type: &apos;select&apos;,
+          type: &apos;select&apos;
         };
-      },
+      }
     };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+    const types = getComponentSavedTypes(schema);
+
+    if (_.isArray(types)) {
+      return types;
+    }
+
+    if (schema.inputType === &apos;radio&apos;) {
+      return [componentValueTypes.string];
+    }
+
+    return [componentValueTypes.boolean];
   }
 
   get defaultSchema() {
