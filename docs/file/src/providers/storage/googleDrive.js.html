@@ -250,11 +250,6 @@ const googledrive = (formio) =&gt; ({
     file.url =
       `${formio.formUrl}/storage/gdrive?fileId=${file.id}&amp;fileName=${file.originalName}${token ? `&amp;x-jwt-token=${token}` : &apos;&apos;}`;
     return NativePromise.resolve(file);
-  },
-
-  deleteFile: function deleteFile(fileInfo) {
-    var url = &apos;&apos;.concat(formio.formUrl, `/storage/gdrive?id=${fileInfo.id}&amp;name=${fileInfo.originalName}`);
-    return formio.makeRequest(&apos;&apos;, url, &apos;delete&apos;);
   }
 });
 
