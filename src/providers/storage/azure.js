@@ -6,7 +6,7 @@ const azure = (formio) => ({
       xhr.setRequestHeader('Content-Type', file.type);
       xhr.setRequestHeader('x-ms-blob-type', 'BlockBlob');
       return file;
-    }, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback).then((response) => {
+    }, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback).then(() => {
       return {
         storage: 'azure',
         name: XHR.path([dir, fileName]),
@@ -14,17 +14,11 @@ const azure = (formio) => ({
         type: file.type,
         groupPermissions,
         groupId,
-        key: response.pathFile
       };
     });
   },
   downloadFile(file) {
     return formio.makeRequest('file', `${formio.formUrl}/storage/azure?name=${XHR.trim(file.name)}`, 'GET');
-  },
-
-  deleteFile: function deleteFile(fileInfo) {
-    var url = `${formio.formUrl}/storage/azure?name=${XHR.trim(fileInfo.name)}&key=${XHR.trim(fileInfo.key)}`;
-    return formio.makeRequest('', url, 'delete');
   }
 });
 
