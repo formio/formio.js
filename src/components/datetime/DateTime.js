@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import FormioUtils from '../../utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Input from '../_classes/input/Input';
 
 export default class DateTimeComponent extends Input {
@@ -54,25 +55,26 @@ export default class DateTimeComponent extends Input {
   }
 
   static get serverConditionSettings() {
+    return DateTimeComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
     return {
-      ...super.serverConditionSettings,
-      operators: [
-        'isDateEqual',
-        'isNotDateEqual',
-        'isEmpty',
-        'isNotEmpty',
-        'dateLessThan',
-        'dateGreaterThan',
-        'dateLessThanOrEqual',
-        'dateGreaterThanOrEqual',
-      ],
+      ...super.conditionOperatorsSettings,
+      operators: ['isDateEqual', 'isNotDateEqual', 'isEmpty', 'isNotEmpty','dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'],
       valueComponent(classComp) {
         return {
           ...classComp,
           type: 'datetime',
         };
-      },
+      }
     };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+
+    return  getComponentSavedTypes(schema) || [componentValueTypes.date];
   }
 
   constructor(component, options, data) {

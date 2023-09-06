@@ -2,7 +2,7 @@ import _ from 'lodash';
 import ListComponent from '../_classes/list/ListComponent';
 import NativePromise from 'native-promise-only';
 import { GlobalFormio as Formio } from '../../Formio';
-import { boolValue } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 
 export default class RadioComponent extends ListComponent {
   static schema(...extend) {
@@ -28,6 +28,45 @@ export default class RadioComponent extends ListComponent {
       documentation: '/userguide/form-building/form-components#radio',
       schema: RadioComponent.schema()
     };
+  }
+
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      valueComponent(classComp) {
+        return {
+          type: 'select',
+          dataSrc: 'custom',
+          valueProperty: 'value',
+          dataType: classComp.dataType || '',
+          data: {
+            custom() {
+              return classComp.values;
+            }
+          },
+        };
+      }
+    };
+  }
+
+  static savedValueTypes(schema) {
+    const { boolean, string, number, object, array } = componentValueTypes;
+    const { dataType } = schema;
+    const types = getComponentSavedTypes(schema);
+
+    if (types) {
+      return types;
+    }
+
+    if (dataType === 'object') {
+      return [object, array];
+    }
+
+    if (componentValueTypes[dataType]) {
+      return [componentValueTypes[dataType]];
+    }
+
+    return [boolean, string, number, object, array];
   }
 
   constructor(component, options, data) {

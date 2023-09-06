@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Field from '../_classes/field/Field';
 
 export default class CheckBoxComponent extends Field {
@@ -27,22 +28,41 @@ export default class CheckBoxComponent extends Field {
   }
 
   static get serverConditionSettings() {
+    return CheckBoxComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
     return {
-      ...super.serverConditionSettings,
+      ...super.conditionOperatorsSettings,
       operators: ['isEqual'],
       valueComponent() {
         return {
           valueType: 'boolean',
           data: {
             values: [
-              { label: 'Checked', value: 'true' },
-              { label: 'Not Checked', value: 'false' },
-            ]
+                { label: 'Checked', value: 'true' },
+                { label: 'Not Checked', value: 'false' },
+              ]
           },
-          type: 'select',
+          type: 'select'
         };
-      },
+      }
     };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+    const types = getComponentSavedTypes(schema);
+
+    if (_.isArray(types)) {
+      return types;
+    }
+
+    if (schema.inputType === 'radio') {
+      return [componentValueTypes.string];
+    }
+
+    return [componentValueTypes.boolean];
   }
 
   get defaultSchema() {
