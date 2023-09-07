@@ -6,8 +6,10 @@ const s3 = (formio) => ({
       response.data.fileName = fileName;
       response.data.key = XHR.path([response.data.key, dir, fileName]);
       if (response.signed) {
-        xhr.openAndSetHeaders('PUT', response.signed);
-        xhr.setRequestHeader('Content-Type', file.type);
+        xhr.openAndSetHeaders('PUT', response.signed.url);
+        Object.keys(response.data.headers).forEach(key => {
+          xhr.setRequestHeader(key, response.data.headers[key]);
+        });
         return file;
       }
       else {
