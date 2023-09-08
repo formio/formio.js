@@ -195,4 +195,27 @@ describe('WebformBuilder tests', function() {
       }, 150);
     }).catch(done);
   });
+
+  it('Should keep min/max date validation settings with moment.js function', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm(columnsForm).then(() => {
+      const column1 = builder.webform.element.querySelector('[ref="columns-container"]');
+      Harness.buildComponent('day', column1);
+
+      setTimeout(() => {
+        const maxDateComp = builder.editForm.getComponent('maxDate');
+        maxDateComp.setValue('moment().add(10, \'days\')');
+
+        setTimeout(() => {
+          Harness.saveComponent();
+
+          setTimeout(() => {
+            const dayComp = builder.webform.getComponent(['day']);
+            assert.equal(dayComp.component.maxDate, 'moment().add(10, \'days\')');
+            done();
+          }, 200);
+        }, 200);
+      }, 150);
+    }).catch(done);
+  });
 });
