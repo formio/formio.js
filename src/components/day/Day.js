@@ -42,10 +42,10 @@ export default class DayComponent extends Field {
   }
 
   constructor(component, options, data) {
-    if (component.maxDate) {
+    if (component.maxDate && component.maxDate.indexOf('moment(') === -1) {
       component.maxDate = moment(component.maxDate, 'YYYY-MM-DD').toISOString();
     }
-    if (component.minDate) {
+    if (component.minDate && component.minDate.indexOf('moment(') === -1) {
       component.minDate = moment(component.minDate, 'YYYY-MM-DD').toISOString();
     }
     super(component, options, data);
