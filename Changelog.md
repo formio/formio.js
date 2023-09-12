@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7110: when 'use original revision' is enabled for nested form, submission still displays in current form revision pdfs
  - Revert "FI0-5429: added a condition to remove the decimal separator when the decimal digits are set to 0"
  - FIO-6493: fixed reporting license validation
+ - FIO-7173: fixed an issue when initial focus gets triggered in Formbuilder inside of the Nested forms
    
 ## 5.0.0-rc.26
 ### Changed
