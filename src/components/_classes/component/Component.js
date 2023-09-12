@@ -3541,6 +3541,7 @@ export default class Component extends Element {
 
   autofocus() {
     const hasAutofocus = this.component.autofocus && !this.builderMode && !this.options.preview;
+
     if (hasAutofocus) {
       this.on('render', () => this.focus(), true);
     }
