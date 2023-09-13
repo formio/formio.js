@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Revert "FI0-5429: added a condition to remove the decimal separator when the decimal digits are set to 0"
  - FIO-6493: fixed reporting license validation
  - FIO-7173: fixed an issue when initial focus gets triggered in Formbuilder inside of the Nested forms
+ - FIO 7246: DOMPurify when PDF option is set
    
 ## 5.0.0-rc.26
 ### Changed
