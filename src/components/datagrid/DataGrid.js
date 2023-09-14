@@ -424,10 +424,13 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   focusOnNewRowElement(row) {
     Object.keys(row).find((key) => {
-      const focusableElements = getFocusableElements(row[key].element);
-      if (focusableElements && focusableElements[0]) {
-        focusableElements[0].focus();
-        return true;
+      const element = row[key].element;
+      if (element) {
+        const focusableElements = getFocusableElements(element);
+        if (focusableElements && focusableElements[0]) {
+          focusableElements[0].focus();
+          return true;
+        }
       }
       return false;
     });
