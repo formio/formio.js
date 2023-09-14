@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.17.1-rc.3
+### Changed
+ - Avoid passing 'undefined' to function getFocusableElements in DataGrid#focusOnNewRowElement(row) (#5345)
+
 ## 4.17.1-rc.2
 ### Changed
  - Revert "FIO-7074: Fixes an issue where setting submission to the Wizard from the form controller will not set values for all the pages"
