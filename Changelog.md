@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.17.1
+### Changed
+ - Official Release
+
 ## 4.17.1-rc.3
 ### Changed
  - Avoid passing 'undefined' to function getFocusableElements in DataGrid#focusOnNewRowElement(row) (#5345)
