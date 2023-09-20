@@ -49,6 +49,39 @@
         </div>
       </li>
     {% }) %}
+    {% ctx.filesToSync.forEach(function(file) { %}
+      <li class="list-group-item">
+        <div class="row align-center">
+          {% if (file.status === 'info') { %}
+            <div class="col-md-1"><i tabindex="0" class="{{ctx.iconClass('remove')}}" ref="fileToSyncRemove"></i></div>
+          {% } else { %}
+            <div class="col-md-1"></div>
+          {% } %}
+          <div class="col-md-{% if (ctx.self.hasTypes) { %}7{% } else { %}9{% } %}">
+            <div>{{file.originalName || file.name}}</div>
+            {% if (file.status === 'progress') { %}
+              <div class="status progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="{{file.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{file.progress}}%">
+                  <span class="sr-only">{{file.progress}}% {{ctx.t('Complete')}}</span>
+                </div>
+              </div>
+            {% } else { %}
+              <div class="status text-{{file.status === 'error' ? 'danger': file.status === 'readyToDelete' ? 'info' : file.status}}">{{ctx.t(file.message)}}</div>
+            {% } %}
+          </div>
+          <div class="col-md-2">{{ctx.fileSize(file.size)}}</div>
+          {% if (ctx.self.hasTypes) { %}
+            <div class="col-md-2">
+              <select class="file-type" ref="fileType">
+                {% ctx.component.fileTypes.map(function(type) { %}
+                  <option class="test" value="{{ type.value }}" {% if (type.label === file.fileType) { %}selected="selected"{% } %}>{{ctx.t(type.label)}}</option>
+                {% }); %}
+              </select>
+            </div>
+          {% } %}
+        </div>
+      </li>
+    {% }) %}
   </ul>
 {% } else { %}
   <div>
@@ -80,8 +113,8 @@
         <a href="#" ref="fileBrowse" class="browse">
           {{ctx.t('browse')}}
           <span class="sr-only">
-            {{ctx.t('Browse to attach file for ' + ctx.component.label + '. ' + 
-            (ctx.component.description ? ctx.component.description + '. ' : '') + 
+            {{ctx.t('Browse to attach file for ' + ctx.component.label + '. ' +
+            (ctx.component.description ? ctx.component.description + '. ' : '') +
             ((!ctx.component.filePattern || ctx.component.filePattern === '*') ? 'Any file types are allowed' : ctx.t('Allowed file types: ') + ctx.component.filePattern))}}
           </span>
         </a>
@@ -97,34 +130,6 @@
     <button class="btn btn-primary" ref="toggleCameraMode">{{ctx.t('Switch to file upload')}}</button>
   {% } %}
 {% } %}
-{% ctx.statuses.forEach(function(status) { %}
-  <div class="file {{ctx.statuses.status === 'error' ? ' has-error' : ''}}">
-    <div class="row">
-      <div class="fileName col-form-label col-sm-10">{{status.originalName}}
-        <i class="{{ctx.iconClass('remove')}}" ref="fileStatusRemove">
-          <span class="sr-only">{{ctx.t('Remove button. Press to remove ' + status.originalName || status.name + '.')}}</span>
-          <span class="sr-only">{{status.message ? status.message.replace(';', '.') : ''}}</span>
-        </i>
-      </div>
-      <div class="fileSize col-form-label col-sm-2 text-right">{{ctx.fileSize(status.size)}}</div>
-    </div>
-    <div class="row">
-      <div class="col-sm-12">
-        {% if (status.status === 'progress') { %}
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" aria-valuenow="{{status.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{status.progress}}%">
-              <span class="sr-only">{{status.progress}}% {{ctx.t('Complete')}}</span>
-            </div>
-          </div>
-        {% } else if (status.status === 'error') { %}
-          <div class="alert alert-danger bg-{{status.status}}">{{ctx.t(status.message)}}</div>
-        {% } else { %}
-          <div class="bg-{{status.status}}">{{ctx.t(status.message)}}</div>
-        {% } %}
-      </div>
-    </div>
-  </div>
-{% }) %}
 {% if (!ctx.component.storage || ctx.support.hasWarning) { %}
   <div class="alert alert-warning">
     {% if (!ctx.component.storage) { %}
