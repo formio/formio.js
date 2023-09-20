@@ -380,6 +380,11 @@ td > .formio-form-group {
   }
 }
 
+.formio-component-file .status {
+  margin-top: 4px;
+  font-size: 0.9rem;
+}
+
 .formio-component-file .fileSelector.fileDragOver {
   border-color: #127abe;
 }
@@ -1764,4 +1769,8 @@ span[role="link"] {
 
 .hidden {
   display: none !important;
+}
+
+.align-center {
+  align-items: center;
 }
