@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6493: fixed reporting license validation
  - FIO-7173: fixed an issue when initial focus gets triggered in Formbuilder inside of the Nested forms
  - FIO 7246: DOMPurify when PDF option is set
- - Revert "FIO-7074: Fixes an issue where setting submission to the Wizard from the form controller will not set values for all the pages" 
+ - Revert "FIO-7074: Fixes an issue where setting submission to the Wizard from the form controller will not set values for all the pages"
+ - FIO-4816: fixed email submission: data display issues
    
 ## 5.0.0-rc.26
 ### Changed
