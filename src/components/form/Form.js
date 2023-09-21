@@ -233,7 +233,8 @@ export default class FormComponent extends Component {
   /**
    * Prints out the value of form components as a datagrid value.
    */
-  getValueAsString(value) {
+
+  getValueAsString(value, options) {
     if (!value) {
       return 'No data provided';
     }
@@ -243,6 +244,37 @@ export default class FormComponent extends Component {
     if (!value.data || !Object.keys(value.data).length) {
       return 'No data provided';
     }
+    if (options?.email) {
+      let result = (`
+        <table border="1" style="width:100%">
+          <tbody>
+      `);
+
+      this.everyComponent((component) => {
+        if (component.isInputComponent && component.visible && !component.skipInEmail) {
+          result += (`
+            <tr>
+              <th style="padding: 5px 10px;">${component.label}</th>
+              <td style="width:100%;padding:5px 10px;">${component.getView(component.dataValue, options)}</td>
+            </tr>
+          `);
+        }
+      }, {
+        ...options,
+        fromRoot: true,
+      });
+
+      result += (`
+          </tbody>
+        </table>
+      `);
+
+      return result;
+    }
+    if (_.isEmpty(value)) {
+      return '';
+    }
+
     return '[Complex Data]';
   }
 
