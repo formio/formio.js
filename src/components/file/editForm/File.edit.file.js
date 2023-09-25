@@ -24,7 +24,7 @@ export default [
   {
     type: 'checkbox',
     input: true,
-    key: 'multipartUpload',
+    key: 'useMultipartUpload',
     label: 'Use the S3 Multipart Upload API',
     tooltip: "The <a href='https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html'>S3 Multipart Upload API</a> is designed to improve the upload experience for larger objects (> 5GB).",
     conditional: {

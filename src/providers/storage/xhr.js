@@ -21,7 +21,7 @@ const XHR = {
   path(items) {
     return items.filter(item => !!item).map(XHR.trim).join('/');
   },
-  async upload(formio, type, xhrCallback, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback, multipart) {
+  async upload(formio, type, xhrCallback, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback, multipartOptions) {
     // make request to Form.io server
     const token = formio.getToken();
     let response;
@@ -39,7 +39,7 @@ const XHR = {
           type: file.type,
           groupPermissions,
           groupId,
-          multipart
+          multipart: multipartOptions
         })
       });
     }
@@ -63,7 +63,7 @@ const XHR = {
         xhr.open(...params);
         setXhrHeaders(formio, xhr);
       };
-      Promise.resolve(xhrCallback(xhr, serverResponse)).then((payload) => {
+      Promise.resolve(xhrCallback(xhr, serverResponse, abortCallback)).then((payload) => {
         // if payload is nullish we can assume the provider took care of the entire upload process
         if (!payload) {
           return resolve(serverResponse);

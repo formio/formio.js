@@ -791,7 +791,7 @@ export default class FileComponent extends Field {
 
           // Prep for a potential multipart upload
           let count = 0;
-          const multipart = this.component.multipartUpload && this.component.multipart ? {
+          const multipartOptions = this.component.useMultipartUpload && this.component.multipart ? {
             ...this.component.multipart,
             progressCallback: (total) => {
               count++;
@@ -803,8 +803,8 @@ export default class FileComponent extends Field {
             changeMessage: (message) => {
               fileUpload.message = message;
               this.redraw();
-            }
-          } : {};
+            },
+          } : false;
 
           fileUpload.message = this.t('Starting upload...');
           this.redraw();
@@ -831,7 +831,7 @@ export default class FileComponent extends Field {
               this.emit('fileUploadingStart', filePromise);
             },
             (abort) => fileUpload.abort = abort,
-            multipart
+            multipartOptions
           ).then((fileInfo) => {
               const index = this.statuses.indexOf(fileUpload);
               if (index !== -1) {
