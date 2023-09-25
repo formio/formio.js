@@ -32,6 +32,36 @@ export default [
     },
   },
   {
+    label: 'Multipart Upload',
+    tableView: false,
+    key: 'multipart',
+    type: 'container',
+    input: true,
+    components: [
+      {
+        label: 'Part Size (MB)',
+        applyMaskOn: 'change',
+        mask: false,
+        tableView: false,
+        delimiter: false,
+        requireDecimal: false,
+        inputFormat: 'plain',
+        truncateMultipleSpaces: false,
+        validate: {
+          min: 5,
+          max: 5000,
+        },
+        key: 'partSize',
+        type: 'number',
+        input: true,
+        defaultValue: 500,
+      },
+    ],
+    conditional: {
+      json: { '===': [{ var: 'data.multipartUpload' }, true] }
+    },
+  },
+  {
     type: 'textfield',
     input: true,
     key: 'url',
