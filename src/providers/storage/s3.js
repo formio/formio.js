@@ -1,7 +1,7 @@
 import XHR from './xhr';
 function s3(formio) {
   return {
-    uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback, multipart) {
+    async uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback, multipart) {
       const xhrCallback = async(xhr, response) => {
         response.data.fileName = fileName;
         response.data.key = XHR.path([response.data.key, dir, fileName]);
@@ -34,7 +34,7 @@ function s3(formio) {
           return fd;
         }
       };
-      return XHR.upload(
+      const response = await XHR.upload(
         formio,
         's3',
         xhrCallback,
@@ -46,18 +46,17 @@ function s3(formio) {
         groupId,
         abortCallback,
         multipart
-        ).then((response) => {
-          return {
-            storage: 's3',
-            name: fileName,
-            bucket: response.bucket,
-            key: response.data.key,
-            url: XHR.path([response.url, response.data.key]),
-            acl: response.data.acl,
-            size: file.size,
-            type: file.type
-          };
-        });
+      );
+      return {
+        storage: 's3',
+        name: fileName,
+        bucket: response.bucket,
+        key: response.data.key,
+        url: XHR.path([response.url, response.data.key]),
+        acl: response.data.acl,
+        size: file.size,
+        type: file.type
+      };
     },
     async completeMultipartUpload(serverResponse, parts, multipart, retries) {
       const { changeMessage } = multipart;
