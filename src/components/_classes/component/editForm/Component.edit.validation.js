@@ -72,7 +72,8 @@ export default [
         rows: 5,
         editor: 'ace',
         hideLabel: true,
-        input: true
+        input: true,
+        as: 'javascript',
       },
       {
         type: 'htmlelement',
