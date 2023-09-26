@@ -1,3 +1,4 @@
+import { Formio } from '../../Formio';
 import assert from 'power-assert';
 
 import Harness from '../../../test/harness';
