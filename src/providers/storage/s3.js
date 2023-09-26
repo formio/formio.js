@@ -1,4 +1,5 @@
 import XHR from './xhr';
+import { withRetries } from './util';
 function s3(formio) {
   return {
     async uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback, multipartOptions) {
@@ -22,7 +23,7 @@ function s3(formio) {
                 multipartOptions,
                 abortSignal
               );
-              await this.completeMultipartUpload(response, parts, multipartOptions, 3);
+              await withRetries(this.completeMultipartUpload, [response, parts, multipartOptions], 3);
               return;
             }
             catch (err) {
@@ -76,7 +77,7 @@ function s3(formio) {
         type: file.type
       };
     },
-    async completeMultipartUpload(serverResponse, parts, multipart, retries) {
+    async completeMultipartUpload(serverResponse, parts, multipart) {
       const { changeMessage } = multipart;
       changeMessage('Completing AWS S3 multipart upload...');
       const response = await fetch(`${formio.formUrl}/storage/s3/multipart/complete`, {
@@ -93,10 +94,7 @@ function s3(formio) {
       // the AWS S3 SDK CompleteMultipartUpload command can return a HTTP 200 status header but still error;
       // we need to parse, and according to AWS, to retry
       if (message.match(/Error/)) {
-        if (retries <= 0) {
           throw new Error(message);
-        }
-        await this.completeMultipartUpload(serverResponse, parts, retries - 1);
       }
     },
     abortMultipartUpload(serverResponse) {
@@ -121,15 +119,13 @@ function s3(formio) {
           method: 'PUT',
           headers,
           body: blob,
-          signal: abortSignal
-        }).catch((err) => {
-          throw new Error(`There was a network error (${err.message || ''})`);
+          signal: abortSignal,
         }).then((res) => {
           if (res.ok) {
             progressCallback(urls.length);
             const eTag = res.headers.get('etag');
             if (!eTag) {
-              throw new Error('ETag header not found; it must be exposed in S3 bucket CORS settings for multipart upload');
+              throw new Error('ETag header not found; it must be exposed in S3 bucket CORS settings');
             }
             return { ETag: eTag, PartNumber: i + 1 };
           }
