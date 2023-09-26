@@ -900,7 +900,10 @@ export default class Wizard extends Webform {
       return this.setNestedValue(page, submission.data, flags, changed) || changed;
     }, false);
 
-    if (!flags.sanitize) {
+    if (!flags.sanitize ||
+      (flags && flags.fromSubmission && (this.prefixComps.length || this.suffixComps.length) && submission._id) ||
+      (this.options.server && (this.prefixComps.length || this.suffixComps.length))
+    ) {
       this.mergeData(this.data, submission.data);
     }
 
