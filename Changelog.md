@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.12.7-patch.10.5]
+## 4.12.7-patch.10.5
 ### Changed
  - Update fast json patch
    

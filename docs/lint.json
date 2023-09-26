@@ -1,129 +1,42 @@
 [
   {
-    "name": "DataGridComponent#checkValidity",
-    "filePath": "src/components/datagrid/DataGrid.js",
-    "lines": [
-      {
-        "lineNumber": 474,
-        "line": "  /**\r"
-      },
-      {
-        "lineNumber": 475,
-        "line": "   * Checks the validity of this datagrid.\r"
-      },
-      {
-        "lineNumber": 476,
-        "line": "   *\r"
-      },
-      {
-        "lineNumber": 477,
-        "line": "   * @param data\r"
-      },
-      {
-        "lineNumber": 478,
-        "line": "   * @param dirty\r"
-      },
-      {
-        "lineNumber": 479,
-        "line": "   * @return {*}\r"
-      },
-      {
-        "lineNumber": 480,
-        "line": "   */\r"
-      },
-      {
-        "lineNumber": 481,
-        "line": "  checkValidity(data, dirty, row, silentCheck) {\r"
-      }
-    ],
-    "codeParams": [
-      "data",
-      "dirty",
-      "row",
-      "silentCheck"
-    ],
-    "docParams": [
-      "data",
-      "dirty"
-    ]
-  },
-  {
-    "name": "SelectComponent#addOption",
-    "filePath": "src/components/select/Select.js",
+    "name": "Form#sanitize",
+    "filePath": "src/Form.js",
     "lines": [
       {
         "lineNumber": 223,
-        "line": "  /**\r"
+        "line": "  /**"
       },
       {
         "lineNumber": 224,
-        "line": "   * Adds an option to the select dropdown.\r"
+        "line": "   * Sanitize an html string."
       },
       {
         "lineNumber": 225,
-        "line": "   *\r"
+        "line": "   *"
       },
       {
         "lineNumber": 226,
-        "line": "   * @param value\r"
+        "line": "   * @param string"
       },
       {
         "lineNumber": 227,
-        "line": "   * @param label\r"
+        "line": "   * @returns {*}"
       },
       {
         "lineNumber": 228,
-        "line": "   */\r"
+        "line": "   */"
       },
       {
         "lineNumber": 229,
-        "line": "  addOption(value, label, attrs = {}, id = getRandomComponentId()) {\r"
+        "line": "  sanitize(dirty) {"
       }
     ],
     "codeParams": [
-      "value",
-      "label",
-      "attrs",
-      "id"
+      "dirty"
     ],
     "docParams": [
-      "value",
-      "label"
-    ]
-  },
-  {
-    "name": "SelectComponent#addCurrentChoices",
-    "filePath": "src/components/select/Select.js",
-    "lines": [
-      {
-        "lineNumber": 1107,
-        "line": "  /**\r"
-      },
-      {
-        "lineNumber": 1108,
-        "line": "   * @param {*} value\r"
-      },
-      {
-        "lineNumber": 1109,
-        "line": "   * @param {Array} items\r"
-      },
-      {
-        "lineNumber": 1110,
-        "line": "   */\r"
-      },
-      {
-        "lineNumber": 1111,
-        "line": "  addCurrentChoices(values, items, keyValue) {\r"
-      }
-    ],
-    "codeParams": [
-      "values",
-      "items",
-      "keyValue"
-    ],
-    "docParams": [
-      "value",
-      "items"
+      "string"
     ]
   },
   {
@@ -132,31 +45,31 @@
     "lines": [
       {
         "lineNumber": 153,
-        "line": "  /**\r"
+        "line": "  /**"
       },
       {
         "lineNumber": 154,
-        "line": "   * Perform a deep iteration over every component, including those\r"
+        "line": "   * Perform a deep iteration over every component, including those"
       },
       {
         "lineNumber": 155,
-        "line": "   * within other container based components.\r"
+        "line": "   * within other container based components."
       },
       {
         "lineNumber": 156,
-        "line": "   *\r"
+        "line": "   *"
       },
       {
         "lineNumber": 157,
-        "line": "   * @param {function} fn - Called for every component.\r"
+        "line": "   * @param {function} fn - Called for every component."
       },
       {
         "lineNumber": 158,
-        "line": "   */\r"
+        "line": "   */"
       },
       {
         "lineNumber": 159,
-        "line": "  everyComponent(fn, options) {\r"
+        "line": "  everyComponent(fn, options) {"
       }
     ],
     "codeParams": [
@@ -173,39 +86,39 @@
     "lines": [
       {
         "lineNumber": 210,
-        "line": "  /**\r"
+        "line": "  /**"
       },
       {
         "lineNumber": 211,
-        "line": "   * Returns a component provided a key. This performs a deep search within the\r"
+        "line": "   * Returns a component provided a key. This performs a deep search within the"
       },
       {
         "lineNumber": 212,
-        "line": "   * component tree.\r"
+        "line": "   * component tree."
       },
       {
         "lineNumber": 213,
-        "line": "   *\r"
+        "line": "   *"
       },
       {
         "lineNumber": 214,
-        "line": "   * @param {string} key - The key of the component to retrieve.\r"
+        "line": "   * @param {string} key - The key of the component to retrieve."
       },
       {
         "lineNumber": 215,
-        "line": "   * @param {function} fn - Called with the component once found.\r"
+        "line": "   * @param {function} fn - Called with the component once found."
       },
       {
         "lineNumber": 216,
-        "line": "   * @return {Object} - The component that is located.\r"
+        "line": "   * @return {Object} - The component that is located."
       },
       {
         "lineNumber": 217,
-        "line": "   */\r"
+        "line": "   */"
       },
       {
         "lineNumber": 218,
-        "line": "  getComponent(path, fn, originalPath) {\r"
+        "line": "  getComponent(path, fn, originalPath) {"
       }
     ],
     "codeParams": [
@@ -224,31 +137,31 @@
     "lines": [
       {
         "lineNumber": 301,
-        "line": "  /**\r"
+        "line": "  /**"
       },
       {
         "lineNumber": 302,
-        "line": "   * Create a new component and add it to the components array.\r"
+        "line": "   * Create a new component and add it to the components array."
       },
       {
         "lineNumber": 303,
-        "line": "   *\r"
+        "line": "   *"
       },
       {
         "lineNumber": 304,
-        "line": "   * @param component\r"
+        "line": "   * @param component"
       },
       {
         "lineNumber": 305,
-        "line": "   * @param data\r"
+        "line": "   * @param data"
       },
       {
         "lineNumber": 306,
-        "line": "   */\r"
+        "line": "   */"
       },
       {
         "lineNumber": 307,
-        "line": "  createComponent(component, options, data, before) {\r"
+        "line": "  createComponent(component, options, data, before) {"
       }
     ],
     "codeParams": [
@@ -268,27 +181,27 @@
     "lines": [
       {
         "lineNumber": 368,
-        "line": "  /**\r"
+        "line": "  /**"
       },
       {
         "lineNumber": 369,
-        "line": "   *\r"
+        "line": "   *"
       },
       {
         "lineNumber": 370,
-        "line": "   * @param element\r"
+        "line": "   * @param element"
       },
       {
         "lineNumber": 371,
-        "line": "   * @param data\r"
+        "line": "   * @param data"
       },
       {
         "lineNumber": 372,
-        "line": "   */\r"
+        "line": "   */"
       },
       {
         "lineNumber": 373,
-        "line": "  addComponents(data, options) {\r"
+        "line": "  addComponents(data, options) {"
       }
     ],
     "codeParams": [
@@ -306,39 +219,39 @@
     "lines": [
       {
         "lineNumber": 385,
-        "line": "  /**\r"
+        "line": "  /**"
       },
       {
         "lineNumber": 386,
-        "line": "   * Add a new component to the components array.\r"
+        "line": "   * Add a new component to the components array."
       },
       {
         "lineNumber": 387,
-        "line": "   *\r"
+        "line": "   *"
       },
       {
         "lineNumber": 388,
-        "line": "   * @param {Object} component - The component JSON schema to add.\r"
+        "line": "   * @param {Object} component - The component JSON schema to add."
       },
       {
         "lineNumber": 389,
-        "line": "   * @param {Object} data - The submission data object to house the data for this component.\r"
+        "line": "   * @param {Object} data - The submission data object to house the data for this component."
       },
       {
         "lineNumber": 390,
-        "line": "   * @param {HTMLElement} before - A DOM element to insert this element before.\r"
+        "line": "   * @param {HTMLElement} before - A DOM element to insert this element before."
       },
       {
         "lineNumber": 391,
-        "line": "   * @return {Component} - The created component instance.\r"
+        "line": "   * @return {Component} - The created component instance."
       },
       {
         "lineNumber": 392,
-        "line": "   */\r"
+        "line": "   */"
       },
       {
         "lineNumber": 393,
-        "line": "  addComponent(component, data, before, noAdd) {\r"
+        "line": "  addComponent(component, data, before, noAdd) {"
       }
     ],
     "codeParams": [
@@ -354,43 +267,130 @@
     ]
   },
   {
-    "name": "Form#sanitize",
-    "filePath": "src/Form.js",
+    "name": "DataGridComponent#checkValidity",
+    "filePath": "src/components/datagrid/DataGrid.js",
     "lines": [
       {
-        "lineNumber": 223,
-        "line": "  /**\r"
+        "lineNumber": 474,
+        "line": "  /**"
       },
       {
-        "lineNumber": 224,
-        "line": "   * Sanitize an html string.\r"
+        "lineNumber": 475,
+        "line": "   * Checks the validity of this datagrid."
       },
       {
-        "lineNumber": 225,
-        "line": "   *\r"
+        "lineNumber": 476,
+        "line": "   *"
       },
       {
-        "lineNumber": 226,
-        "line": "   * @param string\r"
+        "lineNumber": 477,
+        "line": "   * @param data"
       },
       {
-        "lineNumber": 227,
-        "line": "   * @returns {*}\r"
+        "lineNumber": 478,
+        "line": "   * @param dirty"
       },
       {
-        "lineNumber": 228,
-        "line": "   */\r"
+        "lineNumber": 479,
+        "line": "   * @return {*}"
       },
       {
-        "lineNumber": 229,
-        "line": "  sanitize(dirty) {\r"
+        "lineNumber": 480,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 481,
+        "line": "  checkValidity(data, dirty, row, silentCheck) {"
       }
     ],
     "codeParams": [
-      "dirty"
+      "data",
+      "dirty",
+      "row",
+      "silentCheck"
     ],
     "docParams": [
-      "string"
+      "data",
+      "dirty"
+    ]
+  },
+  {
+    "name": "SelectComponent#addOption",
+    "filePath": "src/components/select/Select.js",
+    "lines": [
+      {
+        "lineNumber": 223,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 224,
+        "line": "   * Adds an option to the select dropdown."
+      },
+      {
+        "lineNumber": 225,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 226,
+        "line": "   * @param value"
+      },
+      {
+        "lineNumber": 227,
+        "line": "   * @param label"
+      },
+      {
+        "lineNumber": 228,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 229,
+        "line": "  addOption(value, label, attrs = {}, id = getRandomComponentId()) {"
+      }
+    ],
+    "codeParams": [
+      "value",
+      "label",
+      "attrs",
+      "id"
+    ],
+    "docParams": [
+      "value",
+      "label"
+    ]
+  },
+  {
+    "name": "SelectComponent#addCurrentChoices",
+    "filePath": "src/components/select/Select.js",
+    "lines": [
+      {
+        "lineNumber": 1107,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 1108,
+        "line": "   * @param {*} value"
+      },
+      {
+        "lineNumber": 1109,
+        "line": "   * @param {Array} items"
+      },
+      {
+        "lineNumber": 1110,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1111,
+        "line": "  addCurrentChoices(values, items, keyValue) {"
+      }
+    ],
+    "codeParams": [
+      "values",
+      "items",
+      "keyValue"
+    ],
+    "docParams": [
+      "value",
+      "items"
     ]
   },
   {
@@ -399,59 +399,59 @@
     "lines": [
       {
         "lineNumber": 71,
-        "line": "/**\r"
+        "line": "/**"
       },
       {
         "lineNumber": 72,
-        "line": " * Checks the entered date for validity.\r"
+        "line": " * Checks the entered date for validity."
       },
       {
         "lineNumber": 73,
-        "line": " *\r"
+        "line": " *"
       },
       {
         "lineNumber": 74,
-        "line": " * @param {String} value\r"
+        "line": " * @param {String} value"
       },
       {
         "lineNumber": 75,
-        "line": " *   The value to check.\r"
+        "line": " *   The value to check."
       },
       {
         "lineNumber": 76,
-        "line": " * @param {[String]} format\r"
+        "line": " * @param {[String]} format"
       },
       {
         "lineNumber": 77,
-        "line": " *   A moment formats.\r"
+        "line": " *   A moment formats."
       },
       {
         "lineNumber": 78,
-        "line": " * @param {Date} maxDate\r"
+        "line": " * @param {Date} maxDate"
       },
       {
         "lineNumber": 79,
-        "line": " *   The max date.\r"
+        "line": " *   The max date."
       },
       {
         "lineNumber": 80,
-        "line": " * @param {Date} minDate\r"
+        "line": " * @param {Date} minDate"
       },
       {
         "lineNumber": 81,
-        "line": " *   The min date.\r"
+        "line": " *   The min date."
       },
       {
         "lineNumber": 82,
-        "line": " * * @return {{message: string, result: boolean}}\r"
+        "line": " * * @return {{message: string, result: boolean}}"
       },
       {
         "lineNumber": 83,
-        "line": " */\r"
+        "line": " */"
       },
       {
         "lineNumber": 84,
-        "line": "export function checkInvalidDate(value, format, minDate, maxDate) {\r"
+        "line": "export function checkInvalidDate(value, format, minDate, maxDate) {"
       }
     ],
     "codeParams": [
@@ -473,51 +473,51 @@
     "lines": [
       {
         "lineNumber": 141,
-        "line": "/**\r"
+        "line": "/**"
       },
       {
         "lineNumber": 142,
-        "line": " * Get a component by its key\r"
+        "line": " * Get a component by its key"
       },
       {
         "lineNumber": 143,
-        "line": " *\r"
+        "line": " *"
       },
       {
         "lineNumber": 144,
-        "line": " * @param {Object} components\r"
+        "line": " * @param {Object} components"
       },
       {
         "lineNumber": 145,
-        "line": " *   The components to iterate.\r"
+        "line": " *   The components to iterate."
       },
       {
         "lineNumber": 146,
-        "line": " * @param {String|Object} key\r"
+        "line": " * @param {String|Object} key"
       },
       {
         "lineNumber": 147,
-        "line": " *   The key of the component to get, or a query of the component to search.\r"
+        "line": " *   The key of the component to get, or a query of the component to search."
       },
       {
         "lineNumber": 148,
-        "line": " *\r"
+        "line": " *"
       },
       {
         "lineNumber": 149,
-        "line": " * @returns {Object}\r"
+        "line": " * @returns {Object}"
       },
       {
         "lineNumber": 150,
-        "line": " *   The component that matches the given key, or undefined if not found.\r"
+        "line": " *   The component that matches the given key, or undefined if not found."
       },
       {
         "lineNumber": 151,
-        "line": " */\r"
+        "line": " */"
       },
       {
         "lineNumber": 152,
-        "line": "export function getComponent(components, key, includeAll) {\r"
+        "line": "export function getComponent(components, key, includeAll) {"
       }
     ],
     "codeParams": [
@@ -536,55 +536,55 @@
     "lines": [
       {
         "lineNumber": 192,
-        "line": "/**\r"
+        "line": "/**"
       },
       {
         "lineNumber": 193,
-        "line": " * This function will find a component in a form and return the component AND THE PATH to the component in the form.\r"
+        "line": " * This function will find a component in a form and return the component AND THE PATH to the component in the form."
       },
       {
         "lineNumber": 194,
-        "line": " * Path to the component is stored as an array of nested components and their indexes.The Path is being filled recursively\r"
+        "line": " * Path to the component is stored as an array of nested components and their indexes.The Path is being filled recursively"
       },
       {
         "lineNumber": 195,
-        "line": " * when you iterating through the nested structure.\r"
+        "line": " * when you iterating through the nested structure."
       },
       {
         "lineNumber": 196,
-        "line": " * If the component is not found the callback won't be called and function won't return anything.\r"
+        "line": " * If the component is not found the callback won't be called and function won't return anything."
       },
       {
         "lineNumber": 197,
-        "line": " *\r"
+        "line": " *"
       },
       {
         "lineNumber": 198,
-        "line": " * @param components\r"
+        "line": " * @param components"
       },
       {
         "lineNumber": 199,
-        "line": " * @param key\r"
+        "line": " * @param key"
       },
       {
         "lineNumber": 200,
-        "line": " * @param fn\r"
+        "line": " * @param fn"
       },
       {
         "lineNumber": 201,
-        "line": " * @param path\r"
+        "line": " * @param path"
       },
       {
         "lineNumber": 202,
-        "line": " * @returns {*}\r"
+        "line": " * @returns {*}"
       },
       {
         "lineNumber": 203,
-        "line": " */\r"
+        "line": " */"
       },
       {
         "lineNumber": 204,
-        "line": "export function findComponent(components, key, path, fn) {\r"
+        "line": "export function findComponent(components, key, path, fn) {"
       }
     ],
     "codeParams": [
@@ -606,47 +606,47 @@
     "lines": [
       {
         "lineNumber": 956,
-        "line": "  /**\r"
+        "line": "  /**"
       },
       {
         "lineNumber": 957,
-        "line": "   * Use the new validations engine to evaluate any errors.\r"
+        "line": "   * Use the new validations engine to evaluate any errors."
       },
       {
         "lineNumber": 958,
-        "line": "   *\r"
+        "line": "   *"
       },
       {
         "lineNumber": 959,
-        "line": "   * @param component\r"
+        "line": "   * @param component"
       },
       {
         "lineNumber": 960,
-        "line": "   * @param validations\r"
+        "line": "   * @param validations"
       },
       {
         "lineNumber": 961,
-        "line": "   * @param data\r"
+        "line": "   * @param data"
       },
       {
         "lineNumber": 962,
-        "line": "   * @param row\r"
+        "line": "   * @param row"
       },
       {
         "lineNumber": 963,
-        "line": "   * @param values\r"
+        "line": "   * @param values"
       },
       {
         "lineNumber": 964,
-        "line": "   * @returns {any[]}\r"
+        "line": "   * @returns {any[]}"
       },
       {
         "lineNumber": 965,
-        "line": "   */\r"
+        "line": "   */"
       },
       {
         "lineNumber": 966,
-        "line": "  checkValidations(component, validations, data, row, values, async) {\r"
+        "line": "  checkValidations(component, validations, data, row, values, async) {"
       }
     ],
     "codeParams": [

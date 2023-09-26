@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "4.12.7-patch.10.3",
+  "version": "4.12.7-patch.10.5",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "index.js",
   "types": "index.d.ts",
@@ -52,8 +52,8 @@
   },
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
-    "@formio/bootstrap3": "^2.10.0",
-    "@formio/semantic": "^2.4.5",
+    "@formio/bootstrap3": "2.11.0",
+    "@formio/semantic": "2.6.0",
     "autocompleter": "^6.0.5",
     "browser-cookies": "^1.2.0",
     "choices.js": "^9.0.1",
@@ -115,7 +115,7 @@
     "eslint-config-formio": "^1.1.4",
     "fetch-mock": "^9.11.0",
     "file-loader": "^6.2.0",
-    "flatpickr": "^4.6.3",
+    "flatpickr": "4.6.13",
     "font-awesome": "^4.7.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
