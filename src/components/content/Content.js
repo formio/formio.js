@@ -18,6 +18,7 @@ export default class ContentComponent extends Component {
       group: 'layout',
       icon: 'html5',
       preview: false,
+      showPreview: false,
       documentation: '/userguide/form-building/layout-components#content',
       weight: 5,
       schema: ContentComponent.schema()
