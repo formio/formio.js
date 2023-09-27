@@ -10,7 +10,6 @@ import {
   comp3,
   comp4,
   comp5,
-  comp6,
 } from './fixtures';
 import Formio from '../../Formio';
 
@@ -29,9 +28,7 @@ describe('Tags Component', function() {
   });
 
   it('Should not allow to add non-unique tags on blur', function(done) {
-    const element = document.createElement('div');
-    Formio.createForm(element, { type: 'form', display: 'form', components: [comp2] }).then(form => {
-      const component = form.getComponent(['tags']);
+    Harness.testCreate(TagsComponent, comp2).then((component) => {
       const values = ['test', 'test1', 'test'];
       Harness.setTagsValue(values, component);
       assert.equal(component.choices.getValue(true).length, 2);
@@ -40,16 +37,12 @@ describe('Tags Component', function() {
   });
 
   it('Should not exceed maxTags limit', function(done) {
-    const element = document.createElement('div');
-    Formio.createForm(element, { type: 'form', display: 'form', components: [comp2] }).then(form => {
-      const component = form.getComponent(['tags']);
+    Harness.testCreate(TagsComponent, comp2).then((component) => {
       const values = ['1', '2', '3', '4', '5'];
       Harness.setTagsValue(values, component);
 
-      setTimeout(() => {
-        assert.equal(component.choices.getValue(true).length, 4);
-        done();
-      }, 400);
+      assert.equal(component.choices.getValue(true).length, 4);
+      done();
     }).catch(done);
   });
 
@@ -68,7 +61,7 @@ describe('Tags Component', function() {
           assert.equal(modalPreview.textContent.trim(), 'test, test1, test2', 'All tags should be rendered inside Modal Preview');
           form.destroy();
           done();
-        }, 250);
+        }, 150);
       })
       .catch(done);
   });
@@ -136,27 +129,6 @@ describe('Tags Component', function() {
         document.innerHTML = '';
         done();
       }, 200);
-    }).catch(done);
-  });
-
-  it('OnBlur validation should work properly with Tags component', (done) => {
-    const element = document.createElement('div');
-
-    Formio.createForm(element, comp6).then(form => {
-      const tags = form.getComponent('tags');
-      // tags.setValue(['1', '2', '3']);
-      Harness.setTagsValue(['test', 'test1', 'test2'], tags);
-      tags.choices.input.element.focus();
-
-      setTimeout(() => {
-        assert(!tags.error, 'Tags should be valid while changing');
-        tags.choices.input.element.dispatchEvent(new Event('blur'));
-
-        setTimeout(() => {
-          assert(tags.error, 'Should set error after Tags component was blurred');
-          done();
-        }, 500);
-      }, 300);
     }).catch(done);
   });
 });

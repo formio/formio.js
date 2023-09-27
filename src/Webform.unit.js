@@ -2298,15 +2298,15 @@ describe('Webform tests', function() {
           fieldInput.dispatchEvent(blurEvent);
 
           setTimeout(() => {
-            assert(field.error, 'Should set error after component was blurred');
+            assert(field.error, 'Should set error aftre component was blured');
             Harness.setInputValue(field2, 'data[textField1]', 'ab');
 
             setTimeout(() => {
               assert(field.error, 'Should keep error when editing another component');
               done();
-            }, 200);
-          }, 200);
-        }, 200);
+            }, 250);
+          }, 250);
+        }, 250);
       }).catch(done);
     });
 
