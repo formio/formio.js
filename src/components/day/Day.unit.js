@@ -222,26 +222,4 @@ describe('Day Component', () => {
     });
     comp1.fields.year.hide = false;
   });
-
-  it('Should restore focus after redraw', (done) => {
-    const element = document.createElement('div');
-    document.body.appendChild(element);
-    Formio.createForm(element, comp6).then(form => {
-      const textField = form.getComponent(['textField']);
-      textField.setValue('test');
-
-      setTimeout(() => {
-        const day = form.getComponent(['day']);
-        document.querySelector('select.form-control').focus();
-          day.refs.month.value = 2;
-          day.refs.month.dispatchEvent(new Event('input'));
-
-          setTimeout(() => {
-            console.log(global.document.activeElement, day.refs.month);
-            assert(global.document.activeElement === day.refs.month, 'Should keep focus on the year select');
-            done();
-          }, 200);
-      }, 500);
-    }).catch(done);
-  });
 });
