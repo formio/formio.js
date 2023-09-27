@@ -247,7 +247,7 @@ describe('Day Component', () => {
       }, 200);
     }).catch(done);
   });
-  
+
   it('Should restore focus after redraw', (done) => {
     const element = document.createElement('div');
     document.body.appendChild(element);
@@ -267,4 +267,6 @@ describe('Day Component', () => {
             done();
           }, 200);
       }, 500);
+    }).catch(done);
+  });
 });
