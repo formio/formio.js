@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Field from '../_classes/field/Field';
-import _ from 'lodash';
 
 export default class CheckBoxComponent extends Field {
   static schema(...extend) {
