@@ -100,6 +100,8 @@ export default class FileComponent extends Field {
       filesToUpload: [],
       filesToDelete: [],
     };
+    this.isSyncing = false;
+    this.abortUploads = [];
   }
 
   get dataReady() {
@@ -156,15 +158,26 @@ export default class FileComponent extends Field {
     this._fileBrowseHidden = value;
   }
 
+  get shouldSyncFiles() {
+    return Boolean(this.filesToSync.filesToDelete.length || this.filesToSync.filesToUpload.length);
+  }
+
+  get autoSync() {
+    return _.get(this, 'component.validate.autoSync', false);
+  }
+
   render() {
     const { filesToDelete, filesToUpload } = this.filesToSync;
     return super.render(this.renderTemplate('file', {
       fileSize: this.fileSize,
       files: this.dataValue || [],
-      filesToSync: [...filesToDelete, ...filesToUpload],
+      filesToDelete,
+      filesToUpload,
       disabled: this.disabled,
       support: this.support,
-      fileDropHidden: this.fileDropHidden
+      fileDropHidden: this.fileDropHidden,
+      showSyncButton: (filesToDelete.length || filesToUpload.length) && !this.isSyncing,
+      isSyncing: this.isSyncing,
     }));
   }
 
@@ -349,6 +362,9 @@ export default class FileComponent extends Field {
       fileImage: 'multiple',
       fileType: 'multiple',
       fileProcessingLoader: 'single',
+      syncNow: 'single',
+      restoreFile: 'multiple',
+      abortRequest: 'multiple',
     });
     // Ensure we have an empty input refs. We need this for the setValue method to redraw the control when it is set.
     this.refs.input = [];
@@ -402,14 +418,32 @@ export default class FileComponent extends Field {
     this.refs.fileToSyncRemove.forEach((fileToSyncRemove, index) => {
       this.addEventListener(fileToSyncRemove, 'click', (event) => {
         event.preventDefault();
-
-        const fileUpload = this.statuses[index];
-        _.pull(this.filesUploading, fileUpload.originalName);
-
-        if (fileUpload.abort) {
-          fileUpload.abort();
-        }
         this.filesToSync.filesToUpload.splice(index, 1);
+        this.redraw();
+      });
+    });
+
+    this.refs.abortRequest.forEach((abort, index) => {
+      this.addEventListener(abort, 'click', (event) => {
+        event.preventDefault();
+        const fileInfo = this.filesToSync.filesToUpload[index];
+        const abortUpload = this.abortUploads.find(abortUpload => abortUpload.name === fileInfo.name);
+        if (abortUpload) {
+          abortUpload.abort();
+        }
+        this.redraw();
+      });
+    });
+
+    this.refs.restoreFile.forEach((fileToRestore, index) => {
+      this.addEventListener(fileToRestore, 'click', (event) => {
+        event.preventDefault();
+        const fileInfo = this.filesToSync.filesToDelete[index];
+        delete fileInfo.status;
+        delete fileInfo.message;
+        this.filesToSync.filesToDelete.splice(index, 1);
+        this.dataValue.push(fileInfo);
+        this.triggerChange();
         this.redraw();
       });
     });
@@ -491,6 +525,11 @@ export default class FileComponent extends Field {
 
         this.dataValue[index].fileType = fileType.label;
       });
+    });
+
+    this.addEventListener(this.refs.syncNow, 'click', (event) => {
+      event.preventDefault();
+      this.syncFiles();
     });
 
     const fileService = this.fileService;
@@ -841,7 +880,7 @@ export default class FileComponent extends Field {
   prepareFileToDelete(fileInfo) {
     this.filesToSync.filesToDelete.push({
       ...fileInfo,
-      status: 'readyToDelete',
+      status: 'info',
       message: this.t('Ready to be removed from storage'),
     });
 
@@ -873,35 +912,37 @@ export default class FileComponent extends Field {
       return NativePromise.resolve();
     }
 
-    const files = await Promise.all(this.filesToSync.filesToDelete.map((fileToDelete) => {
+    return await Promise.all(this.filesToSync.filesToDelete.map((fileToSync, i) => {
       return new NativePromise(async(resolve) => {
         try {
-          this.deleteFile(fileToDelete);
-          fileToDelete.status = 'success';
-          fileToDelete.message = this.t('Succefully removed');
-          this.redraw();
-          resolve({
-            status: 'success',
-          });
+          if (i === 1) {
+            throw new Error('Delete error');
+          }
+          this.deleteFile(fileToSync);
+          fileToSync.status = 'success';
+          fileToSync.message = this.t('Succefully removed');
         }
         catch (response) {
-          fileToDelete.status = 'error';
-          fileToDelete.message = typeof response === 'string' ? response : response.toString();
+          fileToSync.status = 'error';
+          fileToSync.message = typeof response === 'string' ? response : response.toString();
+        }
+        finally {
           this.redraw();
-          resolve(fileToDelete);
+          resolve({
+            fileToSync,
+          });
         }
       });
     }));
+    // if (files.filter(file => file.status === 'error').length) {
+    //   return NativePromise.reject();
+    // }
 
-    if (files.filter(file => file.status === 'error').length) {
-      return NativePromise.reject();
-    }
-
-    // this.filesToSync.filesToDelete = [];
-    return NativePromise.resolve();
+    // // this.filesToSync.filesToDelete = [];
+    // return NativePromise.resolve();
   }
 
-  async uploadFile(fileToSync) {
+  async uploadFile(fileToSync, abortIndex) {
     return await this.fileService.uploadFile(
       fileToSync.storage,
       fileToSync.file,
@@ -921,7 +962,10 @@ export default class FileComponent extends Field {
       fileToSync.groupResourceId,
       () => {},
       // Abort upload callback
-      (abort) => this.abortUpload = abort,
+      (abort) => this.abortUploads.push({
+        name: fileToSync.name,
+        abort,
+      }),
     );
   }
 
@@ -930,39 +974,80 @@ export default class FileComponent extends Field {
       return NativePromise.resolve();
     }
 
-    const files = await Promise.all(this.filesToSync.filesToUpload.map((fileToSync) => {
+    return await Promise.all(this.filesToSync.filesToUpload.map((fileToSync, i) => {
       return new NativePromise(async(resolve) => {
+        let fileInfo = null;
         try {
-          const fileInfo = await this.uploadFile(fileToSync);
+          if (i === 1) {
+            throw new Error('Upload error.');
+          }
+          fileInfo = await this.uploadFile(fileToSync);
           fileToSync.status = 'success';
           fileToSync.message = this.t('Succefully uploaded');
 
           fileInfo.originalName = fileToSync.originalName;
           fileInfo.hash = fileToSync.hash;
-          this.redraw();
-          resolve(fileInfo);
         }
         catch (response) {
           fileToSync.status = 'error';
           fileToSync.message = typeof response === 'string' ? response : response.toString();
           delete fileToSync.progress;
+        }
+        finally {
+          delete fileToSync.progress;
           this.redraw();
-          resolve(fileToSync);
+          resolve({
+            fileToSync,
+            fileInfo,
+          });
         }
       });
     }));
 
-    if (files.filter(file => file.status === 'error').length) {
+    // if (files.filter(file => file.status === 'error').length) {
+    //   return NativePromise.reject();
+    // }
+
+    // if (!this.hasValue()) {
+    //   this.dataValue = [];
+    // }
+    // this.dataValue.push(...files);
+    // this.filesToSync.filesToUpload = [];
+    // this.triggerChange();
+    // return NativePromise.resolve();
+  }
+
+  async syncFiles() {
+    this.isSyncing = true;
+    this.redraw();
+    try {
+      const [filesToDelete = [], filesToUpload = []] = await NativePromise.all([this.delete(), this.upload()]);
+      this.filesToSync.filesToDelete = filesToDelete
+        .filter(file => file.fileToSync?.status === 'error')
+        .map(file => file.fileToSync);
+      this.filesToSync.filesToUpload = filesToUpload
+        .filter(file => file.fileToSync?.status === 'error')
+        .map(file => file.fileToSync);
+
+      if (!this.hasValue()) {
+        this.dataValue =[];
+      }
+
+      const data = filesToUpload
+        .filter(file => file.fileToSync?.status === 'success')
+        .map(file => file.fileInfo);
+      this.dataValue.push(...data);
+      this.triggerChange();
+      return NativePromise.resolve();
+    }
+    catch (err) {
       return NativePromise.reject();
     }
-
-    if (!this.hasValue()) {
-      this.dataValue = [];
+    finally {
+      this.isSyncing = false;
+      this.abortUploads = [];
+      this.redraw();
     }
-    this.dataValue.push(...files);
-    this.filesToSync.filesToUpload = [];
-    this.triggerChange();
-    return NativePromise.resolve();
   }
 
   getFile(fileInfo) {
@@ -1001,14 +1086,40 @@ export default class FileComponent extends Field {
     }
   }
 
-  async beforeSubmit() {
-    try {
-      await NativePromise.all([this.delete(), this.upload()]);
-      return NativePromise.resolve();
+  checkComponentValidity(data, dirty, row, options = {}) {
+    const superValid = super.checkComponentValidity(data, dirty, row, options);
+    if (!superValid) {
+      return false;
     }
-    catch (err) {
-      return NativePromise.reject();
+
+    if (this.shouldSkipValidation(data, dirty, row)) {
+      return true;
     }
+
+    if (!this.autoSync && this.shouldSyncFiles) {
+      this.setCustomValidity('Files synchronization is required');
+      return false;
+    }
+
+    return superValid;
+  }
+
+  beforeSubmit() {
+    return new NativePromise(async(resolve, reject) => {
+      try {
+        if (!this.autoSync) {
+          return resolve();
+        }
+
+        await this.syncFiles();
+        this.shouldSyncFiles
+          ? reject('Synchronization is failed')
+          : resolve();
+      }
+      catch (error) {
+        reject(error.message);
+      }
+    });
   }
 
   destroy(all) {

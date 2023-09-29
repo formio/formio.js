@@ -385,6 +385,10 @@ td > .formio-form-group {
   font-size: 0.9rem;
 }
 
+.formio-component-file .list-group-item .fa {
+  cursor: pointer;
+}
+
 .formio-component-file .fileSelector.fileDragOver {
   border-color: #127abe;
 }
@@ -1772,5 +1776,11 @@ span[role="link"] {
 }
 
 .align-center {
+  display: flex;
   align-items: center;
+}
+
+.justify-center {
+  display: flex;
+  justify-content: center;
 }
