@@ -58,7 +58,7 @@ export default [
       },
     ],
     conditional: {
-      json: { '===': [{ var: 'data.multipartUpload' }, true] }
+      json: { '===': [{ var: 'data.useMultipartUpload' }, true] }
     },
   },
   {
