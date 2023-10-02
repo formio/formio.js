@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4816: fixed email submission: data display issues
  - [Snyk] Upgrade core-js from 3.32.0 to 3.32.1
  - [Snyk] Upgrade vanilla-picker from 2.12.1 to 2.12.2
+ - Fixed issue where content component would not save in the form.
    
 ## 5.0.0-rc.26
 ### Changed
