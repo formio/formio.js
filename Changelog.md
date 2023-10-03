@@ -67,7 +67,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6370: Fixes issues with PasswordStrength Addon settings
  - FIO-7146: formiojs-circleci-to-ghactions
    
-
 ## 5.0.0-rc.26
 ### Changed
  - More improvements to the embed capabilities.

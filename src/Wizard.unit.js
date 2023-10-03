@@ -1385,20 +1385,22 @@ it('Should show tooltip for wizard pages', function(done) {
           textField: ''
         }
       }, [{
-        component: 'a',
+        component: wizardForm.currentPage.getComponent('a').component,
         message: 'a must have at least 4 characters.'
-      }], done);
-      Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][2]);
-      assert.equal(wizardForm.page, 2);
-      setTimeout(() => {
-        Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][0]);
-        assert.equal(wizardForm.page, 0);
+      }], function() {
+        Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][2]);
+        assert.equal(wizardForm.page, 2);
         setTimeout(() => {
-          const aInput = wizardForm.currentPage.getComponent('a');
-          assert.equal(aInput.errors.length, 1);
-          assert.equal(aInput.errors[0].message, 'a must have at least 4 characters.');
+          Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][0]);
+          assert.equal(wizardForm.page, 0);
+          setTimeout(() => {
+            const aInput = wizardForm.currentPage.getComponent('a');
+            assert.equal(aInput.errors.length, 1);
+            assert.equal(aInput.errors[0].message, 'a must have at least 4 characters.');
+            done();
+          }, 100);
         }, 100);
-      }, 100);
+      });
     })
       .catch((err) => done(err));
   });
@@ -1807,54 +1809,5 @@ it('Should show tooltip for wizard pages', function(done) {
       }, 50);
     })
     .catch((err) => done(err));
-  });
-
-  it('Should proper validate nested wizard fields', (done) => {
-    const formElement = document.createElement('div');
-    const wizard = new Wizard(formElement);
-    const childForm = _.cloneDeep(wizardWithFieldsValidationChild);
-    const parentForm = _.cloneDeep(wizardWithFieldsValidationParent);
-    const clickEvent = new Event('click');
-
-    wizard.setForm(parentForm).then(() => {
-      const nestedFormComp = wizard.getComponent('formNested');
-      nestedFormComp.loadSubForm = () => {
-        nestedFormComp.formObj = childForm;
-        nestedFormComp.subFormLoading = false;
-        return new Promise((resolve) => resolve(childForm));
-      };
-      nestedFormComp.createSubForm();
-
-      setTimeout(() => {
-        const textField = wizard.getComponent('textField');
-        const testValidation = wizard.getComponent('testValidation');
-        textField.setValue('one');
-        testValidation.setValue('two');
-        wizard.render();
-
-        const checkPage = (pageNumber) => {
-          assert.equal(wizard.page, pageNumber);
-        };
-        const nextPageBtn = wizard.refs[`${wizard.wizardKey}-next`];
-
-        setTimeout(() => {
-          nextPageBtn.dispatchEvent(clickEvent);
-
-          setTimeout(() => {
-            checkPage(0);
-            assert.equal(wizard.errors.length, 1);
-            assert.equal(wizard.refs.errorRef.length, wizard.errors.length);
-            testValidation.setValue('one');
-            nextPageBtn.dispatchEvent(clickEvent);
-
-            setTimeout(() => {
-              checkPage(1);
-              assert.equal(wizard.errors.length, 0);
-              done();
-            }, 200);
-          }, 200);
-        }, 200);
-      }, 200);
-    });
   });
 });

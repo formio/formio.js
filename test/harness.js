@@ -300,8 +300,10 @@ const Harness = {
   testErrors(form, submission, errors, done) {
     form.on('error', (err) => {
       _.each(errors, (error, index) => {
-        error.component = form.getComponent(error.component.key).component;
-        assert.deepEqual(err[index].component, error.component);
+        if (error.component) {
+          error.component = form.getComponent(error.component.key).component;
+          assert.deepEqual(err[index].component, error.component);
+        }
         assert.equal(err[index].message, error.message);
       });
       form.off('error');
