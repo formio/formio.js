@@ -56,7 +56,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - [Snyk] Upgrade core-js from 3.32.0 to 3.32.1
  - [Snyk] Upgrade vanilla-picker from 2.12.1 to 2.12.2
  - Fixed issue where content component would not save in the form.
-
+ - FIO-7206: fixed an issue where removed components keys stay in the DataGrid defaultValue property
+ - FIO-7309: fixed an issue where min/maxDate settings for Day component are getting evaluated in Form Builder
+ - FIO-7207: changed tooltip and removed 'Hide label' option from the list of layout components
+ - FIO-7074: fixed an issue where setting submission on wizard does not update data
+   
 ## 5.0.0-rc.26
 ### Changed
  - More improvements to the embed capabilities.
