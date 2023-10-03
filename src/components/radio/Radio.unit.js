@@ -154,7 +154,7 @@ describe('Radio Component', () => {
 
         setTimeout(() => {
           assert.equal(form.errors.length, 1);
-          assert.equal(radio.error.message, 'Radio is an invalid value.');
+          assert.equal(radio.errors[0].message, 'Radio is an invalid value.');
           value = 'one';
           radio.setValue(value);
 
@@ -162,7 +162,7 @@ describe('Radio Component', () => {
             assert.equal(radio.getValue(), value);
             assert.equal(radio.dataValue, value);
             assert.equal(form.errors.length, 0);
-            assert.equal(!!radio.error, false);
+            assert.equal(!!radio.errors.length, 0);
 
             document.innerHTML = '';
             done();
@@ -205,7 +205,7 @@ describe('Radio Component', () => {
 
           setTimeout(() => {
             assert.equal(form.errors.length, 0);
-            assert.equal(!!radio.error, false);
+            assert.equal(!!radio.errors.length, 0);
             assert.equal(radio.getValue(), values[1]);
             assert.equal(radio.dataValue, values[1]);
             document.innerHTML = '';

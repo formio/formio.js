@@ -1,5 +1,5 @@
 import assert from 'power-assert';
-import { Formio } from '../../Formio';
+import { Formio } from '../../formio.form';
 import { comp1 } from './fixtures';
 
 describe('Tabs Component', () => {

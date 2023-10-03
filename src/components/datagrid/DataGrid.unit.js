@@ -467,16 +467,18 @@ describe('DataGrid modal', () => {
       components: [modalWithRequiredFields]
     })
     .then((form) => {
-      const data = {
-        dataGrid: [
-          {
-            textField: '',
-            textArea: ''
-          }
-        ]
-      };
-
-      form.checkValidity(data, true, data);
+      form.setSubmission({
+        data: {
+          dataGrid: [
+            {
+              textField: '',
+              textArea: ''
+            }
+          ]
+        }
+      }, {
+        dirty: true
+      });
 
       setTimeout(() => {
         Harness.testModalWrapperErrorClasses(form);

@@ -44,14 +44,4 @@ describe('Survey Component', () => {
       }
     });
   });
-
-  it('Should require all questions for required Survey', (done) => {
-    Harness.testCreate(SurveyComponent, comp2).then((component) => {
-      Harness.testSetGet(component, { service: 'bad' });
-      component.on('componentChange', () => {
-        done();
-      });
-      // assert(component.element)
-    });
-  });
 });

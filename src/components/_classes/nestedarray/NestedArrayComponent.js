@@ -52,14 +52,14 @@ export default class NestedArrayComponent extends NestedDataComponent {
     row = row || this.data;
     this.checkAddButtonChanged();
 
-    return this.checkRows('checkData', data, flags, Component.prototype.checkData.call(this, data, flags, row));
+    return this.processRows('checkData', data, flags, Component.prototype.checkData.call(this, data, flags, row));
   }
 
-  checkRows(method, data, opts, defaultValue, silentCheck) {
+  processRows(method, data, opts, defaultValue, silentCheck) {
     return this.iteratableRows.reduce(
       (valid, row, rowIndex) => {
         if (!opts?.rowIndex || opts?.rowIndex === rowIndex) {
-          return this.checkRow(method, data, opts, row.data, row.components, silentCheck) && valid;
+          return this.processRow(method, data, opts, row.data, row.components, silentCheck) && valid;
         }
         else {
           return valid;
@@ -69,7 +69,12 @@ export default class NestedArrayComponent extends NestedDataComponent {
     );
   }
 
-  checkRow(method, data, opts, row, components, silentCheck) {
+  validate(data, flags = {}) {
+    data = data || this.data;
+    return this.validateComponents([this.component], data, flags);
+  }
+
+  processRow(method, data, opts, row, components, silentCheck) {
     if (opts?.isolateRow) {
       silentCheck = true;
       opts.noRefresh = true;

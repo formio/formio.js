@@ -56,6 +56,31 @@ export default class Components {
     Components.components[name] = comp;
   }
 
+  /**
+   * Return a path of component's value.
+   *
+   * @param {Object} component - The component instance.
+   * @return {string} - The component's value path.
+   */
+  static getComponentPath(component) {
+    let path = '';
+    if (component.component.key) {
+      let thisPath = component.options?.parent || component;
+      while (thisPath && !thisPath.allowData && thisPath.parent) {
+        thisPath = thisPath.parent;
+      }
+      // TODO: any component that is nested in e.g. a Data Grid or an Edit Grid is going to receive a row prop; the problem
+      // is that options.row is passed to each further nested component, which results in erroneous paths like
+      // `editGrid[0].container[0].textField` rather than `editGrid[0].container.textField`. This should be adapted for other
+      // components with a tree-like data model
+      const rowIndex = component.row;
+      const rowIndexPath = rowIndex && !['container'].includes(thisPath.component.type) ? `[${Number.parseInt(rowIndex)}]` : '';
+      path = `${thisPath.path}${rowIndexPath}.`;
+      path += component.component.key;
+      return _.trim(path, '.');
+    }
+  }
+
   static create(component, options, data) {
     let comp = null;
     if (component.type && Components.components.hasOwnProperty(component.type)) {
@@ -79,6 +104,11 @@ export default class Components {
     }
     else {
       comp = new Component(component, options, data);
+    }
+    const path = Components.getComponentPath(comp);
+    if (path) {
+      comp.path = path;
+      comp.componentsMap[comp.path] = comp;
     }
     return comp;
   }

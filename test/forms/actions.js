@@ -316,7 +316,7 @@ export default {
             placeholder: 'Trigger action on method(s)',
             dataSrc: 'json',
             data: {
-              json: '[{"name":"create","title":"Create"},{"name":"update","title":"Update"},{"name":"read","title":"Read"},{"name":"delete","title":"Delete"},{"name":"index","title:"Index"}]'
+              json: '[{"name":"create","title":"Create"},{"name":"update","title":"Update"},{"name":"read","title":"Read"},{"name":"delete","title":"Delete"},{"name":"index","title":"Index"}]'
             },
             template: '<span>{{ item.title }}</span>',
             valueProperty: 'name',
@@ -799,7 +799,7 @@ export default {
             condition: {},
             settings: {}
           }
-        }
+        };
         assert.deepEqual(formSubmission, {
           data: {
             priority: 0,
@@ -853,7 +853,7 @@ export default {
               machineName: 'ozvjjccvueotocl:webhooks:webhook'
             }
           });
-     
+
           form.destroy();
           done();
         });

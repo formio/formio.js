@@ -8,7 +8,7 @@ import Harness from '../../../test/harness';
 import { Formio } from './../../Formio';
 import { comp1, comp2, comp3, comp4 } from './fixtures';
 import TextAreaComponent from './TextArea';
-import 'ace-builds';
+window.ace = require('ace-builds');
 
 describe('TextArea Component', () => {
   it('Should build a TextArea component', () => {
@@ -94,11 +94,11 @@ describe('TextArea Component', () => {
 
           setTimeout(() => {
             if (valid) {
-              assert.equal(!!component.error, false, 'Should not contain error');
+              assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert.equal(!!component.error, true, 'Should contain error');
-              assert.equal(component.error.message, error, 'Should contain error message');
+              assert.equal(component.errors.length, 1, 'Should contain error');
+              assert.equal(component.errors[0].message, error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
@@ -165,11 +165,11 @@ describe('TextArea Component', () => {
 
           setTimeout(() => {
             if (valid) {
-              assert.equal(!!component.error, false, 'Should not contain error');
+              assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert.equal(!!component.error, true, 'Should contain error');
-              assert.equal(component.error.message, error, 'Should contain error message');
+              assert.equal(component.errors.length, 1, 'Should contain error');
+              assert.equal(component.errors[0].message, error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
@@ -224,11 +224,11 @@ describe('TextArea Component', () => {
 
           setTimeout(() => {
             if (valid) {
-              assert.equal(!!component.error, false, 'Should not contain error');
+              assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert.equal(!!component.error, true, 'Should contain error');
-              assert.equal(component.error.message.trim(), error, 'Should contain error message');
+              assert.equal(component.errors.length, 1, 'Should contain error');
+              assert.equal(component.errors[0].message.trim(), error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
@@ -441,10 +441,9 @@ describe('TextArea Component', () => {
           },
         });
 
-        setTimeout(() => {
-          const plainTextArea = form.getComponent(['textArea']);
-          const aceTextArea = form.getComponent(['textAreaAce']);
-
+        const plainTextArea = form.getComponent(['textArea']);
+        const aceTextArea = form.getComponent(['textAreaAce']);
+        aceTextArea.editorsReady[0].then(() => {
           const textAreaElement = plainTextArea.element.querySelector('textarea');
           console.log(aceTextArea.editors);
           const aceEditor = aceTextArea.editors[0];
@@ -469,7 +468,7 @@ describe('TextArea Component', () => {
             assert.equal(aceEditor.getValue(), '');
             done();
           }, 300);
-        }, 500);
+        });
       }).catch(done);
     });
 

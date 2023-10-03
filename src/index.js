@@ -10,4 +10,4 @@ Formio.use = useModule((key, mod) => {
     return false;
 });
 export * from './formio.form';
-export { FormBuilder, Builders };
+export { FormBuilder, Builders, Formio };

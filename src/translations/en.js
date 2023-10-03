@@ -2,6 +2,8 @@ export default {
   unsavedRowsError: 'Please save all rows before proceeding.',
   invalidRowsError: 'Please correct invalid rows before proceeding.',
   invalidRowError: 'Invalid row. Please correct it or delete.',
+  invalidOption: '{{field}} is an invalid value.',
+  invalidDay: '{{field}} is not a valid day.',
   alertMessageWithLabel: '{{label}}: {{message}}',
   alertMessage: '{{message}}',
   complete: 'Submission Complete',
@@ -26,11 +28,14 @@ export default {
   minDate: '{{field}} should not contain date before {{- minDate}}',
   maxYear: '{{field}} should not contain year greater than {{maxYear}}',
   minYear: '{{field}} should not contain year less than {{minYear}}',
+  minSelectedCount: 'You must select at least {{minCount}} items',
+  maxSelectedCount: 'You may only select up to {{maxCount}} items',
   invalid_email: '{{field}} must be a valid email.', // eslint-disable-line camelcase
   invalid_url: '{{field}} must be a valid url.', // eslint-disable-line camelcase
   invalid_regex: '{{field}} does not match the pattern {{regex}}.', // eslint-disable-line camelcase
   invalid_date: '{{field}} is not a valid date.', // eslint-disable-line camelcase
   invalid_day: '{{field}} is not a valid day.', // eslint-disable-line camelcase
+  invalidValueProperty: 'Invalid Value Property',
   mask: '{{field}} does not match the mask.',
   valueIsNotAvailable: '{{ field }} is an invalid value.',
   stripe: '{{stripe}}',

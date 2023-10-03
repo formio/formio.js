@@ -266,40 +266,44 @@ describe('TextField Component', () => {
 
     Formio.createForm(element, form).then(form => {
       const component = form.getComponent('textField');
-      let changed = component.setValue(value);
       const error = 'Text Field does not match the mask.';
-
-      if (value) {
-        assert.equal(changed, true, 'Should set value');
-      }
-
+      const textFieldInput = component.element.querySelector('.form-control');
+      textFieldInput.value = value;
+      const event = new Event('change');
+      textFieldInput.dispatchEvent(event);
       setTimeout(() => {
-        assert.equal(!!component.error, false, 'Should not contain error');
-
-        const textFieldInput = component.element.querySelector('.form-control');
-        const event = new Event('blur');
-        textFieldInput.dispatchEvent(event);
+        if (value) {
+          assert.equal(component.getValue(), value, 'Should set value');
+        }
 
         setTimeout(() => {
-          assert.equal(!!component.error, true, 'Should contain error');
-          assert.equal(component.error.message, error, 'Should contain error message');
-          assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
-          assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+          assert.equal(component.errors.length, 0, 'Should not contain error');
 
-          value = 9999;
-          changed = component.setValue(value);
+          const textFieldInput = component.element.querySelector('.form-control');
+          const event = new Event('blur');
+          textFieldInput.dispatchEvent(event);
 
           setTimeout(() => {
-            assert.equal(!!component.error, true, 'Should contain error');
-            assert.equal(component.error.message, error, 'Should contain error message');
+            assert.equal(component.errors.length, 1, 'Should contain error');
+            assert.equal(component.errors[0].message, error, 'Should contain error message');
             assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
             assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
 
-            textFieldInput.dispatchEvent(event);
+            value = 9999;
+            component.setValue(value);
 
             setTimeout(() => {
-              assert.equal(!!component.error, false, 'Should not contain error');
-              done();
+              assert.equal(component.errors.length, 1, 'Should contain error');
+              assert.equal(component.errors[0].message, error, 'Should contain error message');
+              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+
+              textFieldInput.dispatchEvent(event);
+
+              setTimeout(() => {
+                assert.equal(component.errors.length, 0, 'Should not contain error');
+                done();
+              }, 300);
             }, 300);
           }, 300);
         }, 300);
@@ -352,11 +356,11 @@ describe('TextField Component', () => {
 
           setTimeout(() => {
             if (valid) {
-              assert.equal(!!component.error, false, 'Should not contain error');
+              assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert.equal(!!component.error, true, 'Should contain error');
-              assert.equal(component.error.message, error, 'Should contain error message');
+              assert.equal(component.errors.length, 1, 'Should contain error');
+              assert.equal(component.errors[0].message, error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
@@ -409,7 +413,7 @@ describe('TextField Component', () => {
           input.dispatchEvent(inputEvent);
 
           setTimeout(() => {
-            assert.equal(!!component.error, false, 'Should not contain error');
+            assert.equal(component.errors.length, 0, 'Should not contain error');
             assert.equal(component.getValue(), '99/99-99.99:99,99', 'Should set and format value');
 
             if (_.isEqual(value, lastValue)) {
@@ -463,11 +467,11 @@ describe('TextField Component', () => {
 
           setTimeout(() => {
             if (valid) {
-              assert.equal(!!component.error, false, 'Should not contain error');
+              assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert.equal(!!component.error, true, 'Should contain error');
-              assert.equal(component.error.message, error, 'Should contain error message');
+              assert.equal(component.errors.length, 1, 'Should contain error');
+              assert.equal(component.errors[0].message, error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
@@ -512,7 +516,7 @@ describe('TextField Component', () => {
           input.dispatchEvent(inputEvent);
 
           setTimeout(() => {
-            assert.equal(!!component.error, false, 'Should not contain error');
+            assert.equal(component.errors.length, 0, 'Should not contain error');
             assert.equal(component.getValue(), 's/s/s-s:s.s,ss', 'Should set and format value');
 
             if (_.isEqual(value, lastValue)) {
@@ -565,11 +569,11 @@ describe('TextField Component', () => {
 
           setTimeout(() => {
             if (valid) {
-              assert.equal(!!component.error, false, 'Should not contain error');
+              assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert.equal(!!component.error, true, 'Should contain error');
-              assert.equal(component.error.message, error, 'Should contain error message');
+              assert.equal(component.errors.length, 1, 'Should contain error');
+              assert.equal(component.errors[0].message, error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
@@ -614,7 +618,7 @@ describe('TextField Component', () => {
           input.dispatchEvent(inputEvent);
 
           setTimeout(() => {
-            assert.equal(!!component.error, false, 'Should not contain error');
+            assert.equal(component.errors.length, 0, 'Should not contain error');
             assert.equal(component.getValue(), value.expected, 'Should set and format value');
 
             if (_.isEqual(value.value, lastValue)) {
@@ -668,11 +672,11 @@ describe('TextField Component', () => {
 
           setTimeout(() => {
             if (valid) {
-              assert.equal(!!component.error, false, 'Should not contain error');
+              assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert.equal(!!component.error, true, 'Should contain error');
-              assert.equal(component.error.message, error, 'Should contain error message');
+              assert.equal(component.errors.length, 1, 'Should contain error');
+              assert.equal(component.errors[0].message, error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
@@ -714,7 +718,7 @@ describe('TextField Component', () => {
           input.dispatchEvent(inputEvent);
 
           setTimeout(() => {
-            assert.equal(!!component.error, false, 'Should not contain error');
+            assert.equal(component.errors.length, 0, 'Should not contain error');
             assert.equal(component.getValue(), value.expected, 'Should set and format value');
 
             if (_.isEqual(value.value, lastValue)) {
@@ -765,11 +769,11 @@ describe('TextField Component', () => {
             assert.equal(component.getValue().maskName, mask.mask, 'Should apply correct mask');
 
             if (valid) {
-              assert.equal(!!component.error, false, 'Should not contain error');
+              assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert.equal(!!component.error, true, 'Should contain error');
-              assert.equal(component.error.message, error, 'Should contain error message');
+              assert.equal(component.errors.length, 1, 'Should contain error');
+              assert.equal(component.errors[0].message, error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
@@ -825,11 +829,11 @@ describe('TextField Component', () => {
 
           setTimeout(() => {
             if (valid) {
-              assert.equal(!!component.error, false, 'Should not contain error');
+              assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert.equal(!!component.error, true, 'Should contain error');
-              assert.equal(component.error.message, error, 'Should contain error message');
+              assert.equal(component.errors.length, 1, 'Should contain error');
+              assert.equal(component.errors[0].message, error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
@@ -869,7 +873,7 @@ describe('TextField Component', () => {
           input.dispatchEvent(inputEvent);
 
           setTimeout(() => {
-            assert.equal(!!component.error, false, 'Should not contain error');
+            assert.equal(component.errors.length, 0, 'Should not contain error');
             assert.equal(component.getValue(), value.expected, 'Should set and format value');
 
             if (_.isEqual(value.value, lastValue)) {

@@ -55,26 +55,25 @@ describe('Container Component', () => {
     });
   });
 
-  it('Should render form with a submission in a draft-state without validation errors', (done) => {
+  it('Should submit form with a submission in a draft-state without validation errors', (done) => {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
-
     Formio.createForm(element, form).then(form => {
-      form.submission = {
+      form.nosubmit = true;
+      form.setSubmission({
+        state: 'draft',
         data: {
           'container': {
             'textField': 'a',
           }
         }
-      };
-
-      setTimeout(() => {
-        const textField = form.getComponent(['textField']);
-        const container = form.getComponent(['container']);
-        assert.equal(textField.errors.length, 0);
-        assert.equal(container.errors.length, 0);
-        done();
-      }, 100);
+      }).then(() => {
+        form.submitForm().then((event) => {
+          // It should allow the submission in the renderer.
+          assert.equal(event.submission.state, 'draft');
+          done();
+        }).catch((err) => done(err));
+      }).catch(done);
     }).catch(done);
   });
 });

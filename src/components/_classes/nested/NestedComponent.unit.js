@@ -212,7 +212,7 @@ describe('NestedComponent class', () => {
     });
   });
 
-  describe('calculateComponentPath', () => {
+  describe('Components.getComponentPath()', () => {
     it('the first layer components', (done) => {
       Harness.testCreate(NestedComponent, comp1)
         .then((nested) => {
@@ -248,11 +248,11 @@ describe('NestedComponent class', () => {
           const dataGrid = childForm.components[1];
           const tabs = childForm.components[2];
 
-          assert(textField.path === 'form.data.textField');
-          assert(dataGrid.path === 'form.data.dataGrid');
-          assert(dataGrid.components[0].path === 'form.data.dataGrid[0].textField');
-          assert(tabs.path === 'form.data.tabs');
-          assert(tabs.tabs[0][0].path === 'form.data.tabsTextfield');
+          assert(textField.path === 'textField');
+          assert(dataGrid.path === 'dataGrid');
+          assert(dataGrid.components[0].path === 'dataGrid[0].textField');
+          assert(tabs.path === 'tabs');
+          assert(tabs.tabs[0][0].path === 'tabsTextfield');
           done();
         })
         .catch(done);

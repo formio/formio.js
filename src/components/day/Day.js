@@ -234,7 +234,6 @@ export default class DayComponent extends Field {
 
   init() {
     super.init();
-    this.validators = this.validators.concat(['day', 'maxDate', 'minDate', 'minYear', 'maxYear']);
 
     const minYear = this.component.fields.year.minYear;
     const maxYear = this.component.fields.year.maxYear;
