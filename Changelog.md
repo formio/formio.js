@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-5967: fixed issue with incorrect string representation for object type
  - FIO-7110: when 'use original revision' is enabled for nested form, submission still displays in current form revision pdfs
  - Revert "FI0-5429: added a condition to remove the decimal separator when the decimal digits are set to 0"
+ - FIO-6493: fixed reporting license validation
+ - FIO-7173: fixed an issue when initial focus gets triggered in Formbuilder inside of the Nested forms
+ - FIO 7246: DOMPurify when PDF option is set
+ - Revert "FIO-7074: Fixes an issue where setting submission to the Wizard from the form controller will not set values for all the pages"
+ - FIO-4816: fixed email submission: data display issues
+ - [Snyk] Upgrade core-js from 3.32.0 to 3.32.1
+ - [Snyk] Upgrade vanilla-picker from 2.12.1 to 2.12.2
+ - Fixed issue where content component would not save in the form.
    
 ## 5.0.0-rc.26
 ### Changed
