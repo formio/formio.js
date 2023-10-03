@@ -85,14 +85,6 @@ export default [
           const formSettings = buildingForm.settings || {};
           return ![data.breadcrumb, formSettings.wizardBreadcrumbsType].includes('none');
         }
-        // conditional: {
-        //   json: {
-        //     'and': [
-        //       { '!==': [{ var: 'data.breadcrumb' }, 'none'] },
-        //       { '!==': [{ var: 'buildingForm.settings.wizardBreadcrumbsType' }, 'none'] }
-        //     ]
-        //   }
-        // },
       },
       {
         input: true,
