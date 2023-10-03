@@ -118,14 +118,14 @@ export default class ReCaptchaComponent extends Component {
       .then((verificationResult) => ({ verificationResult, token }));
   }
 
-  checkComponentValidity(data, dirty, row, options = {}) {
+  checkComponentValidity(data, dirty, row, options = {}, errors = []) {
     data = data || this.rootValue;
     row = row || this.data;
     const { async = false } = options;
 
     // Verification could be async only
     if (!async) {
-      return super.checkComponentValidity(data, dirty, row, options);
+      return super.checkComponentValidity(data, dirty, row, options, errors);
     }
 
     const componentData = row[this.component.key];

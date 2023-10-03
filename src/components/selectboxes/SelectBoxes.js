@@ -50,7 +50,6 @@ export default class SelectBoxesComponent extends RadioComponent {
 
   constructor(...args) {
     super(...args);
-    this.validators = this.validators.concat('minSelectedCount', 'maxSelectedCount', 'availableValueProperty');
   }
 
   init() {
@@ -241,10 +240,10 @@ export default class SelectBoxesComponent extends RadioComponent {
     }
   }
 
-  checkComponentValidity(data, dirty, rowData, options) {
+  checkComponentValidity(data, dirty, rowData, options, errors = []) {
     const minCount = this.component.validate.minSelectedCount;
     const maxCount = this.component.validate.maxSelectedCount;
-    if (!this.shouldSkipValidation(data, dirty, rowData)) {
+    if (!this.shouldSkipValidation(data, rowData, options)) {
       const isValid = this.isValid(data, dirty);
       if ((maxCount || minCount)) {
         const count = Object.keys(this.validationValue).reduce((total, key) => {
@@ -264,24 +263,27 @@ export default class SelectBoxesComponent extends RadioComponent {
 
         if (!isValid && maxCount && count > maxCount) {
           const message = this.t(
-            this.component.maxSelectedCountMessage || 'You can only select up to {{maxCount}} items.',
+            this.component.maxSelectedCountMessage || 'You may only select up to {{maxCount}} items',
             { maxCount }
           );
+          this.errors.push({ message });
           this.setCustomValidity(message, dirty);
           return false;
         }
         else if (!isValid && minCount && count < minCount) {
           this.setInputsDisabled(false);
           const message = this.t(
-            this.component.minSelectedCountMessage || 'You must select at least {{minCount}} items.',
+            this.component.minSelectedCountMessage || 'You must select at least {{minCount}} items',
             { minCount }
           );
+          this.errors.push({ message });
           this.setCustomValidity(message, dirty);
           return false;
         }
       }
     }
-    return super.checkComponentValidity(data, dirty, rowData, options);
+
+    return super.checkComponentValidity(data, dirty, rowData, options, errors);
   }
 
   validateValueAvailability(setting, value) {

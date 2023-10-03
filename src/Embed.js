@@ -195,9 +195,10 @@ export class Formio {
             }]
         }]));
 
+        const renderer = Formio.config.debug ? 'formio.form' : 'formio.form.min';
         Formio.FormioClass = await Formio.addScript(
             wrapper,
-            Formio.formioScript(Formio.config.script || `${Formio.cdn.js}/formio.form.min.js`, builder),
+            Formio.formioScript(Formio.config.script || `${Formio.cdn.js}/${renderer}.js`, builder),
             'Formio'
         );
         Formio.FormioClass.setBaseUrl(Formio.baseUrl || Formio.config.base);
@@ -246,7 +247,7 @@ export class Formio {
             Formio.FormioClass.use(await Formio.addScript(wrapper, Formio.config.premium.js, 'premium'));
         }
 
-        await Formio.addStyles(wrapper, Formio.formioScript(Formio.config.style || `${Formio.cdn.js}/formio.form.min.css`, builder));
+        await Formio.addStyles(wrapper, Formio.formioScript(Formio.config.style || `${Formio.cdn.js}/${renderer}.css`, builder));
         if (Formio.config.before) {
             await Formio.config.before(Formio.FormioClass, element, Formio.config);
         }

@@ -4,6 +4,45 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.0.0]
+### Breaking Changes
+ - Bootstrap 5 Default Template - With the 5.x version of the renderer, the default template is now **Bootstrap 5** and is found @ https://github.com/formio/bootstrap repo.
+ - Bootstrap Icons - Now, instead of Font Awesome being the default icon set for our renderer, we are using Bootstrap Icons as the default icon set which is compatible with Bootstrap 5. Of course, you can always change out icon sets, but this is now the default.
+ - This version implements a new validation system. Within this, there are some changes that you should be aware of.
+   - In version 4.x, each component would have an error associated with that component as ```component.error```. This has changed
+     to ```component.errors``` which is an array of errors that are associated with the component. For example, if your custom logic references
+     the ```component.error.messages``` array, it will need to be changed as follows.
+
+     **4.x Renderer**
+     ```
+     const textField = form.getComponent('textField');
+     console.log(textField.error.messages[0]);  // Legacy way of getting the text field error for the first error.
+     ```
+
+     **5.x Renderer**
+     ```
+     const textField = form.getComponent('textField');
+     console.log(textField.errors[0].message);  // 5.x way of getting the error message for the first error.
+     ```
+  - In the 5.x renderer, the errors array will always be populated if there are errors in the form. They may not be displayed depending on the "pristine" state of the rendered form, but the error is always populated if there are form errors.  This is different in 4.x where the error property would only contain and error if an error is VISIBLE on the form. This means that it is difficult to determine if a form has errors without executing the checkValidity() method with the dirty flag set to "true". You no longer need to do this in the 5.x renderer.
+
+    **4.x Renderer**
+    ```
+    const textField = form.getComponent('requiredField');
+    console.log(textField.error);  // This would be null even if there was an error, but it was not visible.
+    ```
+
+    **5.x Renderer**
+    ```
+    const textField = form.getComponent('requiredField');
+    console.log(textField.errors);  // This will be populated with the errors of the textfield even if they are not displayed on the form.
+    ```
+
+  - With the 5.x renderer, all templates are now stored within a separate repo, and are included as a dependency for this renderer. 
+
+### New Features
+  - Bootstrap 5 Support
+
 ## [Unreleased: 5.0.0-rc.27]
 ### Fixed
  - FIO-5967: fixed issue with incorrect string representation for object type
@@ -28,6 +67,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6370: Fixes issues with PasswordStrength Addon settings
  - FIO-7146: formiojs-circleci-to-ghactions
    
+
 ## 5.0.0-rc.26
 ### Changed
  - More improvements to the embed capabilities.

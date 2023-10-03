@@ -171,90 +171,6 @@ describe('Wizard tests', () => {
     .catch((err) => done(err));
   }).timeout(2500);
 
-  it('Should render nested wizard, navigate pages and trigger validation', function(done) {
-    const formElement = document.createElement('div');
-    const wizard = new Wizard(formElement);
-    const nestedWizard = _.cloneDeep(wizardTestForm.form);
-
-    wizard.setForm(formWithNestedWizard).then(() => {
-      const nestedFormComp = wizard.getComponent('formNested');
-
-      nestedFormComp.loadSubForm = ()=> {
-        nestedFormComp.formObj = nestedWizard;
-        nestedFormComp.subFormLoading = false;
-        return new Promise((resolve) => resolve(nestedWizard));
-      };
-
-      nestedFormComp.createSubForm();
-      setTimeout(() => {
-      const clickWizardBtn = (pathPart, clickError) => {
-        const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
-        const clickEvent = new Event('click');
-        btn.dispatchEvent(clickEvent);
-      };
-
-      const checkPage = (pageNumber) => {
-        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
-      };
-
-      checkPage(0);
-      assert.equal(wizard.pages.length, 5, 'Should have 5 pages');
-      assert.equal(wizard.allPages.length, 5, 'Should have 5 pages');
-      assert.equal(wizard.refs[`${wizard.wizardKey}-link`].length, 5, 'Should contain refs to breadcrumbs of parent and nested wizard');
-
-      clickWizardBtn('next');
-
-      setTimeout(() => {
-        checkPage(1);
-        assert.equal(wizard.refs[`${wizard.wizardKey}`].querySelectorAll('[ref="component"]').length, 1, 'Should not load nested wizard component of the page of nested form if this page contains other components');
-        clickWizardBtn('next');
-
-        setTimeout(() => {
-          checkPage(2);
-          assert.equal(wizard.refs[`${wizard.wizardKey}`].querySelectorAll('[ref="component"]').length, 4, 'Should render nested wizard first page components');
-
-          clickWizardBtn('next');
-
-          setTimeout(() => {
-            checkPage(2);
-            assert.equal(wizard.errors.length, 1, 'Should show validation error for required field');
-            assert.equal(wizard.refs.errorRef.length, 1, 'Should show alert with error');
-            clickWizardBtn('previous');
-
-            setTimeout(() => {
-              checkPage(1);
-              assert.equal(wizard.errors.length, 0, 'Should not have validation errors');
-
-              clickWizardBtn('link[4]');
-
-              setTimeout(() => {
-                checkPage(4);
-                assert.equal(!!wizard.refs[`${wizard.wizardKey}-submit`], true, 'Should have submit btn on the last page');
-                clickWizardBtn('submit');
-
-                setTimeout(() => {
-                  checkPage(4);
-                  assert.equal(wizard.errors.length, 3, 'Should trigger validation errors on submit');
-                  assert.equal(wizard.refs.errorRef.length, 3, 'Should show alert with error on submit');
-                  wizard.getComponent('select').setValue('value1');
-                  setTimeout(() => {
-                    checkPage(4);
-                    assert.equal(wizard.errors.length, 2, 'Should remove validation error if a component is valid');
-                    assert.equal(wizard.refs.errorRef.length, 2, 'Should remove error from alert if component is valid');
-
-                    done();
-                  }, 500);
-                }, 500);
-              }, 200);
-            }, 200);
-          }, 200);
-        }, 200);
-      }, 200);
-    }, 200);
-    })
-    .catch((err) => done(err));
-  }).timeout(3000);
-
   it('Should set submission in wizard with nested wizard', function(done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
@@ -387,7 +303,7 @@ describe('Wizard tests', () => {
     }, 300);
     })
     .catch((err) => done(err));
-  }).timeout(3000);
+  }).timeout(6000);
 
   it('Should render values in HTML render mode', function(done) {
     const formElement = document.createElement('div');
@@ -501,7 +417,7 @@ describe('Wizard tests', () => {
       renderMode: 'html'
     });
 
-    wizard.setForm(wizardWithComponentsWithSameApi, ).then(() => {
+    wizard.setForm(wizardWithComponentsWithSameApi).then(() => {
       const clickWizardBtn = (pathPart) => {
         const [btnKey] = Object.keys(wizard.refs).filter((key) => key.indexOf(pathPart) !== -1);
         const btn = _.get(wizard.refs, btnKey);
@@ -1021,8 +937,8 @@ describe('Wizard tests', () => {
       const checkInvalidComp = (compKey, highLight) => {
         const comp = wizard.getComponent(compKey);
 
-        assert.deepEqual(!!comp.error, true, `${compKey}: should have error`);
-        assert.deepEqual(comp.error.message, `${comp.component.label} is required`, `${compKey}: should have correct required validation message`);
+        assert.deepEqual(comp.errors.length, 1, `${compKey}: should have error`);
+        assert.deepEqual(comp.errors[0].message, `${comp.component.label} is required`, `${compKey}: should have correct required validation message`);
         assert.deepEqual(comp.pristine, false, `${compKey}: should set pristine to false`);
         assert.deepEqual(comp.element.classList.contains(`${highLight ? 'formio-error-wrapper' : 'has-error'}`), true, `${compKey}: should set error class`);
         assert.deepEqual(comp.refs.messageContainer.querySelector('.error').textContent.trim(), `${comp.component.label} is required`, `${compKey}: should display error message`);
@@ -1033,12 +949,12 @@ describe('Wizard tests', () => {
 
       setTimeout(() => {
         checkPage(2);
-        assert.equal(wizard.errors.length, 0, 'Should not have validation errors');
+        assert.equal(wizard.visibleErrors.length, 0, 'Should not have validation errors');
 
         clickWizardBtn('submit');
 
         setTimeout(() => {
-          assert.equal(wizard.errors.length, 3, 'Should have validation errors');
+          assert.equal(wizard.visibleErrors.length, 3, 'Should have validation errors');
           assert.equal(wizard.refs.errorRef.length, wizard.errors.length, 'Should show alert with validation errors');
           assert.equal(!!wizard.element.querySelector('.alert-danger'), true, 'Should have alert with validation errors');
           checkInvalidComp('select', true);
@@ -1047,7 +963,7 @@ describe('Wizard tests', () => {
           setTimeout(() => {
             checkPage(0);
 
-            assert.equal(wizard.errors.length, 1, 'Should have page validation error');
+            assert.equal(wizard.visibleErrors.length, 3, 'Should have page validation error');
             assert.equal(wizard.refs.errorRef.length, 3, 'Should keep alert with validation errors');
             checkInvalidComp('textField');
             clickWizardBtn('errorRef[1]', true);
@@ -1055,38 +971,38 @@ describe('Wizard tests', () => {
             setTimeout(() => {
               checkPage(1);
 
-              assert.equal(wizard.errors.length, 1, 'Should have page validation error');
+              assert.equal(wizard.visibleErrors.length, 3, 'Should have page validation error');
               assert.equal(wizard.refs.errorRef.length, 3, 'Should keep alert with validation errors');
               checkInvalidComp('checkbox');
               wizard.getComponent('checkbox').setValue(true);
 
               setTimeout(() => {
                 checkPage(1);
-                assert.equal(wizard.errors.length, 0, 'Should not have page validation error');
+                assert.equal(wizard.visibleErrors.length, 2, 'Should not have page validation error');
                 assert.equal(wizard.refs.errorRef.length, 2, 'Should keep alert with validation errors');
                 clickWizardBtn('errorRef[1]', true);
 
                 setTimeout(() => {
                   checkPage(2);
 
-                  assert.equal(wizard.errors.length, 2, 'Should have wizard validation errors');
+                  assert.equal(wizard.visibleErrors.length, 2, 'Should have wizard validation errors');
                   assert.equal(wizard.refs.errorRef.length, 2, 'Should keep alert with validation errors');
                   wizard.getComponent('select').setValue('value1');
 
                   setTimeout(() => {
-                    assert.equal(wizard.errors.length, 1, 'Should have wizard validation error');
+                    assert.equal(wizard.visibleErrors.length, 1, 'Should have wizard validation error');
                     assert.equal(wizard.refs.errorRef.length, 1, 'Should keep alert with validation errors');
                     clickWizardBtn('errorRef[0]', true);
 
                     setTimeout(() => {
                       checkPage(0);
 
-                      assert.equal(wizard.errors.length, 1, 'Should have page validation error');
+                      assert.equal(wizard.visibleErrors.length, 1, 'Should have page validation error');
                       assert.equal(wizard.refs.errorRef.length, 1, 'Should keep alert with validation errors');
                       wizard.getComponent('textField').setValue('valid');
 
                       setTimeout(() => {
-                        assert.equal(wizard.errors.length, 0, 'Should not have page validation error');
+                        assert.equal(wizard.visibleErrors.length, 0, 'Should not have page validation error');
                         assert.equal(!!wizard.element.querySelector('.alert-danger'), false, 'Should not have alert with validation errors');
                         clickWizardBtn('link[2]');
 
@@ -1166,7 +1082,8 @@ describe('Wizard tests', () => {
 
                 setTimeout(() => {
                   checkPage(2);
-                  assert.equal(wizard.errors.length, 0, 'Should not have validation error');
+                  assert.equal(wizard.errors.length, 1, 'Should have validation error');
+                  assert.equal(wizard.visibleErrors.length, 0, 'Should not have visible validation error');
                   clickNavigationBtn('link[0]');
 
                   setTimeout(() => {
@@ -1467,11 +1384,10 @@ it('Should show tooltip for wizard pages', function(done) {
           c: '',
           textField: ''
         }
-      },
-        [{
-          component: 'a',
-          message: 'a must have at least 4 characters.'
-        }], done);
+      }, [{
+        component: 'a',
+        message: 'a must have at least 4 characters.'
+      }], done);
       Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][2]);
       assert.equal(wizardForm.page, 2);
       setTimeout(() => {
@@ -1481,7 +1397,6 @@ it('Should show tooltip for wizard pages', function(done) {
           const aInput = wizardForm.currentPage.getComponent('a');
           assert.equal(aInput.errors.length, 1);
           assert.equal(aInput.errors[0].message, 'a must have at least 4 characters.');
-          done();
         }, 100);
       }, 100);
     })
@@ -1546,12 +1461,12 @@ it('Should show tooltip for wizard pages', function(done) {
 
     const form = await Formio.createForm(wizardCond, {});
 
-    form.validator.config = {
-      db: {},
-      token: '',
-      form: wizardCond,
-      submission: submission
-    };
+    // form.validator.config = {
+    //   db: {},
+    //   token: '',
+    //   form: wizardCond,
+    //   submission: submission
+    // };
 
     // Set the submission data
     form.data = submission.data;

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Field from '../field/Field';
 import Components from '../../Components';
 import { getArrayFromComponentPath, getStringFromComponentPath, getRandomComponentId } from '../../../utils/utils';
-
+import { process as processAsync, processSync } from '@formio/core';
 export default class NestedComponent extends Field {
   static schema(...extend) {
     return Field.schema({
@@ -36,7 +36,7 @@ export default class NestedComponent extends Field {
   collapse(value) {
     const promise = this.redraw();
     if (!value) {
-      this.checkValidity(this.data, !this.pristine, null, this.pristine);
+      this.checkValidity(this.data, !this.pristine);
     }
     return promise;
   }
@@ -285,27 +285,6 @@ export default class NestedComponent extends Field {
   }
 
   /**
-   * Return a path of component's value.
-   *
-   * @param {Object} component - The component instance.
-   * @return {string} - The component's value path.
-   */
-  calculateComponentPath(component) {
-    let path = '';
-    if (component.component.key) {
-      let thisPath = this;
-      while (thisPath && !thisPath.allowData && thisPath.parent) {
-        thisPath = thisPath.parent;
-      }
-      const rowIndex = component.row ? `[${Number.parseInt(component.row)}]` : '';
-      path = thisPath.path ? `${thisPath.path}${rowIndex}.` : '';
-      path += component._parentPath && component.component.shouldIncludeSubFormPath ? component._parentPath : '';
-      path += component.component.key;
-      return path;
-    }
-  }
-
-  /**
    * Create a new component and add it to the components array.
    *
    * @param component
@@ -325,15 +304,7 @@ export default class NestedComponent extends Field {
     if (!(options.display === 'pdf' && this.builderMode)) {
       component.id = getRandomComponentId();
     }
-    if (!this.isInputComponent && this.component.shouldIncludeSubFormPath) {
-      component.shouldIncludeSubFormPath = true;
-    }
     const comp = Components.create(component, options, data, true);
-
-    const path = this.calculateComponentPath(comp);
-    if (path) {
-      comp.path = path;
-    }
     comp.init();
     if (component.internal) {
       return comp;
@@ -414,9 +385,6 @@ export default class NestedComponent extends Field {
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
     this.components = this.components || [];
-    if (this.options.parentPath) {
-      component.shouldIncludeSubFormPath = true;
-    }
     component = this.hook('addComponent', component, data, before, noAdd);
     const comp = this.createComponent(component, this.options, data, before ? before : null);
     if (noAdd) {
@@ -519,7 +487,7 @@ export default class NestedComponent extends Field {
   }
 
   /**
-   * Remove a component from the components array.
+   * Remove a component from the components array and from the children object
    *
    * @param {Component} component - The component to remove from the components.
    * @param {Array<Component>} components - An array of components to remove this component from.
@@ -528,6 +496,9 @@ export default class NestedComponent extends Field {
     components = components || this.components;
     component.destroy(all);
     _.remove(components, { id: component.id });
+    if (this.componentsMap[component.path]) {
+      delete this.componentsMap[component.path];
+    }
   }
 
   /**
@@ -580,13 +551,13 @@ export default class NestedComponent extends Field {
     }, super.updateValue(value, flags));
   }
 
-  shouldSkipValidation(data, dirty, row) {
+  shouldSkipValidation(data, row, flags) {
     // Nested components with no input should not be validated.
     if (!this.component.input) {
       return true;
     }
     else {
-      return super.shouldSkipValidation(data, dirty, row);
+      return super.shouldSkipValidation(data, row, flags);
     }
   }
 
@@ -598,12 +569,8 @@ export default class NestedComponent extends Field {
     flags = flags || {};
     row = row || this.data;
     components = components && _.isArray(components) ? components : this.getComponents();
-    const isValid = components.reduce((valid, comp) => {
-      return comp.checkData(data, flags, row) && valid;
-    }, super.checkData(data, flags, row));
-
-    this.checkModal(isValid, this.isDirty);
-    return isValid;
+    super.checkData(data, flags, row);
+    components.forEach((comp) => comp.checkData(data, flags, row));
   }
 
   checkConditions(data, flags, row) {
@@ -646,7 +613,7 @@ export default class NestedComponent extends Field {
    * @return {*}
    */
   beforeSubmit() {
-    return Promise.all(this.getComponents().map((comp) => comp.beforeSubmit()));
+    return Promise.allSettled(this.getComponents().map((comp) => comp.beforeSubmit()));
   }
 
   calculateValue(data, flags, row) {
@@ -671,29 +638,82 @@ export default class NestedComponent extends Field {
     );
   }
 
-  checkChildComponentsValidity(data, dirty, row, silentCheck, isParentValid) {
-    return this.getComponents().reduce(
-      (check, comp) => comp.checkValidity(data, dirty, row, silentCheck) && check,
-      isParentValid
-    );
+  validationProcessor({ scope, data, row, instance }, flags) {
+    const { dirty } = flags;
+    if (!instance) {
+      return;
+    }
+    instance.checkComponentValidity(data, dirty, row, flags, scope.errors);
+    if (instance.processOwnValidation) {
+      scope.noRecurse = true;
+    }
   }
 
-  checkValidity(data, dirty, row, silentCheck) {
-    if (!this.checkCondition(row, data)) {
-      this.setCustomValidity('');
-      return true;
-    }
+  /**
+   * Perform a validation on all child components of this nested component.
+   * @param {*} components
+   * @param {*} data
+   * @param {*} flags
+   * @returns
+   */
+  validateComponents(components, data, flags = {}) {
+    components = components || this.component.components;
+    data = data || this.rootValue;
+    const { async, dirty, process } = flags;
+    const processorContext = {
+      process: process || 'unknown',
+      components,
+      instances: this.componentsMap,
+      data: data,
+      scope: { errors: [] },
+      processors: [
+        (context) => this.validationProcessor(context, flags),
+        ({ instance, component, components }) => {
+          // If we just validated the last component, and there are errors from our parent, then we need to show a model of those errors.
+          if (
+            instance &&
+            instance.parent &&
+            (component === components[components.length - 1]) &&
+            instance.parent.componentModal
+          ) {
+            instance.parent.checkModal(instance.parent.childErrors, dirty);
+          }
+        }
+      ]
+    };
+    return async ? processAsync(processorContext).then((scope) => scope.errors) : processSync(processorContext).errors;
+  }
 
-    const isValid = this.checkChildComponentsValidity(data, dirty, row, silentCheck, super.checkValidity(data, dirty, row, silentCheck));
-    this.checkModal(isValid, dirty);
-    return isValid;
+  /**
+   * Validate a nested component with data, or its own internal data.
+   * @param {*} data
+   * @param {*} flags
+   * @returns
+   */
+  validate(data, flags = {}) {
+    data = data || this.rootValue;
+    return this.validateComponents(this.getComponents().map((component) => component.component), data, flags);
+  }
+
+  checkComponentValidity(data, dirty, row, flags = {}, allErrors = []) {
+    this.childErrors = [];
+    return super.checkComponentValidity(data, dirty, row, flags, allErrors);
+  }
+
+  checkValidity(data, dirty, row, silentCheck, childErrors = []) {
+    console.log('Deprecation warning:  Component.checkValidity() will be deprecated in 6.x version of renderer. Use "validate" method instead.');
+    childErrors.push(...this.validate(data, { dirty, silentCheck }));
+    return this.checkComponentValidity(data, dirty, row, { dirty, silentCheck }, childErrors) && childErrors.length === 0;
   }
 
   checkAsyncValidity(data, dirty, row, silentCheck) {
+    console.log('Deprecation warning:  Component.checkAsyncValidity() will be deprecated in 6.x version of renderer.');
     return this.ready.then(() => {
-      const promises = [super.checkAsyncValidity(data, dirty, row, silentCheck)];
-      this.eachComponent((component) => promises.push(component.checkAsyncValidity(data, dirty, row, silentCheck)));
-      return Promise.all(promises).then((results) => results.reduce((valid, result) => (valid && result), true));
+      return this.validate(data, { dirty, silentCheck, async: true }).then((childErrors) => {
+        return this.checkComponentValidity(data, dirty, row, { dirty, silentCheck, async: true }, childErrors).then((valid) => {
+          return valid && childErrors.length === 0;
+        });
+      });
     });
   }
 
@@ -735,8 +755,12 @@ export default class NestedComponent extends Field {
     this.components = [];
   }
 
+  get visibleErrors() {
+    return this.getComponents().reduce((errors, comp) => errors.concat(comp.visibleErrors || []), super.visibleErrors);
+  }
+
   get errors() {
-    const thisErrors = this.error ? [this.error] : [];
+    const thisErrors = super.errors;
     return this.getComponents()
       .reduce((errors, comp) => errors.concat(comp.errors || []), thisErrors)
       .filter(err => err.level !== 'hidden');
@@ -780,9 +804,6 @@ export default class NestedComponent extends Field {
   setValue(value, flags = {}) {
     if (!value) {
       return false;
-    }
-    if (value.submitAsDraft && !value.submit) {
-      flags.noValidate = true;
     }
     return this.getComponents().reduce((changed, component) => {
       return this.setNestedValue(component, value, flags, changed) || changed;

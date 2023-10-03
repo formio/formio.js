@@ -735,7 +735,7 @@ describe('Select Component', () => {
 
         setTimeout(() => {
           assert.equal(form.errors.length, 1);
-          assert.equal(select.error.message, 'Select is an invalid value.');
+          assert.equal(select.errors[0].message, 'Select is an invalid value.');
           document.innerHTML = '';
           done();
         }, 400);
@@ -926,11 +926,11 @@ describe('Select Component', () => {
       select.pristine = false;
 
       setTimeout(() => {
-        assert(!select.error, 'Select should be valid while changing');
+        assert(!select.errors.length, 'Select should be valid while changing');
         select.focusableElement.dispatchEvent(new Event('blur'));
 
         setTimeout(() => {
-          assert(select.error, 'Should set error after Select component was blurred');
+          assert(select.errors.length, 'Should set error after Select component was blurred');
           done();
         }, 500);
       }, 200);
@@ -940,7 +940,7 @@ describe('Select Component', () => {
   it('Should escape special characters in regex search field', done => {
     const form = _.cloneDeep(comp17);
     const element = document.createElement('div');
-
+    Formio.setProjectUrl('https://formio.form.io');
     Formio.createForm(element, form).then(form => {
       const select = form.getComponent('select');
       const searchField = select.element.querySelector('.choices__input.choices__input--cloned');

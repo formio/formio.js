@@ -149,11 +149,11 @@ describe('Tags Component', function() {
       tags.choices.input.element.focus();
 
       setTimeout(() => {
-        assert(!tags.error, 'Tags should be valid while changing');
+        assert.equal(tags.errors.length, 0, 'Tags should be valid while changing');
         tags.choices.input.element.dispatchEvent(new Event('blur'));
 
         setTimeout(() => {
-          assert(tags.error, 'Should set error after Tags component was blurred');
+          assert.equal(tags.errors.length, 1, 'Should set error after Tags component was blurred');
           done();
         }, 500);
       }, 300);
