@@ -1454,7 +1454,11 @@ export default class WebformBuilder extends Component {
       {
         ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode', 'skipInit']),
         language: this.options.language,
-        ...editFormOptions
+        ...editFormOptions,
+        evalContext: {
+          ...(editFormOptions?.evalContext || this.options?.evalContext || {}),
+          buildingForm: this.form,
+        },
       }
     );
 

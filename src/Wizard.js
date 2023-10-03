@@ -211,7 +211,9 @@ export default class Wizard extends Webform {
   }
 
   prepareHeaderSettings(ctx, headerType) {
-    if (this.currentPanel && this.currentPanel.breadcrumb === 'none' || ctx.isSubForm) {
+    const shouldHideBreadcrumbs = this.currentPanel?.breadcrumb === 'none' ||
+      _.get(this.form, 'settings.wizardBreadcrumbsType', '') === 'none';
+    if (shouldHideBreadcrumbs || ctx.isSubForm) {
       return null;
     }
     return this.renderTemplate(headerType, ctx);
