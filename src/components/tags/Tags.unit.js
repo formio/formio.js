@@ -65,7 +65,7 @@ describe('Tags Component', function() {
 
         setTimeout(() => {
           const modalPreview = component.element.querySelector('[ref="openModal"]');
-          assert.equal(modalPreview.textContent.trim(), 'test, test1, test2', 'All tags should be rendered inside Modal Preview');
+          assert.equal(modalPreview.textContent.trim(), 'test,test1,test2', 'All tags should be rendered inside Modal Preview');
           form.destroy();
           done();
         }, 250);
