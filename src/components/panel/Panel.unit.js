@@ -67,7 +67,6 @@ describe('Panel Component', () => {
       const components = flattenComponents(panelEditForm().components);
       const keys = Object.keys(components).map(path => components[path].key);
       const settings = [
-        'breadcrumb',
         'breadcrumbClickable'
       ];
 

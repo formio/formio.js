@@ -60,6 +60,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7309: fixed an issue where min/maxDate settings for Day component are getting evaluated in Form Builder
  - FIO-7207: changed tooltip and removed 'Hide label' option from the list of layout components
  - FIO-7074: fixed an issue where setting submission on wizard does not update data
+ - FIO-7082: Moved Wizard Breadcrumbs Type to form settings
    
 ## 5.0.0-rc.26
 ### Changed
