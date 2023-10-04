@@ -1588,8 +1588,15 @@ export default class WebformBuilder extends Component {
           }
         }
 
+        // If the edit form has any nested form inside, we get a partial data (nested form's data) in the
+        // event.data property
+        let editFormData;
+        if (event.changed.instance && event.changed.instance.root && event.changed.instance.root.id !== this.editForm.id) {
+          editFormData = this.editForm.data;
+        }
+
         // Update the component.
-        this.updateComponent(event.data.componentJson || event.data, event.changed);
+        this.updateComponent(event.data.componentJson || editFormData || event.data, event.changed);
       }
     });
 
