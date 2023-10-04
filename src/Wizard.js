@@ -1049,24 +1049,22 @@ export default class Wizard extends Webform {
   }
 
   focusOnComponent(key) {
-    let pageIndex = 0;
-
-    const [page] = this.pages.filter((page, index) => {
-      let hasComponent = false;
-      page.getComponent(key, (comp) => {
-        if (comp.path === key) {
-          pageIndex = index;
-          hasComponent = true;
+    const component = this.getComponent(key);
+    if (component) {
+      let topPanel = component.parent;
+      while (!(topPanel.parent instanceof Wizard)) {
+        topPanel = topPanel.parent;
+      }
+      const pageIndex = this.pages.findIndex(page => page === topPanel);
+      if (pageIndex >= 0) {
+        const page = this.pages[pageIndex];
+        if (page && page !== this.currentPage) {
+          return this.setPage(pageIndex).then(() => {
+            this.showErrors(this.validate(this.localData, { dirty: true }));
+            super.focusOnComponent(key);
+          });
         }
-      });
-      return hasComponent;
-    });
-
-    if (page && page !== this.currentPage) {
-      return this.setPage(pageIndex).then(() => {
-        this.showErrors(this.validate(this.localData, { dirty: true }));
-        super.focusOnComponent(key);
-      });
+      }
     }
     return super.focusOnComponent(key);
   }

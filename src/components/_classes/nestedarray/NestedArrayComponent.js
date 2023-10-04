@@ -1,7 +1,7 @@
 'use strict';
 
 import _ from 'lodash';
-import { componentValueTypes } from '../../../utils/utils';
+import { componentValueTypes, getStringFromComponentPath } from '../../../utils/utils';
 
 import Component from '../component/Component';
 import NestedDataComponent from '../nesteddata/NestedDataComponent';
@@ -107,6 +107,15 @@ export default class NestedArrayComponent extends NestedDataComponent {
   }
 
   getComponent(path, fn, originalPath) {
+    originalPath = originalPath || getStringFromComponentPath(path);
+    if (this.componentsMap.hasOwnProperty(originalPath)) {
+      if (fn) {
+        return fn(this.componentsMap[originalPath]);
+      }
+      else {
+        return this.componentsMap[originalPath];
+      }
+    }
     path = Array.isArray(path) ? path : [path];
     let key = path.shift();
     const remainingPath = path;
