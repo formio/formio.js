@@ -393,7 +393,7 @@ export function applyFormChanges(form, changes) {
  * @returns {Object}
  *   The flattened components map.
  */
-export function flattenComponents(components, includeAll) {
+export function flattenComponents(components, includeAll = false) {
   const flattened = {};
   eachComponent(components, (component, path) => {
     flattened[path] = component;

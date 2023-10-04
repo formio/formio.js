@@ -3,13 +3,15 @@
 // like Formio.cdn.ace === 'http://cdn.form.io/ace/1.4.12'.
 // For latest version use empty string
 class CDN {
-  constructor(baseUrl) {
-    this.baseUrl = baseUrl || 'https://cdn.form.io';
-    this.overrides = {};
+  static defaultCDN = 'https://cdn.form.io';
+  constructor(baseUrl, overrides = {}) {
+    this.baseUrl = baseUrl || CDN.defaultCDN;
+    this.overrides = overrides;
     this.libs = {
       'js': '',
       'ace': '1.4.12',
-      'bootstrap': '4.6.2',
+      'bootstrap': '5.3.2',
+      'bootstrap-icons': '1.11.1',
       'ckeditor': '19.0.0',
       'flatpickr': '4.6.8',
       'flatpickr-formio': '4.6.13-formio.3',

@@ -15,7 +15,7 @@ import './components/builder';
 if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
   window.global = window;
 }
-import dragula from 'dragula/dist/dragula.min.js';
+import dragula from 'dragula';
 
 export default class WebformBuilder extends Component {
   // eslint-disable-next-line max-statements
@@ -1311,9 +1311,8 @@ export default class WebformBuilder extends Component {
           comp = component;
         }
       });
-      const originalComp = comp.component;
-      const originalComponentSchema = comp.schema;
-
+      const originalComp = comp?.component;
+      const originalComponentSchema = comp?.schema;
       const isParentSaveChildMethod = this.isParentSaveChildMethod(parent.formioComponent);
 
       if (parentContainer && !isParentSaveChildMethod) {
