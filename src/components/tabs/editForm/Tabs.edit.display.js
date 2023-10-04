@@ -81,4 +81,8 @@ export default [
     key: 'verticalLayout',
     input: true
   },
+  {
+    key: 'hideLabel',
+    ignore: true
+  },
 ];
