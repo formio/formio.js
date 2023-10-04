@@ -38,12 +38,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     console.log(textField.errors);  // This will be populated with the errors of the textfield even if they are not displayed on the form.
     ```
 
+  - If you wish to show the "visibleErrors", then there is a new property on each component called "visibleComponents".
+
+    **4.x Renderer**
+    ```
+    const textField = form.getComponent('requiredField');
+    console.log(textField.errors);
+    ```
+
+    **5.x Renderer**
+    ```
+    const textField = form.getComponent('textField');
+    console.log(textField.visibleErrors); // This is the equivalent of the 4.x renderer "errors" array.
+    ```
+
   - With the 5.x renderer, all templates are now stored within a separate repo, and are included as a dependency for this renderer. 
 
 ### New Features
   - Bootstrap 5 Support
 
-## [Unreleased: 5.0.0-rc.27]
+## 5.0.0-rc.27
 ### Fixed
  - FIO-5967: fixed issue with incorrect string representation for object type
  - FIO-7110: when 'use original revision' is enabled for nested form, submission still displays in current form revision pdfs
