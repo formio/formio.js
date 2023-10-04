@@ -850,7 +850,7 @@ export default class WebformBuilder extends Component {
 
     if (info) {
       //if this is a custom component that was already assigned a key, don't stomp on it
-      if ((group === 'custom') && info.key) {
+      if (!Components.components.hasOwnProperty(info.type) && info.key) {
         return info;
       }
       info.key = this.generateKey(info);
