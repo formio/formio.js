@@ -767,7 +767,7 @@ export default class Component extends Element {
 
     let contentMargin = '';
     if (this.component.hideLabel) {
-      const margin = this.labelWidth + this.labelMargin;
+      const margin = isCondensed ? 0 : this.labelWidth + this.labelMargin;
       contentMargin = isRightPosition ? `margin-right: ${margin}%` : '';
       contentMargin = isLeftPosition ? `margin-left: ${margin}%` : '';
     }

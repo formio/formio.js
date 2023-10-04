@@ -803,8 +803,10 @@ export function convertFormatToMask(format) {
     .replace(/M{3}/g, '***')
     // Short month conversion if input as text.
     .replace(/e/g, 'Q')
+    // Month number conversion.
+    .replace(/W/g, '99')
     // Year conversion.
-    .replace(/[ydhmsHMG]/g, '9')
+    .replace(/[ydhmswHMG]/g, '9')
     // AM/PM conversion.
     .replace(/a/g, 'AA');
 }
