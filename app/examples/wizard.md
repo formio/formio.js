@@ -42,8 +42,9 @@ The determination on whether a form is a wizard or not is based on the **display
 You can create a new wizard just like you can a normal form.
 
 ```html
-<link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
-<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+<script src="https://cdn.form.io/js/formio.embed.js"></script>
 <div id="wizard"></div>
 ```
 
@@ -85,8 +86,9 @@ You can also add options when creating a form, the following options are support
    * buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not  
 
 ```html
-<link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
-<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+<script src="https://cdn.form.io/js/formio.embed.js"></script>
 <div id="wizardWithOptions"></div>
 ```
 

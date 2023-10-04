@@ -29,6 +29,16 @@
     animation: spin 2s linear infinite;
 }
 
+.alert-success {
+    position: relative;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: #0a3622;
+    background-color: #d1e7dd;
+    border: #a3cfbb;
+    border-radius: 0.375rem;
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }

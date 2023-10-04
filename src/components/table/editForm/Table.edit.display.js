@@ -32,6 +32,24 @@ export default [
     ignore: true
   },
   {
+    key: 'hideLabel',
+    ignore: true
+  },
+  {
+    weight: 0,
+    type: 'textfield',
+    input: true,
+    key: 'label',
+    label: 'Label',
+    placeholder: 'Field Label',
+    tooltip: 'The label for this field.',
+    validate: {
+      required: true
+    },
+    autofocus: true,
+    overrideEditForm: true
+  },
+  {
     type: 'number',
     label: 'Number of Rows',
     key: 'numRows',

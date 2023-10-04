@@ -38,6 +38,10 @@ export default class PanelComponent extends NestedComponent {
     return 'panel';
   }
 
+  static savedValueTypes() {
+    return [];
+  }
+
   constructor(...args) {
     super(...args);
     this.noField = true;

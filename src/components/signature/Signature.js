@@ -1,7 +1,7 @@
 import SignaturePad from 'signature_pad';
-import _ResizeObserver from 'resize-observer-polyfill';
 import Input from '../_classes/input/Input';
 import _ from 'lodash';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 
 export default class SignatureComponent extends Input {
   static schema(...extend) {
@@ -29,6 +29,22 @@ export default class SignatureComponent extends Input {
       documentation: '/developers/integrations/esign/esign-integrations#signature-component',
       schema: SignatureComponent.schema()
     };
+  }
+
+  static get serverConditionSettings() {
+    return SignatureComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+    return getComponentSavedTypes(schema) || [componentValueTypes.string];
   }
 
   init() {
@@ -216,7 +232,7 @@ export default class SignatureComponent extends Input {
         }
 
         if (!this.builderMode && !this.options.preview) {
-          this.observer = new _ResizeObserver(() => {
+          this.observer = new ResizeObserver(() => {
             this.checkSize();
           });
 
@@ -261,6 +277,9 @@ export default class SignatureComponent extends Input {
   }
 
   getValueAsString(value) {
+    if (_.isUndefined(value) && this.inDataTable) {
+      return '';
+    }
     return value ? 'Yes' : 'No';
   }
 

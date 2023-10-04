@@ -1,4 +1,3 @@
-import NativePromise from 'native-promise-only';
 import XHR from './xhr';
 const s3 = (formio) => ({
   uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
@@ -37,13 +36,8 @@ const s3 = (formio) => ({
       return formio.makeRequest('file', `${formio.formUrl}/storage/s3?bucket=${XHR.trim(file.bucket)}&key=${XHR.trim(file.key)}`, 'GET');
     }
     else {
-      return NativePromise.resolve(file);
+      return Promise.resolve(file);
     }
-  },
-
-  deleteFile(fileInfo) {
-    const url = `${formio.formUrl}/file/${XHR.trim(fileInfo.name)}?bucket=${XHR.trim(fileInfo.bucket)}&key=${XHR.trim(fileInfo.key)}`;
-    return formio.makeRequest('', url, 'delete');
    }
  });
 

@@ -1,8 +1,7 @@
 import Field from '../_classes/field/Field';
-import { uniqueName } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
 import fileProcessor from '../../providers/processor/fileProcessor';
 import BMF from 'browser-md5-file';
 
@@ -65,6 +64,23 @@ export default class FileComponent extends Field {
     };
   }
 
+  static get serverConditionSettings() {
+    return FileComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+
+    return  getComponentSavedTypes(schema) || [componentValueTypes.object];
+  }
+
   init() {
     super.init();
     webViewCamera = navigator.camera || Camera;
@@ -84,7 +100,7 @@ export default class FileComponent extends Field {
   }
 
   get dataReady() {
-    return this.filesReady || NativePromise.resolve();
+    return this.filesReady || Promise.resolve();
   }
 
   get defaultSchema() {
@@ -165,7 +181,7 @@ export default class FileComponent extends Field {
   }
 
   getFrame(videoPlayer) {
-    return new NativePromise((resolve) => {
+    return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
       canvas.height = videoPlayer.videoHeight;
       canvas.width = videoPlayer.videoWidth;
@@ -226,7 +242,7 @@ export default class FileComponent extends Field {
   }
 
   browseFiles(attrs = {}) {
-    return new NativePromise((resolve) => {
+    return new Promise((resolve) => {
       const fileInput = this.ce('input', {
         type: 'file',
         style: 'height: 0; width: 0; visibility: hidden;',
@@ -317,7 +333,7 @@ export default class FileComponent extends Field {
   deleteFile(fileInfo) {
     const { options = {} } = this.component;
 
-    if (fileInfo && (['url', 'indexeddb', 's3','googledrive', 'azure'].includes(this.component.storage))) {
+    if (fileInfo && (['url', 'indexeddb'].includes(this.component.storage))) {
       const { fileService } = this;
       if (fileService && typeof fileService.deleteFile === 'function') {
         fileService.deleteFile(fileInfo, options);
@@ -403,9 +419,14 @@ export default class FileComponent extends Field {
     this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
       this.addEventListener(fileStatusRemove, 'click', (event) => {
         event.preventDefault();
-        if (this.abortUpload) {
-          this.abortUpload();
+
+        const fileUpload = this.statuses[index];
+        _.pull(this.filesUploading, fileUpload.originalName);
+
+        if (fileUpload.abort) {
+          fileUpload.abort();
         }
+
         this.statuses.splice(index, 1);
         this.redraw();
       });
@@ -493,7 +514,7 @@ export default class FileComponent extends Field {
     const fileService = this.fileService;
     if (fileService) {
       const loadingImages = [];
-      this.filesReady = new NativePromise((resolve, reject) => {
+      this.filesReady = new Promise((resolve, reject) => {
         this.filesReadyResolve = resolve;
         this.filesReadyReject = reject;
       });
@@ -501,7 +522,7 @@ export default class FileComponent extends Field {
         loadingImages.push(this.loadImage(this.dataValue[index]).then((url) => (image.src = url)));
       });
       if (loadingImages.length) {
-        NativePromise.all(loadingImages).then(() => {
+        Promise.all(loadingImages).then(() => {
           this.filesReadyResolve();
         }).catch(() => this.filesReadyReject());
       }
@@ -633,6 +654,7 @@ export default class FileComponent extends Field {
         const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
         const escapedFileName = file.name ? file.name.replaceAll('<', '&lt;').replaceAll('>', '&gt;') : file.name;
         const fileUpload = {
+          abort: () => null,
           originalName: escapedFileName,
           name: fileName,
           size: file.size,
@@ -688,7 +710,6 @@ export default class FileComponent extends Field {
             pattern: this.component.filePattern,
           });
         }
-
         // Check file minimum size
         if (this.component.fileMinSize && !this.validateMinSize(file, this.component.fileMinSize)) {
           fileUpload.status = 'error';
@@ -742,7 +763,6 @@ export default class FileComponent extends Field {
               });
             }
           });
-
           const fileKey = this.component.fileKey || 'file';
           const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
           let processedFile = null;
@@ -769,7 +789,7 @@ export default class FileComponent extends Field {
             }
           }
 
-          fileUpload.message = this.t('Starting upload.');
+          fileUpload.message = this.t('Starting upload...');
           this.redraw();
 
           const filePromise = fileService.uploadFile(
@@ -793,8 +813,7 @@ export default class FileComponent extends Field {
             () => {
               this.emit('fileUploadingStart', filePromise);
             },
-            // Abort upload callback
-            (abort) => this.abortUpload = abort,
+            (abort) => fileUpload.abort = abort,
           ).then((fileInfo) => {
               const index = this.statuses.indexOf(fileUpload);
               if (index !== -1) {

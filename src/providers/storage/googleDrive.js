@@ -1,8 +1,7 @@
-import NativePromise from 'native-promise-only';
 import { setXhrHeaders } from './xhr';
 const googledrive = (formio) => ({
   uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
-    return new NativePromise(((resolve, reject) => {
+    return new Promise(((resolve, reject) => {
       // Send the file with data.
       const xhr = new XMLHttpRequest();
 
@@ -57,12 +56,7 @@ const googledrive = (formio) => ({
     const token = formio.getToken();
     file.url =
       `${formio.formUrl}/storage/gdrive?fileId=${file.id}&fileName=${file.originalName}${token ? `&x-jwt-token=${token}` : ''}`;
-    return NativePromise.resolve(file);
-  },
-
-  deleteFile: function deleteFile(fileInfo) {
-    var url = ''.concat(formio.formUrl, `/storage/gdrive?id=${fileInfo.id}&name=${fileInfo.originalName}`);
-    return formio.makeRequest('', url, 'delete');
+    return Promise.resolve(file);
   }
 });
 
