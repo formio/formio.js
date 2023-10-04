@@ -26,7 +26,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\/Formio\.js$/,
+        test: /\/(Formio|Embed)\.js$/,
         loader: 'string-replace-loader',
         options: {
           search: 'FORMIO_VERSION',

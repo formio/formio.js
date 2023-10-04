@@ -259,95 +259,101 @@ describe('Component', () => {
       }).catch(done);
     });
   });
-});
 
-it('Should return value for HTML mode', () => {
-  return Harness.testCreate(Component, comp1).then((component) => {
-    assert.equal(component.itemValueForHTMLMode(['option 1', 'option 2', 'option 3']), 'option 1, option 2, option 3');
-    assert.equal(component.itemValueForHTMLMode(['option 1', ['option 2', 'option 3']]), 'option 1, option 2, option 3');
-    assert.equal(component.itemValueForHTMLMode(['2020-03-18T15:00:00.000Z', '2020-03-31T09:05:00.000Z']), '2020-03-18T15:00:00.000Z, 2020-03-31T09:05:00.000Z');
-    assert.equal(component.itemValueForHTMLMode('test'), 'test');
-  });
-});
-
-it('Should protect against change loops', function(done) {
-  const formElement = document.createElement('div');
-  const form = new Webform(formElement);
-  const formJson = {
-    components: [
-      {
-        key: 'textField',
-        label: 'Text Field',
-        type: 'textfield',
-        calculateValue: "value = value + '_calculated'",
-      },
-    ],
-  };
-
-  form.setForm(formJson).then(() => {
-    const textField = form.getComponent('textField');
-    const spy = sinon.spy(textField, 'calculateComponentValue');
-    form.onChange({ textField: 'test' });
-
-    setTimeout(() => {
-      expect(spy.calledOnce).to.be.true;
-
-      done();
-    }, 500);
-  })
-  .catch((err) => done(err));
-});
-
-it('Should mark as invalid only invalid fields in multiple components', function(done) {
-  const formElement = document.createElement('div');
-  const form = new Webform(formElement);
-  const formJson = {
-    components: [
-      {
-        label: 'Email',
-        tableView: true,
-        multiple: true,
-        validate: {
-          required: true
-        },
-        key: 'email',
-        type: 'email',
-        input: true
-      },
-    ],
-  };
-
-  form.setForm(formJson).then(() => {
-    return form.setSubmission({
-      data: {
-        email: [
-          'oleg@form.io',
-          'oleg@form',
-          '',
-        ]
-      }
+  it('Should return value for HTML mode', () => {
+    return Harness.testCreate(Component, comp1).then((component) => {
+      assert.equal(component.itemValueForHTMLMode(['option 1', 'option 2', 'option 3']), 'option 1, option 2, option 3');
+      assert.equal(component.itemValueForHTMLMode(['option 1', ['option 2', 'option 3']]), 'option 1, option 2, option 3');
+      assert.equal(component.itemValueForHTMLMode(['2020-03-18T15:00:00.000Z', '2020-03-31T09:05:00.000Z']), '2020-03-18T15:00:00.000Z, 2020-03-31T09:05:00.000Z');
+      assert.equal(component.itemValueForHTMLMode('test'), 'test');
     });
-  })
-  .then(() => {
-    setTimeout(() => {
-      const email = form.getComponent('email');
-      expect(email.refs.input[0].classList.contains('is-invalid')).to.be.false;
-      expect(email.refs.input[1].classList.contains('is-invalid')).to.be.true;
-      expect(email.refs.input[2].classList.contains('is-invalid')).to.be.true;
-      done();
-    }, 300);
-  })
-  .catch(done);
-});
+  });
 
-describe('shouldDisplayRedAsterisk', () => {
-  it('modalPreview template should have className "field-required" if component is required', done => {
-    Harness.testCreate(Component, _merge({}, comp4, {
-      validate: { required: true }
-    })).then(cmp => {
-      assert.equal(!!cmp.element.querySelector('.field-required'), true);
-      done();
-    }, done)
+  it('Should protect against change loops', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    const formJson = {
+      components: [
+        {
+          key: 'textField',
+          label: 'Text Field',
+          type: 'textfield',
+          calculateValue: "value = value + '_calculated'",
+        },
+      ],
+    };
+
+    form.setForm(formJson).then(() => {
+      const textField = form.getComponent('textField');
+      const spy = sinon.spy(textField, 'calculateComponentValue');
+      form.onChange({ textField: 'test' });
+
+      setTimeout(() => {
+        expect(spy.calledOnce).to.be.true;
+
+        done();
+      }, 500);
+    })
+    .catch((err) => done(err));
+  });
+
+  it('Should mark as invalid only invalid fields in multiple components', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    const formJson = {
+      components: [
+        {
+          label: 'Email',
+          tableView: true,
+          multiple: true,
+          validate: {
+            required: true
+          },
+          key: 'email',
+          type: 'email',
+          input: true
+        },
+      ],
+    };
+
+    form.setForm(formJson).then(() => {
+      return form.setSubmission({
+        data: {
+          email: [
+            'oleg@form.io',
+            'oleg@form',
+            '',
+          ]
+        }
+      });
+    })
+    .then(() => {
+      setTimeout(() => {
+        const email = form.getComponent('email');
+        expect(email.refs.input[0].classList.contains('is-invalid')).to.be.false;
+        expect(email.refs.input[1].classList.contains('is-invalid')).to.be.true;
+        expect(email.refs.input[2].classList.contains('is-invalid')).to.be.true;
+        done();
+      }, 300);
+    })
     .catch(done);
+  });
+
+  it('Should sanitize HTML even if options.pdf is set', (done) => {
+    const component = new Component({}, { pdf: true });
+    assert.equal(component.sanitize('<a href="javascript:console.log("untrusted")></a>'), '<a></a>');
+    done();
+  });
+
+  describe('shouldDisplayRedAsterisk', () => {
+    it('modalPreview template should have className "field-required" if component is required', done => {
+      Harness.testCreate(Component, _merge({}, comp4, {
+        validate: { required: true }
+      })).then(cmp => {
+        assert.equal(!!cmp.element.querySelector('.field-required'), true);
+        done();
+      }, done)
+      .catch(done);
+    });
   });
 });

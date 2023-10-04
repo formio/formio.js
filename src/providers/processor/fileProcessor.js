@@ -1,7 +1,5 @@
-import NativePromise from 'native-promise-only';
-
 const fileProcessor = (formio, config) => (file, options) =>
-  new NativePromise((resolve, reject) => {
+  new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
 
     // Fire on network error.

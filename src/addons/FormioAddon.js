@@ -1,5 +1,4 @@
 import Element from '../Element';
-import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
 export default class FormioAddon extends Element {
@@ -30,7 +29,7 @@ export default class FormioAddon extends Element {
 
   attach(element) {
     this._element = element;
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   destroy() {}

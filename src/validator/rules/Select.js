@@ -1,8 +1,7 @@
 import { interpolate } from '../../utils/utils';
-import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
 const { fetch, Headers, Request } = fetchPonyfill({
-  Promise: NativePromise
+  Promise: Promise
 });
 import _ from 'lodash';
 

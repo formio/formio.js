@@ -1,7 +1,6 @@
 import Multivalue from '../multivalue/Multivalue';
 import { convertStringToHTMLElement } from '../../../utils/utils';
 import Widgets from '../../../widgets';
-import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
 export default class Input extends Multivalue {
@@ -247,7 +246,7 @@ export default class Input extends Multivalue {
       element.widget.destroy();
     }
     // Attach the widget.
-    let promise = NativePromise.resolve();
+    let promise = Promise.resolve();
     element.widget = this.createWidget(index);
     if (element.widget) {
       promise = element.widget.attach(element);

@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
 import { Formio } from './Formio';
 
 import WebformBuilder from './WebformBuilder';
@@ -169,7 +168,7 @@ export default class PDFBuilder extends WebformBuilder {
         });
       }
 
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
 
     // Normal PDF Builder
@@ -457,7 +456,7 @@ export default class PDFBuilder extends WebformBuilder {
     if (!this.dropEvent) {
       // a 'drop' event may not be emited in the chrome browser when using a Mac, therefore an additional check has been added
       // eslint-disable-next-line no-undef
-      if (!this.dropEmitted && getBrowserInfo().chrome && globalThis.navigator.userAgentData.platform === 'macOS' && iframeRect.left < e.clientX && iframeRect.top < e.clientY ) {
+      if (!this.dropEmitted && (getBrowserInfo().chrome || getBrowserInfo().edge) && globalThis.navigator.userAgentData.platform === 'macOS' && iframeRect.left < e.clientX && iframeRect.top < e.clientY ) {
         this.dropEvent = e;
         this.dropEvent.dataTransfer.effectAllowed = 'all';
         this.dropEmitted = true;

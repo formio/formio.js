@@ -418,10 +418,13 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   focusOnNewRowElement(row) {
     Object.keys(row).find((key) => {
-      const focusableElements = getFocusableElements(row[key].element);
-      if (focusableElements && focusableElements[0]) {
-        focusableElements[0].focus();
-        return true;
+      const element = row[key].element;
+      if (element) {
+        const focusableElements = getFocusableElements(element);
+        if (focusableElements && focusableElements[0]) {
+          focusableElements[0].focus();
+          return true;
+        }
       }
       return false;
     });
@@ -617,7 +620,14 @@ export default class DataGridComponent extends NestedArrayComponent {
 
           if (col.component.logic && firstRowCheck) {
             const compIndex = _.findIndex(this.columns, ['key', key]);
-            if (!_.isEqual(this.columns[compIndex], col.component)) {
+            const equalColumns = _.isEqualWith(this.columns[compIndex], col.component, (col1, col2, key) => {
+              // Don't compare columns by their auto-generated ids.
+              if (key === 'id') {
+                return true;
+              }
+            });
+
+            if (!equalColumns) {
               logicRebuild = true;
               this.columns[compIndex] = col.component;
             }

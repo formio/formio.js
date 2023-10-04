@@ -14,45 +14,59 @@ export default {
 		input: true
 	},
 	{
-		label: 'Select Boxes',
-		optionsLabelPosition: 'right',
+		label: 'Container',
 		tableView: false,
-		defaultValue:
-		{
-			'1': false,
-			'2': false,
-			'3': false
-		},
-		values: [
-		{
-			label: '1',
-			value: '1',
-			shortcut: ''
-		},
-		{
-			label: '2',
-			value: '2',
-			shortcut: ''
-		},
-		{
-			label: '3',
-			value: '3',
-			shortcut: ''
-		}],
-		validate:
-		{
-			minSelectedCount: 1
-		},
-		key: 'selectBoxes1',
-		conditional:
-		{
+		key: 'container',
+		conditional: {
 			show: true,
-			when: 'checkbox',
-			eq: true
+			conjunction: 'all',
+			conditions: [
+			{
+				component: 'checkbox',
+				operator: 'isEqual',
+				value: true
+			}
+			]
 		},
-		type: 'selectboxes',
+		type: 'container',
 		input: true,
-		inputType: 'checkbox'
+		components: [
+			{
+				label: 'Select Boxes',
+				optionsLabelPosition: 'right',
+				tableView: false,
+				defaultValue:
+				{
+					'1': false,
+					'2': false,
+					'3': false
+				},
+				values: [
+				{
+					label: '1',
+					value: '1',
+					shortcut: ''
+				},
+				{
+					label: '2',
+					value: '2',
+					shortcut: ''
+				},
+				{
+					label: '3',
+					value: '3',
+					shortcut: ''
+				}],
+				validate:
+				{
+					minSelectedCount: 1
+				},
+				key: 'selectBoxes',
+				type: 'selectboxes',
+				input: true,
+				inputType: 'checkbox'
+			}
+		]
 	},
 	{
 		type: 'button',

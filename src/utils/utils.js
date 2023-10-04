@@ -6,14 +6,13 @@ import jsonLogic from 'json-logic-js';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
-import NativePromise from 'native-promise-only';
 import dompurify from 'dompurify';
 import { getValue } from './formUtils';
 import Evaluator from './Evaluator';
 import ConditionOperators from './conditionOperators';
 const interpolate = Evaluator.interpolate;
 const { fetch } = fetchPonyfill({
-  Promise: NativePromise
+  Promise: Promise
 });
 
 export * from './formUtils';
@@ -243,9 +242,9 @@ export function checkCalculated(component, submission, rowData) {
       }
       const value = getComponentActualValue(conditionComponentPath, data, row);
 
-      const СonditionOperator = ConditionOperators[operator];
-      return СonditionOperator
-        ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+      const ConditionOperator = ConditionOperators[operator];
+      return ConditionOperator
+        ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
         : true;
     });
 
@@ -618,7 +617,7 @@ export function shouldLoadZones(timezone) {
 export function loadZones(url, timezone) {
   if (timezone && !shouldLoadZones(timezone)) {
     // Return non-resolving promise.
-    return new NativePromise(_.noop);
+    return new Promise(_.noop);
   }
 
   if (moment.zonesPromise) {
@@ -945,7 +944,7 @@ export function getCurrencyAffixes({
   regex += '(.*)?';
   const parts = (100).toLocaleString(lang, {
     style: 'currency',
-    currency: currency ? currency : "USD",
+    currency: currency ? currency : 'USD',
     useGrouping: true,
     maximumFractionDigits: decimalLimit || 0,
     minimumFractionDigits: decimalLimit || 0
@@ -1552,3 +1551,27 @@ export function getFocusableElements(element) {
 
 // Export lodash to save space with other libraries.
 export { _ };
+
+export const componentValueTypes = {
+  number: 'number',
+  string: 'string',
+  boolean: 'boolean',
+  array: 'array',
+  object: 'object',
+  date: 'date',
+  any: 'any',
+};
+
+export function getComponentSavedTypes(fullSchema) {
+  const schema = fullSchema || {};
+
+  if (schema.persistent !== true) {
+    return [];
+  }
+
+  if (schema.multiple) {
+    return [componentValueTypes.array];
+  }
+
+  return null;
+}
