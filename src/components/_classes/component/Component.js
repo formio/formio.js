@@ -990,8 +990,7 @@ export default class Component extends Element {
    * @returns {*}
    */
   sanitize(dirty, forceSanitize, options) {
-    // No need to sanitize when generating PDF'S since no users interact with the form.
-    if ((!this.shouldSanitizeValue && !forceSanitize) || ((this.options.pdf) && !forceSanitize)) {
+    if (!this.shouldSanitizeValue && !forceSanitize) {
       return dirty;
     }
     return FormioUtils.sanitize(
@@ -1729,16 +1728,16 @@ export default class Component extends Element {
       if (this.refs.input?.length) {
         const { selection, index } = this.root.currentSelection;
         let input = this.refs.input[index];
-        const isInputRangeSelectable = /text|search|password|tel|url/i.test(input.type || '');
+        const isInputRangeSelectable = (i) => /text|search|password|tel|url/i.test(i?.type || '');
         if (input) {
-          if (isInputRangeSelectable) {
+          if (isInputRangeSelectable(input)) {
             input.setSelectionRange(...selection);
           }
         }
         else {
           input = this.refs.input[this.refs.input.length];
           const lastCharacter = input.value?.length || 0;
-          if (isInputRangeSelectable) {
+          if (isInputRangeSelectable(input)) {
             input.setSelectionRange(lastCharacter, lastCharacter);
           }
         }

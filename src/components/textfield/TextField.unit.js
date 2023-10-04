@@ -40,6 +40,48 @@ describe('TextField Component', () => {
     });
   });
 
+  it('Should check mask and value in the textfield component in the email template', (done) => {
+    const formJson =  {
+      components: [{
+          label: 'Text Field',
+          tableView: true,
+          allowMultipleMasks: true,
+          inputMasks: [{
+            label: 'mask1',
+            mask: 'mask1'
+          }],
+          key: 'textField',
+          type: 'textfield',
+          input: true
+       }]
+    };
+    const element = document.createElement('div');
+    Formio.createForm(element, formJson)
+      .then(form => {
+        form.setSubmission({
+          data: {
+            textField: {
+                value: 'mask1',
+                maskName: 'mask2'
+            }
+        },
+        });
+
+        const textField = form.getComponent('textField');
+
+        setTimeout(() => {
+          assert.equal(textField.dataValue.value, 'mask1', 'Should check value');
+          assert.equal(textField.dataValue.maskName, 'mask2', 'Should check maskName');
+          const toString = textField.getValueAsString(textField.dataValue, { email: true });
+          assert.ok(toString.includes('table'), 'Email template should render html table');
+          assert.ok(toString.includes(textField.dataValue.maskName), 'Email template should have Text Field mackName');
+          assert.ok(toString.includes(textField.dataValue.value), 'Email template should have Text Field value');
+          done();
+        }, 300);
+      })
+      .catch(done);
+  });
+
   it('Should provide required validation', () => {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { required: true }
