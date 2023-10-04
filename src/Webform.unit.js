@@ -2,12 +2,11 @@ import assert from 'power-assert';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import _ from 'lodash';
-import each from 'lodash/each';
-import i18next from 'i18next';
 import Harness from '../test/harness';
 import FormTests from '../test/forms';
 import Webform from './Webform';
 import 'flatpickr';
+import AllComponents from './components';
 import { Formio } from './Formio';
 import {
   settingErrors,
@@ -37,7 +36,6 @@ import {
   formWithCustomFormatDate,
   tooltipActivateCheckbox,
 } from '../test/formtest';
-// import DataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import UpdateErrorClassesWidgets from '../test/forms/updateErrorClasses-widgets';
 import nestedModalWizard from '../test/forms/nestedModalWizard';
 import disableSubmitButton from '../test/forms/disableSubmitButton';
@@ -48,8 +46,7 @@ import formWithDataGrid from '../test/forms/formWithDataGrid';
 import translationTestForm from '../test/forms/translationTestForm';
 import formWithDataGridWithCondColumn from '../test/forms/dataGridWithConditionalColumn';
 import { nestedFormInWizard } from '../test/fixtures';
-import NativePromise from 'native-promise-only';
-import { fastCloneDeep } from '../lib/utils/utils';
+import { fastCloneDeep } from './utils/utils';
 import dataGridOnBlurValidation from '../test/forms/dataGridOnBlurValidation';
 import checkBlurFocusEventForm from '../test/forms/checkBlurFocusEventForm';
 import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
@@ -74,11 +71,16 @@ import formsWithNewSimpleConditions from '../test/forms/formsWithNewSimpleCondit
 import formWithRadioInsideDataGrid from '../test/forms/formWithRadioInsideDataGrid';
 import formWithCheckboxRadioType from '../test/forms/formWithCheckboxRadioType';
 import formWithFormController from '../test/forms/formWithFormController';
+import calculateValueOnServerForEditGrid from '../test/forms/calculateValueOnServerForEditGrid';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
 
-/* eslint-disable max-statements */
+if (_.has(Formio, 'Components.setComponents')) {
+  Formio.Components.setComponents(AllComponents);
+}
+
+/* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
 
@@ -106,6 +108,34 @@ describe('Webform tests', function() {
           done();
       }, 200);
     }).catch((err) => done(err));
+  });
+
+  it('Should not fall into setValue calls loop when doing value calculation on server', done => {
+    const formElement = document.createElement('div');
+    // Set a spy for Edit Grid setValue method
+    const spy = sinon.spy(Formio.Components.components.editgrid.prototype, 'setValue');
+
+    Formio.createForm(formElement, calculateValueOnServerForEditGrid, { server: true, noDefaults: true } )
+      .then(form => {
+        assert.deepEqual(form.data, { editGrid: [{ fielda: undefined, fieldb: 'test' }] });
+        assert.equal(spy.callCount, 1);
+
+        const first = form.getComponent('first');
+
+        first.setValue('test value');
+
+        setTimeout(() => {
+          assert.deepEqual(form.data, {
+            first: 'test value',
+            editGrid: [{ fielda: 'test value', fieldb: 'test' }]
+          });
+          assert.equal(spy.callCount, 2);
+          // Remove the spy from setValue method
+          Formio.Components.components.editgrid.prototype.setValue.restore();
+          done();
+        }, 300);
+      })
+      .catch(done);
   });
 
   it('Should fire blur and focus events for address and select components', function(done) {
@@ -258,6 +288,21 @@ describe('Webform tests', function() {
     }, 200);
     })
     .catch((err) => done(err));
+  });
+
+  it('Should show submission if passed as option', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { renderMode: 'html', readOnly: true, submission: { data: { survey: { question1: 'a3', question2: 'a1' } } } });
+
+    form.setForm(formWithSurvey).then(() => {
+      const survey = form.getComponent('survey');
+      const values = survey.element.querySelectorAll('td');
+
+      assert.equal(values.length, 2);
+      assert.equal(values[0].innerHTML.trim(), 'a3');
+      assert.equal(values[1].innerHTML.trim(), 'a1');
+      done();
+   }).catch((err) => done(err));
   });
 
   it('Should show survey values in html render mode', function(done) {
@@ -1387,26 +1432,12 @@ describe('Webform tests', function() {
         }
       ]
     }).then(() => {
-      const label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.col-form-label');
       assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
-    }).catch(done);
-  });
-
-  it('Should treat double colons as i18next namespace separators', (done) => {
-    const formElement = document.createElement('div');
-    const form = new Webform(formElement);
-    form.setForm({
-      title: 'Test Form',
-      components: []
-    }).then(() => {
-      const str = 'Test: this is only a test';
-
-      assert.equal(form.t(str), str);
-      assert.equal(form.t(`Namespace::${str}`), str);
-
-      done();
-    }).catch(done);
+    }).catch((err) => {
+      done(err);
+    });
   });
 
   it('Should get the language passed via options', () => {
@@ -1477,7 +1508,7 @@ describe('Webform tests', function() {
       ]
     }).then(() => {
       translateForm.language = 'es';
-      const label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.col-form-label');
       assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
     }).catch(done);
@@ -1510,7 +1541,7 @@ describe('Webform tests', function() {
       ]
     }).then(() => {
       translateForm.language = 'fr';
-      const label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.col-form-label');
       assert.equal(label.innerHTML.trim(), 'French Label');
       done();
     }).catch(done);
@@ -1533,7 +1564,7 @@ describe('Webform tests', function() {
       ]
     }).then(() => {
       translateForm.addLanguage('es', { 'Default Label': 'Spanish Label' }, true);
-      const label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.col-form-label');
       assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
     }).catch(done);
@@ -1564,10 +1595,10 @@ describe('Webform tests', function() {
         }, done)
         .then(() => {
           expect(form.options.language).to.equal('ru');
-          expect(formElement.querySelector('.control-label').innerHTML.trim()).to.equal('Russian Label');
+          expect(formElement.querySelector('.col-form-label').innerHTML.trim()).to.equal('Russian Label');
           form.redraw();
           expect(form.options.language).to.equal('ru');
-          expect(formElement.querySelector('.control-label').innerHTML.trim()).to.equal('Russian Label');
+          expect(formElement.querySelector('.col-form-label').innerHTML.trim()).to.equal('Russian Label');
           done();
         }, done)
         .catch(done);
@@ -1655,43 +1686,6 @@ describe('Webform tests', function() {
     simpleForm.submit().then((submission) => {
       assert.deepEqual(submission.data, { name: 'noname' });
       done();
-    });
-  });
-
-  it('Should not mutate the global i18next if it gets an instance', async function() {
-    await i18next.init({ lng: 'en' });
-    const instance = i18next.createInstance();
-
-    const formElement = document.createElement('div');
-    const translateForm = new Webform(formElement, {
-      language: 'es',
-      i18next: instance,
-      i18n: {
-        es: {
-          'Default Label': 'Spanish Label'
-        }
-      }
-    });
-
-    return translateForm.setForm({
-      title: 'Translate Form',
-      components: [
-        {
-          type: 'textfield',
-          label: 'Default Label',
-          key: 'myfield',
-          input: true,
-          inputType: 'text',
-          validate: {}
-        }
-      ]
-    }).then(() => {
-      assert.equal(i18next.language, 'en');
-      assert.equal(translateForm.i18next.language, 'es');
-      assert.equal(translateForm.i18next, instance);
-
-      const label = formElement.querySelector('.control-label');
-      assert.equal(label.innerHTML.trim(), 'Spanish Label');
     });
   });
 
@@ -2091,7 +2085,7 @@ describe('Webform tests', function() {
       assert.equal(submitButton.disabled, false, 'Button should be enabled at the beginning');
 
       const simulateFileUploading = (comp, debounce = 250) => {
-        const filePromise = new NativePromise((resolve) => {
+        const filePromise = new Promise((resolve) => {
           setTimeout(() => resolve(), debounce);
         });
         filePromise.then(() => comp.emit('fileUploadingEnd', filePromise));
@@ -2252,15 +2246,15 @@ describe('Webform tests', function() {
           fieldInput.dispatchEvent(blurEvent);
 
           setTimeout(() => {
-            assert(field.error, 'Should set error aftre component was blured');
+            assert(field.error, 'Should set error after component was blurred');
             Harness.setInputValue(field2, 'data[textField1]', 'ab');
 
             setTimeout(() => {
               assert(field.error, 'Should keep error when editing another component');
               done();
-            }, 250);
-          }, 250);
-        }, 250);
+            }, 200);
+          }, 200);
+        }, 200);
       }).catch(done);
     });
 
@@ -3791,16 +3785,13 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  each(FormTests, (formTest) => {
+  for (const formTest of FormTests) {
     const useDoneInsteadOfPromise = formTest.useDone;
 
     if (useDoneInsteadOfPromise) {
       describe(formTest.title || '', () => {
-        each(formTest.tests, (formTestTest, title) => {
-          if (title === 'Email Action Test') {
-            console.log('Email Action Test');
-          }
-
+        for (const title in formTest.tests) {
+          const formTestTest = formTest.tests[title];
           it(title, function(done) {
             const self = this;
             const formElement = document.createElement('div');
@@ -3810,18 +3801,19 @@ describe('Webform tests', function() {
                 form = null;
                 formElement.innerHTML = '';
                 if (error) {
-                  throw new Error(error);
+                  return done(error);
                 }
                 done();
               }, self);
             });
           });
-        });
+        }
       });
     }
     else {
       describe(formTest.title || '', () => {
-        each(formTest.tests, (formTestTest, title) => {
+        for (const title in formTest.tests) {
+          const formTestTest = formTest.tests[title];
           it(title, function() {
             const formElement = document.createElement('div');
             const form = new Webform(formElement, { language: 'en' });
@@ -3834,10 +3826,10 @@ describe('Webform tests', function() {
               });
             });
           });
-        });
+        }
       });
     }
-  });
+  }
 });
 
 // describe('Test the saveDraft and restoreDraft feature', () => {

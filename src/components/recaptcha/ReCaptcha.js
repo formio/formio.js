@@ -3,7 +3,6 @@ import Component from '../_classes/component/Component';
 import { Formio } from '../../Formio';
 import _get from 'lodash/get';
 import _debounce from 'lodash/debounce';
-import NativePromise from 'native-promise-only';
 
 export default class ReCaptchaComponent extends Component {
   static schema(...extend) {
@@ -19,10 +18,14 @@ export default class ReCaptchaComponent extends Component {
       title: 'reCAPTCHA',
       group: 'premium',
       icon: 'refresh',
-      documentation: '/userguide/forms/premium-components#recaptcha',
+      documentation: '/userguide/form-building/premium-components#recaptcha',
       weight: 40,
       schema: ReCaptchaComponent.schema()
     };
+  }
+
+  static savedValueTypes() {
+    return [];
   }
 
   render() {
@@ -67,7 +70,7 @@ export default class ReCaptchaComponent extends Component {
       this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);
     }
     if (this.recaptchaApiReady) {
-      this.recaptchaVerifiedPromise = new NativePromise((resolve, reject) => {
+      this.recaptchaVerifiedPromise = new Promise((resolve, reject) => {
         this.recaptchaApiReady
           .then(() => {
             if (!this.isLoading) {
@@ -128,15 +131,15 @@ export default class ReCaptchaComponent extends Component {
     const componentData = row[this.component.key];
     if (!componentData || !componentData.token) {
       this.setCustomValidity('ReCAPTCHA: Token is not specified in submission');
-      return NativePromise.resolve(false);
+      return Promise.resolve(false);
     }
 
     if (!componentData.success) {
       this.setCustomValidity('ReCAPTCHA: Token validation error');
-      return NativePromise.resolve(false);
+      return Promise.resolve(false);
     }
 
-    return this.hook('validateReCaptcha', componentData.token, () => NativePromise.resolve(true))
+    return this.hook('validateReCaptcha', componentData.token, () => Promise.resolve(true))
       .then((success) => success)
       .catch((err) => {
         this.setCustomValidity(err.message || err);

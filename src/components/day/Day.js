@@ -1,6 +1,7 @@
 import _ from 'lodash';
+import moment from 'moment';
 import Field from '../_classes/field/Field';
-import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypes, getLocaleDateFormatInfo } from '../../utils/utils';
 
 export default class DayComponent extends Field {
   static schema(...extend) {
@@ -34,10 +35,36 @@ export default class DayComponent extends Field {
       title: 'Day',
       group: 'advanced',
       icon: 'calendar',
-      documentation: '/userguide/forms/form-components#day',
+      documentation: '/userguide/form-building/advanced-components#day',
       weight: 50,
       schema: DayComponent.schema()
     };
+  }
+
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isDateEqual', 'isNotDateEqual', 'isEmpty', 'isNotEmpty','dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'],
+    };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+    return getComponentSavedTypes(schema) || [componentValueTypes.string];
+  }
+
+  constructor(component, options, data) {
+    if (component.maxDate && component.maxDate.indexOf('moment(') === -1) {
+      component.maxDate = moment(component.maxDate, 'YYYY-MM-DD').toISOString();
+    }
+    if (component.minDate && component.minDate.indexOf('moment(') === -1) {
+      component.minDate = moment(component.minDate, 'YYYY-MM-DD').toISOString();
+    }
+    super(component, options, data);
+  }
+
+  static get serverConditionSettings() {
+    return DayComponent.conditionOperatorsSettings;
   }
 
   /**
@@ -261,6 +288,19 @@ export default class DayComponent extends Field {
   attach(element) {
     this.loadRefs(element, { day: 'single', month: 'single', year: 'single', input: 'multiple' });
     const superAttach = super.attach(element);
+
+    const updateValueAndSaveFocus = (element, name) => () => {
+      try {
+        this.saveCaretPosition(element, name);
+      }
+      catch (err) {
+        console.warn('An error occurred while trying to save caret position', err);
+      }
+      this.updateValue(null, {
+        modified: true,
+      });
+    };
+
     if (this.shouldDisabled) {
       this.setDisabled(this.refs.day, true);
       this.setDisabled(this.refs.month, true);
@@ -270,13 +310,14 @@ export default class DayComponent extends Field {
       }
     }
     else {
-      this.addEventListener(this.refs.day, 'input', () => this.updateValue(null, {
-        modified: true
-      }));
+      this.addEventListener(this.refs.day, 'input', updateValueAndSaveFocus(this.refs.day, 'day'));
       // TODO: Need to rework this to work with day select as well.
       // Change day max input when month changes.
       this.addEventListener(this.refs.month, 'input', () => {
-        const maxDay = this.refs.year ? parseInt(new Date(this.refs.year.value, this.refs.month.value, 0).getDate(), 10)
+        const maxDay = this.refs.year ? parseInt(
+            new Date(this.refs.year.value, this.refs.month.value, 0).getDate(),
+            10
+          )
           : '';
         const day = this.getFieldValue('day');
         if (!this.component.fields.day.hide && maxDay) {
@@ -285,16 +326,15 @@ export default class DayComponent extends Field {
         if (maxDay && day > maxDay) {
           this.refs.day.value = this.refs.day.max;
         }
-        this.updateValue(null, {
-          modified: true
-        });
+        updateValueAndSaveFocus(this.refs.month, 'month')();
       });
-      this.addEventListener(this.refs.year, 'input', () => this.updateValue(null, {
-        modified: true
-      }));
+      this.addEventListener(this.refs.year, 'input', updateValueAndSaveFocus(this.refs.year, 'year'));
       this.addEventListener(this.refs.input, this.info.changeEvent, () => this.updateValue(null, {
         modified: true
       }));
+      [this.refs.day, this.refs.month, this.refs.year].filter((element) => !!element).forEach((element) => {
+        super.addFocusBlurEvents(element);
+      });
     }
     this.setValue(this.dataValue);
     // Force the disabled state with getters and setters.
@@ -518,19 +558,12 @@ export default class DayComponent extends Field {
     return this.getDate();
   }
 
-  normalizeMinMaxDates() {
-   return [this.component.minDate, this.component.maxDate]
-      .map(date => date ? date.split('-').reverse().join('/') : date);
-  }
-
   /**
    * Return the raw value.
    *
    * @returns {Date}
    */
   get validationValue() {
-    [this.component.minDate, this.component.maxDate] = this.dayFirst ? this.normalizeMinMaxDates()
-      : [this.component.minDate, this.component.maxDate];
     return this.dataValue;
   }
 
@@ -567,8 +600,11 @@ export default class DayComponent extends Field {
     return this.getDate(value) || '';
   }
 
-  focus() {
-    if (this.dayFirst && this.showDay || !this.dayFirst && !this.showMonth && this.showDay) {
+  focus(field) {
+    if (field && typeof field === 'string' && this.refs[field]) {
+      this.refs[field].focus();
+    }
+    else if (this.dayFirst && this.showDay || !this.dayFirst && !this.showMonth && this.showDay) {
       this.refs.day?.focus();
     }
     else if (this.dayFirst && !this.showDay && this.showMonth || !this.dayFirst && this.showMonth) {
@@ -576,6 +612,19 @@ export default class DayComponent extends Field {
     }
     else if (!this.showDay && !this.showDay && this.showYear) {
       this.refs.year?.focus();
+    }
+  }
+
+  restoreCaretPosition() {
+    if (this.root?.currentSelection) {
+      const { selection, index } = this.root.currentSelection;
+      if (this.refs[index]) {
+        const input = this.refs[index];
+        const isInputRangeSelectable = (i) => /text|search|password|tel|url/i.test(i?.type || '');
+        if (isInputRangeSelectable(input)) {
+          input.setSelectionRange(...selection);
+        }
+      }
     }
   }
 

@@ -1,10 +1,8 @@
 import { escapeRegExCharacters } from '../../utils/utils';
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
+import Rule from './Rule';
 
-const Rule = require('./Rule');
-
-module.exports = class Unique extends Rule {
+export default class Unique extends Rule {
   defaultMessage = '{{field}} must be unique';
 
   check(value) {
@@ -18,7 +16,7 @@ module.exports = class Unique extends Rule {
       return true;
     }
 
-    return new NativePromise(resolve => {
+    return new Promise(resolve => {
       const form = this.config.form;
       const submission = this.config.submission;
       const path = `data.${this.component.path}`;
@@ -69,4 +67,4 @@ module.exports = class Unique extends Rule {
       });
     }).catch(() => false);
   }
-};
+}

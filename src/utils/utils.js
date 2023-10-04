@@ -1,4 +1,4 @@
-/* global $ */
+/* global jQuery */
 
 import _ from 'lodash';
 import fetchPonyfill from 'fetch-ponyfill';
@@ -6,14 +6,13 @@ import jsonLogic from 'json-logic-js';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
-import NativePromise from 'native-promise-only';
 import dompurify from 'dompurify';
 import { getValue } from './formUtils';
 import Evaluator from './Evaluator';
 import ConditionOperators from './conditionOperators';
 const interpolate = Evaluator.interpolate;
 const { fetch } = fetchPonyfill({
-  Promise: NativePromise
+  Promise: Promise
 });
 
 export * from './formUtils';
@@ -36,7 +35,8 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, moment, ConditionOperators };
+export { jsonLogic, ConditionOperators };
+export * as moment from 'moment-timezone/moment-timezone';
 
 function setPathToComponentAndPerentSchema(component) {
   component.path = getComponentPath(component);
@@ -242,9 +242,9 @@ export function checkCalculated(component, submission, rowData) {
       }
       const value = getComponentActualValue(conditionComponentPath, data, row);
 
-      const СonditionOperator = ConditionOperators[operator];
-      return СonditionOperator
-        ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+      const ConditionOperator = ConditionOperators[operator];
+      return ConditionOperator
+        ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
         : true;
     });
 
@@ -377,7 +377,7 @@ export function checkCondition(component, row, data, form, instance) {
  */
 export function checkTrigger(component, trigger, row, data, form, instance) {
   // If trigger is empty, don't fire it
-  if (!trigger[trigger.type]) {
+  if (!trigger || !trigger[trigger.type]) {
     return false;
   }
 
@@ -617,7 +617,7 @@ export function shouldLoadZones(timezone) {
 export function loadZones(url, timezone) {
   if (timezone && !shouldLoadZones(timezone)) {
     // Return non-resolving promise.
-    return new NativePromise(_.noop);
+    return new Promise(_.noop);
   }
 
   if (moment.zonesPromise) {
@@ -929,7 +929,7 @@ export function getNumberDecimalLimit(component, defaultLimit) {
 }
 
 export function getCurrencyAffixes({
-   currency = 'USD',
+   currency,
    decimalLimit,
    decimalSeparator,
    lang,
@@ -942,7 +942,7 @@ export function getCurrencyAffixes({
   regex += '(.*)?';
   const parts = (100).toLocaleString(lang, {
     style: 'currency',
-    currency,
+    currency: currency ? currency : 'USD',
     useGrouping: true,
     maximumFractionDigits: decimalLimit || 0,
     minimumFractionDigits: decimalLimit || 0
@@ -1077,8 +1077,11 @@ export function bootstrapVersion(options) {
   if (options.bootstrap) {
     return options.bootstrap;
   }
-  if ((typeof $ === 'function') && (typeof $().collapse === 'function')) {
-    return parseInt($.fn.collapse.Constructor.VERSION.split('.')[0], 10);
+  if ((typeof jQuery === 'function') && (typeof jQuery().collapse === 'function')) {
+    return parseInt(jQuery.fn.collapse.Constructor.VERSION.split('.')[0], 10);
+  }
+  if (window.bootstrap && window.bootstrap.Collapse) {
+    return parseInt(window.bootstrap.Collapse.VERSION.split('.')[0], 10);
   }
   return 0;
 }
@@ -1546,3 +1549,27 @@ export function getFocusableElements(element) {
 
 // Export lodash to save space with other libraries.
 export { _ };
+
+export const componentValueTypes = {
+  number: 'number',
+  string: 'string',
+  boolean: 'boolean',
+  array: 'array',
+  object: 'object',
+  date: 'date',
+  any: 'any',
+};
+
+export function getComponentSavedTypes(fullSchema) {
+  const schema = fullSchema || {};
+
+  if (schema.persistent !== true) {
+    return [];
+  }
+
+  if (schema.multiple) {
+    return [componentValueTypes.array];
+  }
+
+  return null;
+}

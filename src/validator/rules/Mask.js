@@ -1,8 +1,8 @@
 import { getInputMask, matchInputMask } from '../../utils/utils';
 
-const Rule = require('./Rule');
+import Rule from './Rule';
 
-module.exports = class Mask extends Rule {
+export default class Mask extends Rule {
   defaultMessage = '{{field}} does not match the mask.';
 
   check(value) {
@@ -23,4 +23,4 @@ module.exports = class Mask extends Rule {
     }
     return true;
   }
-};
+}

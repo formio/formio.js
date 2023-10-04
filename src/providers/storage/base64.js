@@ -1,11 +1,10 @@
-import NativePromise from 'native-promise-only';
 const base64 = () => ({
   title: 'Base64',
   name: 'base64',
   uploadFile(file, fileName) {
     const reader = new FileReader();
 
-    return new NativePromise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       reader.onload = (event) => {
         const url = event.target.result;
         resolve({
@@ -26,7 +25,7 @@ const base64 = () => ({
   },
   downloadFile(file) {
     // Return the original as there is nothing to do.
-    return NativePromise.resolve(file);
+    return Promise.resolve(file);
   }
 });
 

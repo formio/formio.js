@@ -1,11 +1,11 @@
 import assert from 'power-assert';
-import NativePromise from 'native-promise-only';
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
-import Builders from '../lib/builders';
+import Builders from './builders';
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase } from '../test/formtest';
 import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
+import formBasedOnWizard from '../test/forms/formBasedOnWizard';
 import formWithFormController from '../test/forms/formWithFormController';
 
 describe('WebformBuilder tests', function() {
@@ -102,7 +102,7 @@ describe('WebformBuilder tests', function() {
     builder.webform.setForm(testApiKeysUniquifying).then(() => {
       const ERROR_MSG = 'Should add a number to the api key of the second component of the same type';
       let containerTestsReady;
-      const containerTestsPromise = new NativePromise((resolve) => containerTestsReady = resolve);
+      const containerTestsPromise = new Promise((resolve) => containerTestsReady = resolve);
 
       const container = builder.webform.element.querySelector(['[ref="container-container"]']);
       Harness.buildComponent('editgrid', container);
@@ -191,8 +191,81 @@ describe('WebformBuilder tests', function() {
           assert.equal(numberKey.dataValue, 'rewrittenNumberKey');
 
           done();
-        }, 150);
+        }, 350);
+      }, 350);
+    }).catch(done);
+  });
+
+  it('Should add submit button after switching from wizard form', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm(formBasedOnWizard).then(() => {
+      const components = builder.webform.components;
+      const submit = components[components.length - 1];
+
+      assert.equal(submit.key, 'submit');
+      done();
+    }).catch(done);
+  });
+
+  it('Should keep min/max date validation settings with moment.js function', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm(columnsForm).then(() => {
+      const column1 = builder.webform.element.querySelector('[ref="columns-container"]');
+      Harness.buildComponent('day', column1);
+
+      setTimeout(() => {
+        const maxDateComp = builder.editForm.getComponent('maxDate');
+        maxDateComp.setValue('moment().add(10, \'days\')');
+
+        setTimeout(() => {
+          Harness.saveComponent();
+
+          setTimeout(() => {
+            const dayComp = builder.webform.getComponent(['day']);
+            assert.equal(dayComp.component.maxDate, 'moment().add(10, \'days\')');
+            done();
+          }, 200);
+        }, 200);
       }, 150);
+    }).catch(done);
+  });
+
+  it('Should remove deleted components keys from default value', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('datagrid');
+
+      setTimeout(() => {
+        const dataGridDefaultValue = builder.editForm.getComponent('defaultValue');
+        dataGridDefaultValue.removeRow(0);
+
+        setTimeout(() => {
+          Harness.saveComponent();
+          setTimeout(() => {
+            const dataGridContainer = builder.webform.element.querySelector('[ref="dataGrid-container"]');
+            Harness.buildComponent('textfield', dataGridContainer);
+
+            setTimeout(() => {
+              Harness.saveComponent();
+
+              setTimeout(() => {
+                const textField = builder.webform.getComponent(['dataGrid', 'textField'])[0];
+                textField.refs.removeComponent.dispatchEvent( new MouseEvent('click', {
+                  view: window,
+                  bubbles: true,
+                  cancelable: true
+                }));
+
+                setTimeout(() => {
+                  const dataGrid = builder.webform.getComponent(['dataGrid']);
+                  assert.deepEqual(dataGrid.schema.defaultValue, [{}], 'Should remove TextField key');
+                  done();
+                }, 300);
+              });
+            }, 300);
+          }, 300);
+        }, 350);
+      }, 350);
     }).catch(done);
   });
 });

@@ -13,7 +13,7 @@ const azure = (formio) => ({
         size: file.size,
         type: file.type,
         groupPermissions,
-        groupId
+        groupId,
       };
     });
   },

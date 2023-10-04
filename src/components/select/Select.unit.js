@@ -1,9 +1,10 @@
+/* eslint-disable max-statements */
 import assert from 'power-assert';
 import cloneDeep from 'lodash/cloneDeep';
+import sinon from 'sinon';
 import Harness from '../../../test/harness';
 import SelectComponent from './Select';
 import { expect } from 'chai';
-import NativePromise from 'native-promise-only';
 import { Formio } from './../../Formio';
 import _ from 'lodash';
 
@@ -25,9 +26,12 @@ import {
   comp14,
   comp15,
   comp16,
-  comp17
+  comp17,
+  comp18,
+  comp19,
 } from './fixtures';
 
+// eslint-disable-next-line max-statements
 describe('Select Component', () => {
   it('should not stringify select option value', function(done) {
     Harness.testCreate(SelectComponent, comp6).then((component) => {
@@ -237,7 +241,7 @@ describe('Select Component', () => {
         Harness.testCreate(SelectComponent, c3),
       ];
 
-      return NativePromise
+      return Promise
         .all(comps)
         .then(([a, b, c]) => {
           expect(a.choices.config.fuseOptions.threshold).to.equal(0.2);
@@ -246,7 +250,7 @@ describe('Select Component', () => {
         });
     }
     catch (error) {
-      return NativePromise.reject(error);
+      return Promise.reject(error);
     }
   });
 
@@ -745,7 +749,7 @@ describe('Select Component', () => {
 
     Formio.createForm(element, formObj).then(form => {
       const select = form.getComponent('select');
-      assert.equal(select.choices.containerInner.element.children[1].children[0].dataset.value, formObj.components[0].placeholder);
+      assert.equal(select.choices.containerInner.element.children[1].children[0].dataset.value, '');
       select.choices.showDropdown();
 
       setTimeout(() => {
@@ -911,6 +915,59 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
+  it('OnBlur validation should work properly with Select component', function(done) {
+    this.timeout(0);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, comp19).then(form => {
+      const select = form.components[0];
+      select.setValue('banana');
+      select.focusableElement.focus();
+      select.pristine = false;
+
+      setTimeout(() => {
+        assert(!select.error, 'Select should be valid while changing');
+        select.focusableElement.dispatchEvent(new Event('blur'));
+
+        setTimeout(() => {
+          assert(select.error, 'Should set error after Select component was blurred');
+          done();
+        }, 500);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should escape special characters in regex search field', done => {
+    const form = _.cloneDeep(comp17);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
+      const focusEvent = new Event('focus');
+      searchField.dispatchEvent(focusEvent);
+
+      setTimeout(() => {
+        const keyupEvent = new Event('keyup');
+        searchField.value = '^$.*+?()[]{}|';
+        searchField.dispatchEvent(keyupEvent);
+
+        const spy = sinon.spy(Formio, 'makeRequest');
+
+        setTimeout(() => {
+          assert.equal(spy.callCount, 1);
+
+          const urlArg = spy.args[0][2];
+
+          assert.ok(urlArg && typeof urlArg === 'string' && urlArg.startsWith('http'), 'A URL should be passed as the third argument to "Formio.makeRequest()"');
+
+          assert.ok(urlArg.includes('__regex=%5C%5E%5C%24%5C.%5C*%5C%2B%5C%3F%5C(%5C)%5C%5B%5C%5D%5C%7B%5C%7D%5C%7C'), 'The URL should contain escaped and encoded search value regex');
+          done();
+        }, 500);
+      }, 200);
+    }).catch(done);
+  });
+
   // it('should reset input value when called with empty value', () => {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;
@@ -926,6 +983,39 @@ describe('Select Component', () => {
   //     assert.equal(component.refs.input[0].value, '');
   //   });
   // });
+});
+
+describe('Select Component', () => {
+  it('Select Component should work correctly with the values in the form of an array', (done) => {
+    const form = _.cloneDeep(comp18);
+    const testItems = [
+      { textField: ['one','two'] },
+      { textField: ['three','four'] },
+      { textField: ['five','six'] },
+    ];
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      select.setItems(testItems.map(item => ({ data: item })));
+      const value = ['three','four'];
+      select.setValue(value);
+      assert.equal(select.selectOptions.length, 3);
+      setTimeout(() => {
+        assert.deepEqual(select.getValue(), value);
+        assert.deepEqual(select.dataValue, value);
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(select.dataValue, value);
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
 });
 
 describe('Select Component with Entire Object Value Property', () => {
@@ -1021,5 +1111,42 @@ describe('Select Component with Entire Object Value Property', () => {
         }, 200);
       }, 200);
     }).catch(done);
+  });
+
+  it('Should set submission value for Resource DataSrc Type and Entire Object Value Property', (done) => {
+    const form = _.cloneDeep(comp15);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const value = { textField: 'Jone', nubmer: 1 };
+      form.submission = {
+        data: {
+          select: value
+        }
+      };
+
+      setTimeout(() => {
+        assert.equal(typeof select.dataValue,  'object');
+        const selectContainer = element.querySelector('[ref="selectContainer"]');
+        assert.notEqual(selectContainer, null);
+        assert.notEqual(selectContainer.value, '');
+        const options = selectContainer.childNodes;
+        assert.equal(options.length, 2);
+        done();
+      }, 1000);
+    }).catch(done);
+  });
+
+  it('Should get string representation of value for Resource DataSrc Type and Entire Object Value Property', (done) => {
+    Harness.testCreate(SelectComponent, comp15.components[0]).then((component) => {
+      const entireObject = {
+        a: '1',
+        b: '2',
+      };
+      const formattedValue = component.getView(entireObject);
+      assert.equal(formattedValue, JSON.stringify(entireObject));
+      done();
+    });
   });
 });

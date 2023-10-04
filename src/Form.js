@@ -3,7 +3,6 @@ import { Formio } from './Formio';
 import Displays from './displays';
 import templates from './templates';
 import * as FormioUtils from './utils/utils';
-import NativePromise from 'native-promise-only';
 
 export default class Form extends Element {
   /**
@@ -18,7 +17,7 @@ export default class Form extends Element {
    * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.
    *
    * @example
-   * import Form from 'formiojs/Form';
+   * import Form from '@formio/js/Form';
    * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
    * form.build();
    */
@@ -34,13 +33,16 @@ export default class Form extends Element {
       Formio.useSessionToken(this.options);
     }
 
-    this.ready = new NativePromise((resolve, reject) => {
+    this.ready = new Promise((resolve, reject) => {
       this.readyResolve = resolve;
       this.readyReject = reject;
     });
 
     this.instance = null;
     if (args[0] instanceof HTMLElement) {
+      if (this.element) {
+        delete this.element.component;
+      }
       this.element = args[0];
       this.options = args[2] || {};
       this.options.events = this.events;
@@ -62,6 +64,49 @@ export default class Form extends Element {
       this.options.events = this.events;
     }
     this.display = '';
+  }
+
+  createElement(tag, attrs, children) {
+    const element = document.createElement(tag);
+    for (const attr in attrs) {
+      if (attrs.hasOwnProperty(attr)) {
+        element.setAttribute(attr, attrs[attr]);
+      }
+    }
+    (children || []).forEach(child => {
+      element.appendChild(this.createElement(child.tag, child.attrs, child.children));
+    });
+    return element;
+  }
+
+  set loading(load) {
+    if (!this.element || this.options.noLoader) {
+      return;
+    }
+    if (load) {
+      if (this.loader) {
+        return;
+      }
+      this.loader = this.createElement('div', {
+        'class': 'formio-loader'
+      }, [{
+        tag: 'div',
+        attrs: {
+          class: 'loader-wrapper'
+        },
+        children: [{
+          tag: 'div',
+          attrs: {
+            class: 'loader text-center'
+          }
+        }]
+      }]);
+      this.element.appendChild(this.loader);
+    }
+    else if (this.loader) {
+      this.element.removeChild(this.loader);
+      this.loader = null;
+    }
   }
 
   /**
@@ -91,7 +136,7 @@ export default class Form extends Element {
    * @return {*}
    */
   set form(formParam) {
-    return this.setForm(formParam);
+    this.setForm(formParam);
   }
 
   errorForm(err) {
@@ -122,6 +167,7 @@ export default class Form extends Element {
     if (typeof formParam === 'string') {
       const formio = new Formio(formParam);
       let error;
+      this.loading = true;
       result = this.getSubmission(formio, this.options)
         .catch((err) => {
           error = err;
@@ -137,6 +183,7 @@ export default class Form extends Element {
               if (error) {
                 form = this.errorForm(error);
               }
+              this.loading = false;
               this.instance = this.instance || this.create(form.display);
               this.instance.url = formParam;
               this.instance.nosubmit = false;
@@ -159,6 +206,9 @@ export default class Form extends Element {
 
     // A redraw has occurred so save off the new element in case of a setDisplay causing a rebuild.
     return result.then(() => {
+      if (this.element) {
+        delete this.element.component;
+      }
       this.element = this.instance.element;
       return this.instance;
     });
@@ -168,7 +218,7 @@ export default class Form extends Element {
     if (formio.submissionId) {
       return formio.loadSubmission(null, opts);
     }
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   /**
@@ -188,7 +238,7 @@ export default class Form extends Element {
    */
   setDisplay(display) {
     if ((this.display === display) && this.instance) {
-      return NativePromise.resolve(this.instance);
+      return Promise.resolve(this.instance);
     }
 
     this.form.display = display;
@@ -206,7 +256,7 @@ export default class Form extends Element {
   }
 
   static embed(embed) {
-    return new NativePromise((resolve) => {
+    return new Promise((resolve) => {
       if (!embed || !embed.src) {
         resolve();
       }
@@ -256,11 +306,11 @@ export default class Form extends Element {
    */
   build() {
     if (!this.instance) {
-      return NativePromise.reject('Form not ready. Use form.ready promise');
+      return Promise.reject('Form not ready. Use form.ready promise');
     }
 
     if (!this.element) {
-      return NativePromise.reject('No DOM element for form.');
+      return Promise.reject('No DOM element for form.');
     }
 
     // Add temporary loader.
@@ -280,9 +330,9 @@ export default class Form extends Element {
 
   render() {
     if (!this.instance) {
-      return NativePromise.reject('Form not ready. Use form.ready promise');
+      return Promise.reject('Form not ready. Use form.ready promise');
     }
-    return NativePromise.resolve(this.instance.render())
+    return Promise.resolve(this.instance.render())
       .then((param) => {
         this.emit('render', param);
         return param;
@@ -291,7 +341,10 @@ export default class Form extends Element {
 
   attach(element) {
     if (!this.instance) {
-      return NativePromise.reject('Form not ready. Use form.ready promise');
+      return Promise.reject('Form not ready. Use form.ready promise');
+    }
+    if (this.element) {
+      delete this.element.component;
     }
     this.element = element;
     return this.instance.attach(this.element)
@@ -299,6 +352,12 @@ export default class Form extends Element {
         this.emit('attach', param);
         return param;
       });
+  }
+
+  teardown() {
+    super.teardown();
+    delete this.instance;
+    delete this.ready;
   }
 }
 

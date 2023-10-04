@@ -15,3 +15,4 @@ export * from './rulesEngine/rules';
 export * from './rulesEngine/transformers';
 export * from './rulesEngine/valueSources';
 export * from './providers';
+export * from './licenses';

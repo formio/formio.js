@@ -1,7 +1,6 @@
 /* global Quill */
 import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
 import { uniqueName, getBrowserInfo } from '../../utils/utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
@@ -27,7 +26,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       title: 'Text Area',
       group: 'basic',
       icon: 'font',
-      documentation: '/userguide/forms/form-components#text-area',
+      documentation: '/userguide/form-building/form-components#text-area',
       weight: 20,
       schema: TextAreaComponent.schema()
     };
@@ -130,7 +129,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       : this.component.wysiwyg;
 
     // Keep track of when this editor is ready.
-    this.editorsReady[index] = new NativePromise((editorReady) => {
+    this.editorsReady[index] = new Promise((editorReady) => {
       // Attempt to add a wysiwyg editor. In order to add one, it must be included on the global scope.
       switch (this.component.editor) {
         case 'ace':
@@ -327,7 +326,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         this.setConvertedValue(value);
       return super.setValue(value, flags);
     }
-    flags.skipWysiwyg = _.isEqual(value, this.getValue());
+    flags.skipWysiwyg = value === '' && flags.resetValue ? false : _.isEqual(value, this.getValue());
     return super.setValue(value, flags);
   }
 
@@ -398,12 +397,12 @@ export default class TextAreaComponent extends TextFieldComponent {
         });
     }
     else {
-      return NativePromise.resolve(value);
+      return Promise.resolve(value);
     }
   }
 
   setImagesUrl(images) {
-    return NativePromise.all(_.map(images, image => {
+    return Promise.all(_.map(images, image => {
       let requestData;
       try {
         requestData = JSON.parse(image.getAttribute('alt'));
@@ -583,10 +582,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     switch (this.component.editor) {
       case 'ckeditor': {
         // Wait for the editor to be ready.
-        // TODO: I'm defaulting to the first element of the editorsReady array because we are defaulting to the first element
-        // of the editors array when we focus, but is there a scenario in which the editorsReady array would have more than
-        // one element?
-        this.editorsReady[0].then(() => {
+        this.editorsReady[0]?.then(() => {
           if (this.editors[0].editing?.view?.focus) {
             this.editors[0].editing.view.focus();
           }
@@ -597,7 +593,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         break;
       }
       case 'ace': {
-        this.editorsReady[0].then(() => {
+        this.editorsReady[0]?.then(() => {
           this.editors[0].focus();
           this.element.scrollIntoView();
         }).catch((err) => {
@@ -606,7 +602,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         break;
       }
       case 'quill': {
-        this.editorsReady[0].then(() => {
+        this.editorsReady[0]?.then(() => {
           this.editors[0].focus();
         }).catch((err) => {
           console.warn('An editor did not initialize properly when trying to focus:', err);

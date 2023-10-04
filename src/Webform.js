@@ -1,11 +1,9 @@
 import _ from 'lodash';
 import moment from 'moment';
-import compareVersions from 'compare-versions';
+import { compareVersions } from 'compare-versions';
 import EventEmitter from './EventEmitter';
-import i18next from 'i18next';
 import i18nDefaults from './i18n';
 import { Formio } from './Formio';
-import NativePromise from 'native-promise-only';
 import Components from './components/Components';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
 import {
@@ -36,7 +34,7 @@ function getOptions(options) {
   options = _.defaults(options, {
     submitOnEnter: false,
     iconset: getIconSet((options && options.icons) ? options.icons : Formio.icons),
-    i18next,
+    i18next: null,
     saveDraft: false,
     alwaysDirty: false,
     saveDraftThrottle: 5000,
@@ -76,7 +74,7 @@ export default class Webform extends NestedDataComponent {
     }
     super(null, getOptions(options));
 
-    this.element = element;
+    this.setElement(element);
 
     // Keep track of all available forms globally.
     Formio.forms[this.id] = this;
@@ -84,46 +82,6 @@ export default class Webform extends NestedDataComponent {
     // Set the base url.
     if (this.options.baseUrl) {
       Formio.setBaseUrl(this.options.baseUrl);
-    }
-
-    /**
-     * The i18n configuration for this component.
-     */
-    let i18n = i18nDefaults;
-    if (options && options.i18n && !options.i18nReady) {
-      // Support legacy way of doing translations.
-      if (options.i18n.resources) {
-        i18n = options.i18n;
-      }
-      else {
-        _.each(options.i18n, (lang, code) => {
-          if (code === 'options') {
-            _.merge(i18n, lang);
-          }
-          else if (!i18n.resources[code]) {
-            // extend the default translations (validations, buttons etc.) in case they are not in the options.
-            i18n.resources[code] = { translation: _.assign(fastCloneDeep(i18nDefaults.resources.en.translation), lang) };
-          }
-          else {
-            _.assign(i18n.resources[code].translation, lang);
-          }
-        });
-      }
-
-      options.i18n = i18n;
-      options.i18nReady = true;
-    }
-
-    if (options && options.i18n) {
-      this.options.i18n = options.i18n;
-    }
-    else {
-      this.options.i18n = i18n;
-    }
-
-    // Set the language.
-    if (this.options.language) {
-      this.options.i18n.lng = this.options.language;
     }
 
     /**
@@ -200,14 +158,14 @@ export default class Webform extends NestedDataComponent {
      * @type {Promise}
      *
      * @example
-     * import Webform from 'formiojs/Webform';
+     * import Webform from '@formio/js/Webform';
      * let form = new Webform(document.getElementById('formio'));
      * form.formReady.then(() => {
      *   console.log('The form is ready!');
      * });
      * form.src = 'https://examples.form.io/example';
      */
-    this.formReady = new NativePromise((resolve, reject) => {
+    this.formReady = new Promise((resolve, reject) => {
       /**
        * Called when the formReady state of this form has been resolved.
        *
@@ -228,14 +186,14 @@ export default class Webform extends NestedDataComponent {
      * @type {Promise}
      *
      * @example
-     * import Webform from 'formiojs/Webform';
+     * import Webform from '@formio/js/Webform';
      * let form = new Webform(document.getElementById('formio'));
      * form.submissionReady.then(() => {
      *   console.log('The submission is ready!');
      * });
      * form.src = 'https://examples.form.io/example/submission/234234234234234243';
      */
-    this.submissionReady = new NativePromise((resolve, reject) => {
+    this.submissionReady = new Promise((resolve, reject) => {
       /**
        * Called when the formReady state of this form has been resolved.
        *
@@ -254,9 +212,7 @@ export default class Webform extends NestedDataComponent {
     this.shortcuts = [];
 
     // Set language after everything is established.
-    this.localize().then(() => {
-      this.language = this.options.language;
-    });
+    this.language = this.i18next.language;
 
     // See if we need to restore the draft from a user.
     if (this.options.saveDraft && !this.options.skipDraftRestore) {
@@ -294,22 +250,20 @@ export default class Webform extends NestedDataComponent {
    * @return {Promise}
    */
   set language(lang) {
+    if (!this.i18next) {
+      return;
+    }
     this.options.language = lang;
     if (this.i18next.language === lang) {
       return;
     }
-    try {
-      this.i18next.changeLanguage(lang, (err) => {
-        if (err) {
-          return;
-        }
-        this.redraw();
-        this.emit('languageChanged');
-      });
-    }
-    catch (err) {
-      return;
-    }
+    this.i18next.changeLanguage(lang, (err) => {
+      if (err) {
+        return;
+      }
+      this.rebuild();
+      this.emit('languageChanged');
+    });
   }
 
   get componentComponents() {
@@ -329,40 +283,13 @@ export default class Webform extends NestedDataComponent {
    * @return {*}
    */
   addLanguage(code, lang, active = false) {
-    var translations = _.assign(fastCloneDeep(i18nDefaults.resources.en.translation), lang);
-    this.i18next.addResourceBundle(code, 'translation', translations, true, true);
-    if (active) {
-      this.language = code;
-    }
-  }
-
-  /**
-   * Perform the localization initialization.
-   * @returns {*}
-   */
-  localize() {
-    if (this.i18next.initialized) {
-      return NativePromise.resolve(this.i18next);
-    }
-    this.i18next.initialized = true;
-    return new NativePromise((resolve, reject) => {
-      try {
-        this.i18next.init({
-          ...this.options.i18n,
-          ...{ compatibilityJSON: 'v3' }
-        }, (err) => {
-          // Get language but remove any ;q=1 that might exist on it.
-          this.options.language = this.i18next.language.split(';')[0];
-          if (err) {
-            return reject(err);
-          }
-          resolve(this.i18next);
-        });
+    if (this.i18next) {
+      var translations = _.assign(fastCloneDeep(i18nDefaults.resources.en.translation), lang);
+      this.i18next.addResourceBundle(code, 'translation', translations, true, true);
+      if (active) {
+        this.language = code;
       }
-      catch (err) {
-        return reject(err);
-      }
-    });
+    }
   }
 
   keyboardCatchableElement(element) {
@@ -498,7 +425,7 @@ export default class Webform extends NestedDataComponent {
         this.formReadyReject(err);
       });
     }
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   /**
@@ -507,7 +434,7 @@ export default class Webform extends NestedDataComponent {
    * @param {string} value - The value of the form embed url.
    *
    * @example
-   * import Webform from 'formiojs/Webform';
+   * import Webform from '@formio/js/Webform';
    * let form = new Webform(document.getElementById('formio'));
    * form.formReady.then(() => {
    *   console.log('The form is formReady!');
@@ -622,7 +549,7 @@ export default class Webform extends NestedDataComponent {
    * Sets the JSON schema for the form to be rendered.
    *
    * @example
-   * import Webform from 'formiojs/Webform';
+   * import Webform from '@formio/js/Webform';
    * let form = new Webform(document.getElementById('formio'));
    * form.setForm({
    *   components: [
@@ -658,7 +585,7 @@ export default class Webform extends NestedDataComponent {
     try {
       // Do not set the form again if it has been already set
       if (isFormAlreadySet && JSON.stringify(this._form) === JSON.stringify(form)) {
-        return NativePromise.resolve();
+        return Promise.resolve();
       }
 
       // Create the form.
@@ -669,13 +596,13 @@ export default class Webform extends NestedDataComponent {
       }
 
       if (this.parent?.component?.modalEdit) {
-        return NativePromise.resolve();
+        return Promise.resolve();
       }
     }
     catch (err) {
       console.warn(err);
       // If provided form is not a valid JSON object, do not set it too
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
 
     // Allow the form to provide component overrides.
@@ -718,7 +645,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     this.initialized = false;
-    const rebuild = this.rebuild() || NativePromise.resolve();
+    const rebuild = this.rebuild() || Promise.resolve();
     return rebuild.then(() => {
       this.emit('formLoad', form);
       this.triggerRecaptcha();
@@ -769,7 +696,7 @@ export default class Webform extends NestedDataComponent {
    * Sets the submission of a form.
    *
    * @example
-   * import Webform from 'formiojs/Webform';
+   * import Webform from '@formio/js/Webform';
    * let form = new Webform(document.getElementById('formio'));
    * form.src = 'https://examples.form.io/example';
    * form.submission = {data: {
@@ -894,7 +821,10 @@ export default class Webform extends NestedDataComponent {
 
   setValue(submission, flags = {}) {
     if (!submission || !submission.data) {
-      submission = { data: {} };
+      submission = {
+        data: {},
+        metadata: submission.metadata,
+      };
     }
     // Metadata needs to be available before setValue
     this._submission.metadata = submission.metadata || {};
@@ -935,7 +865,14 @@ export default class Webform extends NestedDataComponent {
    * Build the form.
    */
   init() {
-    this._submission = this._submission || { data: {} };
+    if (this.options.submission) {
+      const submission = _.extend({}, this.options.submission);
+      this._submission = submission;
+      this._data = submission.data;
+    }
+    else {
+      this._submission = this._submission || { data: {} };
+    }
 
     // Remove any existing components.
     if (this.components && this.components.length) {
@@ -986,7 +923,15 @@ export default class Webform extends NestedDataComponent {
     });
   }
 
-  destroy(deleteFromGlobal = false) {
+  teardown() {
+    this.emit('formDelete', this.id);
+    delete Formio.forms[this.id];
+    delete this.executeShortcuts;
+    delete this.triggerSaveDraft;
+    super.teardown();
+  }
+
+  destroy(all = false) {
     this.off('submitButton');
     this.off('checkValidity');
     this.off('requestUrl');
@@ -994,12 +939,7 @@ export default class Webform extends NestedDataComponent {
     this.off('deleteSubmission');
     this.off('refreshData');
 
-    if (deleteFromGlobal) {
-      this.emit('formDelete', this.id);
-      delete Formio.forms[this.id];
-    }
-
-    return super.destroy();
+    return super.destroy(all);
   }
 
   build(element) {
@@ -1030,7 +970,7 @@ export default class Webform extends NestedDataComponent {
   redraw() {
     // Don't bother if we have not built yet.
     if (!this.element) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
     this.clear();
     this.setContent(this.element, this.render());
@@ -1038,7 +978,7 @@ export default class Webform extends NestedDataComponent {
   }
 
   attach(element) {
-    this.element = element;
+    this.setElement(element);
     this.loadRefs(element, { webform: 'single' });
     const childPromise = this.attachComponents(this.refs.webform);
     this.addEventListener(document, 'keydown', this.executeShortcuts);
@@ -1190,7 +1130,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     errors = errors.concat(this.customErrors);
-    errors = errors.concat(this.serverErrors);
+    errors = errors.concat(this.serverErrors || []);
 
     if (!errors.length) {
       this.setAlert(false);
@@ -1454,7 +1394,7 @@ export default class Webform extends NestedDataComponent {
   submitForm(options = {}) {
     this.clearServerErrors();
 
-    return new NativePromise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       // Read-only forms should never submit.
       if (this.options.readOnly) {
         return resolve({
@@ -1486,6 +1426,9 @@ export default class Webform extends NestedDataComponent {
         }
 
         this.everyComponent((comp) => {
+          if (submission._vnote && comp.type === 'form' && comp.component.reference) {
+            _.get(submission.data, comp.path, {})._vnote = submission._vnote;
+          }
           const { persistent } = comp.component;
           if (persistent === 'client-only') {
             _.unset(submission.data, comp.path);
@@ -1574,7 +1517,7 @@ export default class Webform extends NestedDataComponent {
       })
       .catch((err) => {
         this.submissionInProcess = false;
-        return NativePromise.reject(this.onSubmissionError(err));
+        return Promise.reject(this.onSubmissionError(err));
       });
   }
 
@@ -1596,7 +1539,7 @@ export default class Webform extends NestedDataComponent {
    * Submits the form.
    *
    * @example
-   * import Webform from 'formiojs/Webform';
+   * import Webform from '@formio/js/Webform';
    * let form = new Webform(document.getElementById('formio'));
    * form.src = 'https://examples.form.io/example';
    * form.submission = {data: {
@@ -1646,10 +1589,11 @@ export default class Webform extends NestedDataComponent {
           this.emit('requestDone');
           this.setAlert('success', '<p> Success </p>');
         }).catch((e) => {
-          this.showErrors(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
-          this.emit('error',`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
-          console.error(`${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`);
-          this.setAlert('danger', `<p> ${e.statusText ? e.statusText : ''} ${e.status ? e.status : e} </p>`);
+          const message = `${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`;
+          this.emit('error', message);
+          console.error(message);
+          this.setAlert('danger', `<p> ${message} </p>`);
+          return Promise.reject(this.onSubmissionError(e));
         });
     }
     else {

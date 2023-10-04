@@ -1,7 +1,6 @@
 import Multivalue from '../multivalue/Multivalue';
 import { convertStringToHTMLElement } from '../../../utils/utils';
 import Widgets from '../../../widgets';
-import NativePromise from 'native-promise-only';
 import _ from 'lodash';
 
 export default class Input extends Multivalue {
@@ -247,7 +246,7 @@ export default class Input extends Multivalue {
       element.widget.destroy();
     }
     // Attach the widget.
-    let promise = NativePromise.resolve();
+    let promise = Promise.resolve();
     element.widget = this.createWidget(index);
     if (element.widget) {
       promise = element.widget.attach(element);
@@ -309,8 +308,23 @@ export default class Input extends Multivalue {
     return widget;
   }
 
+  teardown() {
+    if (this.element && this.element.widget) {
+      this.element.widget.destroy();
+      delete this.element.widget;
+    }
+    if (this.refs && this.refs.input) {
+      for (let i = 0; i <= this.refs.input.length; i++) {
+        const widget = this.getWidget(i);
+        if (widget) {
+          widget.destroy();
+        }
+      }
+    }
+    super.teardown();
+  }
+
   detach() {
-    super.detach();
     if (this.refs && this.refs.input) {
       for (let i = 0; i <= this.refs.input.length; i++) {
         const widget = this.getWidget(i);
@@ -320,5 +334,6 @@ export default class Input extends Multivalue {
       }
     }
     this.refs.input = [];
+    super.detach();
   }
 }

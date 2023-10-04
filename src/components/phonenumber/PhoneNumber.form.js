@@ -18,12 +18,17 @@ export default function(...extend) {
       ]
     },
     {
-      key: 'validation',
-      components: PhoneNumberEditValidation
+      key: 'data',
+      components: [
+        {
+          key: 'case',
+          ignore: true
+        }
+      ]
     },
     {
-      key: 'addons',
-      ignore: true
+      key: 'validation',
+      components: PhoneNumberEditValidation
     },
   ], ...extend);
 }

@@ -1,12 +1,9 @@
 import { Formio } from './index';
 import { fastCloneDeep } from './utils/utils';
-import _each from 'lodash/each';
 import assert from 'power-assert';
 import sinon from 'sinon';
 import fetchMock from 'fetch-mock/es5/server';
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
-
 import Chance from 'chance';
 const chance = Chance();
 const protocol = 'https';
@@ -35,7 +32,7 @@ const runTests = function(fn, options) {
       Formio.projectUrl = 'https://api.form.io';
     });
   }
-  _each(tests, (test, path) => {
+  _.each(tests, (test, path) => {
     it(`Should initialize for ${path}`, (done) => {
       if (typeof test === 'function') {
         test();
@@ -556,7 +553,7 @@ describe('Formio.js Tests', () => {
         plugin.preRequest = function(requestArgs) {
           assert.equal(++step, 1, 'preRequest hook should be called first');
           assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-          return NativePromise.resolve()
+          return Promise.resolve()
             .then(() => {
               assert.equal(++step, 3, 'preRequest promise should resolve third');
               // TODO
@@ -565,7 +562,7 @@ describe('Formio.js Tests', () => {
         plugin.request = function(requestArgs) {
           assert.equal(++step, 4, 'request hook should be called fourth');
           assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-          return NativePromise.resolve()
+          return Promise.resolve()
             .then(() => {
               assert.equal(++step, 5, 'request promise should resolve fifth');
               return testResult;
@@ -724,7 +721,7 @@ describe('Formio.js Tests', () => {
         plugin.preRequest = function(requestArgs) {
           assert.equal(++step, 1, 'preRequest hook should be called first');
           assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-          return NativePromise.resolve()
+          return Promise.resolve()
             .then(() => {
               assert.equal(++step, 3, 'preRequest promise should resolve third');
               // TODO
@@ -733,7 +730,7 @@ describe('Formio.js Tests', () => {
         plugin.staticRequest = function(requestArgs) {
           assert.equal(++step, 4, 'request hook should be called fourth');
           assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-          return NativePromise.resolve()
+          return Promise.resolve()
             .then(() => {
               assert.equal(++step, 5, 'request promise should resolve fifth');
               return testResult;
@@ -801,7 +798,7 @@ describe('Formio.js Tests', () => {
         plugin.preRequest = function(requestArgs) {
           assert.equal(++step, 1, 'preRequest hook should be called first');
           assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-          return NativePromise.resolve()
+          return Promise.resolve()
             .then(() => {
               assert.equal(++step, 3, 'preRequest promise should resolve third');
               // TODO
@@ -810,7 +807,7 @@ describe('Formio.js Tests', () => {
         plugin.fileRequest = function(requestArgs) {
           assert.equal(++step, 4, 'request hook should be called fourth');
           assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-          return NativePromise.resolve()
+          return Promise.resolve()
             .then(() => {
               assert.equal(++step, 5, 'request promise should resolve fifth');
               return testResult;
@@ -900,7 +897,7 @@ describe('Formio.js Tests', () => {
             fetchMock.mock(mock.url, mock.response, { method: mock.method });
           }
         }
-        NativePromise.resolve()
+        Promise.resolve()
           .then(() => {
             return test.test();
           })
@@ -2175,7 +2172,7 @@ describe('Formio.js Tests', () => {
             }
           };
           const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
-          return NativePromise.all([
+          return Promise.all([
             formio.userPermissions(user1, undefined, submission)
               .then(permissions => {
                 assert.equal(permissions.create, false);
@@ -2240,7 +2237,7 @@ describe('Formio.js Tests', () => {
         staticRequest: sinon.spy(() => {
           // Return dummy user
           const userId = generateID();
-          return NativePromise.resolve({
+          return Promise.resolve({
             _id: userId,
             created: new Date().toISOString(),
             modified: new Date().toISOString(),

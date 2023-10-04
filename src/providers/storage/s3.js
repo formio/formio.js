@@ -1,4 +1,3 @@
-import NativePromise from 'native-promise-only';
 import XHR from './xhr';
 const s3 = (formio) => ({
   uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
@@ -37,10 +36,10 @@ const s3 = (formio) => ({
       return formio.makeRequest('file', `${formio.formUrl}/storage/s3?bucket=${XHR.trim(file.bucket)}&key=${XHR.trim(file.key)}`, 'GET');
     }
     else {
-      return NativePromise.resolve(file);
+      return Promise.resolve(file);
     }
-  }
-});
+   }
+ });
 
 s3.title = 'S3';
 export default s3;

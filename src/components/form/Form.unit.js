@@ -19,6 +19,25 @@ describe('Form Component', () => {
     return Harness.testCreate(FormComponent, comp1);
   });
 
+  describe('Value inside Nested Form', () => {
+    it('Should be able to set value to Nested Form Component and check result in the email template', (done) => {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      form.setForm(comp5)
+        .then(() => {
+            const textField = form.getComponent(['form', 'textField']);
+            textField.setValue('123', { modified: true });
+            assert.equal(textField.dataValue, '123', 'Should set value');
+            const toString = form.getValueAsString(textField.data, { email: true });
+            assert.ok(toString.includes('table'), 'Email template should render html table');
+            assert.ok(toString.includes(textField.label), 'Email template should have Text Field label');
+            assert.ok(toString.includes(textField.dataValue), 'Email template should have Text Field value');
+            done();
+        })
+        .catch(done);
+    });
+  });
+
   it('Test refreshOn inside NestedForm', (done) => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);

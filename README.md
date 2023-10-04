@@ -7,9 +7,6 @@ This library is a plain JavaScript form renderer and SDK for Form.io. This allow
  - Nested components, layouts, Date/Time, Select, Input Masks, and many more included features
  - Full JavaScript API SDK library on top of Form.io
  
-## Form.io is Hiring!
-If you like what you see, and would like to come and work for a cutting edge, Open Source core company, then please apply online @ [https://form-talent.freshteam.com/jobs](https://form-talent.freshteam.com/jobs)!
- 
 ## Examples and Demonstration
 To find out more about this library as well as see a demonstration of what you can do with this library, go to the Examples and Demo site @ [https://formio.github.io/formio.js](https://formio.github.io/formio.js)
  
@@ -17,7 +14,7 @@ To find out more about this library as well as see a demonstration of what you c
 To install this SDK into your project, you can use the following command within your terminal.
 
 ```
-npm install --save formiojs
+npm install --save @formio/js
 ```
  
 ## Form Building
@@ -26,24 +23,22 @@ This library has a very powerful JSON form builder, and can be used like the fol
 ```html
 <html>
   <head>
-    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
-    <link rel='stylesheet' href='https://cdn.form.io/formiojs/formio.full.min.css'>
-    <script src='https://cdn.form.io/formiojs/formio.full.min.js'></script>
-    <script type='text/javascript'>
-      window.onload = function() {
-        Formio.builder(document.getElementById('builder'), {}, {});
-      };
-    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+    <script src='https://cdn.form.io/js/formio.full.min.js'></script>
   </head>
   <body>
     <div id='builder'></div>
+    <script type='text/javascript'>
+      Formio.builder(document.getElementById('builder'), {}, {});
+    </script>
   </body>
 </html>
 ```
 
 This will create a robust Form builder embedded right within your own application. See [Our Demo Page](https://formio.github.io/formio.js/app/builder) for an example.
  
-### Form Builder Documenation
+### Form Builder Documentation
 Go to the [Form Builder Documentation](https://help.form.io/developers/form-builder) for a full documentation on how the open source form builder works. 
  
 ## Form Rendering
@@ -52,17 +47,15 @@ The following is a simple example on how to render a form within your HTML appli
 ```html
 <html>
   <head>
-    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
-    <link rel='stylesheet' href='https://cdn.form.io/formiojs/formio.full.min.css'>
-    <script src='https://cdn.form.io/formiojs/formio.full.min.js'></script>
-    <script type='text/javascript'>
-      window.onload = function() {
-        Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
-      };
-    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+    <script src="https://cdn.form.io/js/formio.embed.js"></script>
   </head>
   <body>
     <div id='formio'></div>
+    <script type='text/javascript'>
+      Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
+    </script>
   </body>
 </html>
 ```
@@ -105,7 +98,7 @@ This will render the JSON schema of the form within your application.
 ### JSFiddle Example
 A great way to play around with this renderer is to use JSFiddle, which serves as a good sandbox environment. Here is an example that you can fork and make your own!
 
-http://jsfiddle.net/travistidwell/v38du9y1/
+http://jsfiddle.net/travistidwell/z63jvwkp/
 
 ### Form Renderer Documentation
 For a more complete documentation of how to utilize this library within your application go to the [Form Renderer](https://help.form.io/developers/form-renderer) documentation.
@@ -118,17 +111,15 @@ being set to ```wizard```.
 ```html
 <html>
   <head>
-    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
-    <link rel='stylesheet' href='https://cdn.form.io/formiojs/formio.full.min.css'>
-    <script src='https://cdn.form.io/formiojs/formio.full.min.js'></script>
-    <script type='text/javascript'>
-      window.onload = function() {
-        Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/wizard');
-      };
-    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+    <script src="https://cdn.form.io/js/formio.embed.js"></script>
   </head>
   <body>
     <div id='formio'></div>
+    <script type='text/javascript'>
+      Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/wizard');
+    </script>
   </body>
 </html>
 ```
@@ -137,10 +128,10 @@ being set to ```wizard```.
 You can also use this library as a JavaScript embedding of the form using a single line of code. For example, to embed the https://examples.form.io/example form within your application you can simply use the following embed code.
 
 ```html
-<script src="https://cdn.form.io/formiojs/formio.embed.min.js?src=https://examples.form.io/example"></script>
+<script src="https://cdn.form.io/js/formio.embed.min.js?src=https://examples.form.io/example&libs=true"></script>
 ```
 
-For an example of how this looks and works, check out the following [Form.io Form Embedding CodePen](http://codepen.io/travist/pen/ggQOBa)
+For an example of how this looks and works, check out the following [Form.io Inline Embedding](https://jsfiddle.net/travistidwell/uys26qpf/)
 
 ## Form Embedding Documentation
 For a more complete documentation of how to embed forms, go to the [Form Embedding Documentation](https://help.form.io/developers/rendering).
@@ -151,7 +142,7 @@ In addition to having a Form Renderer within this application, you can also use 
 ```html
 <html>
   <head>
-    <script src='https://cdn.form.io/formiojs/formio.full.min.js'></script>
+    <script src='https://cdn.form.io/js/formio.min.js'></script>
     <script type='text/javascript'>
       var formio = new Formio('https://examples.form.io/example');
       formio.loadForm().then(function(form) {
@@ -177,7 +168,7 @@ In addition to having a Form Renderer within this application, you can also use 
 You can also use this within an ES6 application as follows.
 
 ```js
-import Formio from 'formiojs';
+import { Formio } from '@formio/js/sdk';
 let formio = new Formio('https://examples.form.io/example');
 formio.loadForm((form) => {
   console.log(form);
