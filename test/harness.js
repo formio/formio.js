@@ -1,9 +1,8 @@
-import i18next from 'i18next';
 import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter3';
 import { expect } from 'chai';
-import i18Defaults from '../src/i18n';
+import { I18n } from '../src/utils/i18n';
 import FormBuilder from '../src/FormBuilder';
 import AllComponents from '../src/components';
 import Components from '../src/components/Components';
@@ -139,18 +138,13 @@ const Harness = {
     }, options));
     component.pristine = false;
     return new Promise((resolve, reject) => {
-      i18next.init(i18Defaults, (err) => {
-        if (err) {
-          return reject(err);
-        }
-        // Need a parent element to redraw.
-        const parent = document.createElement('div');
-        const element = document.createElement('div');
-        parent.appendChild(element);
-        component.build(element);
-        assert(Boolean(component.element), `No ${component.type} element created.`);
-        return resolve(component);
-      });
+      // Need a parent element to redraw.
+      const parent = document.createElement('div');
+      const element = document.createElement('div');
+      parent.appendChild(element);
+      component.build(element);
+      assert(Boolean(component.element), `No ${component.type} element created.`);
+      return resolve(component);
     });
   },
   testConditionals(form, submission, hidden, done) {

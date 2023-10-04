@@ -17,7 +17,7 @@ For a full example of creating your own module that does this, please see the [C
  *
  * Get the base component class by referencing Formio.Components.components map.
  */
-import { Components } from 'formiojs';
+import { Components } from '@formio/js';
 const FieldComponent = (Components as any).components.field;
 import editForm from './CheckMatrix.form';
 
@@ -164,14 +164,14 @@ export default class CheckMatrix extends (FieldComponent as any) {
 These modules will then be compiled into a Module file that can either be imported within your own application, or using ```<script>``` tags in the browser like the following.
 
 ```js
-import { Formio } from 'formiojs';
+import { Formio } from '@formio/js';
 import YourModule from './yourmodule';
 Formio.use(YourModule);
 ```
 
 ```html
-<link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
-<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.form.io/js/formio.full.min.css">
+<script src="https://cdn.form.io/js/formio.full.min.js"></script>
 <script src="./contrib/YourModule.js"></script>
 <script type="text/javascript">
     Formio.use(YourModule);
@@ -181,8 +181,8 @@ Formio.use(YourModule);
 As an example, you can import the Contributed Components into your application using the following.
 
 ```html
-<link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
-<script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+<link rel="stylesheet" href="https://cdn.form.io/js/formio.full.min.css">
+<script src="https://cdn.form.io/js/formio.full.min.js"></script>
 <script src="https://unpkg.com/@formio/contrib@latest/dist/formio-contrib.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/@formio/contrib@latest/dist/formio-contrib.css">
 <script type="text/javascript">

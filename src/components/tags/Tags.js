@@ -1,3 +1,4 @@
+import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Input from '../_classes/input/Input';
 import Choices from '@formio/choices.js';
 
@@ -22,6 +23,23 @@ export default class TagsComponent extends Input {
       weight: 30,
       schema: TagsComponent.schema()
     };
+  }
+
+  static get serverConditionSettings() {
+    return TagsComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: [...super.conditionOperatorsSettings.operators, 'includes', 'notIncludes'],
+    };
+  }
+
+  static savedValueTypes(schema) {
+    schema = schema || {};
+
+    return  getComponentSavedTypes(schema) ||[componentValueTypes[schema.storeas] || componentValueTypes.string];
   }
 
   init() {
@@ -79,6 +97,8 @@ export default class TagsComponent extends Input {
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
     this.addEventListener(this.choices.input.element, 'blur', () => {
+      // Emit event to the native Formio input, so the listener attached in the Input.js will be invoked
+      element.dispatchEvent(new Event('blur'));
       const value = this.choices.input.value;
       const maxTagsNumber = this.component.maxTags;
       const valuesCount = this.choices.getValue(true).length;

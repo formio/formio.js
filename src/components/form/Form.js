@@ -2,12 +2,12 @@ import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import ComponentModal from '../_classes/componentModal/ComponentModal';
 import EventEmitter from 'eventemitter3';
-import NativePromise from 'native-promise-only';
 import {
   isMongoId,
   eachComponent,
   getStringFromComponentPath,
-  getArrayFromComponentPath
+  getArrayFromComponentPath,
+  componentValueTypes
 } from '../../utils/utils';
 import { Formio } from '../../Formio';
 import Form from '../../Form';
@@ -35,6 +35,10 @@ export default class FormComponent extends Component {
       weight: 110,
       schema: FormComponent.schema()
     };
+  }
+
+  static savedValueTypes() {
+    return [componentValueTypes.object];
   }
 
   init() {
@@ -111,7 +115,7 @@ export default class FormComponent extends Component {
   }
 
   get dataReady() {
-    return this.subFormReady || NativePromise.resolve();
+    return this.subFormReady || Promise.resolve();
   }
 
   get defaultValue() {
@@ -128,7 +132,7 @@ export default class FormComponent extends Component {
   }
 
   get ready() {
-    return this.subFormReady || NativePromise.resolve();
+    return this.subFormReady || Promise.resolve();
   }
 
   get useOriginalRevision() {
@@ -212,6 +216,9 @@ export default class FormComponent extends Component {
     if (this.options.onChange) {
       options.onChange = this.options.onChange;
     }
+    if (this.options.preview) {
+      options.preview = this.options.preview;
+    }
     return options;
   }
 
@@ -230,7 +237,8 @@ export default class FormComponent extends Component {
   /**
    * Prints out the value of form components as a datagrid value.
    */
-  getValueAsString(value) {
+
+  getValueAsString(value, options) {
     if (!value) {
       return 'No data provided';
     }
@@ -240,6 +248,37 @@ export default class FormComponent extends Component {
     if (!value.data || !Object.keys(value.data).length) {
       return 'No data provided';
     }
+    if (options?.email) {
+      let result = (`
+        <table border="1" style="width:100%">
+          <tbody>
+      `);
+
+      this.everyComponent((component) => {
+        if (component.isInputComponent && component.visible && !component.skipInEmail) {
+          result += (`
+            <tr>
+              <th style="padding: 5px 10px;">${component.label}</th>
+              <td style="width:100%;padding:5px 10px;">${component.getView(component.dataValue, options)}</td>
+            </tr>
+          `);
+        }
+      }, {
+        ...options,
+        fromRoot: true,
+      });
+
+      result += (`
+          </tbody>
+        </table>
+      `);
+
+      return result;
+    }
+    if (_.isEmpty(value)) {
+      return '';
+    }
+
     return '[Complex Data]';
   }
 
@@ -434,21 +473,26 @@ export default class FormComponent extends Component {
    */
   loadSubForm(fromAttach) {
     if (this.builderMode || this.isHidden() || (this.isSubFormLazyLoad() && !fromAttach)) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
 
-    if (this.hasLoadedForm && !this.isRevisionChanged) {
+    if (this.hasLoadedForm && !this.isRevisionChanged &&
+      !(this.options.pdf && this.component?.useOriginalRevision && _.isNull(this.subForm) && !this.subFormLoading)
+    ) {
       // Pass config down to sub forms.
       if (this.root && this.root.form && this.root.form.config && !this.formObj.config) {
         this.formObj.config = this.root.form.config;
       }
-      return NativePromise.resolve(this.formObj);
+      return Promise.resolve(this.formObj);
     }
     else if (this.formSrc) {
       this.subFormLoading = true;
       return (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
         .then((formObj) => {
           this.formObj = formObj;
+          if (this.options.pdf && this.component.useOriginalRevision) {
+            this.formObj.display = 'form';
+          }
           this.subFormLoading = false;
           return formObj;
         })
@@ -457,7 +501,7 @@ export default class FormComponent extends Component {
           return null;
         });
     }
-    return NativePromise.resolve();
+    return Promise.resolve();
   }
 
   get subFormData() {
@@ -532,7 +576,7 @@ export default class FormComponent extends Component {
       return this.subForm.getSubmission();
     }
     else {
-      return NativePromise.resolve(this.dataValue);
+      return Promise.resolve(this.dataValue);
     }
   }
 
@@ -558,7 +602,7 @@ export default class FormComponent extends Component {
           this.subForm.showAllErrors = true;
           if (rejectOnError) {
             this.subForm.onSubmissionError(err);
-            return NativePromise.reject(err);
+            return Promise.reject(err);
           }
           else {
             return {};
@@ -591,7 +635,7 @@ export default class FormComponent extends Component {
     // This submission has already been submitted, so just return the reference data.
     if (isAlreadySubmitted && !this.subForm?.wizard) {
       this.dataValue = submission;
-      return NativePromise.resolve(this.dataValue);
+      return Promise.resolve(this.dataValue);
     }
     return this.submitSubForm(false)
       .then(() => {
