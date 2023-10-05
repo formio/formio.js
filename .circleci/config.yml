@@ -19,3 +19,11 @@ jobs:
           command: npm test
       - store_artifacts:
           path: test-results.xml
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: /.*/
