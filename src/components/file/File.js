@@ -163,7 +163,21 @@ export default class FileComponent extends Field {
   }
 
   get autoSync() {
-    return _.get(this, 'component.validate.autoSync', false);
+    return _.get(this, 'component.autoSync', false);
+  }
+
+  get columnsSize() {
+    const actionsColumn = this.disabled ? 0 : this.autoSync ? 2 : 1;
+    const typeColumn = this.hasTypes ? 2 : 0;
+    const sizeColumn = 2;
+    const nameColumn = 12 - actionsColumn - typeColumn - sizeColumn;
+
+    return {
+      name: nameColumn,
+      size: sizeColumn,
+      type: typeColumn,
+      actions: actionsColumn,
+    };
   }
 
   render() {
@@ -176,8 +190,9 @@ export default class FileComponent extends Field {
       disabled: this.disabled,
       support: this.support,
       fileDropHidden: this.fileDropHidden,
-      showSyncButton: (filesToDelete.length || filesToUpload.length) && !this.isSyncing,
+      showSyncButton: this.autoSync && (filesToDelete.length || filesToUpload.length),
       isSyncing: this.isSyncing,
+      columns: this.columnsSize,
     }));
   }
 
@@ -252,7 +267,7 @@ export default class FileComponent extends Field {
     this.getFrame(videoPlayer)
       .then((frame) => {
         frame.name = `photo-${Date.now()}.png`;
-        this.prepareFilesToUpload([frame]);
+        this.handleFilesToUpload([frame]);
         this.cameraMode = false;
         this.redraw();
       });
@@ -386,7 +401,7 @@ export default class FileComponent extends Field {
       this.addEventListener(this.refs.fileDrop, 'drop', function(event) {
         this.className = 'fileSelector';
         event.preventDefault();
-        element.prepareFilesToUpload(event.dataTransfer.files);
+        element.handleFilesToUpload(event.dataTransfer.files);
       });
     }
 
@@ -395,7 +410,7 @@ export default class FileComponent extends Field {
         event.preventDefault();
         this.browseFiles(this.browseOptions)
           .then((files) => {
-            this.prepareFilesToUpload(files);
+            this.handleFilesToUpload(files);
           });
       });
     }
@@ -411,7 +426,7 @@ export default class FileComponent extends Field {
       this.addEventListener(removeLink, 'click', (event) => {
         event.preventDefault();
         const fileInfo = this.dataValue[index];
-        this.prepareFileToDelete(fileInfo);
+        this.handleFileToRemove(fileInfo);
       });
     });
 
@@ -458,7 +473,7 @@ export default class FileComponent extends Field {
                 reader.onloadend = (evt) => {
                   const blob = new Blob([new Uint8Array(evt.target.result)], { type: file.type });
                   blob.name = file.name;
-                  this.prepareFilesToUpload([blob]);
+                  this.handleFilesToUpload([blob]);
                 };
                 reader.readAsArrayBuffer(file);
               });
@@ -482,7 +497,7 @@ export default class FileComponent extends Field {
                 reader.onloadend = (evt) => {
                   const blob = new Blob([new Uint8Array(evt.target.result)], { type: file.type });
                   blob.name = file.name;
-                  this.prepareFilesToUpload([blob]);
+                  this.handleFilesToUpload([blob]);
                 };
                 reader.readAsArrayBuffer(file);
               });
@@ -516,6 +531,10 @@ export default class FileComponent extends Field {
     }
 
     this.refs.fileType.forEach((fileType, index) => {
+      if (!this.dataValue[index]) {
+        return;
+      }
+
       this.dataValue[index].fileType = this.dataValue[index].fileType || this.component.fileTypes[0].label;
 
       this.addEventListener(fileType, 'change', (event) => {
@@ -832,6 +851,7 @@ export default class FileComponent extends Field {
 
     const { status, message } = this.validateFile(file);
     if (status === 'error') {
+      fileToSync.isValidationError = true;
       fileToSync.status = status;
       fileToSync.message = message;
       return this.filesToSync.filesToUpload.push(fileToSync);
@@ -850,9 +870,13 @@ export default class FileComponent extends Field {
       return this.filesToSync.filesToUpload.push(fileToSync);
     }
 
+    if (this.autoSync) {
+      fileToSync.message = this.t('Ready to be uploaded into storage');
+    }
+
     this.filesToSync.filesToUpload.push({
       ...fileToSync,
-      message: fileToSync.message = this.t('Ready to be uploaded into storage'),
+      message: fileToSync.message,
       file: processedFile.file || file,
       url: this.interpolate(this.component.url, { file: fileToSync }),
       groupPermissions,
@@ -860,7 +884,7 @@ export default class FileComponent extends Field {
     });
   }
 
-  prepareFilesToUpload(files) {
+  async prepareFilesToUpload(files) {
     // Only allow one upload if not multiple.
     if (!this.component.multiple) {
       files = Array.prototype.slice.call(files, 0, 1);
@@ -869,11 +893,23 @@ export default class FileComponent extends Field {
     if (this.component.storage && files && files.length) {
       this.fileDropHidden = true;
 
-      // files is not really an array and does not have a forEach method, so fake it.
-      Array.prototype.forEach.call(files, async(file) => {
-        await this.prepareFileToUpload(file);
-        this.redraw();
-      });
+      return NativePromise.all([...files].map((file) => {
+        return new NativePromise(async(resolve) => {
+          await this.prepareFileToUpload(file);
+          this.redraw();
+          resolve();
+        });
+      }));
+    }
+    else {
+      return NativePromise.resolve();
+    }
+  }
+
+  async handleFilesToUpload(files) {
+    await this.prepareFilesToUpload(files);
+    if (!this.autoSync) {
+      await this.syncFiles();
     }
   }
 
@@ -881,7 +917,9 @@ export default class FileComponent extends Field {
     this.filesToSync.filesToDelete.push({
       ...fileInfo,
       status: 'info',
-      message: this.t('Ready to be removed from storage'),
+      message: this.autoSync
+        ? this.t('Ready to be removed from storage')
+        : this.t('Preparing file to remove'),
     });
 
     const index = this.dataValue.findIndex(file => file.name === fileInfo.name);
@@ -889,19 +927,26 @@ export default class FileComponent extends Field {
     this.redraw();
   }
 
-  deleteFile(fileInfo) {
+  handleFileToRemove(fileInfo) {
+    this.prepareFileToDelete(fileInfo);
+    if (!this.autoSync) {
+      this.syncFiles();
+    }
+  }
+
+  async deleteFile(fileInfo) {
     const { options = {} } = this.component;
 
     if (fileInfo && (['url', 'indexeddb', 's3'].includes(this.component.storage))) {
       const { fileService } = this;
       if (fileService && typeof fileService.deleteFile === 'function') {
-        fileService.deleteFile(fileInfo, options);
+        return await fileService.deleteFile(fileInfo, options);
       }
       else {
         const formio = this.options.formio || (this.root && this.root.formio);
 
         if (formio) {
-          formio.makeRequest('', fileInfo.url, 'delete');
+          return await formio.makeRequest('', fileInfo.url, 'delete');
         }
       }
     }
@@ -915,10 +960,11 @@ export default class FileComponent extends Field {
     return await Promise.all(this.filesToSync.filesToDelete.map((fileToSync, i) => {
       return new NativePromise(async(resolve) => {
         try {
-          if (i === 1) {
-            throw new Error('Delete error');
+          if (fileToSync.isValidationError) {
+            return;
           }
-          this.deleteFile(fileToSync);
+
+          await this.deleteFile(fileToSync);
           fileToSync.status = 'success';
           fileToSync.message = this.t('Succefully removed');
         }
@@ -934,12 +980,6 @@ export default class FileComponent extends Field {
         }
       });
     }));
-    // if (files.filter(file => file.status === 'error').length) {
-    //   return NativePromise.reject();
-    // }
-
-    // // this.filesToSync.filesToDelete = [];
-    // return NativePromise.resolve();
   }
 
   async uploadFile(fileToSync, abortIndex) {
@@ -974,13 +1014,14 @@ export default class FileComponent extends Field {
       return NativePromise.resolve();
     }
 
-    return await Promise.all(this.filesToSync.filesToUpload.map((fileToSync, i) => {
+    return await NativePromise.all(this.filesToSync.filesToUpload.map((fileToSync, i) => {
       return new NativePromise(async(resolve) => {
         let fileInfo = null;
         try {
-          if (i === 1) {
-            throw new Error('Upload error.');
+          if (fileToSync.isValidationError) {
+            return;
           }
+
           fileInfo = await this.uploadFile(fileToSync);
           fileToSync.status = 'success';
           fileToSync.message = this.t('Succefully uploaded');
@@ -1003,18 +1044,6 @@ export default class FileComponent extends Field {
         }
       });
     }));
-
-    // if (files.filter(file => file.status === 'error').length) {
-    //   return NativePromise.reject();
-    // }
-
-    // if (!this.hasValue()) {
-    //   this.dataValue = [];
-    // }
-    // this.dataValue.push(...files);
-    // this.filesToSync.filesToUpload = [];
-    // this.triggerChange();
-    // return NativePromise.resolve();
   }
 
   async syncFiles() {
@@ -1084,24 +1113,6 @@ export default class FileComponent extends Field {
     if (this.refs.fileBrowse) {
       this.refs.fileBrowse.focus();
     }
-  }
-
-  checkComponentValidity(data, dirty, row, options = {}) {
-    const superValid = super.checkComponentValidity(data, dirty, row, options);
-    if (!superValid) {
-      return false;
-    }
-
-    if (this.shouldSkipValidation(data, dirty, row)) {
-      return true;
-    }
-
-    if (!this.autoSync && this.shouldSyncFiles) {
-      this.setCustomValidity('Files synchronization is required');
-      return false;
-    }
-
-    return superValid;
   }
 
   beforeSubmit() {

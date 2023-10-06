@@ -8,24 +8,26 @@
   <ul class="list-group list-group-striped">
     <li class="list-group-item list-group-header hidden-xs hidden-sm">
       <div class="row">
-        <div class="col-md-{% if (ctx.self.hasTypes) { %}6{% } else { %}8{% } %}"><strong>{{ctx.t('File Name')}}</strong></div>
-        <div class="col-md-2"><strong>{{ctx.t('Size')}}</strong></div>
+        <div class="col-md-{{ctx.columns.name}}"><strong>{{ctx.t('File Name')}}</strong></div>
+        <div class="col-md-{{ctx.columns.size}}"><strong>{{ctx.t('Size')}}</strong></div>
         {% if (ctx.self.hasTypes) { %}
-          <div class="col-md-2"><strong>{{ctx.t('Type')}}</strong></div>
+          <div class="col-md-{{ctx.columns.type}}"><strong>{{ctx.t('Type')}}</strong></div>
         {% } %}
-        <div class="col-md-2 justify-center">
-          <button
-            class="btn btn-primary btn-sm"
-            ref="syncNow"
-            {% if (ctx.disabled || !ctx.showSyncButton) { %}disabled=true{% } %}
-          >{{ctx.isSyncing ? 'Syncing...' : 'Sync Now'}}</button>
+        <div class="col-md-{{ctx.columns.actions}} justify-center">
+          {% if (ctx.showSyncButton) { %}
+            <button
+              class="btn btn-primary btn-sm"
+              ref="syncNow"
+              {% if (ctx.disabled || ctx.isSyncing) { %}disabled=true{% } %}
+            >{{ctx.isSyncing ? ctx.t('Syncing...') : ctx.t('Sync Now')}}</button>
+          {% } %}
         </div>
       </div>
     </li>
     {% ctx.files.forEach(function(file) { %}
       <li class="list-group-item">
         <div class="row">
-          <div class="col-md-{% if (ctx.self.hasTypes) { %}6{% } else { %}8{% } %}">
+          <div class="col-md-{{ctx.columns.name}}">
             {% if (ctx.component.uploadOnly) { %}
               {{file.originalName || file.name}}
             {% } else { %}
@@ -34,9 +36,9 @@
               </a>
             {% } %}
           </div>
-          <div class="col-md-2">{{ctx.fileSize(file.size)}}</div>
+          <div class="col-md-{{ctx.columns.size}}">{{ctx.fileSize(file.size)}}</div>
           {% if (ctx.self.hasTypes && !ctx.disabled) { %}
-            <div class="col-md-2">
+            <div class="col-md-{{ctx.columns.type}}">
               <select class="file-type" ref="fileType">
                 {% ctx.component.fileTypes.map(function(type) { %}
                   <option class="test" value="{{ type.value }}" {% if (type.label === file.fileType) { %}selected="selected"{% } %}>{{ctx.t(type.label)}}</option>
@@ -45,10 +47,10 @@
             </div>
           {% } %}
           {% if (ctx.self.hasTypes && ctx.disabled) { %}
-            <div class="col-md-2">{{file.fileType}}</div>
+            <div class="col-md-{{ctx.columns.type}}">{{file.fileType}}</div>
           {% } %}
           {% if (!ctx.disabled) { %}
-            <div class="col-md-2 justify-center"><i tabindex="0" class="{{ctx.iconClass('remove')}}" ref="removeLink"></i></div>
+            <div class="col-md-{{ctx.columns.actions}} justify-center"><i tabindex="0" class="{{ctx.iconClass('remove')}}" ref="removeLink"></i></div>
           {% } %}
         </div>
       </li>
@@ -56,13 +58,13 @@
     {% ctx.filesToDelete.forEach(function(file) { %}
       <li class="list-group-item">
         <div class="row align-center">
-          <div class="col-md-{% if (ctx.self.hasTypes) { %}6{% } else { %}8{% } %}">
+          <div class="col-md-{{ctx.columns.name}}">
             <div>{{file.originalName || file.name}}</div>
               <div class="status text-{{file.status === 'error' ? 'danger': file.status}}">{{ctx.t(file.message)}}</div>
           </div>
-          <div class="col-md-2">{{ctx.fileSize(file.size)}}</div>
+          <div class="col-md-{{ctx.columns.size}}">{{ctx.fileSize(file.size)}}</div>
           {% if (ctx.self.hasTypes) { %}
-            <div class="col-md-2">
+            <div class="col-md-{{ctx.columns.type}}">
               <select class="file-type" ref="fileType">
                 {% ctx.component.fileTypes.map(function(type) { %}
                   <option class="test" value="{{ type.value }}" {% if (type.label === file.fileType) { %}selected="selected"{% } %}>{{ctx.t(type.label)}}</option>
@@ -71,7 +73,7 @@
             </div>
           {% } %}
           {% if (!ctx.isSyncing && file.status !== 'success') { %}
-            <div class="col-md-2 justify-center"><i tabindex="0" class="{{ctx.iconClass('undo')}}" ref="restoreFile"></i></div>
+            <div class="col-md-{{ctx.columns.actions}} justify-center"><i tabindex="0" class="{{ctx.iconClass('undo')}}" ref="restoreFile"></i></div>
           {% } %}
         </div>
       </li>
@@ -79,7 +81,7 @@
     {% ctx.filesToUpload.forEach(function(file) { %}
       <li class="list-group-item">
         <div class="row align-center">
-          <div class="col-md-{% if (ctx.self.hasTypes) { %}6{% } else { %}8{% } %}">
+          <div class="col-md-{{ctx.columns.name}}">
             <div>{{file.originalName || file.name}}</div>
             {% if (file.status === 'progress') { %}
               <div class="status progress">
@@ -91,9 +93,9 @@
               <div class="status text-{{file.status === 'error' ? 'danger': file.status}}">{{ctx.t(file.message)}}</div>
             {% } %}
           </div>
-          <div class="col-md-2">{{ctx.fileSize(file.size)}}</div>
+          <div class="col-md-{{ctx.columns.size}}">{{ctx.fileSize(file.size)}}</div>
           {% if (ctx.self.hasTypes) { %}
-            <div class="col-md-2">
+            <div class="col-md-{{ctx.columns.type}}">
               <select class="file-type" ref="fileType">
                 {% ctx.component.fileTypes.map(function(type) { %}
                   <option class="test" value="{{ type.value }}" {% if (type.label === file.fileType) { %}selected="selected"{% } %}>{{ctx.t(type.label)}}</option>
@@ -102,9 +104,9 @@
             </div>
           {% } %}
           {% if (file.status === 'progress') { %}
-            <div class="col-md-2 justify-center"><i tabindex="0" class="{{ctx.iconClass('ban')}}" ref="abortRequest"></i></div>
+            <div class="col-md-{{ctx.columns.actions}} justify-center"><i tabindex="0" class="{{ctx.iconClass('ban')}}" ref="abortRequest"></i></div>
           {% } else if (!ctx.isSyncing && file.status !== 'success') { %}
-            <div class="col-md-2 justify-center"><i tabindex="0" class="{{ctx.iconClass('remove')}}" ref="fileToSyncRemove"></i></div>
+            <div class="col-md-{{ctx.columns.actions}} justify-center"><i tabindex="0" class="{{ctx.iconClass('remove')}}" ref="fileToSyncRemove"></i></div>
           {% } %}
         </div>
       </li>
