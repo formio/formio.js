@@ -42,7 +42,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-list">components/_classes/list</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ListComponent">ListComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
@@ -75,8 +74,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PhoneNumber">PhoneNumber</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PhoneNumber">PhoneNumber</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-radio">components/radio</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Radio">Radio</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-recaptcha">components/recaptcha</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html">ReCaptchaComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
@@ -191,7 +189,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/day/Day.unit.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import assert from &apos;power-assert&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Formio from &apos;../../Formio&apos;;
+import assert from &apos;power-assert&apos;;
 
 import Harness from &apos;../../../test/harness&apos;;
 import DayComponent from &apos;./Day&apos;;
@@ -200,7 +199,9 @@ import {
   comp1,
   comp2,
   comp3,
-  comp4
+  comp4,
+  comp5,
+  comp6,
 } from &apos;./fixtures&apos;;
 import PanelComponent from &apos;../panel/Panel&apos;;
 
@@ -411,6 +412,52 @@ describe(&apos;Day Component&apos;, () =&gt; {
       done();
     });
     comp1.fields.year.hide = false;
+  });
+  it(&apos;OnBlur validation should work properly with Day component&apos;, (done) =&gt; {
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, comp5).then(form =&gt; {
+      const dayComponent = form.components[0];
+      dayComponent.setValue(&apos;03/12/2023&apos;);
+
+      setTimeout(() =&gt; {
+        dayComponent.refs.day.focus();
+        dayComponent.refs.day.value = &apos;&apos;;
+        dayComponent.refs.day.dispatchEvent(new Event(&apos;input&apos;));
+
+        setTimeout(() =&gt; {
+          assert(!dayComponent.error, &apos;Day should be valid while changing&apos;);
+          dayComponent.refs.day.dispatchEvent(new Event(&apos;blur&apos;));
+
+          setTimeout(() =&gt; {
+            assert(dayComponent.error, &apos;Should set error after Day component was blurred&apos;);
+            done();
+          }, 200);
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;Should restore focus after redraw&apos;, (done) =&gt; {
+    const element = document.createElement(&apos;div&apos;);
+    document.body.appendChild(element);
+    Formio.createForm(element, comp6).then(form =&gt; {
+      const textField = form.getComponent([&apos;textField&apos;]);
+      textField.setValue(&apos;test&apos;);
+
+      setTimeout(() =&gt; {
+        const day = form.getComponent([&apos;day&apos;]);
+        document.querySelector(&apos;select.form-control&apos;).focus();
+          day.refs.month.value = 2;
+          day.refs.month.dispatchEvent(new Event(&apos;input&apos;));
+
+          setTimeout(() =&gt; {
+            console.log(global.document.activeElement, day.refs.month);
+            assert(global.document.activeElement === day.refs.month, &apos;Should keep focus on the year select&apos;);
+            done();
+          }, 200);
+      }, 500);
+    }).catch(done);
   });
 });
 </code></pre>

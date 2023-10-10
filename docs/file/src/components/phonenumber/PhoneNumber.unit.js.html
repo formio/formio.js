@@ -42,7 +42,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~Components.html">Components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component">components/_classes/component</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Component">Component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-component-editform">components/_classes/component/editForm</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EditFormUtils">EditFormUtils</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-field">components/_classes/field</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/_classes/field/Field.js~Field.html">Field</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-list">components/_classes/list</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ListComponent">ListComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components--classes-nested">components/_classes/nested</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-NestedComponent">NestedComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Address">Address</a></span></span></li>
@@ -75,8 +74,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Password">Password</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PhoneNumber">PhoneNumber</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-phonenumber">components/phonenumber</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PhoneNumber">PhoneNumber</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-radio">components/radio</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Radio">Radio</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-recaptcha">components/recaptcha</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html">ReCaptchaComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ReCaptcha">ReCaptcha</a></span></span></li>
@@ -193,9 +191,11 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/phonenumber/PhoneNumber.unit.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
 import PhoneNumberComponent from &apos;./PhoneNumber&apos;;
+import assert from &apos;power-assert&apos;;
+import Formio from &apos;../../Formio&apos;;
 
 import {
-  comp1
+  comp1,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;PhoneNumber Component&apos;, () =&gt; {
@@ -203,6 +203,48 @@ describe(&apos;PhoneNumber Component&apos;, () =&gt; {
     return Harness.testCreate(PhoneNumberComponent, comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 1);
     });
+  });
+
+  it(&apos;Should check mask and value in the phone component in the email template&apos;, (done) =&gt; {
+    const formJson =  {
+      components: [{
+          label: &apos;Phone Number&apos;,
+          tableView: true,
+          allowMultipleMasks: true,
+          inputMasks: [{
+            label: &apos;mask1&apos;,
+            mask: &apos;mask1&apos;
+          }],
+          key: &apos;phoneNumber&apos;,
+          type: &apos;phoneNumber&apos;,
+          input: true
+       }]
+    };
+    const element = document.createElement(&apos;div&apos;);
+    Formio.createForm(element, formJson)
+      .then(form =&gt; {
+        form.setSubmission({
+          data: {
+            phoneNumber: {
+                value: &apos;mask1&apos;,
+                maskName: &apos;mask2&apos;
+            }
+        },
+        });
+
+        const phoneNumber = form.getComponent(&apos;phoneNumber&apos;);
+
+        setTimeout(() =&gt; {
+          assert.equal(phoneNumber.dataValue.value, &apos;mask1&apos;, &apos;Should check value&apos;);
+          assert.equal(phoneNumber.dataValue.maskName, &apos;mask2&apos;, &apos;Should check maskName&apos;);
+          const toString = phoneNumber.getValueAsString(phoneNumber.dataValue, { email: true });
+          assert.ok(toString.includes(&apos;table&apos;), &apos;Email template should render html table&apos;);
+          assert.ok(toString.includes(phoneNumber.dataValue.maskName), &apos;Email template should have Phone Number mackName&apos;);
+          assert.ok(toString.includes(phoneNumber.dataValue.value), &apos;Email template should have Phone Number value&apos;);
+          done();
+        }, 300);
+      })
+      .catch(done);
   });
 });
 </code></pre>

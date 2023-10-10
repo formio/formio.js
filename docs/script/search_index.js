@@ -252,12 +252,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "formiojs/src/components/_classes/field/field.js~field",
-    "class/src/components/_classes/field/Field.js~Field.html",
-    "<span>Field</span> <span class=\"search-result-import-path\">formiojs/src/components/_classes/field/Field.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/components/fieldset/fieldset.form.js~fieldset",
     "function/index.html#static-function-Fieldset",
     "<span>Fieldset</span> <span class=\"search-result-import-path\">formiojs/src/components/fieldset/Fieldset.form.js</span>",
@@ -508,12 +502,6 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-PhoneNumber",
     "<span>PhoneNumber</span> <span class=\"search-result-import-path\">formiojs/src/components/phonenumber/PhoneNumber.form.js</span>",
     "function"
-  ],
-  [
-    "formiojs/src/components/phonenumber/phonenumber.js~phonenumbercomponent",
-    "class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html",
-    "<span>PhoneNumberComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/phonenumber/PhoneNumber.js</span>",
-    "class"
   ],
   [
     "formiojs/src/providers/providers.js~providers",
@@ -2592,18 +2580,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/_classes/field/field.js",
-    "file/src/components/_classes/field/Field.js.html",
-    "src/components/_classes/field/Field.js",
-    "file"
-  ],
-  [
-    "src/components/_classes/field/field.js~field#render",
-    "class/src/components/_classes/field/Field.js~Field.html#instance-method-render",
-    "src/components/_classes/field/Field.js~Field#render",
-    "method"
-  ],
-  [
     "src/components/_classes/list/listcomponent.form.js",
     "file/src/components/_classes/list/ListComponent.form.js.html",
     "src/components/_classes/list/ListComponent.form.js",
@@ -3840,6 +3816,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/day/fixtures/comp5.js",
+    "file/src/components/day/fixtures/comp5.js.html",
+    "src/components/day/fixtures/comp5.js",
+    "file"
+  ],
+  [
+    "src/components/day/fixtures/comp6.js",
+    "file/src/components/day/fixtures/comp6.js.html",
+    "src/components/day/fixtures/comp6.js",
+    "file"
+  ],
+  [
     "src/components/day/fixtures/index.js",
     "file/src/components/day/fixtures/index.js.html",
     "src/components/day/fixtures/index.js",
@@ -4756,30 +4744,6 @@ window.esdocSearchIndex = [
     "file/src/components/phonenumber/PhoneNumber.form.js.html",
     "src/components/phonenumber/PhoneNumber.form.js",
     "file"
-  ],
-  [
-    "src/components/phonenumber/phonenumber.js",
-    "file/src/components/phonenumber/PhoneNumber.js.html",
-    "src/components/phonenumber/PhoneNumber.js",
-    "file"
-  ],
-  [
-    "src/components/phonenumber/phonenumber.js~phonenumbercomponent#defaultschema",
-    "class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html#instance-get-defaultSchema",
-    "src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent#defaultSchema",
-    "member"
-  ],
-  [
-    "src/components/phonenumber/phonenumber.js~phonenumbercomponent.builderinfo",
-    "class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html#static-get-builderInfo",
-    "src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.builderInfo",
-    "member"
-  ],
-  [
-    "src/components/phonenumber/phonenumber.js~phonenumbercomponent.schema",
-    "class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html#static-method-schema",
-    "src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.schema",
-    "method"
   ],
   [
     "src/components/phonenumber/phonenumber.unit.js",
