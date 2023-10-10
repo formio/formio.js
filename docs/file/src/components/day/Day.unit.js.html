@@ -188,7 +188,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/day/Day.unit.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { Formio } from &apos;../../Formio&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Formio from &apos;../../Formio&apos;;
 import assert from &apos;power-assert&apos;;
 
 import Harness from &apos;../../../test/harness&apos;;
@@ -412,7 +412,6 @@ describe(&apos;Day Component&apos;, () =&gt; {
     });
     comp1.fields.year.hide = false;
   });
-
   it(&apos;OnBlur validation should work properly with Day component&apos;, (done) =&gt; {
     const element = document.createElement(&apos;div&apos;);
 
