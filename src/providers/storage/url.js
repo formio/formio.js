@@ -1,4 +1,4 @@
-const url = (formio) => {
+function url(formio) {
   const xhrRequest = (url, name, query, data, options, progressCallback, abortCallback) => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -148,7 +148,7 @@ const url = (formio) => {
       return Promise.resolve(file);
     }
   };
-};
+}
 
 url.title = 'Url';
 export default url;

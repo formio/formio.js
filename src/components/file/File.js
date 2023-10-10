@@ -37,6 +37,8 @@ if (htmlCanvasElement && !htmlCanvasElement.prototype.toBlob) {
   });
 }
 
+const createRandomString = () => Math.random().toString(36).substring(2, 15);
+
 export default class FileComponent extends Field {
   static schema(...extend) {
     return Field.schema({
@@ -362,6 +364,12 @@ export default class FileComponent extends Field {
     return options;
   }
 
+  get actions() {
+    return {
+      abort: this.abortRequest.bind(this),
+    };
+  }
+
   attach(element) {
     this.loadRefs(element, {
       fileDrop: 'single',
@@ -379,7 +387,7 @@ export default class FileComponent extends Field {
       fileProcessingLoader: 'single',
       syncNow: 'single',
       restoreFile: 'multiple',
-      abortRequest: 'multiple',
+      progress: 'multiple',
     });
     // Ensure we have an empty input refs. We need this for the setValue method to redraw the control when it is set.
     this.refs.input = [];
@@ -389,7 +397,7 @@ export default class FileComponent extends Field {
       // if (!this.statuses.length) {
       //   this.refs.fileDrop.removeAttribute('hidden');
       // }
-      const element = this;
+      const _this = this;
       this.addEventListener(this.refs.fileDrop, 'dragover', function(event) {
         this.className = 'fileSelector fileDragOver';
         event.preventDefault();
@@ -401,9 +409,13 @@ export default class FileComponent extends Field {
       this.addEventListener(this.refs.fileDrop, 'drop', function(event) {
         this.className = 'fileSelector';
         event.preventDefault();
-        element.handleFilesToUpload(event.dataTransfer.files);
+        _this.handleFilesToUpload(event.dataTransfer.files);
       });
     }
+
+    this.addEventListener(element, 'click', (event) => {
+      this.handleAction(event);
+    });
 
     if (this.refs.fileBrowse) {
       this.addEventListener(this.refs.fileBrowse, 'click', (event) => {
@@ -434,18 +446,6 @@ export default class FileComponent extends Field {
       this.addEventListener(fileToSyncRemove, 'click', (event) => {
         event.preventDefault();
         this.filesToSync.filesToUpload.splice(index, 1);
-        this.redraw();
-      });
-    });
-
-    this.refs.abortRequest.forEach((abort, index) => {
-      this.addEventListener(abort, 'click', (event) => {
-        event.preventDefault();
-        const fileInfo = this.filesToSync.filesToUpload[index];
-        const abortUpload = this.abortUploads.find(abortUpload => abortUpload.name === fileInfo.name);
-        if (abortUpload) {
-          abortUpload.abort();
-        }
         this.redraw();
       });
     });
@@ -676,6 +676,26 @@ export default class FileComponent extends Field {
     return file.size - 0.1 <= this.translateScalars(val);
   }
 
+  abortRequest(id) {
+    const abortUpload = this.abortUploads.find(abortUpload => abortUpload.id === id);
+    if (abortUpload) {
+      abortUpload.abort();
+    }
+  }
+
+  handleAction(event) {
+    const target = event.target;
+    if (!target.id) {
+      return;
+    }
+    const [action, id] = target.id.split('-');
+    if (!action || !id || !this.actions[action]) {
+      return;
+    }
+
+    this.actions[action](id);
+  }
+
   getFileName(file) {
     return uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
   }
@@ -683,6 +703,7 @@ export default class FileComponent extends Field {
   getInitFileToSync(file) {
     const escapedFileName = file.name ? file.name.replaceAll('<', '&lt;').replaceAll('>', '&gt;') : file.name;
     return {
+      id: createRandomString(),
       // Get a unique name for this file to keep file collisions from occurring.
       dir: this.interpolate(this.component.dir || ''),
       name: this.getFileName(file),
@@ -893,16 +914,13 @@ export default class FileComponent extends Field {
     if (this.component.storage && files && files.length) {
       this.fileDropHidden = true;
 
-      return NativePromise.all([...files].map((file) => {
-        return new NativePromise(async(resolve) => {
-          await this.prepareFileToUpload(file);
-          this.redraw();
-          resolve();
-        });
+      return Promise.all([...files].map(async(file) => {
+        await this.prepareFileToUpload(file);
+        this.redraw();
       }));
     }
     else {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
   }
 
@@ -937,7 +955,7 @@ export default class FileComponent extends Field {
   async deleteFile(fileInfo) {
     const { options = {} } = this.component;
 
-    if (fileInfo && (['url', 'indexeddb', 's3'].includes(this.component.storage))) {
+    if (fileInfo && (['url', 'indexeddb', 's3', 'azure', 'googledrive'].includes(this.component.storage))) {
       const { fileService } = this;
       if (fileService && typeof fileService.deleteFile === 'function') {
         return await fileService.deleteFile(fileInfo, options);
@@ -954,47 +972,54 @@ export default class FileComponent extends Field {
 
   async delete() {
     if (!this.filesToSync.filesToDelete.length) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
 
-    return await Promise.all(this.filesToSync.filesToDelete.map((fileToSync, i) => {
-      return new NativePromise(async(resolve) => {
-        try {
-          if (fileToSync.isValidationError) {
-            return;
-          }
+    return await Promise.all(this.filesToSync.filesToDelete.map(async(fileToSync) => {
+      try {
+        if (fileToSync.isValidationError) {
+          return { fileToSync };
+        }
 
-          await this.deleteFile(fileToSync);
-          fileToSync.status = 'success';
-          fileToSync.message = this.t('Succefully removed');
-        }
-        catch (response) {
-          fileToSync.status = 'error';
-          fileToSync.message = typeof response === 'string' ? response : response.toString();
-        }
-        finally {
-          this.redraw();
-          resolve({
-            fileToSync,
-          });
-        }
-      });
+        await this.deleteFile(fileToSync);
+        fileToSync.status = 'success';
+        fileToSync.message = this.t('Succefully removed');
+      }
+      catch (response) {
+        fileToSync.status = 'error';
+        fileToSync.message = typeof response === 'string' ? response : response.toString();
+      }
+      finally {
+        this.redraw();
+      }
+
+      return { fileToSync };
     }));
   }
 
-  async uploadFile(fileToSync, abortIndex) {
+  updateProgress(fileInfo, progressEvent) {
+    fileInfo.progress = parseInt(100.0 * progressEvent.loaded / progressEvent.total);
+    if (fileInfo.status !== 'progress') {
+      fileInfo.status = 'progress';
+      delete fileInfo.message;
+      this.redraw();
+    }
+    else {
+      const progress = Array.prototype.find.call(this.refs.progress, progressElement => progressElement.id === fileInfo.id);
+      progress.innerHTML = `<span class="visually-hidden">${fileInfo.progress}% ${this.t('Complete')}</span>`;
+      progress.style.width = `${fileInfo.progress}%`;
+      progress.ariaValueNow = fileInfo.progress.toString();
+    }
+  }
+
+  async uploadFile(fileToSync) {
     return await this.fileService.uploadFile(
       fileToSync.storage,
       fileToSync.file,
       fileToSync.name,
       fileToSync.dir,
       // Progress callback
-      (evt) => {
-        fileToSync.status = 'progress';
-        fileToSync.progress = parseInt(100.0 * evt.loaded / evt.total);
-        delete fileToSync.message;
-        this.redraw();
-      },
+      this.updateProgress.bind(this, fileToSync),
       fileToSync.url,
       fileToSync.options,
       fileToSync.fileKey,
@@ -1003,7 +1028,7 @@ export default class FileComponent extends Field {
       () => {},
       // Abort upload callback
       (abort) => this.abortUploads.push({
-        name: fileToSync.name,
+        id: fileToSync.id,
         abort,
       }),
     );
@@ -1011,46 +1036,53 @@ export default class FileComponent extends Field {
 
   async upload() {
     if (!this.filesToSync.filesToUpload.length) {
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
 
-    return await NativePromise.all(this.filesToSync.filesToUpload.map((fileToSync, i) => {
-      return new NativePromise(async(resolve) => {
-        let fileInfo = null;
-        try {
-          if (fileToSync.isValidationError) {
-            return;
-          }
-
-          fileInfo = await this.uploadFile(fileToSync);
-          fileToSync.status = 'success';
-          fileToSync.message = this.t('Succefully uploaded');
-
-          fileInfo.originalName = fileToSync.originalName;
-          fileInfo.hash = fileToSync.hash;
-        }
-        catch (response) {
-          fileToSync.status = 'error';
-          fileToSync.message = typeof response === 'string' ? response : response.toString();
-          delete fileToSync.progress;
-        }
-        finally {
-          delete fileToSync.progress;
-          this.redraw();
-          resolve({
+    return await Promise.all(this.filesToSync.filesToUpload.map(async(fileToSync) => {
+      let fileInfo = null;
+      try {
+        if (fileToSync.isValidationError) {
+          return {
             fileToSync,
             fileInfo,
-          });
+          };
         }
-      });
+
+        fileInfo = await this.uploadFile(fileToSync);
+        fileToSync.status = 'success';
+        fileToSync.message = this.t('Succefully uploaded');
+
+        fileInfo.originalName = fileToSync.originalName;
+        fileInfo.hash = fileToSync.hash;
+      }
+      catch (response) {
+        fileToSync.status = 'error';
+        delete fileToSync.progress;
+        fileToSync.message = typeof response === 'string'
+          ? response
+          : response.type === 'abort'
+            ? this.t('Request was aborted')
+            : response.toString();
+      }
+      finally {
+        delete fileToSync.progress;
+        this.redraw();
+      }
+
+      return {
+        fileToSync,
+        fileInfo,
+      };
     }));
   }
 
   async syncFiles() {
     this.isSyncing = true;
+    this.fileDropHidden = true;
     this.redraw();
     try {
-      const [filesToDelete = [], filesToUpload = []] = await NativePromise.all([this.delete(), this.upload()]);
+      const [filesToDelete = [], filesToUpload = []] = await Promise.all([this.delete(), this.upload()]);
       this.filesToSync.filesToDelete = filesToDelete
         .filter(file => file.fileToSync?.status === 'error')
         .map(file => file.fileToSync);
@@ -1067,13 +1099,14 @@ export default class FileComponent extends Field {
         .map(file => file.fileInfo);
       this.dataValue.push(...data);
       this.triggerChange();
-      return NativePromise.resolve();
+      return Promise.resolve();
     }
     catch (err) {
-      return NativePromise.reject();
+      return Promise.reject();
     }
     finally {
       this.isSyncing = false;
+      this.fileDropHidden = false;
       this.abortUploads = [];
       this.redraw();
     }
@@ -1115,22 +1148,20 @@ export default class FileComponent extends Field {
     }
   }
 
-  beforeSubmit() {
-    return new NativePromise(async(resolve, reject) => {
-      try {
-        if (!this.autoSync) {
-          return resolve();
-        }
+  async beforeSubmit() {
+    try {
+      if (!this.autoSync) {
+        return Promise.resolve();
+      }
 
-        await this.syncFiles();
-        this.shouldSyncFiles
-          ? reject('Synchronization is failed')
-          : resolve();
-      }
-      catch (error) {
-        reject(error.message);
-      }
-    });
+      await this.syncFiles();
+      return this.shouldSyncFiles
+        ? Promise.reject('Synchronization is failed')
+        : Promise.resolve();
+    }
+    catch (error) {
+      return Promise.reject(error.message);
+    }
   }
 
   destroy(all) {
