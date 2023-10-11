@@ -142,7 +142,7 @@ export class Formio {
     }
 
     // eslint-disable-next-line max-statements
-    static async init(element, builder = false) {
+    static async init(element, options = {}, builder = false) {
         Formio.cdn = new CDN(Formio.config.cdn);
         Formio.config.libs = Formio.config.libs || {
             uswds: {
@@ -160,10 +160,19 @@ export class Formio {
         const id = Formio.config.id || `formio-${Math.random().toString(36).substring(7)}`;
 
         // Create a new wrapper and add the element inside of a new wrapper.
-        const wrapper = Formio.createElement('div', {
+        let wrapper = Formio.createElement('div', {
             'id': `"${id}-wrapper"`
         });
         element.parentNode.insertBefore(wrapper, element);
+
+        // If we include the libraries, then we will attempt to run this in shadow dom.
+        if (Formio.config.includeLibs && (typeof wrapper.attachShadow === 'function') && !Formio.config.premium) {
+            wrapper = wrapper.attachShadow({
+                mode: 'open'
+            });
+            options.shadowRoot = wrapper;
+        }
+
         element.parentNode.removeChild(element);
         wrapper.appendChild(element);
 
@@ -246,7 +255,7 @@ export class Formio {
     }
 
     static async createForm(element, form, options) {
-        const wrapper = await Formio.init(element);
+        const wrapper = await Formio.init(element, options);
         return Formio.FormioClass.createForm(element, form, {
             ...options,
             ...{ noLoader: true }
@@ -278,7 +287,7 @@ export class Formio {
     }
 
     static async builder(element, form, options) {
-        const wrapper = await Formio.init(element, true);
+        const wrapper = await Formio.init(element, options, true);
         return Formio.FormioClass.builder(element, form, options).then((instance) => {
             Formio.debug('Builder created', instance);
             Formio.debug('Removing loader');

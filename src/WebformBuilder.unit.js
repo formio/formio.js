@@ -206,4 +206,66 @@ describe('WebformBuilder tests', function() {
       done();
     }).catch(done);
   });
+
+  it('Should keep min/max date validation settings with moment.js function', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm(columnsForm).then(() => {
+      const column1 = builder.webform.element.querySelector('[ref="columns-container"]');
+      Harness.buildComponent('day', column1);
+
+      setTimeout(() => {
+        const maxDateComp = builder.editForm.getComponent('maxDate');
+        maxDateComp.setValue('moment().add(10, \'days\')');
+
+        setTimeout(() => {
+          Harness.saveComponent();
+
+          setTimeout(() => {
+            const dayComp = builder.webform.getComponent(['day']);
+            assert.equal(dayComp.component.maxDate, 'moment().add(10, \'days\')');
+            done();
+          }, 200);
+        }, 200);
+      }, 150);
+    }).catch(done);
+  });
+
+  it('Should remove deleted components keys from default value', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('datagrid');
+
+      setTimeout(() => {
+        const dataGridDefaultValue = builder.editForm.getComponent('defaultValue');
+        dataGridDefaultValue.removeRow(0);
+
+        setTimeout(() => {
+          Harness.saveComponent();
+          setTimeout(() => {
+            const dataGridContainer = builder.webform.element.querySelector('[ref="dataGrid-container"]');
+            Harness.buildComponent('textfield', dataGridContainer);
+
+            setTimeout(() => {
+              Harness.saveComponent();
+
+              setTimeout(() => {
+                const textField = builder.webform.getComponent(['dataGrid', 'textField'])[0];
+                textField.refs.removeComponent.dispatchEvent( new MouseEvent('click', {
+                  view: window,
+                  bubbles: true,
+                  cancelable: true
+                }));
+
+                setTimeout(() => {
+                  const dataGrid = builder.webform.getComponent(['dataGrid']);
+                  assert.deepEqual(dataGrid.schema.defaultValue, [{}], 'Should remove TextField key');
+                  done();
+                }, 300);
+              });
+            }, 300);
+          }, 300);
+        }, 350);
+      }, 350);
+    }).catch(done);
+  });
 });

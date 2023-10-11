@@ -16,6 +16,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-4816: fixed email submission: data display issues
  - [Snyk] Upgrade core-js from 3.32.0 to 3.32.1
  - [Snyk] Upgrade vanilla-picker from 2.12.1 to 2.12.2
+ - Fixed issue where content component would not save in the form.
+ - FIO-7206: fixed an issue where removed components keys stay in the DataGrid defaultValue property
+ - FIO-7309: fixed an issue where min/maxDate settings for Day component are getting evaluated in Form Builder
+ - FIO-7207: changed tooltip and removed 'Hide label' option from the list of layout components
+ - FIO-7074: fixed an issue where setting submission on wizard does not update data
+ - FIO-7082: Moved Wizard Breadcrumbs Type to form settings
+ - FIO-7224: Fixed issues with layout components when Condensed mode is enabled
+ - FIO-4833: Removes Hide Label setting from Well, Columns, Tabs and Table components since they do not render a label
+ - FIO-5910: allow manual input for w and W date formats
+ - FIO-6370: Fixes issues with PasswordStrength Addon settings
+ - FIO-7146: formiojs-circleci-to-ghactions
+ - FIO-6859: update-s3-to-accept-headers-from-signer-presign
    
 ## 5.0.0-rc.26
 ### Changed

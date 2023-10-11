@@ -417,7 +417,7 @@ export default class WebformBuilder extends Component {
       this.attachTooltip(component.refs.removeComponent, this.t('Remove'));
 
       component.addEventListener(component.refs.removeComponent, 'click', () =>
-        this.removeComponent(component.schema, parent, component.component));
+        this.removeComponent(component.schema, parent, component.component, component));
     }
 
     return element;
@@ -849,6 +849,10 @@ export default class WebformBuilder extends Component {
     }
 
     if (info) {
+      //if this is a custom component that was already assigned a key, don't stomp on it
+      if (!Components.components.hasOwnProperty(info.type) && info.key) {
+        return info;
+      }
       info.key = this.generateKey(info);
     }
 
@@ -1081,7 +1085,7 @@ export default class WebformBuilder extends Component {
     }
   }
 
-  removeComponent(component, parent, original) {
+  removeComponent(component, parent, original, componentInstance) {
     if (!parent) {
       return;
     }
@@ -1109,6 +1113,9 @@ export default class WebformBuilder extends Component {
       }
       else if (parent.formioComponent && parent.formioComponent.removeChildComponent) {
         parent.formioComponent.removeChildComponent(component);
+      }
+      if (component.input && componentInstance && componentInstance.parent) {
+        _.unset(componentInstance._data, componentInstance.key);
       }
       const rebuild = parent.formioComponent.rebuild() || Promise.resolve();
       rebuild.then(() => {
@@ -1451,7 +1458,11 @@ export default class WebformBuilder extends Component {
       {
         ..._.omit(this.options, ['hooks', 'builder', 'events', 'attachMode', 'skipInit']),
         language: this.options.language,
-        ...editFormOptions
+        ...editFormOptions,
+        evalContext: {
+          ...(editFormOptions?.evalContext || this.options?.evalContext || {}),
+          buildingForm: this.form,
+        },
       }
     );
 
@@ -1577,8 +1588,15 @@ export default class WebformBuilder extends Component {
           }
         }
 
+        // If the edit form has any nested form inside, we get a partial data (nested form's data) in the
+        // event.data property
+        let editFormData;
+        if (event.changed.instance && event.changed.instance.root && event.changed.instance.root.id !== this.editForm.id) {
+          editFormData = this.editForm.data;
+        }
+
         // Update the component.
-        this.updateComponent(event.data.componentJson || event.data, event.changed);
+        this.updateComponent(event.data.componentJson || editFormData || event.data, event.changed);
       }
     });
 

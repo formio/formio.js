@@ -161,7 +161,7 @@ describe('Wizard tests', () => {
                   }, 'Should contain correct submission data');
 
                   done();
-                }, 200);
+                }, 500);
               }, 200);
             }, 200);
           }, 200);
