@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6370: Fixes issues with PasswordStrength Addon settings
  - FIO-7146: formiojs-circleci-to-ghactions
  - FIO-6859: update-s3-to-accept-headers-from-signer-presign
+ - FIO 7239: support for AWS S3 Multipart Upload
    
 ## 5.0.0-rc.26
 ### Changed
