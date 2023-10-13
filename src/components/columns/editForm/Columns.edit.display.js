@@ -66,24 +66,6 @@ export default [
         key: 'width',
         defaultValue: 6,
         label: 'Width'
-      },
-      {
-        type: 'number',
-        key: 'offset',
-        defaultValue: 0,
-        label: 'Offset'
-      },
-      {
-        type: 'number',
-        key: 'push',
-        defaultValue: 0,
-        label: 'Push'
-      },
-      {
-        type: 'number',
-        key: 'pull',
-        defaultValue: 0,
-        label: 'Pull'
       }
     ]
   },
