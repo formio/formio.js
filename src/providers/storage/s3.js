@@ -1,5 +1,7 @@
 import NativePromise from 'native-promise-only';
+
 import XHR from './xhr';
+import { withRetries } from './util';
 function s3(formio) {
   return {
     async uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback, multipartOptions) {
@@ -79,33 +81,37 @@ function s3(formio) {
     },
     async completeMultipartUpload(serverResponse, parts, multipart) {
       const { changeMessage } = multipart;
+      const token = formio.getToken();
       changeMessage('Completing AWS S3 multipart upload...');
       const response = await fetch(`${formio.formUrl}/storage/s3/multipart/complete`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(token ? { 'x-jwt-token': token } : {}),
         },
         body: JSON.stringify({ parts, uploadId: serverResponse.uploadId, key: serverResponse.key })
       });
       const message = await response.text();
       if (!response.ok) {
-        throw new Error(message);
+        throw new Error(message || response.statusText);
       }
       // the AWS S3 SDK CompleteMultipartUpload command can return a HTTP 200 status header but still error;
       // we need to parse, and according to AWS, to retry
-      if (message.match(/Error/)) {
+      if (message?.match(/Error/)) {
           throw new Error(message);
       }
     },
     abortMultipartUpload(serverResponse) {
       const { uploadId, key } = serverResponse;
+      const token = formio.getToken();
       fetch(`${formio.formUrl}/storage/s3/multipart/abort`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(token ? { 'x-jwt-token': token } : {}),
         },
         body: JSON.stringify({ uploadId, key })
-      });
+      }).catch((err) => console.error('Error while aborting multipart upload:', err));
     },
     uploadParts(file, urls, headers, partSize, multipart, abortSignal) {
       const { changeMessage, progressCallback } = multipart;
@@ -135,14 +141,14 @@ function s3(formio) {
         });
         promises.push(promise);
       }
-      return Promise.all(promises);
+      return NativePromise.all(promises);
     },
     downloadFile(file) {
       if (file.acl !== 'public-read') {
         return formio.makeRequest('file', `${formio.formUrl}/storage/s3?bucket=${XHR.trim(file.bucket)}&key=${XHR.trim(file.key)}`, 'GET');
       }
       else {
-        return Promise.resolve(file);
+        return NativePromise.resolve(file);
       }
     }
   };
