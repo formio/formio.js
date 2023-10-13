@@ -4,6 +4,7 @@
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
 import NativePromise from 'native-promise-only';
 import fetchPonyfill from 'fetch-ponyfill';
+import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-patch-fetch';
 import EventEmitter from './EventEmitter';
 import cookies from 'browser-cookies';
 import Providers from './providers';
