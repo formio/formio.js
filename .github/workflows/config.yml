@@ -83,7 +83,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         uses: borales/actions-yarn@v4
         with:
-          cmd: install --frozen-lockfile
+          cmd: install
 
       - name: Lint
         uses: borales/actions-yarn@v4
