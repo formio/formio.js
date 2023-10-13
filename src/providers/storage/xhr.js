@@ -22,87 +22,89 @@ const XHR = {
   path(items) {
     return items.filter(item => !!item).map(XHR.trim).join('/');
   },
-  upload(formio, type, xhrCb, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback) {
-    return new NativePromise(((resolve, reject) => {
-      // Send the pre response to sign the upload.
-      const pre = new XMLHttpRequest();
-
-      // This only fires on a network error.
-      pre.onerror = (err) => {
-        err.networkError = true;
-        reject(err);
+  async upload(formio, type, xhrCallback, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback, multipartOptions) {
+    // make request to Form.io server
+    const token = formio.getToken();
+    let response;
+    try {
+      response = await fetch(`${formio.formUrl}/storage/${type}`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json; charset=UTF-8',
+          ...(token ? { 'x-jwt-token': token } : {}),
+        },
+        body: JSON.stringify({
+          name: XHR.path([dir, fileName]),
+          size: file.size,
+          type: file.type,
+          groupPermissions,
+          groupId,
+          multipart: multipartOptions
+        })
+      });
+    }
+    catch (err) {
+      // only throws on network errors
+      err.networkError = true;
+      throw err;
+    }
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message || 'Unable to sign file.');
+    }
+    const serverResponse = await response.json();
+    return await XHR.makeXhrRequest(formio, xhrCallback, serverResponse, progressCallback, abortCallback);
+  },
+  makeXhrRequest(formio, xhrCallback, serverResponse, progressCallback, abortCallback) {
+    return new Promise((resolve, reject) => {
+      // Send the file with data.
+      const xhr = new XMLHttpRequest();
+      xhr.openAndSetHeaders = (...params) => {
+        xhr.open(...params);
+        setXhrHeaders(formio, xhr);
       };
-
-      pre.onabort = reject;
-      pre.onload = () => {
-        if (pre.status >= 200 && pre.status < 300) {
-          const response = JSON.parse(pre.response);
-
-          // Send the file with data.
-          const xhr = new XMLHttpRequest();
-
-          if (typeof progressCallback === 'function') {
-            xhr.upload.onprogress = progressCallback;
-          }
-
-          if (typeof abortCallback === 'function') {
-            abortCallback(() => xhr.abort());
-          }
-
-          xhr.openAndSetHeaders = (...params) => {
-            xhr.open(...params);
-            setXhrHeaders(formio, xhr);
-          };
-
-          // Fire on network error.
-          xhr.onerror = (err) => {
-            err.networkError = true;
-            reject(err);
-          };
-
-          // Fire on network abort.
-          xhr.onabort = (err) => {
-            err.networkError = true;
-            reject(err);
-          };
-
-          // Fired when the response has made it back from the server.
-          xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              resolve(response);
-            }
-            else {
-              reject(xhr.response || 'Unable to upload file');
-            }
-          };
-
-          // Set the onabort error callback.
-          xhr.onabort = reject;
-
-          // Get the request and send it to the server.
-          xhr.send(xhrCb(xhr, response));
+      Promise.resolve(xhrCallback(xhr, serverResponse, abortCallback)).then((payload) => {
+        // if payload is nullish we can assume the provider took care of the entire upload process
+        if (!payload) {
+          return resolve(serverResponse);
         }
-        else {
-          reject(pre.response || 'Unable to sign file');
+        // Fire on network error.
+        xhr.onerror = (err) => {
+          err.networkError = true;
+          reject(err);
+        };
+
+        // Fire on network abort.
+        xhr.onabort = (err) => {
+          err.networkError = true;
+          reject(err);
+        };
+
+        // Set the onabort error callback.
+        xhr.onabort = reject;
+
+        if (typeof progressCallback === 'function') {
+          xhr.upload.onprogress = progressCallback;
         }
-      };
 
-      pre.open('POST', `${formio.formUrl}/storage/${type}`);
-      pre.setRequestHeader('Accept', 'application/json');
-      pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-      const token = formio.getToken();
-      if (token) {
-        pre.setRequestHeader('x-jwt-token', token);
-      }
+        if (typeof abortCallback === 'function') {
+          abortCallback(() => xhr.abort());
+        }
+        // Fired when the response has made it back from the server.
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(serverResponse);
+          }
+          else {
+            reject(xhr.response || 'Unable to upload file');
+          }
+        };
 
-      pre.send(JSON.stringify({
-        name: XHR.path([dir, fileName]),
-        size: file.size,
-        type: file.type,
-        groupPermissions,
-        groupId,
-      }));
-    }));
+        // Get the request and send it to the server.
+        xhr.send(payload);
+      }).catch(reject);
+    });
   }
 };
 
