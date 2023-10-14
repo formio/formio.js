@@ -2,6 +2,8 @@ import NativePromise from 'native-promise-only';
 
 import XHR from './xhr';
 import { withRetries } from './util';
+
+const AbortController = window.AbortController || require('abortcontroller-polyfill/dist/cjs-ponyfill');
 function s3(formio) {
   return {
     async uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback, multipartOptions) {
