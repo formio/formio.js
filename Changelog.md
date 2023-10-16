@@ -5,6 +5,131 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 5.0.0]
+
+### New Features
+
+#### New package name
+The first thing that you will notice with the 5.x renderer is the package name has changed from **formiojs** to **@formio/js**. This is to be more consistent with the naming conventions that we are starting to use with all of our externally facing libraries. This change is as follows:
+
+##### Before 5.x
+```
+npm install --save formiojs
+```
+
+##### After 5.x
+```
+npm install --save @formio/js
+```
+
+##### Before 5.x
+```js
+import { Formio } from 'formiojs';
+```
+
+##### After 5.x
+```js
+import { Formio } from '@formio/js';
+```
+
+All other libraries and modules within this package remain the same. The following still works as expected.
+
+```js
+// This still works as it did in < 5.x. The only thing that changes is @formio/js name.
+import { Formio, Components } from '@formio/js';
+```
+
+#### Bootstrap 5 Support
+The 5.x renderer now supports, and defaults to Bootstrap 5 for the base template. We have also moved the templates from the renderer to their own repository which can be found @ https://github.com/formio/bootstrap.  If you wish to use the 5.x renderer with Bootstrap 4, that is also supported but the following code will need to be included within your application.
+
+```js
+import { Formio } from '@formio/js';
+import bootstrap4 from '@formio/bootstrap/bootstrap4';
+Formio.use(bootstrap4);
+```
+
+This is a **Breaking Change** so please see the section below for more information about this change.
+
+#### New Validation Engine
+The 5.x renderer incorporates our new Core validation engine found @ https://github.com/formio/core/tree/master/src/process. This process can be briefly described within the pull request notes @ https://github.com/formio/formio.js/pull/5317. This will also improve our Iso-morphic behavior for our renderer validation and significantly improve memory and processor consumption for server-side form validations. This feature does have a **Breaking Change** which is described below.
+
+#### Improved render build sizes
+With the 5.x version of the renderer/builder, there has been much effort into reducing the size of the build for the renderer. While the full renderer is still "large" and over the 1mb goal, we still have been able to trim a lot of size from the renderer/builder as follows.
+
+    - formio.form.min.js ~ 1.2mb => ~30% size reduction
+    - formio.form.min.js ~ 1.4mb => ~30% size reduction
+    - formio.min.js (SDK) ~ 235k => ~50% size reduction
+
+#### New lazy-loading Embedding method. 
+One of the more exciting new additions to the 5.x renderer is the new lazy-loading process for adding the renderer to your application. There is a new file that is included with the 5.x renderer called "formio.embed.js". This file is tiny coming in at ~10kb.  What this file does, however, is make it so that you can bundle a lazy-loading renderer within your application without increasing the build sizes of your application.
+
+To use the new lazy-loading features, you will need to change your imports from the following to the new embed source as the following illustrates.
+
+##### Before 5.x
+```js
+import { Formio } from 'formiojs';
+```
+
+##### After 5.x using Embed code.
+```js
+import { Formio } from '@formio/js/embed';
+```
+
+Anywhere you use the Formio.createForm or the Formio.builder methods, this functionality will then add a simple "loader" where the form will render, while then loading the full code to perform the rendering. All of the code that you are used to still functions as you would expect. For example, the following code still works.
+
+```js
+import { Formio } from '@formio/js/embed';
+
+// Before, this would require a +1mb renderer to be bundled with your application to embed a form into a page. Now with the "embed" code, this will only incur a 10kb code penalty and show a loader symbol while the full renderer is lazy-loaded into the application. This improves usability so your application can quickly load and the form will show a loader while the user waits for the renderer to download and form to render.
+Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example').then(function(form) {
+  form.submission = {
+    data: {
+      firstName: 'Joe',
+      lastName: 'Smith'
+    }
+  };
+});
+```
+
+The following methods are able to be used within this embedded renderer.
+
+ - Formio.createForm
+ - Formio.builder
+ - Formio.use
+ - Formio.setBaseUrl
+ - Formio.setProjectUrl
+
+If you wish to have code that is executed after the library has been lazy loaded, you can use the following code.
+
+```js
+import { Formio as FormioEmbed } from '@formio/js/embed';
+
+FormioEmbed.formioReady.then(function(Formio) {
+  // This will be the TextField components.
+  console.log(Formio.Components.components.textfield);
+});
+```
+
+#### "childComponents" and improved performance with getComponent method.
+The 5.x renderer introduces a new "flat-map" of all component instances and their paths with the "childComponents" map. It can be used as follows.
+
+```js
+import { Formio } from '@formio/js';
+
+Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example').then(function(form) {
+  // Prints out all child components and their data paths.
+  console.log(form.childComponents);
+});
+```
+
+This map is also important to dramatically speed up the heavily used ```getComponent``` method.
+
+```js
+Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example').then(function(form) {
+  // Now returns the component from map lookup (quick search) vs O^n searching for the component.
+  const firstName = form.getComponent('firstName');
+});
+```
+
 ### Breaking Changes
  - Bootstrap 5 Default Template - With the 5.x version of the renderer, the default template is now **Bootstrap 5** and is found @ https://github.com/formio/bootstrap repo.
  - Bootstrap Icons - Now, instead of Font Awesome being the default icon set for our renderer, we are using Bootstrap Icons as the default icon set which is compatible with Bootstrap 5. Of course, you can always change out icon sets, but this is now the default.
@@ -14,26 +139,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
      the ```component.error.messages``` array, it will need to be changed as follows.
 
      **4.x Renderer**
-     ```
+     ```js
      const textField = form.getComponent('textField');
      console.log(textField.error.messages[0]);  // Legacy way of getting the text field error for the first error.
      ```
 
      **5.x Renderer**
-     ```
+     ```js
      const textField = form.getComponent('textField');
      console.log(textField.errors[0].message);  // 5.x way of getting the error message for the first error.
      ```
   - In the 5.x renderer, the errors array will always be populated if there are errors in the form. They may not be displayed depending on the "pristine" state of the rendered form, but the error is always populated if there are form errors.  This is different in 4.x where the error property would only contain and error if an error is VISIBLE on the form. This means that it is difficult to determine if a form has errors without executing the checkValidity() method with the dirty flag set to "true". You no longer need to do this in the 5.x renderer.
 
     **4.x Renderer**
-    ```
+    ```js
     const textField = form.getComponent('requiredField');
     console.log(textField.error);  // This would be null even if there was an error, but it was not visible.
     ```
 
     **5.x Renderer**
-    ```
+    ```js
     const textField = form.getComponent('requiredField');
     console.log(textField.errors);  // This will be populated with the errors of the textfield even if they are not displayed on the form.
     ```
@@ -41,21 +166,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - If you wish to show the "visibleErrors", then there is a new property on each component called "visibleComponents".
 
     **4.x Renderer**
-    ```
+    ```js
     const textField = form.getComponent('requiredField');
     console.log(textField.errors);
     ```
 
     **5.x Renderer**
-    ```
+    ```js
     const textField = form.getComponent('textField');
     console.log(textField.visibleErrors); // This is the equivalent of the 4.x renderer "errors" array.
     ```
 
   - With the 5.x renderer, all templates are now stored within a separate repo, and are included as a dependency for this renderer. 
-
-### New Features
-  - Bootstrap 5 Support
 
 ## 5.0.0-rc.27
 ### Fixed
