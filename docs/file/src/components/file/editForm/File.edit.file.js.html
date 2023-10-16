@@ -125,9 +125,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-googledrive">googledrive</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-indexeddb">indexeddb</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getFormioUploadAdapterPlugin">getFormioUploadAdapterPlugin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-withRetries">withRetries</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-setXhrHeaders">setXhrHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-XHR">XHR</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#templates">templates</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/templates/Templates.js~Templates.html">Templates</a></span></span></li>
@@ -210,6 +210,46 @@ export default [
         }));
       }
     }
+  },
+  {
+    type: &apos;checkbox&apos;,
+    input: true,
+    key: &apos;useMultipartUpload&apos;,
+    label: &apos;Use the S3 Multipart Upload API&apos;,
+    tooltip: &quot;The &lt;a href=&apos;https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html&apos;&gt;S3 Multipart Upload API&lt;/a&gt; is designed to improve the upload experience for larger objects (&gt; 5GB).&quot;,
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.storage&apos; }, &apos;s3&apos;] }
+    },
+  },
+  {
+    label: &apos;Multipart Upload&apos;,
+    tableView: false,
+    key: &apos;multipart&apos;,
+    type: &apos;container&apos;,
+    input: true,
+    components: [
+      {
+        label: &apos;Part Size (MB)&apos;,
+        applyMaskOn: &apos;change&apos;,
+        mask: false,
+        tableView: false,
+        delimiter: false,
+        requireDecimal: false,
+        inputFormat: &apos;plain&apos;,
+        truncateMultipleSpaces: false,
+        validate: {
+          min: 5,
+          max: 5000,
+        },
+        key: &apos;partSize&apos;,
+        type: &apos;number&apos;,
+        input: true,
+        defaultValue: 500,
+      },
+    ],
+    conditional: {
+      json: { &apos;===&apos;: [{ var: &apos;data.useMultipartUpload&apos; }, true] }
+    },
   },
   {
     type: &apos;textfield&apos;,

@@ -900,12 +900,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/providers/storage/s3.js~s3",
-    "function/index.html#static-function-s3",
-    "<span>s3</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/s3.js</span>",
-    "function"
-  ],
-  [
     "formiojs/src/utils/formutils.js~searchcomponents",
     "function/index.html#static-function-searchComponents",
     "<span>searchComponents</span> <span class=\"search-result-import-path\">formiojs/src/utils/formUtils.js</span>",
@@ -921,6 +915,12 @@ window.esdocSearchIndex = [
     "formiojs/src/providers/storage/url.js~url",
     "function/index.html#static-function-url",
     "<span>url</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/url.js</span>",
+    "function"
+  ],
+  [
+    "formiojs/src/providers/storage/util.js~withretries",
+    "function/index.html#static-function-withRetries",
+    "<span>withRetries</span> <span class=\"search-result-import-path\">formiojs/src/providers/storage/util.js</span>",
     "function"
   ],
   [
@@ -7698,9 +7698,9 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/providers/storage/s3.js",
-    "file/src/providers/storage/s3.js.html",
-    "src/providers/storage/s3.js",
+    "src/providers/storage/s3.unit.js",
+    "file/src/providers/storage/s3.unit.js.html",
+    "src/providers/storage/s3.unit.js",
     "file"
   ],
   [
@@ -7713,6 +7713,12 @@ window.esdocSearchIndex = [
     "src/providers/storage/url.js",
     "file/src/providers/storage/url.js.html",
     "src/providers/storage/url.js",
+    "file"
+  ],
+  [
+    "src/providers/storage/util.js",
+    "file/src/providers/storage/util.js.html",
+    "src/providers/storage/util.js",
     "file"
   ],
   [
