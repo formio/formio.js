@@ -3,7 +3,7 @@ import { conformToMask } from '@formio/vanilla-text-mask';
 import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import { processOne, processOneSync, validateProcess, validateProcessSync } from '@formio/core';
+import { processOne, processOneSync, validateProcess, validateProcessSync } from '@formio/core/process';
 
 import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';

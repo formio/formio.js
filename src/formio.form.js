@@ -19,6 +19,7 @@ Formio.loadModules = (path = `${Formio.getApiUrl()  }/externalModules.js`, name 
 };
 
 // This is needed to maintain correct imports using the "dist" file.
+Formio.isRenderer = true;
 Formio.Components = Components;
 Formio.Templates = Templates;
 Formio.Utils = Utils;

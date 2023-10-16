@@ -1,17 +1,52 @@
 import CDN from './CDN.js';
 export class Formio {
+    static FormioClass = null;
     static baseUrl;
     static projectUrl;
+    static pathType;
     static language;
     static config = {};
-    static cdn = null;
-    static proxy = true;
+    static cdn = new CDN();
+    static modules = [];
+    static icons = '';
+    static formioReady = new Promise((ready, reject) => {
+        Formio._formioReady = ready;
+        Formio._formioReadyReject = reject;
+    });
     static version = 'FORMIO_VERSION';
-    static async setBaseUrl(url) {
+    static setBaseUrl(url, norecurse) {
         Formio.baseUrl = url;
+        if (!norecurse && Formio.FormioClass) {
+            Formio.FormioClass.setBaseUrl(url);
+        }
     }
-    static async setProjectUrl(url) {
+
+    static setApiUrl(url, norecurse) {
+        Formio.baseUrl = url;
+        if (!norecurse && Formio.FormioClass) {
+            Formio.FormioClass.setApiUrl(url);
+        }
+    }
+
+    static setProjectUrl(url, norecurse) {
         Formio.projectUrl = url;
+        if (!norecurse && Formio.FormioClass) {
+            Formio.FormioClass.setProjectUrl(url);
+        }
+    }
+
+    static setAppUrl(url, norecurse) {
+        Formio.projectUrl = url;
+        if (!norecurse && Formio.FormioClass) {
+            Formio.FormioClass.setAppUrl(url);
+        }
+    }
+
+    static setPathType(type, norecurse) {
+        Formio.pathType = type;
+        if (!norecurse && Formio.FormioClass) {
+            Formio.FormioClass.setPathType(type);
+        }
     }
 
     static debug(...args) {
@@ -26,13 +61,22 @@ export class Formio {
         }
     }
 
-    static global(prop) {
+    static global(prop, flag = '') {
         const globalValue = window[prop];
-        if (globalValue && globalValue.proxy) {
+        if (flag && globalValue && !globalValue[flag]) {
             return null;
         }
         Formio.debug(`Getting global ${prop}`, globalValue);
         return globalValue;
+    }
+
+    static use(module) {
+        if (Formio.FormioClass && Formio.FormioClass.isRenderer) {
+            Formio.FormioClass.use(module);
+        }
+        else {
+            Formio.modules.push(module);
+        }
     }
 
     static createElement(type, attrs, children) {
@@ -46,14 +90,14 @@ export class Formio {
         return element;
     }
 
-    static async addScript(wrapper, src, name) {
+    static async addScript(wrapper, src, name, flag = '') {
         if (!src) {
             return Promise.resolve();
         }
         if (typeof src !== 'string' && src.length) {
             return Promise.all(src.map(ref => Formio.addScript(wrapper, ref)));
         }
-        if (name && Formio.global(name)) {
+        if (name && Formio.global(name, flag)) {
             Formio.debug(`${name} already loaded.`);
             return Promise.resolve(Formio.global(name));
         }
@@ -67,7 +111,7 @@ export class Formio {
         return new Promise((resolve) => {
             Formio.debug(`Waiting to load ${name}`);
             const wait = setInterval(() => {
-                if (Formio.global(name)) {
+                if (Formio.global(name, flag)) {
                     clearInterval(wait);
                     Formio.debug(`${name} loaded.`);
                     resolve(Formio.global(name));
@@ -143,7 +187,7 @@ export class Formio {
 
     // eslint-disable-next-line max-statements
     static async init(element, options = {}, builder = false) {
-        Formio.cdn = new CDN(Formio.config.cdn);
+        Formio.cdn = new CDN(Formio.config.cdn, Formio.config.cdnUrls || {});
         Formio.config.libs = Formio.config.libs || {
             uswds: {
                 fa: true,
@@ -199,11 +243,23 @@ export class Formio {
         Formio.FormioClass = await Formio.addScript(
             wrapper,
             Formio.formioScript(Formio.config.script || `${Formio.cdn.js}/${renderer}.js`, builder),
-            'Formio'
+            'Formio',
+            builder ? 'isBuilder' : 'isRenderer'
         );
-        Formio.FormioClass.setBaseUrl(Formio.baseUrl || Formio.config.base);
-        Formio.FormioClass.setProjectUrl(Formio.projectUrl || Formio.config.project);
+        Formio.FormioClass.setBaseUrl(options.baseUrl || Formio.baseUrl || Formio.config.base);
+        Formio.FormioClass.setProjectUrl(options.projectUrl || Formio.projectUrl || Formio.config.project);
         Formio.FormioClass.language = Formio.language;
+        Formio.modules.forEach((module) => {
+            Formio.FormioClass.use(module);
+        });
+
+        if (Formio.icons) {
+            Formio.FormioClass.icons = Formio.icons;
+        }
+
+        if (Formio.pathType) {
+            Formio.FormioClass.setPathType(Formio.pathType);
+        }
 
         // Add premium modules
         if (Formio.global('premium')) {
@@ -252,6 +308,7 @@ export class Formio {
             await Formio.config.before(Formio.FormioClass, element, Formio.config);
         }
         Formio.FormioClass.license = true;
+        Formio._formioReady(Formio.FormioClass);
         return wrapper;
     }
 

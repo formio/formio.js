@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { processSync } from '@formio/core';
+import { processSync } from '@formio/core/process';
 import { editgrid as templates } from '@formio/bootstrap/components';
 
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';

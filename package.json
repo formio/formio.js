@@ -3,28 +3,28 @@
   "version": "5.0.0-rc.28",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "lib/cjs/index.js",
-  "module": "lib/mjs/index.js",
   "exports": {
     ".": {
-      "import": "./lib/mjs/index.js",
+      "import": "./lib/cjs/index.js",
       "require": "./lib/cjs/index.js"
     },
     "./sdk": {
-      "import": "./lib/mjs/Formio.js",
+      "import": "./lib/cjs/Formio.js",
       "require": "./lib/cjs/Formio.js"
     },
     "./utils": {
-      "import": "./lib/mjs/utils/index.js",
+      "import": "./lib/cjs/utils/index.js",
       "require": "./lib/cjs/utils/index.js"
     },
     "./form": {
-      "import": "./lib/mjs/formio.form.js",
+      "import": "./lib/cjs/formio.form.js",
       "require": "./lib/cjs/formio.form.js"
     },
     "./embed": {
-      "import": "./lib/mjs/formio.embed.js",
-      "require": "./lib/cjs/formio.embed.js"
-    }
+      "import": "./lib/cjs/Embed.js",
+      "require": "./lib/cjs/Embed.js"
+    },
+    "./dist/*": "./dist/*"
   },
   "types": "index.d.ts",
   "files": [
@@ -80,7 +80,7 @@
   "dependencies": {
     "@formio/bootstrap": "^3.0.0-rc.13",
     "@formio/choices.js": "^10.2.0",
-    "@formio/core": "^1.3.0-rc.19",
+    "@formio/core": "^1.3.0-rc.21",
     "@formio/text-mask-addons": "^3.8.0-formio.2",
     "@formio/vanilla-text-mask": "^5.1.1-formio.1",
     "autocompleter": "^8.0.4",
