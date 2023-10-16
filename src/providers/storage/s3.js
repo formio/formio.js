@@ -1,5 +1,7 @@
 import XHR from './xhr';
 import { withRetries } from './util';
+
+const AbortController = window.AbortController || require('abortcontroller-polyfill/dist/cjs-ponyfill');
 function s3(formio) {
   return {
     async uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback, multipartOptions) {
@@ -80,10 +82,12 @@ function s3(formio) {
     async completeMultipartUpload(serverResponse, parts, multipart) {
       const { changeMessage } = multipart;
       changeMessage('Completing AWS S3 multipart upload...');
+      const token = formio.getToken();
       const response = await fetch(`${formio.formUrl}/storage/s3/multipart/complete`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(token ? { 'x-jwt-token': token } : {})
         },
         body: JSON.stringify({ parts, uploadId: serverResponse.uploadId, key: serverResponse.key })
       });
@@ -99,13 +103,15 @@ function s3(formio) {
     },
     abortMultipartUpload(serverResponse) {
       const { uploadId, key } = serverResponse;
+      const token = formio.getToken();
       fetch(`${formio.formUrl}/storage/s3/multipart/abort`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(token ? { 'x-jwt-token': token } : {})
         },
         body: JSON.stringify({ uploadId, key })
-      });
+      }).catch((err) => console.error('Error while aborting multipart upload:', err));
     },
     uploadParts(file, urls, headers, partSize, multipart, abortSignal) {
       const { changeMessage, progressCallback } = multipart;
