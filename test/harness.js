@@ -12,8 +12,9 @@ Components.setComponents(AllComponents);
 
 if (process) {
   // Do not handle unhandled rejections.
-  process.on('unhandledRejection', () => {
+  process.on('unhandledRejection', (err) => {
     console.warn('Unhandled rejection!');
+    console.warn(err);
   });
 }
 
