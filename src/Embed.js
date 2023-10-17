@@ -14,35 +14,35 @@ export class Formio {
         Formio._formioReadyReject = reject;
     });
     static version = 'FORMIO_VERSION';
-    static setBaseUrl(url, norecurse) {
+    static setBaseUrl(url, norecurse = false) {
         Formio.baseUrl = url;
         if (!norecurse && Formio.FormioClass) {
             Formio.FormioClass.setBaseUrl(url);
         }
     }
 
-    static setApiUrl(url, norecurse) {
+    static setApiUrl(url, norecurse = false) {
         Formio.baseUrl = url;
         if (!norecurse && Formio.FormioClass) {
             Formio.FormioClass.setApiUrl(url);
         }
     }
 
-    static setProjectUrl(url, norecurse) {
+    static setProjectUrl(url, norecurse = false) {
         Formio.projectUrl = url;
         if (!norecurse && Formio.FormioClass) {
             Formio.FormioClass.setProjectUrl(url);
         }
     }
 
-    static setAppUrl(url, norecurse) {
+    static setAppUrl(url, norecurse = false) {
         Formio.projectUrl = url;
         if (!norecurse && Formio.FormioClass) {
             Formio.FormioClass.setAppUrl(url);
         }
     }
 
-    static setPathType(type, norecurse) {
+    static setPathType(type, norecurse = false) {
         Formio.pathType = type;
         if (!norecurse && Formio.FormioClass) {
             Formio.FormioClass.setPathType(type);
@@ -312,7 +312,7 @@ export class Formio {
         return wrapper;
     }
 
-    static async createForm(element, form, options) {
+    static async createForm(element, form, options = {}) {
         const wrapper = await Formio.init(element, options);
         return Formio.FormioClass.createForm(element, form, {
             ...options,
@@ -344,7 +344,7 @@ export class Formio {
         });
     }
 
-    static async builder(element, form, options) {
+    static async builder(element, form, options = {}) {
         const wrapper = await Formio.init(element, options, true);
         return Formio.FormioClass.builder(element, form, options).then((instance) => {
             Formio.debug('Builder created', instance);
