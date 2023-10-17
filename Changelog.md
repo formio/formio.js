@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.18.0-rc.5]
+## 4.18.0-rc.5
 ### Changed
 - FIO-7239: added support for AWS S3 multipart uploads
 - FIO-7074: setting submission on wizard does not update data
