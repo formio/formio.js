@@ -896,29 +896,26 @@ export default class Wizard extends Webform {
   }
 
   setValue(submission, flags = {}, ignoreEstablishment) {
-    const changed = this.getPages({ all: true }).reduce((changed, page) => {
-      return this.setNestedValue(page, submission.data, flags, changed) || changed;
-    }, false);
-
-    if (!flags.sanitize ||
+    this._submission = submission;
+    if (
+      (flags && flags.fromSubmission && (this.options.readOnly || this.editMode) && !this.isHtmlRenderMode()) ||
       (flags && flags.fromSubmission && (this.prefixComps.length || this.suffixComps.length) && submission._id) ||
       (this.options.server && (this.prefixComps.length || this.suffixComps.length))
     ) {
-      this.mergeData(this.data, submission.data);
+      this._data = submission.data;
     }
-
-    if (changed) {
-      this.pageFieldLogic(this.page);
-    }
-
-    this.setEditMode(submission);
-
-    submission.data = this.data;
-    this._submission = submission;
 
     if (!ignoreEstablishment) {
       this.establishPages(submission.data);
     }
+    const changed = this.getPages({ all: true }).reduce((changed, page) => {
+      return this.setNestedValue(page, submission.data, flags, changed) || changed;
+    }, false);
+
+    if (changed) {
+      this.pageFieldLogic(this.page);
+    }
+    this.setEditMode(submission);
 
     return changed;
   }
