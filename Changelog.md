@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.18.0-rc.6
+### Changed
+ - Revert "Fio 7074 setting submission on wizard does not update data"
+
 ## 4.18.0-rc.5
 ### Changed
 - FIO-7239: added support for AWS S3 multipart uploads
