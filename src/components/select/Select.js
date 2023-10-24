@@ -1716,7 +1716,6 @@ export default class SelectComponent extends ListComponent {
   }
 
   detach() {
-    super.detach();
     this.off('blur');
     if (this.choices) {
       if (this.choices.containerOuter?.element?.parentNode) {
@@ -1724,6 +1723,7 @@ export default class SelectComponent extends ListComponent {
       }
       this.choices = null;
     }
+    super.detach();
   }
 
   focus() {
