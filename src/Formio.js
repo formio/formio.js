@@ -6,7 +6,7 @@ Formio.Providers = Providers;
 Formio.version = 'FORMIO_VERSION';
 
 const isNil = (val) => val === null || val === undefined;
-Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback, abortCallback) {
+Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback, abortCallback, multipartOptions) {
   const requestArgs = {
     provider: storage,
     method: 'upload',
@@ -26,7 +26,7 @@ Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCal
               if (uploadStartCallback) {
                 uploadStartCallback();
               }
-              return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback);
+              return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback, multipartOptions);
             }
             else {
               throw ('Storage provider not found');
