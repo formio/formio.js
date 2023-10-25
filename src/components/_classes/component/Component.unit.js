@@ -364,7 +364,6 @@ describe('Component', () => {
 
     form.setForm(comp5).then(() => {
       setTimeout(() => {
-        console.log(form.components[0].element);
         assert.equal(window._ee, undefined, 'Should not execute code inside Tooltips/Description');
         done();
       }, 200);
