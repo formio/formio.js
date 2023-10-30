@@ -29,7 +29,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7146: formiojs-circleci-to-ghactions
  - FIO-6859: update-s3-to-accept-headers-from-signer-presign
  - FIO 7239: support for AWS S3 Multipart Upload
- - FIO-7239: add polyfill and include token in abort and complete requests for multipart upload
+ - FIO-7239: add polyfill and include token in abort and complete requests for multipart upload2
+ - FIO-7429: removed columns component settings(pull, offset, push)
    
 ## 5.0.0-rc.26
 ### Changed
