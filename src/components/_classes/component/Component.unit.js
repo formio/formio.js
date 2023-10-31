@@ -9,6 +9,7 @@ import { comp1 } from './fixtures';
 import _merge from 'lodash/merge';
 import comp3 from './fixtures/comp3';
 import comp4 from './fixtures/comp4';
+import comp5 from './fixtures/comp5';
 
 describe('Component', () => {
   it('Should create a Component', (done) => {
@@ -355,5 +356,18 @@ describe('Component', () => {
       }, done)
       .catch(done);
     });
+  });
+
+  it('Should not execute code inside Tooltips/Description', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(comp5).then(() => {
+      setTimeout(() => {
+        assert.equal(window._ee, undefined, 'Should not execute code inside Tooltips/Description');
+        done();
+      }, 200);
+    })
+      .catch(done);
   });
 });
