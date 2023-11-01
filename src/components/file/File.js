@@ -1012,6 +1012,24 @@ export default class FileComponent extends Field {
     }
   }
 
+  getMultipartOptions(fileToSync) {
+    let count = 0;
+    return this.component.useMultipartUpload && this.component.multipart ? {
+      ...this.component.multipart,
+      progressCallback: (total) => {
+        count++;
+        fileToSync.status = 'progress';
+        fileToSync.progress = parseInt(100 * count / total);
+        delete fileToSync.message;
+        this.redraw();
+      },
+      changeMessage: (message) => {
+        fileToSync.message = message;
+        this.redraw();
+      },
+    } : false;
+  }
+
   async uploadFile(fileToSync) {
     return await this.fileService.uploadFile(
       fileToSync.storage,
@@ -1031,6 +1049,7 @@ export default class FileComponent extends Field {
         id: fileToSync.id,
         abort,
       }),
+      this.getMultipartOptions(fileToSync),
     );
   }
 
