@@ -3287,8 +3287,6 @@ export default class Component extends Element {
 
   shouldSkipValidation(data, dirty, row) {
     const rules = [
-      // Do not check custom validation for empty data if it is not required
-      () => this.component.validate.custom && !this.dataValue && !this.component.validate.required,
       // Force valid if component is read-only
       () => this.options.readOnly,
       // Do not check validations if component is not an input component.
