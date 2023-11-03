@@ -203,6 +203,9 @@ export default class DateTimeComponent extends Input {
     format += format.match(/z$/) ? '' : ' z';
     const timezone = this.timezone;
     if (value && !this.attached && timezone) {
+      if (Array.isArray(value) && this.component.multiple) {
+        return value.map((item) => _.trim(FormioUtils.momentDate(item, format, timezone).format(format))).join(', ');
+      }
       return _.trim(FormioUtils.momentDate(value, format, timezone).format(format));
     }
     return (value ? _.trim(moment(value).format(format)) : value) || '';
