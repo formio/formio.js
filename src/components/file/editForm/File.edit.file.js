@@ -22,6 +22,46 @@ export default [
     }
   },
   {
+    type: 'checkbox',
+    input: true,
+    key: 'useMultipartUpload',
+    label: 'Use the S3 Multipart Upload API',
+    tooltip: "The <a href='https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html'>S3 Multipart Upload API</a> is designed to improve the upload experience for larger objects (> 5GB).",
+    conditional: {
+      json: { '===': [{ var: 'data.storage' }, 's3'] }
+    },
+  },
+  {
+    label: 'Multipart Upload',
+    tableView: false,
+    key: 'multipart',
+    type: 'container',
+    input: true,
+    components: [
+      {
+        label: 'Part Size (MB)',
+        applyMaskOn: 'change',
+        mask: false,
+        tableView: false,
+        delimiter: false,
+        requireDecimal: false,
+        inputFormat: 'plain',
+        truncateMultipleSpaces: false,
+        validate: {
+          min: 5,
+          max: 5000,
+        },
+        key: 'partSize',
+        type: 'number',
+        input: true,
+        defaultValue: 500,
+      },
+    ],
+    conditional: {
+      json: { '===': [{ var: 'data.useMultipartUpload' }, true] }
+    },
+  },
+  {
     type: 'textfield',
     input: true,
     key: 'url',

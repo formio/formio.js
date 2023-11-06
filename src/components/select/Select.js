@@ -941,7 +941,11 @@ export default class SelectComponent extends ListComponent {
       }
 
       this.focusableElement = input;
-      this.addEventListener(input, 'focus', () => this.update());
+
+      if (this.component.dataSrc === 'custom') {
+        this.addEventListener(input, 'focus', () => this.updateCustomItems());
+      }
+
       this.addEventListener(input, 'keydown', (event) => {
         const { key } = event;
 
