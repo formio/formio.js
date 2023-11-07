@@ -2568,6 +2568,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/_classes/component/fixtures/comp5.js",
+    "file/src/components/_classes/component/fixtures/comp5.js.html",
+    "src/components/_classes/component/fixtures/comp5.js",
+    "file"
+  ],
+  [
     "src/components/_classes/component/fixtures/index.js",
     "file/src/components/_classes/component/fixtures/index.js.html",
     "src/components/_classes/component/fixtures/index.js",

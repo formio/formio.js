@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.17.4-rc.1
+### Changed
+ - FIO-7429: Remove columns component settings(pull, offset, push)
+ - FIO-7304: Fixed issue when Select with logic was causing unexpected ta…
+ - FIO-7530: added ability to pass onSetItems component setting as a string (needed for builder mode)
+ - FIO-7528: Revert FIO-4405: fixed an issue where walidation error displays with empty value even if it is not required (#4746)
+ - FIO-7466: fix tooltips
+
 ## 4.17.3
 ### Changed
  - Official Release
