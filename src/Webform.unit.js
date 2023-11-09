@@ -2645,6 +2645,38 @@ describe('Webform tests', function() {
         }, 300);
       }).catch((err) => done(err));
     });
+
+    it('Should show the field on select boxes value', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+
+      form.setForm(formsWithNewSimpleConditions.form6).then(() => {
+        const conditionalComponent = form.getComponent('textField');
+        const selectBoxes = form.getComponent('selectBoxes');
+        assert.equal(conditionalComponent.visible, false, '(1) Component should be conditionally hidden');
+
+        const selectBoxesValue = {
+          '111': true,
+          '222': false
+        };
+        selectBoxes.setValue(selectBoxesValue);
+
+        setTimeout(() => {
+          assert.deepEqual(selectBoxes.dataValue, selectBoxesValue, '(2) SelectBoxes value should be set');
+          assert.equal(conditionalComponent.visible, true, '(3) Component should be conditionally visible');
+
+          selectBoxes.setValue({
+            '111': false,
+            '222': false
+          });
+
+          setTimeout(() => {
+            assert.equal(conditionalComponent.visible, false, '(4) Component should be conditionally hidden');
+            done();
+          }, 300);
+        }, 300);
+      }).catch((err) => done(err));
+    });
   });
 
   describe('Calculate Value with allowed manual override', () => {

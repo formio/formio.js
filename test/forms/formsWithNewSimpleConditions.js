@@ -4,14 +4,16 @@ const form1 = {
   path: 'testnewsimpleconditionals',
   type: 'form',
   display: 'form',
-  components: [{
+  components: [
+    {
       label: 'Conditional Field',
       tableView: true,
       key: 'conditionalField',
       conditional: {
         show: true,
         conjunction: 'all',
-        conditions: [{
+        conditions: [
+          {
             component: 'number',
             operator: 'lessThan',
             value: 100,
@@ -54,7 +56,8 @@ const form1 = {
       optionsLabelPosition: 'right',
       inline: false,
       tableView: false,
-      values: [{
+      values: [
+        {
           label: 'one',
           value: 'one',
           shortcut: '',
@@ -94,14 +97,16 @@ const form2 = {
   path: 'testconditions',
   type: 'form',
   display: 'form',
-  components: [{
+  components: [
+    {
       label: 'Text Field CONDITIONAL',
       tableView: true,
       key: 'conditionalField',
       conditional: {
         show: true,
         conjunction: 'all',
-        conditions: [{
+        conditions: [
+          {
             component: 'email',
             operator: 'endsWith',
             value: '@form.io',
@@ -204,7 +209,8 @@ const form2 = {
     {
       label: 'Survey',
       tableView: false,
-      questions: [{
+      questions: [
+        {
           label: 'q1',
           value: 'q1',
           tooltip: '',
@@ -215,7 +221,8 @@ const form2 = {
           tooltip: '',
         },
       ],
-      values: [{
+      values: [
+        {
           label: 'true',
           value: 'true',
           tooltip: '',
@@ -254,7 +261,8 @@ const form2 = {
       label: 'Select Boxes',
       optionsLabelPosition: 'right',
       tableView: false,
-      values: [{
+      values: [
+        {
           label: 'one',
           value: 'one',
           shortcut: '',
@@ -290,7 +298,8 @@ const form2 = {
       optionsLabelPosition: 'right',
       inline: false,
       tableView: false,
-      values: [{
+      values: [
+        {
           label: 'one',
           value: 'one',
           shortcut: '',
@@ -322,7 +331,8 @@ const form2 = {
       widget: 'choicesjs',
       tableView: true,
       data: {
-        values: [{
+        values: [
+          {
             label: 'one',
             value: 'one',
           },
@@ -346,7 +356,8 @@ const form2 = {
       tableView: true,
       dataSrc: 'custom',
       data: {
-        custom: "values = [ {label: 'one', value: 1}, {label: 'two', value: 2}, {label: 'three', value: 3}]",
+        custom:
+          "values = [ {label: 'one', value: 1}, {label: 'two', value: 2}, {label: 'three', value: 3}]",
       },
       dataType: 'boolean',
       valueProperty: 'value',
@@ -375,7 +386,8 @@ const form3 = {
   path: 'simpleconditionallogic',
   type: 'form',
   display: 'form',
-  components: [{
+  components: [
+    {
       label: 'Number',
       mask: false,
       tableView: false,
@@ -392,7 +404,8 @@ const form3 = {
       optionsLabelPosition: 'right',
       inline: false,
       tableView: false,
-      values: [{
+      values: [
+        {
           label: 'one',
           value: 'one',
           shortcut: '',
@@ -416,32 +429,37 @@ const form3 = {
       label: 'Field With Logic',
       tableView: true,
       key: 'fieldWithLogic',
-      logic: [{
-        name: 'test logic',
-        trigger: {
-          type: 'simple',
-          simple: {
-            show: true,
-            conjunction: 'all',
-            conditions: [{
-                component: 'number',
-                operator: 'isEqual',
-                value: 2,
-              },
-              {
-                component: 'radio',
-                operator: 'isEqual',
-                value: 'two',
-              },
-            ],
+      logic: [
+        {
+          name: 'test logic',
+          trigger: {
+            type: 'simple',
+            simple: {
+              show: true,
+              conjunction: 'all',
+              conditions: [
+                {
+                  component: 'number',
+                  operator: 'isEqual',
+                  value: 2,
+                },
+                {
+                  component: 'radio',
+                  operator: 'isEqual',
+                  value: 'two',
+                },
+              ],
+            },
           },
+          actions: [
+            {
+              name: 'test action',
+              type: 'value',
+              value: "value = 'logic works';",
+            },
+          ],
         },
-        actions: [{
-          name: 'test action',
-          type: 'value',
-          value: "value = 'logic works';",
-        },],
-      },],
+      ],
       type: 'textfield',
       input: true,
     },
@@ -465,7 +483,8 @@ const form4 = {
   path: 'simpleconditioninsidetherow',
   type: 'form',
   display: 'form',
-  components: [{
+  components: [
+    {
       label: 'Data Grid',
       reorder: false,
       addAnotherPosition: 'bottom',
@@ -477,7 +496,8 @@ const form4 = {
       key: 'dataGrid',
       type: 'datagrid',
       input: true,
-      components: [{
+      components: [
+        {
           label: 'Number',
           mask: false,
           tableView: false,
@@ -496,11 +516,13 @@ const form4 = {
           conditional: {
             show: true,
             conjunction: 'all',
-            conditions: [{
-              component: 'dataGrid.number',
-              operator: 'lessThanOrEqual',
-              value: 50,
-            }, ],
+            conditions: [
+              {
+                component: 'dataGrid.number',
+                operator: 'lessThanOrEqual',
+                value: 50,
+              },
+            ],
           },
           type: 'textfield',
           input: true,
@@ -527,14 +549,16 @@ const form5 = {
   path: 'testallconditionaloperators',
   type: 'form',
   display: 'form',
-  components: [{
+  components: [
+    {
       label: 'Text Field CONDITIONAL',
       tableView: true,
       key: 'conditionalField',
       conditional: {
         show: true,
         conjunction: 'all',
-        conditions: [{
+        conditions: [
+          {
             component: 'dateTime',
             operator: 'dateGreaterThan',
             value: '2021-09-16T12:00:00+03:00',
@@ -651,7 +675,7 @@ const form5 = {
         format: 'yyyy-MM-dd hh:mm a',
         hourIncrement: 1,
         minuteIncrement: 1,
-        'time_24hr': false,
+        time_24hr: false,
         minDate: null,
         disableWeekends: false,
         disableWeekdays: false,
@@ -704,7 +728,7 @@ const form5 = {
         format: 'yyyy-MM-dd hh:mm a',
         hourIncrement: 1,
         minuteIncrement: 1,
-        'time_24hr': false,
+        time_24hr: false,
         minDate: null,
         disableWeekends: false,
         disableWeekdays: false,
@@ -799,7 +823,8 @@ const form5 = {
       widget: 'choicesjs',
       tableView: true,
       data: {
-        values: [{
+        values: [
+          {
             label: 'one',
             value: 'one',
           },
@@ -818,7 +843,8 @@ const form5 = {
       optionsLabelPosition: 'right',
       inline: false,
       tableView: false,
-      values: [{
+      values: [
+        {
           label: 'one',
           value: 'one',
           shortcut: '',
@@ -857,7 +883,7 @@ const form5 = {
         format: 'yyyy-MM-dd hh:mm a',
         hourIncrement: 1,
         minuteIncrement: 1,
-        'time_24hr': false,
+        time_24hr: false,
         minDate: null,
         disableWeekends: false,
         disableWeekdays: false,
@@ -934,10 +960,73 @@ const form5 = {
   machineName: 'uubnbosxacwjzbk:testAllConditionalOperators',
 };
 
+const form6 = {
+  title: 'select boxes cond',
+  name: 'selectBoxesCond',
+  path: 'selectboxescond',
+  type: 'form',
+  display: 'form',
+  components: [
+    {
+      label: 'Text Field',
+      applyMaskOn: 'change',
+      hidden: true,
+      tableView: true,
+      key: 'textField',
+      conditional: {
+        show: true,
+        conjunction: 'all',
+        conditions: [
+          {
+            component: 'selectBoxes',
+            operator: 'isEqual',
+            value: '111',
+          },
+        ],
+      },
+      type: 'textfield',
+      input: true,
+    },
+    {
+      label: 'Select Boxes',
+      optionsLabelPosition: 'right',
+      tableView: false,
+      values: [
+        {
+          label: 'test 1',
+          value: '111',
+          shortcut: '',
+        },
+        {
+          label: 'test 2',
+          value: '222',
+          shortcut: '',
+        },
+      ],
+      key: 'selectBoxes',
+      type: 'selectboxes',
+      input: true,
+      inputType: 'checkbox',
+    },
+    {
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      disableOnInvalid: true,
+      input: true,
+      tableView: false,
+    },
+  ],
+  created: '2023-11-08T12:37:19.452Z',
+  modified: '2023-11-09T08:54:09.529Z',
+  machineName: 'cpxkpoxmfvhivle:selectBoxesCond',
+};
+
 export default {
   form1,
   form2,
   form3,
   form4,
   form5,
+  form6
 };
