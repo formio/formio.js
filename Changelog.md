@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED - 4.18.0-rc.7]
+## [Unreleased: 4.18.0-rc.7]
 ### Fixed
  -FIO-7304: Fixed issue when Select with logic was causing unexpected tab switches of the Tabs component
+ -FIO-7466: Fixed tooltips issue
 
 ## 4.18.0-rc.6
 ### Changed
