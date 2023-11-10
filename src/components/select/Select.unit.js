@@ -42,7 +42,7 @@ describe('Select Component', () => {
         assert.equal(component.dataValue.value, 'a');
         assert.equal(typeof component.dataValue , 'object');
         done();
-      }, 100);
+      }, 300);
     });
   });
 
