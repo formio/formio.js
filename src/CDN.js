@@ -11,6 +11,8 @@ class CDN {
       'js': '',
       'ace': '1.4.12',
       'bootstrap': '5.3.2',
+      'bootstrap4': '4.6.2',
+      'bootstrap5': '5.3.2',
       'bootstrap-icons': '1.11.1',
       'ckeditor': '19.0.0',
       'flatpickr': '4.6.8',

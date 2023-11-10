@@ -200,20 +200,54 @@ export class Formio {
         return script;
     }
 
+    static async addLibrary(wrapper, lib, name) {
+        if (!lib) {
+            return;
+        }
+        if (lib.dependencies) {
+            for (let i = 0; i < lib.dependencies.length; i++) {
+                await Formio.addLibrary(wrapper, Formio.cdn.libs[lib.dependencies[i]]);
+            }
+        }
+        if (lib.css) {
+            await Formio.addStyles(wrapper, lib.css);
+        }
+        if (lib.js) {
+            const module = await Formio.addScript(wrapper, lib.js, lib.use ? name : false);
+            if (lib.use) {
+                Formio.debug(`Using ${name}`);
+                const options = lib.options || {};
+                if (!options.license && Formio.license) {
+                    options.license = Formio.license;
+                }
+                Formio.use((typeof lib.use === 'function' ? lib.use(module) : module), options);
+            }
+        }
+    }
+
     // eslint-disable-next-line max-statements
     static async init(element, options = {}, builder = false) {
         Formio.cdn = new CDN(Formio.config.cdn, Formio.config.cdnUrls || {});
         Formio.config.libs = Formio.config.libs || {
             uswds: {
-                fa: true,
+                dependencies: ['fontawesome'],
                 js: `${Formio.cdn.uswds}/uswds.min.js`,
                 css: `${Formio.cdn.uswds}/uswds.min.css`,
+                use: true
             },
             fontawesome: {
                 css: `${Formio.cdn['font-awesome']}/css/font-awesome.min.css`
             },
+            bootstrap4: {
+                dependencies: ['fontawesome'],
+                css: `${Formio.cdn.bootstrap4}/css/bootstrap.min.css`
+            },
             bootstrap: {
+                dependencies: ['bootstrap-icons'],
                 css: `${Formio.cdn.bootstrap}/css/bootstrap.min.css`
+            },
+            'bootstrap-icons': {
+                css: `${Formio.cdn['bootstrap-icons']}/css/bootstrap-icons.css`
             }
         };
         const id = Formio.config.id || `formio-${Math.random().toString(36).substring(7)}`;
@@ -278,51 +312,23 @@ export class Formio {
             Formio.FormioClass.setPathType(Formio.pathType);
         }
 
-        if (Formio.config.template) {
-            if (Formio.config.includeLibs) {
-                await Formio.addStyles(wrapper, Formio.config.libs[Formio.config.template].css);
-                await Formio.addScript(wrapper, Formio.config.libs[Formio.config.template].js);
-                if (Formio.config.libs[Formio.config.template].fa) {
-                    await Formio.addStyles(wrapper, Formio.config.libs.fontawesome.css);
-                }
-            }
-
-            if (Formio.cdn[Formio.config.template]) {
-                const templateSrc = `${Formio.cdn[Formio.config.template]}/${Formio.config.template}.min`;
-                await Formio.addStyles(wrapper, `${templateSrc}.css`);
-                Formio.debug(`Using ${Formio.config.template}`);
-                Formio.FormioClass.use(await Formio.addScript(wrapper, `${templateSrc}.js`, Formio.config.template));
-            }
-        }
-        // Default bootstrap + fontawesome.
-        else if (Formio.config.includeLibs) {
-            await Formio.addStyles(wrapper, Formio.config.libs.fontawesome.css);
-            await Formio.addStyles(wrapper, Formio.config.libs.bootstrap.css);
+        // Add libraries if they wish to include the libs.
+        if (Formio.config.template && Formio.config.includeLibs) {
+            await Formio.addLibrary(wrapper, Formio.config.libs[Formio.config.template], Formio.config.template);
         }
 
-        // Allow dynamic adding of modules.
+        // Add the premium modules.
+        if (Formio.config.premium) {
+            Formio.config.modules.premium = Formio.config.premium;
+        }
+
+        // Allow adding dynamic modules.
         if (Formio.config.modules) {
             for (const name in Formio.config.modules) {
-                const moduleInfo = Formio.config.modules[name];
-                await Formio.addStyles(wrapper, moduleInfo.css);
-                const module = await Formio.addScript(wrapper, moduleInfo.js, name);
-                const options = moduleInfo.options || {};
-                if (!options.license && Formio.license) {
-                    options.license = Formio.license;
-                }
-                if (moduleInfo.use) {
-                    Formio.FormioClass.use(moduleInfo.use(module), options);
-                }
-                else {
-                    Formio.FormioClass.use(module, options);
-                }
+                const lib = Formio.config.modules[name];
+                lib.use = lib.use || true;
+                await Formio.addLibrary(wrapper, lib, name);
             }
-        }
-
-        if (Formio.config.premium) {
-            await Formio.addStyles(wrapper, Formio.config.premium.css);
-            Formio.debug('Using premium');
-            Formio.FormioClass.use(await Formio.addScript(wrapper, Formio.config.premium.js, 'premium'));
         }
 
         await Formio.addStyles(wrapper, Formio.formioScript(Formio.config.style || `${Formio.cdn.js}/${renderer}.css`, builder));
@@ -334,63 +340,51 @@ export class Formio {
         return wrapper;
     }
 
+    // Called after an instance has been created.
+    static async afterCreate(instance, wrapper, readyEvent) {
+        wrapper.removeChild(wrapper.querySelector('.formio-loader'));
+        Formio.FormioClass.events.emit(readyEvent, instance);
+        if (Formio.config.after) {
+            Formio.debug('Calling ready callback');
+            Formio.config.after(instance, Formio.config);
+        }
+        return instance;
+    }
+
+    // Create a new form.
     static async createForm(element, form, options = {}) {
         const wrapper = await Formio.init(element, options);
         return Formio.FormioClass.createForm(element, form, {
             ...options,
             ...{ noLoader: true }
         }).then((instance) => {
-            Formio.debug('Form created', instance);
-
-            // Remove the loader.
-            Formio.debug('Removing loader');
-            wrapper.removeChild(wrapper.querySelector('.formio-loader'));
-
             // Set the default submission data.
             if (Formio.config.submission) {
                 Formio.debug('Setting submission', Formio.config.submission);
                 instance.submission = Formio.config.submission;
             }
 
-            // Allow them to provide additional configs.
-            Formio.debug('Triggering embed event');
-            Formio.FormioClass.events.emit('formEmbedded', instance);
-
-            // Trigger the after handler.
-            if (Formio.config.after) {
-                Formio.debug('Calling ready callback');
-                Formio.config.after(instance, Formio.config);
-            }
-
+            // Call the after create method.
+            Formio.afterCreate(instance, wrapper, 'formEmbedded');
             return instance;
         });
     }
 
+    // Create a form builder.
     static async builder(element, form, options = {}) {
         const wrapper = await Formio.init(element, options, true);
         return Formio.FormioClass.builder(element, form, options).then((instance) => {
-            Formio.debug('Builder created', instance);
-            Formio.debug('Removing loader');
-            wrapper.removeChild(wrapper.querySelector('.formio-loader'));
-            Formio.debug('Triggering embed event');
-            Formio.FormioClass.events.emit('builderEmbedded', instance);
-            if (Formio.config.after) {
-                Formio.debug('Calling ready callback');
-                Formio.config.after(instance, Formio.config);
-            }
+            Formio.afterCreate(instance, wrapper, 'builderEmbedded');
             return instance;
         });
     }
 
+    // Create a report.
     static Report = {
         create: async(element, submission, options = {}) => {
             const wrapper = await Formio.init(element, options, true);
             return Formio.FormioClass.Report.create(element, submission, options).then((instance) => {
-                Formio.debug('Report created', instance);
-                Formio.debug('Removing loader');
-                wrapper.removeChild(wrapper.querySelector('.formio-loader'));
-                Formio.debug('Triggering embed event');
-                Formio.FormioClass.events.emit('reportEmbedded', instance);
+                Formio.afterCreate(instance, wrapper, 'reportEmbedded');
                 return instance;
             });
         }
