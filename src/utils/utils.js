@@ -1304,6 +1304,12 @@ export function sanitize(string, options) {
     ADD_ATTR: ['ref', 'target'],
     USE_PROFILES: { html: true }
   };
+  // Use profiles
+  if (options.sanitizeConfig && options.sanitizeConfig.useProfiles) {
+    Object.keys(options.sanitizeConfig.useProfiles).forEach(key => {
+      sanitizeOptions.USE_PROFILES[key] = options.sanitizeConfig.useProfiles[key];
+    });
+  }
   // Add attrs
   if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.addAttr) && options.sanitizeConfig.addAttr.length > 0) {
     options.sanitizeConfig.addAttr.forEach((attr) => {

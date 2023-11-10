@@ -206,8 +206,13 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO 7239: support for AWS S3 Multipart Upload
  - FIO-7239: add polyfill and include token in abort and complete requests for multipart upload2
  - FIO-7429: removed columns component settings(pull, offset, push)
- - FIO-7466: fixed an issue where code inside tolltips will be executed
+ - FIO-7466: Tooltips fix
  - FIO-7355: fixed issue with HTML5 select flickering on initial click
+ - FIO-7530: added ability to pass onSetItems component setting as a string (needed for builder mode)
+ - FIO-7528: Revert FIO-4405: fixed an issue where walidation error displays with empty value even if it is not required (#4746)
+
+### Changed
+ - Add capability for adding sanitize profiles through sanitizeConfig in options
    
 ## 5.0.0-rc.26
 ### Changed

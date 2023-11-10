@@ -3390,8 +3390,6 @@ export default class Component extends Element {
     const rules = [
       // Do not validate if the flags say not too.
       () => flags.noValidate,
-      // Do not check custom validation for empty data if it is not required
-      () => this.component.validate.custom && !this.dataValue && !this.component.validate.required,
       // Force valid if component is read-only
       () => this.options.readOnly,
       // Do not check validations if component is not an input component.
