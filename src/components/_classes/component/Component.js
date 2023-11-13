@@ -217,7 +217,12 @@ export default class Component extends Element {
     return {
       operators: ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'],
       valueComponent() {
-        return { type: 'textfield' };
+        return {
+          type: 'textfield',
+          widget: {
+            type: 'input'
+          }
+        };
       }
     };
   }
