@@ -1,5 +1,11 @@
 import EventEmitter from 'eventemitter3';
 import Plugins from './Plugins';
+
+export interface FormioLibrarySource {
+    type: string;
+    src: string;
+}
+
 /**
  * The Formio class options interface.
  */
@@ -160,6 +166,10 @@ export declare class Formio {
      * A direct interface to the Form.io fetch Headers polyfill.
      */
     static Headers: any;
+    /**
+     * The rules definitions.
+     */
+    static rulesEntities: any;
     /**
      * All of the auth tokens for this session.
      */
@@ -1173,7 +1183,7 @@ export declare class Formio {
      * @param {boolean} polling - Determines if polling should be used to determine if they library is ready to use. If set to false, then it will rely on a global callback called ${name}Callback where "name" is the first property passed to this method. When this is called, that will indicate when the library is ready. In most cases, you will want to pass true to this parameter to initiate a polling method to check for the library availability in the global context.
      * @return {Promise<object>} - A promise that will resolve when the plugin is ready to be used.
      */
-    static requireLibrary(name: string, property: string, src: string | Array<string>, polling?: boolean, onload?: (ready: Promise<any>) => void): any;
+    static requireLibrary(name: string, property: string, src: string | Array<string> | FormioLibrarySource | Array<FormioLibrarySource>, polling?: boolean, onload?: (ready: Promise<any>) => void): any;
     /**
      * Determines if a lazy loaded library is ready to be used.
      *
