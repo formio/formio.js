@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.17.4-rc.2
+### Changed
+ - FIO-7550: Fixing choices css issue
+ - FIO-7547: Container hidden with conditional logic still appears in submission #5401
+
 ## 4.17.4-rc.1
 ### Changed
  - FIO-7429: Remove columns component settings(pull, offset, push)
