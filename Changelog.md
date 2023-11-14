@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7355: fixed issue with HTML5 select flickering on initial click
  - FIO-7530: added ability to pass onSetItems component setting as a string (needed for builder mode)
  - FIO-7528: Revert FIO-4405: fixed an issue where walidation error displays with empty value even if it is not required (#4746)
+ - FIO-7547: Container hidden with conditional logic still appears in submission #5401
 
 ### Changed
  - Add capability for adding sanitize profiles through sanitizeConfig in options
