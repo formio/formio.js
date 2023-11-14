@@ -616,7 +616,7 @@ export default class NestedComponent extends Field {
   clearOnHide(show) {
     super.clearOnHide(show);
     if (this.component.clearOnHide) {
-      if (this.allowData && !this.hasValue()) {
+      if (this.allowData && !this.hasValue() && !(this.options.server && !this.visible)) {
         this.dataValue = this.defaultValue;
       }
       if (this.hasValue()) {
