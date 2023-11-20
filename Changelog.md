@@ -38,6 +38,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7547: Container hidden with conditional logic still appears in submission #5401
  - FIO-7550: Fixing choices css issue
  - FIO-7074/FIO-7379: Fixes some issues caused by Wizzard was not always setting _data to submission data
+ - FIO-7208: Moved Tree component to the contrib library
+ - FIO-7406 Fixed plain Textarea interpolating data in readonly mode [#5396](https://github.com/formio/formio.js/pull/5383)
+ - FIO-7112: fixed issues with calendar widget display for value components in new simple conditionals ui
 
 ### Changed
  - Add capability for adding sanitize profiles through sanitizeConfig in options
