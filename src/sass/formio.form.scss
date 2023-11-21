@@ -868,10 +868,6 @@ body.formio-dialog-open {
   overflow-wrap: break-word;
 }
 
-.tree-listgroup {
-  flex-direction: row;
-}
-
 .formio-component-submit button[disabled]+.has-error {
   display: block;
 }
@@ -1112,23 +1108,6 @@ body.formio-dialog-open {
 .formio-component.alert-danger .help-block,
 .formio-component.alert-warning .help-block {
   color: inherit;
-}
-
-.tree {
-  &__level {
-    &_even {
-      background-color: #f6f6f6;
-    }
-  }
-
-  &__node-content {
-    margin-bottom: 10px;
-    overflow-wrap: break-word;
-  }
-
-  &__node-children {
-    margin: 0;
-  }
 }
 
 .formio-select-autocomplete-input {

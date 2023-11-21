@@ -400,8 +400,10 @@ export default class SelectComponent extends ListComponent {
     }
 
     // Allow js processing (needed for form builder)
-    if (this.component.onSetItems && typeof this.component.onSetItems === 'function') {
-      const newItems = this.component.onSetItems(this, items);
+    if (this.component.onSetItems) {
+      const newItems = typeof this.component.onSetItems === 'function'
+        ? this.component.onSetItems(this, items)
+        : this.evaluate(this.component.onSetItems, { items: items }, 'items');
       if (newItems) {
         items = newItems;
       }
@@ -943,7 +945,11 @@ export default class SelectComponent extends ListComponent {
       }
 
       this.focusableElement = input;
-      this.addEventListener(input, 'focus', () => this.update());
+
+      if (this.component.dataSrc === 'custom') {
+        this.addEventListener(input, 'focus', () => this.updateCustomItems());
+      }
+
       this.addEventListener(input, 'keydown', (event) => {
         const { key } = event;
 
