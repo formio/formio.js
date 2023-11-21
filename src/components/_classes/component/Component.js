@@ -1224,12 +1224,12 @@ export default class Component extends Element {
                                 .replace(/(?:\r\n|\r|\n)/g, '<br />');
 
         this.tooltips[index] = tippy(tooltip, {
-          allowHTML: true,
+          allowHTML: false,
           trigger: 'mouseenter click focus',
           placement: 'right',
           zIndex: 10000,
           interactive: true,
-          content: this.t(this.sanitize(tooltipText), { _userInput: true }),
+          content: this.t(tooltipText, { _userInput: true }),
         });
       }
     });
