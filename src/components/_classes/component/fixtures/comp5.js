@@ -4,8 +4,8 @@ export default {
   components: [
     {
       label: 'Text Field',
-      description: "<img <img src='https://somesite' onerror='var _ee = 2' >",
-      tooltip: "<img src='https://somesite' onerror='var _ee = 1 >",
+      description: "<img src='https://somesite' onerror='var _ee = 2' >",
+      tooltip: "<img src='https://somesite' onerror='var _ee = 1' >",
       applyMaskOn: 'change',
       tableView: true,
       key: 'textField',
