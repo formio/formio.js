@@ -38,7 +38,7 @@ export default [
     key: 'columns',
     label: 'Column Properties',
     addAnother: 'Add Column',
-    tooltip: 'The width, offset, push, and pull settings for each column.',
+    tooltip: 'The size and width settings for each column. One row is equal to 12. (e.g., a row with two columns spanning the entire page should be 6 and 6)',
     reorder: true,
     components: [
       {
