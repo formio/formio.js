@@ -74,6 +74,11 @@ export default class NestedArrayComponent extends NestedDataComponent {
     return this.validateComponents([this.component], data, flags);
   }
 
+  checkRow(...args) {
+    console.log('Deprecation Warning: checkRow method has been replaced with processRow');
+    return this.processRow.call(this, ...args);
+  }
+
   processRow(method, data, opts, row, components, silentCheck) {
     if (opts?.isolateRow) {
       silentCheck = true;

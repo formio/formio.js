@@ -149,6 +149,12 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
      const textField = form.getComponent('textField');
      console.log(textField.errors[0].message);  // 5.x way of getting the error message for the first error.
      ```
+  - EditGrid **validateRows** method now returns an array of errors instead of a boolean "true" or "false". If you wish to do the same thing as before 5.x, then you can use the following code.
+
+    ```js
+    const isValid = form.getComponent('editgrid').validateRow().length === 0;
+    ```
+ 
   - In the 5.x renderer, the errors array will always be populated if there are errors in the form. They may not be displayed depending on the "pristine" state of the rendered form, but the error is always populated if there are form errors.  This is different in 4.x where the error property would only contain and error if an error is VISIBLE on the form. This means that it is difficult to determine if a form has errors without executing the checkValidity() method with the dirty flag set to "true". You no longer need to do this in the 5.x renderer.
 
     **4.x Renderer**

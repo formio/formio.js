@@ -288,7 +288,8 @@ export class Formio {
             }]
         }]));
 
-        const renderer = Formio.config.debug ? 'formio.form' : 'formio.form.min';
+        const formioSrc = Formio.config.full ? 'formio.full' : 'formio.form';
+        const renderer = Formio.config.debug ? formioSrc : `${formioSrc}.min`;
         Formio.FormioClass = await Formio.addScript(
             wrapper,
             Formio.formioScript(Formio.config.script || `${Formio.cdn.js}/${renderer}.js`, builder),
@@ -342,7 +343,10 @@ export class Formio {
 
     // Called after an instance has been created.
     static async afterCreate(instance, wrapper, readyEvent) {
-        wrapper.removeChild(wrapper.querySelector('.formio-loader'));
+        const loader = wrapper.querySelector('.formio-loader');
+        if (loader) {
+            wrapper.removeChild(loader);
+        }
         Formio.FormioClass.events.emit(readyEvent, instance);
         if (Formio.config.after) {
             Formio.debug('Calling ready callback');
@@ -353,6 +357,12 @@ export class Formio {
 
     // Create a new form.
     static async createForm(element, form, options = {}) {
+        if (Formio.FormioClass) {
+            return Formio.FormioClass.createForm(element, form, {
+                ...options,
+                ...{ noLoader: true }
+            });
+        }
         const wrapper = await Formio.init(element, options);
         return Formio.FormioClass.createForm(element, form, {
             ...options,
@@ -372,6 +382,9 @@ export class Formio {
 
     // Create a form builder.
     static async builder(element, form, options = {}) {
+        if (Formio.FormioClass?.builder) {
+            return Formio.FormioClass.builder(element, form, options);
+        }
         const wrapper = await Formio.init(element, options, true);
         return Formio.FormioClass.builder(element, form, options).then((instance) => {
             Formio.afterCreate(instance, wrapper, 'builderEmbedded');
@@ -382,6 +395,9 @@ export class Formio {
     // Create a report.
     static Report = {
         create: async(element, submission, options = {}) => {
+            if (Formio.FormioClass?.Report) {
+                return Formio.FormioClass.Report.create(element, submission, options);
+            }
             const wrapper = await Formio.init(element, options, true);
             return Formio.FormioClass.Report.create(element, submission, options).then((instance) => {
                 Formio.afterCreate(instance, wrapper, 'reportEmbedded');
@@ -407,6 +423,9 @@ export class Form {
     }
 
     init() {
+        if (this.instance && !this.instance.proxy) {
+            this.instance.destroy();
+        }
         this.element.innerHTML = '';
         this.ready = this.create().then((instance) => {
             this.instance = instance;
@@ -419,12 +438,23 @@ export class Form {
         return Formio.createForm(this.element, this.form, this.options);
     }
 
+    setForm(form) {
+        this.form = form;
+        if (this.instance) {
+            this.instance.setForm(form);
+        }
+    }
+
     setDisplay(display) {
         if (this.instance.proxy) {
             return this.ready;
         }
         this.form.display = display;
-        this.init();
+        this.instance.destroy();
+        this.ready = this.create().then((instance) => {
+            this.instance = instance;
+            this.setForm(this.form);
+        });
         return this.ready;
     }
 }

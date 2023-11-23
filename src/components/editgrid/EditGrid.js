@@ -9,8 +9,7 @@ import {
   fastCloneDeep,
   Evaluator,
   getArrayFromComponentPath,
-  eachComponent,
-  getComponentsSchema
+  eachComponent
 } from '../../utils/utils';
 
 const EditRowState = {

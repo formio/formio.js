@@ -2204,7 +2204,7 @@ export default class Component extends Element {
     if (this.options.onChange) {
       this.options.onChange(...args);
     }
-    else if (this.root) {
+    else if (this.root && this.root.triggerChange) {
       this.root.triggerChange(...args);
     }
   }
