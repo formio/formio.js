@@ -140,6 +140,8 @@ export default class SelectComponent extends ListComponent {
       this.itemsLoadedResolve = resolve;
     });
 
+    this.shouldPositionDropdown = this.hasDataGridAncestor();
+
     if (this.isHtmlRenderMode()) {
       this.activate();
     }
@@ -1002,6 +1004,12 @@ export default class SelectComponent extends ListComponent {
       }
     }
 
+    if (window && this.choices && this.shouldPositionDropdown) {
+      this.addEventListener(window.document, 'scroll', () => {
+        this.positionDropdown(true);
+      }, false, true);
+    }
+
     this.focusableElement.setAttribute('tabIndex', tabIndex);
 
     // If a search field is provided, then add an event listener to update items on search.
@@ -1034,7 +1042,12 @@ export default class SelectComponent extends ListComponent {
       const updateComponent = (evt) => {
         this.triggerUpdate(evt.detail.value);
       };
-      this.addEventListener(input, 'search', _.debounce(updateComponent, debounceTimeout));
+
+      this.addEventListener(input, 'search', _.debounce((e) => {
+        updateComponent(e);
+        this.positionDropdown();
+      },  debounceTimeout));
+
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
       this.addEventListener(input, 'hideDropdown', () => {
         if (this.choices && this.choices.input && this.choices.input.element) {
@@ -1045,7 +1058,16 @@ export default class SelectComponent extends ListComponent {
       });
     }
 
-    this.addEventListener(input, 'showDropdown', () => this.update());
+    this.addEventListener(input, 'showDropdown', () => {
+      this.update();
+      this.positionDropdown();
+    });
+
+    if (this.shouldPositionDropdown) {
+      this.addEventListener(input, 'highlightChoice', () => {
+        this.positionDropdown();
+      });
+    }
 
     if (this.choices && choicesOptions.placeholderValue && this.choices._isSelectOneElement) {
       this.addPlaceholderItem(choicesOptions.placeholderValue);
@@ -1089,6 +1111,53 @@ export default class SelectComponent extends ListComponent {
     this.disabled = this.shouldDisabled;
     this.triggerUpdate();
     return superAttach;
+  }
+
+  setDropdownPosition() {
+    const dropdown = this.choices?.dropdown?.element;
+    const container = this.choices?.containerOuter?.element;
+
+    if (!dropdown || !container) {
+      return;
+    }
+
+    const containerPosition = container.getBoundingClientRect();
+    const isFlipped = container.classList.contains('is-flipped');
+
+    _.assign(dropdown.style, {
+      top: `${isFlipped ? containerPosition.top - dropdown.offsetHeight : containerPosition.top + containerPosition.height}px`,
+      left: `${containerPosition.left}px`,
+      width: `${containerPosition.width}px`,
+      position: 'fixed',
+      bottom: 'unset',
+      right: 'unset',
+    });
+  }
+
+  hasDataGridAncestor(comp) {
+    comp = comp || this;
+
+    if (comp.inDataGrid || comp.type === 'datagrid') {
+      return true;
+    }
+    else if (comp.parent) {
+      return this.hasDataGridAncestor(comp.parent);
+    }
+    else {
+      return false;
+    }
+  }
+
+  positionDropdown(scroll) {
+    if (!this.shouldPositionDropdown || !this.choices || (!this.choices.dropdown?.isActive && scroll)) {
+      return;
+    }
+
+    this.setDropdownPosition();
+
+    this.itemsLoaded.then(() => {
+      this.setDropdownPosition();
+    });
   }
 
   get isLoadingAvailable() {
