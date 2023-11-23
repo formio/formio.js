@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7208: Moved Tree component to the contrib library
  - FIO-7406 Fixed plain Textarea interpolating data in readonly mode [#5396](https://github.com/formio/formio.js/pull/5383)
  - FIO-7112: fixed issues with calendar widget display for value components in new simple conditionals ui
+ - FIO-7184 Fixed showing incorrect value for DateTime and Time components with multiple value enabled inside of the DataTable
 
 ### Changed
  - Add capability for adding sanitize profiles through sanitizeConfig in options
