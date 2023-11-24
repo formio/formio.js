@@ -787,7 +787,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   showDialog(rowIndex) {
     const editRow = this.editRows[rowIndex];
-    if (_.isEqual(editRow.backup, editRow.data)) {
+    if (_.isNil(editRow.backup) || _.isEqual(editRow.backup, editRow.data)) {
       return Promise.resolve();
     }
 
