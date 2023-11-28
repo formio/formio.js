@@ -63,12 +63,12 @@ class CDN {
   }
 
   buildUrl(cdnUrl, lib, version) {
-    let url;
-    if (version === 'latest' || version === '') {
-      url = `${cdnUrl}/${lib}`;
+    let url = cdnUrl;
+    if (lib) {
+      url += `/${lib}`;
     }
-    else {
-      url = `${cdnUrl}/${lib}/${version}`;
+    if (version && version !== 'latest') {
+      url += `/${version}`;
     }
     return url;
   }
@@ -76,7 +76,13 @@ class CDN {
   updateUrls() {
     for (const lib in this.libs) {
       if (lib in this.overrides) {
-        this[lib] = this.buildUrl(this.overrides[lib], lib, this.libs[lib]);
+        if (typeof this.overrides[lib] === 'string') {
+          this[lib] = this.buildUrl(this.overrides[lib], lib, this.libs[lib]);
+        }
+        else {
+          const override = this.overrides[lib];
+          this[lib] = this.buildUrl(override.cdn, override.lib || '', override.version || '');
+        }
       }
       else {
         this[lib] = this.buildUrl(this.baseUrl, lib, this.libs[lib]);
