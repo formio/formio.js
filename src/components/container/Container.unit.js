@@ -6,7 +6,8 @@ import ContainerComponent from './Container';
 import {
   comp1,
   comp2,
-  comp3
+  comp3,
+  comp4,
 } from './fixtures';
 
 import { Formio } from '../../Formio';
@@ -74,6 +75,25 @@ describe('Container Component', () => {
           done();
         }).catch((err) => done(err));
       }).catch(done);
+    }).catch(done);
+  });
+
+  it('Should not set the default value when clearOnHide during the server-side validation', (done) => {
+    const form = _.cloneDeep(comp4);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form, { server: true, noDefaults: true }).then(form => {
+      form.setValue({ data: { checkbox: false } }, {
+        sanitize: true,
+      }, true);
+
+      form.checkConditions();
+      form.clearOnHide();
+
+      setTimeout(() => {
+        assert.deepEqual(form._data, { checkbox: false }, 'Should not add Container\'s key');
+        done();
+      }, 200);
     }).catch(done);
   });
 });

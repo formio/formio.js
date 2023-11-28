@@ -58,7 +58,11 @@ function googledrive(formio) {
       file.url =
         `${formio.formUrl}/storage/gdrive?fileId=${file.id}&fileName=${file.originalName}${token ? `&x-jwt-token=${token}` : ''}`;
       return Promise.resolve(file);
-    }
+    },
+    deleteFile: function deleteFile(fileInfo) {
+      var url = ''.concat(formio.formUrl, `/storage/gdrive?id=${fileInfo.id}&name=${fileInfo.originalName}`);
+      return formio.makeRequest('', url, 'delete');
+    },
   };
 }
 

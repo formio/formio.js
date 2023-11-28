@@ -891,7 +891,10 @@ export default class Webform extends NestedDataComponent {
 
     this.addComponents();
     this.on('submitButton', options => {
-      this.submit(false, options).catch(e => e !== false && e !== undefined && console.log(e));
+      this.submit(false, options).catch(e => {
+        options.instance.loading = false;
+        return e !== false && e !== undefined && console.log(e);
+      });
     }, true);
 
     this.on('checkValidity', (data) => this.validate(data, { dirty: true, process: 'change' }), true);

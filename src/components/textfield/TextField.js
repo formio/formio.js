@@ -44,6 +44,12 @@ export default class TextFieldComponent extends Input {
     return {
       ...super.conditionOperatorsSettings,
       operators: [...super.conditionOperatorsSettings.operators, 'includes', 'notIncludes', 'endsWith', 'startsWith'],
+      valueComponent(classComp) {
+        return {
+          ...classComp,
+          type: 'textfield',
+        };
+      }
     };
   }
 
