@@ -1,4 +1,4 @@
-import { ConditionalOptions, ValidateOptions } from '../Formio';
+import { ConditionalOptions, ValidateOptions } from '../formio';
 
 export interface ComponentSchema<T = any> {
   /**

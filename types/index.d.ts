@@ -2,7 +2,7 @@ export * from './components/components';
 export * from './components/schema';
 export * from './form';
 export * from './formbuilder';
-export * from './Formio';
+export * from './formio';
 export * from './templates';
 export * from './displays';
 export * from './widgets';

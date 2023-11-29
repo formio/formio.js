@@ -19,6 +19,7 @@ export interface FormioOptions {
      */
     project?: string;
     useSessionToken?: boolean;
+    formOnly?: boolean;
 }
 /**
  * The different path types for a project.

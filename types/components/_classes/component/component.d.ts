@@ -1,5 +1,5 @@
 import { Element } from '../../../element';
-import { ValidateOptions } from '../../../Formio';
+import { ValidateOptions } from '../../../formio';
 import { ComponentSchema, ElementInfo, ExtendedComponentSchema } from './../../schema.d';
 
 export class Component extends Element {

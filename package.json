@@ -1,6 +1,6 @@
 {
   "name": "@formio/js",
-  "version": "5.0.0-rc.35",
+  "version": "5.0.0-rc.36",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "lib/cjs/index.js",
   "exports": {
@@ -34,7 +34,10 @@
     "dist",
     "lib",
     "types",
-    "index.d.ts"
+    "index.d.ts",
+    "embed.d.ts",
+    "sdk.d.ts",
+    "utils.d.ts"
   ],
   "pre-commit": [
     "lint"
