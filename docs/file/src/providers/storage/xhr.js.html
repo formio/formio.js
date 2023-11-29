@@ -240,6 +240,12 @@ const XHR = {
       throw err;
     }
     if (!response.ok) {
+      if (response.status === 504) {
+        const error = new Error(&apos;Network request failed&apos;);
+        error.networkError = true;
+        throw error;
+      }
+
       const message = await response.text();
       throw new Error(message || &apos;Unable to sign file.&apos;);
     }
@@ -286,6 +292,11 @@ const XHR = {
         xhr.onload = () =&gt; {
           if (xhr.status &gt;= 200 &amp;&amp; xhr.status &lt; 300) {
             resolve(serverResponse);
+          }
+          else if (xhr.status === 504) {
+            const error = new Error(&apos;Network request failed&apos;);
+            error.networkError = true;
+            reject(error);
           }
           else {
             reject(xhr.response || &apos;Unable to upload file&apos;);
