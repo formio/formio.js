@@ -60,6 +60,10 @@ export default class ReCaptchaComponent extends Component {
     return;
   }
 
+  get skipInEmail() {
+    return true;
+  }
+
   verify(actionName) {
     const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');
     if (!siteKey) {
