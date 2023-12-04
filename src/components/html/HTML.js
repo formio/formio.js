@@ -26,6 +26,14 @@ export default class HTMLComponent extends Component {
     };
   }
 
+  constructor(...args) {
+    const alert =  window.alert;
+    window.alert = (msg) => {
+      return alert(msg);
+    };
+    super(...args);
+  }
+
   static savedValueTypes() {
     return [];
   }
@@ -45,13 +53,15 @@ export default class HTMLComponent extends Component {
     }
 
     const submission = _.get(this.root, 'submission', {});
-    const content = this.component.content ? this.interpolate(this.component.content, {
-      metadata: submission.metadata || {},
-      submission: submission,
-      data: this.rootValue,
-      row: this.data
+    const content = this.component.content ? this.interpolate(
+      this.sanitize(this.component.content, this.shouldSanitizeValue),
+      {
+        metadata: submission.metadata || {},
+        submission: submission,
+        data: this.rootValue,
+        row: this.data
     }) : '';
-    return this.sanitize(content, this.shouldSanitizeValue);
+    return content;
   }
 
   get singleTags() {
