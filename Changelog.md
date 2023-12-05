@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.18.0-rc.9
+### Changed
+ - FIO-7309: Fixed an issue where min/maxDate settings for Day component are getting evaluated in Form Builder
+ - FIO-7406 Fixed plain Textarea interpolating data in readonly mode
+ - FIO-7074/FIO-7379: Fixes some issues caused by Wizzard was not always…
+ - FIO-7481: handle 504 response from service worker in offline mode for file request
+
 ## 4.18.0-rc.8
 ### Changed
  - FIO-7550: Fixing choices css issue
