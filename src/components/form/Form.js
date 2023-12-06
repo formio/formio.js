@@ -690,7 +690,9 @@ export default class FormComponent extends Component {
       const formId = submission.form || this.formObj.form || this.component.form;
       const submissionUrl = `${this.subForm.formio.formsUrl}/${formId}/submission/${submission._id}`;
       this.subForm.setUrl(submissionUrl, this.options);
-      this.subForm.loadSubmission();
+      this.subForm.loadSubmission().catch((err) => {
+        console.error(`Unable to load subform submission ${submission._id}:`, err);
+      });
     }
     else {
       this.subForm.setValue(submission, flags);
