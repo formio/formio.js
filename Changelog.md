@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.18.0-rc.10]
+ - FIO-7588: fixed string value for Survey and Select 
+ 
 ## 4.18.0-rc.9
 ### Changed
  - FIO-7309: Fixed an issue where min/maxDate settings for Day component are getting evaluated in Form Builder
