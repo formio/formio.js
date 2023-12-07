@@ -3,7 +3,7 @@ import { GlobalFormio as Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Form from '../../Form';
 import NativePromise from 'native-promise-only';
-import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes, isSelectResourceWithObjectValue } from '../../utils/utils';
 
 let Choices;
 if (typeof window !== 'undefined') {
@@ -69,7 +69,21 @@ export default class SelectComponent extends ListComponent {
     return {
       ...super.conditionOperatorsSettings,
       valueComponent(classComp) {
-        return { ... classComp, type: 'select' };
+        const valueComp = { ... classComp, type: 'select' };
+
+        if (isSelectResourceWithObjectValue(classComp)) {
+          valueComp.reference = false;
+          valueComp.onSetItems = `
+            var templateKeys = utils.getItemTemplateKeys(component.template) || [];
+            items = _.map(items || [], i => {
+              var item = {};
+              _.each(templateKeys, k =>  _.set(item, k, _.get(i, k)));
+              return item;
+            })
+          `;
+        }
+
+        return valueComp;
       }
     };
   }

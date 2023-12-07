@@ -2,6 +2,7 @@ import Field from '../field/Field';
 import { GlobalFormio as Formio } from '../../../Formio';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
+import { getItemTemplateKeys } from '../../../utils/utils';
 
 export default class ListComponent extends Field {
   static schema(...extend) {
@@ -51,18 +52,10 @@ export default class ListComponent extends Field {
   }
 
   getTemplateKeys() {
-    this.templateKeys = [];
-    if (this.options.readOnly && this.component.template) {
-      const keys = this.component.template.match(/({{\s*(.*?)\s*}})/g);
-      if (keys) {
-        keys.forEach((key) => {
-          const propKey = key.match(/{{\s*item\.(.*?)\s*}}/);
-          if (propKey && propKey.length > 1) {
-            this.templateKeys.push(propKey[1]);
-          }
-        });
-      }
-    }
+    const template = this.component.template;
+    this.templateKeys = this.options.readOnly && template
+      ? getItemTemplateKeys(template)
+      : [];
   }
 
   get requestHeaders() {

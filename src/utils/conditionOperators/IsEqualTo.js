@@ -1,3 +1,4 @@
+import { getItemTemplateKeys, isSelectResourceWithObjectValue } from '../utils';
 import ConditionOperator from './ConditionOperator';
 import _ from 'lodash';
 
@@ -10,7 +11,7 @@ export default class IsEqualTo extends ConditionOperator {
         return 'Is Equal To';
     }
 
-    execute({ value, comparedValue }) {
+    execute({ value, comparedValue, instance, conditionComponentPath }) {
         if (value && comparedValue && typeof value !== typeof comparedValue && _.isString(comparedValue)) {
             try {
                 comparedValue = JSON.parse(comparedValue);
@@ -19,6 +20,27 @@ export default class IsEqualTo extends ConditionOperator {
             catch (e) {}
         }
 
+        if (instance && instance.root) {
+            const conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
+            if (
+                conditionTriggerComponent
+                && isSelectResourceWithObjectValue(conditionTriggerComponent.component)
+                && conditionTriggerComponent.component?.template
+            ) {
+                if (!value || !_.isPlainObject(value)) {
+                    return false;
+                }
+                const { template, valueProperty } = conditionTriggerComponent.component;
+
+                if (valueProperty === 'data') {
+                    value = { data: value };
+                    comparedValue = { data: comparedValue };
+                }
+
+                const templateKeys = getItemTemplateKeys(template) || [];
+                return _.every(templateKeys, k => _.isEqual(_.get(value, k), _.get(comparedValue, k)));
+            }
+        }
         //special check for select boxes
         if (_.isObject(value) && comparedValue && _.isString(comparedValue)) {
             return value[comparedValue];

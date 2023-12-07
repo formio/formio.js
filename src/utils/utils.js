@@ -1570,3 +1570,28 @@ export function getComponentSavedTypes(fullSchema) {
 
   return null;
 }
+
+export function getItemTemplateKeys(template) {
+  const templateKeys = [];
+  if (!template) {
+    return templateKeys;
+  }
+  const keys = template.match(/({{\s*(.*?)\s*}})/g);
+
+  if (keys) {
+    keys.forEach((key) => {
+      const propKey = key.match(/{{\s*item\.(.*?)\s*}}/);
+      if (propKey && propKey.length > 1) {
+        templateKeys.push(propKey[1]);
+      }
+    });
+  }
+
+  return templateKeys;
+}
+
+export function isSelectResourceWithObjectValue(comp = {}) {
+  const { reference, dataSrc, valueProperty } = comp;
+  return reference || (dataSrc === 'resource' && (!valueProperty || valueProperty === 'data'));
+}
+
