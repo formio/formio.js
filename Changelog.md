@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.18.0-rc.10]
+## 4.18.0-rc.10
  - FIO-7588: fixed string value for Survey and Select 
  
 ## 4.18.0-rc.9
