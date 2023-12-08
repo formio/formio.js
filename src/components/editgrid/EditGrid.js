@@ -709,6 +709,10 @@ export default class EditGridComponent extends NestedArrayComponent {
     const rowIndex = this.editRows.length;
     const editRow = this.createRow(dataObj, rowIndex);
 
+    if (editRow.state === EditRowState.New) {
+      this.emptyRow = fastCloneDeep(editRow.data);
+    }
+
     if (this.inlineEditMode) {
       this.triggerChange();
     }
@@ -787,7 +791,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   showDialog(rowIndex) {
     const editRow = this.editRows[rowIndex];
-    if (_.isEqual(editRow.backup, editRow.data)) {
+    if (editRow.state === EditRowState.New ? _.isEqual(this.emptyRow, editRow.data) : _.isEqual(editRow.backup, editRow.data)) {
       return Promise.resolve();
     }
 
