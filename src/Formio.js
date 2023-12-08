@@ -114,4 +114,7 @@ FormioCore.Form = FormioEmbed.Form;
 FormioCore.FormBuilder = FormioEmbed.FormBuilder;
 FormioCore.use = FormioEmbed.use;
 FormioCore.createForm = FormioEmbed.createForm;
+FormioCore.submitDone = FormioEmbed.submitDone;
+FormioCore.addLibrary = FormioEmbed.addLibrary;
+FormioCore.addLoader = FormioEmbed.addLoader;
 export { FormioCore as Formio };

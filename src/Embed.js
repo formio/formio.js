@@ -225,6 +225,23 @@ export class Formio {
         }
     }
 
+    static async addLoader(wrapper) {
+        wrapper.appendChild(Formio.createElement('div', {
+            'class': 'formio-loader'
+        }, [{
+            tag: 'div',
+            attrs: {
+                class: 'loader-wrapper'
+            },
+            children: [{
+                tag: 'div',
+                attrs: {
+                    class: 'loader text-center'
+                }
+            }]
+        }]));
+    }
+
     // eslint-disable-next-line max-statements
     static async init(element, options = {}, builder = false) {
         Formio.cdn = new CDN(Formio.config.cdn, Formio.config.cdnUrls || {});
@@ -273,20 +290,7 @@ export class Formio {
         await Formio.addStyles(wrapper, Formio.config.embedCSS || `${Formio.cdn.js}/formio.embed.css`);
 
         // Add a loader.
-        wrapper.appendChild(Formio.createElement('div', {
-            'class': 'formio-loader'
-        }, [{
-            tag: 'div',
-            attrs: {
-                class: 'loader-wrapper'
-            },
-            children: [{
-                tag: 'div',
-                attrs: {
-                    class: 'loader text-center'
-                }
-            }]
-        }]));
+        Formio.addLoader(wrapper);
 
         const formioSrc = Formio.config.full ? 'formio.full' : 'formio.form';
         const renderer = Formio.config.debug ? formioSrc : `${formioSrc}.min`;
