@@ -43,6 +43,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7112: fixed issues with calendar widget display for value components in new simple conditionals ui
  - FIO-7184 Fixed showing incorrect value for DateTime and Time components with multiple value enabled inside of the DataTable
  - FIO-7553: Changed tooltip text for the Column Properties setting
+ - FIO-7602: fixed submission data for Radio with 0s values
+ - FIO-4235: fixed confirmation dialog popping up when the data is empty in EditGrid
+ - FIO-7577: add skipInEmail comp property to recaptcha
 
 ### Changed
  - Add capability for adding sanitize profiles through sanitizeConfig in options
