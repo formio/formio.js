@@ -179,6 +179,17 @@ export default class SurveyComponent extends Field {
         return result;
     }
 
+    if (_.isPlainObject(value)) {
+      const { values = [], questions = [] } = this.component;
+      return _.isEmpty(value)
+        ? ''
+        : _.map(value,(v, q) => {
+          const valueLabel = _.get(_.find(values, val => _.isEqual(val.value, v)), 'label', v);
+          const questionLabel = _.get(_.find(questions, quest => _.isEqual(quest.value, q)), 'label', q);
+          return `${questionLabel}: ${valueLabel}`;
+        }).join('; ');
+    }
+
     return super.getValueAsString(value, options);
   }
 }
