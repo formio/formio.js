@@ -60,6 +60,12 @@ describe('Select Component', () => {
     });
   });
 
+  it('Should return plain text when csv option is provided', () => {
+    return Harness.testCreate(SelectComponent, comp1).then((component) => {
+      assert.equal(component.getView('red', { csv:true }), 'Red');
+    });
+  });
+
   it('should correctly determine storage type when dataType is auto', function(done) {
     Harness.testCreate(SelectComponent, comp4).then((component) => {
       const value = component.normalizeSingleValue('true');
