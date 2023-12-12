@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.17.5
+### Changed
+ - Official Release
+
 ## 4.17.5-rc.1
 ### Changed
  - FIO-7309: Fixed an issue where min/maxDate settings for Day component are getting evaluated in Form Builder
