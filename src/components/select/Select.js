@@ -3,7 +3,8 @@ import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Input from '../_classes/input/Input';
 import Form from '../../Form';
-import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes, isSelectResourceWithObjectValue } from '../../utils/utils';
+import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes, unescapeHTML, isSelectResourceWithObjectValue } from '../../utils/utils';
+
 import Choices from '../../utils/ChoicesWrapper';
 
 export default class SelectComponent extends ListComponent {
@@ -1235,10 +1236,10 @@ export default class SelectComponent extends ListComponent {
     return added;
   }
 
-  getValueAsString(data) {
+  getValueAsString(data, options) {
     return (this.component.multiple && Array.isArray(data))
-      ? data.map(this.asString.bind(this)).join(', ')
-      : this.asString(data);
+      ? data.map((v) => this.asString(v, options)).join(', ')
+      : this.asString(data, options);
   }
 
   getValue() {
@@ -1650,7 +1651,7 @@ export default class SelectComponent extends ListComponent {
     );
   }
 
-  asString(value) {
+  asString(value, options = {}) {
     value = value ?? this.getValue();
     //need to convert values to strings to be able to compare values with available options that are strings
     const convertToString = (data, valueProperty) => {
@@ -1711,13 +1712,20 @@ export default class SelectComponent extends ListComponent {
       return value;
     }
 
+    const getTemplateValue = (v) => {
+      const itemTemplate = this.itemTemplate(v);
+      return options.csv && itemTemplate
+        ? unescapeHTML(itemTemplate)
+        : itemTemplate;
+    };
+
     if (Array.isArray(value)) {
       const items = [];
-      value.forEach(item => items.push(this.itemTemplate(item)));
+      value.forEach(item => items.push(getTemplateValue(item)));
       if (this.component.dataSrc === 'resource' &&  items.length > 0 ) {
         return items.join(', ');
       }
-      else if ( items.length > 0) {
+      else if (items.length > 0) {
         return items.join('<br />');
       }
       else {
@@ -1730,7 +1738,7 @@ export default class SelectComponent extends ListComponent {
     }
 
     return !_.isNil(value)
-      ? this.itemTemplate(value)
+      ? getTemplateValue(value)
       : '-';
   }
 
