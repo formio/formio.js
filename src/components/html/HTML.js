@@ -26,14 +26,6 @@ export default class HTMLComponent extends Component {
     };
   }
 
-  constructor(...args) {
-    const alert =  window.alert;
-    window.alert = (msg) => {
-      return alert(msg);
-    };
-    super(...args);
-  }
-
   static savedValueTypes() {
     return [];
   }
