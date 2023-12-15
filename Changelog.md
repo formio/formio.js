@@ -28,6 +28,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-6370: Fixes issues with PasswordStrength Addon settings
  - FIO-7146: formiojs-circleci-to-ghactions
  - FIO-6859: update-s3-to-accept-headers-from-signer-presign
+ - FIO 7239: support for AWS S3 Multipart Upload
+ - FIO-7239: add polyfill and include token in abort and complete requests for multipart upload2
+ - FIO-7429: removed columns component settings(pull, offset, push)
+ - FIO-7466: Tooltips fix
+ - FIO-7355: fixed issue with HTML5 select flickering on initial click
+ - FIO-7530: added ability to pass onSetItems component setting as a string (needed for builder mode)
+ - FIO-7528: Revert FIO-4405: fixed an issue where walidation error displays with empty value even if it is not required (#4746)
+ - FIO-7547: Container hidden with conditional logic still appears in submission #5401
+ - FIO-7550: Fixing choices css issue
+ - FIO-7074/FIO-7379: Fixes some issues caused by Wizzard was not always setting _data to submission data
+ - FIO-7208: Moved Tree component to the contrib library
+ - FIO-7406 Fixed plain Textarea interpolating data in readonly mode [#5396](https://github.com/formio/formio.js/pull/5383)
+ - FIO-7112: fixed issues with calendar widget display for value components in new simple conditionals ui
+ - FIO-7184 Fixed showing incorrect value for DateTime and Time components with multiple value enabled inside of the DataTable
+ - FIO-7553: Changed tooltip text for the Column Properties setting
+ - FIO-7602: fixed submission data for Radio with 0s values
+ - FIO-4235: fixed confirmation dialog popping up when the data is empty in EditGrid
+ - FIO-7577: add skipInEmail comp property to recaptcha
+
+### Changed
+ - Add capability for adding sanitize profiles through sanitizeConfig in options
    
 ## 5.0.0-rc.26
 ### Changed

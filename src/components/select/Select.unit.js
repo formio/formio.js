@@ -42,7 +42,7 @@ describe('Select Component', () => {
         assert.equal(component.dataValue.value, 'a');
         assert.equal(typeof component.dataValue , 'object');
         done();
-      }, 100);
+      }, 300);
     });
   });
 
@@ -57,6 +57,12 @@ describe('Select Component', () => {
       assert.equal(stringValue2, '<span>test</span>');
       assert.equal(stringValue3, '<span>1.2</span>');
       done();
+    });
+  });
+
+  it('Should return plain text when csv option is provided', () => {
+    return Harness.testCreate(SelectComponent, comp1).then((component) => {
+      assert.equal(component.getView('red', { csv:true }), 'Red');
     });
   });
 

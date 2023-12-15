@@ -653,20 +653,6 @@ export default {
         "input": true
       }]
     }, {
-      "label": "Tree",
-      "tableView": false,
-      "key": "tree",
-      "type": "tree",
-      "input": true,
-      "tree": true,
-      "components": [{
-        "label": "Text Field Tree",
-        "tableView": true,
-        "key": "textFieldTree",
-        "type": "textfield",
-        "input": true
-      }]
-    }, {
       "label": "Upload",
       "tableView": false,
       "storage": "base64",

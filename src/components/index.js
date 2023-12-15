@@ -41,7 +41,6 @@ import TagsComponent from './tags/Tags';
 import TextAreaComponent from './textarea/TextArea';
 import TextFieldComponent from './textfield/TextField';
 import TimeComponent from './time/Time';
-import TreeComponent from './tree/Tree';
 import UnknownComponent from './unknown/Unknown';
 import UrlComponent from './url/Url';
 import WellComponent from './well/Well';
@@ -91,7 +90,6 @@ export default {
   textarea: TextAreaComponent,
   textfield: TextFieldComponent,
   time: TimeComponent,
-  tree: TreeComponent,
   unknown: UnknownComponent,
   url: UrlComponent,
   well: WellComponent,

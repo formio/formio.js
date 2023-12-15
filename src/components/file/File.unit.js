@@ -206,10 +206,13 @@ describe('File Component', () => {
     const options = {
       fileService: {
         uploadFile: function(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback, abortCallbackSetter) {
-          return new Promise((resolve) => {
+          return new Promise((resolve, reject) => {
             // complete upload after 1s.
-            const timeout = setTimeout(function() {
+            setTimeout(() => {
               progressCallback({ loaded: 1, total: 1 });
+            }, 10);
+
+            const timeout = setTimeout(() => {
               const uploadResponse = {
                 name: fileName,
                 size: file.size,
@@ -222,6 +225,9 @@ describe('File Component', () => {
             abortCallbackSetter(function() {
               abortedFiles.push(file.name);
               clearTimeout(timeout);
+              reject({
+                type: 'abort',
+              });
             });
           });
         }
@@ -238,23 +244,31 @@ describe('File Component', () => {
       const content = [1];
       const files = [new File(content, 'file.0'), new File([content], 'file.1'), new File([content], 'file.2')];
 
-      component.upload(files);
+      component.handleFilesToUpload(files);
 
       setTimeout(function() {
-        Harness.testElements(component, 'div.file .fileName', 3);
+        // Table header and 3 rows for files
+        Harness.testElements(component, '.list-group-item', 4);
+        assert.equal(component.dataValue.length, 0);
+        assert.equal(component.filesToSync.filesToUpload.length, 3);
+        assert.equal(component.filesToSync.filesToUpload[1].status, 'progress');
+        assert.equal(component.filesToSync.filesToDelete.length, 0);
 
-        component.element.querySelectorAll('i[ref="fileStatusRemove"]')[1].click();
+        const abortIcon = component.element.querySelectorAll(`#abort-${component.filesToSync.filesToUpload[1].id}`)[0];
+        assert.notEqual(abortIcon, null);
+        abortIcon.click();
 
         setTimeout(() => {
-          assert(component !== null);
+          assert.notEqual(component !== null);
           assert(abortedFiles[0] === 'file.1' && abortedFiles.length === 1);
-          assert(component.filesUploading.join(',') === 'file.0,file.2');
+          assert.equal(component.filesToSync.filesToUpload[1].status, 'error');
+          assert.equal(component.filesToSync.filesToUpload[1].message, 'Request was aborted');
 
-          Harness.testElements(component, 'div.file .fileName', 2);
+          Harness.testElements(component, '.list-group-item', 4);
           component.root = null;
           done();
         }, 20);
-      }, 50);
+      }, 100);
     });
   });
 });

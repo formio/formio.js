@@ -14,7 +14,7 @@ const forms = require('./formtest');
 Components.setComponents(AllComponents);
 
 const dir = './test/renders';
-const componentDir = './lib/components';
+const componentDir = './lib/cjs/components';
 if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir);
 }

@@ -901,18 +901,11 @@ export default class Wizard extends Webform {
       return this.setNestedValue(page, submission.data, flags, changed) || changed;
     }, false);
 
-    if (!flags.sanitize ||
-      (flags && flags.fromSubmission && (this.prefixComps.length || this.suffixComps.length) && submission._id) ||
-      (this.options.server && (this.prefixComps.length || this.suffixComps.length))
-    ) {
-      this.mergeData(this.data, submission.data);
-    }
+    this.mergeData(this.data, submission.data);
 
     if (changed) {
       this.pageFieldLogic(this.page);
     }
-
-    this.setEditMode(submission);
 
     submission.data = this.data;
     this._submission = submission;
@@ -920,6 +913,8 @@ export default class Wizard extends Webform {
     if (!ignoreEstablishment) {
       this.establishPages(submission.data);
     }
+
+    this.setEditMode(submission);
 
     return changed;
   }

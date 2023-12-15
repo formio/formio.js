@@ -57,7 +57,7 @@ const stringValues = {
   day: '01/05/2005',
   time: '04:15',
   currency: '$30,000.00',
-  survey: '{"question1":"yes","question2":"no"}',
+  survey: 'Question 1: yes; Question 2: no',
   numberColumn: '1111',
   textFieldColumn: 'value',
   numberFieldset: '222222',

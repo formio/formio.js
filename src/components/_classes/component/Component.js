@@ -211,7 +211,12 @@ export default class Component extends Element {
     return {
       operators: ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'],
       valueComponent() {
-        return { type: 'textfield' };
+        return {
+          type: 'textfield',
+          widget: {
+            type: 'input'
+          }
+        };
       }
     };
   }
@@ -1223,7 +1228,7 @@ export default class Component extends Element {
           placement: 'right',
           zIndex: 10000,
           interactive: true,
-          content: this.t(tooltipText, { _userInput: true }),
+          content: this.t(this.sanitize(tooltipText), { _userInput: true }),
         });
       }
     });
@@ -3321,8 +3326,6 @@ export default class Component extends Element {
 
   shouldSkipValidation(data, dirty, row) {
     const rules = [
-      // Do not check custom validation for empty data if it is not required
-      () => this.component.validate.custom && !this.dataValue && !this.component.validate.required,
       // Force valid if component is read-only
       () => this.options.readOnly,
       // Do not check validations if component is not an input component.
