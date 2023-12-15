@@ -203,7 +203,8 @@ import {
   comp6,
   comp7,
   comp8,
-  comp9
+  comp9,
+  comp10
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Radio Component&apos;, () =&gt; {
@@ -300,6 +301,23 @@ describe(&apos;Radio Component&apos;, () =&gt; {
         assert.equal(component.refs.input[2].checked, false);
         done();
       }, 700);
+    });
+  });
+
+  it(&apos;Should set correct data for 0s values&apos;, (done) =&gt; {
+    Harness.testCreate(RadioComponent, comp10).then((component) =&gt; {
+      component.setValue(&apos;01&apos;);
+      component.redraw();
+
+      setTimeout(()=&gt;{
+        assert.equal(component._data.radio, &apos;01&apos;);
+        component.setValue(1);
+        component.redraw();
+        setTimeout(()=&gt;{
+          assert.equal(component._data.radio, 1);
+          done();
+        }, 200);
+      }, 200);
     });
   });
 
