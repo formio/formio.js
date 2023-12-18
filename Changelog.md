@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7602: fixed submission data for Radio with 0s values
  - FIO-4235: fixed confirmation dialog popping up when the data is empty in EditGrid
  - FIO-7577: add skipInEmail comp property to recaptcha
+ - FIO-7514: fixed an isse where new simple conditionals do not work when condition is based on the value of resource select with object value
 
 ### Changed
  - Add capability for adding sanitize profiles through sanitizeConfig in options
