@@ -203,7 +203,7 @@ export default class Element {
    * @param persistent
    *   If this listener should persist beyond "destroy" commands.
    */
-  addEventListener(obj, type, func, persistent) {
+  addEventListener(obj, type, func, persistent, capture) {
     if (!obj) {
       return;
     }
@@ -211,7 +211,7 @@ export default class Element {
       this.eventHandlers.push({ id: this.id, obj, type, func });
     }
     if ('addEventListener' in obj) {
-      obj.addEventListener(type, func, false);
+      obj.addEventListener(type, func, !!capture);
     }
     else if ('attachEvent' in obj) {
       obj.attachEvent(`on${type}`, func);
