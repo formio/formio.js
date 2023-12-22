@@ -1,6 +1,6 @@
 {
-  "coverage": "6.28%",
-  "expectCount": 1050,
+  "coverage": "6.3%",
+  "expectCount": 1047,
   "actualCount": 66,
   "files": {
     "src/CDN.js": {
@@ -675,7 +675,7 @@
       ]
     },
     "src/components/recaptcha/ReCaptcha.js": {
-      "expectCount": 16,
+      "expectCount": 17,
       "actualCount": 0,
       "undocumentLines": [
         8,
@@ -688,12 +688,13 @@
         51,
         59,
         63,
-        74,
+        67,
         78,
-        109,
-        117,
-        122,
-        151
+        82,
+        113,
+        121,
+        126,
+        155
       ]
     },
     "src/components/resource/Resource.form.js": {
@@ -1509,16 +1510,6 @@
         28
       ]
     },
-    "src/utils/conditionOperators/IsEqualTo.js": {
-      "expectCount": 4,
-      "actualCount": 0,
-      "undocumentLines": [
-        4,
-        5,
-        9,
-        13
-      ]
-    },
     "src/utils/conditionOperators/IsNotDateEqual.js": {
       "expectCount": 4,
       "actualCount": 0,
@@ -1543,10 +1534,10 @@
       "expectCount": 4,
       "actualCount": 0,
       "undocumentLines": [
+        3,
         4,
-        5,
-        9,
-        13
+        8,
+        12
       ]
     },
     "src/utils/conditionOperators/LessThan.js": {

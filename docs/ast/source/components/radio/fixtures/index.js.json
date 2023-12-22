@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 261,
+  "end": 292,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 10,
+      "line": 11,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 261,
+    "end": 292,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 10,
+        "line": 11,
         "column": 0
       }
     },
@@ -647,6 +647,75 @@
             "raw": "'./comp9'"
           },
           "value": "./comp9"
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 261,
+        "end": 291,
+        "loc": {
+          "start": {
+            "line": 10,
+            "column": 0
+          },
+          "end": {
+            "line": 10,
+            "column": 30
+          }
+        },
+        "specifiers": [
+          {
+            "type": "ExportDefaultSpecifier",
+            "start": 268,
+            "end": 274,
+            "loc": {
+              "start": {
+                "line": 10,
+                "column": 7
+              },
+              "end": {
+                "line": 10,
+                "column": 13
+              }
+            },
+            "exported": {
+              "type": "Identifier",
+              "start": 268,
+              "end": 274,
+              "loc": {
+                "start": {
+                  "line": 10,
+                  "column": 7
+                },
+                "end": {
+                  "line": 10,
+                  "column": 13
+                },
+                "identifierName": "comp10"
+              },
+              "name": "comp10"
+            }
+          }
+        ],
+        "source": {
+          "type": "StringLiteral",
+          "start": 280,
+          "end": 290,
+          "loc": {
+            "start": {
+              "line": 10,
+              "column": 19
+            },
+            "end": {
+              "line": 10,
+              "column": 29
+            }
+          },
+          "extra": {
+            "rawValue": "./comp10",
+            "raw": "'./comp10'"
+          },
+          "value": "./comp10"
         }
       }
     ],
@@ -1853,6 +1922,139 @@
     },
     {
       "type": {
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "export",
+      "start": 261,
+      "end": 267,
+      "loc": {
+        "start": {
+          "line": 10,
+          "column": 0
+        },
+        "end": {
+          "line": 10,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "comp10",
+      "start": 268,
+      "end": 274,
+      "loc": {
+        "start": {
+          "line": 10,
+          "column": 7
+        },
+        "end": {
+          "line": 10,
+          "column": 13
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "from",
+      "start": 275,
+      "end": 279,
+      "loc": {
+        "start": {
+          "line": 10,
+          "column": 14
+        },
+        "end": {
+          "line": 10,
+          "column": 18
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "./comp10",
+      "start": 280,
+      "end": 290,
+      "loc": {
+        "start": {
+          "line": 10,
+          "column": 19
+        },
+        "end": {
+          "line": 10,
+          "column": 29
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ";",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 290,
+      "end": 291,
+      "loc": {
+        "start": {
+          "line": 10,
+          "column": 29
+        },
+        "end": {
+          "line": 10,
+          "column": 30
+        }
+      }
+    },
+    {
+      "type": {
         "label": "eof",
         "beforeExpr": false,
         "startsExpr": false,
@@ -1864,15 +2066,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 261,
-      "end": 261,
+      "start": 292,
+      "end": 292,
       "loc": {
         "start": {
-          "line": 10,
+          "line": 11,
           "column": 0
         },
         "end": {
-          "line": 10,
+          "line": 11,
           "column": 0
         }
       }

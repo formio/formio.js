@@ -167,7 +167,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/conditionOperators/Includes.js~Includes.html">Includes</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/conditionOperators/IsDateEqual.js~IsDateEqual.html">IsDateEqual</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/conditionOperators/IsEmptyValue.js~IsEmptyValue.html">IsEmptyValue</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/conditionOperators/IsEqualTo.js~IsEqualTo.html">IsEqualTo</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/conditionOperators/IsNotDateEqual.js~IsNotDateEqual.html">IsNotDateEqual</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/conditionOperators/IsNotEmptyValue.js~IsNotEmptyValue.html">IsNotEmptyValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/conditionOperators/IsNotEqualTo.js~IsNotEqualTo.html">IsNotEqualTo</a></span></span></li>
@@ -228,6 +227,7 @@ import {
   formWithCollapsedPanel,
   formWithCustomFormatDate,
   tooltipActivateCheckbox,
+  formWithObjectValueSelect
 } from &apos;../test/formtest&apos;;
 import UpdateErrorClassesWidgets from &apos;../test/forms/updateErrorClasses-widgets&apos;;
 import nestedModalWizard from &apos;../test/forms/nestedModalWizard&apos;;
@@ -2887,6 +2887,94 @@ describe(&apos;Webform tests&apos;, function() {
           }, 300);
         }, 300);
       }).catch((err) =&gt; done(err));
+    });
+
+    it(&apos;Should show field when condition is based on the values of select resource with object value&apos;, (done) =&gt; {
+      const element = document.createElement(&apos;div&apos;);
+      const values = [
+        {
+          _id: &apos;656daabeebc67ecca1141569&apos;,
+          form: &apos;656daab0ebc67ecca1141226&apos;,
+          data: {
+            number: 4,
+            notes: &apos;notes 4&apos;,
+          },
+          project: &apos;656daa20ebc67ecca1140e8d&apos;,
+          state: &apos;submitted&apos;,
+          created: &apos;2023-12-04T10:32:30.821Z&apos;,
+          modified: &apos;2023-12-06T14:25:00.886Z&apos;,
+        },
+        {
+          _id: &apos;656daabbebc67ecca11414a7&apos;,
+          form: &apos;656daab0ebc67ecca1141226&apos;,
+          data: {
+            number: 3,
+            notes: &apos;notes 3&apos;,
+          },
+          project: &apos;656daa20ebc67ecca1140e8d&apos;,
+          state: &apos;submitted&apos;,
+          created: &apos;2023-12-04T10:32:27.322Z&apos;,
+          modified: &apos;2023-12-06T14:25:07.494Z&apos;,
+        },
+        {
+          _id: &apos;656daab8ebc67ecca11413e5&apos;,
+          form: &apos;656daab0ebc67ecca1141226&apos;,
+          data: {
+            number: 2,
+            notes: &apos;notes 2&apos;,
+          },
+          project: &apos;656daa20ebc67ecca1140e8d&apos;,
+          state: &apos;submitted&apos;,
+          created: &apos;2023-12-04T10:32:24.514Z&apos;,
+          modified: &apos;2023-12-06T14:25:13.610Z&apos;,
+        },
+        {
+          _id: &apos;656daab5ebc67ecca1141322&apos;,
+          form: &apos;656daab0ebc67ecca1141226&apos;,
+          data: {
+            number: 1,
+            notes: &apos;notes 1&apos;,
+          },
+          project: &apos;656daa20ebc67ecca1140e8d&apos;,
+          state: &apos;submitted&apos;,
+          created: &apos;2023-12-04T10:32:21.205Z&apos;,
+          modified: &apos;2023-12-06T14:25:20.930Z&apos;,
+        },
+      ];
+      const originalMakeRequest = Formio.makeRequest;
+      Formio.makeRequest = function() {
+        return new Promise(resolve =&gt; {
+          setTimeout(() =&gt; {
+            resolve(values);
+          }, 50);
+        });
+      };
+
+      Formio.createForm(element, formWithObjectValueSelect)
+        .then(form =&gt; {
+          const numberComp = form.getComponent(&apos;number&apos;);
+          assert.equal(numberComp.visible, false);
+
+          const selectRef = form.getComponent(&apos;selectRef&apos;);
+          selectRef.setValue(fastCloneDeep(values[3]));
+          const selectNoValuePropertyMult = form.getComponent(&apos;selectNoValueProperty&apos;);
+          selectNoValuePropertyMult.setValue([fastCloneDeep(values[2])]);
+          const selectEntireObject = form.getComponent(&apos;selectEntireObject&apos;);
+          selectEntireObject.setValue(fastCloneDeep(values[1].data));
+          const selectEntireObjectMult = form.getComponent(&apos;selectEntireObjectMult&apos;);
+          selectEntireObjectMult.setValue([fastCloneDeep(values[0].data)]);
+
+          setTimeout(() =&gt; {
+            assert.equal(numberComp.visible, true);
+            selectRef.setValue(fastCloneDeep(values[2]));
+              setTimeout(() =&gt; {
+                assert.equal(numberComp.visible, false);
+                Formio.makeRequest = originalMakeRequest;
+                done();
+              }, 400);
+          }, 400);
+        })
+        .catch(done);
     });
   });
 

@@ -4,8 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.18.1-rc.1]
+## 4.18.1-rc.1
+### Changed
+ - FIO-7577: add skipInEmail comp property to recaptcha
  - FIO-4905: File upload (multi) - aborting upload always cancels the last one in the list
+ - FIO-4235 Fixed confirmation dialog popping up when the data is empty in EditGrid
+ - Fix edit grid events in read only mode
+ - FIO-7602 fixed submission data for 0s values
+ - FIO-7514: fixed an isse where new simple conditionals do not work when condition is based on the value of resource select with object value
  
 ## 4.18.0
 ### Changed

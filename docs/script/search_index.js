@@ -366,12 +366,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "formiojs/src/utils/conditionoperators/isequalto.js~isequalto",
-    "class/src/utils/conditionOperators/IsEqualTo.js~IsEqualTo.html",
-    "<span>IsEqualTo</span> <span class=\"search-result-import-path\">formiojs/src/utils/conditionOperators/IsEqualTo.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/utils/conditionoperators/isnotdateequal.js~isnotdateequal",
     "class/src/utils/conditionOperators/IsNotDateEqual.js~IsNotDateEqual.html",
     "<span>IsNotDateEqual</span> <span class=\"search-result-import-path\">formiojs/src/utils/conditionOperators/IsNotDateEqual.js</span>",
@@ -4824,6 +4818,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/radio/fixtures/comp10.js",
+    "file/src/components/radio/fixtures/comp10.js.html",
+    "src/components/radio/fixtures/comp10.js",
+    "file"
+  ],
+  [
     "src/components/radio/fixtures/comp2.js",
     "file/src/components/radio/fixtures/comp2.js.html",
     "src/components/radio/fixtures/comp2.js",
@@ -4960,6 +4960,12 @@ window.esdocSearchIndex = [
     "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-method-sendVerificationRequest",
     "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#sendVerificationRequest",
     "method"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent#skipinemail",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#instance-get-skipInEmail",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#skipInEmail",
+    "member"
   ],
   [
     "src/components/recaptcha/recaptcha.js~recaptchacomponent#verify",
@@ -8841,30 +8847,6 @@ window.esdocSearchIndex = [
     "src/utils/conditionoperators/isemptyvalue.js~isemptyvalue.requirevalue",
     "class/src/utils/conditionOperators/IsEmptyValue.js~IsEmptyValue.html#static-get-requireValue",
     "src/utils/conditionOperators/IsEmptyValue.js~IsEmptyValue.requireValue",
-    "member"
-  ],
-  [
-    "src/utils/conditionoperators/isequalto.js",
-    "file/src/utils/conditionOperators/IsEqualTo.js.html",
-    "src/utils/conditionOperators/IsEqualTo.js",
-    "file"
-  ],
-  [
-    "src/utils/conditionoperators/isequalto.js~isequalto#execute",
-    "class/src/utils/conditionOperators/IsEqualTo.js~IsEqualTo.html#instance-method-execute",
-    "src/utils/conditionOperators/IsEqualTo.js~IsEqualTo#execute",
-    "method"
-  ],
-  [
-    "src/utils/conditionoperators/isequalto.js~isequalto.displayedname",
-    "class/src/utils/conditionOperators/IsEqualTo.js~IsEqualTo.html#static-get-displayedName",
-    "src/utils/conditionOperators/IsEqualTo.js~IsEqualTo.displayedName",
-    "member"
-  ],
-  [
-    "src/utils/conditionoperators/isequalto.js~isequalto.operatorkey",
-    "class/src/utils/conditionOperators/IsEqualTo.js~IsEqualTo.html#static-get-operatorKey",
-    "src/utils/conditionOperators/IsEqualTo.js~IsEqualTo.operatorKey",
     "member"
   ],
   [
