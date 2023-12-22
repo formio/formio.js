@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.18.1-rc.1]
+ - FIO-4905: File upload (multi) - aborting upload always cancels the last one in the list
+ 
 ## 4.18.0
 ### Changed
  - Official Release
