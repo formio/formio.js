@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.18.1-rc.2]
+## 4.18.1-rc.2
+### Changed
+ - FIO-7710: fixed the radio component check that causes an error
  - FIO-7709: fixed failing tests
    
 ## 4.18.1-rc.1
