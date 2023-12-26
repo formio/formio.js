@@ -408,7 +408,7 @@ export default class RadioComponent extends ListComponent {
       return value;
     }
 
-    const isEquivalent = value.toString() === Number(value).toString();
+    const isEquivalent = _.toString(value) === Number(value).toString();
 
     if (!isNaN(parseFloat(value)) && isFinite(value) && isEquivalent) {
       value = +value;
