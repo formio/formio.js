@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.18.1-rc.2]
+ - FIO-7709: fixed failing tests
+   
 ## 4.18.1-rc.1
 ### Changed
  - FIO-7577: add skipInEmail comp property to recaptcha
