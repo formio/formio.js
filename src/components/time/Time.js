@@ -156,6 +156,9 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   getValueAsString(value) {
+    if (Array.isArray(value) && this.component.multiple) {
+      return value.map(item => moment(item, this.component.dataFormat).format(this.component.format)).join(', ');
+    }
     return (value ? moment(value, this.component.dataFormat).format(this.component.format) : value) || '';
   }
 

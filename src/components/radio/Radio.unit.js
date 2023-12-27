@@ -13,7 +13,8 @@ import {
   comp6,
   comp7,
   comp8,
-  comp9
+  comp9,
+  comp10
 } from './fixtures';
 
 describe('Radio Component', () => {
@@ -110,6 +111,23 @@ describe('Radio Component', () => {
         assert.equal(component.refs.input[2].checked, false);
         done();
       }, 700);
+    });
+  });
+
+  it('Should set correct data for 0s values', (done) => {
+    Harness.testCreate(RadioComponent, comp10).then((component) => {
+      component.setValue('01');
+      component.redraw();
+
+      setTimeout(()=>{
+        assert.equal(component._data.radio, '01');
+        component.setValue(1);
+        component.redraw();
+        setTimeout(()=>{
+          assert.equal(component._data.radio, 1);
+          done();
+        }, 200);
+      }, 200);
     });
   });
 

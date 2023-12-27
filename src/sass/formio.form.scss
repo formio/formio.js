@@ -380,6 +380,15 @@ td > .formio-form-group {
   }
 }
 
+.formio-component-file .status {
+  margin-top: 4px;
+  font-size: 0.9rem;
+}
+
+.formio-component-file .list-group-item .fa {
+  cursor: pointer;
+}
+
 .formio-component-file .fileSelector.fileDragOver {
   border-color: #127abe;
 }
@@ -859,10 +868,6 @@ body.formio-dialog-open {
   overflow-wrap: break-word;
 }
 
-.tree-listgroup {
-  flex-direction: row;
-}
-
 .formio-component-submit button[disabled]+.has-error {
   display: block;
 }
@@ -1103,23 +1108,6 @@ body.formio-dialog-open {
 .formio-component.alert-danger .help-block,
 .formio-component.alert-warning .help-block {
   color: inherit;
-}
-
-.tree {
-  &__level {
-    &_even {
-      background-color: #f6f6f6;
-    }
-  }
-
-  &__node-content {
-    margin-bottom: 10px;
-    overflow-wrap: break-word;
-  }
-
-  &__node-children {
-    margin: 0;
-  }
 }
 
 .formio-select-autocomplete-input {
@@ -1764,4 +1752,14 @@ span[role="link"] {
 
 .hidden {
   display: none !important;
+}
+
+.align-center {
+  display: flex;
+  align-items: center;
+}
+
+.justify-center {
+  display: flex;
+  justify-content: center;
 }

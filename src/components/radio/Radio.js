@@ -407,7 +407,9 @@ export default class RadioComponent extends ListComponent {
       return value;
     }
 
-    if (!isNaN(parseFloat(value)) && isFinite(value)) {
+    const isEquivalent = _.toString(value) === Number(value).toString();
+
+    if (!isNaN(parseFloat(value)) && isFinite(value) && isEquivalent) {
       value = +value;
     }
     if (value === 'true') {

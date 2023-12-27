@@ -3,7 +3,8 @@ import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Input from '../_classes/input/Input';
 import Form from '../../Form';
-import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes, unescapeHTML, isSelectResourceWithObjectValue } from '../../utils/utils';
+
 import Choices from '../../utils/ChoicesWrapper';
 
 export default class SelectComponent extends ListComponent {
@@ -65,7 +66,21 @@ export default class SelectComponent extends ListComponent {
     return {
       ...super.conditionOperatorsSettings,
       valueComponent(classComp) {
-        return { ... classComp, type: 'select' };
+        const valueComp = { ... classComp, type: 'select' };
+
+        if (isSelectResourceWithObjectValue(classComp)) {
+          valueComp.reference = false;
+          valueComp.onSetItems = `
+            var templateKeys = utils.getItemTemplateKeys(component.template) || [];
+            items = _.map(items || [], i => {
+              var item = {};
+              _.each(templateKeys, k =>  _.set(item, k, _.get(i, k)));
+              return item;
+            })
+          `;
+        }
+
+        return valueComp;
       }
     };
   }
@@ -139,6 +154,8 @@ export default class SelectComponent extends ListComponent {
     this.itemsLoaded = new Promise((resolve) => {
       this.itemsLoadedResolve = resolve;
     });
+
+    this.shouldPositionDropdown = this.hasDataGridAncestor();
 
     if (this.isHtmlRenderMode()) {
       this.activate();
@@ -1002,6 +1019,12 @@ export default class SelectComponent extends ListComponent {
       }
     }
 
+    if (window && this.choices && this.shouldPositionDropdown) {
+      this.addEventListener(window.document, 'scroll', () => {
+        this.positionDropdown(true);
+      }, false, true);
+    }
+
     this.focusableElement.setAttribute('tabIndex', tabIndex);
 
     // If a search field is provided, then add an event listener to update items on search.
@@ -1034,7 +1057,12 @@ export default class SelectComponent extends ListComponent {
       const updateComponent = (evt) => {
         this.triggerUpdate(evt.detail.value);
       };
-      this.addEventListener(input, 'search', _.debounce(updateComponent, debounceTimeout));
+
+      this.addEventListener(input, 'search', _.debounce((e) => {
+        updateComponent(e);
+        this.positionDropdown();
+      },  debounceTimeout));
+
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
       this.addEventListener(input, 'hideDropdown', () => {
         if (this.choices && this.choices.input && this.choices.input.element) {
@@ -1045,7 +1073,16 @@ export default class SelectComponent extends ListComponent {
       });
     }
 
-    this.addEventListener(input, 'showDropdown', () => this.update());
+    this.addEventListener(input, 'showDropdown', () => {
+      this.update();
+      this.positionDropdown();
+    });
+
+    if (this.shouldPositionDropdown) {
+      this.addEventListener(input, 'highlightChoice', () => {
+        this.positionDropdown();
+      });
+    }
 
     if (this.choices && choicesOptions.placeholderValue && this.choices._isSelectOneElement) {
       this.addPlaceholderItem(choicesOptions.placeholderValue);
@@ -1089,6 +1126,53 @@ export default class SelectComponent extends ListComponent {
     this.disabled = this.shouldDisabled;
     this.triggerUpdate();
     return superAttach;
+  }
+
+  setDropdownPosition() {
+    const dropdown = this.choices?.dropdown?.element;
+    const container = this.choices?.containerOuter?.element;
+
+    if (!dropdown || !container) {
+      return;
+    }
+
+    const containerPosition = container.getBoundingClientRect();
+    const isFlipped = container.classList.contains('is-flipped');
+
+    _.assign(dropdown.style, {
+      top: `${isFlipped ? containerPosition.top - dropdown.offsetHeight : containerPosition.top + containerPosition.height}px`,
+      left: `${containerPosition.left}px`,
+      width: `${containerPosition.width}px`,
+      position: 'fixed',
+      bottom: 'unset',
+      right: 'unset',
+    });
+  }
+
+  hasDataGridAncestor(comp) {
+    comp = comp || this;
+
+    if (comp.inDataGrid || comp.type === 'datagrid') {
+      return true;
+    }
+    else if (comp.parent) {
+      return this.hasDataGridAncestor(comp.parent);
+    }
+    else {
+      return false;
+    }
+  }
+
+  positionDropdown(scroll) {
+    if (!this.shouldPositionDropdown || !this.choices || (!this.choices.dropdown?.isActive && scroll)) {
+      return;
+    }
+
+    this.setDropdownPosition();
+
+    this.itemsLoaded.then(() => {
+      this.setDropdownPosition();
+    });
   }
 
   get isLoadingAvailable() {
@@ -1221,10 +1305,10 @@ export default class SelectComponent extends ListComponent {
     return added;
   }
 
-  getValueAsString(data) {
+  getValueAsString(data, options) {
     return (this.component.multiple && Array.isArray(data))
-      ? data.map(this.asString.bind(this)).join(', ')
-      : this.asString(data);
+      ? data.map((v) => this.asString(v, options)).join(', ')
+      : this.asString(data, options);
   }
 
   getValue() {
@@ -1636,7 +1720,7 @@ export default class SelectComponent extends ListComponent {
     );
   }
 
-  asString(value) {
+  asString(value, options = {}) {
     value = value ?? this.getValue();
     //need to convert values to strings to be able to compare values with available options that are strings
     const convertToString = (data, valueProperty) => {
@@ -1697,13 +1781,20 @@ export default class SelectComponent extends ListComponent {
       return value;
     }
 
+    const getTemplateValue = (v) => {
+      const itemTemplate = this.itemTemplate(v);
+      return options.csv && itemTemplate
+        ? unescapeHTML(itemTemplate)
+        : itemTemplate;
+    };
+
     if (Array.isArray(value)) {
       const items = [];
-      value.forEach(item => items.push(this.itemTemplate(item)));
+      value.forEach(item => items.push(getTemplateValue(item)));
       if (this.component.dataSrc === 'resource' &&  items.length > 0 ) {
         return items.join(', ');
       }
-      else if ( items.length > 0) {
+      else if (items.length > 0) {
         return items.join('<br />');
       }
       else {
@@ -1716,7 +1807,7 @@ export default class SelectComponent extends ListComponent {
     }
 
     return !_.isNil(value)
-      ? this.itemTemplate(value)
+      ? getTemplateValue(value)
       : '-';
   }
 

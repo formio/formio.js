@@ -150,7 +150,11 @@ function s3(formio) {
       else {
         return Promise.resolve(file);
       }
-    }
+    },
+    deleteFile(fileInfo) {
+      const url = `${formio.formUrl}/storage/s3?bucket=${XHR.trim(fileInfo.bucket)}&key=${XHR.trim(fileInfo.key)}`;
+      return formio.makeRequest('', url, 'delete');
+    },
   };
 }
 

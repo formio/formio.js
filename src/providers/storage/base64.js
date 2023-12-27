@@ -27,7 +27,7 @@ function base64() {
     downloadFile(file) {
       // Return the original as there is nothing to do.
       return Promise.resolve(file);
-    }
+    },
   };
 }
 
