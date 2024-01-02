@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.18.1-rc.3
+### Changed
+ - Updated @formio/choices.js@10.2.1-rc.1
+
 ## 4.18.1-rc.2
 ### Changed
  - FIO-7710: fixed the radio component check that causes an error
