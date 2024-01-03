@@ -959,7 +959,15 @@ export default class Component extends Element {
   renderTemplate(name, data = {}, modeOption) {
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     const mode = modeOption || this.options.renderMode || 'form';
-    data.component = this.component;
+    data.component = {
+      ...this.component,
+    };
+
+    // Escape HTML provided in component description and render it as a string instead
+    if (this.component.description) {
+      data.component.description = FormioUtils.escapeHTML(this.component.description);
+    }
+
     data.self = this;
     data.options = this.options;
     data.readOnly = this.options.readOnly;
