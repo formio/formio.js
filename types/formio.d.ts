@@ -28,6 +28,7 @@ export class Formio {
   static projectUrlSet: boolean;
   static plugins: any;
   static cache: any;
+  static license: string;
   static providers: any;
   static events: any; // EventEmitter3
   static namespace: string;
