@@ -160,6 +160,10 @@ export declare class Formio {
      */
     static libraries: any;
     /**
+     * The Library license for this application.
+     */
+    static license: string;
+    /**
      * A direct interface to the Form.io fetch polyfill.
      */
     static fetch: any;
