@@ -821,7 +821,7 @@ export default class Wizard extends Webform {
         if (this.enabledIndex) {
           this.enabledIndex = 0;
         }
-        this.onChange();
+        this.onChange({ resetValue: true });
         this.redraw();
         return this.page;
       });
