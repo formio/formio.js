@@ -499,12 +499,14 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   removeRow(index) {
-    this.splice(index, { isReordered: true });
+    const makeEmpty = index === 0 && this.rows.length === 1;
+    const flags = { isReordered: !makeEmpty, resetValue: makeEmpty };
+    this.splice(index, flags);
     this.emit('dataGridDeleteRow', { index });
     const [row] = this.rows.splice(index, 1);
     this.removeRowComponents(row);
     this.updateRowsComponents(index);
-    this.setValue(this.dataValue, { isReordered: true });
+    this.setValue(this.dataValue, flags);
     this.redraw();
   }
 

@@ -75,6 +75,7 @@ import formWithRadioInsideDataGrid from '../test/forms/formWithRadioInsideDataGr
 import formWithCheckboxRadioType from '../test/forms/formWithCheckboxRadioType';
 import formWithFormController from '../test/forms/formWithFormController';
 import calculateValueOnServerForEditGrid from '../test/forms/calculateValueOnServerForEditGrid';
+import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -2907,6 +2908,291 @@ describe('Webform tests', function() {
           }, 250);
         }, 250);
       }).catch(done);
+    });
+
+    it('Should recalculate values for components with "allow override" after first and only dataGrid row is removed/reset', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(formElement, formsWithAllowOverride.withDataGrid).then((form) => {
+        const calculatedValues = {
+          number: 11111,
+          textField: 'test DataGrid',
+          textArea: 'test',
+        };
+
+        const overridenValues = {
+          number: 11111222,
+          textField: 'test DataGrid 222',
+          textArea: 'test 222',
+        };
+
+        const number = form.getComponent('number');
+        const textArea = form.getComponent('textArea');
+        const textField = form.getComponent('textField');
+        const dgRadio = form.getComponent('dgRadio');
+        const dataGrid = form.getComponent('dataGrid');
+        // check if values are calculated on form load
+        assert.deepEqual(dataGrid.dataValue, [
+          {
+            ...calculatedValues,
+            textField: textField.emptyValue,
+            dgRadio: dgRadio.emptyValue
+          }
+        ], 1);
+
+        dgRadio.setValue('a');
+
+        setTimeout(() => {
+          // check if values are calculated correctly
+          assert.deepEqual(dataGrid.dataValue, [
+            {
+              ...calculatedValues,
+              dgRadio: 'a'
+            }
+          ]);
+
+          // override calculated values
+          const numberInput = number.refs.input[0];
+          const textFieldInput = textField.refs.input[0];
+          const textAreaInput = textArea.refs.input[0];
+
+          numberInput.value = overridenValues.number;
+          textFieldInput.value = overridenValues.textField;
+          textAreaInput.value = overridenValues.textArea;
+
+          const inputEvent = new Event('input');
+
+          numberInput.dispatchEvent(inputEvent);
+          textFieldInput.dispatchEvent(inputEvent);
+          textAreaInput.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            // check if values are overriden
+            assert.deepEqual(dataGrid.dataValue, [
+              {
+                ...overridenValues,
+                dgRadio: 'a'
+              }
+            ], 2);
+
+            // clear first row
+            dataGrid.removeRow(0);
+
+            setTimeout(() => {
+              const dgRadio = form.getComponent('dgRadio');
+              // make sure values are reset and recalculated
+              assert.deepEqual(dataGrid.dataValue, [
+                {
+                  ...calculatedValues,
+                  textField: textField.emptyValue,
+                  dgRadio: dgRadio.emptyValue
+                }
+              ], 3);
+
+              dgRadio.setValue('a');
+              setTimeout(() => {
+                // check if all values are calculated correctly
+                assert.deepEqual(dataGrid.dataValue, [
+                  {
+                    ...calculatedValues,
+                    dgRadio: 'a'
+                  }
+                ], 4);
+
+                document.body.innerHTML = '';
+                done();
+              }, 400);
+            }, 400);
+          }, 400);
+        }, 400);
+      }).catch((err) => done(err));
+    });
+
+    it('Should recalculate values for components with "allow override" after the form is reset', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(formElement, formsWithAllowOverride.withResetBtn).then((form) => {
+        const calculatedValues = {
+          number: 11111,
+          textField: 'test DataGrid',
+          textArea: 'test',
+          radio: 'one'
+        };
+
+        const overridenValues = {
+          number: 11111222,
+          textField: 'test DataGrid 222',
+          textArea: 'test 222',
+          radio: 'two'
+        };
+        const checkbox = form.getComponent('checkbox');
+        const number = form.getComponent('number');
+        const textArea = form.getComponent('textArea');
+        const radio = form.getComponent('radio');
+        const textField = form.getComponent('textField');
+        const dgRadio = form.getComponent('dgRadio');
+        const resetBtn = form.getComponent('reset');
+
+        dgRadio.setValue('a');
+        checkbox.setValue(true);
+        setTimeout(() => {
+          // check if values were calculated correctly
+          assert.equal(number.dataValue, calculatedValues.number);
+          assert.equal(textField.dataValue, calculatedValues.textField);
+          assert.equal(textArea.dataValue, calculatedValues.textArea);
+          assert.equal(radio.dataValue, calculatedValues.radio);
+
+          // override calculated values
+          const numberInput = number.refs.input[0];
+          const textFieldInput = textField.refs.input[0];
+          const textAreaInput = textArea.refs.input[0];
+          const radioInput =radio.refs.input[1];
+
+          numberInput.value = overridenValues.number;
+          textFieldInput.value = overridenValues.textField;
+          textAreaInput.value = overridenValues.textArea;
+          radioInput.checked = true;
+          const inputEvent = new Event('input');
+          const clickEvent = new Event('click');
+
+          numberInput.dispatchEvent(inputEvent);
+          textFieldInput.dispatchEvent(inputEvent);
+          textAreaInput.dispatchEvent(inputEvent);
+          radioInput.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            // check if values were overriden
+            assert.equal(number.getValue(), overridenValues.number);
+            assert.equal(textField.dataValue, overridenValues.textField);
+            assert.equal(textArea.dataValue, overridenValues.textArea);
+            assert.equal(radio.dataValue, overridenValues.radio);
+
+            checkbox.setValue(false);
+
+            setTimeout(() => {
+              // reset form
+              resetBtn.refs.button.dispatchEvent(clickEvent);
+
+              setTimeout(() => {
+                // make sure that values are reset
+                assert.equal(number.dataValue, calculatedValues.number);
+                assert.equal(textArea.dataValue, calculatedValues.textArea);
+                assert.equal(textField.dataValue, textField.emptyValue);
+                assert.equal(radio.dataValue, radio.emptyValue);
+                assert.equal(dgRadio.dataValue, dgRadio.emptyValue);
+                assert.equal(checkbox.dataValue, checkbox.emptyValue);
+
+                // trigger values calculation
+                dgRadio.setValue('a');
+                checkbox.setValue(true);
+
+                setTimeout(() => {
+                  // make sure that values are recalculated
+                  assert.equal(number.dataValue, calculatedValues.number);
+                  assert.equal(textField.dataValue, calculatedValues.textField);
+                  assert.equal(textArea.dataValue, calculatedValues.textArea);
+                  assert.equal(radio.dataValue, calculatedValues.radio);
+                  document.body.innerHTML = '';
+                  done();
+                }, 300);
+              }, 300);
+            }, 300);
+          }, 300);
+        }, 400);
+      }).catch((err) => done(err));
+    });
+
+    it('Should recalculate values for conditional components with "allow override" and "clear on hide" enabled when components become visible again', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(formElement, formsWithAllowOverride.withClearOnHide).then((form) => {
+        const calculatedValues = {
+          number: 111,
+          textField: 'test',
+          textArea: 'test value',
+          radio: 'a'
+        };
+
+        const overridenValues = {
+          number: 11123,
+          textField: 'test123',
+          textArea: 'test123',
+          radio: 'b'
+        };
+        const checkbox = form.getComponent('checkbox');
+        const number = form.getComponent('number');
+        const textField = form.getComponent('textField');
+        const textArea = form.getComponent('textArea');
+        const radio = form.getComponent('radio');
+
+        assert.equal(number.visible, false);
+        assert.equal(textField.visible, false);
+        assert.equal(textArea.visible, false);
+        assert.equal(radio.visible, false);
+
+        checkbox.setValue(true);
+        setTimeout(() => {
+          assert.equal(number.visible, true);
+          assert.equal(textField.visible, true);
+          assert.equal(textArea.visible, true);
+          assert.equal(radio.visible, true);
+          // check if values were calculated correctly
+          assert.equal(number.dataValue, calculatedValues.number);
+          assert.equal(textField.dataValue, calculatedValues.textField);
+          assert.equal(textArea.dataValue, calculatedValues.textArea);
+          assert.equal(radio.dataValue, calculatedValues.radio);
+
+          // override calculated values
+          const numberInput = number.refs.input[0];
+          const textFieldInput = textField.refs.input[0];
+          const textAreaInput = textArea.refs.input[0];
+          const radioInput =radio.refs.input[1];
+
+          numberInput.value = overridenValues.number;
+          textFieldInput.value = overridenValues.textField;
+          textAreaInput.value = overridenValues.textArea;
+          radioInput.checked = true;
+          const inputEvent = new Event('input');
+          const clickEvent = new Event('click');
+
+          numberInput.dispatchEvent(inputEvent);
+          textFieldInput.dispatchEvent(inputEvent);
+          textAreaInput.dispatchEvent(inputEvent);
+          radioInput.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            // check if values were overriden
+            assert.equal(number.getValue(), overridenValues.number);
+             assert.equal(textField.dataValue, overridenValues.textField);
+            assert.equal(textArea.dataValue, overridenValues.textArea);
+            assert.equal(radio.dataValue, overridenValues.radio);
+
+            checkbox.setValue(false);
+
+            setTimeout(() => {
+              // check if conditional components were hidden
+              assert.equal(number.visible, false);
+              assert.equal(textField.visible, false);
+              assert.equal(textArea.visible, false);
+              assert.equal(radio.visible, false);
+
+              checkbox.setValue(true);
+              setTimeout(() => {
+                // make sure that components appear again and values were recalculated
+                assert.equal(number.visible, true);
+                assert.equal(textField.visible, true);
+                assert.equal(textArea.visible, true);
+                assert.equal(radio.visible, true);
+
+                assert.equal(number.dataValue, calculatedValues.number);
+                assert.equal(textField.dataValue, calculatedValues.textField);
+                assert.equal(textArea.dataValue, calculatedValues.textArea);
+                assert.equal(radio.dataValue, calculatedValues.radio);
+                document.body.innerHTML = '';
+
+                done();
+              }, 300);
+            }, 300);
+          }, 300);
+        }, 400);
+      }).catch((err) => done(err));
     });
   });
 
