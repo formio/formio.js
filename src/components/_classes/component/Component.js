@@ -2821,11 +2821,17 @@ export default class Component extends Element {
     const shouldBeCleared = !this.visible && clearOnHide;
     const allowOverride = _.get(this.component, 'allowCalculateOverride', false);
 
+    if (shouldBeCleared) {
+      // remove calculated value so that the value is recalculated once component becomes visible
+      if (this.hasOwnProperty('calculatedValue') && allowOverride) {
+        _.unset(this, 'calculatedValue');
+      }
+      return false;
+    }
     // Handle all cases when calculated values should not fire.
     if (
       (this.options.readOnly && !this.options.pdf && !this.component.calculateValue) ||
       !(this.component.calculateValue || this.component.calculateValueVariable) ||
-      shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
       (flags.dataSourceInitialLoading && allowOverride)
     ) {
@@ -2859,7 +2865,7 @@ export default class Component extends Element {
         return false;
       }
 
-      const firstPass = (this.calculatedValue === undefined);
+      const firstPass = (this.calculatedValue === undefined) || flags.resetValue;
       if (firstPass) {
         this.calculatedValue = null;
       }

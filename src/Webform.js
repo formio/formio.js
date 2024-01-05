@@ -1070,7 +1070,7 @@ export default class Webform extends NestedDataComponent {
   resetValue() {
     _.each(this.getComponents(), (comp) => (comp.resetValue()));
     this.setPristine(true);
-    this.onChange();
+    this.onChange({ resetValue: true });
   }
 
   /**
