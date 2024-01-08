@@ -896,7 +896,7 @@ body.formio-dialog-open {
 
 .formio-component .table {
   margin-bottom: 0;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .formio-component-htmlelement {
@@ -999,7 +999,7 @@ body.formio-dialog-open {
 
 .datagrid-table {
   &>tbody>tr>td {
-    word-break: break-all;
+    word-break: auto-phrase;
   }
 }
 
