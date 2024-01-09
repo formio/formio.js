@@ -50,6 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7637: add catch block to subform submission loading
  - FIO-7710: fixed the radio component check that causes an error
  - FIO-7466: Make tooltips show non-rendered HTML
+ - FIO-7717: Adding license to the Formio types
 
 ### Changed
  - Add capability for adding sanitize profiles through sanitizeConfig in options
