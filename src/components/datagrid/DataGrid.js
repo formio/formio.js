@@ -153,6 +153,18 @@ export default class DataGridComponent extends NestedArrayComponent {
     }));
   }
 
+  isEmpty(value = this.dataValue) {
+    const isEmpty = super.isEmpty(value);
+
+    if (this.components.length) {
+      return this.components.reduce((isEmpty, component) => {
+        return isEmpty && component.isEmpty();
+      }, true);
+    }
+
+    return isEmpty;
+  }
+
   /**
    * Split rows into chunks.
    * @param {Number[]} groups - array of numbers where each item is size of group

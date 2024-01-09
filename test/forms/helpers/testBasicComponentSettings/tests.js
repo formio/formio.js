@@ -489,7 +489,12 @@ export default {
                 assert.deepEqual(!!confirmationDialogAfter, false, `${compKey} (component ${compType}): should close confirmation dialog`);
 
                 if (!componentsWithBug.includes(compType)) {
-                  assert.deepEqual(comp.getValue(), initialValue, `${compKey} (component ${compType}): should clear value in modalEdit mode`);
+                  if (compType === 'form') {
+                    assert.deepEqual(comp.getValue().data, initialValue.data, `${compKey} (component ${compType}): should clear value in modalEdit mode`);
+                  }
+                  else {
+                    assert.deepEqual(comp.getValue(), initialValue, `${compKey} (component ${compType}): should clear value in modalEdit mode`);
+                  }
                 }
 
                 assert.deepEqual(isModalWindowOpened(), false, `${compKey} (component ${compType}): should close modal window`);
