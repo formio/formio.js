@@ -1159,6 +1159,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       const editGridValue = _.get(rootValue, this.path, []);
       editGridValue[editRow.rowIndex] = editRow.data;
       _.set(rootValue, this.path, editGridValue);
+      const validationProcessorProcess = (context) => this.validationProcessor(context, { dirty, silentCheck });
       editRow.errors = processSync({
         components: fastCloneDeep(this.component.components).map((component) => {
           component.parentPath = `${this.path}[${editRow.rowIndex}]`;
@@ -1170,7 +1171,10 @@ export default class EditGridComponent extends NestedArrayComponent {
         instances: this.componentsMap,
         scope: { errors: [] },
         processors: [
-          (context) => this.validationProcessor(context, { dirty, silentCheck })
+          {
+            process: validationProcessorProcess,
+            processSync: validationProcessorProcess
+          }
         ]
       }).errors;
     }
@@ -1273,7 +1277,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       return false;
     }
 
-    const message = this.invalid || this.invalidMessage(data, dirty);
+    const message = this.invalid || this.invalidMessage(data, dirty, false, row);
     if (allRowErrors.length && this.root?.submitted && !message) {
       this._errors = this.setCustomValidity(message, dirty);
       errors.push(...this._errors);

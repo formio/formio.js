@@ -669,6 +669,18 @@ export default class NestedComponent extends Field {
     components = components || this.component.components;
     data = data || this.rootValue;
     const { async, dirty, process } = flags;
+    const validationProcessorProcess = (context) => this.validationProcessor(context, flags);
+    const checkModalProcessorProcess = ({ instance, component, components }) => {
+      // If we just validated the last component, and there are errors from our parent, then we need to show a model of those errors.
+      if (
+        instance &&
+        instance.parent &&
+        (component === components[components.length - 1]) &&
+        instance.parent.componentModal
+      ) {
+        instance.parent.checkModal(instance.parent.childErrors, dirty);
+      }
+    };
     const processorContext = {
       process: process || 'unknown',
       components,
@@ -676,17 +688,13 @@ export default class NestedComponent extends Field {
       data: data,
       scope: { errors: [] },
       processors: [
-        (context) => this.validationProcessor(context, flags),
-        ({ instance, component, components }) => {
-          // If we just validated the last component, and there are errors from our parent, then we need to show a model of those errors.
-          if (
-            instance &&
-            instance.parent &&
-            (component === components[components.length - 1]) &&
-            instance.parent.componentModal
-          ) {
-            instance.parent.checkModal(instance.parent.childErrors, dirty);
-          }
+        {
+          process: validationProcessorProcess,
+          processSync: validationProcessorProcess
+        },
+        {
+          process: checkModalProcessorProcess,
+          processSync: checkModalProcessorProcess
         }
       ]
     };

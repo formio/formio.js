@@ -3,7 +3,7 @@ import { conformToMask } from '@formio/vanilla-text-mask';
 import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import { processOne, processOneSync, validateProcess, validateProcessSync } from '@formio/core/process';
+import { processOne, processOneSync, validateProcessInfo } from '@formio/core/process';
 
 import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
@@ -3026,7 +3026,7 @@ export default class Component extends Element {
       scope: validationScope,
       instance: this,
       processors: [
-        validateProcessSync
+        validateProcessInfo
       ]
     });
     const errors = validationScope.errors;
@@ -3113,7 +3113,7 @@ export default class Component extends Element {
       instance: this,
       scope: { errors: [] },
       processors: [
-        async ? validateProcess : validateProcessSync
+        validateProcessInfo
       ]
     };
 
@@ -3144,7 +3144,12 @@ export default class Component extends Element {
       return this.validateComponent(data, row, flags).then((errors) => {
         allErrors.push(...errors);
         if (this.parent && this.parent.childErrors) {
-          this.parent.childErrors.push(...errors);
+          if (errors.length) {
+            this.parent.childErrors.push(...errors);
+          }
+          else {
+            _.remove(this.parent.childErrors, (err) => err.component.key === this.component.key);
+          }
         }
         this.showValidationErrors(errors, data, row, flags);
         return errors.length === 0;
@@ -3155,7 +3160,12 @@ export default class Component extends Element {
       this.showValidationErrors(errors, data, row, flags);
       allErrors.push(...errors);
       if (this.parent && this.parent.childErrors) {
-        this.parent.childErrors.push(...errors);
+        if (errors.length) {
+          this.parent.childErrors.push(...errors);
+        }
+        else {
+          _.remove(this.parent.childErrors, (err) => err.component.key === this.component.key);
+        }
       }
       return errors.length === 0;
     }

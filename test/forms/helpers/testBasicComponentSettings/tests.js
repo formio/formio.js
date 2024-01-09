@@ -825,7 +825,6 @@ export default {
   'validate.custom': {
     'Should execute custom validation'(form, done, test) {
       test.timeout(3000);
-      const testComponents = form.components.filter(comp => !['button'].includes(comp.component.type));
 
       assert.deepEqual(form.errors.length, 0, 'Should not show validation errors');
       form.setPristine(false);
@@ -834,9 +833,9 @@ export default {
       });
 
       setTimeout(() => {
-        assert.deepEqual(form.errors.length, testComponents.length, 'Form should contain references to all components errors');
+        assert.deepEqual(form.errors.length, form.components.length, 'Form should contain references to all components errors');
 
-        testComponents.forEach(comp => {
+        form.components.forEach(comp => {
           const compKey = comp.component.key;
           const compType = comp.component.type;
           const getExpectedErrorMessage = () => 'Custom validation message: component is invalid.';
@@ -857,13 +856,13 @@ export default {
           return _.isNumber(comp.dataValue) ? 33333333 : comp.defaultValue;
         };
 
-        _.each(testComponents, (comp) => {
+        _.each(form.components, (comp) => {
           comp.setValue(getSetValue(comp));
         });
 
         setTimeout(() => {
           assert.deepEqual(form.visibleErrors.length, 0, 'Should remove validation errors after setting valid values');
-          testComponents.forEach(comp => {
+          form.components.forEach(comp => {
             const compKey = comp.component.key;
             const compType = comp.component.type;
 

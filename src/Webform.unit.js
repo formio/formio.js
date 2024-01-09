@@ -7,7 +7,7 @@ import FormTests from '../test/forms';
 import Webform from './Webform';
 import 'flatpickr';
 import AllComponents from './components';
-import { Formio } from './Formio';
+import { Formio } from './formio.form.js';
 import {
   settingErrors,
   clearOnHide,
