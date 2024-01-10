@@ -528,7 +528,7 @@ export default class CalendarWidget extends InputWidget {
     return (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
-        if (this.loadZones()) {
+        if (!this.settings.enableTime || this.loadZones()) {
           return Flatpickr.formatDate(date, format);
         }
 
