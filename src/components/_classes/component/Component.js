@@ -3694,7 +3694,12 @@ Component.requireLibrary = function(name, property, src, polling) {
       if (polling) {
         setTimeout(function checkLibrary() {
           const plugin = _.get(window, property);
+
           if (plugin) {
+            // TODO: FIO-7493: Check if this works correctly
+            if (plugin.hasOwnProperty('library')) {
+              Formio.use(plugin.library, { license: Formio.License });
+            }
             Component.externalLibraries[name].resolve(plugin);
           }
           else {
