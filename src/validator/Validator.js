@@ -10,6 +10,7 @@ import {
 } from '../utils/utils';
 import moment from 'moment';
 import NativePromise from 'native-promise-only';
+import Inputmask from 'inputmask';
 import fetchPonyfill from 'fetch-ponyfill';
 const { fetch, Headers, Request } = fetchPonyfill({
   Promise: NativePromise
@@ -693,6 +694,10 @@ class ValidationChecker {
           }
           else {
             inputMask = setting;
+          }
+
+          if (value && inputMask && typeof value === 'string' && component.type === 'textfield' ) {
+            return Inputmask.isValid(value, inputMask);
           }
 
           inputMask = inputMask ? getInputMask(inputMask) : null;
