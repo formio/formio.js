@@ -1,5 +1,6 @@
 import Input from '../_classes/input/Input';
 import { conformToMask } from '@formio/vanilla-text-mask';
+import Inputmask from 'inputmask';
 import * as FormioUtils from '../../utils/utils';
 import _ from 'lodash';
 
@@ -167,8 +168,14 @@ export default class TextFieldComponent extends Input {
     const maskInput = this.refs.select ? this.refs.select[index]: null;
     const mask = this.getMaskPattern(value.maskName);
     if (textInput && maskInput && mask) {
-      const placeholderChar = this.placeholderChar;
-      textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask), { placeholderChar }).conformedValue;
+      if (textInput.inputmask) {
+        this.setInputMask(textInput, mask);
+        textInput.inputmask.setValue(textValue);
+      }
+      else {
+        const placeholderChar = this.placeholderChar;
+        textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask), { placeholderChar }).conformedValue;
+      }
       maskInput.value = value.maskName;
     }
     else {
@@ -205,7 +212,11 @@ export default class TextFieldComponent extends Input {
         return this.unmaskValue(value, displayMask);
       }
 
-      if (this.refs.valueMaskInput?.mask) {
+      if (displayMask && displayMask !== valueMask) {
+        return Inputmask.format(Inputmask.unmask(value, displayMask), valueMask);
+      }
+
+      if (this.refs.valueMaskInput?.mask && this.refs.valueMaskInput.mask.textMaskInputElement) {
         this.refs.valueMaskInput.mask.textMaskInputElement.update(value);
         return this.refs.valueMaskInput?.value;
       }
@@ -218,6 +229,59 @@ export default class TextFieldComponent extends Input {
       value: textInput ? textInput.value : undefined,
       maskName: maskInput ? maskInput.value : undefined
     };
+  }
+  checkInputMaskValue(inputMask) {
+    let valid = true;
+    const maskValues = _.values(inputMask.split('').reduce((acc, el, i, mask) => {
+      if (el === '{' || el === '}') {
+        if (mask[i+1] === '{' || mask[i+1] === '}') {
+          valid = false;
+        }
+        acc[el] = (acc[el] ?? 0) + 1;
+      }
+      return acc;
+    },{}));
+    if (maskValues[0] !== maskValues[1]) {
+      valid = false;
+    }
+    return valid;
+  }
+
+   setInputMask(input, inputMask, usePlaceholder) {
+    if (this.type !== 'textfield') {
+      super.setInputMask(input, inputMask, usePlaceholder);
+      return;
+    }
+
+    inputMask = inputMask || this.component.displayMask || this.component.inputMask;
+    const mask = FormioUtils.getInputMask(inputMask, this.placeholderChar);
+    this.defaultMask = mask;
+
+    if (input && inputMask) {
+      try {
+        //remove previous mask
+        if (input.mask) {
+          input.mask.remove();
+        }
+        if (this.checkInputMaskValue(inputMask)) {
+          input.mask = new Inputmask(inputMask, {
+            clearMaskOnLostFocus: !!this.component.placeholder,
+            showMaskOnHover: !this.component.placeholder,
+            placeholder: this.placeholderChar || '',
+          }).mask(input);
+        }
+      }
+      catch (e) {
+        console.warn(e);
+      }
+      if (mask.numeric) {
+        input.setAttribute('pattern', '\\d*');
+      }
+
+      if (this.component.placeholder) {
+        input.setAttribute('placeholder', this.component.placeholder);
+      }
+    }
   }
 
   isHtmlRenderMode() {

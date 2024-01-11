@@ -119,7 +119,7 @@ export default class Multivalue extends Field {
     if (this.refs.input && this.refs.input.length) {
       this.refs.input.forEach((input) => {
         if (input.mask) {
-          input.mask.destroy();
+          input.mask.destroy ? input.mask.destroy() : input.mask.remove();
         }
         if (input.widget) {
           input.widget.destroy();
@@ -129,7 +129,7 @@ export default class Multivalue extends Field {
     if (this.refs.mask && this.refs.mask.length) {
       this.refs.mask.forEach((input) => {
         if (input.mask) {
-          input.mask.destroy();
+          input.mask.destroy ? input.mask.destroy() : input.mask.remove();
         }
       });
     }
