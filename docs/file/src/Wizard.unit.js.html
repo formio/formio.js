@@ -230,12 +230,99 @@ import wizardWithPrefixComps from &apos;../test/forms/wizardWithPrefixComps&apos
 import wizardPermission from &apos;../test/forms/wizardPermission&apos;;
 import formWithFormController from &apos;../test/forms/formWithFormController&apos;;
 import { fastCloneDeep } from &apos;./utils/utils&apos;;
+import formsWithAllowOverride from &apos;../test/forms/formsWithAllowOverrideComps&apos;;
 
 global.requestAnimationFrame = (cb) =&gt; cb();
 global.cancelAnimationFrame = () =&gt; {};
 
 // eslint-disable-next-line max-statements
 describe(&apos;Wizard tests&apos;, () =&gt; {
+  it(&apos;Should recalculate values for components with &quot;allow override&quot; after wizard is canceled&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(formElement, formsWithAllowOverride.wizard).then((form) =&gt; {
+      const calculatedValues = {
+        number: 123,
+        textField: &apos;test data&apos;,
+        textArea: &apos;test data&apos;,
+        radio: &apos;one&apos;
+      };
+
+      const overridenValues = {
+        number: 1233333,
+        textField: &apos;test data3333&apos;,
+        textArea: &apos;test data3333&apos;,
+        radio: &apos;two&apos;
+      };
+
+      const number = form.getComponent(&apos;number&apos;);
+      const textArea = form.getComponent(&apos;textArea&apos;);
+      const radio = form.getComponent(&apos;radio&apos;);
+      const textField = form.getComponent(&apos;textField&apos;);
+      const radioTrigger = form.getComponent(&apos;radio1&apos;);
+
+      assert.equal(number.dataValue, number.emptyValue);
+      assert.equal(textField.dataValue, textField.emptyValue);
+      assert.equal(textArea.dataValue, textArea.emptyValue);
+      assert.equal(radio.dataValue, calculatedValues.radio);
+
+      radioTrigger.setValue(&apos;a&apos;);
+      setTimeout(() =&gt; {
+        // check if values are calculated correctly
+        assert.equal(number.dataValue, calculatedValues.number);
+        assert.equal(textField.dataValue, calculatedValues.textField);
+        assert.equal(textArea.dataValue, calculatedValues.textArea);
+        assert.equal(radio.dataValue, calculatedValues.radio);
+
+        // override calculated values
+        const numberInput = number.refs.input[0];
+        const textFieldInput = textField.refs.input[0];
+        const textAreaInput = textArea.refs.input[0];
+        const radioInput =radio.refs.input[1];
+
+        numberInput.value = overridenValues.number;
+        textFieldInput.value = overridenValues.textField;
+        textAreaInput.value = overridenValues.textArea;
+        radioInput.checked = true;
+        const inputEvent = new Event(&apos;input&apos;);
+        const clickEvent = new Event(&apos;click&apos;);
+
+        numberInput.dispatchEvent(inputEvent);
+        textFieldInput.dispatchEvent(inputEvent);
+        textAreaInput.dispatchEvent(inputEvent);
+        radioInput.dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          // check if values are overriden
+          assert.equal(number.getValue(), overridenValues.number);
+          assert.equal(textField.dataValue, overridenValues.textField);
+          assert.equal(textArea.dataValue, overridenValues.textArea);
+          assert.equal(radio.dataValue, overridenValues.radio);
+          // reset form
+          form.cancel(true);
+
+          setTimeout(() =&gt; {
+            // make sure that values are reset
+            assert.equal(number.dataValue, number.emptyValue);
+            assert.equal(textField.dataValue, textField.emptyValue);
+            assert.equal(textArea.dataValue, textArea.emptyValue);
+            assert.equal(radio.dataValue, calculatedValues.radio);
+
+            radioTrigger.setValue(&apos;a&apos;);
+            setTimeout(() =&gt; {
+              // check if values are recalculated correctly
+              assert.equal(number.dataValue, calculatedValues.number);
+              assert.equal(textField.dataValue, calculatedValues.textField);
+              assert.equal(textArea.dataValue, calculatedValues.textArea);
+              assert.equal(radio.dataValue, calculatedValues.radio);
+              document.body.innerHTML = &apos;&apos;;
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 400);
+    }).catch((err) =&gt; done(err));
+  });
+
   it(&apos;Should execute form controller&apos;, function(done) {
     const form = fastCloneDeep(formWithFormController);
     form.display = &apos;wizard&apos;;

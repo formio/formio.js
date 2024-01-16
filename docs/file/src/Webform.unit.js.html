@@ -192,7 +192,6 @@
 import { expect } from &apos;chai&apos;;
 import sinon from &apos;sinon&apos;;
 import _ from &apos;lodash&apos;;
-import each from &apos;lodash/each&apos;;
 import i18next from &apos;i18next&apos;;
 import Harness from &apos;../test/harness&apos;;
 import FormTests from &apos;../test/forms&apos;;
@@ -266,6 +265,7 @@ import formWithRadioInsideDataGrid from &apos;../test/forms/formWithRadioInsideD
 import formWithCheckboxRadioType from &apos;../test/forms/formWithCheckboxRadioType&apos;;
 import formWithFormController from &apos;../test/forms/formWithFormController&apos;;
 import calculateValueOnServerForEditGrid from &apos;../test/forms/calculateValueOnServerForEditGrid&apos;;
+import formsWithAllowOverride from &apos;../test/forms/formsWithAllowOverrideComps&apos;;
 
 global.requestAnimationFrame = (cb) =&gt; cb();
 global.cancelAnimationFrame = () =&gt; {};
@@ -1612,10 +1612,12 @@ describe(&apos;Webform tests&apos;, function() {
         }
       ]
     }).then(() =&gt; {
-      const label = formElement.querySelector(&apos;.control-label&apos;);
+      const label = formElement.querySelector(&apos;.col-form-label&apos;);
       assert.equal(label.innerHTML.trim(), &apos;Spanish Label&apos;);
       done();
-    }).catch(done);
+    }).catch((err) =&gt; {
+      done(err);
+    });
   });
 
   it(&apos;Should treat double colons as i18next namespace separators&apos;, (done) =&gt; {
@@ -1703,7 +1705,7 @@ describe(&apos;Webform tests&apos;, function() {
       ]
     }).then(() =&gt; {
       translateForm.language = &apos;es&apos;;
-      const label = formElement.querySelector(&apos;.control-label&apos;);
+      const label = formElement.querySelector(&apos;.col-form-label&apos;);
       assert.equal(label.innerHTML.trim(), &apos;Spanish Label&apos;);
       done();
     }).catch(done);
@@ -1737,7 +1739,7 @@ describe(&apos;Webform tests&apos;, function() {
       ]
     }).then(() =&gt; {
       translateForm.language = &apos;fr&apos;;
-      const label = formElement.querySelector(&apos;.control-label&apos;);
+      const label = formElement.querySelector(&apos;.col-form-label&apos;);
       assert.equal(label.innerHTML.trim(), &apos;French Label&apos;);
       done();
     }).catch(done);
@@ -1762,7 +1764,7 @@ describe(&apos;Webform tests&apos;, function() {
       ]
     }).then(() =&gt; {
       translateForm.addLanguage(&apos;es&apos;, { &apos;Default Label&apos;: &apos;Spanish Label&apos; }, true);
-      const label = formElement.querySelector(&apos;.control-label&apos;);
+      const label = formElement.querySelector(&apos;.col-form-label&apos;);
       assert.equal(label.innerHTML.trim(), &apos;Spanish Label&apos;);
       done();
     }).catch(done);
@@ -1795,10 +1797,10 @@ describe(&apos;Webform tests&apos;, function() {
         }, done)
         .then(() =&gt; {
           expect(form.options.language).to.equal(&apos;ru&apos;);
-          expect(formElement.querySelector(&apos;.control-label&apos;).innerHTML.trim()).to.equal(&apos;Russian Label&apos;);
+          expect(formElement.querySelector(&apos;.col-form-label&apos;).innerHTML.trim()).to.equal(&apos;Russian Label&apos;);
           form.redraw();
           expect(form.options.language).to.equal(&apos;ru&apos;);
-          expect(formElement.querySelector(&apos;.control-label&apos;).innerHTML.trim()).to.equal(&apos;Russian Label&apos;);
+          expect(formElement.querySelector(&apos;.col-form-label&apos;).innerHTML.trim()).to.equal(&apos;Russian Label&apos;);
           done();
         }, done)
         .catch(done);
@@ -1924,7 +1926,7 @@ describe(&apos;Webform tests&apos;, function() {
       assert.equal(translateForm.i18next.language, &apos;es&apos;);
       assert.equal(translateForm.i18next, instance);
 
-      const label = formElement.querySelector(&apos;.control-label&apos;);
+      const label = formElement.querySelector(&apos;.col-form-label&apos;);
       assert.equal(label.innerHTML.trim(), &apos;Spanish Label&apos;);
     });
   });
@@ -3097,6 +3099,291 @@ describe(&apos;Webform tests&apos;, function() {
         }, 250);
       }).catch(done);
     });
+
+    it(&apos;Should recalculate values for components with &quot;allow override&quot; after first and only dataGrid row is removed/reset&apos;, function(done) {
+      const formElement = document.createElement(&apos;div&apos;);
+      Formio.createForm(formElement, formsWithAllowOverride.withDataGrid).then((form) =&gt; {
+        const calculatedValues = {
+          number: 11111,
+          textField: &apos;test DataGrid&apos;,
+          textArea: &apos;test&apos;,
+        };
+
+        const overridenValues = {
+          number: 11111222,
+          textField: &apos;test DataGrid 222&apos;,
+          textArea: &apos;test 222&apos;,
+        };
+
+        const number = form.getComponent(&apos;number&apos;);
+        const textArea = form.getComponent(&apos;textArea&apos;);
+        const textField = form.getComponent(&apos;textField&apos;);
+        const dgRadio = form.getComponent(&apos;dgRadio&apos;);
+        const dataGrid = form.getComponent(&apos;dataGrid&apos;);
+        // check if values are calculated on form load
+        assert.deepEqual(dataGrid.dataValue, [
+          {
+            ...calculatedValues,
+            textField: textField.emptyValue,
+            dgRadio: dgRadio.emptyValue
+          }
+        ], 1);
+
+        dgRadio.setValue(&apos;a&apos;);
+
+        setTimeout(() =&gt; {
+          // check if values are calculated correctly
+          assert.deepEqual(dataGrid.dataValue, [
+            {
+              ...calculatedValues,
+              dgRadio: &apos;a&apos;
+            }
+          ]);
+
+          // override calculated values
+          const numberInput = number.refs.input[0];
+          const textFieldInput = textField.refs.input[0];
+          const textAreaInput = textArea.refs.input[0];
+
+          numberInput.value = overridenValues.number;
+          textFieldInput.value = overridenValues.textField;
+          textAreaInput.value = overridenValues.textArea;
+
+          const inputEvent = new Event(&apos;input&apos;);
+
+          numberInput.dispatchEvent(inputEvent);
+          textFieldInput.dispatchEvent(inputEvent);
+          textAreaInput.dispatchEvent(inputEvent);
+
+          setTimeout(() =&gt; {
+            // check if values are overriden
+            assert.deepEqual(dataGrid.dataValue, [
+              {
+                ...overridenValues,
+                dgRadio: &apos;a&apos;
+              }
+            ], 2);
+
+            // clear first row
+            dataGrid.removeRow(0);
+
+            setTimeout(() =&gt; {
+              const dgRadio = form.getComponent(&apos;dgRadio&apos;);
+              // make sure values are reset and recalculated
+              assert.deepEqual(dataGrid.dataValue, [
+                {
+                  ...calculatedValues,
+                  textField: textField.emptyValue,
+                  dgRadio: dgRadio.emptyValue
+                }
+              ], 3);
+
+              dgRadio.setValue(&apos;a&apos;);
+              setTimeout(() =&gt; {
+                // check if all values are calculated correctly
+                assert.deepEqual(dataGrid.dataValue, [
+                  {
+                    ...calculatedValues,
+                    dgRadio: &apos;a&apos;
+                  }
+                ], 4);
+
+                document.body.innerHTML = &apos;&apos;;
+                done();
+              }, 400);
+            }, 400);
+          }, 400);
+        }, 400);
+      }).catch((err) =&gt; done(err));
+    });
+
+    it(&apos;Should recalculate values for components with &quot;allow override&quot; after the form is reset&apos;, function(done) {
+      const formElement = document.createElement(&apos;div&apos;);
+      Formio.createForm(formElement, formsWithAllowOverride.withResetBtn).then((form) =&gt; {
+        const calculatedValues = {
+          number: 11111,
+          textField: &apos;test DataGrid&apos;,
+          textArea: &apos;test&apos;,
+          radio: &apos;one&apos;
+        };
+
+        const overridenValues = {
+          number: 11111222,
+          textField: &apos;test DataGrid 222&apos;,
+          textArea: &apos;test 222&apos;,
+          radio: &apos;two&apos;
+        };
+        const checkbox = form.getComponent(&apos;checkbox&apos;);
+        const number = form.getComponent(&apos;number&apos;);
+        const textArea = form.getComponent(&apos;textArea&apos;);
+        const radio = form.getComponent(&apos;radio&apos;);
+        const textField = form.getComponent(&apos;textField&apos;);
+        const dgRadio = form.getComponent(&apos;dgRadio&apos;);
+        const resetBtn = form.getComponent(&apos;reset&apos;);
+
+        dgRadio.setValue(&apos;a&apos;);
+        checkbox.setValue(true);
+        setTimeout(() =&gt; {
+          // check if values were calculated correctly
+          assert.equal(number.dataValue, calculatedValues.number);
+          assert.equal(textField.dataValue, calculatedValues.textField);
+          assert.equal(textArea.dataValue, calculatedValues.textArea);
+          assert.equal(radio.dataValue, calculatedValues.radio);
+
+          // override calculated values
+          const numberInput = number.refs.input[0];
+          const textFieldInput = textField.refs.input[0];
+          const textAreaInput = textArea.refs.input[0];
+          const radioInput =radio.refs.input[1];
+
+          numberInput.value = overridenValues.number;
+          textFieldInput.value = overridenValues.textField;
+          textAreaInput.value = overridenValues.textArea;
+          radioInput.checked = true;
+          const inputEvent = new Event(&apos;input&apos;);
+          const clickEvent = new Event(&apos;click&apos;);
+
+          numberInput.dispatchEvent(inputEvent);
+          textFieldInput.dispatchEvent(inputEvent);
+          textAreaInput.dispatchEvent(inputEvent);
+          radioInput.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            // check if values were overriden
+            assert.equal(number.getValue(), overridenValues.number);
+            assert.equal(textField.dataValue, overridenValues.textField);
+            assert.equal(textArea.dataValue, overridenValues.textArea);
+            assert.equal(radio.dataValue, overridenValues.radio);
+
+            checkbox.setValue(false);
+
+            setTimeout(() =&gt; {
+              // reset form
+              resetBtn.refs.button.dispatchEvent(clickEvent);
+
+              setTimeout(() =&gt; {
+                // make sure that values are reset
+                assert.equal(number.dataValue, calculatedValues.number);
+                assert.equal(textArea.dataValue, calculatedValues.textArea);
+                assert.equal(textField.dataValue, textField.emptyValue);
+                assert.equal(radio.dataValue, radio.emptyValue);
+                assert.equal(dgRadio.dataValue, dgRadio.emptyValue);
+                assert.equal(checkbox.dataValue, checkbox.emptyValue);
+
+                // trigger values calculation
+                dgRadio.setValue(&apos;a&apos;);
+                checkbox.setValue(true);
+
+                setTimeout(() =&gt; {
+                  // make sure that values are recalculated
+                  assert.equal(number.dataValue, calculatedValues.number);
+                  assert.equal(textField.dataValue, calculatedValues.textField);
+                  assert.equal(textArea.dataValue, calculatedValues.textArea);
+                  assert.equal(radio.dataValue, calculatedValues.radio);
+                  document.body.innerHTML = &apos;&apos;;
+                  done();
+                }, 300);
+              }, 300);
+            }, 300);
+          }, 300);
+        }, 400);
+      }).catch((err) =&gt; done(err));
+    });
+
+    it(&apos;Should recalculate values for conditional components with &quot;allow override&quot; and &quot;clear on hide&quot; enabled when components become visible again&apos;, function(done) {
+      const formElement = document.createElement(&apos;div&apos;);
+      Formio.createForm(formElement, formsWithAllowOverride.withClearOnHide).then((form) =&gt; {
+        const calculatedValues = {
+          number: 111,
+          textField: &apos;test&apos;,
+          textArea: &apos;test value&apos;,
+          radio: &apos;a&apos;
+        };
+
+        const overridenValues = {
+          number: 11123,
+          textField: &apos;test123&apos;,
+          textArea: &apos;test123&apos;,
+          radio: &apos;b&apos;
+        };
+        const checkbox = form.getComponent(&apos;checkbox&apos;);
+        const number = form.getComponent(&apos;number&apos;);
+        const textField = form.getComponent(&apos;textField&apos;);
+        const textArea = form.getComponent(&apos;textArea&apos;);
+        const radio = form.getComponent(&apos;radio&apos;);
+
+        assert.equal(number.visible, false);
+        assert.equal(textField.visible, false);
+        assert.equal(textArea.visible, false);
+        assert.equal(radio.visible, false);
+
+        checkbox.setValue(true);
+        setTimeout(() =&gt; {
+          assert.equal(number.visible, true);
+          assert.equal(textField.visible, true);
+          assert.equal(textArea.visible, true);
+          assert.equal(radio.visible, true);
+          // check if values were calculated correctly
+          assert.equal(number.dataValue, calculatedValues.number);
+          assert.equal(textField.dataValue, calculatedValues.textField);
+          assert.equal(textArea.dataValue, calculatedValues.textArea);
+          assert.equal(radio.dataValue, calculatedValues.radio);
+
+          // override calculated values
+          const numberInput = number.refs.input[0];
+          const textFieldInput = textField.refs.input[0];
+          const textAreaInput = textArea.refs.input[0];
+          const radioInput =radio.refs.input[1];
+
+          numberInput.value = overridenValues.number;
+          textFieldInput.value = overridenValues.textField;
+          textAreaInput.value = overridenValues.textArea;
+          radioInput.checked = true;
+          const inputEvent = new Event(&apos;input&apos;);
+          const clickEvent = new Event(&apos;click&apos;);
+
+          numberInput.dispatchEvent(inputEvent);
+          textFieldInput.dispatchEvent(inputEvent);
+          textAreaInput.dispatchEvent(inputEvent);
+          radioInput.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            // check if values were overriden
+            assert.equal(number.getValue(), overridenValues.number);
+             assert.equal(textField.dataValue, overridenValues.textField);
+            assert.equal(textArea.dataValue, overridenValues.textArea);
+            assert.equal(radio.dataValue, overridenValues.radio);
+
+            checkbox.setValue(false);
+
+            setTimeout(() =&gt; {
+              // check if conditional components were hidden
+              assert.equal(number.visible, false);
+              assert.equal(textField.visible, false);
+              assert.equal(textArea.visible, false);
+              assert.equal(radio.visible, false);
+
+              checkbox.setValue(true);
+              setTimeout(() =&gt; {
+                // make sure that components appear again and values were recalculated
+                assert.equal(number.visible, true);
+                assert.equal(textField.visible, true);
+                assert.equal(textArea.visible, true);
+                assert.equal(radio.visible, true);
+
+                assert.equal(number.dataValue, calculatedValues.number);
+                assert.equal(textField.dataValue, calculatedValues.textField);
+                assert.equal(textArea.dataValue, calculatedValues.textArea);
+                assert.equal(radio.dataValue, calculatedValues.radio);
+                document.body.innerHTML = &apos;&apos;;
+
+                done();
+              }, 300);
+            }, 300);
+          }, 300);
+        }, 400);
+      }).catch((err) =&gt; done(err));
+    });
   });
 
   describe(&apos;Modal Edit&apos;, () =&gt; {
@@ -4116,16 +4403,13 @@ describe(&apos;Webform tests&apos;, function() {
     .catch((err) =&gt; done(err));
   });
 
-  each(FormTests, (formTest) =&gt; {
+  for (const formTest of FormTests) {
     const useDoneInsteadOfPromise = formTest.useDone;
 
     if (useDoneInsteadOfPromise) {
       describe(formTest.title || &apos;&apos;, () =&gt; {
-        each(formTest.tests, (formTestTest, title) =&gt; {
-          if (title === &apos;Email Action Test&apos;) {
-            console.log(&apos;Email Action Test&apos;);
-          }
-
+        for (const title in formTest.tests) {
+          const formTestTest = formTest.tests[title];
           it(title, function(done) {
             const self = this;
             const formElement = document.createElement(&apos;div&apos;);
@@ -4135,18 +4419,19 @@ describe(&apos;Webform tests&apos;, function() {
                 form = null;
                 formElement.innerHTML = &apos;&apos;;
                 if (error) {
-                  throw new Error(error);
+                  return done(error);
                 }
                 done();
               }, self);
             }).catch(done);
           });
-        });
+        }
       });
     }
     else {
       describe(formTest.title || &apos;&apos;, () =&gt; {
-        each(formTest.tests, (formTestTest, title) =&gt; {
+        for (const title in formTest.tests) {
+          const formTestTest = formTest.tests[title];
           it(title, function() {
             const formElement = document.createElement(&apos;div&apos;);
             const form = new Webform(formElement, { template: &apos;bootstrap3&apos;, language: &apos;en&apos; });
@@ -4159,10 +4444,10 @@ describe(&apos;Webform tests&apos;, function() {
               });
             });
           });
-        });
+        }
       });
     }
-  });
+  }
 });
 
 // describe(&apos;Test the saveDraft and restoreDraft feature&apos;, () =&gt; {

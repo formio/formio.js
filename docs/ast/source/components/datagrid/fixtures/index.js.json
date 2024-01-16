@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 644,
+  "end": 723,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 15,
+      "line": 16,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 644,
+    "end": 723,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 15,
+        "line": 16,
         "column": 0
       }
     },
@@ -992,6 +992,75 @@
             "raw": "'./comp-with-collapsible-groups'"
           },
           "value": "./comp-with-collapsible-groups"
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 644,
+        "end": 722,
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 0
+          },
+          "end": {
+            "line": 15,
+            "column": 78
+          }
+        },
+        "specifiers": [
+          {
+            "type": "ExportDefaultSpecifier",
+            "start": 651,
+            "end": 677,
+            "loc": {
+              "start": {
+                "line": 15,
+                "column": 7
+              },
+              "end": {
+                "line": 15,
+                "column": 33
+              }
+            },
+            "exported": {
+              "type": "Identifier",
+              "start": 651,
+              "end": 677,
+              "loc": {
+                "start": {
+                  "line": 15,
+                  "column": 7
+                },
+                "end": {
+                  "line": 15,
+                  "column": 33
+                },
+                "identifierName": "withAllowCalculateOverride"
+              },
+              "name": "withAllowCalculateOverride"
+            }
+          }
+        ],
+        "source": {
+          "type": "StringLiteral",
+          "start": 683,
+          "end": 721,
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 39
+            },
+            "end": {
+              "line": 15,
+              "column": 77
+            }
+          },
+          "extra": {
+            "rawValue": "./comp-with-allow-calculate-override",
+            "raw": "'./comp-with-allow-calculate-override'"
+          },
+          "value": "./comp-with-allow-calculate-override"
         }
       }
     ],
@@ -2863,6 +2932,139 @@
     },
     {
       "type": {
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "export",
+      "start": 644,
+      "end": 650,
+      "loc": {
+        "start": {
+          "line": 15,
+          "column": 0
+        },
+        "end": {
+          "line": 15,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "withAllowCalculateOverride",
+      "start": 651,
+      "end": 677,
+      "loc": {
+        "start": {
+          "line": 15,
+          "column": 7
+        },
+        "end": {
+          "line": 15,
+          "column": 33
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "from",
+      "start": 678,
+      "end": 682,
+      "loc": {
+        "start": {
+          "line": 15,
+          "column": 34
+        },
+        "end": {
+          "line": 15,
+          "column": 38
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "./comp-with-allow-calculate-override",
+      "start": 683,
+      "end": 721,
+      "loc": {
+        "start": {
+          "line": 15,
+          "column": 39
+        },
+        "end": {
+          "line": 15,
+          "column": 77
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ";",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 721,
+      "end": 722,
+      "loc": {
+        "start": {
+          "line": 15,
+          "column": 77
+        },
+        "end": {
+          "line": 15,
+          "column": 78
+        }
+      }
+    },
+    {
+      "type": {
         "label": "eof",
         "beforeExpr": false,
         "startsExpr": false,
@@ -2874,15 +3076,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 644,
-      "end": 644,
+      "start": 723,
+      "end": 723,
       "loc": {
         "start": {
-          "line": 15,
+          "line": 16,
           "column": 0
         },
         "end": {
-          "line": 15,
+          "line": 16,
           "column": 0
         }
       }

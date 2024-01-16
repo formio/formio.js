@@ -1470,6 +1470,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/form.js~form#teardown",
+    "class/src/Form.js~Form.html#instance-method-teardown",
+    "src/Form.js~Form#teardown",
+    "method"
+  ],
+  [
     "src/form.js~form.embed",
     "class/src/Form.js~Form.html#static-method-embed",
     "src/Form.js~Form.embed",
@@ -3414,6 +3420,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datagrid/fixtures/comp-with-allow-calculate-override.js",
+    "file/src/components/datagrid/fixtures/comp-with-allow-calculate-override.js.html",
+    "src/components/datagrid/fixtures/comp-with-allow-calculate-override.js",
+    "file"
+  ],
+  [
     "src/components/datagrid/fixtures/comp-with-collapsible-groups.js",
     "file/src/components/datagrid/fixtures/comp-with-collapsible-groups.js.html",
     "src/components/datagrid/fixtures/comp-with-collapsible-groups.js",
@@ -4521,6 +4533,12 @@ window.esdocSearchIndex = [
     "src/components/html/fixtures/comp2.js",
     "file/src/components/html/fixtures/comp2.js.html",
     "src/components/html/fixtures/comp2.js",
+    "file"
+  ],
+  [
+    "src/components/html/fixtures/comp3.js",
+    "file/src/components/html/fixtures/comp3.js.html",
+    "src/components/html/fixtures/comp3.js",
     "file"
   ],
   [

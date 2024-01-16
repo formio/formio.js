@@ -4,7 +4,21 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.19.0-rc.1]
+## 4.19.0-rc.1
+### Changed
+ - Updated @formio/choices.js@10.2.1
+ - FIO-7224 Fixed issues with layout components when Condensed mode is enabled
+ - FIO-7466: Make tooltips show non-rendered HTML
+ - FIO-7548: fixed an issue where select dropdown does not overlap the datagrid and causes vertical scroll
+ - FIO-7717: Adding license to the Formio types.
+ - FIO-7642: fixed issues where calculated value with allow override is not recalculated after form/component/row values are reset
+ - FIO-7591: Error messages wrapping on letter instead of on word
+ - FIO-7631: Fixes an issue where timezone is added to the date in PDF download for TextField with CalendarWidget
+ - FIO-7544: Fixes an issue where scripts inside HTML component will be executed during interpolation
+- FIO-4871: Fixed calculated value for data grid component
+- FIO-5954: Backport memory leak fixes from 'm' release to 4.x
+- FIO-7724 fixed metadata for multiple select
+
 
 ## 4.18.1-rc.4
 ### Changed
