@@ -29,6 +29,7 @@ import {
   comp17,
   comp18,
   comp19,
+  comp20
 } from './fixtures';
 
 // eslint-disable-next-line max-statements
@@ -915,6 +916,33 @@ describe('Select Component', () => {
 
         setTimeout(() => {
           assert.equal(_.isEqual(form.submission.metadata.selectData.select.data, testItems[0]), true);
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should provide correct metadata.selectData for multiple Select', (done) => {
+    const form = _.cloneDeep(comp20);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const values = ['apple', 'orange'];
+      select.setValue(values);
+
+      setTimeout(()=> {
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          const metadata = form.submission.metadata.selectData.select;
+          assert.equal(_.keys(metadata).length, 2);
+          values.forEach((value) => {
+            assert.equal(_.find(select.component.data.values, { value }).label, metadata[value].label);
+          });
           done();
         }, 200);
       }, 200);
