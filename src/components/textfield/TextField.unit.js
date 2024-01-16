@@ -423,6 +423,64 @@ describe('TextField Component', () => {
     testFormatting(values, values[values.length-1]);
   });
 
+  it('Should allow dynamic syntax for input mask', (done) => {
+    const form = _.cloneDeep(comp6);
+    form.components[0].inputMask = 'aa-9{1,3}/9[99]';
+
+    const validValues = [
+      '',
+      'bB-77/555',
+      'bc-789/8',
+      'De-7/8',
+      'tr-81/888'
+    ];
+
+    const invalidValues = [
+      '123',
+      '12-hh/789',
+      'dd-/893',
+      'he-538/',
+      'e1-77/790'
+    ];
+
+    const testValidity = (values, valid, lastValue) => {
+      _.each(values, (value) => {
+        const element = document.createElement('div');
+
+        Formio.createForm(element, form).then(form => {
+          form.setPristine(false);
+
+          const component = form.getComponent('textField');
+          const changed = component.setValue(value);
+          const error = 'Text Field does not match the mask.';
+
+          if (value) {
+            assert.equal(changed, true, 'Should set value');
+          }
+
+          setTimeout(() => {
+            if (valid) {
+              assert.equal(!!component.error, false, 'Should not contain error');
+            }
+            else {
+              assert.equal(!!component.error, true, 'Should contain error');
+              assert.equal(component.error.message, error, 'Should contain error message');
+              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
+              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+            }
+
+            if (_.isEqual(value, lastValue)) {
+              done();
+            }
+          }, 300);
+        }).catch(done);
+      });
+    };
+
+    testValidity(validValues, true);
+    testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
+  });
+
   it('Should provide validation for alphabetic input mask after setting value', (done) => {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = 'a/A/a-a:a.a,aa';
@@ -430,7 +488,7 @@ describe('TextField Component', () => {
     const validValues = [
       '',
       'b/V/r-y:d.d,as',
-      'b/b/r-y:d.d,as',
+      'b/B/r-y:d.d,as',
     ];
 
     const invalidValues = [
@@ -513,7 +571,7 @@ describe('TextField Component', () => {
 
           setTimeout(() => {
             assert.equal(!!component.error, false, 'Should not contain error');
-            assert.equal(component.getValue(), 's/s/s-s:s.s,ss', 'Should set and format value');
+            assert.equal(component.getValue().toLowerCase(), 's/s/s-s:s.s,ss', 'Should set and format value');
 
             if (_.isEqual(value, lastValue)) {
               done();
@@ -638,10 +696,10 @@ describe('TextField Component', () => {
       '46/34-yy',
       'ye/56-op',
       'We/56-op',
+      'te/56-Dp',
     ];
 
     const invalidValues = [
-      'te/56-Dp',
       'te/E6-pp',
       'tdddde/E6-pp',
       'te/E6',
@@ -695,7 +753,7 @@ describe('TextField Component', () => {
 
     const values = [
       { value:'S67gf-+f34cfd', expected: 'S6/73-cf' },
-      { value:'56DDDfdsf23,DDdsf', expected: '56/23-ds' },
+      { value:'56DDDfdsf23,DDdsf', expected: '56/23-DD' },
       { value:'--fs344d.g234df', expected: 'fs/34-dg' },
       { value:'000000000g234df', expected: '00/00-gd' },
     ];
@@ -814,7 +872,7 @@ describe('TextField Component', () => {
           const component = form.getComponent('textField');
           const input = component.refs.input[0];
 
-          assert.equal(input.placeholder, '.._../..', 'Should set placeholder using the char setting');
+          assert.equal(input.inputmask.undoValue, '.._../..', 'Should set placeholder using the char setting');
 
           const changed = component.setValue(value);
           const error = 'Text Field does not match the mask.';

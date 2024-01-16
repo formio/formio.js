@@ -9,6 +9,7 @@ import {
   convertFormatToMoment, getArrayFromComponentPath, unescapeHTML
 } from '../utils/utils';
 import moment from 'moment';
+import Inputmask from 'inputmask';
 import fetchPonyfill from 'fetch-ponyfill';
 const { fetch, Headers, Request } = fetchPonyfill({
   Promise: Promise
@@ -692,6 +693,10 @@ class ValidationChecker {
           }
           else {
             inputMask = setting;
+          }
+
+          if (value && inputMask && typeof value === 'string' && component.type === 'textfield' ) {
+            return Inputmask.isValid(value, inputMask);
           }
 
           inputMask = inputMask ? getInputMask(inputMask) : null;

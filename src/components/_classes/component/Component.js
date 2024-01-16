@@ -2570,11 +2570,13 @@ export default class Component extends Element {
 
     const checkMask = (value) => {
       if (typeof value === 'string') {
-        const placeholderChar = this.placeholderChar;
+        if (this.component.type !== 'textfield') {
+          const placeholderChar = this.placeholderChar;
 
-        value = conformToMask(value, this.defaultMask, { placeholderChar }).conformedValue;
-        if (!FormioUtils.matchInputMask(value, this.defaultMask)) {
-          value = '';
+          value = conformToMask(value, this.defaultMask, { placeholderChar }).conformedValue;
+          if (!FormioUtils.matchInputMask(value, this.defaultMask)) {
+            value = '';
+          }
         }
       }
       else {
@@ -2684,11 +2686,11 @@ export default class Component extends Element {
     const input = this.performInputMapping(this.refs.input[index]);
     const valueMaskInput = this.refs.valueMaskInput;
 
-    if (valueMaskInput?.mask) {
+    if (valueMaskInput?.mask && valueMaskInput.mask.textMaskInputElement) {
       valueMaskInput.mask.textMaskInputElement.update(value);
     }
 
-    if (input.mask) {
+    if (input.mask && input.mask.textMaskInputElement) {
       input.mask.textMaskInputElement.update(value);
     }
     else if (input.widget && input.widget.setValue) {
