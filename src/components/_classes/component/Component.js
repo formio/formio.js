@@ -2940,7 +2940,7 @@ export default class Component extends Element {
 
       if (fromSubmission) {
         // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
-        this.calculatedValue = calculatedValue;
+        this.calculatedValue = fastCloneDeep(calculatedValue);
         return false;
       }
 
@@ -2951,7 +2951,7 @@ export default class Component extends Element {
       }
     }
 
-    this.calculatedValue = calculatedValue;
+    this.calculatedValue = fastCloneDeep(calculatedValue);
 
     if (changed) {
       if (!flags.noPristineChangeOnModified) {

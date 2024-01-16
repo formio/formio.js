@@ -20,7 +20,8 @@ import {
   modalWithRequiredFields,
   withConditionalFieldsAndValidations,
   withLogic,
-  withCollapsibleRowGroups
+  withCollapsibleRowGroups,
+  withAllowCalculateOverride
 } from './fixtures';
 
 describe('DataGrid Component', () => {
@@ -499,5 +500,68 @@ describe('DataGrid modal', () => {
       }, 200);
     })
     .catch(done);
+  });
+});
+
+describe('DataGrid calculated values', () => {
+  it('Should allow override calculated value', (done) => {
+    Formio.createForm(document.createElement('div'), withAllowCalculateOverride)
+      .then((form) => {
+        const select = form.getComponent('select');
+        const dataGrid = form.getComponent('dataGrid');
+
+        assert.deepEqual(dataGrid.getValue(),
+          [{
+            firstName: 'initial 1',
+            lastName: 'initial 2'
+          },
+          {
+            firstName: 'initial 1b',
+            lastName: 'initial 2b'
+          }]
+        );
+
+        select.setValue('a', { modified: true });
+        setTimeout(() => {
+          assert.deepEqual(dataGrid.getValue(),
+            [{
+              firstName: 'A f 1',
+              lastName: 'A l 1'
+            }]
+          );
+
+          select.setValue('b', { modified: true });
+          setTimeout(() => {
+            assert.deepEqual(dataGrid.getValue(),
+              [{
+                firstName: 'B f 1',
+                lastName: 'B l 1'
+              },
+              {
+                firstName: 'B f 2',
+                lastName: 'B l 2'
+              }]
+            );
+
+            const firstName = form.getComponent(['dataGrid', 0, 'firstName']);
+            firstName.setValue('first name', { modified: true });
+            select.setValue('c', { modified: true });
+            setTimeout(() => {
+              assert.deepEqual(dataGrid.getValue(),
+                [{
+                  firstName: 'first name',
+                  lastName: 'B l 1'
+                },
+                {
+                  firstName: 'B f 2',
+                  lastName: 'B l 2'
+                }]
+              );
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
   });
 });

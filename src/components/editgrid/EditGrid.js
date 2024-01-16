@@ -673,6 +673,11 @@ export default class EditGridComponent extends NestedArrayComponent {
         : this.editRows.reduce((result, row) => result.concat(row.components || []), []);
   }
 
+  destroy(all = false) {
+    this.calculatedValue = undefined;
+    super.destroy(all);
+  }
+
   destroyComponents(all = false, rowIndex = 0) {
     if (this.builderMode) {
       return super.destroyComponents(all);
