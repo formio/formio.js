@@ -276,7 +276,8 @@ export class Formio {
         element.parentNode.insertBefore(wrapper, element);
 
         // If we include the libraries, then we will attempt to run this in shadow dom.
-        if (Formio.config.includeLibs && (typeof wrapper.attachShadow === 'function') && !Formio.config.premium) {
+        const useShadowDom = Formio.config.includeLibs && (typeof wrapper.attachShadow === 'function');
+        if (useShadowDom) {
             wrapper = wrapper.attachShadow({
                 mode: 'open'
             });
@@ -286,8 +287,11 @@ export class Formio {
         element.parentNode.removeChild(element);
         wrapper.appendChild(element);
 
+        // If this is inside of shadow dom, then we need to add the styles and scripts to the shadow dom.
+        const libWrapper = useShadowDom ? wrapper : document.body;
+
         // Load the renderer styles.
-        await Formio.addStyles(wrapper, Formio.config.embedCSS || `${Formio.cdn.js}/formio.embed.css`);
+        await Formio.addStyles(libWrapper, Formio.config.embedCSS || `${Formio.cdn.js}/formio.embed.css`);
 
         // Add a loader.
         Formio.addLoader(wrapper);
@@ -295,7 +299,7 @@ export class Formio {
         const formioSrc = Formio.config.full ? 'formio.full' : 'formio.form';
         const renderer = Formio.config.debug ? formioSrc : `${formioSrc}.min`;
         Formio.FormioClass = await Formio.addScript(
-            wrapper,
+            libWrapper,
             Formio.formioScript(Formio.config.script || `${Formio.cdn.js}/${renderer}.js`, builder),
             'Formio',
             builder ? 'isBuilder' : 'isRenderer'
@@ -319,7 +323,7 @@ export class Formio {
 
         // Add libraries if they wish to include the libs.
         if (Formio.config.template && Formio.config.includeLibs) {
-            await Formio.addLibrary(wrapper, Formio.config.libs[Formio.config.template], Formio.config.template);
+            await Formio.addLibrary(libWrapper, Formio.config.libs[Formio.config.template], Formio.config.template);
         }
 
         // Add the premium modules.
@@ -332,11 +336,11 @@ export class Formio {
             for (const name in Formio.config.modules) {
                 const lib = Formio.config.modules[name];
                 lib.use = lib.use || true;
-                await Formio.addLibrary(wrapper, lib, name);
+                await Formio.addLibrary(libWrapper, lib, name);
             }
         }
 
-        await Formio.addStyles(wrapper, Formio.formioScript(Formio.config.style || `${Formio.cdn.js}/${renderer}.css`, builder));
+        await Formio.addStyles(libWrapper, Formio.formioScript(Formio.config.style || `${Formio.cdn.js}/${renderer}.css`, builder));
         if (Formio.config.before) {
             await Formio.config.before(Formio.FormioClass, element, Formio.config);
         }
