@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.19.0-rc.2]
+ - FIO-7224: Apply bootstrap templates
+ - Fix tests
+
 ## 4.19.0-rc.1
 ### Changed
  - Updated @formio/choices.js@10.2.1
