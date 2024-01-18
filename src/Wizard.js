@@ -1013,7 +1013,7 @@ export default class Wizard extends Webform {
   rebuild() {
     const currentPage = this.page;
     const setCurrentPage = () => this.setPage(currentPage);
-    super.rebuild().then(setCurrentPage.bind(this));
+    super.rebuild().then(setCurrentPage);
   }
 
   checkValidity(data, dirty, row, currentPageOnly) {
