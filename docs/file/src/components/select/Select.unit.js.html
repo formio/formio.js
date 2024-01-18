@@ -218,7 +218,9 @@ import {
   comp15,
   comp16,
   comp17,
-  comp18
+  comp18,
+  comp19,
+  comp20
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Select Component&apos;, () =&gt; {
@@ -1106,6 +1108,55 @@ describe(&apos;Select Component&apos;, () =&gt; {
           assert.equal(_.isEqual(form.submission.metadata.selectData.select.data, testItems[0]), true);
           done();
         }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;Should provide correct metadata.selectData for multiple Select&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp20);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const select = form.getComponent(&apos;select&apos;);
+      const values = [&apos;apple&apos;, &apos;orange&apos;];
+      select.setValue(values);
+
+      setTimeout(()=&gt; {
+        const submit = form.getComponent(&apos;submit&apos;);
+        const clickEvent = new Event(&apos;click&apos;);
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          const metadata = form.submission.metadata.selectData.select;
+          assert.equal(_.keys(metadata).length, 2);
+          values.forEach((value) =&gt; {
+            assert.equal(_.find(select.component.data.values, { value }).label, metadata[value].label);
+          });
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;OnBlur validation should work properly with Select component&apos;, function(done) {
+    this.timeout(0);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, comp19).then(form =&gt; {
+      const select = form.components[0];
+      select.setValue(&apos;banana&apos;);
+      select.focusableElement.focus();
+      select.pristine = false;
+
+      setTimeout(() =&gt; {
+        assert(!select.error, &apos;Select should be valid while changing&apos;);
+        select.focusableElement.dispatchEvent(new Event(&apos;blur&apos;));
+
+        setTimeout(() =&gt; {
+          assert(select.error, &apos;Should set error after Select component was blurred&apos;);
+          done();
+        }, 500);
       }, 200);
     }).catch(done);
   });

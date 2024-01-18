@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.19.0-rc.2]
+## 4.19.0-rc.2
+### Changed
+ - FIO-7786: Fixing Datagrid issue in Settings JSON
  - FIO-7224: Apply bootstrap templates
  - Fix tests
  - FIO-7724 fixed metadata for multiple select

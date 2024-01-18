@@ -1612,7 +1612,7 @@ describe(&apos;Webform tests&apos;, function() {
         }
       ]
     }).then(() =&gt; {
-      const label = formElement.querySelector(&apos;.col-form-label&apos;);
+      const label = formElement.querySelector(&apos;.control-label&apos;);
       assert.equal(label.innerHTML.trim(), &apos;Spanish Label&apos;);
       done();
     }).catch((err) =&gt; {
@@ -1705,7 +1705,7 @@ describe(&apos;Webform tests&apos;, function() {
       ]
     }).then(() =&gt; {
       translateForm.language = &apos;es&apos;;
-      const label = formElement.querySelector(&apos;.col-form-label&apos;);
+      const label = formElement.querySelector(&apos;.control-label&apos;);
       assert.equal(label.innerHTML.trim(), &apos;Spanish Label&apos;);
       done();
     }).catch(done);
@@ -1739,7 +1739,7 @@ describe(&apos;Webform tests&apos;, function() {
       ]
     }).then(() =&gt; {
       translateForm.language = &apos;fr&apos;;
-      const label = formElement.querySelector(&apos;.col-form-label&apos;);
+      const label = formElement.querySelector(&apos;.control-label&apos;);
       assert.equal(label.innerHTML.trim(), &apos;French Label&apos;);
       done();
     }).catch(done);
@@ -1764,7 +1764,7 @@ describe(&apos;Webform tests&apos;, function() {
       ]
     }).then(() =&gt; {
       translateForm.addLanguage(&apos;es&apos;, { &apos;Default Label&apos;: &apos;Spanish Label&apos; }, true);
-      const label = formElement.querySelector(&apos;.col-form-label&apos;);
+      const label = formElement.querySelector(&apos;.control-label&apos;);
       assert.equal(label.innerHTML.trim(), &apos;Spanish Label&apos;);
       done();
     }).catch(done);
@@ -1797,10 +1797,10 @@ describe(&apos;Webform tests&apos;, function() {
         }, done)
         .then(() =&gt; {
           expect(form.options.language).to.equal(&apos;ru&apos;);
-          expect(formElement.querySelector(&apos;.col-form-label&apos;).innerHTML.trim()).to.equal(&apos;Russian Label&apos;);
+          expect(formElement.querySelector(&apos;.control-label&apos;).innerHTML.trim()).to.equal(&apos;Russian Label&apos;);
           form.redraw();
           expect(form.options.language).to.equal(&apos;ru&apos;);
-          expect(formElement.querySelector(&apos;.col-form-label&apos;).innerHTML.trim()).to.equal(&apos;Russian Label&apos;);
+          expect(formElement.querySelector(&apos;.control-label&apos;).innerHTML.trim()).to.equal(&apos;Russian Label&apos;);
           done();
         }, done)
         .catch(done);
@@ -1926,7 +1926,7 @@ describe(&apos;Webform tests&apos;, function() {
       assert.equal(translateForm.i18next.language, &apos;es&apos;);
       assert.equal(translateForm.i18next, instance);
 
-      const label = formElement.querySelector(&apos;.col-form-label&apos;);
+      const label = formElement.querySelector(&apos;.control-label&apos;);
       assert.equal(label.innerHTML.trim(), &apos;Spanish Label&apos;);
     });
   });
