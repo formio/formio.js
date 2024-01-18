@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.19.0-rc.2]
  - FIO-7224: Apply bootstrap templates
  - Fix tests
+ - FIO-7724 fixed metadata for multiple select
 
 ## 4.19.0-rc.1
 ### Changed
@@ -21,8 +22,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7544: Fixes an issue where scripts inside HTML component will be executed during interpolation
 - FIO-4871: Fixed calculated value for data grid component
 - FIO-5954: Backport memory leak fixes from 'm' release to 4.x
-- FIO-7724 fixed metadata for multiple select
-
 
 ## 4.18.1-rc.4
 ### Changed
