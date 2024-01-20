@@ -567,6 +567,7 @@ export default class Element {
       token: Formio.getToken({
         decode: true
       }),
+      options: this.options,
       config: this.root && this.root.form && this.root.form.config
         ? this.root.form.config
         : this.options?.formConfig

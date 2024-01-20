@@ -873,6 +873,7 @@ export default class Component extends Element {
     return !this.component.label ||
       ((!this.isInDataGrid && this.component.hideLabel) ||
       (this.isInDataGrid && !this.component.dataGridLabel) ||
+      this.options.floatingLabels ||
       this.options.inputsOnly) && !this.builderMode;
   }
 
