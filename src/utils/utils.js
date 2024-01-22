@@ -447,22 +447,6 @@ export function unescapeHTML(str) {
 }
 
 /**
- * Escape HTML characters like <, >, & and etc.
- * @param str
- * @returns {string}
- */
-export function escapeHTML(html) {
-  if (html) {
-    return html.replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
-  return '';
-}
-
-/**
  * Make HTML element from string
  * @param str
  * @param selector
