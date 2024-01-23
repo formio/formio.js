@@ -77,7 +77,7 @@ import formWithCheckboxRadioType from '../test/forms/formWithCheckboxRadioType';
 import formWithFormController from '../test/forms/formWithFormController';
 import calculateValueOnServerForEditGrid from '../test/forms/calculateValueOnServerForEditGrid';
 import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
-import formWithDeeplyNestedConditionalComps from '../test/forms/formWithDeeplyNestedConditionalComps';
+import formWithValidation from '../test/forms/formWithValidation';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -154,6 +154,85 @@ describe('Webform tests', function() {
         done();
       }, 500);
     }).catch((err) => done(err));
+  it('Should fire error and submitError events with args on attempt to submit invalid form', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formWithValidation).then(() => {
+      let errorEvents = 0;
+      let submitErrorEvents = 0;
+      form.on('error', (arg) => {
+        assert.equal(!!arg, true, 'Error event should have argument');
+        errorEvents = errorEvents + 1;
+      });
+
+      form.on('submitError', (arg) => {
+        assert.equal(!!arg, true, 'submitError event should have argument');
+        submitErrorEvents = submitErrorEvents + 1;
+      });
+
+      const clickEvent = new Event('click');
+      const submitBtn = form.element.querySelector('[name="data[submit]"]');
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.equal(form.errors.length, 1);
+        assert.equal(errorEvents, 1);
+        assert.equal(submitErrorEvents, 1);
+        done();
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should keep non-component server errors visible after changes in the form', (done) => {
+    const element = document.createElement('div');
+    const form = fastCloneDeep(formWithValidation);
+    form.components[0].validate = {};
+
+    const originalMakeRequest = Formio.makeRequest;
+    const errorText = 'Server error';
+    Formio.makeRequest = function() {
+      return new Promise((res, rej) => {
+        setTimeout(() => {
+          console.log(8888);
+          rej(errorText);
+        }, 50);
+      });
+    };
+
+    Formio.createForm(element, form)
+      .then(instance => {
+        instance.formio = new Formio('http://localhost:3000/test');
+        assert.equal(instance.errors.length, 0);
+        assert.equal(!!(instance.serverErrors && instance.serverErrors.length), false);
+        assert.equal(!!(instance.refs.errorRef && instance.refs.errorRef.length), false);
+
+        const clickEvent = new Event('click');
+        const submitBtn = instance.element.querySelector('[name="data[submit]"]');
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(instance.errors.length, 0);
+          assert.equal(instance.serverErrors.length, 1);
+          assert.equal(instance.refs.errorRef.length, 1);
+          assert.equal(instance.refs.errorRef[0].textContent.trim(), errorText);
+
+          const inputEvent = new Event('input');
+          const textField = instance.element.querySelector('input[name="data[name]"]');
+          textField.value = 'test';
+          textField.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(instance.errors.length, 0);
+            assert.equal(instance.serverErrors.length, 1);
+            assert.equal(instance.refs.errorRef.length, 1);
+            assert.equal(instance.refs.errorRef[0].textContent.trim(), errorText);
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 400);
+        }, 400);
+      })
+      .catch(done);
   });
 
   it('Should execute form controller', function(done) {
