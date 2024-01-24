@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import fetchPonyfill from 'fetch-ponyfill';
 import jsonLogic from 'json-logic-js';
-import moment from 'moment-timezone/moment-timezone';
+import * as moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
 import NativePromise from 'native-promise-only';
