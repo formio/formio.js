@@ -41,9 +41,11 @@ function s3(formio) {
           else {
             xhr.openAndSetHeaders('PUT', response.signed);
             xhr.setRequestHeader('Content-Type', file.type);
-            Object.keys(response.data.headers).forEach((key) => {
-              xhr.setRequestHeader(key, response.data.headers[key]);
-            });
+            if (response.data.headers) {
+              Object.keys(response.data.headers).forEach((key) => {
+                xhr.setRequestHeader(key, response.data.headers[key]);
+              });
+            }
             return file;
           }
         }
