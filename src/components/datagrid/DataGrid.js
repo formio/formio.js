@@ -148,6 +148,18 @@ export default class DataGridComponent extends NestedArrayComponent {
     }));
   }
 
+  isEmpty(value = this.dataValue) {
+    const isEmpty = super.isEmpty(value);
+
+    if (this.components?.length) {
+      return this.components.reduce((isEmpty, component) => {
+        return isEmpty && component.isEmpty();
+      }, true);
+    }
+
+    return isEmpty;
+  }
+
   /**
    * Split rows into chunks.
    * @param {Number[]} groups - array of numbers where each item is size of group
@@ -482,12 +494,14 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   removeRow(index) {
-    this.splice(index, { isReordered: true });
+    const makeEmpty = index === 0 && this.rows.length === 1;
+    const flags = { isReordered: !makeEmpty, resetValue: makeEmpty };
+    this.splice(index, flags);
     this.emit('dataGridDeleteRow', { index });
     const [row] = this.rows.splice(index, 1);
     this.removeRowComponents(row);
     this.updateRowsComponents(index);
-    this.setValue(this.dataValue, { isReordered: true });
+    this.setValue(this.dataValue, flags);
     this.redraw();
   }
 

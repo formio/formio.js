@@ -232,6 +232,11 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-7710: fixed the radio component check that causes an error
  - FIO-7466: Make tooltips show non-rendered HTML
  - FIO-7717: Adding license to the Formio types
+ - FIO-7631: fixes an issue where timezone is added to the date in PDF download for TextField with CalendarWidget
+ - FIO-4242: updated input mask for TextField
+ - FIO-7724: fixed metadata for multiple select
+ - FIO-4871: fixed calculated value for data grid component
+ - FIO-7591: error messages wrapping on letter instead of on word
 
 ### Changed
  - Add capability for adding sanitize profiles through sanitizeConfig in options

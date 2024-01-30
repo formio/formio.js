@@ -1395,6 +1395,7 @@ export default class SelectComponent extends ListComponent {
               templateData[dataValueItemValue] = this.templateData[dataValueItemValue];
             });
           }
+          templateData[value] = this.templateData[value];
         }
 
         _.set(submission.metadata.selectData, this.path, templateData);

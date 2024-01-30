@@ -963,15 +963,7 @@ export default class Component extends Element {
   renderTemplate(name, data = {}, modeOption) {
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     const mode = modeOption || this.options.renderMode || 'form';
-    data.component = {
-      ...this.component,
-    };
-
-    // Escape HTML provided in component description and render it as a string instead
-    if (this.component.description) {
-      data.component.description = FormioUtils.escapeHTML(this.component.description);
-    }
-
+    data.component = this.component;
     data.self = this;
     data.options = this.options;
     data.readOnly = this.options.readOnly;
@@ -1225,12 +1217,12 @@ export default class Component extends Element {
                                 .replace(/(?:\r\n|\r|\n)/g, '<br />');
 
         this.tooltips[index] = tippy(tooltip, {
-          allowHTML: false,
+          allowHTML: true,
           trigger: 'mouseenter click focus',
           placement: 'right',
           zIndex: 10000,
           interactive: true,
-          content: this.t(tooltipText, { _userInput: true }),
+          content: this.t(this.sanitize(tooltipText), { _userInput: true }),
         });
       }
     });
@@ -2572,11 +2564,13 @@ export default class Component extends Element {
 
     const checkMask = (value) => {
       if (typeof value === 'string') {
-        const placeholderChar = this.placeholderChar;
+        if (this.component.type !== 'textfield') {
+          const placeholderChar = this.placeholderChar;
 
-        value = conformToMask(value, this.defaultMask, { placeholderChar }).conformedValue;
-        if (!FormioUtils.matchInputMask(value, this.defaultMask)) {
-          value = '';
+          value = conformToMask(value, this.defaultMask, { placeholderChar }).conformedValue;
+          if (!FormioUtils.matchInputMask(value, this.defaultMask)) {
+            value = '';
+          }
         }
       }
       else {
@@ -2686,11 +2680,11 @@ export default class Component extends Element {
     const input = this.performInputMapping(this.refs.input[index]);
     const valueMaskInput = this.refs.valueMaskInput;
 
-    if (valueMaskInput?.mask) {
+    if (valueMaskInput?.mask && valueMaskInput.mask.textMaskInputElement) {
       valueMaskInput.mask.textMaskInputElement.update(value);
     }
 
-    if (input.mask) {
+    if (input.mask && input.mask.textMaskInputElement) {
       input.mask.textMaskInputElement.update(value);
     }
     else if (input.widget && input.widget.setValue) {
@@ -2874,11 +2868,18 @@ export default class Component extends Element {
     const shouldBeCleared = !this.visible && clearOnHide;
     const allowOverride = _.get(this.component, 'allowCalculateOverride', false);
 
+    if (shouldBeCleared) {
+      // remove calculated value so that the value is recalculated once component becomes visible
+      if (this.hasOwnProperty('calculatedValue') && allowOverride) {
+        _.unset(this, 'calculatedValue');
+      }
+      return false;
+    }
+
     // Handle all cases when calculated values should not fire.
     if (
       (this.options.readOnly && !this.options.pdf && !this.component.calculateValue) ||
       !(this.component.calculateValue || this.component.calculateValueVariable) ||
-      shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
       (flags.dataSourceInitialLoading && allowOverride)
     ) {
@@ -2912,7 +2913,7 @@ export default class Component extends Element {
         return false;
       }
 
-      const firstPass = (this.calculatedValue === undefined);
+      const firstPass = (this.calculatedValue === undefined) || flags.resetValue;
       if (firstPass) {
         this.calculatedValue = null;
       }
@@ -2937,7 +2938,7 @@ export default class Component extends Element {
 
       if (fromSubmission) {
         // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
-        this.calculatedValue = calculatedValue;
+        this.calculatedValue = fastCloneDeep(calculatedValue);
         return false;
       }
 
@@ -2948,7 +2949,7 @@ export default class Component extends Element {
       }
     }
 
-    this.calculatedValue = calculatedValue;
+    this.calculatedValue = fastCloneDeep(calculatedValue);
 
     if (changed) {
       if (!flags.noPristineChangeOnModified) {
