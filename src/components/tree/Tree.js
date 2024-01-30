@@ -78,11 +78,12 @@ export default class TreeComponent extends NestedDataComponent {
     return !!this.options.editComponent && !!this.options.editForm && this.component.key === 'defaultValue';
   }
 
-  destroy(all = false) {
+  destroy() {
+    super.destroy();
+
     if (!this.builderMode) {
-      this.removeComponents(this._viewComponents, all);
+      this.removeComponents(this._viewComponents);
     }
-    super.destroy(all);
   }
 
   createComponents(data, node) {
@@ -102,8 +103,8 @@ export default class TreeComponent extends NestedDataComponent {
     return components;
   }
 
-  removeComponents(components, all = false) {
-    return components.map((component) => component.destroy(all));
+  removeComponents(components) {
+    return components.map((component) => component.destroy());
   }
 
   render() {

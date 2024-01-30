@@ -281,9 +281,9 @@ export default class PDFBuilder extends WebformBuilder {
     return this.webform;
   }
 
-  destroy(all = false) {
-    super.destroy(all);
-    this.webform.destroy(all);
+  destroy(deleteFromGlobal) {
+    super.destroy(deleteFromGlobal);
+    this.webform.destroy(deleteFromGlobal);
   }
 
   // d8b 8888888888                                                                              888
