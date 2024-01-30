@@ -1326,11 +1326,7 @@ export default class Component extends Element {
   detach() {
     // First iterate through each ref and delete the component so there are no dangling component references.
     _.each(this.refs, (ref) => {
-      if (!ref) {
-        return;
-      }
-
-      if (window && typeof ref === window.NodeList) {
+      if (typeof ref === NodeList) {
         ref.forEach((elem) => {
           delete elem.component;
         });
