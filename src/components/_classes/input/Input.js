@@ -309,23 +309,8 @@ export default class Input extends Multivalue {
     return widget;
   }
 
-  teardown() {
-    if (this.element && this.element.widget) {
-      this.element.widget.destroy();
-      delete this.element.widget;
-    }
-    if (this.refs && this.refs.input) {
-      for (let i = 0; i <= this.refs.input.length; i++) {
-        const widget = this.getWidget(i);
-        if (widget) {
-          widget.destroy();
-        }
-      }
-    }
-    super.teardown();
-  }
-
   detach() {
+    super.detach();
     if (this.refs && this.refs.input) {
       for (let i = 0; i <= this.refs.input.length; i++) {
         const widget = this.getWidget(i);
@@ -335,6 +320,5 @@ export default class Input extends Multivalue {
       }
     }
     this.refs.input = [];
-    super.detach();
   }
 }

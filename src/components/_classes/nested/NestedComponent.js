@@ -393,7 +393,6 @@ export default class NestedComponent extends Field {
    */
   addComponents(data, options) {
     data = data || this.data;
-    this.components = this.components || [];
     options = options || this.options;
     if (options.components) {
       this.components = options.components;
@@ -414,7 +413,6 @@ export default class NestedComponent extends Field {
    */
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
-    this.components = this.components || [];
     if (this.options.parentPath) {
       component.shouldIncludeSubFormPath = true;
     }
@@ -525,9 +523,9 @@ export default class NestedComponent extends Field {
    * @param {Component} component - The component to remove from the components.
    * @param {Array<Component>} components - An array of components to remove this component from.
    */
-  removeComponent(component, components, all = false) {
+  removeComponent(component, components) {
     components = components || this.components;
-    component.destroy(all);
+    component.destroy();
     _.remove(components, { id: component.id });
   }
 
@@ -725,14 +723,14 @@ export default class NestedComponent extends Field {
     super.clear();
   }
 
-  destroy(all = false) {
-    this.destroyComponents(all);
-    super.destroy(all);
+  destroy() {
+    this.destroyComponents();
+    super.destroy();
   }
 
-  destroyComponents(all = false) {
+  destroyComponents() {
     const components = this.getComponents().slice();
-    components.forEach((comp) => this.removeComponent(comp, this.components, all));
+    components.forEach((comp) => this.removeComponent(comp, this.components));
     this.components = [];
   }
 

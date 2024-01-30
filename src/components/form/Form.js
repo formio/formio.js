@@ -364,13 +364,13 @@ export default class FormComponent extends Component {
     && this.formObj._vid !== this.subFormRevision;
   }
 
-  destroy(all = false) {
+  destroy() {
     if (this.subForm) {
-      this.subForm.destroy(all);
+      this.subForm.destroy();
       this.subForm = null;
       this.subFormReady = null;
     }
-    super.destroy(all);
+    super.destroy();
   }
 
   redraw() {
