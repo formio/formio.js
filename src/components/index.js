@@ -31,7 +31,6 @@ import PasswordComponent from './password/Password';
 import PhoneNumberComponent from './phonenumber/PhoneNumber';
 import RadioComponent from './radio/Radio';
 import ReCaptchaComponent from './recaptcha/ReCaptcha';
-import ResourceComponent from './resource/Resource';
 import SelectBoxesComponent from './selectboxes/SelectBoxes';
 import SelectComponent from './select/Select';
 import SignatureComponent from './signature/Signature';
@@ -81,7 +80,6 @@ export default {
   phoneNumber: PhoneNumberComponent,
   radio: RadioComponent,
   recaptcha: ReCaptchaComponent,
-  resource: ResourceComponent,
   select: SelectComponent,
   selectboxes: SelectBoxesComponent,
   signature: SignatureComponent,
