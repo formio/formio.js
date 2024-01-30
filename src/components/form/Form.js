@@ -699,7 +699,7 @@ export default class FormComponent extends Component {
   }
 
   isEmpty(value = this.dataValue) {
-    return value === null || _.isEqual(value, this.emptyValue) || (this.areAllComponentsEmpty(value.data) && !value._id);
+    return value === null || _.isEqual(value, this.emptyValue) || (this.areAllComponentsEmpty(value?.data) && !value?._id);
   }
 
   areAllComponentsEmpty(data) {
