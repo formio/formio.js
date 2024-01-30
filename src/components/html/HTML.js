@@ -45,14 +45,15 @@ export default class HTMLComponent extends Component {
     }
 
     const submission = _.get(this.root, 'submission', {});
-    const content = this.component.content ? this.interpolate(
-      this.sanitize(this.component.content, this.shouldSanitizeValue),
+    const content = this.sanitize(this.component.content ? this.interpolate(
+      this.component.content,
       {
         metadata: submission.metadata || {},
         submission: submission,
         data: this.rootValue,
         row: this.data
-    }) : '';
+      }) : '',
+      this.shouldSanitizeValue);
     return content;
   }
 
