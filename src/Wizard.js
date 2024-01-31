@@ -1019,6 +1019,12 @@ export default class Wizard extends Webform {
     return super.redraw();
   }
 
+  rebuild() {
+    const currentPage = this.page;
+    const setCurrentPage = () => this.setPage(currentPage);
+    return super.rebuild().then(setCurrentPage);
+  }
+
   checkValidity(data, dirty, row, currentPageOnly, childErrors = []) {
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');

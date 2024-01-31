@@ -1193,6 +1193,25 @@ describe('Wizard tests', () => {
     .catch((err) => done(err));
   });
 
+  it('Should stay on current page when changing language', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement, { language: 'en' });
+    wizard.setForm(wizardTestForm.form).then(() => {
+      const checkPage = (page) => {
+        assert.equal(wizard.page, page, `Page ${page + 1} should be the current page`);
+      };
+
+      Harness.clickElement(wizard, wizard.refs[`${wizard.wizardKey}-link`][2]);
+      checkPage(2);
+
+      wizard.language = 'es';
+      setTimeout(() => {
+        checkPage(2);
+        done();
+      }, 50);
+    });
+  });
+
   it('Should correctly set values in HTML render mode', function(done) {
     const formElement = document.createElement('div');
     const formHTMLMode = new Wizard(formElement, {

@@ -19,3 +19,15 @@ jobs:
           command: npm test
       - store_artifacts:
           path: test-results.xml
+
+#########################################################
+## Disables Config (Comment/Remove to re-enable CircleCI)
+#########################################################
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: /.*/

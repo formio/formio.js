@@ -1126,7 +1126,7 @@ export default class Webform extends NestedDataComponent {
       errors = [errors];
     }
 
-    errors = errors.concat(this.serverErrors || []);
+    errors = errors.concat(this.customErrors);
 
     if (!errors.length) {
       this.setAlert(false);
@@ -1255,7 +1255,7 @@ export default class Webform extends NestedDataComponent {
 
     this.submitting = false;
     this.setPristine(false);
-    this.emit('submitError', error);
+    this.emit('submitError', error || this.errors);
 
     // Allow for silent cancellations (no error message, no submit button error state)
     if (error && error.silent) {
@@ -1263,10 +1263,13 @@ export default class Webform extends NestedDataComponent {
       return false;
     }
 
-    this.showErrors(error, true);
+    const errors = this.showErrors(error, true);
+
     if (this.root && this.root.alert) {
       this.scrollIntoView(this.root.alert);
     }
+
+    return errors;
   }
 
   /**
@@ -1294,7 +1297,9 @@ export default class Webform extends NestedDataComponent {
 
     this.loading = false;
     if (this.submitted) {
-      this.showErrors(errors);
+      // show server errors while they are not cleaned/fixed
+      const nonComponentServerErrors = _.filter(this.serverErrors || [], err => !err.component && !err.path);
+      this.showErrors(nonComponentServerErrors.length ? nonComponentServerErrors : null);
     }
 
     // See if we need to save the draft of the form.

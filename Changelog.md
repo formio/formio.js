@@ -185,7 +185,18 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 
   - With the 5.x renderer, all templates are now stored within a separate repo, and are included as a dependency for this renderer. 
 
-## 5.0.0-rc.27
+## [Unreleased: 5.0.0-rc.40]
+### Fixed
+ - FIO-7525: fixed an issue where new conditional logic based on select boxes does not work
+ - Fix broken file exclusion patterns
+ - FIO-7146: disable circleci jobs
+ - Pass options to the deleteFile method for file components with URL storage
+ - Wizard: Keep current page after language is changed
+ - FIO-7580, FIO-6475: fixed error events issues and an issue where general server errors quickly disappear from ui
+ - Add conditional to check for new headers object
+ - FIO-7764: Fixes a typo in File component settings
+
+## 5.0.0-rc.37
 ### Fixed
  - FIO-5967: fixed issue with incorrect string representation for object type
  - FIO-7110: when 'use original revision' is enabled for nested form, submission still displays in current form revision pdfs
