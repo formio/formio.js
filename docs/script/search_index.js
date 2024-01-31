@@ -1470,12 +1470,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/form.js~form#teardown",
-    "class/src/Form.js~Form.html#instance-method-teardown",
-    "src/Form.js~Form#teardown",
-    "method"
-  ],
-  [
     "src/form.js~form.embed",
     "class/src/Form.js~Form.html#static-method-embed",
     "src/Form.js~Form.embed",
