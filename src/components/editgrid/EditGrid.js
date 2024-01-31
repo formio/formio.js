@@ -1309,7 +1309,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     const changed = this.hasChanged(value, this.dataValue);
     flags.noValidate = !changed;
-    if (this.parent) {
+    if (this.parent && !(this.options.server && !this.parent.parentVisible)) {
       this.parent.checkComponentConditions();
     }
     this.dataValue = value;
