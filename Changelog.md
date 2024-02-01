@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7580, FIO-6475: fixed error events issues and an issue where general server errors quickly disappear from ui
  - Add conditional to check for new headers object
  - FIO-7764: Fixes a typo in File component settings
+ - FIO-7773: Adding floating labels to Bootstrap 5 template
 
 ## 5.0.0-rc.37
 ### Fixed
