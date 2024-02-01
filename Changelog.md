@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.19.0-rc.6]
+## 4.19.0-rc.6
 ### Changed
  - Revert "FIO-7466: Fixed tooltips issue"
    
