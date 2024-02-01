@@ -74,6 +74,7 @@ import formWithCheckboxRadioType from '../test/forms/formWithCheckboxRadioType';
 import formWithFormController from '../test/forms/formWithFormController';
 import calculateValueOnServerForEditGrid from '../test/forms/calculateValueOnServerForEditGrid';
 import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
+import formWithDeeplyNestedConditionalComps from '../test/forms/formWithDeeplyNestedConditionalComps';
 import formWithValidation from '../test/forms/formWithValidation';
 
 global.requestAnimationFrame = (cb) => cb();
@@ -86,6 +87,72 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should not lose values of conditionally visible components on setValue when server option is passed', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, formWithDeeplyNestedConditionalComps, { server: true }).then((form) => {
+      const submission = {
+        data: {
+          submit: false,
+          radio1: 'yes',
+          container: {
+            checkbox: true,
+            checkboxInPanelInHiddenContainer: true,
+            textField: 'test',
+            editGrid: [
+              {
+                number: 1,
+                textField: 'test2',
+              },
+              {
+                number: 2,
+              },
+            ],
+          },
+        },
+      };
+
+      form.setValue(fastCloneDeep(submission), { sanitize: true });
+      setTimeout(() => {
+        assert.deepEqual(form.data, submission.data);
+        assert.deepEqual(form.getValue(), submission);
+        done();
+      }, 500);
+    }).catch((err) => done(err));
+  });
+
+  it('Should not lose values of conditionally visible components on setValue when server option is not passed', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, formWithDeeplyNestedConditionalComps).then((form) => {
+      const submission = {
+        data: {
+          submit: false,
+          radio1: 'yes',
+          container: {
+            checkbox: true,
+            checkboxInPanelInHiddenContainer: true,
+            textField: 'test',
+            editGrid: [
+              {
+                number: 1,
+                textField: 'test2',
+              },
+              {
+                number: 2,
+              },
+            ],
+          },
+        },
+      };
+      form.setValue(fastCloneDeep(submission), { sanitize: true });
+
+      setTimeout(() => {
+        assert.deepEqual(form.data, submission.data);
+        assert.deepEqual(form.getValue(), submission);
+        done();
+      }, 500);
+    }).catch((err) => done(err));
+  });
 
   it('Should fire error and submitError events with args on attempt to submit invalid form', function(done) {
     const formElement = document.createElement('div');
