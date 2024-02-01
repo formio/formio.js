@@ -23,7 +23,7 @@ export default [
     weight: 100,
     type: 'checkbox',
     label: 'Validate When Hidden',
-    tooltip: 'When enabled, the component is validated when it is hidden/conditionally hidden. Vaildation errors are displayed in the error alert on the form submission.',
+    tooltip: 'Validates the component when it is hidden/conditionally hidden. Vaildation errors are displayed in the error alert on the form submission.',
     key: 'validateWhenHidden',
     input: true
   },
