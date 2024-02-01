@@ -77,6 +77,7 @@ import formWithCheckboxRadioType from '../test/forms/formWithCheckboxRadioType';
 import formWithFormController from '../test/forms/formWithFormController';
 import calculateValueOnServerForEditGrid from '../test/forms/calculateValueOnServerForEditGrid';
 import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
+import formWithDeeplyNestedConditionalComps from '../test/forms/formWithDeeplyNestedConditionalComps';
 import formWithValidation from '../test/forms/formWithValidation';
 import formWithNotAllowedTags from '../test/forms/formWithNotAllowedTags';
 import formWithValidateWhenHidden from '../test/forms/formWithValidateWhenHidden';
@@ -4883,7 +4884,6 @@ describe('Webform tests', function() {
       }).catch((err) => done(err));
     });
   });
-  
 
 // describe('Test the saveDraft and restoreDraft feature', () => {
 //   APIMock.submission('https://savedraft.form.io/myform', {
