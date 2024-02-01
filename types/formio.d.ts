@@ -34,6 +34,7 @@ export class Formio {
   static namespace: string;
   static formOnly?: boolean;
   static rulesEntities: any;
+  static options: any;
   delete(type: any, opts?: any): any;
   index(type: any, query?: any, opts?: any): any;
   save(type: any, data: any, opts?: any): any;
