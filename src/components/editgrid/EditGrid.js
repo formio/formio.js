@@ -1269,8 +1269,10 @@ export default class EditGridComponent extends NestedArrayComponent {
       return false;
     }
     else if (rowsEditing && this.saveEditMode) {
-      this.setCustomValidity(this.t(this.errorMessage('unsavedRowsError')), dirty);
-      return false;
+      if (!this.component.openWhenEmpty) {
+        this.setCustomValidity(this.t(this.errorMessage('unsavedRowsError')), dirty);
+        return false;
+      }
     }
 
     const message = this.invalid || this.invalidMessage(data, dirty);
