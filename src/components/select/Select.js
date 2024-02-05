@@ -957,10 +957,6 @@ export default class SelectComponent extends ListComponent {
       this.addFocusBlurEvents(input);
       this.triggerUpdate(null, true);
 
-      if (this.visible) {
-        this.setItems(this.selectOptions || []);
-      }
-
       this.focusableElement = input;
 
       if (this.component.dataSrc === 'custom') {
