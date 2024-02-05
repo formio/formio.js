@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.19.1-rc.1]
+### Changed
+ - FIO-7632: Fixes an issue where HTML tags are added to the HTML5 Select metadata
+
 ## 4.19.0
 ### Changed
  - Official Release

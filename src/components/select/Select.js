@@ -960,10 +960,6 @@ export default class SelectComponent extends ListComponent {
       this.addFocusBlurEvents(input);
       this.triggerUpdate(null, true);
 
-      if (this.visible) {
-        this.setItems(this.selectOptions || []);
-      }
-
       this.focusableElement = input;
       this.addEventListener(input, 'focus', () => this.update());
       this.addEventListener(input, 'keydown', (event) => {
