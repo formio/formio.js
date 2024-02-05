@@ -266,6 +266,9 @@ import formWithRadioInsideDataGrid from &apos;../test/forms/formWithRadioInsideD
 import formWithCheckboxRadioType from &apos;../test/forms/formWithCheckboxRadioType&apos;;
 import formWithFormController from &apos;../test/forms/formWithFormController&apos;;
 import calculateValueOnServerForEditGrid from &apos;../test/forms/calculateValueOnServerForEditGrid&apos;;
+import formsWithAllowOverride from &apos;../test/forms/formsWithAllowOverrideComps&apos;;
+import formWithDeeplyNestedConditionalComps from &apos;../test/forms/formWithDeeplyNestedConditionalComps&apos;;
+import formWithValidation from &apos;../test/forms/formWithValidation&apos;;
 
 global.requestAnimationFrame = (cb) =&gt; cb();
 global.cancelAnimationFrame = () =&gt; {};
@@ -277,6 +280,153 @@ if (_.has(Formio, &apos;Components.setComponents&apos;)) {
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should not lose values of conditionally visible components on setValue when server option is passed&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(formElement, formWithDeeplyNestedConditionalComps, { server: true }).then((form) =&gt; {
+      const submission = {
+        data: {
+          submit: false,
+          radio1: &apos;yes&apos;,
+          container: {
+            checkbox: true,
+            checkboxInPanelInHiddenContainer: true,
+            textField: &apos;test&apos;,
+            editGrid: [
+              {
+                number: 1,
+                textField: &apos;test2&apos;,
+              },
+              {
+                number: 2,
+              },
+            ],
+          },
+        },
+      };
+
+      form.setValue(fastCloneDeep(submission), { sanitize: true });
+      setTimeout(() =&gt; {
+        assert.deepEqual(form.data, submission.data);
+        assert.deepEqual(form.getValue(), submission);
+        done();
+      }, 500);
+    }).catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should not lose values of conditionally visible components on setValue when server option is not passed&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(formElement, formWithDeeplyNestedConditionalComps).then((form) =&gt; {
+      const submission = {
+        data: {
+          submit: false,
+          radio1: &apos;yes&apos;,
+          container: {
+            checkbox: true,
+            checkboxInPanelInHiddenContainer: true,
+            textField: &apos;test&apos;,
+            editGrid: [
+              {
+                number: 1,
+                textField: &apos;test2&apos;,
+              },
+              {
+                number: 2,
+              },
+            ],
+          },
+        },
+      };
+      form.setValue(fastCloneDeep(submission), { sanitize: true });
+
+      setTimeout(() =&gt; {
+        assert.deepEqual(form.data, submission.data);
+        assert.deepEqual(form.getValue(), submission);
+        done();
+      }, 500);
+    }).catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should fire error and submitError events with args on attempt to submit invalid form&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+
+    form.setForm(formWithValidation).then(() =&gt; {
+      let errorEvents = 0;
+      let submitErrorEvents = 0;
+      form.on(&apos;error&apos;, (arg) =&gt; {
+        assert.equal(!!arg, true, &apos;Error event should have argument&apos;);
+        errorEvents = errorEvents + 1;
+      });
+
+      form.on(&apos;submitError&apos;, (arg) =&gt; {
+        assert.equal(!!arg, true, &apos;submitError event should have argument&apos;);
+        submitErrorEvents = submitErrorEvents + 1;
+      });
+
+      const clickEvent = new Event(&apos;click&apos;);
+      const submitBtn = form.element.querySelector(&apos;[name=&quot;data[submit]&quot;]&apos;);
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(form.errors.length, 1);
+        assert.equal(errorEvents, 1);
+        assert.equal(submitErrorEvents, 1);
+        done();
+      }, 300);
+    }).catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should keep non-component server errors visible after changes in the form&apos;, (done) =&gt; {
+    const element = document.createElement(&apos;div&apos;);
+    const form = fastCloneDeep(formWithValidation);
+    form.components[0].validate = {};
+
+    const originalMakeRequest = Formio.makeRequest;
+    const errorText = &apos;Server error&apos;;
+    Formio.makeRequest = function() {
+      return new Promise((res, rej) =&gt; {
+        setTimeout(() =&gt; {
+          console.log(8888);
+          rej(errorText);
+        }, 50);
+      });
+    };
+
+    Formio.createForm(element, form)
+      .then(instance =&gt; {
+        instance.formio = new Formio(&apos;http://localhost:3000/test&apos;);
+        assert.equal(instance.errors.length, 0);
+        assert.equal(!!(instance.serverErrors &amp;&amp; instance.serverErrors.length), false);
+        assert.equal(!!(instance.refs.errorRef &amp;&amp; instance.refs.errorRef.length), false);
+
+        const clickEvent = new Event(&apos;click&apos;);
+        const submitBtn = instance.element.querySelector(&apos;[name=&quot;data[submit]&quot;]&apos;);
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() =&gt; {
+          assert.equal(instance.errors.length, 0);
+          assert.equal(instance.serverErrors.length, 1);
+          assert.equal(instance.refs.errorRef.length, 1);
+          assert.equal(instance.refs.errorRef[0].textContent.trim(), errorText);
+
+          const inputEvent = new Event(&apos;input&apos;);
+          const textField = instance.element.querySelector(&apos;input[name=&quot;data[name]&quot;]&apos;);
+          textField.value = &apos;test&apos;;
+          textField.dispatchEvent(inputEvent);
+
+          setTimeout(() =&gt; {
+            assert.equal(instance.errors.length, 0);
+            assert.equal(instance.serverErrors.length, 1);
+            assert.equal(instance.refs.errorRef.length, 1);
+            assert.equal(instance.refs.errorRef[0].textContent.trim(), errorText);
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 400);
+        }, 400);
+      })
+      .catch(done);
+  });
 
   it(&apos;Should execute form controller&apos;, function(done) {
     Formio.createForm(formWithFormController).then((form) =&gt; {

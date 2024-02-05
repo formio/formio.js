@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.18.2-rc.1]
+## 4.18.2-rc.1
 ### Changed
  - FIO-7808: fixed an issue where conditional components inside conditional components lose their value after submission when they are on the same level with editGrid
  
