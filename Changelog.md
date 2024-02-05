@@ -15,6 +15,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Add conditional to check for new headers object
  - FIO-7764: Fixes a typo in File component settings
  - FIO-7773: Adding floating labels to Bootstrap 5 template
+ - FIO-7808: fixed an issue where conditional components inside conditional components lose their value after submission when they are on the same level with editGrid
+ - FIO-7245: Moved Resource component to the contrib library
+ - Fixed an issue with each component recursion.
+ - FIO-7823: fixed an issue where the submission of dataGrid with nested form returns server error
+ - FIO-7809: fixed pdf submission download error
+ - FIO-7786: Fixing Datagrid issue in Settings JSON
+ - FIO-4905: File upload (multi) - aborting upload always cancels the last one in the list
+ - FIO-7642: fixed issues where calculated value with allow override is not recalculated after form/component/row values are reset
 
 ## 5.0.0-rc.37
 ### Fixed
@@ -68,6 +76,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7724: fixed metadata for multiple select
  - FIO-4871: fixed calculated value for data grid component
  - FIO-7591: error messages wrapping on letter instead of on word
+ - FIO-7548: fixed an issue where select dropdown does not overlap the datagrid and causes vertical scroll
 
 ### Changed
  - Add capability for adding sanitize profiles through sanitizeConfig in options
