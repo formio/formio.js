@@ -408,6 +408,7 @@ export default class SelectComponent extends ListComponent {
 
   /* eslint-disable max-statements */
   setItems(items, fromSearch) {
+    this.selectItems = items;
     // If the items is a string, then parse as JSON.
     if (typeof items == 'string') {
       try {
@@ -959,6 +960,10 @@ export default class SelectComponent extends ListComponent {
     if (this.component.widget === 'html5') {
       this.addFocusBlurEvents(input);
       this.triggerUpdate(null, true);
+
+      if (this.visible) {
+        this.setItems(this.selectItems || []);
+      }
 
       this.focusableElement = input;
       this.addEventListener(input, 'focus', () => this.update());
