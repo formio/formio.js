@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7786: Fixing Datagrid issue in Settings JSON
  - FIO-4905: File upload (multi) - aborting upload always cancels the last one in the list
  - FIO-7642: fixed issues where calculated value with allow override is not recalculated after form/component/row values are reset
+ - FIO-7632: Fixes an issue where HTML tags are added to the HTML5 Select metadata
 
 ## 5.0.0-rc.37
 ### Fixed
