@@ -78,6 +78,7 @@ import formWithFormController from '../test/forms/formWithFormController';
 import calculateValueOnServerForEditGrid from '../test/forms/calculateValueOnServerForEditGrid';
 import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
 import formWithValidation from '../test/forms/formWithValidation';
+import formWithNotAllowedTags from '../test/forms/formWithNotAllowedTags';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -4589,6 +4590,127 @@ describe('Webform tests', function() {
           const inputEvent = new Event('input');
           tfInput.dispatchEvent(inputEvent);
         }, 200);
+  describe('Test sanitizeConfig', () => {
+    it('Should sanitize components using default sanitizeConfig', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const testForm = fastCloneDeep(formWithNotAllowedTags);
+
+      form.setForm(testForm).then(() => {
+        const textFieldWithScript = form.getComponent('textFieldWithScript');
+        const textAreaWithIframe = form.getComponent('textAreaWithIframe');
+
+        assert.equal(textFieldWithScript.element?.getElementsByTagName('script').length, 0, 'Should not render srcipt tag');
+        assert.equal(textAreaWithIframe.element?.getElementsByTagName('iframe').length, 0, 'Should not render iframe tag');
+
+       done();
+      }).catch((err) => done(err));
+    });
+
+    it('Should sanitize components using sanitizeConfig from form settings', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const testForm = fastCloneDeep(formWithNotAllowedTags);
+      testForm.settings.sanitizeConfig = {
+        addTags: ['iframe', 'script'],
+      },
+
+      form.setForm(testForm).then(() => {
+        const textFieldWithScript = form.getComponent('textFieldWithScript');
+        const textAreaWithIframe = form.getComponent('textAreaWithIframe');
+
+        assert.equal(textFieldWithScript.element?.getElementsByTagName('script').length, 1, 'Should render srcipt tag');
+        assert.equal(textAreaWithIframe.element?.getElementsByTagName('iframe').length, 1, 'Should render iframe tag');
+
+       done();
+      }).catch((err) => done(err));
+    });
+
+    it('Should sanitize components using sanitizeConfig from global settings', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const testForm = fastCloneDeep(formWithNotAllowedTags);
+      testForm.globalSettings.sanitizeConfig = {
+        addTags: ['iframe', 'script'],
+      },
+
+      form.setForm(testForm).then(() => {
+        const textFieldWithScript = form.getComponent('textFieldWithScript');
+        const textAreaWithIframe = form.getComponent('textAreaWithIframe');
+
+        assert.equal(textFieldWithScript.element?.getElementsByTagName('script').length, 1, 'Should render srcipt tag');
+        assert.equal(textAreaWithIframe.element?.getElementsByTagName('iframe').length, 1, 'Should render iframe tag');
+
+       done();
+      }).catch((err) => done(err));
+    });
+
+    it('sanitizeConfig from form options must not be overriden by sanitizeConfig from global settings', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, {
+        sanitizeConfig: {
+          addTags: ['iframe'],
+        }
+      });
+      const testForm = fastCloneDeep(formWithNotAllowedTags);
+      testForm.globalSettings.sanitizeConfig = {
+        addTags: ['script'],
+      },
+
+      form.setForm(testForm).then(() => {
+        const textFieldWithScript = form.getComponent('textFieldWithScript');
+        const textAreaWithIframe = form.getComponent('textAreaWithIframe');
+
+        assert.equal(textFieldWithScript.element?.getElementsByTagName('script').length, 0, 'Should not render srcipt tag');
+        assert.equal(textAreaWithIframe.element?.getElementsByTagName('iframe').length, 1, 'Should render iframe tag');
+
+       done();
+      }).catch((err) => done(err));
+    });
+
+    it('sanitizeConfig from form options must not be overriden by sanitizeConfig from form settings', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, {
+        sanitizeConfig: {
+          addTags: ['iframe'],
+        }
+      });
+      const testForm = fastCloneDeep(formWithNotAllowedTags);
+      testForm.settings.sanitizeConfig = {
+        addTags: ['script'],
+      },
+
+      form.setForm(testForm).then(() => {
+        const textFieldWithScript = form.getComponent('textFieldWithScript');
+        const textAreaWithIframe = form.getComponent('textAreaWithIframe');
+
+        assert.equal(textFieldWithScript.element?.getElementsByTagName('script').length, 0, 'Should not render srcipt tag');
+        assert.equal(textAreaWithIframe.element?.getElementsByTagName('iframe').length, 1, 'Should render iframe tag');
+
+       done();
+      }).catch((err) => done(err));
+    });
+
+    it('sanitizeConfig from form settings must not be overriden by sanitizeConfig from global settings', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const testForm = fastCloneDeep(formWithNotAllowedTags);
+      testForm.settings.sanitizeConfig = {
+        addTags: ['iframe'],
+      },
+
+      testForm.globalSettings.sanitizeConfig = {
+        addTags: ['script'],
+      },
+
+      form.setForm(testForm).then(() => {
+        const textFieldWithScript = form.getComponent('textFieldWithScript');
+        const textAreaWithIframe = form.getComponent('textAreaWithIframe');
+
+        assert.equal(textFieldWithScript.element?.getElementsByTagName('script').length, 0, 'Should not render srcipt tag');
+        assert.equal(textAreaWithIframe.element?.getElementsByTagName('iframe').length, 1, 'Should render iframe tag');
+
+       done();
       }).catch((err) => done(err));
     });
   });

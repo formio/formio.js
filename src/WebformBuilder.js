@@ -1126,6 +1126,7 @@ export default class WebformBuilder extends Component {
   }
 
   updateComponent(component, changed) {
+    const sanitizeConfig = _.get(this.webform, 'form.settings.sanitizeConfig') || _.get(this.webform, 'form.globalSettings.sanitizeConfig');
     // Update the preview.
     if (this.preview) {
       this.preview.form = {
@@ -1137,7 +1138,8 @@ export default class WebformBuilder extends Component {
           'autofocus',
           'customConditional',
         ])],
-        config: this.options.formConfig || {}
+        config: this.options.formConfig || {},
+        sanitizeConfig,
       };
 
       const fieldsToRemoveDoubleQuotes = ['label', 'tooltip'];
@@ -1146,7 +1148,7 @@ export default class WebformBuilder extends Component {
 
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
       if (previewElement) {
-        this.setContent(previewElement, this.preview.render());
+        this.setContent(previewElement, this.preview.render(), null, sanitizeConfig);
         this.preview.attach(previewElement);
       }
     }

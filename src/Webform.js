@@ -689,6 +689,10 @@ export default class Webform extends NestedDataComponent {
     if (form && form.properties) {
       this.options.properties = form.properties;
     }
+    // Use the sanitize config from the form settings or the global sanitize config if it is not provided in the options
+    if (!this.options.sanitizeConfig && !this.builderMode) {
+      this.options.sanitizeConfig = _.get(form, 'settings.sanitizeConfig') || _.get(form, 'globalSettings.sanitizeConfig');
+    }
 
     if ('schema' in form && compareVersions(form.schema, '1.x') > 0) {
       this.ready.then(() => {
