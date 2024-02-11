@@ -14,10 +14,7 @@ export default [
     dataSrc: 'custom',
     data: {
       custom() {
-        return _.map(Formio.Providers.getProviders('storage'), (storage, key) => ({
-          label: storage.title,
-          value: key
-        }));
+        return _.map(Formio.Providers.getProviders('storage'), (storage, key) => key);
       }
     }
   },
