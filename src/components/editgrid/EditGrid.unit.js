@@ -23,6 +23,7 @@ import {
 } from './fixtures';
 
 import ModalEditGrid from '../../../test/forms/modalEditGrid';
+import EditGridOpenWhenEmpty from '../../../test/forms/editGridOpenWhenEmpty';
 import Webform from '../../Webform';
 import { displayAsModalEditGrid } from '../../../test/formtest';
 import { Formio } from '../../Formio';
@@ -1381,5 +1382,47 @@ describe('EditGrid Open when Empty', () => {
         }, 200);
       })
       .catch(done);
+  });
+
+  it('Should submit form with empty rows when submit button is pressed and no rows are saved', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(compOpenWhenEmpty).then(() => {
+      const editGrid = form.components[0];
+
+      setTimeout(() => {
+        Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
+          setTimeout(() => {
+            const editRow = editGrid.editRows[0];
+            assert(!editGrid.error, 'Should be no errors on EditGrid');
+            assert.equal(editRow.errors, null, 'Should not be any errors on open row');
+            assert.equal(form.submission.state, 'submitted', 'Form should be submitted');
+            done();
+          }, 450);
+      }, 100);
+    }).catch(done);
+  });
+
+  it('Should not submit form if any row inputs are set as required', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(EditGridOpenWhenEmpty).then(() => {
+      const editGrid = form.components[0];
+
+      setTimeout(() => {
+        Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
+          setTimeout(() => {
+            assert(!form.submission.state, 'Form should not be submitted');
+            const editRow = editGrid.editRows[0];
+            assert(editGrid.error, 'Should show error on EditGrid');
+            assert.equal(editRow.errors.length, 1, 'Should show error on row');
+            const textField = editRow.components[0];
+            assert(textField.element.className.includes('formio-error-wrapper'), 'Should add error class to component');
+            done();
+          }, 450);
+      }, 100);
+    }).catch(done);
   });
 });
