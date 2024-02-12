@@ -197,7 +197,6 @@ describe('Webform tests', function() {
     Formio.makeRequest = function() {
       return new Promise((res, rej) => {
         setTimeout(() => {
-          console.log(8888);
           rej(errorText);
         }, 50);
       });
