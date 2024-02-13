@@ -1,6 +1,6 @@
 {
-  "coverage": "6.3%",
-  "expectCount": 1047,
+  "coverage": "6.26%",
+  "expectCount": 1053,
   "actualCount": 66,
   "files": {
     "src/CDN.js": {
@@ -503,6 +503,18 @@
       "actualCount": 0,
       "undocumentLines": [
         7
+      ]
+    },
+    "src/components/editgrid/fixtures/formsWithEditGridAndConditions.js": {
+      "expectCount": 6,
+      "actualCount": 0,
+      "undocumentLines": [
+        1,
+        112,
+        234,
+        591,
+        640,
+        847
       ]
     },
     "src/components/email/Email.form.js": {

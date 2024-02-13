@@ -387,7 +387,6 @@ describe(&apos;Webform tests&apos;, function() {
     Formio.makeRequest = function() {
       return new Promise((res, rej) =&gt; {
         setTimeout(() =&gt; {
-          console.log(8888);
           rej(errorText);
         }, 50);
       });
