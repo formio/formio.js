@@ -2152,6 +2152,10 @@ export default class Component extends Element {
       this.setElementInvalid(this.performInputMapping(element), false);
     });
     this.setInputWidgetErrorClasses(elements, hasErrors);
+    // do not set error classes for hidden components
+    if (!this.visible) {
+      return;
+    }
 
     if (hasErrors) {
       // Add error classes
@@ -3336,6 +3340,7 @@ export default class Component extends Element {
   }
 
   shouldSkipValidation(data, dirty, row) {
+    const { validateWhenHidden = false } = this.component || {};
     const rules = [
       // Force valid if component is read-only
       () => this.options.readOnly,
@@ -3344,9 +3349,9 @@ export default class Component extends Element {
       // Check to see if we are editing and if so, check component persistence.
       () => this.isValueHidden(),
       // Force valid if component is hidden.
-      () => !this.visible,
+      () => !this.visible && !validateWhenHidden,
       // Force valid if component is conditionally hidden.
-      () => !this.checkCondition(row, data)
+      () => !this.checkCondition(row, data) && !validateWhenHidden
     ];
 
     return rules.some(pred => pred());
