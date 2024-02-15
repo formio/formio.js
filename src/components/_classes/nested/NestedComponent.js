@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Field from '../field/Field';
 import Components from '../../Components';
 import { getArrayFromComponentPath, getStringFromComponentPath, getRandomComponentId } from '../../../utils/utils';
+import Component from '../component/Component';
 
 export default class NestedComponent extends Field {
   static schema(...extend) {
@@ -218,8 +219,9 @@ export default class NestedComponent extends Field {
    * component tree.
    *
    * @param {string} key - The key of the component to retrieve.
-   * @param {function} fn - Called with the component once found.
-   * @return {Object} - The component that is located.
+   * @param {function} [fn] - Called with the component once found.
+   * @param {string} [originalPath] - The original path to the component.
+   * @return {Component} - The component that is located.
    */
   getComponent(path, fn, originalPath) {
     originalPath = originalPath || getStringFromComponentPath(path);
