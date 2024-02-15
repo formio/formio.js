@@ -77,6 +77,7 @@ import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
 import formWithDeeplyNestedConditionalComps from '../test/forms/formWithDeeplyNestedConditionalComps';
 import formWithValidation from '../test/forms/formWithValidation';
 import formWithNotAllowedTags from '../test/forms/formWithNotAllowedTags';
+import formWithValidateWhenHidden from '../test/forms/formWithValidateWhenHidden';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -88,6 +89,122 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should validate hidden and conditionally hidden components when validateWhenHidden is enabled for those components', done => {
+    const formElement = document.createElement('div');
+
+    Formio.createForm(formElement, formWithValidateWhenHidden)
+      .then(form => {
+        const errorClasses = ['has-error', 'has-message', form.options.componentErrorClass];
+        const number1 = form.getComponent('number1');
+        const number2 = form.getComponent('number2');
+        const number = form.getComponent('number');
+        const textField = form.getComponent('textField');
+        const textArea = form.getComponent('textArea');
+        const checkbox = form.getComponent('checkbox');
+
+        assert.equal(form.errors.length, 0);
+
+        number1.setValue(5);
+        number2.setValue(7);
+        setTimeout(()=> {
+          assert.equal(form.errors.length, 1);
+          assert.equal(!!number.error, true);
+
+          errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false, '(1) Should not set error classes for hidden components.'));
+          number2.setValue(3);
+
+          setTimeout(() => {
+            assert.equal(form.errors.length, 0);
+            assert.equal(!!number.error, false);
+            errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false, '(2) Should not set error classes for hidden components.'));
+
+            textField.setValue('test');
+            setTimeout(() => {
+              assert.equal(form.errors.length, 1);
+              assert.equal(!!textArea.error, true);
+              assert.equal(textArea.visible, true);
+
+              checkbox.setValue(true);
+              setTimeout(()=> {
+                assert.equal(textArea.visible, false);
+                assert.equal(form.errors.length, 1);
+                assert.equal(!!textArea.error, true);
+                errorClasses.forEach(cl => assert.equal(textArea.element.classList.contains(cl), false));
+
+                number2.setValue(9);
+                form.submit();
+                setTimeout(()=> {
+                  assert.equal(form.errors.length, 2);
+                  assert.equal(!!textArea.error, true);
+                  assert.equal(!!number.error, true);
+                  assert.equal(!!form.alert, true);
+                  assert.equal(form.refs.errorRef.length, 2);
+                  errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false));
+                  errorClasses.forEach(cl => assert.equal(textArea.element.classList.contains(cl), false));
+
+                  textField.setValue('test test test');
+                  number2.setValue(1);
+                  setTimeout(()=> {
+                    assert.equal(form.errors.length, 0);
+                    assert.equal(!!textArea.error, false);
+                    assert.equal(!!number.error, false);
+                    assert.equal(!!form.alert, false);
+
+                    done();
+                  }, 300);
+                }, 300);
+              }, 300);
+            }, 300);
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
+  });
+
+  it('Should not validate hidden and conditionally hidden components when validateWhenHidden is not enabled for those components', done => {
+    const formElement = document.createElement('div');
+    const testForm = fastCloneDeep(formWithValidateWhenHidden);
+
+    _.each(testForm.components, comp => {
+      comp.validateWhenHidden = false;
+    });
+
+    Formio.createForm(formElement, testForm)
+      .then(form => {
+        const number1 = form.getComponent('number1');
+        const number2 = form.getComponent('number2');
+        const number = form.getComponent('number');
+        const textField = form.getComponent('textField');
+        const textArea = form.getComponent('textArea');
+        const checkbox = form.getComponent('checkbox');
+
+        assert.equal(form.errors.length, 0);
+
+        number1.setValue(5);
+        number2.setValue(7);
+        setTimeout(()=> {
+          assert.equal(form.errors.length, 0);
+          assert.equal(!!number.error, false);
+
+          textField.setValue('test');
+          setTimeout(() => {
+            assert.equal(form.errors.length, 1);
+            assert.equal(!!textArea.error, true);
+            assert.equal(textArea.visible, true);
+
+            checkbox.setValue(true);
+            setTimeout(()=> {
+              assert.equal(textArea.visible, false);
+              assert.equal(form.errors.length, 0);
+              assert.equal(!!textArea.error, false);
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
+  });
 
   it('Should not lose values of conditionally visible components on setValue when server option is passed', function(done) {
     const formElement = document.createElement('div');
@@ -195,7 +312,6 @@ describe('Webform tests', function() {
     Formio.makeRequest = function() {
       return new Promise((res, rej) => {
         setTimeout(() => {
-          console.log(8888);
           rej(errorText);
         }, 50);
       });

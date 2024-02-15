@@ -945,7 +945,7 @@ class ValidationChecker {
 
   validate(component, validatorName, value, data, index, row, async, conditionallyVisible, validationObj) {
     // Skip validation for conditionally hidden components
-    if (!conditionallyVisible) {
+    if (!conditionallyVisible && !_.get(component.component, 'validateWhenHidden', false)) {
       return false;
     }
 

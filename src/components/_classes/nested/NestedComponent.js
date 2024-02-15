@@ -599,8 +599,8 @@ export default class NestedComponent extends Field {
     row = row || this.data;
     components = components && _.isArray(components) ? components : this.getComponents();
     const isValid = components.reduce((valid, comp) => {
-      return comp.checkData(data, flags, row) && valid;
-    }, super.checkData(data, flags, row));
+      return comp.checkData(data, { ...flags }, row) && valid;
+    }, super.checkData(data, { ...flags }, row));
 
     this.checkModal(isValid, this.isDirty);
     return isValid;
