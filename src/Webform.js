@@ -51,7 +51,7 @@ function getOptions(options) {
 
 /**
  * Renders a Form.io form within the webpage.
-*/
+ */
 export default class Webform extends NestedDataComponent {
   /**
    * Represents a JSON value.
