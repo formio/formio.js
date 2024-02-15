@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7632: Fixes an issue where HTML tags are added to the HTML5 Select metadata
  - FIO-4871: fixed calculated value issues
  - FIO 7603: fixed Edit Grid With Empty Rows Not Submitting Form
+ - FIO-7445: fixed an issue where the interpolated data does not show up on PDF
+ - FIO-7421: Adds ReCaptcha error messages to the translations config
 
 ## 5.0.0-rc.37
 ### Fixed
