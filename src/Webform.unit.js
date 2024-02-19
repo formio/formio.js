@@ -4583,6 +4583,221 @@ describe('Webform tests', function() {
     });
   });
 
+  describe('SaveDraft functionality', () => {
+    const originalMakeRequest = Formio.makeRequest;
+    let saveDraftCalls = 0;
+    let restoreDraftCalls = 0;
+    const scenario = {
+      restoreDraftError: false,
+      saveDraftError: false,
+    };
+    const restoredDraftData = {
+      textField: 'test',
+      number: 1234,
+      textArea: 'test',
+      submit: false,
+    };
+
+    before((done) => {
+      Formio.setUser({
+        _id: '123'
+      });
+
+      Formio.makeRequest = (formio, type, url, method, data) => {
+        if (type === 'submission' && method === 'put') {
+          saveDraftCalls = ++saveDraftCalls;
+          return scenario.saveDraftError
+            ? Promise.reject('Save Draft Error')
+            : Promise.resolve(fastCloneDeep(data));
+        }
+        if (type === 'form' && method === 'get') {
+          return Promise.resolve(fastCloneDeep({
+            _id: '65cdd69efb1b9683c216fa1d',
+            title: 'test draft errors',
+            name: 'testDraftErrors',
+            path: 'testdrafterrors',
+            type: 'form',
+            display: 'form',
+            components: [
+              {
+                label: 'Text Field',
+                applyMaskOn: 'change',
+                tableView: true,
+                validate: {
+                  required: true,
+                },
+                key: 'textField',
+                type: 'textfield',
+                input: true,
+              },
+              {
+                label: 'Number',
+                applyMaskOn: 'change',
+                mask: false,
+                tableView: false,
+                delimiter: false,
+                requireDecimal: false,
+                inputFormat: 'plain',
+                truncateMultipleSpaces: false,
+                validate: {
+                  min: 800,
+                },
+                key: 'number',
+                type: 'number',
+                input: true,
+              },
+              {
+                label: 'Text Area',
+                applyMaskOn: 'change',
+                autoExpand: false,
+                tableView: true,
+                key: 'textArea',
+                type: 'textarea',
+                input: true,
+              },
+              {
+                label: 'Submit',
+                disableOnInvalid: true,
+                tableView: false,
+                key: 'submit',
+                type: 'button',
+                input: true,
+                saveOnEnter: false,
+              },
+            ],
+            project: '65b0ccbaf019a907ac01a869',
+            machineName: 'zarbzxibjafpcjb:testDraftErrors',
+          }));
+        }
+
+        if (type === 'submissions' && method === 'get') {
+          restoreDraftCalls = ++restoreDraftCalls;
+          return scenario.restoreDraftError
+            ? Promise.reject('Restore Draft Error')
+            : Promise.resolve([
+                fastCloneDeep({
+                  _id: '65d31f8da08cff1b9fc35966',
+                  form: '65cdd69efb1b9683c216fa1d',
+                  owner: '637b2e6b48c1227e60b1f910',
+                  data: restoredDraftData,
+                  project: '65b0ccbaf019a907ac01a869',
+                  state: 'draft',
+                }),
+              ]);
+        }
+      };
+
+      done();
+    });
+
+    afterEach(() => {
+      saveDraftCalls = 0;
+      restoreDraftCalls = 0;
+      scenario.restoreDraftError = false;
+      scenario.saveDraftError = false;
+    });
+
+    after((done) => {
+      Formio.makeRequest = originalMakeRequest;
+      Formio.setUser();
+      done();
+    });
+
+    it('Should restore draft', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(
+        formElement,
+        'http://localhost:3000/zarbzxibjafpcjb/testdrafterrors',
+        {
+          saveDraft: true
+        }
+      ).then((form) => {
+        setTimeout(() => {
+          assert.equal(restoreDraftCalls, 1);
+          assert.equal(saveDraftCalls, 0);
+          assert.equal(form.submission.state, 'draft');
+          assert.deepEqual(form.data, restoredDraftData);
+          done();
+        }, 200);
+      }).catch((err) => done(err));
+    });
+
+    it('Should save draft after data is changed', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(
+        formElement,
+        'http://localhost:3000/zarbzxibjafpcjb/testdrafterrors',
+        {
+          saveDraft: true
+        }
+      ).then((form) => {
+        setTimeout(() => {
+          assert.equal(restoreDraftCalls, 1);
+          assert.equal(saveDraftCalls, 0);
+          assert.equal(form.submission.state, 'draft');
+          const tfInput = form.getComponent('textField').refs.input[0];
+          tfInput.value = 'test resaved';
+          const inputEvent = new Event('input');
+          tfInput.dispatchEvent(inputEvent);
+          setTimeout(() => {
+            assert.equal(restoreDraftCalls, 1);
+            assert.equal(saveDraftCalls, 1);
+            assert.equal(form.submission.state, 'draft');
+            done();
+          }, 300);
+        }, 200);
+      }).catch((err) => done(err));
+    });
+
+    it('Should emit restoreDraftEvent on the restore draft error', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(
+        formElement,
+        'http://localhost:3000/zarbzxibjafpcjb/testdrafterrors',
+        {
+          saveDraft: true
+        }
+      ).then((form) => {
+        scenario.restoreDraftError = true;
+        form.on('restoreDraftError', (err) => {
+          assert.equal(err, 'Restore Draft Error');
+          assert.equal(restoreDraftCalls, 1);
+          assert.equal(saveDraftCalls, 0);
+          done();
+        });
+      }).catch((err) => done(err));
+    });
+
+    it('Should emit saveDraftEvent on the save draft error', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(
+        formElement,
+        'http://localhost:3000/zarbzxibjafpcjb/testdrafterrors',
+        {
+          saveDraft: true
+        }
+      ).then((form) => {
+        scenario.saveDraftError = true;
+        form.on('saveDraftError', (err) => {
+          assert.equal(err, 'Save Draft Error');
+          assert.equal(saveDraftCalls, 1);
+          assert.equal(restoreDraftCalls, 1);
+          assert.equal(form.submission.state, 'draft');
+          done();
+        });
+
+        setTimeout(() => {
+          assert.equal(saveDraftCalls, 0);
+          assert.equal(restoreDraftCalls, 1);
+          const tfInput = form.getComponent('textField').refs.input[0];
+          tfInput.value = 'test resaved';
+          const inputEvent = new Event('input');
+          tfInput.dispatchEvent(inputEvent);
+        }, 200);
+      }).catch((err) => done(err));
+    });
+  });
+
   for (const formTest of FormTests) {
     const useDoneInsteadOfPromise = formTest.useDone;
 

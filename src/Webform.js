@@ -216,11 +216,13 @@ export default class Webform extends NestedDataComponent {
 
     // See if we need to restore the draft from a user.
     if (this.options.saveDraft && !this.options.skipDraftRestore) {
-      const user = Formio.getUser();
-      // Only restore a draft if the submission isn't explicitly set.
-      if (user && !this.submissionSet) {
-        this.restoreDraft(user._id);
-      }
+      this.formReady.then(()=> {
+        const user = Formio.getUser();
+        // Only restore a draft if the submission isn't explicitly set.
+        if (user && !this.submissionSet) {
+          this.restoreDraft(user._id);
+        }
+      });
     }
 
     this.component.clearOnHide = false;
@@ -746,6 +748,12 @@ export default class Webform extends NestedDataComponent {
     );
   }
 
+  handleDraftError(errName, errDetails, restoreDraft) {
+    const errorMessage = _.trim(`${this.t(errName)} ${errDetails || ''}`);
+    console.warn(errorMessage);
+    this.emit(restoreDraft ? 'restoreDraftError' : 'saveDraftError', errDetails || errorMessage);
+  }
+
   /**
    * Saves a submission draft.
    */
@@ -754,11 +762,11 @@ export default class Webform extends NestedDataComponent {
       return;
     }
     if (!this.formio) {
-      console.warn(this.t('saveDraftInstanceError'));
+      this.handleDraftError('saveDraftInstanceError');
       return;
     }
     if (!Formio.getUser()) {
-      console.warn(this.t('saveDraftAuthError'));
+      this.handleDraftError('saveDraftAuthError');
       return;
     }
     const draft = fastCloneDeep(this.submission);
@@ -772,6 +780,10 @@ export default class Webform extends NestedDataComponent {
         this.submission._id = sub._id;
         this.savingDraft = false;
         this.emit('saveDraft', sub);
+      })
+      .catch(err => {
+        this.savingDraft = false;
+        this.handleDraftError('saveDraftError', err);
       });
     }
   }
@@ -783,7 +795,7 @@ export default class Webform extends NestedDataComponent {
    */
   restoreDraft(userId) {
     if (!this.formio) {
-      console.warn(this.t('restoreDraftInstanceError'));
+      this.handleDraftError('restoreDraftInstanceError', null, true);
       return;
     }
     this.savingDraft = true;
@@ -805,6 +817,11 @@ export default class Webform extends NestedDataComponent {
       this.draftEnabled = true;
       this.savingDraft = false;
       this.emit('restoreDraft', null);
+    })
+    .catch(err => {
+      this.draftEnabled = true;
+      this.savingDraft = false;
+      this.handleDraftError('restoreDraftError', err, true);
     });
   }
 
