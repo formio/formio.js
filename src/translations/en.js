@@ -56,6 +56,8 @@ export default {
   confirmCancel: 'Are you sure you want to cancel?',
   saveDraftInstanceError: 'Cannot save draft because there is no formio instance.',
   saveDraftAuthError: 'Cannot save draft unless a user is authenticated.',
+  saveDraftError: 'Unable to save draft.',
+  restoreDraftError: 'Unable to restore draft.',
   restoreDraftInstanceError: 'Cannot restore draft because there is no formio instance.',
   time: 'Invalid time',
   cancelButtonAriaLabel: 'Cancel button. Click to reset the form',
