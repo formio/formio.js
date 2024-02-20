@@ -161,11 +161,43 @@ export default class Form extends Element {
     };
   }
 
+  /**
+  * Check Subdirectories path and provide correct options
+  *
+  * @param {string} url - The the URL of the form json.
+  * @return {*}
+  */
+  getFormInitOptions(url) {
+    const options = {};
+    const urlParts = Formio.getUrlParts(url);
+    if (!urlParts) {
+      return options;
+    }
+    const baseUrl = `${urlParts[1]}${urlParts[2]}`;
+    // Subdirectories path must be '/projectId/formId'
+    const path = urlParts[3]?.split('?')[0]?.split('/');
+    if (path?.length !== 3) {
+      return options;
+    }
+    path.shift();
+    const [projectId, formId] = path;
+    // Detect Subdirectories path type when baseUrl wasn't set for this url
+    if (baseUrl !== Formio.baseUrl && projectId && formId) {
+      return {
+        base: baseUrl,
+        project: `${baseUrl}/${projectId}`,
+      };
+    }
+
+    return {};
+  }
+
   setForm(formParam) {
     let result;
     formParam = formParam || this.form;
     if (typeof formParam === 'string') {
-      const formio = new Formio(formParam);
+      const options = this.getFormInitOptions(formParam);
+      const formio = new Formio(formParam, options);
       let error;
       this.loading = true;
       result = this.getSubmission(formio, this.options)
@@ -185,7 +217,7 @@ export default class Form extends Element {
               }
               this.loading = false;
               this.instance = this.instance || this.create(form.display);
-              this.instance.url = formParam;
+              this.instance.setUrl(formParam, options);
               this.instance.nosubmit = false;
               this._form = this.instance.form = form;
               if (submission) {
