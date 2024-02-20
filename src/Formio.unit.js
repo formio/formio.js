@@ -2222,6 +2222,46 @@ describe('Formio.js Tests', () => {
           ];
         }
       },
+      {
+        name: 'Should return correct options for form url with Subdirectories path',
+        test() {
+          let form = new Formio.Form();
+          let options = form.getFormInitOptions('http://localhost:3000/fakeproject/fakeform');
+          assert.deepEqual(options, {
+            base: 'http://localhost:3000',
+            project: 'http://localhost:3000/fakeproject',
+          });
+
+          form = new Formio.Form();
+          options = form.getFormInitOptions(`${Formio.baseUrl}/fakeproject/fakeform`);
+          assert.deepEqual(options, {});
+        }
+      },
+      {
+        name: 'Should set correct formio base and project url for form with Subdirectories path',
+        test() {
+          const formElement = document.createElement('div');
+          return Formio.createForm(formElement, 'http://localhost:3000/fakeproject/fakeform')
+            .then((form) => {
+              assert.equal(form.formio.base, 'http://localhost:3000');
+              assert.equal(form.formio.projectUrl, 'http://localhost:3000/fakeproject');
+            });
+        },
+        mock() {
+          return {
+            url: 'http://localhost:3000/fakeproject/fakeform',
+            method: 'GET',
+            response() {
+              return {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: {}
+              };
+            }
+          };
+        },
+      },
     ];
 
     tests.forEach(testCapability);
