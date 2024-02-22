@@ -578,8 +578,8 @@ export default class NestedComponent extends Field {
     flags = flags || {};
     row = row || this.data;
     components = components && _.isArray(components) ? components : this.getComponents();
-    super.checkData(data, flags, row);
-    components.forEach((comp) => comp.checkData(data, flags, row));
+    super.checkData(data, { ...flags }, row);
+    components.forEach((comp) => comp.checkData(data, { ...flags }, row));
   }
 
   checkConditions(data, flags, row) {

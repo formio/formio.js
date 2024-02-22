@@ -675,7 +675,8 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     this.dataValue = value;
 
-    if (this.initRows || isSettingSubmission) {
+    if (this.initRows || isSettingSubmission ||
+        (Array.isArray(this.dataValue) && this.dataValue.length !== this.rows.length)) {
       if (!this.createRows() && changed) {
         this.redraw();
       }

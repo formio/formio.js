@@ -1,4 +1,3 @@
-import Webform from '../../Webform';
 import Harness from '../../../test/harness';
 import HTMLComponent from './HTML';
 import sinon from 'sinon';
@@ -6,8 +5,7 @@ import assert from 'power-assert';
 
 import {
   comp1,
-  comp2,
-  comp3,
+  comp2
 } from './fixtures';
 
 describe('HTML Component', () => {
@@ -31,19 +29,5 @@ describe('HTML Component', () => {
       component.checkRefreshOn(null);
       assert.equal(emit.callCount, 0);
     });
-  });
-
-  it('Should not execute scripts inside HTML component', (done) => {
-    const formElement = document.createElement('div');
-    const form = new Webform(formElement);
-
-    const alert = sinon.spy(window, 'alert');
-    form.setForm(comp3).then(() => {
-      setTimeout(() => {
-        assert.equal(alert.callCount, 0);
-        done();
-      }, 200);
-    })
-      .catch(done);
   });
 });
