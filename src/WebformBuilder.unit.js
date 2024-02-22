@@ -2,7 +2,7 @@ import assert from 'power-assert';
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
 import Builders from './builders';
-import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase } from '../test/formtest';
+import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCas, formWithNumericKeys } from '../test/formtest';
 import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
 import formBasedOnWizard from '../test/forms/formBasedOnWizard';
@@ -38,6 +38,16 @@ describe('WebformBuilder tests', function() {
       builder.highlightInvalidComponents();
       const component = builder.webform.getComponent(['textField']);
       assert.equal(component.errors.length, 0);
+      done();
+    }).catch(done);
+  });
+
+  it('Should show API error when componentshave invalid API keys', (done) => {
+    const builder = Harness.getBuilder();
+    builder.webform.setForm(formWithNumericKeys).then(() => {
+      builder.highlightInvalidComponents();
+      const component = builder.webform.components[1];
+      assert.equal(component.errors.length, 1);
       done();
     }).catch(done);
   });
