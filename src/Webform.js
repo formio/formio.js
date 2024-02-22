@@ -18,7 +18,6 @@ import {
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
-
 // Initialize the available forms.
 Formio.forms = {};
 
@@ -50,98 +49,103 @@ function getOptions(options) {
 }
 
 /**
+ * Represents a JSON value.
+ * @typedef {(string | number | boolean | null | JSONArray | JSONObject)} JSON
+ */
+
+/**
+ * Represents a JSON array.
+ * @typedef {Array<JSON>} JSONArray
+ */
+
+/**
+ * Represents a JSON object.
+ * @typedef {{[key: string]: JSON}} JSONObject
+ */
+
+/**
+ * @typedef {Object} FormioHooks
+ * @property {function} [beforeSubmit]
+ * @property {function} [beforeCancel]
+ * @property {function} [beforeNext]
+ * @property {function} [beforePrev]
+ * @property {function} [attachComponent]
+ * @property {function} [setDataValue]
+ * @property {function} [addComponents]
+ * @property {function} [addComponent]
+ * @property {function} [customValidation]
+ * @property {function} [attachWebform]
+ */
+
+/**
+ * @typedef {Object} SanitizeConfig
+ * @property {string[]} [addAttr]
+ * @property {string[]} [addTags]
+ * @property {string[]} [allowedAttrs]
+ * @property {string[]} [allowedTags]
+ * @property {string[]} [allowedUriRegex]
+ * @property {string[]} [addUriSafeAttr]
+ */
+
+/**
+ * @typedef {Object} ButtonSettings
+ * @property {boolean} [showPrevious]
+ * @property {boolean} [showNext]
+ * @property {boolean} [showCancel]
+ * @property {boolean} [showSubmit]
+ */
+
+/**
+ * @typedef {Object} FormOptions
+ * @property {boolean} [saveDraft] - Enable the save draft feature.
+ * @property {number} [saveDraftThrottle] - The throttle for the save draft feature.
+ * @property {boolean} [readOnly] - Set this form to readOnly.
+ * @property {boolean} [noAlerts] - Disable the alerts dialog.
+ * @property {{[key: string]: string}} [i18n] - The translation file for this rendering.
+ * @property {string} [template] - Custom logic for creation of elements.
+ * @property {boolean} [noDefaults] - Exclude default values from the settings.
+ * @property {any} [fileService] - The file service for this form.
+ * @property {EventEmitter} [events] - The EventEmitter for this form.
+ * @property {string} [language] - The language to render this form in.
+ * @property {{[key: string]: string}} [i18next] - The i18next configuration for this form.
+ * @property {boolean} [viewAsHtml] - View the form as raw HTML.
+ * @property {'form' | 'html' | 'flat' | 'builder' | 'pdf'} [renderMode] - The render mode for this form.
+ * @property {boolean} [highlightErrors] - Highlight any errors on the form.
+ * @property {string} [componentErrorClass] - The error class for components.
+ * @property {any} [templates] - The templates for this form.
+ * @property {string} [iconset] - The iconset for this form.
+ * @property {Component[]} [components] - The components for this form.
+ * @property {{[key: string]: boolean}} [disabled] - Disabled components for this form.
+ * @property {boolean} [showHiddenFields] - Show hidden fields.
+ * @property {{[key: string]: boolean}} [hide] - Hidden components for this form.
+ * @property {{[key: string]: boolean}} [show] - Components to show for this form.
+ * @property {Formio} [formio] - The Formio instance for this form.
+ * @property {string} [decimalSeparator] - The decimal separator for this form.
+ * @property {string} [thousandsSeparator] - The thousands separator for this form.
+ * @property {FormioHooks} [hooks] - The hooks for this form.
+ * @property {boolean} [alwaysDirty] - Always be dirty.
+ * @property {boolean} [skipDraftRestore] - Skip restoring a draft.
+ * @property {'form' | 'wizard' | 'pdf'} [display] - The display for this form.
+ * @property {string} [cdnUrl] - The CDN url for this form.
+ * @property {boolean} [flatten] - Flatten the form.
+ * @property {boolean} [sanitize] - Sanitize the form.
+ * @property {SanitizeConfig} [sanitizeConfig] - The sanitize configuration for this form.
+ * @property {ButtonSettings} [buttonSettings] - The button settings for this form.
+ * @property {Object} [breadCrumbSettings] - The breadcrumb settings for this form.
+ * @property {boolean} [allowPrevious] - Allow the previous button (for Wizard forms).
+ * @property {string[]} [wizardButtonOrder] - The order of the buttons (for Wizard forms).
+ * @property {boolean} [showCheckboxBackground] - Show the checkbox background.
+ * @property {number} [zoom] - The zoom for PDF forms.
+ */
+
+/**
  * Renders a Form.io form within the webpage.
  */
 export default class Webform extends NestedDataComponent {
   /**
-   * Represents a JSON value.
-   * @typedef {(string | number | boolean | null | JSONArray | JSONObject)} JSON
+   * @type {FormOptions} - the options for this Webform.
    */
-
-  /**
-   * Represents a JSON array.
-   * @typedef {Array<JSON>} JSONArray
-   */
-
-  /**
-   * Represents a JSON object.
-   * @typedef {{[key: string]: JSON}} JSONObject
-   */
-
-  /**
-   * @typedef {Object} FormioHooks
-   * @property {function} [beforeSubmit]
-   * @property {function} [beforeCancel]
-   * @property {function} [beforeNext]
-   * @property {function} [beforePrev]
-   * @property {function} [attachComponent]
-   * @property {function} [setDataValue]
-   * @property {function} [addComponents]
-   * @property {function} [addComponent]
-   * @property {function} [customValidation]
-   * @property {function} [attachWebform]
-   */
-
-  /**
-   * @typedef {Object} SanitizeConfig
-   * @property {string[]} [addAttr]
-   * @property {string[]} [addTags]
-   * @property {string[]} [allowedAttrs]
-   * @property {string[]} [allowedTags]
-   * @property {string[]} [allowedUriRegex]
-   * @property {string[]} [addUriSafeAttr]
-   */
-
-  /**
-   * @typedef {Object} ButtonSettings
-   * @property {boolean} [showPrevious]
-   * @property {boolean} [showNext]
-   * @property {boolean} [showCancel]
-   * @property {boolean} [showSubmit]
-   */
-
-  /**
-   * @typedef {Object} FormOptions
-   * @property {boolean} [saveDraft] - Enable the save draft feature.
-   * @property {number} [saveDraftThrottle] - The throttle for the save draft feature.
-   * @property {boolean} [readOnly] - Set this form to readOnly.
-   * @property {boolean} [noAlerts] - Disable the alerts dialog.
-   * @property {{[key: string]: string}} [i18n] - The translation file for this rendering.
-   * @property {string} [template] - Custom logic for creation of elements.
-   * @property {boolean} [noDefaults] - Exclude default values from the settings.
-   * @property {any} [fileService] - The file service for this form.
-   * @property {EventEmitter} [events] - The EventEmitter for this form.
-   * @property {string} [language] - The language to render this form in.
-   * @property {{[key: string]: string}} [i18next] - The i18next configuration for this form.
-   * @property {boolean} [viewAsHtml] - View the form as raw HTML.
-   * @property {'form' | 'html' | 'flat' | 'builder' | 'pdf'} [renderMode] - The render mode for this form.
-   * @property {boolean} [highlightErrors] - Highlight any errors on the form.
-   * @property {string} [componentErrorClass] - The error class for components.
-   * @property {any} [templates] - The templates for this form.
-   * @property {string} [iconset] - The iconset for this form.
-   * @property {Component[]} [components] - The components for this form.
-   * @property {{[key: string]: boolean}} [disabled] - Disabled components for this form.
-   * @property {boolean} [showHiddenFields] - Show hidden fields.
-   * @property {{[key: string]: boolean}} [hide] - Hidden components for this form.
-   * @property {{[key: string]: boolean}} [show] - Components to show for this form.
-   * @property {Formio} [formio] - The Formio instance for this form.
-   * @property {string} [decimalSeparator] - The decimal separator for this form.
-   * @property {string} [thousandsSeparator] - The thousands separator for this form.
-   * @property {FormioHooks} [hooks] - The hooks for this form.
-   * @property {boolean} [alwaysDirty] - Always be dirty.
-   * @property {boolean} [skipDraftRestore] - Skip restoring a draft.
-   * @property {'form' | 'wizard' | 'pdf'} [display] - The display for this form.
-   * @property {string} [cdnUrl] - The CDN url for this form.
-   * @property {boolean} [flatten] - Flatten the form.
-   * @property {boolean} [sanitize] - Sanitize the form.
-   * @property {SanitizeConfig} [sanitizeConfig] - The sanitize configuration for this form.
-   * @property {ButtonSettings} [buttonSettings] - The button settings for this form.
-   * @property {Object} [breadCrumbSettings] - The breadcrumb settings for this form.
-   * @property {boolean} [allowPrevious] - Allow the previous button (for Wizard forms).
-   * @property {string[]} [wizardButtonOrder] - The order of the buttons (for Wizard forms).
-   * @property {boolean} [showCheckboxBackground] - Show the checkbox background.
-   * @property {number} [zoom] - The zoom for PDF forms.
-   */
+  options;
 
   /**
    * Creates a new Form instance.
