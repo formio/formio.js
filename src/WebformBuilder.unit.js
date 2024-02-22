@@ -2,7 +2,7 @@ import assert from 'power-assert';
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
 import Builders from './builders';
-import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCas, formWithNumericKeys } from '../test/formtest';
+import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase, formWithNumericKeys } from '../test/formtest';
 import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
 import formBasedOnWizard from '../test/forms/formBasedOnWizard';
