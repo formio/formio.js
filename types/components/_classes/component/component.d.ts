@@ -1,5 +1,6 @@
 import { Element } from '../../../element';
-import { ComponentSchema, ElementInfo, ExtendedComponentSchema, ValidateOptions } from './../../schema.d';
+import { ValidateOptions } from '../../../formio';
+import { ComponentSchema, ElementInfo, ExtendedComponentSchema } from './../../schema.d';
 
 export class Component extends Element {
   static schema(sources: ExtendedComponentSchema): ExtendedComponentSchema;

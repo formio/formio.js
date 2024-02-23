@@ -38,13 +38,6 @@ export default class TimeComponent extends TextFieldComponent {
     this.rawData = this.component.multiple ? [] : this.emptyValue;
   }
 
-  init() {
-    super.init();
-    if (this.component.inputType === 'text') {
-      this.validators.push('time');
-    }
-  }
-
   static get builderInfo() {
     return {
       title: 'Time',

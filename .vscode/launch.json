@@ -16,7 +16,7 @@
               "--colors",
               "${workspaceFolder}/src/**/*.unit.js",
               "-t",
-              "30000"
+              "1000000"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "skipFiles": [
@@ -37,7 +37,6 @@
           "name": "Mocha: current file",
           "program": "${workspaceFolder}/node_modules/.bin/mocha",
           "args": ["-b", "-t", "0", "'${file}'"],
-          "console": "integratedTerminal",
-      }
+        },
     ]
 }

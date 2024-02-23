@@ -10,7 +10,7 @@ the submission as a HTML view.
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
-<script src="https://cdn.form.io/js/formio.embed.js"></script>
+<script src="https://cdn.form.io/js/formio.min.js"></script>
 <div id="formio"></div>
 ```
 

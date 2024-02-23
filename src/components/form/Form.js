@@ -165,7 +165,6 @@ export default class FormComponent extends Component {
   }
 
   getSubOptions(options = {}) {
-    options.parentPath = `${this.path}.data.`;
     options.events = this.createEmitter();
 
     // Make sure to not show the submit button in wizards in the nested forms.
@@ -218,6 +217,9 @@ export default class FormComponent extends Component {
     }
     if (this.options.preview) {
       options.preview = this.options.preview;
+    }
+    if (this.options.inEditGrid) {
+      options.inEditGrid = this.options.inEditGrid;
     }
     return options;
   }
@@ -508,15 +510,15 @@ export default class FormComponent extends Component {
     return this.dataValue?.data || {};
   }
 
-  checkComponentValidity(data, dirty, row, options) {
+  checkComponentValidity(data, dirty, row, options, errors = []) {
     options = options || {};
     const silentCheck = options.silentCheck || false;
 
     if (this.subForm) {
-      return this.subForm.checkValidity(this.subFormData, dirty, null, silentCheck);
+      return this.subForm.checkValidity(this.subFormData, dirty, null, silentCheck, errors);
     }
 
-    return super.checkComponentValidity(data, dirty, row, options);
+    return super.checkComponentValidity(data, dirty, row, options, errors);
   }
 
   checkComponentConditions(data, flags, row) {
@@ -585,7 +587,7 @@ export default class FormComponent extends Component {
    *
    * @return {*}
    */
-  submitSubForm(rejectOnError) {
+  submitSubForm() {
     // If we wish to submit the form on next page, then do that here.
     if (this.shouldSubmit) {
       return this.subFormReady.then(() => {
@@ -593,6 +595,7 @@ export default class FormComponent extends Component {
           return this.dataValue;
         }
         this.subForm.nosubmit = false;
+        this.subForm.submitted = true;
         return this.subForm.submitForm().then(result => {
           this.subForm.loading = false;
           this.subForm.showAllErrors = false;
@@ -600,13 +603,8 @@ export default class FormComponent extends Component {
           return this.dataValue;
         }).catch(err => {
           this.subForm.showAllErrors = true;
-          if (rejectOnError) {
-            this.subForm.onSubmissionError(err);
-            return Promise.reject(err);
-          }
-          else {
-            return {};
-          }
+          this.subForm.onSubmissionError(err);
+          return Promise.reject(err);
         });
       });
     }

@@ -15,7 +15,7 @@ import './components/builder';
 if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
   window.global = window;
 }
-import dragula from 'dragula/dist/dragula.min.js';
+import dragula from 'dragula';
 
 export default class WebformBuilder extends Component {
   // eslint-disable-next-line max-statements
@@ -1268,11 +1268,12 @@ export default class WebformBuilder extends Component {
 
     this.webform.everyComponent((comp) => {
       const path = comp.path;
+      const errors = comp.visibleErrors || [];
       if (repeatablePaths.includes(path)) {
         comp.setCustomValidity(`API Key is not unique: ${comp.key}`);
         hasInvalidComponents = true;
       }
-      else if (comp.error?.message?.startsWith('API Key is not unique')) {
+      else if (errors.length && errors[0].message?.startsWith('API Key is not unique')) {
         comp.setCustomValidity('');
       }
     });
@@ -1312,9 +1313,8 @@ export default class WebformBuilder extends Component {
           comp = component;
         }
       });
-      const originalComp = comp.component;
-      const originalComponentSchema = comp.schema;
-
+      const originalComp = comp?.component;
+      const originalComponentSchema = comp?.schema;
       const isParentSaveChildMethod = this.isParentSaveChildMethod(parent.formioComponent);
 
       if (parentContainer && !isParentSaveChildMethod) {
@@ -1395,9 +1395,12 @@ export default class WebformBuilder extends Component {
     saveButtons.forEach((saveButton) => {
       this.editForm.addEventListener(saveButton, 'click', (event) => {
         event.preventDefault();
-        if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
+        const errors = this.editForm.validate(this.editForm.data, {
+          dirty: true
+        });
+        if (errors.length) {
           this.editForm.setPristine(false);
-          this.editForm.showErrors();
+          this.editForm.showErrors(errors);
           return false;
         }
         this.saved = true;

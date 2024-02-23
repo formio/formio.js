@@ -5,12 +5,6 @@ import Components from './components/Components';
 import Displays from './displays/Displays';
 import Templates from './templates/Templates';
 import Providers from './providers';
-import Rules from './validator/Rules';
-import Conjunctions from './validator/conjunctions';
-import Operators from './validator/operators';
-import QuickRules from './validator/quickRules';
-import Transformers from './validator/transformers';
-import ValueSources from './validator/valueSources';
 import Widgets from './widgets';
 import Form from './Form';
 import Utils from './utils';
@@ -25,20 +19,15 @@ Formio.loadModules = (path = `${Formio.getApiUrl()  }/externalModules.js`, name 
 };
 
 // This is needed to maintain correct imports using the "dist" file.
+Formio.isRenderer = true;
 Formio.Components = Components;
 Formio.Templates = Templates;
 Formio.Utils = Utils;
 Formio.Form = Form;
 Formio.Displays = Displays;
 Formio.Providers = Providers;
-Formio.Rules = Rules;
 Formio.Widgets = Widgets;
 Formio.Evaluator = Evaluator;
-Formio.Conjunctions = Conjunctions;
-Formio.Operators = Operators;
-Formio.QuickRules = QuickRules;
-Formio.Transformers = Transformers;
-Formio.ValueSources = ValueSources;
 Formio.AllComponents = AllComponents;
 Formio.Licenses = Licenses;
 
@@ -53,7 +42,9 @@ Formio.Components.setComponents(AllComponents);
  * @returns
  */
 export function registerModule(mod, defaultFn = null, options = {}) {
-  // Sanity check.
+  if (typeof mod === 'function') {
+    return registerModule(mod(Formio), defaultFn, options);
+  }
   if (typeof mod !== 'object') {
     return;
   }
@@ -90,26 +81,8 @@ export function registerModule(mod, defaultFn = null, options = {}) {
       case 'displays':
         Formio.Displays.addDisplays(mod.displays);
         break;
-      case 'rules':
-        Formio.Rules.addRules(mod.rules);
-        break;
       case 'evaluator':
         Formio.Evaluator.registerEvaluator(mod.evaluator);
-        break;
-      case 'conjunctions':
-        Formio.Conjunctions.addConjunctions(mod.conjunctions);
-        break;
-      case 'operators':
-        Formio.Operators.addOperators(mod.operators);
-        break;
-      case 'quickRules':
-        Formio.QuickRules.addQuickRules(mod.quickRules);
-        break;
-      case 'transformers':
-        Formio.Transformers.addTransformers(mod.transformers);
-        break;
-      case 'valueSources':
-        Formio.ValueSources.addValueSources(mod.valueSources);
         break;
       case 'library':
         options.license
@@ -152,4 +125,4 @@ export function useModule(defaultFn = null) {
 Formio.use = useModule();
 
 // Export the components.
-export { Components, Displays, Providers, Rules, Widgets, Templates, Conjunctions, Operators, QuickRules, Transformers, ValueSources, Utils, Form, Formio, Licenses };
+export { Components, Displays, Providers, Widgets, Templates, Utils, Form, Formio, Licenses };
