@@ -3033,6 +3033,24 @@ describe('Webform tests', function() {
         })
         .catch(done);
     });
+
+    it('Should hide field if the checkbox based condition with string value is met', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const formCopy = fastCloneDeep(formsWithNewSimpleConditions.form7);
+
+      form.setForm(formCopy).then(() => {
+        const conditionalComponent = form.getComponent('textField');
+        assert.equal(conditionalComponent.visible, true, 'Component should be conditionally visible');
+
+        form.setValue({ data: { checkbox: true } });
+
+        setTimeout(() => {
+          assert.equal(conditionalComponent.visible, false, 'Component should be conditionally hidden');
+          done();
+        }, 300);
+      }).catch((err) => done(err));
+    });
   });
 
   describe('Calculate Value with allowed manual override', () => {
