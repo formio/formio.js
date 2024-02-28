@@ -934,10 +934,115 @@ const form5 = {
   machineName: 'uubnbosxacwjzbk:testAllConditionalOperators',
 };
 
+const form6 = {
+  title: 'select boxes cond',
+  name: 'selectBoxesCond',
+  path: 'selectboxescond',
+  type: 'form',
+  display: 'form',
+  components: [
+    {
+      label: 'Text Field',
+      applyMaskOn: 'change',
+      hidden: true,
+      tableView: true,
+      key: 'textField',
+      conditional: {
+        show: true,
+        conjunction: 'all',
+        conditions: [
+          {
+            component: 'selectBoxes',
+            operator: 'isEqual',
+            value: '111',
+          },
+        ],
+      },
+      type: 'textfield',
+      input: true,
+    },
+    {
+      label: 'Select Boxes',
+      optionsLabelPosition: 'right',
+      tableView: false,
+      values: [
+        {
+          label: 'test 1',
+          value: '111',
+          shortcut: '',
+        },
+        {
+          label: 'test 2',
+          value: '222',
+          shortcut: '',
+        },
+      ],
+      key: 'selectBoxes',
+      type: 'selectboxes',
+      input: true,
+      inputType: 'checkbox',
+    },
+    {
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      disableOnInvalid: true,
+      input: true,
+      tableView: false,
+    },
+  ],
+  created: '2023-11-08T12:37:19.452Z',
+  modified: '2023-11-09T08:54:09.529Z',
+  machineName: 'cpxkpoxmfvhivle:selectBoxesCond',
+};
+
+const form7 = {
+  type: 'form',
+  display: 'form',
+  components: [
+    {
+      label: 'Checkbox',
+      tableView: false,
+      key: 'checkbox',
+      type: 'checkbox',
+      input: true,
+    },
+    {
+      label: 'Text Field',
+      applyMaskOn: 'change',
+      tableView: true,
+      key: 'textField',
+      conditional: {
+        show: true,
+        conjunction: 'all',
+        conditions: [
+          {
+            component: 'checkbox',
+            operator: 'isEqual',
+            value: 'false',
+          },
+        ],
+      },
+      type: 'textfield',
+      input: true,
+    },
+    {
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      disableOnInvalid: true,
+      input: true,
+      tableView: false,
+    },
+  ],
+};
+
 export default {
   form1,
   form2,
   form3,
   form4,
   form5,
+  form6,
+  form7
 };
