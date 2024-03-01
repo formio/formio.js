@@ -126,8 +126,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Test and generate report
-        run: yarn test
-        # Note: Adjust the test command if needed to ensure it generates the desired output
+        run: mocha 'src/**/*.unit.js' --reporter spec > tests_pipeline.txt
 
       - name: Upload test report
         uses: actions/upload-artifact@v3
