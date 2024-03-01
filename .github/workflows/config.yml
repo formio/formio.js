@@ -125,7 +125,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Test
-        uses: borales/actions-yarn@v4
+      - name: Test and generate report
+        run: yarn test
+        # Note: Adjust the test command if needed to ensure it generates the desired output
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v3
         with:
-          cmd: test
+          name: test-report
+          path: tests_pipeline.txt
