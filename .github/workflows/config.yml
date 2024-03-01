@@ -71,13 +71,13 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      # - name: Cache node modules
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: node_modules
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Installing dependencies
         if: steps.cache.outputs.cache-hit != 'true'
@@ -125,11 +125,12 @@ jobs:
       #     restore-keys: |
       #       ${{ runner.os }}-node-
 
-      - name: Test and generate report
-        run: yarn test --reporter spec > tests_pipeline.txt
-
-      - name: Upload test report
-        uses: actions/upload-artifact@v3
+      - name: Installing dependencies
+        uses: borales/actions-yarn@v4
         with:
-          name: test-report
-          path: tests_pipeline.txt
+          cmd: install
+
+      - name: Test
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: test
