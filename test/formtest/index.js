@@ -42,7 +42,6 @@ const wizardWithTooltip = require('./wizardWithTooltip.json');
 const resourceKeyCamelCase = require('./resourceKeyCamelCase.json');
 const tooltipActivateCheckbox = require('./tooltipActivateCheckbox.json');
 const formWithObjectValueSelect = require('./formWithObjectValueSelect.json');
-const formWithNumericKeys = require('./formWithNumericKeys.json');
 
 module.exports = {
   advanced,
@@ -89,5 +88,4 @@ module.exports = {
   resourceKeyCamelCase,
   tooltipActivateCheckbox,
   formWithObjectValueSelect,
-  formWithNumericKeys,
 };
