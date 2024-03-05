@@ -73,29 +73,34 @@ export default class ReCaptchaComponent extends Component {
       const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${_get(this.root.form, 'settings.recaptcha.siteKey')}`;
       this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);
     }
-    await this.recaptchaApiReady;
-    this.recaptchaVerifiedPromise = new Promise((resolve, reject) => {
-      if (!this.isLoading) {
-        this.isLoading= true;
-        grecaptcha.ready(_debounce(async() => {
-          try {
-            const token = await grecaptcha.execute(siteKey, { action: actionName });
-            const verificationResult = await this.sendVerificationRequest(token);
-            this.recaptchaResult = {
-              ...verificationResult,
-              token,
-            };
-            this.updateValue(this.recaptchaResult);
-            this.isLoading = false;
-            return resolve(verificationResult);
-          }
-          catch (err) {
-            this.isLoading = false;
-            reject(err);
-          }
-        }, 1000));
-      }
-    });
+    try {
+      await this.recaptchaApiReady;
+      this.recaptchaVerifiedPromise = new Promise((resolve, reject) => {
+        if (!this.isLoading) {
+          this.isLoading= true;
+          grecaptcha.ready(_debounce(async() => {
+            try {
+              const token = await grecaptcha.execute(siteKey, { action: actionName });
+              const verificationResult = await this.sendVerificationRequest(token);
+              this.recaptchaResult = {
+                ...verificationResult,
+                token,
+              };
+              this.updateValue(this.recaptchaResult);
+              this.isLoading = false;
+              return resolve(verificationResult);
+            }
+            catch (err) {
+              this.isLoading = false;
+              reject(err);
+            }
+          }, 1000));
+        }
+      });
+    }
+    catch (err) {
+      this.loading = false;
+    }
   }
 
   beforeSubmit() {
