@@ -210,6 +210,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-7445: fixed an issue where the interpolated data does not show up on PDF
  - FIO-7421: Adds ReCaptcha error messages to the translations config
  - FIO-7804: Added PKCE method for OIDC
+ - FIO-7675: Removed maps key from repo
 
 ## 5.0.0-rc.37
 ### Fixed
