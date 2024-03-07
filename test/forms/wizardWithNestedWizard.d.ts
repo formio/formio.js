@@ -21,47 +21,50 @@ declare namespace _default {
             type: string;
             tags: never[];
             owner: string;
-            components: ({
-                title: string;
-                label: string;
-                type: string;
-                key: string;
-                components: {
-                    label: string;
-                    optionsLabelPosition: string;
-                    inline: boolean;
-                    tableView: boolean;
-                    values: {
-                        label: string;
-                        value: string;
-                        shortcut: string;
-                    }[];
-                    key: string;
-                    type: string;
-                    input: boolean;
-                }[];
-                input: boolean;
-                tableView: boolean;
-            } | {
-                title: string;
-                label: string;
-                type: string;
-                key: string;
-                components: {
-                    label: string;
-                    tableView: boolean;
-                    key: string;
-                    conditional: {
-                        show: boolean;
-                        when: string;
-                        eq: string;
-                    };
-                    type: string;
-                    input: boolean;
-                }[];
-                input: boolean;
-                tableView: boolean;
-            })[];
+            components: (
+                | {
+                      title: string;
+                      label: string;
+                      type: string;
+                      key: string;
+                      components: {
+                          label: string;
+                          optionsLabelPosition: string;
+                          inline: boolean;
+                          tableView: boolean;
+                          values: {
+                              label: string;
+                              value: string;
+                              shortcut: string;
+                          }[];
+                          key: string;
+                          type: string;
+                          input: boolean;
+                      }[];
+                      input: boolean;
+                      tableView: boolean;
+                  }
+                | {
+                      title: string;
+                      label: string;
+                      type: string;
+                      key: string;
+                      components: {
+                          label: string;
+                          tableView: boolean;
+                          key: string;
+                          conditional: {
+                              show: boolean;
+                              when: string;
+                              eq: string;
+                          };
+                          type: string;
+                          input: boolean;
+                      }[];
+                      input: boolean;
+                      tableView: boolean;
+                  }
+            )[];
             revisions: string;
             _vid: number;
             title: string;

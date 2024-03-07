@@ -6,10 +6,10 @@ import indexeddb from './indexeddb';
 import googledrive from './googleDrive';
 
 export default {
-  base64,
-  s3,
-  url,
-  azure,
-  indexeddb,
-  googledrive
+    base64,
+    s3,
+    url,
+    azure,
+    indexeddb,
+    googledrive,
 };

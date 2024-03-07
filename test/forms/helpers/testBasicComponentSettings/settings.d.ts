@@ -241,11 +241,11 @@ declare const _default: {
         };
         select: {
             js: string;
-            expectedValue: (basis: any) => "a" | "b";
+            expectedValue: (basis: any) => 'a' | 'b';
         };
         radio: {
             js: string;
-            expectedValue: (basis: any) => "b" | "c";
+            expectedValue: (basis: any) => 'b' | 'c';
         };
         email: {
             js: string;
@@ -265,15 +265,17 @@ declare const _default: {
         };
         dateTime: {
             js: string;
-            expectedValue: (basis: any) => "2023-03-03T12:00:00" | "2003-12-12T12:00:00";
+            expectedValue: (
+                basis: any
+            ) => '2023-03-03T12:00:00' | '2003-12-12T12:00:00';
         };
         day: {
             js: string;
-            expectedValue: (basis: any) => "05/05/2015" | "03/03/2003";
+            expectedValue: (basis: any) => '05/05/2015' | '03/03/2003';
         };
         time: {
             js: string;
-            expectedValue: (basis: any) => "04:45:00" | "04:05:00";
+            expectedValue: (basis: any) => '04:45:00' | '04:05:00';
         };
         currency: {
             js: string;

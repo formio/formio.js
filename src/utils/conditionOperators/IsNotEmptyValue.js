@@ -1,4 +1,4 @@
-import  IsEmptyValue from './IsEmptyValue';
+import IsEmptyValue from './IsEmptyValue';
 
 export default class IsNotEmptyValue extends IsEmptyValue {
     static get operatorKey() {
@@ -10,6 +10,6 @@ export default class IsNotEmptyValue extends IsEmptyValue {
     }
 
     getResult(options) {
-        return  !super.getResult(options);
+        return !super.getResult(options);
     }
 }

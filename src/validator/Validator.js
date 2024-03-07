@@ -195,7 +195,9 @@ class ValidationChecker {
                             addPathQueryParams(
                                 {
                                     $regex: new RegExp(
-                                        `^${escapeRegExCharacters(value.address['place_id'])}$`,
+                                        `^${escapeRegExCharacters(
+                                            value.address['place_id'],
+                                        )}$`,
                                     ),
                                     $options: 'i',
                                 },
@@ -243,7 +245,9 @@ class ValidationChecker {
                                     addPathQueryParams(
                                         {
                                             $regex: new RegExp(
-                                                `^${escapeRegExCharacters(value)}$`,
+                                                `^${escapeRegExCharacters(
+                                                    value,
+                                                )}$`,
                                             ),
                                             $options: 'i',
                                         },
@@ -391,7 +395,9 @@ class ValidationChecker {
                         _.chain(requestOptions.qs)
                             .map(
                                 (val, key) =>
-                                    `${encodeURIComponent(key)}=${encodeURIComponent(val)}`,
+                                    `${encodeURIComponent(
+                                        key,
+                                    )}=${encodeURIComponent(val)}`,
                             )
                             .join('&')
                             .value();

@@ -11,26 +11,25 @@ export default {
             widget: 'choicesjs',
             tableView: true,
             multiple: true,
-            data:
-                {
-                    values: [
-                        {
-                            label: 'Apple',
-                            value: 'apple'
-                        },
-                        {
-                            label: 'Orange',
-                            value: 'orange'
-                        },
-                        {
-                            label: 'Pear',
-                            value: 'pear'
-                        }
-                    ]
-                },
+            data: {
+                values: [
+                    {
+                        label: 'Apple',
+                        value: 'apple',
+                    },
+                    {
+                        label: 'Orange',
+                        value: 'orange',
+                    },
+                    {
+                        label: 'Pear',
+                        value: 'pear',
+                    },
+                ],
+            },
             key: 'select',
             type: 'select',
-            input: true
+            input: true,
         },
         {
             type: 'button',
@@ -38,8 +37,8 @@ export default {
             key: 'submit',
             disableOnInvalid: true,
             input: true,
-            tableView: false
-        }
+            tableView: false,
+        },
     ],
-    project: '63cead09be0090345b109e22'
+    project: '63cead09be0090345b109e22',
 };

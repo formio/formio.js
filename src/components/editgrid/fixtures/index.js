@@ -16,4 +16,23 @@ import comp15 from './comp15';
 import withOpenWhenEmptyAndConditions from './comp-with-conditions-and-openWhenEmpty';
 import compOpenWhenEmpty from './comp-openWhenEmpty';
 import compWithCustomDefaultValue from './comp-with-custom-default-value';
-export { comp1, comp2, comp3, comp10, comp11, comp12, comp13, comp14, comp15, comp4, comp5, comp6, comp7, comp8, comp9, compOpenWhenEmpty, withOpenWhenEmptyAndConditions, compWithCustomDefaultValue };
+export {
+    comp1,
+    comp2,
+    comp3,
+    comp10,
+    comp11,
+    comp12,
+    comp13,
+    comp14,
+    comp15,
+    comp4,
+    comp5,
+    comp6,
+    comp7,
+    comp8,
+    comp9,
+    compOpenWhenEmpty,
+    withOpenWhenEmptyAndConditions,
+    compWithCustomDefaultValue,
+};

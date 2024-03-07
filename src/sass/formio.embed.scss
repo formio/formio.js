@@ -2,19 +2,19 @@
     position: relative;
     min-height: 100px;
 }
-  
+
 .loader-wrapper {
     z-index: 1000;
-    position:absolute;
+    position: absolute;
     top: 0px;
     left: 0px;
     bottom: 0px;
     right: 0px;
-    background-color:rgba(0, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .loader {
-    position:absolute;
+    position: absolute;
     left: 50%;
     top: 50%;
     margin-left: -30px;
@@ -40,6 +40,10 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

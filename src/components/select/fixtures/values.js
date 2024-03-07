@@ -1,5 +1,1 @@
-export default [
-  'one',
-  'two',
-  false,
-];
+export default ['one', 'two', false];

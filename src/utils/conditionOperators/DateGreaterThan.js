@@ -10,9 +10,18 @@ export default class DateGeaterThan extends ConditionOperator {
     }
 
     getFormattedDates({ value, comparedValue, conditionTriggerComponent }) {
-        const hasValidationFormat = conditionTriggerComponent ? conditionTriggerComponent.getValidationFormat : null;
-        const date = hasValidationFormat ? moment(value, conditionTriggerComponent.getValidationFormat()) : moment(value);
-        const comparedDate = hasValidationFormat ? moment(comparedValue, conditionTriggerComponent.getValidationFormat()) : moment(comparedValue);
+        const hasValidationFormat = conditionTriggerComponent
+            ? conditionTriggerComponent.getValidationFormat
+            : null;
+        const date = hasValidationFormat
+            ? moment(value, conditionTriggerComponent.getValidationFormat())
+            : moment(value);
+        const comparedDate = hasValidationFormat
+            ? moment(
+                  comparedValue,
+                  conditionTriggerComponent.getValidationFormat(),
+              )
+            : moment(comparedValue);
 
         return { date, comparedDate };
     }
@@ -27,14 +36,23 @@ export default class DateGeaterThan extends ConditionOperator {
         let conditionTriggerComponent = null;
 
         if (instance && instance.root) {
-            conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
+            conditionTriggerComponent = instance.root.getComponent(
+                conditionComponentPath,
+            );
         }
 
-        if ( conditionTriggerComponent && conditionTriggerComponent.isPartialDay && conditionTriggerComponent.isPartialDay(value)) {
+        if (
+            conditionTriggerComponent &&
+            conditionTriggerComponent.isPartialDay &&
+            conditionTriggerComponent.isPartialDay(value)
+        ) {
             return false;
         }
 
-        const { date, comparedDate } = this.getFormattedDates({ ...options, conditionTriggerComponent });
+        const { date, comparedDate } = this.getFormattedDates({
+            ...options,
+            conditionTriggerComponent,
+        });
 
         return date[functionName](comparedDate);
     }

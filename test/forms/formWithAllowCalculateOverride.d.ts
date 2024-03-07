@@ -10,23 +10,26 @@ declare namespace _default {
         label: string;
         value: string;
     }[];
-    const components: ({
-        label: string;
-        key: string;
-        input: boolean;
-        type: string;
-        allowCalculateOverride?: undefined;
-    } | {
-        label: string;
-        key: string;
-        input: boolean;
-        type: string;
-        allowCalculateOverride: boolean;
-        calculateValue: {
-            _camelCase: {
-                var: string;
-            }[];
-        };
-    })[];
+    const components: (
+        | {
+              label: string;
+              key: string;
+              input: boolean;
+              type: string;
+              allowCalculateOverride?: undefined;
+          }
+        | {
+              label: string;
+              key: string;
+              input: boolean;
+              type: string;
+              allowCalculateOverride: boolean;
+              calculateValue: {
+                  _camelCase: {
+                      var: string;
+                  }[];
+              };
+          }
+    )[];
 }
 export default _default;

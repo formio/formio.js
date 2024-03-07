@@ -1,27 +1,32 @@
 import Rule from './Rule';
 
 export default class Custom extends Rule {
-  defaultMessage = '{{error}}';
+    defaultMessage = '{{error}}';
 
-  check(value, data, row, index) {
-    const custom = this.settings.custom;
+    check(value, data, row, index) {
+        const custom = this.settings.custom;
 
-    if (!custom) {
-      return true;
+        if (!custom) {
+            return true;
+        }
+
+        const valid = this.component.evaluate(
+            custom,
+            {
+                valid: true,
+                data,
+                row,
+                rowIndex: index,
+                input: value,
+            },
+            'valid',
+            true,
+        );
+
+        if (valid === null) {
+            return true;
+        }
+
+        return valid;
     }
-
-    const valid = this.component.evaluate(custom, {
-      valid: true,
-      data,
-      row,
-      rowIndex: index,
-      input: value,
-    }, 'valid', true);
-
-    if (valid === null) {
-      return true;
-    }
-
-    return valid;
-  }
 }

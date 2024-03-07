@@ -5,7 +5,7 @@ export default {
             label: 'Select Boxes',
             dataSrc: 'url',
             data: {
-                url: 'https://cdn.rawgit.com/mshafrir/2646763/raw/states_titlecase.json'
+                url: 'https://cdn.rawgit.com/mshafrir/2646763/raw/states_titlecase.json',
             },
             valueProperty: 'abbreviation',
             template: '<span>{{ item.name }}</span>',
@@ -15,17 +15,17 @@ export default {
             inputType: 'checkbox',
         },
         {
-			label: 'Submit',
-			showValidations: false,
-			alwaysEnabled: false,
-			tableView: false,
-			key: 'submit',
-			type: 'button',
-			input: true
-		}
+            label: 'Submit',
+            showValidations: false,
+            alwaysEnabled: false,
+            tableView: false,
+            key: 'submit',
+            type: 'button',
+            input: true,
+        },
     ],
     title: 'test selectBoxes Url',
-	display: 'form',
-	name: 'testSelectBoxesUrl',
-	path: 'testSelectBoxesUrl',
+    display: 'form',
+    name: 'testSelectBoxesUrl',
+    path: 'testSelectBoxesUrl',
 };

@@ -590,11 +590,10 @@ export function uniqueName(name, template, evalContext) {
         guid: guid(),
     });
     //only letters, numbers, dots, dashes, underscores and spaces are allowed. Anything else will be replaced with dash
-    const uniqueName =
-        `${Evaluator.interpolate(template, evalContext)}${extension}`.replace(
-            /[^0-9a-zA-Z.\-_ ]/g,
-            '-',
-        );
+    const uniqueName = `${Evaluator.interpolate(
+        template,
+        evalContext,
+    )}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, '-');
     return uniqueName;
 }
 
@@ -816,7 +815,9 @@ export function formatDate(
     }
     if (timezone === 'UTC') {
         const offset = offsetDate(momentDate.toDate(), 'UTC');
-        return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;
+        return `${moment(offset.date).format(
+            convertFormatToMoment(format),
+        )} UTC`;
     }
 
     // Load the zones since we need timezone information.
@@ -1080,7 +1081,9 @@ export function getCurrencyAffixes({
     // Get the prefix and suffix from the localized string.
     let regex = `(.*)?${(100).toLocaleString(lang)}`;
     if (decimalLimit) {
-        regex += `${decimalSeparator === '.' ? '\\.' : decimalSeparator}${(0).toLocaleString(lang)}{${decimalLimit}}`;
+        regex += `${
+            decimalSeparator === '.' ? '\\.' : decimalSeparator
+        }${(0).toLocaleString(lang)}{${decimalLimit}}`;
     }
     regex += '(.*)?';
     const parts = (100)

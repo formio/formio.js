@@ -9,29 +9,32 @@ declare namespace form {
     const display: string;
     const name: string;
     const path: string;
-    const components: ({
-        label: string;
-        tableView: boolean;
-        key: string;
-        type: string;
-        input: boolean;
-        title?: undefined;
-        components?: undefined;
-    } | {
-        title: string;
-        label: string;
-        type: string;
-        key: string;
-        components: {
-            label: string;
-            tableView: boolean;
-            key: string;
-            type: string;
-            input: boolean;
-        }[];
-        input: boolean;
-        tableView: boolean;
-    })[];
+    const components: (
+        | {
+              label: string;
+              tableView: boolean;
+              key: string;
+              type: string;
+              input: boolean;
+              title?: undefined;
+              components?: undefined;
+          }
+        | {
+              title: string;
+              label: string;
+              type: string;
+              key: string;
+              components: {
+                  label: string;
+                  tableView: boolean;
+                  key: string;
+                  type: string;
+                  input: boolean;
+              }[];
+              input: boolean;
+              tableView: boolean;
+          }
+    )[];
 }
 declare namespace submission {
     namespace data {
