@@ -10,16 +10,20 @@ import formWithFormController from '../test/forms/formWithFormController';
 
 describe('WebformBuilder tests', function() {
   this.retries(3);
-  before((done) => Harness.builderBefore(done));
-  afterEach(() => Harness.getBuilder().setForm({ display: 'form', components: [] }));
-  after((done) => Harness.builderAfter(done));
-  it('Should create a new form builder class', (done) => {
+
+  before(function(done) { Harness.builderBefore(done); });
+
+  afterEach(function() { Harness.getBuilder().setForm({ display: 'form', components: [] }); });
+
+  after(function(done) { Harness.builderAfter(done); });
+
+  it('Should create a new form builder class', function(done) {
     const builder = Harness.getBuilder();
     assert(builder instanceof WebformBuilder, 'Builder must be an instance of FormioFormBuilder');
     done();
   });
 
-  it('Should execute form controller', (done) => {
+  it('Should execute form controller', function(done) {
     const builder = Harness.getBuilder();
     builder.webform.form = formWithFormController;
 
@@ -32,7 +36,7 @@ describe('WebformBuilder tests', function() {
     }, 500);
   });
 
-  it('Should not show unique API error when components with same keys are inside and outside of the Data component', (done) => {
+  it('Should not show unique API error when components with same keys are inside and outside of the Data component', function(done) {
     const builder = Harness.getBuilder();
     builder.webform.setForm(uniqueApiKeys).then(() => {
       builder.highlightInvalidComponents();
@@ -42,7 +46,7 @@ describe('WebformBuilder tests', function() {
     }).catch(done);
   });
 
-  it('Should show unique API error when components inside and outside of the Layout component have same keys', (done) => {
+  it('Should show unique API error when components inside and outside of the Layout component have same keys', function(done) {
     const builder = Harness.getBuilder();
     builder.webform.setForm(uniqueApiKeysLayout).then(() => {
       builder.highlightInvalidComponents();
@@ -52,7 +56,7 @@ describe('WebformBuilder tests', function() {
     }).catch(done);
   });
 
-  it('Should not overwrite existing resource key in camelCase', (done) => {
+  it('Should not overwrite existing resource key in camelCase', function(done) {
     const builder = Harness.getBuilder();
     builder.setForm(resourceKeyCamelCase).then(() => {
       const component = builder.webform.getComponent('CalendarID');
@@ -61,7 +65,7 @@ describe('WebformBuilder tests', function() {
     }).catch(done);
   });
 
-  it('Should show unique API error when layout components have same keys', (done) => {
+  it('Should show unique API error when layout components have same keys', function(done) {
     const builder = Harness.getBuilder();
     builder.webform.setForm(sameApiKeysLayoutComps).then(() => {
       builder.highlightInvalidComponents();
@@ -87,7 +91,7 @@ describe('WebformBuilder tests', function() {
     }).catch(done);
   });
 
-  it('Should show unique API error when components on the same level have same keys', (done) => {
+  it('Should show unique API error when components on the same level have same keys', function(done) {
     const builder = Harness.getBuilder();
     builder.webform.setForm(uniqueApiKeysSameLevel).then(() => {
       builder.highlightInvalidComponents();
@@ -97,7 +101,7 @@ describe('WebformBuilder tests', function() {
     }).catch(done);
   });
 
-  it('Should uniquify API keys when add a component to the container which already has the same type component', (done) => {
+  it('Should uniquify API keys when add a component to the container which already has the same type component', function(done) {
     const builder = Harness.getBuilder();
     builder.webform.setForm(testApiKeysUniquifying).then(() => {
       const ERROR_MSG = 'Should add a number to the api key of the second component of the same type';
@@ -171,7 +175,7 @@ describe('WebformBuilder tests', function() {
     }).catch(done);
   });
 
-  it('Should override the way a key for new component is set', (done) => {
+  it('Should override the way a key for new component is set', function(done) {
     const builder = Harness.getBuilder();
     builder.setForm(columnsForm).then(() => {
       Builders.builders.webform.prototype.updateComponentKey = function() {
@@ -196,7 +200,7 @@ describe('WebformBuilder tests', function() {
     }).catch(done);
   });
 
-  it('Should add submit button after switching from wizard form', (done) => {
+  it('Should add submit button after switching from wizard form', function(done) {
     const builder = Harness.getBuilder();
     builder.setForm(formBasedOnWizard).then(() => {
       const components = builder.webform.components;
@@ -207,7 +211,7 @@ describe('WebformBuilder tests', function() {
     }).catch(done);
   });
 
-  it('Should keep min/max date validation settings with moment.js function', (done) => {
+  it('Should keep min/max date validation settings with moment.js function', function(done) {
     const builder = Harness.getBuilder();
     builder.setForm(columnsForm).then(() => {
       const column1 = builder.webform.element.querySelector('[ref="columns-container"]');
@@ -230,7 +234,7 @@ describe('WebformBuilder tests', function() {
     }).catch(done);
   });
 
-  it('Should remove deleted components keys from default value', (done) => {
+  it('Should remove deleted components keys from default value', function(done) {
     const builder = Harness.getBuilder();
     builder.setForm({}).then(() => {
       Harness.buildComponent('datagrid');

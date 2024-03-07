@@ -17,22 +17,22 @@ import {
   comp10
 } from './fixtures';
 
-describe('Radio Component', () => {
-  it('Should build a radio component', () => {
+describe('Radio Component', function() {
+  it('Should build a radio component', function() {
     return Harness.testCreate(RadioComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="radio"]', 4);
       Harness.testElements(component, 'span', 4);
     });
   });
 
-  it('Should return correct string values if storage type is Number', () => {
+  it('Should return correct string values if storage type is Number', function() {
     return Harness.testCreate(RadioComponent, comp2).then((component) => {
       assert.equal(component.getValueAsString(1), 'one');
       assert.equal(component.getValueAsString(2), 'two');
     });
   });
 
-  it('Should build a radio component with URL DataSrc', (done) => {
+  it('Should build a radio component with URL DataSrc', function(done) {
     const form = _.cloneDeep(comp9);
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
@@ -60,7 +60,7 @@ describe('Radio Component', () => {
     }).catch(done);
   });
 
-  it('Should provide metadata.selectData for radio component with URL DataSrc', (done) => {
+  it('Should provide metadata.selectData for radio component with URL DataSrc', function(done) {
     const form = _.cloneDeep(comp9);
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
@@ -99,7 +99,7 @@ describe('Radio Component', () => {
     }).catch(done);
   });
 
-  it('Should save checked value after redrawing if storage type is Number', (done) => {
+  it('Should save checked value after redrawing if storage type is Number', function(done) {
     Harness.testCreate(RadioComponent, comp3).then((component) => {
       component.setValue(22);
       component.redraw();
@@ -114,7 +114,7 @@ describe('Radio Component', () => {
     });
   });
 
-  it('Should set correct data for 0s values', (done) => {
+  it('Should set correct data for 0s values', function(done) {
     Harness.testCreate(RadioComponent, comp10).then((component) => {
       component.setValue('01');
       component.redraw();
@@ -131,7 +131,7 @@ describe('Radio Component', () => {
     });
   });
 
-  it('Span should have correct text label', () => {
+  it('Span should have correct text label', function() {
     return Harness.testCreate(RadioComponent, comp1).then((component) => {
       component.element.querySelectorAll('input').forEach((input) => {
         assert(input.getAttribute('class').indexOf('form-check-input') !== -1, 'No form-check-input on radios.');
@@ -144,7 +144,7 @@ describe('Radio Component', () => {
     });
   });
 
-  it('Should set false as defaultValue correctly', (done) => {
+  it('Should set false as defaultValue correctly', function(done) {
     Harness.testCreate(RadioComponent, comp4).then((component) => {
       assert.equal(component.dataValue, false, 'Should be equal to false');
       const input = component.element.querySelector('input[value="false"]');
@@ -153,7 +153,7 @@ describe('Radio Component', () => {
     });
   });
 
-  it('Should provide "Allow only available values" validation', (done) => {
+  it('Should provide "Allow only available values" validation', function(done) {
     const form = _.cloneDeep(comp5);
     const element = document.createElement('div');
 
@@ -190,7 +190,7 @@ describe('Radio Component', () => {
     }).catch(done);
   });
 
-  it('Should use whole Object as value if URL DataSrc and ValueProperty is not set', (done) => {
+  it('Should use whole Object as value if URL DataSrc and ValueProperty is not set', function(done) {
     const form = _.cloneDeep(comp9);
     delete form.components[0].valueProperty;
     const element = document.createElement('div');
@@ -235,7 +235,7 @@ describe('Radio Component', () => {
     }).catch(done);
   });
 
-  it('Should not have default values in schema', (done) => {
+  it('Should not have default values in schema', function(done) {
     const form = _.cloneDeep(comp6);
     const element = document.createElement('div');
 
@@ -257,8 +257,8 @@ describe('Radio Component', () => {
   });
 });
 
-describe('Radio Component', () => {
-  it('should have red asterisk left hand side to the options labels if component is required and label is hidden', () => {
+describe('Radio Component Part Two', function() {
+  it('should have red asterisk left hand side to the options labels if component is required and label is hidden', function() {
     return Harness.testCreate(RadioComponent, comp7).then(component => {
       const options = component.element.querySelectorAll('.form-check-label');
       options.forEach(i => {
@@ -267,7 +267,7 @@ describe('Radio Component', () => {
     });
   });
 
-  it('Should not provide empty error message when hidden radio has storage type as string', (done) => {
+  it('Should not provide empty error message when hidden radio has storage type as string', function(done) {
     const form = _.cloneDeep(comp8);
     const element = document.createElement('div');
 

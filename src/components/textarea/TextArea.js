@@ -148,7 +148,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           break;
         case 'quill':
           // Normalize the configurations for quill.
-          if (settings.hasOwnProperty('toolbarGroups') || settings.hasOwnProperty('toolbar')) {
+          if (Object.prototype.hasOwnProperty.call(settings, 'toolbarGroups') || Object.prototype.hasOwnProperty.call(settings, 'toolbar')) {
             console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
             settings = this.wysiwygDefault.quill;
           }

@@ -5,8 +5,8 @@ import { comp1, comp2 } from './fixtures';
 import { Formio } from './../../Formio';
 import _ from 'lodash';
 
-describe('File Component', () => {
-  it('Should create a File Component', () => {
+describe('File Component', function() {
+  it('Should create a File Component', function() {
     return Harness.testCreate(FileComponent, comp1).then((component) => {
       const parentNode = document.createElement('div');
       const element = document.createElement('div');
@@ -41,7 +41,7 @@ describe('File Component', () => {
     });
   });
 
-  it('Should hide loader after loading process', () => {
+  it('Should hide loader after loading process', function() {
     return Harness.testCreate(FileComponent, comp1).then((component) => {
       const parentNode = document.createElement('div');
       const element = document.createElement('div');
@@ -62,7 +62,7 @@ describe('File Component', () => {
     });
   });
 
-  it('Should create a multiple File Component', () => {
+  it('Should create a multiple File Component', function() {
     comp1.multiple = true;
     return Harness.testCreate(FileComponent, comp1).then((component) => {
       const parentNode = document.createElement('div');
@@ -98,7 +98,7 @@ describe('File Component', () => {
     });
   });
 
-  it('Should validate uploaded file according to the pattern', (done) => {
+  it('Should validate uploaded file according to the pattern', function(done) {
     Harness.testCreate(FileComponent, comp1).then((component) => {
       const validFiles =[
         {
@@ -145,7 +145,7 @@ describe('File Component', () => {
     });
   });
 
-  it('Should display uploaded file in file component only after saving', (done) => {
+  it('Should display uploaded file in file component only after saving', function(done) {
     const form = _.cloneDeep(comp2);
     const element = document.createElement('div');
 
@@ -197,7 +197,7 @@ describe('File Component', () => {
     }).catch(done);
   });
 
-  it('Should abort the correct file when user clicks the file remove button', (done) => {
+  it('Should abort the correct file when user clicks the file remove button', function(done) {
     const cmp =  _.cloneDeep(comp1);
     const abortedFiles = [];
     cmp.multiple = true;

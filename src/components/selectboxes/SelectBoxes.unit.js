@@ -14,14 +14,14 @@ import {
 } from './fixtures';
 import wizardWithSelectBoxes from '../../../test/forms/wizardWithSelectBoxes';
 
-describe('SelectBoxes Component', () => {
-  it('Should build a SelectBoxes component', () => {
+describe('SelectBoxes Component', function() {
+  it('Should build a SelectBoxes component', function() {
     return Harness.testCreate(SelectBoxesComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="checkbox"]', 8);
     });
   });
 
-  it('Should build a SelectBoxes component with URL DataSrc', (done) => {
+  it('Should build a SelectBoxes component with URL DataSrc', function(done) {
     const form = _.cloneDeep(comp5);
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
@@ -59,7 +59,7 @@ describe('SelectBoxes Component', () => {
     });
   });
 
-  it('Should provide metadata.selectData for SelectBoxes component with URL DataSrc', (done) => {
+  it('Should provide metadata.selectData for SelectBoxes component with URL DataSrc', function(done) {
     const form = _.cloneDeep(comp5);
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
@@ -98,8 +98,8 @@ describe('SelectBoxes Component', () => {
     }).catch(done);
   });
 
-  describe('error messages', () => {
-    it('Should have a minSelectedCount validation message', () => {
+  describe('error messages', function() {
+    it('Should have a minSelectedCount validation message', function() {
       const formJson = {
         components: [
           {
@@ -136,7 +136,7 @@ describe('SelectBoxes Component', () => {
         });
     });
 
-    it('Should use the minSelectedCountMessage if provided', () => {
+    it('Should use the minSelectedCountMessage if provided', function() {
       const formJson = {
         components: [
           {
@@ -174,7 +174,7 @@ describe('SelectBoxes Component', () => {
         });
     });
 
-    it('Hidden SelectBoxes validation should not prevent submission', (done) => {
+    it('Hidden SelectBoxes validation should not prevent submission', function(done) {
       const element = document.createElement('div');
       Formio.createForm(element, comp4)
         .then(async form => {
@@ -191,7 +191,7 @@ describe('SelectBoxes Component', () => {
         .catch(done);
     });
 
-    it('Should have a maxSelectedCount validation message', () => {
+    it('Should have a maxSelectedCount validation message', function() {
       const formJson = {
         components: [
           {
@@ -228,7 +228,7 @@ describe('SelectBoxes Component', () => {
         });
     });
 
-    it('Should use the maxSelectedCountMessage if provided', () => {
+    it('Should use the maxSelectedCountMessage if provided', function() {
       const formJson = {
         components: [
           {
@@ -266,7 +266,7 @@ describe('SelectBoxes Component', () => {
         });
     });
 
-    it('Should provide validation for ValueProperty', (done) => {
+    it('Should provide validation for ValueProperty', function(done) {
       const form = _.cloneDeep(comp5);
       const element = document.createElement('div');
       const originalMakeRequest = Formio.makeRequest;
@@ -315,7 +315,7 @@ describe('SelectBoxes Component', () => {
     });
   });
 
-  it('Should set "checked" attribute correctly when value is changed', (done) => {
+  it('Should set "checked" attribute correctly when value is changed', function(done) {
     Formio.createForm(document.createElement('div'), wizardWithSelectBoxes).then((form) => {
       const selectBoxes = form.getComponent(['selectBoxes']);
       const value = {
@@ -352,8 +352,8 @@ describe('SelectBoxes Component', () => {
   });
 });
 
-describe('SelectBoxes Component', () => {
-  it('should have red asterisk left hand side to the options labels if component is required and label is hidden', () => {
+describe('SelectBoxes Component Part Two', function() {
+  it('should have red asterisk left hand side to the options labels if component is required and label is hidden', function() {
     return Harness.testCreate(SelectBoxesComponent, comp3).then(component => {
       const options = component.element.querySelectorAll('.form-check-label');
       options.forEach(i => {
@@ -362,7 +362,7 @@ describe('SelectBoxes Component', () => {
     });
   });
 
-  it('Should perform OnlyAvailableItems check properly', (done) => {
+  it('Should perform OnlyAvailableItems check properly', function(done) {
     Harness.testCreate(SelectBoxesComponent, comp7).then(component => {
       assert.equal(component.validateValueAvailability(true, { a: true }), true, 'Should be valid');
       assert.equal(component.validateValueAvailability(true, { a: false, b: false, c: false }), true, 'Should be valid');

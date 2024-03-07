@@ -98,7 +98,7 @@ export default class FormComponent extends Component {
       }
     }
 
-    if (this.builderMode && this.component.hasOwnProperty('formRevision')) {
+    if (this.builderMode && Object.prototype.hasOwnProperty.call(this.component, 'formRevision')) {
       this.component.revision = this.component.formRevision;
       delete this.component.formRevision;
     }
@@ -563,7 +563,7 @@ export default class FormComponent extends Component {
    * @return {*|boolean}
    */
   get shouldSubmit() {
-    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.isHidden();
+    return this.subFormReady && (!Object.prototype.hasOwnProperty.call(this.component, 'reference') || this.component.reference) && !this.isHidden();
   }
 
   /**

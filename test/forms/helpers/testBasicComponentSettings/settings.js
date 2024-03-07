@@ -8,38 +8,38 @@ export default {
     (obj, componentKey, index) => {
       if(componentKey === 'day') {
         obj[componentKey] = { day: "enter day", month: "enter month", year: "enter year" };
-      } 
+      }
       else {
         'test placeholder' + index;
       }
 
       return obj;
     },
-    {} 
+    {}
   ),
   description: _.reduce(
     [
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
+      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
       "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
     (obj, componentKey, index) => {
       obj[componentKey] = 'test description' + index;
       return obj;
     },
-    {} 
+    {}
   ),
   tooltip:_.reduce(
     [
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
+      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
       "fieldset", "panel", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
       ],
     (obj, componentKey, index) => {
       obj[componentKey] = 'test tooltip' + index;
       return obj;
     },
-    {} 
+    {}
   ),
   prefix: _.reduce(
     ["textField", "textArea", "number", "password", "email", "url", "phoneNumber", "currency"],
@@ -47,7 +47,7 @@ export default {
       obj[componentKey] = 'test prefix' + index;
       return obj;
     },
-    {} 
+    {}
   ),
   suffix:_.reduce(
     ["textField", "textArea", "number", "password", "email", "url", "phoneNumber", "currency"],
@@ -55,27 +55,27 @@ export default {
       obj[componentKey] = 'test suffix' + index;
       return obj;
     },
-    {} 
+    {}
   ),
   customClass: _.reduce(
     [
-      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
       "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
     (obj, componentKey) => {
       obj[componentKey] = 'test-custom__css_class';
       return obj;
     },
-    {} 
+    {}
   ),
   tabindex: _.reduce(
     [
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", 
+      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber",
       //"tags","form", //BUG
-      "address", "dateTime", 
+      "address", "dateTime",
       //"day", //BUG
-      "time", "currency", 
+      "time", "currency",
       //"survey", //BUG
       //"signature",
       //"fieldset", "dataGrid", "editGrid", "tree", "file", //BUG
@@ -88,8 +88,8 @@ export default {
     {} ),
   hidden: _.reduce(
     [
-      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
       "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
     (obj, componentKey) => {
@@ -99,8 +99,8 @@ export default {
     {} ),
   hideLabel: _.reduce(
     [
-      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
       "panel", "container", "dataMap", "dataGrid", "editGrid", "tree", "file"
     ],
     (obj, componentKey) => {
@@ -110,9 +110,9 @@ export default {
     {} ),
   disabled: _.reduce(
     [
-      "form", "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
-      "fieldset", "panel", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit", 
+      "form", "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
+      "fieldset", "panel", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit",
     ],
     (obj, componentKey) => {
       obj[componentKey] = true;
@@ -164,7 +164,7 @@ export default {
     },
   },
   customDefaultValue: {
-    form: { 
+    form: {
       js: `value = {
         data: {
         dataGridChild: [
@@ -175,7 +175,7 @@ export default {
         textFieldChild: data.basis + " default in nested form",
         timeChild: "11:55:00",
         },
-      }`, 
+      }`,
       expectedValue: {
         data: {
         dataGridChild: [
@@ -212,7 +212,7 @@ export default {
     editGrid: { js:'value = [{textFieldEditGrid: data.basis + " default"}]', expectedValue: [{textFieldEditGrid: 'base value default'}]},
     tree: { js:"value = {children: [], data:{ textFieldTree: data.basis + ' default' } }", expectedValue: {children: [], data:{ textFieldTree: 'base value default' } }},
     file: { js:`
-      value = [{ 
+      value = [{
         name: "test file-15c248a4-401f-4456-aff9-abcbdf0f7bfa.docx",
         originalName: "test file.docx",
         size: 11396,
@@ -220,7 +220,7 @@ export default {
         type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         url: "data:application/vnd.openxmlformats-officedocument",
       }]`,
-      expectedValue: [{ 
+      expectedValue: [{
         name: "test file-15c248a4-401f-4456-aff9-abcbdf0f7bfa.docx",
         originalName: "test file.docx",
         size: 11396,
@@ -232,8 +232,8 @@ export default {
   },
   redrawOn:_.reduce(
     [
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
+      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
       "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file"
     ],
     (obj, componentKey) => {
@@ -242,9 +242,9 @@ export default {
     },
     {} ),
   multiple:_.reduce(
-    [ 
-      "textField", "textArea", "number", "password", "select", "email", "url", "phoneNumber", "address", "dateTime", "time", "currency", 
-      //"tree"//BUG, 
+    [
+      "textField", "textArea", "number", "password", "select", "email", "url", "phoneNumber", "address", "dateTime", "time", "currency",
+      //"tree"//BUG,
       "file"
     ],
     (obj, componentKey) => {
@@ -253,10 +253,10 @@ export default {
     },
     {} ),
   modalEdit:_.reduce(
-    [ 
-      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
-      "html", "content", 
+    [
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
+      "html", "content",
       "columns", "fieldset", "panel", "table", "tabs", "well", //BUG: they are excluded from some tests of modalEdit setting
       "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
@@ -267,7 +267,7 @@ export default {
     {}
   ),
   calculateValue: {
-    form: { 
+    form: {
       js: `value = {
         data: {
         dataGridChild: [
@@ -278,8 +278,8 @@ export default {
         textFieldChild: data.basis + " calculated in nested form",
         timeChild: "11:55:00",
         },
-      }`, 
-      expectedValue: (basis) => { 
+      }`,
+      expectedValue: (basis) => {
         return {
           data: {
             dataGridChild: [
@@ -304,7 +304,7 @@ export default {
     url: { js: 'value = `https://${data.basis.split(" ").join("")}.com`', expectedValue: (basis) => `https://${basis.split(" ").join("")}.com`},
     phoneNumber: { js:'value = `(${data.basis ? "222":"333"}) 555-5555`', expectedValue: (basis) => `(${basis ? "222":"333"}) 555-5555`},
     tags: { js:'value = data.basis.split(" ").join(",")', expectedValue: (basis) => basis.split(" ").join(",")},
-    dateTime: { js:"var date = moment('2005-02-03T12:00:00');var now = moment();value = date < now ? '2023-03-03T12:00:00' : '2003-12-12T12:00:00';", expectedValue: (basis) => { 
+    dateTime: { js:"var date = moment('2005-02-03T12:00:00');var now = moment();value = date < now ? '2023-03-03T12:00:00' : '2003-12-12T12:00:00';", expectedValue: () => {
       const date = moment('2005-02-03T12:00:00');
       const now = moment();
 
@@ -321,7 +321,7 @@ export default {
     editGrid: { js:'value = [{textFieldEditGrid: data.basis + " calculated"}]', expectedValue: (basis) => [{textFieldEditGrid: basis + " calculated"}]},
     tree: { js:"value = {children: [], data:{ textFieldTree: data.basis + ' calculated' } }", expectedValue: (basis) => ({children: [], data:{ textFieldTree: basis + ' calculated' }}) },
     file: { js: 'value = [{ name: `${data.basis}-15c248a4-401f-4456-aff9-abcbdf0f7bfa.docx`, originalName: `${data.basis}.docx`, size: 11396, storage: "base64", type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", url: "data:application/vnd.openxmlformats-officedocument", }]',
-      expectedValue: (basis) => [{ 
+      expectedValue: (basis) => [{
         name: `${basis}-15c248a4-401f-4456-aff9-abcbdf0f7bfa.docx`,
         originalName: `${basis}.docx`,
         size: 11396,
@@ -332,9 +332,9 @@ export default {
     }
   },
   clearOnHide: _.reduce(
-    [ 
-      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
+    [
+      "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
       "container", "dataMap", "dataGrid", "editGrid", "tree", "file"
     ],
     (obj, componentKey) => {
@@ -345,8 +345,8 @@ export default {
   ),
   'validate.required':_.reduce(
     [
-      "textField", "extArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
+      "textField", "extArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
       //"container","dataGrid", // BUG: required validation does not work
       "dataMap", "editGrid", "tree", "file", "submit"
     ],
@@ -355,12 +355,12 @@ export default {
       return obj;
     },
     {}
-  ), 
+  ),
   'validate.custom': _.reduce(
     [
       "textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day",
-      "time", "currency", "survey", 
-      //"signature", 
+      "time", "currency", "survey",
+      //"signature",
       "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
     (obj, componentKey) => {
@@ -379,11 +379,11 @@ export default {
       return obj;
     },
     {}
-  ), 
-  'conditional': _.reduce(    
+  ),
+  'conditional': _.reduce(
     [
-      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
       "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
     (obj, componentKey) => {
@@ -391,11 +391,11 @@ export default {
       return obj;
     },
     {}
-  ), 
-  'customConditional': _.reduce(    
+  ),
+  'customConditional': _.reduce(
     [
-      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
       "html", "content", "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
     (obj, componentKey) => {
@@ -403,11 +403,11 @@ export default {
       return obj;
     },
     {}
-  ), 
-  logic: _.reduce(    
+  ),
+  logic: _.reduce(
     [
-      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
       "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
     (obj, componentKey) => {
@@ -528,19 +528,19 @@ export default {
           'state': true
         }]
       }];
-      
+
       return obj;
     },
     {}
-  ), 
-  'set_get_value': _.reduce(    
+  ),
+  'set_get_value': _.reduce(
     [
-      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey", 
-      //"signature", 
+      "form","textField", "textArea", "number", "password", "checkbox", "selectBoxes", "select", "radio", "email", "url", "phoneNumber", "tags", "address", "dateTime", "day", "time", "currency", "survey",
+      //"signature",
       "columns", "fieldset", "panel", "table", "tabs", "well", "hidden", "container", "dataMap", "dataGrid", "editGrid", "tree", "file", "submit"
     ],
     (obj, componentKey) => {
-      obj[componentKey] = true; 
+      obj[componentKey] = true;
       return obj;
     },
     {}
@@ -587,4 +587,3 @@ export default {
 //   file: 'test-custom__css_class',
 //   submit: 'test-custom__css_class',
 // }
-

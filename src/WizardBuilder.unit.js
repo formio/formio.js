@@ -10,7 +10,8 @@ global.cancelAnimationFrame = () => {};
 
 describe('WizardBuilder tests', function() {
   let formBuilderElement, formBuilder;
-  after((done) => {
+
+  after(function(done) {
     destroyWizardBuilder();
     done();
   });
@@ -93,7 +94,7 @@ describe('WizardBuilder tests', function() {
     }, 500);
   });
 
-  it('Should execute form controller', (done) => {
+  it('Should execute form controller', function(done) {
     const form = fastCloneDeep(formWithFormController);
     form.display = 'wizard';
     const builder = createWizardBuilder(form).instance;
@@ -108,7 +109,7 @@ describe('WizardBuilder tests', function() {
     }, 500);
   });
 
-  it('Test pages reorder', (done) => {
+  it('Test pages reorder', function(done) {
     const builder = createWizardBuilder(simpleWizard);
 
     setTimeout(() => {

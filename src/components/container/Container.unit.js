@@ -12,8 +12,8 @@ import {
 
 import { Formio } from '../../Formio';
 
-describe('Container Component', () => {
-  it('Should build a container component', () => {
+describe('Container Component', function() {
+  it('Should build a container component', function() {
     return Harness.testCreate(ContainerComponent, comp1).then((component) => {
       const inputs = Harness.testElements(component, 'input[type="text"]', 2);
       for (let i=0; i < inputs.length; i++) {
@@ -22,7 +22,7 @@ describe('Container Component', () => {
     });
   });
 
-  it('Should be able to set and get data', () => {
+  it('Should be able to set and get data', function() {
     return Harness.testCreate(ContainerComponent, comp1).then((component) => {
       const inputs = Harness.testElements(component, 'input[type="text"]', 2);
       Harness.testSetGet(component, {
@@ -34,7 +34,7 @@ describe('Container Component', () => {
     });
   });
 
-  it('Should set the dataValue, but after it sets the value of its nested components', () => {
+  it('Should set the dataValue, but after it sets the value of its nested components', function() {
     return Harness.testCreate(ContainerComponent, comp2).then((component) => {
       const editGrid = component.getComponent('children');
       const setValue = editGrid.setValue;
@@ -56,7 +56,7 @@ describe('Container Component', () => {
     });
   });
 
-  it('Should render form with a submission in a draft-state without validation errors', (done) => {
+  it('Should render form with a submission in a draft-state without validation errors', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
 
@@ -79,7 +79,7 @@ describe('Container Component', () => {
     }).catch(done);
   });
 
-  it('Should not set the default value when clearOnHide during the server-side validation', (done) => {
+  it('Should not set the default value when clearOnHide during the server-side validation', function(done) {
     const form = _.cloneDeep(comp4);
     const element = document.createElement('div');
 

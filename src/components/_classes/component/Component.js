@@ -392,7 +392,7 @@ export default class Component extends Element {
     /**
      * Determines if this component is visible, or not.
      */
-    this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
+    this._parentVisible = Object.prototype.hasOwnProperty.call(this.options, 'parentVisible') ? this.options.parentVisible : true;
     this._visible = this._parentVisible && this.conditionallyVisible(null, data);
     this._parentDisabled = false;
 
@@ -609,11 +609,11 @@ export default class Component extends Element {
   }
 
   get shouldDisabled() {
-    return this.options.readOnly || this.component.disabled || (this.options.hasOwnProperty('disabled') && this.options.disabled[this.key]);
+    return this.options.readOnly || this.component.disabled || (Object.prototype.hasOwnProperty.call(this.options, 'disabled') && this.options.disabled[this.key]);
   }
 
   get isInputComponent() {
-    return !this.component.hasOwnProperty('input') || this.component.input;
+    return !Object.prototype.hasOwnProperty.call(this.component, 'input') || this.component.input;
   }
 
   get allowData() {
@@ -808,7 +808,7 @@ export default class Component extends Element {
       return schema;
     }
     _.each(schema, (val, key) => {
-      if (!_.isArray(val) && _.isObject(val) && defaultSchema.hasOwnProperty(key)) {
+      if (!_.isArray(val) && _.isObject(val) && Object.prototype.hasOwnProperty.call(defaultSchema, key)) {
         const subModified = this.getModifiedSchema(val, defaultSchema[key], true);
         if (!_.isEmpty(subModified)) {
           modified[key] = subModified;
@@ -825,7 +825,7 @@ export default class Component extends Element {
         (!recursion && (key === 'label')) ||
         (!recursion && (key === 'input')) ||
         (!recursion && (key === 'tableView')) ||
-        (val !== '' && !defaultSchema.hasOwnProperty(key)) ||
+        (val !== '' && !Object.prototype.hasOwnProperty.call(defaultSchema, key)) ||
         (val !== '' && val !== defaultSchema[key]) ||
         (defaultSchema[key] && val !== defaultSchema[key])
       ) {
@@ -879,7 +879,7 @@ export default class Component extends Element {
 
   transform(type, value) {
     const frameworkTemplates = this.options.template ? Templates.templates[this.options.template] : Templates.current;
-    return frameworkTemplates.hasOwnProperty('transform')
+    return Object.prototype.hasOwnProperty.call(frameworkTemplates, 'transform')
       ? frameworkTemplates.transform(type, value, this)
       : (type, value) => value;
   }
@@ -1389,7 +1389,7 @@ export default class Component extends Element {
    * @param value
    */
   refresh(value) {
-    if (this.hasOwnProperty('refreshOnValue')) {
+    if (Object.prototype.hasOwnProperty.call(this, 'refreshOnValue')) {
       this.refreshOnChanged = !_.isEqual(value, this.refreshOnValue);
     }
     else {
@@ -1716,13 +1716,13 @@ export default class Component extends Element {
 
   iconClass(name, spinning) {
     const iconset = this.options.iconset || Templates.current.defaultIconset || 'fa';
-    return Templates.current.hasOwnProperty('iconClass')
+    return Object.prototype.hasOwnProperty.call(Templates.current, 'iconClass')
       ? Templates.current.iconClass(iconset, name, spinning)
       : this.options.iconset === 'fa' ? Templates.defaultTemplates.iconClass(iconset, name, spinning) : name;
   }
 
   size(size) {
-    return Templates.current.hasOwnProperty('size')
+    return Object.prototype.hasOwnProperty.call(Templates.current, 'size')
       ? Templates.current.size(size)
       : size;
   }
@@ -2519,7 +2519,7 @@ export default class Component extends Element {
   splice(index, flags = {}) {
     if (this.hasValue()) {
       const dataValue = this.dataValue || [];
-      if (_.isArray(dataValue) && dataValue.hasOwnProperty(index)) {
+      if (_.isArray(dataValue) && Object.prototype.hasOwnProperty.call(dataValue, index)) {
         dataValue.splice(index, 1);
         this.dataValue = dataValue;
         this.triggerChange(flags);
@@ -2606,7 +2606,7 @@ export default class Component extends Element {
     }
     const values = [];
     for (const i in this.refs.input) {
-      if (this.refs.input.hasOwnProperty(i)) {
+      if (Object.prototype.hasOwnProperty.call(this.refs.input, i)) {
         if (!this.component.multiple) {
           return this.getValueAt(i);
         }
@@ -2650,7 +2650,7 @@ export default class Component extends Element {
     if (
       isArray &&
       Array.isArray(this.defaultValue) &&
-      this.refs.hasOwnProperty('input') &&
+      Object.prototype.hasOwnProperty.call(this.refs, 'input') &&
       valueInput &&
       (valueInput.length !== value.length) &&
       this.visible
@@ -2662,7 +2662,7 @@ export default class Component extends Element {
       return changed;
     }
     for (const i in this.refs.input) {
-      if (this.refs.input.hasOwnProperty(i)) {
+      if (Object.prototype.hasOwnProperty.call(this.refs.input, i)) {
         this.setValueAt(i, isArray ? value[i] : value, flags);
       }
     }
@@ -2869,7 +2869,7 @@ export default class Component extends Element {
 
     if (shouldBeCleared) {
       // remove calculated value so that the value is recalculated once component becomes visible
-      if (this.hasOwnProperty('calculatedValue') && allowOverride) {
+      if (Object.prototype.hasOwnProperty.call(this, 'calculatedValue') && allowOverride) {
         _.unset(this, 'calculatedValue');
       }
       return false;
@@ -3330,7 +3330,7 @@ export default class Component extends Element {
     if (this.component.protected && this.root.editing) {
       return false;
     }
-    if (!this.root || !this.root.hasOwnProperty('editing')) {
+    if (!this.root || !Object.prototype.hasOwnProperty.call(this.root, 'editing')) {
       return false;
     }
     if (!this.root || !this.root.editing) {
@@ -3634,7 +3634,7 @@ export default class Component extends Element {
 
 Component.externalLibraries = {};
 Component.requireLibrary = function(name, property, src, polling) {
-  if (!Component.externalLibraries.hasOwnProperty(name)) {
+  if (!Object.prototype.hasOwnProperty.call(Component.externalLibraries, name)) {
     Component.externalLibraries[name] = {};
     Component.externalLibraries[name].ready = new Promise((resolve, reject) => {
       Component.externalLibraries[name].resolve = resolve;
@@ -3711,7 +3711,7 @@ Component.requireLibrary = function(name, property, src, polling) {
 
 Component.libraryReady = function(name) {
   if (
-    Component.externalLibraries.hasOwnProperty(name) &&
+    Object.prototype.hasOwnProperty.call(Component.externalLibraries, name) &&
     Component.externalLibraries[name].ready
   ) {
     return Component.externalLibraries[name].ready;

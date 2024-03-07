@@ -34,7 +34,7 @@ export default _.map(testedProperties, (property) => {
 
   testedForm.components = testedForm.components
     .filter(comp => {
-      if (_.get(settings, property).hasOwnProperty(comp.key)) {
+      if (Object.prototype.hasOwnProperty.call(_.get(settings, property), comp.key)) {
         return true;
       }
     })

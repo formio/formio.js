@@ -13,8 +13,8 @@ import {
 import Webform from '../../Webform';
 import formWithResetValue from '../../../test/formtest/formWithResetValue';
 
-describe('Button Component', () => {
-  it('Should build a button component', () => {
+describe('Button Component', function() {
+  it('Should build a button component', function() {
     return Harness.testCreate(ButtonComponent, comp1).then((component) => {
       const buttons = Harness.testElements(component, 'button[type="submit"]', 1);
       for (const button of buttons) {
@@ -24,7 +24,7 @@ describe('Button Component', () => {
     });
   });
 
-  it('POST to URL button should pass URL and headers', (done) => {
+  it('POST to URL button should pass URL and headers', function(done) {
     const formJson = {
       'type': 'form',
       'components': [{
@@ -64,7 +64,7 @@ describe('Button Component', () => {
       .catch(done);
   });
 
-  it('Test on error', (done) => {
+  it('Test on error', function(done) {
     const element = document.createElement('div');
     Formio.createForm(element, {
       components: [{
@@ -100,7 +100,7 @@ describe('Button Component', () => {
     }).catch(done);
   });
 
-  it('POST to URL button should perform URL interpolation', (done) => {
+  it('POST to URL button should perform URL interpolation', function(done) {
     const formJson = {
       'type': 'form',
       'components': [{
@@ -146,7 +146,7 @@ describe('Button Component', () => {
       .catch(done);
   });
 
-  it('POST to URL button should perform headers interpolation', (done) => {
+  it('POST to URL button should perform headers interpolation', function(done) {
     const formJson = {
       'type': 'form',
       'components': [{
@@ -199,7 +199,7 @@ describe('Button Component', () => {
       .catch(done);
   });
 
-  it('Should not change color and show message if the error is silent', (done) => {
+  it('Should not change color and show message if the error is silent', function(done) {
     const formJson = {
       'type': 'form',
       'components': [{
@@ -248,7 +248,7 @@ describe('Button Component', () => {
       .catch(done);
   });
 
-  it('Should reset values of all the form\'s components and update properties dependent on values', (done) => {
+  it('Should reset values of all the form\'s components and update properties dependent on values', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
 
@@ -283,7 +283,7 @@ describe('Button Component', () => {
     }).catch((err) => done(err));
   });
 
-  it('Should perform custom logic', (done) => {
+  it('Should perform custom logic', function(done) {
     const element = document.createElement('div');
     const form = new Webform(element);
     const testForm = {
@@ -322,7 +322,7 @@ describe('Button Component', () => {
       .catch((err) => done(err));
   });
 
-  it('Should correctly set theme', (done) => {
+  it('Should correctly set theme', function(done) {
     const form = _.cloneDeep(comp2);
     const element = document.createElement('div');
 
@@ -340,7 +340,7 @@ describe('Button Component', () => {
     }).catch(done);
   });
 
-  it('Should render block btn', (done) => {
+  it('Should render block btn', function(done) {
     const form = _.cloneDeep(comp2);
     form.components = [{
       label: 'Submit',
@@ -365,7 +365,7 @@ describe('Button Component', () => {
     }).catch(done);
   });
 
-  it('Test event, reset, post, save in state actions', (done) => {
+  it('Test event, reset, post, save in state actions', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
 

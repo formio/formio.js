@@ -10,12 +10,12 @@ import {
 } from './fixtures';
 import Webform from '../../Webform';
 
-describe('Time Component', () => {
-  it('Should build a time component', () => {
+describe('Time Component', function() {
+  it('Should build a time component', function() {
     return Harness.testCreate(TimeComponent, comp1);
   });
 
-  it('Should format value on blur', (done) => {
+  it('Should format value on blur', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm(timeForm).then(() => {
@@ -41,7 +41,7 @@ describe('Time Component', () => {
       .catch(done);
   });
 
-  it('Should not show error if value corresponds to the mask', (done) => {
+  it('Should not show error if value corresponds to the mask', function(done) {
     Harness.testCreate(TimeComponent, comp2).then((component) => {
       const inputEvent = new Event('input', { bubbles: true, cancelable: true });
       const timeInput = component.element.querySelector('input[name="data[time]"]');
@@ -64,7 +64,7 @@ describe('Time Component', () => {
     });
   });
 
-  it('Should be invalid if time is not real', (done) => {
+  it('Should be invalid if time is not real', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm(timeForm2).then(() => {
@@ -77,7 +77,7 @@ describe('Time Component', () => {
     }).catch(done);
   });
 
-  it('Should build a time component', (done) => {
+  it('Should build another time component', function(done) {
     Harness.testCreate(TimeComponent, comp3).then((time) => {
       assert.deepEqual(time.dataValue, ['10:00:00', '11:00:00'], 'Should be set to default value');
       done();

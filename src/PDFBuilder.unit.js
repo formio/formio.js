@@ -4,17 +4,17 @@ import { expect } from 'chai';
 import { Formio } from './Formio';
 import FormBuilder from './FormBuilder';
 
-describe('PDF Builder tests', () => {
-  describe('PDF Auto Conversion', () => {
+describe('PDF Builder tests', function() {
+  describe('PDF Auto Conversion', function() {
     const originalUploadFile = Formio.prototype.uploadFile;
     const originalLoadProject = Formio.prototype.loadProject;
 
-    after(() => {
+    after(function() {
       Formio.prototype.uploadFile = originalUploadFile;
       Formio.prototype.loadProject = originalLoadProject;
     });
 
-    beforeEach(() => {
+    beforeEach(function() {
       Formio.prototype.loadProject = fake.resolves(null);
     });
 
@@ -44,7 +44,7 @@ describe('PDF Builder tests', () => {
       },
     });
 
-    it('Should assign fields from PDF auto conversion to the empty form', (done) => {
+    it('Should assign fields from PDF auto conversion to the empty form', function(done) {
       const uploadResponseMock = getUploadResponseMock();
 
       Formio.prototype.uploadFile = fake.resolves(uploadResponseMock);
@@ -71,7 +71,7 @@ describe('PDF Builder tests', () => {
         });
     });
 
-    it('Should assign fields from PDF auto conversion to the initial form', (done) => {
+    it('Should assign fields from PDF auto conversion to the initial form', function(done) {
       const uploadResponseMock = getUploadResponseMock();
 
       Formio.prototype.uploadFile = fake.resolves(uploadResponseMock);
@@ -106,7 +106,7 @@ describe('PDF Builder tests', () => {
         });
     });
 
-    it('Should assign fields from PDF non fillable conversion to the initial form', (done) => {
+    it('Should assign fields from PDF non fillable conversion to the initial form', function(done) {
       const uploadResponseMock = getUploadResponseMock(true);
 
       Formio.prototype.uploadFile = fake.resolves(uploadResponseMock);
@@ -141,7 +141,7 @@ describe('PDF Builder tests', () => {
         });
     });
 
-    it('Should not assign fields from PDF auto conversion to non pristine form', (done) => {
+    it('Should not assign fields from PDF auto conversion to non pristine form', function(done) {
       const uploadResponseMock = getUploadResponseMock(true);
 
       Formio.prototype.uploadFile = fake.resolves(uploadResponseMock);

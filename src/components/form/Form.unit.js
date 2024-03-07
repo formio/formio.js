@@ -14,13 +14,13 @@ import Webform from '../../Webform';
 import formModalEdit from './fixtures/formModalEdit';
 import { formComponentWithConditionalRenderingForm } from '../../../test/formtest';
 
-describe('Form Component', () => {
-  it('Should build a form component', () => {
+describe('Form Component', function() {
+  it('Should build a form component', function() {
     return Harness.testCreate(FormComponent, comp1);
   });
 
-  describe('Value inside Nested Form', () => {
-    it('Should be able to set value to Nested Form Component and check result in the email template', (done) => {
+  describe('Value inside Nested Form', function() {
+    it('Should be able to set value to Nested Form Component and check result in the email template', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(comp5)
@@ -38,7 +38,7 @@ describe('Form Component', () => {
     });
   });
 
-  it('Test refreshOn inside NestedForm', (done) => {
+  it('Test refreshOn inside NestedForm', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm(comp4)
@@ -63,9 +63,10 @@ describe('Form Component', () => {
       .catch(done);
   });
 
-  describe('renderSubForm', () => {
+  describe('renderSubForm', function() {
     let formcmp = null;
-    it('should set sub form parentVisible', done => {
+
+    it('should set sub form parentVisible', function(done) {
       Harness.testCreate(FormComponent, comp1)
         .then(cmp => {
           formcmp = cmp;
@@ -82,8 +83,8 @@ describe('Form Component', () => {
     });
   });
 
-  describe('set visible', () => {
-    it('should set visible flag on instance', done => {
+  describe('set visible', function() {
+    it('should set visible flag on instance', function(done) {
       Harness.testCreate(FormComponent, comp1)
         .then(formcmp => {
           expect(formcmp._visible).to.be.true;
@@ -94,7 +95,7 @@ describe('Form Component', () => {
         .catch(done);
     });
 
-    it('should update sub form visibility', done => {
+    it('should update sub form visibility', function(done) {
       let formcmp;
       Harness.testCreate(FormComponent, comp1)
         .then(cmp => {
@@ -116,8 +117,8 @@ describe('Form Component', () => {
     });
   });
 
-  describe('get visible', () => {
-    it('should get visible flag from instance', done => {
+  describe('get visible', function() {
+    it('should get visible flag from instance', function(done) {
       Harness.testCreate(FormComponent, comp1)
         .then(formcmp => {
           expect(formcmp._visible).to.be.true;
@@ -130,8 +131,8 @@ describe('Form Component', () => {
     });
   });
 
-  describe('set parentVisible', () => {
-    it('should set parentVisible flag on instance', done => {
+  describe('set parentVisible', function() {
+    it('should set parentVisible flag on instance', function(done) {
       Harness.testCreate(FormComponent, comp1)
         .then(formcmp => {
           expect(formcmp._parentVisible).to.be.true;
@@ -142,7 +143,7 @@ describe('Form Component', () => {
         .catch(done);
     });
 
-    it('should update sub form visibility', done => {
+    it('should update sub form visibility', function(done) {
       let formcmp;
       Harness.testCreate(FormComponent, comp1)
         .then(cmp => {
@@ -164,8 +165,8 @@ describe('Form Component', () => {
     });
   });
 
-  describe('get parentVisible', () => {
-    it('should get parentVisible flag from instance', done => {
+  describe('get parentVisible', function() {
+    it('should get parentVisible flag from instance', function(done) {
       Harness.testCreate(FormComponent, comp1)
         .then(formcmp => {
           expect(formcmp._parentVisible).to.be.true;
@@ -178,8 +179,8 @@ describe('Form Component', () => {
     });
   });
 
-  describe('Modal Edit', () => {
-    it('Should render preview when modalEdit', (done) => {
+  describe('Modal Edit', function() {
+    it('Should render preview when modalEdit', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(formModalEdit).then(() => {
@@ -190,8 +191,8 @@ describe('Form Component', () => {
     });
   });
 
-  describe('Conditional rendering', () => {
-    it('Should render and set submission to conditional form component', (done) => {
+  describe('Conditional rendering', function() {
+    it('Should render and set submission to conditional form component', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(formComponentWithConditionalRenderingForm).then(() => {
@@ -219,8 +220,8 @@ describe('Form Component', () => {
     });
   });
 
-  describe('Advanced Logic', () => {
-    it('Should disable all components of the form', (done) => {
+  describe('Advanced Logic', function() {
+    it('Should disable all components of the form', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(comp6)
@@ -238,8 +239,8 @@ describe('Form Component', () => {
     });
   });
 
-  describe('Inside Collapsed Panel', () => {
-    it('Should be able to set value to Nested Form Component inside collapsed Panel', (done) => {
+  describe('Inside Collapsed Panel', function() {
+    it('Should be able to set value to Nested Form Component inside collapsed Panel', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(comp5)
@@ -261,8 +262,8 @@ describe('Form Component', () => {
   });
 });
 
-describe('Wizard Component', () => {
-  it('Should build a wizard component and disable cancel, next and breadcrumbs', (done) => {
+describe('Wizard Component', function() {
+  it('Should build a wizard component and disable cancel, next and breadcrumbs', function(done) {
     Harness.testCreate(FormComponent, comp3, {
       breadcrumbSettings:
         { clickable: false },

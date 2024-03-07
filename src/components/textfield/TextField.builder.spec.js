@@ -2,10 +2,10 @@ import Harness from '../../../test/harness';
 import EventEmitter from '../../EventEmitter';
 import assert from 'power-assert';
 
-describe('TextField Builder', () => {
+describe('TextField Builder', function() {
   let builder = null;
 
-  before((done) => {
+  before(function(done) {
     // Incrise Events limit for this tests set
     Harness.builderBefore(done, {
       editForm: {
@@ -13,11 +13,12 @@ describe('TextField Builder', () => {
       }
     });
   });
-  after(() => {
+
+  after(function() {
     Harness.builderAfter();
   });
 
-  it('Should create a new textfield component', () => {
+  it('Should create a new textfield component', function() {
     builder = Harness.buildComponent('textfield');
     return builder.editForm.formReady.then(() => {
       // Make sure default preview is correct.
@@ -28,7 +29,7 @@ describe('TextField Builder', () => {
     });
   });
 
-  it('Should allow you to change the label', (done) => {
+  it('Should allow you to change the label', function(done) {
     Harness.setComponentProperty('label', 'Text Field', 'First Name', (preview) => {
       assert(preview.match(/label.*input/), 'Label must be on top.');
       assert(preview.indexOf('<label class="control-label" style="">First Name</label>') !== -1, 'Must have a label');
@@ -36,7 +37,7 @@ describe('TextField Builder', () => {
     });
   });
 
-  it('Should allow you to hide/show the label', (done) => {
+  it('Should allow you to hide/show the label', function(done) {
     Harness.setComponentProperty('hideLabel', false, true, (preview) => {
       assert(preview.indexOf('<label class="control-label"') === -1, 'Must not have a label');
       Harness.setComponentProperty('hideLabel', true, false, (preview) => {
@@ -46,7 +47,7 @@ describe('TextField Builder', () => {
     });
   });
 
-  it('Should allow you to change the label position', (done) => {
+  it('Should allow you to change the label position', function(done) {
     Harness.setComponentProperty('labelPosition', 'top', 'bottom', (preview) => {
       assert(preview.match(/input.*label/), 'Label must be on bottom.');
       Harness.setComponentProperty('labelPosition', 'bottom', 'left-left', (preview) => {
@@ -65,7 +66,7 @@ describe('TextField Builder', () => {
     });
   });
 
-  it('Should allow you to change the label width and margin', (done) => {
+  it('Should allow you to change the label width and margin', function(done) {
     Harness.setComponentProperty('labelPosition', 'right-right', 'top', () => {
       Harness.testVisibility(builder.editForm, '.formio-component-labelWidth', false);
       Harness.testVisibility(builder.editForm, '.formio-component-labelMargin', false);
@@ -87,7 +88,7 @@ describe('TextField Builder', () => {
     });
   });
 
-  it('Should allow you to set the input mask', (done) => {
+  it('Should allow you to set the input mask', function(done) {
     Harness.testBuilderProperty('inputMask', '', '(999) 999-9999', null, () => {
       assert.equal(builder.preview.inputs[0].placeholder, '(___) ___-____');
       builder.preview.setValue('1234567890');
@@ -97,17 +98,17 @@ describe('TextField Builder', () => {
     });
   });
 
-  it('Should set the placeholder of the input', (done) => {
+  it('Should set the placeholder of the input', function(done) {
     Harness.setComponentProperty('labelPosition', 'right-right', 'top', () => {
       Harness.testBuilderProperty('placeholder', '', 'Enter something here', /input.*name="data\[firstName\].*placeholder="Enter something here"/, done);
     });
   });
 
-  it('Should set the description of the input', (done) => {
+  it('Should set the description of the input', function(done) {
     Harness.testBuilderProperty('description', '', 'This is a description', /input.*div.*class="help-block">This is a description<\/div>/, done);
   });
 
-  it('Should set the tooltip of the input', (done) => {
+  it('Should set the tooltip of the input', function(done) {
     Harness.testBuilderProperty('tooltip', '', 'This is something you should fill out.', /label.*i.*class="glyphicon glyphicon-question-sign text-muted.*<\/label>/, () => {
       assert(builder.preview.tooltip, 'There should be a tooltip instance');
       builder.preview.tooltip.show();
@@ -117,29 +118,29 @@ describe('TextField Builder', () => {
     });
   });
 
-  it('Should set the prefix of the input', (done) => {
+  it('Should set the prefix of the input', function(done) {
     Harness.testBuilderProperty('prefix', '', '$', /div class="input-group">.*<div class="input-group-addon">\$<\/div>.*input/, done);
   });
 
-  it('Should set the suffix of the input', (done) => {
+  it('Should set the suffix of the input', function(done) {
     Harness.testBuilderProperty('suffix', '', 'USD', /div class="input-group">.*input.*<div class="input-group-addon">USD<\/div>/, done);
   });
 
-  it('Should set the custom css class of the input', (done) => {
+  it('Should set the custom css class of the input', function(done) {
     Harness.testBuilderProperty('customClass', '', 'custom-text-field', null, () => {
       assert(builder.preview.hasClass(builder.preview.element, 'custom-text-field'), 'Preview should have this custom class');
       done();
     });
   });
 
-  it('Should set the tab index of the input element', (done) => {
+  it('Should set the tab index of the input element', function(done) {
     Harness.testBuilderProperty('tabindex', '', 10, null, () => {
       assert.equal(builder.preview.inputs[0].tabIndex, 10);
       done();
     });
   });
 
-  it('Should allow you to set the multiple flag', (done) => {
+  it('Should allow you to set the multiple flag', function(done) {
     Harness.testBuilderProperty('multiple', false, true, null, () => {
       done();
     });

@@ -7,14 +7,14 @@ import {
   comp1,
 } from './fixtures';
 
-describe('PhoneNumber Component', () => {
-  it('Should build a phone number component', () => {
+describe('PhoneNumber Component', function() {
+  it('Should build a phone number component', function() {
     return Harness.testCreate(PhoneNumberComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
     });
   });
 
-  it('Should check mask and value in the phone component in the email template', (done) => {
+  it('Should check mask and value in the phone component in the email template', function(done) {
     const formJson =  {
       components: [{
           label: 'Phone Number',

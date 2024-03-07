@@ -14,15 +14,15 @@ import {
 } from './fixtures';
 import PanelComponent from '../panel/Panel';
 
-describe('Day Component', () => {
-  it('Should build a day component', () => {
+describe('Day Component', function() {
+  it('Should build a day component', function() {
     return Harness.testCreate(DayComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="number"]', 2);
       Harness.testElements(component, 'select', 1);
     });
   });
 
-  it('Should change the max day when the month changes', (done) => {
+  it('Should change the max day when the month changes', function(done) {
     Harness.testCreate(DayComponent, comp1).then((component) => {
       Harness.testElements(component, 'option', 13);
       assert(!!component.refs.year, 'There should be a year');
@@ -66,7 +66,7 @@ describe('Day Component', () => {
     });
   });
 
-  it('Should put the month select first', (done) => {
+  it('Should put the month select first', function(done) {
     Harness.testCreate(DayComponent, comp1).then((component) => {
       const inputs = Harness.testElements(component, '.form-control', 4);
       assert.equal(inputs[0].id, `${component.component.key}-month`);
@@ -78,7 +78,7 @@ describe('Day Component', () => {
     });
   });
 
-  it('Should put the day select first on configuration', (done) => {
+  it('Should put the day select first on configuration', function(done) {
     comp1.dayFirst = true;
     Harness.testCreate(DayComponent, comp1).then((component) => {
       const inputs = Harness.testElements(component, '.form-control', 4);
@@ -91,7 +91,7 @@ describe('Day Component', () => {
     });
   });
 
-  it('Should not allow invalid days', (done) => {
+  it('Should not allow invalid days', function(done) {
     comp1.dayFirst = false;
     Harness.testCreate(DayComponent, comp1).then((component) => {
       component.on('componentError', (err) => {
@@ -108,7 +108,7 @@ describe('Day Component', () => {
     });
   });
 
-  it('Should ignore invalid months and use zeros as default', (done) => {
+  it('Should ignore invalid months and use zeros as default', function(done) {
     comp1.dayFirst = false;
 
     Harness.testCreate(DayComponent, comp1).then((component) => {
@@ -118,7 +118,7 @@ describe('Day Component', () => {
     });
   });
 
-  it('Should keep day value when switching months', (done) => {
+  it('Should keep day value when switching months', function(done) {
     Harness.testCreate(DayComponent, comp1).then((component) => {
       component.setValue('01/05/2018');
       assert.equal(component.getValue(), '01/05/2018');
@@ -131,7 +131,7 @@ describe('Day Component', () => {
     });
   });
 
-  it('Should adjust day value when day is great then maxDay of month', (done) => {
+  it('Should adjust day value when day is great then maxDay of month', function(done) {
     Harness.testCreate(DayComponent, comp1).then((component) => {
       component.setValue('01/31/2018');
       assert.equal(component.getValue(), '01/31/2018');
@@ -144,7 +144,7 @@ describe('Day Component', () => {
     });
   });
 
-  it('Should validate required fields', (done) => {
+  it('Should validate required fields', function(done) {
     Harness.testCreate(DayComponent, comp2).then((component) => {
       component.pristine = false;
       const valid = () => component.checkValidity(component.data, true);
@@ -165,7 +165,7 @@ describe('Day Component', () => {
     });
   });
 
-  it('Should properly validate min-max dates when dayFirst is checked', (done) => {
+  it('Should properly validate min-max dates when dayFirst is checked', function(done) {
     Harness.testCreate(DayComponent, comp3).then((component) => {
       component.setValue('01/02/2020');
       assert(!component.checkValidity(component.data, true), 'Component should not be valid');
@@ -182,14 +182,14 @@ describe('Day Component', () => {
     });
   });
 
-  it('Should disable day component if parent component is disabled', (done) => {
+  it('Should disable day component if parent component is disabled', function(done) {
     Harness.testCreate(PanelComponent, comp4).then((component) => {
       Harness.testElements(component, '[disabled]', 4);
       done();
     });
   });
 
-  it('Should use the default day value if the day field is hidden', (done) => {
+  it('Should use the default day value if the day field is hidden', function(done) {
     comp1.dayFirst = false;
     comp1.defaultValue = '00/01/0000';
     comp1.fields.day.hide = true;
@@ -201,7 +201,7 @@ describe('Day Component', () => {
     comp1.fields.day.hide = false;
   });
 
-  it('Should use the default month value if the month field is hidden', (done) => {
+  it('Should use the default month value if the month field is hidden', function(done) {
     comp1.defaultValue = '03/00/0000';
     comp1.fields.month.hide = true;
     Harness.testCreate(DayComponent, comp1).then((component) => {
@@ -212,7 +212,7 @@ describe('Day Component', () => {
     comp1.fields.month.hide = false;
   });
 
-  it('Should use the default year value if the year field is hidden', (done) => {
+  it('Should use the default year value if the year field is hidden', function(done) {
     comp1.defaultValue = '00/00/2023';
     comp1.fields.year.hide = true;
     Harness.testCreate(DayComponent, comp1).then((component) => {
@@ -223,7 +223,7 @@ describe('Day Component', () => {
     comp1.fields.year.hide = false;
   });
 
-  it('OnBlur validation should work properly with Day component', (done) => {
+  it('OnBlur validation should work properly with Day component', function(done) {
     const element = document.createElement('div');
 
     Formio.createForm(element, comp5).then(form => {
@@ -248,7 +248,7 @@ describe('Day Component', () => {
     }).catch(done);
   });
 
-  it('Should restore focus after redraw', (done) => {
+  it('Should restore focus after redraw', function(done) {
     const element = document.createElement('div');
     document.body.appendChild(element);
     Formio.createForm(element, comp6).then(form => {

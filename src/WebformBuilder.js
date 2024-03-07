@@ -225,7 +225,7 @@ export default class WebformBuilder extends Component {
     if (this.options && this.options.resourceTag) {
       query.params.tags = [this.options.resourceTag];
     }
-    else if (!this.options || !this.options.hasOwnProperty('resourceTag')) {
+    else if (!this.options || !Object.prototype.hasOwnProperty.call(this.options, 'resourceTag')) {
       query.params.tags = ['builder'];
     }
     const formio = new Formio(Formio.projectUrl);
@@ -823,17 +823,17 @@ export default class WebformBuilder extends Component {
       // This is an existing resource field.
       const resourceGroups = this.groups.resource.subgroups;
       const resourceGroup = _.find(resourceGroups, { key: group });
-      if (resourceGroup && resourceGroup.components.hasOwnProperty(`component-${key}`)) {
+      if (resourceGroup && Object.prototype.hasOwnProperty.call(resourceGroup.components, `component-${key}`)) {
         info = fastCloneDeep(resourceGroup.components[`component-${key}`].schema);
       }
     }
     // This is a new component
-    else if (this.schemas.hasOwnProperty(key)) {
+    else if (Object.prototype.hasOwnProperty.call(this.schemas, key)) {
       info = fastCloneDeep(this.schemas[key]);
     }
-    else if (this.groups.hasOwnProperty(group)) {
+    else if (Object.prototype.hasOwnProperty.call(this.groups, group)) {
       const groupComponents = this.groups[group].components;
-      if (groupComponents.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(groupComponents, key)) {
         info = fastCloneDeep(groupComponents[key].schema);
       }
     }
@@ -841,7 +841,7 @@ export default class WebformBuilder extends Component {
       const resourceGroups = this.groups.resource.subgroups;
       for (let ix = 0; ix < resourceGroups.length; ix++) {
         const resourceGroup = resourceGroups[ix];
-        if (resourceGroup.components.hasOwnProperty(`component-${key}`)) {
+        if (Object.prototype.hasOwnProperty.call(resourceGroup.components, `component-${key}`)) {
           info = fastCloneDeep(resourceGroup.components[`component-${key}`].schema);
           break;
         }
@@ -850,7 +850,7 @@ export default class WebformBuilder extends Component {
 
     if (info) {
       //if this is a custom component that was already assigned a key, don't stomp on it
-      if (!Components.components.hasOwnProperty(info.type) && info.key) {
+      if (!Object.prototype.hasOwnProperty.call(Components.components, info.type) && info.key) {
         return info;
       }
       info.key = this.generateKey(info);
@@ -1510,7 +1510,7 @@ export default class WebformBuilder extends Component {
     if (this.preview) {
       this.preview.destroy();
     }
-    if (!ComponentClass.builderInfo.hasOwnProperty('preview') || ComponentClass.builderInfo.preview) {
+    if (!Object.prototype.hasOwnProperty.call(ComponentClass.builderInfo, 'preview') || ComponentClass.builderInfo.preview) {
       this.preview = new Webform(_.omit({ ...this.options, preview: true }, [
         'hooks',
         'builder',
@@ -1825,7 +1825,7 @@ export default class WebformBuilder extends Component {
 
     component = _.clone(component);
     const groupInfo = this.groups[component.group];
-    if (!groupInfo.components.hasOwnProperty(component.key)) {
+    if (!Object.prototype.hasOwnProperty.call(groupInfo.components, component.key)) {
       groupInfo.components[component.key] = component;
     }
     return component;

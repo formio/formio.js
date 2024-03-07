@@ -4,12 +4,12 @@ import DataMapComponent from './DataMap';
 import { comp1, formWithConditionalPanel } from './fixtures';
 import assert from 'power-assert';
 
-describe('DataMap Component', () => {
-  it('Should build a data map component', () => {
+describe('DataMap Component', function() {
+  it('Should build a data map component', function() {
     return Harness.testCreate(DataMapComponent, comp1);
   });
 
-  it('Should get and set values within the datamap.', () => {
+  it('Should get and set values within the datamap.', function() {
     return Harness.testCreate(DataMapComponent, comp1).then((component) => {
       Harness.testSetGet(component, {
         one: 'One',
@@ -21,7 +21,7 @@ describe('DataMap Component', () => {
 
   it(
     'Should render data from submission properly when the Data Map is inside conditionally shown layout component',
-    (done) => {
+    function(done) {
       Formio.createForm(document.createElement('div'), formWithConditionalPanel, { readOnly: true })
         .then((form) => {
           form.submission = {

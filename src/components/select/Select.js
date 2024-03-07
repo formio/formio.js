@@ -871,7 +871,7 @@ export default class SelectComponent extends ListComponent {
   }
 
   choicesOptions() {
-    const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
+    const useSearch = Object.prototype.hasOwnProperty.call(this.component, 'searchEnabled') ? this.component.searchEnabled : true;
     const placeholderValue = this.t(this.component.placeholder, { _userInput: true });
     let customOptions = this.component.customOptions || {};
     if (typeof customOptions == 'string') {

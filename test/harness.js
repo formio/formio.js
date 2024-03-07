@@ -2,7 +2,6 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter3';
 import { expect } from 'chai';
-import { I18n } from '../src/utils/i18n';
 import FormBuilder from '../src/FormBuilder';
 import AllComponents from '../src/components';
 import Components from '../src/components/Components';
@@ -137,7 +136,7 @@ const Harness = {
       events: new EventEmitter(),
     }, options));
     component.pristine = false;
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       // Need a parent element to redraw.
       const parent = document.createElement('div');
       const element = document.createElement('div');

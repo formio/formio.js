@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import Harness from '../test/harness';
 import Wizard from './Wizard';
 import { Formio } from './Formio';
@@ -46,7 +45,7 @@ global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
 
 // eslint-disable-next-line max-statements
-describe('Wizard tests', () => {
+describe('Wizard tests', function() {
   it('Should recalculate values for components with "allow override" after wizard is canceled', function(done) {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, formsWithAllowOverride.wizard).then((form) => {
@@ -149,7 +148,7 @@ describe('Wizard tests', () => {
     }).catch((err) => done(err));
   });
 
-  it('Should check correctly Permissions and disabled sumbit button', (done) => {
+  it('Should check correctly Permissions and disabled sumbit button', function(done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
 
@@ -1540,7 +1539,7 @@ it('Should show tooltip for wizard pages', function(done) {
     .catch((err) => done(err));
   });
 
-  it('Should display editGrid submission data in readOnly mode', (done) => {
+  it('Should display editGrid submission data in readOnly mode', function(done) {
     const formElement = document.createElement('div');
     const wizardForm = new Wizard(formElement, { readOnly: true });
     wizardForm.setForm(wizard2).then(() => {
@@ -1563,7 +1562,8 @@ it('Should show tooltip for wizard pages', function(done) {
   });
 
   let wizardForm = null;
-  it('Should set components errors if they are after page was changed with navigation', (done) => {
+
+  it('Should set components errors if they are after page was changed with navigation', function(done) {
     const formElement = document.createElement('div');
     wizardForm = new Wizard(formElement);
     wizardForm.setForm(wizard).then(() => {
@@ -1619,7 +1619,7 @@ it('Should show tooltip for wizard pages', function(done) {
       .catch((err) => done(err));
   });
 
-  it('Should not set components errors if in readOnly mode', (done) => {
+  it('Should not set components errors if in readOnly mode', function(done) {
     const formElement = document.createElement('div');
     wizardForm = new Wizard(formElement, { readOnly: true });
     wizardForm.setForm(wizard).then(() => {
@@ -1641,7 +1641,7 @@ it('Should show tooltip for wizard pages', function(done) {
     });
   });
 
-  it('Should keep values during validation that are conditionally visible', async() => {
+  it('Should keep values during validation that are conditionally visible', async function() {
     const submission = {
       data: {
         a: true,
@@ -1689,7 +1689,7 @@ it('Should show tooltip for wizard pages', function(done) {
     assert.equal(form.data.c, 'c', 'Should keep the value of a conditionally visible page.');
   });
 
-  it('If allowPrevious is given, the breadcrumb bar should be clickable for visited tabs.', (done) => {
+  it('If allowPrevious is given, the breadcrumb bar should be clickable for visited tabs.', function(done) {
     const formElement = document.createElement('div');
     wizardForm = new Wizard(formElement, { allowPrevious: true });
     wizardForm.setForm(wizardWithAllowPrevious)
@@ -1709,7 +1709,7 @@ it('Should show tooltip for wizard pages', function(done) {
       .catch(done);
   });
 
-  it('Should scroll to the top of the page when the page is changed', (done) => {
+  it('Should scroll to the top of the page when the page is changed', function(done) {
     const formElement = document.createElement('div');
     wizardForm = new Wizard(formElement);
     wizardForm.setForm(wizardWithHighPages)
@@ -1724,7 +1724,7 @@ it('Should show tooltip for wizard pages', function(done) {
       .catch(done);
   });
 
-  it('Should show the actual page after re-rendering due to nested wizards.', (done) => {
+  it('Should show the actual page after re-rendering due to nested wizards.', function(done) {
     const formElement = document.createElement('div');
     wizardForm = new Wizard(formElement);
     wizardForm.setForm(wizardWithNestedWizard)
@@ -1793,8 +1793,8 @@ it('Should show tooltip for wizard pages', function(done) {
   //   }).catch(done);
   // });
 
-  describe('Conditional pages', () => {
-    it('Should remove page from header when it is hidden', (done) => {
+  describe('Conditional pages', function() {
+    it('Should remove page from header when it is hidden', function(done) {
       const formElement = document.createElement('div');
       const form = new Wizard(formElement);
       form.setForm(wizardWithConditionallyVisiblePage)
@@ -1819,7 +1819,7 @@ it('Should show tooltip for wizard pages', function(done) {
         .catch(done);
     });
 
-    it('', (done) => {
+    it('Should open and make visible nested forms', function(done) {
       const formElement = document.createElement('div');
       Formio.createForm(formElement, nestedConditionalWizard).then((form) => {
         const nestedFormRadio = form.getComponent(['nestedForm']);
@@ -1878,7 +1878,7 @@ it('Should show tooltip for wizard pages', function(done) {
     });
   });
 
-  it('Should have proper values for localRoot', (done) => {
+  it('Should have proper values for localRoot', function(done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
     const form = _.cloneDeep(wizardWithPanel);
@@ -1923,7 +1923,7 @@ it('Should show tooltip for wizard pages', function(done) {
     });
   });
 
-  it('Should keep wizard pages separate from edit grid inner wizard pages', (done) => {
+  it('Should keep wizard pages separate from edit grid inner wizard pages', function(done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
     const form = _.cloneDeep(wizardWithNestedWizardInEditGrid);
@@ -2000,7 +2000,7 @@ it('Should show tooltip for wizard pages', function(done) {
     .catch((err) => done(err));
   });
 
-  it('Should proper validate nested wizard fields', (done) => {
+  it('Should proper validate nested wizard fields', function(done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
     const childForm = _.cloneDeep(wizardWithFieldsValidationChild);

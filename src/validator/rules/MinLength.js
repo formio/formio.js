@@ -5,7 +5,7 @@ export default class MinLength extends Rule {
 
   check(value) {
     const minLength = parseInt(this.settings.length, 10);
-    if (!minLength || !value || !value.hasOwnProperty('length') || this.component.isEmpty(value)) {
+    if (!minLength || !value || !Object.prototype.hasOwnProperty.call(value, 'length') || this.component.isEmpty(value)) {
       return true;
     }
     return (value.length >= minLength);

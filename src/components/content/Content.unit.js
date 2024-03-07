@@ -8,15 +8,15 @@ import {
   comp1
 } from './fixtures';
 
-describe('Content Component', () => {
-  it('Should build a content component', () => {
+describe('Content Component', function() {
+  it('Should build a content component', function() {
     return Harness.testCreate(ContentComponent, comp1).then((component) => {
       const html = component.element.querySelector('[ref="html"]');
       assert.equal(html.innerHTML.trim(), comp1.html.trim());
     });
   });
 
-  it('Should update after submission set', (done) => {
+  it('Should update after submission set', function(done) {
     const formJson =  {
       components: [{
         html: '<p>{{submission.data.textField}}</p>',

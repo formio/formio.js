@@ -69,7 +69,7 @@ export default class Form extends Element {
   createElement(tag, attrs, children) {
     const element = document.createElement(tag);
     for (const attr in attrs) {
-      if (attrs.hasOwnProperty(attr)) {
+      if (Object.prototype.hasOwnProperty.call(attrs, attr)) {
         element.setAttribute(attr, attrs[attr]);
       }
     }

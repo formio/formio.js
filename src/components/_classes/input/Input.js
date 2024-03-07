@@ -295,7 +295,7 @@ export default class Input extends Multivalue {
     }
 
     // Make sure we have a widget.
-    if (!Widgets.hasOwnProperty(settings.type)) {
+    if (!Object.prototype.hasOwnProperty.call(Widgets, settings.type)) {
       return null;
     }
 

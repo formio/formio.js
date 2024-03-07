@@ -7,13 +7,14 @@ import {
   comp3
 } from './fixtures';
 
-describe('Columns Component', () => {
-  it('Should build a columns component', () => {
+describe('Columns Component', function() {
+  it('Should build a columns component', function() {
     return Harness.testCreate(ColumnsComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 2);
     });
   });
-  it('Should be auto-adjusting when auto adjust is set to true', done => {
+
+  it('Should be auto-adjusting when auto adjust is set to true', function(done) {
     Harness.testCreate(ColumnsComponent, comp2)
     .then((component) => {
       const columns = component.component.columns;
@@ -40,7 +41,7 @@ describe('Columns Component', () => {
     .catch(done);
   });
 
-  it('Should clear fields in modal window after confirming to clear data in dialog window', (done) => {
+  it('Should clear fields in modal window after confirming to clear data in dialog window', function(done) {
     Harness.testCreate(ColumnsComponent, comp3).then((component) => {
       const hiddenModalWindow = component.element.querySelector('.component-rendering-hidden');
       assert.equal(!!hiddenModalWindow, true);

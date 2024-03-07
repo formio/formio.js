@@ -5,8 +5,8 @@ import {
   comp1
 } from './fixtures';
 
-describe('Hidden Component', () => {
-  it('Should build a hidden component', () => {
+describe('Hidden Component', function() {
+  it('Should build a hidden component', function() {
     return Harness.testCreate(HiddenComponent, comp1);
   });
 });

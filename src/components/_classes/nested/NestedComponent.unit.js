@@ -10,8 +10,8 @@ import _map from 'lodash/map';
 import Webform from '../../../Webform';
 
 let component = null;
-describe('NestedComponent class', () => {
-  it('Should create a new NestedComponent class', () => {
+describe('NestedComponent class', function() {
+  it('Should create a new NestedComponent class', function() {
     return Harness.testCreate(NestedComponent, {
       // key: 'nested',
       components: [
@@ -33,7 +33,7 @@ describe('NestedComponent class', () => {
     });
   });
 
-  it('Should be able to add new components', (done) => {
+  it('Should be able to add new components', function(done) {
     component.addComponent({
       type: 'email',
       key: 'email',
@@ -44,7 +44,7 @@ describe('NestedComponent class', () => {
     done();
   });
 
-  it('Should be able to set data within the components.', (done) => {
+  it('Should be able to set data within the components.', function(done) {
     const value = {
       firstName: 'Joe',
       lastName: 'Smith',
@@ -58,7 +58,7 @@ describe('NestedComponent class', () => {
     done();
   });
 
-  it('Should create nested visibility elements.', () => {
+  it('Should create nested visibility elements.', function() {
     return Harness.testCreate(NestedComponent, {
       components: [
         {
@@ -136,8 +136,8 @@ describe('NestedComponent class', () => {
     });
   });
 
-  describe('set/get visible', () => {
-    it('should set/get visible flag on instance and child components', done => {
+  describe('set/get visible', function() {
+    it('should set/get visible flag on instance and child components', function(done) {
       Harness.testCreate(NestedComponent, comp1)
         .then(nested => {
           expect(nested.visible).to.be.true;
@@ -165,8 +165,8 @@ describe('NestedComponent class', () => {
     });
   });
 
-  describe('set/get parentVisible', () => {
-    it('should set/get parentVisible flag on instance and child components', done => {
+  describe('set/get parentVisible', function() {
+    it('should set/get parentVisible flag on instance and child components', function(done) {
       Harness.testCreate(NestedComponent, comp1)
         .then(nested => {
           expect(nested.parentVisible).to.be.true;
@@ -197,8 +197,8 @@ describe('NestedComponent class', () => {
     });
   });
 
-  describe('get schema', () => {
-    it('components array shouldn\'t have duplicates', done => {
+  describe('get schema', function() {
+    it('components array shouldn\'t have duplicates', function(done) {
       Harness.testCreate(NestedComponent, comp1)
         .then(nested => {
           const child = nested.components[0];
@@ -212,8 +212,8 @@ describe('NestedComponent class', () => {
     });
   });
 
-  describe('calculateComponentPath', () => {
-    it('the first layer components', (done) => {
+  describe('calculateComponentPath', function() {
+    it('the first layer components', function(done) {
       Harness.testCreate(NestedComponent, comp1)
         .then((nested) => {
           assert(nested.components[0].path === 'firstName');
@@ -222,7 +222,8 @@ describe('NestedComponent class', () => {
         })
         .catch(done);
     });
-    it('inside data components', (done) => {
+
+    it('inside data components', function(done) {
       Harness.testCreate(NestedComponent, comp2)
         .then((nested) => {
           assert(nested.components[0].path === 'dataGrid');
@@ -236,7 +237,8 @@ describe('NestedComponent class', () => {
         })
         .catch(done);
     });
-    it('inside nested forms', (done) => {
+
+    it('inside nested forms', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(nestedForm)
@@ -259,8 +261,8 @@ describe('NestedComponent class', () => {
     });
   });
 
-  describe('getComponent', () => {
-    it('the first layer components', (done) => {
+  describe('getComponent', function() {
+    it('the first layer components', function(done) {
       Harness.testCreate(NestedComponent, comp1)
         .then((nested) => {
           const firstNameTextFieldByStringPath = nested.getComponent('firstName');
@@ -271,7 +273,8 @@ describe('NestedComponent class', () => {
         })
         .catch(done);
     });
-    it('inside data components', (done) => {
+
+    it('inside data components', function(done) {
       Harness.testCreate(NestedComponent, comp2)
         .then((nested) => {
           assert(nested.components[0].path === 'dataGrid');
@@ -288,7 +291,8 @@ describe('NestedComponent class', () => {
         })
         .catch(done);
     });
-    it('inside nested forms', (done) => {
+
+    it('inside nested forms', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(nestedForm)
@@ -307,8 +311,8 @@ describe('NestedComponent class', () => {
     });
   });
 
-  describe('render value as String', () => {
-    it('Should render a Select\'s value template', (done) => {
+  describe('render value as String', function() {
+    it('Should render a Select\'s value template', function(done) {
       Harness.testCreate(NestedComponent, comp3)
       .then((nested) => {
         const editGrid = nested.components[0];

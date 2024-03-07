@@ -9,12 +9,12 @@ import {
   comp2
 } from './fixtures';
 
-describe('Email Component', () => {
-  it('Should build a email component', () => {
+describe('Email Component', function() {
+  it('Should build a email component', function() {
     return Harness.testCreate(EmailComponent, comp1);
   });
 
-  it('Should provide min/max length validation', (done) => {
+  it('Should provide min/max length validation', function(done) {
     const form = _.cloneDeep(comp2);
     form.components[0].validate = { minLength: 7, maxLength: 10 };
 
@@ -73,7 +73,7 @@ describe('Email Component', () => {
     testValidity(invalidMax, false, 'Email must have no more than 10 characters.', invalidMax[invalidMax.length-1]);
   });
 
-  it('Should provide pattern validation', (done) => {
+  it('Should provide pattern validation', function(done) {
     const form = _.cloneDeep(comp2);
     form.components[0].validate = { pattern: '^[0-9]+@[0-9]+\\.[a-z]{2,4}$' };
 
@@ -133,7 +133,7 @@ describe('Email Component', () => {
     );
   });
 
-  it('Should provide email validation', (done) => {
+  it('Should provide email validation', function(done) {
     const form = _.cloneDeep(comp2);
 
     const validValues = [

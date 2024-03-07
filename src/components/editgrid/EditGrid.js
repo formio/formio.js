@@ -597,7 +597,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   displayComponentValue(component, header) {
-    return !!((!component.hasOwnProperty('tableView') || component.tableView)
+    return !!((!Object.prototype.hasOwnProperty.call(component, 'tableView') || component.tableView)
       && header ? this.isComponentVisibleInSomeRow(component) : _.includes(this.visibleInHeader, component.key));
   }
 

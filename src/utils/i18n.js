@@ -2,7 +2,7 @@ import { Evaluator } from '@formio/core/utils';
 import i18n from '../i18n';
 const i18Defaults = {};
 for (const lang in i18n.resources) {
-    if (i18n.resources.hasOwnProperty(lang)) {
+    if (Object.prototype.hasOwnProperty.call(i18n.resources, lang)) {
         i18Defaults[lang] = i18n.resources[lang].translation;
     }
 }
@@ -22,7 +22,12 @@ export class I18n {
     setLanguages(languages) {
         if (languages.resources) {
             for (const lang in languages.resources) {
-                if (languages.resources.hasOwnProperty(lang)) {
+                if (
+                    Object.prototype.hasOwnProperty.call(
+                        languages.resources,
+                        lang,
+                    )
+                ) {
                     languages[lang] = languages.resources[lang].translation;
                 }
             }
@@ -43,11 +48,17 @@ export class I18n {
             this.language = languages.language;
         }
         for (const lang in languages) {
-            if (lang !== 'language' && languages.hasOwnProperty(lang)) {
+            if (
+                lang !== 'language' &&
+                Object.prototype.hasOwnProperty.call(languages, lang)
+            ) {
                 if (!this.languages[lang]) {
                     this.languages[lang] = {};
                 }
-                this.languages[lang] = { ...this.languages[lang], ...languages[lang] };
+                this.languages[lang] = {
+                    ...this.languages[lang],
+                    ...languages[lang],
+                };
             }
         }
     }
@@ -71,7 +82,9 @@ export class I18n {
             language = 'en';
         }
         this.language = language;
-        this.currentLanguage = this.languages[language] ? this.languages[language] : {};
+        this.currentLanguage = this.languages[language]
+            ? this.languages[language]
+            : {};
         if (ready) {
             ready();
         }
@@ -83,7 +96,10 @@ export class I18n {
 
     t(text, ...args) {
         if (this.currentLanguage[text]) {
-            return Evaluator.interpolateString(this.currentLanguage[text], ...args);
+            return Evaluator.interpolateString(
+                this.currentLanguage[text],
+                ...args,
+            );
         }
         return Evaluator.interpolateString(text, ...args);
     }

@@ -34,7 +34,7 @@ import {
 } from './fixtures';
 
 // eslint-disable-next-line max-statements
-describe('Select Component', () => {
+describe('Select Component', function() {
   it('should not stringify select option value', function(done) {
     Harness.testCreate(SelectComponent, comp6).then((component) => {
       component.setValue({ value:'a', label:'A' });
@@ -62,7 +62,7 @@ describe('Select Component', () => {
     });
   });
 
-  it('Should return plain text when csv option is provided', () => {
+  it('Should return plain text when csv option is provided', function() {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       assert.equal(component.getView('red', { csv:true }), 'Red');
     });
@@ -218,27 +218,27 @@ describe('Select Component', () => {
     });
   });
 
-  it('Should build a Select component', () => {
+  it('Should build a Select component', function() {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       Harness.testElements(component, 'select', 1);
     });
   });
 
-  it('Should preserve the tabindex', () => {
+  it('Should preserve the tabindex', function() {
     return Harness.testCreate(SelectComponent, comp2).then((component) => {
       const element = component.element.getElementsByClassName('choices__list choices__list--single')[0];
       Harness.testElementAttribute(element, 'tabindex', '10');
     });
   });
 
-  it('Should default to 0 when tabindex is not specified', () => {
+  it('Should default to 0 when tabindex is not specified', function() {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       const element = component.element.getElementsByClassName('choices__list choices__list--single')[0];
       Harness.testElementAttribute(element, 'tabindex', '0');
     });
   });
 
-  it('Should allow to override threshold option of fuzzy search', () => {
+  it('Should allow to override threshold option of fuzzy search', function() {
     try {
       const c1 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.2 });
       const c2 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.4 });
@@ -262,7 +262,7 @@ describe('Select Component', () => {
     }
   });
 
-  it('should set component value', () => {
+  it('should set component value', function() {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       assert.deepEqual(component.dataValue, '');
       component.setValue('red');
@@ -270,7 +270,7 @@ describe('Select Component', () => {
     });
   });
 
-  it('should remove selected item', () => {
+  it('should remove selected item', function() {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       assert.deepEqual(component.dataValue, '');
       component.setValue('red');
@@ -283,7 +283,7 @@ describe('Select Component', () => {
     });
   });
 
-  it('should open dropdown after item has been removed', () => {
+  it('should open dropdown after item has been removed', function() {
     global.requestAnimationFrame = cb => cb();
     window.matchMedia = window.matchMedia || function() {
       return {
@@ -305,7 +305,7 @@ describe('Select Component', () => {
     });
   });
 
-  it('should keep dropdown closed after item has been removed by keypress', () => {
+  it('should keep dropdown closed after item has been removed by keypress', function() {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       component.setValue('red');
 
@@ -321,7 +321,7 @@ describe('Select Component', () => {
     });
   });
 
-  it('Should render and set values in selects with different widget types', (done) => {
+  it('Should render and set values in selects with different widget types', function(done) {
     const form = _.cloneDeep(comp7);
     const element = document.createElement('div');
 
@@ -349,7 +349,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should clear select value when "clear value on refresh options" and "refresh options on" is enable and number component is changed   ', (done) => {
+  it('Should clear select value when "clear value on refresh options" and "refresh options on" is enable and number component is changed   ', function(done) {
     const form = _.cloneDeep(comp8);
     const element = document.createElement('div');
 
@@ -380,7 +380,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should update select items when "refresh options on" is enable and number component is changed', (done) => {
+  it('Should update select items when "refresh options on" is enable and number component is changed', function(done) {
     const form = _.cloneDeep(comp9);
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
@@ -422,7 +422,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should update select items when "refresh options on blur" is enable and number component is changed', (done) => {
+  it('Should update select items when "refresh options on blur" is enable and number component is changed', function(done) {
     const form = _.cloneDeep(comp9);
     form.components[1].refreshOn = null;
     form.components[1].refreshOnBlur = 'number';
@@ -470,7 +470,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should be able to search if static search is enable', (done) => {
+  it('Should be able to search if static search is enable', function(done) {
     const form = _.cloneDeep(comp10);
     const element = document.createElement('div');
 
@@ -501,7 +501,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should not be able to search if static search is disable', (done) => {
+  it('Should not be able to search if static search is disable', function(done) {
     const form = _.cloneDeep(comp10);
     form.components[0].searchEnabled = false;
     const element = document.createElement('div');
@@ -515,7 +515,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should save correct value if value property and item template property are different', (done) => {
+  it('Should save correct value if value property and item template property are different', function(done) {
     const form = _.cloneDeep(comp9);
     form.components[1].refreshOn = null;
     form.components[1].valueProperty = 'age';
@@ -559,7 +559,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should set custom header when sending request in select url', (done) => {
+  it('Should set custom header when sending request in select url', function(done) {
     const form = _.cloneDeep(comp9);
     form.components[1].refreshOn = null;
     form.components[1].lazyLoad = true;
@@ -588,7 +588,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should set value in select url with lazy load option', (done) => {
+  it('Should set value in select url with lazy load option', function(done) {
     const form = _.cloneDeep(comp9);
     form.components[1].refreshOn = null;
     form.components[1].lazyLoad = true;
@@ -618,7 +618,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should set value in select url with lazy load option when value property is defined', (done) => {
+  it('Should set value in select url with lazy load option when value property is defined', function(done) {
     const form = _.cloneDeep(comp9);
     form.components[1].refreshOn = null;
     form.components[1].lazyLoad = true;
@@ -648,7 +648,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should be able to search if static search is enable', (done) => {
+  it('Should be able to search if static search is enabled', function(done) {
     const form = _.cloneDeep(comp10);
     const element = document.createElement('div');
 
@@ -679,7 +679,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Server side search is debounced with the correct timeout', (done) => {
+  it('Server side search is debounced with the correct timeout', function(done) {
     const form = _.cloneDeep(comp9);
     form.components[1].lazyLoad = false;
     form.components[1].searchDebounce = 0.7;
@@ -723,7 +723,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should provide "Allow only available values" validation', (done) => {
+  it('Should provide "Allow only available values" validation', function(done) {
     const form = _.cloneDeep(comp10);
     form.components[0].validate.onlyAvailableItems = true;
     const element = document.createElement('div');
@@ -751,7 +751,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should render and set value in select json', (done) => {
+  it('Should render and set value in select json', function(done) {
     const formObj = _.cloneDeep(comp11);
     const element = document.createElement('div');
 
@@ -778,7 +778,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should load and set items in select resource and set value', (done) => {
+  it('Should load and set items in select resource and set value', function(done) {
     const form = _.cloneDeep(comp12);
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
@@ -824,7 +824,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should not have "limit" and "skip" query params when "Disable limit" option checked', (done) => {
+  it('Should not have "limit" and "skip" query params when "Disable limit" option checked', function(done) {
     const form = _.cloneDeep(comp9);
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
@@ -841,7 +841,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('The empty option in html5 shouldn\'t have the [Object Object] value', () => {
+  it('The empty option in html5 shouldn\'t have the [Object Object] value', function() {
     return Harness.testCreate(SelectComponent, comp13).then((component) => {
      const emptyOption = component.element.querySelectorAll('option')[0];
       assert.notEqual(emptyOption.value, '[object Object]');
@@ -849,7 +849,7 @@ describe('Select Component', () => {
     });
   });
 
-  it('Should not have default values in schema', (done) => {
+  it('Should not have default values in schema', function(done) {
     const form = _.cloneDeep(comp14);
     const element = document.createElement('div');
 
@@ -868,7 +868,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should show async custom values and be able to set submission', (done) => {
+  it('Should show async custom values and be able to set submission', function(done) {
     const formObj = _.cloneDeep(comp16);
     const element = document.createElement('div');
 
@@ -893,7 +893,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should provide metadata.selectData for Select component pointed to a resource where value property is set to a field', (done) => {
+  it('Should provide metadata.selectData for Select component pointed to a resource where value property is set to a field', function(done) {
     const form = _.cloneDeep(comp17);
     const testItems = [
       { textField: 'John' },
@@ -923,7 +923,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should provide correct metadata.selectData for multiple Select', (done) => {
+  it('Should provide correct metadata.selectData for multiple Select', function(done) {
     const form = _.cloneDeep(comp20);
     const element = document.createElement('div');
 
@@ -950,7 +950,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should provide correct metadata.selectData for HTML5 Select', (done) => {
+  it('Should provide correct metadata.selectData for HTML5 Select', function(done) {
     const element = document.createElement('div');
 
     Formio.createForm(element, comp21).then(form => {
@@ -999,7 +999,7 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
-  it('Should escape special characters in regex search field', done => {
+  it('Should escape special characters in regex search field', function(done) {
     const form = _.cloneDeep(comp17);
     const element = document.createElement('div');
 
@@ -1047,8 +1047,8 @@ describe('Select Component', () => {
   // });
 });
 
-describe('Select Component', () => {
-  it('Select Component should work correctly with the values in the form of an array', (done) => {
+describe('Select Component Array Values', function() {
+  it('Select Component should work correctly with the values in the form of an array', function(done) {
     const form = _.cloneDeep(comp18);
     const testItems = [
       { textField: ['one','two'] },
@@ -1080,8 +1080,8 @@ describe('Select Component', () => {
   });
 });
 
-describe('Select Component with Entire Object Value Property', () => {
-  it('Should provide correct value', (done) => {
+describe('Select Component with Entire Object Value Property', function() {
+  it('Should provide correct value', function(done) {
     const form = _.cloneDeep(comp15);
     const element = document.createElement('div');
 
@@ -1106,7 +1106,7 @@ describe('Select Component with Entire Object Value Property', () => {
     }).catch(done);
   });
 
-  it('Should provide correct items for Resource DataSrc Type and Entire Object Value Property', (done) => {
+  it('Should provide correct items for Resource DataSrc Type and Entire Object Value Property', function(done) {
     const form = _.cloneDeep(comp15);
     const testItems = [
       { textField: 'Jone', number: 1 },
@@ -1137,7 +1137,7 @@ describe('Select Component with Entire Object Value Property', () => {
     }).catch(done);
   });
 
-  it('Should provide correct html value for Resource DataSrc Type and Entire Object Value Property', (done) => {
+  it('Should provide correct html value for Resource DataSrc Type and Entire Object Value Property', function(done) {
     const form = _.cloneDeep(comp15);
     const testItems = [
       { textField: 'Jone', number: 1 },
@@ -1175,7 +1175,7 @@ describe('Select Component with Entire Object Value Property', () => {
     }).catch(done);
   });
 
-  it('Should set submission value for Resource DataSrc Type and Entire Object Value Property', (done) => {
+  it('Should set submission value for Resource DataSrc Type and Entire Object Value Property', function(done) {
     const form = _.cloneDeep(comp15);
     const element = document.createElement('div');
 
@@ -1200,7 +1200,7 @@ describe('Select Component with Entire Object Value Property', () => {
     }).catch(done);
   });
 
-  it('Should get string representation of value for Resource DataSrc Type and Entire Object Value Property', (done) => {
+  it('Should get string representation of value for Resource DataSrc Type and Entire Object Value Property', function(done) {
     Harness.testCreate(SelectComponent, comp15.components[0]).then((component) => {
       const entireObject = {
         a: '1',

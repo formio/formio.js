@@ -1109,7 +1109,7 @@ export default {
     },
   },
   'set_get_value': {
-    'Should set and get components` value (including string value)'(form, done, test) {
+    'Should set and get components` value (including string value)'(form, done) {
       form.components.forEach(comp => {
         comp.setValue(_.cloneDeep(values.values[comp.component.key]));
       });
@@ -1119,7 +1119,7 @@ export default {
         done();
       }, 300);
     },
-    'Should set and get submission'(form, done, test) {
+    'Should set and get submission'(form, done) {
       form.setSubmission({
         data: values.submission
       }).then(() => {

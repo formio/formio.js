@@ -3,8 +3,8 @@ import NestedDataComponent from './NestedDataComponent';
 import Harness from '../../../../test/harness';
 
 let component = null;
-describe('NestedDataComponent class', () => {
-  it('Should create a new NestedDataComponent class', () => {
+describe('NestedDataComponent class', function() {
+  it('Should create a new NestedDataComponent class', function() {
     return Harness.testCreate(NestedDataComponent, {
       // key: 'nested',
       components: [

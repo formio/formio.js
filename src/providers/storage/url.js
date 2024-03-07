@@ -47,7 +47,7 @@ function url(formio) {
           }
 
           // Get the url of the file.
-          let respUrl = respData.hasOwnProperty('url') ? respData.url : `${xhr.responseURL}/${name}`;
+          let respUrl = Object.prototype.hasOwnProperty.call(respData, 'url') ? respData.url : `${xhr.responseURL}/${name}`;
 
           // If they provide relative url, then prepend the url.
           if (respUrl && respUrl[0] === '/') {

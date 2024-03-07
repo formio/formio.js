@@ -1,62 +1,65 @@
 export default {
-  type: 'form',
+  type: "form",
   components: [
     {
-      title: 'SUBSIDIARY/AFFILIATE/OTHER ENTITIES INFORMATION',
+      title: "SUBSIDIARY/AFFILIATE/OTHER ENTITIES INFORMATION",
       collapsible: false,
-      key: 'subsidiaryAffiliateOtherEntitiesInformation',
-      type: 'panel',
-      label: 'SUBSIDIARY/AFFILIATE/OTHER ENTITIES INFORMATION',
+      key: "subsidiaryAffiliateOtherEntitiesInformation",
+      type: "panel",
+      label: "SUBSIDIARY/AFFILIATE/OTHER ENTITIES INFORMATION",
       input: false,
       tableView: false,
       components: [
         {
-          legend: 'Important Information',
-          key: 'fieldset',
-          type: 'fieldset',
-          label: '',
+          legend: "Important Information",
+          key: "fieldset",
+          type: "fieldset",
+          label: "",
           input: false,
           tableView: false,
           components: [],
-        }, {
-          label: 'Subsidiary Edit Grid',
+        },
+        {
+          label: "Subsidiary Edit Grid",
           openWhenEmpty: true,
           hideLabel: true,
           tableView: false,
           templates: {
-            header: '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty(\'tableView\') || component.tableView) { %}\n          <div class="col-sm-6">{{ component.label }}</div>\n        {% } %}\n      {% }) %}\n    </div>',
+            header:
+              '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty(\'tableView\') || component.tableView) { %}\n          <div class="col-sm-6">{{ component.label }}</div>\n        {% } %}\n      {% }) %}\n    </div>',
             row: '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty(\'tableView\') || component.tableView) { %}\n          <div class="col-sm-6">\n            {{ getView(component, row[component.key]) }}\n          </div>\n        {% } %}\n      {% }) %}\n      {% if (!instance.disabled) { %}\n        <div class="col-sm-6">\n          <div class="btn-group pull-right">\n            <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass(\'edit\') }}"></i></button>\n            {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}\n              <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass(\'trash\') }}"></i></button>\n            {% } %}\n          </div>\n        </div>\n      {% } %}\n    </div>',
           },
-          addAnother: 'Add Another',
+          addAnother: "Add Another",
           validate: {
             maxLength: 10,
           },
           rowDrafts: false,
-          key: 'subsidiaryEditGrid',
-          type: 'editgrid',
+          key: "subsidiaryEditGrid",
+          type: "editgrid",
           input: true,
           components: [
             {
-              label: 'Subsidiary Entity Container',
+              label: "Subsidiary Entity Container",
               tableView: false,
-              key: 'subsidiaryEntityContainer',
-              type: 'container',
+              key: "subsidiaryEntityContainer",
+              type: "container",
               input: true,
               components: [
                 {
-                  label: 'Columns',
+                  label: "Columns",
                   columns: [
                     {
                       components: [
                         {
-                          label: 'Full Name of Entity as legally registered with the Government',
+                          label:
+                            "Full Name of Entity as legally registered with the Government",
                           tableView: true,
                           validate: {
                             required: true,
                             maxLength: 200,
                           },
-                          key: 'entityFullName',
-                          type: 'textfield',
+                          key: "entityFullName",
+                          type: "textfield",
                           input: true,
                           hideOnChildrenHidden: false,
                         },
@@ -65,19 +68,21 @@ export default {
                       offset: 0,
                       push: 0,
                       pull: 0,
-                      size: 'md',
+                      size: "md",
                       currentWidth: 6,
-                    }, {
+                    },
+                    {
                       components: [
                         {
-                          label: 'Division #',
+                          label: "Division #",
                           tableView: false,
                           validate: {
-                            pattern: '(^\\d{3}$)',
-                            customMessage: 'Division Number must be 3 digits long (can use leading zeros).',
+                            pattern: "(^\\d{3}$)",
+                            customMessage:
+                              "Division Number must be 3 digits long (can use leading zeros).",
                           },
-                          key: 'divisionNum',
-                          type: 'textfield',
+                          key: "divisionNum",
+                          type: "textfield",
                           input: true,
                           hideOnChildrenHidden: false,
                         },
@@ -86,11 +91,12 @@ export default {
                       offset: 0,
                       push: 0,
                       pull: 0,
-                      size: 'md',
+                      size: "md",
                       currentWidth: 2,
-                    }, {
+                    },
+                    {
                       components: [],
-                      size: 'md',
+                      size: "md",
                       width: 4,
                       offset: 0,
                       push: 0,
@@ -98,38 +104,41 @@ export default {
                       currentWidth: 4,
                     },
                   ],
-                  key: 'columns',
-                  type: 'columns',
+                  key: "columns",
+                  type: "columns",
                   input: false,
                   tableView: false,
                   clearOnHide: true,
-                }, {
-                  label: 'Columns',
+                },
+                {
+                  label: "Columns",
                   columns: [
                     {
                       components: [
                         {
-                          label: 'Select one of the following:',
-                          optionsLabelPosition: 'right',
+                          label: "Select one of the following:",
+                          optionsLabelPosition: "right",
                           inline: false,
                           tableView: false,
                           values: [
                             {
-                              label: 'Subsidiary',
-                              value: 'subsidiary',
-                              shortcut: '',
-                            }, {
-                              label: 'Affiliate',
-                              value: 'affiliate',
-                              shortcut: '',
-                            }, {
-                              label: 'Other Entity',
-                              value: 'otherEntity',
-                              shortcut: '',
+                              label: "Subsidiary",
+                              value: "subsidiary",
+                              shortcut: "",
+                            },
+                            {
+                              label: "Affiliate",
+                              value: "affiliate",
+                              shortcut: "",
+                            },
+                            {
+                              label: "Other Entity",
+                              value: "otherEntity",
+                              shortcut: "",
                             },
                           ],
-                          key: 'entityType',
-                          type: 'radio',
+                          key: "entityType",
+                          type: "radio",
                           input: true,
                           hideOnChildrenHidden: false,
                         },
@@ -138,32 +147,34 @@ export default {
                       offset: 0,
                       push: 0,
                       pull: 0,
-                      size: 'md',
+                      size: "md",
                       currentWidth: 4,
-                    }, {
+                    },
+                    {
                       components: [],
                       width: 8,
                       offset: 0,
                       push: 0,
                       pull: 0,
-                      size: 'md',
+                      size: "md",
                       currentWidth: 8,
                     },
                   ],
-                  key: 'columns4',
-                  type: 'columns',
+                  key: "columns4",
+                  type: "columns",
                   input: false,
                   tableView: false,
                   clearOnHide: true,
-                }, {
-                  label: 'If \'Other Entity\', please explain',
+                },
+                {
+                  label: "If 'Other Entity', please explain",
                   tableView: false,
                   validate: {
                     maxLength: 200,
                   },
-                  key: 'ifOtherEntityPleaseExplain',
-                  customConditional: 'show = row.entityType === \'otherEntity\';',
-                  type: 'textfield',
+                  key: "ifOtherEntityPleaseExplain",
+                  customConditional: "show = row.entityType === 'otherEntity';",
+                  type: "textfield",
                   input: true,
                   hideOnChildrenHidden: false,
                 },
@@ -173,18 +184,18 @@ export default {
         },
       ],
       clearOnHide: true,
-    }, {
-      label: 'Submit',
+    },
+    {
+      label: "Submit",
       showValidations: false,
       tableView: false,
-      key: 'submit',
-      type: 'button',
+      key: "submit",
+      type: "button",
       input: true,
     },
   ],
-  revisions: '',
+  revisions: "",
   _vid: 0,
-  title: 'FIO-3326',
-  title: 'FIO-3326',
-  display: 'form',
+  title: "FIO-3326",
+  display: "form",
 };

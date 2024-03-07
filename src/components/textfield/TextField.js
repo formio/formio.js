@@ -66,7 +66,7 @@ export default class TextFieldComponent extends Input {
     const info = super.inputInfo;
     info.type = 'input';
 
-    if (this.component.hasOwnProperty('spellcheck')) {
+    if (Object.prototype.hasOwnProperty.call(this.component, 'spellcheck')) {
       info.attr.spellcheck = this.component.spellcheck;
     }
 

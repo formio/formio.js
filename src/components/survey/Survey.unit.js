@@ -8,8 +8,8 @@ import {
   comp2
 } from './fixtures';
 
-describe('Survey Component', () => {
-  it('Should build a survey component', () => {
+describe('Survey Component', function() {
+  it('Should build a survey component', function() {
     return Harness.testCreate(SurveyComponent, comp1).then((component) => {
       const inputs = Harness.testElements(component, 'input[type="radio"]', 10);
       inputs.forEach((input, index) => {
@@ -27,7 +27,7 @@ describe('Survey Component', () => {
     });
   });
 
-  it('Should set the value of surveys.', () => {
+  it('Should set the value of surveys.', function() {
     return Harness.testCreate(SurveyComponent, comp1).then((component) => {
       Harness.testSetGet(component, { service: 'bad', howWouldYouRateTheTechnology: 'good' });
       const inputs = Harness.testElements(component, 'input[type="radio"]', 10);
@@ -45,7 +45,7 @@ describe('Survey Component', () => {
     });
   });
 
-  it('Should require all questions for required Survey', (done) => {
+  it('Should require all questions for required Survey', function(done) {
     Harness.testCreate(SurveyComponent, comp2).then((component) => {
       Harness.testSetGet(component, { service: 'bad' });
       component.on('componentChange', () => {

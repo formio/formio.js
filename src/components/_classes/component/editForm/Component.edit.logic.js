@@ -330,7 +330,7 @@ export default [
                 type: 'select',
                 customConditional({ row }) {
                   return row.type === 'property' &&
-                    row.hasOwnProperty('property') &&
+                    Object.prototype.hasOwnProperty.call(row, 'property') &&
                     row.property.type === 'boolean';
                 },
               },
@@ -345,7 +345,7 @@ export default [
                 description: 'Can use templating with {{ data.myfield }}. "data", "row", "component" and "result" variables are available.',
                 customConditional({ row }) {
                   return row.type === 'property' &&
-                    row.hasOwnProperty('property') &&
+                    Object.prototype.hasOwnProperty.call(row, 'property') &&
                     row.property.type === 'string' &&
                     !row.property.component;
                 },

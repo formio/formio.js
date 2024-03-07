@@ -15,14 +15,14 @@ import {
   comp7,
 } from './fixtures';
 
-describe('Number Component', () => {
-  it('Should build an number component', () => {
+describe('Number Component', function() {
+  it('Should build an number component', function() {
     return Harness.testCreate(NumberComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
     });
   });
 
-  it('Should format submissions for table view for French locale', () => {
+  it('Should format submissions for table view for French locale', function() {
     return Harness.testCreate(NumberComponent, comp4, { language: 'fr' }).then((component) => {
       const value1 = component.getValueAsString(1);
       const value2 = component.getValueAsString(1.1);
@@ -40,7 +40,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format sumbissions for table view for USA locale', () => {
+  it('Should format sumbissions for table view for USA locale', function() {
     return Harness.testCreate(NumberComponent, comp4, { language: 'en-US' }).then((component) => {
       const value1 = component.getValueAsString(1);
       const value2 = component.getValueAsString(1.1);
@@ -58,7 +58,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format value on blur for USA locale', () => {
+  it('Should format value on blur for USA locale', function() {
    return Harness.testCreate(NumberComponent, comp4, { language: 'en-US' }).then((component) => {
       component.root = {
         onChange: ()=>{},
@@ -91,7 +91,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format value on blur for French locale', (done) => {
+  it('Should format value on blur for French locale', function(done) {
     Harness.testCreate(NumberComponent, comp4, { language: 'fr' }).then((component) => {
       component.root = {
         onChange: ()=>{},
@@ -131,7 +131,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should not change entered value on blur if multiple value is set', (done) => {
+  it('Should not change entered value on blur if multiple value is set', function(done) {
     Harness.testCreate(NumberComponent, comp5).then((component) => {
       component.root = {
         onChange: ()=>{},
@@ -157,7 +157,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should limit decimals using step', () => {
+  it('Should limit decimals using step', function() {
     return Harness.testCreate(NumberComponent, _merge({}, comp2, {
       validate: {
         step: '0.001'
@@ -170,25 +170,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format submissions for table view for French locale', () => {
-    return Harness.testCreate(NumberComponent, comp2, { language: 'fr' }).then((component) => {
-      const value1 = component.getValueAsString(1);
-      const value2 = component.getValueAsString(1.1);
-      const value3 = component.getValueAsString(1.1111111);
-      const value4 = component.getValueAsString(1111);
-      const value5 = component.getValueAsString(1111111);
-      const value6 = component.getValueAsString(-11111.1111);
-
-      assert.equal(value1, '1');
-      assert.equal(value2, '1,1');
-      assert.equal(value3, '1,1111111');
-      assert.equal(value4, '1 111');
-      assert.equal(value5, '1 111 111');
-      assert.equal(value6, '-11 111,1111');
-    });
-  });
-
-  it('Should format sumissions for table view for USA locale', () => {
+  it('Should format sumissions for table view for USA locale', function() {
     return Harness.testCreate(NumberComponent, comp2, { language: 'en-US' }).then((component) => {
       const value1 = component.getValueAsString(1);
       const value2 = component.getValueAsString(1.1);
@@ -206,7 +188,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format numbers for USA locale', () => {
+  it('Should format numbers for USA locale', function() {
     /* eslint-disable max-statements */
     return Harness.testCreate(NumberComponent, comp2, { language: 'en-US' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
@@ -255,7 +237,7 @@ describe('Number Component', () => {
     /* eslint-enable max-statements */
   });
 
-  it('Should format numbers for British locale', () => {
+  it('Should format numbers for British locale', function() {
     return Harness.testCreate(NumberComponent, comp2, { language: 'en-GB' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
@@ -276,7 +258,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format numbers for French locale', () => {
+  it('Should format numbers for French locale', function() {
     return Harness.testCreate(NumberComponent, comp2, { language: 'fr' }).then((component) => {
       // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
       Harness.testSetInput(component, null, null, '');
@@ -298,7 +280,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format numbers for German locale', () => {
+  it('Should format numbers for German locale', function() {
     return Harness.testCreate(NumberComponent, comp2, { language: 'de' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
@@ -319,13 +301,13 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should display default integer value', () => {
+  it('Should display default integer value', function() {
     return Harness.testCreate(NumberComponent, comp3).then(number => {
       assert.deepEqual(_.get(number, ['refs', 'input', '0', 'value']), '42');
     });
   });
 
-  it('Should display default decimal value', () => {
+  it('Should display default decimal value', function() {
     const TEST_VAL = 4.2;
     const comp = _.cloneDeep(comp3);
 
@@ -338,7 +320,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should provide min/max validation', (done) => {
+  it('Should provide min/max validation', function(done) {
     const form = _.cloneDeep(comp6);
 
     const validValues = [
@@ -404,7 +386,7 @@ describe('Number Component', () => {
     testValidity(invalidMax, false, 'Number cannot be greater than 555.', invalidMax[invalidMax.length-1]);
   });
 
-  it('Should be able to switch between multiple and single values', (done) => {
+  it('Should be able to switch between multiple and single values', function(done) {
     Harness.testCreate(NumberComponent, comp5).then((component) => {
       assert.equal(_.isEqual(component.defaultValue, [null]), true);
       component.component.multiple = false;
@@ -415,7 +397,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should return value as string properly for multiple values', (done) => {
+  it('Should return value as string properly for multiple values', function(done) {
     Harness.testCreate(NumberComponent, comp7).then((component) => {
       component.refs.input = null;
       assert.equal(component.getValueAsString([1, 2, 3, 4, 5]), '1, 2, 3, 4, 5');

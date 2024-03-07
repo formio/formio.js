@@ -1,7 +1,5 @@
 import assert from 'power-assert';
 
-import Harness from '../harness';
-
 export default {
   title: 'Date Fields Test',
   form: {

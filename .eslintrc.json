@@ -1,38 +1,22 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "extends": "formio",
-  "parserOptions": {
-    "ecmaVersion": 2015,
-    "sourceType": "module"
-  },
-  "plugins": ["@typescript-eslint"],
   "env": {
     "browser": true,
-    "es6": true,
-    "node": true,
-    "mocha": true
+    "es2021": true,
+    "node": true
   },
-  "ignorePatterns": [
-    "!.*rc.js"
+  "extends": [
+    "eslint:recommended",
+    "plugin:mocha/recommended",
+    "eslint-config-prettier"
   ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["mocha"],
   "rules": {
-    "max-len": [
-      "off",
-      {
-        "code": 160,
-        "ignoreComments": true,
-        "ignoreStrings": true
-      }
-    ],
-    "max-statements": [2, 40],
-    "max-depth": [2, 10],
-    "no-console": "off",
-    "no-prototype-builtins": "off",
-    "prefer-const": "error",
-    "prefer-template": "error",
-    "object-curly-spacing": [
-      "error",
-      "always"
-    ]
+    "mocha/max-top-level-suites": ["warn", { "limit": 5 }],
+    "mocha/no-setup-in-describe": "warn",
+    "no-loss-of-precision": "warn"
   }
 }

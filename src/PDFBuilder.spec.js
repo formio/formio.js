@@ -1,7 +1,7 @@
 import FormBuilder from './FormBuilder';
 
-describe('Formio PDF Form Builder tests', () => {
-  it('Should emit change event when component position changed', (done) => {
+describe('Formio PDF Form Builder tests', function() {
+  it('Should emit change event when component position changed', function(done) {
     const form = {
       'type': 'form',
       'components': [

@@ -84,7 +84,7 @@ export default [
                 input: true,
                 customConditional(context) {
                   return (context.row.type === 'property' &&
-                    context.row.hasOwnProperty('property') &&
+                    Object.prototype.hasOwnProperty.call(context.row, 'property') &&
                     context.row.property.type === 'string' &&
                     context.row.property.component === 'content');
                 },

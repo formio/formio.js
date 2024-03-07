@@ -331,7 +331,7 @@ if (typeof window !== 'undefined') {
       eventData &&
       eventData.name &&
       eventData.formId &&
-      Formio.forms.hasOwnProperty(eventData.formId)
+      Object.prototype.hasOwnProperty.call(Formio.forms, eventData.formId)
     ) {
       Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
     }

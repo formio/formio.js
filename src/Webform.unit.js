@@ -90,7 +90,7 @@ if (_.has(Formio, 'Components.setComponents')) {
 describe('Webform tests', function() {
   this.retries(3);
 
-  it('Should validate hidden and conditionally hidden components when validateWhenHidden is enabled for those components', done => {
+  it('Should validate hidden and conditionally hidden components when validateWhenHidden is enabled for those components', function(done) {
     const formElement = document.createElement('div');
 
     Formio.createForm(formElement, formWithValidateWhenHidden)
@@ -162,7 +162,7 @@ describe('Webform tests', function() {
       .catch(done);
   });
 
-  it('Should not validate hidden and conditionally hidden components when validateWhenHidden is not enabled for those components', done => {
+  it('Should not validate hidden and conditionally hidden components when validateWhenHidden is not enabled for those components', function(done) {
     const formElement = document.createElement('div');
     const testForm = fastCloneDeep(formWithValidateWhenHidden);
 
@@ -302,7 +302,7 @@ describe('Webform tests', function() {
     }).catch((err) => done(err));
   });
 
-  it('Should keep non-component server errors visible after changes in the form', (done) => {
+  it('Should keep non-component server errors visible after changes in the form', function(done) {
     const element = document.createElement('div');
     const form = fastCloneDeep(formWithValidation);
     form.components[0].validate = {};
@@ -378,7 +378,7 @@ describe('Webform tests', function() {
     }).catch((err) => done(err));
   });
 
-  it('Should not fall into setValue calls loop when doing value calculation on server', done => {
+  it('Should not fall into setValue calls loop when doing value calculation on server', function(done) {
     const formElement = document.createElement('div');
     // Set a spy for Edit Grid setValue method
     const spy = sinon.spy(Formio.Components.components.editgrid.prototype, 'setValue');
@@ -726,7 +726,7 @@ describe('Webform tests', function() {
     }).catch((err) => done(err));
   });
 
-  it('Should not translate en value if _userInput option is provided and value presents in reserved translation names', done => {
+  it('Should not translate en value if _userInput option is provided and value presents in reserved translation names', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, {
      language: 'en'
@@ -747,7 +747,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should translate in English if _userInput option is provided and value does not present in reserved translation names', done => {
+  it('Should translate in English if _userInput option is provided and value does not present in reserved translation names', function(done) {
     const formElement = document.createElement('div');
     const selectLabel = 'Select test label';
     const translationForm = fastCloneDeep(translationTestForm);
@@ -774,7 +774,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should translate value in franch if _userInput option is provided and value does not present in reserved translation names', done => {
+  it('Should translate value in franch if _userInput option is provided and value does not present in reserved translation names', function(done) {
     const formElement = document.createElement('div');
     const selectLabel = 'Select test label';
     const translationForm = fastCloneDeep(translationTestForm);
@@ -1420,7 +1420,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  it('Should modify calculated value only if it was not manually modified when allowCalculateOverride is true', (done) => {
+  it('Should modify calculated value only if it was not manually modified when allowCalculateOverride is true', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
 
@@ -1645,7 +1645,8 @@ describe('Webform tests', function() {
   });
 
   let simpleForm = null;
-  it('Should create a simple form', (done) => {
+
+  it('Should create a simple form', function(done) {
     const formElement = document.createElement('div');
     simpleForm = new Webform(formElement);
     simpleForm.setForm({
@@ -1670,14 +1671,14 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should set a submission to the form.', () => {
+  it('Should set a submission to the form.', function() {
     Harness.testSubmission(simpleForm, { data: {
       firstName: 'Joe',
       lastName: 'Smith'
     } });
   });
 
-  it('Should translate a form from options', done => {
+  it('Should translate a form from options', function(done) {
     const formElement = document.createElement('div');
     const translateForm = new Webform(formElement, {
       language: 'es',
@@ -1708,7 +1709,7 @@ describe('Webform tests', function() {
     });
   });
 
-  it('Should get the language passed via options', () => {
+  it('Should get the language passed via options', function() {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, {
       language: 'es'
@@ -1717,7 +1718,7 @@ describe('Webform tests', function() {
     assert.equal(form.language, 'es');
   });
 
-  it('Should translate form errors in alerts', () => {
+  it('Should translate form errors in alerts', function() {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, {
       language: 'es',
@@ -1753,7 +1754,7 @@ describe('Webform tests', function() {
       });
   });
 
-  it('Should translate a form after instantiate', done => {
+  it('Should translate a form after instantiate', function(done) {
     const formElement = document.createElement('div');
     const translateForm = new Webform(formElement, {
       i18n: {
@@ -1782,7 +1783,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should add a translation after instantiate', done => {
+  it('Should add a translation after instantiate', function(done) {
     const formElement = document.createElement('div');
     const translateForm = new Webform(formElement, {
       i18n: {
@@ -1815,7 +1816,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should switch a translation after instantiate', done => {
+  it('Should switch a translation after instantiate', function(done) {
     const formElement = document.createElement('div');
     const translateForm = new Webform(formElement);
     translateForm.setForm({
@@ -1838,7 +1839,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should keep translation after redraw', done => {
+  it('Should keep translation after redraw', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     const schema = {
@@ -1876,7 +1877,7 @@ describe('Webform tests', function() {
     }
   });
 
-  it('Should fire languageChanged event when language is set', done => {
+  it('Should fire languageChanged event when language is set', function(done) {
     let isLanguageChangedEventFired = false;
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
@@ -1914,7 +1915,7 @@ describe('Webform tests', function() {
     }
   });
 
-  it('When submitted should strip fields with persistent: client-only from submission', done => {
+  it('When submitted should strip fields with persistent: client-only from submission', function(done) {
     const formElement = document.createElement('div');
     simpleForm = new Webform(formElement);
     /* eslint-disable quotes */
@@ -1957,7 +1958,7 @@ describe('Webform tests', function() {
     });
   });
 
-  it('Should keep components valid if they are pristine', (done) => {
+  it('Should keep components valid if they are pristine', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { language: 'en' });
     form.setForm(settingErrors).then(() => {
@@ -2072,7 +2073,7 @@ describe('Webform tests', function() {
   //   });
   // });
 
-  it('Should not fire validation on init.', (done) => {
+  it('Should not fire validation on init.', function(done) {
     formElement.innerHTML = '';
     const form = new Webform(formElement,{ language: 'en' });
     form.setForm(
@@ -2101,7 +2102,7 @@ describe('Webform tests', function() {
     });
   });
 
-  it('Should validation on init when alwaysDirty flag is set.', (done) => {
+  it('Should validation on init when alwaysDirty flag is set.', function(done) {
     formElement.innerHTML = '';
     const form = new Webform(formElement, {
       language: 'en',
@@ -2133,7 +2134,7 @@ describe('Webform tests', function() {
     });
   });
 
-  it('Should validation on init when dirty flag is set.', (done) => {
+  it('Should validation on init when dirty flag is set.', function(done) {
     formElement.innerHTML = '';
     const form = new Webform(formElement, {
       language: 'en',
@@ -2166,7 +2167,7 @@ describe('Webform tests', function() {
     });
   });
 
-  it('Should not show any errors on setSubmission when providing an empty data object', (done) => {
+  it('Should not show any errors on setSubmission when providing an empty data object', function(done) {
     formElement.innerHTML = '';
     const form = new Webform(formElement,{ language: 'en' });
     form.setForm(
@@ -2196,7 +2197,7 @@ describe('Webform tests', function() {
     });
   });
 
-  it('Should not show errors when providing empty data object with data set.', (done) => {
+  it('Should not show errors when providing empty data object with data set.', function(done) {
     formElement.innerHTML = '';
     const form = new Webform(formElement,{ language: 'en' });
     form.setForm(
@@ -2226,7 +2227,7 @@ describe('Webform tests', function() {
     });
   });
 
-  it('Should show errors on setSubmission when providing explicit data values.', (done) => {
+  it('Should show errors on setSubmission when providing explicit data values.', function(done) {
     formElement.innerHTML = '';
     const form = new Webform(formElement,{ language: 'en' });
     form.setForm(
@@ -2261,7 +2262,7 @@ describe('Webform tests', function() {
     });
   });
 
-  it('Should not show errors on setSubmission with noValidate:TRUE', (done) => {
+  it('Should not show errors on setSubmission with noValidate:TRUE', function(done) {
     formElement.innerHTML = '';
     const form = new Webform(formElement,{ language: 'en' });
     form.setForm(
@@ -2298,7 +2299,7 @@ describe('Webform tests', function() {
     });
   });
 
-  it('Should set calculated value correctly', (done) => {
+  it('Should set calculated value correctly', function(done) {
     formElement.innerHTML = '';
     const form = new Webform(formElement);
     form.setForm(calculateZeroValue).then(() => {
@@ -2326,7 +2327,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should render Nested Modal Wizard Form correctly', (done) => {
+  it('Should render Nested Modal Wizard Form correctly', function(done) {
     formElement.innerHTML = '';
     const form = new Webform(formElement);
     form.setForm(nestedModalWizard).then(() => {
@@ -2342,7 +2343,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should set calculated value correctly', (done) => {
+  it('Should set calculated value correctly, given a file component', function(done) {
     formElement.innerHTML = '';
     const form = new Webform(formElement);
     form.setForm(disableSubmitButton).then(() => {
@@ -2384,8 +2385,8 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  describe('set/get nosubmit', () => {
-    it('should set/get nosubmit flag and emit nosubmit event', () => {
+  describe('set/get nosubmit', function() {
+    it('should set/get nosubmit flag and emit nosubmit event', function() {
       const form = new Webform(null, {});
       const emit = sinon.spy(form, 'emit');
       expect(form.nosubmit).to.be.false;
@@ -2400,8 +2401,8 @@ describe('Webform tests', function() {
     });
   });
 
-  describe('getValue and setValue', () => {
-    it('should setValue and getValue', (done) => {
+  describe('getValue and setValue', function() {
+    it('should setValue and getValue', function(done) {
       formElement.innerHTML = '';
       const form = new Webform(formElement, { language: 'en' });
       form.setForm({
@@ -2469,8 +2470,8 @@ describe('Webform tests', function() {
     });
   });
 
-  describe('ReadOnly Form', () => {
-    it('Should apply conditionals when in readOnly mode.', (done) => {
+  describe('ReadOnly Form', function() {
+    it('Should apply conditionals when in readOnly mode.', function(done) {
       done = _.once(done);
       const Conditions = require('../test/forms/conditions').default;
       const formElement = document.createElement('div');
@@ -2497,8 +2498,8 @@ describe('Webform tests', function() {
     });
   });
 
-  describe('Validate onBlur', () => {
-    it('Should keep component valid onChange', (done) => {
+  describe('Validate onBlur', function() {
+    it('Should keep component valid onChange', function(done) {
       formElement.innerHTML = '';
       const form = new Webform(formElement, { language: 'en' });
       form.setForm(validationOnBlur).then(() => {
@@ -2526,7 +2527,7 @@ describe('Webform tests', function() {
       }).catch(done);
     });
 
-    it('Should keep components inside DataGrid valid onChange', (done) => {
+    it('Should keep components inside DataGrid valid onChange', function(done) {
       formElement.innerHTML = '';
       const form = new Webform(formElement, { language: 'en' });
       form.setForm(dataGridOnBlurValidation).then(() => {
@@ -2549,8 +2550,8 @@ describe('Webform tests', function() {
     });
   });
 
-  describe('Reset values', () => {
-    it('Should reset all values correctly.', () => {
+  describe('Reset values', function() {
+    it('Should reset all values correctly.', function() {
       formElement.innerHTML = '';
       const form = new Webform(formElement, { language: 'en' });
       return form.setForm(
@@ -2651,7 +2652,7 @@ describe('Webform tests', function() {
     });
   });
 
-  describe('New Simple Conditions', () => {
+  describe('New Simple Conditions', function() {
     it('Should show field if all conditions are met', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
@@ -2946,7 +2947,7 @@ describe('Webform tests', function() {
       }).catch((err) => done(err));
     });
 
-    it('Should show field when condition is based on the values of select resource with object value', (done) => {
+    it('Should show field when condition is based on the values of select resource with object value', function(done) {
       const element = document.createElement('div');
       const values = [
         {
@@ -3035,7 +3036,7 @@ describe('Webform tests', function() {
     });
   });
 
-  describe('Calculate Value with allowed manual override', () => {
+  describe('Calculate Value with allowed manual override', function() {
     const initialSubmission = {
       data: {
         dataGrid: [
@@ -3069,7 +3070,8 @@ describe('Webform tests', function() {
       },
       metadata: {}
     };
-    it('Should reset all values correctly.', (done) => {
+
+    it('Should reset all values correctly.', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en' });
       form.setForm(calculateValueWithManualOverride).then(() => {
@@ -3104,7 +3106,7 @@ describe('Webform tests', function() {
       }).catch(done);
     });
 
-    it('Should apply submission metadata value in calculation.', (done) => {
+    it('Should apply submission metadata value in calculation.', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en' });
       form.setForm(calculateValueWithSubmissionMetadata).then(() => {
@@ -3128,7 +3130,7 @@ describe('Webform tests', function() {
       }).catch(done);
     });
 
-    it('Should allow to change value.', (done) => {
+    it('Should allow to change value.', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en' });
       form.setForm(calculatedSelectboxes).then(() => {
@@ -3441,7 +3443,7 @@ describe('Webform tests', function() {
     });
   });
 
-  describe('Modal Edit', () => {
+  describe('Modal Edit', function() {
     const submission = {
       state: 'submitted',
       data: {
@@ -3462,7 +3464,8 @@ describe('Webform tests', function() {
       select: 'f',
       textfield: 'My Text'
     };
-    it('Test rendering previews after the submission is set', (done) => {
+
+    it('Test rendering previews after the submission is set', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en' });
       form.setForm(modalEditComponents).then(() => {
@@ -3479,7 +3482,7 @@ describe('Webform tests', function() {
       }).catch(done);
     });
 
-    it('Test updating previews after aboting changes', (done) => {
+    it('Test updating previews after aboting changes', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en' });
       form.setForm(modalEditComponents).then(() => {
@@ -3503,11 +3506,11 @@ describe('Webform tests', function() {
     });
   });
 
-  describe('Initially Collapsed Panel', () => {
+  describe('Initially Collapsed Panel', function() {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { language: 'en' });
     form.setForm(initiallyCollapsedPanel).then(() => {
-      it('Should be collapsed', (done) => {
+      it('Should be collapsed', function(done) {
         try {
           const panelBody = form.element.querySelector('[ref=nested-panel]');
           assert.equal(panelBody, null, 'Should not render the panel\'s body when initially collapsed');
@@ -3517,7 +3520,7 @@ describe('Webform tests', function() {
           done(err);
         }
       });
-      it('Should open when an Error occured', (done) => {
+      it('Should open when an Error occured', function(done) {
         form.executeSubmit().catch(() => {
           try {
             const panelBody = form.element.querySelector('[ref=nested-panel]');
@@ -3532,8 +3535,8 @@ describe('Webform tests', function() {
     }).catch((err) => console.error(err));
   });
 
-  describe('Calculate Value', () => {
-    it('Should calculate value when set submission if the component is not persistent', (done) => {
+  describe('Calculate Value', function() {
+    it('Should calculate value when set submission if the component is not persistent', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en', pdf: true });
       form.setForm(calculatedNotPersistentValue).then(() => {
@@ -3553,7 +3556,8 @@ describe('Webform tests', function() {
         }, 550);
       }).catch(done);
     });
-    it('Should calculate value by datasouce component when editing mode is on', (done) => {
+
+    it('Should calculate value by datasouce component when editing mode is on', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en', pdf: true });
       form.setForm(calculateValueInEditingMode).then(() => {
@@ -3578,7 +3582,8 @@ describe('Webform tests', function() {
        });
       }).catch(done);
     });
-    it('Should calculate value properly in editing mode', (done) => {
+
+    it('Should calculate value properly in editing mode', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en', pdf: true });
       form.setForm(calculatedValue).then(() => {
@@ -3606,7 +3611,8 @@ describe('Webform tests', function() {
         }, 1000);
       }).catch(done);
     });
-    it('Should not override value which was set from submission', (done) => {
+
+    it('Should not override value which was set from submission', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en', pdf: true });
       form.setForm(calculateValueWithManualOverrideLableValueDataGrid).then(() => {
@@ -3634,7 +3640,7 @@ describe('Webform tests', function() {
     });
   });
 
-  it('Should set different ids for components inside different Table rows', (done) => {
+  it('Should set different ids for components inside different Table rows', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { language: 'en', pdf: true });
     form.setForm(conditionalDataGridWithTableAndRadio).then(() => {
@@ -3701,7 +3707,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should render components properly', (done) => {
+  it('Should render components properly', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { language: 'en' });
     form.setForm(multipleTextareaInsideConditionalComponent).then(() => {
@@ -3726,7 +3732,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should disable all the components inside Nested Form if it is disabled', (done) => {
+  it('Should disable all the components inside Nested Form if it is disabled', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { language: 'en' });
     form.setForm(disabledNestedForm).then(() => {
@@ -3737,7 +3743,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should restore value correctly if NestedForm is saved as reference', (done) => {
+  it('Should restore value correctly if NestedForm is saved as reference', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { language: 'en' });
     form.setForm(nestedFormInsideDataGrid).then(() => {
@@ -3753,7 +3759,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should not set the default value if there is only Radio with False value', (done) => {
+  it('Should not set the default value if there is only Radio with False value', function(done) {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, nestedFormInWizard).then((form) => {
       const nestedForm = form.getComponent(['form']);
@@ -3778,7 +3784,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should add and clear input error classes correctly', (done) => {
+  it('Should add and clear input error classes correctly', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { language: 'en' });
 
@@ -3878,7 +3884,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  it('Test Truncate Multiple Spaces', (done) => {
+  it('Test Truncate Multiple Spaces', function(done) {
     const formElement = document.createElement('div');
     const form= new Webform(formElement);
 
@@ -3928,7 +3934,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('HTML render mode for Webform', (done) => {
+  it('HTML render mode for Webform', function(done) {
     const element = document.createElement('div');
 
     const originalMakeRequest = Formio.makeRequest;
@@ -4062,7 +4068,7 @@ describe('Webform tests', function() {
       .catch(done);
   });
 
-  it('HTML render mode for Wizard', (done) => {
+  it('HTML render mode for Wizard', function(done) {
     const element = document.createElement('div');
     htmlRenderMode.display = 'wizard';
 
@@ -4209,7 +4215,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Test optional sanitize', (done) => {
+  it('Test optional sanitize', function(done) {
     const element = document.createElement('div');
 
     Formio.createForm(element, optionalSanitize, {
@@ -4234,7 +4240,7 @@ describe('Webform tests', function() {
     }).catch(done);
   });
 
-  it('Should execute clearOnHide if visibility of the component inside an EditGrid has changed', (done) => {
+  it('Should execute clearOnHide if visibility of the component inside an EditGrid has changed', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { language: 'en' });
 
@@ -4458,7 +4464,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  describe('Test sanitizeConfig', () => {
+  describe('Test sanitizeConfig', function() {
     it('Should sanitize components using default sanitizeConfig', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
@@ -4583,7 +4589,7 @@ describe('Webform tests', function() {
     });
   });
 
-  describe('SaveDraft functionality', () => {
+  describe('SaveDraft functionality', function() {
     const originalMakeRequest = Formio.makeRequest;
     let saveDraftCalls = 0;
     let restoreDraftCalls = 0;
@@ -4598,7 +4604,7 @@ describe('Webform tests', function() {
       submit: false,
     };
 
-    before((done) => {
+    before(function(done) {
       Formio.setUser({
         _id: '123'
       });
@@ -4690,14 +4696,14 @@ describe('Webform tests', function() {
       done();
     });
 
-    afterEach(() => {
+    afterEach(function() {
       saveDraftCalls = 0;
       restoreDraftCalls = 0;
       scenario.restoreDraftError = false;
       scenario.saveDraftError = false;
     });
 
-    after((done) => {
+    after(function(done) {
       Formio.makeRequest = originalMakeRequest;
       Formio.setUser();
       done();
@@ -4802,7 +4808,7 @@ describe('Webform tests', function() {
     const useDoneInsteadOfPromise = formTest.useDone;
 
     if (useDoneInsteadOfPromise) {
-      describe(formTest.title || '', () => {
+      describe(formTest.title || '', function() {
         for (const title in formTest.tests) {
           const formTestTest = formTest.tests[title];
           it(title, function(done) {
@@ -4824,7 +4830,7 @@ describe('Webform tests', function() {
       });
     }
     else {
-      describe(formTest.title || '', () => {
+      describe(formTest.title || '', function() {
         for (const title in formTest.tests) {
           const formTestTest = formTest.tests[title];
           it(title, function() {
