@@ -34,7 +34,8 @@
         "index.d.ts"
     ],
     "pre-commit": [
-        "lint"
+        "lint",
+        "format"
     ],
     "scripts": {
         "build": "yarn doc && yarn lib && yarn dist",
