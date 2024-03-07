@@ -1,15 +1,15 @@
 .formbuilder {
-    position: relative;
+	position: relative;
 }
 
 .drag-container {
-    padding: 10px;
-    border: dotted 2px #e8e8e8;
+	padding: 10px;
+	border: dotted 2px #e8e8e8;
 }
 
 .drag-container:hover {
-    cursor: move;
-    border: dotted 2px #ccc;
+	cursor: move;
+	border: dotted 2px #ccc;
 }
 
 .drag-container.formio-builder-form,
@@ -18,231 +18,231 @@
 .panel-body > .drag-container.formio-builder-components:hover,
 .tab-pane > .drag-container.formio-builder-components,
 .tab-pane > .drag-container.formio-builder-components:hover {
-    padding: 0 0 1rem 0;
-    border: none;
+	padding: 0 0 1rem 0;
+	border: none;
 }
 
 .component-btn-group {
-    display: flex;
-    flex-direction: row-reverse;
-    position: absolute;
-    right: 0;
-    z-index: 1000;
-    margin-top: -2px;
+	display: flex;
+	flex-direction: row-reverse;
+	position: absolute;
+	right: 0;
+	z-index: 1000;
+	margin-top: -2px;
 }
 
 .builder-component {
-    position: relative;
-    min-height: 15px;
-    margin-bottom: 15px;
-    .formio-component-htmlelement {
-        border: dotted 2px #e8e8e8;
-        [ref='html']:empty:before {
-            content: 'HTML Content';
-            color: #aaa;
-        }
-    }
+	position: relative;
+	min-height: 15px;
+	margin-bottom: 15px;
+	.formio-component-htmlelement {
+		border: dotted 2px #e8e8e8;
+		[ref='html']:empty:before {
+			content: 'HTML Content';
+			color: #aaa;
+		}
+	}
 }
 
 .builder-component:not(:hover) .component-btn-group {
-    display: none;
+	display: none;
 }
 
 .builder-group-button {
-    background-color: transparent;
-    white-space: normal;
-    text-align: left;
+	background-color: transparent;
+	white-space: normal;
+	text-align: left;
 }
 
 .form-builder-group-header {
-    padding: 0;
+	padding: 0;
 }
 
 .component-btn-group .component-settings-button {
-    float: right;
-    z-index: 1001;
-    margin: 4px 4px 0 0;
-    z-index: 1001;
-    -webkit-box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6);
-    -moz-box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6);
-    box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6);
+	float: right;
+	z-index: 1001;
+	margin: 4px 4px 0 0;
+	z-index: 1001;
+	-webkit-box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6);
+	-moz-box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6);
+	box-shadow: 0px 0px 10px 1px rgba(48, 113, 169, 0.6);
 }
 
 .formbuilder .formio-component-hidden,
 .formbuilder .formio-component-content,
 .formbuilder .formio-component-form,
 .formbuilder .formio-component-datasource {
-    border: 2px dashed #ddd;
+	border: 2px dashed #ddd;
 }
 
 .formbuilder .formio-component-form,
 .formbuilder .formio-component-hidden,
 .formbuilder .formio-component-datasource {
-    min-height: 3em;
-    text-align: center;
-    color: #aaa;
-    padding-top: 0.5em;
+	min-height: 3em;
+	text-align: center;
+	color: #aaa;
+	padding-top: 0.5em;
 }
 
 .btn-xxs,
 .btn-group-xxs > .btn,
 .component-btn-group .component-settings-button {
-    padding: 2px 2px;
-    font-size: 10px;
-    line-height: 1.2em;
-    border-radius: 0;
-    width: 18px;
-    height: 18px;
+	padding: 2px 2px;
+	font-size: 10px;
+	line-height: 1.2em;
+	border-radius: 0;
+	width: 18px;
+	height: 18px;
 }
 
 .formcomponents .formcomponent {
-    text-align: left;
-    padding: 5px 5px 5px 8px;
-    margin-top: 0.2rem;
-    font-size: 0.8em;
-    line-height: 1.2;
-    border-radius: 0.3em;
+	text-align: left;
+	padding: 5px 5px 5px 8px;
+	margin-top: 0.2rem;
+	font-size: 0.8em;
+	line-height: 1.2;
+	border-radius: 0.3em;
 }
 
 .form-builder-panel .panel-body {
-    padding: 5px;
+	padding: 5px;
 }
 
 .formio-component-tabs .ui.tabular.menu .item {
-    padding: 0.8em;
+	padding: 0.8em;
 }
 
 .formio-pdf-builder {
-    position: relative;
+	position: relative;
 }
 
 .formio-drop-zone {
-    display: none;
-    position: absolute;
-    z-index: 10;
-    background-color: #0d87e9;
-    opacity: 0.1;
+	display: none;
+	position: absolute;
+	z-index: 10;
+	background-color: #0d87e9;
+	opacity: 0.1;
 }
 
 .formio-drop-zone.enabled {
-    display: inherit;
+	display: inherit;
 }
 
 .component-settings .formio-dialog-content {
-    max-height: 100%;
-    .ck-editor__editable ol {
-        padding-inline-start: 40px;
-    }
+	max-height: 100%;
+	.ck-editor__editable ol {
+		padding-inline-start: 40px;
+	}
 }
 
 .component-btn-group .btn.component-settings-button-paste {
-    display: none;
+	display: none;
 }
 
 .builder-paste-mode .component-settings-button-paste {
-    display: inherit !important;
+	display: inherit !important;
 }
 
 .wizard-page-label {
-    cursor: pointer;
-    border-radius: 0;
+	cursor: pointer;
+	border-radius: 0;
 }
 
 .panel-body .drag-and-drop-alert {
-    margin-bottom: 0;
+	margin-bottom: 0;
 }
 
 .builder-sidebar {
-    &_scroll {
-        position: sticky;
-        top: 15px;
-        max-height: 100vh;
-        overflow-y: auto;
-    }
+	&_scroll {
+		position: sticky;
+		top: 15px;
+		max-height: 100vh;
+		overflow-y: auto;
+	}
 }
 
 .builder-sidebar_search {
-    margin-bottom: 10px;
-    appearance: auto;
+	margin-bottom: 10px;
+	appearance: auto;
 }
 
 .formio-wizard-builder-component-title {
-    color: #6c757d;
-    text-align: center;
-    padding: 0.5rem;
+	color: #6c757d;
+	text-align: center;
+	padding: 0.5rem;
 }
 
 .formio-wizard-position {
-    position: relative;
+	position: relative;
 }
 
 .gu-mirror {
-    list-style-type: none;
+	list-style-type: none;
 }
 
 .formio-settings-help {
-    color: #8a6d3b;
-    background-color: #fcf8e3;
-    border-color: #faebcc;
-    margin-top: 10px;
+	color: #8a6d3b;
+	background-color: #fcf8e3;
+	border-color: #faebcc;
+	margin-top: 10px;
 }
 
 .help-block {
-    margin: 0px;
+	margin: 0px;
 }
 
 .builder-sidebar .btn {
-    white-space: normal;
+	white-space: normal;
 }
 
 /* Styles for component edit modal */
 .component-settings {
-    padding-top: 20px !important;
-    padding-bottom: 20px !important;
+	padding-top: 20px !important;
+	padding-bottom: 20px !important;
 }
 
 .component-edit-container {
-    height: auto;
-    overflow: hidden;
+	height: auto;
+	overflow: hidden;
 }
 
 .component-edit-content {
-    height: calc(100% - 4em);
+	height: calc(100% - 4em);
 }
 
 .component-edit-tabs.col-sm-6 {
-    min-height: 87vh;
-    height: 100%;
+	min-height: 87vh;
+	height: 100%;
 }
 
 .component-edit-tabs.col-sm-12 {
-    height: calc(100% - 4em);
-    overflow-y: auto;
+	height: calc(100% - 4em);
+	overflow-y: auto;
 }
 
 .component-edit-tabs.col-sm-12 .editForm {
-    height: calc(100% - 4em);
-    overflow-y: auto;
+	height: calc(100% - 4em);
+	overflow-y: auto;
 }
 
 .progress.pdf-progress {
-    height: 2rem;
+	height: 2rem;
 }
 
 .progress.pdf-progress .progress-bar {
-    font-size: 1rem;
-    line-height: 2rem;
+	font-size: 1rem;
+	line-height: 2rem;
 }
 
 .builder-sidebar.disabled {
-    .formcomponent {
-        cursor: not-allowed;
-        opacity: 0.65;
-        box-shadow: none;
-    }
+	.formcomponent {
+		cursor: not-allowed;
+		opacity: 0.65;
+		box-shadow: none;
+	}
 }
 
 .builder-component-selected {
-    border: 2px dashed #919191;
-    outline: none !important;
+	border: 2px dashed #919191;
+	outline: none !important;
 }

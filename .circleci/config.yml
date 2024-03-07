@@ -1,33 +1,33 @@
 version: 2
 jobs:
-    build:
-        docker:
-            - image: cimg/node:lts
-        steps:
-            - checkout
-            - restore_cache:
-                  key: dependency-cache-{{ checksum "package.json" }}
-            - run:
-                  name: Install modules
-                  command: yarn install
-            - save_cache:
-                  key: dependency-cache-{{ checksum "package.json" }}
-                  paths:
-                      - node_modules
-            - run:
-                  name: Test
-                  command: npm test
-            - store_artifacts:
-                  path: test-results.xml
+  build:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Install modules
+          command: yarn install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Test
+          command: npm test
+      - store_artifacts:
+          path: test-results.xml
 
 #########################################################
 ## Disables Config (Comment/Remove to re-enable CircleCI)
 #########################################################
 workflows:
-    version: 2
-    build-and-test:
-        jobs:
-            - build:
-                  filters:
-                      branches:
-                          ignore: /.*/
+  version: 2
+  build-and-test:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: /.*/

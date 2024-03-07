@@ -1,7 +1,7 @@
 export default [
-    {
-        data: {
-            foo: 'bar',
-        },
-    },
+	{
+		data: {
+			foo: 'bar',
+		},
+	},
 ];

@@ -1,16 +1,16 @@
 import Rule from './Rule';
 
 export default class Max extends Rule {
-    defaultMessage = '{{field}} cannot be greater than {{settings.limit}}.';
+	defaultMessage = '{{field}} cannot be greater than {{settings.limit}}.';
 
-    check(value) {
-        const max = parseFloat(this.settings.limit);
-        const parsedValue = parseFloat(value);
+	check(value) {
+		const max = parseFloat(this.settings.limit);
+		const parsedValue = parseFloat(value);
 
-        if (Number.isNaN(max) || Number.isNaN(parsedValue)) {
-            return true;
-        }
+		if (Number.isNaN(max) || Number.isNaN(parsedValue)) {
+			return true;
+		}
 
-        return parsedValue <= max;
-    }
+		return parsedValue <= max;
+	}
 }

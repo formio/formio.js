@@ -1,6 +1,6 @@
 export default [
-    {
-        key: 'defaultValue',
-        ignore: true,
-    },
+	{
+		key: 'defaultValue',
+		ignore: true,
+	},
 ];

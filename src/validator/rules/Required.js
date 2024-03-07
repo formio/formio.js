@@ -1,13 +1,11 @@
 import Rule from './Rule';
 
 export default class Required extends Rule {
-    defaultMessage = '{{field}} is required';
+	defaultMessage = '{{field}} is required';
 
-    check(value) {
-        // TODO: Day, Survey overrides.
+	check(value) {
+		// TODO: Day, Survey overrides.
 
-        return (
-            !this.component.isValueHidden() && !this.component.isEmpty(value)
-        );
-    }
+		return !this.component.isValueHidden() && !this.component.isEmpty(value);
+	}
 }

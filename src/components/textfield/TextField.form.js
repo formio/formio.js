@@ -5,21 +5,21 @@ import TextFieldEditDisplay from './editForm/TextField.edit.display';
 import TextFieldEditValidation from './editForm/TextField.edit.validation';
 
 export default function (...extend) {
-    return Components.baseEditForm(
-        [
-            {
-                key: 'display',
-                components: TextFieldEditDisplay,
-            },
-            {
-                key: 'data',
-                components: TextFieldEditData,
-            },
-            {
-                key: 'validation',
-                components: TextFieldEditValidation,
-            },
-        ],
-        ...extend,
-    );
+	return Components.baseEditForm(
+		[
+			{
+				key: 'display',
+				components: TextFieldEditDisplay,
+			},
+			{
+				key: 'data',
+				components: TextFieldEditData,
+			},
+			{
+				key: 'validation',
+				components: TextFieldEditValidation,
+			},
+		],
+		...extend,
+	);
 }

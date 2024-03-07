@@ -2,31 +2,31 @@ import _ from 'lodash';
 
 /* eslint-disable no-unused-vars */
 export default class ConditionOperator {
-    static get operatorKey() {
-        return '';
-    }
+	static get operatorKey() {
+		return '';
+	}
 
-    static get displayedName() {
-        return '';
-    }
+	static get displayedName() {
+		return '';
+	}
 
-    static get requireValue() {
-        return true;
-    }
+	static get requireValue() {
+		return true;
+	}
 
-    execute(options) {
-        return true;
-    }
+	execute(options) {
+		return true;
+	}
 
-    getResult(options = {}) {
-        const { value } = options;
+	getResult(options = {}) {
+		const { value } = options;
 
-        if (_.isArray(value)) {
-            return _.some(value, (valueItem) =>
-                this.execute({ ...options, value: valueItem }),
-            );
-        }
+		if (_.isArray(value)) {
+			return _.some(value, (valueItem) =>
+				this.execute({ ...options, value: valueItem }),
+			);
+		}
 
-        return this.execute(options);
-    }
+		return this.execute(options);
+	}
 }

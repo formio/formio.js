@@ -1,8 +1,8 @@
 declare namespace _default {
-    export { values };
-    export { settings };
-    export { form };
-    export { tests };
+	export { values };
+	export { settings };
+	export { form };
+	export { tests };
 }
 export default _default;
 import values from './values';

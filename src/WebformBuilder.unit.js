@@ -3,11 +3,11 @@ import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
 import Builders from './builders';
 import {
-    uniqueApiKeys,
-    uniqueApiKeysLayout,
-    uniqueApiKeysSameLevel,
-    columnsForm,
-    resourceKeyCamelCase,
+	uniqueApiKeys,
+	uniqueApiKeysLayout,
+	uniqueApiKeysSameLevel,
+	columnsForm,
+	resourceKeyCamelCase,
 } from '../test/formtest';
 import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
@@ -15,410 +15,373 @@ import formBasedOnWizard from '../test/forms/formBasedOnWizard';
 import formWithFormController from '../test/forms/formWithFormController';
 
 describe('WebformBuilder tests', function () {
-    this.retries(3);
+	this.retries(3);
 
-    before(function (done) {
-        Harness.builderBefore(done);
-    });
+	before(function (done) {
+		Harness.builderBefore(done);
+	});
 
-    afterEach(function () {
-        Harness.getBuilder().setForm({ display: 'form', components: [] });
-    });
+	afterEach(function () {
+		Harness.getBuilder().setForm({
+			display: 'form',
+			components: [],
+		});
+	});
 
-    after(function (done) {
-        Harness.builderAfter(done);
-    });
+	after(function (done) {
+		Harness.builderAfter(done);
+	});
 
-    it('Should create a new form builder class', function (done) {
-        const builder = Harness.getBuilder();
-        assert(
-            builder instanceof WebformBuilder,
-            'Builder must be an instance of FormioFormBuilder',
-        );
-        done();
-    });
+	it('Should create a new form builder class', function (done) {
+		const builder = Harness.getBuilder();
+		assert(
+			builder instanceof WebformBuilder,
+			'Builder must be an instance of FormioFormBuilder',
+		);
+		done();
+	});
 
-    it('Should execute form controller', function (done) {
-        const builder = Harness.getBuilder();
-        builder.webform.form = formWithFormController;
+	it('Should execute form controller', function (done) {
+		const builder = Harness.getBuilder();
+		builder.webform.form = formWithFormController;
 
-        setTimeout(() => {
-            const textF = builder.webform.getComponent('textField');
-            assert.equal(textF.getValue(), 'Hello World');
-            assert.equal(textF.disabled, true);
-            assert.equal(builder.webform.components[0].disabled, true);
-            done();
-        }, 500);
-    });
+		setTimeout(() => {
+			const textF = builder.webform.getComponent('textField');
+			assert.equal(textF.getValue(), 'Hello World');
+			assert.equal(textF.disabled, true);
+			assert.equal(builder.webform.components[0].disabled, true);
+			done();
+		}, 500);
+	});
 
-    it('Should not show unique API error when components with same keys are inside and outside of the Data component', function (done) {
-        const builder = Harness.getBuilder();
-        builder.webform
-            .setForm(uniqueApiKeys)
-            .then(() => {
-                builder.highlightInvalidComponents();
-                const component = builder.webform.getComponent(['textField']);
-                assert.equal(component.errors.length, 0);
-                done();
-            })
-            .catch(done);
-    });
+	it('Should not show unique API error when components with same keys are inside and outside of the Data component', function (done) {
+		const builder = Harness.getBuilder();
+		builder.webform
+			.setForm(uniqueApiKeys)
+			.then(() => {
+				builder.highlightInvalidComponents();
+				const component = builder.webform.getComponent(['textField']);
+				assert.equal(component.errors.length, 0);
+				done();
+			})
+			.catch(done);
+	});
 
-    it('Should show unique API error when components inside and outside of the Layout component have same keys', function (done) {
-        const builder = Harness.getBuilder();
-        builder.webform
-            .setForm(uniqueApiKeysLayout)
-            .then(() => {
-                builder.highlightInvalidComponents();
-                const component = builder.webform.getComponent(['textField']);
-                assert.equal(component.errors.length, 1);
-                done();
-            })
-            .catch(done);
-    });
+	it('Should show unique API error when components inside and outside of the Layout component have same keys', function (done) {
+		const builder = Harness.getBuilder();
+		builder.webform
+			.setForm(uniqueApiKeysLayout)
+			.then(() => {
+				builder.highlightInvalidComponents();
+				const component = builder.webform.getComponent(['textField']);
+				assert.equal(component.errors.length, 1);
+				done();
+			})
+			.catch(done);
+	});
 
-    it('Should not overwrite existing resource key in camelCase', function (done) {
-        const builder = Harness.getBuilder();
-        builder
-            .setForm(resourceKeyCamelCase)
-            .then(() => {
-                const component = builder.webform.getComponent('CalendarID');
-                assert.equal(
-                    !!document.querySelector(`[name='data[${component.key}]']`),
-                    true,
-                );
-                done();
-            })
-            .catch(done);
-    });
+	it('Should not overwrite existing resource key in camelCase', function (done) {
+		const builder = Harness.getBuilder();
+		builder
+			.setForm(resourceKeyCamelCase)
+			.then(() => {
+				const component = builder.webform.getComponent('CalendarID');
+				assert.equal(
+					!!document.querySelector(`[name='data[${component.key}]']`),
+					true,
+				);
+				done();
+			})
+			.catch(done);
+	});
 
-    it('Should show unique API error when layout components have same keys', function (done) {
-        const builder = Harness.getBuilder();
-        builder.webform
-            .setForm(sameApiKeysLayoutComps)
-            .then(() => {
-                builder.highlightInvalidComponents();
-                const component = builder.webform.getComponent(['tabs']);
-                assert.equal(
-                    component.errors.length,
-                    1,
-                    'Should show Unique API Key error',
-                );
-                done();
-            })
-            .catch(done);
-    });
+	it('Should show unique API error when layout components have same keys', function (done) {
+		const builder = Harness.getBuilder();
+		builder.webform
+			.setForm(sameApiKeysLayoutComps)
+			.then(() => {
+				builder.highlightInvalidComponents();
+				const component = builder.webform.getComponent(['tabs']);
+				assert.equal(
+					component.errors.length,
+					1,
+					'Should show Unique API Key error',
+				);
+				done();
+			})
+			.catch(done);
+	});
 
-    it('Should allow add components', function (done) {
-        const builder = Harness.getBuilder();
-        builder
-            .setForm(columnsForm)
-            .then(() => {
-                const column1 = builder.webform.element.querySelector(
-                    '[ref="columns-container"]',
-                );
-                Harness.buildComponent('textfield', column1);
-                setTimeout(() => {
-                    Harness.saveComponent();
-                    setTimeout(() => {
-                        const columns = builder.webform.getComponent('columns');
-                        assert.equal(columns.columns[0].length, 1);
-                        done();
-                    }, 150);
-                }, 150);
-            })
-            .catch(done);
-    });
+	it('Should allow add components', function (done) {
+		const builder = Harness.getBuilder();
+		builder
+			.setForm(columnsForm)
+			.then(() => {
+				const column1 = builder.webform.element.querySelector(
+					'[ref="columns-container"]',
+				);
+				Harness.buildComponent('textfield', column1);
+				setTimeout(() => {
+					Harness.saveComponent();
+					setTimeout(() => {
+						const columns = builder.webform.getComponent('columns');
+						assert.equal(columns.columns[0].length, 1);
+						done();
+					}, 150);
+				}, 150);
+			})
+			.catch(done);
+	});
 
-    it('Should show unique API error when components on the same level have same keys', function (done) {
-        const builder = Harness.getBuilder();
-        builder.webform
-            .setForm(uniqueApiKeysSameLevel)
-            .then(() => {
-                builder.highlightInvalidComponents();
-                const component = builder.webform.getComponent(['textField']);
-                assert.equal(component.errors.length, 1);
-                done();
-            })
-            .catch(done);
-    });
+	it('Should show unique API error when components on the same level have same keys', function (done) {
+		const builder = Harness.getBuilder();
+		builder.webform
+			.setForm(uniqueApiKeysSameLevel)
+			.then(() => {
+				builder.highlightInvalidComponents();
+				const component = builder.webform.getComponent(['textField']);
+				assert.equal(component.errors.length, 1);
+				done();
+			})
+			.catch(done);
+	});
 
-    it('Should uniquify API keys when add a component to the container which already has the same type component', function (done) {
-        const builder = Harness.getBuilder();
-        builder.webform
-            .setForm(testApiKeysUniquifying)
-            .then(() => {
-                const ERROR_MSG =
-                    'Should add a number to the api key of the second component of the same type';
-                let containerTestsReady;
-                const containerTestsPromise = new Promise(
-                    (resolve) => (containerTestsReady = resolve),
-                );
+	it('Should uniquify API keys when add a component to the container which already has the same type component', function (done) {
+		const builder = Harness.getBuilder();
+		builder.webform
+			.setForm(testApiKeysUniquifying)
+			.then(() => {
+				const ERROR_MSG =
+					'Should add a number to the api key of the second component of the same type';
+				let containerTestsReady;
+				const containerTestsPromise = new Promise(
+					(resolve) => (containerTestsReady = resolve),
+				);
 
-                const container = builder.webform.element.querySelector([
-                    '[ref="container-container"]',
-                ]);
-                Harness.buildComponent('editgrid', container);
+				const container = builder.webform.element.querySelector([
+					'[ref="container-container"]',
+				]);
+				Harness.buildComponent('editgrid', container);
 
-                setTimeout(() => {
-                    const newEditGridApiKey =
-                        builder.editForm.getComponent('key');
-                    assert.equal(
-                        newEditGridApiKey.dataValue,
-                        'editGrid1',
-                        ERROR_MSG,
-                    );
-                    Harness.saveComponent();
+				setTimeout(() => {
+					const newEditGridApiKey = builder.editForm.getComponent('key');
+					assert.equal(newEditGridApiKey.dataValue, 'editGrid1', ERROR_MSG);
+					Harness.saveComponent();
 
-                    setTimeout(() => {
-                        const editGridInsideContainer = container.querySelector(
-                            '[ref="editGrid-container"]',
-                        );
-                        Harness.buildComponent(
-                            'columns',
-                            editGridInsideContainer,
-                        );
+					setTimeout(() => {
+						const editGridInsideContainer = container.querySelector(
+							'[ref="editGrid-container"]',
+						);
+						Harness.buildComponent('columns', editGridInsideContainer);
 
-                        setTimeout(() => {
-                            const newColumnsApiKey =
-                                builder.editForm.getComponent('key');
-                            assert.equal(
-                                newColumnsApiKey.dataValue,
-                                'columns1',
-                                ERROR_MSG,
-                            );
-                            Harness.saveComponent();
+						setTimeout(() => {
+							const newColumnsApiKey = builder.editForm.getComponent('key');
+							assert.equal(newColumnsApiKey.dataValue, 'columns1', ERROR_MSG);
+							Harness.saveComponent();
 
-                            setTimeout(() => {
-                                const columnInsideEditGridInsideContainer =
-                                    editGridInsideContainer.querySelector(
-                                        '[ref="columns-container"]',
-                                    );
-                                Harness.buildComponent(
-                                    'textfield',
-                                    columnInsideEditGridInsideContainer,
-                                );
+							setTimeout(() => {
+								const columnInsideEditGridInsideContainer =
+									editGridInsideContainer.querySelector(
+										'[ref="columns-container"]',
+									);
+								Harness.buildComponent(
+									'textfield',
+									columnInsideEditGridInsideContainer,
+								);
 
-                                setTimeout(() => {
-                                    const newTextFieldApiKey =
-                                        builder.editForm.getComponent('key');
-                                    assert.equal(
-                                        newTextFieldApiKey.dataValue,
-                                        'textField1',
-                                        ERROR_MSG,
-                                    );
-                                    Harness.saveComponent();
-                                    containerTestsReady();
-                                }, 150);
-                            }, 150);
-                        }, 150);
-                    }, 150);
-                }, 150);
+								setTimeout(() => {
+									const newTextFieldApiKey =
+										builder.editForm.getComponent('key');
+									assert.equal(
+										newTextFieldApiKey.dataValue,
+										'textField1',
+										ERROR_MSG,
+									);
+									Harness.saveComponent();
+									containerTestsReady();
+								}, 150);
+							}, 150);
+						}, 150);
+					}, 150);
+				}, 150);
 
-                containerTestsPromise.then(() => {
-                    const panel = builder.webform.element.querySelector([
-                        '[ref="panel-container"]',
-                    ]);
-                    Harness.buildComponent('datagrid', panel);
+				containerTestsPromise.then(() => {
+					const panel = builder.webform.element.querySelector([
+						'[ref="panel-container"]',
+					]);
+					Harness.buildComponent('datagrid', panel);
 
-                    setTimeout(() => {
-                        const newDataGridApiKey =
-                            builder.editForm.getComponent('key');
-                        assert.equal(
-                            newDataGridApiKey.dataValue,
-                            'dataGrid1',
-                            ERROR_MSG,
-                        );
-                        Harness.saveComponent();
+					setTimeout(() => {
+						const newDataGridApiKey = builder.editForm.getComponent('key');
+						assert.equal(newDataGridApiKey.dataValue, 'dataGrid1', ERROR_MSG);
+						Harness.saveComponent();
 
-                        setTimeout(() => {
-                            const dataGridInsidePanel = panel.querySelector(
-                                '[ref="dataGrid-container"]',
-                            );
-                            Harness.buildComponent(
-                                'number',
-                                dataGridInsidePanel,
-                            );
+						setTimeout(() => {
+							const dataGridInsidePanel = panel.querySelector(
+								'[ref="dataGrid-container"]',
+							);
+							Harness.buildComponent('number', dataGridInsidePanel);
 
-                            setTimeout(() => {
-                                const newNumberApiKey =
-                                    builder.editForm.getComponent('key');
-                                assert.equal(
-                                    newNumberApiKey.dataValue,
-                                    'number1',
-                                    ERROR_MSG,
-                                );
-                                Harness.saveComponent();
+							setTimeout(() => {
+								const newNumberApiKey = builder.editForm.getComponent('key');
+								assert.equal(newNumberApiKey.dataValue, 'number1', ERROR_MSG);
+								Harness.saveComponent();
 
-                                setTimeout(() => {
-                                    const columnInsidefieldSetInsideDataGridInsidePanel =
-                                        dataGridInsidePanel.parentElement.querySelectorAll(
-                                            '[ref="columns-container"]',
-                                        )[1];
-                                    Harness.buildComponent(
-                                        'checkbox',
-                                        columnInsidefieldSetInsideDataGridInsidePanel,
-                                    );
+								setTimeout(() => {
+									const columnInsidefieldSetInsideDataGridInsidePanel =
+										dataGridInsidePanel.parentElement.querySelectorAll(
+											'[ref="columns-container"]',
+										)[1];
+									Harness.buildComponent(
+										'checkbox',
+										columnInsidefieldSetInsideDataGridInsidePanel,
+									);
 
-                                    setTimeout(() => {
-                                        const newTextFieldApiKey =
-                                            builder.editForm.getComponent(
-                                                'key',
-                                            );
-                                        assert.equal(
-                                            newTextFieldApiKey.dataValue,
-                                            'checkbox1',
-                                            ERROR_MSG,
-                                        );
-                                        done();
-                                    }, 150);
-                                }, 150);
-                            }, 150);
-                        }, 150);
-                    }, 150);
-                });
-            })
-            .catch(done);
-    });
+									setTimeout(() => {
+										const newTextFieldApiKey =
+											builder.editForm.getComponent('key');
+										assert.equal(
+											newTextFieldApiKey.dataValue,
+											'checkbox1',
+											ERROR_MSG,
+										);
+										done();
+									}, 150);
+								}, 150);
+							}, 150);
+						}, 150);
+					}, 150);
+				});
+			})
+			.catch(done);
+	});
 
-    it('Should override the way a key for new component is set', function (done) {
-        const builder = Harness.getBuilder();
-        builder
-            .setForm(columnsForm)
-            .then(() => {
-                Builders.builders.webform.prototype.updateComponentKey =
-                    function () {
-                        return 'rewrittenNumberKey';
-                    };
+	it('Should override the way a key for new component is set', function (done) {
+		const builder = Harness.getBuilder();
+		builder
+			.setForm(columnsForm)
+			.then(() => {
+				Builders.builders.webform.prototype.updateComponentKey = function () {
+					return 'rewrittenNumberKey';
+				};
 
-                const column = builder.webform.element.querySelector(
-                    '[ref="columns-container"]',
-                );
+				const column = builder.webform.element.querySelector(
+					'[ref="columns-container"]',
+				);
 
-                Harness.buildComponent('number', column);
+				Harness.buildComponent('number', column);
 
-                setTimeout(() => {
-                    const numberLabel = builder.editForm.getComponent('label');
-                    numberLabel.setValue('Test Number');
+				setTimeout(() => {
+					const numberLabel = builder.editForm.getComponent('label');
+					numberLabel.setValue('Test Number');
 
-                    setTimeout(() => {
-                        const numberKey = builder.editForm.getComponent('key');
-                        assert.equal(numberKey.dataValue, 'rewrittenNumberKey');
+					setTimeout(() => {
+						const numberKey = builder.editForm.getComponent('key');
+						assert.equal(numberKey.dataValue, 'rewrittenNumberKey');
 
-                        done();
-                    }, 350);
-                }, 350);
-            })
-            .catch(done);
-    });
+						done();
+					}, 350);
+				}, 350);
+			})
+			.catch(done);
+	});
 
-    it('Should add submit button after switching from wizard form', function (done) {
-        const builder = Harness.getBuilder();
-        builder
-            .setForm(formBasedOnWizard)
-            .then(() => {
-                const components = builder.webform.components;
-                const submit = components[components.length - 1];
+	it('Should add submit button after switching from wizard form', function (done) {
+		const builder = Harness.getBuilder();
+		builder
+			.setForm(formBasedOnWizard)
+			.then(() => {
+				const components = builder.webform.components;
+				const submit = components[components.length - 1];
 
-                assert.equal(submit.key, 'submit');
-                done();
-            })
-            .catch(done);
-    });
+				assert.equal(submit.key, 'submit');
+				done();
+			})
+			.catch(done);
+	});
 
-    it('Should keep min/max date validation settings with moment.js function', function (done) {
-        const builder = Harness.getBuilder();
-        builder
-            .setForm(columnsForm)
-            .then(() => {
-                const column1 = builder.webform.element.querySelector(
-                    '[ref="columns-container"]',
-                );
-                Harness.buildComponent('day', column1);
+	it('Should keep min/max date validation settings with moment.js function', function (done) {
+		const builder = Harness.getBuilder();
+		builder
+			.setForm(columnsForm)
+			.then(() => {
+				const column1 = builder.webform.element.querySelector(
+					'[ref="columns-container"]',
+				);
+				Harness.buildComponent('day', column1);
 
-                setTimeout(() => {
-                    const maxDateComp =
-                        builder.editForm.getComponent('maxDate');
-                    maxDateComp.setValue("moment().add(10, 'days')");
+				setTimeout(() => {
+					const maxDateComp = builder.editForm.getComponent('maxDate');
+					maxDateComp.setValue("moment().add(10, 'days')");
 
-                    setTimeout(() => {
-                        Harness.saveComponent();
+					setTimeout(() => {
+						Harness.saveComponent();
 
-                        setTimeout(() => {
-                            const dayComp = builder.webform.getComponent([
-                                'day',
-                            ]);
-                            assert.equal(
-                                dayComp.component.maxDate,
-                                "moment().add(10, 'days')",
-                            );
-                            done();
-                        }, 200);
-                    }, 200);
-                }, 150);
-            })
-            .catch(done);
-    });
+						setTimeout(() => {
+							const dayComp = builder.webform.getComponent(['day']);
+							assert.equal(
+								dayComp.component.maxDate,
+								"moment().add(10, 'days')",
+							);
+							done();
+						}, 200);
+					}, 200);
+				}, 150);
+			})
+			.catch(done);
+	});
 
-    it('Should remove deleted components keys from default value', function (done) {
-        const builder = Harness.getBuilder();
-        builder
-            .setForm({})
-            .then(() => {
-                Harness.buildComponent('datagrid');
+	it('Should remove deleted components keys from default value', function (done) {
+		const builder = Harness.getBuilder();
+		builder
+			.setForm({})
+			.then(() => {
+				Harness.buildComponent('datagrid');
 
-                setTimeout(() => {
-                    const dataGridDefaultValue =
-                        builder.editForm.getComponent('defaultValue');
-                    dataGridDefaultValue.removeRow(0);
+				setTimeout(() => {
+					const dataGridDefaultValue =
+						builder.editForm.getComponent('defaultValue');
+					dataGridDefaultValue.removeRow(0);
 
-                    setTimeout(() => {
-                        Harness.saveComponent();
-                        setTimeout(() => {
-                            const dataGridContainer =
-                                builder.webform.element.querySelector(
-                                    '[ref="dataGrid-container"]',
-                                );
-                            Harness.buildComponent(
-                                'textfield',
-                                dataGridContainer,
-                            );
+					setTimeout(() => {
+						Harness.saveComponent();
+						setTimeout(() => {
+							const dataGridContainer = builder.webform.element.querySelector(
+								'[ref="dataGrid-container"]',
+							);
+							Harness.buildComponent('textfield', dataGridContainer);
 
-                            setTimeout(() => {
-                                Harness.saveComponent();
+							setTimeout(() => {
+								Harness.saveComponent();
 
-                                setTimeout(() => {
-                                    const textField =
-                                        builder.webform.getComponent([
-                                            'dataGrid',
-                                            'textField',
-                                        ])[0];
-                                    textField.refs.removeComponent.dispatchEvent(
-                                        new MouseEvent('click', {
-                                            view: window,
-                                            bubbles: true,
-                                            cancelable: true,
-                                        }),
-                                    );
+								setTimeout(() => {
+									const textField = builder.webform.getComponent([
+										'dataGrid',
+										'textField',
+									])[0];
+									textField.refs.removeComponent.dispatchEvent(
+										new MouseEvent('click', {
+											view: window,
+											bubbles: true,
+											cancelable: true,
+										}),
+									);
 
-                                    setTimeout(() => {
-                                        const dataGrid =
-                                            builder.webform.getComponent([
-                                                'dataGrid',
-                                            ]);
-                                        assert.deepEqual(
-                                            dataGrid.schema.defaultValue,
-                                            [{}],
-                                            'Should remove TextField key',
-                                        );
-                                        done();
-                                    }, 300);
-                                });
-                            }, 300);
-                        }, 300);
-                    }, 350);
-                }, 350);
-            })
-            .catch(done);
-    });
+									setTimeout(() => {
+										const dataGrid = builder.webform.getComponent(['dataGrid']);
+										assert.deepEqual(
+											dataGrid.schema.defaultValue,
+											[{}],
+											'Should remove TextField key',
+										);
+										done();
+									}, 300);
+								});
+							}, 300);
+						}, 300);
+					}, 350);
+				}, 350);
+			})
+			.catch(done);
+	});
 });

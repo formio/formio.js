@@ -18,36 +18,32 @@ const jsonDocHTML = `
 `;
 
 const settingComponent = EditFormUtils.javaScriptValue(
-    title,
-    jsProp,
-    jsonProp,
-    110,
-    jsDocHTML,
-    jsonDocHTML,
+	title,
+	jsProp,
+	jsonProp,
+	110,
+	jsDocHTML,
+	jsonDocHTML,
 );
 
 export default [
-    {
-        ...settingComponent,
-        customConditional(context) {
-            let isWizardPanel = false;
-            if (context.instance.options.editForm.display === 'wizard') {
-                const { components } = context.instance.options.editForm;
-                const component = context.instance.options.editComponent;
-                if (components && component) {
-                    isWizardPanel = components.some((comp) => {
-                        const diff =
-                            _difference(_keys(comp), _keys(component)) || [];
-                        diff.push('components');
-                        return _isEqual(
-                            _omit(comp, diff),
-                            _omit(component, diff),
-                        );
-                    });
-                }
-            }
-            return isWizardPanel;
-        },
-    },
+	{
+		...settingComponent,
+		customConditional(context) {
+			let isWizardPanel = false;
+			if (context.instance.options.editForm.display === 'wizard') {
+				const { components } = context.instance.options.editForm;
+				const component = context.instance.options.editComponent;
+				if (components && component) {
+					isWizardPanel = components.some((comp) => {
+						const diff = _difference(_keys(comp), _keys(component)) || [];
+						diff.push('components');
+						return _isEqual(_omit(comp, diff), _omit(component, diff));
+					});
+				}
+			}
+			return isWizardPanel;
+		},
+	},
 ];
 /* eslint-enable quotes, max-len */

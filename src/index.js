@@ -3,11 +3,11 @@ import Builders from './builders/Builders';
 import { Formio, useModule } from './formio.form';
 Formio.Builders = Builders;
 Formio.use = useModule((key, mod) => {
-    if (key === 'builders') {
-        Formio.Builders.addBuilders(mod.builders);
-        return true;
-    }
-    return false;
+	if (key === 'builders') {
+		Formio.Builders.addBuilders(mod.builders);
+		return true;
+	}
+	return false;
 });
 export * from './formio.form';
 export { FormBuilder, Builders };

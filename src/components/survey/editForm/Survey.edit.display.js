@@ -1,6 +1,6 @@
 export default [
-    {
-        key: 'placeholder',
-        ignore: true,
-    },
+	{
+		key: 'placeholder',
+		ignore: true,
+	},
 ];

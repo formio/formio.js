@@ -1,22 +1,22 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true,
-        "node": true
-    },
-    "extends": [
-        "eslint:recommended",
-        "plugin:mocha/recommended",
-        "eslint-config-prettier"
-    ],
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module"
-    },
-    "plugins": ["mocha"],
-    "rules": {
-        "mocha/max-top-level-suites": ["warn", { "limit": 5 }],
-        "mocha/no-setup-in-describe": "warn",
-        "no-loss-of-precision": "warn"
-    }
+	"env": {
+		"browser": true,
+		"es2021": true,
+		"node": true
+	},
+	"extends": [
+		"eslint:recommended",
+		"plugin:mocha/recommended",
+		"eslint-config-prettier"
+	],
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"plugins": ["mocha"],
+	"rules": {
+		"mocha/max-top-level-suites": ["warn", { "limit": 5 }],
+		"mocha/no-setup-in-describe": "warn",
+		"no-loss-of-precision": "warn"
+	}
 }

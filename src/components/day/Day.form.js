@@ -7,39 +7,39 @@ import DayEditMonth from './editForm/Day.edit.month';
 import DayEditYear from './editForm/Day.edit.year';
 
 export default function (...extend) {
-    return Components.baseEditForm(
-        [
-            {
-                key: 'display',
-                components: DayEditDisplay,
-            },
-            {
-                key: 'data',
-                components: DayEditData,
-            },
-            {
-                key: 'validation',
-                components: DayEditValidation,
-            },
-            {
-                key: 'day',
-                label: 'Day',
-                weight: 3,
-                components: DayEditDay,
-            },
-            {
-                key: 'month',
-                label: 'Month',
-                weight: 3,
-                components: DayEditMonth,
-            },
-            {
-                key: 'year',
-                label: 'Year',
-                weight: 3,
-                components: DayEditYear,
-            },
-        ],
-        ...extend,
-    );
+	return Components.baseEditForm(
+		[
+			{
+				key: 'display',
+				components: DayEditDisplay,
+			},
+			{
+				key: 'data',
+				components: DayEditData,
+			},
+			{
+				key: 'validation',
+				components: DayEditValidation,
+			},
+			{
+				key: 'day',
+				label: 'Day',
+				weight: 3,
+				components: DayEditDay,
+			},
+			{
+				key: 'month',
+				label: 'Month',
+				weight: 3,
+				components: DayEditMonth,
+			},
+			{
+				key: 'year',
+				label: 'Year',
+				weight: 3,
+				components: DayEditYear,
+			},
+		],
+		...extend,
+	);
 }
