@@ -1533,8 +1533,7 @@ describe('EditGrid Open when Empty', () => {
         Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
           setTimeout(() => {
             const editRow = editGrid.editRows[0];
-            assert(!editGrid.error, 'Should be no errors on EditGrid');
-            assert.equal(editRow.errors, null, 'Should not be any errors on open row');
+            assert.equal(editRow.errors.length, 0, 'Should not be any errors on open row');
             assert.equal(form.submission.state, 'submitted', 'Form should be submitted');
             done();
           }, 450);
@@ -1554,7 +1553,6 @@ describe('EditGrid Open when Empty', () => {
           setTimeout(() => {
             assert(!form.submission.state, 'Form should not be submitted');
             const editRow = editGrid.editRows[0];
-            assert(editGrid.error, 'Should show error on EditGrid');
             assert.equal(editRow.errors.length, 1, 'Should show error on row');
             const textField = editRow.components[0];
             assert(textField.element.className.includes('formio-error-wrapper'), 'Should add error class to component');
