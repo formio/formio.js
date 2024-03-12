@@ -1,8 +1,6 @@
-/* global Quill */
 import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
 import NativePromise from 'native-promise-only';
-import { uniqueName, getBrowserInfo } from '../../utils/utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -121,102 +119,10 @@ export default class TextAreaComponent extends TextFieldComponent {
       return element;
     }
 
-    if (this.component.wysiwyg && !this.component.editor) {
-      this.component.editor = 'ckeditor';
-    }
-
-    let settings = _.isEmpty(this.component.wysiwyg) ?
-      this.wysiwygDefault[this.component.editor] || this.wysiwygDefault.default
-      : this.component.wysiwyg;
-
     // Keep track of when this editor is ready.
-    this.editorsReady[index] = new NativePromise((editorReady) => {
-      // Attempt to add a wysiwyg editor. In order to add one, it must be included on the global scope.
-      switch (this.component.editor) {
-        case 'ace':
-          if (!settings) {
-            settings = {};
-          }
-          settings.mode = this.component.as ? `ace/mode/${this.component.as}` : 'ace/mode/javascript';
-          this.addAce(element, settings, (newValue) => this.updateEditorValue(index, newValue)).then((ace) => {
-            this.editors[index] = ace;
-            let dataValue = this.dataValue;
-            dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-            ace.setValue(this.setConvertedValue(dataValue, index));
-            editorReady(ace);
-            return ace;
-          }).catch(err => console.warn(err));
-          break;
-        case 'quill':
-          // Normalize the configurations for quill.
-          if (settings.hasOwnProperty('toolbarGroups') || settings.hasOwnProperty('toolbar')) {
-            console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
-            settings = this.wysiwygDefault.quill;
-          }
-
-          // Add the quill editor.
-          this.addQuill(
-            element,
-            settings, () => this.updateEditorValue(index, this.editors[index].root.innerHTML)
-          ).then((quill) => {
-            this.editors[index] = quill;
-            if (this.component.isUploadEnabled) {
-              const _this = this;
-              quill.getModule('uploader').options.handler = function(...args) {
-                //we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
-                //we also need current component instance as we use some fields and methods from it as well
-                _this.imageHandler.call(_this, this, ...args);
-              };
-            }
-            quill.root.spellcheck = this.component.spellcheck;
-            if (this.options.readOnly || this.disabled) {
-              quill.disable();
-            }
-
-            let dataValue = this.dataValue;
-            dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-            quill.setContents(quill.clipboard.convert({ html: this.setConvertedValue(dataValue, index) }));
-            editorReady(quill);
-            return quill;
-          }).catch(err => console.warn(err));
-          break;
-        case 'ckeditor':
-          settings = settings || {};
-          settings.rows = this.component.rows;
-          this.addCKE(element, settings, (newValue) => this.updateEditorValue(index, newValue))
-            .then((editor) => {
-              this.editors[index] = editor;
-              let dataValue = this.dataValue;
-              dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-              const value = this.setConvertedValue(dataValue, index);
-              const isReadOnly = this.options.readOnly || this.disabled;
-              // Use ckeditor 4 in IE browser
-              if (getBrowserInfo().ie) {
-                editor.on('instanceReady', () => {
-                  editor.setReadOnly(isReadOnly);
-                  editor.setData(value);
-                });
-              }
-              else {
-                const numRows = parseInt(this.component.rows, 10);
-
-                if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
-                  // Default height is 21px with 10px margin + a 14px top margin.
-                  const editorHeight = (numRows * 31) + 14;
-                  editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
-                }
-                editor.isReadOnly = isReadOnly;
-                editor.data.set(value);
-              }
-
-              editorReady(editor);
-              return editor;
-            });
-          break;
-        default:
-          super.attachElement(element, index);
-          break;
-      }
+    this.editorsReady[index] = new NativePromise(() => {
+      // We don't use WYSIWYG editor for text area
+      super.attachElement(element, index);
     });
 
     return element;
@@ -229,95 +135,12 @@ export default class TextAreaComponent extends TextFieldComponent {
     return attached;
   }
 
-  imageHandler(moduleInstance, range, files) {
-    const quillInstance = moduleInstance.quill;
-
-    if (!files || !files.length) {
-      console.warn('No files selected');
-      return;
-    }
-
-    quillInstance.enable(false);
-    const { uploadStorage, uploadUrl, uploadOptions, uploadDir, fileKey } = this.component;
-    let requestData;
-    this.fileService
-      .uploadFile(
-        uploadStorage,
-        files[0],
-        uniqueName(files[0].name),
-        uploadDir || '', //should pass empty string if undefined
-        null,
-        uploadUrl,
-        uploadOptions,
-        fileKey
-      )
-      .then(result => {
-        requestData = result;
-        return this.fileService.downloadFile(result);
-      })
-      .then(result => {
-        quillInstance.enable(true);
-        const Delta = Quill.import('delta');
-        quillInstance.updateContents(new Delta()
-            .retain(range.index)
-            .delete(range.length)
-            .insert(
-              {
-                image: result.url
-              },
-              {
-                alt: JSON.stringify(requestData),
-              })
-          , Quill.sources.USER);
-      }).catch(error => {
-      console.warn('Quill image upload failed');
-      console.warn(error);
-      quillInstance.enable(true);
-    });
-  }
-
   get isPlain() {
     return (!this.component.wysiwyg && !this.component.editor);
   }
 
   get htmlView() {
     return this.options.readOnly && (this.component.editor || this.component.wysiwyg);
-  }
-
-  setValueAt(index, value, flags = {}) {
-    super.setValueAt(index, value, flags);
-
-    if (this.editorsReady[index]) {
-      const setEditorsValue = (flags) => (editor) => {
-        this.autoModified = true;
-        if (!flags.skipWysiwyg) {
-          switch (this.component.editor) {
-            case 'ace':
-              editor.setValue(this.setConvertedValue(value, index));
-              break;
-            case 'quill':
-              if (this.component.isUploadEnabled) {
-                this.setAsyncConvertedValue(value)
-                  .then(result => {
-                    const content = editor.clipboard.convert({ html: result });
-                    editor.setContents(content);
-                  });
-              }
-              else {
-                const convertedValue = this.setConvertedValue(value, index);
-                const content = editor.clipboard.convert({ html: convertedValue });
-                editor.setContents(content);
-              }
-              break;
-            case 'ckeditor':
-              editor.data.set(this.setConvertedValue(value, index));
-              break;
-          }
-        }
-      };
-
-      this.editorsReady[index].then(setEditorsValue(_.clone(flags)));
-    }
   }
 
   setValue(value, flags = {}) {
