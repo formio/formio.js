@@ -8,6 +8,7 @@ import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
 import dompurify from 'dompurify';
 import { getValue } from './formUtils';
+import { Utils } from '@formio/core';
 import Evaluator from './Evaluator';
 import ConditionOperators from './conditionOperators';
 const interpolate = Evaluator.interpolate;
@@ -15,7 +16,7 @@ const { fetch } = fetchPonyfill({
   Promise: Promise
 });
 
-export * from './formUtils';
+export * from Utils;
 
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
