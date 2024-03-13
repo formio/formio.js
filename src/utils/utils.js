@@ -16,7 +16,7 @@ const { fetch } = fetchPonyfill({
   Promise: Promise
 });
 
-export * from Utils;
+export * from '@formio/core/lib/utils/formUtil';
 
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
