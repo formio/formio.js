@@ -2226,14 +2226,14 @@ describe('Formio.js Tests', () => {
         name: 'Should return correct options for form url with Subdirectories path',
         test() {
           let form = new Formio.Form();
-          let options = form.getFormInitOptions('http://localhost:3000/fakeproject/fakeform');
+          let options = form.getFormInitOptions('http://localhost:3000/fakeproject/fakeform', { path: 'fakeform' });
           assert.deepEqual(options, {
             base: 'http://localhost:3000',
             project: 'http://localhost:3000/fakeproject',
           });
 
           form = new Formio.Form();
-          options = form.getFormInitOptions(`${Formio.baseUrl}/fakeproject/fakeform`);
+          options = form.getFormInitOptions(`${Formio.baseUrl}/fakeproject/fakeform`, { path: 'fakeform' });
           assert.deepEqual(options, {});
         }
       },
@@ -2256,7 +2256,9 @@ describe('Formio.js Tests', () => {
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: {}
+                body: {
+                  path: 'fakeform',
+                }
               };
             }
           };
