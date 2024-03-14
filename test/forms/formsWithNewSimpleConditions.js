@@ -1022,11 +1022,53 @@ const form6 = {
   machineName: 'cpxkpoxmfvhivle:selectBoxesCond',
 };
 
+const form7 = {
+  type: 'form',
+  display: 'form',
+  components: [
+    {
+      label: 'Checkbox',
+      tableView: false,
+      key: 'checkbox',
+      type: 'checkbox',
+      input: true,
+    },
+    {
+      label: 'Text Field',
+      applyMaskOn: 'change',
+      tableView: true,
+      key: 'textField',
+      conditional: {
+        show: true,
+        conjunction: 'all',
+        conditions: [
+          {
+            component: 'checkbox',
+            operator: 'isEqual',
+            value: 'false',
+          },
+        ],
+      },
+      type: 'textfield',
+      input: true,
+    },
+    {
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      disableOnInvalid: true,
+      input: true,
+      tableView: false,
+    },
+  ],
+};
+
 export default {
   form1,
   form2,
   form3,
   form4,
   form5,
-  form6
+  form6,
+  form7
 };
