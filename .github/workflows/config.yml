@@ -148,6 +148,12 @@ jobs:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
         uses: actions/checkout@v3
 
+      - name: Setup Ruby and Install Jekyll
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          bundler-cache: true
+
       - name: Restore node modules from cache
         uses: actions/cache@v3
         with:
