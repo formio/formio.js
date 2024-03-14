@@ -154,6 +154,9 @@ jobs:
           ruby-version: '3.0'
           bundler-cache: true
 
+      - name: Install Jekyll
+        run: gem install jekyll
+
       - name: Restore node modules from cache
         uses: actions/cache@v3
         with:
