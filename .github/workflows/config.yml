@@ -1,65 +1,14 @@
-# name: Build & Test
-
-# on: push
-
-# env:
-#   NODE_VERSION: 18.x
-
-# jobs:
-#   test:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - run: echo "Triggered by ${{ github.event_name }} event."
-
-#       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-#         uses: actions/checkout@v3
-
-#       - name: Set up Node.js ${{ env.NODE_VERSION }}
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: ${{ env.NODE_VERSION }}
-#           cache: 'npm'
-      
-#       - name: Cache node modules
-#         uses: actions/cache@v3
-#         with:
-#           path: node_modules
-#           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-#           restore-keys: |
-#             ${{ runner.os }}-node-
-            
-#       - name: Installing dependencies
-#         if: steps.cache.outputs.cache-hit != 'true'
-#         uses: borales/actions-yarn@v4
-#         with:
-#           cmd: install --frozen-lockfile
-
-#       - name: Lint
-#         uses: borales/actions-yarn@v4
-#         with:
-#           cmd: lint
-
-#       - name: Build
-#         uses: borales/actions-yarn@v4
-#         with:
-#           cmd: build
-
-#       - name: Test
-#         uses: borales/actions-yarn@v4
-#         with:
-#           cmd: test
-
 name: Build & Test
 
 on:
   push:
     branches:
       - '*' # This will make sure all push events on any branch triggers this workflow.
-    tags:
-      - '*' # This will make sure tag creations also trigger the workflow.
+    # tags:
+    #   - '*' # This will make sure tag creations also trigger the workflow.
 
 env:
-  NODE_VERSION: 18.x
+  NODE_VERSION: 20.x
 
 jobs:
   setup:
@@ -138,49 +87,49 @@ jobs:
   ###########################################################################
   ## Commit to formio/enterprise
   ###########################################################################
-  deploy_to_test:
-    if: startsWith(github.ref, 'refs/tags/')
-    needs: [build, test]
-    runs-on: ubuntu-latest
-    env:
-      AWS_DEFAULT_REGION: us-west-2
-      AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  # deploy_to_test:
+  #   if: startsWith(github.ref, 'refs/tags/')
+  #   needs: [build, test]
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     AWS_DEFAULT_REGION: us-west-2
+  #     AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+  #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    steps:
-      - run: echo "Triggered by ${{ github.event_name }} event."
-      - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-        uses: actions/checkout@v3
+  #   steps:
+  #     - run: echo "Triggered by ${{ github.event_name }} event."
+  #     - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
+  #       uses: actions/checkout@v3
 
-      - name: Setup Ruby and Install Jekyll
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.0'
-          bundler-cache: true
+  #     - name: Setup Ruby and Install Jekyll
+  #       uses: ruby/setup-ruby@v1
+  #       with:
+  #         ruby-version: '3.0'
+  #         bundler-cache: true
 
-      - name: Install Jekyll
-        run: gem install jekyll
+  #     - name: Install Jekyll
+  #       run: gem install jekyll
 
-      - name: Restore node modules from cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+  #     - name: Restore node modules from cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: node_modules
+  #         key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-node-
 
-      - name: Install awscli
-        run: |
-          sudo apt-get update
-          sudo apt install -y awscli
+  #     - name: Install awscli
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt install -y awscli
 
-      - name: Set AWS Credentials
-        run: |
-          aws configure set aws_access_key_id $AWS_DEFAULT_REGION
-          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-          aws configure set default.region $AWS_DEFAULT_REGION
+  #     - name: Set AWS Credentials
+  #       run: |
+  #         aws configure set aws_access_key_id $AWS_DEFAULT_REGION
+  #         aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+  #         aws configure set default.region $AWS_DEFAULT_REGION
 
-      - name: Release
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: release
+  #     - name: Release
+  #       uses: borales/actions-yarn@v4
+  #       with:
+  #         cmd: release
