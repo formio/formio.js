@@ -72,7 +72,7 @@ jobs:
 
       - name: Publish package to NPM
         run: |
-          npm publish --access public
+          npm publish lib --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
