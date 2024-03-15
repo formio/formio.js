@@ -13,8 +13,8 @@ env:
 
 jobs:
   deploy_to_test:
-    if: false
-    # if: startsWith(github.ref, 'refs/tags/')
+    # if: false
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
 
     steps:
