@@ -67,12 +67,12 @@ jobs:
 
       - name: Build
         run: |
-          - npm install
-          - npm run build
+          npm install
+          npm run build
 
       - name: Publish package to NPM
         run: |
-          - run: npm publish
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
