@@ -57,9 +57,13 @@ export default {
   saveDraftInstanceError: 'Cannot save draft because there is no formio instance.',
   saveDraftAuthError: 'Cannot save draft unless a user is authenticated.',
   restoreDraftInstanceError: 'Cannot restore draft because there is no formio instance.',
+  saveDraftError: 'Unable to save draft.',
+  restoreDraftError: 'Unable to restore draft.',
   time: 'Invalid time',
   cancelButtonAriaLabel: 'Cancel button. Click to reset the form',
   previousButtonAriaLabel:'Previous button. Click to go back to the previous tab',
   nextButtonAriaLabel:'Next button. Click to go to the next tab',
   submitButtonAriaLabel:'Submit Form button. Click to submit the form',
+  reCaptchaTokenValidationError: 'ReCAPTCHA: Token validation error',
+  reCaptchaTokenNotSpecifiedError: 'ReCAPTCHA: Token is not specified in submission',
 };

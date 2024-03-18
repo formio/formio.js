@@ -21,8 +21,10 @@ import {
   compOpenWhenEmpty,
   compWithCustomDefaultValue,
 } from './fixtures';
+import formsWithEditGridAndConditions from './fixtures/formsWithEditGridAndConditions';
 
 import ModalEditGrid from '../../../test/forms/modalEditGrid';
+import EditGridOpenWhenEmpty from '../../../test/forms/editGridOpenWhenEmpty';
 import Webform from '../../Webform';
 import { displayAsModalEditGrid } from '../../../test/formtest';
 import { Formio } from '../../Formio';
@@ -1245,6 +1247,147 @@ describe('EditGrid Component', () => {
       }, 100);
     }).catch(done);
   });
+
+  it('Should keep value for conditional editGrid on setValue when server option is provided', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form1, { server: true }).then(form => {
+      const formData = {
+        checkbox: true,
+        radio: 'yes',
+        editGrid: [
+          { textField: 'test', number: 4 },
+          { textField: 'test1', number: 5 },
+        ],
+      };
+
+      form.setValue({ data: _.cloneDeep(formData) });
+
+      setTimeout(() => {
+        const editGrid = form.getComponent('editGrid');
+        assert.deepEqual(editGrid.dataValue, formData.editGrid);
+
+        done();
+      }, 500);
+    }).catch(done);
+  });
+
+  it('Should set value for conditional editGrid inside editGrid on event when form is not pristine ', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form2).then(form => {
+      form.setPristine(false);
+      const editGrid1 = form.getComponent('editGrid1');
+      editGrid1.addRow();
+
+      setTimeout(() => {
+        const btn = editGrid1.getComponent('setPanelValue')[0];
+        const clickEvent = new Event('click');
+        btn.refs.button.dispatchEvent(clickEvent);
+        setTimeout(() => {
+          const conditionalEditGrid = editGrid1.getComponent('editGrid')[0];
+          assert.deepEqual(conditionalEditGrid.dataValue, [{ textField:'testyyyy' }]);
+          assert.equal(conditionalEditGrid.editRows.length, 1);
+          done();
+        }, 500);
+      }, 300);
+    }).catch(done);
+  });
+
+  it('Should keep value for conditional editGrid in tabs on setValue when server option is provided', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form3, { server: true }).then(form => {
+      const formData =  {
+        affectedRiskTypes: {
+          creditRisk: false,
+          marketRisk: true,
+          operationalRisk: false,
+          counterpartyCreditRisk: false,
+          creditValuationRiskAdjustment: false,
+        },
+        rwaImpact: 'yes',
+        submit: true,
+        mr: {
+          quantitativeInformation: {
+            cva: 'yes',
+            sameRiskCategories: false,
+            impactsPerEntity: [{ number: 123 }],
+            sameImpactAcrossEntities: false,
+          },
+        },
+        euParentInstitution: 'EUParent',
+      };
+
+      form.setValue({ data: _.cloneDeep(formData) });
+
+      setTimeout(() => {
+        const editGrid = form.getComponent('impactsPerEntity');
+        assert.deepEqual(editGrid.dataValue, formData.mr.quantitativeInformation.impactsPerEntity);
+        assert.deepEqual(editGrid.editRows.length, 1);
+
+        done();
+      }, 500);
+    }).catch(done);
+  });
+
+  it('Should calculate editGrid value when calculateOnServer is enabled and server option is passed', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form4, { server: true }).then(form => {
+        const editGrid = form.getComponent('editGrid');
+        assert.deepEqual(editGrid.dataValue, [{ textArea: 'test' }]);
+        assert.deepEqual(editGrid.editRows.length, 1);
+        done();
+    }).catch(done);
+  });
+
+  it('Should keep value for conditional editGrid deeply nested in panels and containers on setValue when server option is provided', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form5, { server: true }).then(form => {
+      const formData =  {
+        generalInformation: {
+          listSupervisedEntitiesCovered: [
+            { id: 6256, longName: 'Bank_DE', leiCode: 'LEI6256', countryCode: 'DE' },
+          ],
+          deSpecific: {
+            criticalPartsToBeOutsourcedSuboutsourcer: 'yes',
+            suboutsourcers: [
+              { nameSuboutsourcer: 'test' },
+              { nameSuboutsourcer: 'test 1' },
+            ],
+          },
+        },
+      };
+
+      form.setValue({ data: _.cloneDeep(formData) });
+
+      setTimeout(() => {
+        const editGrid = form.getComponent('suboutsourcers');
+        assert.deepEqual(editGrid.dataValue, formData.generalInformation.deSpecific.suboutsourcers);
+        assert.deepEqual(editGrid.editRows.length, 2);
+
+        done();
+      }, 500);
+    }).catch(done);
+  });
+
+  it('Should calculate editGrid value when condition is met in advanced logic', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form6).then(form => {
+      form.getComponent('textField').setValue('show');
+
+      setTimeout(() => {
+        const editGrid = form.getComponent('editGrid');
+        assert.deepEqual(editGrid.dataValue, [{ number:1, textArea: 'test' }, { number:2, textArea: 'test2' }]);
+        assert.deepEqual(editGrid.editRows.length, 2);
+
+        done();
+      }, 300);
+    }).catch(done);
+  });
 });
 
 describe('EditGrid Open when Empty', () => {
@@ -1381,5 +1524,47 @@ describe('EditGrid Open when Empty', () => {
         }, 200);
       })
       .catch(done);
+  });
+
+  it('Should submit form with empty rows when submit button is pressed and no rows are saved', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(compOpenWhenEmpty).then(() => {
+      const editGrid = form.components[0];
+
+      setTimeout(() => {
+        Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
+          setTimeout(() => {
+            const editRow = editGrid.editRows[0];
+            assert(!editGrid.error, 'Should be no errors on EditGrid');
+            assert.equal(editRow.errors, null, 'Should not be any errors on open row');
+            assert.equal(form.submission.state, 'submitted', 'Form should be submitted');
+            done();
+          }, 450);
+      }, 100);
+    }).catch(done);
+  });
+
+  it('Should not submit form if any row inputs are set as required', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(EditGridOpenWhenEmpty).then(() => {
+      const editGrid = form.components[0];
+
+      setTimeout(() => {
+        Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
+          setTimeout(() => {
+            assert(!form.submission.state, 'Form should not be submitted');
+            const editRow = editGrid.editRows[0];
+            assert(editGrid.error, 'Should show error on EditGrid');
+            assert.equal(editRow.errors.length, 1, 'Should show error on row');
+            const textField = editRow.components[0];
+            assert(textField.element.className.includes('formio-error-wrapper'), 'Should add error class to component');
+            done();
+          }, 450);
+      }, 100);
+    }).catch(done);
   });
 });

@@ -12,7 +12,7 @@ export default {
       providerOptions: {
         params: {
           autocompleteOptions: {},
-          key: 'AIzaSyBNL2e4MnmyPj9zN7SVAe428nCSLP1X144',
+          key: '',
         },
       },
       input: true,

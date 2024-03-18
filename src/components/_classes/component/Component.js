@@ -873,6 +873,7 @@ export default class Component extends Element {
     return !this.component.label ||
       ((!this.isInDataGrid && this.component.hideLabel) ||
       (this.isInDataGrid && !this.component.dataGridLabel) ||
+      this.options.floatingLabels ||
       this.options.inputsOnly) && !this.builderMode;
   }
 
@@ -1228,7 +1229,7 @@ export default class Component extends Element {
           placement: 'right',
           zIndex: 10000,
           interactive: true,
-          content: this.t(tooltipText, { _userInput: true }),
+          content: this.t(this.sanitize(tooltipText), { _userInput: true }),
         });
       }
     });
@@ -2151,6 +2152,10 @@ export default class Component extends Element {
       this.setElementInvalid(this.performInputMapping(element), false);
     });
     this.setInputWidgetErrorClasses(elements, hasErrors);
+    // do not set error classes for hidden components
+    if (!this.visible) {
+      return;
+    }
 
     if (hasErrors) {
       // Add error classes
@@ -2852,8 +2857,8 @@ export default class Component extends Element {
 
   /* eslint-disable max-statements */
   calculateComponentValue(data, flags, row) {
-    // Skip value calculation for the component if we don't have entire form data set
-    if (_.isUndefined(_.get(this, 'root.data'))) {
+    // Skip value calculation for the component if we don't have entire form data set or in builder mode
+    if (this.builderMode || _.isUndefined(_.get(this, 'root.data'))) {
       return false;
     }
     // If no calculated value or
@@ -2923,6 +2928,7 @@ export default class Component extends Element {
 
       // Check to ensure that the calculated value is different than the previously calculated value.
       if (previousCalculatedValue && previousChanged && !calculationChanged) {
+        this.calculatedValue = null;
         return false;
       }
 
@@ -3334,6 +3340,7 @@ export default class Component extends Element {
   }
 
   shouldSkipValidation(data, dirty, row) {
+    const { validateWhenHidden = false } = this.component || {};
     const rules = [
       // Force valid if component is read-only
       () => this.options.readOnly,
@@ -3342,9 +3349,9 @@ export default class Component extends Element {
       // Check to see if we are editing and if so, check component persistence.
       () => this.isValueHidden(),
       // Force valid if component is hidden.
-      () => !this.visible,
+      () => !this.visible && !validateWhenHidden,
       // Force valid if component is conditionally hidden.
-      () => !this.checkCondition(row, data)
+      () => !this.checkCondition(row, data) && !validateWhenHidden
     ];
 
     return rules.some(pred => pred());
