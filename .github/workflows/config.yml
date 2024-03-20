@@ -1,6 +1,7 @@
 name: Build / Test / Publish
 
 on:
+  push:
   pull_request:
     types: [opened, synchronize]
 
@@ -10,6 +11,10 @@ env:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    # Prevents the setup, build, and test jobs from running on pull_request synchronize events
+    if: >
+      github.event_name == 'push' ||
+      (github.event_name == 'pull_request' && github.event.action == 'opened')
     steps:
       - run: echo "Triggered by ${{ github.event_name }} event."
 
@@ -44,6 +49,10 @@ jobs:
   build:
     needs: setup
     runs-on: ubuntu-latest
+    # Prevents the setup, build, and test jobs from running on pull_request synchronize events
+    if: >
+      github.event_name == 'push' ||
+      (github.event_name == 'pull_request' && github.event.action == 'opened')
     steps:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
         uses: actions/checkout@v3
@@ -64,6 +73,10 @@ jobs:
   test:
     needs: setup
     runs-on: ubuntu-latest
+    # Prevents the setup, build, and test jobs from running on pull_request synchronize events
+    if: >
+      github.event_name == 'push' ||
+      (github.event_name == 'pull_request' && github.event.action == 'opened')
     steps:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
         uses: actions/checkout@v3
