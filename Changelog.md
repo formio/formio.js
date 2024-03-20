@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.19.1-rc.1]
 ### Changed
  - FIO-7632: Fixes an issue where HTML tags are added to the HTML5 Select metadata
+ - FIO-7899: fixed an issue where saveDraft option does not work and added errors handling for the save draft and restore draft functionality
 
 ## 4.19.0
 ### Changed
