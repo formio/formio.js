@@ -1,57 +1,8 @@
-# name: Build & Test
+name: Build / Test / Publish
 
-# on: push
-
-# env:
-#   NODE_VERSION: 18.x
-
-# jobs:
-#   test:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - run: echo "Triggered by ${{ github.event_name }} event."
-
-#       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-#         uses: actions/checkout@v3
-
-#       - name: Set up Node.js ${{ env.NODE_VERSION }}
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: ${{ env.NODE_VERSION }}
-#           cache: 'npm'
-      
-#       - name: Cache node modules
-#         uses: actions/cache@v3
-#         with:
-#           path: node_modules
-#           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-#           restore-keys: |
-#             ${{ runner.os }}-node-
-            
-#       - name: Installing dependencies
-#         if: steps.cache.outputs.cache-hit != 'true'
-#         uses: borales/actions-yarn@v4
-#         with:
-#           cmd: install --frozen-lockfile
-
-#       - name: Lint
-#         uses: borales/actions-yarn@v4
-#         with:
-#           cmd: lint
-
-#       - name: Build
-#         uses: borales/actions-yarn@v4
-#         with:
-#           cmd: build
-
-#       - name: Test
-#         uses: borales/actions-yarn@v4
-#         with:
-#           cmd: test
-
-name: Build & Test
-
-on: push
+on:
+  pull_request:
+    types: [opened, synchronize]
 
 env:
   NODE_VERSION: 18.x
@@ -129,3 +80,53 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: test
+
+  publish:
+    needs: [setup, test]
+    if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
+        uses: actions/checkout@v3
+
+      - name: Configure Git user
+        run: |
+          git config --global user.email "pkgbot@form.io"
+          git config --global user.name "pkgbot"
+
+      - name: Add npm token to .npmrc
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Restore node modules from cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Prepare version for publish
+        id: prep
+        run: |
+          PR_NUMBER=$(echo ${{ github.event.number }})
+          COMMIT_SHORT_SHA=$(echo "${{ github.event.pull_request.head.sha }}" | cut -c1-7)
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          NEW_VERSION="${CURRENT_VERSION}-dev.${PR_NUMBER}.${COMMIT_SHORT_SHA}"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Echo version for testing
+        run: |
+          echo "Version to publish: $NEW_VERSION"
+
+      # - name: Publish to npm
+      #   run: |
+      #     npm version $NEW_VERSION
+      #     npm publish --tag dev
