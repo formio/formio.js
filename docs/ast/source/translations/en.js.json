@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 3207,
+  "end": 3299,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 66,
+      "line": 68,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 3207,
+    "end": 3299,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 66,
+        "line": 68,
         "column": 0
       }
     },
@@ -31,28 +31,28 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 0,
-        "end": 3206,
+        "end": 3298,
         "loc": {
           "start": {
             "line": 1,
             "column": 0
           },
           "end": {
-            "line": 65,
+            "line": 67,
             "column": 2
           }
         },
         "declaration": {
           "type": "ObjectExpression",
           "start": 15,
-          "end": 3205,
+          "end": 3297,
           "loc": {
             "start": {
               "line": 1,
               "column": 15
             },
             "end": {
-              "line": 65,
+              "line": 67,
               "column": 1
             }
           },
@@ -3364,7 +3364,7 @@
             {
               "type": "ObjectProperty",
               "start": 2894,
-              "end": 2914,
+              "end": 2933,
               "loc": {
                 "start": {
                   "line": 60,
@@ -3372,7 +3372,7 @@
                 },
                 "end": {
                   "line": 60,
-                  "column": 22
+                  "column": 41
                 }
               },
               "method": false,
@@ -3381,7 +3381,7 @@
               "key": {
                 "type": "Identifier",
                 "start": 2894,
-                "end": 2898,
+                "end": 2908,
                 "loc": {
                   "start": {
                     "line": 60,
@@ -3389,6 +3389,116 @@
                   },
                   "end": {
                     "line": 60,
+                    "column": 16
+                  },
+                  "identifierName": "saveDraftError"
+                },
+                "name": "saveDraftError"
+              },
+              "value": {
+                "type": "StringLiteral",
+                "start": 2910,
+                "end": 2933,
+                "loc": {
+                  "start": {
+                    "line": 60,
+                    "column": 18
+                  },
+                  "end": {
+                    "line": 60,
+                    "column": 41
+                  }
+                },
+                "extra": {
+                  "rawValue": "Unable to save draft.",
+                  "raw": "'Unable to save draft.'"
+                },
+                "value": "Unable to save draft."
+              }
+            },
+            {
+              "type": "ObjectProperty",
+              "start": 2937,
+              "end": 2982,
+              "loc": {
+                "start": {
+                  "line": 61,
+                  "column": 2
+                },
+                "end": {
+                  "line": 61,
+                  "column": 47
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 2937,
+                "end": 2954,
+                "loc": {
+                  "start": {
+                    "line": 61,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 61,
+                    "column": 19
+                  },
+                  "identifierName": "restoreDraftError"
+                },
+                "name": "restoreDraftError"
+              },
+              "value": {
+                "type": "StringLiteral",
+                "start": 2956,
+                "end": 2982,
+                "loc": {
+                  "start": {
+                    "line": 61,
+                    "column": 21
+                  },
+                  "end": {
+                    "line": 61,
+                    "column": 47
+                  }
+                },
+                "extra": {
+                  "rawValue": "Unable to restore draft.",
+                  "raw": "'Unable to restore draft.'"
+                },
+                "value": "Unable to restore draft."
+              }
+            },
+            {
+              "type": "ObjectProperty",
+              "start": 2986,
+              "end": 3006,
+              "loc": {
+                "start": {
+                  "line": 62,
+                  "column": 2
+                },
+                "end": {
+                  "line": 62,
+                  "column": 22
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 2986,
+                "end": 2990,
+                "loc": {
+                  "start": {
+                    "line": 62,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 62,
                     "column": 6
                   },
                   "identifierName": "time"
@@ -3397,15 +3507,15 @@
               },
               "value": {
                 "type": "StringLiteral",
-                "start": 2900,
-                "end": 2914,
+                "start": 2992,
+                "end": 3006,
                 "loc": {
                   "start": {
-                    "line": 60,
+                    "line": 62,
                     "column": 8
                   },
                   "end": {
-                    "line": 60,
+                    "line": 62,
                     "column": 22
                   }
                 },
@@ -3418,15 +3528,15 @@
             },
             {
               "type": "ObjectProperty",
-              "start": 2918,
-              "end": 2981,
+              "start": 3010,
+              "end": 3073,
               "loc": {
                 "start": {
-                  "line": 61,
+                  "line": 63,
                   "column": 2
                 },
                 "end": {
-                  "line": 61,
+                  "line": 63,
                   "column": 65
                 }
               },
@@ -3435,15 +3545,15 @@
               "computed": false,
               "key": {
                 "type": "Identifier",
-                "start": 2918,
-                "end": 2939,
+                "start": 3010,
+                "end": 3031,
                 "loc": {
                   "start": {
-                    "line": 61,
+                    "line": 63,
                     "column": 2
                   },
                   "end": {
-                    "line": 61,
+                    "line": 63,
                     "column": 23
                   },
                   "identifierName": "cancelButtonAriaLabel"
@@ -3452,15 +3562,15 @@
               },
               "value": {
                 "type": "StringLiteral",
-                "start": 2941,
-                "end": 2981,
+                "start": 3033,
+                "end": 3073,
                 "loc": {
                   "start": {
-                    "line": 61,
+                    "line": 63,
                     "column": 25
                   },
                   "end": {
-                    "line": 61,
+                    "line": 63,
                     "column": 65
                   }
                 },
@@ -3473,15 +3583,15 @@
             },
             {
               "type": "ObjectProperty",
-              "start": 2985,
-              "end": 3064,
+              "start": 3077,
+              "end": 3156,
               "loc": {
                 "start": {
-                  "line": 62,
+                  "line": 64,
                   "column": 2
                 },
                 "end": {
-                  "line": 62,
+                  "line": 64,
                   "column": 81
                 }
               },
@@ -3490,15 +3600,15 @@
               "computed": false,
               "key": {
                 "type": "Identifier",
-                "start": 2985,
-                "end": 3008,
+                "start": 3077,
+                "end": 3100,
                 "loc": {
                   "start": {
-                    "line": 62,
+                    "line": 64,
                     "column": 2
                   },
                   "end": {
-                    "line": 62,
+                    "line": 64,
                     "column": 25
                   },
                   "identifierName": "previousButtonAriaLabel"
@@ -3507,15 +3617,15 @@
               },
               "value": {
                 "type": "StringLiteral",
-                "start": 3009,
-                "end": 3064,
+                "start": 3101,
+                "end": 3156,
                 "loc": {
                   "start": {
-                    "line": 62,
+                    "line": 64,
                     "column": 26
                   },
                   "end": {
-                    "line": 62,
+                    "line": 64,
                     "column": 81
                   }
                 },
@@ -3528,15 +3638,15 @@
             },
             {
               "type": "ObjectProperty",
-              "start": 3068,
-              "end": 3130,
+              "start": 3160,
+              "end": 3222,
               "loc": {
                 "start": {
-                  "line": 63,
+                  "line": 65,
                   "column": 2
                 },
                 "end": {
-                  "line": 63,
+                  "line": 65,
                   "column": 64
                 }
               },
@@ -3545,15 +3655,15 @@
               "computed": false,
               "key": {
                 "type": "Identifier",
-                "start": 3068,
-                "end": 3087,
+                "start": 3160,
+                "end": 3179,
                 "loc": {
                   "start": {
-                    "line": 63,
+                    "line": 65,
                     "column": 2
                   },
                   "end": {
-                    "line": 63,
+                    "line": 65,
                     "column": 21
                   },
                   "identifierName": "nextButtonAriaLabel"
@@ -3562,15 +3672,15 @@
               },
               "value": {
                 "type": "StringLiteral",
-                "start": 3088,
-                "end": 3130,
+                "start": 3180,
+                "end": 3222,
                 "loc": {
                   "start": {
-                    "line": 63,
+                    "line": 65,
                     "column": 22
                   },
                   "end": {
-                    "line": 63,
+                    "line": 65,
                     "column": 64
                   }
                 },
@@ -3583,15 +3693,15 @@
             },
             {
               "type": "ObjectProperty",
-              "start": 3134,
-              "end": 3202,
+              "start": 3226,
+              "end": 3294,
               "loc": {
                 "start": {
-                  "line": 64,
+                  "line": 66,
                   "column": 2
                 },
                 "end": {
-                  "line": 64,
+                  "line": 66,
                   "column": 70
                 }
               },
@@ -3600,15 +3710,15 @@
               "computed": false,
               "key": {
                 "type": "Identifier",
-                "start": 3134,
-                "end": 3155,
+                "start": 3226,
+                "end": 3247,
                 "loc": {
                   "start": {
-                    "line": 64,
+                    "line": 66,
                     "column": 2
                   },
                   "end": {
-                    "line": 64,
+                    "line": 66,
                     "column": 23
                   },
                   "identifierName": "submitButtonAriaLabel"
@@ -3617,15 +3727,15 @@
               },
               "value": {
                 "type": "StringLiteral",
-                "start": 3156,
-                "end": 3202,
+                "start": 3248,
+                "end": 3294,
                 "loc": {
                   "start": {
-                    "line": 64,
+                    "line": 66,
                     "column": 24
                   },
                   "end": {
-                    "line": 64,
+                    "line": 66,
                     "column": 70
                   }
                 },
@@ -10022,9 +10132,9 @@
         "postfix": false,
         "binop": null
       },
-      "value": "time",
+      "value": "saveDraftError",
       "start": 2894,
-      "end": 2898,
+      "end": 2908,
       "loc": {
         "start": {
           "line": 60,
@@ -10032,6 +10142,216 @@
         },
         "end": {
           "line": 60,
+          "column": 16
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2908,
+      "end": 2909,
+      "loc": {
+        "start": {
+          "line": 60,
+          "column": 16
+        },
+        "end": {
+          "line": 60,
+          "column": 17
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "Unable to save draft.",
+      "start": 2910,
+      "end": 2933,
+      "loc": {
+        "start": {
+          "line": 60,
+          "column": 18
+        },
+        "end": {
+          "line": 60,
+          "column": 41
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2933,
+      "end": 2934,
+      "loc": {
+        "start": {
+          "line": 60,
+          "column": 41
+        },
+        "end": {
+          "line": 60,
+          "column": 42
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "restoreDraftError",
+      "start": 2937,
+      "end": 2954,
+      "loc": {
+        "start": {
+          "line": 61,
+          "column": 2
+        },
+        "end": {
+          "line": 61,
+          "column": 19
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2954,
+      "end": 2955,
+      "loc": {
+        "start": {
+          "line": 61,
+          "column": 19
+        },
+        "end": {
+          "line": 61,
+          "column": 20
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "Unable to restore draft.",
+      "start": 2956,
+      "end": 2982,
+      "loc": {
+        "start": {
+          "line": 61,
+          "column": 21
+        },
+        "end": {
+          "line": 61,
+          "column": 47
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 2982,
+      "end": 2983,
+      "loc": {
+        "start": {
+          "line": 61,
+          "column": 47
+        },
+        "end": {
+          "line": 61,
+          "column": 48
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "time",
+      "start": 2986,
+      "end": 2990,
+      "loc": {
+        "start": {
+          "line": 62,
+          "column": 2
+        },
+        "end": {
+          "line": 62,
           "column": 6
         }
       }
@@ -10049,15 +10369,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2898,
-      "end": 2899,
+      "start": 2990,
+      "end": 2991,
       "loc": {
         "start": {
-          "line": 60,
+          "line": 62,
           "column": 6
         },
         "end": {
-          "line": 60,
+          "line": 62,
           "column": 7
         }
       }
@@ -10076,15 +10396,15 @@
         "updateContext": null
       },
       "value": "Invalid time",
-      "start": 2900,
-      "end": 2914,
+      "start": 2992,
+      "end": 3006,
       "loc": {
         "start": {
-          "line": 60,
+          "line": 62,
           "column": 8
         },
         "end": {
-          "line": 60,
+          "line": 62,
           "column": 22
         }
       }
@@ -10102,15 +10422,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2914,
-      "end": 2915,
+      "start": 3006,
+      "end": 3007,
       "loc": {
         "start": {
-          "line": 60,
+          "line": 62,
           "column": 22
         },
         "end": {
-          "line": 60,
+          "line": 62,
           "column": 23
         }
       }
@@ -10128,15 +10448,15 @@
         "binop": null
       },
       "value": "cancelButtonAriaLabel",
-      "start": 2918,
-      "end": 2939,
+      "start": 3010,
+      "end": 3031,
       "loc": {
         "start": {
-          "line": 61,
+          "line": 63,
           "column": 2
         },
         "end": {
-          "line": 61,
+          "line": 63,
           "column": 23
         }
       }
@@ -10154,15 +10474,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2939,
-      "end": 2940,
+      "start": 3031,
+      "end": 3032,
       "loc": {
         "start": {
-          "line": 61,
+          "line": 63,
           "column": 23
         },
         "end": {
-          "line": 61,
+          "line": 63,
           "column": 24
         }
       }
@@ -10181,15 +10501,15 @@
         "updateContext": null
       },
       "value": "Cancel button. Click to reset the form",
-      "start": 2941,
-      "end": 2981,
+      "start": 3033,
+      "end": 3073,
       "loc": {
         "start": {
-          "line": 61,
+          "line": 63,
           "column": 25
         },
         "end": {
-          "line": 61,
+          "line": 63,
           "column": 65
         }
       }
@@ -10207,15 +10527,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2981,
-      "end": 2982,
+      "start": 3073,
+      "end": 3074,
       "loc": {
         "start": {
-          "line": 61,
+          "line": 63,
           "column": 65
         },
         "end": {
-          "line": 61,
+          "line": 63,
           "column": 66
         }
       }
@@ -10233,15 +10553,15 @@
         "binop": null
       },
       "value": "previousButtonAriaLabel",
-      "start": 2985,
-      "end": 3008,
+      "start": 3077,
+      "end": 3100,
       "loc": {
         "start": {
-          "line": 62,
+          "line": 64,
           "column": 2
         },
         "end": {
-          "line": 62,
+          "line": 64,
           "column": 25
         }
       }
@@ -10259,15 +10579,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3008,
-      "end": 3009,
+      "start": 3100,
+      "end": 3101,
       "loc": {
         "start": {
-          "line": 62,
+          "line": 64,
           "column": 25
         },
         "end": {
-          "line": 62,
+          "line": 64,
           "column": 26
         }
       }
@@ -10286,15 +10606,15 @@
         "updateContext": null
       },
       "value": "Previous button. Click to go back to the previous tab",
-      "start": 3009,
-      "end": 3064,
+      "start": 3101,
+      "end": 3156,
       "loc": {
         "start": {
-          "line": 62,
+          "line": 64,
           "column": 26
         },
         "end": {
-          "line": 62,
+          "line": 64,
           "column": 81
         }
       }
@@ -10312,15 +10632,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3064,
-      "end": 3065,
+      "start": 3156,
+      "end": 3157,
       "loc": {
         "start": {
-          "line": 62,
+          "line": 64,
           "column": 81
         },
         "end": {
-          "line": 62,
+          "line": 64,
           "column": 82
         }
       }
@@ -10338,15 +10658,15 @@
         "binop": null
       },
       "value": "nextButtonAriaLabel",
-      "start": 3068,
-      "end": 3087,
+      "start": 3160,
+      "end": 3179,
       "loc": {
         "start": {
-          "line": 63,
+          "line": 65,
           "column": 2
         },
         "end": {
-          "line": 63,
+          "line": 65,
           "column": 21
         }
       }
@@ -10364,15 +10684,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3087,
-      "end": 3088,
+      "start": 3179,
+      "end": 3180,
       "loc": {
         "start": {
-          "line": 63,
+          "line": 65,
           "column": 21
         },
         "end": {
-          "line": 63,
+          "line": 65,
           "column": 22
         }
       }
@@ -10391,15 +10711,15 @@
         "updateContext": null
       },
       "value": "Next button. Click to go to the next tab",
-      "start": 3088,
-      "end": 3130,
+      "start": 3180,
+      "end": 3222,
       "loc": {
         "start": {
-          "line": 63,
+          "line": 65,
           "column": 22
         },
         "end": {
-          "line": 63,
+          "line": 65,
           "column": 64
         }
       }
@@ -10417,15 +10737,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3130,
-      "end": 3131,
+      "start": 3222,
+      "end": 3223,
       "loc": {
         "start": {
-          "line": 63,
+          "line": 65,
           "column": 64
         },
         "end": {
-          "line": 63,
+          "line": 65,
           "column": 65
         }
       }
@@ -10443,15 +10763,15 @@
         "binop": null
       },
       "value": "submitButtonAriaLabel",
-      "start": 3134,
-      "end": 3155,
+      "start": 3226,
+      "end": 3247,
       "loc": {
         "start": {
-          "line": 64,
+          "line": 66,
           "column": 2
         },
         "end": {
-          "line": 64,
+          "line": 66,
           "column": 23
         }
       }
@@ -10469,15 +10789,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3155,
-      "end": 3156,
+      "start": 3247,
+      "end": 3248,
       "loc": {
         "start": {
-          "line": 64,
+          "line": 66,
           "column": 23
         },
         "end": {
-          "line": 64,
+          "line": 66,
           "column": 24
         }
       }
@@ -10496,15 +10816,15 @@
         "updateContext": null
       },
       "value": "Submit Form button. Click to submit the form",
-      "start": 3156,
-      "end": 3202,
+      "start": 3248,
+      "end": 3294,
       "loc": {
         "start": {
-          "line": 64,
+          "line": 66,
           "column": 24
         },
         "end": {
-          "line": 64,
+          "line": 66,
           "column": 70
         }
       }
@@ -10522,15 +10842,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3202,
-      "end": 3203,
+      "start": 3294,
+      "end": 3295,
       "loc": {
         "start": {
-          "line": 64,
+          "line": 66,
           "column": 70
         },
         "end": {
-          "line": 64,
+          "line": 66,
           "column": 71
         }
       }
@@ -10547,15 +10867,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 3204,
-      "end": 3205,
+      "start": 3296,
+      "end": 3297,
       "loc": {
         "start": {
-          "line": 65,
+          "line": 67,
           "column": 0
         },
         "end": {
-          "line": 65,
+          "line": 67,
           "column": 1
         }
       }
@@ -10573,15 +10893,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3205,
-      "end": 3206,
+      "start": 3297,
+      "end": 3298,
       "loc": {
         "start": {
-          "line": 65,
+          "line": 67,
           "column": 1
         },
         "end": {
-          "line": 65,
+          "line": 67,
           "column": 2
         }
       }
@@ -10599,15 +10919,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3207,
-      "end": 3207,
+      "start": 3299,
+      "end": 3299,
       "loc": {
         "start": {
-          "line": 66,
+          "line": 68,
           "column": 0
         },
         "end": {
-          "line": 66,
+          "line": 68,
           "column": 0
         }
       }

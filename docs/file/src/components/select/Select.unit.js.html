@@ -220,7 +220,8 @@ import {
   comp17,
   comp18,
   comp19,
-  comp20
+  comp20,
+  comp21,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Select Component&apos;, () =&gt; {
@@ -1135,6 +1136,33 @@ describe(&apos;Select Component&apos;, () =&gt; {
           });
           done();
         }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;Should provide correct metadata.selectData for HTML5 Select&apos;, (done) =&gt; {
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, comp21).then(form =&gt; {
+      const select = form.getComponent(&apos;animals&apos;);
+      const checkbox = form.getComponent(&apos;checkbox&apos;);
+      const value = &apos;dog&apos;;
+      select.setValue(value);
+
+      setTimeout(()=&gt; {
+        checkbox.setValue(true);
+        setTimeout(() =&gt; {
+          const submit = form.getComponent(&apos;submit&apos;);
+          const clickEvent = new Event(&apos;click&apos;);
+          const submitBtn = submit.refs.button;
+          submitBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() =&gt; {
+            const metadata = form.submission.metadata.selectData.animals2;
+            assert.equal(metadata.label, &apos;Dog&apos;);
+            done();
+          }, 200);
+        }, 300);
       }, 200);
     }).catch(done);
   });
