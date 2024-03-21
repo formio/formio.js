@@ -113,11 +113,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Build
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build
-
       - name: Prepare version for publish
         id: prep
         run: |
