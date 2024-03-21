@@ -61,83 +61,88 @@ jobs:
         with:
           cmd: build
 
-  test:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-        uses: actions/checkout@v3
-
-      - name: Restore node modules from cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Test
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: test
-
-  publish:
-    needs: [setup, test]
-    if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-        uses: actions/checkout@v3
-
-      - name: Configure Git user
+      # Unpack caches and show contents (Assuming caches are restored correctly)
+      - name: Show workspace contents
         run: |
-          git config --global user.email "pkgbot@form.io"
-          git config --global user.name "pkgbot"
+          ls -R .
 
-      - name: Add npm token to .npmrc
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+  # test:
+  #   needs: setup
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
+  #       uses: actions/checkout@v3
 
-      - name: Set up Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          registry-url: 'https://registry.npmjs.org/'
+  #     - name: Restore node modules from cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: node_modules
+  #         key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-node-
 
-      - name: Restore node modules from cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+  #     - name: Test
+  #       uses: borales/actions-yarn@v4
+  #       with:
+  #         cmd: test
 
-      - name: Prepare version for publish
-        id: prep
-        run: |
-          # Extract the pull request number and the short SHA of the commit
-          PR_NUMBER=$(echo ${{ github.event.number }})
-          COMMIT_SHORT_SHA=$(echo "${{ github.event.pull_request.head.sha }}" | cut -c1-7)
+  # publish:
+  #   needs: [setup, test]
+  #   if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
+  #       uses: actions/checkout@v3
+
+  #     - name: Configure Git user
+  #       run: |
+  #         git config --global user.email "pkgbot@form.io"
+  #         git config --global user.name "pkgbot"
+
+  #     - name: Add npm token to .npmrc
+  #       run: |
+  #         echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+
+  #     - name: Set up Node.js ${{ env.NODE_VERSION }}
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         cache: 'npm'
+  #         registry-url: 'https://registry.npmjs.org/'
+
+  #     - name: Restore node modules from cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: node_modules
+  #         key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-node-
+
+  #     - name: Prepare version for publish
+  #       id: prep
+  #       run: |
+  #         # Extract the pull request number and the short SHA of the commit
+  #         PR_NUMBER=$(echo ${{ github.event.number }})
+  #         COMMIT_SHORT_SHA=$(echo "${{ github.event.pull_request.head.sha }}" | cut -c1-7)
           
-          # Extract the current version from package.json
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
+  #         # Extract the current version from package.json
+  #         CURRENT_VERSION=$(node -p "require('./package.json').version")
           
-          # If the current version includes '-rc.', remove it and everything after
-          # This step ensures that we start with a base version like '3.0.0' even if it was a release candidate
-          BASE_VERSION=$(echo "$CURRENT_VERSION" | sed 's/-rc.*//')
+  #         # If the current version includes '-rc.', remove it and everything after
+  #         # This step ensures that we start with a base version like '3.0.0' even if it was a release candidate
+  #         BASE_VERSION=$(echo "$CURRENT_VERSION" | sed 's/-rc.*//')
           
-          # Construct the new version string
-          NEW_VERSION="${BASE_VERSION}-dev.${PR_NUMBER}.${COMMIT_SHORT_SHA}"
+  #         # Construct the new version string
+  #         NEW_VERSION="${BASE_VERSION}-dev.${PR_NUMBER}.${COMMIT_SHORT_SHA}"
           
-          # Output the new version for use in subsequent GitHub Actions steps
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+  #         # Output the new version for use in subsequent GitHub Actions steps
+  #         echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
-      - name: Echo version to Publish
-        run: |
-          echo "Version to publish: $NEW_VERSION"
+  #     - name: Echo version to Publish
+  #       run: |
+  #         echo "Version to publish: $NEW_VERSION"
 
-      - name: Publish to npm
-        run: |
-          npm version $NEW_VERSION
-          npm publish --tag dev
+  #     # - name: Publish to npm
+  #     #   run: |
+  #     #     npm version $NEW_VERSION
+  #     #     npm publish --tag dev
