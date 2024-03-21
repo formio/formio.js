@@ -1,4 +1,4 @@
-name: Build / Test / Publish
+name: Build, Test, Publish
 
 on:
   pull_request:
@@ -130,7 +130,7 @@ jobs:
           
           # If the current version includes '-rc.', remove it and everything after
           # This step ensures that we start with a base version like '3.0.0' even if it was a release candidate
-          BASE_VERSION=$(echo "$CURRENT_VERSION" | sed 's/-rc.*//')
+          BASE_VERSION=$(echo "$CURRENT_VERSION" | cut -d'-' -f1)
           
           # Construct the new version string
           NEW_VERSION="${BASE_VERSION}-dev.${PR_NUMBER}.${COMMIT_SHORT_SHA}"
