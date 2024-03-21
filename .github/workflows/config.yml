@@ -61,18 +61,6 @@ jobs:
         with:
           cmd: build
 
-      - name: Upload dist folder
-        uses: actions/upload-artifact@v2
-        with:
-          name: dist
-          path: dist/
-          
-      - name: Upload lib folder
-        uses: actions/upload-artifact@v2
-        with:
-          name: lib
-          path: lib/
-
   test:
     needs: setup
     runs-on: ubuntu-latest
@@ -101,16 +89,6 @@ jobs:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
         uses: actions/checkout@v3
 
-      - name: Download dist folder
-        uses: actions/download-artifact@v2
-        with:
-          name: dist
-          
-      - name: Download lib folder
-        uses: actions/download-artifact@v2
-        with:
-          name: lib
-
       - name: Configure Git user
         run: |
           git config --global user.email "pkgbot@form.io"
@@ -126,6 +104,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org/'
+
+      - name: Build
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
 
       - name: Prepare version for publish
         id: prep
