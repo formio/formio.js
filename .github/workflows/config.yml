@@ -105,6 +105,14 @@ jobs:
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org/'
 
+      - name: Restore node modules from cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Build
         uses: borales/actions-yarn@v4
         with:
