@@ -240,7 +240,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   get canAddColumn() {
-    return this.builderMode;
+    return this.builderMode && !this.options.design;
   }
 
   render() {
