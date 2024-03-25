@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7421: Adds ReCaptcha error messages to the translations config
  - FIO-7804: Added PKCE method for OIDC
  - FIO-7675: Removed maps key from repo
+ - FIO-2453: Fixes an issue where custom disabled dates are not recalculated
+ - FIO-7395: Fixed the issue with loading nested form 
 
 ## 5.0.0-rc.37
 ### Fixed
