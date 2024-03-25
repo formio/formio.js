@@ -487,7 +487,13 @@ export default class FormComponent extends Component {
     }
     else if (this.formSrc) {
       this.subFormLoading = true;
-      return (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
+      const options = this.root.formio?.base && this.root.formio?.projectUrl
+        ? {
+            base: this.root.formio.base,
+            project: this.root.formio.projectUrl,
+          }
+        : {};
+      return (new Formio(this.formSrc, options)).loadForm({ params: { live: 1 } })
         .then((formObj) => {
           this.formObj = formObj;
           if (this.options.pdf && this.component.useOriginalRevision) {
@@ -688,7 +694,13 @@ export default class FormComponent extends Component {
     if (shouldLoadSubmissionById) {
       const formId = submission.form || this.formObj.form || this.component.form;
       const submissionUrl = `${this.subForm.formio.formsUrl}/${formId}/submission/${submission._id}`;
-      this.subForm.setUrl(submissionUrl, this.options);
+      const options = this.root.formio?.base && this.root.formio?.projectUrl
+      ? {
+          base: this.root.formio.base,
+          project: this.root.formio.projectUrl,
+        }
+      : {};
+      this.subForm.setUrl(submissionUrl, { ...this.options, ...options });
       this.subForm.loadSubmission().catch((err) => {
         console.error(`Unable to load subform submission ${submission._id}:`, err);
       });
