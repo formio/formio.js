@@ -220,6 +220,12 @@ export default class FormComponent extends Component {
     if (this.options.preview) {
       options.preview = this.options.preview;
     }
+    if (this.options.saveDraft) {
+      options.saveDraft = this.options.saveDraft;
+    }
+    if (this.options.saveDraftThrottle) {
+      options.saveDraftThrottle = this.options.saveDraftThrottle;
+    }
     return options;
   }
 
@@ -448,6 +454,8 @@ export default class FormComponent extends Component {
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
         this.subForm.localRoot = this.isNestedWizard ? this.localRoot : this.subForm;
+        this.subForm.draftEnabled = this.parent.draftEnabled;
+        this.subForm.savingDraft = this.parent.savingDraft;
         this.restoreValue();
         this.valueChanged = this.hasSetValue;
         this.onChange();
