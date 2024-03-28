@@ -457,6 +457,10 @@ export default class FormComponent extends Component {
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
         this.subForm.localRoot = this.isNestedWizard ? this.localRoot : this.subForm;
+        if (this.parent) {
+          this.subForm.draftEnabled = this.parent.draftEnabled;
+          this.subForm.savingDraft = this.parent.savingDraft;
+        }
         this.restoreValue();
         this.valueChanged = this.hasSetValue;
         this.onChange();
