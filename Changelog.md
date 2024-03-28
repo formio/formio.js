@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7807: added sanitizeConfig to global form settings
  - FIO-7334: Fixes an issue where Radio values do not appear for Action Conditions settings
  - FIO-8009: fixed display of the required asterisk
+ - FIO-8111: fixed saveDraft Trigger for nested forms
 
 ## 5.0.0-rc.37
 ### Fixed
