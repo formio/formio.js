@@ -90,7 +90,17 @@ export default class FormComponent extends Component {
     if (!this.formSrc && this.options.formio) {
       const rootSrc = this.options.formio.formsUrl;
       if (this.component.form && isMongoId(this.component.form)) {
-        this.formSrc = `${rootSrc}/${this.component.form}`;
+        if (
+          this.parent.form?.project &&
+          !isMongoId(this.options.formio.formId) &&
+          this.options.formio.formId !==this.parent.form.path &&
+          this.options.formio.formId.split('/').includes(this.parent.form.path)
+        ) {
+          this.formSrc = `${this.options.formio.projectUrl}/project/${this.parent.form.project}/form/${this.component.form}`;
+        }
+        else {
+          this.formSrc = `${rootSrc}/${this.component.form}`;
+        }
       }
       else {
         const formPath = this.component.path || this.component.form;
