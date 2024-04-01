@@ -324,6 +324,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "formiojs/src/components/html/html.js~htmlcomponent",
+    "class/src/components/html/HTML.js~HTMLComponent.html",
+    "<span>HTMLComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/html/HTML.js</span>",
+    "class"
+  ],
+  [
     "formiojs/src/components/hidden/hidden.form.js~hidden",
     "function/index.html#static-function-Hidden",
     "<span>Hidden</span> <span class=\"search-result-import-path\">formiojs/src/components/hidden/Hidden.form.js</span>",
@@ -4426,6 +4432,72 @@ window.esdocSearchIndex = [
     "file/src/components/html/HTML.form.js.html",
     "src/components/html/HTML.form.js",
     "file"
+  ],
+  [
+    "src/components/html/html.js",
+    "file/src/components/html/HTML.js.html",
+    "src/components/html/HTML.js",
+    "file"
+  ],
+  [
+    "src/components/html/html.js~htmlcomponent#attach",
+    "class/src/components/html/HTML.js~HTMLComponent.html#instance-method-attach",
+    "src/components/html/HTML.js~HTMLComponent#attach",
+    "method"
+  ],
+  [
+    "src/components/html/html.js~htmlcomponent#checkrefreshon",
+    "class/src/components/html/HTML.js~HTMLComponent.html#instance-method-checkRefreshOn",
+    "src/components/html/HTML.js~HTMLComponent#checkRefreshOn",
+    "method"
+  ],
+  [
+    "src/components/html/html.js~htmlcomponent#content",
+    "class/src/components/html/HTML.js~HTMLComponent.html#instance-get-content",
+    "src/components/html/HTML.js~HTMLComponent#content",
+    "member"
+  ],
+  [
+    "src/components/html/html.js~htmlcomponent#defaultschema",
+    "class/src/components/html/HTML.js~HTMLComponent.html#instance-get-defaultSchema",
+    "src/components/html/HTML.js~HTMLComponent#defaultSchema",
+    "member"
+  ],
+  [
+    "src/components/html/html.js~htmlcomponent#render",
+    "class/src/components/html/HTML.js~HTMLComponent.html#instance-method-render",
+    "src/components/html/HTML.js~HTMLComponent#render",
+    "method"
+  ],
+  [
+    "src/components/html/html.js~htmlcomponent#rendercontent",
+    "class/src/components/html/HTML.js~HTMLComponent.html#instance-method-renderContent",
+    "src/components/html/HTML.js~HTMLComponent#renderContent",
+    "method"
+  ],
+  [
+    "src/components/html/html.js~htmlcomponent#singletags",
+    "class/src/components/html/HTML.js~HTMLComponent.html#instance-get-singleTags",
+    "src/components/html/HTML.js~HTMLComponent#singleTags",
+    "member"
+  ],
+  [
+    "src/components/html/html.js~htmlcomponent.builderinfo",
+    "class/src/components/html/HTML.js~HTMLComponent.html#static-get-builderInfo",
+    "src/components/html/HTML.js~HTMLComponent.builderInfo",
+    "member"
+  ],
+  [
+    "src/components/html/html.js~htmlcomponent.savedvaluetypes",
+    "class/src/components/html/HTML.js~HTMLComponent.html#static-method-savedValueTypes",
+    "src/components/html/HTML.js~HTMLComponent.savedValueTypes",
+    "method"
+  ],
+  [
+    "src/components/html/html.js~htmlcomponent.schema",
+    "class/src/components/html/HTML.js~HTMLComponent.html#static-method-schema",
+    "src/components/html/HTML.js~HTMLComponent.schema",
+    "method"
   ],
   [
     "src/components/html/html.unit.js",
