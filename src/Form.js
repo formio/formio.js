@@ -161,6 +161,38 @@ export default class Form extends Element {
     };
   }
 
+  /**
+  * Check Subdirectories path and provide correct options
+  *
+  * @param {string} url - The the URL of the form json.
+  * @param {form} object - The form json.
+  * @return {object} The initial options with base and project.
+  */
+  getFormInitOptions(url, form) {
+    const options = {};
+    const index = url.indexOf(form?.path);
+    // form url doesn't include form path
+    if (index === -1) {
+      return options;
+    }
+    const projectUrl = url.substring(0, index - 1);
+    const urlParts = Formio.getUrlParts(projectUrl);
+    // project url doesn't include subdirectories path
+    if (!urlParts || urlParts.filter(part => !!part).length < 4) {
+      return options;
+    }
+    const baseUrl = `${urlParts[1]}${urlParts[2]}`;
+    // Skip if baseUrl has already been set
+    if (baseUrl !== Formio.baseUrl) {
+      return {
+        base: baseUrl,
+        project: projectUrl,
+      };
+    }
+
+    return {};
+  }
+
   setForm(formParam) {
     let result;
     formParam = formParam || this.form;
@@ -185,7 +217,8 @@ export default class Form extends Element {
               }
               this.loading = false;
               this.instance = this.instance || this.create(form.display);
-              this.instance.url = formParam;
+              const options = this.getFormInitOptions(formParam, form);
+              this.instance.setUrl(formParam, options);
               this.instance.nosubmit = false;
               this._form = this.instance.form = form;
               if (submission) {

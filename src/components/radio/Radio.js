@@ -48,6 +48,23 @@ export default class RadioComponent extends ListComponent {
     };
   }
 
+  static get serverConditionSettings() {
+    return {
+      ...super.serverConditionSettings,
+      valueComponent(classComp) {
+        return {
+          type: 'select',
+          dataSrc: 'custom',
+          valueProperty: 'value',
+          dataType: classComp.dataType || '',
+          data: {
+            custom: `values = ${classComp && classComp.values ? JSON.stringify(classComp.values) : []}`,
+          },
+        };
+      },
+    };
+  }
+
   static savedValueTypes(schema) {
     const { boolean, string, number, object, array } = componentValueTypes;
     const { dataType } = schema;

@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import ComponentModal from '../_classes/componentModal/ComponentModal';
@@ -220,6 +221,12 @@ export default class FormComponent extends Component {
     }
     if (this.options.inEditGrid) {
       options.inEditGrid = this.options.inEditGrid;
+    }
+    if (this.options.saveDraft) {
+      options.saveDraft = this.options.saveDraft;
+    }
+    if (this.options.saveDraftThrottle) {
+      options.saveDraftThrottle = this.options.saveDraftThrottle;
     }
     return options;
   }
@@ -449,6 +456,10 @@ export default class FormComponent extends Component {
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
         this.subForm.localRoot = this.isNestedWizard ? this.localRoot : this.subForm;
+        if (this.parent) {
+          this.subForm.draftEnabled = this.parent.draftEnabled;
+          this.subForm.savingDraft = this.parent.savingDraft;
+        }
         this.restoreValue();
         this.valueChanged = this.hasSetValue;
         this.onChange();
@@ -489,7 +500,13 @@ export default class FormComponent extends Component {
     }
     else if (this.formSrc) {
       this.subFormLoading = true;
-      return (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
+      const options = this.root.formio?.base && this.root.formio?.projectUrl
+        ? {
+            base: this.root.formio.base,
+            project: this.root.formio.projectUrl,
+          }
+        : {};
+      return (new Formio(this.formSrc, options)).loadForm({ params: { live: 1 } })
         .then((formObj) => {
           this.formObj = formObj;
           if (this.options.pdf && this.component.useOriginalRevision) {
@@ -686,7 +703,13 @@ export default class FormComponent extends Component {
     if (shouldLoadSubmissionById) {
       const formId = submission.form || this.formObj.form || this.component.form;
       const submissionUrl = `${this.subForm.formio.formsUrl}/${formId}/submission/${submission._id}`;
-      this.subForm.setUrl(submissionUrl, this.options);
+      const options = this.root.formio?.base && this.root.formio?.projectUrl
+      ? {
+          base: this.root.formio.base,
+          project: this.root.formio.projectUrl,
+        }
+      : {};
+      this.subForm.setUrl(submissionUrl, { ...this.options, ...options });
       this.subForm.loadSubmission().catch((err) => {
         console.error(`Unable to load subform submission ${submission._id}:`, err);
       });
