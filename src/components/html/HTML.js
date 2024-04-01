@@ -92,17 +92,8 @@ export default class HTMLComponent extends Component {
     return super.render(this.renderContent());
   }
 
-  get dataReady() {
-    return this.root?.submissionReady || Promise.resolve();
-  }
-
   attach(element) {
     this.loadRefs(element, { html: 'single' });
-    this.dataReady.then(() => {
-      if (this.element) {
-        this.setContent(this.elemet, this.content);
-      }
-    });
     return super.attach(element);
   }
 }
