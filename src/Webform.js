@@ -1147,7 +1147,7 @@ export default class Webform extends NestedDataComponent {
       errors = [errors];
     }
 
-    errors = errors.concat(this.customErrors);
+    errors = errors.concat(this.customErrors).filter((err) => !!err);
 
     if (!errors.length) {
       this.setAlert(false);
