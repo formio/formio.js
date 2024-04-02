@@ -31,7 +31,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
   {% if page.formioFull == nil %}
     {% if page.noFormio == nil %}
-      <script src="{{ site.baseurl }}dist/formio.min.js"></script>
+      <script src="{{ site.baseurl }}dist/formio.js"></script>
       <script type="text/javascript">
         Formio.config.cdnUrls = {
           js: {
