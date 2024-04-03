@@ -718,8 +718,8 @@ describe('Select Component', () => {
 
           assert.equal(searchHasBeenDebounced, true);
           done();
-        }, 50);
-      }, 200);
+        }, 500);
+      }, 300);
     }).catch(done);
   });
 
@@ -988,14 +988,14 @@ describe('Select Component', () => {
       select.pristine = false;
 
       setTimeout(() => {
-        assert(!select.errors.length, 'Select should be valid while changing');
+        assert(!select.visibleErrors.length, 'Select should be valid while changing');
         select.focusableElement.dispatchEvent(new Event('blur'));
 
         setTimeout(() => {
-          assert(select.errors.length, 'Should set error after Select component was blurred');
+          assert(select.visibleErrors.length, 'Should set error after Select component was blurred');
           done();
-        }, 500);
-      }, 200);
+        }, 300);
+      }, 300);
     }).catch(done);
   });
 

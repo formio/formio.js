@@ -1221,6 +1221,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
         else {
           this.alert.clear();
+          this.alert = null;
         }
       }
     }

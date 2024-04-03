@@ -1139,10 +1139,7 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   /* eslint-disable no-unused-vars */
-  showErrors(errors, triggerEvent, onChange) {
-    if (!errors) {
-      return;
-    }
+  showErrors(errors, triggerEvent) {
     this.loading = false;
     if (!Array.isArray(errors)) {
       errors = [errors];
