@@ -794,12 +794,13 @@ export default class Webform extends NestedDataComponent {
    * @param {userId} - The user id where we need to restore the draft from.
    */
   restoreDraft(userId) {
-    if (!this.formio) {
+    const formio = this.formio || this.options.formio;
+    if (!formio) {
       this.handleDraftError('restoreDraftInstanceError', null, true);
       return;
     }
     this.savingDraft = true;
-    this.formio.loadSubmissions({
+    formio.loadSubmissions({
       params: {
         state: 'draft',
         owner: userId

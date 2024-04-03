@@ -164,6 +164,7 @@ export default class FormComponent extends Component {
     }
   }
 
+  /* eslint-disable max-statements */
   getSubOptions(options = {}) {
     options.parentPath = `${this.path}.data.`;
     options.events = this.createEmitter();
@@ -221,12 +222,14 @@ export default class FormComponent extends Component {
     }
     if (this.options.saveDraft) {
       options.saveDraft = this.options.saveDraft;
+      options.formio = new Formio(this.formSrc);
     }
     if (this.options.saveDraftThrottle) {
       options.saveDraftThrottle = this.options.saveDraftThrottle;
     }
     return options;
   }
+  /* eslint-enable max-statements */
 
   render() {
     if (this.builderMode) {
@@ -453,10 +456,6 @@ export default class FormComponent extends Component {
         this.subForm.nosubmit = true;
         this.subForm.root = this.root;
         this.subForm.localRoot = this.isNestedWizard ? this.localRoot : this.subForm;
-        if (this.parent) {
-          this.subForm.draftEnabled = this.parent.draftEnabled;
-          this.subForm.savingDraft = this.parent.savingDraft;
-        }
         this.restoreValue();
         this.valueChanged = this.hasSetValue;
         this.onChange();
