@@ -640,7 +640,7 @@ export default class FormComponent extends Component {
   beforeSubmit() {
     const submission = this.dataValue;
     // Cancel triggered saveDraft
-    if (this.subForm.draftEnabled && this.subForm.triggerSaveDraft?.cancel) {
+    if (this.subForm?.draftEnabled && this.subForm.triggerSaveDraft?.cancel) {
       this.subForm.triggerSaveDraft.cancel();
     }
 
