@@ -7,7 +7,7 @@ import nestedDataCompWithModalPreview from '../../../../test/forms/nestedDataWit
 
 let component = null;
 describe('NestedDataComponent class', () => {
-  it('Should create a new NestedDataComponent class', (done) => {
+  it('Should create a new NestedDataComponent class', () => {
     return Harness.testCreate(NestedDataComponent, {
       // key: 'nested',
       components: [
@@ -28,7 +28,7 @@ describe('NestedDataComponent class', () => {
       Harness.testElements(component, 'input[name="data[lastName]"]', 1);
     });
   });
-  it('Should show preview of the modal view component properly', () => {
+  it('Should show preview of the modal view component properly', (done) => {
     Formio.createForm(document.createElement('div'), nestedDataCompWithModalPreview)
       .then((form) => {
         const openModalBtn = form.element.querySelector('.open-modal-button');
