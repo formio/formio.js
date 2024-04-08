@@ -80,7 +80,7 @@ export default class NestedDataComponent extends NestedComponent {
 
     const htmlTagRegExp = new RegExp('<(.*?)>');
 
-    this.components.forEach((component) => {
+    this.everyComponent((component) => {
       if (component.isInputComponent && component.visible && !component.skipInEmail) {
         const componentValue = component.getView(component.dataValue, options);
         result += (`

@@ -207,7 +207,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
   }
 
   getComponents(rowIndex) {
-    if (rowIndex !== undefined) {
+    if (rowIndex !== undefined && rowIndex !== null) {
       if (!this.iteratableRows[rowIndex]) {
         return [];
       }
