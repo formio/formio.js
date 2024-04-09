@@ -1194,22 +1194,27 @@ export default class Component extends Element {
     }
   }
 
+  createTooltip(tooltipEl,  settings = {}) {
+    const tooltipAttribute = tooltipEl.getAttribute('data-tooltip');
+    const tooltipDataTitle = tooltipEl.getAttribute('data-title');
+    const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
+                            .replace(/(?:\r\n|\r|\n)/g, '<br />');
+
+    return tippy(tooltipEl, {
+      allowHTML: true,
+      trigger: 'mouseenter click focus',
+      placement: 'right',
+      zIndex: 10000,
+      interactive: true,
+      ...settings,
+      content: this.t(this.sanitize(tooltipText), { _userInput: true }),
+    });
+  }
+
   attachTooltips(toolTipsRefs) {
     toolTipsRefs?.forEach((tooltip, index) => {
       if (tooltip) {
-        const tooltipAttribute = tooltip.getAttribute('data-tooltip');
-        const tooltipDataTitle = tooltip.getAttribute('data-title');
-        const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
-                                .replace(/(?:\r\n|\r|\n)/g, '<br />');
-
-        this.tooltips[index] = tippy(tooltip, {
-          allowHTML: true,
-          trigger: 'mouseenter click focus',
-          placement: 'right',
-          zIndex: 10000,
-          interactive: true,
-          content: this.t(this.sanitize(tooltipText), { _userInput: true }),
-        });
+        this.tooltips[index] = this.createTooltip(tooltip);
       }
     });
   }

@@ -681,14 +681,7 @@ export default class Webform extends NestedDataComponent {
       return NativePromise.resolve();
     }
 
-    // Allow the form to provide component overrides.
-    if (form && form.settings && form.settings.components) {
-      this.options.components = form.settings.components;
-    }
-
-    if (form && form.properties) {
-      this.options.properties = form.properties;
-    }
+    this.setFormOptions(form);
 
     if ('schema' in form && compareVersions(form.schema, '1.x') > 0) {
       this.ready.then(() => {
@@ -735,6 +728,22 @@ export default class Webform extends NestedDataComponent {
     });
   }
 
+   /**
+   * Sets options from the JSON schema .
+   *
+   * @param {Object} form - The JSON schema of the form.
+   * @returns {void}
+   */
+  setFormOptions(form) {
+       // Allow the form to provide component overrides.
+      if (form && form.settings && form.settings.components) {
+        this.options.components = form.settings.components;
+      }
+
+      if (form && form.properties) {
+        this.options.properties = form.properties;
+      }
+  }
   /**
    * Gets the form object.
    *
