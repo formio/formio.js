@@ -33,7 +33,7 @@ describe('HTML Component', () => {
     });
   });
 
-  it('Should not execute scripts inside HTML component', (done) => {
+  it('Should not execute scripts inside HTML component, but execute interpolation properly', (done) => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
 
@@ -41,7 +41,19 @@ describe('HTML Component', () => {
     form.setForm(comp3).then(() => {
       setTimeout(() => {
         assert.equal(alert.callCount, 0);
-        done();
+        const div = form.element.querySelector('.myClass');
+        assert.equal(div.innerHTML.trim(), 'No Text');
+
+        const textField = form.getComponent(['textField']);
+        textField.setValue('apple', { modified: true });
+
+        setTimeout(() => {
+          const div = form.element.querySelector('.myClass');
+
+          assert.equal(div.innerHTML.trim(), 'apple');
+          assert.equal(div.className, 'myClass apple-class');
+          done();
+        }, 400);
       }, 200);
     })
       .catch(done);

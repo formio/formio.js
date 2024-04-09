@@ -3,6 +3,14 @@ export default {
   display: 'form',
   components: [
     {
+      label: 'Text Field',
+      applyMaskOn: 'change',
+      tableView: true,
+      key: 'textField',
+      type: 'textfield',
+      input: true,
+    },
+    {
       label: 'HTML',
       attrs: [
         {
@@ -10,8 +18,9 @@ export default {
           value: '',
         },
       ],
-      content: '<img src=1 onerror=alert("htmlContent")>',
-      refreshOnChange: false,
+      content: '<img src=1 onerror=alert("htmlContent")>\n<div class="myClass {{data.textField + \'-class\'}}">{{' +
+        ' data.textField ? data.textField : \'No Text\'}}</div>',
+      refreshOnChange: true,
       key: 'html',
       type: 'htmlelement',
       input: false,
