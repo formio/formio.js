@@ -846,8 +846,8 @@ body.formio-dialog-open {
   color:#EB0000;
 }
 
-.formio-component-radio.formio-component-label-hidden.required .label-position-right.form-check-label:before,
-.formio-component-selectboxes.formio-component-label-hidden.required .label-position-right.form-check-label:before {
+.formio-component-radio.formio-component-label-hidden.required .form-check .label-position-right.form-check-label:before,
+.formio-component-selectboxes.formio-component-label-hidden.required .form-check .label-position-right.form-check-label:before {
   right: 20px;
 }
 
@@ -896,7 +896,7 @@ body.formio-dialog-open {
 
 .formio-component .table {
   margin-bottom: 0;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .formio-component-htmlelement {
@@ -999,7 +999,7 @@ body.formio-dialog-open {
 
 .datagrid-table {
   &>tbody>tr>td {
-    word-break: break-all;
+    word-break: auto-phrase;
   }
 }
 

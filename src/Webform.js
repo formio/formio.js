@@ -216,11 +216,13 @@ export default class Webform extends NestedDataComponent {
 
     // See if we need to restore the draft from a user.
     if (this.options.saveDraft && !this.options.skipDraftRestore) {
-      const user = Formio.getUser();
-      // Only restore a draft if the submission isn't explicitly set.
-      if (user && !this.submissionSet) {
-        this.restoreDraft(user._id);
-      }
+      this.formReady.then(()=> {
+        const user = Formio.getUser();
+        // Only restore a draft if the submission isn't explicitly set.
+        if (user && !this.submissionSet) {
+          this.restoreDraft(user._id);
+        }
+      });
     }
 
     this.component.clearOnHide = false;
@@ -613,6 +615,10 @@ export default class Webform extends NestedDataComponent {
     if (form && form.properties) {
       this.options.properties = form.properties;
     }
+    // Use the sanitize config from the form settings or the global sanitize config if it is not provided in the options
+    if (!this.options.sanitizeConfig && !this.builderMode) {
+      this.options.sanitizeConfig = _.get(form, 'settings.sanitizeConfig') || _.get(form, 'globalSettings.sanitizeConfig');
+    }
 
     if ('schema' in form && compareVersions(form.schema, '1.x') > 0) {
       this.ready.then(() => {
@@ -742,6 +748,12 @@ export default class Webform extends NestedDataComponent {
     );
   }
 
+  handleDraftError(errName, errDetails, restoreDraft) {
+    const errorMessage = _.trim(`${this.t(errName)} ${errDetails || ''}`);
+    console.warn(errorMessage);
+    this.emit(restoreDraft ? 'restoreDraftError' : 'saveDraftError', errDetails || errorMessage);
+  }
+
   /**
    * Saves a submission draft.
    */
@@ -750,11 +762,11 @@ export default class Webform extends NestedDataComponent {
       return;
     }
     if (!this.formio) {
-      console.warn(this.t('saveDraftInstanceError'));
+      this.handleDraftError('saveDraftInstanceError');
       return;
     }
     if (!Formio.getUser()) {
-      console.warn(this.t('saveDraftAuthError'));
+      this.handleDraftError('saveDraftAuthError');
       return;
     }
     const draft = fastCloneDeep(this.submission);
@@ -768,6 +780,10 @@ export default class Webform extends NestedDataComponent {
         this.submission._id = sub._id;
         this.savingDraft = false;
         this.emit('saveDraft', sub);
+      })
+      .catch(err => {
+        this.savingDraft = false;
+        this.handleDraftError('saveDraftError', err);
       });
     }
   }
@@ -778,12 +794,13 @@ export default class Webform extends NestedDataComponent {
    * @param {userId} - The user id where we need to restore the draft from.
    */
   restoreDraft(userId) {
-    if (!this.formio) {
-      console.warn(this.t('restoreDraftInstanceError'));
+    const formio = this.formio || this.options.formio;
+    if (!formio) {
+      this.handleDraftError('restoreDraftInstanceError', null, true);
       return;
     }
     this.savingDraft = true;
-    this.formio.loadSubmissions({
+    formio.loadSubmissions({
       params: {
         state: 'draft',
         owner: userId
@@ -801,6 +818,11 @@ export default class Webform extends NestedDataComponent {
       this.draftEnabled = true;
       this.savingDraft = false;
       this.emit('restoreDraft', null);
+    })
+    .catch(err => {
+      this.draftEnabled = true;
+      this.savingDraft = false;
+      this.handleDraftError('restoreDraftError', err, true);
     });
   }
 
@@ -1012,7 +1034,7 @@ export default class Webform extends NestedDataComponent {
   resetValue() {
     _.each(this.getComponents(), (comp) => (comp.resetValue()));
     this.setPristine(true);
-    this.onChange();
+    this.onChange({ resetValue: true });
   }
 
   /**
@@ -1133,7 +1155,6 @@ export default class Webform extends NestedDataComponent {
     }
 
     errors = errors.concat(this.customErrors);
-    errors = errors.concat(this.serverErrors || []);
 
     if (!errors.length) {
       this.setAlert(false);
@@ -1276,7 +1297,7 @@ export default class Webform extends NestedDataComponent {
 
     this.submitting = false;
     this.setPristine(false);
-    this.emit('submitError', error);
+    this.emit('submitError', error || this.errors);
 
     // Allow for silent cancellations (no error message, no submit button error state)
     if (error && error.silent) {
@@ -1284,13 +1305,8 @@ export default class Webform extends NestedDataComponent {
       return false;
     }
 
-    let errors;
-    if (this.submitted) {
-      errors = this.showErrors();
-    }
-    else {
-      errors = this.showErrors(error, true);
-    }
+    const  errors = this.showErrors(error, true);
+
     if (this.root && this.root.alert) {
       this.scrollIntoView(this.root.alert);
     }
@@ -1323,7 +1339,9 @@ export default class Webform extends NestedDataComponent {
     value.isValid = this.checkData(value.data, flags);
     this.loading = false;
     if (this.submitted) {
-      this.showErrors();
+      // show server errors while they are not cleaned/fixed
+      const nonComponentServerErrors = _.filter(this.serverErrors || [], err => !err.component && !err.path);
+      this.showErrors(nonComponentServerErrors.length ? nonComponentServerErrors : null);
     }
 
     // See if we need to save the draft of the form.

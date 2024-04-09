@@ -662,8 +662,8 @@ export default class FileComponent extends Field {
     }
     valid = pattern.excludes.reduce((result, excludePattern) => {
       const exclude = new RegExp(excludePattern, 'i');
-      return result && (_.isNil(file.type) || !exclude.test(file.type)) &&
-        (_.isNil(file.name) || !exclude.test(file.name));
+      return result && (_.isNil(file.type) || exclude.test(file.type)) &&
+        (_.isNil(file.name) || exclude.test(file.name));
     }, valid);
     return valid;
   }

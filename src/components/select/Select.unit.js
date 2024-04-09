@@ -29,6 +29,8 @@ import {
   comp17,
   comp18,
   comp19,
+  comp20,
+  comp21,
 } from './fixtures';
 
 // eslint-disable-next-line max-statements
@@ -917,6 +919,60 @@ describe('Select Component', () => {
           assert.equal(_.isEqual(form.submission.metadata.selectData.select.data, testItems[0]), true);
           done();
         }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should provide correct metadata.selectData for multiple Select', (done) => {
+    const form = _.cloneDeep(comp20);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const values = ['apple', 'orange'];
+      select.setValue(values);
+
+      setTimeout(()=> {
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          const metadata = form.submission.metadata.selectData.select;
+          assert.equal(_.keys(metadata).length, 2);
+          values.forEach((value) => {
+            assert.equal(_.find(select.component.data.values, { value }).label, metadata[value].label);
+          });
+          done();
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should provide correct metadata.selectData for HTML5 Select', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, comp21).then(form => {
+      const select = form.getComponent('animals');
+      const checkbox = form.getComponent('checkbox');
+      const value = 'dog';
+      select.setValue(value);
+
+      setTimeout(()=> {
+        checkbox.setValue(true);
+        setTimeout(() => {
+          const submit = form.getComponent('submit');
+          const clickEvent = new Event('click');
+          const submitBtn = submit.refs.button;
+          submitBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            const metadata = form.submission.metadata.selectData.animals2;
+            assert.equal(metadata.label, 'Dog');
+            done();
+          }, 200);
+        }, 300);
       }, 200);
     }).catch(done);
   });

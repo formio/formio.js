@@ -4,7 +4,50 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0-rc.27]
+## [Unreleased: 5.0.0-rc.40]
+### Fixed
+ - FIO-7525: fixed an issue where new conditional logic based on select boxes does not work
+ - Fix broken file exclusion patterns
+ - FIO-7146: disable circleci jobs
+ - Pass options to the deleteFile method for file components with URL storage
+ - Wizard: Keep current page after language is changed
+ - FIO-7580, FIO-6475: fixed error events issues and an issue where general server errors quickly disappear from ui
+ - Add conditional to check for new headers object
+ - FIO-7764: Fixes a typo in File component settings
+ - FIO-7773: Adding floating labels to Bootstrap 5 template
+ - FIO-7808: fixed an issue where conditional components inside conditional components lose their value after submission when they are on the same level with editGrid
+ - FIO-7245: Moved Resource component to the contrib library
+ - Fixed an issue with each component recursion.
+ - FIO-7823: fixed an issue where the submission of dataGrid with nested form returns server error
+ - FIO-7809: fixed pdf submission download error
+ - FIO-7786: Fixing Datagrid issue in Settings JSON
+ - FIO-4905: File upload (multi) - aborting upload always cancels the last one in the list
+ - FIO-7642: fixed issues where calculated value with allow override is not recalculated after form/component/row values are reset
+ - FIO-7632: Fixes an issue where HTML tags are added to the HTML5 Select metadata
+ - FIO-4871: fixed calculated value issues
+ - FIO 7603: fixed Edit Grid With Empty Rows Not Submitting Form
+ - FIO-7445: fixed an issue where the interpolated data does not show up on PDF
+ - FIO-7774: added validateWhenHidden option
+ - FIO-7421: Adds ReCaptcha error messages to the translations config
+ - FIO-7804: Added PKCE method for OIDC
+ - FIO-7675: Removed maps key from repo
+ - FIO-2453: Fixes an issue where custom disabled dates are not recalculated
+ - FIO-7395: Fixed the issue with loading nested form
+ - FIO-7996: refactor recaptcha validation
+ - FIO-7899: fixed an issue where saveDraft option does not work and added errors handling for the save draft and restore draft functionality
+ - FIO-7956: fixed an issue where simple condition based on stringified checkbox value is not executed correctly
+ - FIO-7933: added PDF Document Designer
+ - FIO-6632: update-formiojs-test-env-on-tag
+ - FIO-2453: Fixes an issue where custom disabled dates are bot recalculated after for valus is changed
+ - FIO-7395: Fixed the issue with loading nested form
+ - FIO-7807: added sanitizeConfig to global form settings
+ - FIO-7334: Fixes an issue where Radio values do not appear for Action Conditions settings
+ - FIO-8009: fixed display of the required asterisk
+ - FIO-8111: fixed saveDraft Trigger for nested forms
+ - FIO-8109: fixed save draft triggering for nested components
+ - FIO-8146 fixed saveDraft triggering for nested forms after submitting
+
+## 5.0.0-rc.37
 ### Fixed
  - FIO-5967: fixed issue with incorrect string representation for object type
  - FIO-7110: when 'use original revision' is enabled for nested form, submission still displays in current form revision pdfs
@@ -46,6 +89,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7602: fixed submission data for Radio with 0s values
  - FIO-4235: fixed confirmation dialog popping up when the data is empty in EditGrid
  - FIO-7577: add skipInEmail comp property to recaptcha
+ - FIO-7514: fixed an isse where new simple conditionals do not work when condition is based on the value of resource select with object value
+ - FIO-7637: add catch block to subform submission loading
+ - FIO-7710: fixed the radio component check that causes an error
+ - FIO-7466: Make tooltips show non-rendered HTML
+ - FIO-7717: Adding license to the Formio types
+ - FIO-7631: fixes an issue where timezone is added to the date in PDF download for TextField with CalendarWidget
+ - FIO-4242: updated input mask for TextField
+ - FIO-7724: fixed metadata for multiple select
+ - FIO-4871: fixed calculated value for data grid component
+ - FIO-7591: error messages wrapping on letter instead of on word
+ - FIO-7548: fixed an issue where select dropdown does not overlap the datagrid and causes vertical scroll
 
 ### Changed
  - Add capability for adding sanitize profiles through sanitizeConfig in options

@@ -35,6 +35,7 @@ import {
   formWithCollapsedPanel,
   formWithCustomFormatDate,
   tooltipActivateCheckbox,
+  formWithObjectValueSelect
 } from '../test/formtest';
 import UpdateErrorClassesWidgets from '../test/forms/updateErrorClasses-widgets';
 import nestedModalWizard from '../test/forms/nestedModalWizard';
@@ -72,6 +73,11 @@ import formWithRadioInsideDataGrid from '../test/forms/formWithRadioInsideDataGr
 import formWithCheckboxRadioType from '../test/forms/formWithCheckboxRadioType';
 import formWithFormController from '../test/forms/formWithFormController';
 import calculateValueOnServerForEditGrid from '../test/forms/calculateValueOnServerForEditGrid';
+import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
+import formWithDeeplyNestedConditionalComps from '../test/forms/formWithDeeplyNestedConditionalComps';
+import formWithValidation from '../test/forms/formWithValidation';
+import formWithNotAllowedTags from '../test/forms/formWithNotAllowedTags';
+import formWithValidateWhenHidden from '../test/forms/formWithValidateWhenHidden';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -83,6 +89,268 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should validate hidden and conditionally hidden components when validateWhenHidden is enabled for those components', done => {
+    const formElement = document.createElement('div');
+
+    Formio.createForm(formElement, formWithValidateWhenHidden)
+      .then(form => {
+        const errorClasses = ['has-error', 'has-message', form.options.componentErrorClass];
+        const number1 = form.getComponent('number1');
+        const number2 = form.getComponent('number2');
+        const number = form.getComponent('number');
+        const textField = form.getComponent('textField');
+        const textArea = form.getComponent('textArea');
+        const checkbox = form.getComponent('checkbox');
+
+        assert.equal(form.errors.length, 0);
+
+        number1.setValue(5);
+        number2.setValue(7);
+        setTimeout(()=> {
+          assert.equal(form.errors.length, 1);
+          assert.equal(!!number.error, true);
+
+          errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false, '(1) Should not set error classes for hidden components.'));
+          number2.setValue(3);
+
+          setTimeout(() => {
+            assert.equal(form.errors.length, 0);
+            assert.equal(!!number.error, false);
+            errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false, '(2) Should not set error classes for hidden components.'));
+
+            textField.setValue('test');
+            setTimeout(() => {
+              assert.equal(form.errors.length, 1);
+              assert.equal(!!textArea.error, true);
+              assert.equal(textArea.visible, true);
+
+              checkbox.setValue(true);
+              setTimeout(()=> {
+                assert.equal(textArea.visible, false);
+                assert.equal(form.errors.length, 1);
+                assert.equal(!!textArea.error, true);
+                errorClasses.forEach(cl => assert.equal(textArea.element.classList.contains(cl), false));
+
+                number2.setValue(9);
+                form.submit();
+                setTimeout(()=> {
+                  assert.equal(form.errors.length, 2);
+                  assert.equal(!!textArea.error, true);
+                  assert.equal(!!number.error, true);
+                  assert.equal(!!form.alert, true);
+                  assert.equal(form.refs.errorRef.length, 2);
+                  errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false));
+                  errorClasses.forEach(cl => assert.equal(textArea.element.classList.contains(cl), false));
+
+                  textField.setValue('test test test');
+                  number2.setValue(1);
+                  setTimeout(()=> {
+                    assert.equal(form.errors.length, 0);
+                    assert.equal(!!textArea.error, false);
+                    assert.equal(!!number.error, false);
+                    assert.equal(!!form.alert, false);
+
+                    done();
+                  }, 300);
+                }, 300);
+              }, 300);
+            }, 300);
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
+  });
+
+  it('Should not validate hidden and conditionally hidden components when validateWhenHidden is not enabled for those components', done => {
+    const formElement = document.createElement('div');
+    const testForm = fastCloneDeep(formWithValidateWhenHidden);
+
+    _.each(testForm.components, comp => {
+      comp.validateWhenHidden = false;
+    });
+
+    Formio.createForm(formElement, testForm)
+      .then(form => {
+        const number1 = form.getComponent('number1');
+        const number2 = form.getComponent('number2');
+        const number = form.getComponent('number');
+        const textField = form.getComponent('textField');
+        const textArea = form.getComponent('textArea');
+        const checkbox = form.getComponent('checkbox');
+
+        assert.equal(form.errors.length, 0);
+
+        number1.setValue(5);
+        number2.setValue(7);
+        setTimeout(()=> {
+          assert.equal(form.errors.length, 0);
+          assert.equal(!!number.error, false);
+
+          textField.setValue('test');
+          setTimeout(() => {
+            assert.equal(form.errors.length, 1);
+            assert.equal(!!textArea.error, true);
+            assert.equal(textArea.visible, true);
+
+            checkbox.setValue(true);
+            setTimeout(()=> {
+              assert.equal(textArea.visible, false);
+              assert.equal(form.errors.length, 0);
+              assert.equal(!!textArea.error, false);
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
+  });
+
+  it('Should not lose values of conditionally visible components on setValue when server option is passed', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, formWithDeeplyNestedConditionalComps, { server: true }).then((form) => {
+      const submission = {
+        data: {
+          submit: false,
+          radio1: 'yes',
+          container: {
+            checkbox: true,
+            checkboxInPanelInHiddenContainer: true,
+            textField: 'test',
+            editGrid: [
+              {
+                number: 1,
+                textField: 'test2',
+              },
+              {
+                number: 2,
+              },
+            ],
+          },
+        },
+      };
+
+      form.setValue(fastCloneDeep(submission), { sanitize: true });
+      setTimeout(() => {
+        assert.deepEqual(form.data, submission.data);
+        assert.deepEqual(form.getValue(), submission);
+        done();
+      }, 500);
+    }).catch((err) => done(err));
+  });
+
+  it('Should not lose values of conditionally visible components on setValue when server option is not passed', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, formWithDeeplyNestedConditionalComps).then((form) => {
+      const submission = {
+        data: {
+          submit: false,
+          radio1: 'yes',
+          container: {
+            checkbox: true,
+            checkboxInPanelInHiddenContainer: true,
+            textField: 'test',
+            editGrid: [
+              {
+                number: 1,
+                textField: 'test2',
+              },
+              {
+                number: 2,
+              },
+            ],
+          },
+        },
+      };
+      form.setValue(fastCloneDeep(submission), { sanitize: true });
+
+      setTimeout(() => {
+        assert.deepEqual(form.data, submission.data);
+        assert.deepEqual(form.getValue(), submission);
+        done();
+      }, 500);
+    }).catch((err) => done(err));
+  });
+
+  it('Should fire error and submitError events with args on attempt to submit invalid form', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formWithValidation).then(() => {
+      let errorEvents = 0;
+      let submitErrorEvents = 0;
+      form.on('error', (arg) => {
+        assert.equal(!!arg, true, 'Error event should have argument');
+        errorEvents = errorEvents + 1;
+      });
+
+      form.on('submitError', (arg) => {
+        assert.equal(!!arg, true, 'submitError event should have argument');
+        submitErrorEvents = submitErrorEvents + 1;
+      });
+
+      const clickEvent = new Event('click');
+      const submitBtn = form.element.querySelector('[name="data[submit]"]');
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.equal(form.errors.length, 1);
+        assert.equal(errorEvents, 1);
+        assert.equal(submitErrorEvents, 1);
+        done();
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should keep non-component server errors visible after changes in the form', (done) => {
+    const element = document.createElement('div');
+    const form = fastCloneDeep(formWithValidation);
+    form.components[0].validate = {};
+
+    const originalMakeRequest = Formio.makeRequest;
+    const errorText = 'Server error';
+    Formio.makeRequest = function() {
+      return new Promise((res, rej) => {
+        setTimeout(() => {
+          rej(errorText);
+        }, 50);
+      });
+    };
+
+    Formio.createForm(element, form)
+      .then(instance => {
+        instance.formio = new Formio('http://localhost:3000/test');
+        assert.equal(instance.errors.length, 0);
+        assert.equal(!!(instance.serverErrors && instance.serverErrors.length), false);
+        assert.equal(!!(instance.refs.errorRef && instance.refs.errorRef.length), false);
+
+        const clickEvent = new Event('click');
+        const submitBtn = instance.element.querySelector('[name="data[submit]"]');
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(instance.errors.length, 0);
+          assert.equal(instance.serverErrors.length, 1);
+          assert.equal(instance.refs.errorRef.length, 1);
+          assert.equal(instance.refs.errorRef[0].textContent.trim(), errorText);
+
+          const inputEvent = new Event('input');
+          const textField = instance.element.querySelector('input[name="data[name]"]');
+          textField.value = 'test';
+          textField.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(instance.errors.length, 0);
+            assert.equal(instance.serverErrors.length, 1);
+            assert.equal(instance.refs.errorRef.length, 1);
+            assert.equal(instance.refs.errorRef[0].textContent.trim(), errorText);
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 400);
+        }, 400);
+      })
+      .catch(done);
+  });
 
   it('Should execute form controller', function(done) {
     Formio.createForm(formWithFormController).then((form) => {
@@ -2645,6 +2913,144 @@ describe('Webform tests', function() {
         }, 300);
       }).catch((err) => done(err));
     });
+
+    it('Should show the field on select boxes value', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+
+      form.setForm(formsWithNewSimpleConditions.form6).then(() => {
+        const conditionalComponent = form.getComponent('textField');
+        const selectBoxes = form.getComponent('selectBoxes');
+        assert.equal(conditionalComponent.visible, false, '(1) Component should be conditionally hidden');
+
+        const selectBoxesValue = {
+          '111': true,
+          '222': false
+        };
+        selectBoxes.setValue(selectBoxesValue);
+
+        setTimeout(() => {
+          assert.deepEqual(selectBoxes.dataValue, selectBoxesValue, '(2) SelectBoxes value should be set');
+          assert.equal(conditionalComponent.visible, true, '(3) Component should be conditionally visible');
+
+          selectBoxes.setValue({
+            '111': false,
+            '222': false
+          });
+
+          setTimeout(() => {
+            assert.equal(conditionalComponent.visible, false, '(4) Component should be conditionally hidden');
+            done();
+          }, 300);
+        }, 300);
+      }).catch((err) => done(err));
+    });
+
+    it('Should show field when condition is based on the values of select resource with object value', (done) => {
+      const element = document.createElement('div');
+      const values = [
+        {
+          _id: '656daabeebc67ecca1141569',
+          form: '656daab0ebc67ecca1141226',
+          data: {
+            number: 4,
+            notes: 'notes 4',
+          },
+          project: '656daa20ebc67ecca1140e8d',
+          state: 'submitted',
+          created: '2023-12-04T10:32:30.821Z',
+          modified: '2023-12-06T14:25:00.886Z',
+        },
+        {
+          _id: '656daabbebc67ecca11414a7',
+          form: '656daab0ebc67ecca1141226',
+          data: {
+            number: 3,
+            notes: 'notes 3',
+          },
+          project: '656daa20ebc67ecca1140e8d',
+          state: 'submitted',
+          created: '2023-12-04T10:32:27.322Z',
+          modified: '2023-12-06T14:25:07.494Z',
+        },
+        {
+          _id: '656daab8ebc67ecca11413e5',
+          form: '656daab0ebc67ecca1141226',
+          data: {
+            number: 2,
+            notes: 'notes 2',
+          },
+          project: '656daa20ebc67ecca1140e8d',
+          state: 'submitted',
+          created: '2023-12-04T10:32:24.514Z',
+          modified: '2023-12-06T14:25:13.610Z',
+        },
+        {
+          _id: '656daab5ebc67ecca1141322',
+          form: '656daab0ebc67ecca1141226',
+          data: {
+            number: 1,
+            notes: 'notes 1',
+          },
+          project: '656daa20ebc67ecca1140e8d',
+          state: 'submitted',
+          created: '2023-12-04T10:32:21.205Z',
+          modified: '2023-12-06T14:25:20.930Z',
+        },
+      ];
+      const originalMakeRequest = Formio.makeRequest;
+      Formio.makeRequest = function() {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve(values);
+          }, 50);
+        });
+      };
+
+      Formio.createForm(element, formWithObjectValueSelect)
+        .then(form => {
+          const numberComp = form.getComponent('number');
+          assert.equal(numberComp.visible, false);
+
+          const selectRef = form.getComponent('selectRef');
+          selectRef.setValue(fastCloneDeep(values[3]));
+          const selectNoValuePropertyMult = form.getComponent('selectNoValueProperty');
+          selectNoValuePropertyMult.setValue([fastCloneDeep(values[2])]);
+          const selectEntireObject = form.getComponent('selectEntireObject');
+          selectEntireObject.setValue(fastCloneDeep(values[1].data));
+          const selectEntireObjectMult = form.getComponent('selectEntireObjectMult');
+          selectEntireObjectMult.setValue([fastCloneDeep(values[0].data)]);
+
+          setTimeout(() => {
+            assert.equal(numberComp.visible, true);
+            selectRef.setValue(fastCloneDeep(values[2]));
+              setTimeout(() => {
+                assert.equal(numberComp.visible, false);
+                Formio.makeRequest = originalMakeRequest;
+                done();
+              }, 400);
+          }, 400);
+        })
+        .catch(done);
+    });
+
+    it('Should hide field if the checkbox based condition with string value is met', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const formCopy = fastCloneDeep(formsWithNewSimpleConditions.form7);
+
+      form.setForm(formCopy).then(() => {
+        const conditionalComponent = form.getComponent('textField');
+        assert.equal(conditionalComponent.visible, true, 'Component should be conditionally visible');
+
+        form.setValue({ data: { checkbox: true } });
+
+        setTimeout(() => {
+          assert.equal(conditionalComponent.visible, false, 'Component should be conditionally hidden');
+          done();
+        }, 300);
+      }).catch((err) => done(err));
+    });
   });
 
   describe('Calculate Value with allowed manual override', () => {
@@ -2765,6 +3171,291 @@ describe('Webform tests', function() {
           }, 250);
         }, 250);
       }).catch(done);
+    });
+
+    it('Should recalculate values for components with "allow override" after first and only dataGrid row is removed/reset', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(formElement, formsWithAllowOverride.withDataGrid).then((form) => {
+        const calculatedValues = {
+          number: 11111,
+          textField: 'test DataGrid',
+          textArea: 'test',
+        };
+
+        const overridenValues = {
+          number: 11111222,
+          textField: 'test DataGrid 222',
+          textArea: 'test 222',
+        };
+
+        const number = form.getComponent('number');
+        const textArea = form.getComponent('textArea');
+        const textField = form.getComponent('textField');
+        const dgRadio = form.getComponent('dgRadio');
+        const dataGrid = form.getComponent('dataGrid');
+        // check if values are calculated on form load
+        assert.deepEqual(dataGrid.dataValue, [
+          {
+            ...calculatedValues,
+            textField: textField.emptyValue,
+            dgRadio: dgRadio.emptyValue
+          }
+        ], 1);
+
+        dgRadio.setValue('a');
+
+        setTimeout(() => {
+          // check if values are calculated correctly
+          assert.deepEqual(dataGrid.dataValue, [
+            {
+              ...calculatedValues,
+              dgRadio: 'a'
+            }
+          ]);
+
+          // override calculated values
+          const numberInput = number.refs.input[0];
+          const textFieldInput = textField.refs.input[0];
+          const textAreaInput = textArea.refs.input[0];
+
+          numberInput.value = overridenValues.number;
+          textFieldInput.value = overridenValues.textField;
+          textAreaInput.value = overridenValues.textArea;
+
+          const inputEvent = new Event('input');
+
+          numberInput.dispatchEvent(inputEvent);
+          textFieldInput.dispatchEvent(inputEvent);
+          textAreaInput.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            // check if values are overriden
+            assert.deepEqual(dataGrid.dataValue, [
+              {
+                ...overridenValues,
+                dgRadio: 'a'
+              }
+            ], 2);
+
+            // clear first row
+            dataGrid.removeRow(0);
+
+            setTimeout(() => {
+              const dgRadio = form.getComponent('dgRadio');
+              // make sure values are reset and recalculated
+              assert.deepEqual(dataGrid.dataValue, [
+                {
+                  ...calculatedValues,
+                  textField: textField.emptyValue,
+                  dgRadio: dgRadio.emptyValue
+                }
+              ], 3);
+
+              dgRadio.setValue('a');
+              setTimeout(() => {
+                // check if all values are calculated correctly
+                assert.deepEqual(dataGrid.dataValue, [
+                  {
+                    ...calculatedValues,
+                    dgRadio: 'a'
+                  }
+                ], 4);
+
+                document.body.innerHTML = '';
+                done();
+              }, 400);
+            }, 400);
+          }, 400);
+        }, 400);
+      }).catch((err) => done(err));
+    });
+
+    it('Should recalculate values for components with "allow override" after the form is reset', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(formElement, formsWithAllowOverride.withResetBtn).then((form) => {
+        const calculatedValues = {
+          number: 11111,
+          textField: 'test DataGrid',
+          textArea: 'test',
+          radio: 'one'
+        };
+
+        const overridenValues = {
+          number: 11111222,
+          textField: 'test DataGrid 222',
+          textArea: 'test 222',
+          radio: 'two'
+        };
+        const checkbox = form.getComponent('checkbox');
+        const number = form.getComponent('number');
+        const textArea = form.getComponent('textArea');
+        const radio = form.getComponent('radio');
+        const textField = form.getComponent('textField');
+        const dgRadio = form.getComponent('dgRadio');
+        const resetBtn = form.getComponent('reset');
+
+        dgRadio.setValue('a');
+        checkbox.setValue(true);
+        setTimeout(() => {
+          // check if values were calculated correctly
+          assert.equal(number.dataValue, calculatedValues.number);
+          assert.equal(textField.dataValue, calculatedValues.textField);
+          assert.equal(textArea.dataValue, calculatedValues.textArea);
+          assert.equal(radio.dataValue, calculatedValues.radio);
+
+          // override calculated values
+          const numberInput = number.refs.input[0];
+          const textFieldInput = textField.refs.input[0];
+          const textAreaInput = textArea.refs.input[0];
+          const radioInput =radio.refs.input[1];
+
+          numberInput.value = overridenValues.number;
+          textFieldInput.value = overridenValues.textField;
+          textAreaInput.value = overridenValues.textArea;
+          radioInput.checked = true;
+          const inputEvent = new Event('input');
+          const clickEvent = new Event('click');
+
+          numberInput.dispatchEvent(inputEvent);
+          textFieldInput.dispatchEvent(inputEvent);
+          textAreaInput.dispatchEvent(inputEvent);
+          radioInput.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            // check if values were overriden
+            assert.equal(number.getValue(), overridenValues.number);
+            assert.equal(textField.dataValue, overridenValues.textField);
+            assert.equal(textArea.dataValue, overridenValues.textArea);
+            assert.equal(radio.dataValue, overridenValues.radio);
+
+            checkbox.setValue(false);
+
+            setTimeout(() => {
+              // reset form
+              resetBtn.refs.button.dispatchEvent(clickEvent);
+
+              setTimeout(() => {
+                // make sure that values are reset
+                assert.equal(number.dataValue, calculatedValues.number);
+                assert.equal(textArea.dataValue, calculatedValues.textArea);
+                assert.equal(textField.dataValue, textField.emptyValue);
+                assert.equal(radio.dataValue, radio.emptyValue);
+                assert.equal(dgRadio.dataValue, dgRadio.emptyValue);
+                assert.equal(checkbox.dataValue, checkbox.emptyValue);
+
+                // trigger values calculation
+                dgRadio.setValue('a');
+                checkbox.setValue(true);
+
+                setTimeout(() => {
+                  // make sure that values are recalculated
+                  assert.equal(number.dataValue, calculatedValues.number);
+                  assert.equal(textField.dataValue, calculatedValues.textField);
+                  assert.equal(textArea.dataValue, calculatedValues.textArea);
+                  assert.equal(radio.dataValue, calculatedValues.radio);
+                  document.body.innerHTML = '';
+                  done();
+                }, 300);
+              }, 300);
+            }, 300);
+          }, 300);
+        }, 400);
+      }).catch((err) => done(err));
+    });
+
+    it('Should recalculate values for conditional components with "allow override" and "clear on hide" enabled when components become visible again', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(formElement, formsWithAllowOverride.withClearOnHide).then((form) => {
+        const calculatedValues = {
+          number: 111,
+          textField: 'test',
+          textArea: 'test value',
+          radio: 'a'
+        };
+
+        const overridenValues = {
+          number: 11123,
+          textField: 'test123',
+          textArea: 'test123',
+          radio: 'b'
+        };
+        const checkbox = form.getComponent('checkbox');
+        const number = form.getComponent('number');
+        const textField = form.getComponent('textField');
+        const textArea = form.getComponent('textArea');
+        const radio = form.getComponent('radio');
+
+        assert.equal(number.visible, false);
+        assert.equal(textField.visible, false);
+        assert.equal(textArea.visible, false);
+        assert.equal(radio.visible, false);
+
+        checkbox.setValue(true);
+        setTimeout(() => {
+          assert.equal(number.visible, true);
+          assert.equal(textField.visible, true);
+          assert.equal(textArea.visible, true);
+          assert.equal(radio.visible, true);
+          // check if values were calculated correctly
+          assert.equal(number.dataValue, calculatedValues.number);
+          assert.equal(textField.dataValue, calculatedValues.textField);
+          assert.equal(textArea.dataValue, calculatedValues.textArea);
+          assert.equal(radio.dataValue, calculatedValues.radio);
+
+          // override calculated values
+          const numberInput = number.refs.input[0];
+          const textFieldInput = textField.refs.input[0];
+          const textAreaInput = textArea.refs.input[0];
+          const radioInput =radio.refs.input[1];
+
+          numberInput.value = overridenValues.number;
+          textFieldInput.value = overridenValues.textField;
+          textAreaInput.value = overridenValues.textArea;
+          radioInput.checked = true;
+          const inputEvent = new Event('input');
+          const clickEvent = new Event('click');
+
+          numberInput.dispatchEvent(inputEvent);
+          textFieldInput.dispatchEvent(inputEvent);
+          textAreaInput.dispatchEvent(inputEvent);
+          radioInput.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            // check if values were overriden
+            assert.equal(number.getValue(), overridenValues.number);
+             assert.equal(textField.dataValue, overridenValues.textField);
+            assert.equal(textArea.dataValue, overridenValues.textArea);
+            assert.equal(radio.dataValue, overridenValues.radio);
+
+            checkbox.setValue(false);
+
+            setTimeout(() => {
+              // check if conditional components were hidden
+              assert.equal(number.visible, false);
+              assert.equal(textField.visible, false);
+              assert.equal(textArea.visible, false);
+              assert.equal(radio.visible, false);
+
+              checkbox.setValue(true);
+              setTimeout(() => {
+                // make sure that components appear again and values were recalculated
+                assert.equal(number.visible, true);
+                assert.equal(textField.visible, true);
+                assert.equal(textArea.visible, true);
+                assert.equal(radio.visible, true);
+
+                assert.equal(number.dataValue, calculatedValues.number);
+                assert.equal(textField.dataValue, calculatedValues.textField);
+                assert.equal(textArea.dataValue, calculatedValues.textArea);
+                assert.equal(radio.dataValue, calculatedValues.radio);
+                document.body.innerHTML = '';
+
+                done();
+              }, 300);
+            }, 300);
+          }, 300);
+        }, 400);
+      }).catch((err) => done(err));
     });
   });
 
@@ -3783,6 +4474,346 @@ describe('Webform tests', function() {
       }, 200);
     })
     .catch((err) => done(err));
+  });
+
+  describe('Test sanitizeConfig', () => {
+    it('Should sanitize components using default sanitizeConfig', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const testForm = fastCloneDeep(formWithNotAllowedTags);
+
+      form.setForm(testForm).then(() => {
+        const textFieldWithScript = form.getComponent('textFieldWithScript');
+        const textAreaWithIframe = form.getComponent('textAreaWithIframe');
+
+        assert.equal(textFieldWithScript.element?.getElementsByTagName('script').length, 0, 'Should not render srcipt tag');
+        assert.equal(textAreaWithIframe.element?.getElementsByTagName('iframe').length, 0, 'Should not render iframe tag');
+
+       done();
+      }).catch((err) => done(err));
+    });
+
+    it('Should sanitize components using sanitizeConfig from form settings', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const testForm = fastCloneDeep(formWithNotAllowedTags);
+      testForm.settings.sanitizeConfig = {
+        addTags: ['iframe', 'script'],
+      },
+
+      form.setForm(testForm).then(() => {
+        const textFieldWithScript = form.getComponent('textFieldWithScript');
+        const textAreaWithIframe = form.getComponent('textAreaWithIframe');
+
+        assert.equal(textFieldWithScript.element?.getElementsByTagName('script').length, 1, 'Should render srcipt tag');
+        assert.equal(textAreaWithIframe.element?.getElementsByTagName('iframe').length, 1, 'Should render iframe tag');
+
+       done();
+      }).catch((err) => done(err));
+    });
+
+    it('Should sanitize components using sanitizeConfig from global settings', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const testForm = fastCloneDeep(formWithNotAllowedTags);
+      testForm.globalSettings.sanitizeConfig = {
+        addTags: ['iframe', 'script'],
+      },
+
+      form.setForm(testForm).then(() => {
+        const textFieldWithScript = form.getComponent('textFieldWithScript');
+        const textAreaWithIframe = form.getComponent('textAreaWithIframe');
+
+        assert.equal(textFieldWithScript.element?.getElementsByTagName('script').length, 1, 'Should render srcipt tag');
+        assert.equal(textAreaWithIframe.element?.getElementsByTagName('iframe').length, 1, 'Should render iframe tag');
+
+       done();
+      }).catch((err) => done(err));
+    });
+
+    it('sanitizeConfig from form options must not be overriden by sanitizeConfig from global settings', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, {
+        sanitizeConfig: {
+          addTags: ['iframe'],
+        }
+      });
+      const testForm = fastCloneDeep(formWithNotAllowedTags);
+      testForm.globalSettings.sanitizeConfig = {
+        addTags: ['script'],
+      },
+
+      form.setForm(testForm).then(() => {
+        const textFieldWithScript = form.getComponent('textFieldWithScript');
+        const textAreaWithIframe = form.getComponent('textAreaWithIframe');
+
+        assert.equal(textFieldWithScript.element?.getElementsByTagName('script').length, 0, 'Should not render srcipt tag');
+        assert.equal(textAreaWithIframe.element?.getElementsByTagName('iframe').length, 1, 'Should render iframe tag');
+
+       done();
+      }).catch((err) => done(err));
+    });
+
+    it('sanitizeConfig from form options must not be overriden by sanitizeConfig from form settings', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, {
+        sanitizeConfig: {
+          addTags: ['iframe'],
+        }
+      });
+      const testForm = fastCloneDeep(formWithNotAllowedTags);
+      testForm.settings.sanitizeConfig = {
+        addTags: ['script'],
+      },
+
+      form.setForm(testForm).then(() => {
+        const textFieldWithScript = form.getComponent('textFieldWithScript');
+        const textAreaWithIframe = form.getComponent('textAreaWithIframe');
+
+        assert.equal(textFieldWithScript.element?.getElementsByTagName('script').length, 0, 'Should not render srcipt tag');
+        assert.equal(textAreaWithIframe.element?.getElementsByTagName('iframe').length, 1, 'Should render iframe tag');
+
+       done();
+      }).catch((err) => done(err));
+    });
+
+    it('sanitizeConfig from form settings must not be overriden by sanitizeConfig from global settings', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const testForm = fastCloneDeep(formWithNotAllowedTags);
+      testForm.settings.sanitizeConfig = {
+        addTags: ['iframe'],
+      },
+
+      testForm.globalSettings.sanitizeConfig = {
+        addTags: ['script'],
+      },
+
+      form.setForm(testForm).then(() => {
+        const textFieldWithScript = form.getComponent('textFieldWithScript');
+        const textAreaWithIframe = form.getComponent('textAreaWithIframe');
+
+        assert.equal(textFieldWithScript.element?.getElementsByTagName('script').length, 0, 'Should not render srcipt tag');
+        assert.equal(textAreaWithIframe.element?.getElementsByTagName('iframe').length, 1, 'Should render iframe tag');
+
+       done();
+      }).catch((err) => done(err));
+    });
+  });
+
+  describe('SaveDraft functionality', () => {
+    const originalMakeRequest = Formio.makeRequest;
+    let saveDraftCalls = 0;
+    let restoreDraftCalls = 0;
+    const scenario = {
+      restoreDraftError: false,
+      saveDraftError: false,
+    };
+    const restoredDraftData = {
+      textField: 'test',
+      number: 1234,
+      textArea: 'test',
+      submit: false,
+    };
+
+    before((done) => {
+      Formio.setUser({
+        _id: '123'
+      });
+
+      Formio.makeRequest = (formio, type, url, method, data) => {
+        if (type === 'submission' && method === 'put') {
+          saveDraftCalls = ++saveDraftCalls;
+          return scenario.saveDraftError
+            ? Promise.reject('Save Draft Error')
+            : Promise.resolve(fastCloneDeep(data));
+        }
+        if (type === 'form' && method === 'get') {
+          return Promise.resolve(fastCloneDeep({
+            _id: '65cdd69efb1b9683c216fa1d',
+            title: 'test draft errors',
+            name: 'testDraftErrors',
+            path: 'testdrafterrors',
+            type: 'form',
+            display: 'form',
+            components: [
+              {
+                label: 'Text Field',
+                applyMaskOn: 'change',
+                tableView: true,
+                validate: {
+                  required: true,
+                },
+                key: 'textField',
+                type: 'textfield',
+                input: true,
+              },
+              {
+                label: 'Number',
+                applyMaskOn: 'change',
+                mask: false,
+                tableView: false,
+                delimiter: false,
+                requireDecimal: false,
+                inputFormat: 'plain',
+                truncateMultipleSpaces: false,
+                validate: {
+                  min: 800,
+                },
+                key: 'number',
+                type: 'number',
+                input: true,
+              },
+              {
+                label: 'Text Area',
+                applyMaskOn: 'change',
+                autoExpand: false,
+                tableView: true,
+                key: 'textArea',
+                type: 'textarea',
+                input: true,
+              },
+              {
+                label: 'Submit',
+                disableOnInvalid: true,
+                tableView: false,
+                key: 'submit',
+                type: 'button',
+                input: true,
+                saveOnEnter: false,
+              },
+            ],
+            project: '65b0ccbaf019a907ac01a869',
+            machineName: 'zarbzxibjafpcjb:testDraftErrors',
+          }));
+        }
+
+        if (type === 'submissions' && method === 'get') {
+          restoreDraftCalls = ++restoreDraftCalls;
+          return scenario.restoreDraftError
+            ? Promise.reject('Restore Draft Error')
+            : Promise.resolve([
+                fastCloneDeep({
+                  _id: '65d31f8da08cff1b9fc35966',
+                  form: '65cdd69efb1b9683c216fa1d',
+                  owner: '637b2e6b48c1227e60b1f910',
+                  data: restoredDraftData,
+                  project: '65b0ccbaf019a907ac01a869',
+                  state: 'draft',
+                }),
+              ]);
+        }
+      };
+
+      done();
+    });
+
+    afterEach(() => {
+      saveDraftCalls = 0;
+      restoreDraftCalls = 0;
+      scenario.restoreDraftError = false;
+      scenario.saveDraftError = false;
+    });
+
+    after((done) => {
+      Formio.makeRequest = originalMakeRequest;
+      Formio.setUser();
+      done();
+    });
+
+    it('Should restore draft', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(
+        formElement,
+        'http://localhost:3000/zarbzxibjafpcjb/testdrafterrors',
+        {
+          saveDraft: true
+        }
+      ).then((form) => {
+        setTimeout(() => {
+          assert.equal(restoreDraftCalls, 1);
+          assert.equal(saveDraftCalls, 0);
+          assert.equal(form.submission.state, 'draft');
+          assert.deepEqual(form.data, restoredDraftData);
+          done();
+        }, 200);
+      }).catch((err) => done(err));
+    });
+
+    it('Should save draft after data is changed', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(
+        formElement,
+        'http://localhost:3000/zarbzxibjafpcjb/testdrafterrors',
+        {
+          saveDraft: true
+        }
+      ).then((form) => {
+        setTimeout(() => {
+          assert.equal(restoreDraftCalls, 1);
+          assert.equal(saveDraftCalls, 0);
+          assert.equal(form.submission.state, 'draft');
+          const tfInput = form.getComponent('textField').refs.input[0];
+          tfInput.value = 'test resaved';
+          const inputEvent = new Event('input');
+          tfInput.dispatchEvent(inputEvent);
+          setTimeout(() => {
+            assert.equal(restoreDraftCalls, 1);
+            assert.equal(saveDraftCalls, 1);
+            assert.equal(form.submission.state, 'draft');
+            done();
+          }, 300);
+        }, 200);
+      }).catch((err) => done(err));
+    });
+
+    it('Should emit restoreDraftEvent on the restore draft error', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(
+        formElement,
+        'http://localhost:3000/zarbzxibjafpcjb/testdrafterrors',
+        {
+          saveDraft: true
+        }
+      ).then((form) => {
+        scenario.restoreDraftError = true;
+        form.on('restoreDraftError', (err) => {
+          assert.equal(err, 'Restore Draft Error');
+          assert.equal(restoreDraftCalls, 1);
+          assert.equal(saveDraftCalls, 0);
+          done();
+        });
+      }).catch((err) => done(err));
+    });
+
+    it('Should emit saveDraftEvent on the save draft error', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(
+        formElement,
+        'http://localhost:3000/zarbzxibjafpcjb/testdrafterrors',
+        {
+          saveDraft: true
+        }
+      ).then((form) => {
+        scenario.saveDraftError = true;
+        form.on('saveDraftError', (err) => {
+          assert.equal(err, 'Save Draft Error');
+          assert.equal(saveDraftCalls, 1);
+          assert.equal(restoreDraftCalls, 1);
+          assert.equal(form.submission.state, 'draft');
+          done();
+        });
+
+        setTimeout(() => {
+          assert.equal(saveDraftCalls, 0);
+          assert.equal(restoreDraftCalls, 1);
+          const tfInput = form.getComponent('textField').refs.input[0];
+          tfInput.value = 'test resaved';
+          const inputEvent = new Event('input');
+          tfInput.dispatchEvent(inputEvent);
+        }, 200);
+      }).catch((err) => done(err));
+    });
   });
 
   for (const formTest of FormTests) {

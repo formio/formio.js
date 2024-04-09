@@ -40,12 +40,99 @@ import wizardWithPrefixComps from '../test/forms/wizardWithPrefixComps';
 import wizardPermission from '../test/forms/wizardPermission';
 import formWithFormController from '../test/forms/formWithFormController';
 import { fastCloneDeep } from './utils/utils';
+import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
 
 // eslint-disable-next-line max-statements
 describe('Wizard tests', () => {
+  it('Should recalculate values for components with "allow override" after wizard is canceled', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, formsWithAllowOverride.wizard).then((form) => {
+      const calculatedValues = {
+        number: 123,
+        textField: 'test data',
+        textArea: 'test data',
+        radio: 'one'
+      };
+
+      const overridenValues = {
+        number: 1233333,
+        textField: 'test data3333',
+        textArea: 'test data3333',
+        radio: 'two'
+      };
+
+      const number = form.getComponent('number');
+      const textArea = form.getComponent('textArea');
+      const radio = form.getComponent('radio');
+      const textField = form.getComponent('textField');
+      const radioTrigger = form.getComponent('radio1');
+
+      assert.equal(number.dataValue, number.emptyValue);
+      assert.equal(textField.dataValue, textField.emptyValue);
+      assert.equal(textArea.dataValue, textArea.emptyValue);
+      assert.equal(radio.dataValue, calculatedValues.radio);
+
+      radioTrigger.setValue('a');
+      setTimeout(() => {
+        // check if values are calculated correctly
+        assert.equal(number.dataValue, calculatedValues.number);
+        assert.equal(textField.dataValue, calculatedValues.textField);
+        assert.equal(textArea.dataValue, calculatedValues.textArea);
+        assert.equal(radio.dataValue, calculatedValues.radio);
+
+        // override calculated values
+        const numberInput = number.refs.input[0];
+        const textFieldInput = textField.refs.input[0];
+        const textAreaInput = textArea.refs.input[0];
+        const radioInput =radio.refs.input[1];
+
+        numberInput.value = overridenValues.number;
+        textFieldInput.value = overridenValues.textField;
+        textAreaInput.value = overridenValues.textArea;
+        radioInput.checked = true;
+        const inputEvent = new Event('input');
+        const clickEvent = new Event('click');
+
+        numberInput.dispatchEvent(inputEvent);
+        textFieldInput.dispatchEvent(inputEvent);
+        textAreaInput.dispatchEvent(inputEvent);
+        radioInput.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          // check if values are overriden
+          assert.equal(number.getValue(), overridenValues.number);
+          assert.equal(textField.dataValue, overridenValues.textField);
+          assert.equal(textArea.dataValue, overridenValues.textArea);
+          assert.equal(radio.dataValue, overridenValues.radio);
+          // reset form
+          form.cancel(true);
+
+          setTimeout(() => {
+            // make sure that values are reset
+            assert.equal(number.dataValue, number.emptyValue);
+            assert.equal(textField.dataValue, textField.emptyValue);
+            assert.equal(textArea.dataValue, textArea.emptyValue);
+            assert.equal(radio.dataValue, calculatedValues.radio);
+
+            radioTrigger.setValue('a');
+            setTimeout(() => {
+              // check if values are recalculated correctly
+              assert.equal(number.dataValue, calculatedValues.number);
+              assert.equal(textField.dataValue, calculatedValues.textField);
+              assert.equal(textArea.dataValue, calculatedValues.textArea);
+              assert.equal(radio.dataValue, calculatedValues.radio);
+              document.body.innerHTML = '';
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 400);
+    }).catch((err) => done(err));
+  });
+
   it('Should execute form controller', function(done) {
     const form = fastCloneDeep(formWithFormController);
     form.display = 'wizard';
@@ -1187,6 +1274,25 @@ describe('Wizard tests', () => {
       }, 50);
     })
     .catch((err) => done(err));
+  });
+
+  it('Should stay on current page when changing language', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement, { language: 'en' });
+    wizard.setForm(wizardTestForm.form).then(() => {
+      const checkPage = (page) => {
+        assert.equal(wizard.page, page, `Page ${page + 1} should be the current page`);
+      };
+
+      Harness.clickElement(wizard, wizard.refs[`${wizard.wizardKey}-link`][2]);
+      checkPage(2);
+
+      wizard.language = 'es';
+      setTimeout(() => {
+        checkPage(2);
+        done();
+      }, 50);
+    });
   });
 
   it('Should correctly set values in HTML render mode', function(done) {

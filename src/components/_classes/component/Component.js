@@ -873,6 +873,7 @@ export default class Component extends Element {
     return !this.component.label ||
       ((!this.isInDataGrid && this.component.hideLabel) ||
       (this.isInDataGrid && !this.component.dataGridLabel) ||
+      this.options.floatingLabels ||
       this.options.inputsOnly) && !this.builderMode;
   }
 
@@ -2151,6 +2152,10 @@ export default class Component extends Element {
       this.setElementInvalid(this.performInputMapping(element), false);
     });
     this.setInputWidgetErrorClasses(elements, hasErrors);
+    // do not set error classes for hidden components
+    if (!this.visible) {
+      return;
+    }
 
     if (hasErrors) {
       // Add error classes
@@ -2562,11 +2567,13 @@ export default class Component extends Element {
 
     const checkMask = (value) => {
       if (typeof value === 'string') {
-        const placeholderChar = this.placeholderChar;
+        if (this.component.type !== 'textfield') {
+          const placeholderChar = this.placeholderChar;
 
-        value = conformToMask(value, this.defaultMask, { placeholderChar }).conformedValue;
-        if (!FormioUtils.matchInputMask(value, this.defaultMask)) {
-          value = '';
+          value = conformToMask(value, this.defaultMask, { placeholderChar }).conformedValue;
+          if (!FormioUtils.matchInputMask(value, this.defaultMask)) {
+            value = '';
+          }
         }
       }
       else {
@@ -2676,11 +2683,11 @@ export default class Component extends Element {
     const input = this.performInputMapping(this.refs.input[index]);
     const valueMaskInput = this.refs.valueMaskInput;
 
-    if (valueMaskInput?.mask) {
+    if (valueMaskInput?.mask && valueMaskInput.mask.textMaskInputElement) {
       valueMaskInput.mask.textMaskInputElement.update(value);
     }
 
-    if (input.mask) {
+    if (input.mask && input.mask.textMaskInputElement) {
       input.mask.textMaskInputElement.update(value);
     }
     else if (input.widget && input.widget.setValue) {
@@ -2850,8 +2857,8 @@ export default class Component extends Element {
 
   /* eslint-disable max-statements */
   calculateComponentValue(data, flags, row) {
-    // Skip value calculation for the component if we don't have entire form data set
-    if (_.isUndefined(_.get(this, 'root.data'))) {
+    // Skip value calculation for the component if we don't have entire form data set or in builder mode
+    if (this.builderMode || _.isUndefined(_.get(this, 'root.data'))) {
       return false;
     }
     // If no calculated value or
@@ -2860,11 +2867,18 @@ export default class Component extends Element {
     const shouldBeCleared = !this.visible && clearOnHide;
     const allowOverride = _.get(this.component, 'allowCalculateOverride', false);
 
+    if (shouldBeCleared) {
+      // remove calculated value so that the value is recalculated once component becomes visible
+      if (this.hasOwnProperty('calculatedValue') && allowOverride) {
+        _.unset(this, 'calculatedValue');
+      }
+      return false;
+    }
+
     // Handle all cases when calculated values should not fire.
     if (
       (this.options.readOnly && !this.options.pdf && !this.component.calculateValue) ||
       !(this.component.calculateValue || this.component.calculateValueVariable) ||
-      shouldBeCleared ||
       (this.options.server && !this.component.calculateServer) ||
       (flags.dataSourceInitialLoading && allowOverride)
     ) {
@@ -2898,7 +2912,7 @@ export default class Component extends Element {
         return false;
       }
 
-      const firstPass = (this.calculatedValue === undefined);
+      const firstPass = (this.calculatedValue === undefined) || flags.resetValue;
       if (firstPass) {
         this.calculatedValue = null;
       }
@@ -2914,6 +2928,7 @@ export default class Component extends Element {
 
       // Check to ensure that the calculated value is different than the previously calculated value.
       if (previousCalculatedValue && previousChanged && !calculationChanged) {
+        this.calculatedValue = null;
         return false;
       }
 
@@ -2923,7 +2938,7 @@ export default class Component extends Element {
 
       if (fromSubmission) {
         // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
-        this.calculatedValue = calculatedValue;
+        this.calculatedValue = fastCloneDeep(calculatedValue);
         return false;
       }
 
@@ -2934,7 +2949,7 @@ export default class Component extends Element {
       }
     }
 
-    this.calculatedValue = calculatedValue;
+    this.calculatedValue = fastCloneDeep(calculatedValue);
 
     if (changed) {
       if (!flags.noPristineChangeOnModified) {
@@ -3325,6 +3340,7 @@ export default class Component extends Element {
   }
 
   shouldSkipValidation(data, dirty, row) {
+    const { validateWhenHidden = false } = this.component || {};
     const rules = [
       // Force valid if component is read-only
       () => this.options.readOnly,
@@ -3333,9 +3349,9 @@ export default class Component extends Element {
       // Check to see if we are editing and if so, check component persistence.
       () => this.isValueHidden(),
       // Force valid if component is hidden.
-      () => !this.visible,
+      () => !this.visible && !validateWhenHidden,
       // Force valid if component is conditionally hidden.
-      () => !this.checkCondition(row, data)
+      () => !this.checkCondition(row, data) && !validateWhenHidden
     ];
 
     return rules.some(pred => pred());

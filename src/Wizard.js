@@ -821,7 +821,7 @@ export default class Wizard extends Webform {
         if (this.enabledIndex) {
           this.enabledIndex = 0;
         }
-        this.onChange();
+        this.onChange({ resetValue: true });
         this.redraw();
         return this.page;
       });
@@ -1008,6 +1008,12 @@ export default class Wizard extends Webform {
       return this.parent.redraw();
     }
     return super.redraw();
+  }
+
+  rebuild() {
+    const currentPage = this.page;
+    const setCurrentPage = () => this.setPage(currentPage);
+    return super.rebuild().then(setCurrentPage);
   }
 
   checkValidity(data, dirty, row, currentPageOnly) {

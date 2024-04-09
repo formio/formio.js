@@ -1,7 +1,6 @@
-import ConditionOperator from './ConditionOperator';
-import _ from 'lodash';
+import IsEqualTo from './IsEqualTo';
 
-export default class IsNotEqualTo extends ConditionOperator {
+export default class IsNotEqualTo extends IsEqualTo {
     static get operatorKey() {
         return 'isNotEqual';
     }
@@ -10,7 +9,7 @@ export default class IsNotEqualTo extends ConditionOperator {
         return 'Is Not Equal To';
     }
 
-    execute({ value, comparedValue }) {
-        return  !_.isEqual(value, comparedValue);
+    execute(options) {
+        return !super.execute(options);
     }
 }

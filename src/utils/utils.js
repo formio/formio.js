@@ -1330,7 +1330,8 @@ export function sanitize(string, options) {
   }
   // Allowd URI Regex
   if (options.sanitizeConfig && options.sanitizeConfig.allowedUriRegex) {
-    sanitizeOptions.ALLOWED_URI_REGEXP = options.sanitizeConfig.allowedUriRegex;
+    const allowedUriRegex = options.sanitizeConfig.allowedUriRegex;
+    sanitizeOptions.ALLOWED_URI_REGEXP = _.isString(allowedUriRegex) ? new RegExp(allowedUriRegex) : allowedUriRegex;
   }
   // Allow to extend the existing array of elements that are safe for URI-like values
   if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.addUriSafeAttr) && options.sanitizeConfig.addUriSafeAttr.length > 0) {
@@ -1580,4 +1581,28 @@ export function getComponentSavedTypes(fullSchema) {
   }
 
   return null;
+}
+
+export function getItemTemplateKeys(template) {
+  const templateKeys = [];
+  if (!template) {
+    return templateKeys;
+  }
+  const keys = template.match(/({{\s*(.*?)\s*}})/g);
+
+  if (keys) {
+    keys.forEach((key) => {
+      const propKey = key.match(/{{\s*item\.(.*?)\s*}}/);
+      if (propKey && propKey.length > 1) {
+        templateKeys.push(propKey[1]);
+      }
+    });
+  }
+
+  return templateKeys;
+}
+
+export function isSelectResourceWithObjectValue(comp = {}) {
+  const { reference, dataSrc, valueProperty } = comp;
+  return reference || (dataSrc === 'resource' && (!valueProperty || valueProperty === 'data'));
 }

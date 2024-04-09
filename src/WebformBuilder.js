@@ -134,6 +134,7 @@ export default class WebformBuilder extends Component {
         html,
         disableBuilderActions: self?.component?.disableBuilderActions,
         childComponent: component,
+        design: self?.options?.design
       });
     };
 
@@ -560,6 +561,7 @@ export default class WebformBuilder extends Component {
   attach(element) {
     this.on('change', (form) => {
       this.populateRecaptchaSettings(form);
+      this.webform.setAlert(false);
     });
     return super.attach(element).then(() => {
       this.loadRefs(element, {
@@ -945,6 +947,21 @@ export default class WebformBuilder extends Component {
       }
     }
 
+    if (draggableComponent.uniqueComponent) {
+      let isCompAlreadyExists = false;
+      eachComponent(this.webform.components, (component) => {
+        if (component.key === draggableComponent.schema.key) {
+          isCompAlreadyExists = true;
+          return;
+        }
+      }, true);
+      if (isCompAlreadyExists) {
+        this.webform.redraw();
+        this.webform.setAlert('danger', `You cannot add more than one ${draggableComponent.title} component to one page.`);
+        return;
+      }
+    }
+
     if (target !== source) {
       // Ensure the key remains unique in its new container.
       BuilderUtils.uniquify(this.findNamespaceRoot(target.formioComponent), info);
@@ -982,7 +999,7 @@ export default class WebformBuilder extends Component {
 
     const componentInDataGrid = parent.type === 'datagrid';
 
-    if (isNew && !this.options.noNewEdit && !info.noNewEdit) {
+    if (isNew && !this.options.noNewEdit && !info.noNewEdit && !(this.options.design && info.type === 'reviewpage')) {
       this.editComponent(info, target, isNew, null, null, { inDataGrid: componentInDataGrid });
     }
 
@@ -1138,6 +1155,7 @@ export default class WebformBuilder extends Component {
   }
 
   updateComponent(component, changed) {
+    const sanitizeConfig = _.get(this.webform, 'form.settings.sanitizeConfig') || _.get(this.webform, 'form.globalSettings.sanitizeConfig');
     // Update the preview.
     if (this.preview) {
       this.preview.form = {
@@ -1149,7 +1167,8 @@ export default class WebformBuilder extends Component {
           'autofocus',
           'customConditional',
         ])],
-        config: this.options.formConfig || {}
+        config: this.options.formConfig || {},
+        sanitizeConfig,
       };
 
       const fieldsToRemoveDoubleQuotes = ['label', 'tooltip'];
@@ -1158,7 +1177,7 @@ export default class WebformBuilder extends Component {
 
       const previewElement = this.componentEdit.querySelector('[ref="preview"]');
       if (previewElement) {
-        this.setContent(previewElement, this.preview.render());
+        this.setContent(previewElement, this.preview.render(), null, sanitizeConfig);
         this.preview.attach(previewElement);
       }
     }

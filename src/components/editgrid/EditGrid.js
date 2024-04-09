@@ -673,6 +673,11 @@ export default class EditGridComponent extends NestedArrayComponent {
         : this.editRows.reduce((result, row) => result.concat(row.components || []), []);
   }
 
+  destroy(all = false) {
+    this.calculatedValue = undefined;
+    super.destroy(all);
+  }
+
   destroyComponents(all = false, rowIndex = 0) {
     if (this.builderMode) {
       return super.destroyComponents(all);
@@ -1262,7 +1267,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
       return false;
     }
-    else if (rowsEditing && this.saveEditMode) {
+    else if (rowsEditing && this.saveEditMode && !this.component.openWhenEmpty) {
       this.setCustomValidity(this.t(this.errorMessage('unsavedRowsError')), dirty);
       return false;
     }
@@ -1279,7 +1284,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   changeState(changed, flags) {
-    if (changed || (flags.resetValue && this.component.modalEdit)) {
+    if (this.visible && (changed || (flags.resetValue && this.component.modalEdit))) {
       this.rebuild();
     }
     else {
@@ -1303,7 +1308,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     const changed = this.hasChanged(value, this.dataValue);
     flags.noValidate = !changed;
-    if (this.parent) {
+    if (this.parent && !this.options.server) {
       this.parent.checkComponentConditions();
     }
     this.dataValue = value;
@@ -1338,7 +1343,10 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.openWhenEmpty();
     this.updateOnChange(flags, changed);
-    this.checkData();
+    // do not call checkData with server option, it is called when change is triggered in updateOnChange
+    if (!this.options.server) {
+      this.checkData();
+    }
 
     this.changeState(changed, flags);
 
