@@ -35,7 +35,7 @@ describe('NestedDataComponent class', () => {
         const openModalBtnRows = openModalBtn.querySelectorAll('tr');
         assert.equal(openModalBtnRows.length, 1);
 
-        const dataGrid = form.geComponent(['dataGrid']);
+        const dataGrid = form.getComponent(['dataGrid']);
         dataGrid.setValue([
           {
             textField: 'test'
