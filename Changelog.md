@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.19.2-rc.1]
+## 4.19.2-rc.1
 ### Changed
+ - FIO-8009 fixed  display of the required asterisk
+ - FIO-8109 fixed save draft triggering for nested components
+ - FIO-8146 fixed saveDraft triggering for nested forms after submitting
  - FIO-4871 fixed calculated value issues
 
 ## 4.19.1

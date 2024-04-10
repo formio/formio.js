@@ -3498,6 +3498,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datagrid/fixtures/two-comp-with-allow-calculate-override.js",
+    "file/src/components/datagrid/fixtures/two-comp-with-allow-calculate-override.js.html",
+    "src/components/datagrid/fixtures/two-comp-with-allow-calculate-override.js",
+    "file"
+  ],
+  [
     "src/components/datamap/datamap.form.js",
     "file/src/components/datamap/DataMap.form.js.html",
     "src/components/datamap/DataMap.form.js",
