@@ -46,7 +46,7 @@ describe('NestedDataComponent class', () => {
         ]);
 
         setTimeout(() => {
-          const modalPreviewValues = form.element.querySelector('.open-modal-button tr td input');
+          const modalPreviewValues = form.element.querySelectorAll('.open-modal-button tr td input');
           assert.equal(modalPreviewValues.length, 2);
           assert.deepEqual(Array.prototype.map.call(modalPreviewValues, (i) => i.value), ['test', 'test2']);
           done();
