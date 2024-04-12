@@ -109,49 +109,47 @@ describe('Webform tests', function() {
         number2.setValue(7);
         setTimeout(()=> {
           assert.equal(form.errors.length, 1);
-          assert.equal(!!number.error, true);
-
+          assert.equal(number.errors.length, 1);
           errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false, '(1) Should not set error classes for hidden components.'));
           number2.setValue(3);
 
           setTimeout(() => {
             assert.equal(form.errors.length, 0);
-            assert.equal(!!number.error, false);
+            assert.equal(number.errors.length, 0);
             errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false, '(2) Should not set error classes for hidden components.'));
 
             textField.setValue('test');
             setTimeout(() => {
               assert.equal(form.errors.length, 1);
-              assert.equal(!!textArea.error, true);
+              assert.equal(textArea.errors.length, 1);
               assert.equal(textArea.visible, true);
 
               checkbox.setValue(true);
               setTimeout(()=> {
                 assert.equal(textArea.visible, false);
                 assert.equal(form.errors.length, 1);
-                assert.equal(!!textArea.error, true);
+                assert.equal(textArea.errors.length, 1);
                 errorClasses.forEach(cl => assert.equal(textArea.element.classList.contains(cl), false));
-
                 number2.setValue(9);
-                form.submit();
-                setTimeout(()=> {
-                  assert.equal(form.errors.length, 2);
-                  assert.equal(!!textArea.error, true);
-                  assert.equal(!!number.error, true);
-                  assert.equal(!!form.alert, true);
-                  assert.equal(form.refs.errorRef.length, 2);
-                  errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false));
-                  errorClasses.forEach(cl => assert.equal(textArea.element.classList.contains(cl), false));
-
-                  textField.setValue('test test test');
-                  number2.setValue(1);
+                setTimeout(() => {
+                  form.submit();
                   setTimeout(()=> {
-                    assert.equal(form.errors.length, 0);
-                    assert.equal(!!textArea.error, false);
-                    assert.equal(!!number.error, false);
-                    assert.equal(!!form.alert, false);
-
-                    done();
+                    assert.equal(form.errors.length, 2);
+                    assert.equal(textArea.errors.length, 1);
+                    assert.equal(number.errors.length, 1);
+                    assert.equal(!!form.alert, true);
+                    assert.equal(form.refs.errorRef.length, 2);
+                    errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false));
+                    errorClasses.forEach(cl => assert.equal(textArea.element.classList.contains(cl), false));
+                    textField.setValue('test test test');
+                    number2.setValue(1);
+                    setTimeout(()=> {
+                      assert.equal(form.errors.length, 0);
+                      assert.equal(textArea.errors.length, 0);
+                      assert.equal(number.errors.length, 0);
+                      assert.equal(!!form.alert, false);
+                      done();
+                    }, 300);
                   }, 300);
                 }, 300);
               }, 300);
@@ -185,19 +183,19 @@ describe('Webform tests', function() {
         number2.setValue(7);
         setTimeout(()=> {
           assert.equal(form.errors.length, 0);
-          assert.equal(!!number.error, false);
+          assert.equal(number.errors.length, 0);
 
           textField.setValue('test');
           setTimeout(() => {
             assert.equal(form.errors.length, 1);
-            assert.equal(!!textArea.error, true);
+            assert.equal(textArea.errors.length, 1);
             assert.equal(textArea.visible, true);
 
             checkbox.setValue(true);
             setTimeout(()=> {
               assert.equal(textArea.visible, false);
               assert.equal(form.errors.length, 0);
-              assert.equal(!!textArea.error, false);
+              assert.equal(textArea.errors.length, 0);
               done();
             }, 300);
           }, 300);
@@ -1272,8 +1270,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  it(`Should show validation errors and update validation errors list when opening and editing edit grid rows
-  in draft modal mode after pushing submit btn`, function(done) {
+  it('Should show validation errors and update validation errors list when opening and editing edit grid rows in draft modal mode after pushing submit btn', function(done) {
     const formElement = document.createElement('div');
     const formWithDraftModals = new Webform(formElement, { sanitize: true });
 

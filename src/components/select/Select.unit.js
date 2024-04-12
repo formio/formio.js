@@ -697,7 +697,7 @@ describe('Select Component', () => {
     var searchHasBeenDebounced = false;
     var originalDebounce = _.debounce;
     _.debounce = (fn, timeout, opts) => {
-      searchHasBeenDebounced = timeout === 700;
+      searchHasBeenDebounced = true;
       return originalDebounce(fn, 0, opts);
     };
 

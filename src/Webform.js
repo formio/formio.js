@@ -1318,7 +1318,7 @@ export default class Webform extends NestedDataComponent {
     if (this.submitted) {
       // show server errors while they are not cleaned/fixed
       const nonComponentServerErrors = _.filter(this.serverErrors || [], err => !err.component && !err.path);
-      this.showErrors(nonComponentServerErrors.length ? nonComponentServerErrors : null);
+      this.showErrors(nonComponentServerErrors.length ? nonComponentServerErrors : errors);
     }
 
     // See if we need to save the draft of the form.
