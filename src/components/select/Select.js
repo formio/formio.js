@@ -257,6 +257,10 @@ export default class SelectComponent extends ListComponent {
     return super.shouldLoad;
   }
 
+  get selectData() {
+    return this.component.selectData || super.selectData;
+  }
+
   isEntireObjectDisplay() {
     return this.component.dataSrc === 'resource' && this.valueProperty === 'data';
   }
