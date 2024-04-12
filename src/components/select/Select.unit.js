@@ -9,9 +9,6 @@ import NativePromise from 'native-promise-only';
 import Formio from './../../Formio';
 import _ from 'lodash';
 
-global.requestAnimationFrame = (cb) => cb();
-global.cancelAnimationFrame = () => { };
-
 import {
   comp1,
   comp2,
