@@ -182,7 +182,7 @@ export default class WebformBuilder extends Component {
         return element;
       }
       // Attach container and component to element for later reference.
-      const containerElement = element.querySelector(`[ref="${component.component.key}-container"]`) || element;
+      const containerElement = element.querySelector(`[${this._referenceAttributeName}="${component.component.key}-container"]`) || element;
       containerElement.formioContainer = container;
       containerElement.formioComponent = component;
 
@@ -1175,7 +1175,7 @@ export default class WebformBuilder extends Component {
 
       this.preview.form.components.forEach(component => this.replaceDoubleQuotes(component, fieldsToRemoveDoubleQuotes));
 
-      const previewElement = this.componentEdit.querySelector('[ref="preview"]');
+      const previewElement = this.componentEdit.querySelector(`[${this._referenceAttributeName}="preview"]`);
       if (previewElement) {
         this.setContent(previewElement, this.preview.render(), null, sanitizeConfig);
         this.preview.attach(previewElement);
@@ -1384,7 +1384,7 @@ export default class WebformBuilder extends Component {
   }
 
   attachEditComponentControls(component, parent, isNew, original, ComponentClass) {
-    const cancelButtons = this.componentEdit.querySelectorAll('[ref="cancelButton"]');
+    const cancelButtons = this.componentEdit.querySelectorAll(`[${this._referenceAttributeName}="cancelButton"]`);
     cancelButtons.forEach((cancelButton) => {
       this.editForm.addEventListener(cancelButton, 'click', (event) => {
         event.preventDefault();
@@ -1395,7 +1395,7 @@ export default class WebformBuilder extends Component {
       });
     });
 
-    const removeButtons = this.componentEdit.querySelectorAll('[ref="removeButton"]');
+    const removeButtons = this.componentEdit.querySelectorAll(`[${this._referenceAttributeName}="removeButton"]`);
     removeButtons.forEach((removeButton) => {
       this.editForm.addEventListener(removeButton, 'click', (event) => {
         event.preventDefault();
@@ -1408,7 +1408,7 @@ export default class WebformBuilder extends Component {
       });
     });
 
-    const saveButtons = this.componentEdit.querySelectorAll('[ref="saveButton"]');
+    const saveButtons = this.componentEdit.querySelectorAll(`[${this._referenceAttributeName}="saveButton"]`);
     saveButtons.forEach((saveButton) => {
       this.editForm.addEventListener(saveButton, 'click', (event) => {
         event.preventDefault();
@@ -1422,7 +1422,7 @@ export default class WebformBuilder extends Component {
       });
     });
 
-    const previewButtons = this.componentEdit.querySelectorAll('[ref="previewButton"]');
+    const previewButtons = this.componentEdit.querySelectorAll(`[${this._referenceAttributeName}="previewButton"]`);
     previewButtons.forEach((previewButton) => {
       this.editForm.addEventListener(previewButton, 'click', (event) => {
         event.preventDefault();
@@ -1435,7 +1435,7 @@ export default class WebformBuilder extends Component {
           showPreview: this.showPreview,
           helplinks: this.helplinks,
         }));
-        this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
+        this.editForm.attach(this.componentEdit.querySelector(`[${this._referenceAttributeName}="editForm"]`));
         this.attachEditComponentControls(component, parent, isNew, original, ComponentClass);
       });
     });
@@ -1553,7 +1553,7 @@ export default class WebformBuilder extends Component {
     this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}));
 
     // This is the attach step.
-    this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
+    this.editForm.attach(this.componentEdit.querySelector(`[${this._referenceAttributeName}="editForm"]`));
 
     this.hook('editFormWrapper');
 

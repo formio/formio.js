@@ -11,7 +11,8 @@ export default class ComponentModal {
     });
   }
 
-  constructor(component, element, isOpened, currentValue) {
+  constructor(component, element, isOpened, currentValue, referenceAttributeName = "ref") {
+    this._referenceAttributeName = referenceAttributeName;
     this.isOpened = isOpened;
     this.component = component;
     this.element = element;
@@ -165,10 +166,10 @@ export default class ComponentModal {
   showDialog() {
     this.dialogElement = this.component.ce('div');
     const dialogContent = `
-      <h3 ref="dialogHeader">${this.component.t('Do you want to clear changes?')}</h3>
+      <h3 ${this._referenceAttributeName}="dialogHeader">${this.component.t('Do you want to clear changes?')}</h3>
       <div style="display:flex; justify-content: flex-end;">
-        <button ref="dialogCancelButton" class="btn btn-secondary">${this.component.t('Cancel')}</button>
-        <button ref="dialogYesButton" class="btn btn-danger">${this.component.t('Yes, delete it')}</button>
+        <button ${this._referenceAttributeName}="dialogCancelButton" class="btn btn-secondary">${this.component.t('Cancel')}</button>
+        <button ${this._referenceAttributeName}="dialogYesButton" class="btn btn-danger">${this.component.t('Yes, delete it')}</button>
       </div>
     `;
 

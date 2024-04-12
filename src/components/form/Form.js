@@ -329,7 +329,7 @@ export default class FormComponent extends Component {
           if (!this.builderMode && this.component.modalEdit) {
             const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
             const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
-            this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue);
+            this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue, this._referenceAttributeName);
             this.setOpenModalElement();
           }
 

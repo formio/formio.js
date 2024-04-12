@@ -122,7 +122,7 @@ export default class Input extends Multivalue {
       }).trim();
       if (this.component.prefix !== calendarIcon) {
         // converting string to HTML markup to render correctly DateTime component in portal.form.io
-        return convertStringToHTMLElement(calendarIcon, '[ref="icon"]');
+        return convertStringToHTMLElement(calendarIcon, `[${this._referenceAttributeName}="icon"]`);
       }
     }
     return this.component.suffix;

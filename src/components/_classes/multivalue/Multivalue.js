@@ -42,7 +42,7 @@ export default class Multivalue extends Field {
     // If single value field.
     if (!this.useWrapper()) {
       return super.render(
-        `<div ref="element">
+        `<div ${this._referenceAttributeName}="element">
           ${this.renderElement(
             this.component.type !== 'hidden' ? this.dataValue : ''
           )}

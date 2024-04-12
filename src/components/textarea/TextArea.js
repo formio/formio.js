@@ -65,7 +65,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     info.content = value;
     if ((this.options.readOnly || this.disabled) && !this.isHtmlRenderMode()) {
       const elementStyle = this.info.attr.style || '';
-      const children = `<div ref="input" class="formio-editor-read-only-content" ${elementStyle ? `style='${elementStyle}'` : ''}></div>`;
+      const children = `<div ${this._referenceAttributeName}="input" class="formio-editor-read-only-content" ${elementStyle ? `style='${elementStyle}'` : ''}></div>`;
 
       return this.renderTemplate('well', {
         children,
