@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8111: fixed saveDraft Trigger for nested forms
  - FIO-8109: fixed save draft triggering for nested components
  - FIO-8146 fixed saveDraft triggering for nested forms after submitting
+ - FIO-3703: Fixes an issue where NestedData components with modal view do not render values inside Layout components in modal preview table
 
 ## 5.0.0-rc.37
 ### Fixed
