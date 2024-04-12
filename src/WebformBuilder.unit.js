@@ -2,7 +2,8 @@ import assert from 'power-assert';
 import NativePromise from 'native-promise-only';
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
-import Builders from '../lib/builders';
+import Builders from './builders';
+import Formio from './Formio';
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase } from '../test/formtest';
 import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
@@ -217,5 +218,124 @@ describe('WebformBuilder tests', function() {
         }, 200);
       }, 150);
     }).catch(done);
+  });
+});
+
+describe('Select Component selectData property', () => {
+  const originalMakeRequest = Formio.makeRequest;
+
+  before((done) => {
+    Formio.makeRequest = () => {
+      return new Promise(resolve => {
+        const values = [{
+          label: 'Label 1',
+          value: 'value1',
+        }, {
+          label: 'Label 2',
+          value: 'value2',
+        }];
+
+        resolve(values);
+      });
+    };
+    Harness.builderBefore(done);
+  });
+  afterEach(() => Harness.getBuilder().setForm({ display: 'form', components: [] }));
+
+  it('Should calculate selectData property for url dataSource', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('select');
+
+      setTimeout(() => {
+        const dataSrc = builder.editForm.getComponent('dataSrc');
+        dataSrc.setValue('url');
+        const url = builder.editForm.getComponent(['data.url']);
+        const valueProperty = builder.editForm.getComponent('valueProperty');
+        url.setValue('htts//fakeurl.com');
+        valueProperty.setValue('value');
+
+        setTimeout(() => {
+          const defaultValue = builder.editForm.getComponent('defaultValue');
+          defaultValue.setValue('value1');
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() => {
+            assert.deepEqual(builder.editForm.data.selectData, {
+              label: 'Label 1',
+            });
+            Harness.saveComponent();
+            setTimeout(() => {
+              done();
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
+  it('Should calculate selectData property for resource dataSource', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('select');
+
+      setTimeout(() => {
+        const dataSrc = builder.editForm.getComponent('dataSrc');
+        dataSrc.setValue('resource');
+        const resource = builder.editForm.getComponent(['data.resource']);
+        const valueProperty = builder.editForm.getComponent('valueProperty');
+        resource.setValue('12345678');
+        valueProperty.setValue('value');
+
+        setTimeout(() => {
+          const defaultValue = builder.editForm.getComponent('defaultValue');
+          defaultValue.setValue('value1');
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() => {
+            assert.deepEqual(builder.editForm.data.selectData, {
+              label: 'Label 1',
+            });
+            Harness.saveComponent();
+            setTimeout(() => {
+              done();
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
+  it('Should not calculate selectData property without valueProperty', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('select');
+
+      setTimeout(() => {
+        const dataSrc = builder.editForm.getComponent('dataSrc');
+        dataSrc.setValue('url');
+        const url = builder.editForm.getComponent(['data.url']);
+        url.setValue('https://fakeurl.com');
+
+        setTimeout(() => {
+          const defaultValue = builder.editForm.getComponent('defaultValue');
+          defaultValue.setValue('value1');
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() => {
+            assert.equal(builder.editForm.data.selectData, undefined);
+            Harness.saveComponent();
+            setTimeout(() => {
+              done();
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
+  after((done) => {
+    Formio.makeRequest = originalMakeRequest;
+    Harness.builderAfter(done);
   });
 });
