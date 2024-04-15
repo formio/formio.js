@@ -1363,7 +1363,7 @@ describe('Webform tests', function() {
                   setTimeout(() => {
                     const alertErrorMessagesAfterInputtingInvalidValues = document
                       .querySelector(`.editgrid-row-modal-${editGrid.id}`)
-                      .querySelectorAll('[ref="messageRef"]');
+                      .querySelectorAll('[ref="messageContainer"]');
 
                     assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length, 2);
                     document.body.innerHTML = '';
