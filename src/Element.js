@@ -75,6 +75,8 @@ export default class Element {
    *
    * @param {string} event - The event you wish to register the handler for.
    * @param {function} cb - The callback handler to handle this event.
+   * @param {boolean} [internal] - This is an internal event handler.
+   * @param {boolean} [once] - This event should only fire once.
    */
   on(event, cb, internal, once = false) {
     if (!this.events) {

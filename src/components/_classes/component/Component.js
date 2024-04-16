@@ -399,7 +399,7 @@ export default class Component extends Element {
     /**
      * The reference attribute name for this component
      */
-    this._referenceAttributeName = "ref";
+    this._referenceAttributeName = 'ref';
 
     /**
      * Used to trigger a new change in this component.
@@ -916,15 +916,15 @@ export default class Component extends Element {
     const templatesByName = Templates.defaultTemplates[name];
 
     if (!templatesByName) {
-      return {template: `Unknown template: ${name}`};
+      return { template: `Unknown template: ${name}` };
     }
 
     const templateByMode = this.checkTemplateMode(templatesByName, modes);
     if (templateByMode) {
-      return {template: templateByMode};
+      return { template: templateByMode };
     }
 
-    return {template: templatesByName.form};
+    return { template: templatesByName.form };
   }
 
   checkTemplate(templates, names, modes) {
@@ -932,10 +932,10 @@ export default class Component extends Element {
       const templatesByName = templates[name];
 
       if (templatesByName) {
-        const {referenceAttributeName} = templatesByName;
+        const { referenceAttributeName } = templatesByName;
         const templateByMode = this.checkTemplateMode(templatesByName, modes);
         if (templateByMode) {
-          return {template: templateByMode, referenceAttributeName};
+          return { template: templateByMode, referenceAttributeName };
         }
       }
     }
@@ -1002,7 +1002,7 @@ export default class Component extends Element {
     ];
 
     // Allow template alters.
-    const {referenceAttributeName, template} = this.getTemplate(names, mode);
+    const { referenceAttributeName, template } = this.getTemplate(names, mode);
     if (referenceAttributeName) {
       this._referenceAttributeName = referenceAttributeName;
     }
@@ -1149,14 +1149,14 @@ export default class Component extends Element {
     return currentTimezone();
   }
 
-  loadRefs(element, refs) {
+  loadRefs(element, refs, referenceAttributeName) {
     for (const ref in refs) {
       const refType = refs[ref];
       const isString = typeof refType === 'string';
 
       const selector = isString && refType.includes('scope')
-        ? `:scope > [${this._referenceAttributeName}="${ref}"]`
-        : `[${this._referenceAttributeName}="${ref}"]`;
+        ? `:scope > [${referenceAttributeName || this._referenceAttributeName}="${ref}"]`
+        : `[${referenceAttributeName || this._referenceAttributeName}="${ref}"]`;
 
       if (isString && refType.startsWith('single')) {
         this.refs[ref] = element.querySelector(selector);
