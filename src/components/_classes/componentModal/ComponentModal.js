@@ -11,7 +11,7 @@ export default class ComponentModal {
     });
   }
 
-  constructor(component, element, isOpened, currentValue, referenceAttributeName = "ref") {
+  constructor(component, element, isOpened, currentValue, referenceAttributeName = 'ref') {
     this._referenceAttributeName = referenceAttributeName;
     this.isOpened = isOpened;
     this.component = component;
