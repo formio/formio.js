@@ -1149,6 +1149,12 @@ export default class Component extends Element {
     return currentTimezone();
   }
 
+  /**
+   *
+   * @param {HTMLElement} element - The containing DOM element to query for the ref value.
+   * @param {object} refs - The references to load.
+   * @param {string} [referenceAttributeName] - The attribute name to use for the reference.
+   */
   loadRefs(element, refs, referenceAttributeName) {
     for (const ref in refs) {
       const refType = refs[ref];
