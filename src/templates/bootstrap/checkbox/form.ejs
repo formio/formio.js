@@ -1,12 +1,27 @@
 <div class="form-check checkbox">
+<<<<<<< HEAD
   <label class="{{ctx.input.labelClass}} form-check-label">
+=======
+  <label
+    class="{{ctx.input.labelClass}} form-check-label"
+    for="{{ctx.instance.id}}-{{ctx.component.key}}"
+    id="l-{{ctx.instance.id}}-{{ctx.component.key}}"
+  >
+>>>>>>> 4464700633 (FIO-8199: Fixes an issue where Checkbox does not have id and for attributes)
     <{{ctx.input.type}}
       ref="input"
       {% for (var attr in ctx.input.attr) { %}
       {{attr}}="{{ctx.input.attr[attr]}}"
       {% } %}
+<<<<<<< HEAD
       {% if (ctx.checked) { %}checked=true{% } %}
       aria-required="{{ctx.component.validate.required}}"
+=======
+      id="{{ctx.instance.id}}-{{ctx.component.key}}"
+      {% if (ctx.checked) { %}checked=true{% } %}
+      aria-required="{{ctx.component.validate.required}}"
+      aria-labelledby="l-{{ctx.instance.id}}-{{ctx.component.key}}
+>>>>>>> 4464700633 (FIO-8199: Fixes an issue where Checkbox does not have id and for attributes)
       {% if (ctx.component.description) { %}
       aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}"
       {% } %}
