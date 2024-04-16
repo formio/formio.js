@@ -1155,8 +1155,8 @@ export default class Component extends Element {
       const isString = typeof refType === 'string';
 
       const selector = isString && refType.includes('scope')
-        ? `:scope > [${referenceAttributeName || this._referenceAttributeName}="${ref}"]`
-        : `[${referenceAttributeName || this._referenceAttributeName}="${ref}"]`;
+        ? `:scope > [${referenceAttributeName || this._referenceAttributeName || 'ref'}="${ref}"]`
+        : `[${referenceAttributeName || this._referenceAttributeName || 'ref'}="${ref}"]`;
 
       if (isString && refType.startsWith('single')) {
         this.refs[ref] = element.querySelector(selector);
