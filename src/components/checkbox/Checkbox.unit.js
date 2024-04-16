@@ -25,15 +25,19 @@ describe('Checkbox Component', () => {
     });
   });
 
-  it('Span should have correct text label', () => {
+  it('Span should have correct text label and attributes', () => {
     return Harness.testCreate(CheckBoxComponent, comp1).then((component) => {
       const checkboxes = component.element.querySelectorAll('input[ref="input"]');
       assert.equal(checkboxes.length, 1);
       const componentClass = checkboxes[0].getAttribute('class');
+      const componentId = checkboxes[0].getAttribute('id');
       assert(componentClass.indexOf('form-check-input') !== -1, 'No form-check-input class.');
+      assert(componentId, 'Should provide "id" attribute for the input');
       const labels = component.element.querySelectorAll('label');
       assert.equal(labels.length, 1);
       assert(labels[0].getAttribute('class').indexOf('form-check-label') !== -1, 'No form-check-label class');
+      assert.equal(labels[0].getAttribute('for'), componentId, 'Should provide a proper "for" attribute for the' +
+        ' label');
       const spans = labels[0].querySelectorAll('span');
       assert.equal(spans.length, 1);
       assert.equal(spans[0].innerHTML, 'Check me');
