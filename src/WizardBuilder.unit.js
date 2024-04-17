@@ -122,4 +122,59 @@ describe('WizardBuilder tests', function() {
       done();
     }, 500);
   });
+
+  describe('Test saveComponent', () => {
+    it('should replace page component correctly in form object', function(done) {
+      const builder = createWizardBuilder(simpleWizard);
+      const page = builder.instance.webform.components[0];
+      const editComponentRef = page.refs.editComponent;
+
+      Harness.clickElement(page, editComponentRef);
+      setTimeout(() => {
+        assert(builder.instance.editForm, 'Should create the settings form on component edit');
+        const labelComponent = builder.instance.editForm.getComponent('label');
+        labelComponent.updateValue('This is page 1');
+        const saveButton = builder.instance.componentEdit.querySelector('[ref="saveButton"]');
+        Harness.clickElement(page, saveButton);
+        setTimeout(() => {
+          assert.equal(builder.instance.form.components[0].label, 'This is page 1');
+          done();
+        }, 100);
+      }, 100);
+    });
+
+    it('should not remove page when component with duplicate API key is changed', function(done) {
+      const builder = createWizardBuilder(simpleWizard);
+      const page1 = builder.instance.webform.components[0];
+
+      let component1 = builder.instance.webform.components[0].components[0];
+      Harness.clickElement(component1, component1.refs.editComponent);
+      setTimeout(() => {
+        assert(builder.instance.editForm, 'Should create the settings form on component edit');
+        const keyComponent = builder.instance.editForm.getComponent('key');
+        keyComponent.updateValue(page1.key);
+        const saveButton = builder.instance.componentEdit.querySelector('[ref="saveButton"]');
+        Harness.clickElement(component1, saveButton);
+        setTimeout(() => {
+          component1 = builder.instance.webform.components[0].components[0];
+          assert.equal(component1.errors.length, 1, 'Should have error due to duplicate API key');
+          assert.equal(component1.errors[0].message, `API Key is not unique: ${page1.key}`);
+
+          Harness.clickElement(component1, component1.refs.editComponent);
+          setTimeout(() => {
+            assert(builder.instance.editForm, 'Should create the settings form on component edit');
+            const keyComponent = builder.instance.editForm.getComponent('key');
+            keyComponent.updateValue('some-unique-key');
+            const saveButton = builder.instance.componentEdit.querySelector('[ref="saveButton"]');
+            Harness.clickElement(component1, saveButton);
+            setTimeout(() => {
+              assert.equal(builder.instance.form.components[0].label, page1.label, 'Page 1 should still exist');
+              assert.equal(builder.instance.form.components[0].components[0].key, 'some-unique-key', 'Component should have new key');
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    });
+  });
 });

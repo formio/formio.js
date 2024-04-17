@@ -71,7 +71,7 @@ export default class WizardBuilder extends WebformBuilder {
       }
       else {
         // Fallback to look for panel based on key.
-        const formComponentIndex = this._form.components.findIndex((comp) => originalComponent.key === comp.key);
+        const formComponentIndex = this._form.components.findIndex((comp) => originalComponent.id === comp.id);
         if (formComponentIndex !== -1) {
           this._form.components[formComponentIndex] = component;
           this.rebuild();
