@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 3299,
+  "end": 3455,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 68,
+      "line": 70,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 3299,
+    "end": 3455,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 68,
+        "line": 70,
         "column": 0
       }
     },
@@ -31,28 +31,28 @@
       {
         "type": "ExportDefaultDeclaration",
         "start": 0,
-        "end": 3298,
+        "end": 3454,
         "loc": {
           "start": {
             "line": 1,
             "column": 0
           },
           "end": {
-            "line": 67,
+            "line": 69,
             "column": 2
           }
         },
         "declaration": {
           "type": "ObjectExpression",
           "start": 15,
-          "end": 3297,
+          "end": 3453,
           "loc": {
             "start": {
               "line": 1,
               "column": 15
             },
             "end": {
-              "line": 67,
+              "line": 69,
               "column": 1
             }
           },
@@ -3744,6 +3744,116 @@
                   "raw": "'Submit Form button. Click to submit the form'"
                 },
                 "value": "Submit Form button. Click to submit the form"
+              }
+            },
+            {
+              "type": "ObjectProperty",
+              "start": 3298,
+              "end": 3364,
+              "loc": {
+                "start": {
+                  "line": 67,
+                  "column": 2
+                },
+                "end": {
+                  "line": 67,
+                  "column": 68
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 3298,
+                "end": 3327,
+                "loc": {
+                  "start": {
+                    "line": 67,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 67,
+                    "column": 31
+                  },
+                  "identifierName": "reCaptchaTokenValidationError"
+                },
+                "name": "reCaptchaTokenValidationError"
+              },
+              "value": {
+                "type": "StringLiteral",
+                "start": 3329,
+                "end": 3364,
+                "loc": {
+                  "start": {
+                    "line": 67,
+                    "column": 33
+                  },
+                  "end": {
+                    "line": 67,
+                    "column": 68
+                  }
+                },
+                "extra": {
+                  "rawValue": "ReCAPTCHA: Token validation error",
+                  "raw": "'ReCAPTCHA: Token validation error'"
+                },
+                "value": "ReCAPTCHA: Token validation error"
+              }
+            },
+            {
+              "type": "ObjectProperty",
+              "start": 3368,
+              "end": 3450,
+              "loc": {
+                "start": {
+                  "line": 68,
+                  "column": 2
+                },
+                "end": {
+                  "line": 68,
+                  "column": 84
+                }
+              },
+              "method": false,
+              "shorthand": false,
+              "computed": false,
+              "key": {
+                "type": "Identifier",
+                "start": 3368,
+                "end": 3399,
+                "loc": {
+                  "start": {
+                    "line": 68,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 68,
+                    "column": 33
+                  },
+                  "identifierName": "reCaptchaTokenNotSpecifiedError"
+                },
+                "name": "reCaptchaTokenNotSpecifiedError"
+              },
+              "value": {
+                "type": "StringLiteral",
+                "start": 3401,
+                "end": 3450,
+                "loc": {
+                  "start": {
+                    "line": 68,
+                    "column": 35
+                  },
+                  "end": {
+                    "line": 68,
+                    "column": 84
+                  }
+                },
+                "extra": {
+                  "rawValue": "ReCAPTCHA: Token is not specified in submission",
+                  "raw": "'ReCAPTCHA: Token is not specified in submission'"
+                },
+                "value": "ReCAPTCHA: Token is not specified in submission"
               }
             }
           ],
@@ -10857,6 +10967,216 @@
     },
     {
       "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "reCaptchaTokenValidationError",
+      "start": 3298,
+      "end": 3327,
+      "loc": {
+        "start": {
+          "line": 67,
+          "column": 2
+        },
+        "end": {
+          "line": 67,
+          "column": 31
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 3327,
+      "end": 3328,
+      "loc": {
+        "start": {
+          "line": 67,
+          "column": 31
+        },
+        "end": {
+          "line": 67,
+          "column": 32
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "ReCAPTCHA: Token validation error",
+      "start": 3329,
+      "end": 3364,
+      "loc": {
+        "start": {
+          "line": 67,
+          "column": 33
+        },
+        "end": {
+          "line": 67,
+          "column": 68
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 3364,
+      "end": 3365,
+      "loc": {
+        "start": {
+          "line": 67,
+          "column": 68
+        },
+        "end": {
+          "line": 67,
+          "column": 69
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "reCaptchaTokenNotSpecifiedError",
+      "start": 3368,
+      "end": 3399,
+      "loc": {
+        "start": {
+          "line": 68,
+          "column": 2
+        },
+        "end": {
+          "line": 68,
+          "column": 33
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 3399,
+      "end": 3400,
+      "loc": {
+        "start": {
+          "line": 68,
+          "column": 33
+        },
+        "end": {
+          "line": 68,
+          "column": 34
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "ReCAPTCHA: Token is not specified in submission",
+      "start": 3401,
+      "end": 3450,
+      "loc": {
+        "start": {
+          "line": 68,
+          "column": 35
+        },
+        "end": {
+          "line": 68,
+          "column": 84
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 3450,
+      "end": 3451,
+      "loc": {
+        "start": {
+          "line": 68,
+          "column": 84
+        },
+        "end": {
+          "line": 68,
+          "column": 85
+        }
+      }
+    },
+    {
+      "type": {
         "label": "}",
         "beforeExpr": false,
         "startsExpr": false,
@@ -10867,15 +11187,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 3296,
-      "end": 3297,
+      "start": 3452,
+      "end": 3453,
       "loc": {
         "start": {
-          "line": 67,
+          "line": 69,
           "column": 0
         },
         "end": {
-          "line": 67,
+          "line": 69,
           "column": 1
         }
       }
@@ -10893,15 +11213,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3297,
-      "end": 3298,
+      "start": 3453,
+      "end": 3454,
       "loc": {
         "start": {
-          "line": 67,
+          "line": 69,
           "column": 1
         },
         "end": {
-          "line": 67,
+          "line": 69,
           "column": 2
         }
       }
@@ -10919,15 +11239,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3299,
-      "end": 3299,
+      "start": 3455,
+      "end": 3455,
       "loc": {
         "start": {
-          "line": 68,
+          "line": 70,
           "column": 0
         },
         "end": {
-          "line": 68,
+          "line": 70,
           "column": 0
         }
       }

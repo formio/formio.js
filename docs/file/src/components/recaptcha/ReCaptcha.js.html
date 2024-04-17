@@ -324,19 +324,19 @@ export default class ReCaptchaComponent extends Component {
 
     const componentData = row[this.component.key];
     if (!componentData || !componentData.token) {
-      this.setCustomValidity(&apos;ReCAPTCHA: Token is not specified in submission&apos;);
+      this.setCustomValidity(this.t(&apos;reCaptchaTokenNotSpecifiedError&apos;));
       return NativePromise.resolve(false);
     }
 
     if (!componentData.success) {
-      this.setCustomValidity(&apos;ReCAPTCHA: Token validation error&apos;);
+      this.setCustomValidity(this.t(&apos;reCaptchaTokenValidationError&apos;));
       return NativePromise.resolve(false);
     }
 
     return this.hook(&apos;validateReCaptcha&apos;, componentData.token, () =&gt; NativePromise.resolve(true))
       .then((success) =&gt; success)
       .catch((err) =&gt; {
-        this.setCustomValidity(err.message || err);
+        this.setCustomValidity(this.t(err.message || err));
         return false;
       });
   }

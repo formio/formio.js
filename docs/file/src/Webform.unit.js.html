@@ -266,6 +266,7 @@ import formWithCheckboxRadioType from &apos;../test/forms/formWithCheckboxRadioT
 import formWithFormController from &apos;../test/forms/formWithFormController&apos;;
 import calculateValueOnServerForEditGrid from &apos;../test/forms/calculateValueOnServerForEditGrid&apos;;
 import formsWithAllowOverride from &apos;../test/forms/formsWithAllowOverrideComps&apos;;
+import formWithDeeplyNestedConditionalComps from &apos;../test/forms/formWithDeeplyNestedConditionalComps&apos;;
 
 global.requestAnimationFrame = (cb) =&gt; cb();
 global.cancelAnimationFrame = () =&gt; {};
@@ -277,6 +278,72 @@ if (_.has(Formio, &apos;Components.setComponents&apos;)) {
 /* eslint-disable max-statements */
 describe(&apos;Webform tests&apos;, function() {
   this.retries(3);
+
+  it(&apos;Should not lose values of conditionally visible components on setValue when server option is passed&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(formElement, formWithDeeplyNestedConditionalComps, { server: true }).then((form) =&gt; {
+      const submission = {
+        data: {
+          submit: false,
+          radio1: &apos;yes&apos;,
+          container: {
+            checkbox: true,
+            checkboxInPanelInHiddenContainer: true,
+            textField: &apos;test&apos;,
+            editGrid: [
+              {
+                number: 1,
+                textField: &apos;test2&apos;,
+              },
+              {
+                number: 2,
+              },
+            ],
+          },
+        },
+      };
+
+      form.setValue(fastCloneDeep(submission), { sanitize: true });
+      setTimeout(() =&gt; {
+        assert.deepEqual(form.data, submission.data);
+        assert.deepEqual(form.getValue(), submission);
+        done();
+      }, 500);
+    }).catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should not lose values of conditionally visible components on setValue when server option is not passed&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(formElement, formWithDeeplyNestedConditionalComps).then((form) =&gt; {
+      const submission = {
+        data: {
+          submit: false,
+          radio1: &apos;yes&apos;,
+          container: {
+            checkbox: true,
+            checkboxInPanelInHiddenContainer: true,
+            textField: &apos;test&apos;,
+            editGrid: [
+              {
+                number: 1,
+                textField: &apos;test2&apos;,
+              },
+              {
+                number: 2,
+              },
+            ],
+          },
+        },
+      };
+      form.setValue(fastCloneDeep(submission), { sanitize: true });
+
+      setTimeout(() =&gt; {
+        assert.deepEqual(form.data, submission.data);
+        assert.deepEqual(form.getValue(), submission);
+        done();
+      }, 500);
+    }).catch((err) =&gt; done(err));
+  });
 
   it(&apos;Should execute form controller&apos;, function(done) {
     Formio.createForm(formWithFormController).then((form) =&gt; {

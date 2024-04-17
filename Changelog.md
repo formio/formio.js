@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.20.0-rc.1]
+## 4.20.0-rc.1
+### Changed
+ - FIO-7764: Fixes a typo in File component settings
+ - FIO-7808: fixed an issue where conditional components inside conditional components lose their value after submission when they are on the same level with editGrid
+ - FIO-4242 updated input mask for TextField
+ - Wizard: Keep current page after language is changed
+ - FIO-7421: Adds ReCaptcha error messages to the translations config
 
 ## 4.19.2-rc.3
 ### Changed
