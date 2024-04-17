@@ -15,14 +15,7 @@ export default class ReCaptchaComponent extends Component {
   }
 
   static get builderInfo() {
-    return {
-      title: 'reCAPTCHA',
-      group: 'premium',
-      icon: 'refresh',
-      documentation: '/userguide/form-building/premium-components#recaptcha',
-      weight: 40,
-      schema: ReCaptchaComponent.schema()
-    };
+    return {};
   }
 
   static savedValueTypes() {
