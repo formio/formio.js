@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.19.2-rc.3]
+## 4.19.2-rc.3
 ### Changed
  - FIO-7445: fixed an issue where the interpolated data does not show up on PDF
  - FIO-8091: added selectData calculation for url/resource select components
