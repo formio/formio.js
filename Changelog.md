@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.20.0-rc.2]
+### Changed
+ - FIO-7580 FIO-6475: fixed error events issues and an issue where general server errors quickly disappear from ui
+ - FIO-7774: added validateWhenHidden option
+ - FIO-7807: added sanitizeConfig to global form settings
+ - FIO-7808: fixed an issue where conditional editGrid loses the value after submission
+ - FIO-7808: fixed an issue where conditional components inside conditional components lose their value after submission when they are on the same level with editGrid
+
 ## 4.20.0-rc.1
 ### Changed
  - FIO-7764: Fixes a typo in File component settings
