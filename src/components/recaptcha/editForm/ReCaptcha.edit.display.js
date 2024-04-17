@@ -1,9 +1,17 @@
 import { getContextButtons } from '../../../utils/utils';
 export default [
   {
+    key: 'recaptchaInfo',
+    weight: -10,
+    type: 'htmlelement',
+    tag: 'div',
+    className: 'alert alert-danger',
+    content: 'This component has been deprecated and will be removed. Use the CAPTCHA component instead.',
+  },
+  {
     key: 'eventType',
     label: 'Type of event',
-    tooltip: 'Specify type of event that this reCAPTCHA would react to',
+    tooltip: 'Specify type of event that this CAPTCHA would react to. If Button Click is selected, then the CAPTCHA widget will be displayed and verification will occur after clicking on the button.',
     type: 'radio',
     values: [
       {
@@ -24,7 +32,7 @@ export default [
     key: 'buttonKey',
     dataSrc: 'custom',
     valueProperty: 'value',
-    tooltip: 'Specify key of button on this form that this reCAPTCHA should react to',
+    tooltip: 'Specify key of button on this form that this CAPTCHA should react to',
     weight: 660,
     customConditional(context) {
       return context.data.eventType === 'buttonClick';

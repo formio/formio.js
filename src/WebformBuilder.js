@@ -560,7 +560,7 @@ export default class WebformBuilder extends Component {
 
   attach(element) {
     this.on('change', (form) => {
-      this.populateRecaptchaSettings(form);
+      this.populateCaptchaSettings(form);
       this.webform.setAlert(false);
     });
     return super.attach(element).then(() => {
@@ -1080,24 +1080,24 @@ export default class WebformBuilder extends Component {
     return Promise.resolve(form);
   }
 
-  populateRecaptchaSettings(form) {
-    //populate isEnabled for recaptcha form settings
-    let isRecaptchaEnabled = false;
+  populateCaptchaSettings(form) {
+    //populate isEnabled for captcha form settings
+    let isCaptchaEnabled = false;
     if (this.form.components) {
       eachComponent(form.components, component => {
-        if (isRecaptchaEnabled) {
+        if (isCaptchaEnabled) {
           return;
         }
-        if (component.type === 'recaptcha') {
-          isRecaptchaEnabled = true;
+        if (component.type === 'captcha') {
+          isCaptchaEnabled = true;
           return false;
         }
       });
-      if (isRecaptchaEnabled) {
-        _.set(form, 'settings.recaptcha.isEnabled', true);
+      if (isCaptchaEnabled) {
+        _.set(form, 'settings.captcha.isEnabled', true);
       }
-      else if (_.get(form, 'settings.recaptcha.isEnabled')) {
-        _.set(form, 'settings.recaptcha.isEnabled', false);
+      else if (_.get(form, 'settings.captcha.isEnabled')) {
+        _.set(form, 'settings.captcha.isEnabled', false);
       }
     }
   }
