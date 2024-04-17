@@ -838,7 +838,8 @@ export default {
       });
 
       setTimeout(() => {
-        assert.deepEqual(form.errors.length, form.components.length, 'Form should contain references to all components errors');
+        // minus one to not include the submit button.
+        assert.deepEqual(form.errors.length, form.components.length - 1, 'Form should contain references to all components errors');
 
         form.components.forEach(comp => {
           const compKey = comp.component.key;

@@ -402,7 +402,8 @@ export default class CalendarWidget extends InputWidget {
     }
   }
 
-  validationValue(value) {
+  get validationValue() {
+    const value = this.dataValue;
     if (typeof value === 'string') {
       return new Date(value);
     }

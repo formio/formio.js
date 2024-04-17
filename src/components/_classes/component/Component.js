@@ -3124,6 +3124,7 @@ export default class Component extends Element {
       component: this.component,
       data,
       row,
+      value: this.validationValue,
       path: this.path || this.component.key,
       instance: this,
       scope: { errors: [] },
