@@ -83,7 +83,7 @@ export class Component extends Element {
   evalContext(additional: any): any;
   setPristine(pristine: boolean): void;
   removeValue(index: number): void;
-  iconClass(name: any, spinning: any): any;
+  iconClass(name: any, spinning: any, size?: any): any;
   readonly name: string;
   readonly errorLabel: string;
   errorMessage(type: any): any;
