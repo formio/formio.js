@@ -413,6 +413,13 @@
   resolved "https://registry.npmjs.org/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"
   integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
 
+"@sinonjs/commons@^1.7.0":
+  version "1.8.6"
+  resolved "https://registry.npmjs.org/@sinonjs/commons/-/commons-1.8.6.tgz#80c516a4dc264c2a69115e7578d62581ff455ed9"
+  integrity sha512-Ky+XkAkqPZSm3NLBeUng77EBQl3cmeJhITaGHdYH8kjVB+aun3S4XBRti2zt17mtt0mIUDiNxYeoJm6drVvBJQ==
+  dependencies:
+    type-detect "4.0.8"
+
 "@sinonjs/commons@^2.0.0":
   version "2.0.0"
   resolved "https://registry.npmjs.org/@sinonjs/commons/-/commons-2.0.0.tgz#fd4ca5b063554307e8327b4564bd56d3b73924a3"
@@ -434,10 +441,17 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
-"@sinonjs/samsam@^8.0.0":
-  version "8.0.0"
-  resolved "https://registry.npmjs.org/@sinonjs/samsam/-/samsam-8.0.0.tgz#0d488c91efb3fa1442e26abea81759dfc8b5ac60"
-  integrity sha512-Bp8KUVlLp8ibJZrnvq2foVhP0IVX2CIprMJPK0vqGqgrDa0OHVKeZyBykqskkrdxV6yKBPmGasO8LVjAKR3Gew==
+"@sinonjs/fake-timers@^9.1.2":
+  version "9.1.2"
+  resolved "https://registry.npmjs.org/@sinonjs/fake-timers/-/fake-timers-9.1.2.tgz#4eaab737fab77332ab132d396a3c0d364bd0ea8c"
+  integrity sha512-BPS4ynJW/o92PUR4wgriz2Ud5gpST5vz6GQfMixEDK0Z8ZCUv2M7SkBLykH56T++Xs+8ln9zTGbOvNGIe02/jw==
+  dependencies:
+    "@sinonjs/commons" "^1.7.0"
+
+"@sinonjs/samsam@^7.0.1":
+  version "7.0.1"
+  resolved "https://registry.npmjs.org/@sinonjs/samsam/-/samsam-7.0.1.tgz#5b5fa31c554636f78308439d220986b9523fc51f"
+  integrity sha512-zsAk2Jkiq89mhZovB2LLOdTCxJF4hqqTToGP0ASWlhp4I1hqOjcfmZGafXntCN7MDC6yySH0mFHrYtHceOeLmw==
   dependencies:
     "@sinonjs/commons" "^2.0.0"
     lodash.get "^4.4.2"
@@ -2461,7 +2475,7 @@ diff@^4.0.1:
   resolved "https://registry.npmjs.org/diff/-/diff-4.0.2.tgz#60f3aecb89d5fae520c11aa19efc2bb982aade7d"
   integrity sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==
 
-diff@^5.1.0:
+diff@^5.0.0:
   version "5.2.0"
   resolved "https://registry.npmjs.org/diff/-/diff-5.2.0.tgz#26ded047cd1179b78b9537d5ef725503ce1ae531"
   integrity sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==
@@ -6030,7 +6044,7 @@ nice-try@^1.0.4:
   resolved "https://registry.npmjs.org/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
 
-nise@^5.1.5:
+nise@^5.1.2:
   version "5.1.9"
   resolved "https://registry.npmjs.org/nise/-/nise-5.1.9.tgz#0cb73b5e4499d738231a473cd89bd8afbb618139"
   integrity sha512-qOnoujW4SV6e40dYxJOb3uvuoPHtmLzIk4TFo+j0jPJoC+5Z9xja5qH5JZobEPsa8+YYphMrOSwnrshEhG2qww==
@@ -7471,16 +7485,16 @@ signature_pad@^4.2.0:
   resolved "https://registry.npmjs.org/signature_pad/-/signature_pad-4.2.0.tgz#7513cee8cb8afd6594d871c61cf4d61420601422"
   integrity sha512-YLWysmaUBaC5wosAKkgbX7XI+LBv2w5L0QUcI6Jc4moHYzv9BUBJtAyNLpWzHjtjKTeWOH6bfP4a4pzf0UinfQ==
 
-sinon@^17.0.1:
-  version "17.0.1"
-  resolved "https://registry.npmjs.org/sinon/-/sinon-17.0.1.tgz#26b8ef719261bf8df43f925924cccc96748e407a"
-  integrity sha512-wmwE19Lie0MLT+ZYNpDymasPHUKTaZHUH/pKEubRXIzySv9Atnlw+BUMGCzWgV7b7wO+Hw6f1TEOr0IUnmU8/g==
+sinon@14.0.2:
+  version "14.0.2"
+  resolved "https://registry.npmjs.org/sinon/-/sinon-14.0.2.tgz#585a81a3c7b22cf950762ac4e7c28eb8b151c46f"
+  integrity sha512-PDpV0ZI3ZCS3pEqx0vpNp6kzPhHrLx72wA0G+ZLaaJjLIYeE0n8INlgaohKuGy7hP0as5tbUd23QWu5U233t+w==
   dependencies:
-    "@sinonjs/commons" "^3.0.0"
-    "@sinonjs/fake-timers" "^11.2.2"
-    "@sinonjs/samsam" "^8.0.0"
-    diff "^5.1.0"
-    nise "^5.1.5"
+    "@sinonjs/commons" "^2.0.0"
+    "@sinonjs/fake-timers" "^9.1.2"
+    "@sinonjs/samsam" "^7.0.1"
+    diff "^5.0.0"
+    nise "^5.1.2"
     supports-color "^7.2.0"
 
 sirv@^2.0.3:
