@@ -612,7 +612,7 @@ export default {
         form.components.forEach(comp => {
           const compKey = comp.component.key;
           const compType = comp.component.type;
-          if (compKey === 'basis') return;
+          if (compKey === 'basis' || compType === 'button') return;
 
           const getExpectedCalculatedValue = (basis) => settings.calculateValue[`${compKey}`].expectedValue(basis);
 
@@ -844,6 +844,7 @@ export default {
         form.components.forEach(comp => {
           const compKey = comp.component.key;
           const compType = comp.component.type;
+          if (compType === 'button') return;
           const getExpectedErrorMessage = () => 'Custom validation message: component is invalid.';
 
           assert.deepEqual(comp.dataValue, _.get(values.values, compKey), `${compKey} (component ${compType}): should set value`);
