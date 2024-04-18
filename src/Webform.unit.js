@@ -78,7 +78,7 @@ import formWithDeeplyNestedConditionalComps from '../test/forms/formWithDeeplyNe
 import formWithValidation from '../test/forms/formWithValidation';
 import formWithNotAllowedTags from '../test/forms/formWithNotAllowedTags';
 import formWithValidateWhenHidden from '../test/forms/formWithValidateWhenHidden';
-
+const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
 
@@ -4226,22 +4226,21 @@ describe('Webform tests', function() {
 
   it('Test optional sanitize', (done) => {
     const element = document.createElement('div');
-
+    SpySanitize.resetHistory();
     Formio.createForm(element, optionalSanitize, {
       sanitize: false,
     }).then(form => {
-      const sanitize = sinon.spy(FormioUtils, 'sanitize');
       form.redraw();
       setTimeout(() => {
-        assert.equal(sanitize.callCount, 0, 'Should not sanitize templates when sanitize in not turned on');
+        assert.equal(SpySanitize.callCount, 0, 'Should not sanitize templates when sanitize in not turned on');
         element.innerHTML = '';
         Formio.createForm(element, optionalSanitize, {
           sanitize: true,
         }).then(form => {
-          sanitize.resetHistory();
+          SpySanitize.resetHistory();
           form.redraw();
           setTimeout(() => {
-            assert.equal(sanitize.callCount, 1, 'Should sanitize templates when sanitize in turned on');
+            assert.equal(SpySanitize.callCount, 1, 'Should sanitize templates when sanitize in turned on');
             done();
           }, 250);
         }, 250);
