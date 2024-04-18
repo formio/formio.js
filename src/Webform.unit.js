@@ -4825,6 +4825,7 @@ describe('Webform tests', function() {
             let form = new Webform(formElement, _.cloneDeep(formTest.formOptions || {}));
             form.setForm(formTest.form).then(function() {
               formTestTest(form, function(error) {
+                form.destroy();
                 form = null;
                 formElement.innerHTML = '';
                 if (error) {
