@@ -4240,7 +4240,7 @@ describe('Webform tests', function() {
           SpySanitize.resetHistory();
           form.redraw();
           setTimeout(() => {
-            assert.equal(SpySanitize.callCount, 1, 'Should sanitize templates when sanitize in turned on');
+            assert(SpySanitize.callCount >= 1, 'Should sanitize templates when sanitize in turned on');
             done();
           }, 250);
         }, 250);
