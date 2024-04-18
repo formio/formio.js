@@ -2256,12 +2256,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/webform.unit.js",
-    "file/src/Webform.unit.js.html",
-    "src/Webform.unit.js",
-    "file"
-  ],
-  [
     "src/webformbuilder.unit.js",
     "file/src/WebformBuilder.unit.js.html",
     "src/WebformBuilder.unit.js",
@@ -3993,6 +3987,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/fixtures/comp9.js",
     "file/src/components/editgrid/fixtures/comp9.js.html",
     "src/components/editgrid/fixtures/comp9.js",
+    "file"
+  ],
+  [
+    "src/components/editgrid/fixtures/formswitheditgridandconditions.js",
+    "file/src/components/editgrid/fixtures/formsWithEditGridAndConditions.js.html",
+    "src/components/editgrid/fixtures/formsWithEditGridAndConditions.js",
     "file"
   ],
   [

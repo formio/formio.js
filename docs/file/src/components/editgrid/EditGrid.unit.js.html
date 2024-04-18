@@ -209,6 +209,7 @@ import {
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
 } from &apos;./fixtures&apos;;
+import formsWithEditGridAndConditions from &apos;./fixtures/formsWithEditGridAndConditions&apos;;
 
 import ModalEditGrid from &apos;../../../test/forms/modalEditGrid&apos;;
 import Webform from &apos;../../Webform&apos;;
@@ -1431,6 +1432,147 @@ describe(&apos;EditGrid Component&apos;, () =&gt; {
         assert.equal(editGrid.errors.length, 0);
         done();
       }, 100);
+    }).catch(done);
+  });
+
+  it(&apos;Should keep value for conditional editGrid on setValue when server option is provided&apos;, (done) =&gt; {
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form1, { server: true }).then(form =&gt; {
+      const formData = {
+        checkbox: true,
+        radio: &apos;yes&apos;,
+        editGrid: [
+          { textField: &apos;test&apos;, number: 4 },
+          { textField: &apos;test1&apos;, number: 5 },
+        ],
+      };
+
+      form.setValue({ data: _.cloneDeep(formData) });
+
+      setTimeout(() =&gt; {
+        const editGrid = form.getComponent(&apos;editGrid&apos;);
+        assert.deepEqual(editGrid.dataValue, formData.editGrid);
+
+        done();
+      }, 500);
+    }).catch(done);
+  });
+
+  it(&apos;Should set value for conditional editGrid inside editGrid on event when form is not pristine &apos;, (done) =&gt; {
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form2).then(form =&gt; {
+      form.setPristine(false);
+      const editGrid1 = form.getComponent(&apos;editGrid1&apos;);
+      editGrid1.addRow();
+
+      setTimeout(() =&gt; {
+        const btn = editGrid1.getComponent(&apos;setPanelValue&apos;)[0];
+        const clickEvent = new Event(&apos;click&apos;);
+        btn.refs.button.dispatchEvent(clickEvent);
+        setTimeout(() =&gt; {
+          const conditionalEditGrid = editGrid1.getComponent(&apos;editGrid&apos;)[0];
+          assert.deepEqual(conditionalEditGrid.dataValue, [{ textField:&apos;testyyyy&apos; }]);
+          assert.equal(conditionalEditGrid.editRows.length, 1);
+          done();
+        }, 500);
+      }, 300);
+    }).catch(done);
+  });
+
+  it(&apos;Should keep value for conditional editGrid in tabs on setValue when server option is provided&apos;, (done) =&gt; {
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form3, { server: true }).then(form =&gt; {
+      const formData =  {
+        affectedRiskTypes: {
+          creditRisk: false,
+          marketRisk: true,
+          operationalRisk: false,
+          counterpartyCreditRisk: false,
+          creditValuationRiskAdjustment: false,
+        },
+        rwaImpact: &apos;yes&apos;,
+        submit: true,
+        mr: {
+          quantitativeInformation: {
+            cva: &apos;yes&apos;,
+            sameRiskCategories: false,
+            impactsPerEntity: [{ number: 123 }],
+            sameImpactAcrossEntities: false,
+          },
+        },
+        euParentInstitution: &apos;EUParent&apos;,
+      };
+
+      form.setValue({ data: _.cloneDeep(formData) });
+
+      setTimeout(() =&gt; {
+        const editGrid = form.getComponent(&apos;impactsPerEntity&apos;);
+        assert.deepEqual(editGrid.dataValue, formData.mr.quantitativeInformation.impactsPerEntity);
+        assert.deepEqual(editGrid.editRows.length, 1);
+
+        done();
+      }, 500);
+    }).catch(done);
+  });
+
+  it(&apos;Should calculate editGrid value when calculateOnServer is enabled and server option is passed&apos;, (done) =&gt; {
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form4, { server: true }).then(form =&gt; {
+        const editGrid = form.getComponent(&apos;editGrid&apos;);
+        assert.deepEqual(editGrid.dataValue, [{ textArea: &apos;test&apos; }]);
+        assert.deepEqual(editGrid.editRows.length, 1);
+        done();
+    }).catch(done);
+  });
+
+  it(&apos;Should keep value for conditional editGrid deeply nested in panels and containers on setValue when server option is provided&apos;, (done) =&gt; {
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form5, { server: true }).then(form =&gt; {
+      const formData =  {
+        generalInformation: {
+          listSupervisedEntitiesCovered: [
+            { id: 6256, longName: &apos;Bank_DE&apos;, leiCode: &apos;LEI6256&apos;, countryCode: &apos;DE&apos; },
+          ],
+          deSpecific: {
+            criticalPartsToBeOutsourcedSuboutsourcer: &apos;yes&apos;,
+            suboutsourcers: [
+              { nameSuboutsourcer: &apos;test&apos; },
+              { nameSuboutsourcer: &apos;test 1&apos; },
+            ],
+          },
+        },
+      };
+
+      form.setValue({ data: _.cloneDeep(formData) });
+
+      setTimeout(() =&gt; {
+        const editGrid = form.getComponent(&apos;suboutsourcers&apos;);
+        assert.deepEqual(editGrid.dataValue, formData.generalInformation.deSpecific.suboutsourcers);
+        assert.deepEqual(editGrid.editRows.length, 2);
+
+        done();
+      }, 500);
+    }).catch(done);
+  });
+
+  it(&apos;Should calculate editGrid value when condition is met in advanced logic&apos;, (done) =&gt; {
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form6).then(form =&gt; {
+      form.getComponent(&apos;textField&apos;).setValue(&apos;show&apos;);
+
+      setTimeout(() =&gt; {
+        const editGrid = form.getComponent(&apos;editGrid&apos;);
+        assert.deepEqual(editGrid.dataValue, [{ number:1, textArea: &apos;test&apos; }, { number:2, textArea: &apos;test2&apos; }]);
+        assert.deepEqual(editGrid.editRows.length, 2);
+
+        done();
+      }, 300);
     }).catch(done);
   });
 });
