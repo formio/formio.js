@@ -194,7 +194,8 @@ export default class RadioComponent extends ListComponent {
         }
 
         if (this.isSelectURL && _.isObject(this.loadedOptions[index].value)) {
-          input.checked = _.isEqual(this.loadedOptions[index].value, this.dataValue);
+          const optionValue = this.component.dataType === 'string' ? JSON.stringify(this.loadedOptions[index].value) : this.loadedOptions[index].value;
+          input.checked = _.isEqual(optionValue, this.dataValue);
         }
         else {
           input.checked = (dataValue === input.value && (input.value || this.component.dataSrc !== 'url'));
@@ -421,21 +422,39 @@ export default class RadioComponent extends ListComponent {
    * @return {*}
    */
   normalizeValue(value) {
+    const dataType = this.component.dataType || 'auto';
     if (value === this.emptyValue) {
       return value;
     }
 
-    const isEquivalent = _.toString(value) === Number(value).toString();
+    switch (dataType) {
+      case 'auto':
 
-    if (!isNaN(parseFloat(value)) && isFinite(value) && isEquivalent) {
-      value = +value;
-    }
-    if (value === 'true') {
-      value = true;
-    }
-    if (value === 'false') {
-      value = false;
-    }
+        if (!isNaN(parseFloat(value)) && isFinite(value) && _.toString(value) === Number(value).toString()) {
+          value = +value;
+        }
+        if (value === 'true') {
+          value = true;
+        }
+        if (value === 'false') {
+          value = false;
+        }
+        break;
+      case 'number':
+        value = +value;
+        break;
+      case 'string':
+        if (typeof value === 'object') {
+          value = JSON.stringify(value);
+        }
+        else {
+          value = String(value);
+        }
+        break;
+      case 'boolean':
+        value = !(!value || value.toString() === 'false');
+        break;
+      }
 
     if (this.isSelectURL && this.templateData && this.templateData[value]) {
       const submission = this.root.submission;

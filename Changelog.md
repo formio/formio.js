@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.21.0-rc.2]
+ - FIO-8074: Added Storage Type to Radio Components
+ 
 ## 4.21.0-rc.1
 ### Changed
  - FIO-3957: Fixes an issue where Data Map inside conditionally shown Panel does not show its values in the view mode

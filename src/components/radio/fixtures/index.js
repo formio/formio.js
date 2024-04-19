@@ -8,3 +8,4 @@ export comp7 from './comp7';
 export comp8 from './comp8';
 export comp9 from './comp9';
 export comp10 from './comp10';
+export comp11 from './comp11';
