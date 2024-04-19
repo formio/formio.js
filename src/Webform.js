@@ -23,6 +23,10 @@ Formio.forms = {};
 // Allow people to register components.
 Formio.registerComponent = Components.setComponent;
 
+/**
+ *
+ * @param icons
+ */
 function getIconSet(icons) {
   if (icons === 'fontawesome') {
     return 'fa';
@@ -30,6 +34,10 @@ function getIconSet(icons) {
   return icons || '';
 }
 
+/**
+ *
+ * @param options
+ */
 function getOptions(options) {
   options = _.defaults(options, {
     submitOnEnter: false,
@@ -53,14 +61,11 @@ function getOptions(options) {
 export default class Webform extends NestedDataComponent {
   /**
    * Creates a new Form instance.
-   *
-   * @param {Object} options - The options to create a new form instance.
+   * @param {object} options - The options to create a new form instance.
    * @param {boolean} options.saveDraft - Set this if you would like to enable the save draft feature.
-   * @param {boolean} options.saveDraftThrottle - The throttle for the save draft feature.
    * @param {boolean} options.readOnly - Set this form to readOnly
    * @param {boolean} options.noAlerts - Set to true to disable the alerts dialog.
    * @param {boolean} options.i18n - The translation file for this rendering. @see https://github.com/formio/formio.js/blob/master/i18n.js
-   * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.
    */
   /* eslint-disable max-statements */
   constructor() {
@@ -111,14 +116,12 @@ export default class Webform extends NestedDataComponent {
 
     /**
      * Determines if the form has tried to be submitted, error or not.
-     *
      * @type {boolean}
      */
     this.submitted = false;
 
     /**
      * Determines if the form is being submitted at the moment.
-     *
      * @type {boolean}
      */
     this.submitting = false;
@@ -156,7 +159,6 @@ export default class Webform extends NestedDataComponent {
     /**
      * Promise that executes when the form is ready and rendered.
      * @type {Promise}
-     *
      * @example
      * import Webform from '@formio/js/Webform';
      * let form = new Webform(document.getElementById('formio'));
@@ -168,15 +170,13 @@ export default class Webform extends NestedDataComponent {
     this.formReady = new Promise((resolve, reject) => {
       /**
        * Called when the formReady state of this form has been resolved.
-       *
-       * @type {function}
+       * @type {Function}
        */
       this.formReadyResolve = resolve;
 
       /**
        * Called when this form could not load and is rejected.
-       *
-       * @type {function}
+       * @type {Function}
        */
       this.formReadyReject = reject;
     });
@@ -184,7 +184,6 @@ export default class Webform extends NestedDataComponent {
     /**
      * Promise that executes when the submission is ready and rendered.
      * @type {Promise}
-     *
      * @example
      * import Webform from '@formio/js/Webform';
      * let form = new Webform(document.getElementById('formio'));
@@ -196,15 +195,13 @@ export default class Webform extends NestedDataComponent {
     this.submissionReady = new Promise((resolve, reject) => {
       /**
        * Called when the formReady state of this form has been resolved.
-       *
-       * @type {function}
+       * @type {Function}
        */
       this.submissionReadyResolve = resolve;
 
       /**
        * Called when this form could not load and is rejected.
-       *
-       * @type {function}
+       * @type {Function}
        */
       this.submissionReadyReject = reject;
     });
@@ -247,9 +244,8 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Sets the language for this form.
-   *
    * @param lang
-   * @return {Promise}
+   * @returns {Promise}
    */
   set language(lang) {
     if (!this.i18next) {
@@ -278,11 +274,10 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Add a language for translations
-   *
    * @param code
    * @param lang
    * @param active
-   * @return {*}
+   * @returns {*}
    */
   addLanguage(code, lang, active = false) {
     if (this.i18next) {
@@ -382,7 +377,6 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Get the embed source of the form.
-   *
    * @returns {string}
    */
   get src() {
@@ -410,7 +404,6 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Set the src of the form renderer.
-   *
    * @param value
    * @param options
    */
@@ -432,9 +425,7 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Set the Form source, which is typically the Form.io embed URL.
-   *
    * @param {string} value - The value of the form embed url.
-   *
    * @example
    * import Webform from '@formio/js/Webform';
    * let form = new Webform(document.getElementById('formio'));
@@ -449,7 +440,6 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Get the embed source of the form.
-   *
    * @returns {string}
    */
   get url() {
@@ -458,7 +448,6 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Sets the url of the form renderer.
-   *
    * @param value
    * @param options
    */
@@ -483,7 +472,6 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Set the form source but don't initialize the form and submission from the url.
-   *
    * @param {string} value - The value of the form embed url.
    */
   set url(value) {
@@ -492,7 +480,6 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Called when both the form and submission have been loaded.
-   *
    * @returns {Promise} - The promise to trigger when both form and submission have loaded.
    */
   get ready() {
@@ -505,7 +492,6 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Returns if this form is loading.
-   *
    * @returns {boolean} - TRUE means the form is loading, FALSE otherwise.
    */
   get loading() {
@@ -514,7 +500,6 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Set the loading state for this form, and also show the loader spinner.
-   *
    * @param {boolean} loading - If this form should be "loading" or not.
    */
   set loading(loading) {
@@ -549,7 +534,6 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Sets the JSON schema for the form to be rendered.
-   *
    * @example
    * import Webform from '@formio/js/Webform';
    * let form = new Webform(document.getElementById('formio'));
@@ -577,8 +561,7 @@ export default class Webform extends NestedDataComponent {
    *     }
    *   ]
    * });
-   *
-   * @param {Object} form - The JSON schema of the form @see https://examples.form.io/example for an example JSON schema.
+   * @param {object} form - The JSON schema of the form @see https://examples.form.io/example for an example JSON schema.
    * @param flags
    * @returns {*}
    */
@@ -667,8 +650,7 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Gets the form object.
-   *
-   * @returns {Object} - The form JSON schema.
+   * @returns {object} - The form JSON schema.
    */
   get form() {
     if (!this._form) {
@@ -681,9 +663,8 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Sets the form value.
-   *
    * @alias setForm
-   * @param {Object} form - The form schema object.
+   * @param {object} form - The form schema object.
    */
   set form(form) {
     this.setForm(form);
@@ -691,8 +672,7 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Returns the submission object that was set within this form.
-   *
-   * @returns {Object}
+   * @returns {object}
    */
   get submission() {
     return this.getValue();
@@ -700,7 +680,6 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Sets the submission of a form.
-   *
    * @example
    * import Webform from '@formio/js/Webform';
    * let form = new Webform(document.getElementById('formio'));
@@ -710,8 +689,7 @@ export default class Webform extends NestedDataComponent {
    *   lastName: 'Smith',
    *   email: 'joe@example.com'
    * }};
-   *
-   * @param {Object} submission - The Form.io submission object.
+   * @param {object} submission - The Form.io submission object.
    */
   set submission(submission) {
     this.setSubmission(submission);
@@ -721,7 +699,7 @@ export default class Webform extends NestedDataComponent {
    * Sets a submission and returns the promise when it is ready.
    * @param submission
    * @param flags
-   * @return {Promise.<TResult>}
+   * @returns {Promise.<TResult>}
    */
   setSubmission(submission, flags = {}) {
     flags = {
@@ -790,8 +768,8 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Restores a draft submission based on the user who is authenticated.
-   *
    * @param {userId} - The user id where we need to restore the draft from.
+   * @param userId
    */
   restoreDraft(userId) {
     const formio = this.formio || this.options.formio;
@@ -1039,10 +1017,9 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Sets a new alert to display in the error dialog of the form.
-   *
    * @param {string} type - The type of alert to display. "danger", "success", "warning", etc.
    * @param {string} message - The message to show in the alert.
-   * @param {Object} options
+   * @param {object} options
    */
   setAlert(type, message, options) {
     if (!type && this.submitted) {
@@ -1119,7 +1096,6 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Focus on selected component.
-   *
    * @param {string} key - The key of selected component.
    * @returns {*}
    */
@@ -1134,8 +1110,7 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Show the errors of this form within the alert dialog.
-   *
-   * @param {Object} error - An optional additional error to display along with the component errors.
+   * @param {object} error - An optional additional error to display along with the component errors.
    * @returns {*}
    */
   /* eslint-disable no-unused-vars */
@@ -1247,8 +1222,7 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Called when the submission has completed, or if the submission needs to be sent to an external library.
-   *
-   * @param {Object} submission - The submission object.
+   * @param {object} submission - The submission object.
    * @param {boolean} saved - Whether or not this submission was saved to the server.
    * @returns {object} - The submission object.
    */
@@ -1289,8 +1263,7 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Called when an error occurs during the submission.
-   *
-   * @param {Object} error - The error that occured.
+   * @param {object} error - The error that occured.
    */
   onSubmissionError(error) {
     error = this.normalizeError(error);
@@ -1315,9 +1288,10 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Trigger the change event for this form.
-   *
    * @param changed
    * @param flags
+   * @param modified
+   * @param changes
    */
   onChange(flags, changed, modified, changes) {
     flags = flags || {};
@@ -1382,7 +1356,7 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Cancels the submission.
-   *
+   * @param noconfirm
    * @alias reset
    */
   cancel(noconfirm) {
@@ -1558,9 +1532,9 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Submits the form.
-   *
    * @example
    * import Webform from '@formio/js/Webform';
+   * @param options
    * let form = new Webform(document.getElementById('formio'));
    * form.src = 'https://examples.form.io/example';
    * form.submission = {data: {
@@ -1571,9 +1545,7 @@ export default class Webform extends NestedDataComponent {
    * form.submit().then((submission) => {
    *   console.log(submission);
    * });
-   *
    * @param {boolean} before - If this submission occured from the before handlers.
-   *
    * @returns {Promise} - A promise when the form is done submitting.
    */
   submit(before, options) {
