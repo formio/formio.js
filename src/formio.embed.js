@@ -26,9 +26,11 @@ if (thisScript) {
         config.formioPath(scriptSrc);
     }
     scriptSrc = scriptSrc.join('/');
+    const debug = (query.debug === 'true' || query.debug === '1');
+    const renderer = debug ? 'formio.form' : 'formio.form.min';
     Formio.config = Object.assign({
-        script: query.script || (`${config.updatePath ? config.updatePath() : scriptSrc}/formio.form.min.js`),
-        style: query.styles || (`${config.updatePath ? config.updatePath() : scriptSrc}/formio.form.min.css`),
+        script: query.script || (`${config.updatePath ? config.updatePath() : scriptSrc}/${renderer}.js`),
+        style: query.styles || (`${config.updatePath ? config.updatePath() : scriptSrc}/${renderer}.css`),
         cdn: query.cdn,
         class: (query.class || 'formio-form-wrapper'),
         src: query.src,
@@ -39,7 +41,7 @@ if (thisScript) {
         submit: query.submit,
         includeLibs: (query.libs === 'true' || query.libs === '1'),
         template: query.template,
-        debug: (query.debug === 'true' || query.debug === '1'),
+        debug: debug,
         config: {},
         redirect: (query.return || query.redirect),
         embedCSS: (`${config.updatePath ? config.updatePath() : scriptSrc}/formio.embed.css`),

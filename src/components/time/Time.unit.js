@@ -49,17 +49,11 @@ describe('Time Component', () => {
       timeInput.dispatchEvent(inputEvent);
 
       setTimeout(() => {
-        timeInput.value = '12:00';
-        timeInput.dispatchEvent(inputEvent);
-
+        component.setValue('12:00');
         setTimeout(() => {
-          component.checkData(component.data);
-
-          setTimeout(() => {
-            assert.equal(component.errors.length, 0);
-            done();
-          }, 700);
-        }, 600);
+          assert.equal(component.errors.length, 0);
+          done();
+        }, 700);
       }, 500);
     });
   });
@@ -71,7 +65,7 @@ describe('Time Component', () => {
       const component = form.components[0];
       Harness.setInputValue(component, 'data[time]', '89:19');
       setTimeout(() => {
-        assert.equal(component.error.message, 'Invalid time', 'Should have an error');
+        assert.equal(component.errors[0].message, 'Invalid time', 'Should have an error');
         done();
       }, 650);
     }).catch(done);

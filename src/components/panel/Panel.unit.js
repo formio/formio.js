@@ -25,8 +25,11 @@ describe('Panel Component', () => {
       const textComp = form.getComponent('textField');
 
       assert.equal(panel.collapsed, false);
-      assert.equal(!!numberComp.error, false);
-      assert.equal(!!textComp.error, false);
+      assert.equal(numberComp.errors.length, 0);
+      assert.equal(textComp.errors.length, 1);
+
+      // Make sure the error is not visible in the UI.
+      assert.equal(numberComp.element.classList.contains('has-error'), false, 'Should not contain error classes.');
 
       const numberInput = numberComp.refs?.input[0];
       numberInput.value = 5;
@@ -34,10 +37,10 @@ describe('Panel Component', () => {
       numberInput.dispatchEvent(inputEvent);
 
       setTimeout(() => {
-        assert.equal(!!numberComp.error, true);
-        assert.equal(numberComp.error.messages.length, 1);
+        assert(numberComp.errors.length > 0);
+        assert.equal(numberComp.errors.length, 1);
         assert.equal(numberComp.refs.messageContainer.querySelectorAll('.error').length, 1);
-        assert.equal(!!textComp.error, false);
+        assert.equal(textComp.errors.length, 1);
 
         const clickEvent = new Event('click');
         panel.refs.header.dispatchEvent(clickEvent);
@@ -48,10 +51,10 @@ describe('Panel Component', () => {
 
           setTimeout(() => {
             assert.equal(panel.collapsed, false);
-            assert.equal(!!numberComp.error, true);
-            assert.equal(numberComp.error.messages.length, 1);
+            assert(numberComp.errors.length > 0);
+            assert.equal(numberComp.errors.length, 1);
             assert.equal(numberComp.refs.messageContainer.querySelectorAll('.error').length, 1);
-            assert.equal(!!textComp.error, false);
+            assert.equal(textComp.errors.length, 1);
             done();
           }, 300);
         }, 300);
