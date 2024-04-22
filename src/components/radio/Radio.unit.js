@@ -14,7 +14,8 @@ import {
   comp7,
   comp8,
   comp9,
-  comp10
+  comp10,
+  comp11
 } from './fixtures';
 
 describe('Radio Component', () => {
@@ -112,6 +113,38 @@ describe('Radio Component', () => {
         done();
       }, 700);
     });
+  });
+
+  it('Should set the Value according to Storage Type', (done) => {
+    const form = _.cloneDeep(comp11);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const radioNumber = form.getComponent('radioNumber');
+      const radioString = form.getComponent('radioString');
+      const radioBoolean = form.getComponent('radioBoolean');
+      const value1 = '0';
+      const value2 = 'true';
+      radioNumber.setValue(value1);
+      radioString.setValue(value1);
+      radioBoolean.setValue(value2);
+
+      const submit = form.getComponent('submit');
+      const clickEvent = new Event('click');
+      const submitBtn = submit.refs.button;
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.equal(form.submission.data.radioNumber, 0);
+        assert.equal(typeof form.submission.data.radioNumber, 'number');
+        assert.equal(form.submission.data.radioString, '0');
+        assert.equal(typeof form.submission.data.radioString, 'string');
+        assert.equal(form.submission.data.radioBoolean, true);
+        assert.equal(typeof form.submission.data.radioBoolean, 'boolean');
+        document.innerHTML = '';
+        done();
+      }, 300);
+    }).catch(done);
   });
 
   it('Should set correct data for 0s values', (done) => {

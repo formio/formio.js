@@ -228,6 +228,8 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-8109: fixed save draft triggering for nested components
  - FIO-8146 fixed saveDraft triggering for nested forms after submitting
  - FIO-3703: Fixes an issue where NestedData components with modal view do not render values inside Layout components in modal preview table
+ - FIO-8091: added selectData calculation for url/resource select components
+ - FIO-8074: Added Storage Type to Radio Components 
 
 ## 5.0.0-rc.37
 ### Fixed
