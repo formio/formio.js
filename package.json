@@ -5,12 +5,10 @@
   "main": "lib/cjs/index.js",
   "exports": {
     ".": {
-      "types": "index.d.ts",
       "import": "./lib/cjs/index.js",
       "require": "./lib/cjs/index.js"
     },
     "./sdk": {
-      "types": "./types/Formio.d.ts",
       "import": "./lib/cjs/Formio.js",
       "require": "./lib/cjs/Formio.js"
     },
@@ -23,7 +21,6 @@
       "require": "./lib/cjs/formio.form.js"
     },
     "./embed": {
-      "types": "./types/Embed.d.ts",
       "import": "./lib/cjs/Embed.js",
       "require": "./lib/cjs/Embed.js"
     },
@@ -31,12 +28,7 @@
   },
   "files": [
     "dist",
-    "lib",
-    "types",
-    "index.d.ts",
-    "embed.d.ts",
-    "sdk.d.ts",
-    "utils.d.ts"
+    "lib"
   ],
   "pre-commit": [
     "lint"
@@ -175,6 +167,7 @@
     "string-replace-loader": "^3.1.0",
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
+    "tsc": "^2.0.4",
     "typescript": "5.3.2",
     "webpack": "^5.90.3",
     "webpack-bundle-analyzer": "^4.10.2",
