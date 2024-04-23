@@ -6,7 +6,7 @@
     "allowJs": true,                          /* Allow javascript files to be compiled. */
     "allowSyntheticDefaultImports": true,     /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
     "noImplicitThis": false,                  /* Raise error on 'this' expressions with an implied 'any' type. */
-    "declaration": false,                     /* Generates corresponding '.d.ts' file. */
+    "declaration": true,                     /* Generates corresponding '.d.ts' file. */
     "baseUrl": "src",                         /* Base directory to resolve non-absolute module names. */
     "esModuleInterop": true,                  /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
     "inlineSourceMap": false,                 /* Emit a single file with source maps instead of having a separate file. */
@@ -22,7 +22,7 @@
     "traceResolution": false,
     "types": ["node"],
     "experimentalDecorators": true,           /* Enables experimental support for ES7 decorators. */
-    "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
+    "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
   },
   "include": [
     "src/**/*.js"
