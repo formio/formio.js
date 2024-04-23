@@ -129,10 +129,10 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   get defaultDialogTemplate() {
     return `
-    <h3 ref="dialogHeader">${this.t('Do you want to clear data?')}</h3>
+    <h3 ${this._referenceAttributeName}="dialogHeader">${this.t('Do you want to clear data?')}</h3>
     <div style="display:flex; justify-content: flex-end;">
-      <button ref="dialogCancelButton" class="btn btn-secondary" aria-label="${this.t('Cancel')}">${this.t('Cancel')}</button>
-      <button ref="dialogYesButton" class="btn btn-danger" aria-label="${this.t('Yes, delete it')}">${this.t('Yes, delete it')}</button>
+      <button ${this._referenceAttributeName}="dialogCancelButton" class="btn btn-secondary" aria-label="${this.t('Cancel')}">${this.t('Cancel')}</button>
+      <button ${this._referenceAttributeName}="dialogYesButton" class="btn btn-danger" aria-label="${this.t('Yes, delete it')}">${this.t('Yes, delete it')}</button>
     </div>
   `;
   }

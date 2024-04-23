@@ -311,7 +311,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     super.loadRefs(element, refs);
 
     if (refs['messageContainer'] === 'single') {
-      const container = _.last(element.querySelectorAll('[ref=messageContainer]'));
+      const container = _.last(element.querySelectorAll(`[${this._referenceAttributeName}=messageContainer]`));
       this.refs['messageContainer'] = container || this.refs['messageContainer'];
     }
   }

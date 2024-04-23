@@ -387,6 +387,11 @@ export default class Component extends Element {
     this._parentDisabled = false;
 
     /**
+     * The reference attribute name for this component
+     */
+    this._referenceAttributeName = 'ref';
+
+    /**
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
@@ -910,15 +915,15 @@ export default class Component extends Element {
     const templatesByName = Templates.defaultTemplates[name];
 
     if (!templatesByName) {
-      return `Unknown template: ${name}`;
+      return { template: `Unknown template: ${name}` };
     }
 
     const templateByMode = this.checkTemplateMode(templatesByName, modes);
     if (templateByMode) {
-      return templateByMode;
+      return { template: templateByMode };
     }
 
-    return templatesByName.form;
+    return { template: templatesByName.form };
   }
 
   checkTemplate(templates, names, modes) {
@@ -926,9 +931,10 @@ export default class Component extends Element {
       const templatesByName = templates[name];
 
       if (templatesByName) {
+        const { referenceAttributeName } = templatesByName;
         const templateByMode = this.checkTemplateMode(templatesByName, modes);
         if (templateByMode) {
-          return templateByMode;
+          return { template: templateByMode, referenceAttributeName };
         }
       }
     }
@@ -995,9 +1001,13 @@ export default class Component extends Element {
     ];
 
     // Allow template alters.
+    const { referenceAttributeName, template } = this.getTemplate(names, mode);
+    if (referenceAttributeName) {
+      this._referenceAttributeName = referenceAttributeName;
+    }
     return this.hook(
       `render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`,
-      this.interpolate(this.getTemplate(names, mode), data),
+      this.interpolate(template, data),
       data,
       mode
     );
@@ -1138,12 +1148,20 @@ export default class Component extends Element {
     return currentTimezone();
   }
 
-  loadRefs(element, refs) {
+  /**
+   *
+   * @param {HTMLElement} element - The containing DOM element to query for the ref value.
+   * @param {object} refs - The references to load.
+   * @param {string} [referenceAttributeName] - The attribute name to use for the reference.
+   */
+  loadRefs(element, refs, referenceAttributeName) {
     for (const ref in refs) {
       const refType = refs[ref];
       const isString = typeof refType === 'string';
 
-      const selector = isString && refType.includes('scope') ? `:scope > [ref="${ref}"]` : `[ref="${ref}"]`;
+      const selector = isString && refType.includes('scope')
+        ? `:scope > [${referenceAttributeName || this._referenceAttributeName || 'ref'}="${ref}"]`
+        : `[${referenceAttributeName || this._referenceAttributeName || 'ref'}="${ref}"]`;
 
       if (isString && refType.startsWith('single')) {
         this.refs[ref] = element.querySelector(selector);
@@ -1230,7 +1248,7 @@ export default class Component extends Element {
   }
 
   createComponentModal(element, modalShouldBeOpened, currentValue) {
-    return new ComponentModal(this, element, modalShouldBeOpened, currentValue);
+    return new ComponentModal(this, element, modalShouldBeOpened, currentValue, this._referenceAttributeName);
   }
 
   attach(element) {
