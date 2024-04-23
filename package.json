@@ -1,6 +1,6 @@
 {
   "name": "@formio/js",
-  "version": "5.0.0-rc.43",
+  "version": "5.0.0-rc.44",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "lib/cjs/index.js",
   "exports": {
@@ -83,9 +83,9 @@
   },
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
-    "@formio/bootstrap": "^3.0.0-rc.22",
+    "@formio/bootstrap": "^3.0.0-rc.23",
     "@formio/choices.js": "^10.2.1",
-    "@formio/core": "^2.1.0-dev.tt.2",
+    "@formio/core": "^2.1.0-dev.tt.3",
     "@formio/text-mask-addons": "^3.8.0-formio.2",
     "@formio/vanilla-text-mask": "^5.1.1-formio.1",
     "abortcontroller-polyfill": "^1.7.5",
@@ -113,7 +113,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.44",
-    "quill": "^2.0.0-rc.4",
+    "quill": "^2.0.0",
     "signature_pad": "^4.2.0",
     "string-hash": "^1.1.3",
     "tippy.js": "^6.3.7",
@@ -121,9 +121,9 @@
     "vanilla-picker": "^2.12.3"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.6.0",
-    "@typescript-eslint/parser": "^7.6.0",
-    "ace-builds": "1.33.0",
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/parser": "^7.7.1",
+    "ace-builds": "1.33.1",
     "async-limiter": "^2.0.0",
     "bootstrap-icons": "^1.10.5",
     "bootswatch": "^5.3.3",
