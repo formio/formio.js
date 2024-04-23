@@ -40,7 +40,7 @@ export default {
           lastName: ''
         }
       ],
-      calculateValue: "var temp = [\n    {'firstName': 'initial 1','lastName': 'initial 2'},\n    {'firstName': 'initial 1b','lastName': 'initial 2b'},\n  ];\n  if(data.select === 'a')\n  {\n    temp = [{'firstName': 'A f 1','lastName': 'A l 1'}];\n  } else if(data.select === 'b') {  \n    temp = [{'firstName': 'B f 1','lastName': 'B l 1'}  \n    ,{'firstName': 'B f 2','lastName': 'B l 2'}];\n  } else if(data.select === 'c') {  \n    temp = [{'firstName': 'C f 1','lastName': 'C l 1'}];\n  }\n  value = temp;",
+      calculateValue: "var temp = instance.defaultValue;\n  if(data.select === 'a')\n  {\n    temp = [{'firstName': 'A f 1','lastName': 'A l 1'}];\n  } else if(data.select === 'b') {  \n    temp = [{'firstName': 'B f 1','lastName': 'B l 1'}  \n    ,{'firstName': 'B f 2','lastName': 'B l 2'}];\n  } else if(data.select === 'c') {  \n    temp = [{'firstName': 'C f 1','lastName': 'C l 1'}];\n  }\n  value = temp;",
       allowCalculateOverride: true,
       key: 'dataGrid',
       type: 'datagrid',

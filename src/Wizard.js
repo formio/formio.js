@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import Webform from './Webform';
 import { Formio } from './Formio';
 import {
@@ -6,7 +7,8 @@ import {
   checkCondition,
   firstNonNil,
   uniqueKey,
-  eachComponent
+  eachComponent,
+  unescapeHTML
 } from './utils/utils';
 
 export default class Wizard extends Webform {
@@ -667,6 +669,7 @@ export default class Wizard extends Webform {
       }
       this.redraw().then(() => {
         this.checkData(this.submission.data);
+        this.validateCurrentPage();
       });
       return Promise.resolve();
     }
@@ -778,7 +781,8 @@ export default class Wizard extends Webform {
     }
 
     // Validate the form, before go to the next page
-    if (this.checkValidity(this.localData, true, this.localData, true)) {
+    const errors = this.validateCurrentPage({ dirty: true });
+    if (errors.length === 0) {
       this.checkData(this.submission.data);
       return this.beforePage(true).then(() => {
         return this.setPage(this.getNextPage()).then(() => {
@@ -794,8 +798,13 @@ export default class Wizard extends Webform {
     else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
       this.scrollIntoView(this.element);
-      return Promise.reject(this.showErrors([], true));
+      return Promise.reject(this.showErrors(errors, true));
     }
+  }
+
+  validateCurrentPage(flags = {}) {
+    // Accessing the parent ensures the right instance (whether it's the parent Wizard or a nested Wizard) performs its validation
+    return this.currentPage?.parent.validateComponents(this.currentPage.component.components, this.currentPage.parent.data, flags);
   }
 
   emitPrevPage() {
@@ -885,7 +894,7 @@ export default class Wizard extends Webform {
   }
 
   onSetForm(clonedForm, initialForm) {
-    this.component.components = (this._parentPath ? initialForm.components : clonedForm.components) || [];
+    this.component.components = (this.parent ? initialForm.components : clonedForm.components) || [];
     this.setComponentSchema();
   }
 
@@ -967,9 +976,9 @@ export default class Wizard extends Webform {
 
   onChange(flags, changed, modified, changes) {
     super.onChange(flags, changed, modified, changes);
-    if (this.alert && !this.submitted) {
-      this.checkValidity(this.localData, false, this.localData, true);
-      this.showErrors([], true, true);
+    const errors = this.validate(this.localData, { dirty: false });
+    if (this.alert) {
+      this.showErrors(errors, true, true);
     }
 
     // If the pages change, need to redraw the header.
@@ -1016,7 +1025,7 @@ export default class Wizard extends Webform {
     return super.rebuild().then(setCurrentPage);
   }
 
-  checkValidity(data, dirty, row, currentPageOnly) {
+  checkValidity(data, dirty, row, currentPageOnly, childErrors = []) {
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
       return true;
@@ -1027,7 +1036,7 @@ export default class Wizard extends Webform {
       : this.currentPage.components;
 
     return components.reduce(
-      (check, comp) => comp.checkValidity(data, dirty, row) && check,
+      (check, comp) => comp.checkValidity(data, dirty, row, childErrors) && check,
       true
     );
   }
@@ -1041,25 +1050,22 @@ export default class Wizard extends Webform {
   }
 
   focusOnComponent(key) {
-    let pageIndex = 0;
-
-    const [page] = this.pages.filter((page, index) => {
-      let hasComponent = false;
-      page.getComponent(key, (comp) => {
-        if (comp.path === key) {
-          pageIndex = index;
-          hasComponent = true;
+    const component = this.getComponent(key);
+    if (component) {
+      let topPanel = component.parent;
+      while (!(topPanel.parent instanceof Wizard)) {
+        topPanel = topPanel.parent;
+      }
+      const pageIndex = this.pages.findIndex(page => page === topPanel);
+      if (pageIndex >= 0) {
+        const page = this.pages[pageIndex];
+        if (page && page !== this.currentPage) {
+          return this.setPage(pageIndex).then(() => {
+            this.showErrors(this.validate(this.localData, { dirty: true }));
+            super.focusOnComponent(key);
+          });
         }
-      });
-      return hasComponent;
-    });
-
-    if (page && page !== this.currentPage) {
-      return this.setPage(pageIndex).then(() => {
-        this.checkValidity(this.submission.data, true, this.submission.data);
-        this.showErrors();
-        super.focusOnComponent(key);
-      });
+      }
     }
     return super.focusOnComponent(key);
   }

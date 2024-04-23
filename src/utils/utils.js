@@ -1330,7 +1330,8 @@ export function sanitize(string, options) {
   }
   // Allowd URI Regex
   if (options.sanitizeConfig && options.sanitizeConfig.allowedUriRegex) {
-    sanitizeOptions.ALLOWED_URI_REGEXP = options.sanitizeConfig.allowedUriRegex;
+    const allowedUriRegex = options.sanitizeConfig.allowedUriRegex;
+    sanitizeOptions.ALLOWED_URI_REGEXP = _.isString(allowedUriRegex) ? new RegExp(allowedUriRegex) : allowedUriRegex;
   }
   // Allow to extend the existing array of elements that are safe for URI-like values
   if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.addUriSafeAttr) && options.sanitizeConfig.addUriSafeAttr.length > 0) {
@@ -1382,13 +1383,14 @@ export function getArrayFromComponentPath(pathStr) {
     .map(part => _.defaultTo(_.toNumber(part), part));
 }
 
-export function  hasInvalidComponent(component) {
-  return component.getComponents().some((comp) => {
-    if (_.isArray(comp.components)) {
-      return hasInvalidComponent(comp);
+export function isChildOf(child, parent) {
+  while (child && child.parent) {
+    if (child.parent === parent) {
+      return true;
     }
-      return comp.error;
-  });
+    child = child.parent;
+  }
+  return false;
 }
 
 export function getStringFromComponentPath(path) {
@@ -1581,6 +1583,21 @@ export function getComponentSavedTypes(fullSchema) {
 
   return null;
 }
+
+/**
+ * Interpolates @formio/core errors so that they are compatible with the renderer
+ * @param {FieldError[]} errors
+ * @param firstPass
+ * @returns {[]}
+ */
+export const interpolateErrors = (component, errors, interpolateFn) => {
+ return errors.map((error) => {
+    error.component = component;
+    const { errorKeyOrMessage, context } = error;
+    const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+    return { ...error, message: unescapeHTML(interpolateFn(toInterpolate, context)), context: { ...context } };
+  });
+};
 
 export function getItemTemplateKeys(template) {
   const templateKeys = [];

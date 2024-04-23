@@ -298,16 +298,22 @@ export default class PasswordStrengthAddon extends FormioAddon {
     const passwordLength = value.length;
 
     const { charactersPoolSize, errors } = this.performChecks(value);
-    this.errors = errors;
-
     const entropy = this.calculatePasswordEntropy(passwordLength, charactersPoolSize);
     const blackListCheck = this.settings.blackList?.length || this.settings.customBlacklistedWords ?
       this.checkBlackList(value)
       : null;
 
+    const isValid = this.isValid();
+    if (!isValid) {
+      errors.push({
+        message: 'Password is not strong enough',
+        level: this.settings.required ? 'error' : 'warning'
+      });
+    }
+
     // If there were found some words from the black list
     if (blackListCheck && blackListCheck !== true) {
-      this.handleBlackListCheckResult(blackListCheck);
+      this.handleBlackListCheckResult(blackListCheck, errors);
       // Select the mininal entropy based on the dictionary check or symbolic check
       this.entropy = Math.min(entropy, blackListCheck.entropy);
     }
@@ -315,18 +321,10 @@ export default class PasswordStrengthAddon extends FormioAddon {
       this.entropy = entropy;
     }
 
-    const isValid = this.isValid();
-    if (!isValid) {
-      this.errors.push({
-        message: 'Password is not strong enough',
-        level: this.settings.required ? 'error' : 'warning'
-      });
-    }
-
-    return !this.errors.length;
+    return !errors.length;
   }
 
-  handleBlackListCheckResult(result) {
+  handleBlackListCheckResult(result, errors) {
     const blacklistedWords = result.blacklistedWords;
     const isRequired = this.settings.disableBlacklistedWords;
     const message = `Password ${isRequired ? 'must' : 'should'} not include common words: ${blacklistedWords.join(', ')}`;
@@ -335,7 +333,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
       required: isRequired,
     };
 
-    this.handleRuleCheckResult(false, validation, message, this.errors);
+    this.handleRuleCheckResult(false, validation, message, errors);
   }
 
   constructor(settings, componentInstance) {

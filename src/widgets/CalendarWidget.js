@@ -402,7 +402,8 @@ export default class CalendarWidget extends InputWidget {
     }
   }
 
-  validationValue(value) {
+  get validationValue() {
+    const value = this.dataValue;
     if (typeof value === 'string') {
       return new Date(value);
     }
@@ -424,7 +425,7 @@ export default class CalendarWidget extends InputWidget {
   initFlatpickr(Flatpickr) {
     // Create a new flatpickr.
     this.calendar = new Flatpickr(this._input, { ...this.settings, disableMobile: true });
-    this.calendar.altInput.addEventListener('input', (event) => {
+    this.addEventListener(this.calendar.altInput, 'input', (event) => {
       if (this.settings.allowInput && this.settings.currentValue !== event.target.value) {
         this.settings.manualInputValue = event.target.value;
         this.settings.isManuallyOverriddenValue = true;
@@ -497,6 +498,15 @@ export default class CalendarWidget extends InputWidget {
         }
       }
     });
+
+    // If other fields are used to calculate disabled dates, we need to redraw calendar to refresh disabled dates
+    if (this.settings.disableFunction && this.componentInstance && this.componentInstance.root) {
+      this.componentInstance.root.on('change', (e) => {
+        if (e.changed && this.calendar) {
+          this.calendar.redraw();
+        }
+      });
+    }
 
     // Restore the calendar value from the component value.
     this.setValue(this.componentValue);
