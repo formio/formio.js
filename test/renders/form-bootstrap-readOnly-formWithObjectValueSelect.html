@@ -32,7 +32,15 @@
       <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
-    <div id="number" class="mb-2 formio-form-group has-feedback formio-component formio-component-number formio-component-number  formio-hidden" ref="component">
+    <div id="number" class="mb-2 formio-form-group has-feedback formio-component formio-component-number formio-component-number " ref="component">
+      <label ref="label" class="col-form-label " for="number-number" id="l-number-number">
+        Number
+        <span class="visually-hidden">, numeric only,</span>
+      </label>
+      <div ref="element">
+        <input ref="input" name="data[number]" type="text" class="form-control" lang="en" disabled="disabled" inputmode="decimal" value="" id="number-number" aria-labelledby="l-number-number " aria-required="false"></input>
+      </div>
+      <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="submit" class="mb-2 formio-form-group has-feedback formio-component formio-component-button formio-component-submit  mb-2 formio-form-group" ref="component">
       <button ref="button" name="data[submit]" type="submit" class="btn btn-primary btn-md" lang="en" disabled="disabled">
