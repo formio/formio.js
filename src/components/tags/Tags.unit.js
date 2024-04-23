@@ -65,7 +65,7 @@ describe('Tags Component', function() {
 
         setTimeout(() => {
           const modalPreview = component.element.querySelector('[ref="openModal"]');
-          assert.equal(modalPreview.textContent.trim(), 'test, test1, test2', 'All tags should be rendered inside Modal Preview');
+          assert.equal(modalPreview.textContent.trim(), 'test,test1,test2', 'All tags should be rendered inside Modal Preview');
           form.destroy();
           done();
         }, 250);
@@ -149,14 +149,14 @@ describe('Tags Component', function() {
       tags.choices.input.element.focus();
 
       setTimeout(() => {
-        assert(!tags.error, 'Tags should be valid while changing');
+        assert.equal(tags.errors.length, 0, 'Tags should be valid while changing');
         tags.choices.input.element.dispatchEvent(new Event('blur'));
 
         setTimeout(() => {
-          assert(tags.error, 'Should set error after Tags component was blurred');
+          assert.equal(tags.errors.length, 1, 'Should set error after Tags component was blurred');
           done();
         }, 500);
-      }, 300);
+      }, 350);
     }).catch(done);
   });
 });

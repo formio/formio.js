@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import ComponentModal from '../_classes/componentModal/ComponentModal';
@@ -164,8 +165,8 @@ export default class FormComponent extends Component {
     }
   }
 
+  /* eslint-disable max-statements */
   getSubOptions(options = {}) {
-    options.parentPath = `${this.path}.data.`;
     options.events = this.createEmitter();
 
     // Make sure to not show the submit button in wizards in the nested forms.
@@ -219,8 +220,19 @@ export default class FormComponent extends Component {
     if (this.options.preview) {
       options.preview = this.options.preview;
     }
+    if (this.options.inEditGrid) {
+      options.inEditGrid = this.options.inEditGrid;
+    }
+    if (this.options.saveDraft) {
+      options.saveDraft = this.options.saveDraft;
+      options.formio = new Formio(this.formSrc);
+    }
+    if (this.options.saveDraftThrottle) {
+      options.saveDraftThrottle = this.options.saveDraftThrottle;
+    }
     return options;
   }
+  /* eslint-enable max-statements */
 
   render() {
     if (this.builderMode) {
@@ -487,7 +499,13 @@ export default class FormComponent extends Component {
     }
     else if (this.formSrc) {
       this.subFormLoading = true;
-      return (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
+      const options = this.root.formio?.base && this.root.formio?.projectUrl
+        ? {
+            base: this.root.formio.base,
+            project: this.root.formio.projectUrl,
+          }
+        : {};
+      return (new Formio(this.formSrc, options)).loadForm({ params: { live: 1 } })
         .then((formObj) => {
           this.formObj = formObj;
           if (this.options.pdf && this.component.useOriginalRevision) {
@@ -508,15 +526,15 @@ export default class FormComponent extends Component {
     return this.dataValue?.data || {};
   }
 
-  checkComponentValidity(data, dirty, row, options) {
+  checkComponentValidity(data, dirty, row, options, errors = []) {
     options = options || {};
     const silentCheck = options.silentCheck || false;
 
     if (this.subForm) {
-      return this.subForm.checkValidity(this.subFormData, dirty, null, silentCheck);
+      return this.subForm.checkValidity(this.subFormData, dirty, null, silentCheck, errors);
     }
 
-    return super.checkComponentValidity(data, dirty, row, options);
+    return super.checkComponentValidity(data, dirty, row, options, errors);
   }
 
   checkComponentConditions(data, flags, row) {
@@ -585,7 +603,7 @@ export default class FormComponent extends Component {
    *
    * @return {*}
    */
-  submitSubForm(rejectOnError) {
+  submitSubForm() {
     // If we wish to submit the form on next page, then do that here.
     if (this.shouldSubmit) {
       return this.subFormReady.then(() => {
@@ -593,6 +611,7 @@ export default class FormComponent extends Component {
           return this.dataValue;
         }
         this.subForm.nosubmit = false;
+        this.subForm.submitted = true;
         return this.subForm.submitForm().then(result => {
           this.subForm.loading = false;
           this.subForm.showAllErrors = false;
@@ -600,13 +619,8 @@ export default class FormComponent extends Component {
           return this.dataValue;
         }).catch(err => {
           this.subForm.showAllErrors = true;
-          if (rejectOnError) {
-            this.subForm.onSubmissionError(err);
-            return Promise.reject(err);
-          }
-          else {
-            return {};
-          }
+          this.subForm.onSubmissionError(err);
+          return Promise.reject(err);
         });
       });
     }
@@ -629,6 +643,10 @@ export default class FormComponent extends Component {
    */
   beforeSubmit() {
     const submission = this.dataValue;
+    // Cancel triggered saveDraft
+    if (this.subForm?.draftEnabled && this.subForm.triggerSaveDraft?.cancel) {
+      this.subForm.triggerSaveDraft.cancel();
+    }
 
     const isAlreadySubmitted = submission && submission._id && submission.form;
 
@@ -688,7 +706,13 @@ export default class FormComponent extends Component {
     if (shouldLoadSubmissionById) {
       const formId = submission.form || this.formObj.form || this.component.form;
       const submissionUrl = `${this.subForm.formio.formsUrl}/${formId}/submission/${submission._id}`;
-      this.subForm.setUrl(submissionUrl, this.options);
+      const options = this.root.formio?.base && this.root.formio?.projectUrl
+      ? {
+          base: this.root.formio.base,
+          project: this.root.formio.projectUrl,
+        }
+      : {};
+      this.subForm.setUrl(submissionUrl, { ...this.options, ...options });
       this.subForm.loadSubmission().catch((err) => {
         console.error(`Unable to load subform submission ${submission._id}:`, err);
       });

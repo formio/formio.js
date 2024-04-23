@@ -45,13 +45,15 @@ export default class HTMLComponent extends Component {
     }
 
     const submission = _.get(this.root, 'submission', {});
-    const content = this.component.content ? this.interpolate(this.component.content, {
-      metadata: submission.metadata || {},
-      submission: submission,
-      data: this.rootValue,
-      row: this.data
+    const content = this.component.content ? this.interpolate(
+      this.sanitize(this.component.content, this.shouldSanitizeValue),
+      {
+        metadata: submission.metadata || {},
+        submission: submission,
+        data: this.rootValue,
+        row: this.data
     }) : '';
-    return this.sanitize(content, this.shouldSanitizeValue);
+    return content;
   }
 
   get singleTags() {
@@ -92,8 +94,17 @@ export default class HTMLComponent extends Component {
     return super.render(this.renderContent());
   }
 
+  get dataReady() {
+    return this.root?.submissionReady || Promise.resolve();
+  }
+
   attach(element) {
     this.loadRefs(element, { html: 'single' });
+    this.dataReady.then(() => {
+      if (this.element) {
+        this.setContent(this.elemet, this.content);
+      }
+    });
     return super.attach(element);
   }
 }

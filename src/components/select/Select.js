@@ -112,7 +112,6 @@ export default class SelectComponent extends ListComponent {
   init() {
     super.init();
     this.templateData = {};
-    this.validators = this.validators.concat(['select', 'onlyAvailableItems']);
 
     // Trigger an update.
     let updateArgs = [];
@@ -252,6 +251,10 @@ export default class SelectComponent extends ListComponent {
     }
 
     return super.shouldLoad;
+  }
+
+  get selectData() {
+    return this.component.selectData || super.selectData;
   }
 
   isEntireObjectDisplay() {
@@ -661,7 +664,6 @@ export default class SelectComponent extends ListComponent {
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
       .then((response) => {
         this.loading = false;
-        this.error = null;
         this.setItems(response, !!search);
       })
       .catch((err) => {
