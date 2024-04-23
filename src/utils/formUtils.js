@@ -38,6 +38,19 @@ const {
   getEmptyValue,
   isComponentDataEmpty
 } = Utils;
+
+/**
+ * Deprecated version of findComponents. Renamed to searchComponents.
+ *
+ * @param components
+ * @param query
+ * @returns {*}
+ */
+export function findComponents(components, query) {
+  console.warn('formio.js/utils findComponents is deprecated. Use searchComponents instead.');
+  return searchComponents(components, query);
+}
+
 export {
   flattenComponents,
   guid,
@@ -75,5 +88,6 @@ export {
   applyFormChanges,
   findComponent,
   getEmptyValue,
-  isComponentDataEmpty
+  isComponentDataEmpty,
+  findComponents
 };
