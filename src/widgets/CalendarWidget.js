@@ -402,7 +402,8 @@ export default class CalendarWidget extends InputWidget {
     }
   }
 
-  validationValue(value) {
+  get validationValue() {
+    const value = this.dataValue;
     if (typeof value === 'string') {
       return new Date(value);
     }
@@ -424,7 +425,7 @@ export default class CalendarWidget extends InputWidget {
   initFlatpickr(Flatpickr) {
     // Create a new flatpickr.
     this.calendar = new Flatpickr(this._input, { ...this.settings, disableMobile: true });
-    this.calendar.altInput.addEventListener('input', (event) => {
+    this.addEventListener(this.calendar.altInput, 'input', (event) => {
       if (this.settings.allowInput && this.settings.currentValue !== event.target.value) {
         this.settings.manualInputValue = event.target.value;
         this.settings.isManuallyOverriddenValue = true;

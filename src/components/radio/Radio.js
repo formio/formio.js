@@ -131,7 +131,6 @@ export default class RadioComponent extends ListComponent {
   init() {
     super.init();
     this.templateData = {};
-    this.validators = this.validators.concat(['select', 'onlyAvailableItems', 'availableValueProperty']);
 
     // Trigger an update.//
     let updateArgs = [];
@@ -314,7 +313,6 @@ export default class RadioComponent extends ListComponent {
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
     .then((response) => {
       this.loading = false;
-      this.error = null;
       this.setItems(response);
       this.optionsLoaded = true;
       this.redraw();

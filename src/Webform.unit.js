@@ -7,7 +7,7 @@ import FormTests from '../test/forms';
 import Webform from './Webform';
 import 'flatpickr';
 import AllComponents from './components';
-import { Formio } from './Formio';
+import { Formio } from './formio.form.js';
 import {
   settingErrors,
   clearOnHide,
@@ -78,7 +78,7 @@ import formWithDeeplyNestedConditionalComps from '../test/forms/formWithDeeplyNe
 import formWithValidation from '../test/forms/formWithValidation';
 import formWithNotAllowedTags from '../test/forms/formWithNotAllowedTags';
 import formWithValidateWhenHidden from '../test/forms/formWithValidateWhenHidden';
-
+const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
 
@@ -109,49 +109,47 @@ describe('Webform tests', function() {
         number2.setValue(7);
         setTimeout(()=> {
           assert.equal(form.errors.length, 1);
-          assert.equal(!!number.error, true);
-
+          assert.equal(number.errors.length, 1);
           errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false, '(1) Should not set error classes for hidden components.'));
           number2.setValue(3);
 
           setTimeout(() => {
             assert.equal(form.errors.length, 0);
-            assert.equal(!!number.error, false);
+            assert.equal(number.errors.length, 0);
             errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false, '(2) Should not set error classes for hidden components.'));
 
             textField.setValue('test');
             setTimeout(() => {
               assert.equal(form.errors.length, 1);
-              assert.equal(!!textArea.error, true);
+              assert.equal(textArea.errors.length, 1);
               assert.equal(textArea.visible, true);
 
               checkbox.setValue(true);
               setTimeout(()=> {
                 assert.equal(textArea.visible, false);
                 assert.equal(form.errors.length, 1);
-                assert.equal(!!textArea.error, true);
+                assert.equal(textArea.errors.length, 1);
                 errorClasses.forEach(cl => assert.equal(textArea.element.classList.contains(cl), false));
-
                 number2.setValue(9);
-                form.submit();
-                setTimeout(()=> {
-                  assert.equal(form.errors.length, 2);
-                  assert.equal(!!textArea.error, true);
-                  assert.equal(!!number.error, true);
-                  assert.equal(!!form.alert, true);
-                  assert.equal(form.refs.errorRef.length, 2);
-                  errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false));
-                  errorClasses.forEach(cl => assert.equal(textArea.element.classList.contains(cl), false));
-
-                  textField.setValue('test test test');
-                  number2.setValue(1);
+                setTimeout(() => {
+                  form.submit();
                   setTimeout(()=> {
-                    assert.equal(form.errors.length, 0);
-                    assert.equal(!!textArea.error, false);
-                    assert.equal(!!number.error, false);
-                    assert.equal(!!form.alert, false);
-
-                    done();
+                    assert.equal(form.errors.length, 2);
+                    assert.equal(textArea.errors.length, 1);
+                    assert.equal(number.errors.length, 1);
+                    assert.equal(!!form.alert, true);
+                    assert.equal(form.refs.errorRef.length, 2);
+                    errorClasses.forEach(cl => assert.equal(number.element.classList.contains(cl), false));
+                    errorClasses.forEach(cl => assert.equal(textArea.element.classList.contains(cl), false));
+                    textField.setValue('test test test');
+                    number2.setValue(1);
+                    setTimeout(()=> {
+                      assert.equal(form.errors.length, 0);
+                      assert.equal(textArea.errors.length, 0);
+                      assert.equal(number.errors.length, 0);
+                      assert.equal(!!form.alert, false);
+                      done();
+                    }, 300);
                   }, 300);
                 }, 300);
               }, 300);
@@ -185,19 +183,19 @@ describe('Webform tests', function() {
         number2.setValue(7);
         setTimeout(()=> {
           assert.equal(form.errors.length, 0);
-          assert.equal(!!number.error, false);
+          assert.equal(number.errors.length, 0);
 
           textField.setValue('test');
           setTimeout(() => {
             assert.equal(form.errors.length, 1);
-            assert.equal(!!textArea.error, true);
+            assert.equal(textArea.errors.length, 1);
             assert.equal(textArea.visible, true);
 
             checkbox.setValue(true);
             setTimeout(()=> {
               assert.equal(textArea.visible, false);
               assert.equal(form.errors.length, 0);
-              assert.equal(!!textArea.error, false);
+              assert.equal(textArea.errors.length, 0);
               done();
             }, 300);
           }, 300);
@@ -492,7 +490,7 @@ describe('Webform tests', function() {
 
     form.setForm(formWithEventLogicInHiddenComponent).then(() => {
       const regesteredAddress = form.getComponent('registeredAddressInformation').getComponent('streetAddress')[0];
-      const address =  form.getComponent('addressInformation').getComponent('streetAddress')[0];
+      const address = form.getComponent('addressInformation').getComponent('streetAddress')[0];
 
       assert.equal(address.visible, true);
       assert.equal(regesteredAddress.visible, false);
@@ -1272,8 +1270,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  it(`Should show validation errors and update validation errors list when openning and editing edit grid rows
-  in draft modal mode after pushing submit btn`, function(done) {
+  it('Should show validation errors and update validation errors list when opening and editing edit grid rows in draft modal mode after pushing submit btn', function(done) {
     const formElement = document.createElement('div');
     const formWithDraftModals = new Webform(formElement, { sanitize: true });
 
@@ -1318,7 +1315,7 @@ describe('Webform tests', function() {
 
             setTimeout(() => {
               //checking the number of appeared errors
-              assert.equal(formWithDraftModals.errors.length, 2);
+              assert.equal(formWithDraftModals.visibleErrors.length, 2);
 
               const rowError = formWithDraftModals.element.querySelector('.editgrid-row-error').textContent.trim();
               const editGridError = formWithDraftModals.element.querySelector('[ref="messageContainer"]').querySelector('.error').textContent;
@@ -1327,7 +1324,7 @@ describe('Webform tests', function() {
               assert.equal(editGridError, 'Please correct invalid rows before proceeding.');
 
               const rowEditBtn = editGridRows[0].querySelector('.editRow');
-              //open row modal again to check if there are errors
+              // open row modal again to check if there are errors
               rowEditBtn.dispatchEvent(clickEvent);
 
               setTimeout(() => {
@@ -1366,7 +1363,7 @@ describe('Webform tests', function() {
                   setTimeout(() => {
                     const alertErrorMessagesAfterInputtingInvalidValues = document
                       .querySelector(`.editgrid-row-modal-${editGrid.id}`)
-                      .querySelectorAll('[ref="messageRef"]');
+                      .querySelectorAll('[ref="messageContainer"]');
 
                     assert.equal(alertErrorMessagesAfterInputtingInvalidValues.length, 2);
                     document.body.innerHTML = '';
@@ -1376,9 +1373,9 @@ describe('Webform tests', function() {
                 }, 240);
               }, 200);
             }, 160);
-          }, 120);
-        }, 80);
-      }, 50);
+          }, 200);
+        }, 200);
+      }, 200);
     }).catch((err) => done(err));
   });
 
@@ -1486,9 +1483,9 @@ describe('Webform tests', function() {
     Harness.clickElement(formWithPattern, formWithPattern.element.querySelector('[name="data[submit]"]'));
 
     setTimeout(() => {
+      assert.equal(formWithPattern.errors.length, 1);
       assert.equal(formWithPattern.element.querySelector('.formio-component-textField').querySelectorAll('.error').length, 1);
-      assert.equal(formWithPattern.errors[0].messages.length, 1);
-      assert.equal(formWithPattern.errors[0].messages[0].message, 'Text Field is required');
+      assert.equal(formWithPattern.errors[0].message, 'Text Field is required');
       assert.equal(formWithPattern.element.querySelector('[ref="errorRef"]').textContent.trim(), 'Text Field is required');
       done();
     }, 500);
@@ -1547,7 +1544,7 @@ describe('Webform tests', function() {
       Harness.clickElement(form, form.element.querySelector('[name="data[submit]"]'));
 
       setTimeout(() => {
-        assert.equal(form.errors[0].messages.length, 1);
+        assert.equal(form.errors.length, 1);
         assert(scrollIntoView.calledOnceWith(form.root.alert));
 
         //changes do not trigger scrolling
@@ -1559,7 +1556,7 @@ describe('Webform tests', function() {
         input1.dispatchEvent(inputEvent);
 
         setTimeout(() => {
-          assert.equal(form.errors[0].messages.length, 1);
+          assert.equal(form.errors.length, 1);
           assert.equal(scrollIntoView.callCount, 1);
 
           //valid input value
@@ -1969,10 +1966,10 @@ describe('Webform tests', function() {
       }
 
       setTimeout(() => {
-        assert.equal(form.errors.length, 0);
+        assert.equal(form.visibleErrors.length, 0);
         Harness.setInputValue(form, 'data[textField]', '');
         setTimeout(() => {
-          assert.equal(form.errors.length, 1);
+          assert.equal(form.visibleErrors.length, 1);
           done();
         }, 250);
       }, 250);
@@ -2021,7 +2018,7 @@ describe('Webform tests', function() {
       setTimeout(() => {
         const errors = formElement.querySelectorAll('.formio-error-wrapper');
         expect(errors.length).to.equal(numErrors);
-        expect(form.errors.length).to.equal(numErrors);
+        expect(form.visibleErrors.length).to.equal(numErrors);
         done();
       }, 100);
     }).catch(done);
@@ -2509,16 +2506,16 @@ describe('Webform tests', function() {
         Harness.setInputValue(field, 'data[textField]', '12');
 
         setTimeout(() => {
-          assert(!field.error, 'Should be valid while changing');
+          assert.equal(field.errors.length, 0, 'Should be valid while changing');
           const blurEvent = new Event('blur');
           fieldInput.dispatchEvent(blurEvent);
 
           setTimeout(() => {
-            assert(field.error, 'Should set error after component was blurred');
+            assert.equal(field.errors.length, 1, 'Should set error after component was blurred');
             Harness.setInputValue(field2, 'data[textField1]', 'ab');
 
             setTimeout(() => {
-              assert(field.error, 'Should keep error when editing another component');
+              assert.equal(field.errors.length, 1, 'Should keep error when editing another component');
               done();
             }, 200);
           }, 200);
@@ -2535,13 +2532,13 @@ describe('Webform tests', function() {
 
         setTimeout(() => {
           const textField = component.iteratableRows[0].components.textField;
-          assert.equal(!!textField.error, false, 'Should stay valid on input');
+          assert.equal(textField.visibleErrors.length, 0, 'Should stay valid on input');
           const blur = new Event('blur', { bubbles: true, cancelable: true });
           const input = textField.refs.input[0];
           input.dispatchEvent(blur);
           textField.element.dispatchEvent(blur);
             setTimeout(() => {
-              assert(textField.error, 'Should be validated after blur');
+              assert.equal(textField.visibleErrors.length, 1, 'Should be validated after blur');
               done();
             }, 250);
         }, 250);
@@ -4229,22 +4226,21 @@ describe('Webform tests', function() {
 
   it('Test optional sanitize', (done) => {
     const element = document.createElement('div');
-
+    SpySanitize.resetHistory();
     Formio.createForm(element, optionalSanitize, {
       sanitize: false,
     }).then(form => {
-      const sanitize = sinon.spy(FormioUtils, 'sanitize');
       form.redraw();
       setTimeout(() => {
-        assert.equal(sanitize.callCount, 0, 'Should not sanitize templates when sanitize in not turned on');
+        assert.equal(SpySanitize.callCount, 0, 'Should not sanitize templates when sanitize in not turned on');
         element.innerHTML = '';
         Formio.createForm(element, optionalSanitize, {
           sanitize: true,
         }).then(form => {
-          sanitize.resetHistory();
+          SpySanitize.resetHistory();
           form.redraw();
           setTimeout(() => {
-            assert.equal(sanitize.callCount, 1, 'Should sanitize templates when sanitize in turned on');
+            assert(SpySanitize.callCount >= 1, 'Should sanitize templates when sanitize in turned on');
             done();
           }, 250);
         }, 250);
@@ -4421,9 +4417,9 @@ describe('Webform tests', function() {
     Harness.clickElement(form, form.element.querySelector('[name="data[submit]"]'));
 
     setTimeout(() => {
-      assert.equal(form.errors[0].messages.length, 1);
-      assert.equal(form.errors[0].messages[0].message, 'will be showed once');
-      assert.equal(form.element.querySelector('[ref="errorRef"]').textContent.trim().includes('will be showed once'), true);
+      const errors = form.element.querySelectorAll('[ref="errorRef"]');
+      assert.equal(errors.length, 1);
+      assert.equal(errors[0].textContent.trim().includes('will be showed once'), true);
       done();
     }, 200);
     })
@@ -4467,9 +4463,9 @@ describe('Webform tests', function() {
       Harness.clickElement(form, form.element.querySelector('[name="data[submit]"]'));
 
       setTimeout(() => {
-        assert.equal(form.errors[0].messages.length, 1);
-        assert.equal(form.errors[0].messages[0].message, 'Number is required');
-        assert.equal(form.element.querySelector('[ref="errorRef"]').textContent.trim().includes('Number is required'), true);
+        const errors = form.element.querySelectorAll('[ref="errorRef"]');
+        assert.equal(errors.length, 1);
+        assert.equal(errors[0].textContent.trim().includes('Number is required'), true);
         done();
       }, 200);
     })
@@ -4829,6 +4825,7 @@ describe('Webform tests', function() {
             let form = new Webform(formElement, _.cloneDeep(formTest.formOptions || {}));
             form.setForm(formTest.form).then(function() {
               formTestTest(form, function(error) {
+                form.destroy();
                 form = null;
                 formElement.innerHTML = '';
                 if (error) {

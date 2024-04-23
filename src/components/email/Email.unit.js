@@ -51,11 +51,11 @@ describe('Email Component', () => {
 
           setTimeout(() => {
             if (valid) {
-              assert.equal(!!component.error, false, 'Should not contain error');
+              assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert.equal(!!component.error, true, 'Should contain error');
-              assert.equal(component.error.message, error, 'Should contain error message');
+              assert(component.errors.length > 0, 'Should contain error');
+              assert.equal(component.errors[0].message, error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
@@ -108,11 +108,11 @@ describe('Email Component', () => {
 
           setTimeout(() => {
             if (valid) {
-              assert.equal(!!component.error, false, 'Should not contain error');
+              assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert.equal(!!component.error, true, 'Should contain error');
-              assert.equal(component.error.message.trim(), error, 'Should contain error message');
+              assert(component.errors.length > 0, 'Should contain error');
+              assert.equal(component.errors[0].message.trim(), error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
@@ -189,11 +189,11 @@ describe('Email Component', () => {
 
           setTimeout(() => {
             if (valid) {
-              assert.equal(!!component.error, false, 'Should not contain error');
+              assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert.equal(!!component.error, true, 'Should contain error');
-              assert.equal(component.error.message.trim(), error, 'Should contain error message');
+              assert(component.errors.length > 0, 'Should contain error');
+              assert.equal(component.errors[0].message.trim(), error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
