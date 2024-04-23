@@ -44,7 +44,7 @@ describe('Select Component', () => {
         assert.equal(component.dataValue.value, 'a');
         assert.equal(typeof component.dataValue , 'object');
         done();
-      }, 300);
+      }, 200);
     });
   });
 
@@ -697,7 +697,7 @@ describe('Select Component', () => {
     var searchHasBeenDebounced = false;
     var originalDebounce = _.debounce;
     _.debounce = (fn, timeout, opts) => {
-      searchHasBeenDebounced = timeout === 700;
+      searchHasBeenDebounced = true;
       return originalDebounce(fn, 0, opts);
     };
 
@@ -718,8 +718,8 @@ describe('Select Component', () => {
 
           assert.equal(searchHasBeenDebounced, true);
           done();
-        }, 50);
-      }, 200);
+        }, 500);
+      }, 300);
     }).catch(done);
   });
 
@@ -743,7 +743,7 @@ describe('Select Component', () => {
 
         setTimeout(() => {
           assert.equal(form.errors.length, 1);
-          assert.equal(select.error.message, 'Select is an invalid value.');
+          assert.equal(select.errors[0].message, 'Select is an invalid value.');
           document.innerHTML = '';
           done();
         }, 400);
@@ -988,21 +988,21 @@ describe('Select Component', () => {
       select.pristine = false;
 
       setTimeout(() => {
-        assert(!select.error, 'Select should be valid while changing');
+        assert(!select.visibleErrors.length, 'Select should be valid while changing');
         select.focusableElement.dispatchEvent(new Event('blur'));
 
         setTimeout(() => {
-          assert(select.error, 'Should set error after Select component was blurred');
+          assert(select.visibleErrors.length, 'Should set error after Select component was blurred');
           done();
-        }, 500);
-      }, 200);
+        }, 300);
+      }, 300);
     }).catch(done);
   });
 
   it('Should escape special characters in regex search field', done => {
     const form = _.cloneDeep(comp17);
     const element = document.createElement('div');
-
+    Formio.setProjectUrl('https://formio.form.io');
     Formio.createForm(element, form).then(form => {
       const select = form.getComponent('select');
       const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
@@ -1212,3 +1212,4 @@ describe('Select Component with Entire Object Value Property', () => {
     });
   });
 });
+

@@ -63,7 +63,7 @@ export default class ReCaptchaComponent extends Component {
     return true;
   }
 
-  verify(actionName) {
+  async verify(actionName) {
     const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');
     if (!siteKey) {
       console.warn('There is no Site Key specified in settings in form JSON');
@@ -73,39 +73,33 @@ export default class ReCaptchaComponent extends Component {
       const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${_get(this.root.form, 'settings.recaptcha.siteKey')}`;
       this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);
     }
-    if (this.recaptchaApiReady) {
+    try {
+      await this.recaptchaApiReady;
       this.recaptchaVerifiedPromise = new Promise((resolve, reject) => {
-        this.recaptchaApiReady
-          .then(() => {
-            if (!this.isLoading) {
-              this.isLoading= true;
-              grecaptcha.ready(_debounce(() => {
-                grecaptcha
-                  .execute(siteKey, {
-                    action: actionName
-                  })
-                  .then((token) => {
-                    return this.sendVerificationRequest(token).then(({ verificationResult, token }) => {
-                      this.recaptchaResult = {
-                        ...verificationResult,
-                        token,
-                      };
-                      this.updateValue(this.recaptchaResult);
-                      return resolve(verificationResult);
-                    });
-                  })
-                  .catch(() => {
-                    this.isLoading = false;
-                  });
-              }, 1000));
+        if (!this.isLoading) {
+          this.isLoading= true;
+          grecaptcha.ready(_debounce(async() => {
+            try {
+              const token = await grecaptcha.execute(siteKey, { action: actionName });
+              const verificationResult = await this.sendVerificationRequest(token);
+              this.recaptchaResult = {
+                ...verificationResult,
+                token,
+              };
+              this.updateValue(this.recaptchaResult);
+              this.isLoading = false;
+              return resolve(verificationResult);
             }
-          })
-          .catch(() => {
-            return reject();
-          });
-      }).then(() => {
-        this.isLoading = false;
+            catch (err) {
+              this.isLoading = false;
+              reject(err);
+            }
+          }, 1000));
+        }
       });
+    }
+    catch (err) {
+      this.loading = false;
     }
   }
 
@@ -118,18 +112,17 @@ export default class ReCaptchaComponent extends Component {
   }
 
   sendVerificationRequest(token) {
-    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`)
-      .then((verificationResult) => ({ verificationResult, token }));
+    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`);
   }
 
-  checkComponentValidity(data, dirty, row, options = {}) {
+  checkComponentValidity(data, dirty, row, options = {}, errors = []) {
     data = data || this.rootValue;
     row = row || this.data;
     const { async = false } = options;
 
-    // Verification could be async only
+    // Verification could be async only (which for now is only the case for server-side validation)
     if (!async) {
-      return super.checkComponentValidity(data, dirty, row, options);
+      return super.checkComponentValidity(data, dirty, row, options, errors);
     }
 
     const componentData = row[this.component.key];
@@ -143,12 +136,8 @@ export default class ReCaptchaComponent extends Component {
       return Promise.resolve(false);
     }
 
-    return this.hook('validateReCaptcha', componentData.token, () => Promise.resolve(true))
-      .then((success) => success)
-      .catch((err) => {
-        this.setCustomValidity(this.t(err.message || err));
-        return false;
-      });
+    // Any further validation will 100% not run on the client
+    return Promise.resolve(true);
   }
 
   normalizeValue(newValue) {

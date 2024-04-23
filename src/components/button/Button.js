@@ -214,7 +214,7 @@ export default class ButtonComponent extends Field {
       const isSilent = flags && flags.silent;
       //check root validity only if disableOnInvalid is set and when it is not possible to make submission because of validation errors
       if (flags && flags.noValidate && (this.component.disableOnInvalid || this.hasError)) {
-        isValid = flags.rootValidity || (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true);
+        isValid = flags.rootValidity || (this.root ? (this.root.validate(this.root.data, { dirty: false, silentCheck: true }).length === 0) : true);
         flags.rootValidity = isValid;
       }
       this.isDisabledOnInvalid = this.component.disableOnInvalid && (isSilent || !isValid);
@@ -313,6 +313,7 @@ export default class ButtonComponent extends Field {
         event.stopPropagation();
         this.loading = true;
         this.emit('submitButton', {
+          noValidate: this.component.state === 'draft',
           state: this.component.state || 'submitted',
           component: this.component,
           instance: this
@@ -402,9 +403,16 @@ export default class ButtonComponent extends Field {
       response_type: 'code',
       client_id: settings.clientId,
       redirect_uri: (settings.redirectURI && this.interpolate(settings.redirectURI)) || window.location.origin || `${window.location.protocol}//${window.location.host}`,
-      state: settings.state,
       scope: settings.scope
     };
+    if (settings.state) {
+      params.state = settings.state;
+    }
+    else if (settings.code_challenge) {
+      params.code_challenge = settings.code_challenge;
+      params.code_challenge_method = 'S256';
+    }
+
     /*eslint-enable camelcase */
 
     // Needs for the correct redirection URI for the OpenID

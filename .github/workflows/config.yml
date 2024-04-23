@@ -1,60 +1,12 @@
-# name: Build & Test
-
-# on: push
-
-# env:
-#   NODE_VERSION: 18.x
-
-# jobs:
-#   test:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - run: echo "Triggered by ${{ github.event_name }} event."
-
-#       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-#         uses: actions/checkout@v3
-
-#       - name: Set up Node.js ${{ env.NODE_VERSION }}
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: ${{ env.NODE_VERSION }}
-#           cache: 'npm'
-      
-#       - name: Cache node modules
-#         uses: actions/cache@v3
-#         with:
-#           path: node_modules
-#           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-#           restore-keys: |
-#             ${{ runner.os }}-node-
-            
-#       - name: Installing dependencies
-#         if: steps.cache.outputs.cache-hit != 'true'
-#         uses: borales/actions-yarn@v4
-#         with:
-#           cmd: install --frozen-lockfile
-
-#       - name: Lint
-#         uses: borales/actions-yarn@v4
-#         with:
-#           cmd: lint
-
-#       - name: Build
-#         uses: borales/actions-yarn@v4
-#         with:
-#           cmd: build
-
-#       - name: Test
-#         uses: borales/actions-yarn@v4
-#         with:
-#           cmd: test
-
 name: Build & Test
 
-on: push
+on:
+  push:
+    branches:
+      - '*' # This will make sure all push events on any branch triggers this workflow.
 
 env:
-  NODE_VERSION: 18.x
+  NODE_VERSION: 20.x
 
 jobs:
   setup:

@@ -106,7 +106,7 @@ export default class WizardBuilder extends WebformBuilder {
     return (pages && (pages.length >= this.page)) ? pages[this.page] : null;
   }
 
-  set form(value) {
+  setForm(value) {
     this._form = value;
     if (!this._form.components || !Array.isArray(this._form.components)) {
       this._form.components = [];
@@ -122,6 +122,10 @@ export default class WizardBuilder extends WebformBuilder {
       this._form.components = components;
     }
     this.rebuild();
+  }
+
+  set form(value) {
+    this.setForm(value);
   }
 
   get form() {

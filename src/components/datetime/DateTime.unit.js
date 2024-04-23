@@ -4,6 +4,7 @@ import DateTimeComponent from './DateTime';
 import { Formio } from './../../Formio';
 import _ from 'lodash';
 import 'flatpickr';
+import moment from 'moment';
 import {
   comp1,
   comp2,
@@ -15,7 +16,8 @@ import {
  // comp9,
   comp10,
   comp11,
-  comp12
+  comp12,
+  comp13,
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -699,6 +701,33 @@ describe('DateTime Component', () => {
       const dateTime = form.getComponent('dateTime');
       assert.equal(dateTime.component.format, 'yyyy-MM-dd hh:mm a');
       done();
+    }).catch(done);
+  });
+
+  it('Should refresh disabled dates when other fields values change', (done) => {
+    const form = _.cloneDeep(comp13);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const minDate = form.getComponent('minDate');
+      const maxDate = form.getComponent('maxDate');
+      minDate.setValue(moment().startOf('month').toISOString());
+      maxDate.setValue(moment().startOf('month').add(7, 'days').toISOString());
+
+      setTimeout(() => {
+        const inBetweenDate = form.getComponent('inBetweenDate');
+        const calendar = inBetweenDate.element.querySelector('.flatpickr-input').widget.calendar;
+        assert.equal(calendar.days.querySelectorAll('.flatpickr-disabled').length, 36, 'Only dates between selected' +
+          ' min and max dates should be enabled');
+
+        maxDate.setValue(moment().startOf('month').add(10, 'days').toISOString(), { modified: true });
+        setTimeout(() => {
+          assert.equal(calendar.days.querySelectorAll('.flatpickr-disabled').length, 33, 'Should recalculate' +
+            ' disabled dates after value change');
+
+          done();
+        }, 400);
+      }, 400);
     }).catch(done);
   });
 

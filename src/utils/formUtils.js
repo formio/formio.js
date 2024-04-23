@@ -12,6 +12,7 @@ import chunk from 'lodash/chunk';
 import pad from 'lodash/pad';
 import { compare, applyPatch } from 'fast-json-patch';
 import _ from 'lodash';
+import { fastCloneDeep } from './utils';
 
 /**
  * Determine if a component is a layout component or not.
@@ -392,7 +393,7 @@ export function applyFormChanges(form, changes) {
  * @returns {Object}
  *   The flattened components map.
  */
-export function flattenComponents(components, includeAll) {
+export function flattenComponents(components, includeAll = false) {
   const flattened = {};
   eachComponent(components, (component, path) => {
     flattened[path] = component;

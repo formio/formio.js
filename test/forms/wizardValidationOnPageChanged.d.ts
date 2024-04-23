@@ -1,5 +1,4 @@
-declare namespace _default {
-    const title: string;
+declare namespace _default { const title: string;
     const components: ({
         title: string;
         label: string;

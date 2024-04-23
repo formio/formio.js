@@ -14,7 +14,7 @@ import {
   getStringFromComponentPath,
   searchComponents,
   convertStringToHTMLElement,
-  getArrayFromComponentPath
+  getArrayFromComponentPath,
 } from './utils/utils';
 import { eachComponent } from './utils/formUtils';
 
@@ -191,8 +191,6 @@ export default class Webform extends NestedDataComponent {
       this.triggerSaveDraft = this.saveDraft.bind(this);
     }
 
-    this.customErrors = [];
-
     /**
      * Determines if this form should submit the API on submit.
      * @type {boolean}
@@ -306,11 +304,13 @@ export default class Webform extends NestedDataComponent {
 
     // See if we need to restore the draft from a user.
     if (this.options.saveDraft && !this.options.skipDraftRestore) {
-      const user = Formio.getUser();
-      // Only restore a draft if the submission isn't explicitly set.
-      if (user && !this.submissionSet) {
-        this.restoreDraft(user._id);
-      }
+      this.formReady.then(()=> {
+        const user = Formio.getUser();
+        // Only restore a draft if the submission isn't explicitly set.
+        if (user && !this.submissionSet) {
+          this.restoreDraft(user._id);
+        }
+      });
     }
 
     this.component.clearOnHide = false;
@@ -836,6 +836,12 @@ export default class Webform extends NestedDataComponent {
     );
   }
 
+  handleDraftError(errName, errDetails, restoreDraft) {
+    const errorMessage = _.trim(`${this.t(errName)} ${errDetails || ''}`);
+    console.warn(errorMessage);
+    this.emit(restoreDraft ? 'restoreDraftError' : 'saveDraftError', errDetails || errorMessage);
+  }
+
   /**
    * Saves a submission draft.
    */
@@ -844,11 +850,11 @@ export default class Webform extends NestedDataComponent {
       return;
     }
     if (!this.formio) {
-      console.warn(this.t('saveDraftInstanceError'));
+      this.handleDraftError('saveDraftInstanceError');
       return;
     }
     if (!Formio.getUser()) {
-      console.warn(this.t('saveDraftAuthError'));
+      this.handleDraftError('saveDraftAuthError');
       return;
     }
     const draft = fastCloneDeep(this.submission);
@@ -862,6 +868,10 @@ export default class Webform extends NestedDataComponent {
         this.submission._id = sub._id;
         this.savingDraft = false;
         this.emit('saveDraft', sub);
+      })
+      .catch(err => {
+        this.savingDraft = false;
+        this.handleDraftError('saveDraftError', err);
       });
     }
   }
@@ -872,12 +882,13 @@ export default class Webform extends NestedDataComponent {
    * @param {userId} - The user id where we need to restore the draft from.
    */
   restoreDraft(userId) {
-    if (!this.formio) {
-      console.warn(this.t('restoreDraftInstanceError'));
+    const formio = this.formio || this.options.formio;
+    if (!formio) {
+      this.handleDraftError('restoreDraftInstanceError', null, true);
       return;
     }
     this.savingDraft = true;
-    this.formio.loadSubmissions({
+    formio.loadSubmissions({
       params: {
         state: 'draft',
         owner: userId
@@ -895,6 +906,11 @@ export default class Webform extends NestedDataComponent {
       this.draftEnabled = true;
       this.savingDraft = false;
       this.emit('restoreDraft', null);
+    })
+    .catch(err => {
+      this.draftEnabled = true;
+      this.savingDraft = false;
+      this.handleDraftError('restoreDraftError', err, true);
     });
   }
 
@@ -987,11 +1003,11 @@ export default class Webform extends NestedDataComponent {
     this.on('submitButton', options => {
       this.submit(false, options).catch(e => {
         options.instance.loading = false;
-        return e !== false && console.log(e);
+        return e !== false && e !== undefined && console.log(e);
       });
     }, true);
 
-    this.on('checkValidity', (data) => this.checkValidity(data, true, data), true);
+    this.on('checkValidity', (data) => this.validate(data, { dirty: true, process: 'change' }), true);
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
     this.on('resetForm', () => this.resetValue(), true);
     this.on('deleteSubmission', () => this.deleteSubmission(), true);
@@ -1211,22 +1227,13 @@ export default class Webform extends NestedDataComponent {
    * @returns {*}
    */
   /* eslint-disable no-unused-vars */
-  showErrors(error, triggerEvent, onChange) {
+  showErrors(errors, triggerEvent) {
     this.loading = false;
-    let errors = this.errors;
-    if (error) {
-      if (Array.isArray(error)) {
-        errors = errors.concat(error);
-      }
-      else {
-        errors.push(error);
-      }
-    }
-    else {
-      errors = super.errors;
+    if (!Array.isArray(errors)) {
+      errors = [errors];
     }
 
-    errors = errors.concat(this.customErrors);
+    errors = errors.concat(this.customErrors).filter((err) => !!err);
 
     if (!errors.length) {
       this.setAlert(false);
@@ -1246,7 +1253,7 @@ export default class Webform extends NestedDataComponent {
       }
 
       components.forEach((path) => {
-        const originalPath = this._parentPath + getStringFromComponentPath(path);
+        const originalPath = getStringFromComponentPath(path);
         const component = this.getComponent(path, _.identity, originalPath);
 
         if (err.fromServer) {
@@ -1264,51 +1271,37 @@ export default class Webform extends NestedDataComponent {
     });
 
     const displayedErrors = [];
+    if (errors.length) {
+      errors = _.uniqBy(errors, error => error.message);
+      const createListItem = (message, index) => {
+        const err = errors[index];
+        const messageFromIndex = !_.isUndefined(index) && errors && errors[index];
+        const keyOrPath = (messageFromIndex?.formattedKeyOrPath || messageFromIndex?.path || messageFromIndex?.context?.path) || (err.context?.component && err.context?.component.key) || (err.component && err.component.key) || err.fromServer && err.path;
 
-    errors.forEach(err => {
-      if (err) {
-        const createListItem = (message, index) => {
-          const messageFromIndex = !_.isUndefined(index) && err.messages && err.messages[index];
-          const keyOrPath = (messageFromIndex && messageFromIndex.formattedKeyOrPath || messageFromIndex.path) || (err.component && err.component.key) || err.fromServer && err.path;
+        const formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
+        if (typeof err !== 'string' && !err.formattedKeyOrPath) {
+          err.formattedKeyOrPath = formattedKeyOrPath;
+        }
 
-          let formattedKeyOrPath = keyOrPath ? getStringFromComponentPath(keyOrPath) : '';
-          formattedKeyOrPath = this._parentPath + formattedKeyOrPath;
-          if (typeof err !== 'string' && !err.formattedKeyOrPath) {
-            err.formattedKeyOrPath = formattedKeyOrPath;
-          }
-
-          return {
-            message: unescapeHTML(message),
-            keyOrPath: formattedKeyOrPath
-          };
+        return {
+          message: unescapeHTML(message),
+          keyOrPath: formattedKeyOrPath
         };
+      };
 
-        err.messages = _.uniqBy(err.messages, message => message.message);
-
-        if (err.messages && err.messages.length) {
-          const { component } = err;
-          err.messages.forEach(({ message, context, fromServer }, index) => {
-            const text = context?.hasLabel || fromServer
-              ? this.t('alertMessage', { message: this.t(message) })
-              : this.t('alertMessageWithLabel', {
-                label: this.t(component.label),
-                message: this.t(message),
-              });
-            displayedErrors.push(createListItem(text, index));
+      errors.forEach(({ message, context, fromServer, component }, index) => {
+        const text = !component?.label || context?.hasLabel || fromServer
+          ? this.t('alertMessage', { message: this.t(message) })
+          : this.t('alertMessageWithLabel', {
+            label: this.t(component?.label),
+            message: this.t(message),
           });
-        }
-        else if (err) {
-          const message = _.isObject(err)
-            ? this.t('alertMessage', { message: this.t(err.message || '') })
-            : this.t('alertMessage', { message: this.t(err) });
-          displayedErrors.push(createListItem(message));
-        }
-      }
-    });
+        displayedErrors.push(createListItem(text, index));
+      });
+    }
 
     const errorsList = this.renderTemplate('errorsList', { errors: displayedErrors });
     this.root.setAlert('danger', errorsList);
-
     if (triggerEvent) {
       this.emit('error', errors);
     }
@@ -1377,11 +1370,12 @@ export default class Webform extends NestedDataComponent {
       return false;
     }
 
-    const  errors = this.showErrors(error, true);
+    const errors = this.showErrors(error, true);
 
     if (this.root && this.root.alert) {
       this.scrollIntoView(this.root.alert);
     }
+
     return errors;
   }
 
@@ -1394,11 +1388,6 @@ export default class Webform extends NestedDataComponent {
   onChange(flags, changed, modified, changes) {
     flags = flags || {};
     let isChangeEventEmitted = false;
-    // For any change events, clear any custom errors for that component.
-    if (changed && changed.component) {
-      this.customErrors = this.customErrors.filter(err => err.component && err.component !== changed.component.key);
-    }
-
     super.onChange(flags, true);
     const value = _.clone(this.submission);
     flags.changed = value.changed = changed;
@@ -1408,12 +1397,16 @@ export default class Webform extends NestedDataComponent {
       this.pristine = false;
     }
 
-    value.isValid = this.checkData(value.data, flags);
+    this.checkData(value.data, flags);
+    const shouldValidate = !flags.noValidate || flags.fromIFrame || (flags.fromSubmission && this.rootPristine && this.pristine && flags.changed);
+    const errors = shouldValidate ? this.validate(value.data, { ...flags, process: 'change' }) : [];
+    value.isValid = errors.length === 0;
+
     this.loading = false;
     if (this.submitted) {
       // show server errors while they are not cleaned/fixed
       const nonComponentServerErrors = _.filter(this.serverErrors || [], err => !err.component && !err.path);
-      this.showErrors(nonComponentServerErrors.length ? nonComponentServerErrors : null);
+      this.showErrors(nonComponentServerErrors.length ? nonComponentServerErrors : errors);
     }
 
     // See if we need to save the draft of the form.
@@ -1431,14 +1424,6 @@ export default class Webform extends NestedDataComponent {
       this.emit('initialized');
       this.initialized = true;
     }
-  }
-
-  checkData(data, flags = {}) {
-    const valid = super.checkData(data, flags);
-    if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
-      this.showErrors();
-    }
-    return valid;
   }
 
   /**
@@ -1500,7 +1485,7 @@ export default class Webform extends NestedDataComponent {
 
       this.setMetadata(submission);
 
-      submission.state = options.state || 'submitted';
+      submission.state = options.state || submission.state || 'submitted';
 
       const isDraft = (submission.state === 'draft');
       this.hook('beforeSubmit', { ...submission, component: options.component }, (err , data) => {
@@ -1510,12 +1495,23 @@ export default class Webform extends NestedDataComponent {
 
         submission._vnote = data && data._vnote ? data._vnote : '';
 
-        if (!isDraft && !submission.data) {
-          return reject('Invalid Submission');
+        try {
+          if (!isDraft && !options.noValidate) {
+            if (!submission.data) {
+              return reject('Invalid Submission');
+            }
+            const errors = this.validate(submission.data, {
+              dirty: true,
+              silentCheck: false,
+              process: 'submit'
+            });
+            if (errors.length || options.beforeSubmitResults?.some((result) => result.status === 'rejected')) {
+              return reject(errors);
+            }
+          }
         }
-
-        if (!isDraft && !this.checkValidity(submission.data, true)) {
-          return reject();
+        catch (err) {
+          console.error(err);
         }
 
         this.everyComponent((comp) => {
@@ -1539,11 +1535,7 @@ export default class Webform extends NestedDataComponent {
 
             // Ensure err is an array.
             err = Array.isArray(err) ? err : [err];
-
-            // Set as custom errors.
-            this.customErrors = err;
-
-            return reject();
+            return reject(err);
           }
 
           this.loading = true;
@@ -1648,7 +1640,7 @@ export default class Webform extends NestedDataComponent {
    *
    * @returns {Promise} - A promise when the form is done submitting.
    */
-  submit(before, options) {
+  submit(before, options = {}) {
     this.submissionInProcess = true;
     if (!before) {
       return this.beforeSubmit(options).then(() => this.executeSubmit(options));
