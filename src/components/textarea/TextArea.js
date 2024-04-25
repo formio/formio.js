@@ -89,7 +89,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   /**
    * Updates the editor value.
-   *
+   * @param index
    * @param newValue
    */
   updateEditorValue(index, newValue) {

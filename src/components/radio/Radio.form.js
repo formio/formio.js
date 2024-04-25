@@ -3,6 +3,10 @@ import RadioEditData from './editForm/Radio.edit.data';
 import RadioEditDisplay from './editForm/Radio.edit.display';
 import RadioEditValidation from './editForm/Radio.edit.validation';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return  listComponentForm([
     {

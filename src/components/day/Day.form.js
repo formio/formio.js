@@ -6,6 +6,10 @@ import DayEditDay from './editForm/Day.edit.day';
 import DayEditMonth from './editForm/Day.edit.month';
 import DayEditYear from './editForm/Day.edit.year';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return Components.baseEditForm([
     {

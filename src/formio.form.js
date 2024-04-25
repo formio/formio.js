@@ -41,6 +41,9 @@ Formio.Components.setComponents(AllComponents);
 /**
  * Register a module
  * @param {*} plugin
+ * @param mod
+ * @param defaultFn
+ * @param options
  * @returns
  */
 export function registerModule(mod, defaultFn = null, options = {}) {
@@ -103,6 +106,10 @@ export function registerModule(mod, defaultFn = null, options = {}) {
   }
 }
 
+/**
+ *
+ * @param defaultFn
+ */
 export function useModule(defaultFn = null) {
   return (plugins, options = {}) => {
     plugins = _.isArray(plugins) ? plugins : [plugins];

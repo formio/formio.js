@@ -7,15 +7,14 @@ import * as FormioUtils from './utils/utils';
 export default class Form extends Element {
   /**
    * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
-   *
-   * @param {Object} element - The DOM element you wish to render this form within.
-   * @param {Object | string} form - Either a Form JSON schema or the URL of a hosted form via. form.io.
-   * @param {Object} options - The options to create a new form instance.
+   * @param {object} element - The DOM element you wish to render this form within.
+   * @param {object | string} form - Either a Form JSON schema or the URL of a hosted form via. form.io.
+   * @param {object} options - The options to create a new form instance.
    * @param {boolean} options.readOnly - Set this form to readOnly
    * @param {boolean} options.noAlerts - Set to true to disable the alerts dialog.
    * @param {boolean} options.i18n - The translation file for this rendering. @see https://github.com/formio/formio.js/blob/master/i18n.js
    * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.
-   *
+   * @param {...any} args
    * @example
    * import Form from '@formio/js/Form';
    * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
@@ -113,9 +112,8 @@ export default class Form extends Element {
 
   /**
    * Create a new form instance provided the display of the form.
-   *
    * @param {string} display - The display of the form, either "wizard", "form", or "pdf"
-   * @return {*}
+   * @returns {*}
    */
   create(display) {
     if (this.options && (this.options.flatten || this.options.renderMode === 'flat')) {
@@ -133,9 +131,8 @@ export default class Form extends Element {
 
   /**
    * Sets the form. Either as JSON or a URL to a form JSON schema.
-   *
    * @param {string|object} formParam - Either the form JSON or the URL of the form json.
-   * @return {*}
+   * @returns {*}
    */
   set form(formParam) {
     this.setForm(formParam);
@@ -164,12 +161,12 @@ export default class Form extends Element {
   }
 
   /**
-  * Check Subdirectories path and provide correct options
-  *
-  * @param {string} url - The the URL of the form json.
-  * @param {form} object - The form json.
-  * @return {object} The initial options with base and project.
-  */
+   * Check Subdirectories path and provide correct options
+   * @param {string} url - The the URL of the form json.
+   * @param {form} object - The form json.
+   * @param form
+   * @returns {object} The initial options with base and project.
+   */
   getFormInitOptions(url, form) {
     const options = {};
     const index = url.indexOf(form?.path);
@@ -258,8 +255,7 @@ export default class Form extends Element {
 
   /**
    * Returns the loaded forms JSON.
-   *
-   * @return {object} - The loaded form's JSON
+   * @returns {object} - The loaded form's JSON
    */
   get form() {
     return this._form;
@@ -267,9 +263,8 @@ export default class Form extends Element {
 
   /**
    * Changes the display of the form.
-   *
    * @param {string} display - The display to set this form. Either "wizard", "form", or "pdf"
-   * @return {Promise<T>}
+   * @returns {Promise<T>}
    */
   setDisplay(display) {
     if ((this.display === display) && this.instance) {
@@ -314,8 +309,9 @@ export default class Form extends Element {
 
   /**
    * Sanitize an html string.
-   *
    * @param string
+   * @param dirty
+   * @param forceSanitize
    * @returns {*}
    */
   sanitize(dirty, forceSanitize) {
@@ -336,8 +332,7 @@ export default class Form extends Element {
 
   /**
    * Build a new form.
-   *
-   * @return {Promise<T>}
+   * @returns {Promise<T>}
    */
   build() {
     if (!this.instance) {
@@ -401,12 +396,11 @@ Formio.embedForm = (embed) => Form.embed(embed);
 
 /**
  * Factory that creates a new form based on the form parameters.
- *
  * @param element {HMTLElement} - The HTML Element to add this form to.
  * @param form {string|Object} - The src of the form, or a form object.
  * @param options {Object} - The options to create this form.
- *
- * @return {Promise} - When the form is instance is ready.
+ * @param {...any} args
+ * @returns {Promise} - When the form is instance is ready.
  */
 Formio.createForm = (...args) => {
   return (new Form(...args)).ready;

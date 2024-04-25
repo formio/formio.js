@@ -14,12 +14,11 @@ export const CALENDAR_ERROR_MESSAGES = {
 
 /**
  * Builds the response for checkInvalidDate.
- *
- * @param {String} message
+ * @param {string} message
  *   The message for response.
- * @param {Boolean} result
+ * @param {boolean} result
  *   The boolean flag for response.
- * * @return {{message: string, result: boolean}}
+ * @returns {{message: string, result: boolean}}
  */
 function buildResponse(message, result) {
   return {
@@ -30,16 +29,15 @@ function buildResponse(message, result) {
 
 /**
  * Checks the value for a min date and max date.
- *
  * @param {moment} value
  *   The value to check.
- * @param {[String]} format
+ * @param {[string]} format
  *   A moment formats.
  * @param {Date} maxDate
  *   The max date.
  * @param {Date} minDate
  *   The min date.
- * * @return {{message: string, result: boolean}}
+ * @returns {{message: string, result: boolean}}
  */
 export function lessOrGreater(value, format, maxDate, minDate) {
   let message = '';
@@ -71,16 +69,15 @@ export function lessOrGreater(value, format, maxDate, minDate) {
 
 /**
  * Checks the entered date for validity.
- *
- * @param {String} value
+ * @param {string} value
  *   The value to check.
- * @param {[String]} format
+ * @param {[string]} format
  *   A moment formats.
  * @param {Date} maxDate
  *   The max date.
  * @param {Date} minDate
  *   The min date.
- * * @return {{message: string, result: boolean}}
+ * @returns {{message: string, result: boolean}}
  */
 export function checkInvalidDate(value, format, minDate, maxDate) {
   const date = moment(value, format, true);

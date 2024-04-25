@@ -1,6 +1,10 @@
 import Components from '../Components';
 import ButtonEditDisplay from './editForm/Button.edit.display';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return Components.baseEditForm([
     {

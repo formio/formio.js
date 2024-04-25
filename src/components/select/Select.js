@@ -327,9 +327,10 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * Adds an option to the select dropdown.
-   *
    * @param value
    * @param label
+   * @param attrs
+   * @param id
    */
   addOption(value, label, attrs = {}, id = getRandomComponentId()) {
     if (_.isNil(label)) return;
@@ -1257,7 +1258,9 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * @param {*} value
+   * @param values
    * @param {Array} items
+   * @param keyValue
    */
   addCurrentChoices(values, items, keyValue) {
     if (!values) {
@@ -1466,9 +1469,8 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * Normalize values coming into updateValue.
-   *
    * @param value
-   * @return {*}
+   * @returns {*}
    */
   normalizeValue(value) {
     if (this.component.multiple && Array.isArray(value)) {
@@ -1698,8 +1700,7 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * Check if a component is eligible for multiple validation
-   *
-   * @return {boolean}
+   * @returns {boolean}
    */
   validateMultiple() {
     // Select component will contain one input when flagged as multiple.
@@ -1708,7 +1709,7 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * Output this select dropdown as a string value.
-   * @return {*}
+   * @returns {*}
    */
 
   isBooleanOrNumber(value) {

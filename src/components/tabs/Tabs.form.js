@@ -2,6 +2,10 @@ import nestedComponentForm from '../_classes/nested/NestedComponent.form';
 
 import TabsEditDisplay from './editForm/Tabs.edit.display';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return nestedComponentForm([
     {

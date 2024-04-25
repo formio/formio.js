@@ -1,6 +1,10 @@
 import radioEditForm from '../radio/Radio.form';
 import SelectBoxesEditValidation from './editForm/SelectBoxes.edit.validation';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return radioEditForm([
     {

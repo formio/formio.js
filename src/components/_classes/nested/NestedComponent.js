@@ -161,8 +161,8 @@ export default class NestedComponent extends Field {
   /**
    * Perform a deep iteration over every component, including those
    * within other container based components.
-   *
-   * @param {function} fn - Called for every component.
+   * @param {Function} fn - Called for every component.
+   * @param options
    */
   everyComponent(fn, options) {
     const components = this.getComponents();
@@ -204,8 +204,7 @@ export default class NestedComponent extends Field {
 
   /**
    * Perform an iteration over each component within this container component.
-   *
-   * @param {function} fn - Called for each component
+   * @param {Function} fn - Called for each component
    */
   eachComponent(fn) {
     _.each(this.getComponents(), (component, index) => {
@@ -218,11 +217,11 @@ export default class NestedComponent extends Field {
   /**
    * Returns a component provided a key. This performs a deep search within the
    * component tree.
-   *
    * @param {string} key - The key of the component to retrieve.
-   * @param {function} [fn] - Called with the component once found.
+   * @param path
+   * @param {Function} [fn] - Called with the component once found.
    * @param {string} [originalPath] - The original path to the component.
-   * @return {Component} - The component that is located.
+   * @returns {Component} - The component that is located.
    */
   getComponent(path, fn, originalPath) {
     originalPath = originalPath || getStringFromComponentPath(path);
@@ -277,10 +276,9 @@ export default class NestedComponent extends Field {
 
   /**
    * Return a component provided the Id of the component.
-   *
    * @param {string} id - The Id of the component.
-   * @param {function} fn - Called with the component once it is retrieved.
-   * @return {Object} - The component retrieved.
+   * @param {Function} fn - Called with the component once it is retrieved.
+   * @returns {object} - The component retrieved.
    */
   getComponentById(id, fn) {
     let comp = null;
@@ -298,9 +296,11 @@ export default class NestedComponent extends Field {
 
   /**
    * Create a new component and add it to the components array.
-   *
    * @param component
+   * @param options
    * @param data
+   * @param before
+   * @param replacedComp
    */
    createComponent(component, options, data, before, replacedComp) {
     if (!component) {
@@ -372,6 +372,7 @@ export default class NestedComponent extends Field {
    *
    * @param element
    * @param data
+   * @param options
    */
   addComponents(data, options) {
     data = data || this.data;
@@ -388,11 +389,11 @@ export default class NestedComponent extends Field {
 
   /**
    * Add a new component to the components array.
-   *
-   * @param {Object} component - The component JSON schema to add.
-   * @param {Object} data - The submission data object to house the data for this component.
+   * @param {object} component - The component JSON schema to add.
+   * @param {object} data - The submission data object to house the data for this component.
    * @param {HTMLElement} before - A DOM element to insert this element before.
-   * @return {Component} - The created component instance.
+   * @param noAdd
+   * @returns {Component} - The created component instance.
    */
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
@@ -500,9 +501,9 @@ export default class NestedComponent extends Field {
 
   /**
    * Remove a component from the components array and from the children object
-   *
    * @param {Component} component - The component to remove from the components.
    * @param {Array<Component>} components - An array of components to remove this component from.
+   * @param all
    */
   removeComponent(component, components, all = false) {
     components = components || this.components;
@@ -515,10 +516,9 @@ export default class NestedComponent extends Field {
 
   /**
    * Removes a component provided the API key of that component.
-   *
    * @param {string} key - The API key of the component to remove.
-   * @param {function} fn - Called once the component is removed.
-   * @return {null}
+   * @param {Function} fn - Called once the component is removed.
+   * @returns {null}
    */
   removeComponentByKey(key, fn) {
     const comp = this.getComponent(key, (component, components) => {
@@ -537,10 +537,9 @@ export default class NestedComponent extends Field {
 
   /**
    * Removes a component provided the Id of the component.
-   *
    * @param {string} id - The Id of the component to remove.
-   * @param {function} fn - Called when the component is removed.
-   * @return {null}
+   * @param {Function} fn - Called when the component is removed.
+   * @returns {null}
    */
   removeComponentById(id, fn) {
     const comp = this.getComponentById(id, (component, components) => {
@@ -612,8 +611,8 @@ export default class NestedComponent extends Field {
 
   /**
    * Allow components to hook into the next page trigger to perform their own logic.
-   *
-   * @return {*}
+   * @param next
+   * @returns {*}
    */
   beforePage(next) {
     return Promise.all(this.getComponents().map((comp) => comp.beforePage(next)));
@@ -621,8 +620,7 @@ export default class NestedComponent extends Field {
 
   /**
    * Allow components to hook into the submission to provide their own async data.
-   *
-   * @return {*}
+   * @returns {*}
    */
   beforeSubmit() {
     return Promise.allSettled(this.getComponents().map((comp) => comp.beforeSubmit()));

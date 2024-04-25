@@ -97,9 +97,8 @@ export default class SelectBoxesComponent extends RadioComponent {
 
   /**
    * Only empty if the values are all false.
-   *
    * @param value
-   * @return {boolean}
+   * @returns {boolean}
    */
   isEmpty(value = this.dataValue) {
     let empty = true;
@@ -126,9 +125,8 @@ export default class SelectBoxesComponent extends RadioComponent {
 
   /**
    * Normalize values coming into updateValue.
-   *
    * @param value
-   * @return {*}
+   * @returns {*}
    */
   normalizeValue(value) {
     value = value || {};
@@ -164,7 +162,6 @@ export default class SelectBoxesComponent extends RadioComponent {
 
   /**
    * Set the value of this component.
-   *
    * @param value
    * @param flags
    */

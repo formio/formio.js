@@ -1,3 +1,10 @@
+/**
+ *
+ * @param fn
+ * @param args
+ * @param retries
+ * @param err
+ */
 export async function withRetries(fn, args, retries = 3, err = null) {
   if (!retries) {
     throw new Error(err);

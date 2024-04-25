@@ -4,6 +4,10 @@ import EditGridEditDisplay from './editForm/EditGrid.edit.display';
 import EditGridEditTemplates from './editForm/EditGrid.edit.templates';
 import EditGridEditValidation from './editForm/EditGrid.edit.validation';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return Components.baseEditForm([
     {

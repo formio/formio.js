@@ -15,7 +15,7 @@ export default class Wizard extends Webform {
   /**
    * Constructor for wizard based forms
    * @param element Dom element to place this wizard.
-   * @param {Object} options Options object, supported options are:
+   * @param {object} options Options object, supported options are:
    *    - breadcrumbSettings.clickable: true (default) determines if the breadcrumb bar is clickable or not
    *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not
    *    - allowPrevious: false (default) determines if the breadcrumb bar is clickable or not for visited tabs

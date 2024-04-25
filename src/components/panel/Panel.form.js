@@ -3,6 +3,10 @@ import nestedComponentForm from '../_classes/nested/NestedComponent.form';
 import PanelEditDisplay from './editForm/Panel.edit.display';
 import PanelEditConditional from './editForm/Panel.edit.conditional';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return nestedComponentForm([
     {

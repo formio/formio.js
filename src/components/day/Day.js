@@ -69,8 +69,7 @@ export default class DayComponent extends Field {
 
   /**
    * The empty value for day component.
-   *
-   * @return {'00/00/0000'}
+   * @returns {'00/00/0000'}
    */
   get emptyValue() {
     return '00/00/0000';
@@ -407,7 +406,6 @@ export default class DayComponent extends Field {
 
   /**
    * Set the value at a specific index.
-   *
    * @param index
    * @param value
    */
@@ -494,9 +492,8 @@ export default class DayComponent extends Field {
 
   /**
    * Return the date for this component.
-   *
    * @param value
-   * @return {*}
+   * @returns {*}
    */
   getDate(value) {
     let defaults = [], day, month, year;
@@ -559,7 +556,6 @@ export default class DayComponent extends Field {
 
   /**
    * Return the raw value.
-   *
    * @returns {Date}
    */
   get validationValue() {
@@ -573,7 +569,6 @@ export default class DayComponent extends Field {
 
   /**
    * Get the value at a specific index.
-   *
    * @param index
    * @returns {*}
    */
@@ -591,9 +586,8 @@ export default class DayComponent extends Field {
 
   /**
    * Get the input value of the date.
-   *
    * @param value
-   * @return {null}
+   * @returns {null}
    */
   getValueAsString(value) {
     return this.getDate(value) || '';

@@ -5,6 +5,10 @@ import DateTimeEditDisplay from './editForm/DateTime.edit.display';
 import DateTimeEditTime from './editForm/DateTime.edit.time';
 import DateTimeEditValidation from './editForm/DateTime.edit.validation';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return Components.baseEditForm([
     {

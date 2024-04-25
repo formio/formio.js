@@ -138,7 +138,6 @@ export default class Multivalue extends Field {
 
   /**
    * Attach inputs to the element.
-   *
    * @param element
    * @param index
    */
@@ -253,6 +252,7 @@ export default class Multivalue extends Field {
 
   /**
    * Adds a new empty value to the data array.
+   * @param value
    */
   addNewValue(value) {
     if (value === undefined) {

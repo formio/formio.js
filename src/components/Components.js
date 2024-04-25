@@ -58,9 +58,8 @@ export default class Components {
 
   /**
    * Return a path of component's value.
-   *
-   * @param {Object} component - The component instance.
-   * @return {string} - The component's value path.
+   * @param {object} component - The component instance.
+   * @returns {string} - The component's value path.
    */
   static getComponentPath(component) {
     let path = '';

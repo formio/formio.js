@@ -72,21 +72,21 @@ function getOptions(options) {
  */
 
 /**
- * @typedef {Object} FormioHooks
- * @property {function} [beforeSubmit]
- * @property {function} [beforeCancel]
- * @property {function} [beforeNext]
- * @property {function} [beforePrev]
- * @property {function} [attachComponent]
- * @property {function} [setDataValue]
- * @property {function} [addComponents]
- * @property {function} [addComponent]
- * @property {function} [customValidation]
+ * @typedef {object} FormioHooks
+ * @property {Function} [beforeSubmit]
+ * @property {Function} [beforeCancel]
+ * @property {Function} [beforeNext]
+ * @property {Function} [beforePrev]
+ * @property {Function} [attachComponent]
+ * @property {Function} [setDataValue]
+ * @property {Function} [addComponents]
+ * @property {Function} [addComponent]
+ * @property {Function} [customValidation]
  * @property {function} [attachWebform]
  */
 
 /**
- * @typedef {Object} SanitizeConfig
+ * @typedef {object} SanitizeConfig
  * @property {string[]} [addAttr]
  * @property {string[]} [addTags]
  * @property {string[]} [allowedAttrs]
@@ -96,7 +96,7 @@ function getOptions(options) {
  */
 
 /**
- * @typedef {Object} ButtonSettings
+ * @typedef {object} ButtonSettings
  * @property {boolean} [showPrevious]
  * @property {boolean} [showNext]
  * @property {boolean} [showCancel]
@@ -104,7 +104,7 @@ function getOptions(options) {
  */
 
 /**
- * @typedef {Object} FormOptions
+ * @typedef {object} FormOptions
  * @property {boolean} [saveDraft] - Enable the save draft feature.
  * @property {number} [saveDraftThrottle] - The throttle for the save draft feature.
  * @property {boolean} [readOnly] - Set this form to readOnly.
@@ -139,7 +139,7 @@ function getOptions(options) {
  * @property {boolean} [sanitize] - Sanitize the form.
  * @property {SanitizeConfig} [sanitizeConfig] - The sanitize configuration for this form.
  * @property {ButtonSettings} [buttonSettings] - The button settings for this form.
- * @property {Object} [breadCrumbSettings] - The breadcrumb settings for this form.
+ * @property {object} [breadCrumbSettings] - The breadcrumb settings for this form.
  * @property {boolean} [allowPrevious] - Allow the previous button (for Wizard forms).
  * @property {string[]} [wizardButtonOrder] - The order of the buttons (for Wizard forms).
  * @property {boolean} [showCheckboxBackground] - Show the checkbox background.
@@ -157,8 +157,7 @@ export default class Webform extends NestedDataComponent {
 
   /**
    * Creates a new Form instance.
-   *
-   * @param {HTMLElement | Object | FormOptions} [elementOrOptions] - The DOM element to render this form within or the options to create this form instance.
+   * @param {HTMLElement | object | FormOptions} [elementOrOptions] - The DOM element to render this form within or the options to create this form instance.
    * @param {FormOptions} [options] - The options to create a new form instance.
    */
   constructor(elementOrOptions, options) {

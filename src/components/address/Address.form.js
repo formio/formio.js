@@ -3,6 +3,10 @@ import AddressEditData from './editForm/Address.edit.data';
 import AddressEditDisplay from './editForm/Address.edit.display';
 import AddressEditProvider from './editForm/Address.edit.provider';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return Components.baseEditForm([
     {

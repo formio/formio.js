@@ -414,9 +414,8 @@ export default class RadioComponent extends ListComponent {
 
   /**
    * Normalize values coming into updateValue.
-   *
    * @param value
-   * @return {*}
+   * @returns {*}
    */
   normalizeValue(value) {
     const dataType = this.component.dataType || 'auto';

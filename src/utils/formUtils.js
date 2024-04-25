@@ -16,11 +16,9 @@ import { fastCloneDeep } from './utils';
 
 /**
  * Determine if a component is a layout component or not.
- *
- * @param {Object} component
+ * @param {object} component
  *   The component to check.
- *
- * @returns {Boolean}
+ * @returns {boolean}
  *   Whether or not the component is a layout component.
  */
 export function isLayoutComponent(component) {
@@ -33,17 +31,17 @@ export function isLayoutComponent(component) {
 
 /**
  * Iterate through each component within a form.
- *
- * @param {Object} components
+ * @param {object} components
  *   The components to iterate.
  * @param {Function} fn
  *   The iteration function to invoke for each component.
- * @param {Boolean} includeAll
+ * @param {boolean} includeAll
  *   Whether or not to include layout components.
- * @param {String} path
+ * @param {string} path
  *   The current data path of the element. Example: data.user.firstName
- * @param {Object} parent
+ * @param {object} parent
  *   The parent object.
+ * @param inRecursion
  */
 export function eachComponent(components, fn, includeAll, path, parent, inRecursion) {
   if (!components) return;
@@ -129,10 +127,9 @@ export function eachComponent(components, fn, includeAll, path, parent, inRecurs
 
 /**
  * Matches if a component matches the query.
- *
  * @param component
  * @param query
- * @return {boolean}
+ * @returns {boolean}
  */
 export function matchComponent(component, query) {
   if (isString(query)) {
@@ -152,13 +149,12 @@ export function matchComponent(component, query) {
 
 /**
  * Get a component by its key
- *
- * @param {Object} components
+ * @param {object} components
  *   The components to iterate.
- * @param {String|Object} key
+ * @param {string | object} key
  *   The key of the component to get, or a query of the component to search.
- *
- * @returns {Object}
+ * @param includeAll
+ * @returns {object}
  *   The component that matches the given key, or undefined if not found.
  */
 export function getComponent(components, key, includeAll) {
@@ -174,10 +170,9 @@ export function getComponent(components, key, includeAll) {
 
 /**
  * Finds a component provided a query of properties of that component.
- *
  * @param components
  * @param query
- * @return {*}
+ * @returns {*}
  */
 export function searchComponents(components, query) {
   const results = [];
@@ -191,7 +186,6 @@ export function searchComponents(components, query) {
 
 /**
  * Deprecated version of findComponents. Renamed to searchComponents.
- *
  * @param components
  * @param query
  * @returns {*}
@@ -206,7 +200,6 @@ export function findComponents(components, query) {
  * Path to the component is stored as an array of nested components and their indexes.The Path is being filled recursively
  * when you iterating through the nested structure.
  * If the component is not found the callback won't be called and function won't return anything.
- *
  * @param components
  * @param key
  * @param fn
@@ -265,7 +258,6 @@ export function findComponent(components, key, path, fn) {
 
 /**
  * Remove a component by path.
- *
  * @param components
  * @param path
  */
@@ -278,6 +270,11 @@ export function removeComponent(components, path) {
   components.splice(index, 1);
 }
 
+/**
+ *
+ * @param type
+ * @param data
+ */
 export function generateFormChange(type, data) {
   let change;
   switch (type) {
@@ -314,6 +311,11 @@ export function generateFormChange(type, data) {
   return change;
 }
 
+/**
+ *
+ * @param form
+ * @param changes
+ */
 export function applyFormChanges(form, changes) {
   const failed = [];
   changes.forEach(function(change) {
@@ -384,13 +386,11 @@ export function applyFormChanges(form, changes) {
 
 /**
  * Flatten the form components for data manipulation.
- *
- * @param {Object} components
+ * @param {object} components
  *   The components to iterate.
- * @param {Boolean} includeAll
+ * @param {boolean} includeAll
  *   Whether or not to include layout components.
- *
- * @returns {Object}
+ * @returns {object}
  *   The flattened components map.
  */
 export function flattenComponents(components, includeAll = false) {
@@ -403,9 +403,7 @@ export function flattenComponents(components, includeAll = false) {
 
 /**
  * Returns if this component has a conditional statement.
- *
  * @param component - The component JSON schema.
- *
  * @returns {boolean} - TRUE - This component has a conditional, FALSE - No conditional provided.
  */
 export function hasCondition(component) {
@@ -421,11 +419,9 @@ export function hasCondition(component) {
 
 /**
  * Extension of standard #parseFloat(value) function, that also clears input string.
- *
  * @param {any} value
  *   The value to parse.
- *
- * @returns {Number}
+ * @returns {number}
  *   Parsed value.
  */
 export function parseFloatExt(value) {
@@ -436,11 +432,9 @@ export function parseFloatExt(value) {
 
 /**
  * Formats provided value in way how Currency component uses it.
- *
  * @param {any} value
  *   The value to format.
- *
- * @returns {String}
+ * @returns {string}
  *   Value formatted for Currency component.
  */
 export function formatAsCurrency(value) {
@@ -465,8 +459,7 @@ export function formatAsCurrency(value) {
 
 /**
  * Escapes RegEx characters in provided String value.
- *
- * @param {String} value
+ * @param {string} value
  *   String for escaping RegEx characters.
  * @returns {string}
  *   String with escaped RegEx characters.
@@ -477,10 +470,9 @@ export function escapeRegExCharacters(value) {
 
 /**
  * Get the value for a component key, in the given submission.
- *
- * @param {Object} submission
+ * @param {object} submission
  *   A submission object to search.
- * @param {String} key
+ * @param {string} key
  *   A for components API key to search for.
  */
 export function getValue(submission, key) {

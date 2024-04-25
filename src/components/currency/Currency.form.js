@@ -1,6 +1,10 @@
 import baseEditForm from '../textfield/TextField.form';
 import CurrencyEditDisplay from './editForm/Currency.edit.display';
 import CurrencyEditData from './editForm/Currency.edit.data';
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return baseEditForm([
     {

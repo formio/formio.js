@@ -4,6 +4,10 @@ import NumberEditDisplay from './editForm/Number.edit.display';
 import NumberEditData from './editForm/Number.edit.data';
 import NumberEditValidation from './editForm/Number.edit.validation';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return textEditForm([
     {

@@ -2,6 +2,10 @@ import Components from '../Components';
 import DataMapEditData from './editForm/DataMap.edit.data';
 import DataMapEditDisplay from './editForm/DataMap.edit.display';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return Components.baseEditForm([
     {

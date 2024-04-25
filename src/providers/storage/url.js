@@ -1,4 +1,13 @@
+/**
+ *
+ * @param formio
+ */
 function url(formio) {
+  /**
+   *
+   * @param options
+   * @param xhr
+   */
   function setOptions(options, xhr) {
     const parsedOptions = typeof options === 'string' ? JSON.parse(options) : options;
     for (const prop in parsedOptions) {

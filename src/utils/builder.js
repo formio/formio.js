@@ -3,10 +3,10 @@ import { eachComponent, uniqueKey } from './utils';
 export default {
   /**
    * Appends a number to a component.key to keep it unique
-   *
-   * @param {Object} form
+   * @param {object} form
    *   The components parent form.
-   * @param {Object} component
+   * @param container
+   * @param {object} component
    *   The component to uniquify
    */
   uniquify(container, component) {
