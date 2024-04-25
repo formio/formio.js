@@ -161,7 +161,7 @@ export default class NestedComponent extends Field {
    * Perform a deep iteration over every component, including those
    * within other container based components.
    * @param {Function} fn - Called for every component.
-   * @param options
+   * @param {any} options - The options to include with this everyComponent call.
    */
   everyComponent(fn, options) {
     const components = this.getComponents();
@@ -216,11 +216,10 @@ export default class NestedComponent extends Field {
   /**
    * Returns a component provided a key. This performs a deep search within the
    * component tree.
-   * @param {string} key - The key of the component to retrieve.
-   * @param path
+   * @param {string} path - The path to the component.
    * @param {Function} [fn] - Called with the component once found.
    * @param {string} [originalPath] - The original path to the component.
-   * @returns {import('@formio/core').Component} - The component that is located.
+   * @returns {any} - The component that is located.
    */
   getComponent(path, fn, originalPath) {
     originalPath = originalPath || getStringFromComponentPath(path);
@@ -295,11 +294,12 @@ export default class NestedComponent extends Field {
 
   /**
    * Create a new component and add it to the components array.
-   * @param component
-   * @param options
-   * @param data
-   * @param before
-   * @param replacedComp
+   * @param {import('@formio/core').Component} component - The component JSON schema to create.
+   * @param {any} options - The options to create the component with.
+   * @param {any} data - The submission data object to house the data for this component.
+   * @param {*} [before] - The component before which to add this component.
+   * @param {*} [replacedComp] - The component to replace with this component.
+   * @returns {any} - The created component instance.
    */
    createComponent(component, options, data, before, replacedComp) {
     if (!component) {
@@ -368,10 +368,9 @@ export default class NestedComponent extends Field {
   }
 
   /**
-   *
-   * @param element
-   * @param data
-   * @param options
+   * Add a new component instance to the components array.
+   * @param {any} [data] - The Submission data for this component.
+   * @param {any} [options] - The options for this component.
    */
   addComponents(data, options) {
     data = data || this.data;
@@ -391,8 +390,8 @@ export default class NestedComponent extends Field {
    * @param {object} component - The component JSON schema to add.
    * @param {object} data - The submission data object to house the data for this component.
    * @param {HTMLElement} before - A DOM element to insert this element before.
-   * @param noAdd
-   * @returns {Component} - The created component instance.
+   * @param {boolean} [noAdd] - A possibly extraneous boolean flag.
+   * @returns {any} - The created component instance.
    */
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
@@ -500,9 +499,9 @@ export default class NestedComponent extends Field {
 
   /**
    * Remove a component from the components array and from the children object
-   * @param {Component} component - The component to remove from the components.
-   * @param {Array<Component>} components - An array of components to remove this component from.
-   * @param all
+   * @param {any} component - The component to remove from the components.
+   * @param {Array<any>} components - An array of components to remove this component from.
+   * @param {boolean} [all] - If set to TRUE will cascade remove all components.
    */
   removeComponent(component, components, all = false) {
     components = components || this.components;
@@ -517,7 +516,7 @@ export default class NestedComponent extends Field {
    * Removes a component provided the API key of that component.
    * @param {string} key - The API key of the component to remove.
    * @param {Function} fn - Called once the component is removed.
-   * @returns {null}
+   * @returns {null|void} - Returns nothing if the component is not found.
    */
   removeComponentByKey(key, fn) {
     const comp = this.getComponent(key, (component, components) => {
@@ -538,7 +537,7 @@ export default class NestedComponent extends Field {
    * Removes a component provided the Id of the component.
    * @param {string} id - The Id of the component to remove.
    * @param {Function} fn - Called when the component is removed.
-   * @returns {null}
+   * @returns {null|void} - Returns nothing if the component is not found.
    */
   removeComponentById(id, fn) {
     const comp = this.getComponentById(id, (component, components) => {
@@ -610,8 +609,8 @@ export default class NestedComponent extends Field {
 
   /**
    * Allow components to hook into the next page trigger to perform their own logic.
-   * @param next
-   * @returns {*}
+   * @param {Function} next - The callback to continue to the next page.
+   * @returns {Promise} - A promise when the page has been processed.
    */
   beforePage(next) {
     return Promise.all(this.getComponents().map((comp) => comp.beforePage(next)));
@@ -619,7 +618,7 @@ export default class NestedComponent extends Field {
 
   /**
    * Allow components to hook into the submission to provide their own async data.
-   * @returns {*}
+   * @returns {Promise} - Returns a promise when the constituent beforeSubmit functions are complete.
    */
   beforeSubmit() {
     return Promise.allSettled(this.getComponents().map((comp) => comp.beforeSubmit()));
@@ -660,10 +659,10 @@ export default class NestedComponent extends Field {
 
   /**
    * Perform a validation on all child components of this nested component.
-   * @param {*} components
-   * @param {*} data
-   * @param {*} flags
-   * @returns
+   * @param {*} components - The components to validate.
+   * @param {*} data - The data to validate.
+   * @param {*} flags - The flags to use when validating.
+   * @returns {Promise<Array>|Array} - The errors if any exist.
    */
   validateComponents(components, data, flags = {}) {
     components = components || this.component.components;
@@ -703,9 +702,9 @@ export default class NestedComponent extends Field {
 
   /**
    * Validate a nested component with data, or its own internal data.
-   * @param {*} data
-   * @param {*} flags
-   * @returns
+   * @param {*} data - The data to validate.
+   * @param {*} flags - The flags to use when validating.
+   * @returns {*} - The errors if any exist.
    */
   validate(data, flags = {}) {
     data = data || this.rootValue;
