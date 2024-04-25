@@ -1740,9 +1740,6 @@ export default class Webform extends NestedDataComponent {
         }
     }
 
-    /**
-     *
-     */
     triggerRecaptcha() {
         if (!this || !this.components) {
             return;
