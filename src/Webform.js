@@ -135,6 +135,8 @@ function getOptions(options) {
  * @property {boolean} [allowPrevious] - Allow the previous button (for Wizard forms).
  * @property {string[]} [wizardButtonOrder] - The order of the buttons (for Wizard forms).
  * @property {boolean} [showCheckboxBackground] - Show the checkbox background.
+ * @property {boolean} [inputsOnly] - Only show inputs in the form and no labels.
+ * @property {boolean} [building] - If we are in the process of building the form.
  * @property {number} [zoom] - The zoom for PDF forms.
  */
 
@@ -1640,7 +1642,7 @@ export default class Webform extends NestedDataComponent {
    *
    * @returns {Promise} - A promise when the form is done submitting.
    */
-  submit(before, options = {}) {
+  submit(before = null, options = {}) {
     this.submissionInProcess = true;
     if (!before) {
       return this.beforeSubmit(options).then(() => this.executeSubmit(options));

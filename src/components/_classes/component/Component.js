@@ -967,7 +967,7 @@ export default class Component extends Element {
     return this.options.renderMode === 'html';
   }
 
-  renderTemplate(name, data = {}, modeOption) {
+  renderTemplate(name, data = {}, modeOption = '') {
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     const mode = modeOption || this.options.renderMode || 'form';
     data.component = this.component;
@@ -1019,7 +1019,7 @@ export default class Component extends Element {
    * @param string
    * @returns {*}
    */
-  sanitize(dirty, forceSanitize, options) {
+  sanitize(dirty, forceSanitize = false, options = {}) {
     if (!this.shouldSanitizeValue && !forceSanitize) {
       return dirty;
     }
@@ -3213,7 +3213,7 @@ export default class Component extends Element {
    * @param {*} silentCheck
    * @returns
    */
-  checkValidity(data, dirty, row, silentCheck, errors = []) {
+  checkValidity(data = null, dirty = false, row = null, silentCheck = false, errors = []) {
     data = data || this.rootValue;
     row = row || this.data;
     console.log('Deprecation warning:  Component.checkValidity() will be deprecated in 6.x version of renderer. Use Component.validateComponent instead.');
@@ -3674,19 +3674,15 @@ export default class Component extends Element {
     window.scrollTo(left + window.scrollX, top + window.scrollY);
   }
 
-  focus(index) {
+  focus(index = (this.refs.input.length - 1)) {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
 
     if (this.refs.input?.length) {
-      const focusingInput = typeof index === 'number' && this.refs.input[index]
-        ? this.refs.input[index]
-        : this.refs.input[this.refs.input.length - 1];
-
+      const focusingInput = this.refs.input[index];
       if (this.component.widget?.type === 'calendar') {
         const sibling = focusingInput.nextSibling;
-
         if (sibling) {
           sibling.focus();
         }

@@ -164,7 +164,7 @@ export default class NestedComponent extends Field {
    *
    * @param {function} fn - Called for every component.
    */
-  everyComponent(fn, options) {
+  everyComponent(fn, options = {}) {
     const components = this.getComponents();
     _.each(components, (component, index) => {
       if (fn(component, components, index) === false) {
@@ -282,7 +282,7 @@ export default class NestedComponent extends Field {
    * @param {function} fn - Called with the component once it is retrieved.
    * @return {Object} - The component retrieved.
    */
-  getComponentById(id, fn) {
+  getComponentById(id, fn = null) {
     let comp = null;
     this.everyComponent((component, components) => {
       if (component.id === id) {
@@ -394,7 +394,7 @@ export default class NestedComponent extends Field {
    * @param {HTMLElement} before - A DOM element to insert this element before.
    * @return {Component} - The created component instance.
    */
-  addComponent(component, data, before, noAdd) {
+  addComponent(component, data = null, before = null, noAdd = false) {
     data = data || this.data;
     this.components = this.components || [];
     component = this.hook('addComponent', component, data, before, noAdd);
@@ -520,7 +520,7 @@ export default class NestedComponent extends Field {
    * @param {function} fn - Called once the component is removed.
    * @return {null}
    */
-  removeComponentByKey(key, fn) {
+  removeComponentByKey(key, fn = null) {
     const comp = this.getComponent(key, (component, components) => {
       this.removeComponent(component, components);
       if (fn) {
@@ -542,7 +542,7 @@ export default class NestedComponent extends Field {
    * @param {function} fn - Called when the component is removed.
    * @return {null}
    */
-  removeComponentById(id, fn) {
+  removeComponentById(id, fn = null) {
     const comp = this.getComponentById(id, (component, components) => {
       this.removeComponent(component, components);
       if (fn) {

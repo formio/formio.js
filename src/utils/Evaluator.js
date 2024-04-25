@@ -5,6 +5,7 @@ import { Evaluator as CoreEvaluator } from '@formio/core/utils';
 export class Evaluator extends CoreEvaluator {
   static cache = {};
   static protectedEval = false;
+  static noeval = false;
   static template(template, hash) {
     hash = hash || stringHash(template);
     if (Evaluator.cache[hash]) {
@@ -55,9 +56,3 @@ export class Evaluator extends CoreEvaluator {
     return Array.isArray(args) ? func(...args) : func(args);
   }
 }
-
-Evaluator.registerEvaluator = (evaluator) => {
-  Object.keys(evaluator).forEach((key) => {
-    Evaluator[key] = evaluator[key];
-  });
-};
