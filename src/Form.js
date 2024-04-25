@@ -104,7 +104,9 @@ export default class Form extends Element {
       this.element.appendChild(this.loader);
     }
     else if (this.loader) {
-      this.element.removeChild(this.loader);
+      if (this.element.contains(this.loader)) {
+        this.element.removeChild(this.loader);
+      }
       this.loader = null;
     }
   }

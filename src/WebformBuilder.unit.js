@@ -38,7 +38,7 @@ describe('WebformBuilder tests', function() {
     builder.webform.setForm(uniqueApiKeys).then(() => {
       builder.highlightInvalidComponents();
       const component = builder.webform.getComponent(['textField']);
-      assert.equal(component.errors.length, 0);
+      assert.equal(component.visibleErrors.length, 0);
       done();
     }).catch(done);
   });
@@ -48,7 +48,7 @@ describe('WebformBuilder tests', function() {
     builder.webform.setForm(uniqueApiKeysLayout).then(() => {
       builder.highlightInvalidComponents();
       const component = builder.webform.getComponent(['textField']);
-      assert.equal(component.errors.length, 1);
+      assert.equal(component.visibleErrors.length, 1);
       done();
     }).catch(done);
   });
@@ -67,7 +67,7 @@ describe('WebformBuilder tests', function() {
     builder.webform.setForm(sameApiKeysLayoutComps).then(() => {
       builder.highlightInvalidComponents();
       const component = builder.webform.getComponent(['tabs']);
-      assert.equal(component.errors.length, 1, 'Should show Unique API Key error');
+      assert.equal(component.visibleErrors.length, 1, 'Should show Unique API Key error');
       done();
     }).catch(done);
   });
@@ -93,7 +93,7 @@ describe('WebformBuilder tests', function() {
     builder.webform.setForm(uniqueApiKeysSameLevel).then(() => {
       builder.highlightInvalidComponents();
       const component = builder.webform.getComponent(['textField']);
-      assert.equal(component.errors.length, 1);
+      assert.equal(component.visibleErrors.length, 1);
       done();
     }).catch(done);
   });

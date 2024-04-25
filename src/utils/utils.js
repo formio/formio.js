@@ -1383,13 +1383,14 @@ export function getArrayFromComponentPath(pathStr) {
     .map(part => _.defaultTo(_.toNumber(part), part));
 }
 
-export function  hasInvalidComponent(component) {
-  return component.getComponents().some((comp) => {
-    if (_.isArray(comp.components)) {
-      return hasInvalidComponent(comp);
+export function isChildOf(child, parent) {
+  while (child && child.parent) {
+    if (child.parent === parent) {
+      return true;
     }
-      return comp.error;
-  });
+    child = child.parent;
+  }
+  return false;
 }
 
 export function getStringFromComponentPath(path) {
@@ -1582,6 +1583,21 @@ export function getComponentSavedTypes(fullSchema) {
 
   return null;
 }
+
+/**
+ * Interpolates @formio/core errors so that they are compatible with the renderer
+ * @param {FieldError[]} errors
+ * @param firstPass
+ * @returns {[]}
+ */
+export const interpolateErrors = (component, errors, interpolateFn) => {
+ return errors.map((error) => {
+    error.component = component;
+    const { errorKeyOrMessage, context } = error;
+    const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
+    return { ...error, message: unescapeHTML(interpolateFn(toInterpolate, context)), context: { ...context } };
+  });
+};
 
 export function getItemTemplateKeys(template) {
   const templateKeys = [];

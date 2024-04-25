@@ -1,7 +1,12 @@
 import XHR from './xhr';
 import { withRetries } from './util';
 
-const AbortController = window.AbortController || require('abortcontroller-polyfill/dist/cjs-ponyfill');
+const loadAbortControllerPolyfill = async() => {
+  if (typeof AbortController === 'undefined') {
+    await import('abortcontroller-polyfill/dist/polyfill-patch-fetch');
+  }
+};
+
 function s3(formio) {
   return {
     async uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback, multipartOptions) {
@@ -11,6 +16,7 @@ function s3(formio) {
         if (response.signed) {
           if (multipartOptions && Array.isArray(response.signed)) {
             // patch abort callback
+            await loadAbortControllerPolyfill();
             const abortController = new AbortController();
             const abortSignal = abortController.signal;
             if (typeof abortCallback === 'function') {

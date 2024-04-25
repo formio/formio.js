@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
+import { Components } from '../Components';
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -310,7 +311,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     super.loadRefs(element, refs);
 
     if (refs['messageContainer'] === 'single') {
-      const container = _.last(element.querySelectorAll('[ref=messageContainer]'));
+      const container = _.last(element.querySelectorAll(`[${this._referenceAttributeName}=messageContainer]`));
       this.refs['messageContainer'] = container || this.refs['messageContainer'];
     }
   }
@@ -482,7 +483,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
       component.rowIndex = rowIndex;
       component.row = `${rowIndex}-${colIndex}`;
-      component.path = this.calculateComponentPath(component);
+      component.path = Components.getComponentPath(component);
     });
   }
 
@@ -579,33 +580,6 @@ export default class DataGridComponent extends NestedArrayComponent {
       components[col.key] = component;
     });
     return components;
-  }
-
-  /**
-   * Checks the validity of this datagrid.
-   *
-   * @param data
-   * @param dirty
-   * @return {*}
-   */
-  checkValidity(data, dirty, row, silentCheck) {
-    data = data || this.rootValue;
-    row = row || this.data;
-
-    if (!this.checkCondition(row, data)) {
-      this.setCustomValidity('');
-      return true;
-    }
-
-    if (!this.checkComponentValidity(data, dirty, row, { silentCheck })) {
-      return false;
-    }
-
-    const isValid = this.checkRows('checkValidity', data, dirty, true, silentCheck);
-
-    this.checkModal(isValid, dirty);
-
-    return isValid;
   }
 
   checkColumns(data, flags = {}) {
