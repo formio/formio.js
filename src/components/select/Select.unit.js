@@ -32,6 +32,7 @@ import {
   comp19,
   comp20,
   comp21,
+  comp22,
 } from './fixtures';
 
 describe('Select Component', () => {
@@ -973,6 +974,43 @@ describe('Select Component', () => {
             done();
           }, 200);
         }, 300);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should provide correct metadata.selectData for HTML5 Select with default value', (done) => {
+    const form = _.cloneDeep(comp22);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const submit = form.getComponent('submit');
+      const clickEvent = new Event('click');
+      const submitBtn = submit.refs.button;
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(()=> {
+        const metadata = form.submission.metadata.selectData.select;
+        assert.equal(metadata.label, 'Label 1');
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should provide correct metadata.selectData for ChoicesJS Select with default value', (done) => {
+    const form = _.cloneDeep(comp22);
+    form.components[0].widget='choicesjs';
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const submit = form.getComponent('submit');
+      const clickEvent = new Event('click');
+      const submitBtn = submit.refs.button;
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(()=> {
+        const metadata = form.submission.metadata.selectData.select;
+        assert.equal(metadata.label, 'Label 1');
+        done();
       }, 200);
     }).catch(done);
   });
