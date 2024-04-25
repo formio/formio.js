@@ -1,0 +1,13 @@
+{
+    "source": {
+      "includePattern": "src/+\\.js$",
+      "excludePattern": "src/+\\.(spec|test|unit)\\.js$"
+    },
+    "destination": "./docs",
+    "plugins": [
+      "jsdoc-plugin-typescript"
+    ],
+    "typescript": {
+      "moduleRoot": "src"
+    }
+  }
