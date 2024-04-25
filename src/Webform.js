@@ -82,7 +82,7 @@ function getOptions(options) {
  * @property {Function} [addComponents]
  * @property {Function} [addComponent]
  * @property {Function} [customValidation]
- * @property {function} [attachWebform]
+ * @property {Function} [attachWebform]
  */
 
 /**
@@ -139,7 +139,7 @@ function getOptions(options) {
  * @property {boolean} [sanitize] - Sanitize the form.
  * @property {SanitizeConfig} [sanitizeConfig] - The sanitize configuration for this form.
  * @property {ButtonSettings} [buttonSettings] - The button settings for this form.
- * @property {object} [breadCrumbSettings] - The breadcrumb settings for this form.
+ * @property {object} [breadcrumbSettings] - The breadcrumb settings for this form.
  * @property {boolean} [allowPrevious] - Allow the previous button (for Wizard forms).
  * @property {string[]} [wizardButtonOrder] - The order of the buttons (for Wizard forms).
  * @property {boolean} [showCheckboxBackground] - Show the checkbox background.
