@@ -3,7 +3,6 @@ import _ from 'lodash';
 import Field from '../field/Field';
 import Components from '../../Components';
 import { getArrayFromComponentPath, getStringFromComponentPath, getRandomComponentId } from '../../../utils/utils';
-import Component from '../component/Component';
 import { process as processAsync, processSync } from '@formio/core/process';
 
 export default class NestedComponent extends Field {
@@ -221,7 +220,7 @@ export default class NestedComponent extends Field {
    * @param path
    * @param {Function} [fn] - Called with the component once found.
    * @param {string} [originalPath] - The original path to the component.
-   * @returns {Component} - The component that is located.
+   * @returns {import('@formio/core').Component} - The component that is located.
    */
   getComponent(path, fn, originalPath) {
     originalPath = originalPath || getStringFromComponentPath(path);

@@ -12,7 +12,6 @@ import chunk from 'lodash/chunk';
 import pad from 'lodash/pad';
 import { compare, applyPatch } from 'fast-json-patch';
 import _ from 'lodash';
-import { fastCloneDeep } from './utils';
 
 /**
  * Determine if a component is a layout component or not.

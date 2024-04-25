@@ -11,6 +11,6 @@ module.exports = {
     },
     "plugins": ["jsdoc"],
     "rules": {
-      "no-prototype-builtins": "warn"
+      "no-prototype-builtins": "off"
     }
 }

@@ -8,7 +8,6 @@ import {
   firstNonNil,
   uniqueKey,
   eachComponent,
-  unescapeHTML
 } from './utils/utils';
 
 export default class Wizard extends Webform {
