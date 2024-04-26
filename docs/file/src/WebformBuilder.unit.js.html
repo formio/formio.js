@@ -528,6 +528,125 @@ describe(&apos;Select Component selectData property&apos;, () =&gt; {
     Harness.builderAfter(done);
   });
 });
+
+describe(&apos;Select Component selectData property&apos;, () =&gt; {
+  const originalMakeRequest = Formio.makeRequest;
+
+  before((done) =&gt; {
+    Formio.makeRequest = () =&gt; {
+      return new Promise(resolve =&gt; {
+        const values = [{
+          label: &apos;Label 1&apos;,
+          value: &apos;value1&apos;,
+        }, {
+          label: &apos;Label 2&apos;,
+          value: &apos;value2&apos;,
+        }];
+
+        resolve(values);
+      });
+    };
+    Harness.builderBefore(done);
+  });
+  afterEach(() =&gt; Harness.getBuilder().setForm({ display: &apos;form&apos;, components: [] }));
+
+  it(&apos;Should calculate selectData property for url dataSource&apos;, (done) =&gt; {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() =&gt; {
+      Harness.buildComponent(&apos;select&apos;);
+
+      setTimeout(() =&gt; {
+        const dataSrc = builder.editForm.getComponent(&apos;dataSrc&apos;);
+        dataSrc.setValue(&apos;url&apos;);
+        const url = builder.editForm.getComponent([&apos;data.url&apos;]);
+        const valueProperty = builder.editForm.getComponent(&apos;valueProperty&apos;);
+        url.setValue(&apos;htts//fakeurl.com&apos;);
+        valueProperty.setValue(&apos;value&apos;);
+
+        setTimeout(() =&gt; {
+          const defaultValue = builder.editForm.getComponent(&apos;defaultValue&apos;);
+          defaultValue.setValue(&apos;value1&apos;);
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() =&gt; {
+            assert.deepEqual(builder.editForm.data.selectData, {
+              label: &apos;Label 1&apos;,
+            });
+            Harness.saveComponent();
+            setTimeout(() =&gt; {
+              done();
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
+  it(&apos;Should calculate selectData property for resource dataSource&apos;, (done) =&gt; {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() =&gt; {
+      Harness.buildComponent(&apos;select&apos;);
+
+      setTimeout(() =&gt; {
+        const dataSrc = builder.editForm.getComponent(&apos;dataSrc&apos;);
+        dataSrc.setValue(&apos;resource&apos;);
+        const resource = builder.editForm.getComponent([&apos;data.resource&apos;]);
+        const valueProperty = builder.editForm.getComponent(&apos;valueProperty&apos;);
+        resource.setValue(&apos;12345678&apos;);
+        valueProperty.setValue(&apos;value&apos;);
+
+        setTimeout(() =&gt; {
+          const defaultValue = builder.editForm.getComponent(&apos;defaultValue&apos;);
+          defaultValue.setValue(&apos;value1&apos;);
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() =&gt; {
+            assert.deepEqual(builder.editForm.data.selectData, {
+              label: &apos;Label 1&apos;,
+            });
+            Harness.saveComponent();
+            setTimeout(() =&gt; {
+              done();
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
+  it(&apos;Should not calculate selectData property without valueProperty&apos;, (done) =&gt; {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() =&gt; {
+      Harness.buildComponent(&apos;select&apos;);
+
+      setTimeout(() =&gt; {
+        const dataSrc = builder.editForm.getComponent(&apos;dataSrc&apos;);
+        dataSrc.setValue(&apos;url&apos;);
+        const url = builder.editForm.getComponent([&apos;data.url&apos;]);
+        url.setValue(&apos;https://fakeurl.com&apos;);
+
+        setTimeout(() =&gt; {
+          const defaultValue = builder.editForm.getComponent(&apos;defaultValue&apos;);
+          defaultValue.setValue(&apos;value1&apos;);
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() =&gt; {
+            assert.equal(builder.editForm.data.selectData, undefined);
+            Harness.saveComponent();
+            setTimeout(() =&gt; {
+              done();
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
+  after((done) =&gt; {
+    Formio.makeRequest = originalMakeRequest;
+    Harness.builderAfter(done);
+  });
+});
 </code></pre>
 
 </div>

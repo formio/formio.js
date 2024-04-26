@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.19.2-rc.4]
+## 4.19.2-rc.4
+### Changed
+ - FIO-7445: fixed an issue with interpolated data in HTML
+
 ### Changed
  - FIO-8091: added selectData calculation for url/resource select components
  

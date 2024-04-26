@@ -221,6 +221,7 @@ import {
   comp19,
   comp20,
   comp21,
+  comp22,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Select Component&apos;, () =&gt; {
@@ -1166,6 +1167,43 @@ describe(&apos;Select Component&apos;, () =&gt; {
     }).catch(done);
   });
 
+  it(&apos;Should provide correct metadata.selectData for HTML5 Select with default value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp22);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const submit = form.getComponent(&apos;submit&apos;);
+      const clickEvent = new Event(&apos;click&apos;);
+      const submitBtn = submit.refs.button;
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(()=&gt; {
+        const metadata = form.submission.metadata.selectData.select;
+        assert.equal(metadata.label, &apos;Label 1&apos;);
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;Should provide correct metadata.selectData for ChoicesJS Select with default value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp22);
+    form.components[0].widget=&apos;choicesjs&apos;;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const submit = form.getComponent(&apos;submit&apos;);
+      const clickEvent = new Event(&apos;click&apos;);
+      const submitBtn = submit.refs.button;
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(()=&gt; {
+        const metadata = form.submission.metadata.selectData.select;
+        assert.equal(metadata.label, &apos;Label 1&apos;);
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
   it(&apos;OnBlur validation should work properly with Select component&apos;, function(done) {
     this.timeout(0);
     const element = document.createElement(&apos;div&apos;);
@@ -1402,7 +1440,6 @@ describe(&apos;Select Component with Entire Object Value Property&apos;, () =&gt
     });
   });
 });
-
 </code></pre>
 
 </div>
