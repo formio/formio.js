@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.20.0-rc.3
+### Changed
+ - FIO-7445: fixed an issue with interpolated data in HTML
+ - FIO-8091: Fixed missing metadata for html5 select component with default value
+
 ## 4.20.0-rc.2
 ### Changed
  - FIO-7580 FIO-6475: fixed error events issues and an issue where general server errors quickly disappear from ui
