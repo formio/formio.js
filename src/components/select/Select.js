@@ -262,7 +262,7 @@ export default class SelectComponent extends ListComponent {
   }
 
   get selectData() {
-    return this.component.selectData || this.selectMetadata;
+    return this.selectMetadata || this.component.selectData;
   }
 
   isEntireObjectDisplay() {
