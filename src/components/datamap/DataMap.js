@@ -40,6 +40,10 @@ export default class DataMapComponent extends DataGridComponent {
     };
   }
 
+  get isRowsDataComponent() {
+    return true;
+  }
+
   get schema() {
     const schema = super.schema;
     if (this.components && (this.components.length > 0)) {

@@ -514,6 +514,10 @@ export default class Component extends Element {
     return NativePromise.resolve(this);
   }
 
+  get isRowsDataComponent() {
+    return false;
+  }
+
   get isPDFReadOnlyMode() {
     return this.parent &&
       this.parent.form &&
