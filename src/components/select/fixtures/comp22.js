@@ -10,7 +10,7 @@ export default {
     tableView: true,
     dataSrc: 'url',
     data: {
-      url: 'https://fake_url',
+      url: 'https://fake_url.com',
       headers: [
         {
           key: '',
