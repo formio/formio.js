@@ -301,7 +301,7 @@ export default class NestedComponent extends Field {
 
       const rowIndex = component.row && this.isRowsDataComponent ? `[${Number.parseInt(component.row)}]` : '';
       path = thisPath.path ? `${thisPath.path}${rowIndex}.` : '';
-      path += component._parentPath && this.type === 'form' ? component._parentPath : '';
+      path += component._parentPath && thisPath.type === 'form' ? component._parentPath : '';
       path += component.component.key;
       return path;
     }
