@@ -231,6 +231,18 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-8091: added selectData calculation for url/resource select components
  - FIO-8074: Added Storage Type to Radio Components
  - FIO-8280: Fixed setting incorrect option label
+ - FIO-7544: html sanitization issue
+ - FIO-4112: Integrate @formio/core validation engine to renderer + many other code cleanup
+ - FIO 7733: move polyfill to conditional lazy import
+ - FIO-7733: export eventemitter
+ - FIO-7733: conditionally offload loader
+ - FIO-7733: remove stale types
+ - FIO-7733: update webform types; export webform
+ - FIO 8151: allow for reference attr name
+ - Chore: finish removing prebuilt types
+ - FIO-8091: Fixed missing metadata for html5 select component with default value
+ - FIO-7445: fixed an issue with interpolated data in HTML
+ - FIO-7507: publish-dev-tag-to-npm
 
 ## 5.0.0-rc.37
 ### Fixed
