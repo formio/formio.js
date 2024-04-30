@@ -1204,6 +1204,33 @@ describe(&apos;Select Component&apos;, () =&gt; {
     }).catch(done);
   });
 
+  it(&apos;Should set correct label from metadata for ChoicesJS Select with default value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp22);
+    form.components[0].widget=&apos;choicesjs&apos;;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const select = form.getComponent(&apos;select&apos;);
+      form.submission = {
+        data: {
+          select: &apos;value2&apos;,
+        },
+        metadata: {
+          selectData: {
+            select: {
+              label: &apos;Label 2&apos;,
+            },
+          },
+        },
+      };
+
+      setTimeout(()=&gt; {
+        assert.equal(select.templateData[&apos;value2&apos;].label, &apos;Label 2&apos;);
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
   it(&apos;OnBlur validation should work properly with Select component&apos;, function(done) {
     this.timeout(0);
     const element = document.createElement(&apos;div&apos;);
