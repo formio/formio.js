@@ -10,16 +10,19 @@ env:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
     steps:
       - run: echo "Triggered by ${{ github.event_name }} event."
 
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
         uses: actions/checkout@v3
 
-      - name: Set up Node.js ${{ env.NODE_VERSION }}
+      - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
       - name: Cache node modules
@@ -47,9 +50,18 @@ jobs:
   build:
     needs: setup
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
     steps:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
         uses: actions/checkout@v3
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
       - name: Restore node modules from cache
         uses: actions/cache@v3
@@ -70,9 +82,18 @@ jobs:
   test-current:
     needs: setup
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
     steps:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
         uses: actions/checkout@v3
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
       - name: Restore node modules from cache
         uses: actions/cache@v3
@@ -90,6 +111,9 @@ jobs:
   test-target:
     needs: setup
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
     steps:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
         uses: actions/checkout@v3
@@ -110,10 +134,10 @@ jobs:
             echo "Merge successful."
           fi
       
-      - name: Set up Node.js ${{ env.NODE_VERSION }}
+      - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
       - name: Restore node modules from cache
