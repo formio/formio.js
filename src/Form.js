@@ -6,21 +6,109 @@ import * as FormioUtils from './utils/utils';
 
 export default class Form extends Element {
   /**
+ * Represents a JSON value.
+ * @typedef {(string | number | boolean | null | JSONArray | JSONObject)} JSON
+ */
+
+/**
+ * Represents a JSON array.
+ * @typedef {Array<JSON>} JSONArray
+ */
+
+/**
+ * Represents a JSON object.
+ * @typedef {{[key: string]: JSON}} JSONObject
+ */
+
+/**
+ * @typedef {object} FormioHooks
+ * @property {Function} [beforeSubmit] - A function that is called before the form is submitted.
+ * @property {Function} [beforeCancel] - A function that is called before the form is canceled.
+ * @property {Function} [beforeNext] - A function that is called before moving to the next page in a multi-page form.
+ * @property {Function} [beforePrev] - A function that is called before moving to the previous page in a multi-page form.
+ * @property {Function} [attachComponent] - A function that is called when a component is attached to the form.
+ * @property {Function} [setDataValue] - A function that is called when setting the value of a data component.
+ * @property {Function} [addComponents] - A function that is called when adding multiple components to the form.
+ * @property {Function} [addComponent] - A function that is called when adding a single component to the form.
+ * @property {Function} [customValidation] - A function that is called for custom validation of the form.
+ * @property {Function} [attachWebform] - A function that is called when attaching a webform to the form.
+ */
+
+/**
+ * @typedef {object} SanitizeConfig
+ * @property {string[]} [addAttr] - The attributes to add.
+ * @property {string[]} [addTags] - The tags to add.
+ * @property {string[]} [allowedAttrs] - The allowed attributes.
+ * @property {string[]} [allowedTags] - The allowed tags.
+ * @property {string[]} [allowedUriRegex] - The allowed URI regex.
+ * @property {string[]} [addUriSafeAttr] - The URI safe attributes.
+ */
+
+/**
+ * @typedef {object} ButtonSettings
+ * @property {boolean} [showPrevious] - Show the "Previous" button.
+ * @property {boolean} [showNext] - Show the "Next" button.
+ * @property {boolean} [showCancel] - Show the "Cancel" button.
+ * @property {boolean} [showSubmit] - Show the "Submit" button.
+ */
+
+/**
+ * @typedef {object} FormOptions
+ * @property {boolean} [saveDraft] - Enable the save draft feature.
+ * @property {number} [saveDraftThrottle] - The throttle for the save draft feature.
+ * @property {boolean} [readOnly] - Set this form to readOnly.
+ * @property {boolean} [noAlerts] - Disable the alerts dialog.
+ * @property {{[key: string]: string}} [i18n] - The translation file for this rendering.
+ * @property {string} [template] - Custom logic for creation of elements.
+ * @property {boolean} [noDefaults] - Exclude default values from the settings.
+ * @property {any} [fileService] - The file service for this form.
+ * @property {EventEmitter} [events] - The EventEmitter for this form.
+ * @property {string} [language] - The language to render this form in.
+ * @property {Object<string, string>} [i18next] - The i18next configuration for this form.
+ * @property {boolean} [viewAsHtml] - View the form as raw HTML.
+ * @property {'form' | 'html' | 'flat' | 'builder' | 'pdf'} [renderMode] - The render mode for this form.
+ * @property {boolean} [highlightErrors] - Highlight any errors on the form.
+ * @property {string} [componentErrorClass] - The error class for components.
+ * @property {any} [templates] - The templates for this form.
+ * @property {string} [iconset] - The iconset for this form.
+ * @property {import('@formio/core').Component[]} [components] - The components for this form.
+ * @property {{[key: string]: boolean}} [disabled] - Disabled components for this form.
+ * @property {boolean} [showHiddenFields] - Show hidden fields.
+ * @property {{[key: string]: boolean}} [hide] - Hidden components for this form.
+ * @property {{[key: string]: boolean}} [show] - Components to show for this form.
+ * @property {Formio} [formio] - The Formio instance for this form.
+ * @property {string} [decimalSeparator] - The decimal separator for this form.
+ * @property {string} [thousandsSeparator] - The thousands separator for this form.
+ * @property {FormioHooks} [hooks] - The hooks for this form.
+ * @property {boolean} [alwaysDirty] - Always be dirty.
+ * @property {boolean} [skipDraftRestore] - Skip restoring a draft.
+ * @property {'form' | 'wizard' | 'pdf'} [display] - The display for this form.
+ * @property {string} [cdnUrl] - The CDN url for this form.
+ * @property {boolean} [flatten] - Flatten the form.
+ * @property {boolean} [sanitize] - Sanitize the form.
+ * @property {SanitizeConfig} [sanitizeConfig] - The sanitize configuration for this form.
+ * @property {ButtonSettings} [buttonSettings] - The button settings for this form.
+ * @property {object} [breadcrumbSettings] - The breadcrumb settings for this form.
+ * @property {boolean} [allowPrevious] - Allow the previous button (for Wizard forms).
+ * @property {string[]} [wizardButtonOrder] - The order of the buttons (for Wizard forms).
+ * @property {boolean} [showCheckboxBackground] - Show the checkbox background.
+ * @property {number} [zoom] - The zoom for PDF forms.
+ */
+
+  /**
    * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
-   * @param {object} element - The DOM element you wish to render this form within.
-   * @param {object | string} form - Either a Form JSON schema or the URL of a hosted form via. form.io.
-   * @param {object} options - The options to create a new form instance.
+   * @param {object | string} elementOrForm - The DOM element you wish to render this form within OR the Form JSON Schema or URL of a form.io hosted form.
+   * @param {object} formOrOptions - The options to create a new form instance.
    * @param {boolean} options.readOnly - Set this form to readOnly
    * @param {boolean} options.noAlerts - Set to true to disable the alerts dialog.
    * @param {boolean} options.i18n - The translation file for this rendering. @see https://github.com/formio/formio.js/blob/master/i18n.js
    * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.
-   * @param {...any} args
    * @example
    * import Form from '@formio/js/Form';
    * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
    * form.build();
    */
-  constructor(...args) {
+  constructor(elementOrForm, formOrOptions, options) {
     let options = args[0] instanceof HTMLElement ? args[2] : args[1];
     if (Formio.options && Formio.options.form) {
       options = Object.assign(options, Formio.options.form);
@@ -407,3 +495,5 @@ Formio.createForm = (...args) => {
 };
 
 Formio.Form = Form;
+
+export { FormOptions };
