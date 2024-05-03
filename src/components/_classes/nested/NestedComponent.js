@@ -3,7 +3,6 @@ import _ from 'lodash';
 import Field from '../field/Field';
 import Components from '../../Components';
 import { getArrayFromComponentPath, getStringFromComponentPath, getRandomComponentId } from '../../../utils/utils';
-import Component from '../component/Component';
 import { process as processAsync, processSync } from '@formio/core/process';
 
 export default class NestedComponent extends Field {
