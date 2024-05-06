@@ -1142,6 +1142,10 @@ export default class Component extends Element {
     this.componentModal.setOpenModalElement(template || this.getModalPreviewTemplate());
   }
 
+  renderModalPreview(ctx) {
+    return this.renderTemplate('modalPreview', ctx || {});
+  }
+
   getModalPreviewTemplate() {
     const dataValue = this.component.type === 'password' ? this.dataValue.replace(/./g, '•') : this.dataValue;
     const message = this.error ? {
@@ -1155,7 +1159,7 @@ export default class Component extends Element {
       modalLabel = { className: 'field-required' };
     }
 
-    return this.renderTemplate('modalPreview', {
+    return this.renderModalPreview({
       previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value'),
       messages: message && this.renderTemplate('message', message),
       labelInfo: modalLabel,
