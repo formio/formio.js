@@ -1267,7 +1267,7 @@ export function observeOverload(callback, options = {}) {
  * @param excludeNested
  * @param excludedTypes
  */
-export function getContextComponents(context, excludeNested, excludedTypes = []) {
+export function getContextComponents(context, excludeNested = false, excludedTypes = []) {
   const values = [];
 
   context.utils.eachComponent(context.instance.options.editForm.components, (component, path) => {
