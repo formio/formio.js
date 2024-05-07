@@ -2,6 +2,10 @@ import textEditForm from '../textfield/TextField.form';
 import TextAreaEditDisplay from './editForm/TextArea.edit.display';
 import TextAreaEditValidation from './editForm/TextArea.edit.validation';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return textEditForm([
     {

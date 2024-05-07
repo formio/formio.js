@@ -39,8 +39,7 @@ export default class HiddenComponent extends Input {
 
   /**
    * Check if a component is eligible for multiple validation
-   *
-   * @return {boolean}
+   * @returns {boolean}
    */
   validateMultiple() {
     // Since "arrays" are able to be stored in hidden components, we need to turn off multiple validation.

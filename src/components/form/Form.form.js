@@ -3,6 +3,10 @@ import FormEditDisplay from './editForm/Form.edit.display';
 import FormEditForm from './editForm/Form.edit.form';
 import FormEditData from './editForm/Form.edit.data';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return nestedComponentForm([
     {

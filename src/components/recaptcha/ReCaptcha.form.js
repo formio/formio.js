@@ -1,6 +1,9 @@
 import Components from '../Components';
 import ReCaptchaEditDisplay from './editForm/ReCaptcha.edit.display';
 
+/**
+ *
+ */
 export default function() {
   return Components.baseEditForm([
     {

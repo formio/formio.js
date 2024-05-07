@@ -3,6 +3,10 @@ import SelectEditData from './editForm/Select.edit.data';
 import SelectEditDisplay from './editForm/Select.edit.display';
 import SelectEditValidation from './editForm/Select.edit.validation';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return listComponentForm([
     {

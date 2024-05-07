@@ -160,8 +160,8 @@ export default class NestedComponent extends Field {
   /**
    * Perform a deep iteration over every component, including those
    * within other container based components.
-   *
-   * @param {function} fn - Called for every component.
+   * @param {Function} fn - Called for every component.
+   * @param {any} options - The options to include with this everyComponent call.
    */
   everyComponent(fn, options = {}) {
     const components = this.getComponents();
@@ -203,8 +203,7 @@ export default class NestedComponent extends Field {
 
   /**
    * Perform an iteration over each component within this container component.
-   *
-   * @param {function} fn - Called for each component
+   * @param {Function} fn - Called for each component
    */
   eachComponent(fn) {
     _.each(this.getComponents(), (component, index) => {
@@ -217,11 +216,10 @@ export default class NestedComponent extends Field {
   /**
    * Returns a component provided a key. This performs a deep search within the
    * component tree.
-   *
-   * @param {string} key - The key of the component to retrieve.
-   * @param {function} [fn] - Called with the component once found.
+   * @param {string} path - The path to the component.
+   * @param {Function} [fn] - Called with the component once found.
    * @param {string} [originalPath] - The original path to the component.
-   * @return {Component} - The component that is located.
+   * @returns {any} - The component that is located.
    */
   getComponent(path, fn, originalPath) {
     originalPath = originalPath || getStringFromComponentPath(path);
@@ -276,10 +274,9 @@ export default class NestedComponent extends Field {
 
   /**
    * Return a component provided the Id of the component.
-   *
    * @param {string} id - The Id of the component.
-   * @param {function} fn - Called with the component once it is retrieved.
-   * @return {Object} - The component retrieved.
+   * @param {Function} fn - Called with the component once it is retrieved.
+   * @returns {object} - The component retrieved.
    */
   getComponentById(id, fn = null) {
     let comp = null;
@@ -297,9 +294,12 @@ export default class NestedComponent extends Field {
 
   /**
    * Create a new component and add it to the components array.
-   *
-   * @param component
-   * @param data
+   * @param {import('@formio/core').Component} component - The component JSON schema to create.
+   * @param {any} options - The options to create the component with.
+   * @param {any} data - The submission data object to house the data for this component.
+   * @param {*} [before] - The component before which to add this component.
+   * @param {*} [replacedComp] - The component to replace with this component.
+   * @returns {any} - The created component instance.
    */
    createComponent(component, options, data, before, replacedComp) {
     if (!component) {
@@ -368,9 +368,9 @@ export default class NestedComponent extends Field {
   }
 
   /**
-   *
-   * @param element
-   * @param data
+   * Add a new component instance to the components array.
+   * @param {any} [data] - The Submission data for this component.
+   * @param {any} [options] - The options for this component.
    */
   addComponents(data, options) {
     data = data || this.data;
@@ -387,11 +387,11 @@ export default class NestedComponent extends Field {
 
   /**
    * Add a new component to the components array.
-   *
-   * @param {Object} component - The component JSON schema to add.
-   * @param {Object} data - The submission data object to house the data for this component.
+   * @param {object} component - The component JSON schema to add.
+   * @param {object} data - The submission data object to house the data for this component.
    * @param {HTMLElement} before - A DOM element to insert this element before.
-   * @return {Component} - The created component instance.
+   * @param {boolean} [noAdd] - A possibly extraneous boolean flag.
+   * @returns {any} - The created component instance.
    */
   addComponent(component, data = null, before = null, noAdd = false) {
     data = data || this.data;
@@ -499,9 +499,9 @@ export default class NestedComponent extends Field {
 
   /**
    * Remove a component from the components array and from the children object
-   *
-   * @param {Component} component - The component to remove from the components.
-   * @param {Array<Component>} components - An array of components to remove this component from.
+   * @param {any} component - The component to remove from the components.
+   * @param {Array<any>} components - An array of components to remove this component from.
+   * @param {boolean} [all] - If set to TRUE will cascade remove all components.
    */
   removeComponent(component, components, all = false) {
     components = components || this.components;
@@ -514,10 +514,9 @@ export default class NestedComponent extends Field {
 
   /**
    * Removes a component provided the API key of that component.
-   *
    * @param {string} key - The API key of the component to remove.
-   * @param {function} fn - Called once the component is removed.
-   * @return {null}
+   * @param {Function} fn - Called once the component is removed.
+   * @returns {null|void} - Returns nothing if the component is not found.
    */
   removeComponentByKey(key, fn = null) {
     const comp = this.getComponent(key, (component, components) => {
@@ -536,10 +535,9 @@ export default class NestedComponent extends Field {
 
   /**
    * Removes a component provided the Id of the component.
-   *
    * @param {string} id - The Id of the component to remove.
-   * @param {function} fn - Called when the component is removed.
-   * @return {null}
+   * @param {Function} fn - Called when the component is removed.
+   * @returns {null|void} - Returns nothing if the component is not found.
    */
   removeComponentById(id, fn = null) {
     const comp = this.getComponentById(id, (component, components) => {
@@ -611,8 +609,8 @@ export default class NestedComponent extends Field {
 
   /**
    * Allow components to hook into the next page trigger to perform their own logic.
-   *
-   * @return {*}
+   * @param {Function} next - The callback to continue to the next page.
+   * @returns {Promise} - A promise when the page has been processed.
    */
   beforePage(next) {
     return Promise.all(this.getComponents().map((comp) => comp.beforePage(next)));
@@ -620,8 +618,7 @@ export default class NestedComponent extends Field {
 
   /**
    * Allow components to hook into the submission to provide their own async data.
-   *
-   * @return {*}
+   * @returns {Promise} - Returns a promise when the constituent beforeSubmit functions are complete.
    */
   beforeSubmit() {
     return Promise.allSettled(this.getComponents().map((comp) => comp.beforeSubmit()));
@@ -662,12 +659,12 @@ export default class NestedComponent extends Field {
 
   /**
    * Perform a validation on all child components of this nested component.
-   * @param {*} components
-   * @param {*} data
-   * @param {*} flags
-   * @returns
+   * @param {*} components - The components to validate.
+   * @param {*} data - The data to validate.
+   * @param {*} flags - The flags to use when validating.
+   * @returns {Promise<Array>|Array} - The errors if any exist.
    */
-  validateComponents(components, data, flags = {}) {
+  validateComponents(components = null, data = null, flags = {}) {
     components = components || this.component.components;
     data = data || this.rootValue;
     const { async, dirty, process } = flags;
@@ -705,27 +702,36 @@ export default class NestedComponent extends Field {
 
   /**
    * Validate a nested component with data, or its own internal data.
-   * @param {*} data
-   * @param {*} flags
-   * @returns
+   * @param {*} data - The data to validate.
+   * @param {*} flags - The flags to use when validating.
+   * @returns {*} - The errors if any exist.
    */
-  validate(data, flags = {}) {
+  validate(data = null, flags = {}) {
     data = data || this.rootValue;
     return this.validateComponents(this.getComponents().map((component) => component.component), data, flags);
   }
 
-  checkComponentValidity(data, dirty, row, flags = {}, allErrors = []) {
+  checkComponentValidity(data = null, dirty = false, row = null, flags = {}, allErrors = []) {
     this.childErrors = [];
     return super.checkComponentValidity(data, dirty, row, flags, allErrors);
   }
 
-  checkValidity(data, dirty, row, silentCheck, childErrors = []) {
+  /**
+   * Checks the validity of the component.
+   * @param {*} data - The data to check if the component is valid.
+   * @param {boolean} dirty - If the component is dirty.
+   * @param {*} row - The contextual row data for this component.
+   * @param {boolean} silentCheck - If the check should be silent and not set the error messages.
+   * @param {Array<any>} childErrors - An array of all errors that have occured so that it can be appended when another one occurs here.
+   * @returns {boolean} - TRUE if the component is valid.
+   */
+  checkValidity(data = null, dirty = false, row = null, silentCheck = false, childErrors = []) {
     console.log('Deprecation warning:  Component.checkValidity() will be deprecated in 6.x version of renderer. Use "validate" method instead.');
     childErrors.push(...this.validate(data, { dirty, silentCheck }));
     return this.checkComponentValidity(data, dirty, row, { dirty, silentCheck }, childErrors) && childErrors.length === 0;
   }
 
-  checkAsyncValidity(data, dirty, row, silentCheck) {
+  checkAsyncValidity(data = null, dirty = false, row = null, silentCheck = false) {
     console.log('Deprecation warning:  Component.checkAsyncValidity() will be deprecated in 6.x version of renderer.');
     return this.ready.then(() => {
       return this.validate(data, { dirty, silentCheck, async: true }).then((childErrors) => {

@@ -2,6 +2,10 @@ import Components from '../Components';
 import HTMLEditDisplay from './editForm/HTML.edit.display';
 import HTMLEditLogic from './editForm/HTML.edit.logic';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return Components.baseEditForm([
     {

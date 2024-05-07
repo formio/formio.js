@@ -34,8 +34,7 @@ export default class CurrencyComponent extends NumberComponent {
 
   /**
    * Creates the number mask for currency numbers.
-   *
-   * @return {*}
+   * @returns {*}
    */
   createNumberMask() {
     const decimalLimit = _.get(this.component, 'decimalLimit', 2);

@@ -38,6 +38,10 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
 export { jsonLogic, ConditionOperators };
 export * as moment from 'moment-timezone/moment-timezone';
 
+/**
+ * Sets the path to the component and parent schema.
+ * @param {import('@formio/core').Component} component - The component to set the path for.
+ */
 function setPathToComponentAndPerentSchema(component) {
   component.path = getComponentPath(component);
   const dataParent = getDataParentComponent(component);
@@ -48,10 +52,11 @@ function setPathToComponentAndPerentSchema(component) {
 
 /**
  * Evaluate a method.
- *
- * @param func
- * @param args
- * @return {*}
+ * @param {Function|string|object} func - The function to evaluate.
+ * @param {*} args - A map of arguments to pass to the function.
+ * @param {string} ret - The name of the "return" variable in the script.
+ * @param {boolean} tokenize - True if the script should be interpolated before being executed.
+ * @returns {*} - The result of the evaluation.
  */
 export function evaluate(func, args, ret, tokenize) {
   let returnVal = null;
@@ -117,16 +122,19 @@ export function evaluate(func, args, ret, tokenize) {
   return returnVal;
 }
 
+/**
+ * Returns a random compoennt ID.
+ * @returns {string} - A random component ID.
+ */
 export function getRandomComponentId() {
   return `e${Math.random().toString(36).substring(7)}`;
 }
 
 /**
  * Get a property value of an element.
- *
- * @param style
- * @param prop
- * @return {number}
+ * @param {CSSStyleDeclaration} style - The style element to get the property value from.
+ * @param {string} prop - The property to get the value for.
+ * @returns {number} - The value of the property.
  */
 export function getPropertyValue(style, prop) {
   let value = style.getPropertyValue(prop);
@@ -136,9 +144,8 @@ export function getPropertyValue(style, prop) {
 
 /**
  * Get an elements bounding rectagle.
- *
- * @param element
- * @return {{x: string, y: string, width: string, height: string}}
+ * @param {HTMLElement} element - A DOM element to get the bounding rectangle for.
+ * @returns {{x: number, y: number, width: number, height: number}} - The bounding rectangle.
  */
 export function getElementRect(element) {
   const style = window.getComputedStyle(element, null);
@@ -152,9 +159,8 @@ export function getElementRect(element) {
 
 /**
  * Determines the boolean value of a setting.
- *
- * @param value
- * @return {boolean}
+ * @param {string|boolean} value - A string or boolean value to convert to boolean.
+ * @returns {boolean} - The boolean value of the setting.
  */
 export function boolValue(value) {
   if (_.isBoolean(value)) {
@@ -170,22 +176,18 @@ export function boolValue(value) {
 
 /**
  * Check to see if an ID is a mongoID.
- * @param text
- * @return {Array|{index: number, input: string}|Boolean|*}
+ * @param {string} text - The text to check if it is a mongoID.
+ * @returns {boolean} - TRUE if the text is a mongoID; FALSE otherwise.
  */
 export function isMongoId(text) {
-  return text.toString().match(/^[0-9a-fA-F]{24}$/);
+  return !!text.toString().match(/^[0-9a-fA-F]{24}$/);
 }
 
 /**
  * Checks the calculated value for a provided component and data.
- *
- * @param {Object} component
- *   The component to check for the calculated value.
- * @param {Object} submission
- *   A submission object.
- * @param data
- *   The full submission data.
+ * @param {import('@formio/core').Component} component - The component to check for the calculated value.
+ * @param {import('@formio/core').Submission} submission - A submission object.
+ * @param {*} rowData - The contextual row data for the component.
  */
 export function checkCalculated(component, submission, rowData) {
   // Process calculated value stuff if present.
@@ -201,14 +203,13 @@ export function checkCalculated(component, submission, rowData) {
 }
 
 /**
- * Check if a simple conditional evaluates to true.
- *
- * @param condition
- * @param condition
- * @param row
- * @param data
- * @param instance
- * @returns {boolean}
+ * Check if a simple conditional evaluates to true. 
+ * @param {import('@formio/core').Component} component - The component to check for the conditional.
+ * @param {import('@formio/core').SimpleConditional} condition - The condition to check.
+ * @param {*} row - The row data for the component.
+ * @param {*} data - The full submission data.
+ * @param {import('../../src/components/_classes/component/Component').Component} instance - The instance of the component.
+ * @returns {boolean} - TRUE if the condition is true; FALSE otherwise.
  */
  export function checkSimpleConditional(component, condition, row, data, instance) {
   if (condition.when) {
@@ -262,6 +263,13 @@ export function checkCalculated(component, submission, rowData) {
   }
 }
 
+/**
+ * Returns a components normalized value.
+ * @param {string} compPath - The full path to the component.
+ * @param {*} data - The data object to get the value from.
+ * @param {*} row - The contextual row data for the component.
+ * @returns {*} - The normalized value of the component.
+ */
 export function getComponentActualValue(compPath, data, row) {
   let value = null;
 
@@ -280,12 +288,15 @@ export function getComponentActualValue(compPath, data, row) {
 
 /**
  * Check custom javascript conditional.
- *
- * @param component
- * @param custom
- * @param row
- * @param data
- * @returns {*}
+ * @param {import('@formio/core').Component} component - The component to check for the conditional.
+ * @param {string} custom - The custom conditional string to evaluate.
+ * @param {*} row - The row data for the component.
+ * @param {*} data - The full submission data.
+ * @param {import('@formio/core').Form} form - The form object.
+ * @param {string} variable - The variable name for the result of the custom conditional.
+ * @param {*} onError - A custom return if there is an error or the value is null from the evaluation.
+ * @param {import('../../src/components/_classes/component/Component').Component} instance - The component instance.
+ * @returns {*} - The result of the evaulation.
  */
 export function checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {
   if (typeof custom === 'string') {
@@ -300,6 +311,16 @@ export function checkCustomConditional(component, custom, row, data, form, varia
   return value;
 }
 
+/**
+ * Check a component for JSON conditionals.
+ * @param {import('@formio/core').Component} component - The component 
+ * @param {import('@formio/core').JSONConditional} json - The json conditional to check.
+ * @param {*} row - The contextual row data for the component.
+ * @param {*} data - The full submission data.
+ * @param {import('@formio/core').Form} form - The Form JSON of the form.
+ * @param {*} onError - Custom return value if there is an error.
+ * @returns {boolean} - TRUE if the condition is true; FALSE otherwise.
+ */
 export function checkJsonConditional(component, json, row, data, form, onError) {
   try {
     return jsonLogic.apply(json, {
@@ -315,6 +336,14 @@ export function checkJsonConditional(component, json, row, data, form, onError) 
   }
 }
 
+/**
+ * Returns the contextual row data for a component.
+ * @param {import('@formio/core').Component} component - The component to get the row data for.
+ * @param {*} row - The row data for the component.
+ * @param {import('../../src/components/_classes/component/Component').Component} instance - The component instance.
+ * @param {*} conditional - The component conditional.
+ * @returns {*} - The contextual row data for the component.
+ */
 function getRow(component, row, instance, conditional) {
   const condition = conditional || component.conditional;
   // If no component's instance passed (happens only in 6.x server), calculate its path based on the schema
@@ -339,15 +368,12 @@ function getRow(component, row, instance, conditional) {
 
 /**
  * Checks the conditions for a provided component and data.
- *
- * @param component
- *   The component to check for the condition.
- * @param row
- *   The data within a row
- * @param data
- *   The full submission data.
- *
- * @returns {boolean}
+ * @param {import('@formio/core').Component} component - The component to check for the condition.
+ * @param {*} row - The data within a row
+ * @param {*} data - The full submission data.
+ * @param {import('@formio/core').Form} form - The form object.
+ * @param {import('../../src/components/_classes/component/Component').Component} instance - The component instance.
+ * @returns {boolean} - TRUE if the condition is true; FALSE otherwise.
  */
 export function checkCondition(component, row, data, form, instance) {
   const { customConditional, conditional } = component;
@@ -368,11 +394,13 @@ export function checkCondition(component, row, data, form, instance) {
 
 /**
  * Test a trigger on a component.
- *
  * @param component
  * @param action
+ * @param trigger
  * @param data
  * @param row
+ * @param form
+ * @param instance
  * @returns {mixed}
  */
 export function checkTrigger(component, trigger, row, data, form, instance) {
@@ -394,6 +422,15 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
   return false;
 }
 
+/**
+ *
+ * @param component
+ * @param action
+ * @param result
+ * @param row
+ * @param data
+ * @param instance
+ */
 export function setActionProperty(component, action, result, row, data, instance) {
   const property = action.property.value;
 
@@ -453,6 +490,11 @@ export function unescapeHTML(str) {
  * @returns {HTMLElement}
  */
 
+/**
+ *
+ * @param str
+ * @param selector
+ */
 export function convertStringToHTMLElement(str, selector) {
   const doc = new window.DOMParser().parseFromString(str, 'text/html');
   return doc.body.querySelector(selector);
@@ -487,6 +529,9 @@ export function uniqueName(name, template, evalContext) {
   return uniqueName;
 }
 
+/**
+ *
+ */
 export function guid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = Math.random()*16|0;
@@ -499,9 +544,8 @@ export function guid() {
 
 /**
  * Return a translated date setting.
- *
  * @param date
- * @return {(null|Date)}
+ * @returns {(null|Date)}
  */
 export function getDateSetting(date) {
   if (_.isNil(date) || _.isNaN(date) || date === '') {
@@ -549,14 +593,17 @@ export function getDateSetting(date) {
   return dateSetting.toDate();
 }
 
+/**
+ *
+ * @param date
+ */
 export function isValidDate(date) {
   return _.isDate(date) && !_.isNaN(date.getDate());
 }
 
 /**
  * Get the current timezone string.
- *
- * @return {string}
+ * @returns {string}
  */
 export function currentTimezone() {
   if (moment.currentTimezone) {
@@ -568,10 +615,9 @@ export function currentTimezone() {
 
 /**
  * Get an offset date provided a date object and timezone object.
- *
  * @param date
  * @param timezone
- * @return {Date}
+ * @returns {Date}
  */
 export function offsetDate(date, timezone) {
   if (timezone === 'UTC') {
@@ -589,8 +635,7 @@ export function offsetDate(date, timezone) {
 
 /**
  * Returns if the zones are loaded.
- *
- * @return {boolean}
+ * @returns {boolean}
  */
 export function zonesLoaded() {
   return moment.zonesLoaded;
@@ -598,9 +643,8 @@ export function zonesLoaded() {
 
 /**
  * Returns if we should load the zones.
- *
  * @param timezone
- * @return {boolean}
+ * @returns {boolean}
  */
 export function shouldLoadZones(timezone) {
   if (timezone === currentTimezone() || timezone === 'UTC') {
@@ -611,8 +655,9 @@ export function shouldLoadZones(timezone) {
 
 /**
  * Externally load the timezone data.
- *
- * @return {Promise<any> | *}
+ * @param url
+ * @param timezone
+ * @returns {Promise<any> | *}
  */
 export function loadZones(url, timezone) {
   if (timezone && !shouldLoadZones(timezone)) {
@@ -639,11 +684,10 @@ export function loadZones(url, timezone) {
 
 /**
  * Get the moment date object for translating dates with timezones.
- *
  * @param value
  * @param format
  * @param timezone
- * @return {*}
+ * @returns {*}
  */
 export function momentDate(value, format, timezone) {
   const momentDate = moment(value);
@@ -661,11 +705,12 @@ export function momentDate(value, format, timezone) {
 
 /**
  * Format a date provided a value, format, and timezone object.
- *
+ * @param timezonesUrl
  * @param value
  * @param format
  * @param timezone
- * @return {string}
+ * @param flatPickrInputFormat
+ * @returns {string}
  */
 export function formatDate(timezonesUrl, value, format, timezone, flatPickrInputFormat) {
   const momentDate = moment(value, flatPickrInputFormat || undefined);
@@ -701,12 +746,12 @@ export function formatDate(timezonesUrl, value, format, timezone, flatPickrInput
 
 /**
  * Pass a format function to format within a timezone.
- *
+ * @param timezonesUrl
  * @param formatFn
  * @param date
  * @param format
  * @param timezone
- * @return {string}
+ * @returns {string}
  */
 export function formatOffset(timezonesUrl, formatFn, date, format, timezone) {
   if (timezone === currentTimezone()) {
@@ -727,6 +772,10 @@ export function formatOffset(timezonesUrl, formatFn, date, format, timezone) {
   }
 }
 
+/**
+ *
+ * @param locale
+ */
 export function getLocaleDateFormatInfo(locale) {
   const formatInfo = {};
 
@@ -742,7 +791,7 @@ export function getLocaleDateFormatInfo(locale) {
 /**
  * Convert the format from the angular-datepicker module to flatpickr format.
  * @param format
- * @return {string}
+ * @returns {string}
  */
 export function convertFormatToFlatpickr(format) {
   return format
@@ -779,7 +828,7 @@ export function convertFormatToFlatpickr(format) {
 /**
  * Convert the format from the angular-datepicker module to moment format.
  * @param format
- * @return {string}
+ * @returns {string}
  */
 export function convertFormatToMoment(format) {
   return format
@@ -795,6 +844,10 @@ export function convertFormatToMoment(format) {
     .replace(/U/g, 'X');
 }
 
+/**
+ *
+ * @param format
+ */
 export function convertFormatToMask(format) {
   return format
   // Long month replacement.
@@ -854,6 +907,12 @@ export function getInputMask(mask, placeholderChar) {
   return maskArray;
 }
 
+/**
+ *
+ * @param value
+ * @param mask
+ * @param placeholderChar
+ */
 export function unmaskValue(value, mask, placeholderChar) {
   if (!mask || !value || value.length > mask.length) {
     return value;
@@ -875,6 +934,11 @@ export function unmaskValue(value, mask, placeholderChar) {
   return unmaskedValue;
 }
 
+/**
+ *
+ * @param value
+ * @param inputMask
+ */
 export function matchInputMask(value, inputMask) {
   if (!inputMask) {
     return true;
@@ -897,6 +961,10 @@ export function matchInputMask(value, inputMask) {
   return true;
 }
 
+/**
+ *
+ * @param lang
+ */
 export function getNumberSeparators(lang = 'en') {
   const formattedNumberString = (12345.6789).toLocaleString(lang);
   const delimeters = formattedNumberString.match(/..(.)...(.)../);
@@ -912,6 +980,11 @@ export function getNumberSeparators(lang = 'en') {
   };
 }
 
+/**
+ *
+ * @param component
+ * @param defaultLimit
+ */
 export function getNumberDecimalLimit(component, defaultLimit) {
   if (_.has(component, 'decimalLimit')) {
     return _.get(component, 'decimalLimit');
@@ -930,6 +1003,14 @@ export function getNumberDecimalLimit(component, defaultLimit) {
   return decimalLimit;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.currency
+ * @param root0.decimalLimit
+ * @param root0.decimalSeparator
+ * @param root0.lang
+ */
 export function getCurrencyAffixes({
    currency,
    decimalLimit,
@@ -957,10 +1038,9 @@ export function getCurrencyAffixes({
 
 /**
  * Fetch the field data provided a component.
- *
  * @param data
  * @param component
- * @return {*}
+ * @returns {*}
  */
 export function fieldData(data, component) {
   if (!data) {
@@ -1013,18 +1093,24 @@ export function fieldData(data, component) {
 
 /**
  * Delays function execution with possibility to execute function synchronously or cancel it.
- *
  * @param fn Function to delay
  * @param delay Delay time
- * @return {*}
+ * @param {...any} args
+ * @returns {*}
  */
 export function delay(fn, delay = 0, ...args) {
   const timer = setTimeout(fn, delay, ...args);
 
+  /**
+   *
+   */
   function cancel() {
     clearTimeout(timer);
   }
 
+  /**
+   *
+   */
   function earlyCall() {
     cancel();
     return fn(...args);
@@ -1038,11 +1124,9 @@ export function delay(fn, delay = 0, ...args) {
 
 /**
  * Iterate the given key to make it unique.
- *
- * @param {String} key
+ * @param {string} key
  *   Modify the component key to be unique.
- *
- * @returns {String}
+ * @returns {string}
  *   The new component key.
  */
 export function iterateKey(key) {
@@ -1057,10 +1141,9 @@ export function iterateKey(key) {
 
 /**
  * Determines a unique key within a map provided the base key.
- *
  * @param map
  * @param base
- * @return {*}
+ * @returns {*}
  */
 export function uniqueKey(map, base) {
   let newKey = base;
@@ -1072,8 +1155,8 @@ export function uniqueKey(map, base) {
 
 /**
  * Determines the major version number of bootstrap.
- *
- * @return {number}
+ * @param options
+ * @returns {number}
  */
 export function bootstrapVersion(options) {
   if (options.bootstrap) {
@@ -1092,8 +1175,8 @@ export function bootstrapVersion(options) {
  * Retrun provided argument.
  * If argument is a function, returns the result of a function call.
  * @param {*} e;
- *
- * @return {*}
+ * @param e
+ * @returns {*}
  */
 export function unfold(e) {
   if (typeof e === 'function') {
@@ -1106,8 +1189,7 @@ export function unfold(e) {
 /**
  * Map values through unfold and return first non-nil value.
  * @param {Array<T>} collection;
- *
- * @return {T}
+ * @returns {T}
  */
 export const firstNonNil = _.flow([
   _.partialRight(_.map, unfold),
@@ -1121,14 +1203,25 @@ export const firstNonNil = _.flow([
  * @param {*} b - next state.
  * @return {Functions[]} -- [get, toggle];
  */
+/**
+ *
+ * @param a
+ * @param b
+ */
 export function withSwitch(a, b) {
   let state = a;
   let next = b;
 
+  /**
+   *
+   */
   function get() {
     return state;
   }
 
+  /**
+   *
+   */
   function toggle() {
     const prev = state;
     state = next;
@@ -1138,6 +1231,11 @@ export function withSwitch(a, b) {
   return [get, toggle];
 }
 
+/**
+ *
+ * @param callback
+ * @param options
+ */
 export function observeOverload(callback, options = {}) {
   const { limit = 50, delay = 500 } = options;
   let callCount = 0;
@@ -1163,6 +1261,12 @@ export function observeOverload(callback, options = {}) {
   };
 }
 
+/**
+ *
+ * @param context
+ * @param excludeNested
+ * @param excludedTypes
+ */
 export function getContextComponents(context, excludeNested, excludedTypes = []) {
   const values = [];
 
@@ -1179,6 +1283,10 @@ export function getContextComponents(context, excludeNested, excludedTypes = [])
   return values;
 }
 
+/**
+ *
+ * @param context
+ */
 export function getContextButtons(context) {
   const values = [];
 
@@ -1199,11 +1307,9 @@ const inTextTags = ['#text', 'A', 'B', 'EM', 'I', 'SMALL', 'STRONG', 'SUB', 'SUP
 
 /**
  * Helper function for 'translateHTMLTemplate'. Translates text value of the passed html element.
- *
  * @param {HTMLElement} elem
  * @param {Function} translate
- *
- * @returns {String}
+ * @returns {string}
  *   Translated element template.
  */
 function translateElemValue(elem, translate) {
@@ -1241,10 +1347,8 @@ function translateElemValue(elem, translate) {
 
 /**
  * Helper function for 'translateHTMLTemplate'. Goes deep through html tag children and calls function to translate their text values.
- *
  * @param {HTMLElement} tag
  * @param {Function} translate
- *
  * @returns {void}
  */
 function translateDeepTag(tag, translate) {
@@ -1264,11 +1368,9 @@ function translateDeepTag(tag, translate) {
 
 /**
  * Translates text values in html template.
- *
- * @param {String} template
+ * @param {string} template
  * @param {Function} translate
- *
- * @returns {String}
+ * @returns {string}
  *   Html template with translated values.
  */
 export function translateHTMLTemplate(template, translate) {
@@ -1291,8 +1393,8 @@ export function translateHTMLTemplate(template, translate) {
 
 /**
  * Sanitize an html string.
- *
  * @param string
+ * @param options
  * @returns {*}
  */
 export function sanitize(string, options) {
@@ -1342,6 +1444,7 @@ export function sanitize(string, options) {
 
 /**
  * Fast cloneDeep for JSON objects only.
+ * @param obj
  */
 export function fastCloneDeep(obj) {
   return obj ? JSON.parse(JSON.stringify(obj)) : obj;
@@ -1349,6 +1452,10 @@ export function fastCloneDeep(obj) {
 
 export { Evaluator, interpolate };
 
+/**
+ *
+ * @param componentJson
+ */
 export function isInputComponent(componentJson) {
   if (componentJson.input === false || componentJson.input === true) {
     return componentJson.input;
@@ -1369,6 +1476,10 @@ export function isInputComponent(componentJson) {
   }
 }
 
+/**
+ *
+ * @param pathStr
+ */
 export function getArrayFromComponentPath(pathStr) {
   if (!pathStr || !_.isString(pathStr)) {
     if (!_.isArray(pathStr)) {
@@ -1383,6 +1494,11 @@ export function getArrayFromComponentPath(pathStr) {
     .map(part => _.defaultTo(_.toNumber(part), part));
 }
 
+/**
+ *
+ * @param child
+ * @param parent
+ */
 export function isChildOf(child, parent) {
   while (child && child.parent) {
     if (child.parent === parent) {
@@ -1393,6 +1509,10 @@ export function isChildOf(child, parent) {
   return false;
 }
 
+/**
+ *
+ * @param path
+ */
 export function getStringFromComponentPath(path) {
   if (!_.isArray(path)) {
     return path;
@@ -1409,6 +1529,11 @@ export function getStringFromComponentPath(path) {
   return strPath;
 }
 
+/**
+ *
+ * @param number
+ * @param precision
+ */
 export function round(number, precision) {
   if (_.isNumber(number)) {
     return number.toFixed(precision);
@@ -1418,8 +1543,7 @@ export function round(number, precision) {
 
 /**
  * Check for Internet Explorer browser version
- *
- * @return {(number|null)}
+ * @returns {(number|null)}
  */
 export function getIEBrowserVersion() {
   const { ie, version } = getBrowserInfo();
@@ -1429,8 +1553,7 @@ export function getIEBrowserVersion() {
 
 /**
  * Get browser name and version (modified from 'jquery-browser-plugin')
- *
- * @return {Object} -- {{browser name, version, isWebkit?}}
+ * @returns {object} -- {{browser name, version, isWebkit?}}
  * Possible browser names: chrome, safari, ie, edge, opera, mozilla, yabrowser
  */
 export function getBrowserInfo() {
@@ -1483,6 +1606,10 @@ export function getBrowserInfo() {
   return browser;
 }
 
+/**
+ *
+ * @param path
+ */
 export function getComponentPathWithoutIndicies(path = '') {
   return path.replace(/\[\d+\]/, '');
 }
@@ -1490,6 +1617,7 @@ export function getComponentPathWithoutIndicies(path = '') {
 /**
  * Returns a path to the component which based on its schema
  * @param {*} component is a component's schema containing link to its parent's schema in the 'parent' property
+ * @param path
  */
 export function getComponentPath(component, path = '') {
   if (!component || !component.key || component?._form?.display === 'wizard') { // unlike the Webform, the Wizard has the key and it is a duplicate of the panel key
@@ -1502,7 +1630,7 @@ export function getComponentPath(component, path = '') {
 /**
  * Returns a parent component of the passed component instance skipping all the Layout components
  * @param {*} componentInstance
- * @return {(Component|undefined)}
+ * @returns {(Component|undefined)}
  */
 export function getDataParentComponent(componentInstance) {
   if (!componentInstance) {
@@ -1520,7 +1648,7 @@ export function getDataParentComponent(componentInstance) {
 /**
  * Returns whether the value is a promise
  * @param value
- * @return {boolean}
+ * @returns {boolean}
  */
  export function isPromise(value) {
    return value
@@ -1550,6 +1678,10 @@ export function isInsideScopingComponent(componentInstance, firstPass = true) {
   return false;
 }
 
+/**
+ *
+ * @param element
+ */
 export function getFocusableElements(element) {
   const focusableSelector =
     `button:not([disabled]), input:not([disabled]), select:not([disabled]),
@@ -1570,6 +1702,10 @@ export const componentValueTypes = {
   any: 'any',
 };
 
+/**
+ *
+ * @param fullSchema
+ */
 export function getComponentSavedTypes(fullSchema) {
   const schema = fullSchema || {};
 
@@ -1586,8 +1722,10 @@ export function getComponentSavedTypes(fullSchema) {
 
 /**
  * Interpolates @formio/core errors so that they are compatible with the renderer
+ * @param component
  * @param {FieldError[]} errors
  * @param firstPass
+ * @param interpolateFn
  * @returns {[]}
  */
 export const interpolateErrors = (component, errors, interpolateFn) => {
@@ -1599,6 +1737,10 @@ export const interpolateErrors = (component, errors, interpolateFn) => {
   });
 };
 
+/**
+ *
+ * @param template
+ */
 export function getItemTemplateKeys(template) {
   const templateKeys = [];
   if (!template) {
@@ -1618,6 +1760,10 @@ export function getItemTemplateKeys(template) {
   return templateKeys;
 }
 
+/**
+ *
+ * @param comp
+ */
 export function isSelectResourceWithObjectValue(comp = {}) {
   const { reference, dataSrc, valueProperty } = comp;
   return reference || (dataSrc === 'resource' && (!valueProperty || valueProperty === 'data'));

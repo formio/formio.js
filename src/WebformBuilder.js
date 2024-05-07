@@ -439,7 +439,6 @@ export default class WebformBuilder extends Component {
 
   /**
    * Called when everything is ready.
-   *
    * @returns {Promise} - Wait for webform to be ready.
    */
   get ready() {
@@ -1300,10 +1299,11 @@ export default class WebformBuilder extends Component {
 
   /**
    * Called when a new component is saved.
-   *
    * @param parent
    * @param component
-   * @return {boolean}
+   * @param isNew
+   * @param original
+   * @returns {boolean}
    */
   saveComponent(component, parent, isNew, original) {
     this.editForm.detach();
@@ -1777,7 +1777,7 @@ export default class WebformBuilder extends Component {
   /**
    * Creates copy of component schema and stores it under sessionStorage.
    * @param {Component} component
-   * @return {*}
+   * @returns {*}
    */
   copyComponent(component) {
     if (!window.sessionStorage) {
@@ -1790,7 +1790,7 @@ export default class WebformBuilder extends Component {
   /**
    * Paste copied component after the current component.
    * @param {Component} component
-   * @return {*}
+   * @returns {*}
    */
   pasteComponent(component) {
     if (!window.sessionStorage) {

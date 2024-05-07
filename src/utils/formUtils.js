@@ -41,7 +41,6 @@ const {
 
 /**
  * Deprecated version of findComponents. Renamed to searchComponents.
- *
  * @param components
  * @param query
  * @returns {*}

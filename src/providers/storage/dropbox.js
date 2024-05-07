@@ -1,4 +1,8 @@
 import { setXhrHeaders } from './xhr';
+/**
+ *
+ * @param formio
+ */
 function dropbox(formio) {
   return {
     uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {

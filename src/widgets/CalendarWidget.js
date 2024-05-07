@@ -69,8 +69,7 @@ export default class CalendarWidget extends InputWidget {
 
   /**
    * Load the timezones.
-   *
-   * @return {boolean} TRUE if the zones are loading, FALSE otherwise.
+   * @returns {boolean} TRUE if the zones are loading, FALSE otherwise.
    */
   loadZones() {
     const timezone = this.timezone;
@@ -309,10 +308,10 @@ export default class CalendarWidget extends InputWidget {
 
   /**
    * Return the date value.
-   *
    * @param date
    * @param format
-   * @return {string}
+   * @param useTimezone
+   * @returns {string}
    */
   getDateValue(date, format, useTimezone) {
     if (useTimezone) {
@@ -323,8 +322,7 @@ export default class CalendarWidget extends InputWidget {
 
   /**
    * Return the value of the selected date.
-   *
-   * @return {*}
+   * @returns {*}
    */
   getValue() {
     // Standard output format.
@@ -351,7 +349,6 @@ export default class CalendarWidget extends InputWidget {
 
   /**
    * Set the selected date value.
-   *
    * @param value
    */
   setValue(value) {

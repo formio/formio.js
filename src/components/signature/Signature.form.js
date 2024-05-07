@@ -3,6 +3,10 @@ import SignatureEditData from './editForm/Signature.edit.data';
 import SignatureEditDisplay from './editForm/Signature.edit.display';
 import SignatureEditValidation from './editForm/Signature.edit.validation';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return Components.baseEditForm([
     {

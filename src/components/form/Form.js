@@ -422,8 +422,8 @@ export default class FormComponent extends Component {
 
   /**
    * Create a subform instance.
-   *
-   * @return {*}
+   * @param fromAttach
+   * @returns {*}
    */
   createSubForm(fromAttach) {
     this.subFormReady = this.loadSubForm(fromAttach).then((form) => {
@@ -482,6 +482,7 @@ export default class FormComponent extends Component {
 
   /**
    * Load the subform.
+   * @param fromAttach
    */
   loadSubForm(fromAttach) {
     if (this.builderMode || this.isHidden() || (this.isSubFormLazyLoad() && !fromAttach)) {
@@ -578,7 +579,7 @@ export default class FormComponent extends Component {
 
   /**
    * Determine if the subform should be submitted.
-   * @return {*|boolean}
+   * @returns {*|boolean}
    */
   get shouldSubmit() {
     return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.isHidden();
@@ -586,8 +587,7 @@ export default class FormComponent extends Component {
 
   /**
    * Returns the data for the subform.
-   *
-   * @return {*}
+   * @returns {*}
    */
   getSubFormData() {
     if (_.get(this.subForm, 'form.display') === 'pdf') {
@@ -600,8 +600,7 @@ export default class FormComponent extends Component {
 
   /**
    * Submit the subform if configured to do so.
-   *
-   * @return {*}
+   * @returns {*}
    */
   submitSubForm() {
     // If we wish to submit the form on next page, then do that here.
@@ -629,6 +628,7 @@ export default class FormComponent extends Component {
 
   /**
    * Submit the form before the next page is triggered.
+   * @param next
    */
   beforePage(next) {
     // Should not submit child forms if we are going to the previous page

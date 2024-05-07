@@ -4,6 +4,10 @@ import FileEditDisplay from './editForm/File.edit.display';
 import FileEditFile from './editForm/File.edit.file';
 import FileEditValidation from './editForm/File.edit.validation';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return Components.baseEditForm([
     {

@@ -7,6 +7,10 @@ const loadAbortControllerPolyfill = async() => {
   }
 };
 
+/**
+ *
+ * @param formio
+ */
 function s3(formio) {
   return {
     async uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback, multipartOptions) {

@@ -2,6 +2,10 @@ import Components from '../Components';
 import HiddenEditDisplay from './editForm/Hidden.edit.display';
 import HiddenEditData from './editForm/Hidden.edit.data';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return Components.baseEditForm([
     {

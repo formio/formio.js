@@ -162,8 +162,7 @@ export default class PDF extends Webform {
 
   /**
    * Get the submission from the iframe.
-   *
-   * @return {Promise<any>}
+   * @returns {Promise<any>}
    */
   getSubmission() {
     return new Promise((resolve) => {
@@ -174,9 +173,8 @@ export default class PDF extends Webform {
 
   /**
    * Ensure we have the submission from the iframe before we submit the form.
-   *
    * @param options
-   * @return {*}
+   * @returns {*}
    */
   submitForm(options = {}) {
     this.postMessage({ name: 'getErrors' });
@@ -228,7 +226,6 @@ export default class PDF extends Webform {
 
   /**
    * Set's the value of this form component.
-   *
    * @param submission
    * @param flags
    */

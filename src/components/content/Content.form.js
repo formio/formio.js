@@ -2,6 +2,10 @@ import Components from '../Components';
 import ContentEditDisplay from './editForm/Content.edit.display';
 import ContentEditLogic from './editForm/Content.edit.logic';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   const editForm = Components.baseEditForm([
     {

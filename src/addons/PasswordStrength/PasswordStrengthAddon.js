@@ -226,7 +226,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
 
   /**
    * Determines is a password is secure enough to submit
-   * @return {boolean}
+   * @returns {boolean}
    */
   isValid() {
     const isValidCheck = this.settings.isValid;
@@ -247,6 +247,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
    * @param {*} validation - Validation configuration
    * @param {string} value - Value which was validated
    * @param {string} message - Message which should be shown if validation was not passed
+   * @param errors
    */
   handleRuleCheckResult(valid, validation, message, errors) {
     if (valid !== true) {

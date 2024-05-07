@@ -9,6 +9,10 @@ import ComponentEditValidation from './editForm/Component.edit.validation';
 import ComponentEditLayout from './editForm/Component.edit.layout';
 import EditFormUtils from './editForm/utils';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   const components = _.cloneDeep([
     {

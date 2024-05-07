@@ -131,7 +131,6 @@ export default class TabsComponent extends NestedComponent {
 
   /**
    * Set the current tab.
-   *
    * @param index
    */
   setTab(index) {

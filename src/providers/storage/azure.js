@@ -1,4 +1,8 @@
 import XHR from './xhr';
+/**
+ *
+ * @param formio
+ */
 function azure(formio) {
   return {
     uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {

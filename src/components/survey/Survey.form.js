@@ -3,6 +3,10 @@ import SurveyEditData from './editForm/Survey.edit.data';
 import SurveyEditDisplay from './editForm/Survey.edit.display';
 import SurveyEditValidation from './editForm/Survey.edit.validation';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return Components.baseEditForm([
     {

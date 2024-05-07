@@ -4,6 +4,10 @@ import PasswordEditDisplay from './editForm/Password.edit.display';
 import PasswordEditData from './editForm/Password.edit.data';
 import PasswordEditValidation from './editForm/Password.edit.validation';
 
+/**
+ *
+ * @param {...any} extend
+ */
 export default function(...extend) {
   return textEditForm([
     {
