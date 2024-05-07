@@ -123,7 +123,7 @@ export default class Form extends Element {
     else {
       element = null;
       form = elementOrForm;
-      formOptions = formOrOptions;
+      formOptions = formOrOptions || {};
     }
     if (Formio.options && Formio.options.form) {
       formOptions = Object.assign(formOptions, Formio.options.form);
