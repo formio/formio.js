@@ -37,6 +37,22 @@ function cloneResponse(response) {
 }
 
 /**
+ * Get non HTMLElement property in the window object
+ * @param {String} property
+ * @return {any || undefined}
+ */
+function getScriptPlugin(property) {
+  const obj = window[property];
+  if (
+    typeof HTMLElement === 'object' ? obj instanceof HTMLElement : //DOM2
+      obj && typeof obj === 'object' && true && obj.nodeType === 1 && typeof obj.nodeName === 'string'
+  ) {
+    return undefined;
+  }
+  return obj;
+}
+
+/**
  * The Formio interface class.
  *
  *   let formio = new Formio('https://examples.form.io/example');
@@ -1528,7 +1544,7 @@ class Formio {
       }
 
       // See if the plugin already exists.
-      const plugin = _get(window, property);
+      const plugin = getScriptPlugin(property);
       if (plugin) {
         Formio.libraries[name].resolve(plugin);
       }
@@ -1587,7 +1603,7 @@ class Formio {
         // if no callback is provided, then check periodically for the script.
         if (polling) {
           const interval = setInterval(() => {
-            const plugin = _get(window, property);
+            const plugin = getScriptPlugin(property);
             if (plugin) {
               clearInterval(interval);
               Formio.libraries[name].resolve(plugin);
