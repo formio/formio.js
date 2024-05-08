@@ -5,7 +5,7 @@
   <div class="col-xs-8 col-sm-9 col-md-10 formarea">
     <ol class="breadcrumb wizard-pages">
         {% ctx.pages.forEach(function(page, pageIndex) { %}
-          <li id="{{page.key}}">
+          <li>
             <span title="{{page.title}}" class="mr-2 badge {% if (pageIndex === ctx.self.page) { %}badge-primary{% } else { %}badge-info{% } %} wizard-page-label" ref="gotoPage">{{page.title}}</span>
           </li>
         {% }) %}
