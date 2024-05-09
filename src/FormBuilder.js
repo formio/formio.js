@@ -56,14 +56,13 @@ export default class FormBuilder extends Form {
 
 /**
  * Factory that creates a new form builder based on the form parameter.
- * @param element {HMTLElement} - The HTML Element to add this form to.
- * @param form {string|Object} - The src of the form, or a form object.
- * @param options {Object} - The options to create this form.
- * @param {...any} args
+ * @param {HTMLElement} element - The HTML Element to add this form to.
+ * @param {string|object} form - The src of the form, or a form object.
+ * @param {object} options - The options to create this form.
  * @returns {Promise} - When the form is instance is ready.
  */
-Formio.builder = (...args) => {
-  return (new FormBuilder(...args)).ready;
+Formio.builder = (element, form, options) => {
+  return (new FormBuilder(element, form, options)).ready;
 };
 
 Formio.FormBuilder = FormBuilder;
