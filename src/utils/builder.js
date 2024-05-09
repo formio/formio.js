@@ -3,11 +3,9 @@ import { eachComponent, uniqueKey } from './utils';
 export default {
   /**
    * Appends a number to a component.key to keep it unique
-   * @param {object} form
-   *   The components parent form.
-   * @param container
-   * @param {object} component
-   *   The component to uniquify
+   * @param {import('@formio/core').Component[]} container - The container of components to uniquify against
+   * @param {import('@formio/core').Component} component - The Component to uniqify.
+   * @returns {boolean} - If the component was changed.
    */
   uniquify(container, component) {
     let changed = false;
@@ -42,6 +40,9 @@ export default {
     return changed;
   },
 
+  /**
+   * Additional shortcuts for the builder.
+   */
   additionalShortcuts: {
     button: [
       'Enter',
@@ -49,6 +50,10 @@ export default {
     ]
   },
 
+  /**
+   * Returns the alpha character shortcuts.
+   * @returns {string[]} - An array of shortcuts of alpha characters.
+   */
   getAlphaShortcuts() {
     return _.range('A'.charCodeAt(), 'Z'.charCodeAt() + 1).map((charCode) => String.fromCharCode(charCode));
   },
