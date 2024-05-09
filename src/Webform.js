@@ -57,7 +57,6 @@ function getOptions(options) {
     return options;
 }
 
-
 /**
  * Renders a Form.io form within the webpage.
  */
