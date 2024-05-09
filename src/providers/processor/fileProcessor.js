@@ -1,5 +1,6 @@
 /**
  * Creates a file processor function.
+ * 
  *
  * @param {Formio} formio - The Formio instance.
  * @param {object} config - The configuration object.
