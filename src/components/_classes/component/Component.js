@@ -2232,6 +2232,12 @@ export default class Component extends Element {
     return false;
   }
 
+  /**
+   * Defines the logic action value through evaluation.
+   * @param {object} action - The action within the Logic system to perform.
+   * @param {object} argsObject - The arguments to pass to the evaluation.
+   * @returns {any} - The result of the evaluation.
+   */
   defineActionValue(action, argsObject) {
     return this.evaluate(
       action.value,
@@ -2240,6 +2246,15 @@ export default class Component extends Element {
     );
   }
 
+  /**
+   * Apply the actions of Logic for a component once the conditions have been met.
+   * @param {object} newComponent - The new component to apply the actions to.
+   * @param {Array<object>} actions - An array of actions
+   * @param {any} result - The result of the conditional check in order to evaluate the actions.
+   * @param {any} row - The contextual row data for this component.
+   * @param {any} data - The global data object for the submission.
+   * @returns {boolean} - TRUE if the component was altered.
+   */
   applyActions(newComponent, actions, result, row, data) {
     data = data || this.rootValue;
     row = row || this.data;
@@ -2345,9 +2360,8 @@ export default class Component extends Element {
 
   /**
    * Add a new input error to this element.
-   * @param message
-   * @param dirty
-   * @param messages
+   * @param {Array<object>|string} messages - An array of messages to add to the element.
+   * @returns {void}
    */
   addMessages(messages) {
     if (!messages) {
@@ -2379,6 +2393,15 @@ export default class Component extends Element {
     }
   }
 
+  /**
+   * Sets the form input widget error classes.
+   * @param {Array<HTMLElement>} elements - An array of DOM elements to set the error classes on.
+   * @param {boolean} dirty - If the input is dirty.
+   * @param {boolean} hasErrors - If the input has errors.
+   * @param {boolean} hasMessages - If the input has messages. 
+   * @param {HTMLElement} element - The wrapper element for all the other elements passed in first argument.
+   * @returns {void}
+   */
   setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {
     this.clearErrorClasses();
     elements.forEach((element) => {
@@ -2408,6 +2431,12 @@ export default class Component extends Element {
     }
   }
 
+  /**
+   * Adds the classes necessary to mark an element as invalid.
+   * @param {HTMLElement} element - The element you wish to add the invalid classes to.
+   * @param {boolean} invalid - TRUE if the component is invalid, FALSE otherwise.
+   * @returns {void}
+   */
   setElementInvalid(element, invalid) {
     if (!element) return;
 
@@ -2420,6 +2449,9 @@ export default class Component extends Element {
     element.setAttribute('aria-invalid', invalid ? 'true' : 'false');
   }
 
+  /**
+   * Clears the components data if it is conditionally hidden AND clearOnHide is set to true for this component.
+   */
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (
@@ -2441,6 +2473,10 @@ export default class Component extends Element {
     }
   }
 
+  /**
+   * Triggers a debounced onChange event for the root component (usually Webform).
+   * @param {...any} args - The arguments to pass to the onChange event.
+   */
   triggerRootChange(...args) {
     if (this.options.onChange) {
       this.options.onChange(...args);
@@ -2450,6 +2486,13 @@ export default class Component extends Element {
     }
   }
 
+  /**
+   * Called when the component value has been changed. This will then trigger the root level onChange handler which
+   * propagates the checkData methods for the full component tree.
+   * @param {any} flags - The flags for the change event propagation.
+   * @param {boolean} fromRoot - If the change event is from the root component.
+   * @returns {boolean} - TRUE if the component has changed.
+   */
   onChange(flags, fromRoot) {
     flags = flags || {};
     if (flags.modified) {
@@ -2671,7 +2714,7 @@ export default class Component extends Element {
 
   /**
    * The empty value for this component.
-   * @returns {null}
+   * @returns {null} - The empty value for this component.
    */
   get emptyValue() {
     return null;
@@ -2679,7 +2722,8 @@ export default class Component extends Element {
 
   /**
    * Returns if this component has a value set.
-   * @param data
+   * @param {any} data - The global data object.
+   * @returns {boolean} - TRUE if a value is set.
    */
   hasValue(data) {
     return !_.isUndefined(_.get(data || this.data, this.key));
@@ -2687,7 +2731,7 @@ export default class Component extends Element {
 
   /**
    * Get the data value at the root level.
-   * @returns {*}
+   * @returns {*} - The root value for the component, typically the Webform data object.
    */
   get rootValue() {
     return this.root ? this.root.data : this.data;
@@ -2699,7 +2743,7 @@ export default class Component extends Element {
 
   /**
    * Get the static value of this component.
-   * @returns {*}
+   * @returns {*} - The value for this component.
    */
   get dataValue() {
     if (
@@ -2720,7 +2764,7 @@ export default class Component extends Element {
 
   /**
    * Sets the static value of this component.
-   * @param value
+   * @param {*} value - The value to set for this component.
    */
   set dataValue(value) {
     if (
@@ -2743,8 +2787,8 @@ export default class Component extends Element {
 
   /**
    * Splice a value from the dataValue.
-   * @param index
-   * @param flags
+   * @param {number} index - The index to splice for an array component values.
+   * @param {*} flags - The flags to use when splicing the value.
    */
   splice(index, flags = {}) {
     if (this.hasValue()) {
@@ -2827,7 +2871,7 @@ export default class Component extends Element {
 
   /**
    * Get the input value of this component.
-   * @returns {*}
+   * @returns {*} - The value for the component.
    */
   getValue() {
     if (!this.hasInput || this.viewOnly || !this.refs.input || !this.refs.input.length) {
@@ -2851,8 +2895,8 @@ export default class Component extends Element {
 
   /**
    * Get the value at a specific index.
-   * @param index
-   * @returns {*}
+   * @param {number} index - For an array component or multiple values, this returns the value at a specific index.
+   * @returns {*} - The value at the specified index.
    */
   getValueAt(index) {
     const input = this.performInputMapping(this.refs.input[index]);
@@ -2861,8 +2905,8 @@ export default class Component extends Element {
 
   /**
    * Set the value of this component.
-   * @param value
-   * @param flags
+   * @param {*} value - The value to set for this component.
+   * @param {*} flags - The flags to use when setting the value.
    * @returns {boolean} - If the value changed.
    */
   setValue(value, flags = {}) {
@@ -2897,9 +2941,9 @@ export default class Component extends Element {
 
   /**
    * Set the value at a specific index.
-   * @param index
-   * @param value
-   * @param flags
+   * @param {number} index - The index to set the value at.
+   * @param {*} value - The value to set at the specified index.
+   * @param {*} flags - The flags to use when setting the value.
    */
   setValueAt(index, value, flags = {}) {
     if (!flags.noDefault && (value === null || value === undefined) && !this.component.multiple) {
@@ -2953,8 +2997,8 @@ export default class Component extends Element {
 
   /**
    * Normalize values coming into updateValue.
-   * @param value
-   * @returns {*}
+   * @param {*} value - The value to normalize before setting.
+   * @returns {*} - The normalized value.
    */
   normalizeValue(value) {
     if (this.component.multiple && !Array.isArray(value)) {
@@ -2965,8 +3009,9 @@ export default class Component extends Element {
 
   /**
    * Update a value of this component.
-   * @param value
-   * @param flags
+   * @param {*} value - The value to update.
+   * @param {*} flags - The flags to use when updating the value.
+   * @returns {boolean} - If the value changed.
    */
   updateComponentValue(value, flags = {}) {
     let newValue = (!flags.resetValue && (value === undefined || value === null)) ? this.getValue() : value;
@@ -2986,8 +3031,8 @@ export default class Component extends Element {
 
   /**
    * Updates the value of this component plus all sub-components.
-   * @param args
-   * @returns {boolean}
+   * @param {...any} args - The arguments to pass to updateValue.
+   * @returns {boolean} - If the value changed.
    */
   updateValue(...args) {
     return this.updateComponentValue(...args);
@@ -3016,9 +3061,9 @@ export default class Component extends Element {
 
   /**
    * Determine if the value of this component has changed.
-   * @param newValue
-   * @param oldValue
-   * @returns {boolean}
+   * @param {*} newValue - The new value to check.
+   * @param {*} oldValue - The existing value of the component.
+   * @returns {boolean} - TRUE if the value has changed.
    */
   hasChanged(newValue, oldValue) {
     if (
@@ -3041,8 +3086,9 @@ export default class Component extends Element {
 
   /**
    * Update the value on change.
-   * @param flags
-   * @param changed
+   * @param {*} flags - The flags to use when triggering the on change event.
+   * @param {boolean} changed - If the value has changed.
+   * @returns {boolean} - If the value changed.
    */
   updateOnChange(flags = {}, changed = false) {
     if (!flags.noUpdateEvent && changed) {
@@ -3055,12 +3101,6 @@ export default class Component extends Element {
     }
     return false;
   }
-
-  /**
-   * Perform a calculated value operation.
-   * @param data - The global data object.
-   * @returns {boolean} - If the value changed during calculation.
-   */
 
   convertNumberOrBoolToString(value) {
     if (typeof value === 'number' || typeof value === 'boolean' ) {
@@ -3190,11 +3230,10 @@ export default class Component extends Element {
 
   /**
    * Performs calculations in this component plus any child components.
-   * @param args
-   * @param data
-   * @param flags
-   * @param row
-   * @returns {boolean}
+   * @param {*} data - The data to perform the calculation with.
+   * @param {*} flags - The flags to use when calculating the value.
+   * @param {*} row - The contextual row data to use when performing the calculation.
+   * @returns {boolean} - TRUE if the value changed. 
    */
   calculateValue(data, flags, row) {
     data = data || this.rootValue;
@@ -3205,7 +3244,7 @@ export default class Component extends Element {
 
   /**
    * Get this component's label text.
-   *
+   * @returns {string} - The label text for this component.
    */
   get label() {
     return this.component.label;
@@ -3213,7 +3252,7 @@ export default class Component extends Element {
 
   /**
    * Set this component's label text and render it.
-   * @param value - The new label text.
+   * @param {string} value - The new label text.
    */
   set label(value) {
     this.component.label = value;
@@ -3224,7 +3263,7 @@ export default class Component extends Element {
 
   /**
    * Get FormioForm element at the root of this component tree.
-   *
+   * @returns {*} root - The root component to search from.
    */
   getRoot() {
     return this.root;
@@ -3232,11 +3271,11 @@ export default class Component extends Element {
 
   /**
    * Returns the invalid message, or empty string if the component is valid.
-   * @param data
-   * @param dirty
-   * @param ignoreCondition
-   * @param row
-   * @returns {*}
+   * @param {*} data - The data to check if the component is valid.
+   * @param {boolean} dirty - If the component is dirty.
+   * @param {boolean} ignoreCondition - If conditions for the component should be ignored when checking validity.
+   * @param {*} row - Contextual row data for this component.
+   * @returns {string} - The message to show when the component is invalid.
    */
   invalidMessage(data, dirty, ignoreCondition, row) {
     if (!ignoreCondition && !this.checkCondition(row, data)) {
@@ -3273,9 +3312,9 @@ export default class Component extends Element {
 
   /**
    * Returns if the component is valid or not.
-   * @param data
-   * @param dirty
-   * @returns {boolean}
+   * @param {*} data - The data to check if the component is valid.
+   * @param {boolean} dirty - If the component is dirty.
+   * @returns {boolean} - TRUE if the component is valid.
    */
   isValid(data, dirty) {
     return !this.invalidMessage(data, dirty);
@@ -3296,8 +3335,8 @@ export default class Component extends Element {
 
   /**
    * Interpolate errors from the validation methods.
-   * @param {*} errors
-   * @returns
+   * @param {Array<any>} errors - An array of errors to interpolate.
+   * @returns {Array<any>} - The interpolated errors.
    */
   interpolateErrors(errors) {
     const interpolatedErrors = FormioUtils.interpolateErrors(this.component, errors, this.t.bind(this));
@@ -3310,7 +3349,7 @@ export default class Component extends Element {
    * @param {*} data - The root submission data.
    * @param {*} row - The contextual row data.
    * @param {*} flags - The flags to perform validation.
-   * @returns
+   * @returns {boolean} - TRUE if the component is valid.
    */
   showValidationErrors(errors, data, row, flags) {
     if (flags.silentCheck) {
@@ -3331,7 +3370,7 @@ export default class Component extends Element {
    * @param {*} data - The root data you wish to use for this component.
    * @param {*} row - The contextual row data you wish to use for this component.
    * @param {*} flags - The flags to control the behavior of the validation.
-   * @returns
+   * @returns {Array<any>} - An array of errors if the component is invalid.
    */
   validateComponent(data, row, flags = {}) {
     data = data || this.rootValue;
@@ -3366,12 +3405,12 @@ export default class Component extends Element {
 
   /**
    * Checks the validity of this component and sets the error message if it is invalid.
-   * @param data
-   * @param dirty
-   * @param row
-   * @param flags
-   * @param allErrors
-   * @returns {boolean}
+   * @param {*} data - The data to check if the component is valid.
+   * @param {boolean} dirty - If the component is dirty.
+   * @param {*} row - The contextual row data for this component.
+   * @param {*} flags - The flags to use when checking the validity.
+   * @param {Array<any>} allErrors - An array of all errors that have occured so that it can be appended when another one occurs here.
+   * @returns {boolean} - TRUE if the component is valid.
    */
   checkComponentValidity(data, dirty, row, flags = {}, allErrors = []) {
     data = data || this.rootValue;
@@ -3410,12 +3449,12 @@ export default class Component extends Element {
 
   /**
    * Checks the validity of the component.
-   * @param {*} data
-   * @param {*} dirty
-   * @param {*} row
-   * @param {*} silentCheck
-   * @param errors
-   * @returns
+   * @param {*} data - The data to check if the component is valid.
+   * @param {boolean} dirty - If the component is dirty.
+   * @param {*} row - The contextual row data for this component.
+   * @param {boolean} silentCheck - If the check should be silent and not set the error messages.
+   * @param {Array<any>} errors - An array of all errors that have occured so that it can be appended when another one occurs here.
+   * @returns {boolean} - TRUE if the component is valid.
    */
   checkValidity(data, dirty, row, silentCheck, errors = []) {
     data = data || this.rootValue;
@@ -3432,10 +3471,10 @@ export default class Component extends Element {
   /**
    * Check the conditions, calculations, and validity of a single component and triggers an update if
    * something changed.
-   * @param data - The root data of the change event.
-   * @param flags - The flags from this change event.
-   * @param row
-   * @returns boolean - If component is valid or not.
+   * @param {*} data - The root data of the change event.
+   * @param {*} flags - The flags from this change event.
+   * @param {*} row - The contextual row data for this component.
+   * @returns {void|boolean} - TRUE if no check should be performed on the component.
    */
   checkData(data, flags, row) {
     data = data || this.rootValue;
@@ -3490,7 +3529,7 @@ export default class Component extends Element {
 
   /**
    * Check if a component is eligible for multiple validation
-   * @returns {boolean}
+   * @returns {boolean} - TRUE if the component is eligible for multiple validation.
    */
   validateMultiple() {
     return true;
@@ -3621,7 +3660,7 @@ export default class Component extends Element {
   /**
    * Determines if the value of this component is hidden from the user as if it is coming from the server, but is
    * protected.
-   * @returns {boolean|*}
+   * @returns {boolean|*} - TRUE if the value is hidden.
    */
   isValueHidden() {
     if (this.component.protected && this.root.editing) {
@@ -3671,7 +3710,8 @@ export default class Component extends Element {
 
   /**
    * Prints out the value of this component as a string value.
-   * @param value
+   * @param {*} value - The value to print out.
+   * @returns {string} - The string representation of the value.
    */
   asString(value) {
     value = value || this.getValue();
@@ -3680,7 +3720,7 @@ export default class Component extends Element {
 
   /**
    * Return if the component is disabled.
-   * @returns {boolean}
+   * @returns {boolean} - TRUE if the component is disabled.
    */
   get disabled() {
     return this._disabled || this.parentDisabled;
@@ -3688,7 +3728,7 @@ export default class Component extends Element {
 
   /**
    * Disable this component.
-   * @param {boolean} disabled
+   * @param {boolean} disabled - TRUE to disable the component.
    */
   set disabled(disabled) {
     this._disabled = disabled;
@@ -3828,6 +3868,7 @@ export default class Component extends Element {
 
   /**
    * Get the element information.
+   * @returns {*} - The components "input" DOM element information.
    */
   elementInfo() {
     const attributes = {
@@ -3908,6 +3949,7 @@ export default class Component extends Element {
 
   /**
    * Get `Formio` instance for working with files
+   * @returns {import('@formio/core').Formio} - The Formio instance file service.
    */
   get fileService() {
     if (this.options.fileService) {
