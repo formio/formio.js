@@ -1,5 +1,7 @@
 /**
- *
+ * base64 File Services provider for file storage.
+ * @param {object} formio formio instance
+ * @returns {import('./typedefs').FileProvider} The FileProvider interface defined in index.js.
  */
 function base64() {
   return {
