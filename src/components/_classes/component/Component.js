@@ -3750,7 +3750,7 @@ Component.requireLibrary = function(name, property, src, polling) {
       }.bind(Component.externalLibraries[name]);
     }
     // See if the plugin already exists.
-    const plugin = getScriptPlugin(property)
+    const plugin = getScriptPlugin(property);
     if (plugin) {
       Component.externalLibraries[name].resolve(plugin);
     }
@@ -3795,7 +3795,7 @@ Component.requireLibrary = function(name, property, src, polling) {
       // if no callback is provided, then check periodically for the script.
       if (polling) {
         setTimeout(function checkLibrary() {
-          const plugin = getScriptPlugin(property)
+          const plugin = getScriptPlugin(property);
           if (plugin) {
             Component.externalLibraries[name].resolve(plugin);
           }
