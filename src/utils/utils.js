@@ -39,8 +39,8 @@ export { jsonLogic, ConditionOperators };
 export * as moment from 'moment-timezone/moment-timezone';
 
 /**
- *
- * @param component
+ * Sets the path to the component and parent schema.
+ * @param {import('@formio/core').Component} component - The component to set the path for.
  */
 function setPathToComponentAndPerentSchema(component) {
   component.path = getComponentPath(component);
@@ -52,11 +52,11 @@ function setPathToComponentAndPerentSchema(component) {
 
 /**
  * Evaluate a method.
- * @param func
- * @param args
- * @param ret
- * @param tokenize
- * @returns {*}
+ * @param {Function|string|object} func - The function to evaluate.
+ * @param {*} args - A map of arguments to pass to the function.
+ * @param {string} ret - The name of the "return" variable in the script.
+ * @param {boolean} tokenize - True if the script should be interpolated before being executed.
+ * @returns {*} - The result of the evaluation.
  */
 export function evaluate(func, args, ret, tokenize) {
   let returnVal = null;
@@ -123,7 +123,8 @@ export function evaluate(func, args, ret, tokenize) {
 }
 
 /**
- *
+ * Returns a random compoennt ID.
+ * @returns {string} - A random component ID.
  */
 export function getRandomComponentId() {
   return `e${Math.random().toString(36).substring(7)}`;
@@ -131,9 +132,9 @@ export function getRandomComponentId() {
 
 /**
  * Get a property value of an element.
- * @param style
- * @param prop
- * @returns {number}
+ * @param {CSSStyleDeclaration} style - The style element to get the property value from.
+ * @param {string} prop - The property to get the value for.
+ * @returns {number} - The value of the property.
  */
 export function getPropertyValue(style, prop) {
   let value = style.getPropertyValue(prop);
@@ -143,8 +144,8 @@ export function getPropertyValue(style, prop) {
 
 /**
  * Get an elements bounding rectagle.
- * @param element
- * @returns {{x: string, y: string, width: string, height: string}}
+ * @param {HTMLElement} element - A DOM element to get the bounding rectangle for.
+ * @returns {{x: number, y: number, width: number, height: number}} - The bounding rectangle.
  */
 export function getElementRect(element) {
   const style = window.getComputedStyle(element, null);
@@ -158,8 +159,8 @@ export function getElementRect(element) {
 
 /**
  * Determines the boolean value of a setting.
- * @param value
- * @returns {boolean}
+ * @param {string|boolean} value - A string or boolean value to convert to boolean.
+ * @returns {boolean} - The boolean value of the setting.
  */
 export function boolValue(value) {
   if (_.isBoolean(value)) {
@@ -175,22 +176,18 @@ export function boolValue(value) {
 
 /**
  * Check to see if an ID is a mongoID.
- * @param text
- * @returns {Array | {index: number, input: string} | boolean | *}
+ * @param {string} text - The text to check if it is a mongoID.
+ * @returns {boolean} - TRUE if the text is a mongoID; FALSE otherwise.
  */
 export function isMongoId(text) {
-  return text.toString().match(/^[0-9a-fA-F]{24}$/);
+  return !!text.toString().match(/^[0-9a-fA-F]{24}$/);
 }
 
 /**
  * Checks the calculated value for a provided component and data.
- * @param {object} component
- *   The component to check for the calculated value.
- * @param {object} submission
- *   A submission object.
- * @param data
- *   The full submission data.
- * @param rowData
+ * @param {import('@formio/core').Component} component - The component to check for the calculated value.
+ * @param {import('@formio/core').Submission} submission - A submission object.
+ * @param {*} rowData - The contextual row data for the component.
  */
 export function checkCalculated(component, submission, rowData) {
   // Process calculated value stuff if present.
@@ -206,14 +203,13 @@ export function checkCalculated(component, submission, rowData) {
 }
 
 /**
- * Check if a simple conditional evaluates to true.
- * @param component
- * @param condition
- * @param condition
- * @param row
- * @param data
- * @param instance
- * @returns {boolean}
+ * Check if a simple conditional evaluates to true. 
+ * @param {import('@formio/core').Component} component - The component to check for the conditional.
+ * @param {import('@formio/core').SimpleConditional} condition - The condition to check.
+ * @param {*} row - The row data for the component.
+ * @param {*} data - The full submission data.
+ * @param {import('../../src/components/_classes/component/Component').Component} instance - The instance of the component.
+ * @returns {boolean} - TRUE if the condition is true; FALSE otherwise.
  */
  export function checkSimpleConditional(component, condition, row, data, instance) {
   if (condition.when) {
@@ -268,10 +264,11 @@ export function checkCalculated(component, submission, rowData) {
 }
 
 /**
- *
- * @param compPath
- * @param data
- * @param row
+ * Returns a components normalized value.
+ * @param {string} compPath - The full path to the component.
+ * @param {*} data - The data object to get the value from.
+ * @param {*} row - The contextual row data for the component.
+ * @returns {*} - The normalized value of the component.
  */
 export function getComponentActualValue(compPath, data, row) {
   let value = null;
@@ -291,15 +288,15 @@ export function getComponentActualValue(compPath, data, row) {
 
 /**
  * Check custom javascript conditional.
- * @param component
- * @param custom
- * @param row
- * @param data
- * @param form
- * @param variable
- * @param onError
- * @param instance
- * @returns {*}
+ * @param {import('@formio/core').Component} component - The component to check for the conditional.
+ * @param {string} custom - The custom conditional string to evaluate.
+ * @param {*} row - The row data for the component.
+ * @param {*} data - The full submission data.
+ * @param {import('@formio/core').Form} form - The form object.
+ * @param {string} variable - The variable name for the result of the custom conditional.
+ * @param {*} onError - A custom return if there is an error or the value is null from the evaluation.
+ * @param {import('../../src/components/_classes/component/Component').Component} instance - The component instance.
+ * @returns {*} - The result of the evaulation.
  */
 export function checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {
   if (typeof custom === 'string') {
@@ -315,13 +312,14 @@ export function checkCustomConditional(component, custom, row, data, form, varia
 }
 
 /**
- *
- * @param component
- * @param json
- * @param row
- * @param data
- * @param form
- * @param onError
+ * Check a component for JSON conditionals.
+ * @param {import('@formio/core').Component} component - The component 
+ * @param {import('@formio/core').JSONConditional} json - The json conditional to check.
+ * @param {*} row - The contextual row data for the component.
+ * @param {*} data - The full submission data.
+ * @param {import('@formio/core').Form} form - The Form JSON of the form.
+ * @param {*} onError - Custom return value if there is an error.
+ * @returns {boolean} - TRUE if the condition is true; FALSE otherwise.
  */
 export function checkJsonConditional(component, json, row, data, form, onError) {
   try {
@@ -339,11 +337,12 @@ export function checkJsonConditional(component, json, row, data, form, onError) 
 }
 
 /**
- *
- * @param component
- * @param row
- * @param instance
- * @param conditional
+ * Returns the contextual row data for a component.
+ * @param {import('@formio/core').Component} component - The component to get the row data for.
+ * @param {*} row - The row data for the component.
+ * @param {import('../../src/components/_classes/component/Component').Component} instance - The component instance.
+ * @param {*} conditional - The component conditional.
+ * @returns {*} - The contextual row data for the component.
  */
 function getRow(component, row, instance, conditional) {
   const condition = conditional || component.conditional;
@@ -369,15 +368,12 @@ function getRow(component, row, instance, conditional) {
 
 /**
  * Checks the conditions for a provided component and data.
- * @param component
- *   The component to check for the condition.
- * @param row
- *   The data within a row
- * @param data
- *   The full submission data.
- * @param form
- * @param instance
- * @returns {boolean}
+ * @param {import('@formio/core').Component} component - The component to check for the condition.
+ * @param {*} row - The data within a row
+ * @param {*} data - The full submission data.
+ * @param {import('@formio/core').Form} form - The form object.
+ * @param {import('../../src/components/_classes/component/Component').Component} instance - The component instance.
+ * @returns {boolean} - TRUE if the condition is true; FALSE otherwise.
  */
 export function checkCondition(component, row, data, form, instance) {
   const { customConditional, conditional } = component;

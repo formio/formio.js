@@ -12,12 +12,12 @@ import {
 
 export default class Wizard extends Webform {
   /**
-   * Constructor for wizard based forms
-   * @param element Dom element to place this wizard.
-   * @param {object} options Options object, supported options are:
-   *    - breadcrumbSettings.clickable: true (default) determines if the breadcrumb bar is clickable or not
-   *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not
-   *    - allowPrevious: false (default) determines if the breadcrumb bar is clickable or not for visited tabs
+   * Constructor for wizard-based forms.
+   * @param {HTMLElement} [element] - The DOM element to place this wizard.
+   * @param {object} [options] - Options object, supported options include:
+   *    - breadcrumbSettings.clickable: true (default) - determines if the breadcrumb bar is clickable.
+   *    - buttonSettings.show*(Previous, Next, Cancel): true (default) - determines if the button is shown.
+   *    - allowPrevious: false (default) - determines if the breadcrumb bar is clickable for visited tabs.
    */
   constructor() {
     let element, options;
@@ -115,7 +115,7 @@ export default class Wizard extends Webform {
     });
 
     if (!this.isSecondInit) {
-      this.isClickableDefined = this.options?.breadcrumbSettings?.hasOwnProperty('clickable');
+      this.isClickableDefined = Object.prototype.hasOwnProperty.call(this.options?.breadcrumbSettings, 'clickable');
       this.isSecondInit = true;
     }
 
@@ -287,6 +287,13 @@ export default class Wizard extends Webform {
     }
   }
 
+  /**
+   * Attaches the wizard to the provided DOM element, initializes component references, sets up navigation, 
+   * and emits a render event. It will initialize the wizard's index if necessary, 
+   * attach event hooks, and make sure that the current page is rendered and displayed correctly.
+   * @param {HTMLElement} element - The DOM element to which the wizard will be attached.
+   * @returns {Promise} A promise that resolves when all components have been successfully attached.
+   */
   attach(element) {
     this.setElement(element);
     this.loadRefs(element, {
@@ -356,6 +363,10 @@ export default class Wizard extends Webform {
     return _.get(currentPage.component, 'allowPrevious', this.options.allowPrevious);
   }
 
+  /**
+   * Handles navigate on 'Enter' key event in a wizard form. 
+   * @param {KeyboardEvent} event - The keyboard event object that triggered the handler.
+   */
   handleNaviageteOnEnter(event) {
     if (event.keyCode === 13) {
       const clickEvent = new CustomEvent('click');
@@ -366,6 +377,10 @@ export default class Wizard extends Webform {
     }
   }
 
+  /**
+   * Handles save on 'Enter' key event in a wizard form. 
+   * @param {KeyboardEvent} event - The keyboard event object that triggered the handler.
+   */
   handleSaveOnEnter(event) {
     if (event.keyCode === 13) {
       const clickEvent = new CustomEvent('click');
@@ -404,6 +419,12 @@ export default class Wizard extends Webform {
     });
   }
 
+  
+  /**
+   * Emits an event indicating that a wizard page has been selected.
+   * @param {number} index - Index of the selected wizard page in the `pages` array.
+   * @fires emit - Emits the 'wizardPageSelected' event with the page object and index.
+   */
   emitWizardPageSelected(index) {
     this.emit('wizardPageSelected', this.pages[index], index);
   }
@@ -864,7 +885,10 @@ export default class Wizard extends Webform {
           this.options.show = this.options.show || {};
           this.options.show[item.key] = true;
         }
-        else if (this.wizard.hasOwnProperty('full') && !_.isEqual(this.originalOptions.show, this.options.show)) {
+        else if (
+          Object.prototype.hasOwnProperty.call(this.wizard, 'full') 
+          && !_.isEqual(this.originalOptions.show, this.options.show)
+        ) {
           this.options.show = { ...(this.originalOptions.show || {}) };
         }
       }
