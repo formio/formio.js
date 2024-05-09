@@ -138,8 +138,8 @@ export default class Multivalue extends Field {
 
   /**
    * Attach inputs to the element.
-   * @param element
-   * @param index
+   * @param {HTMLElement} element - The element to attach inputs to.
+   * @param {number} index - The index of the element.
    */
   attachElement(element, index) {
     this.addEventListener(element, this.inputInfo.changeEvent, () => {
@@ -252,7 +252,7 @@ export default class Multivalue extends Field {
 
   /**
    * Adds a new empty value to the data array.
-   * @param value
+   * @param {*} value - The value to add.
    */
   addNewValue(value) {
     if (value === undefined) {

@@ -276,8 +276,8 @@ export default class Input extends Multivalue {
 
   /**
    * Creates an instance of a widget for this component.
-   * @param index
-   * @returns {null}
+   * @param {number} index - The index of the widget.
+   * @returns {*} - The widget instance.
    */
   createWidget(index) {
     // Return null if no widget is found.
