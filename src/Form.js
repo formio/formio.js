@@ -503,5 +503,6 @@ Formio.createForm = (...args) => {
 
 Formio.Form = Form;
 
-// eslint-disable-next-line no-undef
-export { FormOptions };
+
+export {  }; 
+

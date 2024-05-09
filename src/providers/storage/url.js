@@ -1,12 +1,13 @@
 /**
  *
- * @param formio
+ * @param {object} formio - formio instance
+ * @returns {import('./typedefs').FileProvider} The FileProvider interface defined in index.js.
  */
 function url(formio) {
   /**
    *
-   * @param options
-   * @param xhr
+   * @param {object} options - options to set on the xhr
+   * @param {object} xhr - the xhr object
    */
   function setOptions(options, xhr) {
     const parsedOptions = typeof options === 'string' ? JSON.parse(options) : options;
