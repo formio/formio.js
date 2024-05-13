@@ -259,12 +259,19 @@ export default class Webform extends NestedDataComponent {
     });
 
     // See if we need to restore the draft from a user.
-    if (this.options.saveDraft && !this.options.skipDraftRestore) {
+    if (this.options.saveDraft) {
       this.formReady.then(()=> {
-        const user = Formio.getUser();
-        // Only restore a draft if the submission isn't explicitly set.
-        if (user && !this.submissionSet) {
-          this.restoreDraft(user._id);
+        if (!this.options.skipDraftRestore) {
+          const user = Formio.getUser();
+          // Only restore a draft if the submission isn't explicitly set.
+          if (user && !this.submissionSet) {
+            this.restoreDraft(user._id);
+          }
+        }
+        else {
+          // Enable drafts
+          this.draftEnabled = true;
+          this.savingDraft = false;
         }
       });
     }

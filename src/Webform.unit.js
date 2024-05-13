@@ -4674,6 +4674,7 @@ describe('Webform tests', function() {
     const originalMakeRequest = Formio.makeRequest;
     let saveDraftCalls = 0;
     let restoreDraftCalls = 0;
+    let state = null;
     const scenario = {
       restoreDraftError: false,
       saveDraftError: false,
@@ -4696,6 +4697,11 @@ describe('Webform tests', function() {
           return scenario.saveDraftError
             ? Promise.reject('Save Draft Error')
             : Promise.resolve(fastCloneDeep(data));
+        }
+        if (type === 'submission' && method === 'post') {
+          state = data.state;
+          saveDraftCalls = ++saveDraftCalls;
+          return Promise.resolve(fastCloneDeep(data));
         }
         if (type === 'form' && method === 'get') {
           return Promise.resolve(fastCloneDeep({
@@ -4780,6 +4786,7 @@ describe('Webform tests', function() {
     afterEach(() => {
       saveDraftCalls = 0;
       restoreDraftCalls = 0;
+      state = null;
       scenario.restoreDraftError = false;
       scenario.saveDraftError = false;
     });
@@ -4881,6 +4888,34 @@ describe('Webform tests', function() {
           const inputEvent = new Event('input');
           tfInput.dispatchEvent(inputEvent);
         }, 200);
+      }).catch((err) => done(err));
+    });
+
+    it('Should save the draft after changing the data if skipDraftRestore is set as true', function(done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(
+        formElement,
+        'http://localhost:3000/zarbzxibjafpcjb/testdrafterrors',
+        {
+          saveDraft: true,
+          skipDraftRestore: true
+        }
+      ).then((form) => {
+        setTimeout(() => {
+          assert.equal(restoreDraftCalls, 0, 'Should not restore Draft');
+          assert.equal(saveDraftCalls, 0);
+          assert.equal(_.isUndefined(form.submission.state), true);
+          const tfInput = form.getComponent('textField').refs.input[0];
+          tfInput.value = 'test';
+          const inputEvent = new Event('input');
+          tfInput.dispatchEvent(inputEvent);
+          setTimeout(() => {
+            assert.equal(restoreDraftCalls, 0);
+            assert.equal(saveDraftCalls, 1, 'Should save Draft');
+            assert.equal(state, 'draft');
+            done();
+          }, 300);
+        },200);
       }).catch((err) => done(err));
     });
   });
