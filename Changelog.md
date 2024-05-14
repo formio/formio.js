@@ -4,9 +4,25 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.21.0-rc.1]
+## 4.21.0-rc.1
+### Changed
+ - FIO-3957: Fixes an issue where Data Map inside conditionally shown Panel does not show its values in the view mode
+ - FIO-6408: Fixed Default value field getting the same label settings as the preview component
+ - FIO-3442: Added tests
+ - FIO-5918: fixed display of note on child form submission revision
+ - FIO-7184: Fixed showing incorrect value for DateTime and Time components with multiple value enabled inside of the Data Table
+ - Add capability for adding sanitize profiles through sanitizeConfig in options
+ - FIO-7112: fixed issues with calendar widget display for value components in new simple conditionals ui
+ - add conditional to check for new headers object
+ - FIO 7603: Edit Grid With Empty Rows Not Submitting Form
+ - FIO-7804: Added PKCE method for OIDC
+ - FIO-7933: added PDF Document Designer
+ - FIO-7334: Fixes an issue where Radio values do not appear for Action Conditions settings
  - FIO-6970: Fixes an issue where SelectBoxes Only Available Items validation always fails
  - FIO-7206: Fixes an issue where removed components keys stay in the DataGrid defaultValue property
+ - FIO-4833: Table, Well, Columns & Tabs: Label does not display by default. The 'Hide Label' setting does nothing
+ - FIO-7207: Changed tooltip and removed 'Hide label' option from the list of layout components
+ - interpolate redirectURI in button oauth config
  
 ## 4.20.0-rc.4
 ### Changed

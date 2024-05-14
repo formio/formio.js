@@ -221,6 +221,24 @@
     ignore: true
   },
   {
+    key: &apos;hideLabel&apos;,
+    ignore: true
+  },
+  {
+    weight: 0,
+    type: &apos;textfield&apos;,
+    input: true,
+    key: &apos;label&apos;,
+    label: &apos;Label&apos;,
+    placeholder: &apos;Field Label&apos;,
+    tooltip: &apos;The label for this field.&apos;,
+    validate: {
+      required: true
+    },
+    autofocus: true,
+    overrideEditForm: true
+  },
+  {
     type: &apos;number&apos;,
     label: &apos;Number of Rows&apos;,
     key: &apos;numRows&apos;,
@@ -294,6 +312,10 @@
     input: true,
     tooltip: &apos;Condense the size of the table.&apos;,
     weight: 704
+  },
+  {
+    key: &apos;hideLabel&apos;,
+    ignore: true
   },
 ];
 </code></pre>

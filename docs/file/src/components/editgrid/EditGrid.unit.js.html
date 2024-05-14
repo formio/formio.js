@@ -208,10 +208,12 @@ import {
   comp15,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
+  compWithCustomDefaultValue,
 } from &apos;./fixtures&apos;;
 import formsWithEditGridAndConditions from &apos;./fixtures/formsWithEditGridAndConditions&apos;;
 
 import ModalEditGrid from &apos;../../../test/forms/modalEditGrid&apos;;
+import EditGridOpenWhenEmpty from &apos;../../../test/forms/editGridOpenWhenEmpty&apos;;
 import Webform from &apos;../../Webform&apos;;
 import { displayAsModalEditGrid } from &apos;../../../test/formtest&apos;;
 import Formio from &apos;../../Formio&apos;;
@@ -1684,6 +1686,75 @@ describe(&apos;EditGrid Open when Empty&apos;, () =&gt; {
         }, 250);
       })
       .catch(done);
+  });
+
+  it(&apos;Should restore focus on the proper component after change event&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(formElement, compWithCustomDefaultValue)
+      .then((form) =&gt; {
+        const editGrid = form.getComponent([&apos;selectedFunds2&apos;]);
+        editGrid.removeRow(2, true);
+        setTimeout(() =&gt; {
+          assert.equal(editGrid.editRows.length, 4, &apos;Should remove a row&apos;);
+          editGrid.editRow(2);
+
+          setTimeout(() =&gt; {
+            const currency = form.getComponent([&apos;selectedFunds2&apos;, 2, &apos;allocationAmount2&apos;]);
+            currency.focus();
+            currency.setValue(250);
+            editGrid.redraw();
+
+            setTimeout(() =&gt; {
+              assert.equal(editGrid.editRows[2].state, &apos;editing&apos;, &apos;Should keep the row in the editing state&apos;);
+              assert.equal(editGrid.editRows[3].state, &apos;saved&apos;, &apos;Should keep the next row in the saved state&apos;);
+              done();
+            }, 200);
+          }, 200);
+        }, 200);
+      })
+      .catch(done);
+  });
+
+  it(&apos;Should submit form with empty rows when submit button is pressed and no rows are saved&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+
+    form.setForm(compOpenWhenEmpty).then(() =&gt; {
+      const editGrid = form.components[0];
+
+      setTimeout(() =&gt; {
+        Harness.dispatchEvent(&apos;click&apos;, form.element, &apos;[name=&quot;data[submit]&quot;]&apos;);
+          setTimeout(() =&gt; {
+            const editRow = editGrid.editRows[0];
+            assert(!editGrid.error, &apos;Should be no errors on EditGrid&apos;);
+            assert.equal(editRow.errors, null, &apos;Should not be any errors on open row&apos;);
+            assert.equal(form.submission.state, &apos;submitted&apos;, &apos;Form should be submitted&apos;);
+            done();
+          }, 450);
+      }, 100);
+    }).catch(done);
+  });
+
+  it(&apos;Should not submit form if any row inputs are set as required&apos;, (done) =&gt; {
+    const formElement = document.createElement(&apos;div&apos;);
+    const form = new Webform(formElement);
+
+    form.setForm(EditGridOpenWhenEmpty).then(() =&gt; {
+      const editGrid = form.components[0];
+
+      setTimeout(() =&gt; {
+        Harness.dispatchEvent(&apos;click&apos;, form.element, &apos;[name=&quot;data[submit]&quot;]&apos;);
+          setTimeout(() =&gt; {
+            assert(!form.submission.state, &apos;Form should not be submitted&apos;);
+            const editRow = editGrid.editRows[0];
+            assert(editGrid.error, &apos;Should show error on EditGrid&apos;);
+            assert.equal(editRow.errors.length, 1, &apos;Should show error on row&apos;);
+            const textField = editRow.components[0];
+            assert(textField.element.className.includes(&apos;formio-error-wrapper&apos;), &apos;Should add error class to component&apos;);
+            done();
+          }, 450);
+      }, 100);
+    }).catch(done);
   });
 });
 </code></pre>

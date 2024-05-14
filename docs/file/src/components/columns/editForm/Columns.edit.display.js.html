@@ -221,6 +221,24 @@
     ignore: true
   },
   {
+    key: &apos;hideLabel&apos;,
+    ignore: true
+  },
+  {
+    weight: 0,
+    type: &apos;textfield&apos;,
+    input: true,
+    key: &apos;label&apos;,
+    label: &apos;Label&apos;,
+    placeholder: &apos;Field Label&apos;,
+    tooltip: &apos;The label for this field.&apos;,
+    validate: {
+      required: true
+    },
+    autofocus: true,
+    overrideEditForm: true
+  },
+  {
     weight: 150,
     type: &apos;datagrid&apos;,
     input: true,
@@ -265,7 +283,11 @@
     tooltip: &apos;Will automatically adjust columns based on if nested components are hidden.&apos;,
     key: &apos;autoAdjust&apos;,
     input: true
-  }
+  },
+  {
+    key: &apos;hideLabel&apos;,
+    ignore: true
+  },
 ];
 </code></pre>
 

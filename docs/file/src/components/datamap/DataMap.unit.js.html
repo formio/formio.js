@@ -187,9 +187,11 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datamap/DataMap.unit.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Formio from &apos;../../Formio&apos;;
+import Harness from &apos;../../../test/harness&apos;;
 import DataMapComponent from &apos;./DataMap&apos;;
-import { comp1 } from &apos;./fixtures&apos;;
+import { comp1, formWithConditionalPanel } from &apos;./fixtures&apos;;
+import assert from &apos;power-assert&apos;;
 
 describe(&apos;DataMap Component&apos;, () =&gt; {
   it(&apos;Should build a data map component&apos;, () =&gt; {
@@ -205,6 +207,47 @@ describe(&apos;DataMap Component&apos;, () =&gt; {
       });
     });
   });
+
+  it(
+    &apos;Should render data from submission properly when the Data Map is inside conditionally shown layout component&apos;,
+    (done) =&gt; {
+      Formio.createForm(document.createElement(&apos;div&apos;), formWithConditionalPanel, { readOnly: true })
+        .then((form) =&gt; {
+          form.submission = {
+            data: {
+              checkbox: true,
+              dataMap1: {
+                key: &apos;a&apos;
+              },
+              dataMap: {
+                key: &apos;b&apos;,
+                key1: &apos;c&apos;,
+              },
+            },
+            state: &apos;submitted&apos;,
+          };
+
+          setTimeout(() =&gt; {
+            const dataMap1 = form.getComponent([&apos;dataMap1&apos;]);
+            const dataMap = form.getComponent([&apos;dataMap&apos;]);
+            assert.equal(dataMap1.visible, true, &apos;Data Map should become visible&apos;);
+            assert.equal(dataMap.visible, true, &apos;Data Map inside a panel should become visible&apos;);
+            assert.deepEqual(dataMap1.dataValue, {
+              key: &apos;a&apos;
+            }, &apos;Should set value of the Data Map properly&apos;);
+            assert.deepEqual(dataMap.dataValue, {
+              key: &apos;b&apos;,
+              key1: &apos;c&apos;,
+            }, &apos;Should set value of the Data Map inside a panel properly&apos;);
+            assert.equal(dataMap1.rows.length, 1, &apos;Should create rows for Data Grid&apos;);
+            assert.equal(dataMap.rows.length, 2, &apos;Should create rows for Data Grid inside a panel&apos;);
+
+            done();
+          }, 300);
+        })
+        .catch(done);
+    }
+  );
 });
 </code></pre>
 

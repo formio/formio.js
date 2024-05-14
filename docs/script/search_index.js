@@ -3522,6 +3522,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datamap/fixtures/formwithconditionalpanel.js",
+    "file/src/components/datamap/fixtures/formWithConditionalPanel.js.html",
+    "src/components/datamap/fixtures/formWithConditionalPanel.js",
+    "file"
+  ],
+  [
     "src/components/datamap/fixtures/index.js",
     "file/src/components/datamap/fixtures/index.js.html",
     "src/components/datamap/fixtures/index.js",
@@ -3897,6 +3903,12 @@ window.esdocSearchIndex = [
     "src/components/editgrid/fixtures/comp-with-conditions-and-openwhenempty.js",
     "file/src/components/editgrid/fixtures/comp-with-conditions-and-openWhenEmpty.js.html",
     "src/components/editgrid/fixtures/comp-with-conditions-and-openWhenEmpty.js",
+    "file"
+  ],
+  [
+    "src/components/editgrid/fixtures/comp-with-custom-default-value.js",
+    "file/src/components/editgrid/fixtures/comp-with-custom-default-value.js.html",
+    "src/components/editgrid/fixtures/comp-with-custom-default-value.js",
     "file"
   ],
   [
@@ -5241,6 +5253,12 @@ window.esdocSearchIndex = [
     "src/components/selectboxes/fixtures/comp6.js",
     "file/src/components/selectboxes/fixtures/comp6.js.html",
     "src/components/selectboxes/fixtures/comp6.js",
+    "file"
+  ],
+  [
+    "src/components/selectboxes/fixtures/comp7.js",
+    "file/src/components/selectboxes/fixtures/comp7.js.html",
+    "src/components/selectboxes/fixtures/comp7.js",
     "file"
   ],
   [

@@ -345,6 +345,9 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   getValueAsString(value) {
+    if (Array.isArray(value) &amp;&amp; this.component.multiple) {
+      return value.map(item =&gt; moment(item, this.component.dataFormat).format(this.component.format)).join(&apos;, &apos;);
+    }
     return (value ? moment(value, this.component.dataFormat).format(this.component.format) : value) || &apos;&apos;;
   }
 
