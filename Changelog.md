@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.21.0-rc.2]
  - FIO-8074: Added Storage Type to Radio Components
  - FIO-7595: fixed incorrect value for conditionally hidden Checkbox
+ - FIO-8240: fixed skipDraftRestore effect for the nested Forms
  
 ## 4.21.0-rc.1
 ### Changed
