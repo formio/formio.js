@@ -1,11 +1,4 @@
 import { setXhrHeaders } from './xhr';
-
-/**
- * 
- * Google Drive provider for file storage.
- * @param {object} formio - formio instance
- * @returns {import('./typedefs').FileProvider} The FileProvider interface defined in index.js.
- */
 function googledrive(formio) {
   return {
     uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {

@@ -253,11 +253,6 @@ export default class ButtonComponent extends Field {
     this.disabled = this.shouldDisabled;
     this.setDisabled(this.refs.button, this.disabled);
 
-    /**
-     * Get url parameter by name
-     * @param {string} name - The url parameter
-     * @returns {string} - The url parameter value
-     */
     function getUrlParameter(name) {
       name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
       const regex = new RegExp(`[\\?&]${name}=([^&#]*)`);

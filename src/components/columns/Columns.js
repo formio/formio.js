@@ -134,7 +134,7 @@ export default class ColumnsComponent extends NestedComponent {
 
   /**
    * Group columns in rows.
-   * @returns {Array.<ColumnComponent[]>} - The array of columns 
+   * @return {Array.<ColumnComponent[]>}
    */
   groupByRow() {
     const initVal = { stack: [], rows: [] };

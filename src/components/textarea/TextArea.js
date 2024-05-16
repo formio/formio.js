@@ -89,8 +89,8 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   /**
    * Updates the editor value.
-   * @param {number} index - The index of the editor.
-   * @param {any} newValue - The new editor value.
+   *
+   * @param newValue
    */
   updateEditorValue(index, newValue) {
     newValue = this.getConvertedValue(this.trimBlanks(newValue));

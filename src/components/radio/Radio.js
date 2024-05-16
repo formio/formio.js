@@ -413,9 +413,10 @@ export default class RadioComponent extends ListComponent {
   }
 
   /**
-   * Normalize values coming into updateValue. For example, depending on the configuration, string value `"true"` will be normalized to boolean `true`.
-   * @param {*} value - The value to normalize
-   * @returns {*} - Returns the normalized value
+   * Normalize values coming into updateValue.
+   *
+   * @param value
+   * @return {*}
    */
   normalizeValue(value) {
     const dataType = this.component.dataType || 'auto';

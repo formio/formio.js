@@ -162,9 +162,9 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   /**
    * Split rows into chunks.
-   * @param {number[]} groups - array of numbers where each item is size of group
+   * @param {Number[]} groups - array of numbers where each item is size of group
    * @param {Array<T>} rows - rows collection
-   * @returns {Array<T[]>} - The chunked rows
+   * @return {Array<T[]>}
    */
   getRowChunks(groups, rows) {
     const [, chunks] = groups.reduce(
@@ -179,7 +179,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   /**
    * Create groups object.
    * Each key in object represents index of first row in group.
-   * @returns {object} - The groups object.
+   * @return {Object}
    */
   getGroups() {
     const groups = _.get(this.component, 'rowGroups', []);
@@ -201,8 +201,8 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   /**
-   * Get group sizes.
-   * @returns {number[]} - The array of group sizes.
+   * Retrun group sizes.
+   * @return {Number[]}
    */
   getGroupSizes() {
     return _.map(_.get(this.component, 'rowGroups', []), 'numberOfRows');
