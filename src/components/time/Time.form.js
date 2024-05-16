@@ -4,8 +4,9 @@ import TimeEditData from './editForm/Time.edit.data';
 import TimeEditDisplay from './editForm/Time.edit.display';
 
 /**
- *
- * @param {...any} extend
+ * Time Component edit form definition.
+ * @param {...any} extend - The extended edit form definition.
+ * @returns {object} - The Well Component edit form definition.
  */
 export default function(...extend) {
   return baseEditForm([

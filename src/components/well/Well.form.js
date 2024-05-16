@@ -3,9 +3,9 @@ import nestedComponentForm from '../_classes/nested/NestedComponent.form';
 import WellEditDisplay from './editForm/Well.edit.display';
 
 /**
- * Well Component schema.
- * @param {...any} extend - The extended schema.
- * @returns {object} - The Well Component schema.
+ * Well Component edit form definition.
+ * @param {...any} extend - The extended definition.
+ * @returns {object} - The Well Component edit form definition.
  */
 export default function(...extend) {
   return nestedComponentForm([

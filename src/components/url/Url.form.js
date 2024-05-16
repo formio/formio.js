@@ -5,8 +5,9 @@ import UrlEditData from './editForm/Url.edit.data';
 import UrlEditValidation from './editForm/Url.edit.validation';
 
 /**
- *
- * @param {...any} extend
+ * Url Component edit form definition.
+ * @param {...any} extend - The extended edit form defintion.
+ * @returns {object} - The Url Component edit form definition.
  */
 export default function(...extend) {
   return textEditForm([
