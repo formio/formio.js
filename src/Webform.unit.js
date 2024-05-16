@@ -4835,20 +4835,40 @@ describe('Webform tests', function() {
       const select = form.getComponent('select');
       const radio = form.getComponent('radio');
 
-      selectBoxes.setValue({ AL: false, AK: true, AS: true }, { modified: true });
-      select.setValue('AL', { modified: true });
-      radio.setValue('AL', { modified: true });
+      selectBoxes.componentModal.openModal();
+      select.componentModal.openModal();
+      radio.componentModal.openModal();
 
       setTimeout(() => {
-        const previewSelectBoxes = selectBoxes.element.querySelector('[ref="openModal"]');
-        const previewSelect = select.element.querySelector('[ref="openModal"]');
-        const previewRadio = radio.element.querySelector('[ref="openModal"]');
-        assert.equal(previewSelectBoxes.innerHTML, '\n  <span>Alaska</span>, <span>American Samoa</span>\n');
-        assert.equal(previewSelect.innerHTML, '\n  <span>Alabama</span>\n');
-        assert.equal(previewSelectBoxes.innerHTML, '\n  <span>Alabama</span>\n');
+        form.setSubmission({
+          data: {
+            selectBoxes: { AL: false, AK: true, AS: true },
+            select: 'AL',
+            radio: 'AL',
+          }
+        });
 
-        Formio.makeRequest = originalMakeRequest;
-        done();
+        setTimeout(() => {
+          selectBoxes.componentModal.closeModal();
+          select.componentModal.closeModal();
+          radio.componentModal.closeModal();
+
+          setTimeout(() => {
+            const previewSelectBoxes = selectBoxes.element.querySelector('[ref="openModal"]');
+            const previewSelect = select.element.querySelector('[ref="openModal"]');
+            const previewRadio = radio.element.querySelector('[ref="openModal"]');
+
+            assert.equal(previewSelectBoxes.innerHTML, '\n  <span>Alaska</span>, <span>American Samoa</span>\n', 'Should show labels as a selected value' +
+              ' for SelectBoxes component');
+            assert.equal(previewRadio.innerHTML, '\n  <span>Alabama</span>\n', 'Should show label as a selected value' +
+              ' for Radio component');
+            assert.equal(previewSelect.innerHTML, '\n  <span>Alabama</span>\n', 'Should show label as a selected value' +
+              ' for Select component');
+
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 300);
+        }, 300);
       }, 300);
     })
       .catch((err) => done(err));
