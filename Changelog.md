@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.19.3-rc.2]
+### Changed
+ - Resolved merge conflict with saveDraft
+   
 ## 4.19.3-rc.1
 ### Changed
  - FIO-8330 fixed saving draft if saveDraft and skipDraftRestore are true
