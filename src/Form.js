@@ -22,34 +22,34 @@ export default class Form extends Element {
 
 /**
  * @typedef {object} FormioHooks
- * @property {Function} [beforeSubmit]
- * @property {Function} [beforeCancel]
- * @property {Function} [beforeNext]
- * @property {Function} [beforePrev]
- * @property {Function} [attachComponent]
- * @property {Function} [setDataValue]
- * @property {Function} [addComponents]
- * @property {Function} [addComponent]
- * @property {Function} [customValidation]
- * @property {function} [attachWebform]
+ * @property {Function} [beforeSubmit] - Called before a submission is made.
+ * @property {Function} [beforeCancel] - Called before a cancel is made.
+ * @property {Function} [beforeNext] - Called before the next page is navigated to.
+ * @property {Function} [beforePrev] - Called before the previous page is navigated to.
+ * @property {Function} [attachComponent] - Called when a component is attached.
+ * @property {Function} [setDataValue] - Called when a data value is set.
+ * @property {Function} [addComponents] - Called when components are added.
+ * @property {Function} [addComponent] - Called when a component is added.
+ * @property {Function} [customValidation] - Called when a custom validation is made.
+ * @property {Function} [attachWebform] - Called when a webform is attached.
  */
 
 /**
  * @typedef {object} SanitizeConfig
- * @property {string[]} [addAttr]
- * @property {string[]} [addTags]
- * @property {string[]} [allowedAttrs]
- * @property {string[]} [allowedTags]
- * @property {string[]} [allowedUriRegex]
- * @property {string[]} [addUriSafeAttr]
+ * @property {string[]} [addAttr] - The html attributes to allow with sanitization.
+ * @property {string[]} [addTags] - The html tags to allow with sanitization.
+ * @property {string[]} [allowedAttrs] - The html attributes to allow with sanitization.
+ * @property {string[]} [allowedTags] - The html tags to allow with sanitization.
+ * @property {string[]} [allowedUriRegex] - The regex for allowed URIs.
+ * @property {string[]} [addUriSafeAttr] - The URI attributes to allow with sanitization.
  */
 
 /**
  * @typedef {object} ButtonSettings
- * @property {boolean} [showPrevious]
- * @property {boolean} [showNext]
- * @property {boolean} [showCancel]
- * @property {boolean} [showSubmit]
+ * @property {boolean} [showPrevious] - Show the previous button in wizard forms.
+ * @property {boolean} [showNext] - Show the next button in wizard forms.
+ * @property {boolean} [showCancel] - Show the cancel button in wizard forms.
+ * @property {boolean} [showSubmit] - Show the submit button in wizard forms.
  */
 
 /**
@@ -206,7 +206,7 @@ export default class Form extends Element {
   /**
    * Create a new form instance provided the display of the form.
    * @param {string} display - The display of the form, either "wizard", "form", or "pdf"
-   * @returns {*}
+   * @returns {Webform|Wizard|PDF} - The new form instance for the display.
    */
   create(display) {
     if (this.options && (this.options.flatten || this.options.renderMode === 'flat')) {
@@ -225,7 +225,7 @@ export default class Form extends Element {
   /**
    * Sets the form. Either as JSON or a URL to a form JSON schema.
    * @param {string|object} formParam - Either the form JSON or the URL of the form json.
-   * @returns {*}
+   * @returns {void}
    */
   set form(formParam) {
     this.setForm(formParam);
@@ -256,8 +256,7 @@ export default class Form extends Element {
   /**
    * Check Subdirectories path and provide correct options
    * @param {string} url - The the URL of the form json.
-   * @param {form} object - The form json.
-   * @param form
+   * @param {import('@formio/core').Form} form - The form json.
    * @returns {object} The initial options with base and project.
    */
   getFormInitOptions(url, form) {
@@ -285,6 +284,11 @@ export default class Form extends Element {
     return {};
   }
 
+  /**
+   * Sets the form to the JSON schema of a form.
+   * @param {import('@formio/core').Form} formParam - The form JSON to set this form to.
+   * @returns {Promise<Webform|Wizard|PDF>} - The webform instance that was created.
+   */
   setForm(formParam) {
     let result;
     formParam = formParam || this.form;
@@ -357,7 +361,7 @@ export default class Form extends Element {
   /**
    * Changes the display of the form.
    * @param {string} display - The display to set this form. Either "wizard", "form", or "pdf"
-   * @returns {Promise<T>}
+   * @returns {Promise<Webform|Wizard|PDF>} - The form instance that was created after changing the display.
    */
   setDisplay(display) {
     if ((this.display === display) && this.instance) {
@@ -402,10 +406,9 @@ export default class Form extends Element {
 
   /**
    * Sanitize an html string.
-   * @param string
-   * @param dirty
-   * @param forceSanitize
-   * @returns {*}
+   * @param {string} dirty - The dirty html string to sanitize.
+   * @param {boolean} forceSanitize - If the string should be force sanitized.
+   * @returns {string} - The sanitized html string.
    */
   sanitize(dirty, forceSanitize) {
     // If Sanitize is turned off
@@ -425,7 +428,7 @@ export default class Form extends Element {
 
   /**
    * Build a new form.
-   * @returns {Promise<T>}
+   * @returns {Promise<Webform|Wizard|PDF>} - The form instance that was created.
    */
   build() {
     if (!this.instance) {
@@ -488,15 +491,17 @@ export default class Form extends Element {
 Formio.embedForm = (embed) => Form.embed(embed);
 
 /**
- * Factory that creates a new form based on the form parameters.
- * @param element {HMTLElement} - The HTML Element to add this form to.
- * @param form {string|Object} - The src of the form, or a form object.
- * @param options {Object} - The options to create this form.
- * @param {...any} args
- * @returns {Promise} - When the form is instance is ready.
+ * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
+ * @param {object} elementOrForm - The DOM element you wish to render this form within, or the form definition.
+ * @param {object | string | FormOptions} formOrOptions - A Form JSON schema, the URL of a hosted form, or the form options.
+ * @param {FormOptions} [options] - The options to create a new form instance.
+ * @returns {Promise<Webform|Wizard|PDF>} - The form instance that was created.
+ * @example
+ * import { Formio } from '@formio/js';
+ * Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
  */
-Formio.createForm = (...args) => {
-  return (new Form(...args)).ready;
+Formio.createForm = (elementOrForm, formOrOptions, options) => {
+  return (new Form(elementOrForm, formOrOptions, options)).ready;
 };
 
 Formio.Form = Form;
