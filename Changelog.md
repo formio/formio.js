@@ -245,6 +245,9 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-7507: publish-dev-tag-to-npm
  - FIO-8330: fixed saving draft if saveDraft and skipDraftRestore are true
  - FIO-7595: fixed incorrect value for conditionally hidden Checkbox
+ - FIO-8342: fixed triggering saveDraft after submitting the form
+ - FIO-8240: fixed skipDraftRestore effect for the nested Forms
+   
 
 ## 5.0.0-rc.37
 ### Fixed
