@@ -3,9 +3,9 @@ import nestedComponentForm from '../_classes/nested/NestedComponent.form';
 import ColumnsEditDisplay from './editForm/Columns.edit.display';
 
 /**
- * Columns nested component form definition.
- * @param {...any} extend - The extended definition.
- * @returns {object} - The Columns nested component form.
+ * The Edit Form function.
+ * @param {...any} extend - The components that extend the edit form.
+ * @returns {import('@formio/core').Component[]} - The edit form components.
  */
 export default function(...extend) {
   return nestedComponentForm([
