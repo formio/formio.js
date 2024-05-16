@@ -4,8 +4,9 @@ import AddressEditDisplay from './editForm/Address.edit.display';
 import AddressEditProvider from './editForm/Address.edit.provider';
 
 /**
- *
- * @param {...any} extend
+ * Address edit form definition.
+ * @param {...any} extend - The extended definition.
+ * @returns {object} - The Address edit form.
  */
 export default function(...extend) {
   return Components.baseEditForm([

@@ -3,8 +3,9 @@ import ContentEditDisplay from './editForm/Content.edit.display';
 import ContentEditLogic from './editForm/Content.edit.logic';
 
 /**
- *
- * @param {...any} extend
+ * Content edit form definition.
+ * @param {...any} extend - The extended definition.
+ * @returns {object} - The Content edit form.
  */
 export default function(...extend) {
   const editForm = Components.baseEditForm([

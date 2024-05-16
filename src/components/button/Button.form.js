@@ -2,8 +2,9 @@ import Components from '../Components';
 import ButtonEditDisplay from './editForm/Button.edit.display';
 
 /**
- *
- * @param {...any} extend
+ * Button edit form definition.
+ * @param {...any} extend - The extended definition.
+ * @returns {object} - The Button edit form.
  */
 export default function(...extend) {
   return Components.baseEditForm([

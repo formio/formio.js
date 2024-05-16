@@ -4,8 +4,9 @@ import CheckboxEditDisplay from './editForm/Checkbox.edit.display';
 import CheckboxEditValidation from './editForm/Checkbox.edit.validation';
 
 /**
- *
- * @param {...any} extend
+ * CheckBox edit form definition.
+ * @param {...any} extend - The extended definition.
+ * @returns {object} - The CheckBox edit form.
  */
 export default function(...extend) {
   return Components.baseEditForm([
