@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.19.3-rc.1
+### Changed
+ - FIO-8330 fixed saving draft if saveDraft and skipDraftRestore are true
+ - FIO-8342 fixed triggering saveDraft after submitting the form
+ - FIO-8111 fixed saveDraft Trigger for nested forms
+ - FIO-8074 Added Storage Type to Radio Components
+ - FIO-7595 fixed incorrect value for conditionally hidden Checkbox
+ - FIO-8240 fixed skipDraftRestore effect for the nested Forms
+
+## 4.19.2
+### Changed
+ - Official Release
+
+## 4.19.2-rc.5
+### Changed
+ - FIO-8280: Fixed setting incorrect option label
+
+## 4.19.2-rc.4
+### Changed
+ - FIO-7445: fixed an issue with interpolated data in HTML
+
+### Changed
+ - FIO-8091: added selectData calculation for url/resource select components
+ 
+## 4.19.2-rc.3
+### Changed
+ - FIO-7445: fixed an issue where the interpolated data does not show up on PDF
+ - FIO-8091: added selectData calculation for url/resource select components
+
+## 4.19.2-rc.1
+### Changed
+ - FIO-8009 fixed  display of the required asterisk
+ - FIO-8109 fixed save draft triggering for nested components
+ - FIO-8146 fixed saveDraft triggering for nested forms after submitting
+ - FIO-4871 fixed calculated value issues
+
 ## 4.19.1
 ### Changed
  - Official Release

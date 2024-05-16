@@ -1,4 +1,32 @@
+import _ from 'lodash';
 import { eachComponent } from '../../../utils/utils';
+
+const calculateSelectData = (context) => {
+  const { instance, data } = context;
+  const rawDefaultValue = instance.downloadedResources.find(resource => _.get(resource, data.valueProperty) === instance.getValue());
+  const options = { data: {}, noeval: true };
+  instance.interpolate(data.template, {
+    item: rawDefaultValue,
+  }, options);
+  return options.data.item;
+};
+
+const setSelectData = (context) => {
+  // Wait before downloadedResources will be set
+  setTimeout(() => {
+    const { instance, data } = context;
+    const selectDataComponent = instance?.root.getComponent('selectData');
+    // nothing can set if don't have downloaded resources
+    if (!selectDataComponent || !instance.getValue() || !instance.downloadedResources?.length) {
+      return;
+    }
+    // if valueProperty is not provided, we have entire object
+    const shouldCalculateUrlData = data.dataSrc === 'url' && data.data.url && data.valueProperty;
+    const shouldCalculateResourceData = data.dataSrc === 'resource' && data.data.resource && data.valueProperty;
+    const newValue = shouldCalculateUrlData || shouldCalculateResourceData ? calculateSelectData(context) : undefined;
+    selectDataComponent.setValue(newValue);
+  }, 0);
+};
 
 export default [
   {
@@ -625,5 +653,37 @@ export default [
     key: 'useExactSearch',
     label: 'Use exact search',
     tooltip: 'Disables search algorithm threshold.',
-  }
+  },
+  {
+    key: 'defaultValue',
+    onSetItems(component) {
+      setSelectData(component.evalContext());
+    },
+    onChange(context) {
+      if (context && context.flags && context.flags.modified) {
+        setSelectData(context);
+      }
+    },
+  },
+  {
+    key: 'selectData',
+    conditional: {
+      json: { 'and': [
+        { '!==': [{ var: 'data.valueProperty' }, null] },
+        { '!==': [{ var: 'data.valueProperty' }, ''] },
+      ] },
+    },
+  },
+  {
+    key: 'template',
+    onChange(context) {
+      if (context && context.flags && context.flags.modified) {
+        const defaultValueComponent = context.instance.root.getComponent('defaultValue');
+        if (!defaultValueComponent) {
+          return;
+        }
+        setSelectData(defaultValueComponent.evalContext());
+      }
+    },
+  },
 ];

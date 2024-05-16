@@ -324,12 +324,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/components/html/html.js~htmlcomponent",
-    "class/src/components/html/HTML.js~HTMLComponent.html",
-    "<span>HTMLComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/html/HTML.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/components/hidden/hidden.form.js~hidden",
     "function/index.html#static-function-Hidden",
     "<span>Hidden</span> <span class=\"search-result-import-path\">formiojs/src/components/hidden/Hidden.form.js</span>",
@@ -2970,6 +2964,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/checkbox/fixtures/comp5.js",
+    "file/src/components/checkbox/fixtures/comp5.js.html",
+    "src/components/checkbox/fixtures/comp5.js",
+    "file"
+  ],
+  [
     "src/components/checkbox/fixtures/customdefaultcomponent.js",
     "file/src/components/checkbox/fixtures/customDefaultComponent.js.html",
     "src/components/checkbox/fixtures/customDefaultComponent.js",
@@ -3495,6 +3495,12 @@ window.esdocSearchIndex = [
     "src/components/datagrid/fixtures/index.js",
     "file/src/components/datagrid/fixtures/index.js.html",
     "src/components/datagrid/fixtures/index.js",
+    "file"
+  ],
+  [
+    "src/components/datagrid/fixtures/two-comp-with-allow-calculate-override.js",
+    "file/src/components/datagrid/fixtures/two-comp-with-allow-calculate-override.js.html",
+    "src/components/datagrid/fixtures/two-comp-with-allow-calculate-override.js",
     "file"
   ],
   [
@@ -4302,6 +4308,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/form/fixtures/comp7.js",
+    "file/src/components/form/fixtures/comp7.js.html",
+    "src/components/form/fixtures/comp7.js",
+    "file"
+  ],
+  [
+    "src/components/form/fixtures/comp8.js",
+    "file/src/components/form/fixtures/comp8.js.html",
+    "src/components/form/fixtures/comp8.js",
+    "file"
+  ],
+  [
     "src/components/form/fixtures/formmodaledit.js",
     "file/src/components/form/fixtures/formModalEdit.js.html",
     "src/components/form/fixtures/formModalEdit.js",
@@ -4432,72 +4450,6 @@ window.esdocSearchIndex = [
     "file/src/components/html/HTML.form.js.html",
     "src/components/html/HTML.form.js",
     "file"
-  ],
-  [
-    "src/components/html/html.js",
-    "file/src/components/html/HTML.js.html",
-    "src/components/html/HTML.js",
-    "file"
-  ],
-  [
-    "src/components/html/html.js~htmlcomponent#attach",
-    "class/src/components/html/HTML.js~HTMLComponent.html#instance-method-attach",
-    "src/components/html/HTML.js~HTMLComponent#attach",
-    "method"
-  ],
-  [
-    "src/components/html/html.js~htmlcomponent#checkrefreshon",
-    "class/src/components/html/HTML.js~HTMLComponent.html#instance-method-checkRefreshOn",
-    "src/components/html/HTML.js~HTMLComponent#checkRefreshOn",
-    "method"
-  ],
-  [
-    "src/components/html/html.js~htmlcomponent#content",
-    "class/src/components/html/HTML.js~HTMLComponent.html#instance-get-content",
-    "src/components/html/HTML.js~HTMLComponent#content",
-    "member"
-  ],
-  [
-    "src/components/html/html.js~htmlcomponent#defaultschema",
-    "class/src/components/html/HTML.js~HTMLComponent.html#instance-get-defaultSchema",
-    "src/components/html/HTML.js~HTMLComponent#defaultSchema",
-    "member"
-  ],
-  [
-    "src/components/html/html.js~htmlcomponent#render",
-    "class/src/components/html/HTML.js~HTMLComponent.html#instance-method-render",
-    "src/components/html/HTML.js~HTMLComponent#render",
-    "method"
-  ],
-  [
-    "src/components/html/html.js~htmlcomponent#rendercontent",
-    "class/src/components/html/HTML.js~HTMLComponent.html#instance-method-renderContent",
-    "src/components/html/HTML.js~HTMLComponent#renderContent",
-    "method"
-  ],
-  [
-    "src/components/html/html.js~htmlcomponent#singletags",
-    "class/src/components/html/HTML.js~HTMLComponent.html#instance-get-singleTags",
-    "src/components/html/HTML.js~HTMLComponent#singleTags",
-    "member"
-  ],
-  [
-    "src/components/html/html.js~htmlcomponent.builderinfo",
-    "class/src/components/html/HTML.js~HTMLComponent.html#static-get-builderInfo",
-    "src/components/html/HTML.js~HTMLComponent.builderInfo",
-    "member"
-  ],
-  [
-    "src/components/html/html.js~htmlcomponent.savedvaluetypes",
-    "class/src/components/html/HTML.js~HTMLComponent.html#static-method-savedValueTypes",
-    "src/components/html/HTML.js~HTMLComponent.savedValueTypes",
-    "method"
-  ],
-  [
-    "src/components/html/html.js~htmlcomponent.schema",
-    "class/src/components/html/HTML.js~HTMLComponent.html#static-method-schema",
-    "src/components/html/HTML.js~HTMLComponent.schema",
-    "method"
   ],
   [
     "src/components/html/html.unit.js",
@@ -4830,6 +4782,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/radio/fixtures/comp11.js",
+    "file/src/components/radio/fixtures/comp11.js.html",
+    "src/components/radio/fixtures/comp11.js",
+    "file"
+  ],
+  [
     "src/components/radio/fixtures/comp2.js",
     "file/src/components/radio/fixtures/comp2.js.html",
     "src/components/radio/fixtures/comp2.js",
@@ -5100,12 +5058,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/select/editform/select.edit.data.js",
-    "file/src/components/select/editForm/Select.edit.data.js.html",
-    "src/components/select/editForm/Select.edit.data.js",
-    "file"
-  ],
-  [
     "src/components/select/editform/select.edit.display.js",
     "file/src/components/select/editForm/Select.edit.display.js.html",
     "src/components/select/editForm/Select.edit.display.js",
@@ -5199,6 +5151,12 @@ window.esdocSearchIndex = [
     "src/components/select/fixtures/comp21.js",
     "file/src/components/select/fixtures/comp21.js.html",
     "src/components/select/fixtures/comp21.js",
+    "file"
+  ],
+  [
+    "src/components/select/fixtures/comp22.js",
+    "file/src/components/select/fixtures/comp22.js.html",
+    "src/components/select/fixtures/comp22.js",
     "file"
   ],
   [

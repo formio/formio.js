@@ -2811,8 +2811,8 @@ export default class Component extends Element {
 
   /* eslint-disable max-statements */
   calculateComponentValue(data, flags, row) {
-    // Skip value calculation for the component if we don't have entire form data set
-    if (_.isUndefined(_.get(this, 'root.data'))) {
+    // Skip value calculation for the component if we don't have entire form data set or in builder mode
+    if (this.builderMode || _.isUndefined(_.get(this, 'root.data'))) {
       return false;
     }
     // If no calculated value or
@@ -2882,6 +2882,7 @@ export default class Component extends Element {
 
       // Check to ensure that the calculated value is different than the previously calculated value.
       if (previousCalculatedValue && previousChanged && !calculationChanged) {
+        this.calculatedValue = null;
         return false;
       }
 

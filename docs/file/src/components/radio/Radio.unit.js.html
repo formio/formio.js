@@ -68,8 +68,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden">components/hidden</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
@@ -204,7 +203,8 @@ import {
   comp7,
   comp8,
   comp9,
-  comp10
+  comp10,
+  comp11
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Radio Component&apos;, () =&gt; {
@@ -302,6 +302,38 @@ describe(&apos;Radio Component&apos;, () =&gt; {
         done();
       }, 700);
     });
+  });
+
+  it(&apos;Should set the Value according to Storage Type&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp11);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const radioNumber = form.getComponent(&apos;radioNumber&apos;);
+      const radioString = form.getComponent(&apos;radioString&apos;);
+      const radioBoolean = form.getComponent(&apos;radioBoolean&apos;);
+      const value1 = &apos;0&apos;;
+      const value2 = &apos;true&apos;;
+      radioNumber.setValue(value1);
+      radioString.setValue(value1);
+      radioBoolean.setValue(value2);
+
+      const submit = form.getComponent(&apos;submit&apos;);
+      const clickEvent = new Event(&apos;click&apos;);
+      const submitBtn = submit.refs.button;
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() =&gt; {
+        assert.equal(form.submission.data.radioNumber, 0);
+        assert.equal(typeof form.submission.data.radioNumber, &apos;number&apos;);
+        assert.equal(form.submission.data.radioString, &apos;0&apos;);
+        assert.equal(typeof form.submission.data.radioString, &apos;string&apos;);
+        assert.equal(form.submission.data.radioBoolean, true);
+        assert.equal(typeof form.submission.data.radioBoolean, &apos;boolean&apos;);
+        document.innerHTML = &apos;&apos;;
+        done();
+      }, 300);
+    }).catch(done);
   });
 
   it(&apos;Should set correct data for 0s values&apos;, (done) =&gt; {

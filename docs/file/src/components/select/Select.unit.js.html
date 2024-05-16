@@ -68,8 +68,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden">components/hidden</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
@@ -222,6 +221,7 @@ import {
   comp19,
   comp20,
   comp21,
+  comp22,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Select Component&apos;, () =&gt; {
@@ -1163,6 +1163,70 @@ describe(&apos;Select Component&apos;, () =&gt; {
             done();
           }, 200);
         }, 300);
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;Should provide correct metadata.selectData for HTML5 Select with default value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp22);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const submit = form.getComponent(&apos;submit&apos;);
+      const clickEvent = new Event(&apos;click&apos;);
+      const submitBtn = submit.refs.button;
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(()=&gt; {
+        const metadata = form.submission.metadata.selectData.select;
+        assert.equal(metadata.label, &apos;Label 1&apos;);
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;Should provide correct metadata.selectData for ChoicesJS Select with default value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp22);
+    form.components[0].widget=&apos;choicesjs&apos;;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const submit = form.getComponent(&apos;submit&apos;);
+      const clickEvent = new Event(&apos;click&apos;);
+      const submitBtn = submit.refs.button;
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(()=&gt; {
+        const metadata = form.submission.metadata.selectData.select;
+        assert.equal(metadata.label, &apos;Label 1&apos;);
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;Should set correct label from metadata for ChoicesJS Select with default value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp22);
+    form.components[0].widget=&apos;choicesjs&apos;;
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const select = form.getComponent(&apos;select&apos;);
+      form.submission = {
+        data: {
+          select: &apos;value2&apos;,
+        },
+        metadata: {
+          selectData: {
+            select: {
+              label: &apos;Label 2&apos;,
+            },
+          },
+        },
+      };
+
+      setTimeout(()=&gt; {
+        assert.equal(select.templateData[&apos;value2&apos;].label, &apos;Label 2&apos;);
+        done();
       }, 200);
     }).catch(done);
   });

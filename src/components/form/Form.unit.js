@@ -1,3 +1,5 @@
+import _ from 'lodash';
+import { fastCloneDeep } from '../../utils/utils';
 import Harness from '../../../test/harness';
 import FormComponent from './Form';
 import { expect } from 'chai';
@@ -8,9 +10,12 @@ import {
   comp3,
   comp4,
   comp5,
-  comp6
+  comp6,
+  comp7,
+  comp8
 } from './fixtures';
 import Webform from '../../Webform';
+import { Formio } from '../../formio.form.js';
 import formModalEdit from './fixtures/formModalEdit';
 import { formComponentWithConditionalRenderingForm } from '../../../test/formtest';
 
@@ -271,5 +276,122 @@ describe('Wizard Component', () => {
     }).then(() => {
       done();
     });
+  });
+});
+
+describe('SaveDraft functionality for Nested Form', () => {
+  const originalMakeRequest = Formio.makeRequest;
+  let saveDraftCalls = 0;
+  let restoreDraftCalls = 0;
+  let state = null;
+
+  const restoredDraftData = {
+    parent: 'test Parent',
+    form: { nested: 'test Nested' },
+    submit: false,
+  };
+
+  before((done) => {
+    Formio.setUser({
+      _id: '123'
+    });
+
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'submission' && ['put', 'post'].includes(method)) {
+        state = data.state;
+        if (state === 'draft') {
+          saveDraftCalls = ++saveDraftCalls;
+        }
+        return Promise.resolve(fastCloneDeep(data));
+      }
+
+      if (type === 'form' && method === 'get') {
+        return Promise.resolve(fastCloneDeep(_.endsWith(url, 'parent') ? comp7 : comp8));
+      }
+
+      if (type === 'submissions' && method === 'get' && _.includes(url, 'parent')) {
+        restoreDraftCalls = ++restoreDraftCalls;
+        return Promise.resolve([
+          fastCloneDeep({
+            _id: '662259f500773e9994360c72',
+            form: '66051dae494c977c47028fac',
+            owner: '63ceaccebe0090345b109da7',
+            data: restoredDraftData,
+            project: '65b0ccbaf019a907ac01a869',
+            state: 'draft',
+          }),
+        ]);
+      }
+
+      if (type === 'submissions' && method === 'get') {
+        restoreDraftCalls = ++restoreDraftCalls;
+        return Promise.resolve([
+          fastCloneDeep({
+            _id: '660e75e4e8c776f1225142aa',
+            form: '63e4deda12b88c4f05c125cf',
+            owner: '63ceaccebe0090345b109da7',
+            data: restoredDraftData.form,
+            project: '65b0ccbaf019a907ac01a869',
+            state: 'draft',
+          }),
+        ]);
+      }
+    };
+
+    done();
+  });
+
+  afterEach(() => {
+    saveDraftCalls = 0;
+    restoreDraftCalls = 0;
+    state = null;
+  });
+
+  after((done) => {
+    Formio.makeRequest = originalMakeRequest;
+    Formio.setUser();
+    done();
+  });
+
+  it('Should save draft for Nested Form', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/idwqwhclwioyqbw/testdraftparent',
+      {
+        saveDraft: true
+      }
+    ).then((form) => {
+      setTimeout(() => {
+        const tfNestedInput = form.getComponent('form.nested').refs.input[0];
+        tfNestedInput.value = 'testNested';
+        const inputEvent = new Event('input');
+        tfNestedInput.dispatchEvent(inputEvent);
+        setTimeout(() => {
+          assert.equal(saveDraftCalls, 1);
+          assert.equal(state, 'draft');
+          done();
+        }, 1000);
+      }, 200);
+    }).catch((err) => done(err));
+  });
+
+  it('Should not restore draft for Nested Form if skipDraftRestore is set as true', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/idwqwhclwioyqbw/testdraftparent',
+      {
+        saveDraft: true,
+        skipDraftRestore: true
+      }
+    ).then((form) => {
+      setTimeout(() => {
+        assert.equal(restoreDraftCalls, 0);
+        assert.equal(saveDraftCalls, 0);
+        assert.equal(_.isUndefined(form.submission.state), true);
+        done();
+      }, 200);
+    }).catch((err) => done(err));
   });
 });

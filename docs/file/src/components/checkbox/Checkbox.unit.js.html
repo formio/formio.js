@@ -68,8 +68,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Form">Form</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-hidden">components/hidden</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Hidden">Hidden</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-html">components/html</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HTML">HTML</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-number">components/number</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Number">Number</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-panel">components/panel</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Panel">Panel</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-password">components/password</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
@@ -200,7 +199,8 @@ import {
   customDefaultComponent,
   comp2,
   comp3,
-  comp4
+  comp4,
+  comp5
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Checkbox Component&apos;, () =&gt; {
@@ -278,6 +278,29 @@ describe(&apos;Checkbox Component&apos;, () =&gt; {
           assert.equal(contentComp.visible, false);
           done();
         }, 300);
+      }, 300);
+    }).catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should set the value for the checkbox if it set before the component from checbox`s condition&apos;, (done) =&gt;  {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement(&apos;div&apos;);
+    const data = {
+      textField: &apos;test&apos;,
+      checkboxBefore: true,
+      checkboxAfter: true
+    };
+    Formio.createForm(element, form).then(form =&gt; {
+      form.setValue({ data }, { sanitize: true });
+      const checkboxBefore = form.getComponent(&apos;checkboxBefore&apos;);
+      const checkboxAfter = form.getComponent(&apos;checkboxAfter&apos;);
+      setTimeout(() =&gt; {
+        const inputBefore = Harness.testElements(checkboxBefore, &apos;input[type=&quot;checkbox&quot;]&apos;, 1)[0];
+        assert.equal(inputBefore.checked, true);
+        const inputAfter = Harness.testElements(checkboxAfter, &apos;input[type=&quot;checkbox&quot;]&apos;, 1)[0];
+        assert.equal(inputAfter.checked, true);
+        assert.deepEqual(form.data, data);
+        done();
       }, 300);
     }).catch((err) =&gt; done(err));
   });

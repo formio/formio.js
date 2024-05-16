@@ -257,6 +257,14 @@ export default class SelectComponent extends ListComponent {
     return super.shouldLoad;
   }
 
+  get selectMetadata() {
+    return super.selectData;
+  }
+
+  get selectData() {
+    return this.selectMetadata || this.component.selectData;
+  }
+
   isEntireObjectDisplay() {
     return this.component.dataSrc === 'resource' && this.valueProperty === 'data';
   }
@@ -1362,7 +1370,7 @@ export default class SelectComponent extends ListComponent {
     return done;
   }
 
-  normalizeSingleValue(value, retainObject) {
+  normalizeSingleValue(value) {
     if (_.isNil(value)) {
       return;
     }
@@ -1370,35 +1378,6 @@ export default class SelectComponent extends ListComponent {
     //check if value equals to default emptyValue
     if (valueIsObject && Object.keys(value).length === 0) {
       return value;
-    }
-    // Check to see if we need to save off the template data into our metadata.
-    if (retainObject) {
-      const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
-      const shouldSaveData = !valueIsObject || this.component.reference;
-      if (templateValue && shouldSaveData && (this.templateData && this.templateData[templateValue]) && this.root?.submission) {
-        const submission = this.root.submission;
-        if (!submission.metadata) {
-          submission.metadata = {};
-        }
-        if (!submission.metadata.selectData) {
-          submission.metadata.selectData = {};
-        }
-
-        let templateData = this.templateData[templateValue];
-        if (this.component.multiple) {
-          templateData = {};
-          const dataValue = this.dataValue;
-          if (dataValue && _.isArray(dataValue) && dataValue.length) {
-            dataValue.forEach((dataValueItem) => {
-              const dataValueItemValue = this.component.reference ? dataValueItem._id.toString() : dataValueItem;
-              templateData[dataValueItemValue] = this.templateData[dataValueItemValue];
-            });
-          }
-          templateData[value] = this.templateData[value];
-        }
-
-        _.set(submission.metadata.selectData, this.path, templateData);
-      }
     }
 
     const dataType = this.component.dataType || 'auto';
@@ -1466,18 +1445,69 @@ export default class SelectComponent extends ListComponent {
    */
   normalizeValue(value) {
     if (this.component.multiple && Array.isArray(value)) {
-      return value.map((singleValue) => this.normalizeSingleValue(singleValue, true));
+      return value.map((singleValue) => this.normalizeSingleValue(singleValue));
     }
 
-    return super.normalizeValue(this.normalizeSingleValue(value, true));
+    return super.normalizeValue(this.normalizeSingleValue(value));
+  }
+
+  setMetadata(value) {
+    if (_.isNil(value)) {
+      return;
+    }
+    const valueIsObject = _.isObject(value);
+    //check if value equals to default emptyValue
+    if (valueIsObject && Object.keys(value).length === 0) {
+      return value;
+    }
+    // Check to see if we need to save off the template data into our metadata.
+    const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
+    const shouldSaveData = !valueIsObject || this.component.reference;
+    if (templateValue && shouldSaveData && this.templateData && this.templateData[templateValue] && this.root?.submission) {
+      const submission = this.root.submission;
+      if (!submission.metadata) {
+        submission.metadata = {};
+      }
+      if (!submission.metadata.selectData) {
+        submission.metadata.selectData = {};
+      }
+
+      let templateData = this.templateData[templateValue];
+      if (this.component.multiple) {
+        templateData = {};
+        const dataValue = this.dataValue;
+        if (dataValue && _.isArray(dataValue) && dataValue.length) {
+          dataValue.forEach((dataValueItem) => {
+            const dataValueItemValue = this.component.reference ? dataValueItem._id.toString() : dataValueItem;
+            templateData[dataValueItemValue] = this.templateData[dataValueItemValue];
+          });
+        }
+        templateData[value] = this.templateData[value];
+      }
+
+      _.set(submission.metadata.selectData, this.path, templateData);
+    }
+  }
+
+  updateValue(value, flags) {
+    const changed = super.updateValue(value, flags);
+    if (changed || !this.selectMetadata) {
+      if (this.component.multiple && Array.isArray(this.dataValue)) {
+        this.dataValue.forEach(singleValue => this.setMetadata(singleValue));
+      }
+      else {
+        this.setMetadata(this.dataValue);
+      }
+    }
+    return changed;
   }
 
   setValue(value, flags = {}) {
     const previousValue = this.dataValue;
+    const changed = this.updateValue(value, flags);
     if (this.component.widget === 'html5' && (_.isEqual(value, previousValue) || _.isEqual(previousValue, {}) && _.isEqual(flags, {})) && !flags.fromSubmission ) {
       return false;
     }
-    const changed = this.updateValue(value, flags);
     value = this.dataValue;
     const hasPreviousValue = !this.isEmpty(previousValue);
     const hasValue = !this.isEmpty(value);
@@ -1606,7 +1636,7 @@ export default class SelectComponent extends ListComponent {
     if (values) {
       if (_.isObject(value)) {
         const compareComplexValues = (optionValue) => {
-          const normalizedOptionValue = this.normalizeSingleValue(optionValue, true);
+          const normalizedOptionValue = this.normalizeSingleValue(optionValue);
 
           if (!_.isObject(normalizedOptionValue)) {
             return false;

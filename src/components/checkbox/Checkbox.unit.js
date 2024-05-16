@@ -10,7 +10,8 @@ import {
   customDefaultComponent,
   comp2,
   comp3,
-  comp4
+  comp4,
+  comp5
 } from './fixtures';
 
 describe('Checkbox Component', () => {
@@ -92,6 +93,29 @@ describe('Checkbox Component', () => {
           assert.equal(contentComp.visible, false);
           done();
         }, 300);
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should set the value for the checkbox if it set before the component from checbox`s condition', (done) =>  {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement('div');
+    const data = {
+      textField: 'test',
+      checkboxBefore: true,
+      checkboxAfter: true
+    };
+    Formio.createForm(element, form).then(form => {
+      form.setValue({ data }, { sanitize: true });
+      const checkboxBefore = form.getComponent('checkboxBefore');
+      const checkboxAfter = form.getComponent('checkboxAfter');
+      setTimeout(() => {
+        const inputBefore = Harness.testElements(checkboxBefore, 'input[type="checkbox"]', 1)[0];
+        assert.equal(inputBefore.checked, true);
+        const inputAfter = Harness.testElements(checkboxAfter, 'input[type="checkbox"]', 1)[0];
+        assert.equal(inputAfter.checked, true);
+        assert.deepEqual(form.data, data);
+        done();
       }, 300);
     }).catch((err) => done(err));
   });

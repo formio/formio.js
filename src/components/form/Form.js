@@ -165,6 +165,7 @@ export default class FormComponent extends Component {
     }
   }
 
+  /* eslint-disable max-statements */
   getSubOptions(options = {}) {
     options.parentPath = `${this.path}.data.`;
     options.events = this.createEmitter();
@@ -222,12 +223,17 @@ export default class FormComponent extends Component {
     }
     if (this.options.saveDraft) {
       options.saveDraft = this.options.saveDraft;
+      options.formio = new Formio(this.formSrc);
     }
     if (this.options.saveDraftThrottle) {
       options.saveDraftThrottle = this.options.saveDraftThrottle;
     }
+    if (this.options.skipDraftRestore) {
+      options.skipDraftRestore = this.options.skipDraftRestore;
+    }
     return options;
   }
+  /* eslint-enable max-statements */
 
   render() {
     if (this.builderMode) {
@@ -640,6 +646,10 @@ export default class FormComponent extends Component {
    */
   beforeSubmit() {
     const submission = this.dataValue;
+    // Cancel triggered saveDraft
+    if (this.subForm?.draftEnabled && this.subForm.triggerSaveDraft?.cancel) {
+      this.subForm.triggerSaveDraft.cancel();
+    }
 
     const isAlreadySubmitted = submission && submission._id && submission.form;
 

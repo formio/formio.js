@@ -259,12 +259,19 @@ export default class Webform extends NestedDataComponent {
     });
 
     // See if we need to restore the draft from a user.
-    if (this.options.saveDraft && !this.options.skipDraftRestore) {
+    if (this.options.saveDraft) {
       this.formReady.then(()=> {
-        const user = Formio.getUser();
-        // Only restore a draft if the submission isn't explicitly set.
-        if (user && !this.submissionSet) {
-          this.restoreDraft(user._id);
+        if (!this.options.skipDraftRestore) {
+          const user = Formio.getUser();
+          // Only restore a draft if the submission isn't explicitly set.
+          if (user && !this.submissionSet) {
+            this.restoreDraft(user._id);
+          }
+        }
+        else {
+          // Enable drafts
+          this.draftEnabled = true;
+          this.savingDraft = false;
         }
       });
     }
@@ -842,7 +849,7 @@ export default class Webform extends NestedDataComponent {
     const draft = fastCloneDeep(this.submission);
     draft.state = 'draft';
 
-    if (!this.savingDraft) {
+    if (!this.savingDraft && !this.submitting) {
       this.emit('saveDraftBegin');
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) => {
@@ -864,12 +871,13 @@ export default class Webform extends NestedDataComponent {
    * @param {userId} - The user id where we need to restore the draft from.
    */
   restoreDraft(userId) {
-    if (!this.formio) {
+    const formio = this.formio || this.options.formio;
+    if (!formio) {
       this.handleDraftError('restoreDraftInstanceError', null, true);
       return;
     }
     this.savingDraft = true;
-    this.formio.loadSubmissions({
+    formio.loadSubmissions({
       params: {
         state: 'draft',
         owner: userId
