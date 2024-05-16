@@ -2964,6 +2964,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/checkbox/fixtures/comp5.js",
+    "file/src/components/checkbox/fixtures/comp5.js.html",
+    "src/components/checkbox/fixtures/comp5.js",
+    "file"
+  ],
+  [
     "src/components/checkbox/fixtures/customdefaultcomponent.js",
     "file/src/components/checkbox/fixtures/customDefaultComponent.js.html",
     "src/components/checkbox/fixtures/customDefaultComponent.js",
@@ -4302,6 +4308,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/form/fixtures/comp7.js",
+    "file/src/components/form/fixtures/comp7.js.html",
+    "src/components/form/fixtures/comp7.js",
+    "file"
+  ],
+  [
+    "src/components/form/fixtures/comp8.js",
+    "file/src/components/form/fixtures/comp8.js.html",
+    "src/components/form/fixtures/comp8.js",
+    "file"
+  ],
+  [
     "src/components/form/fixtures/formmodaledit.js",
     "file/src/components/form/fixtures/formModalEdit.js.html",
     "src/components/form/fixtures/formModalEdit.js",
@@ -4761,6 +4779,12 @@ window.esdocSearchIndex = [
     "src/components/radio/fixtures/comp10.js",
     "file/src/components/radio/fixtures/comp10.js.html",
     "src/components/radio/fixtures/comp10.js",
+    "file"
+  ],
+  [
+    "src/components/radio/fixtures/comp11.js",
+    "file/src/components/radio/fixtures/comp11.js.html",
+    "src/components/radio/fixtures/comp11.js",
     "file"
   ],
   [

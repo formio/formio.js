@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.19.3-rc.1
+### Changed
+ - FIO-8330 fixed saving draft if saveDraft and skipDraftRestore are true
+ - FIO-8342 fixed triggering saveDraft after submitting the form
+ - FIO-8111 fixed saveDraft Trigger for nested forms
+ - FIO-8074 Added Storage Type to Radio Components
+ - FIO-7595 fixed incorrect value for conditionally hidden Checkbox
+ - FIO-8240 fixed skipDraftRestore effect for the nested Forms
+
 ## 4.19.2
 ### Changed
  - Official Release

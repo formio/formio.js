@@ -265,6 +265,26 @@ export default [
     },
   },
   {
+    type: &apos;select&apos;,
+    input: true,
+    label: &apos;Storage Type&apos;,
+    key: &apos;dataType&apos;,
+    clearOnHide: true,
+    tooltip: &apos;The type to store the data. If you select something other than autotype, it will force it to that type.&apos;,
+    weight: 12,
+    template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
+    dataSrc: &apos;values&apos;,
+    data: {
+      values: [
+        { label: &apos;Autotype&apos;, value: &apos;auto&apos; },
+        { label: &apos;String&apos;, value: &apos;string&apos; },
+        { label: &apos;Number&apos;, value: &apos;number&apos; },
+        { label: &apos;Boolean&apos;, value: &apos;boolean&apos; },
+        { label: &apos;Object&apos;, value: &apos;object&apos; },
+      ],
+    },
+  },
+  {
     key: &apos;template&apos;,
     conditional: {
       json: { &apos;===&apos;: [{ var: &apos;data.dataSrc&apos; }, &apos;url&apos;] },
