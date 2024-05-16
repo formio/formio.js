@@ -1145,9 +1145,9 @@ export function iterateKey(key) {
 
 /**
  * Determines a unique key within a map provided the base key.
- * @param map
- * @param base
- * @returns {*}
+ * @param {Record<string, string>} map - The map to check for uniqueness.
+ * @param {string} base - The base path of the key.
+ * @returns {string} - The unique key.
  */
 export function uniqueKey(map, base) {
   let newKey = base;
@@ -1159,8 +1159,9 @@ export function uniqueKey(map, base) {
 
 /**
  * Determines the major version number of bootstrap.
- * @param options
- * @returns {number}
+ * @param {object} options - The options to check for bootstrap version.
+ * @param {string} options.bootstrap - The bootstrap version to use.
+ * @returns {number} - The bootstrap version.
  */
 export function bootstrapVersion(options) {
   if (options.bootstrap) {
@@ -1178,9 +1179,8 @@ export function bootstrapVersion(options) {
 /**
  * Retrun provided argument.
  * If argument is a function, returns the result of a function call.
- * @param {*} e;
- * @param e
- * @returns {*}
+ * @param {Function|any} e - The argument to check if a function and call if so.
+ * @returns {any} - Either the result of the function call (e) or e if it is not a function.
  */
 export function unfold(e) {
   if (typeof e === 'function') {
@@ -1192,39 +1192,34 @@ export function unfold(e) {
 
 /**
  * Map values through unfold and return first non-nil value.
- * @param {Array<T>} collection;
- * @returns {T}
+ * @param {Array<T>} collection - The collection to map through unfold.;
+ * @returns {T} - The first non-nil value.
  */
 export const firstNonNil = _.flow([
   _.partialRight(_.map, unfold),
   _.partialRight(_.find, v => !_.isUndefined(v))
 ]);
 
-/*
- * Create enclosed state.
- * Returns functions to getting and cycling between states.
+/**
+ * Create enclosed state. Returns functions to getting and cycling between states.
  * @param {*} a - initial state.
  * @param {*} b - next state.
- * @return {Functions[]} -- [get, toggle];
- */
-/**
- *
- * @param a
- * @param b
+ * @returns {Functions[]} -- [get, toggle];
  */
 export function withSwitch(a, b) {
   let state = a;
   let next = b;
 
   /**
-   *
+   * Returns the state of the switch.
+   * @returns {*} - The current state.
    */
   function get() {
     return state;
   }
 
   /**
-   *
+   * Toggles the state of the switch.
    */
   function toggle() {
     const prev = state;
@@ -1236,9 +1231,12 @@ export function withSwitch(a, b) {
 }
 
 /**
- *
- * @param callback
- * @param options
+ * Create a function that will call the provided function only the provided limit.
+ * @param {Function} callback - The callback to call.
+ * @param {object} options - The options to use.
+ * @param {number} options.limit - The limit to call the callback.
+ * @param {number} options.delay - The delay to wait before resetting the call count.
+ * @returns {Function} - The function that will call the callback only the provided limit.
  */
 export function observeOverload(callback, options = {}) {
   const { limit = 50, delay = 500 } = options;
@@ -1266,12 +1264,13 @@ export function observeOverload(callback, options = {}) {
 }
 
 /**
- *
- * @param context
- * @param excludeNested
- * @param excludedTypes
+ * Returns the components that are provided within an evaluation context.
+ * @param {any} context - The evaluation context to get the components from.
+ * @param {boolean} excludeNested - Exclude nested components.
+ * @param {Array<string>} excludedTypes - The types of components to exclude.
+ * @returns {Array} - The components within the evaluation context.
  */
-export function getContextComponents(context, excludeNested = false, excludedTypes = []) {
+export function getContextComponents(context, excludeNested, excludedTypes = []) {
   const values = [];
 
   context.utils.eachComponent(context.instance.options.editForm.components, (component, path) => {
@@ -1288,8 +1287,9 @@ export function getContextComponents(context, excludeNested = false, excludedTyp
 }
 
 /**
- *
- * @param context
+ * Returns the button components that are within an evaluation context.
+ * @param {any} context - The evaluation context to get the components from.
+ * @returns {Array} - The button components within the evaluation context.
  */
 export function getContextButtons(context) {
   const values = [];
@@ -1311,10 +1311,9 @@ const inTextTags = ['#text', 'A', 'B', 'EM', 'I', 'SMALL', 'STRONG', 'SUB', 'SUP
 
 /**
  * Helper function for 'translateHTMLTemplate'. Translates text value of the passed html element.
- * @param {HTMLElement} elem
- * @param {Function} translate
- * @returns {string}
- *   Translated element template.
+ * @param {HTMLElement} elem - The element to translate.
+ * @param {Function} translate - The translation function.
+ * @returns {string} - Translated element template.
  */
 function translateElemValue(elem, translate) {
   if (!elem.innerText) {
@@ -1351,8 +1350,8 @@ function translateElemValue(elem, translate) {
 
 /**
  * Helper function for 'translateHTMLTemplate'. Goes deep through html tag children and calls function to translate their text values.
- * @param {HTMLElement} tag
- * @param {Function} translate
+ * @param {HTMLElement} tag - The tag to translate.
+ * @param {Function} translate - The translation function.
  * @returns {void}
  */
 function translateDeepTag(tag, translate) {
@@ -1372,10 +1371,9 @@ function translateDeepTag(tag, translate) {
 
 /**
  * Translates text values in html template.
- * @param {string} template
- * @param {Function} translate
- * @returns {string}
- *   Html template with translated values.
+ * @param {string} template - The template to translate.
+ * @param {Function} translate - The translation function.
+ * @returns {string} - Html template with translated values.
  */
 export function translateHTMLTemplate(template, translate) {
   const isHTML = /<[^>]*>/.test(template);
@@ -1397,9 +1395,9 @@ export function translateHTMLTemplate(template, translate) {
 
 /**
  * Sanitize an html string.
- * @param string
- * @param options
- * @returns {*}
+ * @param {string} string - The string to sanitize.
+ * @param {any} options - The options to use for sanitization.
+ * @returns {string} - The sanitized html string.
  */
 export function sanitize(string, options) {
   if (typeof dompurify.sanitize !== 'function') {
@@ -1448,7 +1446,8 @@ export function sanitize(string, options) {
 
 /**
  * Fast cloneDeep for JSON objects only.
- * @param obj
+ * @param {any} obj - The object to perform a fast clone deep against.
+ * @returns {any} - The cloned object.
  */
 export function fastCloneDeep(obj) {
   return obj ? JSON.parse(JSON.stringify(obj)) : obj;
@@ -1457,8 +1456,9 @@ export function fastCloneDeep(obj) {
 export { Evaluator, interpolate };
 
 /**
- *
- * @param componentJson
+ * Returns if the component is an input component.
+ * @param {import('@formio/core').Component} componentJson - The JSON of a component.
+ * @returns {bool} - TRUE if the component is an input component; FALSE otherwise.
  */
 export function isInputComponent(componentJson) {
   if (componentJson.input === false || componentJson.input === true) {
@@ -1481,8 +1481,9 @@ export function isInputComponent(componentJson) {
 }
 
 /**
- *
- * @param pathStr
+ * Takes a component path, and returns a component path array.
+ * @param {string} pathStr - The path string to convert to an array.
+ * @returns {Arryay<number>} - The array of paths.
  */
 export function getArrayFromComponentPath(pathStr) {
   if (!pathStr || !_.isString(pathStr)) {
@@ -1499,9 +1500,10 @@ export function getArrayFromComponentPath(pathStr) {
 }
 
 /**
- *
- * @param child
- * @param parent
+ * Returns true if the component is a child of the parent.
+ * @param {any} child - The child component to check.
+ * @param {any} parent - The parent component to check.
+ * @returns {boolean} - TRUE if the child is a child of the parent; FALSE otherwise.
  */
 export function isChildOf(child, parent) {
   while (child && child.parent) {
@@ -1514,8 +1516,9 @@ export function isChildOf(child, parent) {
 }
 
 /**
- *
- * @param path
+ * Takes an array of component path indexes, and returns a string version of that array.
+ * @param {Array<number>} path - The path array to convert to a string.
+ * @returns {string} - The string version of the path.
  */
 export function getStringFromComponentPath(path) {
   if (!_.isArray(path)) {
@@ -1534,20 +1537,21 @@ export function getStringFromComponentPath(path) {
 }
 
 /**
- *
- * @param number
- * @param precision
+ * Takes a number and rounds it to the provided precision amount.
+ * @param {number} number - The number to round.
+ * @param {number} precision - The precision to round the number to.
+ * @returns {string} - The rounded number.
  */
 export function round(number, precision) {
   if (_.isNumber(number)) {
     return number.toFixed(precision);
   }
-  return number;
+  return number.toString();
 }
 
 /**
  * Check for Internet Explorer browser version
- * @returns {(number|null)}
+ * @returns {(number|null)} - The IE browser version or null if not IE
  */
 export function getIEBrowserVersion() {
   const { ie, version } = getBrowserInfo();
@@ -1611,8 +1615,9 @@ export function getBrowserInfo() {
 }
 
 /**
- *
- * @param path
+ * Takes a component path, which may include array indicies (i.e. [0][1]), and returns the compoennt path without the indicies.
+ * @param {string} path - The path to remove the indicies from.
+ * @returns {string} - The path without the indicies.
  */
 export function getComponentPathWithoutIndicies(path = '') {
   return path.replace(/\[\d+\]/, '');
@@ -1620,8 +1625,9 @@ export function getComponentPathWithoutIndicies(path = '') {
 
 /**
  * Returns a path to the component which based on its schema
- * @param {*} component is a component's schema containing link to its parent's schema in the 'parent' property
- * @param path
+ * @param {import('@formio/core').Component} component - Component containing link to its parent's schema in the 'parent' property
+ * @param {string} path - Path to the component
+ * @returns {string} - Path to the component
  */
 export function getComponentPath(component, path = '') {
   if (!component || !component.key || component?._form?.display === 'wizard') { // unlike the Webform, the Wizard has the key and it is a duplicate of the panel key
@@ -1633,8 +1639,8 @@ export function getComponentPath(component, path = '') {
 
 /**
  * Returns a parent component of the passed component instance skipping all the Layout components
- * @param {*} componentInstance
- * @returns {(Component|undefined)}
+ * @param {Component} componentInstance - The component to check for the parent.
+ * @returns {Component|undefined} - The parent data component.
  */
 export function getDataParentComponent(componentInstance) {
   if (!componentInstance) {
@@ -1651,8 +1657,8 @@ export function getDataParentComponent(componentInstance) {
 
 /**
  * Returns whether the value is a promise
- * @param value
- * @returns {boolean}
+ * @param {any} value - The value to check
+ * @returns {boolean} - TRUE if the value is a promise; FALSE otherwise
  */
  export function isPromise(value) {
    return value
@@ -1664,9 +1670,9 @@ export function getDataParentComponent(componentInstance) {
 /**
  * Determines if the component has a scoping parent in tree (a component which scopes its children and manages its
  * changes by itself, e.g. EditGrid)
- * @param componentInstance
- * @param firstPass
- * @returns {boolean|boolean|*}
+ * @param {Component} componentInstance - The component to check for the scoping parent.
+ * @param {boolean} firstPass - Whether it is the first pass of the function
+ * @returns {boolean|*} - TRUE if the component has a scoping parent; FALSE otherwise
  */
 export function isInsideScopingComponent(componentInstance, firstPass = true) {
   if (!firstPass && componentInstance?.hasScopedChildren) {
@@ -1683,8 +1689,9 @@ export function isInsideScopingComponent(componentInstance, firstPass = true) {
 }
 
 /**
- *
- * @param element
+ * Returns all the focusable elements within the provided dom element.
+ * @param {HTMLElement} element - The element to get the focusable elements from.
+ * @returns {NodeList<HTMLElement>} - The focusable elements within the provided element.
  */
 export function getFocusableElements(element) {
   const focusableSelector =
@@ -1707,8 +1714,9 @@ export const componentValueTypes = {
 };
 
 /**
- *
- * @param fullSchema
+ * Returns the saved types for the component
+ * @param {import('@formio/core').Component} fullSchema - The component schema
+ * @returns {Array<string>|null} - The saved types for the component
  */
 export function getComponentSavedTypes(fullSchema) {
   const schema = fullSchema || {};
@@ -1726,11 +1734,10 @@ export function getComponentSavedTypes(fullSchema) {
 
 /**
  * Interpolates @formio/core errors so that they are compatible with the renderer
- * @param component
- * @param {FieldError[]} errors
- * @param firstPass
- * @param interpolateFn
- * @returns {[]}
+ * @param {Component} component - The component to interpolate the errors for
+ * @param {FieldError[]} errors - The errors to interpolate
+ * @param {Function} interpolateFn - The interpolation function
+ * @returns {[]} - The interpolated errors
  */
 export const interpolateErrors = (component, errors, interpolateFn) => {
  return errors.map((error) => {
@@ -1742,8 +1749,9 @@ export const interpolateErrors = (component, errors, interpolateFn) => {
 };
 
 /**
- *
- * @param template
+ * Returns the template keys inside the template code.
+ * @param {string} template - The template to get the keys from.
+ * @returns {Array<string>} - The keys inside the template.
  */
 export function getItemTemplateKeys(template) {
   const templateKeys = [];
@@ -1765,8 +1773,9 @@ export function getItemTemplateKeys(template) {
 }
 
 /**
- *
- * @param comp
+ * Returns if the component is a select resource with an object for its value.
+ * @param {import('@formio/core').Component} comp - The component to check.
+ * @returns {boolean} - TRUE if the component is a select resource with an object for its value; FALSE otherwise.
  */
 export function isSelectResourceWithObjectValue(comp = {}) {
   const { reference, dataSrc, valueProperty } = comp;

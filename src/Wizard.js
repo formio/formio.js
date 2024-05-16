@@ -13,24 +13,21 @@ import {
 export default class Wizard extends Webform {
   /**
    * Constructor for wizard-based forms.
-   * @param {HTMLElement} [element] - The DOM element to place this wizard.
-   * @param {object} [options] - Options object, supported options include:
+   * @param {HTMLElement | object | import('Form').FormOptions} [elementOrOptions] - The DOM element to render this form within or the options to create this form instance.
+   * @param {import('Form').FormOptions} [_options] - The options to create a new form instance.
    *    - breadcrumbSettings.clickable: true (default) - determines if the breadcrumb bar is clickable.
    *    - buttonSettings.show*(Previous, Next, Cancel): true (default) - determines if the button is shown.
    *    - allowPrevious: false (default) - determines if the breadcrumb bar is clickable for visited tabs.
    */
-  constructor() {
+  constructor(elementOrOptions, _options) {
     let element, options;
-    if (arguments[0] instanceof HTMLElement || arguments[1]) {
-      element = arguments[0];
-      options = arguments[1] || {};
+    if (elementOrOptions instanceof HTMLElement || options) {
+        element = elementOrOptions;
+        options = _options;
+    } else {
+        options = elementOrOptions;
     }
-    else {
-      options = arguments[0] || {};
-    }
-
     options.display = 'wizard';
-
     super(element, options);
     this.pages = [];
     this.prefixComps = [];

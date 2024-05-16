@@ -1660,7 +1660,7 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * Performs required transformations on the initial value to use in selectOptions
-   * @param {*} value
+   * @param {*} value - The value to transform.
    * @returns {*} - Returns the options value.
    */
   getOptionValue(value) {

@@ -38,8 +38,8 @@
     "lint"
   ],
   "scripts": {
-    "build": "yarn lib && yarn dist",
-    "doc": "",
+    "build": "yarn doc && yarn lib && yarn dist",
+    "doc": "typedoc",
     "dist": "gulp clean:dist && webpack --config webpack.config.js && webpack --config webpack.prod.js && gulp build",
     "lib": "gulp clean:lib && tsc --project tsconfig.cjs.json && tsc --project tsconfig.mjs.json && yarn lib:package",
     "lib:package": "node ./libpackage.js",
@@ -128,8 +128,6 @@
     "chance": "^1.1.9",
     "ejs-loader": "^0.5.0",
     "escape-string-regexp": "^5.0.0",
-    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
-    "esdoc-standard-plugin": "^1.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-jsdoc": "^48.2.5",
     "fetch-mock": "^9.11.0",
