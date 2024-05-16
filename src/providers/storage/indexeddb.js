@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 /**
- *
+ * indexedDb provider for file storage.
+ * @returns {import('./typedefs').FileProvider} The FileProvider interface defined in index.js.
  */
 function indexeddb() {
   return {

@@ -394,14 +394,13 @@ export function checkCondition(component, row, data, form, instance) {
 
 /**
  * Test a trigger on a component.
- * @param component
- * @param action
- * @param trigger
- * @param data
- * @param row
- * @param form
- * @param instance
- * @returns {mixed}
+ * @param {import('@formio/core').Component} component - The component to test the trigger against.
+ * @param {import('@formio/core').LogicTrigger} trigger - The trigger configuration.
+ * @param {import('@formio/core').DataObject} row - The contextual row data.
+ * @param {import('@formio/core').DataObject} data - The root data object.
+ * @param {import('@formio/core').Form} form - The form object.
+ * @param {any} instance - The component that is performing the trigger.
+ * @returns {boolean} - TRUE if the trigger should fire; FALSE otherwise.
  */
 export function checkTrigger(component, trigger, row, data, form, instance) {
   // If trigger is empty, don't fire it
@@ -423,13 +422,14 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
 }
 
 /**
- *
- * @param component
- * @param action
- * @param result
- * @param row
- * @param data
- * @param instance
+ * Sets a property on a component via an executed Logic action.
+ * @param {import('@formio/core').Component} component - The component to set the property on.
+ * @param {import('@formio/core').LogicAction} action - The action to perform on the component.
+ * @param {string} result - The name of the variable in the evaulation to use as the result.
+ * @param {import('@formio/core').DataObject} row - The contextual row data.
+ * @param {import('@formio/core').DataObject} data - The full submission data.
+ * @param {any} instance - The component instance.
+ * @returns {import('@formio/core').Component} - The modified component.
  */
 export function setActionProperty(component, action, result, row, data, instance) {
   const property = action.property.value;
@@ -471,8 +471,8 @@ export function setActionProperty(component, action, result, row, data, instance
 
 /**
  * Unescape HTML characters like &lt, &gt, &amp and etc.
- * @param str
- * @returns {string}
+ * @param {string} str - The string to unescape.
+ * @returns {string} - The unescaped string.
  */
 export function unescapeHTML(str) {
   if (typeof window === 'undefined' || !('DOMParser' in window)) {
@@ -485,15 +485,9 @@ export function unescapeHTML(str) {
 
 /**
  * Make HTML element from string
- * @param str
- * @param selector
- * @returns {HTMLElement}
- */
-
-/**
- *
- * @param str
- * @param selector
+ * @param {string} str - The string to convert to an HTML element.
+ * @param {string} selector - The selector to use to get the element once it is created.
+ * @returns {HTMLElement} - The HTML element that was created.
  */
 export function convertStringToHTMLElement(str, selector) {
   const doc = new window.DOMParser().parseFromString(str, 'text/html');
@@ -502,10 +496,10 @@ export function convertStringToHTMLElement(str, selector) {
 
 /**
  * Make a filename guaranteed to be unique.
- * @param name
- * @param template
- * @param evalContext
- * @returns {string}
+ * @param {string} name - The original name of the file.
+ * @param {string} template - The template to use for the unique name.
+ * @param {object} evalContext - The context to use for the evaluation.
+ * @returns {string} - A unique filename.
  */
 export function uniqueName(name, template, evalContext) {
   template = template || '{{fileName}}-{{guid}}';
@@ -530,7 +524,8 @@ export function uniqueName(name, template, evalContext) {
 }
 
 /**
- *
+ * Returns a GUID
+ * @returns {string} - A GUID.
  */
 export function guid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -544,8 +539,8 @@ export function guid() {
 
 /**
  * Return a translated date setting.
- * @param date
- * @returns {(null|Date)}
+ * @param {string|Date} date - The date to translate.
+ * @returns {(null|Date)} - The translated date.
  */
 export function getDateSetting(date) {
   if (_.isNil(date) || _.isNaN(date) || date === '') {
@@ -594,8 +589,9 @@ export function getDateSetting(date) {
 }
 
 /**
- *
- * @param date
+ * Returns true if the date is a valid date. False otherwise.
+ * @param {Date|string} date - The date to check for validity.
+ * @returns {boolean} - TRUE if the date is valid; FALSE otherwise.
  */
 export function isValidDate(date) {
   return _.isDate(date) && !_.isNaN(date.getDate());
@@ -603,7 +599,7 @@ export function isValidDate(date) {
 
 /**
  * Get the current timezone string.
- * @returns {string}
+ * @returns {string} - The current timezone.
  */
 export function currentTimezone() {
   if (moment.currentTimezone) {
@@ -615,9 +611,9 @@ export function currentTimezone() {
 
 /**
  * Get an offset date provided a date object and timezone object.
- * @param date
- * @param timezone
- * @returns {Date}
+ * @param {Date} date - The date to offset.
+ * @param {string} timezone - The timezone to offset the date to.
+ * @returns {Date} - The offset date.
  */
 export function offsetDate(date, timezone) {
   if (timezone === 'UTC') {
@@ -635,7 +631,7 @@ export function offsetDate(date, timezone) {
 
 /**
  * Returns if the zones are loaded.
- * @returns {boolean}
+ * @returns {boolean} - TRUE if the zones are loaded; FALSE otherwise.
  */
 export function zonesLoaded() {
   return moment.zonesLoaded;
@@ -643,8 +639,8 @@ export function zonesLoaded() {
 
 /**
  * Returns if we should load the zones.
- * @param timezone
- * @returns {boolean}
+ * @param {string} timezone - The timezone to check if we should load the zones.
+ * @returns {boolean} - TRUE if we should load the zones; FALSE otherwise.
  */
 export function shouldLoadZones(timezone) {
   if (timezone === currentTimezone() || timezone === 'UTC') {
@@ -655,9 +651,9 @@ export function shouldLoadZones(timezone) {
 
 /**
  * Externally load the timezone data.
- * @param url
- * @param timezone
- * @returns {Promise<any> | *}
+ * @param {string} url - The URL to load the timezone data from.
+ * @param {string} timezone - The timezone to load.
+ * @returns {Promise<any> | *} - Resolves when the zones for this timezone are loaded.
  */
 export function loadZones(url, timezone) {
   if (timezone && !shouldLoadZones(timezone)) {
@@ -684,10 +680,10 @@ export function loadZones(url, timezone) {
 
 /**
  * Get the moment date object for translating dates with timezones.
- * @param value
- * @param format
- * @param timezone
- * @returns {*}
+ * @param {string|Date} value - The value to convert into a moment date.
+ * @param {string} format - The format to convert the date to.
+ * @param {string} timezone - The timezone to convert the date to.
+ * @returns {Date} - The moment date object.
  */
 export function momentDate(value, format, timezone) {
   const momentDate = moment(value);
@@ -705,12 +701,12 @@ export function momentDate(value, format, timezone) {
 
 /**
  * Format a date provided a value, format, and timezone object.
- * @param timezonesUrl
- * @param value
- * @param format
- * @param timezone
- * @param flatPickrInputFormat
- * @returns {string}
+ * @param {string} timezonesUrl - The URL to load the timezone data from.
+ * @param {string|Date} value - The value to format.
+ * @param {string} format - The format to format the date to.
+ * @param {string} timezone - The timezone to format the date to.
+ * @param {string} flatPickrInputFormat - The format to use for flatpickr input.
+ * @returns {string} - The formatted date.
  */
 export function formatDate(timezonesUrl, value, format, timezone, flatPickrInputFormat) {
   const momentDate = moment(value, flatPickrInputFormat || undefined);
@@ -746,12 +742,12 @@ export function formatDate(timezonesUrl, value, format, timezone, flatPickrInput
 
 /**
  * Pass a format function to format within a timezone.
- * @param timezonesUrl
- * @param formatFn
- * @param date
- * @param format
- * @param timezone
- * @returns {string}
+ * @param {string} timezonesUrl - The URL to load the timezone data from.
+ * @param {Function} formatFn - The format function to use.
+ * @param {Date|string} date - The date to format.
+ * @param {string} format - The format to format the date to.
+ * @param {string} timezone - The timezone to format the date to.
+ * @returns {string} - The formatted date.
  */
 export function formatOffset(timezonesUrl, formatFn, date, format, timezone) {
   if (timezone === currentTimezone()) {
@@ -773,8 +769,9 @@ export function formatOffset(timezonesUrl, formatFn, date, format, timezone) {
 }
 
 /**
- *
- * @param locale
+ * Returns the local date format information.
+ * @param {Intl.LocalesArgument} locale - The locale to get the date format for.
+ * @returns {object} - The local date format information.
  */
 export function getLocaleDateFormatInfo(locale) {
   const formatInfo = {};
@@ -790,8 +787,8 @@ export function getLocaleDateFormatInfo(locale) {
 
 /**
  * Convert the format from the angular-datepicker module to flatpickr format.
- * @param format
- * @returns {string}
+ * @param {string} format - The format to convert.
+ * @returns {string} - The converted format.
  */
 export function convertFormatToFlatpickr(format) {
   return format
@@ -827,8 +824,8 @@ export function convertFormatToFlatpickr(format) {
 
 /**
  * Convert the format from the angular-datepicker module to moment format.
- * @param format
- * @returns {string}
+ * @param {string} format - The format to convert.
+ * @returns {string} - The converted format.
  */
 export function convertFormatToMoment(format) {
   return format
@@ -845,8 +842,9 @@ export function convertFormatToMoment(format) {
 }
 
 /**
- *
- * @param format
+ * Convert the format from the angular-datepicker module to mask format.
+ * @param {string} format - The format to convert.
+ * @returns {string} - The converted format.
  */
 export function convertFormatToMask(format) {
   return format
@@ -908,10 +906,11 @@ export function getInputMask(mask, placeholderChar) {
 }
 
 /**
- *
- * @param value
- * @param mask
- * @param placeholderChar
+ * Unmasks a value using the provided mask and placeholder characters.
+ * @param {string} value - The value to unmask.
+ * @param {string} mask - The mask to use for unmasking.
+ * @param {string} placeholderChar - The placeholder character to use for unmasking.
+ * @returns {string} - The unmasked value.
  */
 export function unmaskValue(value, mask, placeholderChar) {
   if (!mask || !value || value.length > mask.length) {
@@ -935,9 +934,10 @@ export function unmaskValue(value, mask, placeholderChar) {
 }
 
 /**
- *
- * @param value
- * @param inputMask
+ * Returns true if the value matches the input mask format.
+ * @param {string} value - The value to check.
+ * @param {string} inputMask - The input mask to check against.
+ * @returns {boolean} - TRUE if the value matches the input mask; FALSE otherwise.
  */
 export function matchInputMask(value, inputMask) {
   if (!inputMask) {
@@ -962,8 +962,9 @@ export function matchInputMask(value, inputMask) {
 }
 
 /**
- *
- * @param lang
+ * Returns the number separators (i.e. 1,000) for the provided language.
+ * @param {string} lang - The language code to get the number separators for.
+ * @returns {{delimiter: string, decimalSeparator: string}} - The number separators.
  */
 export function getNumberSeparators(lang = 'en') {
   const formattedNumberString = (12345.6789).toLocaleString(lang);
@@ -981,9 +982,10 @@ export function getNumberSeparators(lang = 'en') {
 }
 
 /**
- *
- * @param component
- * @param defaultLimit
+ * Returns the number for the maximum amount of decimal places for a number.
+ * @param {import('@formio/core').Component} component - The component to check for decimal limits.
+ * @param {number} defaultLimit - The default limit to use if none is provided in the component.
+ * @returns {number} - The number of decimal places allowed.
  */
 export function getNumberDecimalLimit(component, defaultLimit) {
   if (_.has(component, 'decimalLimit')) {
@@ -1004,12 +1006,13 @@ export function getNumberDecimalLimit(component, defaultLimit) {
 }
 
 /**
- *
- * @param root0
- * @param root0.currency
- * @param root0.decimalLimit
- * @param root0.decimalSeparator
- * @param root0.lang
+ * Returns the currency affixes for a specific language.
+ * @param {object} arg0 - The arguments object.
+ * @param {string} arg0.currency - The currency code to get the affixes for.
+ * @param {number} arg0.decimalLimit - The number of decimal places to use.
+ * @param {string} arg0.decimalSeparator - The decimal separator to use.
+ * @param {string} arg0.lang - The language code to use.
+ * @returns {{prefix: string, suffix: string}} - The currency affixes.
  */
 export function getCurrencyAffixes({
    currency,
@@ -1038,9 +1041,9 @@ export function getCurrencyAffixes({
 
 /**
  * Fetch the field data provided a component.
- * @param data
- * @param component
- * @returns {*}
+ * @param {import('@formio/core').DataObject} data - The data object to fetch the field data from.
+ * @param {import('@formio/core').Component} component - The component to fetch the field data for.
+ * @returns {*} - The field data.
  */
 export function fieldData(data, component) {
   if (!data) {
@@ -1093,10 +1096,10 @@ export function fieldData(data, component) {
 
 /**
  * Delays function execution with possibility to execute function synchronously or cancel it.
- * @param fn Function to delay
- * @param delay Delay time
- * @param {...any} args
- * @returns {*}
+ * @param {Function} fn - Function to delay
+ * @param {number} delay - Delay time
+ * @param {...any} args - Arguments to pass to the function
+ * @returns {*} - Function to cancel the delay
  */
 export function delay(fn, delay = 0, ...args) {
   const timer = setTimeout(fn, delay, ...args);
@@ -1109,7 +1112,8 @@ export function delay(fn, delay = 0, ...args) {
   }
 
   /**
-   *
+   * Execute the function early.
+   * @returns {*} - The result of the function.
    */
   function earlyCall() {
     cancel();

@@ -1,9 +1,13 @@
+
 import XHR from './xhr';
+
 /**
- *
- * @param formio
+ * Azure File Services provider for file storage.
+ * @param {object} formio formio instance
+ * @returns {import('./typedefs').FileProvider} The FileProvider interface defined in index.js.
  */
 function azure(formio) {
+  
   return {
     uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
       return XHR.upload(formio, 'azure', (xhr, response) => {
@@ -34,4 +38,7 @@ function azure(formio) {
 }
 
 azure.title = 'Azure File Services';
+
+
+
 export default azure;

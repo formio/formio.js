@@ -10,6 +10,10 @@ import { AddressProvider } from './AddressProvider';
  */
 
 export class NominatimAddressProvider extends AddressProvider {
+  /**
+   * Gets the name of the address provider.
+   * @type {string}
+   */
   static get name() {
     return 'nominatim';
   }
@@ -48,7 +52,7 @@ export class NominatimAddressProvider extends AddressProvider {
   }
   /**
    * Generates the request URL for the address provider with options.
-   * @param {NominatimAddressProviderOptionsParams} options
+   * @param {NominatimAddressProviderOptionsParams} options - The request options.
    * @returns {string} The formatted Url.
    */
   getRequestUrl(options = {}) {

@@ -8,8 +8,9 @@ const loadAbortControllerPolyfill = async() => {
 };
 
 /**
- *
- * @param formio
+ * S3 File Services provider for file storage.
+ * @param {object} formio formio instance
+ * @returns {import('./typedefs').FileProvider} The FileProvider interface defined in index.js.
  */
 function s3(formio) {
   return {

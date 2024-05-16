@@ -154,14 +154,14 @@ function getOptions(options) {
  */
 export default class Webform extends NestedDataComponent {
     /**
-     * @type {FormOptions} - the options for this Webform.
+     * @type {import('Form').FormOptions} - the options for this Webform.
      */
     options;
 
     /**
      * Creates a new Form instance.
-     * @param {HTMLElement | object | FormOptions} [elementOrOptions] - The DOM element to render this form within or the options to create this form instance.
-     * @param {FormOptions} [options] - The options to create a new form instance.
+     * @param {HTMLElement | object | import('Form').FormOptions} [elementOrOptions] - The DOM element to render this form within or the options to create this form instance.
+     * @param {import('Form').FormOptions} [options] - The options to create a new form instance.
      */
     constructor(elementOrOptions, options) {
         let element, formOptions;

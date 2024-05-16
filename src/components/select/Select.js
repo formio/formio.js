@@ -331,10 +331,10 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * Adds an option to the select dropdown.
-   * @param value
-   * @param label
-   * @param attrs
-   * @param id
+   * @param {*} value - The value of the new option.
+   * @param {string} label - The label of the new option.
+   * @param {object} [attrs] - Additional value attributes. Defaults to {}.
+   * @param {string} [id] - An id. Defaults to a random string.
    */
   addOption(value, label, attrs = {}, id = getRandomComponentId()) {
     if (_.isNil(label)) return;
@@ -696,6 +696,7 @@ export default class SelectComponent extends ListComponent {
   }
   /**
    * Get the request headers for this select dropdown.
+   * @returns {*} - Returns the request headers for this select dropdown.
    */
   get requestHeaders() {
     // Create the headers object.
@@ -1260,12 +1261,6 @@ export default class SelectComponent extends ListComponent {
     return super.visible;
   }
 
-  /**
-   * @param {*} value
-   * @param values
-   * @param {Array} items
-   * @param keyValue
-   */
   addCurrentChoices(values, items, keyValue) {
     if (!values) {
       return false;
@@ -1443,9 +1438,9 @@ export default class SelectComponent extends ListComponent {
   }
 
   /**
-   * Normalize values coming into updateValue.
-   * @param value
-   * @returns {*}
+   * Normalize values coming into updateValue. For example, depending on the configuration, string value `"true"` will be normalized to boolean `true`.
+   * @param {*} value - The value to normalize
+   * @returns {*} - Returns the normalized value
    */
   normalizeValue(value) {
     if (this.component.multiple && Array.isArray(value)) {
@@ -1666,6 +1661,7 @@ export default class SelectComponent extends ListComponent {
   /**
    * Performs required transformations on the initial value to use in selectOptions
    * @param {*} value
+   * @returns {*} - Returns the options value.
    */
   getOptionValue(value) {
     return _.isObject(value) && this.isEntireObjectDisplay()
@@ -1681,7 +1677,7 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * If component has static values (values, json) or custom values, returns an array of them
-   * @returns {Array<*>|undefined}
+   * @returns {Array<*>|undefined} - Returns an array of the static or custom values.
    */
   getOptionsValues() {
     let rawItems = [];
@@ -1726,7 +1722,7 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * Check if a component is eligible for multiple validation
-   * @returns {boolean}
+   * @returns {boolean} - Returns FALSE for select components.
    */
   validateMultiple() {
     // Select component will contain one input when flagged as multiple.
