@@ -3,9 +3,9 @@ import nestedComponentForm from '../_classes/nested/NestedComponent.form';
 import WellEditDisplay from './editForm/Well.edit.display';
 
 /**
- * Well Component edit form definition.
- * @param {...any} extend - The extended definition.
- * @returns {object} - The Well Component edit form definition.
+ * The Edit Form function.
+ * @param {...any} extend - The components that extend the edit form.
+ * @returns {import('@formio/core').Component[]} - The edit form components.
  */
 export default function(...extend) {
   return nestedComponentForm([
