@@ -10,8 +10,9 @@ import ComponentEditLayout from './editForm/Component.edit.layout';
 import EditFormUtils from './editForm/utils';
 
 /**
- *
- * @param {...any} extend
+ * The Edit Form function.
+ * @param {...any} extend - The components that extend the edit form.
+ * @returns {import('@formio/core').Component[]} - The edit form components.
  */
 export default function(...extend) {
   const components = _.cloneDeep([
