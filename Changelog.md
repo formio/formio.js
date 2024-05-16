@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.19.3-rc.2]
+## 4.19.3-rc.2
 ### Changed
  - Resolved merge conflict with saveDraft
    
