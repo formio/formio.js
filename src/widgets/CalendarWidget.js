@@ -307,11 +307,11 @@ export default class CalendarWidget extends InputWidget {
   }
 
   /**
-   * Return the date value.
-   * @param date
-   * @param format
-   * @param useTimezone
-   * @returns {string}
+   * Return the date value as a string.
+   * @param {string|Date} date - The date object or a date string that is momentjs compatible.
+   * @param {string} format - The DateParser code format.
+   * @param {boolean} [useTimezone] - If the timezone should be used.
+   * @returns {string} - Returns the formatted date string.
    */
   getDateValue(date, format, useTimezone) {
     if (useTimezone) {
@@ -322,7 +322,7 @@ export default class CalendarWidget extends InputWidget {
 
   /**
    * Return the value of the selected date.
-   * @returns {*}
+   * @returns {*} - The value of the selected date.
    */
   getValue() {
     // Standard output format.
@@ -349,7 +349,8 @@ export default class CalendarWidget extends InputWidget {
 
   /**
    * Set the selected date value.
-   * @param value
+   * @param {*} value - The value to set.
+   * @returns {void}
    */
   setValue(value) {
     const saveAsText = (this.settings.saveAs === 'text');
