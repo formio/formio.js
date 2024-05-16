@@ -1,6 +1,6 @@
 {
   "name": "@formio/js",
-  "version": "5.0.0-rc.53",
+  "version": "5.0.0-rc.54",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "lib/cjs/index.js",
   "exports": {
@@ -21,14 +21,18 @@
       "require": "./lib/cjs/formio.form.js"
     },
     "./embed": {
-      "import": "./lib/cjs/Embed.js",
-      "require": "./lib/cjs/Embed.js"
+      "import": "./lib/cjs/InlineEmbed.js",
+      "require": "./lib/cjs/InlineEmbed.js"
     },
     "./dist/*": "./dist/*"
   },
   "files": [
     "dist",
-    "lib"
+    "lib",
+    "embed.d.ts",
+    "form.d.ts",
+    "sdk.d.ts",
+    "utils.d.ts"
   ],
   "pre-commit": [
     "lint"
