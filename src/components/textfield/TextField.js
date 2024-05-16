@@ -110,11 +110,10 @@ export default class TextFieldComponent extends Input {
   }
 
   /**
-   * Returns the mask value object.
-   *
-   * @param value
-   * @param flags
-   * @return {*}
+   * Returns the mask value object (mutates value!).
+   * @param {any} [value] - The value to convert to a mask value.
+   * @param {any} [flags] - The flags to use when converting to a mask value.
+   * @returns {*} - The value as a mask value.
    */
   maskValue(value, flags = {}) {
     // Convert it into the correct format.
@@ -136,10 +135,9 @@ export default class TextFieldComponent extends Input {
 
   /**
    * Normalize the value set in the data object.
-   *
-   * @param value
-   * @param flags
-   * @return {*}
+   * @param {any} value - The value to normalize.
+   * @param {any} flags - The flags to use when normalizing the value.
+   * @returns {*} - Returns the normalized value.
    */
   normalizeValue(value, flags = {}) {
     if (!this.isMultipleMasksField) {
@@ -153,10 +151,10 @@ export default class TextFieldComponent extends Input {
 
   /**
    * Sets the value at this index.
-   *
-   * @param index
-   * @param value
-   * @param flags
+   * @param {number} index - The index to set the value at.
+   * @param {any} value - The value to set.
+   * @param {any} [flags] - The flags to use when setting the value.
+   * @returns {void}
    */
   setValueAt(index, value, flags = {}) {
     if (!this.isMultipleMasksField) {
@@ -191,9 +189,8 @@ export default class TextFieldComponent extends Input {
 
   /**
    * Returns the value at this index.
-   *
-   * @param index
-   * @return {*}
+   * @param {number} index - The index to get the value from.
+   * @returns {*} - The value at the index.
    */
   getValueAt(index) {
     if (!this.isMultipleMasksField) {

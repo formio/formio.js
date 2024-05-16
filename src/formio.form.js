@@ -40,8 +40,10 @@ Formio.Components.setComponents(AllComponents);
 
 /**
  * Register a module
- * @param {*} plugin
- * @returns
+ * @param {any} mod - The module object to register. This can also be a function which accepts Formio as an argument.
+ * @param {Function|null} [defaultFn] - The default function to call if the module does not have a known key.
+ * @param {any} options - Options for the module.
+ * @returns {void}
  */
 export function registerModule(mod, defaultFn = null, options = {}) {
   if (typeof mod === 'function') {
@@ -103,6 +105,10 @@ export function registerModule(mod, defaultFn = null, options = {}) {
   }
 }
 
+/**
+ * @param {Function|null} defaultFn - The default function to call if the module does not have a known key.
+ * @returns {void}
+ */
 export function useModule(defaultFn = null) {
   return (plugins, options = {}) => {
     plugins = _.isArray(plugins) ? plugins : [plugins];

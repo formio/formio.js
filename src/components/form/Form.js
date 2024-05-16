@@ -397,8 +397,8 @@ export default class FormComponent extends Component {
 
   /**
    * Pass everyComponent to subform.
-   * @param args
-   * @returns {*|void}
+   * @param {any[]} args - Arguments to pass through to the subform's everyComponent method.
+   * @returns {*} - The result of the subform's everyComponent method.
    */
   everyComponent(...args) {
     if (this.subForm) {
@@ -425,8 +425,8 @@ export default class FormComponent extends Component {
 
   /**
    * Create a subform instance.
-   *
-   * @return {*}
+   * @param {boolean} [fromAttach] - This function is being called from an `attach` method.
+   * @returns {*} - The subform instance.
    */
   createSubForm(fromAttach) {
     this.subFormReady = this.loadSubForm(fromAttach).then((form) => {
@@ -485,6 +485,8 @@ export default class FormComponent extends Component {
 
   /**
    * Load the subform.
+   * @param {boolean} fromAttach - This function is being called from an `attach` method.
+   * @returns {Promise} - The promise that resolves when the subform is loaded.
    */
   loadSubForm(fromAttach) {
     if (this.builderMode || this.isHidden() || (this.isSubFormLazyLoad() && !fromAttach)) {
@@ -581,7 +583,7 @@ export default class FormComponent extends Component {
 
   /**
    * Determine if the subform should be submitted.
-   * @return {*|boolean}
+   * @returns {*|boolean} - TRUE if the subform should be submitted, FALSE if it should not.
    */
   get shouldSubmit() {
     return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.isHidden();
@@ -589,8 +591,7 @@ export default class FormComponent extends Component {
 
   /**
    * Returns the data for the subform.
-   *
-   * @return {*}
+   * @returns {*} - the data for the subform.
    */
   getSubFormData() {
     if (_.get(this.subForm, 'form.display') === 'pdf') {
@@ -603,8 +604,7 @@ export default class FormComponent extends Component {
 
   /**
    * Submit the subform if configured to do so.
-   *
-   * @return {*}
+   * @returns {Promise} - The promise that resolves when the subform is submitted.
    */
   submitSubForm() {
     // If we wish to submit the form on next page, then do that here.
@@ -632,6 +632,8 @@ export default class FormComponent extends Component {
 
   /**
    * Submit the form before the next page is triggered.
+   * @param {Function} next - The function to trigger the next page.
+   * @returns {Promise} - The promise that resolves when the subform submission is complete (if necessary) and the next page is triggered.
    */
   beforePage(next) {
     // Should not submit child forms if we are going to the previous page
@@ -643,6 +645,7 @@ export default class FormComponent extends Component {
 
   /**
    * Submit the form before the whole form is triggered.
+   * @returns {Promise} - The promise that resolves when the subform submission is complete (if necessary) and the form is submitted.
    */
   beforeSubmit() {
     const submission = this.dataValue;
@@ -767,7 +770,7 @@ export default class FormComponent extends Component {
   /**
    * Determines if this form is a Nested Wizard
    * which means it should be a Wizard itself and should be a direct child of a Wizard's page
-   * @returns {boolean}
+   * @returns {boolean} - TRUE if this form is a Nested Wizard, FALSE otherwise
    */
   get isNestedWizard() {
     return this.subForm?._form?.display === 'wizard' && this.parent?.parent?._form?.display === 'wizard';
