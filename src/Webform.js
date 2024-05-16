@@ -867,7 +867,7 @@ export default class Webform extends NestedDataComponent {
     const draft = fastCloneDeep(this.submission);
     draft.state = 'draft';
 
-    if (!this.savingDraft) {
+    if (!this.savingDraft && !this.submitting) {
       this.emit('saveDraftBegin');
       this.savingDraft = true;
       this.formio.saveSubmission(draft).then((sub) => {
