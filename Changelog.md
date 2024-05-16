@@ -243,6 +243,11 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-8091: Fixed missing metadata for html5 select component with default value
  - FIO-7445: fixed an issue with interpolated data in HTML
  - FIO-7507: publish-dev-tag-to-npm
+ - FIO-8330: fixed saving draft if saveDraft and skipDraftRestore are true
+ - FIO-7595: fixed incorrect value for conditionally hidden Checkbox
+ - FIO-8342: fixed triggering saveDraft after submitting the form
+ - FIO-8240: fixed skipDraftRestore effect for the nested Forms
+   
 
 ## 5.0.0-rc.37
 ### Fixed

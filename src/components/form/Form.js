@@ -230,6 +230,9 @@ export default class FormComponent extends Component {
     if (this.options.saveDraftThrottle) {
       options.saveDraftThrottle = this.options.saveDraftThrottle;
     }
+    if (this.options.skipDraftRestore) {
+      options.skipDraftRestore = this.options.skipDraftRestore;
+    }
     return options;
   }
   /* eslint-enable max-statements */
