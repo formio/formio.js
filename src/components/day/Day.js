@@ -405,16 +405,10 @@ export default class DayComponent extends Field {
   }
 
   /**
-<<<<<<< HEAD
-   * Set the value at a specific index.
-   * @param index
-   * @param value
-=======
    * Set the value at a specific index and updates the component's refs.
    * @param {number} index - The index to set.
    * @param {any} value - The value to set.
    * @returns {null|void} - Returns null if the value is invalid, otherwise void.
->>>>>>> 168311e19969359e558efc2a999c71f753e77511
    */
   setValueAt(index, value) {
     // temporary solution to avoid input reset
@@ -499,13 +493,8 @@ export default class DayComponent extends Field {
 
   /**
    * Return the date for this component.
-<<<<<<< HEAD
-   * @param value
-   * @returns {*}
-=======
    * @param {any} value - The value to convert to a date.
    * @returns {null|string} - The date string.
->>>>>>> 168311e19969359e558efc2a999c71f753e77511
    */
   getDate(value) {
     let defaults = [], day, month, year;
@@ -568,11 +557,7 @@ export default class DayComponent extends Field {
 
   /**
    * Return the raw value.
-<<<<<<< HEAD
-   * @returns {Date}
-=======
    * @returns {string} - The raw value of the component.
->>>>>>> 168311e19969359e558efc2a999c71f753e77511
    */
   get validationValue() {
     return this.dataValue;
@@ -585,13 +570,8 @@ export default class DayComponent extends Field {
 
   /**
    * Get the value at a specific index.
-<<<<<<< HEAD
-   * @param index
-   * @returns {*}
-=======
    * @param {number} index - The index to get the value from.
    * @returns {*} - The value at index.
->>>>>>> 168311e19969359e558efc2a999c71f753e77511
    */
   getValueAt(index) {
     const date = this.date || this.emptyValue;
@@ -607,13 +587,8 @@ export default class DayComponent extends Field {
 
   /**
    * Get the input value of the date.
-<<<<<<< HEAD
-   * @param value
-   * @returns {null}
-=======
    * @param {any} value - The value to convert to a string.
    * @returns {string|null} - The string value of the date.
->>>>>>> 168311e19969359e558efc2a999c71f753e77511
    */
   getValueAsString(value) {
     return this.getDate(value) || '';

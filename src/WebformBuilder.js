@@ -1300,19 +1300,11 @@ export default class WebformBuilder extends Component {
 
   /**
    * Called when a new component is saved.
-<<<<<<< HEAD
-   * @param parent
-   * @param component
-   * @param isNew
-   * @param original
-   * @returns {boolean}
-=======
    * @param {Component} component - The component instance to save.
    * @param {Component} parent - The parent component.
    * @param {boolean} isNew - If this is a new component.
    * @param {Component} original - The original component.
    * @returns {boolean} - If the component was saved.
->>>>>>> 168311e19969359e558efc2a999c71f753e77511
    */
   saveComponent(component, parent, isNew, original) {
     this.editForm.detach();
