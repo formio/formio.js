@@ -8,7 +8,7 @@ import jtz from 'jstimezonedetect';
 import { lodashOperators } from './jsonlogic/operators';
 import dompurify from 'dompurify';
 import { getValue } from './formUtils';
-import Evaluator from './Evaluator';
+import { Evaluator } from './Evaluator';
 import ConditionOperators from './conditionOperators';
 const interpolate = Evaluator.interpolate;
 const { fetch } = fetchPonyfill({

@@ -958,7 +958,7 @@ export default class Component extends Element {
     return this.options.renderMode === 'html';
   }
 
-  renderTemplate(name, data = {}, modeOption) {
+  renderTemplate(name, data = {}, modeOption = '') {
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     const mode = modeOption || this.options.renderMode || 'form';
     data.component = this.component;
@@ -1011,7 +1011,7 @@ export default class Component extends Element {
    * @param {object} options - The options for the sanitize.
    * @returns {*} - The sanitized html string.
    */
-  sanitize(dirty, forceSanitize, options) {
+  sanitize(dirty, forceSanitize = false, options = {}) {
     if (!this.shouldSanitizeValue && !forceSanitize) {
       return dirty;
     }
@@ -3372,7 +3372,7 @@ export default class Component extends Element {
    * @param {*} flags - The flags to control the behavior of the validation.
    * @returns {Array<any>} - An array of errors if the component is invalid.
    */
-  validateComponent(data, row, flags = {}) {
+  validateComponent(data = null, row = null, flags = {}) {
     data = data || this.rootValue;
     row = row || this.data;
     const { async = false } = flags;
@@ -3412,7 +3412,7 @@ export default class Component extends Element {
    * @param {Array<any>} allErrors - An array of all errors that have occured so that it can be appended when another one occurs here.
    * @returns {boolean} - TRUE if the component is valid.
    */
-  checkComponentValidity(data, dirty, row, flags = {}, allErrors = []) {
+  checkComponentValidity(data = null, dirty = false, row = null, flags = {}, allErrors = []) {
     data = data || this.rootValue;
     row = row || this.data;
     flags.dirty = dirty || false;
@@ -3456,14 +3456,14 @@ export default class Component extends Element {
    * @param {Array<any>} errors - An array of all errors that have occured so that it can be appended when another one occurs here.
    * @returns {boolean} - TRUE if the component is valid.
    */
-  checkValidity(data, dirty, row, silentCheck, errors = []) {
+  checkValidity(data = null, dirty = false, row = null, silentCheck = false, errors = []) {
     data = data || this.rootValue;
     row = row || this.data;
     console.log('Deprecation warning:  Component.checkValidity() will be deprecated in 6.x version of renderer. Use Component.validateComponent instead.');
     return this.checkComponentValidity(data, dirty, row, { silentCheck }, errors);
   }
 
-  checkAsyncValidity(data, dirty, row, silentCheck, errors = []) {
+  checkAsyncValidity(data = null, dirty = false, row = null, silentCheck = false, errors = []) {
     console.log('Deprecation warning:  Component.checkAsyncValidity() will be deprecated in 6.x version of renderer. Use Component.validateComponent instead.');
     return this.checkComponentValidity(data, dirty, row, { async: true, silentCheck }, errors);
   }
@@ -3476,7 +3476,7 @@ export default class Component extends Element {
    * @param {*} row - The contextual row data for this component.
    * @returns {void|boolean} - TRUE if no check should be performed on the component.
    */
-  checkData(data, flags, row) {
+  checkData(data = null, flags = null, row = null) {
     data = data || this.rootValue;
     flags = flags || {};
     row = row || this.data;
@@ -3916,19 +3916,15 @@ export default class Component extends Element {
     window.scrollTo(left + window.scrollX, top + window.scrollY);
   }
 
-  focus(index) {
+  focus(index = (this.refs.input.length - 1)) {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
 
     if (this.refs.input?.length) {
-      const focusingInput = typeof index === 'number' && this.refs.input[index]
-        ? this.refs.input[index]
-        : this.refs.input[this.refs.input.length - 1];
-
+      const focusingInput = this.refs.input[index];
       if (this.component.widget?.type === 'calendar') {
         const sibling = focusingInput.nextSibling;
-
         if (sibling) {
           sibling.focus();
         }

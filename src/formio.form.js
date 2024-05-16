@@ -131,6 +131,7 @@ export function useModule(defaultFn = null) {
  * Formio.plugins([plugin1, plugin2, etc], options);
  */
 Formio.use = useModule();
+export { Formio as FormioCore } from './Formio';
 
 // Export the components.
 export { Components, Displays, Providers, Widgets, Templates, Utils, Form, Formio, Licenses, EventEmitter, Webform };

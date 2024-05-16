@@ -39,15 +39,19 @@
     </div>
     <div id="checkboxFalse" class="mb-2 formio-form-group has-feedback formio-component formio-component-checkbox formio-component-checkboxFalse " ref="component">
       <div class="form-check checkbox">
-        <input ref="input" name="data[checkboxFalse]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false">
-        <label class=" form-check-label"><span>Checkbox False</span></label>
+        <input ref="input" id="checkboxFalse-checkboxFalse" aria-labelledby="l-checkboxFalse-checkboxFalse" name="data[checkboxFalse]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false">
+        <label class=" form-check-label" for="checkboxFalse-checkboxFalse" id="l-checkboxFalse-checkboxFalse">
+          <span>Checkbox False</span>
+        </label>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
     <div id="checkboxTrue" class="mb-2 formio-form-group has-feedback formio-component formio-component-checkbox formio-component-checkboxTrue " ref="component">
       <div class="form-check checkbox">
-        <input ref="input" name="data[checkboxTrue]" type="checkbox" class="form-check-input" lang="en" value="0" checked=true aria-required="false">
-        <label class=" form-check-label"><span>Checkbox True</span></label>
+        <input ref="input" id="checkboxTrue-checkboxTrue" aria-labelledby="l-checkboxTrue-checkboxTrue" name="data[checkboxTrue]" type="checkbox" class="form-check-input" lang="en" value="0" checked=true aria-required="false">
+        <label class=" form-check-label" for="checkboxTrue-checkboxTrue" id="l-checkboxTrue-checkboxTrue">
+          <span>Checkbox True</span>
+        </label>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
