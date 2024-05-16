@@ -31,7 +31,7 @@ export default class Form extends Element {
  * @property {Function} [addComponents]
  * @property {Function} [addComponent]
  * @property {Function} [customValidation]
- * @property {function} [attachWebform]
+ * @property {Function} [attachWebform]
  */
 
 /**
