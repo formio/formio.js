@@ -58,7 +58,7 @@ export default class Components {
 
   /**
    * Return a path of component's value.
-   * @param {object} component - The component instance.
+   * @param {Component} component - The component instance.
    * @returns {string} - The component's value path.
    */
   static getComponentPath(component) {
@@ -78,6 +78,7 @@ export default class Components {
       path += component.component.key;
       return _.trim(path, '.');
     }
+    return path;
   }
 
   static create(component, options, data) {
