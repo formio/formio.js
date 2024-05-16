@@ -6,9 +6,9 @@ import * as FormioUtils from './utils/utils';
 
 export default class Form extends Element {
   /**
- * Represents a JSON value.
- * @typedef {(string | number | boolean | null | JSONArray | JSONObject)} JSON
- */
+   * Represents a JSON value.
+   * @typedef {(string | number | boolean | null | JSONArray | JSONObject)} JSON
+   */
 
 /**
  * Represents a JSON array.
@@ -21,21 +21,21 @@ export default class Form extends Element {
  */
 
 /**
- * @typedef {Object} FormioHooks
- * @property {function} [beforeSubmit]
- * @property {function} [beforeCancel]
- * @property {function} [beforeNext]
- * @property {function} [beforePrev]
- * @property {function} [attachComponent]
- * @property {function} [setDataValue]
- * @property {function} [addComponents]
- * @property {function} [addComponent]
- * @property {function} [customValidation]
+ * @typedef {object} FormioHooks
+ * @property {Function} [beforeSubmit]
+ * @property {Function} [beforeCancel]
+ * @property {Function} [beforeNext]
+ * @property {Function} [beforePrev]
+ * @property {Function} [attachComponent]
+ * @property {Function} [setDataValue]
+ * @property {Function} [addComponents]
+ * @property {Function} [addComponent]
+ * @property {Function} [customValidation]
  * @property {function} [attachWebform]
  */
 
 /**
- * @typedef {Object} SanitizeConfig
+ * @typedef {object} SanitizeConfig
  * @property {string[]} [addAttr]
  * @property {string[]} [addTags]
  * @property {string[]} [allowedAttrs]
@@ -45,7 +45,7 @@ export default class Form extends Element {
  */
 
 /**
- * @typedef {Object} ButtonSettings
+ * @typedef {object} ButtonSettings
  * @property {boolean} [showPrevious]
  * @property {boolean} [showNext]
  * @property {boolean} [showCancel]
@@ -53,7 +53,7 @@ export default class Form extends Element {
  */
 
 /**
- * @typedef {Object} FormOptions
+ * @typedef {object} FormOptions
  * @property {boolean} [saveDraft] - Enable the save draft feature.
  * @property {number} [saveDraftThrottle] - The throttle for the save draft feature.
  * @property {boolean} [readOnly] - Set this form to readOnly.
@@ -88,7 +88,7 @@ export default class Form extends Element {
  * @property {boolean} [sanitize] - Sanitize the form.
  * @property {SanitizeConfig} [sanitizeConfig] - The sanitize configuration for this form.
  * @property {ButtonSettings} [buttonSettings] - The button settings for this form.
- * @property {Object} [breadcrumbSettings] - The breadcrumb settings for this form.
+ * @property {object} [breadcrumbSettings] - The breadcrumb settings for this form.
  * @property {boolean} [allowPrevious] - Allow the previous button (for Wizard forms).
  * @property {string[]} [wizardButtonOrder] - The order of the buttons (for Wizard forms).
  * @property {boolean} [showCheckboxBackground] - Show the checkbox background.
@@ -97,11 +97,9 @@ export default class Form extends Element {
 
   /**
    * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
-   *
-   * @param {Object} elementOrForm - The DOM element you wish to render this form within, or the form definition.
-   * @param {Object | string | FormOptions} formOrOptions - A Form JSON schema, the URL of a hosted form, or the form options.
+   * @param {object} elementOrForm - The DOM element you wish to render this form within, or the form definition.
+   * @param {object | string | FormOptions} formOrOptions - A Form JSON schema, the URL of a hosted form, or the form options.
    * @param {FormOptions} [options] - The options to create a new form instance.
-   *
    * @example
    * import Form from '@formio/js/Form';
    * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
