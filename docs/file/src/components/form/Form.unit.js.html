@@ -473,6 +473,7 @@ describe(&apos;SaveDraft functionality for Nested Form&apos;, () =&gt; {
   let saveDraftCalls = 0;
   let restoreDraftCalls = 0;
   let state = null;
+  let subFormState = null;
 
   const restoredDraftData = {
     parent: &apos;test Parent&apos;,
@@ -488,6 +489,7 @@ describe(&apos;SaveDraft functionality for Nested Form&apos;, () =&gt; {
     Formio.makeRequest = (formio, type, url, method, data) =&gt; {
       if (type === &apos;submission&apos; &amp;&amp; [&apos;put&apos;, &apos;post&apos;].includes(method)) {
         state = data.state;
+        subFormState = _.get(data, &apos;data.form.state&apos;, null);
         if (state === &apos;draft&apos;) {
           saveDraftCalls = ++saveDraftCalls;
         }
@@ -534,6 +536,7 @@ describe(&apos;SaveDraft functionality for Nested Form&apos;, () =&gt; {
     saveDraftCalls = 0;
     restoreDraftCalls = 0;
     state = null;
+    subFormState = null;
   });
 
   after((done) =&gt; {
@@ -580,6 +583,36 @@ describe(&apos;SaveDraft functionality for Nested Form&apos;, () =&gt; {
         assert.equal(saveDraftCalls, 0);
         assert.equal(_.isUndefined(form.submission.state), true);
         done();
+      }, 200);
+    }).catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should change state of the nested sumbmission to submitted after submit parent form&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(
+      formElement,
+      &apos;http://localhost:3000/idwqwhclwioyqbw/testdraftparent&apos;,
+      {
+        saveDraft: true
+      }
+    ).then((form)=&gt;{
+      setTimeout(()=&gt;{
+        const tfNestedInput = form.getComponent(&apos;form.nested&apos;).refs.input[0];
+        tfNestedInput.value = &apos;testNested Update&apos;;
+        const inputEvent = new Event(&apos;input&apos;);
+        tfNestedInput.dispatchEvent(inputEvent);
+        setTimeout(()=&gt;{
+          assert.equal(saveDraftCalls, 1);
+          const clickEvent = new Event(&apos;click&apos;);
+          const submitBtn = form.element.querySelector(&apos;[name=&quot;data[submit]&quot;]&apos;);
+          submitBtn.dispatchEvent(clickEvent);
+          setTimeout(()=&gt; {
+            assert.equal(saveDraftCalls, 1);
+            assert.equal(state, &apos;submitted&apos;);
+            assert.equal(subFormState, &apos;submitted&apos;);
+            done();
+          }, 500);
+        }, 300);
       }, 200);
     }).catch((err) =&gt; done(err));
   });
