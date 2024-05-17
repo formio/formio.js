@@ -284,6 +284,7 @@ describe('SaveDraft functionality for Nested Form', () => {
   let saveDraftCalls = 0;
   let restoreDraftCalls = 0;
   let state = null;
+  let subFormState = null;
 
   const restoredDraftData = {
     parent: 'test Parent',
@@ -299,6 +300,7 @@ describe('SaveDraft functionality for Nested Form', () => {
     Formio.makeRequest = (formio, type, url, method, data) => {
       if (type === 'submission' && ['put', 'post'].includes(method)) {
         state = data.state;
+        subFormState = _.get(data, 'data.form.state', null);
         if (state === 'draft') {
           saveDraftCalls = ++saveDraftCalls;
         }
@@ -345,6 +347,7 @@ describe('SaveDraft functionality for Nested Form', () => {
     saveDraftCalls = 0;
     restoreDraftCalls = 0;
     state = null;
+    subFormState = null;
   });
 
   after((done) => {
@@ -391,6 +394,36 @@ describe('SaveDraft functionality for Nested Form', () => {
         assert.equal(saveDraftCalls, 0);
         assert.equal(_.isUndefined(form.submission.state), true);
         done();
+      }, 200);
+    }).catch((err) => done(err));
+  });
+
+  it('Should change state of the nested sumbmission to submitted after submit parent form', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/idwqwhclwioyqbw/testdraftparent',
+      {
+        saveDraft: true
+      }
+    ).then((form)=>{
+      setTimeout(()=>{
+        const tfNestedInput = form.getComponent('form.nested').refs.input[0];
+        tfNestedInput.value = 'testNested Update';
+        const inputEvent = new Event('input');
+        tfNestedInput.dispatchEvent(inputEvent);
+        setTimeout(()=>{
+          assert.equal(saveDraftCalls, 1);
+          const clickEvent = new Event('click');
+          const submitBtn = form.element.querySelector('[name="data[submit]"]');
+          submitBtn.dispatchEvent(clickEvent);
+          setTimeout(()=> {
+            assert.equal(saveDraftCalls, 1);
+            assert.equal(state, 'submitted');
+            assert.equal(subFormState, 'submitted');
+            done();
+          }, 500);
+        }, 300);
       }, 200);
     }).catch((err) => done(err));
   });
