@@ -425,6 +425,6 @@ describe('SaveDraft functionality for Nested Form', () => {
           }, 500);
         }, 300);
       }, 200);
-    }).catch((err) => done(err))
+    }).catch((err) => done(err));
   });
 });
