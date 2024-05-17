@@ -121,7 +121,8 @@ export default class NestedDataComponent extends NestedComponent {
 
   /**
    * Get the value of this component.
-   * @returns {any} - Return the value of this component.
+   *
+   * @returns {*}
    */
   getValue() {
     return this.dataValue;

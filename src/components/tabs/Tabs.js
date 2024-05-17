@@ -131,7 +131,8 @@ export default class TabsComponent extends NestedComponent {
 
   /**
    * Set the current tab.
-   * @param {number} index - The index of the tab to set.
+   *
+   * @param index
    */
   setTab(index) {
     if (!this.tabs || !this.tabs[index] || !this.refs[this.tabKey] || !this.refs[this.tabKey][index]) {

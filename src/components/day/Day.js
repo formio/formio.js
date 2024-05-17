@@ -69,7 +69,8 @@ export default class DayComponent extends Field {
 
   /**
    * The empty value for day component.
-   * @returns {'00/00/0000'} - The empty value of the day component.
+   *
+   * @return {'00/00/0000'}
    */
   get emptyValue() {
     return '00/00/0000';
@@ -405,10 +406,10 @@ export default class DayComponent extends Field {
   }
 
   /**
-   * Set the value at a specific index and updates the component's refs.
-   * @param {number} index - The index to set.
-   * @param {any} value - The value to set.
-   * @returns {null|void} - Returns null if the value is invalid, otherwise void.
+   * Set the value at a specific index.
+   *
+   * @param index
+   * @param value
    */
   setValueAt(index, value) {
     // temporary solution to avoid input reset
@@ -468,7 +469,7 @@ export default class DayComponent extends Field {
 
   /**
    * Get the format for the value string.
-   * @returns {string} - the format for the value string.
+   * @returns {string}
    */
   get format() {
     let format = '';
@@ -493,8 +494,9 @@ export default class DayComponent extends Field {
 
   /**
    * Return the date for this component.
-   * @param {any} value - The value to convert to a date.
-   * @returns {null|string} - The date string.
+   *
+   * @param value
+   * @return {*}
    */
   getDate(value) {
     let defaults = [], day, month, year;
@@ -548,8 +550,8 @@ export default class DayComponent extends Field {
   }
 
   /**
-   * Return the date string for this component.
-   * @returns {string|null} - The date string for this component.
+   * Return the date object for this component.
+   * @returns {Date}
    */
   get date() {
     return this.getDate();
@@ -557,7 +559,8 @@ export default class DayComponent extends Field {
 
   /**
    * Return the raw value.
-   * @returns {string} - The raw value of the component.
+   *
+   * @returns {Date}
    */
   get validationValue() {
     return this.dataValue;
@@ -570,8 +573,9 @@ export default class DayComponent extends Field {
 
   /**
    * Get the value at a specific index.
-   * @param {number} index - The index to get the value from.
-   * @returns {*} - The value at index.
+   *
+   * @param index
+   * @returns {*}
    */
   getValueAt(index) {
     const date = this.date || this.emptyValue;
@@ -587,8 +591,9 @@ export default class DayComponent extends Field {
 
   /**
    * Get the input value of the date.
-   * @param {any} value - The value to convert to a string.
-   * @returns {string|null} - The string value of the date.
+   *
+   * @param value
+   * @return {null}
    */
   getValueAsString(value) {
     return this.getDate(value) || '';

@@ -1,10 +1,6 @@
 import Components from '../Components';
 import ReCaptchaEditDisplay from './editForm/ReCaptcha.edit.display';
 
-/**
- * The Edit Form function.
- * @returns {import('@formio/core').Component[]} - The edit form components.
- */
 export default function() {
   return Components.baseEditForm([
     {

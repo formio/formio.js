@@ -1,0 +1,38 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": "formio",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "env": {
+    "browser": true,
+    "es2020": true,
+    "node": true,
+    "mocha": true
+  },
+  "ignorePatterns": [
+    "!.*rc.js"
+  ],
+  "rules": {
+    "max-len": [
+      "off",
+      {
+        "code": 160,
+        "ignoreComments": true,
+        "ignoreStrings": true
+      }
+    ],
+    "max-statements": [2, 40],
+    "max-depth": [2, 10],
+    "no-console": "off",
+    "no-prototype-builtins": "off",
+    "prefer-const": "error",
+    "prefer-template": "error",
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ]
+  }
+}

@@ -38,9 +38,6 @@ export default class Multivalue extends Field {
     return this.component.hasOwnProperty('multiple') && this.component.multiple;
   }
 
-  /**
-   * @returns {Field} - The created field.
-   */
   render() {
     // If single value field.
     if (!this.useWrapper()) {
@@ -71,12 +68,6 @@ export default class Multivalue extends Field {
     return '';
   }
 
-  /**
-   * Renders a single row for multi-value components.
-   * @param {any} value - The value associated with the row to render.
-   * @param {number} index - The index of the row in the multi-value list.
-   * @returns {any} Returns the HTML string representation of the row.
-   */
   renderRow(value, index) {
     return this.renderTemplate('multiValueRow', {
       index,
@@ -85,10 +76,6 @@ export default class Multivalue extends Field {
     });
   }
 
-  /**
-   * @param {HTMLElement} dom - The DOM element to which the component will attach.
-   * @returns {Promise} - Promise that resolves when all asynchronous tasks that have finished.
-   */
   attach(dom) {
     const superAttach = super.attach(dom);
     this.loadRefs(dom, {
@@ -128,10 +115,6 @@ export default class Multivalue extends Field {
     });
   }
 
-
-  /**
-   * Remove all event handlers.
-   */
   detach() {
     if (this.refs.input && this.refs.input.length) {
       this.refs.input.forEach((input) => {
@@ -155,8 +138,9 @@ export default class Multivalue extends Field {
 
   /**
    * Attach inputs to the element.
-   * @param {HTMLElement} element - The element to attach.
-   * @param {number} index - The index of the element to attach.
+   *
+   * @param element
+   * @param index
    */
   attachElement(element, index) {
     this.addEventListener(element, this.inputInfo.changeEvent, () => {
@@ -231,19 +215,10 @@ export default class Multivalue extends Field {
     }
   }
 
-  /**
-   * Event handler for selecting a mask from a dropdown.
-   * @param {Event} event - Event triggered by changing the selected option in mask.
-   */
   onSelectMaskHandler(event) {
     this.updateMask(event.target.maskInput, this.getMaskPattern(event.target.value));
   }
 
-  /**
-   * Retrieves the mask pattern for a given mask name
-   * @param {string} maskName - The name of the mask to retrieve.
-   * @returns {any} The mask pattern associated with the given mask name.
-   */
   getMaskPattern(maskName) {
     if (!this.multiMasks) {
       this.multiMasks = {};
@@ -256,11 +231,6 @@ export default class Multivalue extends Field {
     return this.multiMasks[maskName];
   }
 
-  /**
-   * Attaches a selectable mask to an input field based on its configuration.
-   * @param {number} index - The index of the select or input in component array.
-   * @returns {boolean} - Returns true if the mask was successfully attached
-   */
   attachMultiMask(index) {
     if (!(this.isMultipleMasksField && this.component.inputMasks.length && this.refs.input.length)) {
       return false;
@@ -273,10 +243,6 @@ export default class Multivalue extends Field {
     return true;
   }
 
-  /**
-   * @param {any} input - The input element on which the mask is to be applied.
-   * @param {string} mask - The mask pattern to apply to the input element. Exit early if no mask.
-   */
   updateMask(input, mask) {
     if (!mask) {
       return;
@@ -287,7 +253,6 @@ export default class Multivalue extends Field {
 
   /**
    * Adds a new empty value to the data array.
-   * @param {any} value -A value to be added to the data array.
    */
   addNewValue(value) {
     if (value === undefined) {

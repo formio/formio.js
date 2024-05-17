@@ -1,9 +1,4 @@
 import { setXhrHeaders } from './xhr';
-/**
- * Dropbox provider for file storage.
- * @param {object} formio formio instance
- * @returns {import('./typedefs').FileProvider} The FileProvider interface defined in index.js.
- */
 function dropbox(formio) {
   return {
     uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
@@ -67,5 +62,6 @@ function dropbox(formio) {
     }
   };
 }
+
 dropbox.title = 'Dropbox';
 export default dropbox;
