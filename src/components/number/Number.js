@@ -83,7 +83,8 @@ export default class NumberComponent extends Input {
 
   /**
    * Creates the number mask for normal numbers.
-   * @returns {*} - The number mask.
+   *
+   * @return {*}
    */
   createNumberMask() {
     return createNumberMask({

@@ -162,7 +162,8 @@ export default class PDF extends Webform {
 
   /**
    * Get the submission from the iframe.
-   * @returns {Promise<any>} - The submission from the iframe.
+   *
+   * @return {Promise<any>}
    */
   getSubmission() {
     return new Promise((resolve) => {
@@ -173,8 +174,9 @@ export default class PDF extends Webform {
 
   /**
    * Ensure we have the submission from the iframe before we submit the form.
-   * @param {any} options - The options for submission.
-   * @returns {Promise<any>} - Resolves when the form is submitted.
+   *
+   * @param options
+   * @return {*}
    */
   submitForm(options = {}) {
     this.postMessage({ name: 'getErrors' });
@@ -226,9 +228,9 @@ export default class PDF extends Webform {
 
   /**
    * Set's the value of this form component.
-   * @param {import('@formio/core').Submission} submission - The submission JSON to set the value of this form.
-   * @param {any} flags - The flags to use when setting the submission.
-   * @returns {boolean} - If the value changed or not.
+   *
+   * @param submission
+   * @param flags
    */
   setValue(submission, flags = {}) {
     const changed = super.setValue(submission, flags);
