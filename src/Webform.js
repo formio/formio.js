@@ -1367,13 +1367,7 @@ export default class Webform extends NestedDataComponent {
       return false;
     }
 
-    let errors;
-    if (this.submitted) {
-      errors = this.showErrors();
-    }
-    else {
-      errors = this.showErrors(error, true);
-    }
+    const errors = this.showErrors(error, true);
     if (this.root && this.root.alert) {
       this.scrollIntoView(this.root.alert);
     }
