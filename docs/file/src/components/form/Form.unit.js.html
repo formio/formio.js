@@ -187,7 +187,9 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/form/Form.unit.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Harness from &apos;../../../test/harness&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import { fastCloneDeep } from &apos;../../utils/utils&apos;;
+import Harness from &apos;../../../test/harness&apos;;
 import FormComponent from &apos;./Form&apos;;
 import { expect } from &apos;chai&apos;;
 import assert from &apos;power-assert&apos;;
@@ -197,9 +199,12 @@ import {
   comp3,
   comp4,
   comp5,
-  comp6
+  comp6,
+  comp7,
+  comp8
 } from &apos;./fixtures&apos;;
 import Webform from &apos;../../Webform&apos;;
+import { Formio } from &apos;../../formio.form.js&apos;;
 import formModalEdit from &apos;./fixtures/formModalEdit&apos;;
 import { formComponentWithConditionalRenderingForm } from &apos;../../../test/formtest&apos;;
 
@@ -460,6 +465,156 @@ describe(&apos;Wizard Component&apos;, () =&gt; {
     }).then(() =&gt; {
       done();
     });
+  });
+});
+
+describe(&apos;SaveDraft functionality for Nested Form&apos;, () =&gt; {
+  const originalMakeRequest = Formio.makeRequest;
+  let saveDraftCalls = 0;
+  let restoreDraftCalls = 0;
+  let state = null;
+  let subFormState = null;
+
+  const restoredDraftData = {
+    parent: &apos;test Parent&apos;,
+    form: { nested: &apos;test Nested&apos; },
+    submit: false,
+  };
+
+  before((done) =&gt; {
+    Formio.setUser({
+      _id: &apos;123&apos;
+    });
+
+    Formio.makeRequest = (formio, type, url, method, data) =&gt; {
+      if (type === &apos;submission&apos; &amp;&amp; [&apos;put&apos;, &apos;post&apos;].includes(method)) {
+        state = data.state;
+        subFormState = _.get(data, &apos;data.form.state&apos;, null);
+        if (state === &apos;draft&apos;) {
+          saveDraftCalls = ++saveDraftCalls;
+        }
+        return Promise.resolve(fastCloneDeep(data));
+      }
+
+      if (type === &apos;form&apos; &amp;&amp; method === &apos;get&apos;) {
+        return Promise.resolve(fastCloneDeep(_.endsWith(url, &apos;parent&apos;) ? comp7 : comp8));
+      }
+
+      if (type === &apos;submissions&apos; &amp;&amp; method === &apos;get&apos; &amp;&amp; _.includes(url, &apos;parent&apos;)) {
+        restoreDraftCalls = ++restoreDraftCalls;
+        return Promise.resolve([
+          fastCloneDeep({
+            _id: &apos;662259f500773e9994360c72&apos;,
+            form: &apos;66051dae494c977c47028fac&apos;,
+            owner: &apos;63ceaccebe0090345b109da7&apos;,
+            data: restoredDraftData,
+            project: &apos;65b0ccbaf019a907ac01a869&apos;,
+            state: &apos;draft&apos;,
+          }),
+        ]);
+      }
+
+      if (type === &apos;submissions&apos; &amp;&amp; method === &apos;get&apos;) {
+        restoreDraftCalls = ++restoreDraftCalls;
+        return Promise.resolve([
+          fastCloneDeep({
+            _id: &apos;660e75e4e8c776f1225142aa&apos;,
+            form: &apos;63e4deda12b88c4f05c125cf&apos;,
+            owner: &apos;63ceaccebe0090345b109da7&apos;,
+            data: restoredDraftData.form,
+            project: &apos;65b0ccbaf019a907ac01a869&apos;,
+            state: &apos;draft&apos;,
+          }),
+        ]);
+      }
+    };
+
+    done();
+  });
+
+  afterEach(() =&gt; {
+    saveDraftCalls = 0;
+    restoreDraftCalls = 0;
+    state = null;
+    subFormState = null;
+  });
+
+  after((done) =&gt; {
+    Formio.makeRequest = originalMakeRequest;
+    Formio.setUser();
+    done();
+  });
+
+  it(&apos;Should save draft for Nested Form&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(
+      formElement,
+      &apos;http://localhost:3000/idwqwhclwioyqbw/testdraftparent&apos;,
+      {
+        saveDraft: true
+      }
+    ).then((form) =&gt; {
+      setTimeout(() =&gt; {
+        const tfNestedInput = form.getComponent(&apos;form.nested&apos;).refs.input[0];
+        tfNestedInput.value = &apos;testNested&apos;;
+        const inputEvent = new Event(&apos;input&apos;);
+        tfNestedInput.dispatchEvent(inputEvent);
+        setTimeout(() =&gt; {
+          assert.equal(saveDraftCalls, 1);
+          assert.equal(state, &apos;draft&apos;);
+          done();
+        }, 1000);
+      }, 200);
+    }).catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should not restore draft for Nested Form if skipDraftRestore is set as true&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(
+      formElement,
+      &apos;http://localhost:3000/idwqwhclwioyqbw/testdraftparent&apos;,
+      {
+        saveDraft: true,
+        skipDraftRestore: true
+      }
+    ).then((form) =&gt; {
+      setTimeout(() =&gt; {
+        assert.equal(restoreDraftCalls, 0);
+        assert.equal(saveDraftCalls, 0);
+        assert.equal(_.isUndefined(form.submission.state), true);
+        done();
+      }, 200);
+    }).catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should change state of the nested sumbmission to submitted after submit parent form&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(
+      formElement,
+      &apos;http://localhost:3000/idwqwhclwioyqbw/testdraftparent&apos;,
+      {
+        saveDraft: true
+      }
+    ).then((form)=&gt;{
+      setTimeout(()=&gt;{
+        const tfNestedInput = form.getComponent(&apos;form.nested&apos;).refs.input[0];
+        tfNestedInput.value = &apos;testNested Update&apos;;
+        const inputEvent = new Event(&apos;input&apos;);
+        tfNestedInput.dispatchEvent(inputEvent);
+        setTimeout(()=&gt;{
+          assert.equal(saveDraftCalls, 1);
+          const clickEvent = new Event(&apos;click&apos;);
+          const submitBtn = form.element.querySelector(&apos;[name=&quot;data[submit]&quot;]&apos;);
+          submitBtn.dispatchEvent(clickEvent);
+          setTimeout(()=&gt; {
+            assert.equal(saveDraftCalls, 1);
+            assert.equal(state, &apos;submitted&apos;);
+            assert.equal(subFormState, &apos;submitted&apos;);
+            done();
+          }, 500);
+        }, 300);
+      }, 200);
+    }).catch((err) =&gt; done(err));
   });
 });
 </code></pre>

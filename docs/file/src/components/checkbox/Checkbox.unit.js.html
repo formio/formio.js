@@ -199,7 +199,8 @@ import {
   customDefaultComponent,
   comp2,
   comp3,
-  comp4
+  comp4,
+  comp5
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Checkbox Component&apos;, () =&gt; {
@@ -277,6 +278,29 @@ describe(&apos;Checkbox Component&apos;, () =&gt; {
           assert.equal(contentComp.visible, false);
           done();
         }, 300);
+      }, 300);
+    }).catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should set the value for the checkbox if it set before the component from checbox`s condition&apos;, (done) =&gt;  {
+    const form = _.cloneDeep(comp5);
+    const element = document.createElement(&apos;div&apos;);
+    const data = {
+      textField: &apos;test&apos;,
+      checkboxBefore: true,
+      checkboxAfter: true
+    };
+    Formio.createForm(element, form).then(form =&gt; {
+      form.setValue({ data }, { sanitize: true });
+      const checkboxBefore = form.getComponent(&apos;checkboxBefore&apos;);
+      const checkboxAfter = form.getComponent(&apos;checkboxAfter&apos;);
+      setTimeout(() =&gt; {
+        const inputBefore = Harness.testElements(checkboxBefore, &apos;input[type=&quot;checkbox&quot;]&apos;, 1)[0];
+        assert.equal(inputBefore.checked, true);
+        const inputAfter = Harness.testElements(checkboxAfter, &apos;input[type=&quot;checkbox&quot;]&apos;, 1)[0];
+        assert.equal(inputAfter.checked, true);
+        assert.deepEqual(form.data, data);
+        done();
       }, 300);
     }).catch((err) =&gt; done(err));
   });
