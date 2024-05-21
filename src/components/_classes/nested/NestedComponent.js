@@ -164,7 +164,7 @@ export default class NestedComponent extends Field {
    *
    * @param {function} fn - Called for every component.
    */
-  everyComponent(fn, options) {
+  everyComponent(fn, options = {}) {
     const components = this.getComponents();
     _.each(components, (component, index) => {
       if (fn(component, components, index) === false) {
@@ -282,7 +282,7 @@ export default class NestedComponent extends Field {
    * @param {function} fn - Called with the component once it is retrieved.
    * @return {Object} - The component retrieved.
    */
-  getComponentById(id, fn) {
+  getComponentById(id, fn = null) {
     let comp = null;
     this.everyComponent((component, components) => {
       if (component.id === id) {
@@ -394,7 +394,7 @@ export default class NestedComponent extends Field {
    * @param {HTMLElement} before - A DOM element to insert this element before.
    * @return {Component} - The created component instance.
    */
-  addComponent(component, data, before, noAdd) {
+  addComponent(component, data = null, before = null, noAdd = false) {
     data = data || this.data;
     this.components = this.components || [];
     component = this.hook('addComponent', component, data, before, noAdd);
@@ -520,7 +520,7 @@ export default class NestedComponent extends Field {
    * @param {function} fn - Called once the component is removed.
    * @return {null}
    */
-  removeComponentByKey(key, fn) {
+  removeComponentByKey(key, fn = null) {
     const comp = this.getComponent(key, (component, components) => {
       this.removeComponent(component, components);
       if (fn) {
@@ -542,7 +542,7 @@ export default class NestedComponent extends Field {
    * @param {function} fn - Called when the component is removed.
    * @return {null}
    */
-  removeComponentById(id, fn) {
+  removeComponentById(id, fn = null) {
     const comp = this.getComponentById(id, (component, components) => {
       this.removeComponent(component, components);
       if (fn) {
@@ -668,7 +668,7 @@ export default class NestedComponent extends Field {
    * @param {*} flags
    * @returns
    */
-  validateComponents(components, data, flags = {}) {
+  validateComponents(components = null, data = null, flags = {}) {
     components = components || this.component.components;
     data = data || this.rootValue;
     const { async, dirty, process } = flags;
@@ -710,23 +710,31 @@ export default class NestedComponent extends Field {
    * @param {*} flags
    * @returns
    */
-  validate(data, flags = {}) {
+  validate(data = null, flags = {}) {
     data = data || this.rootValue;
     return this.validateComponents(this.getComponents().map((component) => component.component), data, flags);
   }
 
-  checkComponentValidity(data, dirty, row, flags = {}, allErrors = []) {
+  checkComponentValidity(data = null, dirty = false, row = null, flags = {}, allErrors = []) {
     this.childErrors = [];
     return super.checkComponentValidity(data, dirty, row, flags, allErrors);
   }
 
-  checkValidity(data, dirty, row, silentCheck, childErrors = []) {
-    console.log('Deprecation warning:  Component.checkValidity() will be deprecated in 6.x version of renderer. Use "validate" method instead.');
+  /**
+   * Checks the validity of the component.
+   * @param {*} data - The data to check if the component is valid.
+   * @param {boolean} dirty - If the component is dirty.
+   * @param {*} row - The contextual row data for this component.
+   * @param {boolean} silentCheck - If the check should be silent and not set the error messages.
+   * @param {Array<any>} childErrors - An array of all errors that have occured so that it can be appended when another one occurs here.
+   * @returns {boolean} - TRUE if the component is valid.
+   */
+  checkValidity(data = null, dirty = false, row = null, silentCheck = false, childErrors = []) {
     childErrors.push(...this.validate(data, { dirty, silentCheck }));
     return this.checkComponentValidity(data, dirty, row, { dirty, silentCheck }, childErrors) && childErrors.length === 0;
   }
 
-  checkAsyncValidity(data, dirty, row, silentCheck) {
+  checkAsyncValidity(data = null, dirty = false, row = null, silentCheck = false) {
     console.log('Deprecation warning:  Component.checkAsyncValidity() will be deprecated in 6.x version of renderer.');
     return this.ready.then(() => {
       return this.validate(data, { dirty, silentCheck, async: true }).then((childErrors) => {

@@ -20,14 +20,13 @@ export default class Wizard extends Webform {
    *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not
    *    - allowPrevious: false (default) determines if the breadcrumb bar is clickable or not for visited tabs
    */
-  constructor() {
+  constructor(elementOrOptions, _options = {}) {
     let element, options;
-    if (arguments[0] instanceof HTMLElement || arguments[1]) {
-      element = arguments[0];
-      options = arguments[1] || {};
-    }
-    else {
-      options = arguments[0] || {};
+    if (elementOrOptions instanceof HTMLElement || options) {
+        element = elementOrOptions;
+        options = _options;
+    } else {
+        options = elementOrOptions || {};
     }
 
     options.display = 'wizard';
@@ -115,8 +114,8 @@ export default class Wizard extends Webform {
       showCancel: !this.options.readOnly
     });
 
-    if (!this.isSecondInit) {
-      this.isClickableDefined = this.options?.breadcrumbSettings?.hasOwnProperty('clickable');
+    if (!this.isSecondInit && this.options?.breadcrumbSettings) {
+      this.isClickableDefined = Object.prototype.hasOwnProperty.call(this.options?.breadcrumbSettings, 'clickable');
       this.isSecondInit = true;
     }
 
