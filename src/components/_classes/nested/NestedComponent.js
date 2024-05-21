@@ -847,7 +847,6 @@ export default class NestedComponent extends Field {
   }
 
   checkAsyncValidity(data = null, dirty = false, row = null, silentCheck = false) {
-    console.log('Deprecation warning:  Component.checkAsyncValidity() will be deprecated in 6.x version of renderer.');
     return this.ready.then(() => {
       return this.validate(data, { dirty, silentCheck, async: true }).then((childErrors) => {
         return this.checkComponentValidity(data, dirty, row, { dirty, silentCheck, async: true }, childErrors).then((valid) => {
