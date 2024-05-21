@@ -1,3 +1,7 @@
+/**
+ * base64 File Services provider for file storage.
+ * @returns {import('./typedefs').FileProvider} The FileProvider interface defined in index.js.
+ */
 function base64() {
   return {
     title: 'Base64',
