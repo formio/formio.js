@@ -8,7 +8,7 @@ import Providers from './providers';
 import Widgets from './widgets';
 import Form from './Form';
 import Utils from './utils';
-import Evaluator from './utils/Evaluator';
+import { Evaluator } from './utils/Evaluator';
 import Licenses from './licenses';
 import EventEmitter from './EventEmitter';
 import Webform from './Webform';
