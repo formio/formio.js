@@ -1,4 +1,4 @@
-<div class="formio-form formio-read-only">
+<div class="formio-form">
   <div style="position: relative;">
     <nav aria-label="Wizard navigation" id="wizard-page1-header" ref="wizard-page1-header">
       <ul class="pagination" role="tablist">
@@ -12,13 +12,19 @@
     <div class="wizard-page" ref="wizard-page1">
       <div id="checkbox" class="mb-2 formio-form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
         <div class="form-check checkbox">
-          <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="0" aria-required="false">
+          <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false">
           <label class=" form-check-label"><span>Checkbox</span></label>
         </div>
         <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
       </div>
     </div>
     <ul class="formio-wizard-nav-container list-inline" id="wizard-page1-nav">
+      <li>
+        <button class="btn btn-secondary btn-wizard-nav-cancel" ref="wizard-page1-cancel" aria-label="Cancel button. Click to reset the form">Cancel</button>
+      </li>
+      <li>
+        <button class="btn btn-primary btn-wizard-nav-submit" ref="wizard-page1-submit" aria-label="Submit Form button. Click to submit the form">Submit Form</button>
+      </li>
     </ul>
   </div>
 </div>
