@@ -1165,6 +1165,9 @@ export default class Component extends Element {
    * @param {string} [referenceAttributeName] - The attribute name to use for the reference.
    */
   loadRefs(element, refs, referenceAttributeName) {
+    if (!element) {
+      return;
+    }
     for (const ref in refs) {
       const refType = refs[ref];
       const isString = typeof refType === 'string';
