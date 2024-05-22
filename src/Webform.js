@@ -159,7 +159,7 @@ export default class Webform extends NestedDataComponent {
      * @param {HTMLElement | object | import('Form').FormOptions} [elementOrOptions] - The DOM element to render this form within or the options to create this form instance.
      * @param {import('Form').FormOptions} [options] - The options to create a new form instance.
      */
-    constructor(elementOrOptions, options = {}) {
+    constructor(elementOrOptions, options = undefined) {
         let element, formOptions;
         if (elementOrOptions instanceof HTMLElement || options) {
             element = elementOrOptions;

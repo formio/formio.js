@@ -19,7 +19,7 @@ export default class Wizard extends Webform {
    *    - buttonSettings.show*(Previous, Next, Cancel): true (default) - determines if the button is shown.
    *    - allowPrevious: false (default) - determines if the breadcrumb bar is clickable for visited tabs.
    */
-  constructor(elementOrOptions, _options = {}) {
+  constructor(elementOrOptions, _options = undefined) {
     let element, options;
     if (elementOrOptions instanceof HTMLElement || options) {
         element = elementOrOptions;
