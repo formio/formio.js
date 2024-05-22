@@ -247,6 +247,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-7595: fixed incorrect value for conditionally hidden Checkbox
  - FIO-8342: fixed triggering saveDraft after submitting the form
  - FIO-8240: fixed skipDraftRestore effect for the nested Forms
+ - FIO-8360 fixed submission state for nested form 
    
 
 ## 5.0.0-rc.37
