@@ -79,8 +79,6 @@ import formWithValidation from '../test/forms/formWithValidation';
 import formWithNotAllowedTags from '../test/forms/formWithNotAllowedTags';
 import formWithValidateWhenHidden from '../test/forms/formWithValidateWhenHidden';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
-global.requestAnimationFrame = (cb) => cb();
-global.cancelAnimationFrame = () => {};
 
 if (_.has(Formio, 'Components.setComponents')) {
   Formio.Components.setComponents(AllComponents);

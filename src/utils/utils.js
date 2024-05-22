@@ -55,71 +55,12 @@ function setPathToComponentAndPerentSchema(component) {
  * @param {Function|string|object} func - The function to evaluate.
  * @param {*} args - A map of arguments to pass to the function.
  * @param {string} ret - The name of the "return" variable in the script.
- * @param {boolean} tokenize - True if the script should be interpolated before being executed.
+ * @param {boolean} interpolate - True if the script should be interpolated before being executed.
+ * @param {import('@formio/core').EvaluatorOptions} options - The evaluator options.
  * @returns {*} - The result of the evaluation.
  */
-export function evaluate(func, args, ret, tokenize) {
-  let returnVal = null;
-  const component = args.component ? args.component : { key: 'unknown' };
-  if (!args.form && args.instance) {
-    args.form = _.get(args.instance, 'root._form', {});
-  }
-
-  const componentKey = component.key;
-
-  if (typeof func === 'string') {
-    if (ret) {
-      func += `;return ${ret}`;
-    }
-
-    if (tokenize) {
-      // Replace all {{ }} references with actual data.
-      func = func.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
-        if ($2.indexOf('data.') === 0) {
-          return _.get(args.data, $2.replace('data.', ''));
-        }
-        else if ($2.indexOf('row.') === 0) {
-          return _.get(args.row, $2.replace('row.', ''));
-        }
-
-        // Support legacy...
-        return _.get(args.data, $2);
-      });
-    }
-
-    try {
-      func = Evaluator.evaluator(func, args);
-      args = _.values(args);
-    }
-    catch (err) {
-      console.warn(`An error occured within the custom function for ${componentKey}`, err);
-      returnVal = null;
-      func = false;
-    }
-  }
-
-  if (typeof func === 'function') {
-    try {
-      returnVal = Evaluator.evaluate(func, args);
-    }
-    catch (err) {
-      returnVal = null;
-      console.warn(`An error occured within custom function for ${componentKey}`, err);
-    }
-  }
-  else if (typeof func === 'object') {
-    try {
-      returnVal = jsonLogic.apply(func, args);
-    }
-    catch (err) {
-      returnVal = null;
-      console.warn(`An error occured within custom function for ${componentKey}`, err);
-    }
-  }
-  else if (func) {
-    console.warn(`Unknown function type for ${componentKey}`);
-  }
-  return returnVal;
+export function evaluate(func, args, ret, interpolate, options = {}) {
+  return Evaluator.evaluate(func, args, ret, interpolate, undefined, options);
 }
 
 /**

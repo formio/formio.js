@@ -594,11 +594,12 @@ export default class Element {
    * @param {string|Function|object} func - The function or string to evaluate.
    * @param {object} args - The arguments to pass to the evaluation.
    * @param {string} ret - The name of the variable within the evaluation context to return.
-   * @param {boolean} tokenize - Determines if it should replace all {{ }} token references with actual data.
+   * @param {boolean} interpolate - Determines if it should replace all {{ }} token references with actual data.
+   * @param {import('@formio/core').EvaluatorOptions} options - The options to pass to the evaluation.
    * @returns {*} - The result of the evaluation.
    */
-  evaluate(func, args, ret, tokenize) {
-    return FormioUtils.evaluate(func, this.evalContext(args), ret, tokenize);
+  evaluate(func, args, ret, interpolate, options = {}) {
+    return FormioUtils.evaluate(func, this.evalContext(args), ret, interpolate, options);
   }
 
   /**

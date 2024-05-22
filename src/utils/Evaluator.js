@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import stringHash from 'string-hash';
-import { Evaluator as CoreEvaluator } from '@formio/core/utils';
+import { JSONLogicEvaluator as CoreEvaluator } from '@formio/core/utils';
 
 export class Evaluator extends CoreEvaluator {
   static cache = {};
@@ -51,8 +51,5 @@ export class Evaluator extends CoreEvaluator {
       }
     }
     return template;
-  }
-  static evaluate(func, args) {
-    return Array.isArray(args) ? func(...args) : func(args);
   }
 }
