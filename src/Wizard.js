@@ -23,7 +23,7 @@ export default class Wizard extends Webform {
     let element, options;
     if (elementOrOptions instanceof HTMLElement || options) {
         element = elementOrOptions;
-        options = _options;
+        options = _options || {};
     } else {
         options = elementOrOptions || {};
     }

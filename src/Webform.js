@@ -163,7 +163,7 @@ export default class Webform extends NestedDataComponent {
         let element, formOptions;
         if (elementOrOptions instanceof HTMLElement || options) {
             element = elementOrOptions;
-            formOptions = options;
+            formOptions = options || {};
         } else {
             formOptions = elementOrOptions || {};
         }
