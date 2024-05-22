@@ -19,7 +19,7 @@ export default class Wizard extends Webform {
    *    - buttonSettings.show*(Previous, Next, Cancel): true (default) - determines if the button is shown.
    *    - allowPrevious: false (default) - determines if the breadcrumb bar is clickable for visited tabs.
    */
-  constructor(elementOrOptions, _options = undefined) {
+  constructor(elementOrOptions = undefined, _options = undefined) {
     let element, options;
     if (elementOrOptions instanceof HTMLElement || options) {
         element = elementOrOptions;
@@ -111,11 +111,6 @@ export default class Wizard extends Webform {
       showSubmit: true,
       showCancel: !this.options.readOnly
     });
-
-    if (!this.isSecondInit && this.options?.breadcrumbSettings) {
-      this.isClickableDefined = Object.prototype.hasOwnProperty.call(this.options?.breadcrumbSettings, 'clickable');
-      this.isSecondInit = true;
-    }
 
     this.options.breadcrumbSettings = _.defaults(this.options.breadcrumbSettings, {
       clickable: true
@@ -347,7 +342,15 @@ export default class Wizard extends Webform {
       }
     });
 
-    return this.isClickableDefined ? this.options.breadcrumbSettings.clickable : _.get(currentPage, 'component.breadcrumbClickable', true);
+    if (_.has(currentPage, 'component.breadcrumbClickable')) {
+      return _.get(currentPage, 'component.breadcrumbClickable');
+    }
+
+    if (_.has(this.options, 'breadcrumbSettings.clickable')) {
+      return this.options.breadcrumbSettings.clickable;
+    }
+
+    return true;
   }
 
   isAllowPrevious() {
