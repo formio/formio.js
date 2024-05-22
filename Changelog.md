@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8342 fixed triggering saveDraft after submitting the form 
  - FIO-8330 fixed saving draft if saveDraft and skipDraftRestore are true
  - FIO-8360 fixed submission state for nested form
+ - FIO-8111 fixed saveDraft Trigger for nested forms
 
 ## 4.21.0-rc.1
 ### Changed
