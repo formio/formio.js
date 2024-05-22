@@ -4,6 +4,7 @@ import WebformBuilder from './WebformBuilder';
 import Builders from './builders';
 import { Formio } from './Formio';
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase } from '../test/formtest';
+import formWithNumericKeys from '../test/forms/formWithNumericKeys';
 import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
 import formBasedOnWizard from '../test/forms/formBasedOnWizard';
@@ -39,6 +40,16 @@ describe('WebformBuilder tests', function() {
       builder.highlightInvalidComponents();
       const component = builder.webform.getComponent(['textField']);
       assert.equal(component.visibleErrors.length, 0);
+      done();
+    }).catch(done);
+  });
+
+  it('Should show API error when components have invalid API keys', (done) => {
+    const builder = Harness.getBuilder();
+    builder.webform.setForm(formWithNumericKeys).then(() => {
+      builder.highlightInvalidComponents();
+      const component = builder.webform.components[1];
+      assert.equal(component.errors.length, 1);
       done();
     }).catch(done);
   });

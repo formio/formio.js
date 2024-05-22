@@ -1282,6 +1282,8 @@ export default class WebformBuilder extends Component {
   highlightInvalidComponents() {
     const repeatablePaths = this.findRepeatablePaths();
     let hasInvalidComponents = false;
+    // Matches anything expect letters and  '_' at the begginnig of the key and anything except of letters, numbers, '-', '.' and '_' in the rest of the key
+    const badCharacters = /^[^A-Za-z_]+|[^A-Za-z0-9\-._]+/g;
 
     this.webform.everyComponent((comp) => {
       const path = comp.path;
@@ -1291,6 +1293,13 @@ export default class WebformBuilder extends Component {
         hasInvalidComponents = true;
       }
       else if (errors.length && errors[0].message?.startsWith('API Key is not unique')) {
+        comp.setCustomValidity('');
+      }
+
+      if (comp.key.replace(badCharacters, '') === '') {
+        comp.setCustomValidity(`API Key is not valid: ${comp.key}`);
+      }
+      else if (comp.error?.message?.startsWith('API Key is not valid')) {
         comp.setCustomValidity('');
       }
     });
