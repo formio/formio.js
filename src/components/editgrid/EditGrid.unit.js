@@ -17,6 +17,7 @@ import {
   comp13,
   comp14,
   comp15,
+  comp16,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
   compWithCustomDefaultValue,
@@ -1560,5 +1561,35 @@ describe('EditGrid Open when Empty', () => {
           }, 450);
       }, 100);
     }).catch(done);
+  });
+
+  it('Hide or show textfield and checkbox components inside of EditGrid conditionally', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, comp16)
+      .then((form) => {
+        const editGrid = form.components[0];
+        editGrid.addRow();
+        const textField1 = editGrid.getComponent('textField1')[0];
+        const checkBox1 = editGrid.getComponent('checkbox1')[0];
+        checkBox1.setValue(true);
+        textField1.setValue('Some value');
+
+        setTimeout(() => {
+          const textField2 = editGrid.getComponent('textField2')[0];
+          const checkBox2 = editGrid.getComponent('checkbox2')[0];
+          assert.equal(textField2.visible, false);
+          assert.equal(checkBox2.visible, false);
+          textField1.setValue('');
+          checkBox1.setValue(false);
+
+          setTimeout(() => {
+            const textField2 = editGrid.getComponent('textField2')[0];
+            const checkBox2 = editGrid.getComponent('checkbox2')[0];
+            assert.equal(textField2.visible, true);
+            assert.equal(checkBox2.visible, true);
+            done();
+          }, 300);
+        }, 300);
+      }).catch(done);
   });
 });
