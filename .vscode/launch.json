@@ -10,6 +10,10 @@
             "name": "Mocha Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
+              "--require",
+              "@babel/register",
+              "--require",
+              "jsdom-global/register",
               "-b",
               "-t",
               "20000",

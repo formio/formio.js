@@ -553,10 +553,10 @@ export default class CalendarWidget extends InputWidget {
     };
   }
 
-  destroy(all = false) {
+  destroy() {
+    super.destroy();
     if (this.calendar) {
       this.calendar.destroy();
     }
-    super.destroy(all);
   }
 }

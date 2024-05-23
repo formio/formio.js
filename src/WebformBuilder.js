@@ -34,7 +34,7 @@ export default class WebformBuilder extends Component {
 
     super(null, options);
 
-    this.setElement(element);
+    this.element = element;
     this.dragulaLib = dragula;
 
     this.builderHeight = 0;
@@ -1864,11 +1864,11 @@ export default class WebformBuilder extends Component {
     }
   }
 
-  destroy(all = false) {
+  destroy(deleteFromGlobal) {
     if (this.webform.initialized) {
-      this.webform.destroy(all);
+      this.webform.destroy(deleteFromGlobal);
     }
-    super.destroy(all);
+    super.destroy(deleteFromGlobal);
   }
 
   addBuilderGroup(name, group) {

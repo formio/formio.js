@@ -164,7 +164,7 @@ export default class Webform extends NestedDataComponent {
     }
     super(null, getOptions(formOptions));
 
-    this.setElement(element);
+    this.element = element;
 
     // Keep track of all available forms globally.
     Formio.forms[this.id] = this;
@@ -380,12 +380,10 @@ export default class Webform extends NestedDataComponent {
    * @return {*}
    */
   addLanguage(code, lang, active = false) {
-    if (this.i18next) {
-      var translations = _.assign(fastCloneDeep(i18nDefaults.resources.en.translation), lang);
-      this.i18next.addResourceBundle(code, 'translation', translations, true, true);
-      if (active) {
-        this.language = code;
-      }
+    var translations = _.assign(fastCloneDeep(i18nDefaults.resources.en.translation), lang);
+    this.i18next.addResourceBundle(code, 'translation', translations, true, true);
+    if (active) {
+      this.language = code;
     }
   }
 
@@ -1043,15 +1041,7 @@ export default class Webform extends NestedDataComponent {
     });
   }
 
-  teardown() {
-    this.emit('formDelete', this.id);
-    delete Formio.forms[this.id];
-    delete this.executeShortcuts;
-    delete this.triggerSaveDraft;
-    super.teardown();
-  }
-
-  destroy(all = false) {
+  destroy(deleteFromGlobal = false) {
     this.off('submitButton');
     this.off('checkValidity');
     this.off('requestUrl');
@@ -1059,7 +1049,12 @@ export default class Webform extends NestedDataComponent {
     this.off('deleteSubmission');
     this.off('refreshData');
 
-    return super.destroy(all);
+    if (deleteFromGlobal) {
+      this.emit('formDelete', this.id);
+      delete Formio.forms[this.id];
+    }
+
+    return super.destroy();
   }
 
   build(element) {
@@ -1098,7 +1093,7 @@ export default class Webform extends NestedDataComponent {
   }
 
   attach(element) {
-    this.setElement(element);
+    this.element = element;
     this.loadRefs(element, { webform: 'single' });
     const childPromise = this.attachComponents(this.refs.webform);
     this.addEventListener(document, 'keydown', this.executeShortcuts);
