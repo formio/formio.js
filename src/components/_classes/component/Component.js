@@ -2133,8 +2133,7 @@ export default class Component extends Element {
   /**
    * Add a new input error to this element.
    *
-   * @param message
-   * @param dirty
+   * @param {{level: string, message: string}[]} messages
    */
   addMessages(messages) {
     if (!messages) {
