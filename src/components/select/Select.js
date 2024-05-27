@@ -1752,6 +1752,11 @@ export default class SelectComponent extends ListComponent {
 
   asString(value, options = {}) {
     value = value ?? this.getValue();
+
+    if (options.modalPreview && this.selectData) {
+      const { label } = this.selectValueAndLabel(value);
+      return label;
+    }
     //need to convert values to strings to be able to compare values with available options that are strings
     const convertToString = (data, valueProperty) => {
       if (valueProperty) {

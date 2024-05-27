@@ -35,7 +35,7 @@ import {
   formWithCollapsedPanel,
   formWithCustomFormatDate,
   tooltipActivateCheckbox,
-  formWithObjectValueSelect
+  formWithObjectValueSelect,
 } from '../test/formtest';
 import UpdateErrorClassesWidgets from '../test/forms/updateErrorClasses-widgets';
 import nestedModalWizard from '../test/forms/nestedModalWizard';
@@ -78,7 +78,9 @@ import formWithDeeplyNestedConditionalComps from '../test/forms/formWithDeeplyNe
 import formWithValidation from '../test/forms/formWithValidation';
 import formWithNotAllowedTags from '../test/forms/formWithNotAllowedTags';
 import formWithValidateWhenHidden from '../test/forms/formWithValidateWhenHidden';
+import formWithSelectRadioUrlDataSource from '../test/forms/selectRadioUrlDataSource';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
+
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
 
@@ -4845,6 +4847,66 @@ describe('Webform tests', function() {
         },200);
       }).catch((err) => done(err));
     });
+  });
+
+  it('Should render labels for Select, Radio and selectBoxes components when Data Source is URL', (done) => {
+    const element = document.createElement('div');
+    const form = new Webform(element);
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        const values = [
+          { name : 'Alabama', abbreviation : 'AL' },
+          { name : 'Alaska', abbreviation: 'AK' },
+          { name: 'American Samoa', abbreviation: 'AS' }
+        ];
+        resolve(values);
+      });
+    };
+
+    form.setForm(formWithSelectRadioUrlDataSource).then(() => {
+      const selectBoxes = form.getComponent('selectBoxes');
+      const select = form.getComponent('select');
+      const radio = form.getComponent('radio');
+
+      selectBoxes.componentModal.openModal();
+      select.componentModal.openModal();
+      radio.componentModal.openModal();
+
+      setTimeout(() => {
+        form.setSubmission({
+          data: {
+            selectBoxes: { AL: false, AK: true, AS: true },
+            select: 'AL',
+            radio: 'AL',
+          }
+        });
+
+        setTimeout(() => {
+          selectBoxes.componentModal.closeModal();
+          select.componentModal.closeModal();
+          radio.componentModal.closeModal();
+
+          setTimeout(() => {
+            const previewSelectBoxes = selectBoxes.element.querySelector('[ref="openModal"]');
+            const previewSelect = select.element.querySelector('[ref="openModal"]');
+            const previewRadio = radio.element.querySelector('[ref="openModal"]');
+
+            assert.equal(previewSelectBoxes.innerHTML, '\n  <span>Alaska</span>, <span>American Samoa</span>\n', 'Should show labels as a selected value' +
+              ' for SelectBoxes component');
+            assert.equal(previewRadio.innerHTML, '\n  <span>Alabama</span>\n', 'Should show label as a selected value' +
+              ' for Radio component');
+            assert.equal(previewSelect.innerHTML, '\n  <span>Alabama</span>\n', 'Should show label as a selected value' +
+              ' for Select component');
+
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    })
+      .catch((err) => done(err));
   });
 
   for (const formTest of FormTests) {
