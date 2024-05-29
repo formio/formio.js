@@ -251,6 +251,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-7195: Fixes an issue where Select, Radio and SelectBoxes components with URL DataSource show values instead of labels in modal preview
  - FIO-8302: Fixed issue with wizard api key overriding window.property objects
  - FIO-8326: Recaptcha now requires type of event to be selected
+ - FIO-8234: Fixes an issue where Select with Resource data source renders values instead of labels in the read only mode   
 
 ## 5.0.0-rc.37
 ### Fixed
