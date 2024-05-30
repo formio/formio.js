@@ -1272,7 +1272,7 @@ describe('Webform tests', function() {
     .catch((err) => done(err));
   });
 
-  it('Should show validation errors and update validation errors list when opening and editing edit grid rows in draft modal mode after pushing submit btn', function(done) {
+  it('Should show validation errors and update validation errors list when opening and editing edit grid rows in draft modal mode after pushing submit btn',function(done) {
     const formElement = document.createElement('div');
     const formWithDraftModals = new Webform(formElement, { sanitize: true });
 
