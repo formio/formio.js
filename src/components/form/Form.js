@@ -230,6 +230,9 @@ export default class FormComponent extends Component {
     if (this.options.saveDraftThrottle) {
       options.saveDraftThrottle = this.options.saveDraftThrottle;
     }
+    if (this.options.skipDraftRestore) {
+      options.skipDraftRestore = this.options.skipDraftRestore;
+    }
     return options;
   }
   /* eslint-enable max-statements */
@@ -649,9 +652,10 @@ export default class FormComponent extends Component {
     }
 
     const isAlreadySubmitted = submission && submission._id && submission.form;
+    const isDraftSubmission = this.options.saveDraft && submission.state === 'draft';
 
     // This submission has already been submitted, so just return the reference data.
-    if (isAlreadySubmitted && !this.subForm?.wizard) {
+    if (isAlreadySubmitted && !this.subForm?.wizard && !isDraftSubmission) {
       this.dataValue = submission;
       return Promise.resolve(this.dataValue);
     }

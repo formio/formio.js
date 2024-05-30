@@ -243,6 +243,16 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-8091: Fixed missing metadata for html5 select component with default value
  - FIO-7445: fixed an issue with interpolated data in HTML
  - FIO-7507: publish-dev-tag-to-npm
+ - FIO-8330: fixed saving draft if saveDraft and skipDraftRestore are true
+ - FIO-7595: fixed incorrect value for conditionally hidden Checkbox
+ - FIO-8342: fixed triggering saveDraft after submitting the form
+ - FIO-8240: fixed skipDraftRestore effect for the nested Forms
+ - FIO-8360 fixed submission state for nested form
+ - FIO-7195: Fixes an issue where Select, Radio and SelectBoxes components with URL DataSource show values instead of labels in modal preview
+ - FIO-8302: Fixed issue with wizard api key overriding window.property objects
+ - FIO-8326: Recaptcha now requires type of event to be selected
+ - FIO-8234: Fixes an issue where Select with Resource data source renders values instead of labels in the read only mode
+ - FIO-8366: API key is not unique translation
 
 ## 5.0.0-rc.37
 ### Fixed
