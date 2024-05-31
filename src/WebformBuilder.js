@@ -1285,13 +1285,9 @@ export default class WebformBuilder extends Component {
 
     this.webform.everyComponent((comp) => {
       const path = comp.path;
-      const errors = comp.visibleErrors || [];
       if (repeatablePaths.includes(path)) {
-        comp.setCustomValidity(`API Key is not unique: ${comp.key}`);
+        comp.setCustomValidity(this.t('apiKey', { key: comp.key }));
         hasInvalidComponents = true;
-      }
-      else if (errors.length && errors[0].message?.startsWith('API Key is not unique')) {
-        comp.setCustomValidity('');
       }
     });
 
