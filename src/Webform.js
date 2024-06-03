@@ -651,7 +651,7 @@ export default class Webform extends NestedDataComponent {
      * @param {any} flags - Any flags to apply when setting the form.
      * @returns {Promise} - The promise that is triggered when the form is set.
      */
-    setForm(form, flags) {
+    setForm(form, flags = {}) {
         const isFormAlreadySet = this._form && this._form.components?.length;
         try {
             // Do not set the form again if it has been already set

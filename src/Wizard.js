@@ -909,7 +909,7 @@ export default class Wizard extends Webform {
     }
   }
 
-  setForm(form, flags) {
+  setForm(form, flags = {}) {
     if (!form) {
       return;
     }

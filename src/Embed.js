@@ -326,15 +326,19 @@ export class Formio {
             await Formio.addLibrary(libWrapper, Formio.config.libs[Formio.config.template], Formio.config.template);
         }
 
-        // Add the premium modules.
+        if (!Formio.config.libraries) {
+            Formio.config.libraries = Formio.config.modules || {};
+        }
+
+        // Adding premium if it is provided via the config.
         if (Formio.config.premium) {
-            Formio.config.modules.premium = Formio.config.premium;
+            Formio.config.libraries.premium = Formio.config.premium;
         }
 
         // Allow adding dynamic modules.
-        if (Formio.config.modules) {
-            for (const name in Formio.config.modules) {
-                const lib = Formio.config.modules[name];
+        if (Formio.config.libraries) {
+            for (const name in Formio.config.libraries) {
+                const lib = Formio.config.libraries[name];
                 lib.use = lib.use || true;
                 await Formio.addLibrary(libWrapper, lib, name);
             }
