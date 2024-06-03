@@ -2906,7 +2906,7 @@ export default class Component extends Element {
     this.calculatedValue = fastCloneDeep(calculatedValue);
 
     if (changed) {
-      if (!flags.noPristineChangeOnModified) {
+      if (!flags.noPristineChangeOnModified && this.root.initialized) {
         this.pristine = false;
       }
 
