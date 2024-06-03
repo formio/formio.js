@@ -17,26 +17,29 @@ export function embed(config = {}) {
             break;
         }
     }
-    
     if (thisScript) {
         const query = {};
         const queryString = thisScript.src.replace(/^[^?]+\??/, '');
         queryString.replace(/\?/g, '&').split('&').forEach((item) => {
             query[item.split('=')[0]] = item.split('=')[1] && decodeURIComponent(item.split('=')[1]);
         });
-    
+
         let scriptSrc = thisScript.src.replace(/^([^?]+).*/, '$1').split('/');
         scriptSrc.pop();
-        if (config.formioPath) {
-            config.formioPath(scriptSrc);
+        let cdnSrc = '';
+        if (scriptSrc[scriptSrc.length - 1] === 'js') {
+            scriptSrc.pop();
+            scriptSrc = cdnSrc = scriptSrc.join('/');
         }
-        scriptSrc = scriptSrc.join('/');
+        else {
+            scriptSrc = scriptSrc.join('/');
+        }
         const debug = (query.debug === 'true' || query.debug === '1');
         const renderer = debug ? 'formio.form' : 'formio.form.min';
         Formio.config = Object.assign({
-            script: query.script || (`${config.updatePath ? config.updatePath() : scriptSrc}/${renderer}.js`),
-            style: query.styles || (`${config.updatePath ? config.updatePath() : scriptSrc}/${renderer}.css`),
-            cdn: query.cdn,
+            script: query.script || (`${scriptSrc}/${renderer}.js`),
+            style: query.styles || (`${scriptSrc}/${renderer}.css`),
+            cdn: query.cdn || cdnSrc,
             class: (query.class || 'formio-form-wrapper'),
             src: query.src,
             form: null,
@@ -45,22 +48,22 @@ export function embed(config = {}) {
             base: query.base || 'https://api.form.io',
             submit: query.submit,
             includeLibs: (query.libs === 'true' || query.libs === '1'),
-            template: query.template,
+            template: query.template || 'bootstrap',
             debug: debug,
             config: {},
             redirect: (query.return || query.redirect),
-            embedCSS: (`${config.updatePath ? config.updatePath() : scriptSrc}/formio.embed.css`),
+            embedCSS: (`${scriptSrc}/formio.embed.css`),
             success: query.success || 'Thank you for your submission!',
             before: null,
             after: null
         }, config);
+        if (Formio.config.alter) {
+            Formio.config.alter(Formio.config);
+        }
         const form = (Formio.config.form || Formio.config.src);
         if (form) {
             Formio.debug('Embedding Configuration', config);
-            if (Formio.config.addPremiumLib) {
-                Formio.config.addPremiumLib(Formio.config, scriptSrc);
-            }
-    
+
             // The id for this embedded form.
             Formio.config.id = `formio-${Math.random().toString(36).substring(7)}`;
             Formio.debug('Creating form element');
@@ -68,14 +71,16 @@ export function embed(config = {}) {
                 'id': Formio.config.id,
                 class: Formio.config.class
             });
-    
             // insertAfter doesn't exist, but effect is identical.
             thisScript.parentNode.insertBefore(element, thisScript.parentNode.firstElementChild.nextSibling);
             Formio.createForm(element, form, Formio.config.config).then((instance) => {
                 if (Formio.config.submit) {
                     instance.nosubmit = true;
                 }
-    
+
+                // Trigger the submit done event.
+                instance.on('submitDone', (submission) => Formio.submitDone(instance, submission));
+
                 // Configure a redirect.
                 instance.on('submit', (submission) => {
                     Formio.debug("on('submit')", submission);
@@ -95,10 +100,9 @@ export function embed(config = {}) {
                             mode: 'cors',
                         })
                             .then(resp => resp.json())
-                            .then(submission => Formio.submitDone(instance, submission));
-                    }
-                    else {
-                        Formio.submitDone(instance, submission);
+                            .then((submission) => {
+                                Formio.submitDone(instance, submission);
+                            });
                     }
                 });
             });

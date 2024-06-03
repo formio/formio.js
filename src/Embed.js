@@ -151,6 +151,10 @@ export class Formio {
 
     static async submitDone(instance, submission) {
         Formio.debug('Submision Complete', submission);
+        if (Formio.config.submitDone) {
+            Formio.config.submitDone(submission, instance);
+        }
+
         const successMessage = (Formio.config.success || '').toString();
         if (successMessage && successMessage.toLowerCase() !== 'false' && instance.element) {
             instance.element.innerHTML = `<div class="alert-success" role="alert">${successMessage}</div>`;
