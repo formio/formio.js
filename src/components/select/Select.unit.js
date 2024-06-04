@@ -33,6 +33,7 @@ import {
   comp21,
   comp22,
   comp23,
+  comp24,
 } from './fixtures';
 
 // eslint-disable-next-line max-statements
@@ -1337,7 +1338,7 @@ describe('Select Component with Entire Object Value Property', () => {
 
   it('Should render label for Select components when Data Source is Resource in read only mode', (done) => {
     const element = document.createElement('div');
-    Formio.createForm(element, comp23, { readOnly: true }).then((form) => {
+    Formio.createForm(element, comp24, { readOnly: true }).then((form) => {
       const select = form.getComponent('select');
       form.setSubmission({
         metadata: {
@@ -1399,4 +1400,3 @@ describe('Select Component with Entire Object Value Property', () => {
       .catch((err) => done(err));
   });
 });
-
