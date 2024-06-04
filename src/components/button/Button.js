@@ -297,7 +297,7 @@ export default class ButtonComponent extends Field {
   }
 
   onClick(event) {
-    this.triggerReCaptcha();
+    this.triggerCaptcha();
     // Don't click if disabled or in builder mode.
     if (this.disabled || this.options.attachMode === 'builder') {
       return;
@@ -505,23 +505,23 @@ export default class ButtonComponent extends Field {
     }
   }
 
-  triggerReCaptcha() {
+  triggerCaptcha() {
     if (!this.root) {
       return;
     }
 
-    let recaptchaComponent;
+    let captchaComponent;
 
     this.root.everyComponent((component)=> {
-      if ( component.component.type === 'recaptcha' &&
+      if (/^(re)?captcha$/.test(component.component.type) &&
         component.component.eventType === 'buttonClick' &&
         component.component.buttonKey === this.component.key) {
-          recaptchaComponent = component;
+          captchaComponent = component;
         }
     });
 
-    if (recaptchaComponent) {
-      recaptchaComponent.verify(`${this.component.key}Click`);
+    if (captchaComponent) {
+      captchaComponent.verify(`${this.component.key}Click`);
     }
   }
 }
