@@ -944,7 +944,9 @@ export default class Webform extends NestedDataComponent {
       };
     }
     // Metadata needs to be available before setValue
-    this._submission.metadata = submission.metadata || {};
+    this._submission.metadata = submission.metadata
+      ? _.cloneDeep(submission.metadata)
+      : {};
     this.editing = !!submission._id;
 
     // Set the timezone in the options if available.

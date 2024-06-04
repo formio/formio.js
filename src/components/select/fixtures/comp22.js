@@ -6,7 +6,7 @@ export default {
   display: 'form',
   components: [{
     label: 'Select',
-    widget: 'choicesjs',
+    widget: 'html5',
     tableView: true,
     dataSrc: 'url',
     data: {

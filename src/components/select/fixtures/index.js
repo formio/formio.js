@@ -21,4 +21,5 @@ import comp20 from './comp20';
 import comp21 from './comp21';
 import comp22 from './comp22';
 import comp23 from './comp23';
-export { comp1, comp2, comp4, comp5, comp6, comp7, comp8, comp9, comp10, comp11, comp12, comp13, comp14, comp15, comp16, comp17, comp18, comp19, comp20, comp21, comp22, comp23 };
+import comp24 from './comp24';
+export { comp1, comp2, comp4, comp5, comp6, comp7, comp8, comp9, comp10, comp11, comp12, comp13, comp14, comp15, comp16, comp17, comp18, comp19, comp20, comp21, comp22, comp23, comp24 };

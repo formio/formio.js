@@ -1,38 +1,47 @@
 export default {
-  title: 'FIO-8234',
-  name: 'fio8234',
-  path: 'fio8234',
+  title: 'FIO-8281',
+  name: 'fio8281',
+  path: 'fio8281',
   type: 'form',
   display: 'form',
-  components: [
-    {
-      label: 'Select',
-      widget: 'choicesjs',
-      tableView: true,
-      dataSrc: 'resource',
-      data: {
-        resource: '665446284c9b0163c3e0c7e6',
-      },
-      template: '<span>{{ item.data.textField1 }}</span>',
-      validate: {
-        select: false,
-      },
-      key: 'select',
-      type: 'select',
-      searchField: 'data.textField2__regex',
-      input: true,
-      noRefreshOnScroll: false,
-      addResource: false,
-      reference: false,
-      valueProperty: 'data.textField2',
+  components: [{
+    label: 'Select',
+    widget: 'choicesjs',
+    tableView: true,
+    dataSrc: 'url',
+    data: {
+      url: 'https://fake_url.com',
+      headers: [
+        {
+          key: '',
+          value: ''
+        },
+      ],
     },
-    {
-      type: 'button',
-      label: 'Submit',
-      key: 'submit',
-      disableOnInvalid: true,
-      input: true,
-      tableView: false,
+    multiple: true,
+    valueProperty: 'value',
+    validateWhenHidden: false,
+    key: 'select',
+    type: 'select',
+    input: true,
+    defaultValue: ['value1', 'value3'],
+    selectValues: 'data',
+    disableLimit: false,
+    noRefreshOnScroll: false,
+    selectData: {
+      value1: {
+        label: 'Label 1',
+      },
+      value3: {
+        label: 'Label 3',
+      },
     },
-  ],
+  }, {
+    type: 'button',
+    label: 'Submit',
+    key: 'submit',
+    disableOnInvalid: true,
+    input: true,
+    tableView: false,
+  }]
 };
