@@ -43,5 +43,5 @@ export default {
     disableOnInvalid: true,
     input: true,
     tableView: false,
-  }],
+  }]
 };

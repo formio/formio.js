@@ -3,7 +3,7 @@ import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
 import Builders from './builders';
 import { Formio } from './Formio';
-import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase } from '../test/formtest';
+import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase, uniqueApiKeysTranslation } from '../test/formtest';
 import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
 import formBasedOnWizard from '../test/forms/formBasedOnWizard';
@@ -34,6 +34,27 @@ describe('WebformBuilder tests', function() {
       assert.equal(builder.webform.components[0].disabled, true);
       done();
     }, 500);
+  });
+  it('Should show API Key is not unique: {{key}} error when api keys are the same', (done) => {
+    const builder = Harness.getBuilder();
+    builder.i18next.currentLanguage = { apiKey: 'translated api key error {{key}}' };
+    builder.webform.setForm(uniqueApiKeysTranslation).then(()=>{
+      builder.highlightInvalidComponents();
+      const component = builder.webform.getComponent(['textField']);
+      assert.equal(component.visibleErrors.length, 1);
+      done();
+    }).catch(done);
+  });
+
+  it('Should show translated api key error {{key}} when apiKey is overridden in i18next translations', (done) => {
+    const builder = Harness.getBuilder();
+    builder.i18next.currentLanguage = { apiKey: 'translated api key error {{key}}' };
+    builder.webform.setForm(uniqueApiKeysTranslation).then(() => {
+      builder.highlightInvalidComponents();
+      const component = builder.webform.getComponent(['textField']);
+      assert.equal(component.visibleErrors[0].message,'translated api key error textField');
+      done();
+    }).catch(done);
   });
 
   it('Should not show unique API error when components with same keys are inside and outside of the Data component', (done) => {

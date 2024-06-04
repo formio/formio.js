@@ -1334,5 +1334,69 @@ describe('Select Component with Entire Object Value Property', () => {
       done();
     });
   });
+
+  it('Should render label for Select components when Data Source is Resource in read only mode', (done) => {
+    const element = document.createElement('div');
+    Formio.createForm(element, comp23, { readOnly: true }).then((form) => {
+      const select = form.getComponent('select');
+      form.setSubmission({
+        metadata: {
+          selectData: {
+            select: {
+              data: {
+                textField1: 'A',
+              },
+            },
+          },
+          timezone: 'Europe/Kiev',
+          offset: 180,
+          origin: 'http://localhost:3001',
+          referrer: '',
+          browserName: 'Netscape',
+          userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+          pathName: '/',
+          onLine: true,
+          headers: {
+            host: 'qvecgdgwpwujbpi.localhost:3000',
+            connection: 'keep-alive',
+            'content-length': '457',
+            'sec-ch-ua': '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
+            accept: 'application/json',
+            'content-type': 'application/json',
+            'sec-ch-ua-mobile': '?0',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+            'sec-ch-ua-platform': '"Windows"',
+            origin: 'http://localhost:3001',
+            'sec-fetch-site': 'cross-site',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-dest': 'empty',
+            referer: 'http://localhost:3001/',
+            'accept-encoding': 'gzip, deflate, br, zstd',
+            'accept-language': 'en-US,en;q=0.9,ru-RU;q=0.8,ru;q=0.7',
+          },
+        },
+        data: {
+          select: 1,
+          select1: {
+            textField1: 'A',
+            textField2: '1',
+            submit: true,
+          },
+          submit: true,
+        },
+        state: 'submitted',
+      });
+
+      setTimeout(() => {
+        const previewSelect = select.element.querySelector('[aria-selected="true"] span');
+
+        assert.equal(previewSelect.innerHTML, 'A', 'Should show label as a selected value' +
+          ' for Select component');
+
+        done();
+      }, 300);
+    })
+      .catch((err) => done(err));
+  });
 });
 
