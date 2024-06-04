@@ -9,6 +9,9 @@ import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
 import formWithFormController from '../test/forms/formWithFormController';
 
+global.requestAnimationFrame = (cb) => cb();
+global.cancelAnimationFrame = () => {};
+
 describe('WebformBuilder tests', function() {
   this.retries(3);
   before((done) => Harness.builderBefore(done));
@@ -352,6 +355,9 @@ describe('Select Component selectData property', () => {
         }, {
           label: 'Label 2',
           value: 'value2',
+        }, {
+          label: 'Label 3',
+          value: 'value3',
         }];
 
         resolve(values);
@@ -443,6 +449,45 @@ describe('Select Component selectData property', () => {
 
           setTimeout(() => {
             assert.equal(builder.editForm.data.selectData, undefined);
+            Harness.saveComponent();
+            setTimeout(() => {
+              done();
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
+  it('Should calculate multiple selectData property for url dataSource', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('select');
+
+      setTimeout(() => {
+        const multiple = builder.editForm.getComponent('multiple');
+        multiple.setValue(true);
+        const dataSrc = builder.editForm.getComponent('dataSrc');
+        dataSrc.setValue('url');
+        const url = builder.editForm.getComponent(['data.url']);
+        const valueProperty = builder.editForm.getComponent('valueProperty');
+        url.setValue('htts//fakeurl.com');
+        valueProperty.setValue('value');
+
+        setTimeout(() => {
+          const defaultValue = builder.editForm.getComponent('defaultValue');
+          defaultValue.setValue(['value1', 'value3']);
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() => {
+            assert.deepEqual(builder.editForm.data.selectData, {
+              value1: {
+                label: 'Label 1',
+              },
+              value3: {
+                label: 'Label 3',
+              },
+            });
             Harness.saveComponent();
             setTimeout(() => {
               done();

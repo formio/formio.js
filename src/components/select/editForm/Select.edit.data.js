@@ -1,14 +1,29 @@
 import _ from 'lodash';
 import { eachComponent } from '../../../utils/utils';
 
-const calculateSelectData = (context) => {
+const calculateSingleSelectData = (context, defaultValue) => {
   const { instance, data } = context;
-  const rawDefaultValue = instance.downloadedResources.find(resource => _.get(resource, data.valueProperty) === instance.getValue());
+  const rawDefaultValue = instance.downloadedResources.find(resource => _.get(resource, data.valueProperty) === defaultValue);
   const options = { data: {}, noeval: true };
   instance.interpolate(data.template, {
     item: rawDefaultValue,
   }, options);
   return options.data.item;
+};
+
+const calculateSelectData = (context) => {
+  const { instance } = context;
+  const defaultValue = instance.getValue();
+  if (instance.component.multiple) {
+    const multiSelectData = {};
+    (defaultValue ?? []).forEach((defaultValueItem) => {
+      multiSelectData[defaultValueItem] = calculateSingleSelectData(context, defaultValueItem);
+    });
+    return multiSelectData;
+  }
+  else {
+    return calculateSingleSelectData(context, defaultValue);
+  }
 };
 
 const setSelectData = (context) => {

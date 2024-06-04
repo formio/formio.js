@@ -1,12 +1,12 @@
 export default {
-  title: 'FIO-8091',
-  name: 'fio8091',
-  path: 'fio8091',
+  title: 'FIO-8281',
+  name: 'fio8281',
+  path: 'fio8281',
   type: 'form',
   display: 'form',
   components: [{
     label: 'Select',
-    widget: 'html5',
+    widget: 'choicesjs',
     tableView: true,
     dataSrc: 'url',
     data: {
@@ -18,17 +18,23 @@ export default {
         },
       ],
     },
+    multiple: true,
     valueProperty: 'value',
     validateWhenHidden: false,
     key: 'select',
     type: 'select',
     input: true,
-    defaultValue: 'value1',
+    defaultValue: ['value1', 'value3'],
     selectValues: 'data',
     disableLimit: false,
     noRefreshOnScroll: false,
     selectData: {
-      label: 'Label 1'
+      value1: {
+        label: 'Label 1',
+      },
+      value3: {
+        label: 'Label 3',
+      },
     },
   }, {
     type: 'button',
@@ -37,5 +43,5 @@ export default {
     disableOnInvalid: true,
     input: true,
     tableView: false,
-  }],
+  }]
 };
