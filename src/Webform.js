@@ -12,7 +12,6 @@ import {
   currentTimezone,
   unescapeHTML,
   getStringFromComponentPath,
-  searchComponents,
   convertStringToHTMLElement,
   getArrayFromComponentPath,
 } from './utils/utils';
@@ -747,7 +746,7 @@ export default class Webform extends NestedDataComponent {
     const rebuild = this.rebuild() || Promise.resolve();
     return rebuild.then(() => {
       this.emit('formLoad', form);
-      this.triggerRecaptcha();
+      this.triggerCaptcha();
       // Make sure to trigger onChange after a render event occurs to speed up form rendering.
       setTimeout(() => {
         this.onChange(flags);
@@ -942,7 +941,9 @@ export default class Webform extends NestedDataComponent {
       };
     }
     // Metadata needs to be available before setValue
-    this._submission.metadata = submission.metadata || {};
+    this._submission.metadata = submission.metadata
+      ? _.cloneDeep(submission.metadata)
+      : {};
     this.editing = !!submission._id;
 
     // Set the timezone in the options if available.
@@ -1690,16 +1691,20 @@ export default class Webform extends NestedDataComponent {
     }
   }
 
-  triggerRecaptcha() {
+  triggerCaptcha() {
     if (!this || !this.components) {
       return;
     }
-    const recaptchaComponent = searchComponents(this.components, {
-      'component.type': 'recaptcha',
-      'component.eventType': 'formLoad'
+
+    const captchaComponent = [];
+    eachComponent(this.components, (component) => {
+      if (/^(re)?captcha$/.test(component.type) && component.component.eventType === 'formLoad') {
+        captchaComponent.push(component);
+      }
     });
-    if (recaptchaComponent.length > 0) {
-      recaptchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
+
+    if (captchaComponent.length > 0) {
+      captchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
     }
   }
 

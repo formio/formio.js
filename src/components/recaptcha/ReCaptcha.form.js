@@ -1,7 +1,7 @@
 import Components from '../Components';
 import ReCaptchaEditDisplay from './editForm/ReCaptcha.edit.display';
 
-export default function() {
+export default function(...extend) {
   return Components.baseEditForm([
     {
       key: 'display',
@@ -23,5 +23,5 @@ export default function() {
       key: 'logic',
       ignore: true
     },
-  ]);
+  ], ...extend);
 }

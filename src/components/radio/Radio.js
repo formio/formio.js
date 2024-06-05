@@ -261,18 +261,21 @@ export default class RadioComponent extends ListComponent {
     return false;
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, options = {}) {
     if (_.isObject(value)) {
       value = JSON.stringify(value);
     }
     else if (!_.isString(value)) {
       value = _.toString(value);
     }
-    if (this.component.dataSrc !== 'values') {
+
+    const isModalPreviewWithUrlDataSource = options.modalPreview && this.component.dataSrc === 'url';
+    if (this.component.dataSrc !== 'values' && !isModalPreviewWithUrlDataSource) {
       return value;
     }
 
-    const option = _.find(this.component.values, (v) => v.value === value);
+    const values = isModalPreviewWithUrlDataSource ? this.loadedOptions : this.component.values;
+    const option = _.find(values, (v) => v.value === value);
 
     if (!value) {
       return _.get(option, 'label', '');

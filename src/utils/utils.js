@@ -150,6 +150,22 @@ export function getElementRect(element) {
 }
 
 /**
+ * Get non HTMLElement property in the window object
+ * @param {String} property
+ * @return {any || undefined}
+ */
+export function getScriptPlugin(property) {
+  const obj = window[property];
+  if (
+    typeof HTMLElement === 'object' ? obj instanceof HTMLElement : //DOM2
+      obj && typeof obj === 'object' && true && obj.nodeType === 1 && typeof obj.nodeName === 'string'
+  ) {
+    return undefined;
+  }
+  return obj;
+}
+
+/**
  * Determines the boolean value of a setting.
  *
  * @param value

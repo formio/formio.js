@@ -189,12 +189,15 @@ export default class SelectBoxesComponent extends RadioComponent {
     return changed;
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, options = {}) {
     if (!value) {
       return '';
     }
 
     if (this.isSelectURL) {
+      if (options.modalPreview && this.loadedOptions) {
+        return this.loadedOptions.filter((option) => value[option.value]).map((option) => option.label).join(', ');
+      }
       return _(value).pickBy((val) => val).keys().join(', ');
     }
     return _(this.component.values || [])
