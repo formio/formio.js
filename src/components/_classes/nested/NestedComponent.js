@@ -1,9 +1,11 @@
 'use strict';
 import _ from 'lodash';
-import Field from '../field/Field';
-import Components from '../../Components';
+
 import NativePromise from 'native-promise-only';
-import { getArrayFromComponentPath, getStringFromComponentPath, getRandomComponentId } from '../../../utils/utils';
+
+import Components from '../../Components';
+import Field from '../field/Field';
+import { getArrayFromComponentPath, getRandomComponentId, getStringFromComponentPath } from '../../../utils/utils';
 
 export default class NestedComponent extends Field {
   static schema(...extend) {
@@ -247,6 +249,10 @@ export default class NestedComponent extends Field {
         if (matchPath) {
           comp = component;
           if (remainingPath.length > 0 && 'getComponent' in component) {
+            // If the path for array data component doesn't contain index, add it.
+            if (['datagrid', 'editgrid'].includes(component.type) && !_.isNumber(remainingPath[0])) {
+              remainingPath.push(component.dataValue.length);
+            }
             comp = component.getComponent(remainingPath, fn, originalPath);
           }
           else if (fn) {
