@@ -1,17 +1,20 @@
-import get from 'lodash/get';
-import set from 'lodash/set';
-import has from 'lodash/has';
+import { applyPatch, compare } from 'fast-json-patch';
+
+import _ from 'lodash';
+import chunk from 'lodash/chunk';
 import clone from 'lodash/clone';
 import forOwn from 'lodash/forOwn';
-import isString from 'lodash/isString';
+import get from 'lodash/get';
+import has from 'lodash/has';
 import isNaN from 'lodash/isNaN';
 import isNil from 'lodash/isNil';
 import isPlainObject from 'lodash/isPlainObject';
-import round from 'lodash/round';
-import chunk from 'lodash/chunk';
+import isString from 'lodash/isString';
 import pad from 'lodash/pad';
-import { compare, applyPatch } from 'fast-json-patch';
-import _ from 'lodash';
+import round from 'lodash/round';
+import set from 'lodash/set';
+
+import { getArrayFromComponentPath } from './utils';
 
 /**
  * Determine if a component is a layout component or not.
@@ -481,32 +484,38 @@ export function escapeRegExCharacters(value) {
  *   A submission object to search.
  * @param {String} key
  *   A for components API key to search for.
+ * @param {Boolean} recursive
+ *   Whether to search for the key in the parent object.
  */
-export function getValue(submission, key) {
-  const search = (data) => {
+export function getValue(submission, key, recursive = false) {
+  const search = (data, keys) => {
     if (isPlainObject(data)) {
-      if (has(data, key)) {
-        return _.get(data, key);
+      // Direct lookup first
+      if (has(data, keys)) {
+        return get(data, keys);
       }
 
-      let value = null;
+      // If not found and recursive is true, try higher level keys
+      if (recursive && keys.length > 1) {
+        return search(data, keys.slice(0, -1));
+      }
 
+      // If value still not found, iterate over properties
+      let value = null;
       forOwn(data, (prop) => {
-        const result = search(prop);
+        const result = search(prop, keys);
         if (!isNil(result)) {
           value = result;
-          return false;
+          return false; // Break the loop
         }
       });
-
       return value;
     }
-    else {
-      return null;
-    }
+    return null;
   };
 
-  return search(submission.data);
+  const keys = getArrayFromComponentPath(key);
+  return search(submission.data, keys);
 }
 
 /**

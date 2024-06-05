@@ -1,16 +1,24 @@
 /* global $ */
 
-import _ from 'lodash';
-import fetchPonyfill from 'fetch-ponyfill';
-import jsonLogic from 'json-logic-js';
-import moment from 'moment-timezone/moment-timezone';
-import jtz from 'jstimezonedetect';
-import { lodashOperators } from './jsonlogic/operators';
-import NativePromise from 'native-promise-only';
 import dompurify from 'dompurify';
-import { getValue } from './formUtils';
+
+import fetchPonyfill from 'fetch-ponyfill';
+
+import jsonLogic from 'json-logic-js';
+
+import jtz from 'jstimezonedetect';
+
+import _ from 'lodash';
+
+import moment from 'moment-timezone/moment-timezone';
+
+import NativePromise from 'native-promise-only';
+
 import Evaluator from './Evaluator';
 import ConditionOperators from './conditionOperators';
+import { getValue } from './formUtils';
+
+import { lodashOperators } from './jsonlogic/operators';
 const interpolate = Evaluator.interpolate;
 const { fetch } = fetchPonyfill({
   Promise: NativePromise
@@ -36,7 +44,7 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, moment, ConditionOperators };
+export { ConditionOperators, jsonLogic, moment };
 
 function setPathToComponentAndPerentSchema(component) {
   component.path = getComponentPath(component);
@@ -243,9 +251,18 @@ export function checkCalculated(component, submission, rowData) {
       const value = getComponentActualValue(conditionComponentPath, data, row);
 
       const СonditionOperator = ConditionOperators[operator];
-      return СonditionOperator
-        ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
-        : true;
+
+      if (!СonditionOperator) {
+        return true;
+      }
+
+      if (Array.isArray(value) && value.length) {
+        const plainValues = value.map(val => _.isPlainObject(val) ? Object.values(val) : val).flat();
+        return plainValues[conjunction === 'all' ? 'every' : 'some'](
+          (val) => new СonditionOperator().getResult({ value: val, comparedValue, instance, component, conditionComponentPath })
+        );
+      }
+      return new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath });
     });
 
     let result = false;
@@ -269,7 +286,7 @@ export function getComponentActualValue(compPath, data, row) {
     value = getValue({ data: row }, compPath);
   }
   if (data && _.isNil(value)) {
-    value = getValue({ data }, compPath);
+    value = getValue({ data }, compPath, true);
   }
   // FOR-400 - Fix issue where falsey values were being evaluated as show=true
   if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
