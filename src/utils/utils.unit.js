@@ -834,6 +834,13 @@ describe('Util Tests', () => {
     });
   });
 
+  describe('removeHTML', () => {
+    it('should remove html tags from string', () => {
+      const removedHTML = utils.removeHTML('<div><p> Hello</p> <p>World</p></div>');
+      expect(removedHTML).to.equal('Hello World');
+    });
+  });
+
   describe('getCurrencyAffixes', () => {
     it('USD en', (done) => {
       try {
