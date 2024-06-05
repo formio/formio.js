@@ -117,4 +117,18 @@ FormioCore.createForm = FormioEmbed.createForm;
 FormioCore.submitDone = FormioEmbed.submitDone;
 FormioCore.addLibrary = FormioEmbed.addLibrary;
 FormioCore.addLoader = FormioEmbed.addLoader;
+FormioCore.addToGlobal = (global) => {
+  if (typeof global === 'object' && !global.Formio) {
+    global.Formio = FormioCore;
+  }
+};
+
+if (typeof global !== 'undefined') {
+  FormioCore.addToGlobal(global);
+}
+
+if (typeof window !== 'undefined') {
+  FormioCore.addToGlobal(window);
+}
+
 export { FormioCore as Formio };
