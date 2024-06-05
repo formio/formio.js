@@ -1,5 +1,6 @@
-import ConditionOperator from './ConditionOperator';
 import _ from 'lodash';
+
+import ConditionOperator from './ConditionOperator';
 
 export default class IsEmptyValue extends ConditionOperator {
     static get operatorKey() {
@@ -19,7 +20,7 @@ export default class IsEmptyValue extends ConditionOperator {
 
         if (instance && instance.root) {
             const conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
-            return conditionTriggerComponent ? conditionTriggerComponent.isEmpty() : isEmptyValue;
+            return conditionTriggerComponent?.isEmpty ? conditionTriggerComponent.isEmpty() : isEmptyValue;
         }
 
         return  isEmptyValue;
