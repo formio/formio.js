@@ -457,9 +457,9 @@ export function unescapeHTML(str) {
   if (typeof window === 'undefined' || !('DOMParser' in window)) {
     return str;
   }
-
-  const doc = new window.DOMParser().parseFromString(str, 'text/html');
-  return doc.documentElement.textContent;
+  const elem = document.createElement('textarea');
+  elem.innerHTML = str;
+  return elem.value;
 }
 
 /**
