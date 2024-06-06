@@ -27,9 +27,10 @@ export function embed(config = {}) {
         let scriptSrc = thisScript.src.replace(/^([^?]+).*/, '$1').split('/');
         scriptSrc.pop();
         let cdnSrc = '';
-        if (scriptSrc[scriptSrc.length - 1] === 'js') {
+        if (['js', 'offline'].includes(scriptSrc[scriptSrc.length - 1])) {
             scriptSrc.pop();
             scriptSrc = cdnSrc = scriptSrc.join('/');
+            scriptSrc += '/js';
         }
         else {
             scriptSrc = scriptSrc.join('/');
@@ -48,6 +49,7 @@ export function embed(config = {}) {
             base: query.base || 'https://api.form.io',
             submit: query.submit,
             includeLibs: (query.libs === 'true' || query.libs === '1'),
+            noshadow: (query.shadow === 'false' || query.shadow === '0'),
             template: query.template || 'bootstrap',
             debug: debug,
             config: {},

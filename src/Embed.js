@@ -89,6 +89,9 @@ export class Formio {
 
     static createElement(type, attrs, children) {
         const element = document.createElement(type);
+        if (!attrs) {
+            return element;
+        }
         Object.keys(attrs).forEach(key => {
             element.setAttribute(key, attrs[key]);
         });
@@ -204,20 +207,21 @@ export class Formio {
         return script;
     }
 
-    static async addLibrary(wrapper, lib, name) {
+    static async addLibrary(libWrapper, lib, name) {
         if (!lib) {
             return;
         }
         if (lib.dependencies) {
             for (let i = 0; i < lib.dependencies.length; i++) {
-                await Formio.addLibrary(wrapper, Formio.cdn.libs[lib.dependencies[i]]);
+                const libName = lib.dependencies[i];
+                await Formio.addLibrary(libWrapper, Formio.config.libs[libName], libName);
             }
         }
         if (lib.css) {
-            await Formio.addStyles(wrapper, lib.css);
+            await Formio.addStyles((lib.global ? document.body : libWrapper), lib.css);
         }
         if (lib.js) {
-            const module = await Formio.addScript(wrapper, lib.js, lib.use ? name : false);
+            const module = await Formio.addScript((lib.global ? document.body : libWrapper), lib.js, lib.use ? name : false);
             if (lib.use) {
                 Formio.debug(`Using ${name}`);
                 const options = lib.options || {};
@@ -268,9 +272,17 @@ export class Formio {
                 css: `${Formio.cdn.bootstrap}/css/bootstrap.min.css`
             },
             'bootstrap-icons': {
-                css: `${Formio.cdn['bootstrap-icons']}/css/bootstrap-icons.css`
+                css: `${Formio.cdn['bootstrap-icons']}/bootstrap-icons.css`,
+                global: true
             }
         };
+        // Add all bootswatch templates.
+        ['cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera', 'lumen', 'lux', 'materia', 'minty', 'pulse', 'sandstone', 'simplex', 'sketchy', 'slate', 'solar', 'spacelab', 'superhero', 'united', 'yeti'].forEach((template) => {
+            Formio.config.libs[template] = {
+                dependencies: ['bootstrap-icons'],
+                css: `${Formio.cdn.bootswatch}/dist/${template}/bootstrap.min.css`
+            };
+        });
         const id = Formio.config.id || `formio-${Math.random().toString(36).substring(7)}`;
 
         // Create a new wrapper and add the element inside of a new wrapper.
@@ -280,7 +292,7 @@ export class Formio {
         element.parentNode.insertBefore(wrapper, element);
 
         // If we include the libraries, then we will attempt to run this in shadow dom.
-        const useShadowDom = Formio.config.includeLibs && (typeof wrapper.attachShadow === 'function');
+        const useShadowDom = Formio.config.includeLibs && !Formio.config.noshadow && (typeof wrapper.attachShadow === 'function');
         if (useShadowDom) {
             wrapper = wrapper.attachShadow({
                 mode: 'open'
@@ -327,7 +339,11 @@ export class Formio {
 
         // Add libraries if they wish to include the libs.
         if (Formio.config.template && Formio.config.includeLibs) {
-            await Formio.addLibrary(libWrapper, Formio.config.libs[Formio.config.template], Formio.config.template);
+            await Formio.addLibrary(
+                libWrapper, 
+                Formio.config.libs[Formio.config.template], 
+                Formio.config.template
+            );
         }
 
         if (!Formio.config.libraries) {
