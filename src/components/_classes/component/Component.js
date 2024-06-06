@@ -1687,11 +1687,11 @@ export default class Component extends Element {
     this.triggerRootChange();
   }
 
-  iconClass(name, spinning, size) {
+  iconClass(name, spinning) {
     const iconset = this.options.iconset || Templates.current.defaultIconset || 'fa';
     return Templates.current.hasOwnProperty('iconClass')
-      ? Templates.current.iconClass(iconset, name, spinning, size)
-      : this.options.iconset === 'fa' ? Templates.defaultTemplates.iconClass(iconset, name, spinning, size) : name;
+      ? Templates.current.iconClass(iconset, name, spinning)
+      : this.options.iconset === 'fa' ? Templates.defaultTemplates.iconClass(iconset, name, spinning) : name;
   }
 
   size(size) {

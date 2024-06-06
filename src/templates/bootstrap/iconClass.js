@@ -1,4 +1,4 @@
-export default (iconset, name, spinning, size) => {
+export default (iconset, name, spinning) => {
   if (iconset === 'fa') {
     switch (name) {
       case 'save':
@@ -28,5 +28,5 @@ export default (iconset, name, spinning, size) => {
     }
   }
 
-  return `${iconset} ${iconset}-${name}${spinning ? ` ${iconset}-spin` : ''}${size ? ` ${iconset}-${size}` : ''}`;
+  return spinning ? `${iconset} ${iconset}-${name} ${iconset}-spin` : `${iconset} ${iconset}-${name}`;
 };
