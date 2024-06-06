@@ -811,6 +811,18 @@ export default class Webform extends NestedDataComponent {
     this.setSubmission(submission);
   }
 
+    /**
+   * @param submission
+   * @param flags
+   * @return {void}
+   */
+  onSetSubmission(submission, flags = {}) {
+    this.submissionSet = true;
+    this.triggerChange(flags);
+    this.emit('beforeSetSubmission', submission);
+    this.setValue(submission, flags);
+  }
+
   /**
    * Sets a submission and returns the promise when it is ready.
    * @param submission
@@ -830,10 +842,7 @@ export default class Webform extends NestedDataComponent {
             ...resolveFlags
           };
         }
-        this.submissionSet = true;
-        this.triggerChange(flags);
-        this.emit('beforeSetSubmission', submission);
-        this.setValue(submission, flags);
+        this.onSetSubmission(submission, flags);
         return this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)

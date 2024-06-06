@@ -722,8 +722,12 @@ export default class FormComponent extends Component {
       });
     }
     else {
-      this.subForm.setValue(submission, flags);
+      this.onSetSubFormValue(submission, flags);
     }
+  }
+
+  onSetSubFormValue(submission, flags) {
+    this.subForm.setValue(submission, flags);
   }
 
   isEmpty(value = this.dataValue) {
