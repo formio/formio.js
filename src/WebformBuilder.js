@@ -1132,7 +1132,12 @@ export default class WebformBuilder extends Component {
         parent.formioComponent.removeChildComponent(component);
       }
       if (component.input && componentInstance && componentInstance.parent) {
-        _.unset(componentInstance._data, componentInstance.key);
+        if (Array.isArray(parent.formioComponent.component.defaultValue)) {
+          parent.formioComponent.component.defaultValue.forEach(v => _.unset(v, componentInstance.key));
+        }
+        else if (typeof parent.formioComponent.component.defaultValue === 'object') {
+          _.unset(parent.formioComponent.component.defaultValue, componentInstance.key);
+        }
       }
       const rebuild = parent.formioComponent.rebuild() || Promise.resolve();
       rebuild.then(() => {
