@@ -299,7 +299,7 @@ export function checkSimpleConditional(component, condition, row, data, instance
 
       const conditionalPaths = instance?.parent?.type === 'datagrid' ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
 
-      if (conditionalPaths.length) {
+      if (conditionalPaths.length>0) {
         return conditionalPaths.map((path) => {
           const value = getComponentActualValue(path, data, row);
 
@@ -307,7 +307,7 @@ export function checkSimpleConditional(component, condition, row, data, instance
           return ConditionOperator
             ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
             : true;
-        }).flat();
+        });
       }
       else {
         const value = getComponentActualValue(conditionComponentPath, data, row);
@@ -322,10 +322,10 @@ export function checkSimpleConditional(component, condition, row, data, instance
 
     switch (conjunction) {
       case 'any':
-        result = _.some(conditionsResult, res => !!res);
+        result = _.some(conditionsResult.flat(), res => !!res);
         break;
       default:
-        result = _.every(conditionsResult, res => !!res);
+        result = _.every(conditionsResult.flat(), res => !!res);
     }
 
     return show ? result : !result;
