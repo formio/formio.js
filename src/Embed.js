@@ -231,6 +231,12 @@ export class Formio {
                 Formio.use((typeof lib.use === 'function' ? lib.use(module) : module), options);
             }
         }
+        if (lib.globalStyle) {
+            const style = Formio.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = lib.globalStyle;
+            document.body.appendChild(style);
+        }
     }
 
     static async addLoader(wrapper) {
@@ -261,7 +267,16 @@ export class Formio {
                 use: true
             },
             fontawesome: {
-                css: `${Formio.cdn['font-awesome']}/css/font-awesome.min.css`
+                // Due to an issue with font-face not loading in the shadowdom (https://issues.chromium.org/issues/41085401), we need
+                // to do 2 things. 1.) Load the fonts from the global cdn, and 2.) add the font-face to the global styles on the page.
+                css: `https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css`,
+                globalStyle: `@font-face {
+                    font-family: 'FontAwesome';
+                    src: url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.eot?v=4.7.0');
+                    src: url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'), url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.woff2?v=4.7.0') format('woff2'), url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.woff?v=4.7.0') format('woff'), url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.ttf?v=4.7.0') format('truetype'), url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
+                    font-weight: normal;
+                    font-style: normal;
+                  }`
             },
             bootstrap4: {
                 dependencies: ['fontawesome'],
@@ -272,8 +287,15 @@ export class Formio {
                 css: `${Formio.cdn.bootstrap}/css/bootstrap.min.css`
             },
             'bootstrap-icons': {
-                css: `${Formio.cdn['bootstrap-icons']}/bootstrap-icons.css`,
-                global: true
+                // Due to an issue with font-face not loading in the shadowdom (https://issues.chromium.org/issues/41085401), we need
+                // to do 2 things. 1.) Load the fonts from the global cdn, and 2.) add the font-face to the global styles on the page.
+                css: 'https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.min.css',
+                globalStyle: `@font-face {
+                    font-display: block;
+                    font-family: "bootstrap-icons";
+                    src: url("https://cdn.jsdelivr.net/npm/bootstrap-icons/font/fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6") format("woff2"),
+                         url("https://cdn.jsdelivr.net/npm/bootstrap-icons/font/fonts/bootstrap-icons.woff?dd67030699838ea613ee6dbda90effa6") format("woff");
+                }`
             }
         };
         // Add all bootswatch templates.
