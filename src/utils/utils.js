@@ -200,7 +200,7 @@ export function checkCalculated(component, submission, rowData) {
   }
 }
 
-function getRecursionFields(filed, data) {
+function getRecursionFields(conditionPaths, data) {
   let currentGlobalIndex = 0;
   const arrayConditionalFields = [];
 
@@ -212,30 +212,29 @@ function getRecursionFields(filed, data) {
       if (currentMassData.some(element => typeof element !== 'object')) {
         return;
       }
-      const findInnerMass = currentMassData.find(x => Array.isArray(x[filed[currentLocalIndex]]));
+      const findInnerMass = currentMassData.find(x => Array.isArray(x[conditionPaths[currentLocalIndex]]));
       if (findInnerMass) {
         currentMassData.forEach((x, indexOutside) => {
-          const someEl = `${currentPath}[${indexOutside}].${filed[currentLocalIndex]}`;
+          const someEl = `${currentPath}[${indexOutside}].${conditionPaths[currentLocalIndex]}`;
           getConditionalPaths(data, someEl, currentLocalIndex + 1);
         });
       }
-      else if (!filed[currentLocalIndex]) {
-        return;
-      }
       else {
-        currentMassData.forEach((_, index) => {
-          const element = `${currentPath}[${index}].${filed[currentLocalIndex]}`;
-          arrayConditionalFields.push(element);
+        currentMassData.forEach((x, index) => {
+          if (!_.isNil(x[conditionPaths[currentLocalIndex]])) {
+            const element = `${currentPath}[${index}].${conditionPaths[currentLocalIndex]}`;
+            arrayConditionalFields.push(element);
+          }
         });
       }
     }
 
     else {
-      if (!filed[currentGlobalIndex]) {
+      if (!conditionPaths[currentGlobalIndex]) {
         return;
       }
       currentGlobalIndex = currentGlobalIndex + 1;
-      getConditionalPaths(data, `${currentPath}.${filed[currentGlobalIndex - 1]}`, currentGlobalIndex);
+      getConditionalPaths(data, `${currentPath}.${conditionPaths[currentGlobalIndex - 1]}`, currentGlobalIndex);
     }
   };
   getConditionalPaths(data);
@@ -284,16 +283,16 @@ export function checkSimpleConditional(component, condition, row, data, instance
         return true;
       }
 
-      const filed = conditionComponentPath.split('.');
+      const splittedConditionPath = conditionComponentPath.split('.');
 
-      let resultT = [];
+      let resultConditionsPath = [];
 
       if (instance?.parent?.type !== 'datagrid') {
-        resultT = getRecursionFields(filed, data);
+        resultConditionsPath = getRecursionFields(splittedConditionPath, data);
       }
 
-      if (resultT.length > 0) {
-        var newMap = resultT.map((x) => {
+      if (resultConditionsPath.length > 0) {
+        var newMap = resultConditionsPath.map((x) => {
           const value = getComponentActualValue(x, data, row);
 
           const ConditionOperator = ConditionOperators[operator];
