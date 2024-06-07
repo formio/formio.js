@@ -706,10 +706,11 @@ export default class FormComponent extends Component {
       && submission._id
       && this.subForm.formio
       && _.isEmpty(submission.data);
+    const shouldLoadDraftById = this.options.saveDraft && _.isEmpty(submission.data) && _.get(this.subForm, 'submission._id');
 
-    if (shouldLoadSubmissionById) {
+    if (shouldLoadSubmissionById || shouldLoadDraftById) {
       const formId = submission.form || this.formObj.form || this.component.form;
-      const submissionUrl = `${this.subForm.formio.formsUrl}/${formId}/submission/${submission._id}`;
+      const submissionUrl = `${this.subForm.formio.formsUrl}/${formId}/submission/${submission._id || this.subForm.submission._id}`;
       const options = this.root.formio?.base && this.root.formio?.projectUrl
       ? {
           base: this.root.formio.base,
