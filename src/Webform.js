@@ -880,7 +880,8 @@ export default class Webform extends NestedDataComponent {
     formio.loadSubmissions({
       params: {
         state: 'draft',
-        owner: userId
+        owner: userId,
+        sort: '-created'
       }
     }).then(submissions => {
       if (submissions.length > 0 && !this.options.skipDraftRestore) {
