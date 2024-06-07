@@ -1,16 +1,24 @@
 /* global $ */
 
-import _ from 'lodash';
-import fetchPonyfill from 'fetch-ponyfill';
-import jsonLogic from 'json-logic-js';
-import moment from 'moment-timezone/moment-timezone';
-import jtz from 'jstimezonedetect';
-import { lodashOperators } from './jsonlogic/operators';
-import NativePromise from 'native-promise-only';
 import dompurify from 'dompurify';
-import { getValue } from './formUtils';
+
+import fetchPonyfill from 'fetch-ponyfill';
+
+import jsonLogic from 'json-logic-js';
+
+import jtz from 'jstimezonedetect';
+
+import _ from 'lodash';
+
+import moment from 'moment-timezone/moment-timezone';
+
+import NativePromise from 'native-promise-only';
+
 import Evaluator from './Evaluator';
 import ConditionOperators from './conditionOperators';
+import { getValue } from './formUtils';
+
+import { lodashOperators } from './jsonlogic/operators';
 const interpolate = Evaluator.interpolate;
 const { fetch } = fetchPonyfill({
   Promise: NativePromise
@@ -36,7 +44,7 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, moment, ConditionOperators };
+export { ConditionOperators, jsonLogic, moment };
 
 function setPathToComponentAndPerentSchema(component) {
   component.path = getComponentPath(component);
@@ -200,35 +208,37 @@ export function checkCalculated(component, submission, rowData) {
   }
 }
 
-function getRecursionFields(conditionPaths, data) {
+function getConditionalPathsRecursive(conditionPaths, data) {
   let currentGlobalIndex = 0;
-  const arrayConditionalFields = [];
+  const conditionalPathsArray = [];
 
   const getConditionalPaths = (data, currentPath = '', localIndex = 0) => {
     currentPath = currentPath.replace(/^\.+|\.+$/g, '');
     const currentLocalIndex = localIndex;
-    const currentMassData = _.get(data, currentPath);
-    if (Array.isArray(currentMassData) && currentMassData.filter(Boolean).length > 0) {
-      if (currentMassData.some(element => typeof element !== 'object')) {
+    const currentData = _.get(data, currentPath);
+
+    if (Array.isArray(currentData) && currentData.filter(Boolean).length > 0) {
+      if (currentData.some(element => typeof element !== 'object')) {
         return;
       }
-      const findInnerMass = currentMassData.find(x => Array.isArray(x[conditionPaths[currentLocalIndex]]));
-      if (findInnerMass) {
-        currentMassData.forEach((x, indexOutside) => {
-          const someEl = `${currentPath}[${indexOutside}].${conditionPaths[currentLocalIndex]}`;
-          getConditionalPaths(data, someEl, currentLocalIndex + 1);
+
+      const hasInnerDataArray = currentData.find(x => Array.isArray(x[conditionPaths[currentLocalIndex]]));
+
+      if (hasInnerDataArray) {
+        currentData.forEach((_, indexOutside) => {
+          const innerCompDataPath = `${currentPath}[${indexOutside}].${conditionPaths[currentLocalIndex]}`;
+          getConditionalPaths(data, innerCompDataPath, currentLocalIndex + 1);
         });
       }
       else {
-        currentMassData.forEach((x, index) => {
+        currentData.forEach((x, index) => {
           if (!_.isNil(x[conditionPaths[currentLocalIndex]])) {
-            const element = `${currentPath}[${index}].${conditionPaths[currentLocalIndex]}`;
-            arrayConditionalFields.push(element);
+            const compDataPath = `${currentPath}[${index}].${conditionPaths[currentLocalIndex]}`;
+            conditionalPathsArray.push(compDataPath);
           }
         });
       }
     }
-
     else {
       if (!conditionPaths[currentGlobalIndex]) {
         return;
@@ -237,9 +247,10 @@ function getRecursionFields(conditionPaths, data) {
       getConditionalPaths(data, `${currentPath}.${conditionPaths[currentGlobalIndex - 1]}`, currentGlobalIndex);
     }
   };
+
   getConditionalPaths(data);
 
-  return arrayConditionalFields;
+  return conditionalPathsArray;
 }
 
 /**
@@ -279,30 +290,25 @@ export function checkSimpleConditional(component, condition, row, data, instance
 
     const conditionsResult = _.map(conditions, (cond) => {
       const { value: comparedValue, operator, component: conditionComponentPath } = cond;
+
       if (!conditionComponentPath) {
         return true;
       }
 
       const splittedConditionPath = conditionComponentPath.split('.');
 
-      let resultConditionsPath = [];
+      const conditionalPaths = instance?.parent?.type === 'datagrid' ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
 
-      if (instance?.parent?.type !== 'datagrid') {
-        resultConditionsPath = getRecursionFields(splittedConditionPath, data);
-      }
-
-      if (resultConditionsPath.length > 0) {
-        var newMap = resultConditionsPath.map((x) => {
-          const value = getComponentActualValue(x, data, row);
+      if (conditionalPaths.length) {
+        return conditionalPaths.map((path) => {
+          const value = getComponentActualValue(path, data, row);
 
           const ConditionOperator = ConditionOperators[operator];
           return ConditionOperator
             ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
             : true;
-        });
-        return newMap;
+        }).flat();
       }
-
       else {
         const value = getComponentActualValue(conditionComponentPath, data, row);
         const СonditionOperator = ConditionOperators[operator];
@@ -316,10 +322,10 @@ export function checkSimpleConditional(component, condition, row, data, instance
 
     switch (conjunction) {
       case 'any':
-        result = _.some(conditionsResult.flat(), res => !!res);
+        result = _.some(conditionsResult, res => !!res);
         break;
       default:
-        result = _.every(conditionsResult.flat(), res => !!res);
+        result = _.every(conditionsResult, res => !!res);
     }
 
     return show ? result : !result;
