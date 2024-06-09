@@ -89,6 +89,9 @@ export class Formio {
 
     static createElement(type, attrs, children) {
         const element = document.createElement(type);
+        if (!attrs) {
+            return element;
+        }
         Object.keys(attrs).forEach(key => {
             element.setAttribute(key, attrs[key]);
         });
@@ -151,6 +154,10 @@ export class Formio {
 
     static async submitDone(instance, submission) {
         Formio.debug('Submision Complete', submission);
+        if (Formio.config.submitDone) {
+            Formio.config.submitDone(submission, instance);
+        }
+
         const successMessage = (Formio.config.success || '').toString();
         if (successMessage && successMessage.toLowerCase() !== 'false' && instance.element) {
             instance.element.innerHTML = `<div class="alert-success" role="alert">${successMessage}</div>`;
@@ -200,20 +207,21 @@ export class Formio {
         return script;
     }
 
-    static async addLibrary(wrapper, lib, name) {
+    static async addLibrary(libWrapper, lib, name) {
         if (!lib) {
             return;
         }
         if (lib.dependencies) {
             for (let i = 0; i < lib.dependencies.length; i++) {
-                await Formio.addLibrary(wrapper, Formio.cdn.libs[lib.dependencies[i]]);
+                const libName = lib.dependencies[i];
+                await Formio.addLibrary(libWrapper, Formio.config.libs[libName], libName);
             }
         }
         if (lib.css) {
-            await Formio.addStyles(wrapper, lib.css);
+            await Formio.addStyles((lib.global ? document.body : libWrapper), lib.css);
         }
         if (lib.js) {
-            const module = await Formio.addScript(wrapper, lib.js, lib.use ? name : false);
+            const module = await Formio.addScript((lib.global ? document.body : libWrapper), lib.js, lib.use ? name : false);
             if (lib.use) {
                 Formio.debug(`Using ${name}`);
                 const options = lib.options || {};
@@ -222,6 +230,12 @@ export class Formio {
                 }
                 Formio.use((typeof lib.use === 'function' ? lib.use(module) : module), options);
             }
+        }
+        if (lib.globalStyle) {
+            const style = Formio.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = lib.globalStyle;
+            document.body.appendChild(style);
         }
     }
 
@@ -253,7 +267,16 @@ export class Formio {
                 use: true
             },
             fontawesome: {
-                css: `${Formio.cdn['font-awesome']}/css/font-awesome.min.css`
+                // Due to an issue with font-face not loading in the shadowdom (https://issues.chromium.org/issues/41085401), we need
+                // to do 2 things. 1.) Load the fonts from the global cdn, and 2.) add the font-face to the global styles on the page.
+                css: `https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css`,
+                globalStyle: `@font-face {
+                    font-family: 'FontAwesome';
+                    src: url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.eot?v=4.7.0');
+                    src: url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'), url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.woff2?v=4.7.0') format('woff2'), url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.woff?v=4.7.0') format('woff'), url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.ttf?v=4.7.0') format('truetype'), url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
+                    font-weight: normal;
+                    font-style: normal;
+                  }`
             },
             bootstrap4: {
                 dependencies: ['fontawesome'],
@@ -264,9 +287,24 @@ export class Formio {
                 css: `${Formio.cdn.bootstrap}/css/bootstrap.min.css`
             },
             'bootstrap-icons': {
-                css: `${Formio.cdn['bootstrap-icons']}/css/bootstrap-icons.css`
+                // Due to an issue with font-face not loading in the shadowdom (https://issues.chromium.org/issues/41085401), we need
+                // to do 2 things. 1.) Load the fonts from the global cdn, and 2.) add the font-face to the global styles on the page.
+                css: 'https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.min.css',
+                globalStyle: `@font-face {
+                    font-display: block;
+                    font-family: "bootstrap-icons";
+                    src: url("https://cdn.jsdelivr.net/npm/bootstrap-icons/font/fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6") format("woff2"),
+                         url("https://cdn.jsdelivr.net/npm/bootstrap-icons/font/fonts/bootstrap-icons.woff?dd67030699838ea613ee6dbda90effa6") format("woff");
+                }`
             }
         };
+        // Add all bootswatch templates.
+        ['cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera', 'lumen', 'lux', 'materia', 'minty', 'pulse', 'sandstone', 'simplex', 'sketchy', 'slate', 'solar', 'spacelab', 'superhero', 'united', 'yeti'].forEach((template) => {
+            Formio.config.libs[template] = {
+                dependencies: ['bootstrap-icons'],
+                css: `${Formio.cdn.bootswatch}/dist/${template}/bootstrap.min.css`
+            };
+        });
         const id = Formio.config.id || `formio-${Math.random().toString(36).substring(7)}`;
 
         // Create a new wrapper and add the element inside of a new wrapper.
@@ -276,7 +314,7 @@ export class Formio {
         element.parentNode.insertBefore(wrapper, element);
 
         // If we include the libraries, then we will attempt to run this in shadow dom.
-        const useShadowDom = Formio.config.includeLibs && (typeof wrapper.attachShadow === 'function');
+        const useShadowDom = Formio.config.includeLibs && !Formio.config.noshadow && (typeof wrapper.attachShadow === 'function');
         if (useShadowDom) {
             wrapper = wrapper.attachShadow({
                 mode: 'open'
@@ -323,18 +361,26 @@ export class Formio {
 
         // Add libraries if they wish to include the libs.
         if (Formio.config.template && Formio.config.includeLibs) {
-            await Formio.addLibrary(libWrapper, Formio.config.libs[Formio.config.template], Formio.config.template);
+            await Formio.addLibrary(
+                libWrapper, 
+                Formio.config.libs[Formio.config.template], 
+                Formio.config.template
+            );
         }
 
-        // Add the premium modules.
+        if (!Formio.config.libraries) {
+            Formio.config.libraries = Formio.config.modules || {};
+        }
+
+        // Adding premium if it is provided via the config.
         if (Formio.config.premium) {
-            Formio.config.modules.premium = Formio.config.premium;
+            Formio.config.libraries.premium = Formio.config.premium;
         }
 
         // Allow adding dynamic modules.
-        if (Formio.config.modules) {
-            for (const name in Formio.config.modules) {
-                const lib = Formio.config.modules[name];
+        if (Formio.config.libraries) {
+            for (const name in Formio.config.libraries) {
+                const lib = Formio.config.libraries[name];
                 lib.use = lib.use || true;
                 await Formio.addLibrary(libWrapper, lib, name);
             }

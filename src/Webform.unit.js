@@ -81,9 +81,6 @@ import formWithValidateWhenHidden from '../test/forms/formWithValidateWhenHidden
 import formWithSelectRadioUrlDataSource from '../test/forms/selectRadioUrlDataSource';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
-global.requestAnimationFrame = (cb) => cb();
-global.cancelAnimationFrame = () => {};
-
 if (_.has(Formio, 'Components.setComponents')) {
   Formio.Components.setComponents(AllComponents);
 }

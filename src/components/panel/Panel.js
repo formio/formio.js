@@ -1,6 +1,5 @@
 import NestedComponent from '../_classes/nested/NestedComponent';
 import { isChildOf } from '../../utils/utils';
-import FormComponent from '../form/Form';
 
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {

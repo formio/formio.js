@@ -1,4 +1,4 @@
-import Evaluator from '../../../utils/Evaluator';
+import { Evaluator } from '../../../utils/Evaluator';
 
 export default [
   {
