@@ -3,7 +3,7 @@ import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Input from '../_classes/input/Input';
 import Form from '../../Form';
-import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes, unescapeHTML, isSelectResourceWithObjectValue } from '../../utils/utils';
+import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes, unescapeHTML, isSelectResourceWithObjectValue, removeHTML } from '../../utils/utils';
 
 import Choices from '../../utils/ChoicesWrapper';
 
@@ -1820,7 +1820,7 @@ export default class SelectComponent extends ListComponent {
     const getTemplateValue = (v) => {
       const itemTemplate = this.itemTemplate(v);
       return options.csv && itemTemplate
-        ? unescapeHTML(itemTemplate)
+        ? removeHTML(itemTemplate)
         : itemTemplate;
     };
 

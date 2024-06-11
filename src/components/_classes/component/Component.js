@@ -2156,9 +2156,6 @@ export default class Component extends Element {
 
     if (this.refs.messageContainer) {
       this.setContent(this.refs.messageContainer, messages.map((message) => {
-        if (message.message && typeof message.message === 'string') {
-          message.message = message.message.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-        }
         return this.renderTemplate('message', { ...message });
       }
       ).join(''));

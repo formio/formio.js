@@ -449,6 +449,16 @@ export function setActionProperty(component, action, result, row, data, instance
 }
 
 /**
+ * Removes HTML tags from string e.g. <div>Hello World</div> => Hello World
+ * @param {string} str
+ * @returns {string}
+ */
+export function removeHTML(str) {
+  const doc = new window.DOMParser().parseFromString(str, 'text/html');
+  return (doc.body.textContent || '').trim();
+}
+
+/**
  * Unescape HTML characters like &lt, &gt, &amp and etc.
  * @param str
  * @returns {string}
@@ -457,9 +467,9 @@ export function unescapeHTML(str) {
   if (typeof window === 'undefined' || !('DOMParser' in window)) {
     return str;
   }
-
-  const doc = new window.DOMParser().parseFromString(str, 'text/html');
-  return doc.documentElement.textContent;
+  const elem = document.createElement('textarea');
+  elem.innerHTML = str;
+  return elem.value;
 }
 
 /**
