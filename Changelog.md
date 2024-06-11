@@ -253,7 +253,8 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-8326: Recaptcha now requires type of event to be selected
  - FIO-8234: Fixes an issue where Select with Resource data source renders values instead of labels in the read only mode
  - FIO-8366: API key is not unique translation
- - FIO-8433 fixed restore draft for nested forms
+ - FIO-8433: fixed restore draft for nested forms
+ - FIO-8395: html in error message not evaluating
 
 ## 5.0.0-rc.37
 ### Fixed
