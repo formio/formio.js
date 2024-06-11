@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.19.4-rc.1]
+## 4.19.4-rc.1
+### Changed
+ - FIO-7395: Fixed the issue with loading nested form
+ - FIO-8433 fixed restore draft for nested forms
+ - FIO-8281: fixed selectData property for multiple select component
+
 ### Changed
  - FIO-8199: Fixes an issue where Checkbox does not have id and for attributes
    

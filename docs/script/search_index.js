@@ -270,12 +270,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "formiojs/src/form.js~form",
-    "class/src/Form.js~Form.html",
-    "<span>Form</span> <span class=\"search-result-import-path\">formiojs/src/Form.js</span>",
-    "class"
-  ],
-  [
     "formiojs/src/components/form/form.form.js~form",
     "function/index.html#static-function-Form",
     "<span>Form</span> <span class=\"search-result-import-path\">formiojs/src/components/form/Form.form.js</span>",
@@ -1324,150 +1318,6 @@ window.esdocSearchIndex = [
     "class/src/EventEmitter.js~EventEmitter.html#instance-member-onAny",
     "src/EventEmitter.js~EventEmitter#onAny",
     "member"
-  ],
-  [
-    "src/form.js",
-    "file/src/Form.js.html",
-    "src/Form.js",
-    "file"
-  ],
-  [
-    "src/form.js~form#_form",
-    "class/src/Form.js~Form.html#instance-member-_form",
-    "src/Form.js~Form#_form",
-    "member"
-  ],
-  [
-    "src/form.js~form#attach",
-    "class/src/Form.js~Form.html#instance-method-attach",
-    "src/Form.js~Form#attach",
-    "method"
-  ],
-  [
-    "src/form.js~form#build",
-    "class/src/Form.js~Form.html#instance-method-build",
-    "src/Form.js~Form#build",
-    "method"
-  ],
-  [
-    "src/form.js~form#constructor",
-    "class/src/Form.js~Form.html#instance-constructor-constructor",
-    "src/Form.js~Form#constructor",
-    "method"
-  ],
-  [
-    "src/form.js~form#create",
-    "class/src/Form.js~Form.html#instance-method-create",
-    "src/Form.js~Form#create",
-    "method"
-  ],
-  [
-    "src/form.js~form#display",
-    "class/src/Form.js~Form.html#instance-member-display",
-    "src/Form.js~Form#display",
-    "member"
-  ],
-  [
-    "src/form.js~form#element",
-    "class/src/Form.js~Form.html#instance-member-element",
-    "src/Form.js~Form#element",
-    "member"
-  ],
-  [
-    "src/form.js~form#empty",
-    "class/src/Form.js~Form.html#instance-method-empty",
-    "src/Form.js~Form#empty",
-    "method"
-  ],
-  [
-    "src/form.js~form#errorform",
-    "class/src/Form.js~Form.html#instance-method-errorForm",
-    "src/Form.js~Form#errorForm",
-    "method"
-  ],
-  [
-    "src/form.js~form#form",
-    "class/src/Form.js~Form.html#instance-set-form",
-    "src/Form.js~Form#form",
-    "member"
-  ],
-  [
-    "src/form.js~form#form",
-    "class/src/Form.js~Form.html#instance-get-form",
-    "src/Form.js~Form#form",
-    "member"
-  ],
-  [
-    "src/form.js~form#getsubmission",
-    "class/src/Form.js~Form.html#instance-method-getSubmission",
-    "src/Form.js~Form#getSubmission",
-    "method"
-  ],
-  [
-    "src/form.js~form#instance",
-    "class/src/Form.js~Form.html#instance-member-instance",
-    "src/Form.js~Form#instance",
-    "member"
-  ],
-  [
-    "src/form.js~form#options",
-    "class/src/Form.js~Form.html#instance-member-options",
-    "src/Form.js~Form#options",
-    "member"
-  ],
-  [
-    "src/form.js~form#ready",
-    "class/src/Form.js~Form.html#instance-member-ready",
-    "src/Form.js~Form#ready",
-    "member"
-  ],
-  [
-    "src/form.js~form#readyreject",
-    "class/src/Form.js~Form.html#instance-member-readyReject",
-    "src/Form.js~Form#readyReject",
-    "member"
-  ],
-  [
-    "src/form.js~form#readyresolve",
-    "class/src/Form.js~Form.html#instance-member-readyResolve",
-    "src/Form.js~Form#readyResolve",
-    "member"
-  ],
-  [
-    "src/form.js~form#render",
-    "class/src/Form.js~Form.html#instance-method-render",
-    "src/Form.js~Form#render",
-    "method"
-  ],
-  [
-    "src/form.js~form#sanitize",
-    "class/src/Form.js~Form.html#instance-method-sanitize",
-    "src/Form.js~Form#sanitize",
-    "method"
-  ],
-  [
-    "src/form.js~form#setcontent",
-    "class/src/Form.js~Form.html#instance-method-setContent",
-    "src/Form.js~Form#setContent",
-    "method"
-  ],
-  [
-    "src/form.js~form#setdisplay",
-    "class/src/Form.js~Form.html#instance-method-setDisplay",
-    "src/Form.js~Form#setDisplay",
-    "method"
-  ],
-  [
-    "src/form.js~form#setform",
-    "class/src/Form.js~Form.html#instance-method-setForm",
-    "src/Form.js~Form#setForm",
-    "method"
-  ],
-  [
-    "src/form.js~form.embed",
-    "class/src/Form.js~Form.html#static-method-embed",
-    "src/Form.js~Form.embed",
-    "method"
   ],
   [
     "src/formbuilder.js",
@@ -5157,6 +5007,18 @@ window.esdocSearchIndex = [
     "src/components/select/fixtures/comp22.js",
     "file/src/components/select/fixtures/comp22.js.html",
     "src/components/select/fixtures/comp22.js",
+    "file"
+  ],
+  [
+    "src/components/select/fixtures/comp23.js",
+    "file/src/components/select/fixtures/comp23.js.html",
+    "src/components/select/fixtures/comp23.js",
+    "file"
+  ],
+  [
+    "src/components/select/fixtures/comp24.js",
+    "file/src/components/select/fixtures/comp24.js.html",
+    "src/components/select/fixtures/comp24.js",
     "file"
   ],
   [

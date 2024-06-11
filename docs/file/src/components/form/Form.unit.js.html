@@ -31,7 +31,6 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
@@ -475,9 +474,11 @@ describe(&apos;SaveDraft functionality for Nested Form&apos;, () =&gt; {
   let state = null;
   let subFormState = null;
 
+  const restoredDraftNestedData = { nested: &apos;test Nested&apos; };
+
   const restoredDraftData = {
     parent: &apos;test Parent&apos;,
-    form: { nested: &apos;test Nested&apos; },
+    form: { data: restoredDraftNestedData },
     submit: false,
   };
 
@@ -494,6 +495,19 @@ describe(&apos;SaveDraft functionality for Nested Form&apos;, () =&gt; {
           saveDraftCalls = ++saveDraftCalls;
         }
         return Promise.resolve(fastCloneDeep(data));
+      }
+
+      if (type === &apos;submission&apos; &amp;&amp; method === &apos;get&apos; &amp;&amp; _.endsWith(url, &apos;660e75e4e8c776f1225142aa&apos;)) {
+        return Promise.resolve(
+          fastCloneDeep({
+            _id: &apos;660e75e4e8c776f1225142aa&apos;,
+            form: &apos;63e4deda12b88c4f05c125cf&apos;,
+            owner: &apos;63ceaccebe0090345b109da7&apos;,
+            data: restoredDraftNestedData,
+            project: &apos;65b0ccbaf019a907ac01a869&apos;,
+            state: &apos;draft&apos;,
+          }),
+        );
       }
 
       if (type === &apos;form&apos; &amp;&amp; method === &apos;get&apos;) {
@@ -521,7 +535,7 @@ describe(&apos;SaveDraft functionality for Nested Form&apos;, () =&gt; {
             _id: &apos;660e75e4e8c776f1225142aa&apos;,
             form: &apos;63e4deda12b88c4f05c125cf&apos;,
             owner: &apos;63ceaccebe0090345b109da7&apos;,
-            data: restoredDraftData.form,
+            data: restoredDraftNestedData,
             project: &apos;65b0ccbaf019a907ac01a869&apos;,
             state: &apos;draft&apos;,
           }),
@@ -564,6 +578,26 @@ describe(&apos;SaveDraft functionality for Nested Form&apos;, () =&gt; {
           assert.equal(state, &apos;draft&apos;);
           done();
         }, 1000);
+      }, 200);
+    }).catch((err) =&gt; done(err));
+  });
+
+  it(&apos;Should restore draft for nested Form&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    Formio.createForm(
+      formElement,
+      &apos;http://localhost:3000/idwqwhclwioyqbw/testdraftparent&apos;,
+      {
+        saveDraft: true
+      }
+    ).then((form) =&gt; {
+      setTimeout(() =&gt; {
+        assert.equal(restoreDraftCalls, 2);
+        assert.equal(saveDraftCalls, 0);
+        assert.equal(form.submission.state, &apos;draft&apos;);
+        assert.deepEqual(form.data, restoredDraftData);
+        assert.deepEqual(_.get(form.submission.data, &apos;form.data&apos;), restoredDraftNestedData);
+        done();
       }, 200);
     }).catch((err) =&gt; done(err));
   });

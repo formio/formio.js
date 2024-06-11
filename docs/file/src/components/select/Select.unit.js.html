@@ -31,7 +31,6 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
@@ -222,6 +221,8 @@ import {
   comp20,
   comp21,
   comp22,
+  comp23,
+  comp24,
 } from &apos;./fixtures&apos;;
 
 describe(&apos;Select Component&apos;, () =&gt; {
@@ -1225,6 +1226,63 @@ describe(&apos;Select Component&apos;, () =&gt; {
       };
 
       setTimeout(()=&gt; {
+        assert.equal(select.templateData[&apos;value2&apos;].label, &apos;Label 2&apos;);
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;Should provide correct metadata.selectData for multiple Select with default value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp23);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const submit = form.getComponent(&apos;submit&apos;);
+      const clickEvent = new Event(&apos;click&apos;);
+      const submitBtn = submit.refs.button;
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(()=&gt; {
+        const metadata = form.submission.metadata.selectData.select;
+        assert.deepEqual(metadata, {
+          value1: {
+            label: &apos;Label 1&apos;,
+          },
+          value3: {
+            label: &apos;Label 3&apos;,
+          },
+        });
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it(&apos;Should set correct label from metadata for multiple Select with default value&apos;, (done) =&gt; {
+    const form = _.cloneDeep(comp23);
+    const element = document.createElement(&apos;div&apos;);
+
+    Formio.createForm(element, form).then(form =&gt; {
+      const select = form.getComponent(&apos;select&apos;);
+      form.submission = {
+        data: {
+          select: [&apos;value1&apos;, &apos;value2&apos;],
+        },
+        metadata: {
+          selectData: {
+            select: {
+              value1: {
+                label: &apos;Label 1&apos;,
+              },
+              value2: {
+                label: &apos;Label 2&apos;,
+              },
+            },
+          },
+        },
+      };
+
+      setTimeout(()=&gt; {
+        assert.equal(select.templateData[&apos;value1&apos;].label, &apos;Label 1&apos;);
         assert.equal(select.templateData[&apos;value2&apos;].label, &apos;Label 2&apos;);
         done();
       }, 200);

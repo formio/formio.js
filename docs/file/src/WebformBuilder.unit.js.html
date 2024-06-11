@@ -31,7 +31,6 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
@@ -197,6 +196,9 @@ import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm
 import sameApiKeysLayoutComps from &apos;../test/forms/sameApiKeysLayoutComps&apos;;
 import testApiKeysUniquifying from &apos;../test/forms/testApiKeysUniquifying&apos;;
 import formWithFormController from &apos;../test/forms/formWithFormController&apos;;
+
+global.requestAnimationFrame = (cb) =&gt; cb();
+global.cancelAnimationFrame = () =&gt; {};
 
 describe(&apos;WebformBuilder tests&apos;, function() {
   this.retries(3);
@@ -541,6 +543,9 @@ describe(&apos;Select Component selectData property&apos;, () =&gt; {
         }, {
           label: &apos;Label 2&apos;,
           value: &apos;value2&apos;,
+        }, {
+          label: &apos;Label 3&apos;,
+          value: &apos;value3&apos;,
         }];
 
         resolve(values);
@@ -632,6 +637,45 @@ describe(&apos;Select Component selectData property&apos;, () =&gt; {
 
           setTimeout(() =&gt; {
             assert.equal(builder.editForm.data.selectData, undefined);
+            Harness.saveComponent();
+            setTimeout(() =&gt; {
+              done();
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
+  it(&apos;Should calculate multiple selectData property for url dataSource&apos;, (done) =&gt; {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() =&gt; {
+      Harness.buildComponent(&apos;select&apos;);
+
+      setTimeout(() =&gt; {
+        const multiple = builder.editForm.getComponent(&apos;multiple&apos;);
+        multiple.setValue(true);
+        const dataSrc = builder.editForm.getComponent(&apos;dataSrc&apos;);
+        dataSrc.setValue(&apos;url&apos;);
+        const url = builder.editForm.getComponent([&apos;data.url&apos;]);
+        const valueProperty = builder.editForm.getComponent(&apos;valueProperty&apos;);
+        url.setValue(&apos;htts//fakeurl.com&apos;);
+        valueProperty.setValue(&apos;value&apos;);
+
+        setTimeout(() =&gt; {
+          const defaultValue = builder.editForm.getComponent(&apos;defaultValue&apos;);
+          defaultValue.setValue([&apos;value1&apos;, &apos;value3&apos;]);
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() =&gt; {
+            assert.deepEqual(builder.editForm.data.selectData, {
+              value1: {
+                label: &apos;Label 1&apos;,
+              },
+              value3: {
+                label: &apos;Label 3&apos;,
+              },
+            });
             Harness.saveComponent();
             setTimeout(() =&gt; {
               done();

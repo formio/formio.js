@@ -31,7 +31,6 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
@@ -215,15 +214,19 @@ describe(&apos;Checkbox Component&apos;, () =&gt; {
     });
   });
 
-  it(&apos;Span should have correct text label&apos;, () =&gt; {
+  it(&apos;Span should have correct text label and attributes&apos;, () =&gt; {
     return Harness.testCreate(CheckBoxComponent, comp1).then((component) =&gt; {
       const checkboxes = component.element.querySelectorAll(&apos;input[ref=&quot;input&quot;]&apos;);
       assert.equal(checkboxes.length, 1);
       const componentClass = checkboxes[0].getAttribute(&apos;class&apos;);
+      const componentId = checkboxes[0].getAttribute(&apos;id&apos;);
       assert(componentClass.indexOf(&apos;form-check-input&apos;) !== -1, &apos;No form-check-input class.&apos;);
+      assert(componentId, &apos;Should provide &quot;id&quot; attribute for the input&apos;);
       const labels = component.element.querySelectorAll(&apos;label&apos;);
       assert.equal(labels.length, 1);
       assert(labels[0].getAttribute(&apos;class&apos;).indexOf(&apos;form-check-label&apos;) !== -1, &apos;No form-check-label class&apos;);
+      assert.equal(labels[0].getAttribute(&apos;for&apos;), componentId, &apos;Should provide a proper &quot;for&quot; attribute for the&apos; +
+        &apos; label&apos;);
       const spans = labels[0].querySelectorAll(&apos;span&apos;);
       assert.equal(spans.length, 1);
       assert.equal(spans[0].innerHTML, &apos;Check me&apos;);

@@ -31,7 +31,6 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CDN.js~CDN.html">CDN</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/EventEmitter.js~EventEmitter.html">EventEmitter</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Form.js~Form.html">Form</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/FormBuilder.js~FormBuilder.html">FormBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embed">embed</a></span></span></li>
@@ -2410,6 +2409,48 @@ describe(&apos;Formio.js Tests&apos;, () =&gt; {
             },
           ];
         }
+      },
+      {
+        name: &apos;Should return correct options for form url with Subdirectories path&apos;,
+        test() {
+          let form = new Formio.Form();
+          let options = form.getFormInitOptions(&apos;http://localhost:3000/fakeproject/fakeform&apos;, { path: &apos;fakeform&apos; });
+          assert.deepEqual(options, {
+            base: &apos;http://localhost:3000&apos;,
+            project: &apos;http://localhost:3000/fakeproject&apos;,
+          });
+
+          form = new Formio.Form();
+          options = form.getFormInitOptions(`${Formio.baseUrl}/fakeproject/fakeform`, { path: &apos;fakeform&apos; });
+          assert.deepEqual(options, {});
+        }
+      },
+      {
+        name: &apos;Should set correct formio base and project url for form with Subdirectories path&apos;,
+        test() {
+          const formElement = document.createElement(&apos;div&apos;);
+          return Formio.createForm(formElement, &apos;http://localhost:3000/fakeproject/fakeform&apos;)
+            .then((form) =&gt; {
+              assert.equal(form.formio.base, &apos;http://localhost:3000&apos;);
+              assert.equal(form.formio.projectUrl, &apos;http://localhost:3000/fakeproject&apos;);
+            });
+        },
+        mock() {
+          return {
+            url: &apos;http://localhost:3000/fakeproject/fakeform&apos;,
+            method: &apos;GET&apos;,
+            response() {
+              return {
+                headers: {
+                  &apos;Content-Type&apos;: &apos;application/json&apos;,
+                },
+                body: {
+                  path: &apos;fakeform&apos;,
+                }
+              };
+            }
+          };
+        },
       },
     ];
 
