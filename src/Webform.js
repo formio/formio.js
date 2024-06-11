@@ -869,8 +869,9 @@ export default class Webform extends NestedDataComponent {
         formio
             .loadSubmissions({
                 params: {
-                    state: "draft",
+                    state: 'draft',
                     owner: userId,
+                    sort: '-created'
                 },
             })
             .then((submissions) => {
