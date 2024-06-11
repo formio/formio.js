@@ -1220,11 +1220,10 @@ export default class Component extends Element {
   }
 
   attachTooltips(toolTipsRefs) {
-    toolTipsRefs?.forEach((tooltip, index) => {
-      if (tooltip) {
-        this.tooltips[index] = this.createTooltip(tooltip);
-      }
-    });
+    this.tooltips = _.chain(toolTipsRefs || [])
+      .filter(tooltip => !!tooltip)
+      .map(tooltip => this.createTooltip(tooltip))
+      .value();
   }
 
   createComponentModal(element, modalShouldBeOpened, currentValue) {

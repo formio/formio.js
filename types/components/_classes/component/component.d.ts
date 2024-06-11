@@ -23,6 +23,7 @@ export class Component extends Element {
   public invalid: boolean;
   public isBuilt: boolean;
   readonly ready: any;
+  readonly isRowsDataComponent: boolean;
   readonly labelInfo: any;
   init(): void;
   destroy(): void;
@@ -83,7 +84,7 @@ export class Component extends Element {
   evalContext(additional: any): any;
   setPristine(pristine: boolean): void;
   removeValue(index: number): void;
-  iconClass(name: any, spinning: any, size?: any): any;
+  iconClass(name: any, spinning: any): any;
   readonly name: string;
   readonly errorLabel: string;
   errorMessage(type: any): any;
@@ -104,6 +105,9 @@ export class Component extends Element {
   addInputError(message: any, dirty: boolean): void;
   clearOnHide(show: boolean): void;
   onChange(flags: Object, fromRoot: boolean): void;
+  createTooltip(tooltipEl: HTMLElement | any, settings?: any): any;
+  attachTooltips(toolTipsRefs: any): void;
+  renderModalPreview(ctx: any): string;
   readonly wysiwygDefault: {
     theme: string;
     placeholder: any | string;
