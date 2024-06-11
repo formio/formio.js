@@ -6,6 +6,7 @@ export comp5 from './comp5';
 export comp6 from './comp6';
 export comp7 from './comp7';
 export comp8 from './comp8';
+export comp9 from './comp9';
 export withDefValue from './comp-with-def-value';
 export withRowGroupsAndDefValue from './comp-row-groups-with-def-value';
 export modalWithRequiredFields from './comp-modal-with-required-fields';
