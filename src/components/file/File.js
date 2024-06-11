@@ -744,7 +744,7 @@ export default class FileComponent extends Field {
     const fileWithSameNameUploading = this.filesToSync.filesToUpload
       .some(fileToSync => fileToSync.file?.name === file.name);
 
-    const fileWithSameNameUploaded = this.dataValue
+    const fileWithSameNameUploaded = this.dataValue && this.dataValue
       .some(fileStatus => fileStatus.originalName === file.name);
 
     return fileWithSameNameUploaded || fileWithSameNameUploading
