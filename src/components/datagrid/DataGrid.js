@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
-import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
+import { checkDataValueOnEmpty, fastCloneDeep, getFocusableElements } from '../../utils/utils';
 
 let dragula;
 if (typeof window !== 'undefined') {
@@ -156,12 +156,9 @@ export default class DataGridComponent extends NestedArrayComponent {
   isEmpty(value = this.dataValue) {
     const isEmpty = super.isEmpty(value);
 
-    if (this.components?.length) {
-      return this.components.reduce((isEmpty, component) => {
-        return isEmpty && component.isEmpty();
-      }, true);
+    if (this.components?.length && _.isArray(value)) {
+      return checkDataValueOnEmpty(value);
     }
-
     return isEmpty;
   }
 

@@ -1594,3 +1594,20 @@ export function isSelectResourceWithObjectValue(comp = {}) {
   const { reference, dataSrc, valueProperty } = comp;
   return reference || (dataSrc === 'resource' && (!valueProperty || valueProperty === 'data'));
 }
+
+export function checkDataValueOnEmpty(dataValue=[])  {
+  const isAnyField = dataValue.some(valueItem=> {
+    let result = true;
+    if (_.isObject(valueItem)) {
+      result =  Object.values(valueItem).some(value=> {
+        if (_.isNumber(value)) {
+          return true;
+        }
+        return value;
+      });
+    }
+    return result;
+  });
+
+  return !isAnyField;
+}
