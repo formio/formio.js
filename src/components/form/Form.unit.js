@@ -286,9 +286,11 @@ describe('SaveDraft functionality for Nested Form', () => {
   let state = null;
   let subFormState = null;
 
+  const restoredDraftNestedData = { nested: 'test Nested' };
+
   const restoredDraftData = {
     parent: 'test Parent',
-    form: { nested: 'test Nested' },
+    form: { data: restoredDraftNestedData },
     submit: false,
   };
 
@@ -305,6 +307,19 @@ describe('SaveDraft functionality for Nested Form', () => {
           saveDraftCalls = ++saveDraftCalls;
         }
         return Promise.resolve(fastCloneDeep(data));
+      }
+
+      if (type === 'submission' && method === 'get' && _.endsWith(url, '660e75e4e8c776f1225142aa')) {
+        return Promise.resolve(
+          fastCloneDeep({
+            _id: '660e75e4e8c776f1225142aa',
+            form: '63e4deda12b88c4f05c125cf',
+            owner: '63ceaccebe0090345b109da7',
+            data: restoredDraftNestedData,
+            project: '65b0ccbaf019a907ac01a869',
+            state: 'draft',
+          }),
+        );
       }
 
       if (type === 'form' && method === 'get') {
@@ -332,7 +347,7 @@ describe('SaveDraft functionality for Nested Form', () => {
             _id: '660e75e4e8c776f1225142aa',
             form: '63e4deda12b88c4f05c125cf',
             owner: '63ceaccebe0090345b109da7',
-            data: restoredDraftData.form,
+            data: restoredDraftNestedData,
             project: '65b0ccbaf019a907ac01a869',
             state: 'draft',
           }),
@@ -375,6 +390,26 @@ describe('SaveDraft functionality for Nested Form', () => {
           assert.equal(state, 'draft');
           done();
         }, 1000);
+      }, 200);
+    }).catch((err) => done(err));
+  });
+
+  it('Should restore draft for nested Form', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/idwqwhclwioyqbw/testdraftparent',
+      {
+        saveDraft: true
+      }
+    ).then((form) => {
+      setTimeout(() => {
+        assert.equal(restoreDraftCalls, 2);
+        assert.equal(saveDraftCalls, 0);
+        assert.equal(form.submission.state, 'draft');
+        assert.deepEqual(form.data, restoredDraftData);
+        assert.deepEqual(_.get(form.submission.data, 'form.data'), restoredDraftNestedData);
+        done();
       }, 200);
     }).catch((err) => done(err));
   });

@@ -567,10 +567,24 @@ describe('Util Tests', () => {
         done(error);
       }
     });
+  });
 
-    it('Should return string without HTML characters', () => {
+  describe('unescapeHTML', () => {
+    it('should not remove html tags from string', () => {
+      const unescapedString = utils.unescapeHTML('<div><p>This is a paragraph.</p> <p>This is another paragraph.</p></div>');
+      expect(unescapedString).to.equal('<div><p>This is a paragraph.</p> <p>This is another paragraph.</p></div>');
+    });
+
+    it('should return string without HTML characters', () => {
       const unescapedString = utils.unescapeHTML('&lt;p&gt;ampersand &amp; &#34;quotes&#34; test&lt;&#47;p&gt;');
       expect(unescapedString).to.equal('<p>ampersand & "quotes" test</p>');
+    });
+  });
+
+  describe('removeHTML', () => {
+    it('should remove html tags from string', () => {
+      const removedHTML = utils.removeHTML('<div><p> Hello</p> <p>World</p></div>');
+      expect(removedHTML).to.equal('Hello World');
     });
   });
 
