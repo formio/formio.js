@@ -256,6 +256,11 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-8433: fixed restore draft for nested forms
  - FIO-8395: html in error message not evaluating
  - FIO-7206: Fixes an issue where API keys of the removed components are not removed from the Data Grid defaultValue
+ - FIO-8402: fixed an issue where Validation Triggering on initial Form load
+ - Remove *zoom (IE7 hack)
+ - made Formio available globally
+ - FIO-8027 added new Captcha provider
+ - FIO-8281: fixed selectData property for multiple select component
 
 ## 5.0.0-rc.37
 ### Fixed
