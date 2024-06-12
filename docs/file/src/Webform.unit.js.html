@@ -2273,6 +2273,46 @@ describe(&apos;Webform tests&apos;, function() {
     });
   });
 
+  it(&apos;Should not fire validation on calculated values init.&apos;, (done) =&gt; {
+    formElement.innerHTML = &apos;&apos;;
+    const form = new Webform(formElement,{ language: &apos;en&apos; });
+    form.setForm(
+      { title: &apos;noValidation flag&apos;,
+        components: [{
+          label: &apos;minMax&apos;,
+          calculateValue: &apos;value = {minAmount: \&apos;5.00\&apos;, maxAmount: \&apos;50000.00\&apos;};&apos;,
+          calculateServer: true,
+          key: &apos;minMax&apos;,
+          type: &apos;hidden&apos;,
+          input: true
+        }, {
+          label: &apos;A&apos;,
+          key: &apos;a&apos;,
+          type: &apos;number&apos;,
+          input: true
+        }, {
+          label: &apos;B&apos;,
+          key: &apos;b&apos;,
+          type: &apos;number&apos;,
+          input: true
+        }, {
+          label: &apos;Sum&apos;,
+          validate: {
+            required: true,
+            min: 10
+          },
+          calculateValue: &apos;var total = _.isNumber(data.a) ? data.a : 0;\ntotal += _.isNumber(data.b) ? data.b : 0;\n\nvalue = parseFloat(total.toFixed(2));&apos;,
+          calculateServer: true,
+          key: &apos;sum&apos;,
+          type: &apos;number&apos;,
+          input: true
+        }],
+      }
+    ).then(() =&gt; {
+      checkForErrors(form, {}, { data: {} }, 0, done);
+    });
+  });
+
   it(&apos;Should set calculated value correctly&apos;, (done) =&gt; {
     formElement.innerHTML = &apos;&apos;;
     const form = new Webform(formElement);
