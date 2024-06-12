@@ -2085,6 +2085,46 @@ describe('Webform tests', function() {
     });
   });
 
+  it('Should not fire validation on calculated values init.', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement,{ language: 'en' });
+    form.setForm(
+      { title: 'noValidation flag',
+        components: [{
+          label: 'minMax',
+          calculateValue: 'value = {minAmount: \'5.00\', maxAmount: \'50000.00\'};',
+          calculateServer: true,
+          key: 'minMax',
+          type: 'hidden',
+          input: true
+        }, {
+          label: 'A',
+          key: 'a',
+          type: 'number',
+          input: true
+        }, {
+          label: 'B',
+          key: 'b',
+          type: 'number',
+          input: true
+        }, {
+          label: 'Sum',
+          validate: {
+            required: true,
+            min: 10
+          },
+          calculateValue: 'var total = _.isNumber(data.a) ? data.a : 0;\ntotal += _.isNumber(data.b) ? data.b : 0;\n\nvalue = parseFloat(total.toFixed(2));',
+          calculateServer: true,
+          key: 'sum',
+          type: 'number',
+          input: true
+        }],
+      }
+    ).then(() => {
+      checkForErrors(form, {}, { data: {} }, 0, done);
+    });
+  });
+
   it('Should set calculated value correctly', (done) => {
     formElement.innerHTML = '';
     const form = new Webform(formElement);
