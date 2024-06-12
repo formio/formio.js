@@ -166,6 +166,7 @@ export default class TextFieldComponent extends Input {
     const maskInput = this.refs.select ? this.refs.select[index]: null;
     const mask = this.getMaskPattern(value.maskName);
     if (textInput && maskInput && mask) {
+      maskInput.value = value.maskName;
       if (textInput.inputmask) {
         this.setInputMask(textInput, mask);
         textInput.inputmask.setValue(textValue);
@@ -174,7 +175,6 @@ export default class TextFieldComponent extends Input {
         const placeholderChar = this.placeholderChar;
         textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask), { placeholderChar }).conformedValue;
       }
-      maskInput.value = value.maskName;
     }
     else {
       return super.setValueAt(index, textValue, flags);
