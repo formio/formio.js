@@ -41,6 +41,7 @@ import wizardPermission from '../test/forms/wizardPermission';
 import formWithFormController from '../test/forms/formWithFormController';
 import { fastCloneDeep } from './utils/utils';
 import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
+import WizardWithCheckboxes from '../test/forms/wizardWithCheckboxes';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -1915,5 +1916,46 @@ it('Should show tooltip for wizard pages', function(done) {
       }, 50);
     })
     .catch((err) => done(err));
+  });
+
+  it('Should retain previous checkbox checked property when navigating to another page (checked)', (done) => {
+    const wizard = new Wizard(document.createElement('div'));
+    wizard.setForm(WizardWithCheckboxes).then(()=> {
+      const clickNavigationBtn = (pathPart) => {
+        const btn = _.get(wizard.refs, `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event('click');
+        btn.dispatchEvent(clickEvent);
+      };
+      wizard.element.querySelector('input').click();
+      clickNavigationBtn('next');
+      setTimeout(()=>{
+        clickNavigationBtn('previous');
+        setTimeout(()=>{
+          assert.equal(wizard.element.querySelector('input').checked, true);
+          done();
+        },200);
+      },200);
+    });
+  });
+
+  it('Should retain previous checkbox checked property when navigating to another page (unchecked)', (done) => {
+    const wizard = new Wizard(document.createElement('div'));
+    wizard.setForm(WizardWithCheckboxes).then(()=> {
+      const clickNavigationBtn = (pathPart) => {
+        const btn = _.get(wizard.refs, `${wizard.wizardKey}-${pathPart}`);
+        const clickEvent = new Event('click');
+        btn.dispatchEvent(clickEvent);
+      };
+      wizard.element.querySelector('input').click();
+      wizard.element.querySelector('input').click();
+      clickNavigationBtn('next');
+      setTimeout(()=>{
+        clickNavigationBtn('previous');
+        setTimeout(()=>{
+          assert.equal(wizard.element.querySelector('input').checked, false);
+          done();
+        },200);
+      },200);
+    });
   });
 });
