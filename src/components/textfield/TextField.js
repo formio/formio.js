@@ -166,6 +166,8 @@ export default class TextFieldComponent extends Input {
     const maskInput = this.refs.select ? this.refs.select[index]: null;
     const mask = this.getMaskPattern(value.maskName);
     if (textInput && maskInput && mask) {
+      // We need to set the maskInput (select dropdown) value before calling inputmask.setValue because, this
+      // function will trigger a "change" event, which was calling updateValue setting the mask type to an incorrect value.
       maskInput.value = value.maskName;
       if (textInput.inputmask) {
         this.setInputMask(textInput, mask);
