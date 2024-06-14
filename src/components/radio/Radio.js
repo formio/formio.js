@@ -229,7 +229,8 @@ export default class RadioComponent extends ListComponent {
     if (this.viewOnly || !this.refs.input || !this.refs.input.length) {
       return this.dataValue;
     }
-    let value = this.dataValue;
+    // If the input type of the component is checkbox the value should be determined by the checkboxes checked property
+    let value = this.component.inputType === 'checkbox' ? '' : this.dataValue;
     this.refs.input.forEach((input, index) => {
       if (input.checked) {
         value = (this.isSelectURL && _.isObject(this.loadedOptions[index].value)) ?
@@ -374,7 +375,7 @@ export default class RadioComponent extends ListComponent {
       const value = this.dataValue;
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
-        const checked  = (input.type === 'checkbox') ? value[input.value] || this.element?.querySelector('input').checked : (input.value.toString() === value.toString());
+        const checked  = (input.type === 'checkbox') ? value[input.value] || input.checked : (input.value.toString() === value.toString());
         if (checked) {
           //add class to container when selected
           this.addClass(wrapper, this.optionSelectedClass);
