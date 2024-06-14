@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.19.4-rc.3
+### Changed
+ - FIO-8493: Added null check for this.root in builder mode
+
 ## 4.19.4-rc.2
 ### Changed
  - FIO-8402: fixed an issue where Validation Triggering on initial Form load
