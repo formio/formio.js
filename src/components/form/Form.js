@@ -502,7 +502,7 @@ export default class FormComponent extends Component {
     }
     else if (this.formSrc) {
       this.subFormLoading = true;
-      const options = this.root.formio?.base && this.root.formio?.projectUrl
+      const options = this.root?.formio?.base && this.root?.formio?.projectUrl
         ? {
             base: this.root.formio.base,
             project: this.root.formio.projectUrl,
@@ -711,7 +711,7 @@ export default class FormComponent extends Component {
     if (shouldLoadSubmissionById || shouldLoadDraftById) {
       const formId = submission.form || this.formObj.form || this.component.form;
       const submissionUrl = `${this.subForm.formio.formsUrl}/${formId}/submission/${submission._id || this.subForm.submission._id}`;
-      const options = this.root.formio?.base && this.root.formio?.projectUrl
+      const options = this.root?.formio?.base && this.root?.formio?.projectUrl
       ? {
           base: this.root.formio.base,
           project: this.root.formio.projectUrl,
