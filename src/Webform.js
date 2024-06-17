@@ -811,9 +811,11 @@ export default class Webform extends NestedDataComponent {
     this.setSubmission(submission);
   }
 
-    /**
-   * @param submission
-   * @param flags
+  /**
+   * Sets the submission value
+   *
+   * @param {Object | null | undefined} submission
+   * @param {Object | null | undefined} flags
    * @return {void}
    */
   onSetSubmission(submission, flags = {}) {

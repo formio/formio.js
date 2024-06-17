@@ -726,6 +726,13 @@ export default class FormComponent extends Component {
     }
   }
 
+  /**
+   * Sets the subform value
+   *
+   * @param {Object | null | undefined} submission
+   * @param {Object | null | undefined} flags
+   * @return {void}
+   */
   onSetSubFormValue(submission, flags) {
     this.subForm.setValue(submission, flags);
   }
