@@ -1179,7 +1179,7 @@ export default class Component extends Element {
   /**
    * Renders a modal preview template and returns the markup as a string
    * @param {object|null|undefined} ctx - The rendering context
-   * @return {string}
+   * @return {string} - The modal preview markup
    */
   renderModalPreview(ctx) {
     return this.renderTemplate('modalPreview', ctx || {});
