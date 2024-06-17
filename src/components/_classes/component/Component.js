@@ -1178,8 +1178,7 @@ export default class Component extends Element {
 
   /**
    * Renders a modal preview template and returns the markup as a string
-   *
-   * @param {Object | null | undefined} ctx - the rendering context
+   * @param {object|null|undefined} ctx - The rendering context
    * @return {string}
    */
   renderModalPreview(ctx) {
@@ -1239,10 +1238,9 @@ export default class Component extends Element {
 
   /**
    * Creates the tooltip instance using tippy.js and returns it
-   *
    * @param {HTMLElement} tooltipEl - HTML element to attach the tooltip
-   * @param {Object | null | undefined} settings - tippy.js options
-   * @return {any} - tippy.js instance
+   * @param {object|null|undefined} settings - tippy.js options
+   * @return {import('tippy.js').Tippy} - tippy.js instance
    */
   createTooltip(tooltipEl, settings = {}) {
     const tooltipAttribute = tooltipEl.getAttribute('data-tooltip');
