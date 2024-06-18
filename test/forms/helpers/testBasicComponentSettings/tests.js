@@ -646,8 +646,8 @@ export default {
           assert.deepEqual(basis, basisComponentNewValue, 'Should set basis component value');
           checkCalculatedValue();
           done();
-        }, 250);
-      }, 250);
+        }, 300);
+      }, 300);
     },
     'Should not allow overriding component colculated value'(form, done) {
       const basisComponent = form.getComponent('basis');
