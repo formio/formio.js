@@ -1397,7 +1397,12 @@ export default class Webform extends NestedDataComponent {
       this.customErrors = this.customErrors.filter(err => err.component && err.component !== changed.component.key);
     }
 
-    super.onChange(flags, true);
+    if (this.parent?.subForm === this) {
+      super.onChange({ ...flags, modified }, false);
+    }
+    else {
+      super.onChange(flags, true);
+    }
     const value = _.clone(this.submission);
     flags.changed = value.changed = changed;
     flags.changes = changes;
