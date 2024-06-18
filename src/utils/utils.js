@@ -226,6 +226,52 @@ export function checkCalculated(component, submission, rowData) {
  * @param instance
  * @returns {boolean}
  */
+
+function getConditionalPathsRecursive(conditionPaths, data) {
+  let currentGlobalIndex = 0;
+  const conditionalPathsArray = [];
+
+  const getConditionalPaths = (data, currentPath = '', localIndex = 0) => {
+    currentPath = currentPath.replace(/^\.+|\.+$/g, '');
+    const currentLocalIndex = localIndex;
+    const currentData = _.get(data, currentPath);
+
+    if (Array.isArray(currentData) && currentData.filter(Boolean).length > 0) {
+      if (currentData.some(element => typeof element !== 'object')) {
+        return;
+      }
+
+      const hasInnerDataArray = currentData.find(x => Array.isArray(x[conditionPaths[currentLocalIndex]]));
+
+      if (hasInnerDataArray) {
+        currentData.forEach((_, indexOutside) => {
+          const innerCompDataPath = `${currentPath}[${indexOutside}].${conditionPaths[currentLocalIndex]}`;
+          getConditionalPaths(data, innerCompDataPath, currentLocalIndex + 1);
+        });
+      }
+      else {
+        currentData.forEach((x, index) => {
+          if (!_.isNil(x[conditionPaths[currentLocalIndex]])) {
+            const compDataPath = `${currentPath}[${index}].${conditionPaths[currentLocalIndex]}`;
+            conditionalPathsArray.push(compDataPath);
+          }
+        });
+      }
+    }
+    else {
+      if (!conditionPaths[currentGlobalIndex]) {
+        return;
+      }
+      currentGlobalIndex = currentGlobalIndex + 1;
+      getConditionalPaths(data, `${currentPath}.${conditionPaths[currentGlobalIndex - 1]}`, currentGlobalIndex);
+    }
+  };
+
+  getConditionalPaths(data);
+
+  return conditionalPathsArray;
+}
+
  export function checkSimpleConditional(component, condition, row, data, instance) {
   if (condition.when) {
     const value = getComponentActualValue(condition.when, data, row);
@@ -256,22 +302,38 @@ export function checkCalculated(component, submission, rowData) {
       if (!conditionComponentPath) {
         return true;
       }
-      const value = getComponentActualValue(conditionComponentPath, data, row);
 
-      const ConditionOperator = ConditionOperators[operator];
-      return ConditionOperator
-        ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
-        : true;
+      const splittedConditionPath = conditionComponentPath.split('.');
+
+      const conditionalPaths = instance?.parent?.type === 'datagrid' || instance?.parent?.type === 'editgrid'  ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
+
+      if (conditionalPaths.length>0) {
+        return conditionalPaths.map((path) => {
+          const value = getComponentActualValue(path, data, row);
+
+          const ConditionOperator = ConditionOperators[operator];
+          return ConditionOperator
+            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+            : true;
+        });
+      }
+      else {
+        const value = getComponentActualValue(conditionComponentPath, data, row);
+        const СonditionOperator = ConditionOperators[operator];
+        return СonditionOperator
+          ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+          : true;
+      }
     });
 
     let result = false;
 
     switch (conjunction) {
       case 'any':
-        result = _.some(conditionsResult, res => !!res);
+        result = _.some(conditionsResult.flat(), res => !!res);
         break;
       default:
-        result = _.every(conditionsResult, res => !!res);
+        result = _.every(conditionsResult.flat(), res => !!res);
     }
 
     return show ? result : !result;

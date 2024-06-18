@@ -1371,13 +1371,13 @@ describe('Webform tests', function() {
                     document.body.innerHTML = '';
 
                     done();
-                  }, 280);
-                }, 240);
-              }, 200);
-            }, 160);
-          }, 200);
-        }, 200);
-      }, 200);
+                  }, 480);
+                }, 440);
+              }, 400);
+            }, 460);
+          }, 400);
+        }, 400);
+      }, 400);
     }).catch((err) => done(err));
   });
 
@@ -3087,6 +3087,118 @@ describe('Webform tests', function() {
         setTimeout(() => {
           assert.equal(conditionalComponent.visible, false, 'Component should be conditionally hidden');
           done();
+        }, 300);
+      }).catch((err) => done(err));
+    });
+
+    it('Check conditional component related to EditGrid inner components with ALL conjunction case', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+
+      form.setForm(formsWithNewSimpleConditions.form8).then(() => {
+        const conditionalComponent = form.getComponent('note');
+        assert.equal(conditionalComponent.visible, true, '(1) Component should be conditionally visible');
+
+        form.setValue({
+          data: {
+            container: {
+              editGrid1: [
+                {
+                  editGrid2: [
+                    {
+                      innerSelect1: 44,
+                      innerSelect2: 'kkk'
+                    },
+                    {
+                      innerSelect1: '',
+                      innerSelect2: 'kkk'
+                    }
+                  ],
+                  order: 1,
+                  lesson: 'math'
+                }
+              ]
+            },
+          },
+        });
+
+        setTimeout(() => {
+          assert.equal(conditionalComponent.visible, false, '(2) Component should be conditionally hidden');
+
+          const editGrid2Component = form.getComponent('editGrid2');
+
+          editGrid2Component.setValue([
+            {
+              innerSelect1: '',
+              innerSelect2: 'kkk'
+            },
+            {
+              innerSelect1: '',
+              innerSelect2: 'kkk'
+            }
+          ],);
+
+          setTimeout(() => {
+            assert.equal(conditionalComponent.visible, true, '(3) Component should be conditionally visible');
+            done();
+          }, 300);
+        }, 300);
+      }).catch((err) => done(err));
+    });
+
+    it('Check conditional component related to EditGrid inner components with ANY conjunction case', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const cloneForm8 =_.cloneDeep(formsWithNewSimpleConditions.form8);
+      cloneForm8.components[0].conditional.conjunction = 'any';
+
+      form.setForm(cloneForm8).then(() => {
+        const conditionalComponent = form.getComponent('note');
+        assert.equal(conditionalComponent.visible, true, '(1) Component should be conditionally visible');
+
+        form.setValue({
+          data: {
+            container: {
+              editGrid1: [
+                {
+                  editGrid2: [
+                    {
+                      innerSelect1: 44,
+                      innerSelect2: 'kkk'
+                    },
+                    {
+                      innerSelect1: '',
+                      innerSelect2: 'kkk'
+                    }
+                  ],
+                  order: 1,
+                  lesson: 'math'
+                }
+              ]
+            },
+          },
+        });
+
+        setTimeout(() => {
+          assert.equal(conditionalComponent.visible, true, '(2) Component should be conditionally hidden');
+
+          const editGrid2Component = form.getComponent('editGrid2');
+
+          editGrid2Component.setValue([
+            {
+              innerSelect1: '33',
+              innerSelect2: 'kkk'
+            },
+            {
+              innerSelect1: '33',
+              innerSelect2: 'kkk'
+            }
+          ],);
+
+          setTimeout(() => {
+            assert.equal(conditionalComponent.visible, false, '(3) Component should be conditionally visible');
+            done();
+          }, 300);
         }, 300);
       }).catch((err) => done(err));
     });

@@ -21,7 +21,7 @@ export default class IsEqualTo extends ConditionOperator {
         }
 
         if (instance && instance.root) {
-            const conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
+            const conditionTriggerComponent = instance.root?.getComponent && instance.root.getComponent(conditionComponentPath);
 
             if (
                 conditionTriggerComponent
