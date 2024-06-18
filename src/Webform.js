@@ -1397,10 +1397,9 @@ export default class Webform extends NestedDataComponent {
   onChange(flags, changed, modified, changes) {
     flags = flags || {};
     let isChangeEventEmitted = false;
-    // If this Webform is a nested form, continue to bubble change
-    // to the root
+    // If this Webform is a nested form, continue to bubble `modified` change to the root
     if (this.parent?.subForm === this) {
-      super.onChange({...flags, modified}, false);
+      super.onChange({ ...flags, modified }, false);
     }
     else {
       super.onChange(flags, true);
