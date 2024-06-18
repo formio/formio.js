@@ -16,7 +16,7 @@ export class GoogleAddressProvider extends AddressProvider {
     super(options);
     this.setAutocompleteOptions();
 
-    let src = 'https://maps.googleapis.com/maps/api/js?v=quarterly&libraries=places&callback=googleMapsCallback';
+    let src = 'https://maps.googleapis.com/maps/api/js?v=quarterly&libraries=places&loading=async&callback=googleMapsCallback';
 
     if (options.params?.key) {
       src += `&key=${options.params.key}`;
