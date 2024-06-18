@@ -271,4 +271,10 @@ describe('File Component', () => {
       }, 100);
     });
   });
+  it('should not error on upload when noDefaults is set to true', () => {
+    return Formio.createForm(document.createElement('div'), comp2,{ noDefaults: true }).then((form)=>{
+      const file = form.getComponent('file');
+      return file.handleFilesToUpload([{ name: 'mypdf.pdf', size: 123123, type: 'application/pdf' }]);
+    });
+  });
 });
