@@ -18,6 +18,7 @@ import Webform from '../../Webform';
 import { Formio } from '../../formio.form.js';
 import formModalEdit from './fixtures/formModalEdit';
 import { formComponentWithConditionalRenderingForm } from '../../../test/formtest';
+import TextFieldComponent from '../textfield/TextField.js';
 
 describe('Form Component', () => {
   it('Should build a form component', () => {
@@ -369,6 +370,34 @@ describe('SaveDraft functionality for Nested Form', () => {
     Formio.makeRequest = originalMakeRequest;
     Formio.setUser();
     done();
+  });
+
+  it('Changes to the child form should trigger a `modified` change in the parent', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/idwqwhclwioyqbw/testdraftparent',
+      {
+        saveDraft: true
+      }
+    ).then((form) => {
+      form.on('change', ({ changed }, _, modified) => {
+        if (changed) {
+          const { instance } = changed;
+          if (instance instanceof Webform) {
+            assert(modified === true, 'the modified flag should bubble to the root');
+            done();
+          }
+        }
+      });
+      setTimeout(() => {
+        const tfNestedInput = form.getComponent('form.nested')?.refs?.input?.[0];
+        assert(tfNestedInput !== undefined, 'We have the input element');
+        tfNestedInput.value = 'testNested';
+        const inputEvent = new Event('input');
+        tfNestedInput.dispatchEvent(inputEvent);
+      }, 200);
+    }).catch((err) => done(err));
   });
 
   it('Should save draft for Nested Form and for the Parent Form', function(done) {
