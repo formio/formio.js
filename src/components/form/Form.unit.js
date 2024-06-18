@@ -371,7 +371,7 @@ describe('SaveDraft functionality for Nested Form', () => {
     done();
   });
 
-  it('Should save draft for Nested Form', function(done) {
+  it('Should save draft for Nested Form and for the Parent Form', function(done) {
     const formElement = document.createElement('div');
     Formio.createForm(
       formElement,
@@ -386,7 +386,7 @@ describe('SaveDraft functionality for Nested Form', () => {
         const inputEvent = new Event('input');
         tfNestedInput.dispatchEvent(inputEvent);
         setTimeout(() => {
-          assert.equal(saveDraftCalls, 1);
+          assert.equal(saveDraftCalls, 2);
           assert.equal(state, 'draft');
           done();
         }, 1000);
