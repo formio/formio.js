@@ -673,22 +673,17 @@ export default class EditGridComponent extends NestedArrayComponent {
     return this.builderMode
       ? super.getComponents()
       : _.isNumber(rowIndex)
-        ? (this.editRows[rowIndex]?.components || [])
+        ? (this.editRows[rowIndex].components || [])
         : this.editRows.reduce((result, row) => result.concat(row.components || []), []);
   }
 
-  destroy(all = false) {
-    this.calculatedValue = undefined;
-    super.destroy(all);
-  }
-
-  destroyComponents(all = false, rowIndex = 0) {
+  destroyComponents(rowIndex) {
     if (this.builderMode) {
-      return super.destroyComponents(all);
+      return super.destroyComponents();
     }
 
     const components = this.getComponents(rowIndex).slice();
-    components.forEach((comp) => this.removeComponent(comp, this.components, all));
+    components.forEach((comp) => this.removeComponent(comp, this.components));
   }
 
   createRow(dataObj, rowIndex) {
@@ -895,7 +890,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         editRow.state = EditRowState.Removed;
 
         this.clearErrors(rowIndex);
-        this.destroyComponents(false, rowIndex);
+        this.destroyComponents(rowIndex);
         if (this.inlineEditMode) {
           this.splice(rowIndex);
         }
@@ -1035,7 +1030,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     const editRow = this.editRows[rowIndex];
 
     editRow.state = EditRowState.Removed;
-    this.destroyComponents(false, rowIndex);
+    this.destroyComponents(rowIndex);
 
     return editRow;
   }
@@ -1062,15 +1057,6 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   createRowComponents(row, rowIndex, recreatePartially) {
-    // Iterate through existing components and destroy the ones with the same rowIndex.
-    if (this.components) {
-      for (let i = 0; i < this.components.length; i++) {
-        if (this.components[i].rowIndex === rowIndex) {
-          this.components[i].destroy();
-          this.components.splice(i, 1);
-        }
-      }
-    }
     const currentRowComponents = _.get(this.editRows, `[${rowIndex}].components`, null);
     return this.component.components.map((col, colIndex) => {
       if (recreatePartially && currentRowComponents && this.variableTypeComponentsIndexes.length) {
@@ -1395,7 +1381,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   emptyRows() {
-    this.editRows.forEach((editRow, index) => this.destroyComponents(false, index));
+    this.editRows.forEach((editRow, index) => this.destroyComponents(index));
     this.editRows = [];
   }
 

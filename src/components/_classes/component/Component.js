@@ -585,31 +585,10 @@ export default class Component extends Element {
     return addon;
   }
 
-  teardown() {
-    if (this.element) {
-      delete this.element.component;
-      delete this.element;
-    }
-    delete this._currentForm;
-    delete this.parent;
-    delete this.root;
-    delete this.triggerChange;
-    delete this.triggerRedraw;
-    if (this.options) {
-      delete this.options.root;
-      delete this.options.parent;
-      delete this.options.i18next;
-    }
-    super.teardown();
-  }
-
-  destroy(all = false) {
-    super.destroy(all);
+  destroy() {
+    super.destroy();
     this.detach();
     this.addons.forEach((addon) => addon.destroy());
-    if (all) {
-      this.teardown();
-    }
   }
 
   get shouldDisabled() {
@@ -1263,7 +1242,7 @@ export default class Component extends Element {
     }
 
     this.attached = true;
-    this.setElement(element);
+    this.element = element;
     element.component = this;
 
     // If this already has an id, get it from the dom. If SSR, it could be different from the initiated id.
@@ -1337,17 +1316,6 @@ export default class Component extends Element {
    * Remove all event handlers.
    */
   detach() {
-    // First iterate through each ref and delete the component so there are no dangling component references.
-    _.each(this.refs, (ref) => {
-      if (typeof ref === NodeList) {
-        ref.forEach((elem) => {
-          delete elem.component;
-        });
-      }
-      else if (ref) {
-        delete ref.component;
-      }
-    });
     this.refs = {};
     this.removeEventListeners();
     this.detachLogic();
@@ -1444,18 +1412,10 @@ export default class Component extends Element {
     return this.options.readOnly && this.options.viewAsHtml;
   }
 
-  setElement(element) {
-    if (this.element) {
-      delete this.element.component;
-      delete this.element;
-    }
-    this.element = element;
-  }
-
   createViewOnlyElement() {
-    this.setElement(this.ce('dl', {
+    this.element = this.ce('dl', {
       id: this.id
-    }));
+    });
 
     if (this.element) {
       // Ensure you can get the component info from the element.
@@ -1817,7 +1777,7 @@ export default class Component extends Element {
     const parent = this.element.parentNode;
     const index = Array.prototype.indexOf.call(parent.children, this.element);
     this.element.outerHTML = this.sanitize(this.render());
-    this.setElement(parent.children[index]);
+    this.element = parent.children[index];
     return this.attach(this.element);
   }
 

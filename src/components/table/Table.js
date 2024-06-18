@@ -184,7 +184,7 @@ export default class TableComponent extends NestedComponent {
     return superAttach;
   }
 
-  destroy(all = false) {
+  destroy(all) {
     super.destroy(all);
     delete this.table;
   }

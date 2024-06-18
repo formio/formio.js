@@ -988,9 +988,7 @@ export default class SelectComponent extends ListComponent {
 
     const tabIndex = input.tabIndex;
     this.addPlaceholder();
-    if (this.i18next) {
-      input.setAttribute('dir', this.i18next.dir());
-    }
+    input.setAttribute('dir', this.i18next.dir());
     if (this.choices?.containerOuter?.element?.parentNode) {
       this.choices.destroy();
     }
@@ -1848,6 +1846,7 @@ export default class SelectComponent extends ListComponent {
   }
 
   detach() {
+    super.detach();
     this.off('blur');
     if (this.choices) {
       if (this.choices.containerOuter?.element?.parentNode) {
@@ -1855,7 +1854,6 @@ export default class SelectComponent extends ListComponent {
       }
       this.choices = null;
     }
-    super.detach();
   }
 
   focus() {

@@ -289,7 +289,7 @@ export default class Wizard extends Webform {
   }
 
   attach(element) {
-    this.setElement(element);
+    this.element = element;
     this.loadRefs(element, {
       [this.wizardKey]: 'single',
       [`${this.wizardKey}-header`]: 'single',
