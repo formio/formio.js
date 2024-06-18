@@ -197,8 +197,10 @@
     </div>
     <div id="show" class="mb-2 formio-form-group has-feedback formio-component formio-component-checkbox formio-component-show " ref="component">
       <div class="form-check checkbox">
-        <input ref="input" name="data[show]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="0" aria-required="false">
-        <label class=" form-check-label"><span>Show</span></label>
+        <input ref="input" id="show-show" aria-labelledby="l-show-show" name="data[show]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="0" aria-required="false">
+        <label class=" form-check-label" for="show-show" id="l-show-show">
+          <span>Show</span>
+        </label>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>
@@ -220,7 +222,7 @@
             <td ref="datagrid-conditionalDataGrid">
               <div id="conditionalDataGridShow2" class="mb-2 formio-form-group has-feedback formio-component formio-component-checkbox formio-component-conditionalDataGridShow2  formio-component-label-hidden" ref="component">
                 <div class="form-check checkbox">
-                  <input ref="input" name="data[conditionalDataGrid][0][conditionalDataGridShow2]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="0" aria-required="false">
+                  <input ref="input" id="conditionalDataGridShow2-conditionalDataGridShow2" aria-labelledby="l-conditionalDataGridShow2-conditionalDataGridShow2" name="data[conditionalDataGrid][0][conditionalDataGridShow2]" type="checkbox" class="form-check-input" lang="en" disabled="disabled" value="0" aria-required="false">
                 </div>
                 <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
               </div>

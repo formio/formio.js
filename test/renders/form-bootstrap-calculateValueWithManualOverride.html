@@ -19,8 +19,10 @@
         <div role="tabpanel" class="card-body tab-pane" style="display: block" ref="tab-tabs">
           <div id="checkbox" class="mb-2 formio-form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
             <div class="form-check checkbox">
-              <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false">
-              <label class=" form-check-label"><span>hide</span></label>
+              <input ref="input" id="checkbox-checkbox" aria-labelledby="l-checkbox-checkbox" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false">
+              <label class=" form-check-label" for="checkbox-checkbox" id="l-checkbox-checkbox">
+                <span>hide</span>
+              </label>
             </div>
             <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
           </div>
@@ -63,7 +65,7 @@
                       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
                     </div>
                   </td>
-                  <td>
+                  <td class="col-1">
                     <button type="button" class="btn btn-secondary formio-button-remove-row" ref="datagrid-dataGrid-removeRow" tabindex="0" aria-label="remove">
                       <i class="fa fa-remove-circle bi bi-x-circle"></i>
                     </button>

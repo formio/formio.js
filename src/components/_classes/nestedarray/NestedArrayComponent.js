@@ -155,7 +155,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
     return result;
   }
 
-  everyComponent(fn, rowIndex, options) {
+  everyComponent(fn, rowIndex, options = {}) {
     if (_.isObject(rowIndex)) {
       options = rowIndex;
       rowIndex = null;

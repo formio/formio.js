@@ -5,9 +5,6 @@ import simpleWizard from '../test/forms/simpleWizard';
 import formWithFormController from '../test/forms/formWithFormController';
 import { fastCloneDeep } from './utils/utils';
 
-global.requestAnimationFrame = (cb) => cb();
-global.cancelAnimationFrame = () => {};
-
 describe('WizardBuilder tests', function() {
   let formBuilderElement, formBuilder;
   after((done) => {
