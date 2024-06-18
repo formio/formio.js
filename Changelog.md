@@ -261,6 +261,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - made Formio available globally
  - FIO-8027 added new Captcha provider
  - FIO-8281: fixed selectData property for multiple select component
+ - FIO-8420: file component no defaults causes error
 
 ## 5.0.0-rc.37
 ### Fixed
