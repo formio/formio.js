@@ -71,5 +71,7 @@ export default {
   submitButtonAriaLabel:'Submit Form button. Click to submit the form',
   reCaptchaTokenValidationError: 'ReCAPTCHA: Token validation error',
   reCaptchaTokenNotSpecifiedError: 'ReCAPTCHA: Token is not specified in submission',
-  apiKey: 'API Key is not unique: {{key}}'
+  apiKey: 'API Key is not unique: {{key}}',
+  typeRemaining: '{{ remaining }} {{ type }} remaining.',
+  typeCount: '{{ count }} {{ type }}'
 };
