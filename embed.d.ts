@@ -1,1 +1,1 @@
-export * from './types/Embed';
+export * from './lib/cjs/InlineEmbed';

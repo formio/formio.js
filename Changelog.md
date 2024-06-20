@@ -47,10 +47,47 @@ import bootstrap4 from '@formio/bootstrap/bootstrap4';
 Formio.use(bootstrap4);
 ```
 
+It should also be noted, that the Bootstrap templates are no longer part of this library, but rather imported in from the external dependency and bundled along with this library. Because of this, if you wish to make a change to the default Bootstrap template, you will need to make that pull request at the Github repo @ https://github.com/formio/bootstrap
+
 This is a **Breaking Change** so please see the section below for more information about this change.
 
 #### New Validation Engine
 The 5.x renderer incorporates our new Core validation engine found @ https://github.com/formio/core/tree/master/src/process. This process can be briefly described within the pull request notes @ https://github.com/formio/formio.js/pull/5317. This will also improve our Iso-morphic behavior for our renderer validation and significantly improve memory and processor consumption for server-side form validations. This feature does have a **Breaking Change** which is described below.
+
+#### Core SDK
+With the 5.x renderer, the Formio SDK is now part of our Core library found @ https://github.com/formio/core/tree/master/src/sdk.  It is now imported directly into the @formio/js library and is re-exported to support reverse compatability. Because of this, there should not be any code upgrade involved. 
+
+For example, the following code still works.
+
+```js
+import { Formio } from '@formio/js/sdk';
+const formio = new Formio('https://examples.form.io');
+formio.loadForm().then((form) => {
+  console.log(form);
+});
+```
+
+#### Core Utilities
+Now, instead of the Form Utilities being defined within the renderer code, they are now maintained within our Core library found @ https://github.com/formio/core/tree/master/src/utils.  These libraries, however, are re-exported from the renderer to maintain reverse compatability. For example, the following code still works.
+
+```js
+import { eachComponent } from '@formio/js/utils';
+import { Formio } from '@formio/js/sdk';
+const formio = new Formio('https://examples.form.io/example');
+formio.loadForm().then((form) => {
+  eachComponent(form.components, (component) => {
+    // Called for every component in this form.
+    console.log(component);
+  });
+});
+```
+
+#### Improved type definitions with JSDoc
+5.x officially deprecates our previous "manual" type definitions found in the "types" folder. These type definitions are now automatically generated using an concerted effort to introduce JSDocs into all of our javascript classes and interfaces. The types can be imported using the following.
+
+```js
+import { Component } from '@formio/js/types';
+```
 
 #### Improved render build sizes
 With the 5.x version of the renderer/builder, there has been much effort into reducing the size of the build for the renderer. While the full renderer is still "large" and over the 1mb goal, we still have been able to trim a lot of size from the renderer/builder as follows.
@@ -261,6 +298,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - made Formio available globally
  - FIO-8027 added new Captcha provider
  - FIO-8281: fixed selectData property for multiple select component
+ - FIO-8420: file component no defaults causes error
 
 ## 5.0.0-rc.37
 ### Fixed
