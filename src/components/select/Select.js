@@ -63,6 +63,8 @@ export default class SelectComponent extends ListComponent {
   }
 
   static get conditionOperatorsSettings() {
+    const numberType = () => ({ type: 'number' });
+
     return {
       ...super.conditionOperatorsSettings,
       valueComponent(classComp) {
@@ -81,7 +83,18 @@ export default class SelectComponent extends ListComponent {
         }
 
         return valueComp;
-      }
+      },
+      dataTypeOperators: {
+        number: ['lessThan', 'greaterThan', 'lessThanOrEqual', 'greaterThanOrEqual'],
+      },
+      dataTypeValueComponents: {
+        number: {
+          lessThan: numberType,
+          greaterThan: numberType,
+          lessThanOrEqual: numberType,
+          greaterThanOrEqual: numberType,
+        },
+      },
     };
   }
 
