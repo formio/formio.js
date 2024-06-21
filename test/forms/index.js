@@ -16,6 +16,7 @@ import ComponentsBasicSettingsTests from './componentsBasicSettingsTests';
 // import ChildMetadata from './childMetadata';
 import NestedFormValidation from './nested-form-validation';
 import WizardWithPrefixComps from './wizardWithPrefixComps';
+import WizardWithCheckboxes from './wizardWithCheckboxes';
 
 export default [
   Simple,
@@ -35,5 +36,6 @@ export default [
   // WysiwygCursor
   ClearOnHide,
   WizardWithPrefixComps,
+  WizardWithCheckboxes,
   ...ComponentsBasicSettingsTests,
 ];
