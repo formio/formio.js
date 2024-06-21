@@ -42,9 +42,6 @@ import formWithFormController from '../test/forms/formWithFormController';
 import { fastCloneDeep } from './utils/utils';
 import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
 
-global.requestAnimationFrame = (cb) => cb();
-global.cancelAnimationFrame = () => {};
-
 // eslint-disable-next-line max-statements
 describe('Wizard tests', () => {
   it('Should recalculate values for components with "allow override" after wizard is canceled', function(done) {

@@ -106,7 +106,7 @@ export default class NestedDataComponent extends NestedComponent {
     return result;
   }
 
-  everyComponent(fn, options) {
+  everyComponent(fn, options = {}) {
     if (options?.email) {
       if (options.fromRoot) {
         delete options.fromRoot;
@@ -121,8 +121,7 @@ export default class NestedDataComponent extends NestedComponent {
 
   /**
    * Get the value of this component.
-   *
-   * @returns {*}
+   * @returns {any} - Return the value of this component.
    */
   getValue() {
     return this.dataValue;

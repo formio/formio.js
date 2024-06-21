@@ -182,8 +182,8 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   /**
-   * Returns true if the component has nested components which don't trigger changes on the root level
-   *///
+   * @returns {boolean} - Returns true if the component has nested components which don't trigger changes on the root level
+   */
   get hasScopedChildren() {
     return !this.inlineEditMode;
   }
@@ -1228,7 +1228,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   /**
-   * Return that this component processes its own validation.
+   * @returns {boolean} - Return that this component processes its own validation.
    */
   get processOwnValidation() {
     return true;
