@@ -1678,7 +1678,7 @@ export default class Component extends Element {
 
   /**
    * Creates a modal to input the value of this component.
-   * @param {HTMLElement} element - The element to attach the modal to. 
+   * @param {HTMLElement} element - The element to attach the modal to.
    * @param {any} attr - A list of attributes to add to the modal.
    * @param {boolean} confirm - If we should add a confirmation to the modal that keeps it from closing unless confirmed.
    * @returns {HTMLElement} - The created modal element.
@@ -2398,7 +2398,7 @@ export default class Component extends Element {
    * @param {Array<HTMLElement>} elements - An array of DOM elements to set the error classes on.
    * @param {boolean} dirty - If the input is dirty.
    * @param {boolean} hasErrors - If the input has errors.
-   * @param {boolean} hasMessages - If the input has messages. 
+   * @param {boolean} hasMessages - If the input has messages.
    * @param {HTMLElement} element - The wrapper element for all the other elements passed in first argument.
    * @returns {void}
    */
@@ -3052,7 +3052,7 @@ export default class Component extends Element {
    */
   resetValue() {
     this.unset();
-    this.setValue(this.emptyValue, {
+    this.setValue(this.defaultValue || this.emptyValue, {
       noUpdateEvent: true,
       noValidate: true,
       resetValue: true
@@ -3233,7 +3233,7 @@ export default class Component extends Element {
    * @param {*} data - The data to perform the calculation with.
    * @param {*} flags - The flags to use when calculating the value.
    * @param {*} row - The contextual row data to use when performing the calculation.
-   * @returns {boolean} - TRUE if the value changed. 
+   * @returns {boolean} - TRUE if the value changed.
    */
   calculateValue(data, flags, row) {
     data = data || this.rootValue;
