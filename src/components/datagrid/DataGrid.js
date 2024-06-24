@@ -2,6 +2,7 @@ import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
 import { Components } from '../Components';
+import dragula from 'dragula';
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -332,43 +333,41 @@ export default class DataGridComponent extends NestedArrayComponent {
         row.dragInfo = { index };
       });
 
-      if (this.root.dragulaLib) {
-        this.dragula = this.root.dragulaLib([this.refs[`${this.datagridKey}-tbody`]], {
-          moves: (_draggedElement, _oldParent, clickedElement) => {
-            const clickedElementKey = clickedElement.getAttribute('data-key');
-            const oldParentKey = _oldParent.getAttribute('data-key');
+      this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
+        moves: (_draggedElement, _oldParent, clickedElement) => {
+          const clickedElementKey = clickedElement.getAttribute('data-key');
+          const oldParentKey = _oldParent.getAttribute('data-key');
 
-            //Check if the clicked button belongs to that container, if false, it belongs to the nested container
-            if (oldParentKey === clickedElementKey) {
-              return clickedElement.classList.contains('formio-drag-button');
+          //Check if the clicked button belongs to that container, if false, it belongs to the nested container
+          if (oldParentKey === clickedElementKey) {
+            return clickedElement.classList.contains('formio-drag-button');
+          }
+        }
+      }).on('drop', this.onReorder.bind(this));
+
+      this.dragula.on('cloned', (el, original) => {
+        if (el && el.children && original && original.children) {
+          _.each(original.children, (child, index) => {
+            const styles = getComputedStyle(child, null);
+
+            if (styles.cssText !== '') {
+              el.children[index].style.cssText = styles.cssText;
             }
-          }
-        }).on('drop', this.onReorder.bind(this));
+            else {
+              const cssText = Object.values(styles).reduce(
+                (css, propertyName) => {
+                  return `${css}${propertyName}:${styles.getPropertyValue(
+                    propertyName
+                  )};`;
+                },
+                ''
+              );
 
-        this.dragula.on('cloned', (el, original) => {
-          if (el && el.children && original && original.children) {
-            _.each(original.children, (child, index) => {
-              const styles = getComputedStyle(child, null);
-
-              if (styles.cssText !== '') {
-                el.children[index].style.cssText = styles.cssText;
-              }
-              else {
-                const cssText = Object.values(styles).reduce(
-                  (css, propertyName) => {
-                    return `${css}${propertyName}:${styles.getPropertyValue(
-                      propertyName
-                    )};`;
-                  },
-                  ''
-                );
-
-                el.children[index].style.cssText = cssText;
-              }
-            });
-          }
-        });
-      }
+              el.children[index].style.cssText = cssText;
+            }
+          });
+        }
+      });
     }
 
     this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {
