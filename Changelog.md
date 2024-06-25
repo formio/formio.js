@@ -299,6 +299,12 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-8027 added new Captcha provider
  - FIO-8281: fixed selectData property for multiple select component
  - FIO-8420: file component no defaults causes error
+ - FIO-8493: Added null check for this.root in builder mode
+ - Adding JSDocs and fixes for the 5x Renderer Version
+ - FIO-8438: fix datagrid addrow clearing checkbox
+ - FIO-8496: added loading=async for Google Maps JavaScript API
+ - FIO-8445: Fixed searchbar not focusing when navigating using up and down arrows
+ - FIO-7936: showCounter messages not translating
 
 ## 5.0.0-rc.37
 ### Fixed
