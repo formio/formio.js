@@ -15,4 +15,5 @@ import withCollapsibleRowGroups from './comp-with-collapsible-groups';
 import withAllowCalculateOverride from './comp-with-allow-calculate-override';
 import twoWithAllowCalculatedOverride from './two-comp-with-allow-calculate-override';
 import withCheckboxes from './comp-with-checkboxes';
-export { comp1, comp2, comp3, comp4, comp5, comp6, comp7, comp8, withCollapsibleRowGroups, withConditionalFieldsAndValidations, withDefValue, withLogic, withRowGroupsAndDefValue, modalWithRequiredFields, withAllowCalculateOverride, twoWithAllowCalculatedOverride, withCheckboxes };
+import withReorder from './comp-with-reorder';
+export { comp1, comp2, comp3, comp4, comp5, comp6, comp7, comp8, withCollapsibleRowGroups, withConditionalFieldsAndValidations, withDefValue, withLogic, withRowGroupsAndDefValue, modalWithRequiredFields, withAllowCalculateOverride, twoWithAllowCalculatedOverride, withCheckboxes, withReorder };
