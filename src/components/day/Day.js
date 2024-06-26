@@ -140,7 +140,7 @@ export default class DayComponent extends Field {
         id: `${this.component.key}-${name}`,
         class: `form-control ${this.transform('class', `formio-day-component-${name}`)}`,
         type: this.component.fields[name].type === 'select' ? 'select' : 'number',
-        placeholder: this.component.fields[name].placeholder,
+        placeholder: this.t(this.component.fields[name].placeholder),
         step: 1,
         min,
         max,
