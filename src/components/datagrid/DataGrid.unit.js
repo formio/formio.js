@@ -23,6 +23,7 @@ import {
   withCollapsibleRowGroups,
   withAllowCalculateOverride,
   twoWithAllowCalculatedOverride, withCheckboxes,
+  withReorder
 } from './fixtures';
 
 describe('DataGrid Component', () => {
@@ -721,6 +722,56 @@ describe('DataGrid calculated values', () => {
             }, 300);
           }, 300);
         }, 300);
+      })
+      .catch(done);
+  });
+});
+
+describe('DataGrid Reorder', () => {
+  it('Should display select components labels correctly on rows reorder', (done) => {
+    Formio.createForm(document.createElement('div'), withReorder.form)
+      .then((form) => {
+        form.setSubmission(withReorder.submission)
+        .then(() => {
+          const values = [
+            { value: '11', label: 1 },
+            { value: '22', label: 2 },
+            { value: '33', label: 3 },
+            { value: '44', label: 4 },
+            { value: '55', label: 5 },
+          ];
+
+          const dataGrid = form.getComponent('dataGrid');
+          _.each(dataGrid.components, (selectComp, ind) => {
+            const expectedValue = values[ind];
+            assert.equal(ind, selectComp.rowIndex);
+            assert.equal(selectComp.dataValue, expectedValue.value);
+            assert.equal(selectComp.templateData[expectedValue.value].data.number, expectedValue.label);
+          });
+
+          dataGrid.onReorder({ dragInfo: { index: 4 } }, null, null, { dragInfo: { index: 0 } });
+          dataGrid.onReorder({ dragInfo: { index: 4 } }, null, null, { dragInfo: { index: 1 } });
+          dataGrid.onReorder({ dragInfo: { index: 2 } }, null, null, { dragInfo: { index: 4 } });
+
+          setTimeout(() => {
+            const values = [
+              { value: '55', label: 5 },
+              { value: '44', label: 4 },
+              { value: '22', label: 2 },
+              { value: '11', label: 1 },
+              { value: '33', label: 3 },
+            ];
+
+            _.each(dataGrid.components, (selectComp, ind) => {
+              const expectedValue = values[ind];
+              assert.equal(ind, selectComp.rowIndex, 'Component index after reorder');
+              assert.equal(selectComp.dataValue, expectedValue.value, 'Component value after reorder');
+              assert.equal(selectComp.templateData[expectedValue.value].data.number, expectedValue.label, 'Component label value after reorder');
+            });
+
+            done();
+          }, 600);
+        });
       })
       .catch(done);
   });

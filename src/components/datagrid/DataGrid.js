@@ -405,6 +405,26 @@ export default class DataGridComponent extends NestedArrayComponent {
     return this.component.components;
   }
 
+  /**
+   * Reorder values in array based on the old and new position
+   * @param {any} valuesArr - An array of values.
+   * @param {number} oldPosition - The index of the value in array before reordering.
+   * @param {number} newPosition - The index of the value in array after reordering.
+   * @param {boolean|any} movedBelow - Whether or not the value is moved below.
+   * @returns {void}
+   */
+  reorderValues(valuesArr, oldPosition, newPosition, movedBelow) {
+    if (!_.isArray(valuesArr) || _.isEmpty(valuesArr)) {
+      return;
+    }
+
+    const draggedRowData = valuesArr[oldPosition];
+    //insert element at new position
+    valuesArr.splice(newPosition, 0, draggedRowData);
+    //remove element from old position (if was moved above, after insertion it's at +1 index)
+    valuesArr.splice(movedBelow ? oldPosition : oldPosition + 1, 1);
+  }
+
   onReorder(element, _target, _source, sibling) {
     if (!element.dragInfo || (sibling && !sibling.dragInfo)) {
       console.warn('There is no Drag Info available for either dragged or sibling element');
@@ -416,12 +436,9 @@ export default class DataGridComponent extends NestedArrayComponent {
     const newPosition = sibling ? sibling.dragInfo.index : this.dataValue.length;
     const movedBelow = newPosition > oldPosition;
     const dataValue = fastCloneDeep(this.dataValue);
-    const draggedRowData = dataValue[oldPosition];
-
-    //insert element at new position
-    dataValue.splice(newPosition, 0, draggedRowData);
-    //remove element from old position (if was moved above, after insertion it's at +1 index)
-    dataValue.splice(movedBelow ? oldPosition : oldPosition + 1, 1);
+    this.reorderValues(dataValue, oldPosition, newPosition, movedBelow);
+    //reorder select data
+    this.reorderValues(_.get(this.root, `submission.metadata.selectData.${this.path}`, []), oldPosition, newPosition, movedBelow);
 
     //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
     this.setValue(dataValue, { isReordered: true });
