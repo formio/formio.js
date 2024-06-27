@@ -14,3 +14,4 @@ export withLogic from './comp-with-logic';
 export withCollapsibleRowGroups from './comp-with-collapsible-groups';
 export withAllowCalculateOverride from './comp-with-allow-calculate-override';
 export twoWithAllowCalculatedOverride from './two-comp-with-allow-calculate-override';
+export withReorder from './comp-with-reorder';
