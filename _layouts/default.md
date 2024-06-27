@@ -69,7 +69,6 @@
         <li class="nav-item {% if page.section == 'sandbox' %}active bg-white border{% endif %}"><a class="text-dark nav-link p-3" href="app/sandbox.html"><i class="bi bi-box"></i> Sandbox</a></li>
         <li class="nav-item {% if page.section == 'examples' %}active bg-white border{% endif %}"><a class="text-dark nav-link p-3" href="app/examples"><i class="bi bi-check-square"></i> Examples</a></li>
         <li class="nav-item"><a class="text-dark nav-link p-3" target="_blank" href="https://help.form.io/developers/form-renderer"><i class="bi bi-book"></i> Documentation</a></li>
-        <li class="nav-item {% if page.section == 'sdk'%}active bg-white border{% endif %}"><a class="text-dark nav-link p-3" href="app/sdk"><i class="bi bi-window"></i> SDK</a></li>
       </ul>
       <ul class="navbar-nav float-end">
         <li class="nav-item"><a class="github-button nav-link" href="https://github.com/formio/formio.js" data-size="large" data-show-count="true" aria-label="Star formio/formio.js on GitHub">Star</a></li>
