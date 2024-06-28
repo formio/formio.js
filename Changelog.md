@@ -225,7 +225,6 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 
   - With the 5.x renderer, all templates are now stored within a separate repo, and are included as a dependency for this renderer. 
 
-## [Unreleased: 5.0.0-rc.40]
 ### Fixed
  - FIO-7525: fixed an issue where new conditional logic based on select boxes does not work
  - Fix broken file exclusion patterns
