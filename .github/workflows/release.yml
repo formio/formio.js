@@ -3,8 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - '*' # This will make sure tag creations also trigger the workflow.
-
+      - '*'
 env:
   NODE_VERSION: 20.x
   AWS_DEFAULT_REGION: us-west-2
@@ -31,6 +30,11 @@ jobs:
       - name: Install Jekyll
         run: gem install jekyll
 
+      - name: Install awscli
+        run: |
+          sudo apt-get update
+          sudo apt install -y awscli
+
       - name: Restore node modules from cache
         uses: actions/cache@v3
         with:
@@ -39,12 +43,29 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Install awscli
-        run: |
-          sudo apt-get update
-          sudo apt install -y awscli
+      - name: Installing dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install --frozen-lockfile
+
+      - name: Build
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
 
       - name: Release
         uses: borales/actions-yarn@v4
         with:
           cmd: release
+
+      - name: Invalidate (formiojs.test-form.io) Cloudfront cache
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: invalidate
+
+      - name: Echo link to Test Page
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "The extracted version is $VERSION"
+          echo "https://formiojs.test-form.io/$VERSION"
