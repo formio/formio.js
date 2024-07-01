@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0]
+## [Unreleased: 5.0.0-rc.62]
 
 ### New Features
 
@@ -222,7 +222,6 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 
   - With the 5.x renderer, all templates are now stored within a separate repo, and are included as a dependency for this renderer. 
 
-## [Unreleased: 5.0.0-rc.40]
 ### Fixed
  - FIO-7525: fixed an issue where new conditional logic based on select boxes does not work
  - Fix broken file exclusion patterns
@@ -359,6 +358,8 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-4871: fixed calculated value for data grid component
  - FIO-7591: error messages wrapping on letter instead of on word
  - FIO-7548: fixed an issue where select dropdown does not overlap the datagrid and causes vertical scroll
+ - FIO-7775: reset value event resets component values to their default values
+ - FIO-6710: added translation for day component placeholder
 
 ### Changed
  - Add capability for adding sanitize profiles through sanitizeConfig in options
