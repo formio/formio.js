@@ -307,6 +307,8 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-8496: added loading=async for Google Maps JavaScript API
  - FIO-8445: Fixed searchbar not focusing when navigating using up and down arrows
  - FIO-7936: showCounter messages not translating
+ - FIO-7775: reset value event resets component values to their default values
+ - FIO-6710: added translation for day component placeholder
 
 ## 5.0.0-rc.37
 ### Fixed
