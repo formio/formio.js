@@ -783,6 +783,19 @@ export default class Webform extends NestedDataComponent {
     }
 
     /**
+     * Sets the submission value
+     * @param {object|null|undefined} submission - The submission to set.
+     * @param {object|null|undefined} flags - Any flags to apply when setting the submission.
+     * @return {void}
+     */
+    onSetSubmission(submission, flags = {}) {
+      this.submissionSet = true;
+      this.triggerChange(flags);
+      this.emit('beforeSetSubmission', submission);
+      this.setValue(submission, flags);
+    }
+
+    /**
      * Sets a submission and returns the promise when it is ready.
      * @param {any} submission - The submission to set.
      * @param {any} flags - Any flags to apply when setting the submission.
@@ -802,10 +815,7 @@ export default class Webform extends NestedDataComponent {
                             ...resolveFlags,
                         };
                     }
-                    this.submissionSet = true;
-                    this.triggerChange(flags);
-                    this.emit("beforeSetSubmission", submission);
-                    this.setValue(submission, flags);
+                    this.onSetSubmission(submission, flags);
                     return this.submissionReadyResolve(submission);
                 },
                 (err) => this.submissionReadyReject(err)
@@ -1253,7 +1263,6 @@ export default class Webform extends NestedDataComponent {
         // Mark any components as invalid if in a custom message.
         errors.forEach((err) => {
             const { components = [] } = err;
-
             if (err.component) {
                 components.push(err.component);
             }
