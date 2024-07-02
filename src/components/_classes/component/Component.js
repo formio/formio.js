@@ -1194,6 +1194,15 @@ export default class Component extends Element {
   }
 
   /**
+   * Renders a modal preview template and returns the markup as a string
+   * @param {object|null|undefined} ctx - The rendering context
+   * @return {string} - The modal preview markup
+   */
+  renderModalPreview(ctx) {
+    return this.renderTemplate('modalPreview', ctx || {});
+  }
+
+  /**
    * Returns the modal preview template.
    * @returns {string} - The modal preview template.
    */
@@ -1205,7 +1214,7 @@ export default class Component extends Element {
       modalLabel = { className: 'field-required' };
     }
 
-    return this.renderTemplate('modalPreview', {
+    return this.renderModalPreview({
       previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value'),
       messages: '',
       labelInfo: modalLabel,
@@ -1260,6 +1269,29 @@ export default class Component extends Element {
   }
 
   /**
+   * Creates the tooltip instance using tippy.js and returns it
+   * @param {HTMLElement} tooltipEl - HTML element to attach the tooltip
+   * @param {object|null|undefined} settings - tippy.js options
+   * @return {import('tippy.js').Tippy} - tippy.js instance
+   */
+  createTooltip(tooltipEl, settings = {}) {
+    const tooltipAttribute = tooltipEl.getAttribute('data-tooltip');
+    const tooltipDataTitle = tooltipEl.getAttribute('data-title');
+    const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
+                            .replace(/(?:\r\n|\r|\n)/g, '<br />');
+
+    return tippy(tooltipEl, {
+      allowHTML: true,
+      trigger: 'mouseenter click focus',
+      placement: 'right',
+      zIndex: 10000,
+      interactive: true,
+      ...settings,
+      content: this.t(this.sanitize(tooltipText), { _userInput: true }),
+    });
+  }
+
+  /**
    * Attaches all the tooltips provided the refs object.
    * @param {object} toolTipsRefs - The refs for the tooltips within your template.
    * @returns {void}
@@ -1267,19 +1299,7 @@ export default class Component extends Element {
   attachTooltips(toolTipsRefs) {
     toolTipsRefs?.forEach((tooltip, index) => {
       if (tooltip) {
-        const tooltipAttribute = tooltip.getAttribute('data-tooltip');
-        const tooltipDataTitle = tooltip.getAttribute('data-title');
-        const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
-                                .replace(/(?:\r\n|\r|\n)/g, '<br />');
-
-        this.tooltips[index] = tippy(tooltip, {
-          allowHTML: true,
-          trigger: 'mouseenter click focus',
-          placement: 'right',
-          zIndex: 10000,
-          interactive: true,
-          content: this.t(this.sanitize(tooltipText), { _userInput: true }),
-        });
+        this.tooltips[index] = this.createTooltip(tooltip);
       }
     });
   }

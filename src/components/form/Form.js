@@ -726,8 +726,17 @@ export default class FormComponent extends Component {
       });
     }
     else {
-      this.subForm.setValue(submission, flags);
+      this.onSetSubFormValue(submission, flags);
     }
+  }
+  /**
+   * Sets the subform value
+   * @param {object|null|undefined} submission - The submission to set.
+   * @param {object|null|undefined} flags - Any flags to apply when setting the submission.
+   * @return {void}
+   */
+  onSetSubFormValue(submission, flags) {
+    this.subForm.setValue(submission, flags);
   }
 
   isEmpty(value = this.dataValue) {
