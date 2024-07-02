@@ -5,7 +5,8 @@ import { expect } from 'chai';
 import FormBuilder from '../src/FormBuilder';
 import AllComponents from '../src/components';
 import Components from '../src/components/Components';
-
+global.requestAnimationFrame = (cb) => cb();
+global.cancelAnimationFrame = () => {};
 Components.setComponents(AllComponents);
 
 if (process) {

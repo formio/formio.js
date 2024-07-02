@@ -2,263 +2,10 @@
 import * as fs from 'fs';
 import { expect, assert } from 'chai';
 import _ from 'lodash';
-import writtenNumber from 'written-number';
 import utils from '.';
-const components = JSON.parse(fs.readFileSync('src/utils/fixtures/components.json'));
-const components2 = JSON.parse(fs.readFileSync('src/utils/fixtures/components2.json'));
-const components3 = JSON.parse(fs.readFileSync('src/utils/fixtures/components3.json'));
-const components4 = JSON.parse(fs.readFileSync('src/utils/fixtures/components4.json'));
-const components5 = JSON.parse(fs.readFileSync('src/utils/fixtures/components5.json'));
 const submission1 = JSON.parse(fs.readFileSync('src/utils/fixtures/submission1.json'));
 
 describe('Util Tests', () => {
-  describe('eachComponent', () => {
-    it('should iterate through nested components in the right order', () => {
-      let n = 1;
-      utils.eachComponent(components, (component) => {
-        expect(component.order).to.equal(n);
-        n += 1;
-      });
-    });
-
-    it('should include layouts components if provided', () => {
-      let numComps = 0;
-      let numLayout = 0;
-      utils.eachComponent(components, (component) => {
-        if (utils.isLayoutComponent(component)) {
-          numLayout++;
-        }
-        else {
-          numComps++;
-        }
-      }, true);
-      expect(numLayout).to.be.equal(3);
-      expect(numComps).to.be.equal(8);
-    });
-
-    it('Should provide the paths to all of the components', () => {
-      const paths = [
-        'one',
-        'parent1',
-        'two',
-        'parent2',
-        'three',
-        '',
-        'four',
-        'five',
-        'six',
-        'seven',
-        'eight'
-      ];
-      const testPaths = [];
-      utils.eachComponent(components, (component, path) => {
-        testPaths.push(path);
-      }, true);
-      expect(paths).to.deep.equal(testPaths);
-    });
-
-    describe('findComponent', () => {
-      it('should find correct component in nested structure', () => {
-        utils.findComponent(components4, 'four', null, (component) => {
-          expect(component.label).to.equal('4');
-        });
-      });
-      it('should find correct component in flat structure', () => {
-        utils.findComponent(components4, 'one', null, (component) => {
-          expect(component.label).to.equal('1');
-        });
-      });
-    });
-
-    it('Should be able to find all textfield components', () => {
-      const comps = utils.findComponents(components, { type: 'textfield' });
-      expect(comps.length).to.equal(6);
-    });
-
-    it('Should be able to find components with special properties.', () => {
-      const comps = utils.findComponents(components3, { 'properties.path': 'a' });
-      expect(comps.length).to.equal(4);
-      expect(comps[0].key).to.equal('b');
-      expect(comps[1].key).to.equal('e');
-      expect(comps[2].key).to.equal('j');
-      expect(comps[3].key).to.equal('m');
-    });
-
-    it('Should be able to generate paths based on component types', () => {
-      const paths = [
-        'a',
-        'b',
-        'c',
-        'd',
-        'f',
-        'f.g',
-        'f.h',
-        'f.i',
-        'e',
-        'j',
-        'k',
-        'k.n',
-        'k.n.o',
-        'k.n.p',
-        'k.n.q',
-        'k.m',
-        'k.l',
-        'r',
-        'submit',
-        'tagpad',
-        'tagpad.a',
-      ];
-      const testPaths = [];
-      utils.eachComponent(components2, (component, path) => {
-        testPaths.push(path);
-      }, true);
-      expect(paths).to.deep.equal(testPaths);
-    });
-
-    it('Should still provide the correct paths when it is not recursive', () => {
-      const paths = [
-        'a',
-        'd',
-        'f',
-        'f.g',
-        'f.h',
-        'f.i',
-        'e',
-        'j',
-        'k',
-        'k.n',
-        'k.n.o',
-        'k.n.p',
-        'k.n.q',
-        'k.m',
-        'k.l',
-        'r',
-        'submit',
-        'tagpad',
-        'tagpad.a',
-      ];
-      const testPaths = [];
-      utils.eachComponent(components2, (component, path) => {
-        testPaths.push(path);
-      });
-      expect(paths).to.deep.equal(testPaths);
-    });
-
-    it('should be able to block recursion', () => {
-      let numComps = 0;
-      let numLayout = 0;
-      utils.eachComponent(components, (component) => {
-        if (utils.isLayoutComponent(component)) {
-          numLayout++;
-        }
-        else {
-          numComps++;
-        }
-
-        if (component.type === 'table') {
-          let numInTable = 0;
-          [].concat.apply([], component.rows).forEach((row) => {
-            utils.eachComponent(row.components, () => {
-              numInTable++;
-            });
-          });
-          expect(numInTable).to.be.equal(4);
-          return true;
-        }
-      }, true);
-      expect(numLayout).to.be.equal(3);
-      expect(numComps).to.be.equal(4);
-    });
-
-    it('should not include `htmlelement` components when `includeAll` is not provided', () => {
-      let htmlComponentsAmount = 0;
-      utils.eachComponent(components5, (component) => {
-        if (component.type === 'htmlelement') {
-          htmlComponentsAmount++;
-        }
-      });
-      expect(htmlComponentsAmount).to.be.equal(0);
-    });
-
-    it('should include `htmlelement` components when `includeAll` is provided', () => {
-      let htmlComponentsAmount = 0;
-      utils.eachComponent(components5, (component) => {
-        if (component.type === 'htmlelement') {
-          htmlComponentsAmount++;
-        }
-      }, true);
-      expect(htmlComponentsAmount).to.be.equal(1);
-    });
-
-    it('should not include `content` components when `includeAll` is not provided', () => {
-      let contentComponentsAmount = 0;
-      utils.eachComponent(components5, (component) => {
-        if (component.type === 'content') {
-          contentComponentsAmount++;
-        }
-      });
-      expect(contentComponentsAmount).to.be.equal(0);
-    });
-
-    it('should include `content` components when `includeAll` is provided', () => {
-      let contentComponentsAmount = 0;
-      utils.eachComponent(components5, (component) => {
-        if (component.type === 'content') {
-          contentComponentsAmount++;
-        }
-      }, true);
-      expect(contentComponentsAmount).to.be.equal(1);
-    });
-  });
-
-  describe('getComponent', () => {
-    it('should return the correct components', () => {
-      for (let n = 1; n <= 8; n += 1) {
-        const component = utils.getComponent(components, writtenNumber(n));
-        expect(component).not.to.be.null;
-        expect(component).not.to.be.undefined;
-        expect(component).to.be.an('object');
-        expect(component.order).to.equal(n);
-        expect(component.key).to.equal(writtenNumber(n));
-      }
-    });
-
-    it('should work with a different this context', () => {
-      for (let n = 1; n <= 8; n += 1) {
-        const component = utils.getComponent.call({}, components, writtenNumber(n));
-        expect(component).not.to.be.null;
-        expect(component).not.to.be.undefined;
-        expect(component).to.be.an('object');
-        expect(component.order).to.equal(n);
-        expect(component.key).to.equal(writtenNumber(n));
-      }
-    });
-  });
-
-  describe('flattenComponents', () => {
-    it('should return an object of flattened components', () => {
-      const flattened = utils.flattenComponents(components);
-      for (let n = 1; n <= 8; n += 1) {
-        const component = flattened[writtenNumber(n)];
-        expect(component).not.to.be.undefined;
-        expect(component).to.be.an('object');
-        expect(component.order).to.equal(n);
-        expect(component.key).to.equal(writtenNumber(n));
-      }
-    });
-
-    it('should work with a different this context', () => {
-      const flattened = utils.flattenComponents.call({}, components);
-      for (let n = 1; n <= 8; n += 1) {
-        const component = flattened[writtenNumber(n)];
-        expect(component).not.to.be.undefined;
-        expect(component).to.be.an('object');
-        expect(component.order).to.equal(n);
-        expect(component.key).to.equal(writtenNumber(n));
-      }
-    });
-  });
-
   describe('getValue', () => {
     it('should be able to get a simple value', () => {
       expect(utils.getValue(submission1, 'name')).to.be.equal(submission1.data.name);
@@ -820,10 +567,24 @@ describe('Util Tests', () => {
         done(error);
       }
     });
+  });
 
-    it('Should return string without HTML characters', () => {
+  describe('unescapeHTML', () => {
+    it('should not remove html tags from string', () => {
+      const unescapedString = utils.unescapeHTML('<div><p>This is a paragraph.</p> <p>This is another paragraph.</p></div>');
+      expect(unescapedString).to.equal('<div><p>This is a paragraph.</p> <p>This is another paragraph.</p></div>');
+    });
+
+    it('should return string without HTML characters', () => {
       const unescapedString = utils.unescapeHTML('&lt;p&gt;ampersand &amp; &#34;quotes&#34; test&lt;&#47;p&gt;');
       expect(unescapedString).to.equal('<p>ampersand & "quotes" test</p>');
+    });
+  });
+
+  describe('removeHTML', () => {
+    it('should remove html tags from string', () => {
+      const removedHTML = utils.removeHTML('<div><p> Hello</p> <p>World</p></div>');
+      expect(removedHTML).to.equal('Hello World');
     });
   });
 

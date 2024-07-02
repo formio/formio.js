@@ -439,7 +439,6 @@ export default class WebformBuilder extends Component {
 
   /**
    * Called when everything is ready.
-   *
    * @returns {Promise} - Wait for webform to be ready.
    */
   get ready() {
@@ -495,7 +494,8 @@ export default class WebformBuilder extends Component {
   /**
    * When a component sets its api key, we need to check if it is unique within its namespace. Find the namespace root
    * so we can calculate this correctly.
-   * @param component
+   * @param {import('@formio/core').Component} component - The component to find the namespace root for.
+   * @returns {import('@formio/core').Component[]} - The components root for this namespace.
    */
   findNamespaceRoot(component) {
     const path = getArrayFromComponentPath(component.path);
@@ -1131,8 +1131,14 @@ export default class WebformBuilder extends Component {
       else if (parent.formioComponent && parent.formioComponent.removeChildComponent) {
         parent.formioComponent.removeChildComponent(component);
       }
-      if (component.input && componentInstance && componentInstance.parent) {
-        _.unset(componentInstance._data, componentInstance.key);
+      if (component.input && componentInstance && parent.formioComponent) {
+        const parentDefaultValue = _.get(parent.formioComponent, 'component.defaultValue', null);
+        if (Array.isArray(parentDefaultValue)) {
+          parentDefaultValue.forEach(v => _.unset(v, componentInstance.key));
+        }
+        else if (typeof parentDefaultValue === 'object') {
+          _.unset(parentDefaultValue, componentInstance.key);
+        }
       }
       const rebuild = parent.formioComponent.rebuild() || Promise.resolve();
       rebuild.then(() => {
@@ -1296,10 +1302,11 @@ export default class WebformBuilder extends Component {
 
   /**
    * Called when a new component is saved.
-   *
-   * @param parent
-   * @param component
-   * @return {boolean}
+   * @param {Component} component - The component instance to save.
+   * @param {Component} parent - The parent component.
+   * @param {boolean} isNew - If this is a new component.
+   * @param {Component} original - The original component.
+   * @returns {boolean} - If the component was saved.
    */
   saveComponent(component, parent, isNew, original) {
     this.editForm.detach();
@@ -1772,8 +1779,8 @@ export default class WebformBuilder extends Component {
 
   /**
    * Creates copy of component schema and stores it under sessionStorage.
-   * @param {Component} component
-   * @return {*}
+   * @param {Component} component - The component to copy.
+   * @returns {void}
    */
   copyComponent(component) {
     if (!window.sessionStorage) {
@@ -1785,8 +1792,8 @@ export default class WebformBuilder extends Component {
 
   /**
    * Paste copied component after the current component.
-   * @param {Component} component
-   * @return {*}
+   * @param {Component} component - The component to paste after.
+   * @returns {void}
    */
   pasteComponent(component) {
     if (!window.sessionStorage) {

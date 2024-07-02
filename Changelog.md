@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0]
+## [Unreleased: 5.0.0-rc.62]
 
 ### New Features
 
@@ -47,10 +47,47 @@ import bootstrap4 from '@formio/bootstrap/bootstrap4';
 Formio.use(bootstrap4);
 ```
 
+It should also be noted, that the Bootstrap templates are no longer part of this library, but rather imported in from the external dependency and bundled along with this library. Because of this, if you wish to make a change to the default Bootstrap template, you will need to make that pull request at the Github repo @ https://github.com/formio/bootstrap
+
 This is a **Breaking Change** so please see the section below for more information about this change.
 
 #### New Validation Engine
 The 5.x renderer incorporates our new Core validation engine found @ https://github.com/formio/core/tree/master/src/process. This process can be briefly described within the pull request notes @ https://github.com/formio/formio.js/pull/5317. This will also improve our Iso-morphic behavior for our renderer validation and significantly improve memory and processor consumption for server-side form validations. This feature does have a **Breaking Change** which is described below.
+
+#### Core SDK
+With the 5.x renderer, the Formio SDK is now part of our Core library found @ https://github.com/formio/core/tree/master/src/sdk.  It is now imported directly into the @formio/js library and is re-exported to support reverse compatability. Because of this, there should not be any code upgrade involved. 
+
+For example, the following code still works.
+
+```js
+import { Formio } from '@formio/js/sdk';
+const formio = new Formio('https://examples.form.io');
+formio.loadForm().then((form) => {
+  console.log(form);
+});
+```
+
+#### Core Utilities
+Now, instead of the Form Utilities being defined within the renderer code, they are now maintained within our Core library found @ https://github.com/formio/core/tree/master/src/utils.  These libraries, however, are re-exported from the renderer to maintain reverse compatability. For example, the following code still works.
+
+```js
+import { eachComponent } from '@formio/js/utils';
+import { Formio } from '@formio/js/sdk';
+const formio = new Formio('https://examples.form.io/example');
+formio.loadForm().then((form) => {
+  eachComponent(form.components, (component) => {
+    // Called for every component in this form.
+    console.log(component);
+  });
+});
+```
+
+#### Improved type definitions with JSDoc
+5.x officially deprecates our previous "manual" type definitions found in the "types" folder. These type definitions are now automatically generated using an concerted effort to introduce JSDocs into all of our javascript classes and interfaces. The types can be imported using the following.
+
+```js
+import { Component } from '@formio/js/types';
+```
 
 #### Improved render build sizes
 With the 5.x version of the renderer/builder, there has been much effort into reducing the size of the build for the renderer. While the full renderer is still "large" and over the 1mb goal, we still have been able to trim a lot of size from the renderer/builder as follows.
@@ -185,7 +222,6 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 
   - With the 5.x renderer, all templates are now stored within a separate repo, and are included as a dependency for this renderer. 
 
-## [Unreleased: 5.0.0-rc.40]
 ### Fixed
  - FIO-7525: fixed an issue where new conditional logic based on select boxes does not work
  - Fix broken file exclusion patterns
@@ -253,6 +289,21 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-8326: Recaptcha now requires type of event to be selected
  - FIO-8234: Fixes an issue where Select with Resource data source renders values instead of labels in the read only mode
  - FIO-8366: API key is not unique translation
+ - FIO-8433: fixed restore draft for nested forms
+ - FIO-8395: html in error message not evaluating
+ - FIO-7206: Fixes an issue where API keys of the removed components are not removed from the Data Grid defaultValue
+ - FIO-8402: fixed an issue where Validation Triggering on initial Form load
+ - Remove *zoom (IE7 hack)
+ - made Formio available globally
+ - FIO-8027 added new Captcha provider
+ - FIO-8281: fixed selectData property for multiple select component
+ - FIO-8420: file component no defaults causes error
+ - FIO-8493: Added null check for this.root in builder mode
+ - Adding JSDocs and fixes for the 5x Renderer Version
+ - FIO-8438: fix datagrid addrow clearing checkbox
+ - FIO-8496: added loading=async for Google Maps JavaScript API
+ - FIO-8445: Fixed searchbar not focusing when navigating using up and down arrows
+ - FIO-7936: showCounter messages not translating
 
 ## 5.0.0-rc.37
 ### Fixed
@@ -307,6 +358,8 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-4871: fixed calculated value for data grid component
  - FIO-7591: error messages wrapping on letter instead of on word
  - FIO-7548: fixed an issue where select dropdown does not overlap the datagrid and causes vertical scroll
+ - FIO-7775: reset value event resets component values to their default values
+ - FIO-6710: added translation for day component placeholder
 
 ### Changed
  - Add capability for adding sanitize profiles through sanitizeConfig in options

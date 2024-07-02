@@ -257,40 +257,53 @@ describe('WebformBuilder tests', function() {
 
   it('Should remove deleted components keys from default value', (done) => {
     const builder = Harness.getBuilder();
-    builder.setForm({}).then(() => {
-      Harness.buildComponent('datagrid');
+    builder.setForm({
+      display: 'form',
+      type: 'form',
+      components: [
+        {
+          label: 'Data Grid',
+          reorder: false,
+          addAnotherPosition: 'bottom',
+          layoutFixed: false,
+          enableRowGroups: false,
+          initEmpty: false,
+          tableView: false,
+          defaultValue: [
+            {
+              textField: '',
+            },
+          ],
+          validateWhenHidden: false,
+          key: 'dataGrid',
+          type: 'datagrid',
+          input: true,
+          components: [
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+            },
+          ],
+        },
+      ],
+    }).then(() => {
+      const textField = builder.webform.getComponent(['dataGrid', 'textField'])[0];
+      textField.refs.removeComponent.dispatchEvent( new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: true
+      }));
 
       setTimeout(() => {
-        const dataGridDefaultValue = builder.editForm.getComponent('defaultValue');
-        dataGridDefaultValue.removeRow(0);
-
-        setTimeout(() => {
-          Harness.saveComponent();
-          setTimeout(() => {
-            const dataGridContainer = builder.webform.element.querySelector('[ref="dataGrid-container"]');
-            Harness.buildComponent('textfield', dataGridContainer);
-
-            setTimeout(() => {
-              Harness.saveComponent();
-
-              setTimeout(() => {
-                const textField = builder.webform.getComponent(['dataGrid', 'textField'])[0];
-                textField.refs.removeComponent.dispatchEvent( new MouseEvent('click', {
-                  view: window,
-                  bubbles: true,
-                  cancelable: true
-                }));
-
-                setTimeout(() => {
-                  const dataGrid = builder.webform.getComponent(['dataGrid']);
-                  assert.deepEqual(dataGrid.schema.defaultValue, [{}], 'Should remove TextField key');
-                  done();
-                }, 300);
-              });
-            }, 300);
-          }, 300);
-        }, 350);
-      }, 350);
+        const dataGrid = builder.webform.getComponent(['dataGrid']);
+        assert.deepEqual(dataGrid.schema.defaultValue, [{}], 'Should remove TextField key');
+        done();
+      }, 300);
     }).catch(done);
   });
 });

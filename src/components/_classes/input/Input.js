@@ -172,13 +172,15 @@ export default class Input extends Multivalue {
       else {
         this.addClass(element, 'text-danger');
       }
-      this.setContent(element, this.t(`{{ remaining }} ${type} remaining.`, {
-        remaining: remaining
+      this.setContent(element, this.t(`typeRemaining`, {
+        remaining: remaining,
+        type: type
       }));
     }
     else {
-      this.setContent(element, this.t(`{{ count }} ${type}`, {
-        count: count
+      this.setContent(element, this.t(`typeCount`, {
+        count: count,
+        type: type
       }));
     }
   }
@@ -276,8 +278,8 @@ export default class Input extends Multivalue {
 
   /**
    * Creates an instance of a widget for this component.
-   *
-   * @return {null}
+   * @param {number} index - The index of the widget.
+   * @returns {*} - The widget instance.
    */
   createWidget(index) {
     // Return null if no widget is found.
