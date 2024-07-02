@@ -13,6 +13,7 @@ import {
   comp5,
   comp6,
   comp7,
+  comp8
 } from './fixtures';
 
 describe('Number Component', () => {
@@ -421,6 +422,23 @@ describe('Number Component', () => {
       assert.equal(component.getValueAsString([1, 2, 3, 4, 5]), '1, 2, 3, 4, 5');
       done();
     }).catch(done);
+  });
+
+  it('Should not remove decimal symbol and numbers after decimal symbol when submit is pressed', (done) => {
+    Formio.createForm(document.createElement('div'), comp8, {}).then((form) => {
+      const inputEvent = new Event('input');
+      const numberComponent = form.getComponent('number');
+      const buttonComponent = form.getComponent('submit');
+      numberComponent.refs.input[0].value = "123-456";
+      numberComponent.refs.input[0].dispatchEvent(inputEvent);
+      setTimeout(()=>{
+        buttonComponent.refs.button.click();
+        setTimeout(()=>{
+          assert.equal(numberComponent.refs.input[0].value, "123-456");
+          done();
+        },200);
+      },200);
+    });
   });
 
   // it('Should add trailing zeros on blur, if decimal required', (done) => {
