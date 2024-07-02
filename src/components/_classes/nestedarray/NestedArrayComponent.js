@@ -21,6 +21,10 @@ export default class NestedArrayComponent extends NestedDataComponent {
     return this.iteratableRows[component.rowIndex].data;
   }
 
+  get isRowsDataComponent() {
+    return true;
+  }
+
   get iteratableRows() {
     throw new Error('Getter #iteratableRows() is not implemented');
   }

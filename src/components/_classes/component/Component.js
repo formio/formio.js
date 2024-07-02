@@ -514,6 +514,10 @@ export default class Component extends Element {
     return NativePromise.resolve(this);
   }
 
+  get isRowsDataComponent() {
+    return false;
+  }
+
   get isPDFReadOnlyMode() {
     return this.parent &&
       this.parent.form &&
@@ -1138,6 +1142,10 @@ export default class Component extends Element {
     this.componentModal.setOpenModalElement(template || this.getModalPreviewTemplate());
   }
 
+  renderModalPreview(ctx) {
+    return this.renderTemplate('modalPreview', ctx || {});
+  }
+
   getModalPreviewTemplate() {
     const dataValue = this.component.type === 'password' ? this.dataValue.replace(/./g, '•') : this.dataValue;
     const message = this.error ? {
@@ -1151,7 +1159,7 @@ export default class Component extends Element {
       modalLabel = { className: 'field-required' };
     }
 
-    return this.renderTemplate('modalPreview', {
+    return this.renderModalPreview({
       previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value'),
       messages: message && this.renderTemplate('message', message),
       labelInfo: modalLabel,
@@ -1194,24 +1202,28 @@ export default class Component extends Element {
     }
   }
 
-  attachTooltips(toolTipsRefs) {
-    toolTipsRefs?.forEach((tooltip, index) => {
-      if (tooltip) {
-        const tooltipAttribute = tooltip.getAttribute('data-tooltip');
-        const tooltipDataTitle = tooltip.getAttribute('data-title');
-        const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
-                                .replace(/(?:\r\n|\r|\n)/g, '<br />');
+  createTooltip(tooltipEl,  settings = {}) {
+    const tooltipAttribute = tooltipEl.getAttribute('data-tooltip');
+    const tooltipDataTitle = tooltipEl.getAttribute('data-title');
+    const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
+                            .replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-        this.tooltips[index] = tippy(tooltip, {
-          allowHTML: true,
-          trigger: 'mouseenter click focus',
-          placement: 'right',
-          zIndex: 10000,
-          interactive: true,
-          content: this.t(this.sanitize(tooltipText), { _userInput: true }),
-        });
-      }
+    return tippy(tooltipEl, {
+      allowHTML: true,
+      trigger: 'mouseenter click focus',
+      placement: 'right',
+      zIndex: 10000,
+      interactive: true,
+      ...settings,
+      content: this.t(this.sanitize(tooltipText), { _userInput: true }),
     });
+  }
+
+  attachTooltips(toolTipsRefs) {
+    this.tooltips = _.chain(toolTipsRefs || [])
+      .filter(tooltip => !!tooltip)
+      .map(tooltip => this.createTooltip(tooltip))
+      .value();
   }
 
   createComponentModal(element, modalShouldBeOpened, currentValue) {

@@ -703,6 +703,10 @@ export default class FormComponent extends Component {
     return changed;
   }
 
+  onSetSubFormValue(submission, flags) {
+    this.subForm.setValue(submission, flags);
+  }
+
   setSubFormValue(submission, flags) {
     const shouldLoadSubmissionById = submission
       && submission._id
@@ -725,7 +729,7 @@ export default class FormComponent extends Component {
       });
     }
     else {
-      this.subForm.setValue(submission, flags);
+      this.onSetSubFormValue(submission, flags);
     }
   }
 
