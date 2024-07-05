@@ -3870,6 +3870,10 @@ export default class Component extends Element {
 
               // Change states which won't be recalculated during redrawing
               if (this.visible !== visible) {
+                // If the logic is triggered by an event and the action sets the hidden state then the original
+                // component definition must be changed so that the components hidden state does not get flipped back by
+                // the fieldLogic function
+                this.originalComponent.hidden = !visible;
                 this.visible = visible;
               }
               if (this.disabled !== disabled) {
