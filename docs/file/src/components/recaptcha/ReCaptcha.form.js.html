@@ -190,7 +190,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Components from &apos;../Components&apos;;
 import ReCaptchaEditDisplay from &apos;./editForm/ReCaptcha.edit.display&apos;;
 
-export default function() {
+export default function(...extend) {
   return Components.baseEditForm([
     {
       key: &apos;display&apos;,
@@ -212,7 +212,7 @@ export default function() {
       key: &apos;logic&apos;,
       ignore: true
     },
-  ]);
+  ], ...extend);
 }
 </code></pre>
 

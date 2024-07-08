@@ -190,9 +190,17 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { getContextButtons } from &apos;../../../utils/utils&apos;;
 export default [
   {
+    key: &apos;recaptchaInfo&apos;,
+    weight: -10,
+    type: &apos;htmlelement&apos;,
+    tag: &apos;div&apos;,
+    className: &apos;alert alert-danger&apos;,
+    content: &apos;This component has been deprecated and will be removed. Use the CAPTCHA component instead.&apos;,
+  },
+  {
     key: &apos;eventType&apos;,
     label: &apos;Type of event&apos;,
-    tooltip: &apos;Specify type of event that this reCAPTCHA would react to&apos;,
+    tooltip: &apos;Specify type of event that this CAPTCHA would react to. If Button Click is selected, then the CAPTCHA widget will be displayed and verification will occur after clicking on the button.&apos;,
     type: &apos;radio&apos;,
     values: [
       {
@@ -213,7 +221,7 @@ export default [
     key: &apos;buttonKey&apos;,
     dataSrc: &apos;custom&apos;,
     valueProperty: &apos;value&apos;,
-    tooltip: &apos;Specify key of button on this form that this reCAPTCHA should react to&apos;,
+    tooltip: &apos;Specify key of button on this form that this CAPTCHA should react to&apos;,
     weight: 660,
     customConditional(context) {
       return context.data.eventType === &apos;buttonClick&apos;;

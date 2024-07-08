@@ -13122,7 +13122,7 @@
     "__docId__": 773,
     "kind": "file",
     "name": "src/components/recaptcha/ReCaptcha.form.js",
-    "content": "import Components from '../Components';\nimport ReCaptchaEditDisplay from './editForm/ReCaptcha.edit.display';\n\nexport default function() {\n  return Components.baseEditForm([\n    {\n      key: 'display',\n      components: ReCaptchaEditDisplay\n    },\n    {\n      key: 'data',\n      ignore: true\n    },\n    {\n      key: 'validation',\n      ignore: true\n    },\n    {\n      key: 'conditional',\n      ignore: true\n    },\n    {\n      key: 'logic',\n      ignore: true\n    },\n  ]);\n}\n",
+    "content": "import Components from '../Components';\nimport ReCaptchaEditDisplay from './editForm/ReCaptcha.edit.display';\n\nexport default function(...extend) {\n  return Components.baseEditForm([\n    {\n      key: 'display',\n      components: ReCaptchaEditDisplay\n    },\n    {\n      key: 'data',\n      ignore: true\n    },\n    {\n      key: 'validation',\n      ignore: true\n    },\n    {\n      key: 'conditional',\n      ignore: true\n    },\n    {\n      key: 'logic',\n      ignore: true\n    },\n  ], ...extend);\n}\n",
     "static": true,
     "longname": "/home/lanedoughtie/cicd/formio.js/src/components/recaptcha/ReCaptcha.form.js",
     "access": "public",
@@ -13145,7 +13145,15 @@
     "description": null,
     "lineNumber": 4,
     "undocument": true,
-    "params": [],
+    "params": [
+      {
+        "name": "extend",
+        "types": [
+          "...*"
+        ],
+        "spread": true
+      }
+    ],
     "return": {
       "types": [
         "*"
@@ -13156,7 +13164,7 @@
     "__docId__": 775,
     "kind": "file",
     "name": "src/components/recaptcha/ReCaptcha.js",
-    "content": "/*globals grecaptcha*/\nimport Component from '../_classes/component/Component';\nimport { GlobalFormio as Formio } from '../../Formio';\nimport _get from 'lodash/get';\nimport _debounce from 'lodash/debounce';\nimport NativePromise from 'native-promise-only';\n\nexport default class ReCaptchaComponent extends Component {\n  static schema(...extend) {\n    return Component.schema({\n      type: 'recaptcha',\n      key: 'recaptcha',\n      label: 'reCAPTCHA'\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {\n      title: 'reCAPTCHA',\n      group: 'premium',\n      icon: 'refresh',\n      documentation: '/userguide/form-building/premium-components#recaptcha',\n      weight: 40,\n      schema: ReCaptchaComponent.schema()\n    };\n  }\n\n  static savedValueTypes() {\n    return [];\n  }\n\n  render() {\n    this.recaptchaResult = null;\n    if (this.builderMode) {\n      return super.render('reCAPTCHA');\n    }\n    else {\n      return super.render('', true);\n    }\n  }\n\n  createInput() {\n    if (this.builderMode) {\n      // We need to see it in builder mode.\n      this.append(this.text(this.name));\n    }\n    else {\n      const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');\n      if (siteKey) {\n        const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;\n        this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);\n      }\n      else {\n        console.warn('There is no Site Key specified in settings in form JSON');\n      }\n    }\n  }\n\n  createLabel() {\n    return;\n  }\n\n  get skipInEmail() {\n    return true;\n  }\n\n  verify(actionName) {\n    const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');\n    if (!siteKey) {\n      console.warn('There is no Site Key specified in settings in form JSON');\n      return;\n    }\n    if (!this.recaptchaApiReady) {\n      const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${_get(this.root.form, 'settings.recaptcha.siteKey')}`;\n      this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);\n    }\n    if (this.recaptchaApiReady) {\n      this.recaptchaVerifiedPromise = new NativePromise((resolve, reject) => {\n        this.recaptchaApiReady\n          .then(() => {\n            if (!this.isLoading) {\n              this.isLoading= true;\n              grecaptcha.ready(_debounce(() => {\n                grecaptcha\n                  .execute(siteKey, {\n                    action: actionName\n                  })\n                  .then((token) => {\n                    return this.sendVerificationRequest(token).then(({ verificationResult, token }) => {\n                      this.recaptchaResult = {\n                        ...verificationResult,\n                        token,\n                      };\n                      this.updateValue(this.recaptchaResult);\n                      return resolve(verificationResult);\n                    });\n                  })\n                  .catch(() => {\n                    this.isLoading = false;\n                  });\n              }, 1000));\n            }\n          })\n          .catch(() => {\n            return reject();\n          });\n      }).then(() => {\n        this.isLoading = false;\n      });\n    }\n  }\n\n  beforeSubmit() {\n    if (this.recaptchaVerifiedPromise) {\n      return this.recaptchaVerifiedPromise\n        .then(() => super.beforeSubmit());\n    }\n    return super.beforeSubmit();\n  }\n\n  sendVerificationRequest(token) {\n    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`)\n      .then((verificationResult) => ({ verificationResult, token }));\n  }\n\n  checkComponentValidity(data, dirty, row, options = {}) {\n    data = data || this.rootValue;\n    row = row || this.data;\n    const { async = false } = options;\n\n    // Verification could be async only\n    if (!async) {\n      return super.checkComponentValidity(data, dirty, row, options);\n    }\n\n    const componentData = row[this.component.key];\n    if (!componentData || !componentData.token) {\n      this.setCustomValidity(this.t('reCaptchaTokenNotSpecifiedError'));\n      return NativePromise.resolve(false);\n    }\n\n    if (!componentData.success) {\n      this.setCustomValidity(this.t('reCaptchaTokenValidationError'));\n      return NativePromise.resolve(false);\n    }\n\n    return this.hook('validateReCaptcha', componentData.token, () => NativePromise.resolve(true))\n      .then((success) => success)\n      .catch((err) => {\n        this.setCustomValidity(this.t(err.message || err));\n        return false;\n      });\n  }\n\n  normalizeValue(newValue) {\n    // If a recaptcha result has already been established, then do not allow it to be reset.\n    return this.recaptchaResult ? this.recaptchaResult : newValue;\n  }\n}\n",
+    "content": "/*globals grecaptcha*/\nimport Component from '../_classes/component/Component';\nimport { GlobalFormio as Formio } from '../../Formio';\nimport _get from 'lodash/get';\nimport _debounce from 'lodash/debounce';\nimport NativePromise from 'native-promise-only';\n\nexport default class ReCaptchaComponent extends Component {\n  static schema(...extend) {\n    return Component.schema({\n      type: 'recaptcha',\n      key: 'recaptcha',\n      label: 'reCAPTCHA'\n    }, ...extend);\n  }\n\n  static get builderInfo() {\n    return {};\n  }\n\n  static savedValueTypes() {\n    return [];\n  }\n\n  render() {\n    this.recaptchaResult = null;\n    if (this.builderMode) {\n      return super.render('reCAPTCHA');\n    }\n    else {\n      return super.render('', true);\n    }\n  }\n\n  createInput() {\n    if (this.builderMode) {\n      // We need to see it in builder mode.\n      this.append(this.text(this.name));\n    }\n    else {\n      const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');\n      if (siteKey) {\n        const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;\n        this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);\n      }\n      else {\n        console.warn('There is no Site Key specified in settings in form JSON');\n      }\n    }\n  }\n\n  createLabel() {\n    return;\n  }\n\n  get skipInEmail() {\n    return true;\n  }\n\n  verify(actionName) {\n    const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');\n    if (!siteKey) {\n      console.warn('There is no Site Key specified in settings in form JSON');\n      return;\n    }\n    if (!this.recaptchaApiReady) {\n      const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${_get(this.root.form, 'settings.recaptcha.siteKey')}`;\n      this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);\n    }\n    if (this.recaptchaApiReady) {\n      this.recaptchaVerifiedPromise = new NativePromise((resolve, reject) => {\n        this.recaptchaApiReady\n          .then(() => {\n            if (!this.isLoading) {\n              this.isLoading= true;\n              grecaptcha.ready(_debounce(() => {\n                grecaptcha\n                  .execute(siteKey, {\n                    action: actionName\n                  })\n                  .then((token) => {\n                    return this.sendVerificationRequest(token).then(({ verificationResult, token }) => {\n                      this.recaptchaResult = {\n                        ...verificationResult,\n                        token,\n                      };\n                      this.updateValue(this.recaptchaResult);\n                      return resolve(verificationResult);\n                    });\n                  })\n                  .catch(() => {\n                    this.isLoading = false;\n                  });\n              }, 1000));\n            }\n          })\n          .catch(() => {\n            return reject();\n          });\n      }).then(() => {\n        this.isLoading = false;\n      });\n    }\n  }\n\n  beforeSubmit() {\n    if (this.recaptchaVerifiedPromise) {\n      return this.recaptchaVerifiedPromise\n        .then(() => super.beforeSubmit());\n    }\n    return super.beforeSubmit();\n  }\n\n  sendVerificationRequest(token) {\n    return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`)\n      .then((verificationResult) => ({ verificationResult, token }));\n  }\n\n  checkComponentValidity(data, dirty, row, options = {}) {\n    data = data || this.rootValue;\n    row = row || this.data;\n    const { async = false } = options;\n\n    // Verification could be async only\n    if (!async) {\n      return super.checkComponentValidity(data, dirty, row, options);\n    }\n\n    const componentData = row[this.component.key];\n    if (!componentData || !componentData.token) {\n      this.setCustomValidity(this.t('reCaptchaTokenNotSpecifiedError'));\n      return NativePromise.resolve(false);\n    }\n\n    if (!componentData.success) {\n      this.setCustomValidity(this.t('reCaptchaTokenValidationError'));\n      return NativePromise.resolve(false);\n    }\n\n    return this.hook('validateReCaptcha', componentData.token, () => NativePromise.resolve(true))\n      .then((success) => success)\n      .catch((err) => {\n        this.setCustomValidity(this.t(err.message || err));\n        return false;\n      });\n  }\n\n  normalizeValue(newValue) {\n    // If a recaptcha result has already been established, then do not allow it to be reset.\n    return this.recaptchaResult ? this.recaptchaResult : newValue;\n  }\n}\n",
     "static": true,
     "longname": "/home/lanedoughtie/cicd/formio.js/src/components/recaptcha/ReCaptcha.js",
     "access": "public",
@@ -13225,7 +13233,7 @@
     "undocument": true,
     "type": {
       "types": [
-        "{\"title\": string, \"group\": string, \"icon\": string, \"documentation\": string, \"weight\": number, \"schema\": *}"
+        "{}"
       ]
     }
   },
@@ -13240,7 +13248,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.savedValueTypes",
     "access": "public",
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 21,
     "undocument": true,
     "params": [],
     "return": {
@@ -13260,7 +13268,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#render",
     "access": "public",
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 25,
     "undocument": true,
     "params": [],
     "return": {
@@ -13278,7 +13286,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#recaptchaResult",
     "access": "public",
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 26,
     "undocument": true,
     "type": {
       "types": [
@@ -13297,7 +13305,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#createInput",
     "access": "public",
     "description": null,
-    "lineNumber": 42,
+    "lineNumber": 35,
     "undocument": true,
     "params": [],
     "return": null
@@ -13311,7 +13319,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#recaptchaApiReady",
     "access": "public",
     "description": null,
-    "lineNumber": 51,
+    "lineNumber": 44,
     "undocument": true,
     "type": {
       "types": [
@@ -13330,7 +13338,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#createLabel",
     "access": "public",
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 52,
     "undocument": true,
     "params": [],
     "return": null
@@ -13346,7 +13354,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#skipInEmail",
     "access": "public",
     "description": null,
-    "lineNumber": 63,
+    "lineNumber": 56,
     "undocument": true,
     "type": {
       "types": [
@@ -13365,7 +13373,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#verify",
     "access": "public",
     "description": null,
-    "lineNumber": 67,
+    "lineNumber": 60,
     "undocument": true,
     "params": [
       {
@@ -13386,7 +13394,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#recaptchaVerifiedPromise",
     "access": "public",
     "description": null,
-    "lineNumber": 78,
+    "lineNumber": 71,
     "undocument": true,
     "type": {
       "types": [
@@ -13403,7 +13411,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#isLoading",
     "access": "public",
     "description": null,
-    "lineNumber": 82,
+    "lineNumber": 75,
     "undocument": true,
     "type": {
       "types": [
@@ -13422,7 +13430,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#beforeSubmit",
     "access": "public",
     "description": null,
-    "lineNumber": 113,
+    "lineNumber": 106,
     "undocument": true,
     "params": [],
     "return": {
@@ -13442,7 +13450,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#sendVerificationRequest",
     "access": "public",
     "description": null,
-    "lineNumber": 121,
+    "lineNumber": 114,
     "undocument": true,
     "params": [
       {
@@ -13469,7 +13477,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#checkComponentValidity",
     "access": "public",
     "description": null,
-    "lineNumber": 126,
+    "lineNumber": 119,
     "undocument": true,
     "params": [
       {
@@ -13517,7 +13525,7 @@
     "longname": "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent#normalizeValue",
     "access": "public",
     "description": null,
-    "lineNumber": 155,
+    "lineNumber": 148,
     "undocument": true,
     "params": [
       {
@@ -13548,7 +13556,7 @@
     "__docId__": 798,
     "kind": "file",
     "name": "src/components/recaptcha/editForm/ReCaptcha.edit.display.js",
-    "content": "import { getContextButtons } from '../../../utils/utils';\nexport default [\n  {\n    key: 'eventType',\n    label: 'Type of event',\n    tooltip: 'Specify type of event that this reCAPTCHA would react to',\n    type: 'radio',\n    values: [\n      {\n        label: 'Form Load',\n        value: 'formLoad'\n      },\n      {\n        label: 'Button Click',\n        value: 'buttonClick'\n      }\n    ],\n    weight: 650\n  },\n  {\n    type: 'select',\n    input: true,\n    label: 'Button Key',\n    key: 'buttonKey',\n    dataSrc: 'custom',\n    valueProperty: 'value',\n    tooltip: 'Specify key of button on this form that this reCAPTCHA should react to',\n    weight: 660,\n    customConditional(context) {\n      return context.data.eventType === 'buttonClick';\n    },\n    data: {\n      custom(context) {\n        return getContextButtons(context);\n      }\n    }\n  },\n  {\n    key: 'label',\n    ignore: true\n  },\n  {\n    key: 'hideLabel',\n    ignore: true\n  },\n  {\n    key: 'labelPosition',\n    ignore: true\n  },\n  {\n    key: 'placeholder',\n    ignore: true\n  },\n  {\n    key: 'description',\n    ignore: true\n  },\n  {\n    key: 'tooltip',\n    ignore: true\n  },\n  {\n    key: 'errorLabel',\n    ignore: true\n  },\n  {\n    key: 'customClass',\n    ignore: true\n  },\n  {\n    key: 'tabindex',\n    ignore: true\n  },\n  {\n    key: 'multiple',\n    ignore: true\n  },\n  {\n    key: 'clearOnHide',\n    ignore: true\n  },\n  {\n    key: 'hidden',\n    ignore: true\n  },\n  {\n    key: 'mask',\n    ignore: true\n  },\n  {\n    key: 'dataGridLabel',\n    ignore: true\n  },\n  {\n    key: 'disabled',\n    ignore: true\n  },\n  {\n    key: 'autofocus',\n    ignore: true\n  },\n  {\n    key: 'tableView',\n    ignore: true\n  },\n];\n",
+    "content": "import { getContextButtons } from '../../../utils/utils';\nexport default [\n  {\n    key: 'recaptchaInfo',\n    weight: -10,\n    type: 'htmlelement',\n    tag: 'div',\n    className: 'alert alert-danger',\n    content: 'This component has been deprecated and will be removed. Use the CAPTCHA component instead.',\n  },\n  {\n    key: 'eventType',\n    label: 'Type of event',\n    tooltip: 'Specify type of event that this CAPTCHA would react to. If Button Click is selected, then the CAPTCHA widget will be displayed and verification will occur after clicking on the button.',\n    type: 'radio',\n    values: [\n      {\n        label: 'Form Load',\n        value: 'formLoad'\n      },\n      {\n        label: 'Button Click',\n        value: 'buttonClick'\n      }\n    ],\n    weight: 650\n  },\n  {\n    type: 'select',\n    input: true,\n    label: 'Button Key',\n    key: 'buttonKey',\n    dataSrc: 'custom',\n    valueProperty: 'value',\n    tooltip: 'Specify key of button on this form that this CAPTCHA should react to',\n    weight: 660,\n    customConditional(context) {\n      return context.data.eventType === 'buttonClick';\n    },\n    data: {\n      custom(context) {\n        return getContextButtons(context);\n      }\n    }\n  },\n  {\n    key: 'label',\n    ignore: true\n  },\n  {\n    key: 'hideLabel',\n    ignore: true\n  },\n  {\n    key: 'labelPosition',\n    ignore: true\n  },\n  {\n    key: 'placeholder',\n    ignore: true\n  },\n  {\n    key: 'description',\n    ignore: true\n  },\n  {\n    key: 'tooltip',\n    ignore: true\n  },\n  {\n    key: 'errorLabel',\n    ignore: true\n  },\n  {\n    key: 'customClass',\n    ignore: true\n  },\n  {\n    key: 'tabindex',\n    ignore: true\n  },\n  {\n    key: 'multiple',\n    ignore: true\n  },\n  {\n    key: 'clearOnHide',\n    ignore: true\n  },\n  {\n    key: 'hidden',\n    ignore: true\n  },\n  {\n    key: 'mask',\n    ignore: true\n  },\n  {\n    key: 'dataGridLabel',\n    ignore: true\n  },\n  {\n    key: 'disabled',\n    ignore: true\n  },\n  {\n    key: 'autofocus',\n    ignore: true\n  },\n  {\n    key: 'tableView',\n    ignore: true\n  },\n];\n",
     "static": true,
     "longname": "/home/lanedoughtie/cicd/formio.js/src/components/recaptcha/editForm/ReCaptcha.edit.display.js",
     "access": "public",
@@ -32316,7 +32324,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.21.0\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc && gulp build\",\n    \"create-app-yml\": \"node -e 'var fs=require(`fs`);fs.writeFileSync(`./_config.app.yml`, `baseurl: https://formiojs.test-form.io/` + require(`./package.json`).version);'\",\n    \"rm-app-yml\": \"rm ./_config.app.yml\",\n    \"build-app\": \"npm run create-app-yml && jekyll build --config _config.yml,_config.app.yml && npm run rm-app-yml\",\n    \"deploy-s3\": \"$(node -e 'console.log(`aws s3 cp _site s3://formiojs.test-form.io/` + require(`./package.json`).version + `/ --recursive`)')\",\n    \"invalidate\": \"aws cloudfront create-invalidation --distribution-id E1MXNA5A4ZKRMZ --paths '/*'\",\n    \"release\": \"npm run build-app && npm run deploy-s3\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib --tag=rc;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"mocha 'lib/**/*.unit.js'\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"2.12.4-rc.1\",\n    \"@formio/choices.js\": \"10.2.1\",\n    \"@formio/semantic\": \"2.6.1\",\n    \"@formio/text-mask-addons\": \"^3.8.0-formio.2\",\n    \"@formio/vanilla-text-mask\": \"^5.1.1-formio.1\",\n    \"abortcontroller-polyfill\": \"^1.7.5\",\n    \"autocompleter\": \"^7.0.1\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"browser-md5-file\": \"^1.1.1\",\n    \"compare-versions\": \"^5.0.1\",\n    \"core-js\": \"^3.26.1\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.6\",\n    \"dom-autoscroller\": \"^2.3.4\",\n    \"dompurify\": \"^3.0.5\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter3\": \"^4.0.7\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^3.1.1\",\n    \"fetch-ponyfill\": \"^7.1.0\",\n    \"i18next\": \"22.4.12\",\n    \"idb\": \"^7.1.1\",\n    \"inputmask\": \"^5.0.8\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^2.0.2\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^3.1.2\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.29.4\",\n    \"moment-timezone\": \"^0.5.40\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"signature_pad\": \"^4.1.4\",\n    \"string-hash\": \"^1.1.3\",\n    \"tippy.js\": \"^6.3.7\",\n    \"uuid\": \"^9.0.0\",\n    \"vanilla-picker\": \"^2.12.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.19.3\",\n    \"@babel/core\": \"^7.20.5\",\n    \"@babel/eslint-parser\": \"^7.18.2\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.16.7\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.16.7\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.16.7\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.20.2\",\n    \"@babel/register\": \"^7.17.7\",\n    \"ace-builds\": \"1.23.4\",\n    \"async-limiter\": \"^2.0.0\",\n    \"babel-loader\": \"^9.1.0\",\n    \"bootstrap\": \"^4.6.0\",\n    \"bootswatch\": \"^4.6.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.3.7\",\n    \"chance\": \"^1.1.9\",\n    \"del\": \"6.1.1\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^5.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^8.29.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.11.0\",\n    \"file-loader\": \"^6.2.0\",\n    \"flatpickr\": \"^4.6.13\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^7.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.1.3\",\n    \"gulp-sass\": \"^5.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^20.0.3\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^6.4.0\",\n    \"karma-chrome-launcher\": \"^3.1.1\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^5.0.0\",\n    \"marked\": \"^4.2.4\",\n    \"mocha\": \"^10.2.0\",\n    \"mock-local-storage\": \"^1.1.23\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.2\",\n    \"sass\": \"^1.56.2\",\n    \"shortcut-buttons-flatpickr\": \"^0.4.0\",\n    \"sinon\": \"^14.0.2\",\n    \"webpack\": \"^5.75.0\",\n    \"webpack-stream\": \"^7.0.0\",\n    \"written-number\": \"^0.11.1\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"formiojs\",\n  \"version\": \"4.21.1-rc.1\",\n  \"description\": \"JavaScript powered Forms with JSON Form Builder\",\n  \"main\": \"index.js\",\n  \"types\": \"index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"lib\",\n    \"utils.js\",\n    \"wizard.js\",\n    \"form.js\",\n    \"embed.js\",\n    \"full.js\",\n    \"types\",\n    \"index.d.ts\"\n  ],\n  \"pre-commit\": [\n    \"lint\"\n  ],\n  \"scripts\": {\n    \"build\": \"esdoc && gulp build\",\n    \"create-app-yml\": \"node -e 'var fs=require(`fs`);fs.writeFileSync(`./_config.app.yml`, `baseurl: https://formiojs.test-form.io/` + require(`./package.json`).version);'\",\n    \"rm-app-yml\": \"rm ./_config.app.yml\",\n    \"build-app\": \"npm run create-app-yml && jekyll build --config _config.yml,_config.app.yml && npm run rm-app-yml\",\n    \"deploy-s3\": \"$(node -e 'console.log(`aws s3 cp _site s3://formiojs.test-form.io/` + require(`./package.json`).version + `/ --recursive`)')\",\n    \"invalidate\": \"aws cloudfront create-invalidation --distribution-id E1MXNA5A4ZKRMZ --paths '/*'\",\n    \"release\": \"npm run build-app && npm run deploy-s3\",\n    \"transpile\": \"babel ./src/ --out-dir ./lib/\",\n    \"templates\": \"gulp templates\",\n    \"watch\": \"babel -w ./src/ --out-dir ./lib/\",\n    \"rebuild\": \"rm -rf node_modules;npm install;gulp build\",\n    \"tag\": \"VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\\\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \\\"Build $Version\\\";git push origin master;git tag v$VERSION;git push origin --tags;\",\n    \"dopublish\": \"npm test;gulp build;npm run tag;npm publish lib --tag=rc;\",\n    \"lint\": \"gulp eslint\",\n    \"serve\": \"jekyll serve --config _config.yml,_config.dev.yml\",\n    \"test\": \"npm run transpile && npm run templates && npm run test:unit\",\n    \"test:unit\": \"mocha 'lib/**/*.unit.js'\",\n    \"test:updateRenders\": \"TZ=UTC node --require @babel/register --require jsdom-global/register test/updateRenders.js\",\n    \"test:e2e\": \"NODE_OPTIONS=\\\"--max-old-space-size=4096\\\" karma start --verbose --single-run\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/formio/formio.js.git\"\n  },\n  \"contributors\": [\n    {\n      \"name\": \"Form.io Open Source Community\",\n      \"url\": \"https://github.com/formio/formio.js/graphs/contributors\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/formio/formio.js/issues\"\n  },\n  \"browser\": {\n    \"vm\": false\n  },\n  \"homepage\": \"https://github.com/formio/formio.js#readme\",\n  \"dependencies\": {\n    \"@formio/bootstrap3\": \"2.12.4-rc.1\",\n    \"@formio/choices.js\": \"10.2.1\",\n    \"@formio/semantic\": \"2.6.1\",\n    \"@formio/text-mask-addons\": \"^3.8.0-formio.2\",\n    \"@formio/vanilla-text-mask\": \"^5.1.1-formio.1\",\n    \"abortcontroller-polyfill\": \"^1.7.5\",\n    \"autocompleter\": \"^7.0.1\",\n    \"browser-cookies\": \"^1.2.0\",\n    \"browser-md5-file\": \"^1.1.1\",\n    \"compare-versions\": \"^5.0.1\",\n    \"core-js\": \"^3.26.1\",\n    \"custom-event-polyfill\": \"^1.0.7\",\n    \"dialog-polyfill\": \"^0.5.6\",\n    \"dom-autoscroller\": \"^2.3.4\",\n    \"dompurify\": \"^3.0.5\",\n    \"downloadjs\": \"^1.4.7\",\n    \"dragula\": \"^3.7.3\",\n    \"eventemitter3\": \"^4.0.7\",\n    \"fast-deep-equal\": \"^3.1.3\",\n    \"fast-json-patch\": \"^3.1.1\",\n    \"fetch-ponyfill\": \"^7.1.0\",\n    \"i18next\": \"22.4.12\",\n    \"idb\": \"^7.1.1\",\n    \"inputmask\": \"^5.0.8\",\n    \"ismobilejs\": \"^1.1.1\",\n    \"json-logic-js\": \"^2.0.2\",\n    \"jstimezonedetect\": \"^1.0.7\",\n    \"jwt-decode\": \"^3.1.2\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.29.4\",\n    \"moment-timezone\": \"^0.5.40\",\n    \"native-promise-only\": \"^0.8.1\",\n    \"quill\": \"^2.0.0-dev.3\",\n    \"signature_pad\": \"^4.1.4\",\n    \"string-hash\": \"^1.1.3\",\n    \"tippy.js\": \"^6.3.7\",\n    \"uuid\": \"^9.0.0\",\n    \"vanilla-picker\": \"^2.12.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.19.3\",\n    \"@babel/core\": \"^7.20.5\",\n    \"@babel/eslint-parser\": \"^7.18.2\",\n    \"@babel/plugin-proposal-class-properties\": \"^7.16.7\",\n    \"@babel/plugin-proposal-export-default-from\": \"^7.16.7\",\n    \"@babel/plugin-proposal-optional-chaining\": \"^7.16.7\",\n    \"@babel/polyfill\": \"^7.12.1\",\n    \"@babel/preset-env\": \"^7.20.2\",\n    \"@babel/register\": \"^7.17.7\",\n    \"ace-builds\": \"1.23.4\",\n    \"async-limiter\": \"^2.0.0\",\n    \"babel-loader\": \"^9.1.0\",\n    \"bootstrap\": \"^4.6.0\",\n    \"bootswatch\": \"^4.6.0\",\n    \"browser-env\": \"^3.3.0\",\n    \"chai\": \"^4.3.7\",\n    \"chance\": \"^1.1.9\",\n    \"del\": \"6.1.1\",\n    \"ejs-loader\": \"^0.5.0\",\n    \"escape-string-regexp\": \"^5.0.0\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"eslint\": \"^8.29.0\",\n    \"eslint-config-formio\": \"^1.1.4\",\n    \"fetch-mock\": \"^9.11.0\",\n    \"file-loader\": \"^6.2.0\",\n    \"flatpickr\": \"^4.6.13\",\n    \"font-awesome\": \"^4.7.0\",\n    \"gulp\": \"^4.0.2\",\n    \"gulp-babel\": \"^8.0.0\",\n    \"gulp-clean-css\": \"^4.3.0\",\n    \"gulp-concat\": \"^2.6.1\",\n    \"gulp-eslint\": \"^6.0.0\",\n    \"gulp-filter\": \"^7.0.0\",\n    \"gulp-insert\": \"^0.5.0\",\n    \"gulp-rename\": \"^2.0.0\",\n    \"gulp-replace\": \"^1.1.3\",\n    \"gulp-sass\": \"^5.1.0\",\n    \"gulp-sync\": \"^0.1.4\",\n    \"gulp-template\": \"^5.0.0\",\n    \"gulp-watch\": \"^5.0.1\",\n    \"hoek\": \"^6.1.3\",\n    \"jquery\": \"^3.5.1\",\n    \"jsdom\": \"^20.0.3\",\n    \"jsdom-global\": \"^3.0.2\",\n    \"karma\": \"^6.4.0\",\n    \"karma-chrome-launcher\": \"^3.1.1\",\n    \"karma-mocha\": \"^2.0.1\",\n    \"karma-mocha-reporter\": \"^2.2.5\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-webpack\": \"^5.0.0\",\n    \"marked\": \"^4.2.4\",\n    \"mocha\": \"^10.2.0\",\n    \"mock-local-storage\": \"^1.1.23\",\n    \"natives\": \"^1.1.6\",\n    \"power-assert\": \"^1.6.1\",\n    \"pre-commit\": \"^1.2.2\",\n    \"pretty\": \"^2.0.0\",\n    \"pygments-css\": \"^1.0.0\",\n    \"raw-loader\": \"^4.0.2\",\n    \"sass\": \"^1.56.2\",\n    \"shortcut-buttons-flatpickr\": \"^0.4.0\",\n    \"sinon\": \"^14.0.2\",\n    \"webpack\": \"^5.75.0\",\n    \"webpack-stream\": \"^7.0.0\",\n    \"written-number\": \"^0.11.1\"\n  }\n}\n",
     "longname": "/home/lanedoughtie/cicd/formio.js/package.json",
     "name": "package.json",
     "static": true,
