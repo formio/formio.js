@@ -786,7 +786,7 @@ export default class Webform extends NestedDataComponent {
      * Sets the submission value
      * @param {object|null|undefined} submission - The submission to set.
      * @param {object|null|undefined} flags - Any flags to apply when setting the submission.
-     * @return {void}
+     * @returns {void}
      */
     onSetSubmission(submission, flags = {}) {
       this.submissionSet = true;
@@ -998,7 +998,9 @@ export default class Webform extends NestedDataComponent {
             "submitButton",
             (options) => {
                 this.submit(false, options).catch((e) => {
-                    options.instance.loading = false;
+                    if (options?.instance) {
+                        options.instance.loading = false;
+                    }
                     return e !== false && e !== undefined && console.log(e);
                 });
             },
