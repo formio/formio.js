@@ -808,8 +808,7 @@ describe('TextField Component', () => {
 
     const testMask = async (mask, valid) => {
       const values = valid ? mask.valueValid : mask.valueInvalid;
-      for (let i = 0; i < values.length; i++) {
-        const value = values[i];
+      for (const value of values) {
         const element = document.createElement('div');
         const instance = await Formio.createForm(element, form);
         instance.setPristine(false);
@@ -838,8 +837,7 @@ describe('TextField Component', () => {
       }
     };
 
-    for (let i = 0; i < masks.length; i++) {
-      const mask = masks[i];
+    for (const mask of masks) {
       await testMask(mask, true);
       await testMask(mask, false);
     }
