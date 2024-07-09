@@ -269,7 +269,30 @@ export default class Input extends Multivalue {
         if (key === 13) {
           event.preventDefault();
           event.stopPropagation();
-          this.emit('submitButton');
+          let submitButton = null;
+          if (this.root?.everyComponent) {
+            this.root.everyComponent((component) => {
+              if (
+                component?.component.type === 'button' &&
+                component?.component.action === 'submit'
+              ) {
+                submitButton = component;
+                return false;
+              }
+            });
+          }
+          const options = {};
+          if (submitButton) {
+            options.instance = submitButton;
+            options.component = submitButton.component;
+            options.noValidate = this.component.state === 'draft';
+            options.state = this.component.state || 'submitted';
+            submitButton.loading = true;
+            this.emit('submitButton', options);
+          }
+          else {
+            this.emit('submitButton', options);
+          }
         }
       });
     }
