@@ -424,6 +424,10 @@ export default class DataGridComponent extends NestedArrayComponent {
     //remove element from old position (if was moved above, after insertion it's at +1 index)
     dataValue.splice(movedBelow ? oldPosition : oldPosition + 1, 1);
 
+    // When components are reordered we need to set the dataGrid and form pristine properties to false
+    this.root.pristine = false;
+    this.pristine = false;
+
     //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
     this.setValue(dataValue, { isReordered: true });
     this.rebuild();
