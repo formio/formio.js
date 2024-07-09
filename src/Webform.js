@@ -15,6 +15,7 @@ import {
     getArrayFromComponentPath,
 } from "./utils/utils";
 import { eachComponent } from "./utils/formUtils";
+import dragula from "dragula";
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -322,6 +323,8 @@ export default class Webform extends NestedDataComponent {
         // Ensure the root is set to this component.
         this.root = this;
         this.localRoot = this;
+
+        this.root.dragulaLib = dragula;
     }
     /* eslint-enable max-statements */
 
