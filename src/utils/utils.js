@@ -1,7 +1,6 @@
 /* global jQuery */
 
 import _ from 'lodash';
-import fetchPonyfill from 'fetch-ponyfill';
 import jsonLogic from 'json-logic-js';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
@@ -11,9 +10,6 @@ import { getValue } from './formUtils';
 import { Evaluator } from './Evaluator';
 import ConditionOperators from './conditionOperators';
 const interpolate = Evaluator.interpolate;
-const { fetch } = fetchPonyfill({
-  Promise: Promise
-});
 
 export * from './formUtils';
 
