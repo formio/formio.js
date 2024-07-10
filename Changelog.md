@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.64
+### Changed
+ - Removing fetch ponyfill since it is no longer needed.
+
 ## 5.0.0-rc.63
 ### Changed
  - Fixing the formioReady promise to always resolve if you load it from the full source instead of the embed code.
