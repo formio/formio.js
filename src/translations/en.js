@@ -74,5 +74,5 @@ export default {
   apiKey: 'API Key is not unique: {{key}}',
   typeRemaining: '{{ remaining }} {{ type }} remaining.',
   typeCount: '{{ count }} {{ type }}',
-  requiredDayField: '{{field}} is required'
+  requiredDayField: '{{ field }} is required'
 };
