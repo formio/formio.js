@@ -11,7 +11,8 @@ import {
   comp4,
   comp5,
   comp6,
-  comp7
+  comp7,
+  comp8
 } from './fixtures';
 import PanelComponent from '../panel/Panel';
 
@@ -265,6 +266,7 @@ describe('Day Component', () => {
       }, 500);
     }).catch(done);
   });
+
   it('Should translate placeholder text', () => {
     const element = document.createElement('div');
     return Formio.createForm(element, comp7, {
@@ -282,5 +284,17 @@ describe('Day Component', () => {
       assert.equal(dayComponent.refs.month.placeholder, 'Month2');
       assert.equal(dayComponent.refs.year.placeholder, 'Year3');
     })
+  });
+
+  it('Should translate requiredDayField to {{ field }} is required', (done) => {
+    Formio.createForm(document.createElement('div'), comp8, {}).then((form) => {
+      const dayComponent = form.getComponent('dayTable');
+      const buttonComponent = form.getComponent('submit');
+      buttonComponent.refs.button.click();
+      setTimeout(()=>{
+        assert.equal(dayComponent.errors[0].message, 'Day - Table is required');
+        done();
+      },200);
+    });
   });
 });
