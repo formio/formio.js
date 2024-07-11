@@ -4,7 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0-rc.62]
+## [Unreleased: 5.1.0-rc.1]
+### Changed
+ - FIO-8270: panel component closing on logic event trigger
+ - FIO-8575: Added ability to reload google maps library with correct API key
+ - FIO-8659: no modal edit in display tab
+ - Removing fetch ponyfill since it is no longer needed
+ - FIO-8652: DataGrid does not reorder
+ - Fixing the submitOnEnter where it will show the loader for the submit
+ - Fixing the formioReady promise to always resolve if you load it from the full source instead of the embed code
+ - FIO-8126: Fixed select component emitting blur on click
+ - FIO-8304: allow for multivalue masks to have blank input mask option
+ - FIO-8570: fixed decimal symbol property on number component
+ - 5.x - FIO-8426: changes required for eSignature
 
 ### New Features
 
