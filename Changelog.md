@@ -4,7 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0]
+## [Unreleased: 5.1.0-rc.1]
+### Changed
+ - FIO-8270: panel component closing on logic event trigger
+ - FIO-8575: Added ability to reload google maps library with correct API key
+ - FIO-8659: no modal edit in display tab
+ - Removing fetch ponyfill since it is no longer needed
+ - FIO-8652: DataGrid does not reorder
+ - Fixing the submitOnEnter where it will show the loader for the submit
+ - Fixing the formioReady promise to always resolve if you load it from the full source instead of the embed code
+ - FIO-8126: Fixed select component emitting blur on click
+ - FIO-8304: allow for multivalue masks to have blank input mask option
+ - FIO-8570: fixed decimal symbol property on number component
+ - 5.x - FIO-8426: changes required for eSignature
 
 ### New Features
 
@@ -222,7 +234,6 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 
   - With the 5.x renderer, all templates are now stored within a separate repo, and are included as a dependency for this renderer. 
 
-## [Unreleased: 5.0.0-rc.40]
 ### Fixed
  - FIO-7525: fixed an issue where new conditional logic based on select boxes does not work
  - Fix broken file exclusion patterns
@@ -299,6 +310,12 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-8027 added new Captcha provider
  - FIO-8281: fixed selectData property for multiple select component
  - FIO-8420: file component no defaults causes error
+ - FIO-8493: Added null check for this.root in builder mode
+ - Adding JSDocs and fixes for the 5x Renderer Version
+ - FIO-8438: fix datagrid addrow clearing checkbox
+ - FIO-8496: added loading=async for Google Maps JavaScript API
+ - FIO-8445: Fixed searchbar not focusing when navigating using up and down arrows
+ - FIO-7936: showCounter messages not translating
 
 ## 5.0.0-rc.37
 ### Fixed
@@ -353,6 +370,8 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-4871: fixed calculated value for data grid component
  - FIO-7591: error messages wrapping on letter instead of on word
  - FIO-7548: fixed an issue where select dropdown does not overlap the datagrid and causes vertical scroll
+ - FIO-7775: reset value event resets component values to their default values
+ - FIO-6710: added translation for day component placeholder
 
 ### Changed
  - Add capability for adding sanitize profiles through sanitizeConfig in options

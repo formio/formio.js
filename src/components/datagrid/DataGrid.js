@@ -440,6 +440,10 @@ export default class DataGridComponent extends NestedArrayComponent {
     //reorder select data
     this.reorderValues(_.get(this.root, `submission.metadata.selectData.${this.path}`, []), oldPosition, newPosition, movedBelow);
 
+    // When components are reordered we need to set the dataGrid and form pristine properties to false
+    this.root.pristine = false;
+    this.pristine = false;
+
     //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
     this.setValue(dataValue, { isReordered: true });
     this.rebuild();

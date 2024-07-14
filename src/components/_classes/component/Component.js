@@ -1194,6 +1194,15 @@ export default class Component extends Element {
   }
 
   /**
+   * Renders a modal preview template and returns the markup as a string
+   * @param {object|null|undefined} ctx - The rendering context
+   * @returns {string} - The modal preview markup
+   */
+  renderModalPreview(ctx) {
+    return this.renderTemplate('modalPreview', ctx || {});
+  }
+
+  /**
    * Returns the modal preview template.
    * @returns {string} - The modal preview template.
    */
@@ -1205,7 +1214,7 @@ export default class Component extends Element {
       modalLabel = { className: 'field-required' };
     }
 
-    return this.renderTemplate('modalPreview', {
+    return this.renderModalPreview({
       previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value'),
       messages: '',
       labelInfo: modalLabel,
@@ -1260,6 +1269,29 @@ export default class Component extends Element {
   }
 
   /**
+   * Creates the tooltip instance using tippy.js and returns it
+   * @param {HTMLElement} tooltipEl - HTML element to attach the tooltip
+   * @param {object|null|undefined} settings - tippy.js options
+   * @returns {import('tippy.js').Tippy} - tippy.js instance
+   */
+  createTooltip(tooltipEl, settings = {}) {
+    const tooltipAttribute = tooltipEl.getAttribute('data-tooltip');
+    const tooltipDataTitle = tooltipEl.getAttribute('data-title');
+    const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
+                            .replace(/(?:\r\n|\r|\n)/g, '<br />');
+
+    return tippy(tooltipEl, {
+      allowHTML: true,
+      trigger: 'mouseenter click focus',
+      placement: 'right',
+      zIndex: 10000,
+      interactive: true,
+      ...settings,
+      content: this.t(this.sanitize(tooltipText), { _userInput: true }),
+    });
+  }
+
+  /**
    * Attaches all the tooltips provided the refs object.
    * @param {object} toolTipsRefs - The refs for the tooltips within your template.
    * @returns {void}
@@ -1267,19 +1299,7 @@ export default class Component extends Element {
   attachTooltips(toolTipsRefs) {
     toolTipsRefs?.forEach((tooltip, index) => {
       if (tooltip) {
-        const tooltipAttribute = tooltip.getAttribute('data-tooltip');
-        const tooltipDataTitle = tooltip.getAttribute('data-title');
-        const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
-                                .replace(/(?:\r\n|\r|\n)/g, '<br />');
-
-        this.tooltips[index] = tippy(tooltip, {
-          allowHTML: true,
-          trigger: 'mouseenter click focus',
-          placement: 'right',
-          zIndex: 10000,
-          interactive: true,
-          content: this.t(this.sanitize(tooltipText), { _userInput: true }),
-        });
+        this.tooltips[index] = this.createTooltip(tooltip);
       }
     });
   }
@@ -1678,7 +1698,7 @@ export default class Component extends Element {
 
   /**
    * Creates a modal to input the value of this component.
-   * @param {HTMLElement} element - The element to attach the modal to. 
+   * @param {HTMLElement} element - The element to attach the modal to.
    * @param {any} attr - A list of attributes to add to the modal.
    * @param {boolean} confirm - If we should add a confirmation to the modal that keeps it from closing unless confirmed.
    * @returns {HTMLElement} - The created modal element.
@@ -2398,7 +2418,7 @@ export default class Component extends Element {
    * @param {Array<HTMLElement>} elements - An array of DOM elements to set the error classes on.
    * @param {boolean} dirty - If the input is dirty.
    * @param {boolean} hasErrors - If the input has errors.
-   * @param {boolean} hasMessages - If the input has messages. 
+   * @param {boolean} hasMessages - If the input has messages.
    * @param {HTMLElement} element - The wrapper element for all the other elements passed in first argument.
    * @returns {void}
    */
@@ -3052,7 +3072,7 @@ export default class Component extends Element {
    */
   resetValue() {
     this.unset();
-    this.setValue(this.emptyValue, {
+    this.setValue(this.defaultValue || this.emptyValue, {
       noUpdateEvent: true,
       noValidate: true,
       resetValue: true
@@ -3233,7 +3253,7 @@ export default class Component extends Element {
    * @param {*} data - The data to perform the calculation with.
    * @param {*} flags - The flags to use when calculating the value.
    * @param {*} row - The contextual row data to use when performing the calculation.
-   * @returns {boolean} - TRUE if the value changed. 
+   * @returns {boolean} - TRUE if the value changed.
    */
   calculateValue(data, flags, row) {
     data = data || this.rootValue;
@@ -3850,6 +3870,10 @@ export default class Component extends Element {
 
               // Change states which won't be recalculated during redrawing
               if (this.visible !== visible) {
+                // If the logic is triggered by an event and the action sets the hidden state then the original
+                // component definition must be changed so that the components hidden state does not get flipped back by
+                // the fieldLogic function
+                this.originalComponent.hidden = !visible;
                 this.visible = visible;
               }
               if (this.disabled !== disabled) {

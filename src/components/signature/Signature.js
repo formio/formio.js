@@ -196,7 +196,7 @@ export default class SignatureComponent extends Input {
   }
 
   getModalPreviewTemplate() {
-    return this.renderTemplate('modalPreview', {
+    return this.renderModalPreview({
       previewText: this.dataValue ?
         `<img src=${this.dataValue} ${this._referenceAttributeName}='openModal' style="width: 100%;height: 100%;" />` :
         this.t('Click to Sign')

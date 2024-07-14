@@ -5,11 +5,8 @@ import sinon from 'sinon';
 import Component from './Component';
 import Webform from '../../../Webform';
 import Harness from '../../../../test/harness';
-import { comp1 } from './fixtures';
+import { comp1, comp4, comp3, comp5, comp6, comp7 } from './fixtures';
 import _merge from 'lodash/merge';
-import comp3 from './fixtures/comp3';
-import comp4 from './fixtures/comp4';
-import comp5 from './fixtures/comp5';
 
 describe('Component', () => {
   it('Should create a Component', (done) => {
@@ -369,5 +366,47 @@ describe('Component', () => {
       }, 200);
     })
       .catch(done);
+  });
+
+  it('Should reset value to default value if default value is given', (done) => {
+    Formio.createForm(document.createElement('div'), comp6, {}).then((form) => {
+      const inputValue = (value, component) => {
+        const input = component.refs.input?.[0] || component.refs.selectContainer;
+        const inputEvent = new Event('input');
+        input.value = value;
+        input.dispatchEvent(inputEvent);
+      };
+      const textfield = form.getComponent('textField');
+      const number = form.getComponent('number');
+      const select = form.getComponent('select');
+      inputValue('hello', textfield);
+      inputValue('321', number);
+      inputValue('b', select);
+      setTimeout(()=>{
+        form.resetValue();
+        assert.equal(textfield.refs.input[0].value, 'test');
+        assert.equal(number.refs.input[0].value, '123');
+        assert.equal(select.refs.selectContainer.value, 'a');
+        done();
+      },200);
+    }).catch(done);
+  });
+
+  it('Should set the state of hidden permanently if a logic event action sets the hidden state', (done) => {
+    Formio.createForm(document.createElement('div'), comp7, {}).then((form) => {
+      const showButtonComponent = form.getComponent('show');
+      const textFieldComponent = form.getComponent('textField1');
+      const panelComponent = form.getComponent('panel');
+      showButtonComponent.refs.button.click();
+      setTimeout(()=>{
+        textFieldComponent.refs.input[0].value = "test"
+        textFieldComponent.refs.input[0].dispatchEvent(new Event('input'));
+        setTimeout(()=>{
+          assert.equal(panelComponent.component.hidden, false);
+          assert.equal(panelComponent.visible, true);
+          done();
+        },400);
+      },200);
+    });
   });
 });

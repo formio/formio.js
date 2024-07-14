@@ -15,6 +15,7 @@ import {
   comp6,
   comp7,
   comp8,
+  comp9,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
@@ -414,6 +415,27 @@ describe('DataGrid Component', () => {
       component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').click();
       component.addRow();
       assert.equal(component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').checked, false);
+    });
+  });
+
+  it('Should have dragula available when reorder flag is set to true', () => {
+    return Formio.createForm(document.createElement('div'), comp9, {}).then((form) => {
+      const dataGridComponent = form.getComponent('dataGrid');
+      assert(dataGridComponent.root.dragulaLib, 'could not find dragulaLib');
+    });
+  });
+
+  it('Should set the pristine of itself and the form the false when reordering occurs', () => {
+    return Formio.createForm(document.createElement('div'), comp9, {}).then((form) => {
+      const dataGridComponent = form.getComponent('dataGrid');
+      const element = document.createElement('tr');
+      element.dragInfo = {};
+      _.set(element, 'dragInfo.index', 0);
+      const tableBody = document.createElement('tbody');
+      const sibling = document.createElement('tr');
+      sibling.dragInfo = {};
+      dataGridComponent.onReorder(element,tableBody, tableBody, sibling);
+      assert(!form.pristine, 'form pristine should be set to false when datagrid reordering occurs');
     });
   });
 });

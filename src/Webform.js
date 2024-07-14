@@ -15,6 +15,7 @@ import {
     getArrayFromComponentPath,
 } from "./utils/utils";
 import { eachComponent } from "./utils/formUtils";
+import dragula from "dragula";
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -322,6 +323,8 @@ export default class Webform extends NestedDataComponent {
         // Ensure the root is set to this component.
         this.root = this;
         this.localRoot = this;
+
+        this.root.dragulaLib = dragula;
     }
     /* eslint-enable max-statements */
 
@@ -783,6 +786,19 @@ export default class Webform extends NestedDataComponent {
     }
 
     /**
+     * Sets the submission value
+     * @param {object|null|undefined} submission - The submission to set.
+     * @param {object|null|undefined} flags - Any flags to apply when setting the submission.
+     * @returns {void}
+     */
+    onSetSubmission(submission, flags = {}) {
+      this.submissionSet = true;
+      this.triggerChange(flags);
+      this.emit('beforeSetSubmission', submission);
+      this.setValue(submission, flags);
+    }
+
+    /**
      * Sets a submission and returns the promise when it is ready.
      * @param {any} submission - The submission to set.
      * @param {any} flags - Any flags to apply when setting the submission.
@@ -802,10 +818,7 @@ export default class Webform extends NestedDataComponent {
                             ...resolveFlags,
                         };
                     }
-                    this.submissionSet = true;
-                    this.triggerChange(flags);
-                    this.emit("beforeSetSubmission", submission);
-                    this.setValue(submission, flags);
+                    this.onSetSubmission(submission, flags);
                     return this.submissionReadyResolve(submission);
                 },
                 (err) => this.submissionReadyReject(err)
@@ -988,7 +1001,9 @@ export default class Webform extends NestedDataComponent {
             "submitButton",
             (options) => {
                 this.submit(false, options).catch((e) => {
-                    options.instance.loading = false;
+                    if (options?.instance) {
+                        options.instance.loading = false;
+                    }
                     return e !== false && e !== undefined && console.log(e);
                 });
             },
@@ -1253,7 +1268,6 @@ export default class Webform extends NestedDataComponent {
         // Mark any components as invalid if in a custom message.
         errors.forEach((err) => {
             const { components = [] } = err;
-
             if (err.component) {
                 components.push(err.component);
             }

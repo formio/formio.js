@@ -275,10 +275,17 @@ export default class Multivalue extends Field {
 
   /**
    * @param {any} input - The input element on which the mask is to be applied.
-   * @param {string} mask - The mask pattern to apply to the input element. Exit early if no mask.
+   * @param {string} mask - The mask pattern to apply to the input element. Exit early and remove previous mask if no mask.
    */
   updateMask(input, mask) {
     if (!mask) {
+      if (input.mask) {
+        input.mask.destroy();
+      }
+      if (!this.component.placeholder) {
+        input.removeAttribute('placeholder');
+      }
+      input.value = '';
       return;
     }
     this.setInputMask(input, mask, !this.component.placeholder);
