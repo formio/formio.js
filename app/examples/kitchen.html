@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-58453303-6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-58453303-6');
+  </script>
+  <base href="/formio.js/"></base>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JavaScript Powered Forms and Form.io SDK</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/formio.js/app/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/formio.js/app/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/formio.js/app/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/formio.js/app/favicon/site.webmanifest">
+  <link href="/formio.js/app/syntax.css" rel="stylesheet">
+  <link href="/formio.js/app/main.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  
+  
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch/dist/spacelab/bootstrap.min.css" rel="stylesheet">
+  
+  <script src="https://cdn.form.io/ace/ace.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
+  
+    
+      <script src="/formio.js/dist/formio.js"></script>
+      <script type="text/javascript">
+        Formio.config.cdnUrls = {
+          js: {
+            cdn: '/formio.js/dist'
+          }
+        };
+      </script>
+    
+  
+  
+  
+  
+</head>
+<body>
+<a href="https://github.com/formio/formio.js"><img style="position: absolute; top: 0; right: 0; border: 0;z-index:3000;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 p-0">
+  <div class="container">
+    <a class="navbar-brand p-0" href="#">
+      <svg width="150px" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 324 115.2"><defs><style>.cls-1{fill:#373a36;}.cls-2{fill:#69b342;}</style></defs><polygon class="cls-1" points="95.53 37.72 127.07 37.72 127.07 45.67 105.07 45.67 105.07 56.68 125.68 56.68 125.68 64.64 105.07 64.64 105.07 82.62 95.53 82.62 95.53 37.72"/><path class="cls-1" d="M139.14,65.76c0,6.49,2.81,10.34,7.34,10.34s7.15-3.85,7.15-10.28c0-7-2.6-10.39-7.29-10.39-4.35,0-7.2,3.21-7.2,10.33m24-.06c0,10.2-6.14,17.7-16.89,17.7-10.52,0-16.67-7.46-16.67-17.52,0-10.4,6.34-17.75,17.11-17.75,10,0,16.45,7,16.45,17.57"/><path class="cls-1" d="M167,58.06c0-3.35,0-6.33-.07-9.15h9.22c.12.75.24,4.1.24,5.92,1.5-3.85,5.12-6.67,10.89-6.7V57c-6.82-.18-10.89,1.64-10.89,10.88v14.7H167Z"/><path class="cls-1" d="M192.81,57.6c0-2.92,0-5.8-.06-8.69h9c.12.82.31,2.7.36,4a10.6,10.6,0,0,1,9.43-4.8c4.88,0,7.56,2.51,8.76,5.13,2-2.76,4.91-5.13,10.45-5.13,5.92,0,10.76,3.61,10.76,12.38V82.62h-9.17v-21c0-3-1.11-6-4.95-6-4,0-5.56,2.56-5.56,7.73V82.62H212.6V62c0-3.49-.87-6.31-4.88-6.31-3.81,0-5.63,2.33-5.63,8.11V82.62h-9.28Z"/><rect class="cls-1" x="247.55" y="71.18" width="10.09" height="11.44"/><path class="cls-1" d="M263.73,48.91h9.39V82.62h-9.39Zm0-13.83h9.39V43.4h-9.39Z"/><path class="cls-1" d="M289.11,65.76c0,6.49,2.8,10.34,7.33,10.34s7.16-3.85,7.16-10.28c0-7-2.61-10.39-7.29-10.39-4.36,0-7.2,3.21-7.2,10.33m24-.06c0,10.2-6.15,17.7-16.89,17.7-10.53,0-16.67-7.46-16.67-17.52,0-10.4,6.33-17.75,17.11-17.75,10,0,16.45,7,16.45,17.57"/><polygon class="cls-1" points="45.38 65.99 54.91 56.55 46.72 48.42 37.2 57.85 45.38 65.99"/><polygon class="cls-1" points="10.87 57.41 46.43 92.97 54.38 85.01 26.7 57.32 53.92 30.1 46.05 22.23 10.87 57.41"/><polygon class="cls-2" points="59.37 35.48 51.42 43.43 65.73 57.75 51.45 72.03 59.37 80.03 81.63 57.76 81.6 57.73 81.61 57.71 59.37 35.48"/></svg>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <ul class="navbar-nav nav-fill me-auto">
+        <li class="nav-item "><a class="text-dark nav-link p-3" href="/formio.js/"><i class="bi bi-house-fill"></i></a></li>
+        <li class="nav-item "><a class="text-dark nav-link p-3" href="app/builder.html"><i class="bi bi-menu-button-wide"></i> Form Builder</a></li>
+        <li class="nav-item "><a class="text-dark nav-link p-3" href="app/sandbox.html"><i class="bi bi-box"></i> Sandbox</a></li>
+        <li class="nav-item active bg-white border"><a class="text-dark nav-link p-3" href="app/examples"><i class="bi bi-check-square"></i> Examples</a></li>
+        <li class="nav-item"><a class="text-dark nav-link p-3" target="_blank" href="https://help.form.io/developers/form-renderer"><i class="bi bi-book"></i> Documentation</a></li>
+        <li class="nav-item "><a class="text-dark nav-link p-3" href="app/sdk"><i class="bi bi-window"></i> SDK</a></li>
+      </ul>
+      <ul class="navbar-nav float-end">
+        <li class="nav-item"><a class="github-button nav-link" href="https://github.com/formio/formio.js" data-size="large" data-show-count="true" aria-label="Star formio/formio.js on GitHub">Star</a></li>
+        <li class="nav-item"><a class="github-button nav-link" href="https://github.com/formio/formio.js/fork" data-size="large" data-show-count="true" aria-label="Fork formio/formio.js on GitHub">Fork</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container">
+  <div class="row">
+  <div class="col-2">
+    <ul class="nav nav-pills nav-fill flex-column border-right border-left border-bottom">
+      
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/">Simple Embedding</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/jsfiddle.html">JSFiddle</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/hosted.html">Hosted Forms</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/submissions.html">Submission Hosting</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/htmlview.html">Submission View</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/customendpoint.html">Submission Custom Endpoint</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/thanyou.html">Thank You Page</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/externalload.html">External Data Load</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/pdf.html">PDF Form</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/customcomponent.html">Custom Components</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/conditionalwizard.html">Conditional Wizards</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/custombuilder.html">Custom Form Builder</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/customwizard.html">Custom Wizards</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/wizard.html">Wizards</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/wysiwyg.html">WYSIWYG Editor</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/embed.html">JavaScript Embedding</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/fieldLogic.html">Field Logic</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/json.html">JSON Powered Forms</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/savedraft.html">Save as Draft</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/floating.html">Floating Labels</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/lazyloading.html">Lazy Loading</a>
+          </li>
+        
+      
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/conditions.html">Conditional Forms</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/select.html">Select Dropdowns</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/datagrid.html">Data Grid Input</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/editgrid.html">Edit Grid</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/noeval.html">No Eval</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/datagrid2.html">Data Grid Panels</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/external.html">External Sources & Conditional Selects</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/calculated.html">Calculated Values</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/language.html">Multi-Language Forms</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 active" href="/formio.js/app/examples/kitchen.html">Kitchen Sink</a>
+          </li>
+        
+      
+        
+          <li class="nav-item ml-0">
+            <a class="nav-link border-top rounded-0 " href="/formio.js/app/examples/recaptcha.html">reCAPTCHA component</a>
+          </li>
+        
+      
+    </ul>
+  </div>
+  <div class="col-10">
+    <h3 class="mt-0">Kitchen Sink</h3>
+    <p>Here is a large form which includes all fields with many different configurations (the kitchen sink).</p>
+
+<div class="card card-body bg-light">
+  <div id="formio"></div>
+  <script type="text/javascript">
+  Formio.createForm(document.getElementById('formio'), {
+    components: [
+      {
+          input: true,
+          tree: true,
+          components: [
+              {
+                  input: false,
+                  columns: [
+                      {
+                          components: [
+                              {
+                                  input: true,
+                                  tableView: true,
+                                  inputType: 'text',
+                                  inputMask: '',
+                                  label: 'First Name',
+                                  key: 'firstName',
+                                  placeholder: 'Enter your first name',
+                                  prefix: '',
+                                  suffix: '',
+                                  multiple: false,
+                                  defaultValue: '',
+                                  protected: false,
+                                  unique: false,
+                                  persistent: true,
+                                  validate: {
+                                      required: false,
+                                      minLength: 6,
+                                      maxLength: 10,
+                                      pattern: '',
+                                      custom: '',
+                                      customPrivate: false
+                                  },
+                                  conditional: {
+                                      show: '',
+                                      when: null,
+                                      eq: ''
+                                  },
+                                  type: 'textfield'
+                              },
+                              {
+                                  type: 'email',
+                                  persistent: true,
+                                  unique: false,
+                                  protected: false,
+                                  defaultValue: '',
+                                  suffix: '',
+                                  prefix: '',
+                                  placeholder: 'Enter your email address',
+                                  key: 'email',
+                                  label: 'Email',
+                                  inputType: 'email',
+                                  tableView: true,
+                                  input: true
+                              },
+                              {
+                                  input: true,
+                                  inputType: 'checkbox',
+                                  tableView: true,
+                                  hideLabel: false,
+                                  label: 'Do you have a phone number?',
+                                  key: 'havePhoneNumber',
+                                  defaultValue: false,
+                                  protected: false,
+                                  persistent: true,
+                                  validate: {
+                                      required: false
+                                  },
+                                  type: 'checkbox',
+                                  conditional: {
+                                      show: '',
+                                      when: null,
+                                      eq: ''
+                                  },
+                                  lockKey: true
+                              },
+                              {
+                                  input: true,
+                                  tableView: true,
+                                  inputMask: '(999) 999-9999',
+                                  label: 'Phone Number',
+                                  key: 'phoneNumber',
+                                  placeholder: '',
+                                  prefix: '',
+                                  suffix: '',
+                                  multiple: false,
+                                  protected: false,
+                                  unique: false,
+                                  persistent: true,
+                                  defaultValue: '',
+                                  validate: {
+                                      required: false
+                                  },
+                                  type: 'phoneNumber',
+                                  conditional: {
+                                      show: 'true',
+                                      when: 'havePhoneNumber',
+                                      eq: 'true'
+                                  }
+                              }
+                          ]
+                      },
+                      {
+                          components: [
+                              {
+                                  input: true,
+                                  tableView: true,
+                                  inputType: 'text',
+                                  inputMask: '',
+                                  label: 'Last Name',
+                                  key: 'lastName',
+                                  placeholder: 'Enter your last name',
+                                  prefix: '',
+                                  suffix: '',
+                                  multiple: false,
+                                  defaultValue: '',
+                                  protected: false,
+                                  unique: false,
+                                  persistent: true,
+                                  validate: {
+                                      required: false,
+                                      minLength: 2,
+                                      maxLength: 10,
+                                      pattern: '',
+                                      custom: '',
+                                      customPrivate: false
+                                  },
+                                  conditional: {
+                                      show: '',
+                                      when: null,
+                                      eq: ''
+                                  },
+                                  type: 'textfield'
+                              },
+                              {
+                                  input: true,
+                                  tableView: true,
+                                  inputType: 'number',
+                                  inputMask: '',
+                                  label: 'Number',
+                                  key: 'number',
+                                  placeholder: 'Enter Number',
+                                  prefix: '',
+                                  suffix: '',
+                                  multiple: false,
+                                  defaultValue: 0,
+                                  protected: false,
+                                  unique: false,
+                                  persistent: true,
+                                  validate: {
+                                      required: false,
+                                      min: 10,
+                                      max: 100,
+                                      step: 5,
+                                      custom: '',
+                                      customPrivate: false
+                                  },
+                                  conditional: {
+                                      show: '',
+                                      when: null,
+                                      eq: ''
+                                  },
+                                  type: 'number'
+                              },
+                              {
+                                  input: true,
+                                  tableView: false,
+                                  inputType: 'password',
+                                  label: 'Password',
+                                  key: 'password',
+                                  placeholder: 'Enter Your Password',
+                                  prefix: '$',
+                                  suffix: '@',
+                                  defaultValue: '',
+                                  protected: true,
+                                  persistent: true,
+                                  type: 'password',
+                                  conditional: {
+                                      show: null,
+                                      when: null,
+                                      eq: ''
+                                  },
+                                  validate: {
+                                      required: false,
+                                      minLength: 8,
+                                      maxLength: 20,
+                                      pattern: '',
+                                      custom: '',
+                                      customPrivate: false
+                                  },
+                                  unique: true
+                              }
+                          ]
+                      }
+                  ],
+                  type: 'columns',
+                  key: 'columns',
+                  conditional: {
+                      show: '',
+                      when: null,
+                      eq: ''
+                  }
+              },
+              {
+                  type: 'textfield',
+                  conditional: {
+                      eq: '',
+                      when: null,
+                      show: ''
+                  },
+                  validate: {
+                      customPrivate: false,
+                      custom: '',
+                      pattern: '',
+                      maxLength: '',
+                      minLength: '',
+                      required: false
+                  },
+                  persistent: true,
+                  unique: false,
+                  protected: false,
+                  defaultValue: '',
+                  multiple: true,
+                  suffix: '',
+                  prefix: '',
+                  placeholder: 'Enter your kids names',
+                  key: 'kids',
+                  label: 'Kids',
+                  inputMask: '',
+                  inputType: 'text',
+                  tableView: true,
+                  input: true
+              }
+          ],
+          tableView: true,
+          label: '',
+          key: 'user',
+          protected: false,
+          persistent: true,
+          type: 'container',
+          conditional: {
+              show: '',
+              when: null,
+              eq: ''
+          },
+          lockKey: true
+      },
+      {
+          input: true,
+          tableView: true,
+          label: 'Day',
+          key: 'day',
+          fields: {
+              day: {
+                  type: 'text',
+                  placeholder: 'Enter day',
+                  required: true
+              },
+              month: {
+                  type: 'select',
+                  placeholder: 'Select month',
+                  required: true
+              },
+              year: {
+                  type: 'text',
+                  placeholder: 'Enter year',
+                  required: true
+              }
+          },
+          dayFirst: true,
+          protected: false,
+          persistent: true,
+          validate: {
+              custom: ''
+          },
+          type: 'day',
+          tags: [],
+          conditional: {
+              show: '',
+              when: null,
+              eq: ''
+          },
+          customClass: 'dayCustomClass',
+          tabindex: '5'
+      },
+      {
+          input: true,
+          tree: true,
+          components: [{
+              input: true,
+              tableView: true,
+              inputType: 'text',
+              inputMask: '',
+              label: 'Make',
+              key: 'make',
+              placeholder: 'Chevy, Ford, etc.',
+              prefix: '',
+              suffix: '',
+              multiple: false,
+              defaultValue: '',
+              protected: false,
+              unique: false,
+              persistent: true,
+              validate: {
+                  required: false,
+                  minLength: '',
+                  maxLength: '',
+                  pattern: '',
+                  custom: '',
+                  customPrivate: false
+              },
+              conditional: '{"show": "", "when": null, "eq": ""}',
+              type: 'textfield',
+              hideLabel: true
+          }, {
+              input: true,
+              tableView: true,
+              inputType: 'text',
+              inputMask: '',
+              label: 'Model',
+              key: 'model',
+              placeholder: 'Tahoe, F-150, etc.',
+              prefix: '',
+              suffix: '',
+              multiple: false,
+              defaultValue: '',
+              protected: false,
+              unique: false,
+              persistent: true,
+              validate: {
+                  required: false,
+                  minLength: '',
+                  maxLength: '',
+                  pattern: '',
+                  custom: '',
+                  customPrivate: false
+              },
+              conditional: '{"show": "", "when": null, "eq": ""}',
+              type: 'textfield',
+              hideLabel: true
+          }, {
+              input: true,
+              tableView: true,
+              inputType: 'text',
+              inputMask: '',
+              label: 'Year',
+              key: 'year',
+              placeholder: '2014, 2015, etc',
+              prefix: '',
+              suffix: '',
+              multiple: false,
+              defaultValue: '',
+              protected: false,
+              unique: false,
+              persistent: true,
+              validate: {
+                  required: false,
+                  minLength: '',
+                  maxLength: '',
+                  pattern: '',
+                  custom: '',
+                  customPrivate: false
+              },
+              conditional: '{"show": "", "when": null, "eq": ""}',
+              type: 'textfield',
+              hideLabel: true
+          }],
+          tableView: true,
+          label: 'Cars',
+          key: 'cars',
+          protected: false,
+          persistent: true,
+          type: 'datagrid',
+          conditional: '{"show": "", "when": null, "eq": ""}',
+          striped: true,
+          bordered: true
+      },
+      {
+          input: false,
+          html: '<p><em><strong>Good Morning Guys!!!<br>This is Content component.</strong></em></p> ',
+          type: 'content',
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          },
+          key: 'mycontent',
+          lockKey: true
+      },
+      {
+          input: false,
+          numRows: 2,
+          numCols: 2,
+          rows: [
+              [{
+                  components: [{
+                      input: true,
+                      tableView: true,
+                      inputType: 'text',
+                      inputMask: '',
+                      label: 'First Name',
+                      key: 'firstName',
+                      placeholder: 'Enter your first name',
+                      prefix: '',
+                      suffix: '',
+                      multiple: false,
+                      defaultValue: '',
+                      protected: false,
+                      unique: false,
+                      persistent: true,
+                      validate: {
+                          required: false,
+                          minLength: 6,
+                          maxLength: 10,
+                          pattern: '',
+                          custom: '',
+                          customPrivate: false
+                      },
+                      conditional: {
+                          show: '',
+                          when: null,
+                          eq: ''
+                      },
+                      type: 'textfield'
+                  }],
+              }, {
+                  components: [{
+                      input: true,
+                      tableView: true,
+                      inputType: 'text',
+                      inputMask: '',
+                      label: 'Last Name',
+                      key: 'lastName',
+                      placeholder: 'Enter your last name',
+                      prefix: '',
+                      suffix: '',
+                      multiple: false,
+                      defaultValue: '',
+                      protected: false,
+                      unique: false,
+                      persistent: true,
+                      validate: {
+                          required: false,
+                          minLength: 6,
+                          maxLength: 10,
+                          pattern: '',
+                          custom: '',
+                          customPrivate: false
+                      },
+                      conditional: {
+                          show: '',
+                          when: null,
+                          eq: ''
+                      },
+                      type: 'textfield'
+                  }],
+              }],
+              [{
+                  components: [{
+                      type: 'email',
+                      persistent: true,
+                      unique: false,
+                      protected: false,
+                      defaultValue: '',
+                      suffix: '',
+                      prefix: '',
+                      placeholder: 'Enter your email address',
+                      key: 'email',
+                      label: 'Email',
+                      inputType: 'email',
+                      tableView: true,
+                      input: true
+                  }],
+              }, {
+                  components: [{
+                      input: true,
+                      inputType: 'checkbox',
+                      tableView: false,
+                      hideLabel: false,
+                      label: 'Checkbox',
+                      key: 'checkbox',
+                      defaultValue: true,
+                      protected: false,
+                      persistent: true,
+                      validate: {
+                          required: false
+                      },
+                      type: 'checkbox',
+                      conditional: {
+                          show: null,
+                          when: null,
+                          eq: ''
+                      }
+                  }],
+              }]
+          ],
+          header: [],
+          caption: '',
+          striped: true,
+          bordered: true,
+          hover: true,
+          condensed: false,
+          type: 'table',
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          }
+      },
+      {
+          input: true,
+          tableView: true,
+          label: 'Textarea',
+          key: 'textarea1',
+          placeholder: 'Enter Your Text Here',
+          prefix: '$',
+          suffix: '@',
+          rows: 3,
+          multiple: false,
+          defaultValue: '',
+          protected: false,
+          persistent: true,
+          validate: {
+              required: false,
+              minLength: 5,
+              maxLength: 100,
+              pattern: '',
+              custom: ''
+          },
+          type: 'textarea',
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          }
+      },
+      {
+          input: false,
+          type: 'well',
+          key: 'Well',
+          lockKey: true,
+          components: [{
+              input: true,
+              tableView: true,
+              inputType: 'text',
+              inputMask: '',
+              label: 'Textfield',
+              key: 'text',
+              placeholder: 'Enter your text',
+              prefix: '',
+              suffix: '',
+              multiple: false,
+              defaultValue: '',
+              protected: false,
+              unique: false,
+              persistent: true,
+              validate: {
+                  required: false,
+                  minLength: 6,
+                  maxLength: 10,
+                  pattern: '',
+                  custom: '',
+                  customPrivate: false
+              },
+              conditional: {
+                  show: '',
+                  when: null,
+                  eq: ''
+              },
+              type: 'textfield'
+          }, {
+              input: true,
+              tableView: true,
+              label: 'Textarea',
+              key: 'textarea2',
+              placeholder: 'Enter Your Text Here',
+              prefix: '',
+              suffix: '',
+              rows: 3,
+              multiple: false,
+              defaultValue: '',
+              protected: false,
+              persistent: true,
+              validate: {
+                  required: false,
+                  minLength: 5,
+                  maxLength: 100,
+                  pattern: '',
+                  custom: ''
+              },
+              type: 'textarea',
+              conditional: {
+                  show: null,
+                  when: null,
+                  eq: ''
+              }
+          }],
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          }
+      },
+      {
+          input: true,
+          tableView: true,
+          inputType: 'radio',
+          label: 'Options',
+          key: 'radio',
+          values: [
+              {
+                  value: 'val1',
+                  label: 'option1'
+              },
+              {
+                  value: 'val2',
+                  label: 'option2'
+              },
+              {
+                  value: 'val3',
+                  label: 'option3'
+              }
+          ],
+          defaultValue: true,
+          protected: false,
+          persistent: true,
+          validate: {
+              required: false,
+              custom: '',
+              customPrivate: false
+          },
+          type: 'radio',
+          inline: false,
+          multiple: false,
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          }
+      },
+      {
+          input: false,
+          tableView: true,
+          legend: 'User Information',
+          type: 'fieldset',
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          },
+          components: [{
+              input: true,
+              tableView: true,
+              inputType: 'text',
+              inputMask: '',
+              label: 'FirstName',
+              key: 'firstName',
+              placeholder: 'Enter FirstName',
+              prefix: '',
+              suffix: '',
+              multiple: false,
+              defaultValue: '',
+              protected: false,
+              unique: false,
+              persistent: true,
+              validate: {
+                  required: false,
+                  minLength: '',
+                  maxLength: '',
+                  pattern: '',
+                  custom: '',
+                  customPrivate: false
+              },
+              conditional: {
+                  show: null,
+                  when: null,
+                  eq: ''
+              },
+              type: 'textfield'
+          },
+              {
+                  input: true,
+                  tableView: true,
+                  inputType: 'text',
+                  inputMask: '',
+                  label: 'LastName',
+                  key: 'lastName',
+                  placeholder: 'Enter LastName',
+                  prefix: '',
+                  suffix: '',
+                  multiple: false,
+                  defaultValue: '',
+                  protected: false,
+                  unique: false,
+                  persistent: true,
+                  validate: {
+                      required: false,
+                      minLength: '',
+                      maxLength: '',
+                      pattern: '',
+                      custom: '',
+                      customPrivate: false
+                  },
+                  conditional: {
+                      show: null,
+                      when: null,
+                      eq: ''
+                  },
+                  type: 'textfield'
+              }]
+      },
+      {
+          input: true,
+          tableView: true,
+          inputType: 'text',
+          inputMask: '',
+          customClass: 'customClass',
+          multiple: true,
+          label: 'Currency',
+          key: 'currency',
+          placeholder: 'currency',
+          prefix: '$',
+          suffix: '@',
+          defaultValue: '',
+          protected: false,
+          persistent: true,
+          validate: {
+              required: false,
+              multiple: '',
+              custom: ''
+          },
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          },
+          type: 'currency',
+      },
+      {
+          input: true,
+          inputType: 'checkbox',
+          tableView: false,
+          hideLabel: false,
+          label: 'Checkbox 2',
+          key: 'checkbox2',
+          defaultValue: false,
+          protected: false,
+          persistent: true,
+          validate: {
+              required: false
+          },
+          type: 'checkbox',
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          }
+      },
+      {
+          input: true,
+          tableView: true,
+          label: 'Select box',
+          key: 'selectbox',
+          values: [
+              {
+                  value: 'coffee',
+                  label: 'Tea'
+              },
+              {
+                  value: 'coffee',
+                  label: 'Coffee'
+              },
+              {
+                  value: 'chocolate',
+                  label: 'Chocolate'
+              },
+              {
+                  value: 'ice-cream',
+                  label: 'Ice-Cream'
+              }
+          ],
+          inline: true,
+          protected: false,
+          persistent: true,
+          validate: {
+              required: false
+          },
+          type: 'selectboxes',
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          },
+          customClass: 'myselect'
+      },
+      {
+          input: false,
+          title: 'Panel',
+          theme: 'primary',
+          components: [{
+              input: true,
+              tableView: true,
+              inputType: 'text',
+              inputMask: '',
+              label: 'Name',
+              key: 'name',
+              placeholder: 'Enter your Name',
+              prefix: '',
+              suffix: '',
+              multiple: false,
+              defaultValue: '',
+              protected: false,
+              unique: false,
+              persistent: true,
+              validate: {
+                  required: false,
+                  minLength: 6,
+                  maxLength: 10,
+                  pattern: '',
+                  custom: '',
+                  customPrivate: false
+              },
+              conditional: {
+                  show: '',
+                  when: null,
+                  eq: ''
+              },
+              type: 'textfield'
+          }, {
+              input: true,
+              tableView: true,
+              label: 'Textarea',
+              key: 'textarea3',
+              placeholder: 'Enter Your Text Here',
+              prefix: '',
+              suffix: '',
+              rows: 3,
+              multiple: false,
+              defaultValue: '',
+              protected: false,
+              persistent: true,
+              validate: {
+                  required: false,
+                  minLength: 5,
+                  maxLength: 100,
+                  pattern: '',
+                  custom: ''
+              },
+              type: 'textarea',
+              conditional: {
+                  show: null,
+                  when: null,
+                  eq: ''
+              }
+          }],
+          type: 'panel',
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          }
+      },
+      {
+          input: true,
+          tableView: true,
+          label: 'Survey',
+          key: 'survey',
+          customClass: 'customClass',
+          questions: [
+              {
+                  value: 'QueValue',
+                  label: 'QueLabel',
+              },
+              {
+                  value: 'QueValue1',
+                  label: 'QueLabel1',
+              },
+              {
+                  value: 'QueValue2',
+                  label: 'QueLabel2',
+              }
+          ],
+          values: [
+              {
+                  value: 'AnsValue',
+                  label: 'AnsLabel',
+              },
+              {
+                  value: 'AnsValue1',
+                  label: 'AnsLabel1',
+              },
+              {
+                  value: 'AnsValue2',
+                  label: 'AnsLabel2',
+              },
+              {
+                  value: 'AnsValue3',
+                  label: 'AnsLabel3',
+              }
+          ],
+          defaultValue: '',
+          protected: false,
+          persistent: true,
+          validate: {
+              required: false,
+              custom: '',
+              customPrivate: false
+          },
+          type: 'survey',
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          }
+      },
+      {
+          input: true,
+          tableView: true,
+          label: 'DateTime',
+          key: 'dateTime',
+          placeholder: 'Select date and time',
+          format: 'yyyy-MM-dd HH:mm',
+          enableDate: true,
+          enableTime: true,
+          datepickerMode: 'day',
+          datePicker: {
+              showWeeks: true,
+              startingDay: '0',
+              initDate: '',
+              minMode: 'day',
+              maxMode: 'year',
+              yearRange: '25',
+              datepickerMode: 'day'
+          },
+          timePicker: {
+              hourStep: 1,
+              minuteStep: 1,
+              showMeridian: true,
+              readonlyInput: true,
+              mousewheel: true,
+              arrowkeys: false
+          },
+          protected: false,
+          persistent: true,
+          validate: {
+              required: false,
+              custom: ''
+          },
+          type: 'datetime',
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          },
+          minDate: '2016-07-01T18:30:00.000Z',
+          maxDate: '2016-08-30T18:30:00.000Z'
+      },
+      {
+          input: false,
+          tag: 'p',
+          key: 'pname',
+          lockKey: true,
+          attrs: [
+              {
+                  attr: 'src',
+                  value: '/img'
+              }
+          ],
+          className: 'customClass',
+          content: 'Hello, Good Morning!!! This is Html Element.',
+          type: 'htmlelement',
+          tags: ['span'],
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          }
+      },
+      {
+          input: true,
+          tableView: true,
+          label: 'Fruits',
+          key: 'fruits',
+          placeholder: 'Select favourite',
+          data: {
+              values: [
+                  {
+                      value: 'opt1',
+                      label: 'mango'
+                  },
+                  {
+                      value: 'opt2',
+                      label: 'apple'
+                  },
+                  {
+                      value: 'opt3',
+                      label: 'pineapple'
+                  },
+                  {
+                      value: 'opt4',
+                      label: 'grapes'
+                  }],
+              json: [
+                  {
+                      label: 'one',
+                      test: 'opt1'
+                  },
+                  {
+                      label: 'two',
+                      test: 'opt2'
+                  },
+                  {
+                      label: 'three',
+                      test: 'opt3'
+                  }],
+              url: 'https://api.github.com/users/hadley/orgs',
+              resource: 'manager'
+          },
+          dataSrc: 'values',
+          valueProperty: '',
+          defaultValue: '',
+          refreshOn: '',
+          filter: '',
+          authenticate: false,
+          template: '<span>\{\{ item.label \}\}</span>',
+          multiple: false,
+          protected: false,
+          unique: false,
+          persistent: true,
+          validate: {
+              required: false
+          },
+          type: 'select',
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          }
+      },
+      {
+          input: true,
+          tableView: true,
+          label: 'Address',
+          key: 'address',
+          placeholder: 'Enter Address',
+          multiple: false,
+          protected: false,
+          unique: false,
+          persistent: true,
+          validate: {
+              required: true
+          },
+          type: 'address',
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          },
+          customClass: 'myclass'
+      },
+      {
+          customClass: 'myclass',
+          conditional: {
+              eq: '',
+              when: null,
+              show: ''
+          },
+          type: 'resource',
+          defaultPermission: '',
+          validate: {
+              required: false
+          },
+          persistent: true,
+          protected: false,
+          multiple: false,
+          searchFields: ['data.fullName'],
+          selectFields: 'data.fullName, data.email',
+          template: '<span>\{\{ item.data \}\}</span>',
+          defaultValue: [],
+          resource: '5757ea1c6e37370100cb5bce',
+          project: '5757ea1c6e37370100cb5bc8',
+          placeholder: 'Select Resource',
+          key: 'resource',
+          label: 'Resource',
+          tableView: true,
+          input: true,
+          tags: []
+      },
+      {
+          input: true,
+          tableView: true,
+          label: 'Signature',
+          key: 'signature',
+          placeholder: 'Please Sign here...',
+          footer: 'Sign above',
+          width: '100%',
+          height: '200px',
+          penColor: 'green',
+          backgroundColor: 'rgb(245,245,235)',
+          minWidth: '0.5',
+          maxWidth: '2.5',
+          protected: false,
+          persistent: true,
+          validate: {
+              required: false
+          },
+          type: 'signature',
+          hideLabel: false,
+          conditional: {
+              show: null,
+              when: null,
+              eq: ''
+          },
+          customClass: 'myclass'
+      },
+      {
+          input: true,
+          tableView: true,
+          key: 'nameHidden',
+          label: 'Name',
+          protected: false,
+          unique: true,
+          persistent: true,
+          type: 'hidden',
+          conditional: {
+              show: true,
+              when: '',
+              eq: ''
+          }
+      },
+      {
+          input: true,
+          label: 'Submit',
+          tableView: false,
+          key: 'submit',
+          size: 'md',
+          leftIcon: '',
+          rightIcon: '',
+          block: false,
+          action: 'submit',
+          disableOnInvalid: false,
+          theme: 'primary',
+          type: 'button'
+      }
+    ]
+  });
+</script>
+</div>
+
+  </div>
+</div>
+
+</div>
+<div class="container">
+  <footer class="py-3 my-4">
+    <h4 class="align-center text-center text-muted">powered by <svg width="150px" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 324 115.2"><defs><style>.cls-1{fill:#373a36;}.cls-2{fill:#69b342;}</style></defs><polygon class="cls-1" points="95.53 37.72 127.07 37.72 127.07 45.67 105.07 45.67 105.07 56.68 125.68 56.68 125.68 64.64 105.07 64.64 105.07 82.62 95.53 82.62 95.53 37.72"/><path class="cls-1" d="M139.14,65.76c0,6.49,2.81,10.34,7.34,10.34s7.15-3.85,7.15-10.28c0-7-2.6-10.39-7.29-10.39-4.35,0-7.2,3.21-7.2,10.33m24-.06c0,10.2-6.14,17.7-16.89,17.7-10.52,0-16.67-7.46-16.67-17.52,0-10.4,6.34-17.75,17.11-17.75,10,0,16.45,7,16.45,17.57"/><path class="cls-1" d="M167,58.06c0-3.35,0-6.33-.07-9.15h9.22c.12.75.24,4.1.24,5.92,1.5-3.85,5.12-6.67,10.89-6.7V57c-6.82-.18-10.89,1.64-10.89,10.88v14.7H167Z"/><path class="cls-1" d="M192.81,57.6c0-2.92,0-5.8-.06-8.69h9c.12.82.31,2.7.36,4a10.6,10.6,0,0,1,9.43-4.8c4.88,0,7.56,2.51,8.76,5.13,2-2.76,4.91-5.13,10.45-5.13,5.92,0,10.76,3.61,10.76,12.38V82.62h-9.17v-21c0-3-1.11-6-4.95-6-4,0-5.56,2.56-5.56,7.73V82.62H212.6V62c0-3.49-.87-6.31-4.88-6.31-3.81,0-5.63,2.33-5.63,8.11V82.62h-9.28Z"/><rect class="cls-1" x="247.55" y="71.18" width="10.09" height="11.44"/><path class="cls-1" d="M263.73,48.91h9.39V82.62h-9.39Zm0-13.83h9.39V43.4h-9.39Z"/><path class="cls-1" d="M289.11,65.76c0,6.49,2.8,10.34,7.33,10.34s7.16-3.85,7.16-10.28c0-7-2.61-10.39-7.29-10.39-4.36,0-7.2,3.21-7.2,10.33m24-.06c0,10.2-6.15,17.7-16.89,17.7-10.53,0-16.67-7.46-16.67-17.52,0-10.4,6.33-17.75,17.11-17.75,10,0,16.45,7,16.45,17.57"/><polygon class="cls-1" points="45.38 65.99 54.91 56.55 46.72 48.42 37.2 57.85 45.38 65.99"/><polygon class="cls-1" points="10.87 57.41 46.43 92.97 54.38 85.01 26.7 57.32 53.92 30.1 46.05 22.23 10.87 57.41"/><polygon class="cls-2" points="59.37 35.48 51.42 43.43 65.73 57.75 51.45 72.03 59.37 80.03 81.63 57.76 81.6 57.73 81.61 57.71 59.37 35.48"/></svg></h4>
+    <p class="text-center text-muted mb-0" style="font-size: 0.8em">Copyright © Form.io LLC <span id="year"></span>. All rights reserved</p>
+    <p class="text-center text-muted mb-0" style="font-size: 0.8em">Renderer v<span id="renderer-version"></span></p>
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script type="text/javascript">
+      document.getElementById('year').innerText = (new Date()).getFullYear();
+      document.getElementById('renderer-version').innerHTML = Formio.version;
+    </script>
+  </footer>
+</div>
+</body>
+</html>
