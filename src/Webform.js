@@ -15,6 +15,11 @@ import {
     getArrayFromComponentPath,
 } from "./utils/utils";
 import { eachComponent } from "./utils/formUtils";
+
+// We need this here because dragula pulls in CustomEvent class that requires global to exist.
+if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
+    window.global = window;
+}
 import dragula from "dragula";
 
 // Initialize the available forms.
