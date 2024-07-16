@@ -56,9 +56,10 @@
     "dopublish": "npm run build && npm run tag && npm publish",
     "lint": "eslint ./src --fix",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
-    "test": "mocha 'src/**/*.unit.js'",
+    "test": "nyc --reporter=lcov --reporter=text --reporter=text-summary mocha src/**/*.unit.js",
     "test:updateRenders": "npm run lib && TZ=UTC node --require jsdom-global/register test/updateRenders.js",
-    "test:e2e": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --verbose --single-run"
+    "test:e2e": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --verbose --single-run",
+    "show-coverage": "open coverage/lcov-report/index.html"
   },
   "repository": {
     "type": "git",
@@ -155,6 +156,7 @@
     "mocha": "^10.3.0",
     "mock-local-storage": "^1.1.24",
     "natives": "^1.1.6",
+    "nyc": "^17.0.0",
     "power-assert": "^1.6.1",
     "pre-commit": "^1.2.2",
     "pretty": "^2.0.0",
@@ -174,5 +176,17 @@
     "webpack-cli": "^5.1.1",
     "webpack-node-externals": "^3.0.0",
     "webpack-stream": "^7.0.0"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "statements": 64,
+    "branches": 55,
+    "functions": 60,
+    "lines": 63,
+    "include": ["src/**/*.js"],
+    "exclude": [
+      "src/**/fixtures"
+    ],
+    "all": true
   }
 }
