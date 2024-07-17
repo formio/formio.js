@@ -73,5 +73,8 @@ export default {
   reCaptchaTokenNotSpecifiedError: 'ReCAPTCHA: Token is not specified in submission',
   apiKey: 'API Key is not unique: {{key}}',
   typeRemaining: '{{ remaining }} {{ type }} remaining.',
-  typeCount: '{{ count }} {{ type }}'
+  typeCount: '{{ count }} {{ type }}',
+  requiredDayField: '{{ field }} is required',
+  requiredMonthField: '{{ field }} is required',
+  requiredYearField: '{{ field }} is required'
 };
