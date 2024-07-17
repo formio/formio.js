@@ -26,7 +26,7 @@ export default class DateGeaterThan extends ConditionOperator {
 
         let conditionTriggerComponent = null;
 
-        if (instance && instance.root) {
+        if (instance?.root?.getComponent) {
             conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
         }
 
