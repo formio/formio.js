@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.67
+### Changed
+ - Updated @formio/core@2.2.0-rc.5
+ - FIO-8633 fixed icon name for Edit Grid
+ - FIO-8645: day component required validation error not correct
+ - FIO-8688 fixed 'global is not defined' error message
+ - FIO-8639 fixed error when adding address component
+
 ## 5.0.0-rc.66
 ### Changed
  - FIO-8652: DataGrid does not reorder
