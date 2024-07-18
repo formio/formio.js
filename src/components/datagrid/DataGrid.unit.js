@@ -456,6 +456,44 @@ describe('DataGrid Component', () => {
       assert(dataGridComponent.root.dragulaLib, 'could not find dragulaLib');
     });
   });
+
+  it('Disable/not disable submit button with required flag in dataGrid', function(done) {
+    Formio.createForm(document.createElement('div'), comp10)
+      .then((form) => {
+      const buttonComponent = form.getComponent('submit');
+      assert.equal(buttonComponent.disabled, true, '(1) Component should be disabled');
+      const dataGrid = form.getComponent('dataGrid');
+      dataGrid.setValue([
+        {
+          textField: 'some value',
+          checkbox: false
+        },
+        {
+          textField: '',
+          checkbox: false
+        }
+      ]);
+
+      setTimeout(() => {
+        assert.equal(buttonComponent.disabled, false, '(2) Component should be not disabled');
+        dataGrid.setValue([
+          {
+            textField: '',
+            checkbox: false
+          },
+          {
+            textField: '',
+            checkbox: false
+          }
+        ]);
+
+        setTimeout(() => {
+          assert.equal(buttonComponent.disabled, true, '(3) Component should be disabled');
+          done();
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
+  });
 });
 
 describe('DataGrid Panels', () => {
