@@ -275,10 +275,10 @@
     fuse.js "^6.6.2"
     redux "^4.2.0"
 
-"@formio/core@2.0.0-dev.105.e92d9a1":
-  version "2.0.0-dev.105.e92d9a1"
-  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.0.0-dev.105.e92d9a1.tgz#dd560403b09a03995d4fe32969d1bcddeeaf758d"
-  integrity sha512-LIgUxWeWWTSdGhagwcn8i/LdjpZhFETTgp6dVfa8qj5BRXMRtc4J5PiWHrkHUbCnIkeIjjeMz3pwDMR1qvUfpg==
+"@formio/core@2.1.0-dev.105.1bff2e6":
+  version "2.1.0-dev.105.1bff2e6"
+  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.1.0-dev.105.1bff2e6.tgz#068bf67444641692f3f8037b16ec4c69c033c91e"
+  integrity sha512-bIbWLn2/Lg6nYKqUYlNDcuF7EH7pIUNUzQBR1XDQ7P0LucK8ukG5Y8A3WOmVtR8S++VShSw8pzapnCytutDA7g==
   dependencies:
     "@types/json-logic-js" "^2.0.7"
     browser-cookies "^1.2.0"
@@ -6902,15 +6902,6 @@ string-width@^1.0.1, string-width@^1.0.2:
     is-fullwidth-code-point "^1.0.0"
     strip-ansi "^3.0.0"
 
-string-width@^3.0.0:
-  version "3.1.0"
-  resolved "https://registry.npmjs.org/string-width/-/string-width-3.1.0.tgz#22767be21b62af1081574306f69ac51b62203961"
-  integrity sha512-vafcv6KjVZKSgz06oM/H6GDBrAtz8vdhQakGjFIvNrHA6y3HCF1CInLy+QLq8dTJPQ1b+KDUqDFctkdRW44e1w==
-  dependencies:
-    emoji-regex "^7.0.1"
-    is-fullwidth-code-point "^2.0.0"
-    strip-ansi "^5.1.0"
-
 string-width@^5.0.1, string-width@^5.1.2:
   version "5.1.2"
   resolved "https://registry.npmjs.org/string-width/-/string-width-5.1.2.tgz#14f8daec6d81e7221d2a357e668cab73bdbca794"
@@ -6991,13 +6982,6 @@ strip-ansi@^4.0.0:
   integrity sha512-4XaJ2zQdCzROZDivEVIDPkcQn8LMFSa8kj8Gxb/Lnwzv9A8VctNZ+lfivC/sV3ivW8ElJTERXZoPBRrZKkNKow==
   dependencies:
     ansi-regex "^3.0.0"
-
-strip-ansi@^5.1.0, strip-ansi@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.npmjs.org/strip-ansi/-/strip-ansi-5.2.0.tgz#8c9a536feb6afc962bdfa5b104a5091c1ad9c0ae"
-  integrity sha512-DuRs1gKbBqsMKIZlrffwlug8MHkcnpjs5VPmL1PAh+mA30U0DTotfDZ0d2UUsXpPmPmMMJ6W773MaA3J+lbiWA==
-  dependencies:
-    ansi-regex "^4.1.0"
 
 strip-ansi@^7.0.1:
   version "7.1.0"
