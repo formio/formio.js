@@ -81,9 +81,6 @@ import formWithValidateWhenHidden from '../test/forms/formWithValidateWhenHidden
 import formWithSelectRadioUrlDataSource from '../test/forms/selectRadioUrlDataSource';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
-global.requestAnimationFrame = (cb) => cb();
-global.cancelAnimationFrame = () => {};
-
 if (_.has(Formio, 'Components.setComponents')) {
   Formio.Components.setComponents(AllComponents);
 }
@@ -425,10 +422,10 @@ describe('Webform tests', function() {
       const blurEvent = new Event('blur');
 
       const selectChoices = form.getComponent('selectChoices');
-      selectChoices.focusableElement.dispatchEvent(focusEvent);
+      selectChoices.choices.input.element.dispatchEvent(focusEvent);
 
       setTimeout(() => {
-        selectChoices.focusableElement.dispatchEvent(blurEvent);
+        selectChoices.choices.input.element.dispatchEvent(blurEvent);
 
         const selectHtml = form.getComponent('selectHtml');
         selectHtml.refs.selectContainer.dispatchEvent(focusEvent);

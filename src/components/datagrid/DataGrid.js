@@ -2,6 +2,7 @@ import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
 import { Components } from '../Components';
+import dragula from 'dragula';
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -162,9 +163,9 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   /**
    * Split rows into chunks.
-   * @param {Number[]} groups - array of numbers where each item is size of group
+   * @param {number[]} groups - array of numbers where each item is size of group
    * @param {Array<T>} rows - rows collection
-   * @return {Array<T[]>}
+   * @returns {Array<T[]>} - The chunked rows
    */
   getRowChunks(groups, rows) {
     const [, chunks] = groups.reduce(
@@ -179,7 +180,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   /**
    * Create groups object.
    * Each key in object represents index of first row in group.
-   * @return {Object}
+   * @returns {object} - The groups object.
    */
   getGroups() {
     const groups = _.get(this.component, 'rowGroups', []);
@@ -201,8 +202,8 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   /**
-   * Retrun group sizes.
-   * @return {Number[]}
+   * Get group sizes.
+   * @returns {number[]} - The array of group sizes.
    */
   getGroupSizes() {
     return _.map(_.get(this.component, 'rowGroups', []), 'numberOfRows');
@@ -332,43 +333,41 @@ export default class DataGridComponent extends NestedArrayComponent {
         row.dragInfo = { index };
       });
 
-      if (this.root.dragulaLib) {
-        this.dragula = this.root.dragulaLib([this.refs[`${this.datagridKey}-tbody`]], {
-          moves: (_draggedElement, _oldParent, clickedElement) => {
-            const clickedElementKey = clickedElement.getAttribute('data-key');
-            const oldParentKey = _oldParent.getAttribute('data-key');
+      this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
+        moves: (_draggedElement, _oldParent, clickedElement) => {
+          const clickedElementKey = clickedElement.getAttribute('data-key');
+          const oldParentKey = _oldParent.getAttribute('data-key');
 
-            //Check if the clicked button belongs to that container, if false, it belongs to the nested container
-            if (oldParentKey === clickedElementKey) {
-              return clickedElement.classList.contains('formio-drag-button');
+          //Check if the clicked button belongs to that container, if false, it belongs to the nested container
+          if (oldParentKey === clickedElementKey) {
+            return clickedElement.classList.contains('formio-drag-button');
+          }
+        }
+      }).on('drop', this.onReorder.bind(this));
+
+      this.dragula.on('cloned', (el, original) => {
+        if (el && el.children && original && original.children) {
+          _.each(original.children, (child, index) => {
+            const styles = getComputedStyle(child, null);
+
+            if (styles.cssText !== '') {
+              el.children[index].style.cssText = styles.cssText;
             }
-          }
-        }).on('drop', this.onReorder.bind(this));
+            else {
+              const cssText = Object.values(styles).reduce(
+                (css, propertyName) => {
+                  return `${css}${propertyName}:${styles.getPropertyValue(
+                    propertyName
+                  )};`;
+                },
+                ''
+              );
 
-        this.dragula.on('cloned', (el, original) => {
-          if (el && el.children && original && original.children) {
-            _.each(original.children, (child, index) => {
-              const styles = getComputedStyle(child, null);
-
-              if (styles.cssText !== '') {
-                el.children[index].style.cssText = styles.cssText;
-              }
-              else {
-                const cssText = Object.values(styles).reduce(
-                  (css, propertyName) => {
-                    return `${css}${propertyName}:${styles.getPropertyValue(
-                      propertyName
-                    )};`;
-                  },
-                  ''
-                );
-
-                el.children[index].style.cssText = cssText;
-              }
-            });
-          }
-        });
-      }
+              el.children[index].style.cssText = cssText;
+            }
+          });
+        }
+      });
     }
 
     this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {
@@ -406,6 +405,26 @@ export default class DataGridComponent extends NestedArrayComponent {
     return this.component.components;
   }
 
+  /**
+   * Reorder values in array based on the old and new position
+   * @param {any} valuesArr - An array of values.
+   * @param {number} oldPosition - The index of the value in array before reordering.
+   * @param {number} newPosition - The index of the value in array after reordering.
+   * @param {boolean|any} movedBelow - Whether or not the value is moved below.
+   * @returns {void}
+   */
+  reorderValues(valuesArr, oldPosition, newPosition, movedBelow) {
+    if (!_.isArray(valuesArr) || _.isEmpty(valuesArr)) {
+      return;
+    }
+
+    const draggedRowData = valuesArr[oldPosition];
+    //insert element at new position
+    valuesArr.splice(newPosition, 0, draggedRowData);
+    //remove element from old position (if was moved above, after insertion it's at +1 index)
+    valuesArr.splice(movedBelow ? oldPosition : oldPosition + 1, 1);
+  }
+
   onReorder(element, _target, _source, sibling) {
     if (!element.dragInfo || (sibling && !sibling.dragInfo)) {
       console.warn('There is no Drag Info available for either dragged or sibling element');
@@ -417,12 +436,13 @@ export default class DataGridComponent extends NestedArrayComponent {
     const newPosition = sibling ? sibling.dragInfo.index : this.dataValue.length;
     const movedBelow = newPosition > oldPosition;
     const dataValue = fastCloneDeep(this.dataValue);
-    const draggedRowData = dataValue[oldPosition];
+    this.reorderValues(dataValue, oldPosition, newPosition, movedBelow);
+    //reorder select data
+    this.reorderValues(_.get(this.root, `submission.metadata.selectData.${this.path}`, []), oldPosition, newPosition, movedBelow);
 
-    //insert element at new position
-    dataValue.splice(newPosition, 0, draggedRowData);
-    //remove element from old position (if was moved above, after insertion it's at +1 index)
-    dataValue.splice(movedBelow ? oldPosition : oldPosition + 1, 1);
+    // When components are reordered we need to set the dataGrid and form pristine properties to false
+    this.root.pristine = false;
+    this.pristine = false;
 
     //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
     this.setValue(dataValue, { isReordered: true });

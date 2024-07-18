@@ -122,13 +122,24 @@ class ChoicesWrapper extends Choices {
     }
   }
 
-  _selectHighlightedChoice(activeItems) {
+  _selectHighlightedChoice() {
     const highlightedChoice = this.dropdown.getChild(
       `.${this.config.classNames.highlightedState}`,
     );
 
     if (highlightedChoice) {
-      this._handleChoiceAction(activeItems, highlightedChoice);
+      const id = highlightedChoice.dataset.id;
+      const choice = id && this._store.getChoiceById(id);
+      this._addItem({
+        value: choice.value,
+        label: choice.label,
+        choiceId: choice.id,
+        groupId: choice.groupId,
+        customProperties: choice.customProperties,
+        placeholder: choice.placeholder,
+        keyCode: choice.keyCode
+      });
+      this._triggerChange(choice.value);
     }
 
     event.preventDefault();

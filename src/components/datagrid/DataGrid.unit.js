@@ -23,7 +23,8 @@ import {
   withLogic,
   withCollapsibleRowGroups,
   withAllowCalculateOverride,
-  twoWithAllowCalculatedOverride,
+  twoWithAllowCalculatedOverride, withCheckboxes,
+  withReorder
 } from './fixtures';
 
 describe('DataGrid Component', () => {
@@ -400,42 +401,42 @@ describe('DataGrid Component', () => {
       .catch(done);
   });
 
-  it('Disable/not disable submit button with required flag in dataGrid', function(done) {
-    Formio.createForm(document.createElement('div'), comp9)
-      .then((form) => {
-      const buttonComponent = form.getComponent('submit');
-      assert.equal(buttonComponent.disabled, true, '(1) Component should be disabled');
-      const dataGrid = form.getComponent('dataGrid');
-      dataGrid.setValue([
-        {
-          textField: 'some value',
-          checkbox: false
-        },
-        {
-          textField: '',
-          checkbox: false
-        }
-      ]);
+  it('Should retain previous checkboxes checked property when add another is pressed (checked)', () => {
+    return Harness.testCreate(DataGridComponent, withCheckboxes).then((component) => {
+      component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').click();
+      component.addRow();
+      assert.equal(component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').checked, true);
+    });
+  });
 
-      setTimeout(() => {
-        assert.equal(buttonComponent.disabled, false, '(2) Component should be not disabled');
-        dataGrid.setValue([
-          {
-            textField: '',
-            checkbox: false
-          },
-          {
-            textField: '',
-            checkbox: false
-          }
-        ]);
+  it('Should retain previous checkboxes checked property when add another is pressed (unchecked)', () => {
+    return Harness.testCreate(DataGridComponent, withCheckboxes).then((component) => {
+      component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').click();
+      component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').click();
+      component.addRow();
+      assert.equal(component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').checked, false);
+    });
+  });
 
-        setTimeout(() => {
-          assert.equal(buttonComponent.disabled, true, '(3) Component should be disabled');
-          done();
-        }, 300);
-      }, 300);
-    }).catch((err) => done(err));
+  it('Should have dragula available when reorder flag is set to true', () => {
+    return Formio.createForm(document.createElement('div'), comp9, {}).then((form) => {
+      const dataGridComponent = form.getComponent('dataGrid');
+      assert(dataGridComponent.root.dragulaLib, 'could not find dragulaLib');
+    });
+  });
+
+  it('Should set the pristine of itself and the form the false when reordering occurs', () => {
+    return Formio.createForm(document.createElement('div'), comp9, {}).then((form) => {
+      const dataGridComponent = form.getComponent('dataGrid');
+      const element = document.createElement('tr');
+      element.dragInfo = {};
+      _.set(element, 'dragInfo.index', 0);
+      const tableBody = document.createElement('tbody');
+      const sibling = document.createElement('tr');
+      sibling.dragInfo = {};
+      dataGridComponent.onReorder(element,tableBody, tableBody, sibling);
+      assert(!form.pristine, 'form pristine should be set to false when datagrid reordering occurs');
+    });
   });
 });
 
@@ -743,6 +744,56 @@ describe('DataGrid calculated values', () => {
             }, 300);
           }, 300);
         }, 300);
+      })
+      .catch(done);
+  });
+});
+
+describe('DataGrid Reorder', () => {
+  it('Should display select components labels correctly on rows reorder', (done) => {
+    Formio.createForm(document.createElement('div'), withReorder.form)
+      .then((form) => {
+        form.setSubmission(withReorder.submission)
+        .then(() => {
+          const values = [
+            { value: '11', label: 1 },
+            { value: '22', label: 2 },
+            { value: '33', label: 3 },
+            { value: '44', label: 4 },
+            { value: '55', label: 5 },
+          ];
+
+          const dataGrid = form.getComponent('dataGrid');
+          _.each(dataGrid.components, (selectComp, ind) => {
+            const expectedValue = values[ind];
+            assert.equal(ind, selectComp.rowIndex);
+            assert.equal(selectComp.dataValue, expectedValue.value);
+            assert.equal(selectComp.templateData[expectedValue.value].data.number, expectedValue.label);
+          });
+
+          dataGrid.onReorder({ dragInfo: { index: 4 } }, null, null, { dragInfo: { index: 0 } });
+          dataGrid.onReorder({ dragInfo: { index: 4 } }, null, null, { dragInfo: { index: 1 } });
+          dataGrid.onReorder({ dragInfo: { index: 2 } }, null, null, { dragInfo: { index: 4 } });
+
+          setTimeout(() => {
+            const values = [
+              { value: '55', label: 5 },
+              { value: '44', label: 4 },
+              { value: '22', label: 2 },
+              { value: '11', label: 1 },
+              { value: '33', label: 3 },
+            ];
+
+            _.each(dataGrid.components, (selectComp, ind) => {
+              const expectedValue = values[ind];
+              assert.equal(ind, selectComp.rowIndex, 'Component index after reorder');
+              assert.equal(selectComp.dataValue, expectedValue.value, 'Component value after reorder');
+              assert.equal(selectComp.templateData[expectedValue.value].data.number, expectedValue.label, 'Component label value after reorder');
+            });
+
+            done();
+          }, 600);
+        });
       })
       .catch(done);
   });

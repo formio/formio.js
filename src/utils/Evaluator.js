@@ -1,13 +1,12 @@
 import _ from 'lodash';
 import stringHash from 'string-hash';
-import { Evaluator as CoreEvaluator } from '@formio/core/utils';
-const Evaluator = {
-  noeval: false,
-  protectedEval: false, // This property can be customized only by plugins
-  cache: {},
-  templateSettings: CoreEvaluator.templateSettings,
-  evaluator: CoreEvaluator.evaluator,
-  template(template, hash) {
+import { JSONLogicEvaluator as CoreEvaluator } from '@formio/core/utils';
+
+export class Evaluator extends CoreEvaluator {
+  static cache = {};
+  static protectedEval = false;
+  static noeval = false;
+  static template(template, hash) {
     hash = hash || stringHash(template);
     if (Evaluator.cache[hash]) {
       return Evaluator.cache[hash];
@@ -20,8 +19,8 @@ const Evaluator = {
     catch (err) {
       console.warn('Error while processing template', err, template);
     }
-  },
-  interpolate(rawTemplate, data, _options) {
+  }
+  static interpolate(rawTemplate, data, _options) {
     // Ensure reverse compatability.
     const options = _.isObject(_options) ? _options : { noeval: _options };
     if (typeof rawTemplate === 'function') {
@@ -52,16 +51,5 @@ const Evaluator = {
       }
     }
     return template;
-  },
-  evaluate(func, args) {
-    return Array.isArray(args) ? func(...args) : func(args);
   }
-};
-
-Evaluator.registerEvaluator = (evaluator) => {
-  Object.keys(evaluator).forEach((key) => {
-    Evaluator[key] = evaluator[key];
-  });
-};
-
-export default Evaluator;
+}

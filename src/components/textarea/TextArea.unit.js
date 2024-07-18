@@ -389,6 +389,34 @@ describe('TextArea Component', () => {
     }).catch(done);
   });
 
+  it('Should translate character counter if it is enabled', (done) => {
+    const form = _.cloneDeep(comp3);
+    form.components[0].showCharCount = true;
+    form.components[0].validate = {
+      maxLength: 20
+    }
+    Formio.createForm(document.createElement('div'), form, {
+      language: 'sp',
+      i18n: {
+        sp: {
+          characters: 'stafbil',
+          typeRemaining: '{{ remaining }} {{ type }} eftir.'
+        }
+      }
+    }).then((form) => {
+      let component = form.getComponent('textArea');
+      const inputEvent = new Event('input');
+      component.refs.input[0].value = 'test';
+      component.refs.input[0].dispatchEvent(inputEvent)
+
+      setTimeout(()=>{
+        component = form.getComponent('textArea');
+        assert.equal(component.refs.charcount[0].textContent, '16 stafbil eftir.');
+        done()
+      },200)
+    }).catch(done);
+  });
+
   describe('Rich text editors', () => {
     describe('CKEditor', () => {
       it('Should allow to insert media fiels and show the in them read-only mode', (done) => {

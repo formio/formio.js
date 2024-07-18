@@ -131,4 +131,5 @@ if (typeof window !== 'undefined') {
   FormioCore.addToGlobal(window);
 }
 
+FormioEmbed._formioReady(FormioCore);
 export { FormioCore as Formio };

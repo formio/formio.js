@@ -1,4 +1,4 @@
-<div class="formio-form formio-read-only">
+<div class="formio-form">
   <div style="position: relative;">
     <nav aria-label="Wizard navigation" id="wizard-page1-header" ref="wizard-page1-header">
       <ul class="pagination" role="tablist">
@@ -21,12 +21,15 @@
           <span class="visually-hidden">, numeric only,</span>
         </label>
         <div ref="element">
-          <input ref="input" name="data[number]" type="text" class="form-control" lang="en" disabled="disabled" inputmode="decimal" value="" id="number-number" aria-labelledby="l-number-number " aria-required="false"></input>
+          <input ref="input" name="data[number]" type="text" class="form-control" lang="en" inputmode="decimal" value="" id="number-number" aria-labelledby="l-number-number " aria-required="false"></input>
         </div>
         <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
       </div>
     </div>
     <ul class="formio-wizard-nav-container list-inline" id="wizard-page1-nav">
+      <li>
+        <button class="btn btn-secondary btn-wizard-nav-cancel" ref="wizard-page1-cancel" aria-label="Cancel button. Click to reset the form">Cancel</button>
+      </li>
       <li>
         <button class="btn btn-primary btn-wizard-nav-next" ref="wizard-page1-next" aria-label="Next button. Click to go to the next tab">Next</button>
       </li>

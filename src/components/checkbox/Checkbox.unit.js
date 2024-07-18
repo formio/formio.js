@@ -11,7 +11,8 @@ import {
   comp2,
   comp3,
   comp4,
-  comp5
+  comp5,
+  comp6
 } from './fixtures';
 
 describe('Checkbox Component', () => {
@@ -62,6 +63,34 @@ describe('Checkbox Component', () => {
       Harness.clickElement(component, input);
       assert.equal(input.checked, false);
     });
+  });
+
+  it('Should be able to submit default checkbox data with the radio input type', (done) => {
+    const form = _.cloneDeep(comp6);
+    const element = document.createElement('div');
+    const inputName = form.components[0].name;
+
+    Formio.createForm(element, form).then(form => {
+      const submit = form.getComponent('submit');
+      const clickEvent = new Event('click');
+      const submitBtn = submit.refs.button;
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.equal(form.submission.data[inputName], '');
+        const radioCheckBox = form.getComponent('checkbox');
+        const radio = Harness.testElements(radioCheckBox, 'input[type="radio"]', 1)[0];
+        Harness.clickElement(radioCheckBox, radio);
+        setTimeout(() => {
+          assert.equal(form.submission.data[inputName], 'ok');
+          Harness.clickElement(radioCheckBox, radio);
+          setTimeout(() => {
+            assert.equal(form.submission.data[inputName], '');
+            done();
+          }, 200);
+         }, 200);
+       }, 200);
+    }).catch((err) => done(err));
   });
 
   it('Should render red asterisk for preview template of the modal required checkbox ', (done) => {

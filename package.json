@@ -1,6 +1,6 @@
 {
   "name": "@formio/js",
-  "version": "5.0.0-rc.43",
+  "version": "5.0.0-rc.59",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "lib/cjs/index.js",
   "exports": {
@@ -21,21 +21,25 @@
       "require": "./lib/cjs/formio.form.js"
     },
     "./embed": {
-      "import": "./lib/cjs/Embed.js",
-      "require": "./lib/cjs/Embed.js"
+      "import": "./lib/cjs/InlineEmbed.js",
+      "require": "./lib/cjs/InlineEmbed.js"
     },
     "./dist/*": "./dist/*"
   },
   "files": [
     "dist",
-    "lib"
+    "lib",
+    "embed.d.ts",
+    "form.d.ts",
+    "sdk.d.ts",
+    "utils.d.ts"
   ],
   "pre-commit": [
     "lint"
   ],
   "scripts": {
     "build": "yarn doc && yarn lib && yarn dist",
-    "doc": "esdoc",
+    "doc": "typedoc",
     "dist": "gulp clean:dist && webpack --config webpack.config.js && webpack --config webpack.prod.js && gulp build",
     "lib": "gulp clean:lib && tsc --project tsconfig.cjs.json && tsc --project tsconfig.mjs.json && yarn lib:package",
     "lib:package": "node ./libpackage.js",
@@ -50,7 +54,7 @@
     "release": "yarn build-app && yarn deploy-s3",
     "tag": "VERSION=$(yarn version);git add -A; git commit -m \"Build $Version\";git push origin master;git tag v$VERSION;git push origin --tags;",
     "dopublish": "npm run build && npm run tag && npm publish",
-    "lint": "gulp eslint",
+    "lint": "eslint ./src --fix",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "mocha 'src/**/*.unit.js'",
     "test:updateRenders": "npm run lib && TZ=UTC node --require jsdom-global/register test/updateRenders.js",
@@ -75,7 +79,7 @@
   },
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
-    "@formio/bootstrap": "^3.0.0-rc.22",
+    "@formio/bootstrap": "3.0.0-dev.98.17ba6ea",
     "@formio/choices.js": "^10.2.1",
     "@formio/core": "2.0.0-dev.105.e92d9a1",
     "@formio/text-mask-addons": "^3.8.0-formio.2",
@@ -86,16 +90,15 @@
     "browser-cookies": "^1.2.0",
     "browser-md5-file": "^1.1.1",
     "compare-versions": "^6.0.0-rc.2",
-    "core-js": "^3.37.0",
+    "core-js": "^3.37.1",
     "dialog-polyfill": "^0.5.6",
     "dom-autoscroller": "^2.3.4",
-    "dompurify": "^3.1.1",
+    "dompurify": "^3.1.3",
     "downloadjs": "^1.4.7",
     "dragula": "^3.7.3",
     "eventemitter3": "^5.0.1",
     "fast-deep-equal": "^3.1.3",
     "fast-json-patch": "^3.1.1",
-    "fetch-ponyfill": "^7.1.0",
     "idb": "^7.1.1",
     "inputmask": "^5.0.8",
     "ismobilejs": "^1.1.1",
@@ -105,7 +108,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.44",
-    "quill": "^2.0.0-rc.4",
+    "quill": "^2.0.2",
     "signature_pad": "^4.2.0",
     "string-hash": "^1.1.3",
     "tippy.js": "^6.3.7",
@@ -113,9 +116,9 @@
     "vanilla-picker": "^2.12.3"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.6.0",
-    "@typescript-eslint/parser": "^7.6.0",
-    "ace-builds": "1.33.0",
+    "@typescript-eslint/eslint-plugin": "^7.9.0",
+    "@typescript-eslint/parser": "^7.9.0",
+    "ace-builds": "1.34.2",
     "async-limiter": "^2.0.0",
     "bootstrap-icons": "^1.10.5",
     "bootswatch": "^5.3.3",
@@ -124,11 +127,8 @@
     "chance": "^1.1.9",
     "ejs-loader": "^0.5.0",
     "escape-string-regexp": "^5.0.0",
-    "esdoc": "^1.1.0",
-    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
-    "esdoc-standard-plugin": "^1.0.0",
     "eslint": "^8.57.0",
-    "eslint-config-formio": "^1.1.4",
+    "eslint-plugin-jsdoc": "^48.2.5",
     "fetch-mock": "^9.11.0",
     "file-loader": "^6.2.0",
     "flatpickr": "^4.6.13",
@@ -137,7 +137,6 @@
     "gulp-clean": "^0.4.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",
-    "gulp-eslint": "^6.0.0",
     "gulp-filter": "^7.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-replace": "^1.1.3",
@@ -161,19 +160,19 @@
     "pretty": "^2.0.0",
     "pygments-css": "^1.0.0",
     "raw-loader": "^4.0.2",
-    "sass": "^1.74.1",
+    "sass": "^1.77.1",
     "shortcut-buttons-flatpickr": "^0.4.0",
     "sinon": "^17.0.1",
     "string-replace-loader": "^3.1.0",
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
     "tsc": "^2.0.4",
+    "typedoc": "^0.25.13",
     "typescript": "5.3.2",
     "webpack": "^5.90.3",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.1",
     "webpack-node-externals": "^3.0.0",
-    "webpack-stream": "^7.0.0",
-    "written-number": "^0.11.1"
+    "webpack-stream": "^7.0.0"
   }
 }
