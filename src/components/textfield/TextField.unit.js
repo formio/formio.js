@@ -819,11 +819,11 @@ describe('TextField Component', () => {
             assert.equal(component.refs.select[0].options[mask.index].selected, true, 'Should select correct mask');
             assert.equal(component.getValue().maskName, mask.mask, 'Should apply correct mask');
             if (valid) {
-              assert.equal(component.errors.length, 0, 'Should not contain error');
+              assert.equal(!!component.error, false, 'Should not contain error');
             }
             else {
-              assert.equal(component.errors.length, 1, 'Should contain error');
-              assert.equal(component.errors[0].message, error, 'Should contain error message');
+              assert.equal(!!component.error, true, 'Should contain error');
+              assert.equal(component.error.message, error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
