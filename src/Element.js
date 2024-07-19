@@ -45,7 +45,6 @@ export default class Element {
 
     /**
      * An instance of the EventEmitter class to handle the emitting and registration of events.
-     *
      * @type {EventEmitter}
      */
     this.events = (options && options.events) ? options.events : new EventEmitter();
@@ -53,7 +52,6 @@ export default class Element {
     this.defaultMask = null;
     /**
      * Conditional to show or hide helplinks in editForm
-     *
      * @type {*|boolean}
      */
     this.helplinks = (this.options.helplinks === 'false') ? false : (this.options.helplinks || 'https://help.form.io');
@@ -61,7 +59,6 @@ export default class Element {
 
   /**
    * Register for a new event within this component.
-   *
    * @example
    * let component = new BaseComponent({
    *   type: 'textfield',
@@ -71,12 +68,11 @@ export default class Element {
    * component.on('componentChange', (changed) => {
    *   console.log('this element is changed.');
    * });
-   *
-   *
    * @param {string} event - The event you wish to register the handler for.
-   * @param {function} cb - The callback handler to handle this event.
+   * @param {Function} cb - The callback handler to handle this event.
    * @param {boolean} [internal] - This is an internal event handler.
    * @param {boolean} [once] - This event should only fire once.
+   * @returns {EventEmitter | void} - The event emitter instance.
    */
   on(event, cb, internal, once = false) {
     if (!this.events) {
@@ -95,9 +91,10 @@ export default class Element {
 
   /**
    * Register for a new single-fire event within this component.
-   *
    * @param {string} event - The event you wish to register the handler for.
-   * @param {function} cb - The callback handler to handle this event.
+   * @param {Function} cb - The callback handler to handle this event.
+   * @param {boolean} internal - This is an internal event handler.
+   * @returns {EventEmitter} - The event emitter instance.
    */
   once(event, cb, internal) {
     return this.on(event, cb, internal, true);
@@ -105,9 +102,8 @@ export default class Element {
 
   /**
    * Allow catching any event.
-   *
-   * @param cb
-   * @returns {this}
+   * @param {Function} cb - The callback handler to handle this event.
+   * @returns {EventEmitter | void} - The event emitter instance.
    */
   onAny(cb) {
     if (!this.events) {
@@ -119,9 +115,8 @@ export default class Element {
 
   /**
    * Removes the listener that will be fired when any event is emitted.
-   *
-   * @param cb
-   * @returns {this}
+   * @param {Function} cb - The callback handler to handle this event.
+   * @returns {EventEmitter | void} - The event emitter instance.
    */
   offAny(cb) {
     if (!this.events) {
@@ -133,9 +128,8 @@ export default class Element {
 
   /**
    * Removes a listener for a certain event. Not passing the 2nd arg will remove all listeners for that event.
-   *
    * @param {string} event - The event you wish to register the handler for.
-   * @param {function|undefined} cb - The callback handler to handle this event.
+   * @param {Function | undefined} cb - The callback handler to handle this event.
    */
   off(event, cb) {
     if (!this.events) {
@@ -161,9 +155,8 @@ export default class Element {
 
   /**
    * Emit a new event.
-   *
    * @param {string} event - The event to emit.
-   * @param {Object} data - The data to emit with the handler.
+   * @param {object} data - The data to emit with the handler.
    */
   emit(event, ...data) {
     if (this.events) {
@@ -173,9 +166,8 @@ export default class Element {
 
   /**
    * Check if the component has an event handler set up for the event.
-   *
    * @param {string} event - The event name.
-   * @returns {boolean}
+   * @returns {boolean} - TRUE if the event is registered, FALSE otherwise.
    */
   hasEventHandler(event) {
     if (!this.events) {
@@ -195,15 +187,12 @@ export default class Element {
 
   /**
    * Wrapper method to add an event listener to an HTML element.
-   *
-   * @param obj
-   *   The DOM element to add the event to.
-   * @param type
-   *   The event name to add.
-   * @param func
-   *   The callback function to be executed when the listener is triggered.
-   * @param persistent
-   *   If this listener should persist beyond "destroy" commands.
+   * @param {HtmlElement} obj - The DOM element to add the event to.
+   * @param {string} type - The event name to add.
+   * @param {Function} func - The callback function to be executed when the listener is triggered.
+   * @param {boolean} persistent - If this listener should persist beyond "destroy" commands.
+   * @param {boolean} capture - If this listener should be executed in the capture phase.
+   * @returns {void | this} - The instance of the element.
    */
   addEventListener(obj, type, func, persistent, capture) {
     if (!obj) {
@@ -224,9 +213,10 @@ export default class Element {
 
   /**
    * Remove an event listener from the object.
-   *
-   * @param obj
-   * @param type
+   * @param {HTMLElement} obj - The DOM element to remove the event from.
+   * @param {string} type - The event name to remove.
+   * @param {Function} func - The callback function to remove.
+   * @returns {this | void} - The instance of the element.
    */
   removeEventListener(obj, type, func = null) {
     const indexes = [];
@@ -273,6 +263,7 @@ export default class Element {
 
   /**
    * Removes all event listeners attached to this component.
+   * @param {boolean} all - If all events should be removed, including external events.
    */
   destroy() {
     this.removeEventListeners();
@@ -281,9 +272,9 @@ export default class Element {
 
   /**
    * Append an HTML DOM element to a container.
-   *
-   * @param element
-   * @param container
+   * @param {HTMLElement} element - The DOM element to append.
+   * @param {HTMLElement} container - The DOM element that is the container of the element getting appended.
+   * @returns {this} - The instance of the element.
    */
   appendTo(element, container) {
     container?.appendChild(element);
@@ -292,9 +283,9 @@ export default class Element {
 
   /**
    * Prepend an HTML DOM element to a container.
-   *
    * @param {HTMLElement} element - The DOM element to prepend.
    * @param {HTMLElement} container - The DOM element that is the container of the element getting prepended.
+   * @returns {this} - The instance of the element.
    */
   prependTo(element, container) {
     if (container) {
@@ -317,9 +308,9 @@ export default class Element {
 
   /**
    * Removes an HTML DOM element from its bounding container.
-   *
    * @param {HTMLElement} element - The element to remove.
    * @param {HTMLElement} container - The DOM element that is the container of the element to remove.
+   * @returns {this} - The instance of the element.
    */
   removeChildFrom(element, container) {
     if (container && container.contains(element)) {
@@ -336,12 +327,10 @@ export default class Element {
 
   /**
    * Alias for document.createElement.
-   *
    * @param {string} type - The type of element to create
-   * @param {Object} attr - The element attributes to add to the created element.
+   * @param {object} attr - The element attributes to add to the created element.
    * @param {Various} children - Child elements. Can be a DOM Element, string or array of both.
-   *
-   * @return {HTMLElement} - The created element.
+   * @returns {HTMLElement} - The created element.
    */
   ce(type, attr, children = null) {
     // console.warn('Call to deprecated this.ce(). Dom elements should be created with templates, not manually with ce.');
@@ -360,8 +349,9 @@ export default class Element {
 
   /**
    * Append different types of children.
-   *
-   * @param child
+   * @param {HTMLElement} element - The element to append to.
+   * @param {HTMLElement} child - The child element to append.
+   * @returns {this} - The instance of the element.
    */
   appendChild(element, child) {
     if (Array.isArray(child)) {
@@ -386,16 +376,19 @@ export default class Element {
     return mask.map((char) => (char instanceof RegExp) ? this.placeholderChar : char).join('');
   }
 
+  /**
+   * Get the placeholder character for the input mask.
+   * @returns {string} - The placeholder character.
+   */
   get placeholderChar() {
     return this.component?.inputMaskPlaceholderChar || '_';
   }
 
   /**
    * Sets the input mask for an input.
-   *
    * @param {HTMLElement} input - The html input to apply the mask to.
-   * @param {String} inputMask - The input mask to add to this input.
-   * @param {Boolean} usePlaceholder - Set the mask placeholder on the input.
+   * @param {string} inputMask - The input mask to add to this input.
+   * @param {boolean} usePlaceholder - Set the mask placeholder on the input.
    */
   setInputMask(input, inputMask, usePlaceholder) {
     if (input && inputMask) {
@@ -431,9 +424,9 @@ export default class Element {
 
   /**
    * Translate a text using the i18n system.
-   *
    * @param {string|Array<string>} text - The i18n identifier.
-   * @param {Object} params - The i18n parameters to use for translation.
+   * @param {...any} args - The arguments to pass to the i18n translation.
+   * @returns {string} - The translated text.
    */
   t(text, ...args) {
     return this.i18next.t(text, ...args);
@@ -441,8 +434,8 @@ export default class Element {
 
   /**
    * Alias to create a text node.
-   * @param text
-   * @returns {Text}
+   * @param {string} text - The text to create.
+   * @returns {HtmlElement} - The created text node.
    */
   text(text) {
     return document.createTextNode(this.t(text));
@@ -451,7 +444,7 @@ export default class Element {
   /**
    * Adds an object of attributes onto an element.
    * @param {HtmlElement} element - The element to add the attributes to.
-   * @param {Object} attr - The attributes to add to the input element.
+   * @param {object} attr - The attributes to add to the input element.
    */
   attr(element, attr) {
     if (!element) {
@@ -475,6 +468,9 @@ export default class Element {
    * Determines if an element has a class.
    *
    * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
+   * @param {HTMLElement} element - The element to check for the class.
+   * @param {string} className - The class to check for.
+   * @returns {boolean} - TRUE if the element has the class, FALSE otherwise.
    */
   hasClass(element, className) {
     if (!element) {
@@ -487,11 +483,9 @@ export default class Element {
 
   /**
    * Adds a class to a DOM element.
-   *
-   * @param element
-   *   The element to add a class to.
-   * @param className
-   *   The name of the class to add.
+   * @param {HTMLElement} element - The element to add a class to.
+   * @param {string} className - The name of the class to add.
+   * @returns {this} - The instance of the element.
    */
   addClass(element, className) {
     if (!element || !(element instanceof HTMLElement)) {
@@ -508,11 +502,9 @@ export default class Element {
 
   /**
    * Remove a class from a DOM element.
-   *
-   * @param element
-   *   The DOM element to remove the class from.
-   * @param className
-   *   The name of the class that is to be removed.
+   * @param {HTMLElement} element - The DOM element to remove the class from.
+   * @param {string} className - The name of the class that is to be removed.
+   * @returns {this} - The instance of the element.
    */
   removeClass(element, className) {
     if (!element || !className || !(element instanceof HTMLElement)) {
@@ -530,7 +522,6 @@ export default class Element {
 
   /**
    * Empty's an HTML DOM element.
-   *
    * @param {HTMLElement} element - The element you wish to empty.
    */
   empty(element) {
@@ -543,9 +534,8 @@ export default class Element {
 
   /**
    * Create an evaluation context for all script executions and interpolations.
-   *
-   * @param additional
-   * @return {*}
+   * @param {object} additional - Additional context to apply to the evaluation context.
+   * @returns {*} - The evaluation context.
    */
   evalContext(additional) {
     return Object.assign({
@@ -570,10 +560,10 @@ export default class Element {
 
   /**
    * Performs an interpolation using the evaluation context of this component.
-   *
-   * @param string
-   * @param data
-   * @return {XML|string|*|void}
+   * @param {string} string - The string to interpolate.
+   * @param {object} data - The data to use in the interpolation.
+   * @param {object} options - The options to pass to the interpolation.
+   * @returns {XML|string|*|void} - The interpolated string.
    */
   interpolate(string, data, options = {}) {
     if (typeof string !== 'function' && (this.component.content || this.component.html)
@@ -591,20 +581,20 @@ export default class Element {
 
   /**
    * Performs an evaluation using the evaluation context of this component.
-   *
-   * @param func
-   * @param args
-   * @param ret
-   * @param tokenize
-   * @return {*}
+   * @param {string|Function|object} func - The function or string to evaluate.
+   * @param {object} args - The arguments to pass to the evaluation.
+   * @param {string} ret - The name of the variable within the evaluation context to return.
+   * @param {boolean} interpolate - Determines if it should replace all {{ }} token references with actual data.
+   * @param {import('@formio/core').EvaluatorOptions} options - The options to pass to the evaluation.
+   * @returns {*} - The result of the evaluation.
    */
-  evaluate(func, args, ret, tokenize) {
-    return FormioUtils.evaluate(func, this.evalContext(args), ret, tokenize);
+  evaluate(func, args, ret, interpolate, options = {}) {
+    return FormioUtils.evaluate(func, this.evalContext(args), ret, interpolate, options);
   }
 
   /**
    * Allow for options to hook into the functionality of this renderer.
-   * @return {*}
+   * @returns {*} - The result of the hook function.
    */
   hook() {
     const name = arguments[0];

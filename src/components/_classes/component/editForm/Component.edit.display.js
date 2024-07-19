@@ -194,6 +194,6 @@ export default [
     tooltip: 'Opens up a modal to edit the value of this component.',
     key: 'modalEdit',
     input: true
-  },
+  }
 ];
 /* eslint-enable max-len */

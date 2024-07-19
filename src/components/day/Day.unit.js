@@ -11,6 +11,8 @@ import {
   comp4,
   comp5,
   comp6,
+  comp7,
+  comp8
 } from './fixtures';
 import PanelComponent from '../panel/Panel';
 
@@ -231,11 +233,11 @@ describe('Day Component', () => {
         dayComponent.refs.day.dispatchEvent(new Event('input'));
 
         setTimeout(() => {
-          assert(dayComponent._errors.length && dayComponent._errors[0].message === 'requiredDayField', 'Day should be valid while changing');
+          assert(dayComponent._errors.length && dayComponent._errors[0].message === 'Day is required', 'Day should be valid while changing');
           dayComponent.refs.day.dispatchEvent(new Event('blur'));
 
           setTimeout(() => {
-            assert(dayComponent._errors.length && dayComponent._errors[0].message === 'requiredDayField', 'Should set error after Day component was blurred');
+            assert(dayComponent._errors.length && dayComponent._errors[0].message === 'Day is required', 'Should set error after Day component was blurred');
             done();
           }, 200);
         }, 200);
@@ -263,5 +265,36 @@ describe('Day Component', () => {
           }, 200);
       }, 500);
     }).catch(done);
+  });
+
+  it('Should translate placeholder text', () => {
+    const element = document.createElement('div');
+    return Formio.createForm(element, comp7, {
+      language: 'sp',
+      i18n: {
+        sp: {
+          Day: "Day1",
+          Month: "Month2",
+          Year: "Year3"
+        }
+      }
+    }).then((form) => {
+      const dayComponent = form.getComponent('day');
+      assert.equal(dayComponent.refs.day.placeholder, 'Day1');
+      assert.equal(dayComponent.refs.month.placeholder, 'Month2');
+      assert.equal(dayComponent.refs.year.placeholder, 'Year3');
+    })
+  });
+
+  it('Should translate requiredDayField to {{ field }} is required', (done) => {
+    Formio.createForm(document.createElement('div'), comp8, {}).then((form) => {
+      const dayComponent = form.getComponent('dayTable');
+      const buttonComponent = form.getComponent('submit');
+      buttonComponent.refs.button.click();
+      setTimeout(()=>{
+        assert.equal(dayComponent.errors[0].message, 'Day - Table is required');
+        done();
+      },200);
+    });
   });
 });

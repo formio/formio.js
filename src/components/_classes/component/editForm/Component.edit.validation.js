@@ -1,5 +1,5 @@
 import EditFormUtils from './utils';
-import Evaluator from '../../../../utils/Evaluator';
+import { Evaluator } from '../../../../utils/Evaluator';
 
 /* eslint-disable quotes, max-len */
 export default [

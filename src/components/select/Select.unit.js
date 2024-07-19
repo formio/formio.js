@@ -1108,12 +1108,12 @@ describe('Select Component', () => {
     Formio.createForm(element, comp19).then(form => {
       const select = form.components[0];
       select.setValue('banana');
-      select.focusableElement.focus();
+      select.choices.input.element.focus();
       select.pristine = false;
 
       setTimeout(() => {
         assert(!select.visibleErrors.length, 'Select should be valid while changing');
-        select.focusableElement.dispatchEvent(new Event('blur'));
+        select.choices.input.element.dispatchEvent(new Event('blur'));
 
         setTimeout(() => {
           assert(select.visibleErrors.length, 'Should set error after Select component was blurred');

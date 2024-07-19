@@ -54,7 +54,7 @@ export default class NumberComponent extends Input {
 
     const separators = getNumberSeparators(this.options.language || navigator.language);
 
-    this.decimalSeparator = this.options.decimalSeparator = this.options.decimalSeparator
+    this.decimalSeparator = this.options.decimalSeparator = this.component.decimalSymbol || this.options.decimalSeparator
       || this.options.properties?.decimalSeparator
       || separators.decimalSeparator;
 
@@ -83,8 +83,7 @@ export default class NumberComponent extends Input {
 
   /**
    * Creates the number mask for normal numbers.
-   *
-   * @return {*}
+   * @returns {*} - The number mask.
    */
   createNumberMask() {
     return createNumberMask({

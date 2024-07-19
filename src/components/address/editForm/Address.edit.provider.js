@@ -28,7 +28,7 @@ export default [
   {
     type: 'textfield',
     input: true,
-    key: "providerOptions.params['subscription-key']",
+    key: "providerOptions.params.subscriptionKey",
     label: 'Subscription Key',
     placeholder: 'Enter Subscription Key',
     weight: 10,
