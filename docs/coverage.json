@@ -1,6 +1,6 @@
 {
-  "coverage": "5.83%",
-  "expectCount": 1012,
+  "coverage": "5.81%",
+  "expectCount": 1014,
   "actualCount": 59,
   "files": {
     "src/CDN.js": {
@@ -429,6 +429,14 @@
       "actualCount": 0,
       "undocumentLines": [
         6
+      ]
+    },
+    "src/components/datagrid/fixtures/comp-with-reorder.js": {
+      "expectCount": 2,
+      "actualCount": 0,
+      "undocumentLines": [
+        1,
+        65
       ]
     },
     "src/components/datamap/DataMap.form.js": {

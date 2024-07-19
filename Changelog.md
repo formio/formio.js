@@ -4,13 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.19.6-rc.1]
+## 4.19.5
 ### Changed
- - Remove *zoom (IE7 hack)
-   
+ - Official Release
+
 ## 4.19.5-rc.1
 ### Changed
  - FIO-8510: update webform change event to bubble
+ - Remove *zoom (IE7 hack)
 
 ## 4.19.4
 ### Changed

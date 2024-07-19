@@ -3294,6 +3294,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datagrid/fixtures/comp-with-reorder.js",
+    "file/src/components/datagrid/fixtures/comp-with-reorder.js.html",
+    "src/components/datagrid/fixtures/comp-with-reorder.js",
+    "file"
+  ],
+  [
     "src/components/datagrid/fixtures/comp1.js",
     "file/src/components/datagrid/fixtures/comp1.js.html",
     "src/components/datagrid/fixtures/comp1.js",
