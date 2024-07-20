@@ -228,7 +228,7 @@ export default class Form extends Element {
    * @returns {void}
    */
   set form(formParam) {
-    return this.setForm(formParam);
+    this.setForm(formParam);
   }
 
   errorForm(err) {
