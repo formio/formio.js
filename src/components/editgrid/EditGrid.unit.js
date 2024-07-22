@@ -1641,8 +1641,6 @@ describe('EditGrid Fired Events', () => {
             done();
           }, 350);
         })
-
-
       })
       .catch(done);
   });
