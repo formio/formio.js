@@ -418,11 +418,24 @@ describe('DataGrid Component', () => {
     });
   });
 
-  it('Should have dragula available when reorder flag is set to true', () => {
+  it('Should lazy load dragula when reorder flag is set to true', (done) => {
+    assert(!window.dragula, 'dragula should not be loaded in yet');
     return Formio.createForm(document.createElement('div'), comp9, {}).then((form) => {
-      const dataGridComponent = form.getComponent('dataGrid');
-      assert(dataGridComponent.root.dragulaLib, 'could not find dragulaLib');
+      setTimeout(() => {
+        assert(window.dragula, 'could not find dragula');
+        done();
+      }, 200);
     });
+  });
+
+  it('Should not lazy load dragula when reorder flag is set to false', (done) => {
+    let formJSON = {...comp9, reorder: false}
+    return Formio.createForm(document.createElement('div'), formJSON, {}).then((form) => {
+      setTimeout(()=>{
+        assert(!window.dragula, 'dragula should not be loaded in');
+        done();
+      },200)
+    })
   });
 
   it('Should set the pristine of itself and the form the false when reordering occurs', () => {
