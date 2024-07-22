@@ -123,6 +123,12 @@ export default class AddressComponent extends ContainerComponent {
           provider,
           providerOptions,
         } = this.component;
+
+        if (_.get(providerOptions, 'params.subscriptionKey')) {
+          _.set(providerOptions, "params['subscription-key']", _.get(providerOptions, 'params.subscriptionKey'));
+          _.unset(providerOptions, 'params.subscriptionKey');
+        }
+
         this.provider = this.initializeProvider(provider, providerOptions);
       }
       else if (this.component.map) {
