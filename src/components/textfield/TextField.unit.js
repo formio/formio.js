@@ -786,7 +786,7 @@ describe('TextField Component', () => {
     testFormatting(values, values[values.length-1].value);
   });
 
-  it('Should allow multiple masks', (done) => {
+  it('Should allow multiple masks', async() => {
     const form = _.cloneDeep(comp6);
     const tf = form.components[0];
     tf.allowMultipleMasks = true;
@@ -802,26 +802,22 @@ describe('TextField Component', () => {
       { index: 2, mask: 'any', valueValid:['Dv/33'], valueInvalid: ['4/4'] },
     ];
 
-    const testMask = (mask, valid, lastValue) => {
+    const testMask = async(mask, valid) => {
       const values = valid ? mask.valueValid : mask.valueInvalid;
-
-      _.each(values, (value) => {
+      for (const value of values) {
         const element = document.createElement('div');
-
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
-          const component = form.getComponent('textField');
-          const changed = component.setValue({ value: value, maskName: mask.mask });
-          const error = 'Text Field does not match the mask.';
-
-          if (value) {
-            assert.equal(changed, true, 'Should set value');
-          }
-
+        const instance = await Formio.createForm(element, form);
+        instance.setPristine(false);
+        const component = instance.getComponent('textField');
+        const changed = component.setValue({ value: value, maskName: mask.mask });
+        const error = 'Text Field does not match the mask.';
+        if (value) {
+          assert.equal(changed, true, 'Should set value');
+        }
+        await new Promise((resolve) => {
           setTimeout(() => {
             assert.equal(component.refs.select[0].options[mask.index].selected, true, 'Should select correct mask');
             assert.equal(component.getValue().maskName, mask.mask, 'Should apply correct mask');
-
             if (valid) {
               assert.equal(!!component.error, false, 'Should not contain error');
             }
@@ -831,19 +827,16 @@ describe('TextField Component', () => {
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
             }
-
-            if (_.isEqual(value, lastValue)) {
-              done();
-            }
+            resolve();
           }, 300);
-        }).catch(done);
-      });
+        });
+      }
     };
 
-    _.each(masks, (mask, index) => {
-      testMask(mask, true);
-      testMask(mask, false,  (index === masks.length - 1) ? mask.valueInvalid[mask.valueInvalid.length-1] : undefined);
-    });
+    for (const mask of masks) {
+      await testMask(mask, true);
+      await testMask(mask, false);
+    }
   });
 
   it('Should provide validation of number input mask with low dash and placeholder char after setting value', (done) => {
