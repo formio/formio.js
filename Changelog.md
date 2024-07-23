@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.21.2-rc.1]
+ - FIO-8461: Fixes checkbox with radio input type not present in submission
+ - Update Circle CI config to use lts node and yarn package manager
+
 ## 4.21.1
 ### Changed
  - Official Release
