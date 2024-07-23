@@ -20,6 +20,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8596: added the editGridEditRow and editGridOpenModal events for editGrid
  - FIO-7733 remove form min height
  - FIO-8414 | FIO-8403 | FIO-8389: Fixes 5x validations and conditionals for array data components
+ - FIO-8639 fixed error when adding address component
+ - FIO-8461: Fixes checkbox with radio input type not present in submission on 5.x renderer
+ - FIO-8645: day component required validation error not correct
+ - FIO-8688 fixed 'global is not defined' error message
+ - FIO-7478: fixed and isse where dataGrod reordering does not work in 5.x and fixed reordering with select component
+ - FIO-8633 fixed icon name for Edit Grid
+ - FIO-8457: set pristine flag when datagrid reorders rows
 
 ### New Features
 
