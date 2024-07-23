@@ -797,6 +797,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       },
     }, this.component.saveRow || 'Save'));
 
+    this.emit('editGridOpenModal', {
+      component: this.component,
+      row: editRow,
+      instance: this,
+    });
+
     return this.attachComponents(modalContent, components);
   }
 
@@ -867,6 +873,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.restoreRowContext(editRow);
     }
 
+    this.emit('editGridEditRow', {
+      component: this.component,
+      row: editRow,
+      instance: this,
+    });
+  
     if (this.component.modal) {
       return this.addRowModal(rowIndex);
     }
