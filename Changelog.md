@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.19.6-rc.1]
+### Changed
+ - FIO-7478: fixed an issue where select component displays incorrect label after datagrid rows reorder
+   
 ## 4.19.5
 ### Changed
  - Official Release
