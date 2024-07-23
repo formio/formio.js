@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8304: allow for multivalue masks to have blank input mask option
  - FIO-8570: fixed decimal symbol property on number component
  - 5.x - FIO-8426: changes required for eSignature
+ - FIO-8596: added the editGridEditRow and editGridOpenModal events for editGrid
+ - FIO-7733 remove form min height
+ - FIO-8414 | FIO-8403 | FIO-8389: Fixes 5x validations and conditionals for array data components
 
 ### New Features
 
