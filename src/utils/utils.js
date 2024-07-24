@@ -1,16 +1,24 @@
 /* global $ */
 
-import _ from 'lodash';
-import fetchPonyfill from 'fetch-ponyfill';
-import jsonLogic from 'json-logic-js';
-import moment from 'moment-timezone/moment-timezone';
-import jtz from 'jstimezonedetect';
-import { lodashOperators } from './jsonlogic/operators';
-import NativePromise from 'native-promise-only';
 import dompurify from 'dompurify';
-import { getValue } from './formUtils';
+
+import fetchPonyfill from 'fetch-ponyfill';
+
+import jsonLogic from 'json-logic-js';
+
+import jtz from 'jstimezonedetect';
+
+import _ from 'lodash';
+
+import moment from 'moment-timezone/moment-timezone';
+
+import NativePromise from 'native-promise-only';
+
 import Evaluator from './Evaluator';
 import ConditionOperators from './conditionOperators';
+import { getValue } from './formUtils';
+
+import { lodashOperators } from './jsonlogic/operators';
 const interpolate = Evaluator.interpolate;
 const { fetch } = fetchPonyfill({
   Promise: NativePromise
@@ -36,7 +44,7 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, moment, ConditionOperators };
+export { ConditionOperators, jsonLogic, moment };
 
 function setPathToComponentAndPerentSchema(component) {
   component.path = getComponentPath(component);
@@ -200,6 +208,51 @@ export function checkCalculated(component, submission, rowData) {
   }
 }
 
+function getConditionalPathsRecursive(conditionPaths, data) {
+  let currentGlobalIndex = 0;
+  const conditionalPathsArray = [];
+
+  const getConditionalPaths = (data, currentPath = '', localIndex = 0) => {
+    currentPath = currentPath.replace(/^\.+|\.+$/g, '');
+    const currentLocalIndex = localIndex;
+    const currentData = _.get(data, currentPath);
+
+    if (Array.isArray(currentData) && currentData.filter(Boolean).length > 0) {
+      if (currentData.some(element => typeof element !== 'object')) {
+        return;
+      }
+
+      const hasInnerDataArray = currentData.find(x => Array.isArray(x[conditionPaths[currentLocalIndex]]));
+
+      if (hasInnerDataArray) {
+        currentData.forEach((_, indexOutside) => {
+          const innerCompDataPath = `${currentPath}[${indexOutside}].${conditionPaths[currentLocalIndex]}`;
+          getConditionalPaths(data, innerCompDataPath, currentLocalIndex + 1);
+        });
+      }
+      else {
+        currentData.forEach((x, index) => {
+          if (!_.isNil(x[conditionPaths[currentLocalIndex]])) {
+            const compDataPath = `${currentPath}[${index}].${conditionPaths[currentLocalIndex]}`;
+            conditionalPathsArray.push(compDataPath);
+          }
+        });
+      }
+    }
+    else {
+      if (!conditionPaths[currentGlobalIndex]) {
+        return;
+      }
+      currentGlobalIndex = currentGlobalIndex + 1;
+      getConditionalPaths(data, `${currentPath}.${conditionPaths[currentGlobalIndex - 1]}`, currentGlobalIndex);
+    }
+  };
+
+  getConditionalPaths(data);
+
+  return conditionalPathsArray;
+}
+
 /**
  * Check if a simple conditional evaluates to true.
  *
@@ -210,7 +263,7 @@ export function checkCalculated(component, submission, rowData) {
  * @param instance
  * @returns {boolean}
  */
- export function checkSimpleConditional(component, condition, row, data, instance) {
+export function checkSimpleConditional(component, condition, row, data, instance) {
   if (condition.when) {
     const value = getComponentActualValue(condition.when, data, row);
 
@@ -229,7 +282,7 @@ export function checkCalculated(component, submission, rowData) {
     return (String(value) === eq) === (show === 'true');
   }
   else {
-    const { conditions = [], conjunction = 'all',  show = true } = condition;
+    const { conditions = [], conjunction = 'all', show = true } = condition;
 
     if (!conditions.length) {
       return true;
@@ -237,25 +290,42 @@ export function checkCalculated(component, submission, rowData) {
 
     const conditionsResult = _.map(conditions, (cond) => {
       const { value: comparedValue, operator, component: conditionComponentPath } = cond;
+
       if (!conditionComponentPath) {
         return true;
       }
-      const value = getComponentActualValue(conditionComponentPath, data, row);
 
-      const СonditionOperator = ConditionOperators[operator];
-      return СonditionOperator
-        ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
-        : true;
+      const splittedConditionPath = conditionComponentPath.split('.');
+
+      const conditionalPaths = instance?.parent?.type === 'datagrid' ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
+
+      if (conditionalPaths.length>0) {
+        return conditionalPaths.map((path) => {
+          const value = getComponentActualValue(path, data, row);
+
+          const ConditionOperator = ConditionOperators[operator];
+          return ConditionOperator
+            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+            : true;
+        });
+      }
+      else {
+        const value = getComponentActualValue(conditionComponentPath, data, row);
+        const СonditionOperator = ConditionOperators[operator];
+        return СonditionOperator
+          ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+          : true;
+      }
     });
 
     let result = false;
 
     switch (conjunction) {
       case 'any':
-        result = _.some(conditionsResult, res => !!res);
+        result = _.some(conditionsResult.flat(), res => !!res);
         break;
       default:
-        result = _.every(conditionsResult, res => !!res);
+        result = _.every(conditionsResult.flat(), res => !!res);
     }
 
     return show ? result : !result;
@@ -489,10 +559,10 @@ export function uniqueName(name, template, evalContext) {
 
 export function guid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random()*16|0;
+    const r = Math.random() * 16 | 0;
     const v = c === 'x'
       ? r
-      : (r&0x3|0x8);
+      : (r & 0x3 | 0x8);
     return v.toString(16);
   });
 }
@@ -624,17 +694,17 @@ export function loadZones(url, timezone) {
     return moment.zonesPromise;
   }
   return moment.zonesPromise = fetch(url)
-  .then(resp => resp.json().then(zones => {
-    moment.tz.load(zones);
-    moment.zonesLoaded = true;
+    .then(resp => resp.json().then(zones => {
+      moment.tz.load(zones);
+      moment.zonesLoaded = true;
 
-    // Trigger a global event that the timezones have finished loading.
-    if (document && document.createEvent && document.body && document.body.dispatchEvent) {
-      var event = document.createEvent('Event');
-      event.initEvent('zonesLoaded', true, true);
-      document.body.dispatchEvent(event);
-    }
-  }));
+      // Trigger a global event that the timezones have finished loading.
+      if (document && document.createEvent && document.body && document.body.dispatchEvent) {
+        var event = document.createEvent('Event');
+        event.initEvent('zonesLoaded', true, true);
+        document.body.dispatchEvent(event);
+      }
+    }));
 }
 
 /**
@@ -746,7 +816,7 @@ export function getLocaleDateFormatInfo(locale) {
  */
 export function convertFormatToFlatpickr(format) {
   return format
-  // Remove the Z timezone offset, not supported by flatpickr.
+    // Remove the Z timezone offset, not supported by flatpickr.
     .replace(/Z/g, '')
 
     // Year conversion.
@@ -783,7 +853,7 @@ export function convertFormatToFlatpickr(format) {
  */
 export function convertFormatToMoment(format) {
   return format
-  // Year conversion.
+    // Year conversion.
     .replace(/y/g, 'Y')
     // Day in month.
     .replace(/d/g, 'D')
@@ -797,7 +867,7 @@ export function convertFormatToMoment(format) {
 
 export function convertFormatToMask(format) {
   return format
-  // Long month replacement.
+    // Long month replacement.
     .replace(/M{4}/g, 'MM')
     // Initial short month conversion.
     .replace(/M{3}/g, '***')
@@ -929,11 +999,11 @@ export function getNumberDecimalLimit(component, defaultLimit) {
 }
 
 export function getCurrencyAffixes({
-   currency = 'USD',
-   decimalLimit,
-   decimalSeparator,
-   lang,
- }) {
+  currency = 'USD',
+  decimalLimit,
+  decimalSeparator,
+  lang,
+}) {
   // Get the prefix and suffix from the localized string.
   let regex = `(.*)?${(100).toLocaleString(lang)}`;
   if (decimalLimit) {
@@ -1371,12 +1441,12 @@ export function getArrayFromComponentPath(pathStr) {
     .map(part => _.defaultTo(_.toNumber(part), part));
 }
 
-export function  hasInvalidComponent(component) {
+export function hasInvalidComponent(component) {
   return component.getComponents().some((comp) => {
     if (_.isArray(comp.components)) {
       return hasInvalidComponent(comp);
     }
-      return comp.error;
+    return comp.error;
   });
 }
 
@@ -1429,18 +1499,18 @@ export function getBrowserInfo() {
 
   const ua = window.navigator.userAgent.toLowerCase();
   const match = /(edge|edg)\/([\w.]+)/.exec(ua) ||
-                /(opr)[/]([\w.]+)/.exec(ua) ||
-                /(yabrowser)[ /]([\w.]+)/.exec(ua) ||
-                /(chrome)[ /]([\w.]+)/.exec(ua) ||
-                /(iemobile)[/]([\w.]+)/.exec(ua) ||
-                /(version)(applewebkit)[ /]([\w.]+).*(safari)[ /]([\w.]+)/.exec(ua) ||
-                /(webkit)[ /]([\w.]+).*(version)[ /]([\w.]+).*(safari)[ /]([\w.]+)/.exec(ua) ||
-                /(webkit)[ /]([\w.]+)/.exec(ua) ||
-                /(opera)(?:.*version|)[ /]([\w.]+)/.exec(ua) ||
-                /(msie) ([\w.]+)/.exec(ua) ||
-                ua.indexOf('trident') >= 0 && /(rv)(?::| )([\w.]+)/.exec(ua) ||
-                ua.indexOf('compatible') < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
-                [];
+    /(opr)[/]([\w.]+)/.exec(ua) ||
+    /(yabrowser)[ /]([\w.]+)/.exec(ua) ||
+    /(chrome)[ /]([\w.]+)/.exec(ua) ||
+    /(iemobile)[/]([\w.]+)/.exec(ua) ||
+    /(version)(applewebkit)[ /]([\w.]+).*(safari)[ /]([\w.]+)/.exec(ua) ||
+    /(webkit)[ /]([\w.]+).*(version)[ /]([\w.]+).*(safari)[ /]([\w.]+)/.exec(ua) ||
+    /(webkit)[ /]([\w.]+)/.exec(ua) ||
+    /(opera)(?:.*version|)[ /]([\w.]+)/.exec(ua) ||
+    /(msie) ([\w.]+)/.exec(ua) ||
+    ua.indexOf('trident') >= 0 && /(rv)(?::| )([\w.]+)/.exec(ua) ||
+    ua.indexOf('compatible') < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
+    [];
   const matched = {
     browser: match[5] || match[3] || match[1] || '',
     version: match[4] || match[2] || '0'
@@ -1509,12 +1579,12 @@ export function getDataParentComponent(componentInstance) {
  * @param value
  * @return {boolean}
  */
- export function isPromise(value) {
-   return value
-     && value.then
-     && typeof value.then === 'function'
-     && Object.prototype.toString.call(value) === '[object Promise]';
- }
+export function isPromise(value) {
+  return value
+    && value.then
+    && typeof value.then === 'function'
+    && Object.prototype.toString.call(value) === '[object Promise]';
+}
 
 /**
  * Determines if the component has a scoping parent in tree (a component which scopes its children and manages its
