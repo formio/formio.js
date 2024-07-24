@@ -202,7 +202,10 @@ import {
   comp5,
   comp6,
   comp7,
+  comp8,
+  comp9
 } from &apos;./fixtures&apos;;
+import CurrencyComponent from &apos;../currency/Currency&apos;;
 
 describe(&apos;Number Component&apos;, () =&gt; {
   it(&apos;Should build an number component&apos;, () =&gt; {
@@ -610,6 +613,43 @@ describe(&apos;Number Component&apos;, () =&gt; {
       assert.equal(component.getValueAsString([1, 2, 3, 4, 5]), &apos;1, 2, 3, 4, 5&apos;);
       done();
     }).catch(done);
+  });
+
+  it(&apos;Should not remove decimal symbol and numbers after decimal symbol when submit is pressed&apos;, (done) =&gt; {
+    Formio.createForm(document.createElement(&apos;div&apos;), comp8, {}).then((form) =&gt; {
+      const inputEvent = new Event(&apos;input&apos;);
+      const numberComponent = form.getComponent(&apos;number&apos;);
+      const buttonComponent = form.getComponent(&apos;submit&apos;);
+      numberComponent.refs.input[0].value = &apos;123-456&apos;;
+      numberComponent.refs.input[0].dispatchEvent(inputEvent);
+      setTimeout(()=&gt;{
+        buttonComponent.refs.button.click();
+        setTimeout(()=&gt;{
+          assert.equal(numberComponent.refs.input[0].value, &apos;123-456&apos;);
+          done();
+        },200);
+      },200);
+    });
+  });
+
+  it(&apos;Should remove thousands separator in parseValue function if set on component JSON&apos;, () =&gt; {
+    const numberComponent = new NumberComponent({ thousandsSeparator: &apos;.&apos;, decimalSymbol: &apos;,&apos;, delimiter: true });
+    assert.equal(numberComponent.parseValue(&apos;123.456.789,1&apos;), &apos;123456789,1&apos;);
+  });
+
+  it(&apos;Should use a . thousands separator when delimiter is true and thousands separator is set to .&apos;, (done) =&gt; {
+    Formio.createForm(document.createElement(&apos;div&apos;), comp9, {}).then((form) =&gt; {
+      const numberComponent = form.getComponent(&apos;number&apos;);
+      const inputEvent = new Event(&apos;input&apos;);
+      const blurEvent = new Event(&apos;blur&apos;);
+      numberComponent.refs.input[0].value = &apos;111222333&apos;;
+      numberComponent.refs.input[0].dispatchEvent(inputEvent);
+      numberComponent.refs.input[0].dispatchEvent(blurEvent);
+      setTimeout(()=&gt;{
+        assert.equal(numberComponent.refs.input[0].value, &apos;111.222.333&apos;);
+        done();
+      },200);
+    });
   });
 
   // it(&apos;Should add trailing zeros on blur, if decimal required&apos;, (done) =&gt; {

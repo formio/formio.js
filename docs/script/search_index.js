@@ -4578,6 +4578,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/number/fixtures/comp8.js",
+    "file/src/components/number/fixtures/comp8.js.html",
+    "src/components/number/fixtures/comp8.js",
+    "file"
+  ],
+  [
+    "src/components/number/fixtures/comp9.js",
+    "file/src/components/number/fixtures/comp9.js.html",
+    "src/components/number/fixtures/comp9.js",
+    "file"
+  ],
+  [
     "src/components/number/fixtures/index.js",
     "file/src/components/number/fixtures/index.js.html",
     "src/components/number/fixtures/index.js",
