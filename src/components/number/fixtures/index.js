@@ -6,4 +6,5 @@ import comp5 from './comp5';
 import comp6 from './comp6';
 import comp7 from './comp7';
 import comp8 from './comp8';
-export { comp1, comp2, comp3, comp4, comp5, comp6, comp7, comp8 };
+import comp9 from './comp9';
+export { comp1, comp2, comp3, comp4, comp5, comp6, comp7, comp8, comp9 };
