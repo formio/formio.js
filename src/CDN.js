@@ -16,6 +16,7 @@ class CDN {
       'bootswatch': '5.3.3',
       'bootstrap-icons': '1.11.1',
       'ckeditor': '19.0.0',
+      'dragula': '3.7.3',
       'flatpickr': '4.6.8',
       'flatpickr-formio': '4.6.13-formio.3',
       'font-awesome': '4.7.0',
@@ -70,7 +71,7 @@ class CDN {
     }
     // Only attach the version if this is the hosted cdn.
     if (
-      cdnUrl.includes('form.io') && 
+      cdnUrl.includes('form.io') &&
       version && version !== 'latest'
     ) {
       url += `/${version}`;

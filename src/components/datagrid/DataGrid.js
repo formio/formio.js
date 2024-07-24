@@ -2,7 +2,6 @@ import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
 import Components from '../Components';
-import dragula from 'dragula';
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -44,6 +43,10 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     if (this.initRows || !_.isEqual(this.dataValue, this.emptyValue)) {
       this.createRows(true);
+    }
+
+    if(this.allowReorder) {
+      this.dragulaReady = this.getDragula();
     }
 
     this.visibleColumns = {};
@@ -330,44 +333,29 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     if (this.allowReorder) {
       this.refs[`${this.datagridKey}-row`].forEach((row, index) => {
-        row.dragInfo = { index };
+        row.dragInfo = {index};
       });
+      this.dragulaReady.then((dragula) => {
+        // The drop event may call redraw twice which calls attach twice and because this block of code is asynchronous
+        // BOTH redraws may be called before this block of code runs (which causes this block of code to run twice sequentially).
+        // This causes two dragula() calls on the same container which breaks dragula. To fix this the return value must
+        // be saved in this.dragula and have its container contents reset if it exists
+        if (this.dragula && this.dragula.containers) {
+          this.dragula.containers = [];
+        }
+        this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
+          moves: (_draggedElement, _oldParent, clickedElement) => {
+            const clickedElementKey = clickedElement.getAttribute('data-key');
+            const oldParentKey = _oldParent.getAttribute('data-key');
 
-      this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
-        moves: (_draggedElement, _oldParent, clickedElement) => {
-          const clickedElementKey = clickedElement.getAttribute('data-key');
-          const oldParentKey = _oldParent.getAttribute('data-key');
-
-          //Check if the clicked button belongs to that container, if false, it belongs to the nested container
-          if (oldParentKey === clickedElementKey) {
-            return clickedElement.classList.contains('formio-drag-button');
+            //Check if the clicked button belongs to that container, if false, it belongs to the nested container
+            if (oldParentKey === clickedElementKey) {
+              return clickedElement.classList.contains('formio-drag-button');
+            }
           }
-        }
-      }).on('drop', this.onReorder.bind(this));
-
-      this.dragula.on('cloned', (el, original) => {
-        if (el && el.children && original && original.children) {
-          _.each(original.children, (child, index) => {
-            const styles = getComputedStyle(child, null);
-
-            if (styles.cssText !== '') {
-              el.children[index].style.cssText = styles.cssText;
-            }
-            else {
-              const cssText = Object.values(styles).reduce(
-                (css, propertyName) => {
-                  return `${css}${propertyName}:${styles.getPropertyValue(
-                    propertyName
-                  )};`;
-                },
-                ''
-              );
-
-              el.children[index].style.cssText = cssText;
-            }
-          });
-        }
-      });
+        }).on('drop', this.onReorder.bind(this))
+          .on('cloned', this.onCloned.bind(this));
+      })
     }
 
     this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {
@@ -447,6 +435,29 @@ export default class DataGridComponent extends NestedArrayComponent {
     //need to re-build rows to re-calculate indexes and other indexed fields for component instance (like rows for ex.)
     this.setValue(dataValue, { isReordered: true });
     this.rebuild();
+  }
+
+  onCloned(el, original) {
+    if (el && el.children && original && original.children) {
+      _.each(original.children, (child, index) => {
+        const styles = getComputedStyle(child, null);
+
+        if (styles.cssText !== '') {
+          el.children[index].style.cssText = styles.cssText;
+        } else {
+          const cssText = Object.values(styles).reduce(
+            (css, propertyName) => {
+              return `${css}${propertyName}:${styles.getPropertyValue(
+                propertyName
+              )};`;
+            },
+            ''
+          );
+
+          el.children[index].style.cssText = cssText;
+        }
+      });
+    }
   }
 
   focusOnNewRowElement(row) {
