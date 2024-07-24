@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-7478: fixed and isse where dataGrod reordering does not work in 5.x and fixed reordering with select component
  - FIO-8633 fixed icon name for Edit Grid
  - FIO-8457: set pristine flag when datagrid reorders rows
+ - FIO-8716: fixed unsavedRows validation for Edit Grid
 
 ### New Features
 
