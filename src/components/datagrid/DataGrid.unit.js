@@ -5,6 +5,7 @@ import sinon from 'sinon';
 import Harness from '../../../test/harness';
 import DataGridComponent from './DataGrid';
 import { Formio } from '../../Formio';
+import dragula from 'dragula'
 
 import {
   comp1,
@@ -28,6 +29,15 @@ import {
 } from './fixtures';
 
 describe('DataGrid Component', () => {
+
+  before(()=>{
+    window.dragula = dragula;
+  });
+
+  after(()=>{
+    delete window.dragula;
+  });
+
   it('Test modal edit confirmation dialog', (done) => {
     Harness.testCreate(DataGridComponent, comp5).then((component) => {
       component.componentModal.openModal();
@@ -418,24 +428,17 @@ describe('DataGrid Component', () => {
     });
   });
 
-  it('Should lazy load dragula when reorder flag is set to true', (done) => {
-    assert(!window.dragula, 'dragula should not be loaded in yet');
-    return Formio.createForm(document.createElement('div'), comp9, {}).then((form) => {
-      setTimeout(() => {
-        assert(window.dragula, 'could not find dragula');
-        done();
-      }, 200);
-    });
+  it('Should lazy load dragula when reorder flag is set to true', async () => {
+    await Formio.createForm(document.createElement('div'), comp9, {});
+    const dragula = await Formio.libraries.dragula.ready;
+    assert.strictEqual(window.dragula, dragula, "could not find dragula");
   });
 
-  it('Should not lazy load dragula when reorder flag is set to false', (done) => {
-    let formJSON = {...comp9, reorder: false}
-    return Formio.createForm(document.createElement('div'), formJSON, {}).then((form) => {
-      setTimeout(()=>{
-        assert(!window.dragula, 'dragula should not be loaded in');
-        done();
-      },200)
-    })
+  it('Should not lazy load dragula when reorder flag is set to false', async () => {
+    let formJSON = _.cloneDeep(comp9);
+    formJSON.components[0].reorder = false;
+    await Formio.createForm(document.createElement('div'), formJSON, {});
+    assert(!Formio.libraries.dragula);
   });
 
   it('Should set the pristine of itself and the form the false when reordering occurs', () => {
