@@ -17,6 +17,7 @@ import {
   comp13,
   comp14,
   comp15,
+  comp16,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
   compWithCustomDefaultValue,
@@ -368,6 +369,29 @@ describe('EditGrid Component', () => {
       assert(component.checkValidity(null, true), 'Item should be valid');
     });
   });
+
+  it('Should not allow to go to the next page if row is not saved', (done) => {
+    const form = _.cloneDeep(comp16);
+    const element = document.createElement('div');
+    Formio.createForm(element, form).then((form) => {
+      const editGrid = form.getComponent('editGrid');
+      assert(editGrid.checkValidity(null, true), 'Item should be valid');
+      assert.equal(form.page, 0);
+      editGrid.addRow();
+      const clickEvent = new Event('click');
+      setTimeout(() => {
+        const nextBtn = _.get(form.refs, `wizard-${form.originalComponent.id}-next`);
+        nextBtn.dispatchEvent(clickEvent);
+        setTimeout(()=> {
+          assert(!editGrid.checkValidity(null, true), 'Item should not be valid');
+          assert.equal(form.page, 0);
+          assert.equal(form.errors.length, 1);
+          done();
+        }, 500)
+        
+      }, 200)
+    }).catch(done);
+  })
 
   it('Should disable components when in read only', () => {
     return Harness.testCreate(EditGridComponent, comp1, { readOnly: true }).then((component) => {
