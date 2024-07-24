@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.68
+### Changed
+ - Updated @formio/core@2.2.0-rc.6
+ - FIO-7733 remove form min height
+ - FIO-8710: fixed incorrect Components import that causes errors when interacting with form components
+ - FIO-8716 fixed unsavedRows validation for Edit Grid
+ - FIO-7478: fixed and isse where dataGrod reordering does not work in 5.x and fixed reordering with select component
+
 ## 5.0.0-rc.67
 ### Changed
  - Updated @formio/core@2.2.0-rc.5
