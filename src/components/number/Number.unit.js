@@ -16,7 +16,7 @@ import {
   comp8,
   comp9
 } from './fixtures';
-import CurrencyComponent from "../currency/Currency";
+import CurrencyComponent from '../currency/Currency';
 
 describe('Number Component', () => {
   it('Should build an number component', () => {
@@ -431,12 +431,12 @@ describe('Number Component', () => {
       const inputEvent = new Event('input');
       const numberComponent = form.getComponent('number');
       const buttonComponent = form.getComponent('submit');
-      numberComponent.refs.input[0].value = "123-456";
+      numberComponent.refs.input[0].value = '123-456';
       numberComponent.refs.input[0].dispatchEvent(inputEvent);
       setTimeout(()=>{
         buttonComponent.refs.button.click();
         setTimeout(()=>{
-          assert.equal(numberComponent.refs.input[0].value, "123-456");
+          assert.equal(numberComponent.refs.input[0].value, '123-456');
           done();
         },200);
       },200);
@@ -444,7 +444,7 @@ describe('Number Component', () => {
   });
 
   it('Should remove thousands separator in parseValue function if set on component JSON', () => {
-    const numberComponent = new NumberComponent({thousandsSeparator: '.', decimalSymbol: ',', delimiter: true});
+    const numberComponent = new NumberComponent({ thousandsSeparator: '.', decimalSymbol: ',', delimiter: true });
     assert.equal(numberComponent.parseValue('123.456.789,1'), '123456789,1');
   });
 
@@ -459,8 +459,8 @@ describe('Number Component', () => {
       setTimeout(()=>{
         assert.equal(numberComponent.refs.input[0].value, '111.222.333');
         done();
-      },200)
-    })
+      },200);
+    });
   });
 
   // it('Should add trailing zeros on blur, if decimal required', (done) => {

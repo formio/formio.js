@@ -63,7 +63,7 @@ export default class NumberComponent extends Input {
       this.delimiter = this.component.thousandsSeparator || this.options.properties?.thousandsSeparator || this.options.thousandsSeparator || separators.delimiter;
     }
     else {
-      if (this.component.thousandsSeparator || this.options.properties?.thousandsSeparator || this.options.thousandsSeparator){
+      if (this.component.thousandsSeparator || this.options.properties?.thousandsSeparator || this.options.thousandsSeparator) {
         console.warn('In order for thousands separator to work properly, you must set the delimiter to true in the component json');
       }
       this.delimiter = '';
