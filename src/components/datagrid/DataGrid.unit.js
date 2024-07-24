@@ -31,11 +31,11 @@ import {
 
 describe('DataGrid Component', () => {
 
-  before(()=>{
+  before(() => {
     window.dragula = dragula;
   });
 
-  after(()=>{
+  after(() => {
     delete window.dragula;
   });
 
@@ -433,6 +433,7 @@ describe('DataGrid Component', () => {
     await Formio.createForm(document.createElement('div'), comp9, {});
     const dragula = await Formio.libraries.dragula.ready;
     assert.strictEqual(window.dragula, dragula, "could not find dragula");
+    delete Formio.libraries.dragula
   });
 
   it('Should not lazy load dragula when reorder flag is set to false', async () => {
