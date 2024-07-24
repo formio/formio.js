@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
-import { Components } from '../Components';
+import Components from '../Components';
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
