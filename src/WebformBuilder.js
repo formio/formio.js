@@ -215,20 +215,6 @@ export default class WebformBuilder extends Component {
 
     this.options.hooks.attachComponent = this.attachComponent.bind(this);
 
-    // Load resources tagged as 'builder'
-    const query = {
-      params: {
-        type: 'resource',
-        limit: 1000000,
-        select: '_id,title,name,components'
-      }
-    };
-    if (this.options && this.options.resourceTag) {
-      query.params.tags = [this.options.resourceTag];
-    }
-    else if (!this.options || !this.options.hasOwnProperty('resourceTag')) {
-      query.params.tags = ['builder'];
-    }
     const formio = new Formio(Formio.projectUrl);
     const isResourcesDisabled = this.options.builder && this.options.builder.resource === false;
 
@@ -250,7 +236,7 @@ export default class WebformBuilder extends Component {
 
     if (!formio.noProject && !isResourcesDisabled && formio.formsUrl) {
       const resourceOptions = this.options.builder && this.options.builder.resource;
-      formio.loadForms(query)
+      formio.loadForms(this.getExistingResourcesQuery())
         .then((resources) => {
           if (resources.length) {
             this.builder.resource = {
@@ -285,6 +271,29 @@ export default class WebformBuilder extends Component {
     this.arrayDataComponentPaths = [];
     this.nestedDataComponents = [];
     this.arrayDataComponents = [];
+  }
+
+  /**
+   * Returns the query parameters for the builder existing resources request
+   * @returns {object} - The object with query parameters.
+   */
+  getExistingResourcesQuery() {
+    // Load resources tagged as 'builder'
+    const query = {
+      params: {
+        type: 'resource',
+        limit: 1000000,
+        select: '_id,title,name,components'
+      }
+    };
+  
+    if (this.options && this.options.resourceTag) {
+      query.params.tags = [this.options.resourceTag];
+    }
+    else if (!this.options || !this.options.hasOwnProperty('resourceTag')) {
+      query.params.tags = ['builder'];
+    }
+    return query;
   }
 
   allowDrop() {
