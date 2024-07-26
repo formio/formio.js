@@ -1289,7 +1289,7 @@ export default class Webform extends NestedDataComponent {
 
         const displayedErrors = [];
         if (errors.length) {
-            errors = _.uniqBy(errors, (error) => error.message);
+            errors = _.uniqBy(errors, (error) => [error.message, error.component?.id, error.context?.path].join());
             const createListItem = (message, index) => {
                 const err = errors[index];
                 const messageFromIndex = !_.isUndefined(index) && errors && errors[index];
