@@ -103,6 +103,11 @@ export default class NumberComponent extends Input {
 
   get defaultValue() {
     let defaultValue = super.defaultValue;
+    if (typeof defaultValue === 'string'){
+      // Default value may be a string or have custom thousands separators or decimal symbols, so we need to call
+      // parseNumber on it
+      defaultValue = this.parseNumber(defaultValue);
+    }
     if (!defaultValue && this.component.defaultValue === 0) {
       defaultValue = this.component.defaultValue;
     }
@@ -117,6 +122,12 @@ export default class NumberComponent extends Input {
     return _.get(this.component, 'allowDecimal', !(this.component.validate && this.component.validate.integer));
   }
 
+  /**
+   * parses a numeric string by removing the delimiters and replacing the decimal separator back to '.' so that it can
+   * be processed by either parseInt or parseFloat
+   * @param {string} value the value to be parsed
+   * @returns {number} a parsed number
+   */
   parseNumber(value) {
     // Remove delimiters and convert decimal separator to dot.
     value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
