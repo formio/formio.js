@@ -2728,6 +2728,14 @@ export default class Component extends Element {
       });
   }
 
+  async getDragula() {
+    return new Promise((resolve) => {
+      return Formio.requireLibrary('dragula', 'dragula', `${Formio.cdn.dragula}/dragula.js`, true, (ready) => {
+        return ready.then(resolve);
+      })
+    });
+  }
+
   get tree() {
     return this.component.tree || false;
   }
