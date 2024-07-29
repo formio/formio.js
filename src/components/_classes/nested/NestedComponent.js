@@ -762,8 +762,11 @@ export default class NestedComponent extends Field {
     );
   }
 
-  validationProcessor({ scope, data, row, instance }, flags) {
+  validationProcessor({ scope, data, row, instance, component }, flags) {
     const { dirty } = flags;
+    if (this.root.hasExtraPages && this.page !== this.root.page) {
+      instance = this.getComponentById(component.id);
+    }
     if (!instance) {
       return;
     }
