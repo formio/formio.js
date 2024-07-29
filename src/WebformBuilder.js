@@ -220,7 +220,8 @@ export default class WebformBuilder extends Component {
       params: {
         type: 'resource',
         limit: 1000000,
-        select: '_id,title,name,components'
+        select: '_id,title,name,components',
+        'tags__ne': 'noBuilderResource'
       }
     };
     if (this.options && this.options.resourceTag) {
