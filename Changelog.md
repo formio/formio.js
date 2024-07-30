@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.69
+### Changed
+ - Updated @formio/core@2.2.0-rc.7
+ - FIO-8570: fixed decimal symbol property on number component
+ - FIO-8570: fixed thousandSeparator problem and decimal symbol problem
+
 ## 5.0.0-rc.68
 ### Changed
  - Updated @formio/core@2.2.0-rc.6
