@@ -14,7 +14,8 @@ import {
   comp6,
   comp7,
   comp8,
-  comp9
+  comp9,
+  comp10
 } from './fixtures';
 import CurrencyComponent from "../currency/Currency";
 
@@ -461,6 +462,13 @@ describe('Number Component', () => {
         done();
       },200)
     })
+  });
+
+  it('Should not display a number validation error if the default value is set to a numeric string', () => {
+    return Formio.createForm(document.createElement('div'), comp10, {}).then((form) => {
+      const numberComponent = form.getComponent("number");
+      assert.equal(numberComponent._errors.length, 0);
+    });
   });
 
   // it('Should add trailing zeros on blur, if decimal required', (done) => {

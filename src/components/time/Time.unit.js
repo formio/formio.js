@@ -5,6 +5,7 @@ import {
   comp1,
   comp2,
   comp3,
+  comp4,
   timeForm2,
   timeForm,
 } from './fixtures';
@@ -76,5 +77,13 @@ describe('Time Component', () => {
       assert.deepEqual(time.dataValue, ['10:00:00', '11:00:00'], 'Should be set to default value');
       done();
     }).catch(done);
+  });
+
+  it('Should not display error when embedded in a wizard form', () => {
+    return Formio.createForm(document.createElement('div'), comp4, {}).then((form) => {
+      const timeComponent = form.getComponent('time1');
+      assert.equal(timeComponent._errors.length, 0);
+      assert.equal(timeComponent.rawData, '03:03');
+    });
   });
 });
