@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8633 fixed icon name for Edit Grid
  - FIO-8457: set pristine flag when datagrid reorders rows
  - FIO-8716: fixed unsavedRows validation for Edit Grid
+ - FIO-8647,8721: validation not triggered for each row after the first one in data and edit grid
+ - FIO-8720: fixed errors occurring with valid time and number components
+ - FIO-8719: fixed validation for nested wizard fields
 
 ### New Features
 
