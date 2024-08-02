@@ -1045,7 +1045,11 @@ export default class WebformBuilder extends Component {
       this.options.properties = form.properties;
     }
 
-    this.keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false) || this.options.properties?.keyboardBuilder;
+    let keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false) || this.options.properties?.keyboardBuilder;
+    if (typeof keyboardActionsEnabled === 'string') {
+      keyboardActionsEnabled = keyboardActionsEnabled === 'true';
+    }
+    this.keyboardActionsEnabled = keyboardActionsEnabled;
 
     const isShowSubmitButton = !this.options.noDefaultSubmitButton
       && (!form.components.length || !form.components.find(comp => comp.key === 'submit'));
