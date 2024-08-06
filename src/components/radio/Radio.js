@@ -332,16 +332,17 @@ export default class RadioComponent extends ListComponent {
   setItems(items) {
     const listData = [];
     items?.forEach((item, i) => {
+      const valueAtProperty = _.get(item, this.component.valueProperty);
       this.loadedOptions[i] = {
-        value: this.component.valueProperty ? item[this.component.valueProperty] : item,
-        label: this.component.valueProperty ? this.itemTemplate(item, item[this.component.valueProperty]) : this.itemTemplate(item, item, i)
+        value: this.component.valueProperty ? valueAtProperty : item,
+        label: this.component.valueProperty ? this.itemTemplate(item, valueAtProperty) : this.itemTemplate(item, item, i)
       };
-      listData.push(this.templateData[this.component.valueProperty ? item[this.component.valueProperty] : i]);
+      listData.push(this.templateData[this.component.valueProperty ? valueAtProperty : i]);
 
       if ((this.component.valueProperty || !this.isRadio) && (
-        _.isUndefined(item[this.component.valueProperty]) ||
-        (!this.isRadio && _.isObject(item[this.component.valueProperty])) ||
-        (!this.isRadio && _.isBoolean(item[this.component.valueProperty]))
+        _.isUndefined(valueAtProperty) ||
+        (!this.isRadio && _.isObject(valueAtProperty)) ||
+        (!this.isRadio && _.isBoolean(valueAtProperty))
       )) {
         this.loadedOptions[i].invalid = true;
       }
