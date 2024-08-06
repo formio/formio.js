@@ -18,6 +18,7 @@ import {
   comp14,
   comp15,
   comp16,
+  comp17,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
   compWithCustomDefaultValue,
@@ -388,7 +389,7 @@ describe('EditGrid Component', () => {
           assert.equal(form.errors.length, 1);
           done();
         }, 500)
-        
+
       }, 200)
     }).catch(done);
   })
@@ -1410,6 +1411,24 @@ describe('EditGrid Component', () => {
       }, 300);
     }).catch(done);
   });
+
+  it('Should open modal when a validation error occurs with a nested component', (done) => {
+    Formio.createForm(document.createElement('div'), comp17, {}).then((form) => {
+      const editGridComponent = form.getComponent('editGrid');
+      editGridComponent.refs.openModal.click();
+      setTimeout(()=>{
+        editGridComponent.addRow();
+        editGridComponent.componentModal.saveModalValueHandler(new Event('PointerEvent'));
+        const submitComponent = form.getComponent('submit');
+        submitComponent.refs.button.click();
+        setTimeout(()=>{
+          form.focusOnComponent('textField1');
+          assert(editGridComponent.componentModal.isOpened, 'the modal should be open when error message is clicked');
+          done();
+        },200);
+      },200);
+    });
+  });
 });
 
 describe('EditGrid Open when Empty', () => {
@@ -1603,7 +1622,7 @@ describe('EditGrid Fired Events', () => {
           eventsCount = eventsCount + 1;
         });
 
-        form.setSubmission({  
+        form.setSubmission({
           data: {
           editGrid: [
               {
@@ -1644,7 +1663,7 @@ describe('EditGrid Fired Events', () => {
           eventsCount = eventsCount + 1;
         });
 
-        form.setSubmission({  
+        form.setSubmission({
           data: {
           editGrid: [
               {
