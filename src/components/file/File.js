@@ -1053,7 +1053,6 @@ export default class FileComponent extends Field {
   }
 
   async upload() {
-    //
     if (!this.filesToSync.filesToUpload.length) {
       return Promise.resolve();
     }
