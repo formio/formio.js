@@ -1214,7 +1214,10 @@ export default class WebformBuilder extends Component {
           'calculateValue',
           'conditional',
           'customConditional',
-          'id'
+          'id',
+          'fields.day.required',
+          'fields.month.required',
+          'fields.year.required',
         ]));
         const parentComponent = defaultValueComponent.parent;
         let tabIndex = -1;
@@ -1237,7 +1240,6 @@ export default class WebformBuilder extends Component {
           _.pull(newComp.validators, 'required');
           parentComponent.tabs[tabIndex].splice(index, 1, newComp);
           newComp.checkValidity = () => true;
-          newComp.checkComponentValidity = () => true;
           newComp.build(defaultValueComponent.element);
         }
       }
