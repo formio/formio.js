@@ -3,7 +3,6 @@ import { Formio } from './Formio';
 import Displays from './displays';
 import templates from './templates';
 import * as FormioUtils from './utils/utils';
-import _ from "lodash";
 
 export default class Form extends Element {
   /**
@@ -316,7 +315,6 @@ export default class Form extends Element {
               this.instance = this.instance || this.create(form.display);
               const options = this.getFormInitOptions(formParam, form);
               this.instance.setUrl(formParam, options);
-              _.set(form, 'config.myApiUrl', options.project);
               this.instance.nosubmit = false;
               this._form = this.instance.form = form;
               if (submission) {

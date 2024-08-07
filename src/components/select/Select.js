@@ -618,7 +618,7 @@ export default class SelectComponent extends ListComponent {
     };
 
     // Allow for url interpolation.
-    url = this.interpolate(url, {
+    url = this.interpolate(this.sanitize(url, this.shouldSanitizeValue), {
       formioBase: Formio.getBaseUrl(),
       search,
       limit,

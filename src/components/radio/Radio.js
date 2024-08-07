@@ -308,6 +308,18 @@ export default class RadioComponent extends ListComponent {
       body = null;
     }
 
+    const limit = this.component.limit || 100;
+    const skip = this.isScrollLoading ? this.selectOptions.length : 0;
+
+    // Allow for url interpolation.
+    url = this.interpolate(this.sanitize(url, this.shouldSanitizeValue), {
+      formioBase: Formio.getBaseUrl(),
+      search,
+      limit,
+      skip,
+      page: Math.abs(Math.floor(skip / limit))
+    });
+
     // Set ignoreCache if it is
     options.ignoreCache = this.component.ignoreCache;
     // Make the request.
