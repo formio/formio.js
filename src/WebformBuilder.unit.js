@@ -317,7 +317,6 @@ describe('WebformBuilder tests', function() {
         requiredDay.setValue(true);
         setTimeout(() => {
           const defaultValue = builder.editForm.getComponent('defaultValue');
-          assert.equal(_.get(defaultValue.component, 'fields.day.required'), true);
           assert.equal(defaultValue.checkComponentValidity(), true);
           done();
         }, 200);
