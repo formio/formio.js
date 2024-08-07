@@ -1446,6 +1446,7 @@ export default class WebformBuilder extends Component {
           helplinks: this.helplinks,
         }));
         this.editForm.attach(this.componentEdit.querySelector(`[${this._referenceAttributeName}="editForm"]`));
+        this.updateComponent(this.editForm.submission.data ?? component);
         this.attachEditComponentControls(component, parent, isNew, original, ComponentClass);
       });
     });
