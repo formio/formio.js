@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.70
+### Changed
+ - Updated @formio/core@2.2.0-rc.9
+ - FIO-8759 fixed validation for the default value component
+ - FIO-8752: coerced keyboard actions to a boolean value
+ - FIO-8389: Fix conditional logic for Edit Grid
+ - FIO-8647,8721: validation not triggered for each row after the first one in data and edit grid
+ - FIO-8720: fixed errors occurring with valid time and number components
+ - FIO-8719 fixed validation for nested wizard fields
+ - FIO-5748 Fixed preview not working correctly after hiding/showing it
+
 ## 5.0.0-rc.69
 ### Changed
  - Updated @formio/core@2.2.0-rc.7
