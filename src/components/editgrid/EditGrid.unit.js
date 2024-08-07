@@ -18,6 +18,7 @@ import {
   comp14,
   comp15,
   comp16,
+  comp17,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
   compWithCustomDefaultValue,
@@ -388,7 +389,7 @@ describe('EditGrid Component', () => {
           assert.equal(form.errors.length, 1);
           done();
         }, 500)
-        
+
       }, 200)
     }).catch(done);
   })
@@ -1603,7 +1604,7 @@ describe('EditGrid Fired Events', () => {
           eventsCount = eventsCount + 1;
         });
 
-        form.setSubmission({  
+        form.setSubmission({
           data: {
           editGrid: [
               {
@@ -1644,7 +1645,7 @@ describe('EditGrid Fired Events', () => {
           eventsCount = eventsCount + 1;
         });
 
-        form.setSubmission({  
+        form.setSubmission({
           data: {
           editGrid: [
               {
@@ -1693,6 +1694,40 @@ describe('EditGrid Fired Events', () => {
             assert.equal(eventsCount, 1);
             done();
           }, 350);
+      })
+      .catch(done);
+  });
+
+  it('Should prepare correct email table template with nested layout components', (done) => {
+    const formElement = document.createElement('div');
+    const testForm = fastCloneDeep(comp17);
+    Formio.createForm(formElement, testForm)
+      .then((form) => {
+        form.setSubmission({
+          data: {
+            editGrid: [{
+              radio: 'yes',
+              textArea: 'text area 1',
+            }, {
+              radio: 'no',
+              textArea: 'text area 2',
+            }],
+          },
+        });
+
+        const editGridComp = form.getComponent('editGrid');
+
+        setTimeout(() => {
+          const table = editGridComp.getValueAsString(editGridComp.dataValue, { email: true});
+          assert.ok(table.includes('table'));
+          assert.ok(table.includes('Radio'));
+          assert.ok(table.includes('Text Area'));
+          assert.ok(table.includes('yes'));
+          assert.ok(table.includes('text area 1'));
+          assert.ok(table.includes('no'));
+          assert.ok(table.includes('text area 2'));
+          done();
+        }, 200);
       })
       .catch(done);
   });

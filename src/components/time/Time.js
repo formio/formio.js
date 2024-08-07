@@ -35,7 +35,8 @@ export default class TimeComponent extends TextFieldComponent {
     this.component.inputType = isEdgeBrowser && edgeVersion <= 18
       ? 'text'
       : (this.component.inputType || 'time');
-    this.rawData = this.component.multiple ? [] : this.emptyValue;
+    // If default value is given then the raw data needs to be set
+    this.rawData = this.component.multiple ? [] : this.getValueAsString(this.defaultValue) || this.emptyValue;
   }
 
   static get builderInfo() {
@@ -71,7 +72,7 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   get validationValue() {
-    if (Array.isArray(this.rawData) && !this.rawData.length || !this.rawData) {
+    if ((Array.isArray(this.rawData) && !this.rawData.length) || !this.rawData) {
       return this.dataValue;
     }
     return this.rawData;
