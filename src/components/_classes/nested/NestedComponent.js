@@ -547,6 +547,7 @@ export default class NestedComponent extends Field {
       header: 'single',
       collapsed: this.collapsed,
       [this.nestedKey]: 'single',
+      messageContainer: 'single-scope',
     });
 
     let childPromise = Promise.resolve();

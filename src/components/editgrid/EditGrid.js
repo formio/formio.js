@@ -573,11 +573,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.removeClass(this.refs.component, `formio-component-${this.component.type}-row-open`);
     }
 
-    const superAttach = super.attach(element);
-    this.loadRefs(element, {
-      messageContainer: 'single-scope',
-    });
-    return superAttach;
+    return super.attach(element);
   }
 
   flattenRowDataValue(dataValue) {
@@ -878,7 +874,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       row: editRow,
       instance: this,
     });
-  
+
     if (this.component.modal) {
       return this.addRowModal(rowIndex);
     }
