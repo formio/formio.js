@@ -5,23 +5,23 @@
   "main": "lib/cjs/index.js",
   "exports": {
     ".": {
-      "import": "./lib/cjs/index.js",
+      "import": "./lib/mjs/index.js",
       "require": "./lib/cjs/index.js"
     },
     "./sdk": {
-      "import": "./lib/cjs/Formio.js",
+      "import": "./lib/mjs/Formio.js",
       "require": "./lib/cjs/Formio.js"
     },
     "./utils": {
-      "import": "./lib/cjs/utils/index.js",
+      "import": "./lib/mjs/utils/index.js",
       "require": "./lib/cjs/utils/index.js"
     },
     "./form": {
-      "import": "./lib/cjs/formio.form.js",
+      "import": "./lib/mjs/formio.form.js",
       "require": "./lib/cjs/formio.form.js"
     },
     "./embed": {
-      "import": "./lib/cjs/InlineEmbed.js",
+      "import": "./lib/mjs/InlineEmbed.js",
       "require": "./lib/cjs/InlineEmbed.js"
     },
     "./dist/*": "./dist/*"
