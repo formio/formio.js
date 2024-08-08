@@ -2,7 +2,8 @@
   "name": "formiojs",
   "version": "4.19.5",
   "description": "JavaScript powered Forms with JSON Form Builder",
-  "main": "./dist/formio.full.min.js",
+  "type": "commonjs",
+  "main": "index.js",
   "types": "index.d.ts",
   "files": [
     "dist",
