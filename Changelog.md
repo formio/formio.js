@@ -4,10 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED 5.0.0-rc.72]
+## [Unreleased: 5.0.0-rc.72]
 ### Changed
  - FIO-8621: error event on file upload adding
- - 
+ - FIO-8783: Fixed the issue when validation messages disappear after collapse and expand the panel
+ 
 ## 5.0.0-rc.71
 ### Changed
  - Updated @formio/bootstrap@3.0.0-rc.37
