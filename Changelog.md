@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - FIO-7478: fixed an issue where select component displays incorrect label after datagrid rows reorder
  - FIO-7835: changes required for eSignature
+ - FIO-8389 | FIO-8403 | FIO-8414: Fixes 4.x validations and conditionals for array data components
    
 ## 4.19.5
 ### Changed
