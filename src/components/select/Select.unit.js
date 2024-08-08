@@ -34,6 +34,7 @@ import {
   comp22,
   comp23,
   comp24,
+  comp25,
 } from './fixtures';
 
 // eslint-disable-next-line max-statements
@@ -1151,6 +1152,41 @@ describe('Select Component', () => {
           done();
         }, 500);
       }, 200);
+    }).catch(done);
+  });
+
+  it('Should perfom simple conditional logic for number data type', (done) => {
+    const form = _.cloneDeep(comp25);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const textfield = form.getComponent('textField');
+      select.setValue('1');
+
+      setTimeout(() => {
+        assert.equal(select.dataValue, 1);
+        assert.equal(textfield.visible, true);
+        select.setValue('2');
+
+        setTimeout(() => {
+          assert.equal(select.dataValue, 2);
+          assert.equal(textfield.visible, true);
+          select.setValue('10');
+
+          setTimeout(() => {
+            assert.equal(select.dataValue, 10);
+            assert.equal(textfield.visible, false);
+            select.setValue('1d');
+
+            setTimeout(() => {
+              assert.equal(select.dataValue, '1d');
+              assert.equal(textfield.visible, false);
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
     }).catch(done);
   });
 

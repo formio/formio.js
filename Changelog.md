@@ -31,6 +31,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8647,8721: validation not triggered for each row after the first one in data and edit grid
  - FIO-8720: fixed errors occurring with valid time and number components
  - FIO-8719: fixed validation for nested wizard fields
+ - FIO-8627: Fixed the email table generation for nested array components
+ - FIO-5748: Fixed preview not working correctly after hiding/showing it
+ - FIO-8759: fixed validation for the default value component
 
 ### New Features
 
