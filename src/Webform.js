@@ -933,7 +933,6 @@ export default class Webform extends NestedDataComponent {
         if (!submission || !submission.data) {
             submission = {
                 data: {},
-                metadata: submission.metadata,
             };
         }
         // Metadata needs to be available before setValue
