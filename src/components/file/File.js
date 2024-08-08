@@ -1082,6 +1082,11 @@ export default class FileComponent extends Field {
           : response.type === 'abort'
             ? this.t('Request was aborted')
             : response.toString();
+
+        this.emit('fileUploadError', {
+          fileToSync,
+          response,
+        });
       }
       finally {
         delete fileToSync.progress;

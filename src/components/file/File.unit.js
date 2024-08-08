@@ -277,4 +277,55 @@ describe('File Component', () => {
       return file.handleFilesToUpload([{ name: 'mypdf.pdf', size: 123123, type: 'application/pdf' }]);
     });
   });
+
+  it('Should emit fileUploadError event on file upload failure', (done) => {
+    const cmp = _.cloneDeep(comp1);
+    const fileServiceError = new Error('Upload failed');
+
+    const options = {
+      fileService: {
+        uploadFile: function(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback, abortCallbackSetter) {
+          return new Promise((resolve, reject) => {
+            // Simulate upload failure
+            setTimeout(() => {
+              const response = {
+                status: 500,
+                message: 'Internal Server Error',
+                data: fileServiceError,
+              };
+              reject(response);
+            }, 10);
+
+            abortCallbackSetter(() => {});
+          });
+        }
+      }
+    };
+
+    Harness.testCreate(FileComponent, cmp, options).then((component) => {
+      component.root = { everyComponent: () => {}, options: options, form: { submissionRevisions: false, components: [cmp] } };
+      const parentNode = document.createElement('div');
+      const element = document.createElement('div');
+      parentNode.appendChild(element);
+      component.build(element);
+
+      // Attach an event listener to catch the fileUploadError event
+      component.on('fileUploadError', (data) => {
+        try {
+          assert.equal(data.fileToSync.status, 'error');
+          assert.equal(data.response.status, 500);
+          assert.equal(data.response.message, 'Internal Server Error');
+          assert.equal(data.response.data, fileServiceError);
+          done();
+        } catch (err) {
+          done(err);
+        }
+      });
+
+      // Trigger file upload
+      const content = [1];
+      const file = new File(content, 'file.0');
+      component.handleFilesToUpload([file]);
+    });
+  });
 });
