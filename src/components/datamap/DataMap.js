@@ -275,7 +275,7 @@ export default class DataMapComponent extends DataGridComponent {
       delete dataValue[key];
       const comp = components[this.valueKey];
       comp.component.key = newKey;
-      comp.path = Components.calculateComponentPath(comp);
+      comp.path = Components.getComponentPath(comp);
       key = newKey;
     });
 
