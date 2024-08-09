@@ -41,6 +41,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8656: lazy load dragula
  - FIO-8570: fixed thousandSeparator problem and decimal symbol problem
  - FIO-8710: fixed incorrect Components import that causes errors when interacting with form components
+ - FIO-8801: fixed submission metadata nullish
+ - FIO-8809: fixed runtime error in setForm when passing string argument to Formio.builder 
 
 ### New Features
 
