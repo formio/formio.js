@@ -10,7 +10,7 @@ import {
   comp4,
   comp5,
   comp6,
-  comp7,
+  comp7
 } from './fixtures';
 import wizardWithSelectBoxes from '../../../test/forms/wizardWithSelectBoxes';
 import {comp12} from "../radio/fixtures";
@@ -350,6 +350,29 @@ describe('SelectBoxes Component', () => {
         }, 200);
       }, 200);
     }).catch(done);
+  });
+
+  it('Should interpolate config data when data source type is set to URL', () => {
+    const originalMakeRequest = Formio.makeRequest;
+    function fakeMakeRequest(formio, type, url, data, method, opts){
+      if (url !== 'test123') {
+        throw Error('the url should be test123');
+      }
+      const myObject = {}
+      myObject.then = ()=>{
+        const myCatchObject = {}
+        myCatchObject.catch = () => {
+          return '';
+        }
+        return myCatchObject;
+      }
+      return myObject;
+    }
+    Formio.makeRequest = fakeMakeRequest;
+    const selectboxes = new SelectBoxesComponent();
+    _.set(selectboxes, 'root._form.config.myApiUrl', 'test123');
+    selectboxes.loadItems('{{form.config.myApiUrl}}', {}, {}, {});
+    Formio.makeRequest = originalMakeRequest;
   });
 
   it('Should have correct submission data when setting the value property', (done) => {
