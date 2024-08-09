@@ -252,32 +252,22 @@ export default class Element {
   }
 
   removeAllEvents(includeExternal) {
-    if (this.events) {
-      _.each(this.events._events, (events, type) => {
-        _.each(events, (listener) => {
-          if (listener && (this.id === listener.id) && (includeExternal || listener.internal)) {
-            this.events.off(type, listener);
-          }
-        });
+    _.each(this.events._events, (events, type) => {
+      _.each(events, (listener) => {
+        if (listener && (this.id === listener.id) && (includeExternal || listener.internal)) {
+          this.events.off(type, listener);
+        }
       });
-    }
-  }
-
-  teardown() {
-    delete this.i18next;
-    delete this.events;
+    });
   }
 
   /**
    * Removes all event listeners attached to this component.
    * @param {boolean} all - If all events should be removed, including external events.
    */
-  destroy(all = false) {
+  destroy() {
     this.removeEventListeners();
     this.removeAllEvents();
-    if (all) {
-      this.teardown();
-    }
   }
 
   /**
@@ -439,7 +429,7 @@ export default class Element {
    * @returns {string} - The translated text.
    */
   t(text, ...args) {
-    return this.i18next ? this.i18next.t(text, ...args): text;
+    return this.i18next.t(text, ...args);
   }
 
   /**

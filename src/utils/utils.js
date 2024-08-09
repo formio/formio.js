@@ -31,8 +31,7 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, ConditionOperators };
-export * as moment from 'moment-timezone/moment-timezone';
+export { jsonLogic, moment, ConditionOperators };
 
 /**
  * Sets the path to the component and parent schema.

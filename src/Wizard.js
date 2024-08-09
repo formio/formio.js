@@ -288,7 +288,7 @@ export default class Wizard extends Webform {
    * @returns {Promise} A promise that resolves when all components have been successfully attached.
    */
   attach(element) {
-    this.setElement(element);
+    this.element = element;
     this.loadRefs(element, {
       [this.wizardKey]: 'single',
       [`${this.wizardKey}-header`]: 'single',
