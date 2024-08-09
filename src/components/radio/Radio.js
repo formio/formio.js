@@ -312,13 +312,13 @@ export default class RadioComponent extends ListComponent {
     const skip = this.isScrollLoading ? this.selectOptions.length : 0;
 
     // Allow for url interpolation.
-    url = this.interpolate(this.sanitize(url, this.shouldSanitizeValue), {
+    url = this.sanitize(this.interpolate(url, {
       formioBase: Formio.getBaseUrl(),
       search,
       limit,
       skip,
       page: Math.abs(Math.floor(skip / limit))
-    });
+    }), this.shouldSanitizeValue);
 
     // Set ignoreCache if it is
     options.ignoreCache = this.component.ignoreCache;
