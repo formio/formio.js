@@ -76,7 +76,7 @@ export default class PDF extends Webform {
   }
 
   rebuild() {
-    if (this.attached && this.builderMode && this.component.components) {
+    if (this.builderMode && this.component.components) {
       this.destroyComponents();
       this.addComponents();
       return Promise.resolve();
