@@ -18,6 +18,7 @@ import {
   comp11,
   comp12,
   comp13,
+  comp14
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -729,6 +730,31 @@ describe('DateTime Component', () => {
         }, 400);
       }, 400);
     }).catch(done);
+  });
+
+  it('Should not change incomplete input if a manual value is given ', (done) => {
+    Formio.createForm(document.createElement('div'), comp14, {}).then((form) => {
+      const dateTimeComponent = form.getComponent('dateTime');
+      const calendar = dateTimeComponent.element.querySelector('.flatpickr-input').widget.calendar;
+      calendar.altInput.click();
+      setTimeout(()=>{
+        calendar.altInput.value = '2036-02-00 71:4_ __';
+        calendar._input.value = '2036-02-00 71:4_ __';
+        const inputEvent = new Event('input');
+        calendar.altInput.dispatchEvent(inputEvent);
+        setTimeout(()=>{
+          calendar.setDate(calendar._input.value, false, calendar.config.altFormat);
+          calendar.close();
+          //now we need to trigger an on blur event and verify that the input value has not changed
+          const blurEvent = new Event('blur');
+          calendar.altInput.dispatchEvent(blurEvent);
+          setTimeout(()=>{
+            assert.equal(calendar.altInput.value, '2036-02-00 71:4_ __');
+            done();
+          },200);
+        },200);
+      },200);
+    })
   });
 
   // it('Should provide correct date in selected timezone after submission', (done) => {
