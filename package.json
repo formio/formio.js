@@ -2,6 +2,8 @@
   "name": "@formio/js",
   "version": "5.0.0-rc.71",
   "description": "JavaScript powered Forms with JSON Form Builder",
+  "type": "module",
+  "module": "lib/mjs/index.js",
   "main": "lib/cjs/index.js",
   "exports": {
     ".": {
