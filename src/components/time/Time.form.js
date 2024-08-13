@@ -1,10 +1,10 @@
-import baseEditForm from '../_classes/component/Component.form';
+import Components from '../Components';
 
 import TimeEditData from './editForm/Time.edit.data';
 import TimeEditDisplay from './editForm/Time.edit.display';
 
 export default function(...extend) {
-  return baseEditForm([
+  return Components.baseEditForm([
     {
       key: 'data',
       components: TimeEditData,
