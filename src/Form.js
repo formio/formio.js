@@ -286,7 +286,7 @@ export default class Form extends Element {
 
   /**
    * Sets the form to the JSON schema of a form.
-   * @param {import('@formio/core').Form} formParam - The form JSON to set this form to.
+   * @param {import('@formio/core').Form | string} formParam - The form JSON to set this form to.
    * @returns {Promise<Webform|Wizard|PDF>} - The webform instance that was created.
    */
   setForm(formParam) {
@@ -313,8 +313,15 @@ export default class Form extends Element {
               }
               this.loading = false;
               this.instance = this.instance || this.create(form.display);
-              const options = this.getFormInitOptions(formParam, form);
-              this.instance.setUrl(formParam, options);
+
+              // If we're in builder mode, instance.setUrl is not a function, so just manually set the URL.
+              if (this.instance.setUrl) {
+                const options = this.getFormInitOptions(formParam, form);
+                this.instance.setUrl(formParam, options);
+              } else {
+                this.instance.url = formParam;
+              }
+              
               this.instance.nosubmit = false;
               this._form = this.instance.form = form;
               if (submission) {
