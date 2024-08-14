@@ -69,10 +69,7 @@ class CDN {
       url += `/${lib}`;
     }
     // Only attach the version if this is the hosted cdn.
-    if (
-      cdnUrl.includes('form.io') && 
-      version && version !== 'latest'
-    ) {
+    if (cdnUrl.match(/cdn\.(test-)?form.io/) && version && version !== 'latest') {
       url += `/${version}`;
     }
     return url;
