@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8809: fixed runtime error in setForm when passing string argument to Formio.builder
  - FIO-8684: Fixes cannot attach more than one component to the PDF form
  - FIO-8719: fixed validation for Data Grid component inside nested wizard
+ - FIO-8621: added error event on file upload
 
 ### New Features
 
