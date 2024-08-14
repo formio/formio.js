@@ -75,6 +75,7 @@ export default {
   typeRemaining: '{{ remaining }} {{ type }} remaining.',
   typeCount: '{{ count }} {{ type }}',
   requiredDayField: '{{ field }} is required',
+  requiredDayEmpty: '{{ field }} is required',
   requiredMonthField: '{{ field }} is required',
   requiredYearField: '{{ field }} is required'
 };
