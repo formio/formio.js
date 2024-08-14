@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.73
+### Changed
+ - FIO-8729: fixed an issue where the rollback to default templates does not work correctly and unknown template message is shown
+
 ## 5.0.0-rc.72
 ### Changed
  - Updated @formio/core@2.2.2-rc.1
