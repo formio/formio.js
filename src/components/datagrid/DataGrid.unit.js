@@ -16,6 +16,8 @@ import {
   comp7,
   comp8,
   comp9,
+  comp10,
+  comp11,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
@@ -190,6 +192,36 @@ describe('DataGrid Component', () => {
       done(err);
     }
   });
+
+  it('Should remove the corresponding row from the metadata when removing a row', (done) => {
+    Formio.createForm(document.createElement('div'), comp11)
+      .then((form) => {
+        const checkValue = (index, value) => {
+          assert.equal(datagrid.getValue()[index].select, value);
+        }
+        const datagrid = form.getComponent('dataGrid');
+        datagrid.addRow();
+        assert.equal(datagrid.getValue().length, 2);
+        const select = form.getComponent('dataGrid[1].select');
+        select.setValue('individual');
+        checkValue(0, 'entity');
+        checkValue(1, 'individual');
+        setTimeout(()=> {
+          assert.equal(select.getView(), '<span>Individual</span>');
+          datagrid.removeRow(1);
+          assert.equal(datagrid.getValue().length, 1);
+          datagrid.addRow();
+          checkValue(0, 'entity');
+          checkValue(1, 'entity');
+          setTimeout(() => {
+            const selectNew = form.getComponent('dataGrid[1].select');
+            assert.equal(selectNew.getView(), '<span>Entity</span>');
+            done();
+          }, 200)
+        }, 200)
+      })
+      .catch(done);
+  })
 
   it('Should allow provide default value in row-groups model', function(done) {
     try {
