@@ -46,6 +46,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8684: Fixes cannot attach more than one component to the PDF form
  - FIO-8719: fixed validation for Data Grid component inside nested wizard
  - FIO-8621: added error event on file upload
+ - FIO-8799 updated conditional tab for Time Component
+ - FIO-6495: fixed an issue where revision ID of nested form does not transfer from stage to stage
+ - FIO-8797: set empty day component value to the empty string
+ - FIO-8729: fixed an issue where the rollback to default templates does not work correctly and unknown template message is shown
+ - FIO-8668: fixed an issue where reportingUI form is available is the existing resources in builder
+ - FIO-8714 Bugfix: allow paths for valueProperty
 
 ### New Features
 
