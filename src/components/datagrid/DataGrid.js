@@ -520,6 +520,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.splice(index, flags);
     this.emit('dataGridDeleteRow', { index });
     const [row] = this.rows.splice(index, 1);
+    this.removeSubmissionMetadataRow(index);
     this.removeRowComponents(row);
     this.updateRowsComponents(index);
     this.setValue(this.dataValue, flags);
