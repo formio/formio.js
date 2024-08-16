@@ -51,7 +51,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8797: set empty day component value to the empty string
  - FIO-8729: fixed an issue where the rollback to default templates does not work correctly and unknown template message is shown
  - FIO-8668: fixed an issue where reportingUI form is available is the existing resources in builder
- - FIO-8714 Bugfix: allow paths for valueProperty
+ - FIO-8714: Bugfix: allow paths for valueProperty
+ - FIO-8795: fixed selected data after removing row
+ - FIO-8771: Included File Component in Review Page Component
+ - FIO-8789: Fixing issues where the wrong urls are used for CDN on remote env
 
 ### New Features
 
