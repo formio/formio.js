@@ -321,7 +321,7 @@ export default class Form extends Element {
               } else {
                 this.instance.url = formParam;
               }
-              
+
               this.instance.nosubmit = false;
               this._form = this.instance.form = form;
               if (submission) {
