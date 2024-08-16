@@ -15,7 +15,11 @@ import {
     getArrayFromComponentPath,
 } from "./utils/utils";
 import { eachComponent } from "./utils/formUtils";
-import dragula from "dragula";
+
+// We need this here because dragula pulls in CustomEvent class that requires global to exist.
+if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
+    window.global = window;
+}
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -323,8 +327,6 @@ export default class Webform extends NestedDataComponent {
         // Ensure the root is set to this component.
         this.root = this;
         this.localRoot = this;
-
-        this.root.dragulaLib = dragula;
     }
     /* eslint-enable max-statements */
 
@@ -931,7 +933,6 @@ export default class Webform extends NestedDataComponent {
         if (!submission || !submission.data) {
             submission = {
                 data: {},
-                metadata: submission.metadata,
             };
         }
         // Metadata needs to be available before setValue
@@ -1295,7 +1296,7 @@ export default class Webform extends NestedDataComponent {
 
         const displayedErrors = [];
         if (errors.length) {
-            errors = _.uniqBy(errors, (error) => error.message);
+            errors = _.uniqBy(errors, (error) => [error.message, error.component?.id, error.context?.path].join());
             const createListItem = (message, index) => {
                 const err = errors[index];
                 const messageFromIndex = !_.isUndefined(index) && errors && errors[index];

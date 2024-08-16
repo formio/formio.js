@@ -42,6 +42,7 @@ import formWithFormController from '../test/forms/formWithFormController';
 import { fastCloneDeep } from './utils/utils';
 import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
 import WizardWithCheckboxes from '../test/forms/wizardWithCheckboxes';
+import WizardWithRequiredFields from '../test/forms/wizardWithRequiredFields';
 
 // eslint-disable-next-line max-statements
 describe('Wizard tests', () => {
@@ -389,6 +390,48 @@ describe('Wizard tests', () => {
     })
     .catch((err) => done(err));
   }).timeout(6000);
+
+  it('Should trigger validation of nested wizard before going to the next page', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const nestedWizard = _.cloneDeep(WizardWithRequiredFields);
+    const clickEvent = new Event('click');
+    
+    wizard.setForm(formWithNestedWizard).then(() => {
+      const nestedFormComp = wizard.getComponent('formNested');
+
+      nestedFormComp.loadSubForm = ()=> {
+        nestedFormComp.formObj = nestedWizard;
+        nestedFormComp.subFormLoading = false;
+        return new Promise((resolve) => resolve(nestedWizard));
+      };
+
+      nestedFormComp.createSubForm();
+      setTimeout(() => {
+        const checkPage = (pageNumber) => {
+          assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+        };
+        checkPage(0);
+        const nestedWizardBreadcrumbBtn = _.get(wizard.refs, `${wizard.wizardKey}-link[2]`);
+        nestedWizardBreadcrumbBtn.dispatchEvent(clickEvent);
+        setTimeout(() => {
+          checkPage(2);
+          const nextBtn = _.get(wizard.refs, `${wizard.wizardKey}-next`);
+          nextBtn.dispatchEvent(clickEvent);
+          setTimeout(() => {
+            checkPage(2);
+            const errors = wizard.errors;
+            assert.equal(errors.length, 2, 'Must err before next page');
+            errors.forEach((error) => {
+              assert.equal(error.ruleName, 'required');
+            });
+            done();
+          }, 300)
+        }, 300)
+      }, 300)
+    })
+    .catch((err) => done(err));
+  })
 
   it('Should render values in HTML render mode', function(done) {
     const formElement = document.createElement('div');

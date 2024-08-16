@@ -5,6 +5,7 @@ import sinon from 'sinon';
 import Harness from '../../../test/harness';
 import DataGridComponent from './DataGrid';
 import { Formio } from '../../Formio';
+import dragula from 'dragula'
 
 import {
   comp1,
@@ -16,6 +17,8 @@ import {
   comp7,
   comp8,
   comp9,
+  comp10,
+  comp11,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
@@ -28,6 +31,15 @@ import {
 } from './fixtures';
 
 describe('DataGrid Component', () => {
+
+  before(() => {
+    window.dragula = dragula;
+  });
+
+  after(() => {
+    delete window.dragula;
+  });
+
   it('Test modal edit confirmation dialog', (done) => {
     Harness.testCreate(DataGridComponent, comp5).then((component) => {
       component.componentModal.openModal();
@@ -190,6 +202,36 @@ describe('DataGrid Component', () => {
       done(err);
     }
   });
+
+  it('Should remove the corresponding row from the metadata when removing a row', (done) => {
+    Formio.createForm(document.createElement('div'), comp11)
+      .then((form) => {
+        const checkValue = (index, value) => {
+          assert.equal(datagrid.getValue()[index].select, value);
+        }
+        const datagrid = form.getComponent('dataGrid');
+        datagrid.addRow();
+        assert.equal(datagrid.getValue().length, 2);
+        const select = form.getComponent('dataGrid[1].select');
+        select.setValue('individual');
+        checkValue(0, 'entity');
+        checkValue(1, 'individual');
+        setTimeout(()=> {
+          assert.equal(select.getView(), '<span>Individual</span>');
+          datagrid.removeRow(1);
+          assert.equal(datagrid.getValue().length, 1);
+          datagrid.addRow();
+          checkValue(0, 'entity');
+          checkValue(1, 'entity');
+          setTimeout(() => {
+            const selectNew = form.getComponent('dataGrid[1].select');
+            assert.equal(selectNew.getView(), '<span>Entity</span>');
+            done();
+          }, 200)
+        }, 200)
+      })
+      .catch(done);
+  })
 
   it('Should allow provide default value in row-groups model', function(done) {
     try {
@@ -418,11 +460,18 @@ describe('DataGrid Component', () => {
     });
   });
 
-  it('Should have dragula available when reorder flag is set to true', () => {
-    return Formio.createForm(document.createElement('div'), comp9, {}).then((form) => {
-      const dataGridComponent = form.getComponent('dataGrid');
-      assert(dataGridComponent.root.dragulaLib, 'could not find dragulaLib');
-    });
+  it('Should lazy load dragula when reorder flag is set to true', async () => {
+    await Formio.createForm(document.createElement('div'), comp9, {});
+    const dragula = await Formio.libraries.dragula.ready;
+    assert.strictEqual(window.dragula, dragula, "could not find dragula");
+    delete Formio.libraries.dragula
+  });
+
+  it('Should not lazy load dragula when reorder flag is set to false', async () => {
+    let formJSON = _.cloneDeep(comp9);
+    formJSON.components[0].reorder = false;
+    await Formio.createForm(document.createElement('div'), formJSON, {});
+    assert(!Formio.libraries.dragula);
   });
 
   it('Should set the pristine of itself and the form the false when reordering occurs', () => {
@@ -437,6 +486,44 @@ describe('DataGrid Component', () => {
       dataGridComponent.onReorder(element,tableBody, tableBody, sibling);
       assert(!form.pristine, 'form pristine should be set to false when datagrid reordering occurs');
     });
+  });
+
+  it('Disable/not disable submit button with required flag in dataGrid', function(done) {
+    Formio.createForm(document.createElement('div'), comp10)
+      .then((form) => {
+      const buttonComponent = form.getComponent('submit');
+      assert.equal(buttonComponent.disabled, true, '(1) Component should be disabled');
+      const dataGrid = form.getComponent('dataGrid');
+      dataGrid.setValue([
+        {
+          textField: 'some value',
+          checkbox: false
+        },
+        {
+          textField: '',
+          checkbox: false
+        }
+      ]);
+
+      setTimeout(() => {
+        assert.equal(buttonComponent.disabled, false, '(2) Component should be not disabled');
+        dataGrid.setValue([
+          {
+            textField: '',
+            checkbox: false
+          },
+          {
+            textField: '',
+            checkbox: false
+          }
+        ]);
+
+        setTimeout(() => {
+          assert.equal(buttonComponent.disabled, true, '(3) Component should be disabled');
+          done();
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
   });
 });
 

@@ -573,11 +573,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.removeClass(this.refs.component, `formio-component-${this.component.type}-row-open`);
     }
 
-    const superAttach = super.attach(element);
-    this.loadRefs(element, {
-      messageContainer: 'single-scope',
-    });
-    return superAttach;
+    return super.attach(element);
   }
 
   flattenRowDataValue(dataValue) {
@@ -797,6 +793,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       },
     }, this.component.saveRow || 'Save'));
 
+    this.emit('editGridOpenModal', {
+      component: this.component,
+      row: editRow,
+      instance: this,
+    });
+
     return this.attachComponents(modalContent, components);
   }
 
@@ -866,6 +868,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       editRow.data = dataSnapshot;
       this.restoreRowContext(editRow);
     }
+
+    this.emit('editGridEditRow', {
+      component: this.component,
+      row: editRow,
+      instance: this,
+    });
 
     if (this.component.modal) {
       return this.addRowModal(rowIndex);
@@ -1047,6 +1055,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.clearErrors(rowIndex);
     this.baseRemoveRow(rowIndex);
+    this.removeSubmissionMetadataRow(rowIndex);
     this.splice(rowIndex);
     this.emit('editGridDeleteRow', {
       index: rowIndex
@@ -1279,7 +1288,8 @@ export default class EditGridComponent extends NestedArrayComponent {
       return false;
     }
     else if (rowsEditing && this.saveEditMode && !this.component.openWhenEmpty) {
-      this.setCustomValidity(this.t(this.errorMessage('unsavedRowsError')), dirty);
+      this._errors = this.setCustomValidity(this.t(this.errorMessage('unsavedRowsError')), dirty);
+      errors.push(...this._errors);
       return false;
     }
 

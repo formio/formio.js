@@ -220,7 +220,8 @@ export default class WebformBuilder extends Component {
       params: {
         type: 'resource',
         limit: 1000000,
-        select: '_id,title,name,components'
+        select: '_id,title,name,components',
+        'tags__ne': 'noBuilderResource'
       }
     };
     if (this.options && this.options.resourceTag) {
@@ -1045,7 +1046,11 @@ export default class WebformBuilder extends Component {
       this.options.properties = form.properties;
     }
 
-    this.keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false) || this.options.properties?.keyboardBuilder;
+    let keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false) || this.options.properties?.keyboardBuilder;
+    if (typeof keyboardActionsEnabled === 'string') {
+      keyboardActionsEnabled = keyboardActionsEnabled === 'true';
+    }
+    this.keyboardActionsEnabled = keyboardActionsEnabled;
 
     const isShowSubmitButton = !this.options.noDefaultSubmitButton
       && (!form.components.length || !form.components.find(comp => comp.key === 'submit'));
@@ -1214,7 +1219,10 @@ export default class WebformBuilder extends Component {
           'calculateValue',
           'conditional',
           'customConditional',
-          'id'
+          'id',
+          'fields.day.required',
+          'fields.month.required',
+          'fields.year.required',
         ]));
         const parentComponent = defaultValueComponent.parent;
         let tabIndex = -1;
@@ -1442,6 +1450,7 @@ export default class WebformBuilder extends Component {
           helplinks: this.helplinks,
         }));
         this.editForm.attach(this.componentEdit.querySelector(`[${this._referenceAttributeName}="editForm"]`));
+        this.updateComponent(this.editForm.submission.data ?? component);
         this.attachEditComponentControls(component, parent, isNew, original, ComponentClass);
       });
     });

@@ -1,7 +1,7 @@
 'use strict';
 
 import _ from 'lodash';
-import { componentValueTypes, getStringFromComponentPath } from '../../../utils/utils';
+import { componentValueTypes, getStringFromComponentPath, isLayoutComponent } from '../../../utils/utils';
 
 import Component from '../component/Component';
 import NestedDataComponent from '../nesteddata/NestedDataComponent';
@@ -179,43 +179,69 @@ export default class NestedArrayComponent extends NestedDataComponent {
     });
   }
 
+  _getEmailTableHeader(options) {
+    let row = '';
+
+    const getHeaderCell = (component) => {
+      if (!component.isInputComponent || !component.visible || component.skipInEmail) {
+        return '';
+      }
+
+      const label = component.label || component.key;
+      return `<th style="padding: 5px 10px;">${label}</th>`;
+    };
+
+    const components = this.getComponents(0);
+    for (const component of components) {
+      if (component.isInputComponent) {
+        row += getHeaderCell(component);
+      }
+      else if (isLayoutComponent(component) && typeof component.everyComponent === 'function') {
+        component.everyComponent((comp) => {
+          row += getHeaderCell(comp);
+        }, options);
+      }
+    }
+
+    return `<thead><tr>${row}</tr></thead>`;
+  }
+
+  _getEmailTableBody(options) {
+    const getBodyCell = (component) => {
+      if (!component.isInputComponent || !component.visible || component.skipInEmail) {
+        return '';
+      }
+
+      return `<td style="padding: 5px 10px;">${component.getView(component.dataValue, options)}</td>`;
+    }
+
+    const rows = [];
+    for (const { components } of this.iteratableRows) {
+      let row = '';
+      for (const component of components) {
+        if (component.isInputComponent) {
+          row += getBodyCell(component);
+        }
+        else if (isLayoutComponent(component) && typeof component.everyComponent === 'function') {
+          component.everyComponent((comp) => {
+            row += getBodyCell(comp);
+          }, options);
+        }
+      }
+      rows.push(`<tr>${row}</tr>`);
+    }
+
+    return `<tbody>${rows.join('')}</tbody>`;
+  }
+
   getValueAsString(value, options) {
     if (options?.email) {
-      let result = (`
+      return `
         <table border="1" style="width:100%">
-          <thead>
-            <tr>
-      `);
-
-      this.component.components?.forEach((component) => {
-        const label = component.label || component.key;
-        result += `<th style="padding: 5px 10px;">${label}</th>`;
-      });
-
-      result += (`
-          </tr>
-        </thead>
-        <tbody>
-      `);
-
-      this.iteratableRows.forEach(({ components }) => {
-        result += '<tr>';
-        _.each(components, (component) => {
-          result += '<td style="padding:5px 10px;">';
-          if (component.isInputComponent && component.visible && !component.skipInEmail) {
-            result += component.getView(component.dataValue, options);
-          }
-          result += '</td>';
-        });
-        result += '</tr>';
-      });
-
-      result += (`
-          </tbody>
+          ${this._getEmailTableHeader(options)}
+          ${this._getEmailTableBody(options)}
         </table>
-      `);
-
-      return result;
+      `;
     }
 
     if (!value || !value.length) {
@@ -233,5 +259,12 @@ export default class NestedArrayComponent extends NestedDataComponent {
       return this.iteratableRows[rowIndex].components;
     }
     return super.getComponents();
+  }
+
+  removeSubmissionMetadataRow(index) {
+    const componentMetadata = _.get(this.root, `submission.metadata.selectData.${this.path}`, null);
+    if (_.isArray(componentMetadata)) {
+      componentMetadata.splice(index, 1);
+    }
   }
 }

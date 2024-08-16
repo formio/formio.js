@@ -13,8 +13,11 @@ import {
   comp5,
   comp6,
   comp7,
-  comp8
+  comp8,
+  comp9,
+  comp10
 } from './fixtures';
+import CurrencyComponent from "../currency/Currency";
 
 describe('Number Component', () => {
   it('Should build an number component', () => {
@@ -438,6 +441,33 @@ describe('Number Component', () => {
           done();
         },200);
       },200);
+    });
+  });
+
+  it('Should remove thousands separator in parseValue function if set on component JSON', () => {
+    const numberComponent = new NumberComponent({thousandsSeparator: '.', decimalSymbol: ',', delimiter: true});
+    assert.equal(numberComponent.parseValue('123.456.789,1'), '123456789,1');
+  });
+
+  it('Should use a . thousands separator when delimiter is true and thousands separator is set to .', (done) => {
+    Formio.createForm(document.createElement('div'), comp9, {}).then((form) => {
+      const numberComponent = form.getComponent('number');
+      const inputEvent = new Event('input');
+      const blurEvent = new Event('blur');
+      numberComponent.refs.input[0].value = '111222333';
+      numberComponent.refs.input[0].dispatchEvent(inputEvent);
+      numberComponent.refs.input[0].dispatchEvent(blurEvent);
+      setTimeout(()=>{
+        assert.equal(numberComponent.refs.input[0].value, '111.222.333');
+        done();
+      },200)
+    })
+  });
+
+  it('Should not display a number validation error if the default value is set to a numeric string', () => {
+    return Formio.createForm(document.createElement('div'), comp10, {}).then((form) => {
+      const numberComponent = form.getComponent("number");
+      assert.equal(numberComponent._errors.length, 0);
     });
   });
 

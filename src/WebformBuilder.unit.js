@@ -1,4 +1,5 @@
 import assert from 'power-assert';
+import _ from 'lodash';
 import Harness from '../test/harness';
 import WebformBuilder from './WebformBuilder';
 import Builders from './builders';
@@ -251,7 +252,7 @@ describe('WebformBuilder tests', function() {
             done();
           }, 200);
         }, 200);
-      }, 150);
+      }, 300);
     }).catch(done);
   });
 
@@ -306,6 +307,22 @@ describe('WebformBuilder tests', function() {
       }, 300);
     }).catch(done);
   });
+
+  it('Should not hilight error for default values', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('day');
+      setTimeout(() => {
+        const requiredDay = builder.editForm.getComponent('fields.day.required');
+        requiredDay.setValue(true);
+        setTimeout(() => {
+          const defaultValue = builder.editForm.getComponent('defaultValue');
+          assert.equal(defaultValue.checkComponentValidity(), true);
+          done();
+        }, 200);
+      }, 200)
+    }).catch(done);
+  })
 });
 
 describe('Select Component selectData property', () => {
