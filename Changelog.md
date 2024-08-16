@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0-rc.74]
+## 5.0.0-rc.74
+### Changed
+ - Updated @formio/core@2.2.2-rc.2
+ - FIO-8799 updated conditional tab for Time Component
+ - FIO-8797: set empty day component value to the empty string
+
  - FIO-8760: Fixes an issue where nested form is not getting all the options
  - FIO-8789: Fixing issues where the wrong urls are used for CDN on remote environments
  
