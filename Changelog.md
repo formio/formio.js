@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.0.0-rc.74]
+ - FIO-8760: Fixes an issue where nested form is not getting all the options
+ - FIO-8789: Fixing issues where the wrong urls are used for CDN on remote environments
+ 
 ## 5.0.0-rc.73
 ### Changed
  - FIO-8729: fixed an issue where the rollback to default templates does not work correctly and unknown template message is shown

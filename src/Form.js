@@ -148,13 +148,13 @@ export default class Form extends Element {
     else {
       this.element = null;
     }
+    this.options = formOptions;
+    this.options.events = this.events;
     if (form) {
       this.setForm(form)
         .then(() => this.readyResolve(this.instance))
         .catch(this.readyReject);
     }
-    this.options = formOptions;
-    this.options.events = this.events;
     this.display = '';
   }
 
