@@ -165,7 +165,7 @@ function url(formio) {
       return Promise.resolve(file);
     }
   };
-}
+};
 
 url.title = 'Url';
 export default url;

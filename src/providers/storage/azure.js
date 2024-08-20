@@ -29,10 +29,6 @@ function azure(formio) {
     },
     downloadFile(file) {
       return formio.makeRequest('file', `${formio.formUrl}/storage/azure?name=${XHR.trim(file.name)}`, 'GET');
-    },
-    deleteFile: function deleteFile(fileInfo) {
-      var url = `${formio.formUrl}/storage/azure?name=${XHR.trim(fileInfo.name)}&key=${XHR.trim(fileInfo.key)}`;
-      return formio.makeRequest('', url, 'delete');
     }
   };
 }

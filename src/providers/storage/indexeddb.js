@@ -26,116 +26,100 @@ function indexeddb() {
       }).then((db) => {
         const reader = new FileReader();
 
-        return new Promise((resolve, reject) => {
-          reader.onload = () => {
-            const blobObject = new Blob([file], { type: file.type });
+          const trans = db.transaction([options.indexeddbTable], 'readwrite');
+          const addReq = trans.objectStore(options.indexeddbTable).put(data, id);
 
-            const id = uuidv4(blobObject);
+          addReq.onerror = function(e) {
+            console.log('error storing data');
+            console.error(e);
+          };
 
-            const data = {
-              id,
-              data: blobObject,
+          trans.oncomplete = function() {
+            resolve({
+              storage: 'indexeddb',
               name: file.name,
               size: file.size,
               type: file.type,
-              url,
-            };
-
-            const trans = db.transaction([options.indexeddbTable], 'readwrite');
-            const addReq = trans.objectStore(options.indexeddbTable).put(data, id);
-
-            addReq.onerror = function(e) {
-              console.log('error storing data');
-              console.error(e);
-            };
-
-            trans.oncomplete = function() {
-              resolve({
-                storage: 'indexeddb',
-                name: file.name,
-                size: file.size,
-                type: file.type,
-                url: url,
-                id,
-              });
-            };
+              url: url,
+              id,
+            });
           };
-
-          reader.onerror = () => {
-            return reject(this);
-          };
-
-          reader.readAsDataURL(file);
-        });
-      });
-    },
-    downloadFile(file, options) {
-      return new Promise((resolve) => {
-        const request = indexedDB.open(options.indexeddb);
-
-        request.onsuccess = function(event) {
-          const db = event.target.result;
-          resolve(db);
         };
-      }).then((db) => {
-        return new Promise((resolve, reject) => {
-          const trans = db.transaction([options.indexeddbTable], 'readonly');
-          const store = trans.objectStore(options.indexeddbTable).get(file.id);
-          store.onsuccess = () => {
-            trans.oncomplete = () => {
-              const result = store.result;
-              const dbFile = new File([store.result.data], file.name, {
-                type: store.result.type,
-              });
 
-              const reader = new FileReader();
-
-              reader.onload = (event) => {
-                result.url = event.target.result;
-                result.storage = file.storage;
-                resolve(result);
-              };
-
-              reader.onerror = () => {
-                return reject(this);
-              };
-
-              reader.readAsDataURL(dbFile);
-            };
-          };
-          store.onerror = () => {
-            return reject(this);
-          };
-        });
-      });
-    },
-    deleteFile(file, options) {
-      return new Promise((resolve) => {
-        const request = indexedDB.open(options.indexeddb);
-
-        request.onsuccess = function(event) {
-          const db = event.target.result;
-          resolve(db);
+        reader.onerror = () => {
+          return reject(this);
         };
-      }).then((db) => {
-        return new Promise((resolve, reject) => {
-          const trans = db.transaction([options.indexeddbTable], 'readwrite');
-          const store = trans.objectStore(options.indexeddbTable).delete(file.id);
-          store.onsuccess = () => {
-            trans.oncomplete = () => {
-              const result = store.result;
 
+        reader.readAsDataURL(file);
+      });
+    });
+  },
+  downloadFile(file, options) {
+    return new Promise((resolve) => {
+      const request = indexedDB.open(options.indexeddb);
+
+      request.onsuccess = function(event) {
+        const db = event.target.result;
+        resolve(db);
+      };
+    }).then((db) => {
+      return new Promise((resolve, reject) => {
+        const trans = db.transaction([options.indexeddbTable], 'readonly');
+        const store = trans.objectStore(options.indexeddbTable).get(file.id);
+        store.onsuccess = () => {
+          trans.oncomplete = () => {
+            const result = store.result;
+            const dbFile = new File([store.result.data], file.name, {
+              type: store.result.type,
+            });
+
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+              result.url = event.target.result;
+              result.storage = file.storage;
               resolve(result);
             };
+
+            reader.onerror = () => {
+              return reject(this);
+            };
+
+            reader.readAsDataURL(dbFile);
           };
-          store.onerror = () => {
-            return reject(this);
-          };
-        });
+        };
+        store.onerror = () => {
+          return reject(this);
+        };
       });
-    },
-  };
-}
+    });
+  },
+  deleteFile(file, options) {
+    return new Promise((resolve) => {
+      const request = indexedDB.open(options.indexeddb);
+
+      request.onsuccess = function(event) {
+        const db = event.target.result;
+        resolve(db);
+      };
+    }).then((db) => {
+      return new Promise((resolve, reject) => {
+        const trans = db.transaction([options.indexeddbTable], 'readwrite');
+        const store = trans.objectStore(options.indexeddbTable).delete(file.id);
+        store.onsuccess = () => {
+          trans.oncomplete = () => {
+            const result = store.result;
+
+            resolve(result);
+          };
+        };
+        store.onerror = () => {
+          return reject(this);
+        };
+      });
+    });
+  }
+});
 
 indexeddb.title = 'IndexedDB';
 export default indexeddb;

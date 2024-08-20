@@ -13,65 +13,60 @@ function googledrive(formio) {
         // Send the file with data.
         const xhr = new XMLHttpRequest();
 
-        if (typeof progressCallback === 'function') {
-          xhr.upload.onprogress = progressCallback;
+      if (typeof progressCallback === 'function') {
+        xhr.upload.onprogress = progressCallback;
+      }
+
+      if (typeof abortCallback === 'function') {
+        abortCallback(() => xhr.abort());
+      }
+
+      const fd = new FormData();
+      fd.append('name', fileName);
+      fd.append('dir', dir);
+      fd.append('file', file);
+
+      // Fire on network error.
+      xhr.onerror = (err) => {
+        err.networkError = true;
+        reject(err);
+      };
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const response = JSON.parse(xhr.response);
+          response.storage = 'googledrive';
+          response.size = file.size;
+          response.type = file.type;
+          response.groupId = groupId;
+          response.groupPermissions = groupPermissions;
+          resolve(response);
         }
-
-        if (typeof abortCallback === 'function') {
-          abortCallback(() => xhr.abort());
+        else {
+          reject(xhr.response || 'Unable to upload file');
         }
+      };
 
-        const fd = new FormData();
-        fd.append('name', fileName);
-        fd.append('dir', dir);
-        fd.append('file', file);
+      xhr.onabort = reject;
 
-        // Fire on network error.
-        xhr.onerror = (err) => {
-          err.networkError = true;
-          reject(err);
-        };
+      xhr.open('POST', `${formio.formUrl}/storage/gdrive`);
 
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            const response = JSON.parse(xhr.response);
-            response.storage = 'googledrive';
-            response.size = file.size;
-            response.type = file.type;
-            response.groupId = groupId;
-            response.groupPermissions = groupPermissions;
-            resolve(response);
-          }
-          else {
-            reject(xhr.response || 'Unable to upload file');
-          }
-        };
+      setXhrHeaders(formio, xhr);
 
-        xhr.onabort = reject;
-
-        xhr.open('POST', `${formio.formUrl}/storage/gdrive`);
-
-        setXhrHeaders(formio, xhr);
-
-        const token = formio.getToken();
-        if (token) {
-          xhr.setRequestHeader('x-jwt-token', token);
-        }
-        xhr.send(fd);
-      }));
-    },
-    downloadFile(file) {
       const token = formio.getToken();
-      file.url =
-        `${formio.formUrl}/storage/gdrive?fileId=${file.id}&fileName=${file.originalName}${token ? `&x-jwt-token=${token}` : ''}`;
-      return Promise.resolve(file);
-    },
-    deleteFile: function deleteFile(fileInfo) {
-      var url = ''.concat(formio.formUrl, `/storage/gdrive?id=${fileInfo.id}&name=${fileInfo.originalName}`);
-      return formio.makeRequest('', url, 'delete');
-    },
-  };
-}
+      if (token) {
+        xhr.setRequestHeader('x-jwt-token', token);
+      }
+      xhr.send(fd);
+    }));
+  },
+  downloadFile(file) {
+    const token = formio.getToken();
+    file.url =
+      `${formio.formUrl}/storage/gdrive?fileId=${file.id}&fileName=${file.originalName}${token ? `&x-jwt-token=${token}` : ''}`;
+    return Promise.resolve(file);
+  }
+});
 
 googledrive.title = 'Google Drive';
 export default googledrive;

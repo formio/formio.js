@@ -37,8 +37,6 @@ if (htmlCanvasElement && !htmlCanvasElement.prototype.toBlob) {
   });
 }
 
-const createRandomString = () => Math.random().toString(36).substring(2, 15);
-
 export default class FileComponent extends Field {
   static schema(...extend) {
     return Field.schema({
@@ -97,13 +95,8 @@ export default class FileComponent extends Field {
       progress: progressSupported,
     };
     this.cameraMode = false;
+    this.statuses = [];
     this.fileDropHidden = false;
-    this.filesToSync = {
-      filesToUpload: [],
-      filesToDelete: [],
-    };
-    this.isSyncing = false;
-    this.abortUploads = [];
   }
 
   get dataReady() {
@@ -160,41 +153,14 @@ export default class FileComponent extends Field {
     this._fileBrowseHidden = value;
   }
 
-  get shouldSyncFiles() {
-    return Boolean(this.filesToSync.filesToDelete.length || this.filesToSync.filesToUpload.length);
-  }
-
-  get autoSync() {
-    return _.get(this, 'component.autoSync', false);
-  }
-
-  get columnsSize() {
-    const actionsColumn = this.disabled ? 0 : this.autoSync ? 2 : 1;
-    const typeColumn = this.hasTypes ? 2 : 0;
-    const sizeColumn = 2;
-    const nameColumn = 12 - actionsColumn - typeColumn - sizeColumn;
-
-    return {
-      name: nameColumn,
-      size: sizeColumn,
-      type: typeColumn,
-      actions: actionsColumn,
-    };
-  }
-
   render() {
-    const { filesToDelete, filesToUpload } = this.filesToSync;
     return super.render(this.renderTemplate('file', {
       fileSize: this.fileSize,
       files: this.dataValue || [],
-      filesToDelete,
-      filesToUpload,
+      statuses: this.statuses,
       disabled: this.disabled,
       support: this.support,
-      fileDropHidden: this.fileDropHidden,
-      showSyncButton: this.autoSync && (filesToDelete.length || filesToUpload.length),
-      isSyncing: this.isSyncing,
-      columns: this.columnsSize,
+      fileDropHidden: this.fileDropHidden
     }));
   }
 
@@ -269,7 +235,7 @@ export default class FileComponent extends Field {
     this.getFrame(videoPlayer)
       .then((frame) => {
         frame.name = `photo-${Date.now()}.png`;
-        this.handleFilesToUpload([frame]);
+        this.upload([frame]);
         this.cameraMode = false;
         this.redraw();
       });
@@ -364,10 +330,22 @@ export default class FileComponent extends Field {
     return options;
   }
 
-  get actions() {
-    return {
-      abort: this.abortRequest.bind(this),
-    };
+  deleteFile(fileInfo) {
+    const { options = {} } = this.component;
+
+    if (fileInfo && (['url', 'indexeddb'].includes(this.component.storage))) {
+      const { fileService } = this;
+      if (fileService && typeof fileService.deleteFile === 'function') {
+        fileService.deleteFile(fileInfo, options);
+      }
+      else {
+        const formio = this.options.formio || (this.root && this.root.formio);
+
+        if (formio) {
+          formio.makeRequest('', fileInfo.url, 'delete');
+        }
+      }
+    }
   }
 
   attach(element) {
@@ -381,23 +359,20 @@ export default class FileComponent extends Field {
       videoPlayer: 'single',
       fileLink: 'multiple',
       removeLink: 'multiple',
-      fileToSyncRemove: 'multiple',
+      fileStatusRemove: 'multiple',
       fileImage: 'multiple',
       fileType: 'multiple',
       fileProcessingLoader: 'single',
-      syncNow: 'single',
-      restoreFile: 'multiple',
-      progress: 'multiple',
     });
     // Ensure we have an empty input refs. We need this for the setValue method to redraw the control when it is set.
     this.refs.input = [];
     const superAttach = super.attach(element);
 
     if (this.refs.fileDrop) {
-      // if (!this.statuses.length) {
-      //   this.refs.fileDrop.removeAttribute('hidden');
-      // }
-      const _this = this;
+      if (!this.statuses.length) {
+        this.refs.fileDrop.removeAttribute('hidden');
+      }
+      const element = this;
       this.addEventListener(this.refs.fileDrop, 'dragover', function(event) {
         this.className = 'fileSelector fileDragOver';
         event.preventDefault();
@@ -409,20 +384,16 @@ export default class FileComponent extends Field {
       this.addEventListener(this.refs.fileDrop, 'drop', function(event) {
         this.className = 'fileSelector';
         event.preventDefault();
-        _this.handleFilesToUpload(event.dataTransfer.files);
+        element.upload(event.dataTransfer.files);
       });
     }
-
-    this.addEventListener(element, 'click', (event) => {
-      this.handleAction(event);
-    });
 
     if (this.refs.fileBrowse) {
       this.addEventListener(this.refs.fileBrowse, 'click', (event) => {
         event.preventDefault();
         this.browseFiles(this.browseOptions)
           .then((files) => {
-            this.handleFilesToUpload(files);
+            this.upload(files);
           });
       });
     }
@@ -436,29 +407,27 @@ export default class FileComponent extends Field {
 
     this.refs.removeLink.forEach((removeLink, index) => {
       this.addEventListener(removeLink, 'click', (event) => {
-        event.preventDefault();
         const fileInfo = this.dataValue[index];
-        this.handleFileToRemove(fileInfo);
-      });
-    });
 
-    this.refs.fileToSyncRemove.forEach((fileToSyncRemove, index) => {
-      this.addEventListener(fileToSyncRemove, 'click', (event) => {
+        this.deleteFile(fileInfo);
         event.preventDefault();
-        this.filesToSync.filesToUpload.splice(index, 1);
+        this.splice(index);
         this.redraw();
       });
     });
 
-    this.refs.restoreFile.forEach((fileToRestore, index) => {
-      this.addEventListener(fileToRestore, 'click', (event) => {
+    this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
+      this.addEventListener(fileStatusRemove, 'click', (event) => {
         event.preventDefault();
-        const fileInfo = this.filesToSync.filesToDelete[index];
-        delete fileInfo.status;
-        delete fileInfo.message;
-        this.filesToSync.filesToDelete.splice(index, 1);
-        this.dataValue.push(fileInfo);
-        this.triggerChange();
+
+        const fileUpload = this.statuses[index];
+        _.pull(this.filesUploading, fileUpload.originalName);
+
+        if (fileUpload.abort) {
+          fileUpload.abort();
+        }
+
+        this.statuses.splice(index, 1);
         this.redraw();
       });
     });
@@ -473,7 +442,7 @@ export default class FileComponent extends Field {
                 reader.onloadend = (evt) => {
                   const blob = new Blob([new Uint8Array(evt.target.result)], { type: file.type });
                   blob.name = file.name;
-                  this.handleFilesToUpload([blob]);
+                  this.upload([blob]);
                 };
                 reader.readAsArrayBuffer(file);
               });
@@ -497,7 +466,7 @@ export default class FileComponent extends Field {
                 reader.onloadend = (evt) => {
                   const blob = new Blob([new Uint8Array(evt.target.result)], { type: file.type });
                   blob.name = file.name;
-                  this.handleFilesToUpload([blob]);
+                  this.upload([blob]);
                 };
                 reader.readAsArrayBuffer(file);
               });
@@ -531,10 +500,6 @@ export default class FileComponent extends Field {
     }
 
     this.refs.fileType.forEach((fileType, index) => {
-      if (!this.dataValue[index]) {
-        return;
-      }
-
       this.dataValue[index].fileType = this.dataValue[index].fileType || this.component.fileTypes[0].label;
 
       this.addEventListener(fileType, 'change', (event) => {
@@ -544,11 +509,6 @@ export default class FileComponent extends Field {
 
         this.dataValue[index].fileType = fileType.label;
       });
-    });
-
-    this.addEventListener(this.refs.syncNow, 'click', (event) => {
-      event.preventDefault();
-      this.syncFiles();
     });
 
     const fileService = this.fileService;
@@ -676,462 +636,215 @@ export default class FileComponent extends Field {
     return file.size - 0.1 <= this.translateScalars(val);
   }
 
-  abortRequest(id) {
-    const abortUpload = this.abortUploads.find(abortUpload => abortUpload.id === id);
-    if (abortUpload) {
-      abortUpload.abort();
-    }
-  }
-
-  handleAction(event) {
-    const target = event.target;
-    if (!target.id) {
-      return;
-    }
-    const [action, id] = target.id.split('-');
-    if (!action || !id || !this.actions[action]) {
-      return;
-    }
-
-    this.actions[action](id);
-  }
-
-  getFileName(file) {
-    return uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
-  }
-
-  getInitFileToSync(file) {
-    const escapedFileName = file.name ? file.name.replaceAll('<', '&lt;').replaceAll('>', '&gt;') : file.name;
-    return {
-      id: createRandomString(),
-      // Get a unique name for this file to keep file collisions from occurring.
-      dir: this.interpolate(this.component.dir || ''),
-      name: this.getFileName(file),
-      originalName: escapedFileName,
-      fileKey: this.component.fileKey || 'file',
-      storage: this.component.storage,
-      options: this.component.options,
-      file,
-      size: file.size,
-      status: 'info',
-      message: this.t('Processing file. Please wait...'),
-      hash: '',
-    };
-  }
-
-  async handleSubmissionRevisions(file) {
-    if (this.root.form.submissionRevisions !== 'true') {
-      return '';
-    }
-
-    const bmf = new BMF();
-    const hash = await new Promise((resolve, reject) => {
-      this.emit('fileUploadingStart');
-      bmf.md5(file, (err, md5)=>{
-        if (err) {
-          return reject(err);
-        }
-        return resolve(md5);
-      });
-    });
-    this.emit('fileUploadingEnd');
-
-    return hash;
-  }
-
-  validateFileName(file) {
-    // Check if file with the same name is being uploaded
-    const fileWithSameNameUploading = this.filesToSync.filesToUpload
-      .some(fileToSync => fileToSync.file?.name === file.name);
-
-    const fileWithSameNameUploaded = _.some(this.dataValue, fileStatus => fileStatus.originalName === file.name);
-
-    return fileWithSameNameUploaded || fileWithSameNameUploading
-      ? {
-        status: 'error',
-        message: this.t(`File with the same name is already ${fileWithSameNameUploading ? 'being ' : ''}uploaded`),
-      }
-      : {};
-  }
-
-  validateFileSettings(file) {
-    // Check file pattern
-    if (this.component.filePattern && !this.validatePattern(file, this.component.filePattern)) {
-      return {
-        status: 'error',
-        message: this.t('File is the wrong type; it must be {{ pattern }}', {
-          pattern: this.component.filePattern,
-        }),
-      };
-    }
-
-    // Check file minimum size
-    if (this.component.fileMinSize && !this.validateMinSize(file, this.component.fileMinSize)) {
-      return {
-        status: 'error',
-        message: this.t('File is too small; it must be at least {{ size }}', {
-          size: this.component.fileMinSize,
-        }),
-      };
-    }
-
-    // Check file maximum size
-    if (this.component.fileMaxSize && !this.validateMaxSize(file, this.component.fileMaxSize)) {
-      return {
-        status: 'error',
-        message: this.t('File is too big; it must be at most {{ size }}', {
-          size: this.component.fileMaxSize,
-        }),
-      };
-    }
-
-    return {};
-  }
-
-  validateFileService() {
-    const { fileService } = this;
-    return !fileService
-      ? {
-        status: 'error',
-        message: this.t('File Service not provided.'),
-      }
-      : {};
-  }
-
-  validateFile(file) {
-    const fileServiceValidation = this.validateFileService();
-    if (fileServiceValidation.status === 'error') {
-      return fileServiceValidation;
-    }
-
-    const fileNameValidation = this.validateFileName(file);
-    if (fileNameValidation.status === 'error') {
-      return fileNameValidation;
-    }
-
-    return this.validateFileSettings(file);
-  }
-
-  getGroupPermissions() {
-    let groupKey = null;
-    let groupPermissions = null;
-
-    //Iterate through form components to find group resource if one exists
-    this.root.everyComponent((element) => {
-      if (element.component?.submissionAccess || element.component?.defaultPermission) {
-        groupPermissions = !element.component.submissionAccess ? [
-          {
-            type: element.component.defaultPermission,
-            roles: [],
-          },
-        ] : element.component.submissionAccess;
-
-        groupPermissions.forEach((permission) => {
-          groupKey = ['admin', 'write', 'create'].includes(permission.type) ? element.component.key : null;
-        });
-      }
-    });
-
-    return { groupKey, groupPermissions };
-  }
-
-  async triggerFileProcessor(file) {
-    let processedFile = null;
-
-    if (this.root.options.fileProcessor) {
-      try {
-        if (this.refs.fileProcessingLoader) {
-          this.refs.fileProcessingLoader.style.display = 'block';
-        }
-        const fileProcessorHandler = fileProcessor(this.fileService, this.root.options.fileProcessor);
-        processedFile = await fileProcessorHandler(file, this.component.properties);
-      }
-      catch (err) {
-        this.fileDropHidden = false;
-        return {
-          status: 'error',
-          message: this.t('File processing has been failed.'),
-        };
-      }
-      finally {
-        if (this.refs.fileProcessingLoader) {
-          this.refs.fileProcessingLoader.style.display = 'none';
-        }
-      }
-    }
-
-    return {
-      file: processedFile,
-    };
-  }
-
-  async prepareFileToUpload(file) {
-    const fileToSync = this.getInitFileToSync(file);
-    fileToSync.hash = await this.handleSubmissionRevisions(file);
-
-    const { status, message } = this.validateFile(file);
-    if (status === 'error') {
-      fileToSync.isValidationError = true;
-      fileToSync.status = status;
-      fileToSync.message = message;
-      return this.filesToSync.filesToUpload.push(fileToSync);
-    }
-
-    if (this.component.privateDownload) {
-      file.private = true;
-    }
-
-    const { groupKey, groupPermissions } = this.getGroupPermissions();
-
-    const processedFile = await this.triggerFileProcessor(file);
-    if (processedFile.status === 'error') {
-      fileToSync.status === 'error';
-      fileToSync.message = processedFile.message;
-      return this.filesToSync.filesToUpload.push(fileToSync);
-    }
-
-    if (this.autoSync) {
-      fileToSync.message = this.t('Ready to be uploaded into storage');
-    }
-
-    this.filesToSync.filesToUpload.push({
-      ...fileToSync,
-      message: fileToSync.message,
-      file: processedFile.file || file,
-      url: this.interpolate(this.component.url, { file: fileToSync }),
-      groupPermissions,
-      groupResourceId: groupKey ? this.currentForm.submission.data[groupKey]._id : null,
-    });
-  }
-
-  async prepareFilesToUpload(files) {
+  upload(files) {
     // Only allow one upload if not multiple.
     if (!this.component.multiple) {
+      if (this.statuses.length) {
+        this.statuses = [];
+      }
       files = Array.prototype.slice.call(files, 0, 1);
     }
 
     if (this.component.storage && files && files.length) {
       this.fileDropHidden = true;
 
-      return Promise.all([...files].map(async(file) => {
-        await this.prepareFileToUpload(file);
-        this.redraw();
-      }));
-    }
-    else {
-      return Promise.resolve();
-    }
-  }
+      // files is not really an array and does not have a forEach method, so fake it.
+      /* eslint-disable max-statements */
+      Array.prototype.forEach.call(files, async(file) => {
+        const fileName = uniqueName(file.name, this.component.fileNameTemplate, this.evalContext());
+        const escapedFileName = file.name ? file.name.replaceAll('<', '&lt;').replaceAll('>', '&gt;') : file.name;
+        const fileUpload = {
+          abort: () => null,
+          originalName: escapedFileName,
+          name: fileName,
+          size: file.size,
+          status: 'info',
+          message: this.t('Processing file. Please wait...'),
+          hash: '',
+        };
 
-  async handleFilesToUpload(files) {
-    await this.prepareFilesToUpload(files);
-    if (!this.autoSync) {
-      await this.syncFiles();
-    }
-  }
-
-  prepareFileToDelete(fileInfo) {
-    this.filesToSync.filesToDelete.push({
-      ...fileInfo,
-      status: 'info',
-      message: this.autoSync
-        ? this.t('Ready to be removed from storage')
-        : this.t('Preparing file to remove'),
-    });
-
-    const index = this.dataValue.findIndex(file => file.name === fileInfo.name);
-    this.splice(index);
-    this.redraw();
-  }
-
-  handleFileToRemove(fileInfo) {
-    this.prepareFileToDelete(fileInfo);
-    if (!this.autoSync) {
-      this.syncFiles();
-    }
-  }
-
-  async deleteFile(fileInfo) {
-    const { options = {} } = this.component;
-
-    if (fileInfo && (['url', 'indexeddb', 's3', 'azure', 'googledrive'].includes(this.component.storage))) {
-      const { fileService } = this;
-      if (fileService && typeof fileService.deleteFile === 'function') {
-        return await fileService.deleteFile(fileInfo, options);
-      }
-      else {
-        const formio = this.options.formio || (this.root && this.root.formio);
-
-        if (formio) {
-          return await formio.makeRequest('', fileInfo.url, 'delete');
-        }
-      }
-    }
-  }
-
-  async delete() {
-    if (!this.filesToSync.filesToDelete.length) {
-      return Promise.resolve();
-    }
-
-    return await Promise.all(this.filesToSync.filesToDelete.map(async(fileToSync) => {
-      try {
-        if (fileToSync.isValidationError) {
-          return { fileToSync };
+        if (this.root.form.submissionRevisions === 'true') {
+          this.statuses.push(fileUpload);
+          this.redraw();
+          const bmf = new BMF();
+          const hash = await new Promise((resolve, reject) => {
+            this.emit('fileUploadingStart');
+            bmf.md5(file, (err, md5)=>{
+              if (err) {
+                return reject(err);
+              }
+              return resolve(md5);
+            });
+          });
+          this.emit('fileUploadingEnd');
+          fileUpload.hash = hash;
         }
 
-        await this.deleteFile(fileToSync);
-        fileToSync.status = 'success';
-        fileToSync.message = this.t('Succefully removed');
-      }
-      catch (response) {
-        fileToSync.status = 'error';
-        fileToSync.message = typeof response === 'string' ? response : response.toString();
-      }
-      finally {
-        this.redraw();
-      }
+        // Check if file with the same name is being uploaded
+        if (!this.filesUploading) {
+          this.filesUploading = [];
+        }
+        const fileWithSameNameUploading = this.filesUploading.some(fileUploading => fileUploading === file.name);
+        this.filesUploading.push(file.name);
 
-      return { fileToSync };
-    }));
-  }
+        const fileWithSameNameUploaded = this.dataValue.some(fileStatus => fileStatus.originalName === file.name);
+        const fileWithSameNameUploadedWithError = this.statuses.findIndex(fileStatus =>
+          fileStatus.originalName === file.name
+          && fileStatus.status === 'error'
+        );
 
-  updateProgress(fileInfo, progressEvent) {
-    fileInfo.progress = parseInt(100.0 * progressEvent.loaded / progressEvent.total);
-    if (fileInfo.status !== 'progress') {
-      fileInfo.status = 'progress';
-      delete fileInfo.message;
-      this.redraw();
-    }
-    else {
-      const progress = Array.prototype.find.call(this.refs.progress, progressElement => progressElement.id === fileInfo.id);
-      progress.innerHTML = `<span class="visually-hidden">${fileInfo.progress}% ${this.t('Complete')}</span>`;
-      progress.style.width = `${fileInfo.progress}%`;
-      progress.ariaValueNow = fileInfo.progress.toString();
-    }
-  }
-
-  getMultipartOptions(fileToSync) {
-    let count = 0;
-    return this.component.useMultipartUpload && this.component.multipart ? {
-      ...this.component.multipart,
-      progressCallback: (total) => {
-        count++;
-        fileToSync.status = 'progress';
-        fileToSync.progress = parseInt(100 * count / total);
-        delete fileToSync.message;
-        this.redraw();
-      },
-      changeMessage: (message) => {
-        fileToSync.message = message;
-        this.redraw();
-      },
-    } : false;
-  }
-
-  async uploadFile(fileToSync) {
-    return await this.fileService.uploadFile(
-      fileToSync.storage,
-      fileToSync.file,
-      fileToSync.name,
-      fileToSync.dir,
-      // Progress callback
-      this.updateProgress.bind(this, fileToSync),
-      fileToSync.url,
-      fileToSync.options,
-      fileToSync.fileKey,
-      fileToSync.groupPermissions,
-      fileToSync.groupResourceId,
-      () => {},
-      // Abort upload callback
-      (abort) => this.abortUploads.push({
-        id: fileToSync.id,
-        abort,
-      }),
-      this.getMultipartOptions(fileToSync),
-    );
-  }
-
-  async upload() {
-    if (!this.filesToSync.filesToUpload.length) {
-      return Promise.resolve();
-    }
-
-    return await Promise.all(this.filesToSync.filesToUpload.map(async(fileToSync) => {
-      let fileInfo = null;
-      try {
-        if (fileToSync.isValidationError) {
-          return {
-            fileToSync,
-            fileInfo,
-          };
+        if (fileWithSameNameUploaded || fileWithSameNameUploading) {
+          fileUpload.status = 'error';
+          fileUpload.message = this.t(`File with the same name is already ${fileWithSameNameUploading ? 'being ' : ''}uploaded`);
         }
 
-        fileInfo = await this.uploadFile(fileToSync);
-        fileToSync.status = 'success';
-        fileToSync.message = this.t('Succefully uploaded');
+        if (fileWithSameNameUploadedWithError !== -1) {
+          this.statuses.splice(fileWithSameNameUploadedWithError, 1);
+          this.redraw();
+        }
 
-        fileInfo.originalName = fileToSync.originalName;
-        fileInfo.hash = fileToSync.hash;
-      }
-      catch (response) {
-        fileToSync.status = 'error';
-        delete fileToSync.progress;
-        fileToSync.message = typeof response === 'string'
-          ? response
-          : response.type === 'abort'
-            ? this.t('Request was aborted')
-            : response.toString();
+        // Check file pattern
+        if (this.component.filePattern && !this.validatePattern(file, this.component.filePattern)) {
+          fileUpload.status = 'error';
+          fileUpload.message = this.t('File is the wrong type; it must be {{ pattern }}', {
+            pattern: this.component.filePattern,
+          });
+        }
+        // Check file minimum size
+        if (this.component.fileMinSize && !this.validateMinSize(file, this.component.fileMinSize)) {
+          fileUpload.status = 'error';
+          fileUpload.message = this.t('File is too small; it must be at least {{ size }}', {
+            size: this.component.fileMinSize,
+          });
+        }
 
-        this.emit('fileUploadError', {
-          fileToSync,
-          response,
-        });
-      }
-      finally {
-        delete fileToSync.progress;
-        this.redraw();
-      }
+        // Check file maximum size
+        if (this.component.fileMaxSize && !this.validateMaxSize(file, this.component.fileMaxSize)) {
+          fileUpload.status = 'error';
+          fileUpload.message = this.t('File is too big; it must be at most {{ size }}', {
+            size: this.component.fileMaxSize,
+          });
+        }
 
-      return {
-        fileToSync,
-        fileInfo,
-      };
-    }));
-  }
+        // Get a unique name for this file to keep file collisions from occurring.
+        const dir = this.interpolate(this.component.dir || '');
+        const { fileService } = this;
+        if (!fileService) {
+          fileUpload.status = 'error';
+          fileUpload.message = this.t('File Service not provided.');
+        }
 
-  async syncFiles() {
-    this.isSyncing = true;
-    this.fileDropHidden = true;
-    this.redraw();
-    try {
-      const [filesToDelete = [], filesToUpload = []] = await Promise.all([this.delete(), this.upload()]);
-      this.filesToSync.filesToDelete = filesToDelete
-        .filter(file => file.fileToSync?.status === 'error')
-        .map(file => file.fileToSync);
-      this.filesToSync.filesToUpload = filesToUpload
-        .filter(file => file.fileToSync?.status === 'error')
-        .map(file => file.fileToSync);
+        if (this.root.form.submissionRevisions !== 'true') {
+          this.statuses.push(fileUpload);
+          this.redraw();
+        }
 
-      if (!this.hasValue()) {
-        this.dataValue =[];
-      }
+        if (fileUpload.status !== 'error') {
+          if (this.component.privateDownload) {
+            file.private = true;
+          }
+          const { storage, options = {} } = this.component;
+          const url = this.interpolate(this.component.url, { file: fileUpload });
+          let groupKey = null;
+          let groupPermissions = null;
 
-      const data = filesToUpload
-        .filter(file => file.fileToSync?.status === 'success')
-        .map(file => file.fileInfo);
-      this.dataValue.push(...data);
-      this.triggerChange();
-      return Promise.resolve();
-    }
-    catch (err) {
-      return Promise.reject();
-    }
-    finally {
-      this.isSyncing = false;
-      this.fileDropHidden = false;
-      this.abortUploads = [];
-      this.redraw();
+          //Iterate through form components to find group resource if one exists
+          this.root.everyComponent((element) => {
+            if (element.component?.submissionAccess || element.component?.defaultPermission) {
+              groupPermissions = !element.component.submissionAccess ? [
+                {
+                  type: element.component.defaultPermission,
+                  roles: [],
+                },
+              ] : element.component.submissionAccess;
+
+              groupPermissions.forEach((permission) => {
+                groupKey = ['admin', 'write', 'create'].includes(permission.type) ? element.component.key : null;
+              });
+            }
+          });
+          const fileKey = this.component.fileKey || 'file';
+          const groupResourceId = groupKey ? this.currentForm.submission.data[groupKey]._id : null;
+          let processedFile = null;
+
+          if (this.root.options.fileProcessor) {
+            try {
+              if (this.refs.fileProcessingLoader) {
+                this.refs.fileProcessingLoader.style.display = 'block';
+              }
+              const fileProcessorHandler = fileProcessor(this.fileService, this.root.options.fileProcessor);
+              processedFile = await fileProcessorHandler(file, this.component.properties);
+            }
+            catch (err) {
+              fileUpload.status = 'error';
+              fileUpload.message = this.t('File processing has been failed.');
+              this.fileDropHidden = false;
+              this.redraw();
+              return;
+            }
+            finally {
+              if (this.refs.fileProcessingLoader) {
+                this.refs.fileProcessingLoader.style.display = 'none';
+              }
+            }
+          }
+
+          fileUpload.message = this.t('Starting upload...');
+          this.redraw();
+
+          const filePromise = fileService.uploadFile(
+            storage,
+            processedFile || file,
+            fileName,
+            dir,
+            // Progress callback
+            (evt) => {
+              fileUpload.status = 'progress';
+              fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
+              delete fileUpload.message;
+              this.redraw();
+            },
+            url,
+            options,
+            fileKey,
+            groupPermissions,
+            groupResourceId,
+            // Upload start callback
+            () => {
+              this.emit('fileUploadingStart', filePromise);
+            },
+            (abort) => fileUpload.abort = abort,
+          ).then((fileInfo) => {
+              const index = this.statuses.indexOf(fileUpload);
+              if (index !== -1) {
+                this.statuses.splice(index, 1);
+              }
+              fileInfo.originalName = escapedFileName;
+              fileInfo.hash = fileUpload.hash;
+              if (!this.hasValue()) {
+                this.dataValue = [];
+              }
+              this.dataValue.push(fileInfo);
+              _.pull(this.filesUploading, fileInfo.originalName);
+              this.fileDropHidden = false;
+              this.redraw();
+              this.triggerChange();
+              this.emit('fileUploadingEnd', filePromise);
+            })
+            .catch((response) => {
+              fileUpload.status = 'error';
+              fileUpload.message = typeof response === 'string' ? response : response.toString();
+              delete fileUpload.progress;
+              this.fileDropHidden = false;
+              _.pull(this.filesUploading, file.name);
+              this.redraw();
+              this.emit('fileUploadingEnd', filePromise);
+            });
+        }
+        else {
+          this.filesUploading.splice(this.filesUploading.indexOf(file.name),1);
+        }
+      });
     }
   }
 
@@ -1171,23 +884,7 @@ export default class FileComponent extends Field {
     }
   }
 
-  async beforeSubmit() {
-    try {
-      if (!this.autoSync) {
-        return Promise.resolve();
-      }
-
-      await this.syncFiles();
-      return this.shouldSyncFiles
-        ? Promise.reject('Synchronization is failed')
-        : Promise.resolve();
-    }
-    catch (error) {
-      return Promise.reject(error.message);
-    }
-  }
-
-  destroy(all) {
+  destroy(all = false) {
     this.stopVideo();
     super.destroy(all);
   }
