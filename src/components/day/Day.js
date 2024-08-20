@@ -26,7 +26,8 @@ export default class DayComponent extends Field {
           required: false
         }
       },
-      dayFirst: false
+      dayFirst: false,
+      defaultValue: ''
     }, ...extend);
   }
 
@@ -38,13 +39,6 @@ export default class DayComponent extends Field {
       documentation: '/userguide/form-building/advanced-components#day',
       weight: 50,
       schema: DayComponent.schema()
-    };
-  }
-
-  static get conditionOperatorsSettings() {
-    return {
-      ...super.conditionOperatorsSettings,
-      operators: ['isDateEqual', 'isNotDateEqual', 'isEmpty', 'isNotEmpty','dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'],
     };
   }
 
@@ -386,20 +380,25 @@ export default class DayComponent extends Field {
     const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const defaultValue = this.component.defaultValue ? this.component.defaultValue.split('/') : '';
 
-    const getNextPart = (shouldTake, defaultValue) =>
-      dateParts.push(shouldTake ? valueParts.shift() : defaultValue);
+    const getNextPart = (shouldTake, defaultValue) => {
+       // Only push the part if it's not an empty string
+      const part = shouldTake ? valueParts.shift() : defaultValue;
+      if (part !== '') {
+        dateParts.push(part);
+      }
+    }
 
     if (this.dayFirst) {
-      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '00');
+      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '');
     }
 
-    getNextPart(this.showMonth, defaultValue ? defaultValue[MONTH] : '00');
+    getNextPart(this.showMonth, defaultValue ? defaultValue[MONTH] : '');
 
     if (!this.dayFirst) {
-      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '00');
+      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '');
     }
 
-    getNextPart(this.showYear, defaultValue ? defaultValue[YEAR] : '0000');
+    getNextPart(this.showYear, defaultValue ? defaultValue[YEAR] : '');
 
     return dateParts.join('/');
   }
@@ -628,7 +627,16 @@ export default class DayComponent extends Field {
     }
     const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const values = value.split('/');
-    return (values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000');
+   // return (values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000');
+
+
+
+    return (values[DAY] === '00' ||
+      values[MONTH] === '00' ||
+      values[YEAR] === '0000' ||
+      values[DAY] === '' ||
+      values[MONTH] === '' ||
+      values[YEAR] === '');
   }
 
   getValidationFormat() {
