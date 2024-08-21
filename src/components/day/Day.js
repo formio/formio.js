@@ -42,6 +42,13 @@ export default class DayComponent extends Field {
     };
   }
 
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isDateEqual', 'isNotDateEqual', 'isEmpty', 'isNotEmpty','dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'],
+    };
+  }
+
   static savedValueTypes(schema) {
     schema = schema || {};
     return getComponentSavedTypes(schema) || [componentValueTypes.string];
