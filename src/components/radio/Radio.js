@@ -34,36 +34,27 @@ export default class RadioComponent extends ListComponent {
     return {
       ...super.conditionOperatorsSettings,
       valueComponent(classComp) {
-        return {
-          type: 'select',
-          dataSrc: 'custom',
-          valueProperty: 'value',
-          dataType: classComp.dataType || '',
-          data: {
-            custom() {
-              return classComp.values;
+        const isValuesSrc = !classComp.dataSrc || classComp.dataSrc === 'values';
+        return isValuesSrc
+          ? {
+              type: 'select',
+              dataSrc: 'custom',
+              valueProperty: 'value',
+              dataType: classComp.dataType || '',
+              data: {
+                custom: `values = ${classComp && classComp.values ? JSON.stringify(classComp.values) : []}`,
+              }
             }
-          },
-        };
+          : {
+              ...classComp,
+              type: 'select',
+            }
       }
     };
   }
 
   static get serverConditionSettings() {
-    return {
-      ...super.serverConditionSettings,
-      valueComponent(classComp) {
-        return {
-          type: 'select',
-          dataSrc: 'custom',
-          valueProperty: 'value',
-          dataType: classComp.dataType || '',
-          data: {
-            custom: `values = ${classComp && classComp.values ? JSON.stringify(classComp.values) : []}`,
-          },
-        };
-      },
-    };
+    return RadioComponent.conditionOperatorsSettings;
   }
 
   static savedValueTypes(schema) {
