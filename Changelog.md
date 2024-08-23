@@ -55,6 +55,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8795: fixed selected data after removing row
  - FIO-8771: Included File Component in Review Page Component
  - FIO-8789: Fixing issues where the wrong urls are used for CDN on remote env
+ - FIO-7524: Added back aspect ratio option to Signature
 
 ### New Features
 
