@@ -647,6 +647,16 @@ export default class DayComponent extends Field {
   }
 
   getValidationFormat() {
-    return this.dayFirst ? 'DD-MM-YYYY' : 'MM-DD-YYYY';
+    let validationFormat = this.dayFirst ? 'DD-MM-YYYY' : 'MM-DD-YYYY';
+    if (this.fields?.day?.hide) {
+      validationFormat = validationFormat.replace('DD-', '');
+    }
+    if (this.fields?.month?.hide) {
+      validationFormat = validationFormat.replace('MM-', '');
+    }
+    if ( this.fields?.year?.hide ) {
+      validationFormat = validationFormat.replace('-YYYY', '');
+    }
+    return validationFormat;
   }
 }
