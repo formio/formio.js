@@ -3969,7 +3969,7 @@ export default class Component extends Element {
     }
 
     if (this.parent.refs.openModal) {
-      this.parent.componentModal.openModal();
+      this.parent.refs.openModal.focus();
     }
   }
 
