@@ -22,6 +22,17 @@ export default class ReCaptchaComponent extends Component {
     return [];
   }
 
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
+  }
+
+  static get serverConditionSettings() {
+    return ReCaptchaComponent.conditionOperatorsSettings;
+  }
+
   render() {
     this.recaptchaResult = null;
     if (this.builderMode) {
