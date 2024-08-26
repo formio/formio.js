@@ -26,7 +26,8 @@ export default class DayComponent extends Field {
           required: false
         }
       },
-      dayFirst: false
+      dayFirst: false,
+      defaultValue: ''
     }, ...extend);
   }
 
@@ -386,20 +387,25 @@ export default class DayComponent extends Field {
     const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const defaultValue = this.component.defaultValue ? this.component.defaultValue.split('/') : '';
 
-    const getNextPart = (shouldTake, defaultValue) =>
-      dateParts.push(shouldTake ? valueParts.shift() : defaultValue);
+    const getNextPart = (shouldTake, defaultValue) => {
+       // Only push the part if it's not an empty string
+      const part = shouldTake ? valueParts.shift() : defaultValue;
+      if (part !== '') {
+        dateParts.push(part);
+      }
+    }
 
     if (this.dayFirst) {
-      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '00');
+      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '');
     }
 
-    getNextPart(this.showMonth, defaultValue ? defaultValue[MONTH] : '00');
+    getNextPart(this.showMonth, defaultValue ? defaultValue[MONTH] : '');
 
     if (!this.dayFirst) {
-      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '00');
+      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '');
     }
 
-    getNextPart(this.showYear, defaultValue ? defaultValue[YEAR] : '0000');
+    getNextPart(this.showYear, defaultValue ? defaultValue[YEAR] : '');
 
     return dateParts.join('/');
   }
@@ -628,10 +634,23 @@ export default class DayComponent extends Field {
     }
     const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const values = value.split('/');
+    if(values.length < 3){
+      return true;
+    }
     return (values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000');
   }
 
   getValidationFormat() {
-    return this.dayFirst ? 'DD-MM-YYYY' : 'MM-DD-YYYY';
+    let validationFormat = this.dayFirst ? 'DD-MM-YYYY' : 'MM-DD-YYYY';
+    if (this.fields?.day?.hide) {
+      validationFormat = validationFormat.replace('DD-', '');
+    }
+    if (this.fields?.month?.hide) {
+      validationFormat = validationFormat.replace('MM-', '');
+    }
+    if ( this.fields?.year?.hide ) {
+      validationFormat = validationFormat.replace('-YYYY', '');
+    }
+    return validationFormat;
   }
 }
