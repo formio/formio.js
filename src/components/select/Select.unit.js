@@ -34,6 +34,7 @@ import {
   comp22,
   comp23,
   comp24,
+  comp25
 } from './fixtures';
 
 // eslint-disable-next-line max-statements
@@ -1152,6 +1153,33 @@ describe('Select Component', () => {
         }, 500);
       }, 200);
     }).catch(done);
+  });
+
+  it('Should open edit grid modal when clicking on validation link when editing a submission', (done) => {
+    Formio.createForm(document.createElement('div'), comp25, {}).then((form) => {
+      form.submission = {
+        "data": {
+          "editGrid": [
+            {
+              "notselect": "",
+              "textField": ""
+            }
+          ],
+          "draft": true,
+          "submit": false
+        },
+        "state": "draft",
+      };
+      const buttonComponent = form.getComponent('submit');
+      buttonComponent.refs.button.click();
+      setTimeout(() => {
+        form.refs.errorRef[0].click();
+        setTimeout(() => {
+          assert(document.querySelector('body').classList.contains('modal-open'), 'modal should be open');
+          done();
+        }, 200);
+      }, 200);
+    });
   });
 
   // it('should reset input value when called with empty value', () => {
