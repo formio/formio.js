@@ -200,6 +200,38 @@ describe('Day Component', () => {
     });
   });
 
+  it('Should set value if the day field is hidden', (done) => {
+    comp1.dayFirst = false;
+    comp1.fields.day.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue('12/2023');
+      assert.equal(component.data.date, '12/2023');
+      done();
+    });
+    comp1.fields.day.hide = false;
+  });
+
+  it('Should set value if the month field is hidden', (done) => {
+    comp1.fields.month.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue('12/2023');
+      assert.equal(component.data.date, '12/2023');
+      done();
+    });
+    comp1.fields.month.hide = false;
+  });
+
+  it('Should set value if the year field is hidden', (done) => {
+    comp1.fields.year.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue('12/21');
+      assert.equal(component.data.date, '12/21');
+      done();
+    });
+    comp1.fields.year.hide = false;
+  });
+
+
   it('Should use the default day value if the day field is hidden', (done) => {
     comp1.dayFirst = false;
     comp1.defaultValue = '00/01/0000';
