@@ -57,6 +57,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8789: Fixing issues where the wrong urls are used for CDN on remote env
  - FIO-7524: Added back aspect ratio option to Signature
  - FIO-8798: updated shape of the data of day component with hidden fields
+ - FIO-8760: Fixes an issue where nested form is not getting all the options
+ - FIO-8706: allow data interpolation for data source in components
+ - FIO-8849: fixed an issue where value of the selctboxes/radio with URL data source are not available in simple conditons UI
+ - FIO-8874: fixed conditional value field for time component
+ - FIO-8931: Disable file synchronization feature
 
 ### New Features
 
