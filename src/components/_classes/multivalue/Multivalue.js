@@ -2,13 +2,30 @@ import Field from '../field/Field';
 import _ from 'lodash';
 
 export default class Multivalue extends Field {
-  get dataValue() {
-    const parent = super.dataValue;
-
-    if (!parent && this.component.multiple) {
-      return [];
+  /**
+   * Normalize values coming into updateValue.
+   * @param {*} value - The value to normalize before setting.
+   * @returns {*} - The normalized value.
+   */
+  normalizeValue(value) {
+    if (this.component.multiple) {
+      if (Array.isArray(value)) {
+        if (value.length === 0) return [this.emptyValue];
+        return super.normalizeValue(value);
+      } else {
+        return super.normalizeValue([value]);
+      }
+    } else {
+      if (Array.isArray(value)) {
+        return super.normalizeValue(value[0] || this.emptyValue);
+      } else {
+        return super.normalizeValue(value);
+      }
     }
-    return parent;
+  }
+
+  get dataValue() {
+    return super.dataValue;
   }
 
   set dataValue(value) {
@@ -16,48 +33,19 @@ export default class Multivalue extends Field {
   }
 
   get defaultValue() {
-    let value = super.defaultValue;
-
-    if (this.component.multiple) {
-      if (_.isArray(value)) {
-        value = !value.length ? [super.emptyValue] : value;
-      }
-      else {
-        value = [value];
-      }
-    }
-
-    return value;
+    return super.defaultValue;
   }
 
   get addAnother() {
     return this.t(this.component.addAnother || 'Add Another');
   }
 
-  get hasMultipleParam() {
-    return this.component.hasOwnProperty('multiple') && this.component.multiple;
-  }
-
-  /**
-   * Ensures the dataValue is an array if the component is a multiple value component, and not an array if not.
-   * NOTE: mutates this.dataValue
-   */
-  normalizeDataValue() {
-    if (this.hasMultipleParam && !Array.isArray(this.dataValue)) {
-      this.dataValue = this.dataValue ? [this.dataValue] : [];
-    } else if (!this.hasMultipleParam && Array.isArray(this.dataValue)) {
-      this.dataValue = this.dataValue[0] || this.emptyValue;
-    }
-  }
-
   /**
    * @returns {Field} - The created field.
    */
   render() {
-    // Normalize the data value before we render.
-    this.normalizeDataValue();
-
-    return this.hasMultipleParam
+    this.dataValue = this.normalizeValue(this.dataValue);
+    return this.component.hasOwnProperty('multiple') && this.component.multiple
       ? super.render(
           this.renderTemplate('multiValueTable', {
             rows: this.dataValue.map(this.renderRow.bind(this)).join(''),

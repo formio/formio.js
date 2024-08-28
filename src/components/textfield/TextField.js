@@ -81,7 +81,7 @@ export default class TextFieldComponent extends Input {
   }
 
   get emptyValue() {
-    return '';
+    return this.component.multiple ? [] : '';
   }
 
   constructor(component, options, data) {
