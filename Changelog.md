@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.76
+### Changed
+ - Updated @formio/core@2.2.2-rc.5
+ - FIO-8874: fixed conditional value field for time component
+ - FIO-8849: fixed an issue where value of the selctboxes/radio with URL data source are not available in simple conditons UI
+ - FIO-8931: Disable file synchronization feature
+ - FIO-8866-8864: fixed simple conditions operators for recaptcha
+ - FIO-8921: fixed an issue where newly created PDF-form cannot be saved in builder after adding some components in it
+ - FIO-8798: updated shape of the data of day component with hidden fields
+
 ## 5.0.0-rc.75
 ### Changed
  - Updated @formio/core@2.2.2-rc.3
