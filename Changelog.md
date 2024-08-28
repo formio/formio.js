@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased - 4.21.3-rc.1]
+## [Unreleased: 4.21.3-rc.1]
 ### Changed
  - FIO-7779: update pathing for nested container components and add test
    
