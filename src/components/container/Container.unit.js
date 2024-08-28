@@ -8,6 +8,7 @@ import {
   comp2,
   comp3,
   comp4,
+  editGridWithChildContainer
 } from './fixtures';
 
 import Formio from '../../Formio';
@@ -96,5 +97,33 @@ describe('Container Component', () => {
         done();
       }, 200);
     }).catch(done);
+  });
+
+  it('Should not include an array index in any child component paths when child of a nested component', async() => {
+    const form = _.cloneDeep(editGridWithChildContainer);
+    const element = document.createElement('div');
+
+    const formInstance = await Formio.createForm(element, form);
+    formInstance.submission = {
+      data: {
+        editGrid: [
+          {
+            container: {
+              textField: 'a',
+            },
+          },
+        ],
+      },
+    };
+    await formInstance.submissionReady;
+    const editGrid = formInstance.getComponent(['editGrid']);
+    assert(editGrid, 'EditGrid component found');
+    assert.strictEqual(editGrid.path, 'editGrid');
+    const container = formInstance.getComponent('container');
+    assert(container, 'Container component found');
+    assert.strictEqual(container.path, 'editGrid[0].container');
+    const textField = formInstance.getComponent('textField');
+    assert(textField, 'TextField component found');
+    assert.strictEqual(textField.path, 'editGrid[0].container.textField');
   });
 });
