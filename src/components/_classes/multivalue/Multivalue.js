@@ -34,37 +34,44 @@ export default class Multivalue extends Field {
     return this.t(this.component.addAnother || 'Add Another');
   }
 
-  useWrapper() {
+  get hasMultipleParam() {
     return this.component.hasOwnProperty('multiple') && this.component.multiple;
+  }
+
+  /**
+   * Ensures the dataValue is an array if the component is a multiple value component, and not an array if not.
+   * NOTE: mutates this.dataValue
+   */
+  normalizeDataValue() {
+    if (this.hasMultipleParam && !Array.isArray(this.dataValue)) {
+      this.dataValue = this.dataValue ? [this.dataValue] : [];
+    } else if (!this.hasMultipleParam && Array.isArray(this.dataValue)) {
+      this.dataValue = this.dataValue[0] || this.emptyValue;
+    }
   }
 
   /**
    * @returns {Field} - The created field.
    */
   render() {
-    // If single value field.
-    if (!this.useWrapper()) {
-      return super.render(
-        `<div ${this._referenceAttributeName}="element">
-          ${this.renderElement(
-            this.component.type !== 'hidden' ? this.dataValue : ''
-          )}
-        </div>`
-      );
-    }
+    // Normalize the data value before we render.
+    this.normalizeDataValue();
 
-    // Make sure dataValue is in the correct array format.
-    let dataValue = this.dataValue;
-    if (!Array.isArray(dataValue)) {
-      dataValue = dataValue ? [dataValue] : [];
-    }
-
-    // If multiple value field.
-    return super.render(this.renderTemplate('multiValueTable', {
-      rows: dataValue.map(this.renderRow.bind(this)).join(''),
-      disabled: this.disabled,
-      addAnother: this.addAnother,
-    }));
+    return this.hasMultipleParam
+      ? super.render(
+          this.renderTemplate('multiValueTable', {
+            rows: this.dataValue.map(this.renderRow.bind(this)).join(''),
+            disabled: this.disabled,
+            addAnother: this.addAnother,
+          })
+        )
+      : super.render(
+          `<div ${this._referenceAttributeName}="element">
+            ${this.renderElement(
+              this.component.type !== 'hidden' ? this.dataValue : ''
+            )}
+          </div>`
+        );
   }
 
   renderElement() {
