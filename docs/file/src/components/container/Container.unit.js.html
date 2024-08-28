@@ -197,6 +197,7 @@ import {
   comp2,
   comp3,
   comp4,
+  editGridWithChildContainer
 } from &apos;./fixtures&apos;;
 
 import Formio from &apos;../../Formio&apos;;
@@ -285,6 +286,34 @@ describe(&apos;Container Component&apos;, () =&gt; {
         done();
       }, 200);
     }).catch(done);
+  });
+
+  it(&apos;Should not include an array index in any child component paths when child of a nested component&apos;, async() =&gt; {
+    const form = _.cloneDeep(editGridWithChildContainer);
+    const element = document.createElement(&apos;div&apos;);
+
+    const formInstance = await Formio.createForm(element, form);
+    formInstance.submission = {
+      data: {
+        editGrid: [
+          {
+            container: {
+              textField: &apos;a&apos;,
+            },
+          },
+        ],
+      },
+    };
+    await formInstance.submissionReady;
+    const editGrid = formInstance.getComponent([&apos;editGrid&apos;]);
+    assert(editGrid, &apos;EditGrid component found&apos;);
+    assert.strictEqual(editGrid.path, &apos;editGrid&apos;);
+    const container = formInstance.getComponent(&apos;container&apos;);
+    assert(container, &apos;Container component found&apos;);
+    assert.strictEqual(container.path, &apos;editGrid[0].container&apos;);
+    const textField = formInstance.getComponent(&apos;textField&apos;);
+    assert(textField, &apos;TextField component found&apos;);
+    assert.strictEqual(textField.path, &apos;editGrid[0].container.textField&apos;);
   });
 });
 </code></pre>
