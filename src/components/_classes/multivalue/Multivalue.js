@@ -10,10 +10,10 @@ export default class Multivalue extends Field {
   normalizeValue(value) {
     if (this.component.multiple) {
       if (Array.isArray(value)) {
-        if (value.length === 0) return [this.emptyValue];
+        if (value.length === 0) return this.emptyValue == null ? [this.emptyValue] : [];
         return super.normalizeValue(value);
       } else {
-        return super.normalizeValue([value]);
+        return super.normalizeValue(value == null ? this.emptyValue == null ? [] : [this.emptyValue] : [value]);
       }
     } else {
       if (Array.isArray(value)) {
@@ -44,11 +44,11 @@ export default class Multivalue extends Field {
    * @returns {Field} - The created field.
    */
   render() {
-    this.dataValue = this.normalizeValue(this.dataValue);
+    let dataValue = this.normalizeValue(this.dataValue);
     return this.component.hasOwnProperty('multiple') && this.component.multiple
       ? super.render(
           this.renderTemplate('multiValueTable', {
-            rows: this.dataValue.map(this.renderRow.bind(this)).join(''),
+            rows: dataValue.map(this.renderRow.bind(this)).join(''),
             disabled: this.disabled,
             addAnother: this.addAnother,
           })
@@ -56,7 +56,7 @@ export default class Multivalue extends Field {
       : super.render(
           `<div ${this._referenceAttributeName}="element">
             ${this.renderElement(
-              this.component.type !== 'hidden' ? this.dataValue : ''
+              this.component.type !== 'hidden' ? dataValue : ''
             )}
           </div>`
         );
