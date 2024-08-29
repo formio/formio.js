@@ -13,6 +13,11 @@ export default class Multivalue extends Field {
         if (value.length === 0) {
           return [this.emptyValue];
         }
+
+        if (this.component.storeas === 'array') {
+          return super.normalizeValue([value]);
+        }
+
         return super.normalizeValue(value);
       } else {
         return super.normalizeValue(value == null ? [this.emptyValue] : [value]);
