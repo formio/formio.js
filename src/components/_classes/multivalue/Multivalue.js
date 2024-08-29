@@ -11,11 +11,11 @@ export default class Multivalue extends Field {
     if (this.component.multiple) {
       if (Array.isArray(value)) {
         if (value.length === 0) {
-          return this.emptyValue == null ? [this.emptyValue] : [];
+          return [this.emptyValue];
         }
         return super.normalizeValue(value);
       } else {
-        return super.normalizeValue(value == null ? this.emptyValue == null ? [] : [this.emptyValue] : [value]);
+        return super.normalizeValue(value == null ? [this.emptyValue] : [value]);
       }
     } else {
       if (Array.isArray(value) && this.component.storeas !== 'array') {
@@ -38,7 +38,17 @@ export default class Multivalue extends Field {
   }
 
   get defaultValue() {
-    return super.defaultValue;
+    let value = super.defaultValue;
+
+    if (this.component.multiple) {
+      if (_.isArray(value)) {
+        value = !value.length ? [super.emptyValue] : value;
+      }
+      else {
+        value = [value];
+      }
+    }
+    return value;
   }
 
   get addAnother() {
