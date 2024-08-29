@@ -10,13 +10,18 @@ export default class Multivalue extends Field {
   normalizeValue(value) {
     if (this.component.multiple) {
       if (Array.isArray(value)) {
-        if (value.length === 0) return this.emptyValue == null ? [this.emptyValue] : [];
+        if (value.length === 0) {
+          return this.emptyValue == null ? [this.emptyValue] : [];
+        }
         return super.normalizeValue(value);
       } else {
         return super.normalizeValue(value == null ? this.emptyValue == null ? [] : [this.emptyValue] : [value]);
       }
     } else {
-      if (Array.isArray(value)) {
+      if (Array.isArray(value) && this.component.storeas !== 'array') {
+        if (this.component.storeas === 'string') {
+          return super.normalizeValue(value.join(this.delimiter || ''));
+        }
         return super.normalizeValue(value[0] || this.emptyValue);
       } else {
         return super.normalizeValue(value);
