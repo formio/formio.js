@@ -5151,7 +5151,7 @@ describe('Webform tests', function() {
       }
     });
   }
-}
+});
 
 // describe('Test the saveDraft and restoreDraft feature', () => {
 //   APIMock.submission('https://savedraft.form.io/myform', {
