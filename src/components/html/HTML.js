@@ -101,8 +101,8 @@ export default class HTMLComponent extends Component {
   attach(element) {
     this.loadRefs(element, { html: 'single' });
     this.dataReady.then(() => {
-      if (this.refs.html) {
-        this.setContent(this.refs.html, this.content);
+      if (this.element) {
+        this.setContent(this.element, this.renderContent());
       }
     });
     return super.attach(element);
