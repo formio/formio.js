@@ -3452,7 +3452,7 @@ export default class Component extends Element {
             this.parent.childErrors.push(...errors);
           }
           else {
-            _.remove(this.parent.childErrors, (err) => err.component.key === this.component.key);
+            _.remove(this.parent.childErrors, (err) => (err?.component?.key || err?.context?.key) === this.component.key);
           }
         }
         this.showValidationErrors(errors, data, row, flags);
@@ -3468,7 +3468,7 @@ export default class Component extends Element {
           this.parent.childErrors.push(...errors);
         }
         else {
-          _.remove(this.parent.childErrors, (err) => err.component.key === this.component.key);
+          _.remove(this.parent.childErrors, (err) => (err?.component?.key || err?.context?.key) === this.component.key);
         }
       }
       return errors.length === 0;
