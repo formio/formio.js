@@ -1423,10 +1423,14 @@ export default class Webform extends NestedDataComponent {
         this.checkData(value.data, flags);
         const shouldValidate =
             !flags.noValidate ||
-            flags.fromIFrame ||
+            flags.fromIframe ||
             (flags.fromSubmission && this.rootPristine && this.pristine && flags.changed);
         const errors = shouldValidate
-            ? this.validate(value.data, { ...flags, process: "change" })
+            ? this.validate(value.data, { 
+                ...flags, 
+                noValidate: flags.fromIframe && this.submitted ? false : flags.noValidate, 
+                process: 'change'
+            })
             : [];
         value.isValid = errors.length === 0;
 
