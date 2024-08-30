@@ -5086,70 +5086,71 @@ describe('Webform tests', function() {
   });
 
   for (const formTest of FormTests) {
-  const useDoneInsteadOfPromise = formTest.useDone;
+    const useDoneInsteadOfPromise = formTest.useDone;
 
-  describe(formTest.title || '', () => {
-    for (const title in formTest.tests) {
-      const formTestTest = formTest.tests[title];
-
-      if (useDoneInsteadOfPromise) {
-        it(title, function(done) {
-          const self = this;
-          const formElement = document.createElement('div');
-          let form = new Webform(formElement, _.cloneDeep(formTest.formOptions || {}));
-          
-          form.setForm(formTest.form).then(() => {
-            try {
-              formTestTest(form, (error) => {
+    describe(formTest.title || '', () => {
+      for (const title in formTest.tests) {
+        const formTestTest = formTest.tests[title];
+  
+        if (useDoneInsteadOfPromise) {
+          it(title, function(done) {
+            const self = this;
+            const formElement = document.createElement('div');
+            let form = new Webform(formElement, _.cloneDeep(formTest.formOptions || {}));
+            
+            form.setForm(formTest.form).then(() => {
+              try {
+                formTestTest(form, (error) => {
+                  form.destroy();
+                  form = null;
+                  formElement.innerHTML = '';
+                  if (error) {
+                    done(error);
+                  } else {
+                    done();
+                  }
+                }, self);
+              } catch (err) {
                 form.destroy();
                 form = null;
                 formElement.innerHTML = '';
-                if (error) {
-                  done(error);
-                } else {
-                  done();
-                }
-              }, self);
-            } catch (err) {
+                done(err);
+              }
+            }).catch((err) => {
               form.destroy();
               form = null;
               formElement.innerHTML = '';
               done(err);
-            }
-          }).catch((err) => {
-            form.destroy();
-            form = null;
-            formElement.innerHTML = '';
-            done(err);
-          });
-        });
-      } else {
-        it(title, async function() {
-          const formElement = document.createElement('div');
-          const form = new Webform(formElement, { language: 'en' });
-
-          try {
-            await form.setForm(formTest.form);
-            await new Promise((resolve, reject) => {
-              formTestTest(form, (error) => {
-                form.destroy();
-                formElement.innerHTML = '';
-                if (error) {
-                  reject(new Error(error));
-                } else {
-                  resolve();
-                }
-              });
             });
-          } catch (err) {
-            form.destroy();
-            formElement.innerHTML = '';
-            throw err;
-          }
-        });
+          });
+        } else {
+          it(title, async function() {
+            const formElement = document.createElement('div');
+            const form = new Webform(formElement, { language: 'en' });
+  
+            try {
+              await form.setForm(formTest.form);
+              await new Promise((resolve, reject) => {
+                formTestTest(form, (error) => {
+                  form.destroy();
+                  formElement.innerHTML = '';
+                  if (error) {
+                    reject(new Error(error));
+                  } else {
+                    resolve();
+                  }
+                });
+              });
+            } catch (err) {
+              form.destroy();
+              formElement.innerHTML = '';
+              throw err;
+            }
+          });
+        }
       }
-    }
-  });
+    });
+  }
 }
 
 // describe('Test the saveDraft and restoreDraft feature', () => {
