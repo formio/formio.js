@@ -76,19 +76,22 @@ describe('DateTime Component', () => {
     Formio.createForm(element, form).then(form => {
       const dateTime = form.getComponent('dateTime');
       const blurEvent = new Event('blur');
+      const inputEvent = new Event('input');
 
-      const value = '2021-04-13 7:00 PM';
+      const value = '2021-04-13 07:00 PM';
       const expectedValueStart = '2021-04-13T19:00:00';
       const input = dateTime.element.querySelector('.input');
       input.value = value;
-      input.dispatchEvent(blurEvent);
-
+      input.dispatchEvent(inputEvent);
       setTimeout(() => {
-        assert.equal(dateTime.getValue().startsWith(expectedValueStart), true);
-        assert.equal(dateTime.dataValue.startsWith(expectedValueStart), true);
+        input.dispatchEvent(blurEvent);
+        setTimeout(() => {
+          assert.equal(dateTime.getValue().startsWith(expectedValueStart), true);
+          assert.equal(dateTime.dataValue.startsWith(expectedValueStart), true);
 
-        document.innerHTML = '';
-        done();
+          document.innerHTML = '';
+          done();
+        }, 300);
       }, 300);
     }).catch(done);
   });
@@ -100,17 +103,20 @@ describe('DateTime Component', () => {
     Formio.createForm(element, form).then(form => {
       const dateTime = form.getComponent('dateTime');
       const blurEvent = new Event('blur');
+      const inputEvent = new Event('input');
 
       const value = 'April 22';
-      const expectedValue = 'April/22';
+      const expectedValue = 'April 22';
       const input = dateTime.element.querySelector('.input');
       input.value = value;
-      input.dispatchEvent(blurEvent);
-
+      input.dispatchEvent(inputEvent);
       setTimeout(() => {
-        assert.equal(input.value, expectedValue);
-        document.innerHTML = '';
-        done();
+        input.dispatchEvent(blurEvent);
+        setTimeout(() => {
+          assert.equal(input.value, expectedValue);
+          document.innerHTML = '';
+          done();
+        }, 300);
       }, 300);
     }).catch(done);
   });
@@ -268,10 +274,13 @@ describe('DateTime Component', () => {
         form.components.forEach((comp, index) => {
           const input = comp.element.querySelector('.input');
           assert.equal(input.value, formats[index].expectedFormattedValue, 'Should format date/time value after setting value');
-
-          const blurEvent = new Event('blur');
+          const inputEvent = new Event('input');
           input.value = formats[index].inputValue;
-          input.dispatchEvent(blurEvent);
+          input.dispatchEvent(inputEvent);
+          setTimeout(() => {
+            const blurEvent = new Event('blur');
+            input.dispatchEvent(blurEvent);
+          }, 300);
         });
 
         setTimeout(() => {
@@ -571,20 +580,25 @@ describe('DateTime Component', () => {
     Formio.createForm(element, form).then(form => {
       const dateTime = form.getComponent('dateTime');
       const blurEvent = new Event('blur');
+      const inputEvent = new Event('input');
+
       const input = dateTime.element.querySelector('.input');
       input.dispatchEvent(blurEvent);
 
       setTimeout(() => {
         const calendar = dateTime.element.querySelector('.flatpickr-input').widget.calendar;
-        calendar._input.value = '7:00 PM';
+        calendar._input.value = '07:00 PM';
+        calendar._input.dispatchEvent(inputEvent);
         const expectedValue = 'T19:00:00';
-        calendar._input.dispatchEvent(blurEvent);
-
         setTimeout(() => {
-          assert.equal(dateTime.dataValue.includes(expectedValue), true);
+          calendar._input.dispatchEvent(blurEvent);
 
-          document.innerHTML = '';
-          done();
+          setTimeout(() => {
+            assert.equal(dateTime.dataValue.includes(expectedValue), true);
+
+            document.innerHTML = '';
+            done();
+          }, 200);
         }, 200);
       }, 200);
     }).catch(done);

@@ -122,11 +122,10 @@ export default class CalendarWidget extends InputWidget {
     this.settings.altFormat = convertFormatToFlatpickr(this.settings.format);
     this.settings.dateFormat = convertFormatToFlatpickr(this.settings.dateFormat);
     this.settings.position = 'auto center';
-    // This is called when a date is picked in Flatpickrs calendar
     this.settings.onChange = () => {
-      // Because a date was picked using flatpickrs calendar we can be sure that we don't have a manually overridden value
-      this.settings.isManuallyOverriddenValue = false;
-
+      if (this.settings.allowInput && this.settings.enableTime) {
+        this.calendar._input.value = this.settings.isManuallyOverriddenValue ? this.settings.manualInputValue : this.calendar.altInput.value;
+      }
       this.emit('update');
     };
     this.settings.onOpen = () => this.hook('onCalendarOpen');
@@ -135,13 +134,8 @@ export default class CalendarWidget extends InputWidget {
       this.closedOn = Date.now();
 
       if (this.settings.allowInput && this.settings.enableTime) {
-        // We need to make sure that this block of code runs after Flatpickr sets the inputs value so that we can
-        // override the value Flatpickr sets with a manual value if we are in the state of manually overridden value
-        setTimeout(()=> {
-          this.calendar._input.value = this.settings.isManuallyOverriddenValue ? this.settings.manualInputValue : this.calendar.altInput.value;
-          this._input.value = this.settings.isManuallyOverriddenValue ? this.settings.manualInputValue : this.calendar.altInput.value
+          this.calendar._input.value  = this.settings.isManuallyOverriddenValue ? this.settings.manualInputValue : this.calendar.altInput.value;
           this.emit('update');
-        });
       }
 
       if (this.settings.wasDefaultValueChanged) {
@@ -323,7 +317,7 @@ export default class CalendarWidget extends InputWidget {
    */
   getValue() {
     // Standard output format.
-    if (!this.calendar || this.settings.isManuallyOverriddenValue) {
+    if (!this.calendar) {
       return super.getValue();
     }
 
@@ -421,26 +415,37 @@ export default class CalendarWidget extends InputWidget {
     // Create a new flatpickr.
     this.calendar = new Flatpickr(this._input, { ...this.settings, disableMobile: true });
     this.addEventListener(this.calendar.altInput, 'input', (event) => {
-      // Need to give time for the input mask to update so that the manualInputValue can be properly set
-      setTimeout(() => {
-        if (this.settings.allowInput && this.settings.currentValue !== event.target.value) {
-          this.settings.manualInputValue = event.target.value;
-          this._input.value = this.settings.manualInputValue;
-          this.settings.isManuallyOverriddenValue = true;
-          this.settings.currentValue = event.target.value;
-          this.emit('update');
+      if (this.settings.allowInput && this.settings.currentValue !== event.target.value) {
+        if(event.target.mask) {
+          event.target.mask.textMaskInputElement.update();
         }
+        this.settings.manualInputValue = event.target.value;
+        this._input.value = this.settings.manualInputValue;
+        this.settings.isManuallyOverriddenValue = true;
+        this.settings.currentValue = event.target.value;
+        this.emit('update');
+      }
 
-        if (event.target.value === '' && this.calendar.selectedDates.length > 0) {
-          this.settings.wasDefaultValueChanged = true;
-          this.settings.defaultValue = event.target.value;
-          this.calendar.clear();
-        } else {
-          this.settings.wasDefaultValueChanged = false;
-        }
-      });
+      if (event.target.value === '' && this.calendar.selectedDates.length > 0) {
+        this.settings.wasDefaultValueChanged = true;
+        this.settings.defaultValue = event.target.value;
+        this.calendar.clear();
+      } else {
+        this.settings.wasDefaultValueChanged = false;
+      }
     });
-
+    if(this.calendar.daysContainer) {
+      this.calendar.daysContainer.addEventListener('click', () => {
+        this.settings.isManuallyOverriddenValue = false;
+        this.calendar.updateValue(false);
+      });
+    }
+    if(this.calendar.timeContainer){
+      this.calendar.timeContainer.addEventListener('click', () => {
+        this.settings.isManuallyOverriddenValue = false;
+        this.calendar.updateValue(false);
+      });
+    }
     const excludedFromMaskFormats = ['MMMM'];
 
     if (!this.settings.readOnly && !_.some(excludedFromMaskFormats, format => _.includes(this.settings.format, format))) {
