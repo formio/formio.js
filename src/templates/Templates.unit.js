@@ -67,7 +67,7 @@ describe('Rendering Tests', () => {
                 template: framework,
               });
               fixComponent(instance);
-              assert.equal(renders[`component-${framework}-${component}-multiple`], pretty(instance.render(), { ocd: true }));
+              assert.equal(pretty(renders[`component-${framework}-${component}-multiple`]), pretty(instance.render(), { ocd: true }));
               done();
             });
 
