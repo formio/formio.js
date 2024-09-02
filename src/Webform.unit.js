@@ -379,9 +379,9 @@ describe('Webform tests', function() {
   it('Should trigger validation for each row of data and edit grid', function(done) {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, formWithEditGrid).then((form) => {
-      form.setSubmission({ data: 
+      form.setSubmission({ data:
         { dataGrid: [{ textField: '' }, { textField: '' }],
-         editGrid: [{ number: '' }, { number: '' }]} 
+         editGrid: [{ number: '' }, { number: '' }]}
         });
       setTimeout(() => {
         assert.equal(form.errors.length, 4);

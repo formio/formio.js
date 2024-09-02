@@ -1465,4 +1465,55 @@ describe('TextField Component', () => {
       }, 300);
     }).catch(done);
   });
+
+  describe('TextFields with `multiple` attribute', () => {
+    it('Should normalize the dataValue to an array when a field is marked as multiple', (done) => {
+      const element = document.createElement('div');
+
+      Formio.createForm(element, {
+        components: [
+          {
+            label: 'Text Field',
+            applyMaskOn: 'change',
+            tableView: true,
+            validateWhenHidden: false,
+            key: 'textField',
+            type: 'textfield',
+            input: true,
+            multiple: true
+          }
+        ]
+      }).then((form) => {
+        const textField = form.getComponent('textField');
+        textField.setValue('hello, world');
+        assert.deepEqual(textField.dataValue, ['hello, world']);
+        assert.deepEqual(form.data.textField, ['hello, world']);
+        done();
+      }).catch(done);
+    });
+
+    it('Should normalize the dataValue to a string when a field is not marked as multiple', (done) => {
+      const element = document.createElement('div');
+
+      Formio.createForm(element, {
+        components: [
+          {
+            label: 'Text Field',
+            applyMaskOn: 'change',
+            tableView: true,
+            validateWhenHidden: false,
+            key: 'textField',
+            type: 'textfield',
+            input: true
+          }
+        ]
+      }).then((form) => {
+        const textField = form.getComponent('textField');
+        textField.setValue(['hello, world']);
+        assert.deepEqual(textField.dataValue, 'hello, world');
+        assert.deepEqual(form.data.textField, 'hello, world');
+        done();
+      }).catch(done);
+    })
+  });
 });
