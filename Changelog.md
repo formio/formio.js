@@ -63,6 +63,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8874: fixed conditional value field for time component
  - FIO-8931: Disable file synchronization feature
  - FIO-8458: removing row from data grid triggers save draft action
+ - FIO-8912: consolidate normalization for multivalue components
 
 ### New Features
 
