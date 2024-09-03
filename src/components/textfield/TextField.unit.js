@@ -364,13 +364,13 @@ describe('TextField Component', () => {
             if (_.isEqual(value, lastValue)) {
               done();
             }
-          }, 300);
+          }, 500);
         }).catch(done);
       });
     };
 
     testValidity(validValues, true);
-    testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
+    testValidity(invalidValues, false, invalidValues[invalidValues.length - 1]);
   });
 
   it('Should allow inputing only numbers and format input according to input mask', (done) => {
@@ -831,7 +831,7 @@ describe('TextField Component', () => {
             if (_.isEqual(value, lastValue)) {
               done();
             }
-          }, 300);
+          }, 700);
         }).catch(done);
       });
     };

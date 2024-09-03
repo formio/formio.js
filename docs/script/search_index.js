@@ -3162,6 +3162,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/container/fixtures/editgridwithchildcontainer.js",
+    "file/src/components/container/fixtures/editGridWithChildContainer.js.html",
+    "src/components/container/fixtures/editGridWithChildContainer.js",
+    "file"
+  ],
+  [
     "src/components/container/fixtures/index.js",
     "file/src/components/container/fixtures/index.js.html",
     "src/components/container/fixtures/index.js",
