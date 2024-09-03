@@ -100,6 +100,17 @@ export default class AddressComponent extends ContainerComponent {
     };
   }
 
+  static get serverConditionSettings() {
+    return AddressComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
+  }
+
   mergeSchema(component = {}) {
     let { defaultSchema } = this;
 
@@ -216,7 +227,7 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   set address(value) {
-    if (this.manualModeEnabled && !this.isMultiple) {
+    if (this.manualModeEnabled && !this.isMultiple && !_.isEqual(value, this.emptyValue)) {
       this.dataValue.address = value;
     }
     else {
