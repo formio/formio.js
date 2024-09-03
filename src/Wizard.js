@@ -21,7 +21,7 @@ export default class Wizard extends Webform {
    */
   constructor(elementOrOptions = undefined, _options = undefined) {
     let element, options;
-    if (elementOrOptions instanceof HTMLElement || options) {
+    if (elementOrOptions instanceof HTMLElement || _options) {
         element = elementOrOptions;
         options = _options || {};
     } else {
@@ -281,8 +281,8 @@ export default class Wizard extends Webform {
   }
 
   /**
-   * Attaches the wizard to the provided DOM element, initializes component references, sets up navigation, 
-   * and emits a render event. It will initialize the wizard's index if necessary, 
+   * Attaches the wizard to the provided DOM element, initializes component references, sets up navigation,
+   * and emits a render event. It will initialize the wizard's index if necessary,
    * attach event hooks, and make sure that the current page is rendered and displayed correctly.
    * @param {HTMLElement} element - The DOM element to which the wizard will be attached.
    * @returns {Promise} A promise that resolves when all components have been successfully attached.
@@ -365,7 +365,7 @@ export default class Wizard extends Webform {
   }
 
   /**
-   * Handles navigate on 'Enter' key event in a wizard form. 
+   * Handles navigate on 'Enter' key event in a wizard form.
    * @param {KeyboardEvent} event - The keyboard event object that triggered the handler.
    */
   handleNaviageteOnEnter(event) {
@@ -379,7 +379,7 @@ export default class Wizard extends Webform {
   }
 
   /**
-   * Handles save on 'Enter' key event in a wizard form. 
+   * Handles save on 'Enter' key event in a wizard form.
    * @param {KeyboardEvent} event - The keyboard event object that triggered the handler.
    */
   handleSaveOnEnter(event) {
@@ -420,7 +420,7 @@ export default class Wizard extends Webform {
     });
   }
 
-  
+
   /**
    * Emits an event indicating that a wizard page has been selected.
    * @param {number} index - Index of the selected wizard page in the `pages` array.
@@ -887,7 +887,7 @@ export default class Wizard extends Webform {
           this.options.show[item.key] = true;
         }
         else if (
-          Object.prototype.hasOwnProperty.call(this.wizard, 'full') 
+          Object.prototype.hasOwnProperty.call(this.wizard, 'full')
           && !_.isEqual(this.originalOptions.show, this.options.show)
         ) {
           this.options.show = { ...(this.originalOptions.show || {}) };

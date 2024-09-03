@@ -631,13 +631,13 @@ export default class SelectComponent extends ListComponent {
     };
 
     // Allow for url interpolation.
-    url = this.interpolate(url, {
+    url = this.sanitize(this.interpolate(url, {
       formioBase: Formio.getBaseUrl(),
       search,
       limit,
       skip,
       page: Math.abs(Math.floor(skip / limit))
-    });
+    }), this.shouldSanitizeValue);
 
     // Add search capability.
     if (this.component.searchField && search) {

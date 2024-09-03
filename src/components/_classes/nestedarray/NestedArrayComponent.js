@@ -260,4 +260,11 @@ export default class NestedArrayComponent extends NestedDataComponent {
     }
     return super.getComponents();
   }
+
+  removeSubmissionMetadataRow(index) {
+    const componentMetadata = _.get(this.root, `submission.metadata.selectData.${this.path}`, null);
+    if (_.isArray(componentMetadata)) {
+      componentMetadata.splice(index, 1);
+    }
+  }
 }
