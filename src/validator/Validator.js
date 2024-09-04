@@ -989,6 +989,7 @@ class ValidationChecker {
     }
   }
 
+  // eslint-disable-next-line max-statements
   checkComponent(component, data, row, includeWarnings = false, async = false) {
     const isServerSidePersistent = typeof process !== 'undefined'
       && _.get(process, 'release.name') === 'node'
@@ -1107,8 +1108,11 @@ class ValidationChecker {
 
     // Run the "unique" pseudo-validator
     component.component.validate = component.component.validate || {};
+    const originalUnique = component.component.validate.unique;
     component.component.validate.unique = component.component.unique;
     resultsOrPromises.push(this.validate(component, 'unique', component.validationValue, data, 0, data, async, conditionallyVisible));
+    // restore the original value to prevent component re-rendering
+    component.component.validate.unique = originalUnique;
 
     // Run the "multiple" pseudo-validator
     component.component.validate.multiple = component.component.multiple;
