@@ -12,7 +12,8 @@ import {
   comp5,
   comp6,
   comp7,
-  comp8
+  comp8,
+  nestedWizardForm,
 } from './fixtures';
 import Webform from '../../Webform';
 import { Formio } from '../../formio.form.js';
@@ -461,5 +462,21 @@ describe('SaveDraft functionality for Nested Form', () => {
         }, 300);
       }, 200);
     }).catch((err) => done(err));
+  });
+
+  it('Should pass all the required options to the nested form properly', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      nestedWizardForm,
+      {
+        readOnly: true,
+      },
+    ).then((form) => {
+      setTimeout(() => {
+        assert.equal(form.options.readOnly, true);
+        done();
+      }).catch((err) => done(err));
+    });
   });
 });

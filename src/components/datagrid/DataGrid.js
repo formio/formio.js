@@ -311,15 +311,6 @@ export default class DataGridComponent extends NestedArrayComponent {
     }, false);
   }
 
-  loadRefs(element, refs) {
-    super.loadRefs(element, refs);
-
-    if (refs['messageContainer'] === 'single') {
-      const container = _.last(element.querySelectorAll(`[${this._referenceAttributeName}=messageContainer]`));
-      this.refs['messageContainer'] = container || this.refs['messageContainer'];
-    }
-  }
-
   attach(element) {
     this.loadRefs(element, {
       [`${this.datagridKey}-row`]: 'multiple',
@@ -328,7 +319,6 @@ export default class DataGridComponent extends NestedArrayComponent {
       [`${this.datagridKey}-removeRow`]: 'multiple',
       [`${this.datagridKey}-group-header`]: 'multiple',
       [this.datagridKey]: 'multiple',
-      'messageContainer': 'single'
     });
 
     if (this.allowReorder) {
@@ -526,10 +516,11 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   removeRow(index) {
     const makeEmpty = index === 0 && this.rows.length === 1;
-    const flags = { isReordered: !makeEmpty, resetValue: makeEmpty };
+    const flags = { isReordered: !makeEmpty, resetValue: makeEmpty, modified: true };
     this.splice(index, flags);
     this.emit('dataGridDeleteRow', { index });
     const [row] = this.rows.splice(index, 1);
+    this.removeSubmissionMetadataRow(index);
     this.removeRowComponents(row);
     this.updateRowsComponents(index);
     this.setValue(this.dataValue, flags);

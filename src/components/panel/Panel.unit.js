@@ -30,31 +30,37 @@ describe('Panel Component', () => {
 
       // Make sure the error is not visible in the UI.
       assert.equal(numberComp.element.classList.contains('has-error'), false, 'Should not contain error classes.');
+      assert.equal(textComp.element.classList.contains('has-error'), false, 'Should not contain error classes.');
 
+      const inputEvent = new Event('input');
       const numberInput = numberComp.refs?.input[0];
       numberInput.value = 5;
-      const inputEvent = new Event('input');
       numberInput.dispatchEvent(inputEvent);
 
+      const textInput = textComp.refs?.input[0];
+      textInput.value = 'test';
+      textInput.dispatchEvent(inputEvent);
+      textInput.value = '';
+      textInput.dispatchEvent(inputEvent);
+
       setTimeout(() => {
-        assert(numberComp.errors.length > 0);
         assert.equal(numberComp.errors.length, 1);
         assert.equal(numberComp.refs.messageContainer.querySelectorAll('.error').length, 1);
         assert.equal(textComp.errors.length, 1);
+        assert.equal(textComp.refs.messageContainer.querySelectorAll('.error').length, 1);
 
-        const clickEvent = new Event('click');
-        panel.refs.header.dispatchEvent(clickEvent);
+        panel.collapse(true);
 
         setTimeout(() => {
-          assert.equal(panel.collapsed, true);
-          panel.refs.header.dispatchEvent(clickEvent);
+          panel.collapse(false);
 
           setTimeout(() => {
             assert.equal(panel.collapsed, false);
-            assert(numberComp.errors.length > 0);
             assert.equal(numberComp.errors.length, 1);
             assert.equal(numberComp.refs.messageContainer.querySelectorAll('.error').length, 1);
             assert.equal(textComp.errors.length, 1);
+            assert.equal(textComp.refs.messageContainer.querySelectorAll('.error').length, 1);
+            assert.equal(panel.refs.messageContainer.querySelectorAll('.error').length, 0);
             done();
           }, 300);
         }, 300);

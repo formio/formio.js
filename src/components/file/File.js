@@ -125,7 +125,12 @@ export default class FileComponent extends Field {
     return [];
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, options) {
+    if (options?.review && !this.component.uploadOnly) {
+      return _.map(value, (val, index) => {
+        return `<a href="${val.url || '#'}" target="_blank" data-path='${this.path}' data-fileindex='${index}'>${val.originalName}</a>`
+      }).join(', ');
+    }
     if (_.isArray(value)) {
       return _.map(value, 'originalName').join(', ');
     }
@@ -165,7 +170,9 @@ export default class FileComponent extends Field {
   }
 
   get autoSync() {
-    return _.get(this, 'component.autoSync', false);
+    // Disable autoSync for now
+    return false;
+    // return _.get(this, 'component.autoSync', false);
   }
 
   get columnsSize() {
@@ -1082,6 +1089,11 @@ export default class FileComponent extends Field {
           : response.type === 'abort'
             ? this.t('Request was aborted')
             : response.toString();
+
+        this.emit('fileUploadError', {
+          fileToSync,
+          response,
+        });
       }
       finally {
         delete fileToSync.progress;

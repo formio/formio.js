@@ -1155,6 +1155,41 @@ describe('Select Component', () => {
     }).catch(done);
   });
 
+  it('Should perfom simple conditional logic for number data type', (done) => {
+    const form = _.cloneDeep(comp25);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const textfield = form.getComponent('textField');
+      select.setValue('1');
+
+      setTimeout(() => {
+        assert.equal(select.dataValue, 1);
+        assert.equal(textfield.visible, true);
+        select.setValue('2');
+
+        setTimeout(() => {
+          assert.equal(select.dataValue, 2);
+          assert.equal(textfield.visible, true);
+          select.setValue('10');
+
+          setTimeout(() => {
+            assert.equal(select.dataValue, 10);
+            assert.equal(textfield.visible, false);
+            select.setValue('1d');
+
+            setTimeout(() => {
+              assert.equal(select.dataValue, '1d');
+              assert.equal(textfield.visible, false);
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch(done);
+  });
+
   it('Should open edit grid modal when clicking on validation link when editing a submission', (done) => {
     Formio.createForm(document.createElement('div'), comp25, {}).then((form) => {
       form.submission = {

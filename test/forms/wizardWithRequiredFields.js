@@ -18,6 +18,33 @@ export default {
             'key': 'textField',
             'type': 'textfield',
             'input': true
+            },
+            {
+                'label': 'Data Grid',
+                'reorder': false,
+                'addAnotherPosition': 'bottom',
+                'layoutFixed': false,
+                'enableRowGroups': false,
+                'initEmpty': false,
+                'tableView': false,
+                'validateWhenHidden': false,
+                'key': 'dataGrid',
+                'type': 'datagrid',
+                'input': true,
+                'components': [
+                  {
+                    'label': 'Text Field',
+                    'applyMaskOn': 'change',
+                    'tableView': true,
+                    'validate': {
+                      'required': true
+                    },
+                    'validateWhenHidden': false,
+                    'key': 'textField',
+                    'type': 'textfield',
+                    'input': true
+                  }
+                ]
             }
         ],
         'input': false,
