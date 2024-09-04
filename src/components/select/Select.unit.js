@@ -34,7 +34,8 @@ import {
   comp22,
   comp23,
   comp24,
-  comp25
+  comp25,
+  comp26
 } from './fixtures';
 
 // eslint-disable-next-line max-statements
@@ -1156,7 +1157,7 @@ describe('Select Component', () => {
   });
 
   it('Should perfom simple conditional logic for number data type', (done) => {
-    const form = _.cloneDeep(comp25);
+    const form = _.cloneDeep(comp26);
     const element = document.createElement('div');
 
     Formio.createForm(element, form).then(form => {
