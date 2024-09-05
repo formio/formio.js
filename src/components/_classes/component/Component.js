@@ -1969,7 +1969,7 @@ export default class Component extends Element {
    * @returns {boolean} - TRUE if the content was sanitized and set.
    */
   setContent(element, content, forceSanitize, sanitizeOptions) {
-    if (element instanceof HTMLElement) {
+    if (element instanceof HTMLElement || element instanceof Element) {
       element.innerHTML = this.sanitize(content, forceSanitize, sanitizeOptions);
       return true;
     }
