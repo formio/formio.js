@@ -3450,6 +3450,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/datagrid/fixtures/comp11.js",
+    "file/src/components/datagrid/fixtures/comp11.js.html",
+    "src/components/datagrid/fixtures/comp11.js",
+    "file"
+  ],
+  [
     "src/components/datagrid/fixtures/comp2.js",
     "file/src/components/datagrid/fixtures/comp2.js.html",
     "src/components/datagrid/fixtures/comp2.js",
@@ -4974,6 +4980,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent.conditionoperatorssettings",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#static-get-conditionOperatorsSettings",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.conditionOperatorsSettings",
+    "member"
+  ],
+  [
     "src/components/recaptcha/recaptcha.js~recaptchacomponent.savedvaluetypes",
     "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#static-method-savedValueTypes",
     "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.savedValueTypes",
@@ -4984,6 +4996,12 @@ window.esdocSearchIndex = [
     "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#static-method-schema",
     "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.schema",
     "method"
+  ],
+  [
+    "src/components/recaptcha/recaptcha.js~recaptchacomponent.serverconditionsettings",
+    "class/src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.html#static-get-serverConditionSettings",
+    "src/components/recaptcha/ReCaptcha.js~ReCaptchaComponent.serverConditionSettings",
+    "member"
   ],
   [
     "src/components/recaptcha/recaptcha.unit.js",
@@ -6196,12 +6214,6 @@ window.esdocSearchIndex = [
     "class/src/components/time/Time.js~TimeComponent.html#static-method-schema",
     "src/components/time/Time.js~TimeComponent.schema",
     "method"
-  ],
-  [
-    "src/components/time/time.js~timecomponent.serverconditionsettings",
-    "class/src/components/time/Time.js~TimeComponent.html#static-get-serverConditionSettings",
-    "src/components/time/Time.js~TimeComponent.serverConditionSettings",
-    "member"
   ],
   [
     "src/components/time/time.unit.js",

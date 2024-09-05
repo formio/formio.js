@@ -1000,12 +1000,8 @@ describe(&apos;TextField Component&apos;, () =&gt; {
         Formio.createForm(element, form).then(form =&gt; {
           form.setPristine(false);
           const component = form.getComponent(&apos;textField&apos;);
-          const changed = component.setValue({ value: value, maskName: mask.mask });
+          form.setValue({ data: { textField: { value, maskName: mask.mask } } });
           const error = &apos;Text Field does not match the mask.&apos;;
-
-          if (value) {
-            assert.equal(changed, true, &apos;Should set value&apos;);
-          }
 
           setTimeout(() =&gt; {
             assert.equal(component.refs.select[0].options[mask.index].selected, true, &apos;Should select correct mask&apos;);

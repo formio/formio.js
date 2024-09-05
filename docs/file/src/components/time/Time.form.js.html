@@ -187,13 +187,13 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/time/Time.form.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../_classes/component/Component.form&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Components from &apos;../Components&apos;;
 
 import TimeEditData from &apos;./editForm/Time.edit.data&apos;;
 import TimeEditDisplay from &apos;./editForm/Time.edit.display&apos;;
 
 export default function(...extend) {
-  return baseEditForm([
+  return Components.baseEditForm([
     {
       key: &apos;data&apos;,
       components: TimeEditData,

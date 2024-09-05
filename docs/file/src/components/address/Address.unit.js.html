@@ -220,6 +220,7 @@ describe(&apos;Address Component&apos;, () =&gt; {
 
       setTimeout(() =&gt; {
         assert.equal(address.refs.searchInput[0].value, &apos;&apos;);
+        assert.deepEqual(address.dataValue, address.emptyValue);
 
         document.innerHTML = &apos;&apos;;
         done();

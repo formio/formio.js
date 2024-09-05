@@ -211,6 +211,17 @@ describe(&apos;Day Component&apos;, () =&gt; {
     });
   });
 
+  it(&apos;Should handle blank data correctly&apos;, (done) =&gt; {
+    Harness.testCreate(DayComponent, comp1).then((component) =&gt; {
+      component.setValue();
+      assert.equal(component.getValue(), &apos;&apos;);
+      component.checkValidity();
+      assert.equal(component.errors.length, 0, &apos;Component should be valid with blank data&apos;);
+
+      done();
+    });
+  });
+
   it(&apos;Should change the max day when the month changes&apos;, (done) =&gt; {
     Harness.testCreate(DayComponent, comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;option&apos;, 13);
@@ -376,6 +387,37 @@ describe(&apos;Day Component&apos;, () =&gt; {
       Harness.testElements(component, &apos;[disabled]&apos;, 4);
       done();
     });
+  });
+
+  it(&apos;Should set value if the day field is hidden&apos;, (done) =&gt; {
+    comp1.dayFirst = false;
+    comp1.fields.day.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) =&gt; {
+      component.setValue(&apos;12/2023&apos;);
+      assert.equal(component.data.date, &apos;12/2023&apos;);
+      done();
+    });
+    comp1.fields.day.hide = false;
+  });
+
+  it(&apos;Should set value if the month field is hidden&apos;, (done) =&gt; {
+    comp1.fields.month.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) =&gt; {
+      component.setValue(&apos;12/2023&apos;);
+      assert.equal(component.data.date, &apos;12/2023&apos;);
+      done();
+    });
+    comp1.fields.month.hide = false;
+  });
+
+  it(&apos;Should set value if the year field is hidden&apos;, (done) =&gt; {
+    comp1.fields.year.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) =&gt; {
+      component.setValue(&apos;12/21&apos;);
+      assert.equal(component.data.date, &apos;12/21&apos;);
+      done();
+    });
+    comp1.fields.year.hide = false;
   });
 
   it(&apos;Should use the default day value if the day field is hidden&apos;, (done) =&gt; {

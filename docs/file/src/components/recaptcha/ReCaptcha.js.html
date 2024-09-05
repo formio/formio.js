@@ -211,6 +211,17 @@ export default class ReCaptchaComponent extends Component {
     return [];
   }
 
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: [&apos;isEmpty&apos;, &apos;isNotEmpty&apos;],
+    };
+  }
+
+  static get serverConditionSettings() {
+    return ReCaptchaComponent.conditionOperatorsSettings;
+  }
+
   render() {
     this.recaptchaResult = null;
     if (this.builderMode) {
