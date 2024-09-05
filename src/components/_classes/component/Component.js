@@ -3946,11 +3946,11 @@ export default class Component extends Element {
     window.scrollTo(left + window.scrollX, top + window.scrollY);
   }
 
-  focus(index = (this.refs.input.length - 1)) {
+  focus(index) {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
-
+    index = index || this.refs.input?.length - 1;
     if (this.refs.input?.length) {
       const focusingInput = this.refs.input[index];
       if (this.component.widget?.type === 'calendar') {
