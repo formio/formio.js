@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.21.4-rc.1]
+### Changed
+ - FIO-8964 updated version of inputmask lib
+ - FIO-8797: set empty day component value to the empty string
+ - FIO-8795 fixed selected data after removing row
+ - FIO-8798: updated shape of the data of day component with hidden fields
+ - FIO-8849: fixed an issue where value of the selctboxes/radio with URL data source are not available in simple conditons UI
+ - FIO-8799 updated conditional tab for Time Component
+ - FIO-8874: fixed conditional value field for time component
+ - FIO-8866-8864: fixed simple conditions operators for recaptcha
+ - FIO-8900-8899: made only 2 operators available for address component in conditionals ui and fixed setting an empty value for address
+
 ## 4.21.3
 ### Changed
  - Official Release
