@@ -48,7 +48,7 @@ export default class RadioComponent extends ListComponent {
           : {
               ...classComp,
               type: 'select',
-            }
+            };
       }
     };
   }

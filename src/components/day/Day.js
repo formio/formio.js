@@ -394,7 +394,7 @@ export default class DayComponent extends Field {
       if (part !== '') {
         dateParts.push(part);
       }
-    }
+    };
 
     if (this.dayFirst) {
       getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '');
@@ -639,7 +639,7 @@ export default class DayComponent extends Field {
     }
     const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const values = value.split('/');
-    if(values.length < 3){
+    if (values.length < 3) {
       return true;
     }
     return (values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000');

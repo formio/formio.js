@@ -46,7 +46,7 @@ export default class SelectBoxesComponent extends RadioComponent {
             ...classComp,
             dataType: 'string',
             type: 'select',
-          }
+          };
       }
     };
   }

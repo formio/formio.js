@@ -193,10 +193,10 @@ describe('DataGrid Component', () => {
   it('Should remove the corresponding row from the metadata when removing a row', (done) => {
     Formio.createForm(document.createElement('div'), comp11)
       .then((form) => {
+        const datagrid = form.getComponent('dataGrid');
         const checkValue = (index, value) => {
           assert.equal(datagrid.getValue()[index].select, value);
-        }
-        const datagrid = form.getComponent('dataGrid');
+        };
         datagrid.addRow();
         assert.equal(datagrid.getValue().length, 2);
         const select = form.getComponent('dataGrid[1].select');
@@ -214,11 +214,11 @@ describe('DataGrid Component', () => {
             const selectNew = form.getComponent('dataGrid[1].select');
             assert.equal(selectNew.getView(), '<span>Entity</span>');
             done();
-          }, 200)
-        }, 200)
+          }, 200);
+        }, 200);
       })
       .catch(done);
-  })
+  });
 
   it('Should allow provide default value in row-groups model', function(done) {
     try {

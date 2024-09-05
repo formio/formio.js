@@ -231,7 +231,6 @@ describe('Day Component', () => {
     comp1.fields.year.hide = false;
   });
 
-
   it('Should use the default day value if the day field is hidden', (done) => {
     comp1.dayFirst = false;
     comp1.defaultValue = '00/01/0000';
