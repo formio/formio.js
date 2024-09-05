@@ -3920,7 +3920,7 @@ export default class Component extends Element {
     window.scrollTo(verticalOnly ? window.scrollX : left + window.scrollX, top + window.scrollY);
   }
 
-  focus(index = (this.refs.input.length - 1)) {
+  focus(index) {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }

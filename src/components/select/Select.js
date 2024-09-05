@@ -1862,8 +1862,8 @@ export default class SelectComponent extends ListComponent {
   }
 
   focus() {
+    super.focus.call(this);
     if (this.focusableElement) {
-      super.focus.call(this);
       this.focusableElement.focus();
     }
   }
