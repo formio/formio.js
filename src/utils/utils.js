@@ -31,9 +31,7 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, ConditionOperators };
-export * as moment from 'moment-timezone/moment-timezone';
-
+export { jsonLogic, ConditionOperators, moment };
 /**
  * Sets the path to the component and parent schema.
  * @param {import('@formio/core').Component} component - The component to set the path for.
