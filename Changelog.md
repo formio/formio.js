@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.77
+### Changed
+ - Updated @formio/core@2.2.2
+ - FIO-8900-8899: made only 2 operators available for address component in conditionals ui and fixed setting an empty value for address
+ - FIO-8912: consolidate normalization for multivalue components
+ - FIO-8795 fixed selected data after removing row
+
 ## 5.0.0-rc.76
 ### Changed
  - Updated @formio/core@2.2.2-rc.5
