@@ -1428,7 +1428,7 @@ export default class Webform extends NestedDataComponent {
         const errors = shouldValidate
             ? this.validate(value.data, { 
                 ...flags, 
-                noValidate: flags.fromIframe && this.submitted ? false : flags.noValidate, 
+                noValidate: false, 
                 process: 'change'
             })
             : [];
