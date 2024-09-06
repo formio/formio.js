@@ -1,57 +1,64 @@
 export default {
-  title: 'FIO-8072',
-  name: 'fio8072',
-  path: 'fio8072',
-  type: 'form',
-  display: 'form',
-  components: [
+  "components": [
     {
-      label: 'Select',
-      widget: 'choicesjs',
-      tableView: true,
-      data: {
-        values: [
-          {
-            label: 'A',
-            value: '1',
+      "label": "Edit Grid",
+      "tableView": false,
+      "modal": true,
+      "rowDrafts": true,
+      "key": "editGrid",
+      "type": "editgrid",
+      "displayAsTable": false,
+      "input": true,
+      "components": [
+        {
+          "label": "Select",
+          "widget": "choicesjs",
+          "tableView": true,
+          "data": {
+            "values": [
+              {
+                "label": "a",
+                "value": "a"
+              },
+              {
+                "label": "b",
+                "value": "b"
+              },
+              {
+                "label": "c",
+                "value": "c"
+              }
+            ]
           },
-          {
-            label: 'B',
-            value: '2',
+          "validate": {
+            "required": true
           },
-          {
-            label: 'C',
-            value: '10',
+          "key": "select",
+          "type": "select",
+          "input": true
+        },
+        {
+          "label": "Text Field",
+          "applyMaskOn": "change",
+          "tableView": true,
+          "validate": {
+            "required": true
           },
-          {
-            label: 'D',
-            value: '1d',
-          },
-        ],
-      },
-      dataType: 'number',
-      key: 'select',
-      type: 'select',
-      input: true,
+          "validateWhenHidden": false,
+          "key": "textField",
+          "type": "textfield",
+          "input": true
+        }
+      ]
     },
     {
-      label: 'Text Field',
-      applyMaskOn: 'change',
-      tableView: true,
-      key: 'textField',
-      type: 'textfield',
-      input: true,
-      conditional: {
-        show: true,
-        conjunction: 'all',
-        conditions: [
-          {
-            component: 'select',
-            operator: 'lessThan',
-            value: 5,
-          },
-        ],
-      },
-    },
-  ],
-};
+      "label": "Submit",
+      "showValidations": false,
+      "tableView": false,
+      "key": "submit",
+      "type": "button",
+      "input": true,
+      "saveOnEnter": false
+    }
+  ]
+}

@@ -46,6 +46,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8684: Fixes cannot attach more than one component to the PDF form
  - FIO-8719: fixed validation for Data Grid component inside nested wizard
  - FIO-8621: added error event on file upload
+ - FIO-8799 updated conditional tab for Time Component
+ - FIO-6495: fixed an issue where revision ID of nested form does not transfer from stage to stage
+ - FIO-8797: set empty day component value to the empty string
+ - FIO-8729: fixed an issue where the rollback to default templates does not work correctly and unknown template message is shown
+ - FIO-8668: fixed an issue where reportingUI form is available is the existing resources in builder
+ - FIO-8714: Bugfix: allow paths for valueProperty
+ - FIO-8795: fixed selected data after removing row
+ - FIO-8771: Included File Component in Review Page Component
+ - FIO-8789: Fixing issues where the wrong urls are used for CDN on remote env
+ - FIO-7524: Added back aspect ratio option to Signature
+ - FIO-8798: updated shape of the data of day component with hidden fields
+ - FIO-8760: Fixes an issue where nested form is not getting all the options
+ - FIO-8706: allow data interpolation for data source in components
+ - FIO-8849: fixed an issue where value of the selctboxes/radio with URL data source are not available in simple conditons UI
+ - FIO-8874: fixed conditional value field for time component
+ - FIO-8931: Disable file synchronization feature
+ - FIO-8458: removing row from data grid triggers save draft action
+ - FIO-8912: consolidate normalization for multivalue components
 
 ### New Features
 
