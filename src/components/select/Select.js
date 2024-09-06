@@ -1705,6 +1705,9 @@ export default class SelectComponent extends ListComponent {
       case 'custom':
         rawItems = this.getCustomItems();
         break;
+      case 'url':
+        rawItems = this.selectItems;
+        break;
     }
 
     if (typeof rawItems === 'string') {
