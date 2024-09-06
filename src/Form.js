@@ -426,7 +426,7 @@ export default class Form extends Element {
   }
 
   setContent(element, content, forceSanitize) {
-    if (element instanceof HTMLElement || element instanceof Element) {
+    if (element instanceof HTMLElement || (element && element.nodeType == 1)) {
       element.innerHTML = this.sanitize(content, forceSanitize);
       return true;
     }
