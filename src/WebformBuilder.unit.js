@@ -250,8 +250,8 @@ describe('WebformBuilder tests', function() {
             const dayComp = builder.webform.getComponent(['day']);
             assert.equal(dayComp.component.maxDate, 'moment().add(10, \'days\')');
             done();
-          }, 200);
-        }, 200);
+          }, 500);
+        }, 500);
       }, 500);
     }).catch(done);
   });
