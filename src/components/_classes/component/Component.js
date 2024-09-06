@@ -3452,7 +3452,7 @@ export default class Component extends Element {
             this.parent.childErrors.push(...errors);
           }
           else {
-            _.remove(this.parent.childErrors, (err) => err.component.key === this.component.key);
+            _.remove(this.parent.childErrors, (err) => (err?.component?.key || err?.context?.key) === this.component.key);
           }
         }
         this.showValidationErrors(errors, data, row, flags);
@@ -3468,7 +3468,7 @@ export default class Component extends Element {
           this.parent.childErrors.push(...errors);
         }
         else {
-          _.remove(this.parent.childErrors, (err) => err.component.key === this.component.key);
+          _.remove(this.parent.childErrors, (err) => (err?.component?.key || err?.context?.key) === this.component.key);
         }
       }
       return errors.length === 0;
@@ -3946,11 +3946,11 @@ export default class Component extends Element {
     window.scrollTo(left + window.scrollX, top + window.scrollY);
   }
 
-  focus(index = (this.refs.input.length - 1)) {
+  focus(index) {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
-
+    index = index || this.refs.input?.length - 1;
     if (this.refs.input?.length) {
       const focusingInput = this.refs.input[index];
       if (this.component.widget?.type === 'calendar') {

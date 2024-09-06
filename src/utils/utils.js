@@ -31,9 +31,7 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, ConditionOperators };
-export * as moment from 'moment-timezone/moment-timezone';
-
+export { jsonLogic, ConditionOperators, moment };
 /**
  * Sets the path to the component and parent schema.
  * @param {import('@formio/core').Component} component - The component to set the path for.
@@ -165,6 +163,11 @@ export function checkCalculated(component, submission, rowData) {
  * @returns {boolean} - TRUE if the condition is true; FALSE otherwise.
  */
 
+/**
+ *
+ * @param conditionPaths
+ * @param data
+ */
 function getConditionalPathsRecursive(conditionPaths, data) {
   let currentGlobalIndex = 0;
   const conditionalPathsArray = [];
@@ -210,6 +213,14 @@ function getConditionalPathsRecursive(conditionPaths, data) {
   return conditionalPathsArray;
 }
 
+ /**
+  *
+  * @param component
+  * @param condition
+  * @param row
+  * @param data
+  * @param instance
+  */
  export function checkSimpleConditional(component, condition, row, data, instance) {
   if (condition.when) {
     const value = getComponentActualValue(condition.when, data, row);

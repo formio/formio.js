@@ -37,7 +37,6 @@ export default [
     label: 'Keep Overlay Aspect Ratio',
     tooltip: 'If checked, the field will have the same aspect ratio as its preview.',
     key: 'keepOverlayRatio',
-    customConditional: ({ options }) => (options?.editForm?.display === 'pdf'),
     input: true
   },
   {
