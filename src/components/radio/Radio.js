@@ -245,7 +245,7 @@ export default class RadioComponent extends ListComponent {
       return true;
     }
 
-    const values = this.component.values;
+    const values = this.component.dataSrc === 'values' ? this.component.values : this.loadedOptions;
     if (values) {
       return values.findIndex(({ value: optionValue }) => this.normalizeValue(optionValue) === value) !== -1;
     }
