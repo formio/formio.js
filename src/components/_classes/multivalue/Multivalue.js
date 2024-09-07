@@ -25,7 +25,7 @@ export default class Multivalue extends Field {
         return super.normalizeValue(value == null ? [emptyValue] : [value], flags);
       }
     } else {
-      if (Array.isArray(value) && this.component.storeas !== 'array') {
+      if (Array.isArray(value) && !Array.isArray(emptyValue)) {
         if (this.component.storeas === 'string') {
           return super.normalizeValue(value.join(this.delimiter || ''), flags);
         }
