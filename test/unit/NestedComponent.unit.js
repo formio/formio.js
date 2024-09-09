@@ -1,13 +1,13 @@
 'use strict';
-import NestedComponent from './NestedComponent';
-import Harness from '../../../../test/harness';
+import NestedComponent from '../../src/components/_classes/nested/NestedComponent';
+import Harness from '../harness';
 import assert from 'power-assert';
 import each from 'lodash/each';
 import { expect } from 'chai';
-import { comp1, comp2, comp3 } from './fixtures';
-import { nestedForm } from '../../../../test/fixtures';
+import { comp1, comp2, comp3 } from './fixtures/nested';
+import { nestedForm } from '../fixtures';
 import _map from 'lodash/map';
-import Webform from '../../../Webform';
+import Webform from '../../src/Webform';
 
 let component = null;
 describe('NestedComponent class', () => {

@@ -1,5 +1,5 @@
-import { Formio } from './index';
-import { fastCloneDeep } from './utils/utils';
+import { Formio } from '../../src/index';
+import { fastCloneDeep } from '../../src/utils/utils';
 import assert from 'power-assert';
 import sinon from 'sinon';
 import fetchMock from 'fetch-mock/es5/server';

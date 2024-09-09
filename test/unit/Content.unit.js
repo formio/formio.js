@@ -1,12 +1,10 @@
 import assert from 'power-assert';
-
-import Harness from '../../../test/harness';
-import ContentComponent from './Content';
-import { Formio } from '../../Formio';
-
+import Harness from '../harness';
+import ContentComponent from '../../src/components/content/Content';
+import { Formio } from '../../src/Formio';
 import {
   comp1
-} from './fixtures';
+} from './fixtures/content';
 
 describe('Content Component', () => {
   it('Should build a content component', () => {

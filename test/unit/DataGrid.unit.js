@@ -2,11 +2,10 @@ import _ from 'lodash';
 import assert from 'power-assert';
 import { expect } from 'chai';
 import sinon from 'sinon';
-import Harness from '../../../test/harness';
-import DataGridComponent from './DataGrid';
-import { Formio } from '../../Formio';
+import Harness from '../harness';
+import DataGridComponent from '../../src/components/datagrid/DataGrid';
+import { Formio } from '../../src/Formio';
 import dragula from 'dragula'
-
 import {
   comp1,
   comp2,
@@ -28,7 +27,7 @@ import {
   withAllowCalculateOverride,
   twoWithAllowCalculatedOverride, withCheckboxes,
   withReorder
-} from './fixtures';
+} from './fixtures/datagrid';
 
 describe('DataGrid Component', () => {
 

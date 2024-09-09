@@ -1,11 +1,11 @@
-import Harness from '../../../test/harness';
-import ColumnsComponent from './Columns';
+import Harness from '../harness';
+import ColumnsComponent from '../../src/components/columns/Columns';
 import assert from 'power-assert';
 import {
   comp1,
   comp2,
   comp3
-} from './fixtures';
+} from './fixtures/columns';
 
 describe('Columns Component', () => {
   it('Should build a columns component', () => {

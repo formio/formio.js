@@ -1,14 +1,14 @@
 import assert from 'power-assert';
 import _ from 'lodash';
-import Harness from '../test/harness';
-import WebformBuilder from './WebformBuilder';
-import Builders from './builders';
-import { Formio } from './Formio';
-import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase, uniqueApiKeysTranslation } from '../test/formtest';
-import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
-import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
-import formBasedOnWizard from '../test/forms/formBasedOnWizard';
-import formWithFormController from '../test/forms/formWithFormController';
+import Harness from '../harness';
+import WebformBuilder from '../../src/WebformBuilder';
+import Builders from '../../src/builders';
+import { Formio } from '../../src/Formio';
+import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase, uniqueApiKeysTranslation } from '../formtest';
+import sameApiKeysLayoutComps from '../forms/sameApiKeysLayoutComps';
+import testApiKeysUniquifying from '../forms/testApiKeysUniquifying';
+import formBasedOnWizard from '../forms/formBasedOnWizard';
+import formWithFormController from '../forms/formWithFormController';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};

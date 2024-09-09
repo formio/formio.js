@@ -1,48 +1,46 @@
 /* eslint-disable no-unused-vars */
-import Harness from '../test/harness';
-import Wizard from './Wizard';
-import { Formio } from './Formio';
+import Harness from '../harness';
+import Wizard from '../../src/Wizard';
+import { Formio } from '../../src/Formio';
 import assert from 'power-assert';
 import _ from 'lodash';
-import wizardCond from '../test/forms/wizardConditionalPages';
-import wizard from '../test/forms/wizardValidationOnPageChanged';
-import wizard1 from '../test/forms/wizardValidationOnNextBtn';
-import wizard2 from '../test/forms/wizardWithEditGrid';
-import wizard3 from '../test/forms/conditionalWizardPages';
-import wizard4 from '../test/forms/wizardWithSimpleConditionalPage';
-import wizard5 from '../test/forms/wizardWithCustomConditionalPage';
-import wizard6 from '../test/forms/wizardWithFirstConditionalPage';
-import wizardWithHighPages from '../test/forms/wizardWithHighPages';
-import wizardWithHiddenPanel from '../test/forms/wizardWithHiddenPanel';
-import wizardWithAllowPrevious from '../test/forms/wizardWithAllowPrevious';
-import wizardWithNestedWizard from '../test/forms/wizardWithNestedWizard';
-import formWithSignature from '../test/forms/formWithSignature';
-import wizardWithTooltip from '../test/forms/wizardWithTooltip';
-import wizardForHtmlModeTest from '../test/forms/wizardForHtmlRenderModeTest';
-import wizardTestForm from '../test/forms/wizardTestForm';
-import wizardTestFormWithNestedComponents from '../test/forms/wizardTestFormWithNestedComponents';
-import formWithNestedWizard from '../test/forms/formWIthNestedWizard';
-import wizardWithDataGridAndEditGrid from '../test/forms/wizardWithDataGridAndEditGrid';
-import customWizard from '../test/forms/customWizard';
+import wizardCond from '../forms/wizardConditionalPages';
+import wizard from '../forms/wizardValidationOnPageChanged';
+import wizard1 from '../forms/wizardValidationOnNextBtn';
+import wizard2 from '../forms/wizardWithEditGrid';
+import wizard3 from '../forms/conditionalWizardPages';
+import wizard4 from '../forms/wizardWithSimpleConditionalPage';
+import wizard5 from '../forms/wizardWithCustomConditionalPage';
+import wizard6 from '../forms/wizardWithFirstConditionalPage';
+import wizardWithHighPages from '../forms/wizardWithHighPages';
+import wizardWithHiddenPanel from '../forms/wizardWithHiddenPanel';
+import wizardWithAllowPrevious from '../forms/wizardWithAllowPrevious';
+import wizardWithNestedWizard from '../forms/wizardWithNestedWizard';
+import formWithSignature from '../forms/formWithSignature';
+import wizardWithTooltip from '../forms/wizardWithTooltip';
+import wizardForHtmlModeTest from '../forms/wizardForHtmlRenderModeTest';
+import wizardTestForm from '../forms/wizardTestForm';
+import wizardTestFormWithNestedComponents from '../forms/wizardTestFormWithNestedComponents';
+import formWithNestedWizard from '../forms/formWIthNestedWizard';
+import wizardWithDataGridAndEditGrid from '../forms/wizardWithDataGridAndEditGrid';
+import customWizard from '../forms/customWizard';
 //import wizardChildForm from '../test/forms/wizardChildForm';
 //import wizardParentForm from '../test/forms/wizardParentForm';
-import wizardWithComponentsWithSameApi from '../test/forms/wizardWithComponentsWithSameApi';
-import wizardWithConditionallyVisiblePage from '../test/forms/conditionallyVisiblePage';
-import wizardWithPanel from '../test/forms/wizardWithPanel';
-import wizardWithWizard from '../test/forms/wizardWithWizard';
-import simpleTwoPagesWizard from '../test/forms/simpleTwoPagesWizard';
-import wizardWithNestedWizardInEditGrid from '../test/forms/wizardWithNestedWizardInEditGrid';
-import wizardNavigateOrSaveOnEnter from '../test/forms/wizardNavigateOrSaveOnEnter';
-import wizardWithFieldsValidationChild from '../test/forms/wizardWithFieldsValidationChild';
-import wizardWithFieldsValidationParent from '../test/forms/wizardWithFieldsValidationParent';
-import nestedConditionalWizard from '../test/forms/nestedConditionalWizard';
-import wizardWithPrefixComps from '../test/forms/wizardWithPrefixComps';
-import wizardPermission from '../test/forms/wizardPermission';
-import formWithFormController from '../test/forms/formWithFormController';
-import { fastCloneDeep } from './utils/utils';
-import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
-import WizardWithCheckboxes from '../test/forms/wizardWithCheckboxes';
-import WizardWithRequiredFields from '../test/forms/wizardWithRequiredFields';
+import wizardWithComponentsWithSameApi from '../forms/wizardWithComponentsWithSameApi';
+import wizardWithConditionallyVisiblePage from '../forms/conditionallyVisiblePage';
+import wizardWithPanel from '../forms/wizardWithPanel';
+import wizardWithWizard from '../forms/wizardWithWizard';
+import simpleTwoPagesWizard from '../forms/simpleTwoPagesWizard';
+import wizardWithNestedWizardInEditGrid from '../forms/wizardWithNestedWizardInEditGrid';
+import wizardNavigateOrSaveOnEnter from '../forms/wizardNavigateOrSaveOnEnter';
+import nestedConditionalWizard from '../forms/nestedConditionalWizard';
+import wizardWithPrefixComps from '../forms/wizardWithPrefixComps';
+import wizardPermission from '../forms/wizardPermission';
+import formWithFormController from '../forms/formWithFormController';
+import { fastCloneDeep } from '../../src/utils/utils';
+import formsWithAllowOverride from '../forms/formsWithAllowOverrideComps';
+import WizardWithCheckboxes from '../forms/wizardWithCheckboxes';
+import WizardWithRequiredFields from '../forms/wizardWithRequiredFields';
 
 // eslint-disable-next-line max-statements
 describe('Wizard tests', () => {
@@ -396,7 +394,7 @@ describe('Wizard tests', () => {
     const wizard = new Wizard(formElement);
     const nestedWizard = _.cloneDeep(WizardWithRequiredFields);
     const clickEvent = new Event('click');
-    
+
     wizard.setForm(formWithNestedWizard).then(() => {
       const nestedFormComp = wizard.getComponent('formNested');
 

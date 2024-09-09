@@ -1,10 +1,8 @@
 import assert from 'power-assert';
 import _ from 'lodash';
-
-import Harness from '../../../test/harness';
-import { Formio } from './../../Formio';
-import CheckBoxComponent from './Checkbox';
-
+import Harness from '../harness';
+import { Formio } from '../../src/Formio';
+import CheckBoxComponent from '../../src/components/checkbox/Checkbox';
 import {
   comp1,
   customDefaultComponent,
@@ -13,7 +11,7 @@ import {
   comp4,
   comp5,
   comp6
-} from './fixtures';
+} from './fixtures/checkbox';
 
 describe('Checkbox Component', () => {
   it('Should build a checkbox component', () => {

@@ -1,4 +1,4 @@
-import CDN from './CDN';
+import CDN from '../../src/CDN';
 import assert from 'power-assert';
 
 describe('Formio.js CDN class Tests', () => {

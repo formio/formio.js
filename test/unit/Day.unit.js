@@ -1,9 +1,8 @@
-import { Formio } from '../../Formio';
+import { Formio } from '../../src/Formio';
 import assert from 'power-assert';
-
-import Harness from '../../../test/harness';
-import DayComponent from './Day';
-
+import Harness from '../harness';
+import DayComponent from '../../src/components/day/Day';
+import PanelComponent from '../../src/components/panel/Panel';
 import {
   comp1,
   comp2,
@@ -13,8 +12,7 @@ import {
   comp6,
   comp7,
   comp8
-} from './fixtures';
-import PanelComponent from '../panel/Panel';
+} from './fixtures/day';
 
 describe('Day Component', () => {
   it('Should build a day component', () => {

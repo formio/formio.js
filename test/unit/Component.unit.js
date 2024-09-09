@@ -2,10 +2,10 @@
 import assert from 'power-assert';
 import { expect } from 'chai';
 import sinon from 'sinon';
-import Component from './Component';
-import Webform from '../../../Webform';
-import Harness from '../../../../test/harness';
-import { comp1, comp4, comp3, comp5, comp6, comp7 } from './fixtures';
+import Component from '../../src/components/_classes/component/Component';
+import Webform from '../../src/Webform';
+import Harness from '../harness';
+import { comp1, comp4, comp3, comp5, comp6, comp7 } from './fixtures/component';
 import _merge from 'lodash/merge';
 
 describe('Component', () => {

@@ -1,8 +1,7 @@
 import { fake } from 'sinon';
 import { expect } from 'chai';
-
-import { Formio } from './Formio';
-import FormBuilder from './FormBuilder';
+import { Formio } from '../../src/Formio';
+import FormBuilder from '../../src/FormBuilder';
 
 describe('PDF Builder tests', () => {
   describe('PDF Auto Conversion', () => {

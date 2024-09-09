@@ -1,12 +1,12 @@
-const renders = require('../../test/renders');
-const forms = require('../../test/formtest');
+const renders = require('../renders');
+const forms = require('../formtest');
 const pretty = require('pretty');
 const fs = require('fs');
 import assert from 'power-assert';
-const AllComponents = require('../components').default;
-const Components = require('../components/Components').default;
-const templates = require('./index').default;
-const Form = require('../Form').default;
+const AllComponents = require('../../src/components').default;
+const Components = require('../../src/components/Components').default;
+const templates = require('../../src/templates/index').default;
+const Form = require('../../src/Form').default;
 Components.setComponents(AllComponents);
 const componentDir = 'components';
 

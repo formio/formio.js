@@ -1,9 +1,9 @@
 'use strict';
-import { Formio } from '../../../Formio';
-import NestedDataComponent from './NestedDataComponent';
-import Harness from '../../../../test/harness';
+import { Formio } from '../../src/Formio';
+import NestedDataComponent from '../../src/components/_classes/nesteddata/NestedDataComponent';
+import Harness from '../harness';
 import assert from 'power-assert';
-import nestedDataCompWithModalPreview from '../../../../test/forms/nestedDataWithModalViewAndLayoutComponents';
+import nestedDataCompWithModalPreview from '../forms/nestedDataWithModalViewAndLayoutComponents';
 
 let component = null;
 describe('NestedDataComponent class', () => {

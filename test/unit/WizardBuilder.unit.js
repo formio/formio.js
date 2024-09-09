@@ -1,9 +1,9 @@
-import FormBuilder from './FormBuilder';
+import FormBuilder from '../../src/FormBuilder';
 import assert from 'power-assert';
-import Harness from '../test/harness';
-import simpleWizard from '../test/forms/simpleWizard';
-import formWithFormController from '../test/forms/formWithFormController';
-import { fastCloneDeep } from './utils/utils';
+import Harness from '../harness';
+import simpleWizard from '../forms/simpleWizard';
+import formWithFormController from '../forms/formWithFormController';
+import { fastCloneDeep } from '../../src/utils/utils';
 
 describe('WizardBuilder tests', function() {
   let formBuilderElement, formBuilder;

@@ -1,15 +1,14 @@
-import Harness from '../../../test/harness';
-import AddressComponent from './Address';
+import Harness from '../harness';
+import AddressComponent from '../../src/components/address/Address';
 import assert from 'power-assert';
-import { Formio } from './../../Formio';
+import { Formio } from '../../src/Formio';
 import _ from 'lodash';
-
 import {
   comp1,
   comp2,
   comp3,
   comp4,
-} from './fixtures';
+} from './fixtures/address';
 
 describe('Address Component', () => {
   it('Should build an address component', () => {

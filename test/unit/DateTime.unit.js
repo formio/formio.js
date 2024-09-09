@@ -1,7 +1,7 @@
 import assert from 'power-assert';
-import Harness from '../../../test/harness';
-import DateTimeComponent from './DateTime';
-import { Formio } from './../../Formio';
+import Harness from '../harness';
+import DateTimeComponent from '../../src/components/datetime/DateTime';
+import { Formio } from '../../src/Formio';
 import _ from 'lodash';
 import 'flatpickr';
 import moment from 'moment';
@@ -18,7 +18,7 @@ import {
   comp11,
   comp12,
   comp13,
-} from './fixtures';
+} from './fixtures/datetime';
 
 describe('DateTime Component', () => {
   it('Should build a date time component', () => {

@@ -1,17 +1,16 @@
 import assert from 'power-assert';
 import _ from 'lodash';
-import Harness from '../../../test/harness';
-import ButtonComponent from './Button';
-import { Formio } from './../../Formio';
+import Harness from '../harness';
+import ButtonComponent from '../../src/components/button/Button';
+import { Formio } from '../../src/Formio';
 import sinon from 'sinon';
-
 import {
   comp1,
   comp2,
   comp3
-} from './fixtures';
-import Webform from '../../Webform';
-import formWithResetValue from '../../../test/formtest/formWithResetValue';
+} from './fixtures/button';
+import Webform from '../../src/Webform';
+import formWithResetValue from '../formtest/formWithResetValue';
 
 describe('Button Component', () => {
   it('Should build a button component', () => {

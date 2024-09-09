@@ -1,17 +1,17 @@
-import Harness from '../../../test/harness';
-import CurrencyComponent from './Currency';
+import Harness from '../harness';
+import CurrencyComponent from '../../src/components/currency/Currency';
 import assert from 'power-assert';
 import {
   comp1,
   comp2,
   comp3,
   comp4,
-} from './fixtures';
+} from './fixtures/currency';
 
 describe('Currency Component', () => {
   before(done => {
     // Need to polyfill some Intl.locale support, since node doesn't include it in standard builds
-    require('../../../test/numberFormatPolyfill');
+    require('../numberFormatPolyfill');
 
     done();
   });

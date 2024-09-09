@@ -1,7 +1,7 @@
-import { Formio } from '../../Formio';
-import Harness from '../../../test/harness';
-import DataMapComponent from './DataMap';
-import { comp1, formWithConditionalPanel } from './fixtures';
+import { Formio } from '../../src/Formio';
+import Harness from '../harness';
+import DataMapComponent from '../../src/components/datamap/DataMap';
+import { comp1, formWithConditionalPanel } from './fixtures/datamap';
 import assert from 'power-assert';
 
 describe('DataMap Component', () => {

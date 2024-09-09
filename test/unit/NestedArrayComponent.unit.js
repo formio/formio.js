@@ -1,6 +1,6 @@
 'use strict';
-import NestedArrayComponent from './NestedArrayComponent';
-import Harness from '../../../../test/harness';
+import NestedArrayComponent from '../../src/components/_classes/nestedarray/NestedArrayComponent';
+import Harness from '../harness';
 
 let component = null;
 describe('NestedArrayComponent class', () => {
