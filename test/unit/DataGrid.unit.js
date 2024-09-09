@@ -5,6 +5,7 @@ import sinon from 'sinon';
 import Harness from '../harness';
 import DataGridComponent from '../../src/components/datagrid/DataGrid';
 import { Formio } from '../../src/Formio';
+import { fastCloneDeep } from '../../src/utils/utils';
 import dragula from 'dragula'
 import {
   comp1,
@@ -884,3 +885,114 @@ describe('DataGrid Reorder', () => {
       .catch(done);
   });
 });
+
+describe('SaveDraft functionality', () => {
+  const originalMakeRequest = Formio.makeRequest;
+  let saveDraftCalls = 0;
+
+  before((done) => {
+    Formio.setUser({
+      _id: '123'
+    });
+
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'submission' && ['put', 'post'].includes(method)) {
+        saveDraftCalls = ++saveDraftCalls;
+        return Promise.resolve(fastCloneDeep(data));
+      }
+
+      if (type === 'form' && method === 'get') {
+        return Promise.resolve(fastCloneDeep({
+          _id: '65cdd69efb1b9683c216fa1d',
+          title: 'test draft',
+          name: 'testDraft',
+          path: 'testdraft',
+          type: 'form',
+          display: 'form',
+          components: [
+            {
+              label: 'Data Grid',
+              reorder: false,
+              addAnotherPosition: 'bottom',
+              layoutFixed: false,
+              enableRowGroups: false,
+              initEmpty: false,
+              tableView: false,
+              validateWhenHidden: false,
+              key: 'dataGrid',
+              type: 'datagrid',
+              input: true,
+              components: [
+                {
+                  label: 'Text Field in Data Grid',
+                  applyMaskOn: 'change',
+                  tableView: true,
+                  validateWhenHidden: false,
+                  key: 'textField',
+                  type: 'textfield',
+                  input: true
+                }
+              ]
+            },
+            {
+              label: 'Submit',
+              disableOnInvalid: true,
+              tableView: false,
+              key: 'submit',
+              type: 'button',
+              input: true,
+              saveOnEnter: false,
+            },
+          ],
+          project: '65b0ccbaf019a907ac01a869',
+          machineName: 'zarbzxibjafpcjb:testDraft',
+        }));
+      }
+    };
+
+    done();
+  });
+
+  afterEach(() => {
+    saveDraftCalls = 0;
+  });
+
+  after((done) => {
+    Formio.makeRequest = originalMakeRequest;
+    Formio.setUser();
+    done();
+  });
+
+  it('Should save the draft after removing row inside Data Grid component', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/zarbzxibjafpcjb/testdraft',
+      {
+        saveDraft: true,
+        skipDraftRestore: true,
+        saveDraftThrottle: 100
+      }
+    ).then((form) => {
+      setTimeout(() => {
+        assert.equal(saveDraftCalls, 0);
+        const dataGrid = form.getComponent('dataGrid');
+        dataGrid.addRow();
+        const textFieldInput = form.getComponent('dataGrid[1].textField').refs.input[0];
+        textFieldInput.value = 'test';
+        const inputEvent = new Event('input');
+        textFieldInput.dispatchEvent(inputEvent);
+        setTimeout(() => {
+          assert.equal(dataGrid.dataValue.length, 2);
+          assert.equal(saveDraftCalls, 1);
+          dataGrid.removeRow(1);
+          setTimeout(() => {
+            assert.equal(dataGrid.dataValue.length, 1);
+            assert.equal(saveDraftCalls, 2);
+            done();
+          }, 300);
+        }, 300);
+      }, 200);
+    }).catch((err) => done(err));
+  })
+})

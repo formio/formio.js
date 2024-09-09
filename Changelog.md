@@ -55,6 +55,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8795: fixed selected data after removing row
  - FIO-8771: Included File Component in Review Page Component
  - FIO-8789: Fixing issues where the wrong urls are used for CDN on remote env
+ - FIO-7524: Added back aspect ratio option to Signature
+ - FIO-8798: updated shape of the data of day component with hidden fields
+ - FIO-8760: Fixes an issue where nested form is not getting all the options
+ - FIO-8706: allow data interpolation for data source in components
+ - FIO-8849: fixed an issue where value of the selctboxes/radio with URL data source are not available in simple conditons UI
+ - FIO-8874: fixed conditional value field for time component
+ - FIO-8931: Disable file synchronization feature
+ - FIO-8458: removing row from data grid triggers save draft action
+ - FIO-8912: consolidate normalization for multivalue components
+ - FIO-8423: change default parent tag from p to div
+ - FIO-8375: allow date time to have manual input
+ - FIO-8912: fix normalization in submission
 
 ### New Features
 

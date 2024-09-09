@@ -33,36 +33,27 @@ export default class RadioComponent extends ListComponent {
     return {
       ...super.conditionOperatorsSettings,
       valueComponent(classComp) {
-        return {
-          type: 'select',
-          dataSrc: 'custom',
-          valueProperty: 'value',
-          dataType: classComp.dataType || '',
-          data: {
-            custom() {
-              return classComp.values;
+        const isValuesSrc = !classComp.dataSrc || classComp.dataSrc === 'values';
+        return isValuesSrc
+          ? {
+              type: 'select',
+              dataSrc: 'custom',
+              valueProperty: 'value',
+              dataType: classComp.dataType || '',
+              data: {
+                custom: `values = ${classComp && classComp.values ? JSON.stringify(classComp.values) : []}`,
+              }
             }
-          },
-        };
+          : {
+              ...classComp,
+              type: 'select',
+            }
       }
     };
   }
 
   static get serverConditionSettings() {
-    return {
-      ...super.serverConditionSettings,
-      valueComponent(classComp) {
-        return {
-          type: 'select',
-          dataSrc: 'custom',
-          valueProperty: 'value',
-          dataType: classComp.dataType || '',
-          data: {
-            custom: `values = ${classComp && classComp.values ? JSON.stringify(classComp.values) : []}`,
-          },
-        };
-      },
-    };
+    return RadioComponent.conditionOperatorsSettings;
   }
 
   static savedValueTypes(schema) {
@@ -307,6 +298,18 @@ export default class RadioComponent extends ListComponent {
     if (method.toUpperCase() === 'GET') {
       body = null;
     }
+
+    const limit = this.component.limit || 100;
+    const skip = this.isScrollLoading ? this.selectOptions.length : 0;
+
+    // Allow for url interpolation.
+    url = this.sanitize(this.interpolate(url, {
+      formioBase: Formio.getBaseUrl(),
+      search,
+      limit,
+      skip,
+      page: Math.abs(Math.floor(skip / limit))
+    }), this.shouldSanitizeValue);
 
     // Set ignoreCache if it is
     options.ignoreCache = this.component.ignoreCache;

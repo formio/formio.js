@@ -30,6 +30,7 @@ describe('Address Component', () => {
 
       setTimeout(() => {
         assert.equal(address.refs.searchInput[0].value, '');
+        assert.deepEqual(address.dataValue, address.emptyValue);
 
         document.innerHTML = '';
         done();

@@ -170,7 +170,9 @@ export default class FileComponent extends Field {
   }
 
   get autoSync() {
-    return _.get(this, 'component.autoSync', false);
+    // Disable autoSync for now
+    return false;
+    // return _.get(this, 'component.autoSync', false);
   }
 
   get columnsSize() {
