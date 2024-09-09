@@ -275,14 +275,14 @@
     fuse.js "^6.6.2"
     redux "^4.2.0"
 
-"@formio/core@2.1.0-dev.140.129711f":
-  version "2.1.0-dev.140.129711f"
-  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.1.0-dev.140.129711f.tgz#c6203a781301671447610355f544ed2af145a22b"
-  integrity sha512-9WU/5Tv7pY+8vxT1Hj5kAiAVDHggAlRGS9kVW5ok+Ht7kOCfSdCSaDI+oaaxfQqdzNd4jbicJdpA5ELCTiAvEQ==
+"@formio/core@2.1.0-dev.145.4491833":
+  version "2.1.0-dev.145.4491833"
+  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.1.0-dev.145.4491833.tgz#f8bb24949e71d865a2ec354a3f58dc5bf56dcde6"
+  integrity sha512-mN9tymogT+6qWbwlVTNB3xGI+sk9sz4WYxe7BW66fuPpsUsYwxuUtSrnGbM8WInkqmj7aNZrXd5WQ2SAV93wjQ==
   dependencies:
     "@types/json-logic-js" "^2.0.7"
     browser-cookies "^1.2.0"
-    core-js "^3.37.1"
+    core-js "^3.38.0"
     dayjs "^1.11.12"
     dompurify "^3.1.6"
     eventemitter3 "^5.0.0"
@@ -1903,6 +1903,11 @@ core-js@^3.0.0, core-js@^3.30.2, core-js@^3.37.1:
   version "3.37.1"
   resolved "https://registry.npmjs.org/core-js/-/core-js-3.37.1.tgz#d21751ddb756518ac5a00e4d66499df981a62db9"
   integrity sha512-Xn6qmxrQZyB0FFY8E3bgRXei3lWDJHhvI+u0q9TKIYM49G8pAr0FgnnrFRAmsbptZL1yxRADVXn+x5AGsbBfyw==
+
+core-js@^3.38.0:
+  version "3.38.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.38.1.tgz#aa375b79a286a670388a1a363363d53677c0383e"
+  integrity sha512-OP35aUorbU3Zvlx7pjsFdu1rGNnD4pgw/CWoYzRY3t2EzoVT7shKHY1dlAy3f41cGIO7ZDPQimhGFTlEYkG/Hw==
 
 core-util-is@1.0.2:
   version "1.0.2"

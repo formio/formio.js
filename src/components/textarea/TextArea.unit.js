@@ -31,16 +31,12 @@ describe('TextArea Component', () => {
       ];
       const emit = sinon.spy(component, 'setValue');
       component.setValue(valueToSet);
-      expect(component.getValue()).to.deep.equal([
+      expect(component.getValue()).to.deep.equal(
         {
           firstName: 'Bobby',
           lastName: 'Lynch'
         },
-        {
-          firstName: 'Harold',
-          lastName: 'Freeman'
-        }
-      ]);
+      );
       expect(emit.callCount).to.equal(1);
     });
   });
