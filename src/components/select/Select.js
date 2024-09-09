@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
-import Input from '../_classes/input/Input';
 import Form from '../../Form';
 import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes, isSelectResourceWithObjectValue, removeHTML } from '../../utils/utils';
 
@@ -63,6 +62,8 @@ export default class SelectComponent extends ListComponent {
   }
 
   static get conditionOperatorsSettings() {
+    const numberType = () => ({ type: 'number' });
+
     return {
       ...super.conditionOperatorsSettings,
       valueComponent(classComp) {
@@ -81,7 +82,18 @@ export default class SelectComponent extends ListComponent {
         }
 
         return valueComp;
-      }
+      },
+      dataTypeOperators: {
+        number: ['lessThan', 'greaterThan', 'lessThanOrEqual', 'greaterThanOrEqual'],
+      },
+      dataTypeValueComponents: {
+        number: {
+          lessThan: numberType,
+          greaterThan: numberType,
+          lessThanOrEqual: numberType,
+          greaterThanOrEqual: numberType,
+        },
+      },
     };
   }
 
@@ -619,13 +631,13 @@ export default class SelectComponent extends ListComponent {
     };
 
     // Allow for url interpolation.
-    url = this.interpolate(url, {
+    url = this.sanitize(this.interpolate(url, {
       formioBase: Formio.getBaseUrl(),
       search,
       limit,
       skip,
       page: Math.abs(Math.floor(skip / limit))
-    });
+    }), this.shouldSanitizeValue);
 
     // Add search capability.
     if (this.component.searchField && search) {
@@ -1015,7 +1027,7 @@ export default class SelectComponent extends ListComponent {
         this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
       }
 
-      Input.prototype.addFocusBlurEvents.call(this, this.focusableElement);
+      this.addFocusBlurEvents(this.choices.input.element);
 
       if (this.itemsFromUrl && !this.component.noRefreshOnScroll) {
         this.scrollList = this.choices.choiceList.element;
@@ -1856,8 +1868,8 @@ export default class SelectComponent extends ListComponent {
   }
 
   focus() {
+    super.focus.call(this);
     if (this.focusableElement) {
-      super.focus.call(this);
       this.focusableElement.focus();
     }
   }

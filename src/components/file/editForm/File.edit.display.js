@@ -4,7 +4,7 @@ export default [
     ignore: true
   },
   {
-    type: 'checkbox',
+    type: 'hidden',
     label: 'Files Synchronization feature',
     tooltip: 'Enable ability to control files synchronization. Files will be auto synced before submit.',
     key: 'autoSync',

@@ -16,6 +16,11 @@ import {
 } from "./utils/utils";
 import { eachComponent } from "./utils/formUtils";
 
+// We need this here because dragula pulls in CustomEvent class that requires global to exist.
+if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
+    window.global = window;
+}
+
 // Initialize the available forms.
 Formio.forms = {};
 
@@ -786,7 +791,7 @@ export default class Webform extends NestedDataComponent {
      * Sets the submission value
      * @param {object|null|undefined} submission - The submission to set.
      * @param {object|null|undefined} flags - Any flags to apply when setting the submission.
-     * @return {void}
+     * @returns {void}
      */
     onSetSubmission(submission, flags = {}) {
       this.submissionSet = true;
@@ -928,7 +933,6 @@ export default class Webform extends NestedDataComponent {
         if (!submission || !submission.data) {
             submission = {
                 data: {},
-                metadata: submission.metadata,
             };
         }
         // Metadata needs to be available before setValue
@@ -998,7 +1002,9 @@ export default class Webform extends NestedDataComponent {
             "submitButton",
             (options) => {
                 this.submit(false, options).catch((e) => {
-                    options.instance.loading = false;
+                    if (options?.instance) {
+                        options.instance.loading = false;
+                    }
                     return e !== false && e !== undefined && console.log(e);
                 });
             },
@@ -1290,7 +1296,7 @@ export default class Webform extends NestedDataComponent {
 
         const displayedErrors = [];
         if (errors.length) {
-            errors = _.uniqBy(errors, (error) => error.message);
+            errors = _.uniqBy(errors, (error) => [error.message, error.component?.id, error.context?.path].join());
             const createListItem = (message, index) => {
                 const err = errors[index];
                 const messageFromIndex = !_.isUndefined(index) && errors && errors[index];
@@ -1425,10 +1431,14 @@ export default class Webform extends NestedDataComponent {
         this.checkData(value.data, flags);
         const shouldValidate =
             !flags.noValidate ||
-            flags.fromIFrame ||
+            flags.fromIframe ||
             (flags.fromSubmission && this.rootPristine && this.pristine && flags.changed);
         const errors = shouldValidate
-            ? this.validate(value.data, { ...flags, process: "change" })
+            ? this.validate(value.data, { 
+                ...flags, 
+                noValidate: false, 
+                process: 'change'
+            })
             : [];
         value.isValid = errors.length === 0;
 

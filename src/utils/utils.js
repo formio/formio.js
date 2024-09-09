@@ -1,7 +1,6 @@
 /* global jQuery */
 
 import _ from 'lodash';
-import fetchPonyfill from 'fetch-ponyfill';
 import jsonLogic from 'json-logic-js';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
@@ -11,9 +10,6 @@ import { getValue } from './formUtils';
 import { Evaluator } from './Evaluator';
 import ConditionOperators from './conditionOperators';
 const interpolate = Evaluator.interpolate;
-const { fetch } = fetchPonyfill({
-  Promise: Promise
-});
 
 export * from './formUtils';
 
@@ -35,9 +31,7 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic, ConditionOperators };
-export * as moment from 'moment-timezone/moment-timezone';
-
+export { jsonLogic, ConditionOperators, moment };
 /**
  * Sets the path to the component and parent schema.
  * @param {import('@formio/core').Component} component - The component to set the path for.
@@ -168,6 +162,52 @@ export function checkCalculated(component, submission, rowData) {
  * @param {import('../../src/components/_classes/component/Component').Component} instance - The instance of the component.
  * @returns {boolean} - TRUE if the condition is true; FALSE otherwise.
  */
+
+function getConditionalPathsRecursive(conditionPaths, data) {
+  let currentGlobalIndex = 0;
+  const conditionalPathsArray = [];
+
+  const getConditionalPaths = (data, currentPath = '', localIndex = 0) => {
+    currentPath = currentPath.replace(/^\.+|\.+$/g, '');
+    const currentLocalIndex = localIndex;
+    const currentData = _.get(data, currentPath);
+
+    if (Array.isArray(currentData) && currentData.filter(Boolean).length > 0) {
+      if (currentData.some(element => typeof element !== 'object')) {
+        return;
+      }
+
+      const hasInnerDataArray = currentData.find(x => Array.isArray(x[conditionPaths[currentLocalIndex]]));
+
+      if (hasInnerDataArray) {
+        currentData.forEach((_, indexOutside) => {
+          const innerCompDataPath = `${currentPath}[${indexOutside}].${conditionPaths[currentLocalIndex]}`;
+          getConditionalPaths(data, innerCompDataPath, currentLocalIndex + 1);
+        });
+      }
+      else {
+        currentData.forEach((x, index) => {
+          if (!_.isNil(x[conditionPaths[currentLocalIndex]])) {
+            const compDataPath = `${currentPath}[${index}].${conditionPaths[currentLocalIndex]}`;
+            conditionalPathsArray.push(compDataPath);
+          }
+        });
+      }
+    }
+    else {
+      if (!conditionPaths[currentGlobalIndex]) {
+        return;
+      }
+      currentGlobalIndex = currentGlobalIndex + 1;
+      getConditionalPaths(data, `${currentPath}.${conditionPaths[currentGlobalIndex - 1]}`, currentGlobalIndex);
+    }
+  };
+
+  getConditionalPaths(data);
+
+  return conditionalPathsArray;
+}
+
  export function checkSimpleConditional(component, condition, row, data, instance) {
   if (condition.when) {
     const value = getComponentActualValue(condition.when, data, row);
@@ -198,22 +238,38 @@ export function checkCalculated(component, submission, rowData) {
       if (!conditionComponentPath) {
         return true;
       }
-      const value = getComponentActualValue(conditionComponentPath, data, row);
 
-      const ConditionOperator = ConditionOperators[operator];
-      return ConditionOperator
-        ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
-        : true;
+      const splittedConditionPath = conditionComponentPath.split('.');
+
+      const conditionalPaths = instance?.parent?.type === 'datagrid' || instance?.parent?.type === 'editgrid'  ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
+
+      if (conditionalPaths.length>0) {
+        return conditionalPaths.map((path) => {
+          const value = getComponentActualValue(path, data, row);
+
+          const ConditionOperator = ConditionOperators[operator];
+          return ConditionOperator
+            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+            : true;
+        });
+      }
+      else {
+        const value = getComponentActualValue(conditionComponentPath, data, row);
+        const СonditionOperator = ConditionOperators[operator];
+        return СonditionOperator
+          ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+          : true;
+      }
     });
 
     let result = false;
 
     switch (conjunction) {
       case 'any':
-        result = _.some(conditionsResult, res => !!res);
+        result = _.some(conditionsResult.flat(), res => !!res);
         break;
       default:
-        result = _.every(conditionsResult, res => !!res);
+        result = _.every(conditionsResult.flat(), res => !!res);
     }
 
     return show ? result : !result;

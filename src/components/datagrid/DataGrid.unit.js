@@ -5,6 +5,8 @@ import sinon from 'sinon';
 import Harness from '../../../test/harness';
 import DataGridComponent from './DataGrid';
 import { Formio } from '../../Formio';
+import { fastCloneDeep } from '../../utils/utils';
+import dragula from 'dragula'
 
 import {
   comp1,
@@ -15,6 +17,9 @@ import {
   comp6,
   comp7,
   comp8,
+  comp9,
+  comp10,
+  comp11,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
@@ -23,9 +28,19 @@ import {
   withCollapsibleRowGroups,
   withAllowCalculateOverride,
   twoWithAllowCalculatedOverride, withCheckboxes,
+  withReorder
 } from './fixtures';
 
 describe('DataGrid Component', () => {
+
+  before(() => {
+    window.dragula = dragula;
+  });
+
+  after(() => {
+    delete window.dragula;
+  });
+
   it('Test modal edit confirmation dialog', (done) => {
     Harness.testCreate(DataGridComponent, comp5).then((component) => {
       component.componentModal.openModal();
@@ -188,6 +203,36 @@ describe('DataGrid Component', () => {
       done(err);
     }
   });
+
+  it('Should remove the corresponding row from the metadata when removing a row', (done) => {
+    Formio.createForm(document.createElement('div'), comp11)
+      .then((form) => {
+        const checkValue = (index, value) => {
+          assert.equal(datagrid.getValue()[index].select, value);
+        }
+        const datagrid = form.getComponent('dataGrid');
+        datagrid.addRow();
+        assert.equal(datagrid.getValue().length, 2);
+        const select = form.getComponent('dataGrid[1].select');
+        select.setValue('individual');
+        checkValue(0, 'entity');
+        checkValue(1, 'individual');
+        setTimeout(()=> {
+          assert.equal(select.getView(), '<span>Individual</span>');
+          datagrid.removeRow(1);
+          assert.equal(datagrid.getValue().length, 1);
+          datagrid.addRow();
+          checkValue(0, 'entity');
+          checkValue(1, 'entity');
+          setTimeout(() => {
+            const selectNew = form.getComponent('dataGrid[1].select');
+            assert.equal(selectNew.getView(), '<span>Entity</span>');
+            done();
+          }, 200)
+        }, 200)
+      })
+      .catch(done);
+  })
 
   it('Should allow provide default value in row-groups model', function(done) {
     try {
@@ -414,6 +459,72 @@ describe('DataGrid Component', () => {
       component.addRow();
       assert.equal(component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').checked, false);
     });
+  });
+
+  it('Should lazy load dragula when reorder flag is set to true', async () => {
+    await Formio.createForm(document.createElement('div'), comp9, {});
+    const dragula = await Formio.libraries.dragula.ready;
+    assert.strictEqual(window.dragula, dragula, "could not find dragula");
+    delete Formio.libraries.dragula
+  });
+
+  it('Should not lazy load dragula when reorder flag is set to false', async () => {
+    let formJSON = _.cloneDeep(comp9);
+    formJSON.components[0].reorder = false;
+    await Formio.createForm(document.createElement('div'), formJSON, {});
+    assert(!Formio.libraries.dragula);
+  });
+
+  it('Should set the pristine of itself and the form the false when reordering occurs', () => {
+    return Formio.createForm(document.createElement('div'), comp9, {}).then((form) => {
+      const dataGridComponent = form.getComponent('dataGrid');
+      const element = document.createElement('tr');
+      element.dragInfo = {};
+      _.set(element, 'dragInfo.index', 0);
+      const tableBody = document.createElement('tbody');
+      const sibling = document.createElement('tr');
+      sibling.dragInfo = {};
+      dataGridComponent.onReorder(element,tableBody, tableBody, sibling);
+      assert(!form.pristine, 'form pristine should be set to false when datagrid reordering occurs');
+    });
+  });
+
+  it('Disable/not disable submit button with required flag in dataGrid', function(done) {
+    Formio.createForm(document.createElement('div'), comp10)
+      .then((form) => {
+      const buttonComponent = form.getComponent('submit');
+      assert.equal(buttonComponent.disabled, true, '(1) Component should be disabled');
+      const dataGrid = form.getComponent('dataGrid');
+      dataGrid.setValue([
+        {
+          textField: 'some value',
+          checkbox: false
+        },
+        {
+          textField: '',
+          checkbox: false
+        }
+      ]);
+
+      setTimeout(() => {
+        assert.equal(buttonComponent.disabled, false, '(2) Component should be not disabled');
+        dataGrid.setValue([
+          {
+            textField: '',
+            checkbox: false
+          },
+          {
+            textField: '',
+            checkbox: false
+          }
+        ]);
+
+        setTimeout(() => {
+          assert.equal(buttonComponent.disabled, true, '(3) Component should be disabled');
+          done();
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
   });
 });
 
@@ -725,3 +836,164 @@ describe('DataGrid calculated values', () => {
       .catch(done);
   });
 });
+
+describe('DataGrid Reorder', () => {
+  it('Should display select components labels correctly on rows reorder', (done) => {
+    Formio.createForm(document.createElement('div'), withReorder.form)
+      .then((form) => {
+        form.setSubmission(withReorder.submission)
+        .then(() => {
+          const values = [
+            { value: '11', label: 1 },
+            { value: '22', label: 2 },
+            { value: '33', label: 3 },
+            { value: '44', label: 4 },
+            { value: '55', label: 5 },
+          ];
+
+          const dataGrid = form.getComponent('dataGrid');
+          _.each(dataGrid.components, (selectComp, ind) => {
+            const expectedValue = values[ind];
+            assert.equal(ind, selectComp.rowIndex);
+            assert.equal(selectComp.dataValue, expectedValue.value);
+            assert.equal(selectComp.templateData[expectedValue.value].data.number, expectedValue.label);
+          });
+
+          dataGrid.onReorder({ dragInfo: { index: 4 } }, null, null, { dragInfo: { index: 0 } });
+          dataGrid.onReorder({ dragInfo: { index: 4 } }, null, null, { dragInfo: { index: 1 } });
+          dataGrid.onReorder({ dragInfo: { index: 2 } }, null, null, { dragInfo: { index: 4 } });
+
+          setTimeout(() => {
+            const values = [
+              { value: '55', label: 5 },
+              { value: '44', label: 4 },
+              { value: '22', label: 2 },
+              { value: '11', label: 1 },
+              { value: '33', label: 3 },
+            ];
+
+            _.each(dataGrid.components, (selectComp, ind) => {
+              const expectedValue = values[ind];
+              assert.equal(ind, selectComp.rowIndex, 'Component index after reorder');
+              assert.equal(selectComp.dataValue, expectedValue.value, 'Component value after reorder');
+              assert.equal(selectComp.templateData[expectedValue.value].data.number, expectedValue.label, 'Component label value after reorder');
+            });
+
+            done();
+          }, 600);
+        });
+      })
+      .catch(done);
+  });
+});
+
+describe('SaveDraft functionality', () => {
+  const originalMakeRequest = Formio.makeRequest;
+  let saveDraftCalls = 0;
+
+  before((done) => {
+    Formio.setUser({
+      _id: '123'
+    });
+
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'submission' && ['put', 'post'].includes(method)) {
+        saveDraftCalls = ++saveDraftCalls;
+        return Promise.resolve(fastCloneDeep(data));
+      }
+
+      if (type === 'form' && method === 'get') {
+        return Promise.resolve(fastCloneDeep({
+          _id: '65cdd69efb1b9683c216fa1d',
+          title: 'test draft',
+          name: 'testDraft',
+          path: 'testdraft',
+          type: 'form',
+          display: 'form',
+          components: [
+            {
+              label: 'Data Grid',
+              reorder: false,
+              addAnotherPosition: 'bottom',
+              layoutFixed: false,
+              enableRowGroups: false,
+              initEmpty: false,
+              tableView: false,
+              validateWhenHidden: false,
+              key: 'dataGrid',
+              type: 'datagrid',
+              input: true,
+              components: [
+                {
+                  label: 'Text Field in Data Grid',
+                  applyMaskOn: 'change',
+                  tableView: true,
+                  validateWhenHidden: false,
+                  key: 'textField',
+                  type: 'textfield',
+                  input: true
+                }
+              ]
+            },
+            {
+              label: 'Submit',
+              disableOnInvalid: true,
+              tableView: false,
+              key: 'submit',
+              type: 'button',
+              input: true,
+              saveOnEnter: false,
+            },
+          ],
+          project: '65b0ccbaf019a907ac01a869',
+          machineName: 'zarbzxibjafpcjb:testDraft',
+        }));
+      }
+    };
+
+    done();
+  });
+
+  afterEach(() => {
+    saveDraftCalls = 0;
+  });
+
+  after((done) => {
+    Formio.makeRequest = originalMakeRequest;
+    Formio.setUser();
+    done();
+  });
+
+  it('Should save the draft after removing row inside Data Grid component', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/zarbzxibjafpcjb/testdraft',
+      {
+        saveDraft: true,
+        skipDraftRestore: true,
+        saveDraftThrottle: 100
+      }
+    ).then((form) => {
+      setTimeout(() => {
+        assert.equal(saveDraftCalls, 0);
+        const dataGrid = form.getComponent('dataGrid');
+        dataGrid.addRow();
+        const textFieldInput = form.getComponent('dataGrid[1].textField').refs.input[0];
+        textFieldInput.value = 'test';
+        const inputEvent = new Event('input');
+        textFieldInput.dispatchEvent(inputEvent);
+        setTimeout(() => {
+          assert.equal(dataGrid.dataValue.length, 2);
+          assert.equal(saveDraftCalls, 1);
+          dataGrid.removeRow(1);
+          setTimeout(() => {
+            assert.equal(dataGrid.dataValue.length, 1);
+            assert.equal(saveDraftCalls, 2);
+            done();
+          }, 300);
+        }, 300);
+      }, 200);
+    }).catch((err) => done(err));
+  })
+})

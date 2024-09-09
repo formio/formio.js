@@ -11,7 +11,8 @@ import {
   comp4,
   comp5,
   comp6,
-  comp7
+  comp7,
+  comp8
 } from './fixtures';
 import PanelComponent from '../panel/Panel';
 
@@ -20,6 +21,17 @@ describe('Day Component', () => {
     return Harness.testCreate(DayComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="number"]', 2);
       Harness.testElements(component, 'select', 1);
+    });
+  });
+
+  it('Should handle blank data correctly', (done) => {
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue();
+      assert.equal(component.getValue(), '');
+      component.checkValidity();
+      assert.equal(component.errors.length, 0, 'Component should be valid with blank data');
+
+      done();
     });
   });
 
@@ -185,6 +197,38 @@ describe('Day Component', () => {
     });
   });
 
+  it('Should set value if the day field is hidden', (done) => {
+    comp1.dayFirst = false;
+    comp1.fields.day.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue('12/2023');
+      assert.equal(component.data.date, '12/2023');
+      done();
+    });
+    comp1.fields.day.hide = false;
+  });
+
+  it('Should set value if the month field is hidden', (done) => {
+    comp1.fields.month.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue('12/2023');
+      assert.equal(component.data.date, '12/2023');
+      done();
+    });
+    comp1.fields.month.hide = false;
+  });
+
+  it('Should set value if the year field is hidden', (done) => {
+    comp1.fields.year.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue('12/21');
+      assert.equal(component.data.date, '12/21');
+      done();
+    });
+    comp1.fields.year.hide = false;
+  });
+
+
   it('Should use the default day value if the day field is hidden', (done) => {
     comp1.dayFirst = false;
     comp1.defaultValue = '00/01/0000';
@@ -232,11 +276,11 @@ describe('Day Component', () => {
         dayComponent.refs.day.dispatchEvent(new Event('input'));
 
         setTimeout(() => {
-          assert(dayComponent._errors.length && dayComponent._errors[0].message === 'requiredDayField', 'Day should be valid while changing');
+          assert(dayComponent._errors.length && dayComponent._errors[0].message === 'Day is required', 'Day should be valid while changing');
           dayComponent.refs.day.dispatchEvent(new Event('blur'));
 
           setTimeout(() => {
-            assert(dayComponent._errors.length && dayComponent._errors[0].message === 'requiredDayField', 'Should set error after Day component was blurred');
+            assert(dayComponent._errors.length && dayComponent._errors[0].message === 'Day is required', 'Should set error after Day component was blurred');
             done();
           }, 200);
         }, 200);
@@ -265,6 +309,7 @@ describe('Day Component', () => {
       }, 500);
     }).catch(done);
   });
+
   it('Should translate placeholder text', () => {
     const element = document.createElement('div');
     return Formio.createForm(element, comp7, {
@@ -282,5 +327,17 @@ describe('Day Component', () => {
       assert.equal(dayComponent.refs.month.placeholder, 'Month2');
       assert.equal(dayComponent.refs.year.placeholder, 'Year3');
     })
+  });
+
+  it('Should translate requiredDayEmpty to {{ field }} is required', (done) => {
+    Formio.createForm(document.createElement('div'), comp8, {}).then((form) => {
+      const dayComponent = form.getComponent('dayTable');
+      const buttonComponent = form.getComponent('submit');
+      buttonComponent.refs.button.click();
+      setTimeout(()=>{
+        assert.equal(dayComponent.errors[0].message, 'Day - Table is required');
+        done();
+      },200);
+    });
   });
 });

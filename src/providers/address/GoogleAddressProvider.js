@@ -2,6 +2,11 @@
 import { Formio } from '../../Formio';
 import _ from 'lodash';
 import { AddressProvider } from './AddressProvider';
+
+const GOOGLE_MAPS_BASE_URL = 'https://maps.googleapis.com';
+const GOOGLE_MAPS_JS_URL = `${GOOGLE_MAPS_BASE_URL}/maps/api/js`;
+const GOOGLE_MAPS_JS_WITH_PARAMS_URL = `${GOOGLE_MAPS_JS_URL}?v=quarterly&libraries=places&loading=async&callback=googleMapsCallback`;
+
 /**
  * @typedef {object} AutocompleteOptions
  * @property {string[]} fields - The fields to include in the autocomplete response.
@@ -58,10 +63,11 @@ export class GoogleAddressProvider extends AddressProvider {
   constructor(options = {}) {
     super(options);
     this.setAutocompleteOptions();
-    let src = 'https://maps.googleapis.com/maps/api/js?v=quarterly&libraries=places&loading=async&callback=googleMapsCallback';
+    let src = GOOGLE_MAPS_JS_WITH_PARAMS_URL;
     if (options.params?.key) {
       src += `&key=${options.params.key}`;
     }
+    this.tryRemoveLibrary(options);
     Formio.requireLibrary(this.getLibraryName(), 'google.maps.places', src);
   }
 
@@ -220,5 +226,24 @@ export class GoogleAddressProvider extends AddressProvider {
       : this.alternativeDisplayValueProperty;
 
     return _.get(address, displayedProperty, '');
+  }
+
+  /**
+   * Tries to remove the library if api key for loaded script is different.
+   * @param {ProviderOptions} options - The options for the provider.
+   */
+  tryRemoveLibrary(options = {}) {
+    if (!Formio.libraries[this.getLibraryName()]) {
+      return;
+    }
+
+    const existingScript = document.querySelector(`script[src^="${GOOGLE_MAPS_JS_URL}"]`);
+    if (existingScript && options.params?.key && !existingScript.attributes.src.value.endsWith(options.params.key)) {
+        const googleMapsScripts = document.querySelectorAll(`script[src^="${GOOGLE_MAPS_BASE_URL}"]`) ?? [];
+        googleMapsScripts.forEach(script => script.parentNode.removeChild(script));
+        delete Formio.libraries[this.getLibraryName()];
+        delete global?.google?.maps;
+        delete global[`${this.getLibraryName()}Callback`];
+    }
   }
 }

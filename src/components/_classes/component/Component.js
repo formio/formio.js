@@ -1196,7 +1196,7 @@ export default class Component extends Element {
   /**
    * Renders a modal preview template and returns the markup as a string
    * @param {object|null|undefined} ctx - The rendering context
-   * @return {string} - The modal preview markup
+   * @returns {string} - The modal preview markup
    */
   renderModalPreview(ctx) {
     return this.renderTemplate('modalPreview', ctx || {});
@@ -1272,7 +1272,7 @@ export default class Component extends Element {
    * Creates the tooltip instance using tippy.js and returns it
    * @param {HTMLElement} tooltipEl - HTML element to attach the tooltip
    * @param {object|null|undefined} settings - tippy.js options
-   * @return {import('tippy.js').Tippy} - tippy.js instance
+   * @returns {import('tippy.js').Tippy} - tippy.js instance
    */
   createTooltip(tooltipEl, settings = {}) {
     const tooltipAttribute = tooltipEl.getAttribute('data-tooltip');
@@ -2728,6 +2728,14 @@ export default class Component extends Element {
       });
   }
 
+  async getDragula() {
+    return new Promise((resolve) => {
+      return Formio.requireLibrary('dragula', 'dragula', `${Formio.cdn.dragula}/dragula.js`, true, (ready) => {
+        return ready.then(resolve);
+      })
+    });
+  }
+
   get tree() {
     return this.component.tree || false;
   }
@@ -3444,7 +3452,7 @@ export default class Component extends Element {
             this.parent.childErrors.push(...errors);
           }
           else {
-            _.remove(this.parent.childErrors, (err) => err.component.key === this.component.key);
+            _.remove(this.parent.childErrors, (err) => (err?.component?.key || err?.context?.key) === this.component.key);
           }
         }
         this.showValidationErrors(errors, data, row, flags);
@@ -3460,7 +3468,7 @@ export default class Component extends Element {
           this.parent.childErrors.push(...errors);
         }
         else {
-          _.remove(this.parent.childErrors, (err) => err.component.key === this.component.key);
+          _.remove(this.parent.childErrors, (err) => (err?.component?.key || err?.context?.key) === this.component.key);
         }
       }
       return errors.length === 0;
@@ -3870,6 +3878,10 @@ export default class Component extends Element {
 
               // Change states which won't be recalculated during redrawing
               if (this.visible !== visible) {
+                // If the logic is triggered by an event and the action sets the hidden state then the original
+                // component definition must be changed so that the components hidden state does not get flipped back by
+                // the fieldLogic function
+                this.originalComponent.hidden = !visible;
                 this.visible = visible;
               }
               if (this.disabled !== disabled) {
@@ -3934,11 +3946,11 @@ export default class Component extends Element {
     window.scrollTo(left + window.scrollX, top + window.scrollY);
   }
 
-  focus(index = (this.refs.input.length - 1)) {
+  focus(index) {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
-
+    index = index || this.refs.input?.length - 1;
     if (this.refs.input?.length) {
       const focusingInput = this.refs.input[index];
       if (this.component.widget?.type === 'calendar') {

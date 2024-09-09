@@ -34,6 +34,8 @@ import {
   comp22,
   comp23,
   comp24,
+  comp25,
+  comp26
 } from './fixtures';
 
 // eslint-disable-next-line max-statements
@@ -1108,12 +1110,12 @@ describe('Select Component', () => {
     Formio.createForm(element, comp19).then(form => {
       const select = form.components[0];
       select.setValue('banana');
-      select.focusableElement.focus();
+      select.choices.input.element.focus();
       select.pristine = false;
 
       setTimeout(() => {
         assert(!select.visibleErrors.length, 'Select should be valid while changing');
-        select.focusableElement.dispatchEvent(new Event('blur'));
+        select.choices.input.element.dispatchEvent(new Event('blur'));
 
         setTimeout(() => {
           assert(select.visibleErrors.length, 'Should set error after Select component was blurred');
@@ -1152,6 +1154,68 @@ describe('Select Component', () => {
         }, 500);
       }, 200);
     }).catch(done);
+  });
+
+  it('Should perfom simple conditional logic for number data type', (done) => {
+    const form = _.cloneDeep(comp26);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const select = form.getComponent('select');
+      const textfield = form.getComponent('textField');
+      select.setValue('1');
+
+      setTimeout(() => {
+        assert.equal(select.dataValue, 1);
+        assert.equal(textfield.visible, true);
+        select.setValue('2');
+
+        setTimeout(() => {
+          assert.equal(select.dataValue, 2);
+          assert.equal(textfield.visible, true);
+          select.setValue('10');
+
+          setTimeout(() => {
+            assert.equal(select.dataValue, 10);
+            assert.equal(textfield.visible, false);
+            select.setValue('1d');
+
+            setTimeout(() => {
+              assert.equal(select.dataValue, '1d');
+              assert.equal(textfield.visible, false);
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch(done);
+  });
+
+  it('Should open edit grid modal when clicking on validation link when editing a submission', (done) => {
+    Formio.createForm(document.createElement('div'), comp25, {}).then((form) => {
+      form.submission = {
+        "data": {
+          "editGrid": [
+            {
+              "notselect": "",
+              "textField": ""
+            }
+          ],
+          "draft": true,
+          "submit": false
+        },
+        "state": "draft",
+      };
+      const buttonComponent = form.getComponent('submit');
+      buttonComponent.refs.button.click();
+      setTimeout(() => {
+        form.refs.errorRef[0].click();
+        setTimeout(() => {
+          assert(document.querySelector('body').classList.contains('modal-open'), 'modal should be open');
+          done();
+        }, 200);
+      }, 200);
+    });
   });
 
   // it('should reset input value when called with empty value', () => {

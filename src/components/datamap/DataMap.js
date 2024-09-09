@@ -3,7 +3,7 @@ import DataGridComponent from '../datagrid/DataGrid';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter3';
 import { componentValueTypes, getComponentSavedTypes, uniqueKey } from '../../utils/utils';
-import { Components } from '../Components';
+import Components from '../Components';
 
 export default class DataMapComponent extends DataGridComponent {
   static schema(...extend) {
@@ -275,7 +275,7 @@ export default class DataMapComponent extends DataGridComponent {
       delete dataValue[key];
       const comp = components[this.valueKey];
       comp.component.key = newKey;
-      comp.path = Components.calculateComponentPath(comp);
+      comp.path = Components.getComponentPath(comp);
       key = newKey;
     });
 

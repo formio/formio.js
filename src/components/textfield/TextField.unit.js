@@ -808,8 +808,7 @@ describe('TextField Component', () => {
 
     const testMask = async (mask, valid) => {
       const values = valid ? mask.valueValid : mask.valueInvalid;
-      for (let i = 0; i < values.length; i++) {
-        const value = values[i];
+      for (const value of values) {
         const element = document.createElement('div');
         const instance = await Formio.createForm(element, form);
         instance.setPristine(false);
@@ -838,8 +837,7 @@ describe('TextField Component', () => {
       }
     };
 
-    for (let i = 0; i < masks.length; i++) {
-      const mask = masks[i];
+    for (const mask of masks) {
       await testMask(mask, true);
       await testMask(mask, false);
     }
@@ -1464,5 +1462,56 @@ describe('TextField Component', () => {
         done();
       }, 300);
     }).catch(done);
+  });
+
+  describe('TextFields with `multiple` attribute', () => {
+    it('Should normalize the dataValue to an array when a field is marked as multiple', (done) => {
+      const element = document.createElement('div');
+
+      Formio.createForm(element, {
+        components: [
+          {
+            label: 'Text Field',
+            applyMaskOn: 'change',
+            tableView: true,
+            validateWhenHidden: false,
+            key: 'textField',
+            type: 'textfield',
+            input: true,
+            multiple: true
+          }
+        ]
+      }).then((form) => {
+        const textField = form.getComponent('textField');
+        textField.setValue('hello, world');
+        assert.deepEqual(textField.dataValue, ['hello, world']);
+        assert.deepEqual(form.data.textField, ['hello, world']);
+        done();
+      }).catch(done);
+    });
+
+    it('Should normalize the dataValue to a string when a field is not marked as multiple', (done) => {
+      const element = document.createElement('div');
+
+      Formio.createForm(element, {
+        components: [
+          {
+            label: 'Text Field',
+            applyMaskOn: 'change',
+            tableView: true,
+            validateWhenHidden: false,
+            key: 'textField',
+            type: 'textfield',
+            input: true
+          }
+        ]
+      }).then((form) => {
+        const textField = form.getComponent('textField');
+        textField.setValue(['hello, world']);
+        assert.deepEqual(textField.dataValue, 'hello, world');
+        assert.deepEqual(form.data.textField, 'hello, world');
+        done();
+      }).catch(done);
+    })
   });
 });

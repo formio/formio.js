@@ -2,13 +2,42 @@ import Field from '../field/Field';
 import _ from 'lodash';
 
 export default class Multivalue extends Field {
-  get dataValue() {
-    const parent = super.dataValue;
+  /**
+   * Normalize values coming into updateValue.
+   * @param {*} value - The value to normalize before setting.
+   * @param {Object} flags - Flags to use when normalizing the value.
+   * @param {*} emptyValue - The empty value for the field.
+   * @returns {*} - The normalized value.
+   */
+  normalizeValue(value, flags = {}, emptyValue = this.emptyValue) {
+    if (this.component.multiple) {
+      if (Array.isArray(value)) {
+        if (value.length === 0) {
+          return [emptyValue];
+        }
 
-    if (!parent && this.component.multiple) {
-      return [];
+        if (this.component.storeas === 'array') {
+          return super.normalizeValue([value], flags);
+        }
+
+        return super.normalizeValue(value, flags);
+      } else {
+        return super.normalizeValue(value == null ? [emptyValue] : [value], flags);
+      }
+    } else {
+      if (Array.isArray(value) && !Array.isArray(emptyValue)) {
+        if (this.component.storeas === 'string') {
+          return super.normalizeValue(value.join(this.delimiter || ''), flags);
+        }
+        return super.normalizeValue(value[0] || emptyValue, flags);
+      } else {
+        return super.normalizeValue(value, flags);
+      }
     }
-    return parent;
+  }
+
+  get dataValue() {
+    return this.normalizeValue(super.dataValue);
   }
 
   set dataValue(value) {
@@ -17,7 +46,6 @@ export default class Multivalue extends Field {
 
   get defaultValue() {
     let value = super.defaultValue;
-
     if (this.component.multiple) {
       if (_.isArray(value)) {
         value = !value.length ? [super.emptyValue] : value;
@@ -26,7 +54,6 @@ export default class Multivalue extends Field {
         value = [value];
       }
     }
-
     return value;
   }
 
@@ -34,37 +61,26 @@ export default class Multivalue extends Field {
     return this.t(this.component.addAnother || 'Add Another');
   }
 
-  useWrapper() {
-    return this.component.hasOwnProperty('multiple') && this.component.multiple;
-  }
-
   /**
    * @returns {Field} - The created field.
    */
   render() {
-    // If single value field.
-    if (!this.useWrapper()) {
-      return super.render(
-        `<div ${this._referenceAttributeName}="element">
-          ${this.renderElement(
-            this.component.type !== 'hidden' ? this.dataValue : ''
-          )}
-        </div>`
-      );
-    }
-
-    // Make sure dataValue is in the correct array format.
-    let dataValue = this.dataValue;
-    if (!Array.isArray(dataValue)) {
-      dataValue = dataValue ? [dataValue] : [];
-    }
-
-    // If multiple value field.
-    return super.render(this.renderTemplate('multiValueTable', {
-      rows: dataValue.map(this.renderRow.bind(this)).join(''),
-      disabled: this.disabled,
-      addAnother: this.addAnother,
-    }));
+    let dataValue = this.normalizeValue(this.dataValue);
+    return this.component.hasOwnProperty('multiple') && this.component.multiple
+      ? super.render(
+          this.renderTemplate('multiValueTable', {
+            rows: dataValue.map(this.renderRow.bind(this)).join(''),
+            disabled: this.disabled,
+            addAnother: this.addAnother,
+          })
+        )
+      : super.render(
+          `<div ${this._referenceAttributeName}="element">
+            ${this.renderElement(
+              this.component.type !== 'hidden' ? dataValue : ''
+            )}
+          </div>`
+        );
   }
 
   renderElement() {
@@ -275,10 +291,17 @@ export default class Multivalue extends Field {
 
   /**
    * @param {any} input - The input element on which the mask is to be applied.
-   * @param {string} mask - The mask pattern to apply to the input element. Exit early if no mask.
+   * @param {string} mask - The mask pattern to apply to the input element. Exit early and remove previous mask if no mask.
    */
   updateMask(input, mask) {
     if (!mask) {
+      if (input.mask) {
+        input.mask.destroy();
+      }
+      if (!this.component.placeholder) {
+        input.removeAttribute('placeholder');
+      }
+      input.value = '';
       return;
     }
     this.setInputMask(input, mask, !this.component.placeholder);
