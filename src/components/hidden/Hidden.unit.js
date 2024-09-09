@@ -2,6 +2,7 @@
 
 import Harness from '../../../test/harness';
 import HiddenComponent from './Hidden';
+import assert from 'power-assert';
 
 import {
   comp1
