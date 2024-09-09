@@ -1,12 +1,12 @@
-import Harness from '../../../test/harness';
-import PhoneNumberComponent from './PhoneNumber';
+import Harness from '../harness';
+import PhoneNumberComponent from '../../src/components/phonenumber/PhoneNumber';
 import assert from 'power-assert';
-import { Formio } from './../../Formio';
+import { Formio } from '../../src/Formio';
 
 import {
   comp1,
   comp2
-} from './fixtures';
+} from './fixtures/phonenumber';
 
 describe('PhoneNumber Component', () => {
   it('Should build a phone number component', () => {

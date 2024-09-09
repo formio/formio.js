@@ -1,6 +1,6 @@
-import Webform from '../../Webform';
-import Harness from '../../../test/harness';
-import HTMLComponent from './HTML';
+import Webform from '../../src/Webform';
+import Harness from '../harness';
+import HTMLComponent from '../../src/components/html/HTML';
 import sinon from 'sinon';
 import assert from 'power-assert';
 
@@ -8,7 +8,7 @@ import {
   comp1,
   comp2,
   comp3,
-} from './fixtures';
+} from './fixtures/html';
 
 describe('HTML Component', () => {
   it('Should build an html component', () => {

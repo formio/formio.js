@@ -1,13 +1,13 @@
-import Harness from '../../../test/harness';
-import PasswordComponent from './Password';
-import { Formio } from './../../Formio';
+import Harness from '../harness';
+import PasswordComponent from '../../src/components/password/Password';
+import { Formio } from '../../src/Formio';
 import assert from 'power-assert';
 import _ from 'lodash';
 
 import {
   comp1,
   comp2
-} from './fixtures';
+} from './fixtures/password';
 
 describe('Password Component', () => {
   it('Should build a password component', () => {

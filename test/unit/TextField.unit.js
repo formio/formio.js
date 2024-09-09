@@ -1,8 +1,8 @@
 import assert from 'power-assert';
 import _ from 'lodash';
-import Harness from '../../../test/harness';
-import TextFieldComponent from './TextField';
-import { Formio } from './../../Formio';
+import Harness from '../harness';
+import TextFieldComponent from '../../src/components/textfield/TextField';
+import { Formio } from '../../src/Formio';
 import 'flatpickr';
 
 import {
@@ -13,7 +13,7 @@ import {
   comp6,
   withDisplayAndInputMasks,
   comp7,
-} from './fixtures';
+} from './fixtures/textfield';
 
 describe('TextField Component', () => {
   it('Should create a new TextField', () => {

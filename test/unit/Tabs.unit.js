@@ -1,6 +1,6 @@
 import assert from 'power-assert';
-import { Formio } from '../../formio.form';
-import { comp1 } from './fixtures';
+import { Formio } from '../../src/formio.form';
+import { comp1 } from './fixtures/tabs';
 
 describe('Tabs Component', () => {
   it('Test setting error classes when set to modalEdit', (done) => {

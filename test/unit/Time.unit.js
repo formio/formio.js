@@ -1,6 +1,6 @@
-import Harness from '../../../test/harness';
+import Harness from '../harness';
 import assert from 'power-assert';
-import TimeComponent from './Time';
+import TimeComponent from '../../src/components/time/Time';
 import {
   comp1,
   comp2,
@@ -8,8 +8,8 @@ import {
   comp4,
   timeForm2,
   timeForm,
-} from './fixtures';
-import Webform from '../../Webform';
+} from './fixtures/time';
+import Webform from '../../src/Webform';
 
 describe('Time Component', () => {
   it('Should build a time component', () => {

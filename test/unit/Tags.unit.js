@@ -1,7 +1,7 @@
-import Harness from '../../../test/harness';
-import TagsComponent from './Tags';
+import Harness from '../harness';
+import TagsComponent from '../../src/components/tags/Tags';
 import assert from 'power-assert';
-import modalTagsComponent from '../../../test/formtest/modalTagsComponent';
+import modalTagsComponent from '../formtest/modalTagsComponent.json';
 import _ from 'lodash';
 
 import {
@@ -11,8 +11,8 @@ import {
   comp4,
   comp5,
   comp6,
-} from './fixtures';
-import { Formio } from '../../Formio';
+} from './fixtures/tags';
+import { Formio } from '../../src/Formio';
 
 describe('Tags Component', function() {
   it('Should build a tags component', function() {

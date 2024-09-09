@@ -1,9 +1,9 @@
-import Harness from '../../../test/harness';
-import HiddenComponent from './Hidden';
+import Harness from '../harness';
+import HiddenComponent from '../../src/components/hidden/Hidden';
 
 import {
   comp1
-} from './fixtures';
+} from './fixtures/hidden';
 
 describe('Hidden Component', () => {
   it('Should build a hidden component', () => {

@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { fastCloneDeep } from '../../utils/utils';
-import Harness from '../../../test/harness';
-import FormComponent from './Form';
+import { fastCloneDeep } from '../../src/utils/utils.js';
+import Harness from '../harness.js';
+import FormComponent from '../../src/components/form/Form.js';
 import { expect } from 'chai';
 import assert from 'power-assert';
 
@@ -14,11 +14,11 @@ import {
   comp7,
   comp8,
   nestedWizardForm,
-} from './fixtures';
-import Webform from '../../Webform';
-import { Formio } from '../../formio.form.js';
-import formModalEdit from './fixtures/formModalEdit';
-import { formComponentWithConditionalRenderingForm } from '../../../test/formtest';
+} from './fixtures/form';
+import Webform from '../../src/Webform.js';
+import { Formio } from '../../src/formio.form.js';
+import formModalEdit from './fixtures/form/formModalEdit.js';
+import { formComponentWithConditionalRenderingForm } from '../formtest/index.js';
 
 describe('Form Component', () => {
   it('Should build a form component', () => {

@@ -1,8 +1,8 @@
 import assert from 'power-assert';
-import Harness from '../../../test/harness';
-import FileComponent from './File';
-import { comp1, comp2 } from './fixtures';
-import { Formio } from './../../Formio';
+import Harness from '../harness';
+import FileComponent from '../../src/components/file/File';
+import { comp1, comp2 } from './fixtures/file';
+import { Formio } from '../../src/Formio';
 import _ from 'lodash';
 
 describe('File Component', () => {

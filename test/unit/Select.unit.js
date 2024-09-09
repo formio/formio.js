@@ -2,10 +2,10 @@
 import assert from 'power-assert';
 import cloneDeep from 'lodash/cloneDeep';
 import sinon from 'sinon';
-import Harness from '../../../test/harness';
-import SelectComponent from './Select';
+import Harness from '../harness';
+import SelectComponent from '../../src/components/select/Select';
 import { expect } from 'chai';
-import { Formio } from './../../Formio';
+import { Formio } from '../../src/Formio';
 import _ from 'lodash';
 
 import {
@@ -36,7 +36,7 @@ import {
   comp24,
   comp25,
   comp26
-} from './fixtures';
+} from './fixtures/select';
 
 // eslint-disable-next-line max-statements
 describe('Select Component', () => {

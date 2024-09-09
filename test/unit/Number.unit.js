@@ -1,9 +1,9 @@
 import assert from 'power-assert';
 import _ from 'lodash';
 import _merge from 'lodash/merge';
-import Harness from '../../../test/harness';
-import { Formio } from './../../Formio';
-import NumberComponent from './Number';
+import Harness from '../harness';
+import { Formio } from '../../src/Formio';
+import NumberComponent from '../../src/components/number/Number';
 
 import {
   comp1,
@@ -16,8 +16,8 @@ import {
   comp8,
   comp9,
   comp10
-} from './fixtures';
-import CurrencyComponent from "../currency/Currency";
+} from './fixtures/number';
+import CurrencyComponent from "../../src/components/currency/Currency";
 
 describe('Number Component', () => {
   it('Should build an number component', () => {

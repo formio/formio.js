@@ -1,8 +1,8 @@
-import UnknownComponent from './Unknown';
+import UnknownComponent from '../../src/components/unknown/Unknown';
 
 import {
   comp1
-} from './fixtures';
+} from './fixtures/unknown';
 
 describe('Custom Component', () => {
   it('Should build a Custom component in builder mode', (done) => {

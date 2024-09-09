@@ -1,9 +1,9 @@
-import Harness from '../../../test/harness';
-import TableComponent from './Table';
+import Harness from '../harness';
+import TableComponent from '../../src/components/table/Table';
 
 import {
   comp1
-} from './fixtures';
+} from './fixtures/table';
 
 describe('Table Component', () => {
   it('Should build a Table component', () => {

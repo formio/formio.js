@@ -18,6 +18,7 @@ import {
   comp11,
   comp12,
   comp13,
+  comp14
 } from './fixtures/datetime';
 
 describe('DateTime Component', () => {

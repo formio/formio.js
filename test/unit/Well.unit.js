@@ -1,9 +1,9 @@
-import Harness from '../../../test/harness';
-import WellComponent from './Well';
+import Harness from '../harness';
+import WellComponent from '../../src/components/well/Well';
 
 import {
   comp1
-} from './fixtures';
+} from './fixtures/well';
 import { expect } from 'chai';
 
 describe('Well Component', () => {

@@ -1,12 +1,12 @@
 import assert from 'power-assert';
 
-import Harness from '../../../test/harness';
-import SurveyComponent from './Survey';
+import Harness from '../harness';
+import SurveyComponent from '../../src/components/survey/Survey';
 
 import {
   comp1,
   comp2
-} from './fixtures';
+} from './fixtures/survey';
 
 describe('Survey Component', () => {
   it('Should build a survey component', () => {

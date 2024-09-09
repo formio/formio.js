@@ -1,9 +1,9 @@
-import Harness from '../../../test/harness';
-import FieldsetComponent from './Fieldset';
+import Harness from '../harness';
+import FieldsetComponent from '../../src/components/fieldset/Fieldset';
 
 import {
   comp1
-} from './fixtures';
+} from './fixtures/fieldset';
 
 describe('Fieldset Component', () => {
   it('Should build a fieldset component', () => {

@@ -1,8 +1,8 @@
 import assert from 'power-assert';
-import Harness from '../../../test/harness';
+import Harness from '../harness';
 import _ from 'lodash';
-import SelectBoxesComponent from './SelectBoxes';
-import { Formio } from './../../Formio';
+import SelectBoxesComponent from '../../src/components/selectboxes/SelectBoxes';
+import { Formio } from '../../src/Formio';
 
 import {
   comp1,
@@ -11,9 +11,9 @@ import {
   comp5,
   comp6,
   comp7
-} from './fixtures';
-import wizardWithSelectBoxes from '../../../test/forms/wizardWithSelectBoxes';
-import {comp12} from "../radio/fixtures";
+} from './fixtures/selectboxes';
+import wizardWithSelectBoxes from '../forms/wizardWithSelectBoxes';
+import {comp12} from './fixtures/radio';
 
 describe('SelectBoxes Component', () => {
   it('Should build a SelectBoxes component', () => {

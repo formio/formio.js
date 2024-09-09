@@ -1,8 +1,8 @@
 import assert from 'power-assert';
-import { Formio } from './../../Formio';
+import { Formio } from '../../src/Formio';
 import _ from 'lodash';
-import Harness from '../../../test/harness';
-import RadioComponent from './Radio';
+import Harness from '../harness';
+import RadioComponent from '../../src/components/radio/Radio';
 
 import {
   comp1,
@@ -16,7 +16,7 @@ import {
   comp9,
   comp10,
   comp11
-} from './fixtures';
+} from './fixtures/radio';
 
 describe('Radio Component', () => {
   it('Should build a radio component', () => {

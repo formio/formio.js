@@ -1,13 +1,13 @@
 import assert from 'power-assert';
-import Harness from '../../../test/harness';
-import { flattenComponents } from '../../utils/formUtils';
-import PanelComponent from './Panel';
-import panelEditForm from './Panel.form';
-import { Formio } from '../../Formio';
+import Harness from '../harness';
+import { flattenComponents } from '../../src/utils/formUtils';
+import PanelComponent from '../../src/components/panel/Panel';
+import panelEditForm from '../../src/components/panel/Panel.form';
+import { Formio } from '../../src/Formio';
 import {
   comp1,
   comp2
-} from './fixtures';
+} from './fixtures/panel';
 
 describe('Panel Component', () => {
   it('Should build a panel component', () => {

@@ -1,37 +1,42 @@
-import Harness from '../../../test/harness';
-import EmailComponent from './Email';
-import { Formio } from './../../Formio';
+import Harness from '../harness';
+import UrlComponent from '../../src/components/url/Url';
+import { Formio } from '../../src/Formio';
 import assert from 'power-assert';
 import _ from 'lodash';
 
 import {
   comp1,
   comp2
-} from './fixtures';
+} from './fixtures/url';
 
-describe('Email Component', () => {
-  it('Should build a email component', () => {
-    return Harness.testCreate(EmailComponent, comp1);
+describe('Url Component', () => {
+  it('Should build a url component', (done) => {
+    Harness.testCreate(UrlComponent, comp1).then(() => {
+      done();
+    });
   });
 
   it('Should provide min/max length validation', (done) => {
     const form = _.cloneDeep(comp2);
-    form.components[0].validate = { minLength: 7, maxLength: 10 };
+    form.components[0].validate = { minLength: 6, maxLength: 10 };
 
     const validValues = [
       '',
-      'test@te.st',
-      't__t@t.st',
-      '_t@test.st'
+      'www.hhh.by',
+      'uuu.by',
+      'TE2-t.est',
+      'te2-t.est'
     ];
 
     const invalidMin = [
-      't@t.st',
+      'hh.jj',
+      'w.by'
     ];
 
     const invalidMax = [
-      't@test.test',
-      'test@test.test',
+      'Test-t.Test',
+      'test.test.test',
+      't-t-t-t-t.tt'
     ];
 
     const testValidity = (values, valid, message, lastValue) => {
@@ -41,7 +46,7 @@ describe('Email Component', () => {
         Formio.createForm(element, form).then(form => {
           form.setPristine(false);
 
-          const component = form.getComponent('email');
+          const component = form.getComponent('url');
           const changed = component.setValue(value);
           const error = message;
 
@@ -54,7 +59,7 @@ describe('Email Component', () => {
               assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert(component.errors.length > 0, 'Should contain error');
+              assert.equal(component.errors.length, 1, 'Should contain error');
               assert.equal(component.errors[0].message, error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
@@ -69,26 +74,25 @@ describe('Email Component', () => {
     };
 
     testValidity(validValues, true);
-    testValidity(invalidMin, false, 'Email must have at least 7 characters.');
-    testValidity(invalidMax, false, 'Email must have no more than 10 characters.', invalidMax[invalidMax.length-1]);
+    testValidity(invalidMin, false, 'Url must have at least 6 characters.');
+    testValidity(invalidMax, false, 'Url must have no more than 10 characters.', invalidMax[invalidMax.length-1]);
   });
 
   it('Should provide pattern validation', (done) => {
     const form = _.cloneDeep(comp2);
-    form.components[0].validate = { pattern: '^[0-9]+@[0-9]+\\.[a-z]{2,4}$' };
+    form.components[0].validate = { pattern: '^(https?):\\/\\/(-\\.)?([^\\s\\/?\\.#-]+\\.?)+(\\/[^\\s]*)?$' };
 
     const validValues = [
-      '000@12.ts',
-      '123456@1234.com',
-      '123456@1234.come',
+      'https://someTest.com',
+      'http://test.com',
+      'http://userid@example.com:8080',
       ''
     ];
 
     const invalidValues = [
-      '123_456@1234.com',
-      '123456@12.34.com',
-      'test@123.com',
-      '00000@123t.com'
+      'www.test.com',
+      'test.hh',
+      'http://at--er.b.co'
     ];
 
     const testValidity = (values, valid, message, lastValue) => {
@@ -98,7 +102,7 @@ describe('Email Component', () => {
         Formio.createForm(element, form).then(form => {
           form.setPristine(false);
 
-          const component = form.getComponent('email');
+          const component = form.getComponent('url');
           const changed = component.setValue(value);
           const error = message;
 
@@ -111,7 +115,7 @@ describe('Email Component', () => {
               assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert(component.errors.length > 0, 'Should contain error');
+              assert.equal(component.errors.length, 1, 'Should contain error');
               assert.equal(component.errors[0].message.trim(), error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
@@ -128,48 +132,54 @@ describe('Email Component', () => {
     testValidity(validValues, true);
     testValidity(invalidValues,
       false,
-      'Email does not match the pattern ^[0-9]+@[0-9]+\\.[a-z]{2,4}$',
+      'Url does not match the pattern ^(https?):\\/\\/(-\\.)?([^\\s\\/?\\.#-]+\\.?)+(\\/[^\\s]*)?$',
       invalidValues[invalidValues.length-1]
     );
   });
 
-  it('Should provide email validation', (done) => {
+  it('Should provide url validation', (done) => {
     const form = _.cloneDeep(comp2);
 
     const validValues = [
       '',
-      'test_test@test.test',
-      '123456@1234.test',
-      'TEST@TEST.test',
-      'te.st_te%st@test.com',
-      'te/st___te%st@test.com',
-      '"John..Doe"@example.com',
-      'test-test@test.com',
-      'test-test@te-st.com',
-      '0-0-0-0-0@12-3-t.com'
+      'www.test.test',
+      'https://www.test.test',
+      'http://www.test.test',
+      'email://test1111@test.to',
+      'email://t-e-s-t@te-st.to',
+      'te.S-T.test',
+      'www.1111111.test'
     ];
 
     const invalidValues = [
-      'te.st_te%st@test.123',
       '      ',
-      'test.test',
-      'test-te st@test.com',
-      '   test_test@test.test',
-      '.test_te%st@test.com',
-      'te/st___t,e%st@test.com',
-      'te[st]t@test.com',
-      'test@test.com     ',
-      'test@',
-      'test@test',
-      'test@test.',
-      '@test.com',
-      'test@.com',
-      '00000@123t.m',
-      '00000@123t.m-com',
-      'test(test)@mail.com',
-      'John..Doe@example.com',
-      'john.smith(comment)@example.com',
-      'test-test.@test.com'
+      'e.S-T.test.',
+      'someText',
+      '.www.test.to',
+      'htthhhhhps://www.test.test',
+      '://www.test.test',
+      '    www.test.test',
+      'www.test.test  ',
+      'www.te st.test',
+      'www.1111111.33',
+      'www.rrrrrr.66h',
+      'email://test111test.to',
+      'http://',
+      'http://.',
+      'http://..',
+      'http://../',
+      'http://?',
+      'http://??',
+      'http://??/',
+      'http://#',
+      'http://##',
+      'http://##/',
+      'http://foo.bar?q=Spaces should be encoded',
+      '//',
+      '//a',
+      '///a',
+      '///',
+      'http:///a'
     ];
 
     const testValidity = (values, valid, message, lastValue) => {
@@ -179,7 +189,7 @@ describe('Email Component', () => {
         Formio.createForm(element, form).then(form => {
           form.setPristine(false);
 
-          const component = form.getComponent('email');
+          const component = form.getComponent('url');
           const changed = component.setValue(value);
           const error = message;
 
@@ -192,7 +202,7 @@ describe('Email Component', () => {
               assert.equal(component.errors.length, 0, 'Should not contain error');
             }
             else {
-              assert(component.errors.length > 0, 'Should contain error');
+              assert.equal(component.errors.length, 1, 'Should contain error');
               assert.equal(component.errors[0].message.trim(), error, 'Should contain error message');
               assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
               assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
@@ -209,7 +219,7 @@ describe('Email Component', () => {
     testValidity(validValues, true);
     testValidity(invalidValues,
       false,
-      'Email must be a valid email.',
+      'Url must be a valid url.',
       invalidValues[invalidValues.length-1]
     );
   });

@@ -2,12 +2,12 @@ import { expect } from 'chai';
 import _ from 'lodash';
 import assert from 'power-assert';
 import sinon from 'sinon';
-import formWithCKEditor from '../../../test/forms/formWithCKEditor';
-import formWithRichTextAreas from '../../../test/forms/formWithRichTextAreas';
-import Harness from '../../../test/harness';
-import { Formio } from './../../Formio';
-import { comp1, comp2, comp3, comp4 } from './fixtures';
-import TextAreaComponent from './TextArea';
+import formWithCKEditor from '../forms/formWithCKEditor';
+import formWithRichTextAreas from '../forms/formWithRichTextAreas';
+import Harness from '../harness';
+import { Formio } from '../../src/Formio';
+import { comp1, comp2, comp3, comp4 } from './fixtures/textarea';
+import TextAreaComponent from '../../src/components/textarea/TextArea';
 window.ace = require('ace-builds');
 
 describe('TextArea Component', () => {

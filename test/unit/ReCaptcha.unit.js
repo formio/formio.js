@@ -1,8 +1,8 @@
-import ReCaptchaComponent from './ReCaptcha';
+import ReCaptchaComponent from '../../src/components/recaptcha/ReCaptcha';
 
 import {
   comp1
-} from './fixtures';
+} from './fixtures/recaptcha';
 
 describe('reCAPTCHA Component', () => {
   it('Should build a reCAPTCHA component in builder mode', (done) => {
