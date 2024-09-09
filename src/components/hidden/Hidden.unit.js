@@ -1,4 +1,4 @@
-const assert = require('power-assert');
+
 
 import Harness from '../../../test/harness';
 import HiddenComponent from './Hidden';
