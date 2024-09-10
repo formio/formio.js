@@ -1,23 +1,26 @@
 import Field from '../field/Field';
 import _ from 'lodash';
+import { Utils } from '@formio/core';
 
 export default class Multivalue extends Field {
   /**
    * Normalize values coming into updateValue.
    * @param {*} value - The value to normalize before setting.
-   * @param {Object} flags - Flags to use when normalizing the value.
+   * @param {object} flags - Flags to use when normalizing the value.
    * @param {*} emptyValue - The empty value for the field.
    * @returns {*} - The normalized value.
    */
   normalizeValue(value, flags = {}, emptyValue = this.emptyValue) {
+    const underlyingValueShouldBeArray = Utils.getModelType(this.component) === 'array' || this.component.storeas === 'array' || Array.isArray(emptyValue);
     if (this.component.multiple) {
       if (Array.isArray(value)) {
+        if (underlyingValueShouldBeArray) {
+          if (value.length === 0 || !Array.isArray(value[0])) {
+            return [value];
+          }
+        }
         if (value.length === 0) {
           return [emptyValue];
-        }
-
-        if (this.component.storeas === 'array') {
-          return super.normalizeValue([value], flags);
         }
 
         return super.normalizeValue(value, flags);
@@ -25,7 +28,7 @@ export default class Multivalue extends Field {
         return super.normalizeValue(value == null ? [emptyValue] : [value], flags);
       }
     } else {
-      if (Array.isArray(value) && !Array.isArray(emptyValue)) {
+      if (Array.isArray(value) && !underlyingValueShouldBeArray) {
         if (this.component.storeas === 'string') {
           return super.normalizeValue(value.join(this.delimiter || ''), flags);
         }

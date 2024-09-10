@@ -673,7 +673,7 @@ export default class DayComponent extends Field {
 
   isPartialDay(value) {
     if (!value) {
-      return false;
+      return true;
     }
     const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const values = value.split('/');
