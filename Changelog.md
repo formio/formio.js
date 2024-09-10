@@ -67,6 +67,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8423: change default parent tag from p to div
  - FIO-8375: allow date time to have manual input
  - FIO-8912: fix normalization in submission
+ - FIO-8912: updated to model types
+ - FIO-8972: fixed display of select componet with custom dataSrc on Data Tab
+ - FIO-8954: fixed previously selected option is displayed in metadata with data source = url
+ - FIO-8986: fixed setting up of default value with hidden fields
 
 ### New Features
 

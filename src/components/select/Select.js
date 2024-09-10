@@ -1704,6 +1704,9 @@ export default class SelectComponent extends ListComponent {
       case 'custom':
         rawItems = this.getCustomItems();
         break;
+      case 'url':
+        rawItems = this.selectItems;
+        break;
     }
 
     if (typeof rawItems === 'string') {
@@ -1773,7 +1776,7 @@ export default class SelectComponent extends ListComponent {
         if (Array.isArray(data)) {
           data.forEach((item) => item[valueProperty] = item[valueProperty].toString());
         }
-        else {
+        else if (_.isObject(data)) {
           data[valueProperty] = data[valueProperty].toString();
         }
         return data;
@@ -1817,7 +1820,7 @@ export default class SelectComponent extends ListComponent {
       };
       value = (this.component.multiple && Array.isArray(value))
         ? _.filter(items, (item) => value.includes(item.value))
-        : valueProperty
+        : (valueProperty && items)
           ? getFromValues() ?? { value, label: value }
           : value;
     }

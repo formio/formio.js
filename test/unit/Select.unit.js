@@ -35,7 +35,8 @@ import {
   comp23,
   comp24,
   comp25,
-  comp26
+  comp26,
+  comp27
 } from './fixtures/select';
 
 // eslint-disable-next-line max-statements
@@ -66,6 +67,14 @@ describe('Select Component', () => {
       done();
     });
   });
+
+  it('should return string value if dataSrc set as custom', function(done) {
+    Harness.testCreate(SelectComponent, comp27).then((component) => {
+      const stringValue = component.asString('California');
+      assert.equal(stringValue, 'California');
+      done();
+    });
+  })
 
   it('Should return plain text when csv option is provided', () => {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
