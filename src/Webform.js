@@ -1259,6 +1259,10 @@ export default class Webform extends NestedDataComponent {
             errors = [errors];
         }
 
+        if (Array.isArray(this.errors)) {
+            errors = _.union(errors, this.errors);
+        }
+
         errors = errors.concat(this.customErrors).filter((err) => !!err);
 
         if (!errors.length) {
