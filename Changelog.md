@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.79
+### Changed
+ - Updated @formio/core@2.2.3-rc.1
+ - FIO-8914: fixed an issue where errors list doesnot appear when submitting a PDF form
+ - FIO-8954 previously selected option is displayed in metadata with data source = url
+ - FIO-8920 fixed errors list for the form with nested wizard
+ - FIO-8986 fixed setting up of default value with hidden fields
+ - FIO-8912: fix normalization in submission
+ - Fixed an issue where the 'root' may be the component that does not have a getComponent method
+ - FIO-8972 fixed display of select componet with custom dataSrc on Data Tab
+ - FIO-8912 update to model types
+
 ## 5.0.0-rc.78
 ### Changed
  - FIO-8072: Added conditional operators for select component with number data type

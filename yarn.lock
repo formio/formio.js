@@ -275,21 +275,21 @@
     fuse.js "^6.6.2"
     redux "^4.2.0"
 
-"@formio/core@2.2.2":
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.2.2.tgz#3dd6810ccf32b6f8e2e9d97c4d3a385db0f69f0c"
-  integrity sha512-FyvqUS/UEvsUYKLaCw0TegUGyrk7Cz9vnUYfeK9NDnWObFPZFwYVDFcaJoXTttWrLLlPM6+pv2rTtf0dnhpuCg==
+"@formio/core@2.2.3-rc.1":
+  version "2.2.3-rc.1"
+  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.2.3-rc.1.tgz#d87d743314108159dec1222a6a2c205b34843183"
+  integrity sha512-cx/5YxmU2tMsYedq0DHuJ1eDrh7b0qgesgz7LDDqGOSQG1q05k/gdDis20XPSspjs1RpEAV4XYAjhY/EwAHNmg==
   dependencies:
     "@types/json-logic-js" "^2.0.7"
     browser-cookies "^1.2.0"
-    core-js "^3.38.0"
-    dayjs "^1.11.12"
-    dompurify "^3.1.6"
+    core-js "^3.37.1"
+    dayjs "^1.11.11"
+    dompurify "^3.1.4"
     eventemitter3 "^5.0.0"
     fast-json-patch "^3.1.1"
     fetch-ponyfill "^7.1.0"
-    inputmask "5.0.9"
-    json-logic-js "^2.0.5"
+    inputmask "5.0.8"
+    json-logic-js "^2.0.2"
     lodash "^4.17.21"
     moment "^2.29.4"
 
@@ -1904,11 +1904,6 @@ core-js@^3.0.0, core-js@^3.30.2, core-js@^3.37.1:
   resolved "https://registry.npmjs.org/core-js/-/core-js-3.37.1.tgz#d21751ddb756518ac5a00e4d66499df981a62db9"
   integrity sha512-Xn6qmxrQZyB0FFY8E3bgRXei3lWDJHhvI+u0q9TKIYM49G8pAr0FgnnrFRAmsbptZL1yxRADVXn+x5AGsbBfyw==
 
-core-js@^3.38.0:
-  version "3.38.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.38.1.tgz#aa375b79a286a670388a1a363363d53677c0383e"
-  integrity sha512-OP35aUorbU3Zvlx7pjsFdu1rGNnD4pgw/CWoYzRY3t2EzoVT7shKHY1dlAy3f41cGIO7ZDPQimhGFTlEYkG/Hw==
-
 core-util-is@1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -2053,7 +2048,7 @@ date-format@^4.0.14:
   resolved "https://registry.npmjs.org/date-format/-/date-format-4.0.14.tgz#7a8e584434fb169a521c8b7aa481f355810d9400"
   integrity sha512-39BOQLs9ZjKh0/patS9nrT8wc3ioX3/eA/zgbKNopnF2wCqJEoxywwwElATYvRsXdnOxA/OQeQoFZ3rFjVajhg==
 
-dayjs@^1.11.12:
+dayjs@^1.11.11:
   version "1.11.13"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.13.tgz#92430b0139055c3ebb60150aa13e860a4b5a366c"
   integrity sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==
@@ -2299,7 +2294,7 @@ domexception@^4.0.0:
   dependencies:
     webidl-conversions "^7.0.0"
 
-dompurify@^3.1.6:
+dompurify@^3.1.3, dompurify@^3.1.4:
   version "3.1.6"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.1.6.tgz#43c714a94c6a7b8801850f82e756685300a027e2"
   integrity sha512-cTOAhc36AalkjtBpfG6O8JimdTMWNXjiePT2xQH/ppBGi/4uIpmj8eKyIkMJErXWARyINV/sB38yf8JCLF5pbQ==
@@ -3974,7 +3969,12 @@ ini@^1.3.4:
   resolved "https://registry.npmjs.org/ini/-/ini-1.3.8.tgz#a29da425b48806f34767a4efce397269af28432c"
   integrity sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==
 
-inputmask@5.0.9, inputmask@^5.0.8:
+inputmask@5.0.8:
+  version "5.0.8"
+  resolved "https://registry.yarnpkg.com/inputmask/-/inputmask-5.0.8.tgz#cd0f70b058c3291a0d4f27de25dbfc179c998bb4"
+  integrity sha512-1WcbyudPTXP1B28ozWWyFa6QRIUG4KiLoyR6LFHlpT4OfTzRqFfWgHFadNvRuMN1S9XNVz9CdNvCGjJi+uAMqQ==
+
+inputmask@^5.0.8:
   version "5.0.9"
   resolved "https://registry.yarnpkg.com/inputmask/-/inputmask-5.0.9.tgz#7bf4e83f5e199c88c0edf28545dc23fa208ef4be"
   integrity sha512-s0lUfqcEbel+EQXtehXqwCJGShutgieOaIImFKC/r4reYNvX3foyrChl6LOEvaEgxEbesePIrw1Zi2jhZaDZbQ==
@@ -4548,7 +4548,7 @@ json-buffer@3.0.1:
   resolved "https://registry.npmjs.org/json-buffer/-/json-buffer-3.0.1.tgz#9338802a30d3b6605fbe0613e094008ca8c05a13"
   integrity sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==
 
-json-logic-js@^2.0.5:
+json-logic-js@^2.0.2:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/json-logic-js/-/json-logic-js-2.0.5.tgz#55f0c687dd6f56b02ccdcfdd64171ed998ab5499"
   integrity sha512-rTT2+lqcuUmj4DgWfmzupZqQDA64AdmYqizzMPWj3DxGdfFNsxPpcNVSaTj4l8W2tG/+hg7/mQhxjU3aPacO6g==
