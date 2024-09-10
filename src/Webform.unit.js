@@ -80,6 +80,8 @@ import formWithNotAllowedTags from '../test/forms/formWithNotAllowedTags';
 import formWithValidateWhenHidden from '../test/forms/formWithValidateWhenHidden';
 import formWithEditGrid from '../test/forms/formWithEditGrid';
 import formWithSelectRadioUrlDataSource from '../test/forms/selectRadioUrlDataSource';
+import wizardWithRequiredFields from '../test/forms/wizardWithRequiredFields';
+import webformWithNestedWizard from '../test/forms/webformWIthNestedWizard';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
 if (_.has(Formio, 'Components.setComponents')) {
@@ -2391,6 +2393,34 @@ describe('Webform tests', function() {
         done();
       }, 250);
     }).catch(done);
+  });
+
+  it('Should display Errors list for the Form with Nested Wizard Form correctly', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    const nestedWizard = _.cloneDeep(wizardWithRequiredFields);
+
+    form.setForm(webformWithNestedWizard).then(() => {
+      const nestedFormComp = form.getComponent('formNested');
+      const button = form.getComponent('submit');
+      nestedFormComp.loadSubForm = ()=> {
+        nestedFormComp.formObj = nestedWizard;
+        nestedFormComp.subFormLoading = false;
+        return new Promise((resolve) => resolve(nestedWizard));
+      };
+
+      nestedFormComp.createSubForm();
+      setTimeout(() => {
+        button.emit('submitButton');
+        setTimeout(() => {
+          assert(button.refs.button.className.includes('btn-danger submit-fail'));
+          assert.equal(form.errors.length, 4);
+          assert.equal(form.refs.errorRef.length, 4);
+          done();
+        }, 100);
+      },500)
+    })
+    .catch((err) => done(err));
   });
 
   it('Should set calculated value correctly', (done) => {
