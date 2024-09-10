@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default [
   {
     wieght: 200,
@@ -33,6 +35,21 @@ export default [
     label: 'Hidden',
     tooltip: 'Hide the Day part of the component.',
     key: 'fields.day.hide',
+    onChange: ( { data } ) => {
+      if (data.defaultValue) {
+        const defaultValueParts = data.defaultValue.split('/');
+        if (!data.fields.day.hide && defaultValueParts.length !==3) {
+          const newDefaultValue = ['00'];
+          if (!data.fields.month.hide) {
+            data.dayFirst ? newDefaultValue.push(defaultValueParts[0]) : newDefaultValue.unshift(defaultValueParts[0]);
+          }
+          if (!data.fields.year.hide) {
+            newDefaultValue.push(defaultValueParts[1]);
+          }
+          _.set(data, 'defaultValue', newDefaultValue.join('/'));
+        }
+      }
+    },
     input: true
   },
   {

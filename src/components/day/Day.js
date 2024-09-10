@@ -388,21 +388,40 @@ export default class DayComponent extends Field {
     const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const defaultValue = this.component.defaultValue ? this.component.defaultValue.split('/') : '';
 
-    const getNextPart = (shouldTake, defaultValue) =>
-      dateParts.push(shouldTake ? valueParts.shift() : defaultValue);
+    let defaultDay = '';
+    let defaultMonth = '';
+    let defaultYear = '';
+
+    if (defaultValue) {
+      const hasHiddenFields = defaultValue.length !==3;
+      defaultDay = hasHiddenFields ? this.getDayWithHiddenFields(defaultValue).day : defaultValue[DAY];
+      defaultMonth = hasHiddenFields ? this.getDayWithHiddenFields(defaultValue).month : defaultValue[MONTH];
+      defaultYear = hasHiddenFields ? this.getDayWithHiddenFields(defaultValue).year : defaultValue[YEAR];
+    }
+
+    if (this.options.building && defaultValue.length ===3) {
+      return this.component.defaultValue;
+    }
+
+    const getNextPart = (shouldTake, defaultValue) => {
+       // Only push the part if it's not an empty string
+      const part = shouldTake ? valueParts.shift() : defaultValue;
+      if (part !== '') {
+        dateParts.push(part);
+      }
+    };
 
     if (this.dayFirst) {
-      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '00');
+      getNextPart(this.showDay, defaultDay);
     }
 
-    getNextPart(this.showMonth, defaultValue ? defaultValue[MONTH] : '00');
+    getNextPart(this.showMonth, defaultMonth);
 
     if (!this.dayFirst) {
-      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '00');
+      getNextPart(this.showDay, defaultDay);
     }
 
-    getNextPart(this.showYear, defaultValue ? defaultValue[YEAR] : '0000');
-
+    getNextPart(this.showYear, defaultYear);
     return dateParts.join('/');
   }
 
@@ -418,17 +437,24 @@ export default class DayComponent extends Field {
     if (!value || value === 'Invalid date') {
       return null;
     }
+    let day, month, year;
     const parts = value.split('/');
-    let day;
-    if (this.component.dayFirst) {
-      day = parts.shift();
-    }
-    const month = parts.shift();
-    if (!this.component.dayFirst) {
-      day = parts.shift();
-    }
-    const year = parts.shift();
 
+    if (parts.length !== 3) {
+      day = this.getDayWithHiddenFields(parts).day;
+      month = this.getDayWithHiddenFields(parts).month;
+      year = this.getDayWithHiddenFields(parts).year;
+    }
+    else {
+      if (this.component.dayFirst) {
+        day = parts.shift();
+      }
+      month = parts.shift();
+      if (!this.component.dayFirst) {
+        day = parts.shift();
+      }
+      year = parts.shift();
+    }
     if (this.refs.day && this.showDay) {
       this.refs.day.value = day === '00' ? '' : parseInt(day, 10);
     }
@@ -438,6 +464,28 @@ export default class DayComponent extends Field {
     if (this.refs.year && this.showYear) {
       this.refs.year.value = year === '0000' ? '' : parseInt(year, 10);
     }
+  }
+
+  getDayWithHiddenFields(parts) {
+    let [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+    if (!this.showDay) {
+      MONTH = MONTH === 0 ? 0 : MONTH - 1;
+      YEAR = YEAR - 1;
+      DAY = null;
+    }
+    if (!this.showMonth) {
+      DAY = DAY === 0 ? 0 : DAY - 1;
+      YEAR = YEAR - 1;
+      MONTH = null;
+    }
+    if (!this.showYear) {
+      YEAR = null;
+    }
+    return {
+      month: _.isNull(MONTH) ? '' : parts[MONTH],
+      day: _.isNull(DAY) ? '' : parts[DAY],
+      year: _.isNull(YEAR) ? '' : parts[YEAR],
+    };
   }
 
   getFieldValue(name) {

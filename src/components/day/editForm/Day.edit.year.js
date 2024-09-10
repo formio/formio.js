@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default [
   {
     wieght: 200,
@@ -51,6 +53,15 @@ export default [
     label: 'Hidden',
     tooltip: 'Hide the Year part of the component.',
     key: 'fields.year.hide',
+    onChange: ( { data } ) => {
+      if (data.defaultValue) {
+        const defaultValueParts = data.defaultValue.split('/');
+        if (!data.fields.month.hide && defaultValueParts.length !==3) {
+          defaultValueParts.push('0000');
+          _.set(data, 'defaultValue', defaultValueParts.join('/'));
+        }
+      }
+    },
     input: true
   },
 ];
