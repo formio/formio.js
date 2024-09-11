@@ -1789,11 +1789,7 @@ export default class SelectComponent extends ListComponent {
       }
 
       if (Array.isArray(data) && data.some(item => this.isBooleanOrNumber(item))) {
-        data = data.map(item => {
-          if (this.isBooleanOrNumber(item)) {
-            item = item.toString();
-          }
-        });
+        data = data.map(item => this.isBooleanOrNumber(item) ? item.toString() : item);
       }
 
       return data;
