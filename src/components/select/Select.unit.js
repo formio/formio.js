@@ -60,10 +60,12 @@ describe('Select Component', () => {
       const stringValue1 = component.asString(11);
       const stringValue2 = component.asString('test');
       const stringValue3 = component.asString(12);
+      const stringValue4 = component.asString([1, 2, 3]);
       assert.equal(stringValue, '<span>true</span>');
       assert.equal(stringValue1, '<span>11</span>');
       assert.equal(stringValue2, '<span>test</span>');
       assert.equal(stringValue3, '<span>1.2</span>');
+      assert.equal(stringValue4, '<span>1,2,3</span>');
       done();
     });
   });

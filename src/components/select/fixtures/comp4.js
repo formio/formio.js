@@ -19,6 +19,10 @@ export default {
       }, {
         'label': 'test',
         'value': 'test'
+      },
+      {
+        'label': '1',
+        'value': [1,2,3]
       }],
       'resource': '',
       'json': '',
