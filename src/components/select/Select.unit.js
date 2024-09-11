@@ -1,6 +1,7 @@
 /* eslint-disable max-statements */
 import assert from 'power-assert';
 import cloneDeep from 'lodash/cloneDeep';
+import set from 'lodash/set'
 import sinon from 'sinon';
 import Harness from '../../../test/harness';
 import SelectComponent from './Select';
@@ -1218,6 +1219,46 @@ describe('Select Component', () => {
     });
   });
 
+  
+  it('Should render label for multiple Select when Data Source is Resource in read only mode', (done) => {
+    const element = document.createElement('div');
+    const form = cloneDeep(comp24);
+    set(form, 'components[0].multiple', true);
+    Formio.createForm(element, form, { readOnly: true }).then((form) => {
+      form.setSubmission({
+        metadata: {
+          selectData: {
+            select: {
+              1: {
+                data: {
+                  textField1: 'One'
+                }
+              },
+              olivia: {
+                data: {
+                  textField1: 'Olivia Miller'
+                }
+              }
+            },
+          },
+        },
+        data: {
+          select: [1, 'olivia'],
+          submit: true,
+        },
+        state: 'submitted',
+      });
+
+      setTimeout(() => {
+        const select = form.getComponent('select');
+        const selectedItems = select.element.querySelectorAll('[aria-selected="true"] span');
+        assert.equal(selectedItems[0].innerHTML, 'One', 'Should show correct label for numeric values');
+        assert.equal(selectedItems[1].innerHTML, 'Olivia Miller', 'Should show correct label for string values');;
+        done();
+      }, 700);
+    })
+    .catch((err) => done(err));
+  });
   // it('should reset input value when called with empty value', () => {
   //   const comp = Object.assign({}, comp1);
   //   delete comp.placeholder;
