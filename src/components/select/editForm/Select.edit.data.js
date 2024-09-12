@@ -30,16 +30,20 @@ const setSelectData = (context) => {
   // Wait before downloadedResources will be set
   setTimeout(() => {
     const { instance, data } = context;
-    const selectDataComponent = instance?.root.getComponent('selectData');
+    const selectDataComponent = instance?.root?.getComponent('selectData');
+    // clear selectData if conditions are not met or clearing default value
+    if (selectDataComponent && (!selectDataComponent.visible || !data.defaultValue)) {
+      selectDataComponent.setValue(null, { resetValue: true});
+      return;
+    }
     // nothing can set if don't have downloaded resources
     if (!selectDataComponent || !instance.getValue() || !instance.downloadedResources?.length) {
       return;
     }
-    // if valueProperty is not provided, we have entire object
     const shouldCalculateUrlData = data.dataSrc === 'url' && data.data.url && data.valueProperty;
     const shouldCalculateResourceData = data.dataSrc === 'resource' && data.data.resource && data.valueProperty;
-    const newValue = shouldCalculateUrlData || shouldCalculateResourceData ? calculateSelectData(context) : undefined;
-    selectDataComponent.setValue(newValue);
+    const newValue = shouldCalculateUrlData || shouldCalculateResourceData ? calculateSelectData(context) : null;
+    selectDataComponent.setValue(newValue, { resetValue: newValue === null});
   }, 0);
 };
 
@@ -683,10 +687,25 @@ export default [
   {
     key: 'selectData',
     conditional: {
-      json: { 'and': [
-        { '!==': [{ var: 'data.valueProperty' }, null] },
-        { '!==': [{ var: 'data.valueProperty' }, ''] },
-      ] },
+      json: {
+        and: [
+          { var: 'data.valueProperty' },
+          { '===': [{ var: 'data.lazyLoad' }, true]},
+          { '!==': [{ var: 'data.widget' }, 'html5'] },
+          {
+            or: [
+              { '===': [{ var: 'data.dataSrc' }, 'url'] },
+              {
+                and: [
+                  { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+                  // 'data' means entire object from resource will be used
+                  { '!==': [{ var: 'data.valueProperty' }, 'data'] },
+                ],
+              }
+            ]
+          }
+        ]
+      },
     },
   },
   {
