@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 4.21.4-rc.2]
+### Changed
+ - Revert "FIO-8797: set empty day component value to the empty string"
+ - Revert "FIO-8798: updated shape of the data of day component with hidden fields"
+ 
 ## 4.21.4-rc.1
 ### Changed
  - FIO-8964 updated version of inputmask lib
