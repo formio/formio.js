@@ -3938,12 +3938,12 @@ export default class Component extends Element {
     }
   }
 
-  scrollIntoView(element = this.element) {
+  scrollIntoView(element = this.element, verticalOnly) {
     if (!element) {
       return;
     }
     const { left, top } = element.getBoundingClientRect();
-    window.scrollTo(left + window.scrollX, top + window.scrollY);
+    window.scrollTo(verticalOnly ? window.scrollX : left + window.scrollX, top + window.scrollY);
   }
 
   focus(index) {
