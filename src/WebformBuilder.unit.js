@@ -216,7 +216,7 @@ describe('WebformBuilder tests', function() {
             done();
           }, 200);
         }, 200);
-      }, 300);
+      }, 150);
     }).catch(done);
   });
 

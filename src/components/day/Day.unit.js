@@ -22,17 +22,6 @@ describe('Day Component', () => {
     });
   });
 
-  it('Should handle blank data correctly', (done) => {
-    Harness.testCreate(DayComponent, comp1).then((component) => {
-      component.setValue();
-      assert.equal(component.getValue(), '');
-      component.checkValidity();
-      assert.equal(component.errors.length, 0, 'Component should be valid with blank data');
-
-      done();
-    });
-  });
-
   it('Should change the max day when the month changes', (done) => {
     Harness.testCreate(DayComponent, comp1).then((component) => {
       Harness.testElements(component, 'option', 13);

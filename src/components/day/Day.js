@@ -69,10 +69,11 @@ export default class DayComponent extends Field {
 
   /**
    * The empty value for day component.
-   * @returns {''} - The empty value of the day component.
+   *
+   * @return {'00/00/0000'}
    */
   get emptyValue() {
-    return '';
+    return '00/00/0000';
   }
 
   get valueMask() {
@@ -414,7 +415,7 @@ export default class DayComponent extends Field {
   setValueAt(index, value) {
     // temporary solution to avoid input reset
     // on invalid date.
-    if (value === 'Invalid date') {
+    if (!value || value === 'Invalid date') {
       return null;
     }
     const parts = value.split('/');
