@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.21.4
+### Changed
+ - Official Release
+
 ## 4.21.4-rc.2
 ### Changed
  - Revert "FIO-8797: set empty day component value to the empty string"
