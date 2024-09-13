@@ -3001,9 +3001,6 @@ export default class Component extends Element {
    * @returns {*} - The normalized value.
    */
   normalizeValue(value) {
-    if (this.component.multiple && !Array.isArray(value)) {
-      value = value ? [value] : [];
-    }
     return value;
   }
 

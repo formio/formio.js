@@ -29,11 +29,11 @@ export default class Multivalue extends Field {
       }
     } else {
       if (Array.isArray(value) && !underlyingValueShouldBeArray) {
+        if (Utils.getModelType(this.component) === 'any') {
+          return super.normalizeValue(value, flags);
+        }
         if (this.component.storeas === 'string') {
           return super.normalizeValue(value.join(this.delimiter || ''), flags);
-        }
-        if (this.component.type === 'hidden' && value.length > 1) {
-          return super.normalizeValue(value, flags);
         }
         return super.normalizeValue(value[0] || emptyValue, flags);
       } else {
