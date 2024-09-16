@@ -29,6 +29,9 @@ export default class Multivalue extends Field {
       }
     } else {
       if (Array.isArray(value) && !underlyingValueShouldBeArray) {
+        if (Utils.getModelType(this.component) === 'any') {
+          return super.normalizeValue(value, flags);
+        }
         if (this.component.storeas === 'string') {
           return super.normalizeValue(value.join(this.delimiter || ''), flags);
         }

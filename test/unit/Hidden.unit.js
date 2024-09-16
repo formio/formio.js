@@ -26,4 +26,16 @@ describe('Hidden Component', () => {
       assert(component.checkValidity(), 'Item should be valid after setting value');
     });
   });
+
+  it('Should set correct array data for Hidden component', () => {
+    return Harness.testCreate(HiddenComponent, comp1).then((component) => {
+      const value = [
+        [ 1, 2, 3],
+        ['a','b','c']
+      ]
+      component.setValue(value);
+      assert(Array.isArray(component.dataValue), 'Value should be an Array');
+      assert.deepEqual(component.dataValue, value, 'Value should be be equal to the set value');
+    });
+  });
 });
