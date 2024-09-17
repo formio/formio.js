@@ -34,6 +34,128 @@ import { Formio } from '../../Formio';
 import { fastCloneDeep } from '@formio/core';
 
 describe('EditGrid Component', () => {
+
+  it('Turning off a validation for components with validateOn: submit', (done) => {
+    const form = {
+      title: "zxc",
+      name: "zxc",
+      path: "zxc",
+      type: "form",
+      display: "form",
+
+      components: [
+        {
+          label: "Edit Grid",
+          tableView: false,
+          validateWhenHidden: false,
+          rowDrafts: false,
+          key: "editGrid",
+          validateOn: 'submit',
+          type: "editgrid",
+          displayAsTable: false,
+          input: true,
+          // validateOn: 'submit',
+          components: [
+            {
+              label: "Select",
+              widget: "choicesjs",
+              tableView: true,
+              data: {
+                values: [
+                  {
+                    label: "one",
+                    value: 1,
+                  },
+
+                  {
+                    label: "two",
+                    value: 2,
+                  },
+                ],
+              },
+              validate: {
+                required: true,
+              },
+              validateWhenHidden: false,
+              validateOn: 'submit',
+              key: "select",
+              type: "select",
+              input: true,
+            },
+            {
+              label: "Select",
+              widget: "choicesjs",
+              tableView: true,
+              data: {
+                values: [
+                  {
+                    label: "two",
+                    value: 2,
+                  },
+                  {
+                    label: "ee",
+                    value: 1,
+                  },
+                ],
+              },
+              validate: {
+                required: true,
+              },
+              validateWhenHidden: false,
+              validateOn: 'submit',
+              key: "select1",
+              type: "select",
+              input: true,
+            },
+          ],
+        },
+      ],
+    };
+
+    const element = document.createElement('div');
+    Formio.createForm(element, form).then((form) => {
+      const editGrid = form.getComponent('editGrid');
+      editGrid.addRow();
+      const select = form.getComponent('select');
+
+      // const inputValue = (value, component) => {
+      //   const input = component.refs.input?.[0] || component.refs.selectContainer;
+      //   const inputEvent = new Event('click');
+      //   input.value = value;
+      //   input.dispatchEvent(inputEvent);
+      // };
+
+      // inputValue(1, select[0]);
+      // const options2 = select.element.querySelector('.choices__item--selectable')
+      // const options = [...select.element.querySelector('[role="listbox"]').children];
+      const selectOption = [...select.element.querySelector('.choices__list--dropdown').children][0];
+      // const options3 = select.element.querySelector('.choices__list');
+      // const op = select.selectOptions
+      // const option1 = options[1].textContent.trim();
+      // el.choices.input.element.dispatchEvent(new Event('blur'));
+
+      // const options = el.selectOptions[0]
+
+        const clickEvent = new Event('click');
+        selectOption.dispatchEvent(clickEvent);
+        setTimeout(()=> {
+
+        const m = editGrid.checkValidity(null, true)
+        const d =  form.checkValidity(form._data, true, form._data);
+        const e = editGrid.element.className.includes('has-error')
+        // const xc = form.element.className.includes('has-error')
+        assert(editGrid.element.className.includes('has-error'), false);
+
+         console.log(editGrid);
+         console.log(form)
+          done();
+        }, 500)
+
+    }).catch(done);
+  })
+
+
+
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
     Harness.testCreate(EditGridComponent, comp4).then((component) => {
       component.setValue([{ dataMap: { key111: '111' } }]);
