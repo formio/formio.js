@@ -302,15 +302,7 @@ export default class SelectComponent extends ListComponent {
       return this.sanitize(value, this.shouldSanitizeValue);
     }
 
-<<<<<<< Updated upstream
-    if (this.component.multiple
-      && _.isArray(this.dataValue) ? this.dataValue.find((val) => this.normalizeSingleValue(value) === val) : (this.dataValue === value)) {
-=======
-    const dataValue = this.undoValueTyping(this.dataValue);
-    const untypedValue = this.undoValueTyping(value);
-
-    if (this.component.multiple && _.isArray(dataValue) ? dataValue.find((val) => untypedValue === val) : (dataValue === untypedValue)) {
->>>>>>> Stashed changes
+    if (this.component.multiple && _.isArray(this.dataValue) ? this.dataValue.find((val) => this.normalizeSingleValue(value) === val) : (this.dataValue === this.normalizeSingleValue(value))) {
       const selectData = this.selectData;
       if (selectData) {
         const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
