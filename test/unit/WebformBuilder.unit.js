@@ -441,6 +441,91 @@ describe('Select Component selectData property', () => {
     }).catch(done);
   });
 
+  it('Should remove selectData property if conditions are not met', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('select');
+
+      setTimeout(() => {
+        const dataSrc = builder.editForm.getComponent('dataSrc');
+        dataSrc.setValue('url');
+        const url = builder.editForm.getComponent(['data.url']);
+        const valueProperty = builder.editForm.getComponent('valueProperty');
+        url.setValue('htts//fakeurl.com');
+        valueProperty.setValue('value');
+
+        setTimeout(() => {
+          const defaultValue = builder.editForm.getComponent('defaultValue');
+          defaultValue.setValue('value1');
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() => {
+            assert.deepEqual(builder.editForm.data.selectData, {
+              label: 'Label 1',
+            });
+
+            setTimeout(() => {
+              const widget = builder.editForm.getComponent('widget');
+              widget.updateValue('html5', { modified: true });
+
+              setTimeout(() => {
+                assert.equal(builder.editForm.data.selectData, null);
+
+                Harness.saveComponent();
+                setTimeout(() => {
+                  done();
+                }, 150);
+              }, 300);
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
+
+
+  it('Should remove selectData property when clearing defaultValue', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('select');
+
+      setTimeout(() => {
+        const dataSrc = builder.editForm.getComponent('dataSrc');
+        dataSrc.setValue('url');
+        const url = builder.editForm.getComponent(['data.url']);
+        const valueProperty = builder.editForm.getComponent('valueProperty');
+        url.setValue('htts//fakeurl.com');
+        valueProperty.setValue('value');
+
+        setTimeout(() => {
+          const defaultValue = builder.editForm.getComponent('defaultValue');
+          defaultValue.setValue('value1');
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() => {
+            assert.deepEqual(builder.editForm.data.selectData, {
+              label: 'Label 1',
+            });
+
+            setTimeout(() => {
+              defaultValue.updateValue('', { modified: true });
+
+              setTimeout(() => {
+                assert.equal(builder.editForm.data.selectData, null);
+
+                Harness.saveComponent();
+                setTimeout(() => {
+                  done();
+                }, 150);
+              }, 300);
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
   it('Should calculate multiple selectData property for url dataSource', (done) => {
     const builder = Harness.getBuilder();
     builder.setForm({}).then(() => {
