@@ -18,6 +18,8 @@ import {
   comp14,
   comp15,
   comp16,
+  comp17,
+  comp18,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
   compWithCustomDefaultValue,
@@ -31,6 +33,7 @@ import { displayAsModalEditGrid } from '../../../test/formtest';
 import { Formio } from '../../Formio';
 
 describe('EditGrid Component', () => {
+
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
     Harness.testCreate(EditGridComponent, comp4).then((component) => {
       component.setValue([{ dataMap: { key111: '111' } }]);

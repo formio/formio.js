@@ -2503,7 +2503,7 @@ export default class Component extends Element {
     }
 
     // If we are supposed to validate on blur, then don't trigger validation yet.
-    if (this.component.validateOn === 'blur') {
+    if (this.component.validateOn === 'blur' || this.component.validateOn === 'submit') {
       flags.noValidate = true;
     }
 
