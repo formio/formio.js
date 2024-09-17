@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8991: fixed an issue where select  value (when it is array with numbers) does not display in submission grid
  - FIO-8951: Updated conditions for selectData and added logic to clear selectData
  - FIO-9010 fixed disappearance of components inside Columns after editing
+ - FIO-8938 fixed label display for multiple select with dataSrc resource
+ - FIO-8908: Fix error message appears when saving not fully filled conditionals tab
 
 ## 5.0.0-rc.80
 ### Changed
