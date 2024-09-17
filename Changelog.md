@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.81
+### Changed
+ - Updated @formio/core@2.3.0-rc.3
+ - FIO-8991: fixed an issue where select  value (when it is array with numbers) does not display in submission grid
+ - FIO-8951: Updated conditions for selectData and added logic to clear selectData
+ - FIO-9010 fixed disappearance of components inside Columns after editing
+
 ## 5.0.0-rc.80
 ### Changed
  - Updated @formio/core@2.2.3-rc.2
