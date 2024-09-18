@@ -279,7 +279,6 @@ export default class SelectComponent extends ListComponent {
 
   selectValueAndLabel(data) {
     const value = this.getOptionValue((this.isEntireObjectDisplay() && !this.itemValue(data)) ? data : this.itemValue(data));
-    // const templateData = this.options.readOnly && (this.isSelectResource || this.isSelectURL) && this.selectData ? this.selectData : data;
     return {
       value,
       label: this.itemTemplate((this.isEntireObjectDisplay() && !_.isObject(data.data)) ? { data: data } : data, value)
