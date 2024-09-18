@@ -9,6 +9,7 @@ import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
 import formBasedOnWizard from '../test/forms/formBasedOnWizard';
 import formWithFormController from '../test/forms/formWithFormController';
+import simpleWebform from '../forms/simpleWebform';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -229,6 +230,17 @@ describe('WebformBuilder tests', function() {
       const submit = components[components.length - 1];
 
       assert.equal(submit.key, 'submit');
+      done();
+    }).catch(done);
+  });
+
+  it('Should not add extra submit button if submit button API key was changed', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm(simpleWebform).then(() => {
+      const components = builder.webform.components;
+      const submit = components[1];
+      assert.equal(components.length, 2);
+      assert.equal(components[1].key, 'testSubmit');
       done();
     }).catch(done);
   });
