@@ -72,6 +72,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8954: fixed previously selected option is displayed in metadata with data source = url
  - FIO-8986: fixed setting up of default value with hidden fields
  - FIO-8938: fixed label display for multiple select with dataSrc resource
+ - FIO-8962: fixed screen shifting when validation errors pop up in an embedded Wizard form
 
 ### New Features
 
