@@ -1487,4 +1487,43 @@ describe('Select Component with Entire Object Value Property', () => {
     })
       .catch((err) => done(err));
   });
+
+  it('Should render label for Select components when Data Source is Resource for modal preview', (done) => {
+    const element = document.createElement('div');
+    const comp = { ...comp24, modalEdit: true };
+    Formio.createForm(element, comp).then((form) => {
+      const select = form.getComponent('select');
+      form.setSubmission({
+        metadata: {
+          selectData: {
+            select: {
+              data: {
+                textField1: 'A',
+              },
+            },
+          },
+        },
+        data: {
+          select: 1,
+          select1: {
+            textField1: 'A',
+            textField2: '1',
+            submit: true,
+          },
+          submit: true,
+        },
+        state: 'submitted',
+      });
+
+      setTimeout(() => {
+        const previewSelect = select.element.querySelector('[aria-selected="true"] span');
+
+        assert.equal(previewSelect.innerHTML, 'A', 'Should show label as a selected value' +
+          ' for Select component');
+
+        done();
+      }, 300);
+    })
+      .catch((err) => done(err));
+  });
 });

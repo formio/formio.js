@@ -165,6 +165,11 @@ export function checkCalculated(component, submission, rowData) {
  * @returns {boolean} - TRUE if the condition is true; FALSE otherwise.
  */
 
+/**
+ *
+ * @param conditionPaths
+ * @param data
+ */
 function getConditionalPathsRecursive(conditionPaths, data) {
   let currentGlobalIndex = 0;
   const conditionalPathsArray = [];
@@ -210,6 +215,14 @@ function getConditionalPathsRecursive(conditionPaths, data) {
   return conditionalPathsArray;
 }
 
+ /**
+  *
+  * @param component
+  * @param condition
+  * @param row
+  * @param data
+  * @param instance
+  */
  export function checkSimpleConditional(component, condition, row, data, instance) {
   if (condition.when) {
     const value = getComponentActualValue(condition.when, data, row);
