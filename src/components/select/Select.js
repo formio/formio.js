@@ -279,10 +279,9 @@ export default class SelectComponent extends ListComponent {
 
   selectValueAndLabel(data) {
     const value = this.getOptionValue((this.isEntireObjectDisplay() && !this.itemValue(data)) ? data : this.itemValue(data));
-    const readOnlyResourceLabelData = this.options.readOnly && (this.component.dataSrc === 'resource' || this.component.dataSrc === 'url') && this.selectData;
     return {
       value,
-      label: this.itemTemplate((this.isEntireObjectDisplay() && !_.isObject(data.data)) ? { data: data } : readOnlyResourceLabelData || data, value)
+      label: this.itemTemplate((this.isEntireObjectDisplay() && !_.isObject(data.data)) ? { data: data } : data, value)
     };
   }
 
@@ -302,8 +301,7 @@ export default class SelectComponent extends ListComponent {
       return this.sanitize(value, this.shouldSanitizeValue);
     }
 
-    if (this.component.multiple
-      && _.isArray(this.dataValue) ? this.dataValue.find((val) => this.normalizeSingleValue(value) === val) : (this.dataValue === value)) {
+    if (this.component.multiple && _.isArray(this.dataValue) ? this.dataValue.find((val) => this.normalizeSingleValue(value) === val) : (this.dataValue === this.normalizeSingleValue(value))) {
       const selectData = this.selectData;
       if (selectData) {
         const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
@@ -1515,6 +1513,25 @@ export default class SelectComponent extends ListComponent {
     return changed;
   }
 
+  undoValueTyping(value) {
+    let untypedValue = value;
+    if (this.component.multiple && Array.isArray(value)) {
+      untypedValue = value.map(v => {
+        if (typeof v === 'boolean' || typeof v === 'number') {
+          return v.toString();
+        }
+        return v;
+      });
+    }
+    else {
+      if (typeof value === 'boolean' || typeof value === 'number') {
+        untypedValue = value.toString();
+      }
+    }
+
+    return untypedValue;
+  }
+
   setValue(value, flags = {}) {
     const previousValue = this.dataValue;
     const changed = this.updateValue(value, flags);
@@ -1526,19 +1543,7 @@ export default class SelectComponent extends ListComponent {
     const hasValue = !this.isEmpty(value);
 
     // Undo typing when searching to set the value.
-    if (this.component.multiple && Array.isArray(value)) {
-      value = value.map(value => {
-        if (typeof value === 'boolean' || typeof value === 'number') {
-          return value.toString();
-        }
-        return value;
-      });
-    }
-    else {
-      if (typeof value === 'boolean' || typeof value === 'number') {
-        value = value.toString();
-      }
-    }
+    value = this.undoValueTyping(value);
 
     if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
       this.itemsLoaded.then(() => {
@@ -1767,9 +1772,9 @@ export default class SelectComponent extends ListComponent {
   asString(value, options = {}) {
     value = value ?? this.getValue();
 
-    if (options.modalPreview && this.selectData) {
-      const { label } = this.selectValueAndLabel(value);
-      return label;
+    if (options.modalPreview) {
+      const template = this.itemTemplate(value, value);
+      return template;
     }
     //need to convert values to strings to be able to compare values with available options that are strings
     const convertToString = (data, valueProperty) => {
