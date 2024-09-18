@@ -1052,8 +1052,12 @@ export default class WebformBuilder extends Component {
     }
     this.keyboardActionsEnabled = keyboardActionsEnabled;
 
+    const isSubmitButton = (comp) => {
+      return (comp.type === 'button') && ((comp.action === 'submit') || !comp.action);
+    }
+
     const isShowSubmitButton = !this.options.noDefaultSubmitButton
-      && (!form.components.length || !form.components.find(comp => comp.key === 'submit'));
+      && (!form.components.length || !form.components.find(comp => isSubmitButton(comp)));
 
     // Ensure there is at least a submit button.
     if (isShowSubmitButton) {
