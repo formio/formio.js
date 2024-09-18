@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.0.0-rc.82]
+### Changed
+ - FIO-8234/FIO-7195: Fixes an issue where value properties are shown instead of labels for Select component with Resource/URL data sources in read only mode and for modal preview
+ 
 ## 5.0.0-rc.81
 ### Changed
  - Updated @formio/core@2.3.0-rc.3
