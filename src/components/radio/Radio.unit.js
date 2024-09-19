@@ -15,8 +15,10 @@ import {
   comp8,
   comp9,
   comp10,
-  comp11
+  comp11,
+  comp13
 } from './fixtures';
+import { fastCloneDeep } from '@formio/core';
 
 describe('Radio Component', () => {
   it('Should build a radio component', () => {
@@ -392,6 +394,165 @@ describe('Radio Component', () => {
             done();
           }, 200);
         }, 200);
+      })
+      .catch(done);
+  });
+
+  it('Should wait for radio url options to load before submit', (done) => {
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+    const urlResponse = [
+      {
+        identifier: 'opt_a',
+        label: 'Option A',
+      },
+      {
+        identifier: 'opt_b',
+        label: 'Option B',
+      },
+      {
+        identifier: 'opt_c',
+        label: 'Option C',
+      },
+    ];
+    const listData = [
+      {
+        label: 'Option A',
+      },
+      {
+        label: 'Option B',
+      },
+      {
+        label: 'Option C',
+      },
+    ];
+    Formio.makeRequest = function() {
+      return new Promise((res, rej) => {
+        setTimeout(() => {
+          res(fastCloneDeep(urlResponse));
+        }, 400);
+      });
+    };
+
+    Formio.createForm(element, fastCloneDeep(comp13))
+      .then(instance => {
+        const radio = instance.getComponent('radio');
+        assert.equal(radio.optionsLoaded, false);
+        assert.equal(!!radio.element.querySelector('.loader'), true, 'Should show loader while options are loading.')
+        instance.submit().then((subm) => {
+          assert.equal(radio.loadedOptions.length, urlResponse.length);
+          assert.equal(radio.optionsLoaded, true);
+          assert.deepEqual(subm.metadata?.listData?.radio, listData);
+          Formio.makeRequest = originalMakeRequest;
+          done();
+        })
+      })
+      .catch(done);
+  });
+
+  it('Should render options from metadata in readOnly when radio value is empty in submission', (done) => {
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+    let optionsCalls = 0;
+    Formio.makeRequest = function() {
+      return new Promise((res, rej) => {
+        optionsCalls = optionsCalls + 1;
+        res([]);
+      });
+    };
+    const submission = {
+      form: '66ebe22841267c275a4cb34e',
+      metadata: {
+        listData: {
+          radio: [
+            {
+              label: 'Option A',
+            },
+            {
+              label: 'Option B',
+            },
+            {
+              label: 'Option C',
+            },
+          ],
+        }
+      },
+      data: {
+        radio: '',
+        submit: true,
+      },
+      _id: '66ebe85841267c275a4cbd4f',
+      state: 'submitted',
+    };
+
+    Formio.createForm(element, fastCloneDeep(comp13), { readOnly: true})
+      .then(instance => {
+        instance.setSubmission(submission).then(() => {
+          setTimeout(() => {
+            assert.equal(optionsCalls, 0);
+            const radio = instance.getComponent('radio');
+            assert.equal(radio.optionsLoaded, true);
+            assert.equal(radio.loadedOptions.length, 3);
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 100)
+        })
+      })
+      .catch(done);
+  });
+
+  it('Should render options from metadata in readOnly when radio has a value in submission', (done) => {
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+    let optionsCalls = 0;
+    Formio.makeRequest = function() {
+      return new Promise((res, rej) => {
+        optionsCalls = optionsCalls + 1;
+        res([]);
+      });
+    };
+    const submission = {
+      form: '66ebe22841267c275a4cb34e',
+      metadata: {
+        listData: {
+          radio: [
+            {
+              label: 'Option A',
+            },
+            {
+              label: 'Option B',
+            },
+            {
+              label: 'Option C',
+            },
+          ],
+        },
+        selectData: {
+          radio: {
+              label: 'Option B'
+          }
+      },
+      },
+      data: {
+        radio: 'opt_b',
+        submit: true,
+      },
+      _id: '66ebe85841267c275a4cbd4f',
+      state: 'submitted',
+    };
+
+    Formio.createForm(element, fastCloneDeep(comp13), { readOnly: true})
+      .then(instance => {
+        instance.setSubmission(submission).then(() => {
+          setTimeout(() => {
+            assert.equal(optionsCalls, 0);
+            const radio = instance.getComponent('radio');
+            assert.equal(radio.optionsLoaded, true);
+            assert.equal(radio.loadedOptions.length, 3);
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 100)
+        })
       })
       .catch(done);
   });
