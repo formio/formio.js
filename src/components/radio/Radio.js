@@ -142,18 +142,30 @@ export default class RadioComponent extends ListComponent {
       }
       return triggerUpdate(...updateArgs);
     };
-
     this.itemsLoaded = new Promise((resolve) => {
       this.itemsLoadedResolve = resolve;
     });
-    this.optionsLoaded = false;
+    this.optionsLoaded = !this.component.dataSrc || this.component.dataSrc === 'values';
     this.loadedOptions = [];
+
+    if (!this.visible) {
+      this.itemsLoadedResolve(); 
+    }
 
     // Get the template keys for this radio component.
     this.getTemplateKeys();
   }
 
+  beforeSubmit() {
+    return new Promise(res => { 
+      this.dataReady.then(() => res(true));
+    });
+  }
+
   render() {
+    if (!this.optionsLoaded) {
+      return super.render(this.renderTemplate('loader'));
+    }
     return super.render(this.renderTemplate('radio', {
       input: this.inputInfo,
       inline: this.component.inline,
@@ -283,13 +295,25 @@ export default class RadioComponent extends ListComponent {
     }
   }
 
+  get shouldLoad() {
+    // do not load options if the value is empty in readOnly and we have options available in metadata
+    if (this.options.readOnly && this.isEmpty() && this.listData) {
+      return false;
+    }
+
+    return super.shouldLoad;
+  }
+
   loadItems(url, search, headers, options, method, body) {
     if (this.optionsLoaded) {
+      this.itemsLoadedResolve();
       return;
     }
 
     if (!this.shouldLoad && this.listData) {
       this.loadItemsFromMetadata();
+      this.itemsLoadedResolve();
+      this.optionsLoaded = true;
       return;
     }
 
@@ -325,8 +349,9 @@ export default class RadioComponent extends ListComponent {
       this.redraw();
     })
     .catch((err) => {
+      this.optionsLoaded = true;
       this.handleLoadingError(err);
-      });
+    });
   }
 
   loadItemsFromMetadata() {
@@ -371,6 +396,8 @@ export default class RadioComponent extends ListComponent {
       }
       _.set(submission.metadata.listData, this.path, listData);
     }
+
+    this.itemsLoadedResolve();
   }
 
   setSelectedClasses() {

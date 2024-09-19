@@ -176,19 +176,6 @@ export default class SelectComponent extends ListComponent {
     this.getTemplateKeys();
   }
 
-  get dataReady() {
-    // If the root submission has been set, and we are still not attached, then assume
-    // that our data is ready.
-    if (
-      this.root &&
-      this.root.submissionSet &&
-      !this.attached
-    ) {
-      return Promise.resolve();
-    }
-    return this.itemsLoaded;
-  }
-
   get defaultSchema() {
     return SelectComponent.schema();
   }
@@ -1634,14 +1621,6 @@ export default class SelectComponent extends ListComponent {
         });
       }
     }
-  }
-
-  get itemsLoaded() {
-    return this._itemsLoaded || Promise.resolve();
-  }
-
-  set itemsLoaded(promise) {
-    this._itemsLoaded = promise;
   }
 
   validateValueAvailability(setting, value) {

@@ -25,6 +25,19 @@ export default class ListComponent extends Field {
     return _.get(selectData, this.path);
   }
 
+  get dataReady() {
+    // If the root submission has been set, and we are still not attached, then assume
+    // that our data is ready.
+    if (
+      this.root &&
+      this.root.submissionSet &&
+      !this.attached
+    ) {
+      return Promise.resolve();
+    }
+    return this.itemsLoaded;
+  }
+
   get shouldLoad() {
     if (this.loadingError) {
       return false;
@@ -125,6 +138,14 @@ export default class ListComponent extends Field {
     }
   }
 
+  get itemsLoaded() {
+    return this._itemsLoaded || Promise.resolve();
+  }
+
+  set itemsLoaded(promise) {
+    this._itemsLoaded = promise;
+  }
+  
   handleLoadingError(err) {
     this.loading = false;
     if (err.networkError) {
