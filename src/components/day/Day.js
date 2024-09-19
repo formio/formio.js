@@ -473,7 +473,9 @@ export default class DayComponent extends Field {
       DAY = null;
     }
     if (!this.showMonth) {
-      DAY = DAY === 0 ? 0 : DAY - 1;
+      if (!_.isNull(DAY)) {
+        DAY = DAY === 0 ? 0 : DAY - 1;
+      }
       YEAR = YEAR - 1;
       MONTH = null;
     }
