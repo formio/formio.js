@@ -148,7 +148,7 @@ export default class CalendarWidget extends InputWidget {
     };
 
     Formio.requireLibrary('flatpickr-css', 'flatpickr', [
-      { type: 'styles', src: `${Formio.cdn['flatpickr-formio']}/flatpickr.min.css` }
+      { type: 'styles', src: `${Formio.cdn['flatpickr']}/flatpickr.min.css` }
     ], true);
 
     if (this.component.shortcutButtons) {
@@ -170,7 +170,7 @@ export default class CalendarWidget extends InputWidget {
         }
       })
       .then((ShortcutButtonsPlugin) => {
-        return Formio.requireLibrary('flatpickr', 'flatpickr', `${Formio.cdn['flatpickr-formio']}/flatpickr.min.js`, true)
+        return Formio.requireLibrary('flatpickr', 'flatpickr', `${Formio.cdn['flatpickr']}/flatpickr.min.js`, true)
           .then((Flatpickr) => {
             if (this.component.shortcutButtons?.length && ShortcutButtonsPlugin) {
               this.initShortcutButtonsPlugin(ShortcutButtonsPlugin);
@@ -184,8 +184,8 @@ export default class CalendarWidget extends InputWidget {
               if (locale && locale.length >= 2 && locale !== 'en') {
                 return Formio.requireLibrary(
                   `flatpickr-${locale}`,
-                  `flatpickr-${locale}`,
-                  `${Formio.cdn['flatpickr-formio']}/l10n/flatpickr-${locale}.js`,
+                  `flatpickr.l10ns.${locale}`,
+                  `${Formio.cdn['flatpickr']}/l10n/${locale}.js`,
                   true).then(() => this.initFlatpickr(Flatpickr));
               }
               else {
