@@ -10,10 +10,12 @@ import {
   comp4,
   comp5,
   comp6,
-  comp7
+  comp7,
+  comp8
 } from './fixtures/selectboxes';
 import wizardWithSelectBoxes from '../forms/wizardWithSelectBoxes';
 import {comp12} from './fixtures/radio';
+import { fastCloneDeep } from '@formio/core';
 
 describe('SelectBoxes Component', () => {
   it('Should build a SelectBoxes component', () => {
@@ -468,5 +470,173 @@ describe('SelectBoxes Component', () => {
       assert.equal(component.validateValueAvailability(false, {}), true, 'Should be valid');
       done();
     }).catch(done);
+  });
+
+  it('Should wait for selectboxes url options to load before submit', (done) => {
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+    const urlResponse = [
+      {
+        identifier: 'opt_a',
+        label: 'Option A',
+      },
+      {
+        identifier: 'opt_b',
+        label: 'Option B',
+      },
+      {
+        identifier: 'opt_c',
+        label: 'Option C',
+      },
+    ];
+    const listData = [
+      {
+        label: 'Option A',
+      },
+      {
+        label: 'Option B',
+      },
+      {
+        label: 'Option C',
+      },
+    ];
+    Formio.makeRequest = function() {
+      return new Promise((res, rej) => {
+        setTimeout(() => {
+          res(fastCloneDeep(urlResponse));
+        }, 400);
+      });
+    };
+
+    Formio.createForm(element, fastCloneDeep(comp8))
+      .then(instance => {
+        const selectBoxes = instance.getComponent('selectBoxes');
+        assert.equal(selectBoxes.optionsLoaded, false);
+        assert.equal(!!selectBoxes.element.querySelector('.loader'), true, 'Should show loader while options are loading.')
+        instance.submit().then((subm) => {
+          assert.equal(selectBoxes.loadedOptions.length, urlResponse.length);
+          assert.equal(selectBoxes.optionsLoaded, true);
+          assert.deepEqual(subm.metadata?.listData?.selectBoxes, listData);
+          Formio.makeRequest = originalMakeRequest;
+          done();
+        })
+      })
+      .catch(done);
+  });
+
+  it('Should render options from metadata in readOnly when selectBoxes value is empty in submission', (done) => {
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+    let optionsCalls = 0;
+    Formio.makeRequest = function() {
+      return new Promise((res, rej) => {
+        optionsCalls = optionsCalls + 1;
+        res([]);
+      });
+    };
+    const submission = {
+      form: '66ebe22841267c275a4cb34e',
+      metadata: {
+        selectData: {
+          selectBoxes: []
+        },
+        listData: {
+          selectBoxes: [
+            {
+              label: 'Option A',
+            },
+            {
+              label: 'Option B',
+            },
+            {
+              label: 'Option C',
+            },
+          ],
+        }
+      },
+      data: {
+        selectBoxes: {},
+        submit: true,
+      },
+      _id: '66ebe85841267c275a4cbd4f',
+      state: 'submitted',
+    };
+
+    Formio.createForm(element, fastCloneDeep(comp8), { readOnly: true})
+      .then(instance => {
+        instance.setSubmission(submission).then(() => {
+          setTimeout(() => {
+            assert.equal(optionsCalls, 0);
+            const selectBoxes = instance.getComponent('selectBoxes');
+            assert.equal(selectBoxes.optionsLoaded, true);
+            assert.equal(selectBoxes.loadedOptions.length, 3);
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 100)
+        })
+      })
+      .catch(done);
+  });
+
+  it('Should render options from metadata in readOnly when selectBoxes has a value in submission', (done) => {
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+    let optionsCalls = 0;
+    Formio.makeRequest = function() {
+      return new Promise((res, rej) => {
+        optionsCalls = optionsCalls + 1;
+        res([]);
+      });
+    };
+    const submission = {
+      form: '66ebe22841267c275a4cb34e',
+      metadata: {
+        listData: {
+          selectBoxes: [
+            {
+              label: 'Option A',
+            },
+            {
+              label: 'Option B',
+            },
+            {
+              label: 'Option C',
+            },
+          ],
+        },
+        selectData: {
+          selectBoxes: [
+            {
+              label: 'Option B'
+            }
+          ]
+        },
+      },
+      data: {
+        selectBoxes: {
+          'opt_a': false,
+          'opt_b': true,
+          'opt_c': false,
+        },
+        submit: true,
+      },
+      _id: '66ebe85841267c275a4cbd4f',
+      state: 'submitted',
+    };
+
+    Formio.createForm(element, fastCloneDeep(comp8), { readOnly: true})
+      .then(instance => {
+        instance.setSubmission(submission).then(() => {
+          setTimeout(() => {
+            assert.equal(optionsCalls, 0);
+            const selectBoxes = instance.getComponent('selectBoxes');
+            assert.equal(selectBoxes.optionsLoaded, true);
+            assert.equal(selectBoxes.loadedOptions.length, 3);
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 100)
+        })
+      })
+      .catch(done);
   });
 });
