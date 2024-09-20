@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import NestedComponent from '../_classes/nested/NestedComponent';
 import { hasInvalidComponent } from '../../utils/utils';
 import FormComponent from '../form/Form';
@@ -55,6 +56,9 @@ export default class PanelComponent extends NestedComponent {
 
   getComponent(path, fn, originalPath) {
     if (this.root?.parent instanceof FormComponent) {
+      if (_.isUndefined(originalPath)) {
+        originalPath = path;
+      }
       path = path.replace(this._parentPath, '');
     }
     return super.getComponent(path, fn, originalPath);
