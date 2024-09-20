@@ -4824,6 +4824,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/radio/fixtures/comp12.js",
+    "file/src/components/radio/fixtures/comp12.js.html",
+    "src/components/radio/fixtures/comp12.js",
+    "file"
+  ],
+  [
     "src/components/radio/fixtures/comp2.js",
     "file/src/components/radio/fixtures/comp2.js.html",
     "src/components/radio/fixtures/comp2.js",

@@ -813,6 +813,56 @@ describe(&apos;Wizard tests&apos;, () =&gt; {
     .catch((err) =&gt; done(err));
   });
 
+  it(&apos;Should redirect to the correct nested wizard page from the Error list&apos;, function(done) {
+    const formElement = document.createElement(&apos;div&apos;);
+    const wizard = new Wizard(formElement);
+    const nestedWizard = _.cloneDeep(wizardTestForm.form);
+    const clickEvent = new Event(&apos;click&apos;);
+
+    wizard.setForm(formWithNestedWizard).then(() =&gt; {
+      const nestedFormComp = wizard.getComponent(&apos;formNested&apos;);
+
+      nestedFormComp.loadSubForm = ()=&gt; {
+        nestedFormComp.formObj = nestedWizard;
+        nestedFormComp.subFormLoading = false;
+        return new Promise((resolve) =&gt; resolve(nestedWizard));
+      };
+
+      nestedFormComp.createSubForm();
+
+      setTimeout(() =&gt; {
+        const clickWizardBtn = (pathPart) =&gt; {
+          const btn = _.get(wizard.refs, `${wizard.wizardKey}-${pathPart}`);
+          btn.dispatchEvent(clickEvent);
+        };
+
+        const checkPage = (pageNumber) =&gt; {
+          assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+        };
+
+        clickWizardBtn(&apos;link[4]&apos;);
+
+        setTimeout(() =&gt; {
+          checkPage(4);
+          clickWizardBtn(&apos;submit&apos;);
+          setTimeout(() =&gt; {
+            assert.equal(wizard.refs.errorRef.length, 3, &apos;Should have errors&apos;);
+            wizard.refs.errorRef[0].dispatchEvent(clickEvent);
+            setTimeout(() =&gt; {
+              checkPage(2);
+              wizard.refs.errorRef[1].dispatchEvent(clickEvent);
+              setTimeout(() =&gt; {
+                checkPage(3);
+                done();
+              }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    })
+    .catch((err) =&gt; done(err));
+  });
+
   it(&apos;Should execute advanced logic for wizard pages&apos;, function(done) {
     const formElement = document.createElement(&apos;div&apos;);
     const wizard = new Wizard(formElement);

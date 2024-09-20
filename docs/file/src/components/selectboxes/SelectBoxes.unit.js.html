@@ -202,6 +202,7 @@ import {
   comp7,
 } from &apos;./fixtures&apos;;
 import wizardWithSelectBoxes from &apos;../../../test/forms/wizardWithSelectBoxes&apos;;
+import { comp12 } from &apos;../radio/fixtures&apos;;
 
 describe(&apos;SelectBoxes Component&apos;, () =&gt; {
   it(&apos;Should build a SelectBoxes component&apos;, () =&gt; {
@@ -538,6 +539,78 @@ describe(&apos;SelectBoxes Component&apos;, () =&gt; {
         }, 200);
       }, 200);
     }).catch(done);
+  });
+
+  it(&apos;Should have correct submission data when setting the value property&apos;, (done) =&gt; {
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = async()=&gt; {
+      return [
+        {
+          data: {
+            name: &apos;Bob&apos;,
+            referenceId: &apos;1&apos;
+          }
+        },
+        {
+          data: {
+            name: &apos;Tom&apos;,
+            referenceId: &apos;2&apos;
+          }
+        },
+        {
+          data: {
+            name: &apos;Joe&apos;,
+            referenceId: &apos;3&apos;
+          }
+        }
+      ];
+    };
+    const changeEvent = new Event(&apos;change&apos;);
+    Formio.createForm(document.createElement(&apos;div&apos;), comp12, {}).then((form) =&gt; {
+      setTimeout(()=&gt;{
+        const selectBoxesComponent = form.getComponent(&apos;selectBoxes&apos;);
+        selectBoxesComponent.refs.input[0].checked = true;
+        selectBoxesComponent.refs.input[0].dispatchEvent(changeEvent);
+        setTimeout(()=&gt;{
+          assert.deepEqual(form.getValue().data, { selectBoxes : { Bob: true, Tom: false, Joe: false } });
+          done();
+        },200);
+        Formio.makeRequest = originalMakeRequest;
+      }, 200);
+    });
+  });
+
+  it(&apos;Should show validation errors when the value property is set&apos;, () =&gt; {
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = async() =&gt; {
+      return [
+        {
+          data: {
+            name: &apos;Bob&apos;,
+            referenceId: &apos;1&apos;
+          }
+        },
+        {
+          data: {
+            name: &apos;Tom&apos;,
+            referenceId: &apos;2&apos;
+          }
+        },
+        {
+          data: {
+            name: &apos;Joe&apos;,
+            referenceId: &apos;3&apos;
+          }
+        }
+      ];
+    };
+    const newComp12 = _.cloneDeep(comp12);
+    _.set(newComp12.components[0], &apos;validate.required&apos;, true);
+    return Formio.createForm(document.createElement(&apos;div&apos;), newComp12, {}).then((form) =&gt; {
+      const selectBoxesComponent = form.getComponent(&apos;selectBoxes&apos;);
+      assert.equal(selectBoxesComponent.errors.length, 1);
+      Formio.makeRequest = originalMakeRequest;
+    });
   });
 });
 
