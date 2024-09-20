@@ -13,7 +13,7 @@ import {
   comp7,
 } from './fixtures';
 import wizardWithSelectBoxes from '../../../test/forms/wizardWithSelectBoxes';
-import {comp12} from "../radio/fixtures";
+import { comp12 } from '../radio/fixtures';
 
 describe('SelectBoxes Component', () => {
   it('Should build a SelectBoxes component', () => {
@@ -354,7 +354,7 @@ describe('SelectBoxes Component', () => {
 
   it('Should have correct submission data when setting the value property', (done) => {
     const originalMakeRequest = Formio.makeRequest;
-    Formio.makeRequest = async ()=> {
+    Formio.makeRequest = async()=> {
       return [
         {
           data: {
@@ -374,8 +374,8 @@ describe('SelectBoxes Component', () => {
             referenceId: '3'
           }
         }
-      ]
-    }
+      ];
+    };
     const changeEvent = new Event('change');
     Formio.createForm(document.createElement('div'), comp12, {}).then((form) => {
       setTimeout(()=>{
@@ -383,17 +383,17 @@ describe('SelectBoxes Component', () => {
         selectBoxesComponent.refs.input[0].checked = true;
         selectBoxesComponent.refs.input[0].dispatchEvent(changeEvent);
         setTimeout(()=>{
-          assert.deepEqual(form.getValue().data, {selectBoxes : {Bob: true, Tom: false, Joe: false}});
+          assert.deepEqual(form.getValue().data, { selectBoxes : { Bob: true, Tom: false, Joe: false } });
           done();
         },200);
         Formio.makeRequest = originalMakeRequest;
-      }, 200)
+      }, 200);
     });
   });
 
   it('Should show validation errors when the value property is set', () => {
     const originalMakeRequest = Formio.makeRequest;
-    Formio.makeRequest = async () => {
+    Formio.makeRequest = async() => {
       return [
         {
           data: {
@@ -413,15 +413,15 @@ describe('SelectBoxes Component', () => {
             referenceId: '3'
           }
         }
-      ]
-    }
-    let newComp12 = _.cloneDeep(comp12);
+      ];
+    };
+    const newComp12 = _.cloneDeep(comp12);
     _.set(newComp12.components[0], 'validate.required', true);
     return Formio.createForm(document.createElement('div'), newComp12, {}).then((form) => {
       const selectBoxesComponent = form.getComponent('selectBoxes');
       assert.equal(selectBoxesComponent.errors.length, 1);
       Formio.makeRequest = originalMakeRequest;
-    })
+    });
   });
 });
 
