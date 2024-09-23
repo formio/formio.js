@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0-rc.85]
+## 5.0.0-rc.85
+### Changed
+ - Updated @formio/core@2.3.0-rc.4
+
 ### Changed
  - FIO-8719 fixed error message display for nested wizard components
  - FIO-8962 Fixed screen shifting when validation errors pop up in an embedded Wizard form
