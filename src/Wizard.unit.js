@@ -395,9 +395,25 @@ describe('Wizard tests', () => {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
     const nestedWizard = _.cloneDeep(WizardWithRequiredFields);
+    const parentWizard = _.cloneDeep(formWithNestedWizard);
+
+    const requiredTextField = {
+      label: 'Parent Text Field',
+      applyMaskOn: 'change',
+      tableView: true,
+      validate: {
+        required: true
+      },
+      validateWhenHidden: false,
+      key: 'textField',
+      type: 'textfield',
+      input: true
+    }
+
+    parentWizard.components[0].components.push(requiredTextField);
     const clickEvent = new Event('click');
-    
-    wizard.setForm(formWithNestedWizard).then(() => {
+
+    wizard.setForm(parentWizard).then(() => {
       const nestedFormComp = wizard.getComponent('formNested');
 
       nestedFormComp.loadSubForm = ()=> {
@@ -424,6 +440,7 @@ describe('Wizard tests', () => {
             assert.equal(errors.length, 2, 'Must err before next page');
             errors.forEach((error) => {
               assert.equal(error.ruleName, 'required');
+              assert.equal(error.message, 'Text Field is required' , 'Should set correct lebel in the error message');
             });
             done();
           }, 300)
