@@ -54,34 +54,35 @@ import truncateMultipleSpaces from '../test/forms/truncateMultipleSpaces';
 import calculatedValue from '../test/forms/calculatedValue';
 import conditionalDataGridWithTableAndRadio from '../test/forms/conditionalDataGridWithTableAndRadio';
 import calculateValueWithManualOverrideLableValueDataGrid
-  from '../test/forms/calculateValueWithManualOverrideLableValueDataGrid';
-import deeplyNestedDataGridAndContainer from '../test/forms/nestedDataGridsAndContainers';
-import columnWithConditionalComponents from '../test/forms/columnWithConditionalComponents';
-import formWithSurvey from '../test/forms/formWithSurvey';
-import formWithSelectBoxes from '../test/forms/formWithSelectBoxes';
-import formWithDayComp from '../test/forms/formWithDayComp';
-import formWithCalcValue from '../test/forms/formWithCalcValue';
-import formWithAllowCalculateOverride from '../test/forms/formWithAllowCalculateOverride';
-import testClearOnHideInsideEditGrid from '../test/forms/clearOnHideInsideEditGrid';
-import formWithNestedDataGridInitEmpty from '../test/forms/nestedDataGridWithInitEmpty';
-import formWithEventLogicInHiddenComponent from '../test/forms/formWithEventLogicInHiddenComponent';
-import * as FormioUtils from './utils/utils';
-import htmlRenderMode from '../test/forms/htmlRenderMode';
-import optionalSanitize from '../test/forms/optionalSanitize';
-import formsWithNewSimpleConditions from '../test/forms/formsWithNewSimpleConditions';
-import formWithRadioInsideDataGrid from '../test/forms/formWithRadioInsideDataGrid';
-import formWithCheckboxRadioType from '../test/forms/formWithCheckboxRadioType';
-import formWithFormController from '../test/forms/formWithFormController';
-import calculateValueOnServerForEditGrid from '../test/forms/calculateValueOnServerForEditGrid';
-import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
-import formWithDeeplyNestedConditionalComps from '../test/forms/formWithDeeplyNestedConditionalComps';
-import formWithValidation from '../test/forms/formWithValidation';
-import formWithNotAllowedTags from '../test/forms/formWithNotAllowedTags';
-import formWithValidateWhenHidden from '../test/forms/formWithValidateWhenHidden';
-import formWithEditGrid from '../test/forms/formWithEditGrid';
-import formWithSelectRadioUrlDataSource from '../test/forms/selectRadioUrlDataSource';
-import wizardWithRequiredFields from '../test/forms/wizardWithRequiredFields';
-import webformWithNestedWizard from '../test/forms/webformWIthNestedWizard';
+  from '../forms/calculateValueWithManualOverrideLableValueDataGrid.js';
+import deeplyNestedDataGridAndContainer from '../forms/nestedDataGridsAndContainers.js';
+import columnWithConditionalComponents from '../forms/columnWithConditionalComponents.js';
+import formWithSurvey from '../forms/formWithSurvey.js';
+import formWithSelectBoxes from '../forms/formWithSelectBoxes.js';
+import formWithDayComp from '../forms/formWithDayComp.js';
+import formWithCalcValue from '../forms/formWithCalcValue.js';
+import formWithAllowCalculateOverride from '../forms/formWithAllowCalculateOverride.js';
+import testClearOnHideInsideEditGrid from '../forms/clearOnHideInsideEditGrid.js';
+import formWithNestedDataGridInitEmpty from '../forms/nestedDataGridWithInitEmpty.js';
+import formWithEventLogicInHiddenComponent from '../forms/formWithEventLogicInHiddenComponent.js';
+import * as FormioUtils from '../../src/utils/utils.js';
+import htmlRenderMode from '../forms/htmlRenderMode.js';
+import optionalSanitize from '../forms/optionalSanitize.js';
+import formsWithNewSimpleConditions from '../forms/formsWithNewSimpleConditions.js';
+import formWithRadioInsideDataGrid from '../forms/formWithRadioInsideDataGrid.js';
+import formWithCheckboxRadioType from '../forms/formWithCheckboxRadioType.js';
+import formWithFormController from '../forms/formWithFormController.js';
+import calculateValueOnServerForEditGrid from '../forms/calculateValueOnServerForEditGrid.js';
+import formsWithAllowOverride from '../forms/formsWithAllowOverrideComps.js';
+import formWithDeeplyNestedConditionalComps from '../forms/formWithDeeplyNestedConditionalComps.js';
+import formWithValidation from '../forms/formWithValidation.js';
+import formWithNotAllowedTags from '../forms/formWithNotAllowedTags.js';
+import formWithValidateWhenHidden from '../forms/formWithValidateWhenHidden.js';
+import formWithEditGrid from '../forms/formWithEditGrid.js';
+import formWithSelectRadioUrlDataSource from '../forms/selectRadioUrlDataSource.js';
+import wizardWithRequiredFields from '../forms/wizardWithRequiredFields';
+import webformWithNestedWizard from '../forms/webformWIthNestedWizard';
+import formWithUniqueValidation from '../forms/formWithUniqueValidation.js';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
 if (_.has(Formio, 'Components.setComponents')) {
@@ -91,6 +92,39 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+  it('Should not disable submit btn when only server errors present for the form', done => {
+    const formElement = document.createElement('div');
+    const {form, submission, serverErrors} = formWithUniqueValidation;
+    Formio.createForm(formElement, form)
+      .then(formInst => {
+        const comp1 = formInst.getComponent('textField');
+        const uniqueComp = formInst.getComponent('textFieldUnique');
+        const btn = formInst.getComponent('submit');
+        assert.deepEqual(btn.disabled, true);
+        comp1.setValue(submission.data.textField);
+        uniqueComp.setValue(submission.data.textFieldUnique);
+        setTimeout(()=> {
+          assert.deepEqual(submission.data, formInst.submission.data);
+          assert.deepEqual(btn.disabled, false);
+          formInst.setServerErrors(serverErrors);
+          formInst.onSubmissionError(serverErrors);
+          setTimeout(()=> {
+            assert.deepEqual(formInst.serverErrors.length, 1);
+            assert.deepEqual(btn.disabled, false);
+            const inputEvent = new Event('input');
+            const comp1Input = comp1.refs.input[0];
+            comp1Input.value = 'test1';
+            comp1Input.dispatchEvent(inputEvent);
+            setTimeout(()=> {
+              assert.deepEqual(formInst.serverErrors.length, 1);
+              assert.deepEqual(btn.disabled, false);
+              done()
+            }, 400);
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
+  });
 
   it('Should validate hidden and conditionally hidden components when validateWhenHidden is enabled for those components', done => {
     const formElement = document.createElement('div');

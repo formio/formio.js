@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.0.0-rc.86]
+ - FIO-9075: fixed an issue where the form cannot be resubmitted if it has server errors
+ - FIO-8414 | FIO-8403 | FIO-8389: Fixes 5x validations and conditionals for array data components
+ 
 ## 5.0.0-rc.85
 ### Changed
  - Updated @formio/core@2.3.0-rc.4

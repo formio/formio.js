@@ -1436,7 +1436,7 @@ export default class Webform extends NestedDataComponent {
                 process: 'change'
             })
             : [];
-        value.isValid = errors.length === 0;
+        value.isValid = (errors || []).filter(err => !err.fromServer).length === 0;
 
         this.loading = false;
         if (this.submitted) {
