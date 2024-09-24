@@ -416,6 +416,10 @@ describe('SelectBoxes Component', () => {
       ];
     };
     const newComp12 = _.cloneDeep(comp12);
+    newComp12.components.push({
+      'type': 'button',
+      'key': 'submit'
+    });
     _.set(newComp12.components[0], 'validate.required', true);
     Formio.createForm(document.createElement('div'), newComp12, {}).then((form) => {
       const selectBoxesComponent = form.getComponent('selectBoxes');
