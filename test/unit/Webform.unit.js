@@ -82,6 +82,7 @@ import formWithEditGrid from '../forms/formWithEditGrid.js';
 import formWithSelectRadioUrlDataSource from '../forms/selectRadioUrlDataSource.js';
 import wizardWithRequiredFields from '../forms/wizardWithRequiredFields';
 import webformWithNestedWizard from '../forms/webformWIthNestedWizard';
+import formWithUniqueValidation from '../forms/formWithUniqueValidation.js';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
 if (_.has(Formio, 'Components.setComponents')) {
@@ -91,6 +92,39 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+  it('Should not disable submit btn when only server errors present for the form', done => {
+    const formElement = document.createElement('div');
+    const {form, submission, serverErrors} = formWithUniqueValidation;
+    Formio.createForm(formElement, form)
+      .then(formInst => {
+        const comp1 = formInst.getComponent('textField');
+        const uniqueComp = formInst.getComponent('textFieldUnique');
+        const btn = formInst.getComponent('submit');
+        assert.deepEqual(btn.disabled, true);
+        comp1.setValue(submission.data.textField);
+        uniqueComp.setValue(submission.data.textFieldUnique);
+        setTimeout(()=> {
+          assert.deepEqual(submission.data, formInst.submission.data);
+          assert.deepEqual(btn.disabled, false);
+          formInst.setServerErrors(serverErrors);
+          formInst.onSubmissionError(serverErrors);
+          setTimeout(()=> {
+            assert.deepEqual(formInst.serverErrors.length, 1);
+            assert.deepEqual(btn.disabled, false);
+            const inputEvent = new Event('input');
+            const comp1Input = comp1.refs.input[0];
+            comp1Input.value = 'test1';
+            comp1Input.dispatchEvent(inputEvent);
+            setTimeout(()=> {
+              assert.deepEqual(formInst.serverErrors.length, 1);
+              assert.deepEqual(btn.disabled, false);
+              done()
+            }, 400);
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
+  });
 
   it('Should validate hidden and conditionally hidden components when validateWhenHidden is enabled for those components', done => {
     const formElement = document.createElement('div');
