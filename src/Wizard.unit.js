@@ -598,6 +598,76 @@ describe('Wizard tests', () => {
     .catch((err) => done(err));
   });
 
+  it('Should redirect to the correct nested wizard page from the Error list', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const nestedWizard = _.cloneDeep(wizardTestForm.form);
+    const parentWizardForm = _.cloneDeep(formWithNestedWizard);
+    parentWizardForm.components[0].components.push({
+      label: 'Parent Text',
+      applyMaskOn: 'change',
+      tableView: true,
+      validate: {
+        required: true
+      },
+      validateWhenHidden: false,
+      key: 'parentText',
+      type: 'textfield',
+      input: true
+    })
+    const clickEvent = new Event('click');
+
+    wizard.setForm(parentWizardForm).then(() => {
+      const nestedFormComp = wizard.getComponent('formNested');
+
+      nestedFormComp.loadSubForm = ()=> {
+        nestedFormComp.formObj = nestedWizard;
+        nestedFormComp.subFormLoading = false;
+        return new Promise((resolve) => resolve(nestedWizard));
+      };
+
+      nestedFormComp.createSubForm();
+
+      setTimeout(() => {
+        const clickWizardBtn = (pathPart) => {
+          const btn = _.get(wizard.refs, `${wizard.wizardKey}-${pathPart}`);
+          btn.dispatchEvent(clickEvent);
+        };
+
+        const checkPage = (pageNumber) => {
+          assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+        };
+
+        clickWizardBtn('link[4]');
+        
+        setTimeout(() => {
+          checkPage(4);
+          clickWizardBtn('submit');
+          setTimeout(() => {
+            assert.equal(wizard.refs.errorRef.length, 4, 'Should have errors');
+            wizard.refs.errorRef[0].dispatchEvent(clickEvent);
+            setTimeout(() => {
+              checkPage(0);
+              assert.equal(wizard.refs.errorRef.length, 4, 'Should have errors');
+              wizard.refs.errorRef[1].dispatchEvent(clickEvent);
+                setTimeout(() => {
+                  checkPage(2);
+                  assert.equal(wizard.refs.errorRef.length, 4, 'Should have errors');
+                  wizard.refs.errorRef[2].dispatchEvent(clickEvent);
+                  setTimeout(() => {
+                    checkPage(3);
+                    done();
+                  }, 200);
+                }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200)
+    })
+    .catch((err) => done(err));
+  });
+  
+
   it('Should execute advanced logic for wizard pages', function(done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
