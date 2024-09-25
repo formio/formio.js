@@ -37,6 +37,10 @@ describe('TextArea Component', () => {
           firstName: 'Bobby',
           lastName: 'Lynch'
         },
+        {
+          firstName: 'Harold',
+          lastName: 'Freeman'
+        },
       );
       expect(emit.callCount).to.equal(1);
     });
