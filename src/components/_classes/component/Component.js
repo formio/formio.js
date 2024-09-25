@@ -2933,10 +2933,18 @@ export default class Component extends Element {
     }
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
-        this.setValueAt(i, isArray ? value[i] : value, flags);
+        this.setValueAt(i, isArray && !this.isSingleInputValue() ? value[i] : value, flags);
       }
     }
     return changed;
+  }
+
+  /**
+   * Returns if the value (e.g. array) should be divided between several inputs
+   * @returns {boolean}
+   */
+  isSingleInputValue() {
+    return false;
   }
 
   /**
