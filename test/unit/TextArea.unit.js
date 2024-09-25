@@ -4,6 +4,7 @@ import assert from 'power-assert';
 import sinon from 'sinon';
 import formWithCKEditor from '../forms/formWithCKEditor';
 import formWithRichTextAreas from '../forms/formWithRichTextAreas';
+import textAreaJsonType from '../forms/textAreaJsonType';
 import Harness from '../harness';
 import { Formio } from '../../src/Formio';
 import { comp1, comp2, comp3, comp4 } from './fixtures/textarea';
@@ -549,6 +550,19 @@ describe('TextArea Component', () => {
           expect(textArea.focus.bind(textArea)).to.not.throw();
 
           done();
+      }).catch(done);
+    });
+
+    it('Should set array as value for textarea with ace editor with json data type', (done) => {
+      const element = document.createElement('div');
+     
+      Formio.createForm(element, textAreaJsonType).then(form => {
+          const textArea = form.getComponent('textArea');
+          textArea.setValue([1,2,3]);
+          setTimeout(() => {
+            assert.deepEqual(textArea.dataValue, [1,2,3]);
+            done();
+          }, 300)
       }).catch(done);
     });
   });
