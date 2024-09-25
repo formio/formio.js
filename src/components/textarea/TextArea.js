@@ -355,6 +355,10 @@ export default class TextAreaComponent extends TextFieldComponent {
     return this.component.as && this.component.as === 'json';
   }
 
+  isSingleInputValue() {
+    return !this.component.multiple;
+  }
+
   setConvertedValue(value, index) {
     if (this.isJsonValue && !_.isNil(value)) {
       try {
