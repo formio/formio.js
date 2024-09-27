@@ -4,10 +4,12 @@ import assert from 'power-assert';
 import sinon from 'sinon';
 import formWithCKEditor from '../../../test/forms/formWithCKEditor';
 import formWithRichTextAreas from '../../../test/forms/formWithRichTextAreas';
+import textAreaJsonType from '../../../test/forms/textAreaJsonType';
 import Harness from '../../../test/harness';
 import { Formio } from './../../Formio';
 import { comp1, comp2, comp3, comp4 } from './fixtures';
 import TextAreaComponent from './TextArea';
+import { fastCloneDeep } from '@formio/core';
 window.ace = require('ace-builds');
 
 describe('TextArea Component', () => {
@@ -21,22 +23,18 @@ describe('TextArea Component', () => {
     return Harness.testCreate(TextAreaComponent, comp2).then((component) => {
       const valueToSet = [
         {
-          firstName: 'Bobby',
-          lastName: 'Lynch'
+          'firstName': 'Bobby',
+          'lastName': 'Lynch'
         },
         {
-          firstName: 'Harold',
-          lastName: 'Freeman'
+          'firstName': 'Harold',
+          'lastName': 'Freeman'
         },
       ];
       const emit = sinon.spy(component, 'setValue');
-      component.setValue(valueToSet);
-      expect(component.getValue()).to.deep.equal(
-        {
-          firstName: 'Bobby',
-          lastName: 'Lynch'
-        },
-      );
+      component.setValue(fastCloneDeep(valueToSet));
+      assert.deepEqual(component.getValue(), valueToSet);
+
       expect(emit.callCount).to.equal(1);
     });
   });
@@ -549,6 +547,19 @@ describe('TextArea Component', () => {
           expect(textArea.focus.bind(textArea)).to.not.throw();
 
           done();
+      }).catch(done);
+    });
+
+    it('Should set array as value for textarea with ace editor with json data type', (done) => {
+      const element = document.createElement('div');
+     
+      Formio.createForm(element, textAreaJsonType).then(form => {
+          const textArea = form.getComponent('textArea');
+          textArea.setValue([1,2,3]);
+          setTimeout(() => {
+            assert.deepEqual(textArea.dataValue, [1,2,3]);
+            done();
+          }, 300)
       }).catch(done);
     });
   });
