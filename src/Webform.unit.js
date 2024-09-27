@@ -71,6 +71,7 @@ import optionalSanitize from '../forms/optionalSanitize.js';
 import formsWithNewSimpleConditions from '../forms/formsWithNewSimpleConditions.js';
 import formWithRadioInsideDataGrid from '../forms/formWithRadioInsideDataGrid.js';
 import formWithCheckboxRadioType from '../forms/formWithCheckboxRadioType.js';
+import formWithCheckboxRadioTypeAndValidation from '../forms/formWithCheckboxRadioTypeAndValidation.js';
 import formWithFormController from '../forms/formWithFormController.js';
 import calculateValueOnServerForEditGrid from '../forms/calculateValueOnServerForEditGrid.js';
 import formsWithAllowOverride from '../forms/formsWithAllowOverrideComps.js';
@@ -5147,6 +5148,20 @@ describe('Webform tests', function() {
       }, 300);
     })
       .catch((err) => done(err));
+  });
+
+  it('Should show validation errors for checkbox component with inputType of radio', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm(formWithCheckboxRadioTypeAndValidation).then(() => {
+      const submitButton = form.getComponent('submit');
+      assert.ok(submitButton.disabled, 'Submit button should be disabled');
+      const errors = form.validate(); 
+      assert.strictEqual(errors.length, 1, 'Should return 1 error for the checkbox');
+      assert.strictEqual(errors[0].component.label, 'Checkbox 1', 'The error should be for the checkbox component');
+      assert.strictEqual(errors[0].errorKeyOrMessage, 'required', 'Should show required validation error');
+      done();
+    }).catch(done);
   });
 
   for (const formTest of FormTests) {
