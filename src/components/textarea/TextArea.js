@@ -355,6 +355,27 @@ export default class TextAreaComponent extends TextFieldComponent {
     return this.component.as && this.component.as === 'json';
   }
 
+  /**
+ * Normalize values coming into updateValue. For example, depending on the configuration, string value `"true"` will be normalized to boolean `true`.
+ * @param {*} value - The value to normalize
+ * @returns {*} - Returns the normalized value
+ */
+  normalizeValue(value) {
+    if (this.component.multiple && Array.isArray(value)) {
+      return value.map((singleValue) => this.normalizeSingleValue(singleValue));
+    }
+
+    return super.normalizeValue(this.normalizeSingleValue(value));
+  }
+
+  normalizeSingleValue(value) {
+    if (_.isNil(value)) {
+      return;
+    }
+
+    return this.isJsonValue ? value : String(value);
+  }
+
   isSingleInputValue() {
     return !this.component.multiple;
   }
