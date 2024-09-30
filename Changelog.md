@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0-rc.87]
+## 5.0.0-rc.87
 ### Changed
  - FIO-9059: fixed an issue where the value for textarea with json datatype is not normalized and set correctly
 
