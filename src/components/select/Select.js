@@ -1752,7 +1752,7 @@ export default class SelectComponent extends ListComponent {
   asString(value, options = {}) {
     value = value ?? this.getValue();
 
-    if (options.modalPreview) {
+    if (options.modalPreview || options.dataTablePreview) {
       const template = this.itemTemplate(value, value);
       return template;
     }
