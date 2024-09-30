@@ -25,6 +25,31 @@ describe('WebformBuilder tests', function() {
     done();
   });
 
+  it("Should not show errors with default array values", (done) => {
+    const builder = Harness.getBuilder();
+    builder
+      .setForm({})
+      .then(() => {
+        Harness.buildComponent("address");
+        setTimeout(() => {
+          const multipleValues = builder.editForm.getComponent("multiple");
+          const provider = builder.editForm.getComponent("provider");
+          provider.setValue("nominatim");
+          setTimeout(() => {
+            multipleValues.setValue(true);
+            setTimeout(() => {
+              Harness.saveComponent();
+              setTimeout(() => {
+                assert.equal(builder.editForm.errors.length, 0);
+                done();
+              }, 350);
+            }, 250);
+          }, 250);
+        }, 250);
+      })
+      .catch(done);
+  });
+
   it('Should execute form controller', (done) => {
     const builder = Harness.getBuilder();
     builder.webform.form = formWithFormController;
