@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
  - FIO-9075: fixed an issue where the form cannot be resubmitted if it has server errors
  - FIO-8414 | FIO-8403 | FIO-8389: Fixes 5x validations and conditionals for array data components
+ - FIO-9097 fixed navigation through the errors list
  
 ## 5.0.0-rc.85
 ### Changed
