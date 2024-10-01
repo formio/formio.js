@@ -310,6 +310,37 @@ describe('Day Component', () => {
     }).catch(done);
     comp1.fields.day.hide = false;
     comp1.fields.month.hide = false;
+    delete comp1.defaultValue;
+  });
+
+  it('Should return correct data value as a string if the day field is hidden', (done) => {
+    comp1.dayFirst = false;
+    comp1.fields.day.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      assert.equal(component.getValueAsString('03/2022'), '03/2022');
+      done();
+    }).catch(done);
+    comp1.fields.day.hide = false;
+  });
+
+  it('Should return correct data value as a string if the month field is hidden', (done) => {
+    comp1.fields.month.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      assert.equal(component.getValueAsString('24/2023'), '24/2023');
+      done();
+    }).catch(done);
+    comp1.fields.month.hide = false;
+  });
+
+  it('Should return correct data value as a string if the month and year fields are hidden', (done) => {
+    comp1.fields.year.hide = true;
+    comp1.fields.month.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      assert.equal(component.getValueAsString('24'), '24');
+      done();
+    }).catch(done);
+    comp1.fields.year.hide = false;
+    comp1.fields.month.hide = false;
   });
 
   it('OnBlur validation should work properly with Day component', (done) => {
