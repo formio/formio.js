@@ -83,6 +83,7 @@ import formWithSelectRadioUrlDataSource from '../forms/selectRadioUrlDataSource.
 import wizardWithRequiredFields from '../forms/wizardWithRequiredFields';
 import webformWithNestedWizard from '../forms/webformWIthNestedWizard';
 import formWithUniqueValidation from '../forms/formWithUniqueValidation.js';
+import formWithConditionalEmail from '../forms/formWithConditionalEmail.js';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
 if (_.has(Formio, 'Components.setComponents')) {
@@ -92,6 +93,35 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+  it('Should validate email input when it is simple conditionally visible', done => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, formWithConditionalEmail)
+      .then(formInst => {
+        const radio = formInst.getComponent('radio');
+        const email = formInst.getComponent('email');
+
+        assert.equal(email.visible, false);
+        radio.setValue('english');
+
+        setTimeout(()=> {
+          assert.equal(email.visible, true);
+
+          const inputEvent = new Event('input');
+          const emailInput = email.refs.input[0];
+          emailInput.value = 'test';
+          emailInput.dispatchEvent(inputEvent);
+
+          setTimeout(()=> {
+            assert.equal(email.visibleErrors.length, 1);
+            assert.equal(email.visibleErrors[0].ruleName, 'email');
+            assert.equal(email.errors.length, 1);
+            done()
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
+  });
+
   it('Should not disable submit btn when only server errors present for the form', done => {
     const formElement = document.createElement('div');
     const {form, submission, serverErrors} = formWithUniqueValidation;
