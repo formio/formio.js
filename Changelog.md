@@ -76,6 +76,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8234/FIO-7195: Fixes an issue where value properties are shown instead of labels for Select component with Resource/URL data sources in read only mode and for modal preview
  - FIO-8986: fixed setting default value for day component with hidden day and month
  - FIO-8719: fixed error message display for nested wizard components
+ - FIO-9086: time component with default value validation fix
 
 ### New Features
 

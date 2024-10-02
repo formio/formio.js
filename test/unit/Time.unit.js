@@ -72,6 +72,32 @@ describe('Time Component', () => {
     }).catch(done);
   });
 
+  it('Should return error if data in multiple time component is not valid', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm(timeForm2).then(() => {
+      const component = form.components[1];
+      Harness.setInputValue(component, 'data[multipleTime]', ['89:19']);
+      setTimeout(() => {
+        assert.equal(component.errors[0].message, 'Invalid time', 'Should have an error');
+        done();
+      }, 650);
+    }).catch(done);
+  });
+
+  it('Should not return error if data in multiple time component is not valid', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm(timeForm2).then(() => {
+      const component = form.components[1];
+      Harness.setInputValue(component, 'data[multipleTime]', ['10:00:00']);
+      setTimeout(() => {
+        assert.equal(component.errors.length, 0, 'Should not have an error');
+        done();
+      }, 650);
+    }).catch(done);
+  });
+
   it('Should build a time component', (done) => {
     Harness.testCreate(TimeComponent, comp3).then((time) => {
       assert.deepEqual(time.dataValue, ['10:00:00', '11:00:00'], 'Should be set to default value');
