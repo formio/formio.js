@@ -288,7 +288,12 @@ export default class SelectComponent extends ListComponent {
       return this.sanitize(value, this.shouldSanitizeValue);
     }
 
-    if (this.component.multiple && _.isArray(this.dataValue) ? this.dataValue.find((val) => this.normalizeSingleValue(value) === val) : (this.dataValue === this.normalizeSingleValue(value))) {
+    // Inside DataTable component won't have dataValue set
+    const shouldUseSelectData = (this.component.multiple && _.isArray(this.dataValue)
+      ? this.dataValue.find((val) => this.normalizeSingleValue(value) === val)
+      : (this.dataValue === this.normalizeSingleValue(value))) || this.inDataTable;
+
+    if (shouldUseSelectData) {
       const selectData = this.selectData;
       if (selectData) {
         const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
@@ -1751,7 +1756,7 @@ export default class SelectComponent extends ListComponent {
   asString(value, options = {}) {
     value = value ?? this.getValue();
 
-    if (options.modalPreview || options.dataTablePreview) {
+    if (options.modalPreview || this.inDataTable) {
       const template = this.itemTemplate(value, value);
       return template;
     }
