@@ -3419,6 +3419,7 @@ export default class Component extends Element {
       value: this.validationValue,
       path: this.path || this.component.key,
       instance: this,
+      form: this.root ? this.root._form : {},
       scope: { errors: [] },
       processors: [
         validateProcessInfo
