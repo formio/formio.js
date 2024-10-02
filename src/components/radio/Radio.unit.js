@@ -28,6 +28,38 @@ describe('Radio Component', () => {
     });
   });
 
+  it("Should allow to uncheck default radio value and set correct submission data", function (done) {
+    const formElement = document.createElement("div");
+    const comp5Cloned = _.cloneDeep(comp5);
+    comp5Cloned.components[0].defaultValue = "one";
+
+    Formio.createForm(formElement, comp5Cloned)
+      .then((form) => {
+        const submit = form.getComponent("submit");
+        const submitBtn = submit.refs.button;
+        const clickEvent = new Event("click");
+        const component = form.getComponent("radio");
+        const radioFirstInput = component.refs.input[0];
+        setTimeout(() => {
+          submitBtn.dispatchEvent(clickEvent);
+          setTimeout(() => {
+            assert.equal(form.submission.data.radio, 'one');
+            assert.equal(component.refs.input[0].checked, true);
+            radioFirstInput.click();
+            setTimeout(() => {
+              submitBtn.dispatchEvent(clickEvent);
+              setTimeout(() => {
+                assert.equal(form.submission.data.radio, '');
+                assert.equal(component.refs.input[0].checked, false);
+                done();
+              }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      })
+      .catch(done);
+  });
+
   it('Should return correct string values if storage type is Number', () => {
     return Harness.testCreate(RadioComponent, comp2).then((component) => {
       assert.equal(component.getValueAsString(1), 'one');
