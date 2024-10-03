@@ -3391,7 +3391,7 @@ export default class Component extends Element {
     if (this.options.alwaysDirty) {
       flags.dirty = true;
     }
-    if (flags.fromSubmission && this.hasValue(data)) {
+    if (flags.fromSubmission && this.hasValue(data) && !(this.pristine && this.protected)) {
       flags.dirty = true;
     }
     this.setDirty(flags.dirty);
