@@ -3924,6 +3924,10 @@ export default class Component extends Element {
       this.parent.beforeFocus(this);
     }
 
+    if (!index && !_.isNumber(index) && this.refs?.input?.length) {
+      index = this.refs.input.length - 1;
+    }
+
     if (this.refs.input?.length) {
       const focusingInput = this.refs.input[index];
       if (this.component.widget?.type === 'calendar') {
