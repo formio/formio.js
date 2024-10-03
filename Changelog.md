@@ -102,6 +102,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8970 resolved failing test
  - FIO-8921: fixed an issue where newly created PDF-form cannot be saved in builder after adding some components in it
  - FIO-8866-8864: fixed simple conditions operators for recaptcha
+ - FIO-9158: fixed an issue where Password component error message persists to displayed in Edit page
 
 ### New Features
 
