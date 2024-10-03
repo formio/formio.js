@@ -418,4 +418,40 @@ describe('Day Component', () => {
       },200);
     });
   });
+
+  it('Should save empty value after deleting the values', (done) => {
+    delete comp1.defaultValue;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue('10/12/2024');
+      assert.equal(component.getValue(), '10/12/2024');
+      component.refs.month.value = '';
+      component.refs.month.dispatchEvent(new Event('input'));
+      component.refs.day.value = '';
+      component.refs.day.dispatchEvent(new Event('input'));
+      component.refs.year.value = '';
+      component.refs.year.dispatchEvent(new Event('input'));
+      setTimeout(() => {
+        assert.equal(component.getValue(), '');
+        done();
+      }, 100);
+    });
+  });
+
+  it('Should save empty value after deleting values from fields if default value is set', (done) => {
+    comp1.defaultValue = '10/12/2024';
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      assert.equal(component.getValue(), '10/12/2024');
+      component.refs.month.value = '';
+      component.refs.month.dispatchEvent(new Event('input'));
+      component.refs.day.value = '';
+      component.refs.day.dispatchEvent(new Event('input'));
+      component.refs.year.value = '';
+      component.refs.year.dispatchEvent(new Event('input'));
+      setTimeout(() => {
+        assert.equal(component.getValue(), '');
+        done();
+      }, 100);
+    });
+    delete comp1.defaultValue;
+  });
 });

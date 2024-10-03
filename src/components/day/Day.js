@@ -557,7 +557,7 @@ export default class DayComponent extends Field {
     }
 
     if (this.showDay && this.refs.day) {
-      day = parseInt(this.refs.day.value, 10);
+      day = this.refs.day.value === '' ? '' : parseInt(this.refs.day.value, 10);
     }
     if (day === undefined || _.isNaN(day)) {
       day = (defaults.length !== 3 && value)
@@ -567,7 +567,7 @@ export default class DayComponent extends Field {
 
     if (this.showMonth && this.refs.month) {
       // Months are 0 indexed.
-      month = parseInt(this.refs.month.value, 10);
+      month = this.refs.month.value === '' ? '' : parseInt(this.refs.month.value, 10);
     }
     if (month === undefined || _.isNaN(month)) {
       month = (defaults.length !== 3 && value)
@@ -576,7 +576,7 @@ export default class DayComponent extends Field {
     }
 
     if (this.showYear && this.refs.year) {
-      year = parseInt(this.refs.year.value);
+      year = this.refs.year.value === '' ? '' : parseInt(this.refs.year.value);
     }
     if (year === undefined || _.isNaN(year)) {
       year = (defaults.length !== 3 && value)
@@ -586,6 +586,7 @@ export default class DayComponent extends Field {
 
     let result;
     if (!day && !month && !year) {
+      this.dataValue = this.emptyValue;
       return null;
     }
 
