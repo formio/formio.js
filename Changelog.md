@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.0.0-rc.89]
+ - FIO-9153-9154: fixed console errors when navigating tagpad validation errors
+ - FIO-8948-8950: fixed an issue where radio and select boxes with url type do not display in PDF download
+ - FIO-9080 checkbox radio validation error
+ - FIO-9148: Fixed duplicated revision versions
+
 ## 5.0.0-rc.88
 ### Changed
  - Updated @formio/core@2.3.0-rc.7
