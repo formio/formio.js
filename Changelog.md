@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0-rc.89]
+## 5.0.0-rc.89
+### Changed
+ - Updated @formio/core@2.3.0-rc.8
+ - FIO-8914: fixed an issue where select url does not work properly when url value has whitespaces at the end
+ - FIO-8990: fixed incorrect moment export
+ - FIO-9056: Fix enabling multiple values for address component
+ - FIO-9147: fixed an issue where the simple conditionally visible component is not validated on change
+ - FIO-9126 fixed display of value for Day component with hidden fields
+ - FIO-9120: Fix issue with unchecking radio default value
+ - FIO-9158: fixed an issue where Password component error message persists to displayed in Edit page
+ - FIO-9127 fixed saving an empty value for day component after deleting values
  - FIO-9153-9154: fixed console errors when navigating tagpad validation errors
  - FIO-8948-8950: fixed an issue where radio and select boxes with url type do not display in PDF download
  - FIO-9080 checkbox radio validation error
