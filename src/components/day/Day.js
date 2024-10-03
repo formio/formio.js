@@ -560,8 +560,8 @@ export default class DayComponent extends Field {
       day = parseInt(this.refs.day.value, 10);
     }
     if (day === undefined || _.isNaN(day)) {
-      day = (defaults.length !== 3 && value) ? 
-        this.getDayWithHiddenFields(defaults).day
+      day = (defaults.length !== 3 && value)
+        ? this.getDayWithHiddenFields(defaults).day
         : (defaults[DAY] && !_.isNaN(defaults[DAY]) ? defaults[DAY] : 0);
     }
 
@@ -570,8 +570,8 @@ export default class DayComponent extends Field {
       month = parseInt(this.refs.month.value, 10);
     }
     if (month === undefined || _.isNaN(month)) {
-      month = (defaults.length !== 3 && value) ? 
-        this.getDayWithHiddenFields(defaults).month
+      month = (defaults.length !== 3 && value)
+        ? this.getDayWithHiddenFields(defaults).month
         : (defaults[MONTH] && !_.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0);
     }
 
@@ -579,8 +579,8 @@ export default class DayComponent extends Field {
       year = parseInt(this.refs.year.value);
     }
     if (year === undefined || _.isNaN(year)) {
-      year = (defaults.length !== 3 && value) ? 
-        this.getDayWithHiddenFields(defaults).year
+      year = (defaults.length !== 3 && value)
+        ? this.getDayWithHiddenFields(defaults).year
         : (defaults[YEAR] && !_.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0);
     }
 
