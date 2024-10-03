@@ -19,6 +19,7 @@ import {
   comp15,
   comp16,
   comp17,
+  comp18,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
   compWithCustomDefaultValue,
@@ -34,6 +35,7 @@ import { Formio } from '../../Formio';
 import { fastCloneDeep } from '@formio/core';
 
 describe('EditGrid Component', () => {
+
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
     Harness.testCreate(EditGridComponent, comp4).then((component) => {
       component.setValue([{ dataMap: { key111: '111' } }]);
@@ -1731,4 +1733,32 @@ describe('EditGrid Fired Events', () => {
       })
       .catch(done);
   });
+
+  it('Should not show validation errors when inside component has validateOn: submit', (done) => {
+    Formio.createForm(document.createElement('div'), comp18).then((form) => {
+      const editGrid = form.getComponent('editGrid');
+      // Open Edit Grid first row for editing
+      editGrid.addRow();
+
+      const select = form.getComponent('select1');
+
+      // Open Select dropdown
+      const clickEvent = new Event('click');
+      const options = select.element.querySelector('.fluid.selection.dropdown');
+      options.dispatchEvent(clickEvent);
+
+      const mouseDownEvent = new Event('mousedown');
+      const firstOption = select.element.querySelector('.choices__list[role="listbox"]').children[0]
+      // Select the first option
+      firstOption.dispatchEvent(mouseDownEvent);
+
+      setTimeout(()=> {
+        // Check no visible errors appeared on the form
+        const errors = form.element.querySelectorAll('.formio-error-wrapper');
+        assert.strictEqual(errors.length, 0);
+        assert.strictEqual(form.visibleErrors.length, 0);
+        done();
+      }, 300)
+    }).catch(done);
+  })
 });

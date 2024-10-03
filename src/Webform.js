@@ -1262,6 +1262,10 @@ export default class Webform extends NestedDataComponent {
             errors = [errors];
         }
 
+        if (Array.isArray(this.errors)) {
+            errors = _.union(errors, this.errors);
+        }
+
         errors = errors.concat(this.customErrors).filter((err) => !!err);
 
         if (!errors.length) {
@@ -1443,7 +1447,7 @@ export default class Webform extends NestedDataComponent {
                 process: 'change'
             })
             : [];
-        value.isValid = errors.length === 0;
+        value.isValid = (errors || []).filter(err => !err.fromServer).length === 0;
 
         this.loading = false;
         if (this.submitted) {

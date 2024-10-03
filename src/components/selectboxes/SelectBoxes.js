@@ -299,7 +299,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       return true;
     }
 
-    const values = this.component.values;
+    const values = this.component.dataSrc === 'values' ? this.component.values : this.loadedOptions;
     const availableValueKeys = (values || []).map(({ value: optionValue }) => optionValue);
     const valueKeys = Object.keys(value);
 

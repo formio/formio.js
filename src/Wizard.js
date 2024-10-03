@@ -818,7 +818,7 @@ export default class Wizard extends Webform {
     }
     else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
-      this.scrollIntoView(this.element);
+      this.scrollIntoView(this.element, true);
       return Promise.reject(this.showErrors(errors, true));
     }
   }
@@ -1073,6 +1073,17 @@ export default class Wizard extends Webform {
     return super.errors;
   }
 
+  showErrors(errors, triggerEvent) {
+    if (this.hasExtraPages) {
+      this.subWizards.forEach((subWizard) => {
+        if(Array.isArray(subWizard.errors)) {
+          errors = [...errors, ...subWizard.errors]
+        }
+      })
+    };
+    return super.showErrors(errors, triggerEvent)
+  }
+
   focusOnComponent(key) {
     const component = this.getComponent(key);
     if (component) {
@@ -1080,7 +1091,7 @@ export default class Wizard extends Webform {
       while (!(topPanel.parent instanceof Wizard)) {
         topPanel = topPanel.parent;
       }
-      const pageIndex = this.pages.findIndex(page => page === topPanel);
+      const pageIndex = this.pages.findIndex(page => page.id === topPanel.id);
       if (pageIndex >= 0) {
         const page = this.pages[pageIndex];
         if (page && page !== this.currentPage) {

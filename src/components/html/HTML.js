@@ -6,7 +6,7 @@ export default class HTMLComponent extends Component {
     return Component.schema({
       label: 'HTML',
       type: 'htmlelement',
-      tag: 'p',
+      tag: 'div',
       attrs: [],
       content: '',
       input: false,

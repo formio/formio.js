@@ -1,41 +1,49 @@
 import Field from '../field/Field';
 import _ from 'lodash';
+import { Utils } from '@formio/core';
 
 export default class Multivalue extends Field {
   /**
    * Normalize values coming into updateValue.
    * @param {*} value - The value to normalize before setting.
+   * @param {object} flags - Flags to use when normalizing the value.
+   * @param {*} emptyValue - The empty value for the field.
    * @returns {*} - The normalized value.
    */
-  normalizeValue(value) {
+  normalizeValue(value, flags = {}, emptyValue = this.emptyValue) {
+    const underlyingValueShouldBeArray = Utils.getModelType(this.component) === 'array' || this.component.storeas === 'array' || Array.isArray(emptyValue);
     if (this.component.multiple) {
       if (Array.isArray(value)) {
+        if (underlyingValueShouldBeArray) {
+          if (value.length === 0 || !Array.isArray(value[0])) {
+            return [value];
+          }
+        }
         if (value.length === 0) {
-          return [this.emptyValue];
+          return [emptyValue];
         }
 
-        if (this.component.storeas === 'array') {
-          return super.normalizeValue([value]);
-        }
-
-        return super.normalizeValue(value);
+        return super.normalizeValue(value, flags);
       } else {
-        return super.normalizeValue(value == null ? [this.emptyValue] : [value]);
+        return super.normalizeValue(value == null ? [emptyValue] : [value], flags);
       }
     } else {
-      if (Array.isArray(value) && this.component.storeas !== 'array') {
-        if (this.component.storeas === 'string') {
-          return super.normalizeValue(value.join(this.delimiter || ''));
+      if (Array.isArray(value) && !underlyingValueShouldBeArray) {
+        if (Utils.getModelType(this.component) === 'any') {
+          return super.normalizeValue(value, flags);
         }
-        return super.normalizeValue(value[0] || this.emptyValue);
+        if (this.component.storeas === 'string') {
+          return super.normalizeValue(value.join(this.delimiter || ''), flags);
+        }
+        return super.normalizeValue(value[0] || emptyValue, flags);
       } else {
-        return super.normalizeValue(value);
+        return super.normalizeValue(value, flags);
       }
     }
   }
 
   get dataValue() {
-    return super.dataValue;
+    return this.normalizeValue(super.dataValue);
   }
 
   set dataValue(value) {
@@ -44,7 +52,6 @@ export default class Multivalue extends Field {
 
   get defaultValue() {
     let value = super.defaultValue;
-
     if (this.component.multiple) {
       if (_.isArray(value)) {
         value = !value.length ? [super.emptyValue] : value;

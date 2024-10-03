@@ -2523,7 +2523,7 @@ export default class Component extends Element {
     }
 
     // If we are supposed to validate on blur, then don't trigger validation yet.
-    if (this.component.validateOn === 'blur') {
+    if (this.component.validateOn === 'blur' || this.component.validateOn === 'submit') {
       flags.noValidate = true;
     }
 
@@ -2961,10 +2961,18 @@ export default class Component extends Element {
     }
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
-        this.setValueAt(i, isArray ? value[i] : value, flags);
+        this.setValueAt(i, isArray && !this.isSingleInputValue() ? value[i] : value, flags);
       }
     }
     return changed;
+  }
+
+  /**
+   * Returns if the value (e.g. array) should be divided between several inputs
+   * @returns {boolean}
+   */
+  isSingleInputValue() {
+    return false;
   }
 
   /**
@@ -3029,9 +3037,6 @@ export default class Component extends Element {
    * @returns {*} - The normalized value.
    */
   normalizeValue(value) {
-    if (this.component.multiple && !Array.isArray(value)) {
-      value = value ? [value] : [];
-    }
     return value;
   }
 
@@ -3386,7 +3391,7 @@ export default class Component extends Element {
     if (this.options.alwaysDirty) {
       flags.dirty = true;
     }
-    if (flags.fromSubmission && this.hasValue(data)) {
+    if (flags.fromSubmission && this.hasValue(data) && !(this.pristine && this.protected)) {
       flags.dirty = true;
     }
     this.setDirty(flags.dirty);
@@ -3414,6 +3419,7 @@ export default class Component extends Element {
       value: this.validationValue,
       path: this.path || this.component.key,
       instance: this,
+      form: this.root ? this.root._form : {},
       scope: { errors: [] },
       processors: [
         validateProcessInfo
@@ -3938,12 +3944,12 @@ export default class Component extends Element {
     }
   }
 
-  scrollIntoView(element = this.element) {
+  scrollIntoView(element = this.element, verticalOnly) {
     if (!element) {
       return;
     }
     const { left, top } = element.getBoundingClientRect();
-    window.scrollTo(left + window.scrollX, top + window.scrollY);
+    window.scrollTo(verticalOnly ? window.scrollX : left + window.scrollX, top + window.scrollY);
   }
 
   focus(index) {
