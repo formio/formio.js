@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.90
+### Changed
+ - Updated @formio/core@2.3.0-rc.9
+ - FIO-9127 fixed saving empty values for Day component with hidden fields
+
 ## 5.0.0-rc.89
 ### Changed
  - Updated @formio/core@2.3.0-rc.8
