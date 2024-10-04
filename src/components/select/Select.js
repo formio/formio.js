@@ -272,7 +272,7 @@ export default class SelectComponent extends ListComponent {
     };
   }
 
-  itemTemplate(data, value) {
+  itemTemplate(data, value, options = {}) {
     if (!_.isNumber(data) && _.isEmpty(data)) {
       return '';
     }
@@ -1466,7 +1466,7 @@ export default class SelectComponent extends ListComponent {
     // Check to see if we need to save off the template data into our metadata.
     const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
     const shouldSaveData = !valueIsObject || this.component.reference;
-    if (templateValue && shouldSaveData && this.templateData && this.templateData[templateValue] && this.root?.submission) {
+    if (!_.isNil(templateValue) && shouldSaveData && this.templateData && this.templateData[templateValue] && this.root?.submission) {
       const submission = this.root.submission;
       if (!submission.metadata) {
         submission.metadata = {};
@@ -1757,7 +1757,10 @@ export default class SelectComponent extends ListComponent {
     value = value ?? this.getValue();
 
     if (options.modalPreview || this.inDataTable) {
-      const template = this.itemTemplate(value, value);
+      if (this.inDataTable) {
+        value = this.undoValueTyping(value);
+      }
+      const template = this.itemTemplate((this.isEntireObjectDisplay() && !_.isObject(value.data)) ? { data: value } : value, value, options);
       return template;
     }
     //need to convert values to strings to be able to compare values with available options that are strings
