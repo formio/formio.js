@@ -273,7 +273,7 @@ export default class SelectComponent extends ListComponent {
     };
   }
 
-  itemTemplate(data, value, options = {}) {
+  itemTemplate(data, value) {
     if (!_.isNumber(data) && _.isEmpty(data)) {
       return '';
     }
