@@ -3,7 +3,7 @@ import { conformToMask } from '@formio/vanilla-text-mask';
 import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
-import { processOne, processOneSync, validateProcessInfo } from '@formio/core/process';
+import { processOne, processOneSync, validateProcessInfo, conditionProcessInfo } from '@formio/core/process';
 
 import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
@@ -227,7 +227,7 @@ export default class Component extends Element {
    * @param options
    */
   /* eslint-disable no-unused-vars */
-  static tableView(value, options) {}
+  static tableView(value, options) { }
   /* eslint-enable no-unused-vars */
 
   /**
@@ -867,9 +867,9 @@ export default class Component extends Element {
   labelIsHidden() {
     return !this.component.label ||
       ((!this.isInDataGrid && this.component.hideLabel) ||
-      (this.isInDataGrid && !this.component.dataGridLabel) ||
-      this.options.floatingLabels ||
-      this.options.inputsOnly) && !this.builderMode;
+        (this.isInDataGrid && !this.component.dataGridLabel) ||
+        this.options.floatingLabels ||
+        this.options.inputsOnly) && !this.builderMode;
   }
 
   transform(type, value) {
@@ -1056,7 +1056,7 @@ export default class Component extends Element {
       settings.shadowRoot = this.root.shadowRoot;
     }
 
-    const widget = settings && Widgets[settings.type] ? new Widgets[settings.type](settings, this.component, this): null;
+    const widget = settings && Widgets[settings.type] ? new Widgets[settings.type](settings, this.component, this) : null;
     return widget;
   }
 
@@ -1278,7 +1278,7 @@ export default class Component extends Element {
     const tooltipAttribute = tooltipEl.getAttribute('data-tooltip');
     const tooltipDataTitle = tooltipEl.getAttribute('data-title');
     const tooltipText = this.interpolate(tooltipDataTitle || tooltipAttribute)
-                            .replace(/(?:\r\n|\r|\n)/g, '<br />');
+      .replace(/(?:\r\n|\r|\n)/g, '<br />');
 
     return tippy(tooltipEl, {
       allowHTML: true,
@@ -1733,7 +1733,7 @@ export default class Component extends Element {
     const handleCloseClick = (e) => {
       if (confirm) {
         confirm().then(() => close(e))
-        .catch(() => {});
+          .catch(() => { });
       }
       else {
         close(e);
@@ -1763,7 +1763,7 @@ export default class Component extends Element {
    * @returns {string} - The class name of this component.
    */
   get className() {
-    let className = this.hasInput ? `${this.transform('class', 'form-group')} has-feedback `: '';
+    let className = this.hasInput ? `${this.transform('class', 'form-group')} has-feedback ` : '';
     className += `formio-component formio-component-${this.component.type} `;
     // TODO: find proper way to avoid overriding of default type-based component styles
     if (this.key && this.key !== 'form') {
@@ -1957,7 +1957,7 @@ export default class Component extends Element {
    * @returns {string} - The error message configured for this component.
    */
   errorMessage(type) {
-    return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] :  type;
+    return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] : type;
   }
 
   /**
@@ -2137,24 +2137,68 @@ export default class Component extends Element {
    * @param {any} row - The row data to check against.
    * @returns {boolean} - TRUE if the component is visible.
    */
-  checkComponentConditions(data, flags, row) {
+  // checkComponentConditions(data, flags, row) {
+  //   data = data || this.rootValue;
+  //   flags = flags || {};
+  //   row = row || this.data;
+
+  //   if (!this.builderMode & !this.previewMode && this.fieldLogic(data, row)) {
+  //     this.redraw();
+  //   }
+
+  //   // Check advanced conditions
+  //   const visible = this.conditionallyVisible(data, row);
+
+  //   if (this.visible !== visible) {
+  //     this.visible = visible;
+  //   }
+
+  //   return visible;
+  // }
+
+  async checkComponentConditions(data, flags, row) {
     data = data || this.rootValue;
     flags = flags || {};
+    // const async = flags?.async
     row = row || this.data;
 
     if (!this.builderMode & !this.previewMode && this.fieldLogic(data, row)) {
       this.redraw();
     }
 
-    // Check advanced conditions
-    const visible = this.conditionallyVisible(data, row);
+    let pathCorrect = this.path;
 
-    if (this.visible !== visible) {
-      this.visible = visible;
+    if (this.parent?.type !=='datagrid') {
+       pathCorrect = this.path.replace(/\[[0-9]+\]/g, '');
     }
 
-    return visible;
-  }
+      // Check advanced conditions
+      const processContext = {
+        component: this.component,
+        data,
+        row,
+        value: this.validationValue,
+        path: pathCorrect || this.component.key,
+        instance: this,
+        scope: { errors: [] },
+        form: this.root,
+        processors: [
+          conditionProcessInfo
+        ]
+      };
+
+      processOneSync(processContext);
+      const componentPath = pathCorrect || this.component.key;
+      const componentCondition = processContext.scope?.conditionals?.find(x => x.path === componentPath)
+      const visible = !componentCondition?.conditionallyHidden;
+
+
+      if (this.visible !== visible) {
+        this.visible = visible;
+      }
+
+      return visible
+    }
 
   /**
    * Checks conditions for this component and any sub components.
@@ -2346,11 +2390,11 @@ export default class Component extends Element {
             value: _.clone(oldValue),
             data,
             row,
-			input: oldValue,
+            input: oldValue,
             component: newComponent,
             result,
           },
-          'value');
+            'value');
 
           if (!_.isEqual(oldValue, newValue) && !(this.component.clearOnHide && !this.visible)) {
             this.setValue(newValue);
@@ -2621,8 +2665,8 @@ export default class Component extends Element {
       'ckeditor',
       isIEBrowser ? 'CKEDITOR' : 'ClassicEditor',
       _.get(this.options, 'editors.ckeditor.src',
-      `${Formio.cdn.ckeditor}/ckeditor.js`
-    ), true)
+        `${Formio.cdn.ckeditor}/ckeditor.js`
+      ), true)
       .then(() => {
         if (!element.parentNode) {
           return Promise.reject();
@@ -2846,7 +2890,7 @@ export default class Component extends Element {
 
   getCustomDefaultValue(defaultValue) {
     if (this.component.customDefaultValue && !this.options.preview) {
-     defaultValue = this.evaluate(
+      defaultValue = this.evaluate(
         this.component.customDefaultValue,
         { value: '' },
         'value'
@@ -3128,21 +3172,21 @@ export default class Component extends Element {
   }
 
   convertNumberOrBoolToString(value) {
-    if (typeof value === 'number' || typeof value === 'boolean' ) {
+    if (typeof value === 'number' || typeof value === 'boolean') {
       return value.toString();
     }
     return value;
   }
 
   doValueCalculation(dataValue, data, row) {
-      return this.evaluate(this.component.calculateValue, {
-        value: dataValue,
-        data,
-        row: row || this.data,
-        submission: this.root?._submission || {
-          data: this.rootValue
-        }
-      }, 'value');
+    return this.evaluate(this.component.calculateValue, {
+      value: dataValue,
+      data,
+      row: row || this.data,
+      submission: this.root?._submission || {
+        data: this.rootValue
+      }
+    }, 'value');
   }
 
   /* eslint-disable max-statements */
@@ -3826,7 +3870,7 @@ export default class Component extends Element {
   getRelativePath(path) {
     const keyPart = `.${this.key}`;
     const thisPath = this.isInputComponent ? this.path
-                                           : this.path.slice(0).replace(keyPart, '');
+      : this.path.slice(0).replace(keyPart, '');
     return path.replace(thisPath, '');
   }
 
@@ -3992,7 +4036,7 @@ export default class Component extends Element {
     return formio;
   }
 
-  resetCaches() {}
+  resetCaches() { }
 
   get previewMode() {
     return false;
@@ -4000,7 +4044,7 @@ export default class Component extends Element {
 }
 
 Component.externalLibraries = {};
-Component.requireLibrary = function(name, property, src, polling) {
+Component.requireLibrary = function (name, property, src, polling) {
   if (!Component.externalLibraries.hasOwnProperty(name)) {
     Component.externalLibraries[name] = {};
     Component.externalLibraries[name].ready = new Promise((resolve, reject) => {
@@ -4011,7 +4055,7 @@ Component.requireLibrary = function(name, property, src, polling) {
     const callbackName = `${name}Callback`;
 
     if (!polling && !window[callbackName]) {
-      window[callbackName] = function() {
+      window[callbackName] = function () {
         this.resolve();
       }.bind(Component.externalLibraries[name]);
     }
@@ -4076,7 +4120,7 @@ Component.requireLibrary = function(name, property, src, polling) {
   return Component.externalLibraries[name].ready;
 };
 
-Component.libraryReady = function(name) {
+Component.libraryReady = function (name) {
   if (
     Component.externalLibraries.hasOwnProperty(name) &&
     Component.externalLibraries[name].ready
