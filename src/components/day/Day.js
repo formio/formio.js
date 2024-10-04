@@ -557,29 +557,36 @@ export default class DayComponent extends Field {
     }
 
     if (this.showDay && this.refs.day) {
-      day = parseInt(this.refs.day.value, 10);
+      day = this.refs.day.value === '' ? '' : parseInt(this.refs.day.value, 10);
     }
     if (day === undefined || _.isNaN(day)) {
-      day = defaults[DAY] && !_.isNaN(defaults[DAY]) ? defaults[DAY] : 0;
+      day = (defaults.length !== 3 && value)
+        ? this.getDayWithHiddenFields(defaults).day
+        : (defaults[DAY] && !_.isNaN(defaults[DAY]) ? defaults[DAY] : 0);
     }
 
     if (this.showMonth && this.refs.month) {
       // Months are 0 indexed.
-      month = parseInt(this.refs.month.value, 10);
+      month = this.refs.month.value === '' ? '' : parseInt(this.refs.month.value, 10);
     }
     if (month === undefined || _.isNaN(month)) {
-      month = defaults[MONTH] && !_.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0;
+      month = (defaults.length !== 3 && value)
+        ? this.getDayWithHiddenFields(defaults).month
+        : (defaults[MONTH] && !_.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0);
     }
 
     if (this.showYear && this.refs.year) {
-      year = parseInt(this.refs.year.value);
+      year = this.refs.year.value === '' ? '' : parseInt(this.refs.year.value);
     }
     if (year === undefined || _.isNaN(year)) {
-      year = defaults[YEAR] && !_.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0;
+      year = (defaults.length !== 3 && value)
+        ? this.getDayWithHiddenFields(defaults).year
+        : (defaults[YEAR] && !_.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0);
     }
 
     let result;
     if (!day && !month && !year) {
+      this.dataValue = this.emptyValue;
       return null;
     }
 
