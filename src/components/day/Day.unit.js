@@ -439,6 +439,23 @@ describe('Day Component', () => {
     });
   });
 
+  it('Should save empty value after deleting the values if the day field is hidden', (done) => {
+    comp1.fields.day.hide = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      component.setValue('10/2024');
+      assert.equal(component.getValue(), '10/2024');
+      component.refs.month.value = '';
+      component.refs.month.dispatchEvent(new Event('input'));
+      component.refs.year.value = '';
+      component.refs.year.dispatchEvent(new Event('input'));
+      setTimeout(() => {
+        assert.equal(component.getValue(), '');
+        done();
+      }, 100);
+    });
+    comp1.fields.day.hide = false;
+  });
+
   it('Should save empty value after deleting values from fields if default value is set', (done) => {
     comp1.defaultValue = '10/12/2024';
     Harness.testCreate(DayComponent, comp1).then((component) => {
