@@ -2810,7 +2810,6 @@ export default class Component extends Element {
       return;
     }
     _.set(this._data, this.key, value);
-    return;
   }
 
   /**
@@ -3388,14 +3387,15 @@ export default class Component extends Element {
     if (flags.silentCheck) {
       return [];
     }
+    let dirty = this.dirty || flags.dirty
     if (this.options.alwaysDirty) {
-      flags.dirty = true;
+      dirty = true;
     }
-    if (flags.fromSubmission && this.hasValue(data) && !(this.pristine && this.protected)) {
-      flags.dirty = true;
+    if (flags.fromSubmission && !_.isUndefined(_.get(flags?.submission?.data, this.key)) && !(this.pristine && this.protected)) {
+      dirty = true;
     }
-    this.setDirty(flags.dirty);
-    return this.setComponentValidity(errors, flags.dirty, flags.silentCheck, flags.fromSubmission);
+    this.setDirty(dirty);
+    return this.setComponentValidity(errors, dirty, flags.silentCheck, flags.fromSubmission);
   }
 
   /**

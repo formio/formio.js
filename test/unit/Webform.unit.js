@@ -2150,10 +2150,10 @@ describe('Webform tests', function() {
   //   });
   // });
 
-  it('Should not fire validation on init.', (done) => {
+  it('Should not show validation on init.', () => {
     formElement.innerHTML = '';
     const form = new Webform(formElement,{ language: 'en' });
-    form.setForm(
+    return form.setForm(
       { title: 'noValidation flag',
         components: [{
           label: 'Number',
@@ -2175,7 +2175,8 @@ describe('Webform tests', function() {
           input: true
         }],
       }).then(() => {
-        checkForErrors(form, {}, {}, 0, done);
+        assert.equal(form.errors.length, 2);
+        assert.equal(form.visibleErrors.length, 0);
     });
   });
 
@@ -2337,6 +2338,91 @@ describe('Webform tests', function() {
         }
       }, 2, done);
     });
+  });
+
+  it('Should only show errors on components that have their data explicitly set', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(formElement,{ language: 'en' });
+    form.setForm(
+      {
+        components: [
+          {
+          label: 'Number',
+          validate: {
+            required: true,
+            min: 5
+          },
+          key: 'number',
+          type: 'number',
+          input: true
+        }, {
+          label: 'Text Area',
+          validate: {
+            required: true,
+            minLength: 10
+          },
+          key: 'textArea',
+          type: 'textarea',
+          input: true
+        }],
+      }
+    ).then(() => {
+      form.submission = {
+        data: {
+          number: 2,
+        }
+      }
+      setTimeout(()=>{
+        const textAreaComponent = form.getComponent('textArea');
+        const numberComponent = form.getComponent('number');
+        assert.equal(textAreaComponent.errors.length, 1);
+        assert.equal(textAreaComponent.visibleErrors.length, 0);
+        assert.equal(numberComponent.errors.length, 1);
+        assert.equal(numberComponent.visibleErrors.length, 1);
+        done();
+      },200);
+    });
+  });
+
+  it('Should not show errors of sibling components if the previous component errors and the submission in not explicitly set', (done) => {
+    formElement.innerHTML = '';
+    const form = new Webform(document.createElement('div'), {language: 'en'});
+    form.setForm({
+      components: [
+        {
+          type: 'textarea',
+          key: 'textArea',
+          label: 'textArea',
+          validate: {
+            required: true
+          }
+        },
+        {
+          type: 'textarea',
+          key: 'textArea1',
+          label: 'textArea1',
+          validate: {
+            required: true
+          }
+        }
+      ]
+    }).then(() => {
+      form.setSubmission({
+        data: {
+          textArea: ''
+        }
+      }).then(() => {
+        setTimeout(()=>{
+          const textAreaComponent = form.getComponent('textArea');
+          const textAreaComponent1 = form.getComponent('textArea1');
+          assert.equal(textAreaComponent.errors.length, 1);
+          assert.equal(textAreaComponent.visibleErrors.length, 1);
+          assert.equal(textAreaComponent1.errors.length, 1);
+          assert.equal(textAreaComponent1.visibleErrors.length, 0);
+          done();
+        },200);
+      })
+    })
   });
 
   it('Should not show errors on setSubmission with noValidate:TRUE', (done) => {

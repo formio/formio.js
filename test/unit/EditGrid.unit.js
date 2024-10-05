@@ -715,12 +715,12 @@ describe('EditGrid Component', () => {
                 assert(form.submitted, 'Form should be submitted');
                 const editRow = editGrid.editRows[0];
                 assert(editRow.alerts, 'Should add an error alert to the modal');
-                assert.equal(editRow.errors.length, 2, 'Should add errors to components inside draft row aftre it was submitted');
+                assert.equal(editRow.errors.length, 2, 'Should add errors to components inside draft row after it was submitted');
                 const textField = editRow.components[0].getComponent('textField');
 
                 const alert = editGrid.alert;
                 assert(alert, 'Should show an error alert when drafts are enabled and form is submitted');
-                assert(textField.element.className.includes('has-error'), 'Should add error class to component even when drafts enabled if the form was submitted');
+                assert(textField.element.className.includes('error'), 'Should add error class to component even when drafts enabled if the form was submitted');
 
                 // 4. Change the value of the text field
                 textField.setValue('new value', { modified: true });
@@ -736,7 +736,7 @@ describe('EditGrid Component', () => {
 
                   setTimeout(() => {
                     assert.equal(textField2.dataValue, 'test val');
-                    assert(!textField2.element.className.includes('has-error'), 'Should remove an error class from component when it was fixed');
+                    assert(!textField2.element.className.includes('error'), 'Should remove an error class from component when it was fixed');
 
                     editGrid.saveRow(0);
 

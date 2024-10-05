@@ -1162,6 +1162,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       editRow.state === EditRowState.New ||
       editRow.state === EditRowState.Editing ||
       editRow.alerts ||
+      this.dirty ||
       dirty;
   }
 
@@ -1244,7 +1245,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   checkComponentValidity(data, dirty, row, options = {}, errors = []) {
-    const { silentCheck } = options;
+    const { silentCheck, fromSubmission } = options;
     const superValid = super.checkComponentValidity(data, dirty, row, options, errors);
 
     // If super tells us that component invalid and there is no need to update alerts, just return false
@@ -1256,7 +1257,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     const allRowErrors = [];
     this.editRows.forEach((editRow, index) => {
       // Trigger all errors on the row.
-      const rowErrors = this.validateRow(editRow, dirty, silentCheck);
+      const rowErrors = this.validateRow(editRow, dirty, silentCheck, fromSubmission);
       errors.push(...rowErrors);
       allRowErrors.push(...rowErrors);
 
