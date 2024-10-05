@@ -795,7 +795,7 @@ export default class Webform extends NestedDataComponent {
      */
     onSetSubmission(submission, flags = {}) {
       this.submissionSet = true;
-      flags.explicitSubmission = structuredClone(submission);
+      flags.submission = structuredClone(submission);
       this.triggerChange(flags);
       this.emit('beforeSetSubmission', submission);
       this.setValue(submission, flags);
