@@ -104,6 +104,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8866-8864: fixed simple conditions operators for recaptcha
  - FIO-9158: fixed an issue where Password component error message persists to displayed in Edit page
  - FIO-9126: fixed display of value for Day component with hidden fields
+ - FIO-9158: fixed password component error in Edit page
+ - FIO-9127 fixed saving empty values for Day component with hidden fields
+ - FIO-9153-9154: fixed console errors when navigating tagpad validation errors
+ - FIO-9127 fixed saving an empty value for day component after deleting values
+ - FIO-9120: Fix issue with unchecking radio default value
 
 ### New Features
 
