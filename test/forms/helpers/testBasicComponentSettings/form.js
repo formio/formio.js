@@ -305,7 +305,6 @@ export default {
       "key": "day",
       "type": "day",
       "input": true,
-      "defaultValue": "00/00/0000"
     }, {
       "label": "Time",
       "tableView": true,

@@ -4,7 +4,6 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 
 .formio-form {
   position: relative;
-  min-height: 80px;
 }
 
 .formio-error-wrapper,
@@ -171,14 +170,13 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   line-height: 1;
 }
 
-
-.card-vertical {
+.card.card-vertical {
   display: flex;
   flex-direction: row;
   margin-top: 5px;
 }
 
-.card-vertical .card-body,
+.card.card-vertical .card-body,
 .tab-content,
 .tab {
   flex-grow: 2;
@@ -193,13 +191,13 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   border-bottom: 0;
 }
 
-.card-vertical > .card-body,
-.card-vertical > .tab-content,
-.card-vertical > .tab {
+.card.card-vertical > .card-body,
+.card.card-vertical > .tab-content,
+.card.card-vertical > .tab {
   flex-basis: 85%;
 }
 
-.card-vertical ul>li>.nav-link-vertical  {
+.card.card-vertical ul>li>.nav-link-vertical  {
   border-right-color: transparent;
   border-radius: 4px 0 0 4px;
   margin-right: 0;

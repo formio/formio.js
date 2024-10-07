@@ -95,7 +95,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       {% if (!instance.options.readOnly && !instance.disabled) { %}
         <div class="col-sm-2">
           <div class="btn-group pull-right">
-            <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass('pen-fill') }}"></i></button>
+            <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass('edit') }}"></i></button>
             {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}
               <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass('trash') }}"></i></button>
             {% } %}
@@ -117,7 +117,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         {% if (!instance.options.readOnly && !instance.disabled) { %}
           <td class="editgrid-table-column">
             <div class="btn-group">
-              <button class="btn btn-default btn-light btn-sm editRow" aria-label="{{ t('Edit row') }}"><i class="{{ iconClass('pen-fill') }}"></i></button>
+              <button class="btn btn-default btn-light btn-sm editRow" aria-label="{{ t('Edit row') }}"><i class="{{ iconClass('edit') }}"></i></button>
               {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}
               <button class="btn btn-danger btn-sm removeRow" aria-label="{{ t('Remove row') }}"><i class="{{ iconClass('trash') }}"></i></button>
               {% } %}
@@ -182,8 +182,8 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   /**
-   * Returns true if the component has nested components which don't trigger changes on the root level
-   *///
+   * @returns {boolean} - Returns true if the component has nested components which don't trigger changes on the root level
+   */
   get hasScopedChildren() {
     return !this.inlineEditMode;
   }
@@ -573,11 +573,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.removeClass(this.refs.component, `formio-component-${this.component.type}-row-open`);
     }
 
-    const superAttach = super.attach(element);
-    this.loadRefs(element, {
-      messageContainer: 'single-scope',
-    });
-    return superAttach;
+    return super.attach(element);
   }
 
   flattenRowDataValue(dataValue) {
@@ -797,6 +793,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       },
     }, this.component.saveRow || 'Save'));
 
+    this.emit('editGridOpenModal', {
+      component: this.component,
+      row: editRow,
+      instance: this,
+    });
+
     return this.attachComponents(modalContent, components);
   }
 
@@ -866,6 +868,12 @@ export default class EditGridComponent extends NestedArrayComponent {
       editRow.data = dataSnapshot;
       this.restoreRowContext(editRow);
     }
+
+    this.emit('editGridEditRow', {
+      component: this.component,
+      row: editRow,
+      instance: this,
+    });
 
     if (this.component.modal) {
       return this.addRowModal(rowIndex);
@@ -1047,6 +1055,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.clearErrors(rowIndex);
     this.baseRemoveRow(rowIndex);
+    this.removeSubmissionMetadataRow(rowIndex);
     this.splice(rowIndex);
     this.emit('editGridDeleteRow', {
       index: rowIndex
@@ -1228,7 +1237,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   /**
-   * Return that this component processes its own validation.
+   * @returns {boolean} - Return that this component processes its own validation.
    */
   get processOwnValidation() {
     return true;
@@ -1279,7 +1288,8 @@ export default class EditGridComponent extends NestedArrayComponent {
       return false;
     }
     else if (rowsEditing && this.saveEditMode && !this.component.openWhenEmpty) {
-      this.setCustomValidity(this.t(this.errorMessage('unsavedRowsError')), dirty);
+      this._errors = this.setCustomValidity(this.t(this.errorMessage('unsavedRowsError')), dirty);
+      errors.push(...this._errors);
       return false;
     }
 

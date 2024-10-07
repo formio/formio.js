@@ -1,6 +1,5 @@
 import NestedComponent from '../_classes/nested/NestedComponent';
 import { isChildOf } from '../../utils/utils';
-import FormComponent from '../form/Form';
 
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {
@@ -25,6 +24,7 @@ export default class PanelComponent extends NestedComponent {
       icon: 'list-alt',
       group: 'layout',
       documentation: '/userguide/form-building/layout-components#panel',
+      showPreview: false,
       weight: 30,
       schema: PanelComponent.schema()
     };

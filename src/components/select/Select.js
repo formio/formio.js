@@ -1,9 +1,8 @@
 import _ from 'lodash';
 import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
-import Input from '../_classes/input/Input';
 import Form from '../../Form';
-import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes, unescapeHTML, isSelectResourceWithObjectValue, removeHTML } from '../../utils/utils';
+import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes, isSelectResourceWithObjectValue, removeHTML } from '../../utils/utils';
 
 import Choices from '../../utils/ChoicesWrapper';
 
@@ -63,6 +62,8 @@ export default class SelectComponent extends ListComponent {
   }
 
   static get conditionOperatorsSettings() {
+    const numberType = () => ({ type: 'number' });
+
     return {
       ...super.conditionOperatorsSettings,
       valueComponent(classComp) {
@@ -81,7 +82,18 @@ export default class SelectComponent extends ListComponent {
         }
 
         return valueComp;
-      }
+      },
+      dataTypeOperators: {
+        number: ['lessThan', 'greaterThan', 'lessThanOrEqual', 'greaterThanOrEqual'],
+      },
+      dataTypeValueComponents: {
+        number: {
+          lessThan: numberType,
+          greaterThan: numberType,
+          lessThanOrEqual: numberType,
+          greaterThanOrEqual: numberType,
+        },
+      },
     };
   }
 
@@ -162,19 +174,6 @@ export default class SelectComponent extends ListComponent {
 
     // Get the template keys for this select component.
     this.getTemplateKeys();
-  }
-
-  get dataReady() {
-    // If the root submission has been set, and we are still not attached, then assume
-    // that our data is ready.
-    if (
-      this.root &&
-      this.root.submissionSet &&
-      !this.attached
-    ) {
-      return Promise.resolve();
-    }
-    return this.itemsLoaded;
   }
 
   get defaultSchema() {
@@ -267,10 +266,9 @@ export default class SelectComponent extends ListComponent {
 
   selectValueAndLabel(data) {
     const value = this.getOptionValue((this.isEntireObjectDisplay() && !this.itemValue(data)) ? data : this.itemValue(data));
-    const readOnlyResourceLabelData = this.options.readOnly && (this.component.dataSrc === 'resource' || this.component.dataSrc === 'url') && this.selectData;
     return {
       value,
-      label: this.itemTemplate((this.isEntireObjectDisplay() && !_.isObject(data.data)) ? { data: data } : readOnlyResourceLabelData || data, value)
+      label: this.itemTemplate((this.isEntireObjectDisplay() && !_.isObject(data.data)) ? { data: data } : data, value)
     };
   }
 
@@ -290,7 +288,7 @@ export default class SelectComponent extends ListComponent {
       return this.sanitize(value, this.shouldSanitizeValue);
     }
 
-    if (this.component.multiple && _.isArray(this.dataValue) ? this.dataValue.find((val) => value === val) : (this.dataValue === value)) {
+    if (this.component.multiple && _.isArray(this.dataValue) ? this.dataValue.find((val) => this.normalizeSingleValue(value) === val) : (this.dataValue === this.normalizeSingleValue(value))) {
       const selectData = this.selectData;
       if (selectData) {
         const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
@@ -332,9 +330,10 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * Adds an option to the select dropdown.
-   *
-   * @param value
-   * @param label
+   * @param {*} value - The value of the new option.
+   * @param {string} label - The label of the new option.
+   * @param {object} [attrs] - Additional value attributes. Defaults to {}.
+   * @param {string} [id] - An id. Defaults to a random string.
    */
   addOption(value, label, attrs = {}, id = getRandomComponentId()) {
     if (_.isNil(label)) return;
@@ -618,13 +617,13 @@ export default class SelectComponent extends ListComponent {
     };
 
     // Allow for url interpolation.
-    url = this.interpolate(url, {
+    url = this.sanitize(this.interpolate(url, {
       formioBase: Formio.getBaseUrl(),
       search,
       limit,
       skip,
       page: Math.abs(Math.floor(skip / limit))
-    });
+    }), this.shouldSanitizeValue);
 
     // Add search capability.
     if (this.component.searchField && search) {
@@ -696,6 +695,7 @@ export default class SelectComponent extends ListComponent {
   }
   /**
    * Get the request headers for this select dropdown.
+   * @returns {*} - Returns the request headers for this select dropdown.
    */
   get requestHeaders() {
     // Create the headers object.
@@ -1013,7 +1013,7 @@ export default class SelectComponent extends ListComponent {
         this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
       }
 
-      Input.prototype.addFocusBlurEvents.call(this, this.focusableElement);
+      this.addFocusBlurEvents(this.choices.input.element);
 
       if (this.itemsFromUrl && !this.component.noRefreshOnScroll) {
         this.scrollList = this.choices.choiceList.element;
@@ -1260,10 +1260,6 @@ export default class SelectComponent extends ListComponent {
     return super.visible;
   }
 
-  /**
-   * @param {*} value
-   * @param {Array} items
-   */
   addCurrentChoices(values, items, keyValue) {
     if (!values) {
       return false;
@@ -1441,10 +1437,9 @@ export default class SelectComponent extends ListComponent {
   }
 
   /**
-   * Normalize values coming into updateValue.
-   *
-   * @param value
-   * @return {*}
+   * Normalize values coming into updateValue. For example, depending on the configuration, string value `"true"` will be normalized to boolean `true`.
+   * @param {*} value - The value to normalize
+   * @returns {*} - Returns the normalized value
    */
   normalizeValue(value) {
     if (this.component.multiple && Array.isArray(value)) {
@@ -1505,6 +1500,25 @@ export default class SelectComponent extends ListComponent {
     return changed;
   }
 
+  undoValueTyping(value) {
+    let untypedValue = value;
+    if (this.component.multiple && Array.isArray(value)) {
+      untypedValue = value.map(v => {
+        if (typeof v === 'boolean' || typeof v === 'number') {
+          return v.toString();
+        }
+        return v;
+      });
+    }
+    else {
+      if (typeof value === 'boolean' || typeof value === 'number') {
+        untypedValue = value.toString();
+      }
+    }
+
+    return untypedValue;
+  }
+
   setValue(value, flags = {}) {
     const previousValue = this.dataValue;
     const changed = this.updateValue(value, flags);
@@ -1516,19 +1530,7 @@ export default class SelectComponent extends ListComponent {
     const hasValue = !this.isEmpty(value);
 
     // Undo typing when searching to set the value.
-    if (this.component.multiple && Array.isArray(value)) {
-      value = value.map(value => {
-        if (typeof value === 'boolean' || typeof value === 'number') {
-          return value.toString();
-        }
-        return value;
-      });
-    }
-    else {
-      if (typeof value === 'boolean' || typeof value === 'number') {
-        value = value.toString();
-      }
-    }
+    value = this.undoValueTyping(value);
 
     if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
       this.itemsLoaded.then(() => {
@@ -1621,14 +1623,6 @@ export default class SelectComponent extends ListComponent {
     }
   }
 
-  get itemsLoaded() {
-    return this._itemsLoaded || Promise.resolve();
-  }
-
-  set itemsLoaded(promise) {
-    this._itemsLoaded = promise;
-  }
-
   validateValueAvailability(setting, value) {
     if (!boolValue(setting) || !value) {
       return true;
@@ -1664,7 +1658,8 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * Performs required transformations on the initial value to use in selectOptions
-   * @param {*} value
+   * @param {*} value - The value to transform.
+   * @returns {*} - Returns the options value.
    */
   getOptionValue(value) {
     return _.isObject(value) && this.isEntireObjectDisplay()
@@ -1680,7 +1675,7 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * If component has static values (values, json) or custom values, returns an array of them
-   * @returns {Array<*>|undefined}
+   * @returns {Array<*>|undefined} - Returns an array of the static or custom values.
    */
   getOptionsValues() {
     let rawItems = [];
@@ -1693,6 +1688,9 @@ export default class SelectComponent extends ListComponent {
         break;
       case 'custom':
         rawItems = this.getCustomItems();
+        break;
+      case 'url':
+        rawItems = this.selectItems;
         break;
     }
 
@@ -1725,8 +1723,7 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * Check if a component is eligible for multiple validation
-   *
-   * @return {boolean}
+   * @returns {boolean} - Returns FALSE for select components.
    */
   validateMultiple() {
     // Select component will contain one input when flagged as multiple.
@@ -1735,7 +1732,7 @@ export default class SelectComponent extends ListComponent {
 
   /**
    * Output this select dropdown as a string value.
-   * @return {*}
+   * @returns {*}
    */
 
   isBooleanOrNumber(value) {
@@ -1754,9 +1751,9 @@ export default class SelectComponent extends ListComponent {
   asString(value, options = {}) {
     value = value ?? this.getValue();
 
-    if (options.modalPreview && this.selectData) {
-      const { label } = this.selectValueAndLabel(value);
-      return label;
+    if (options.modalPreview) {
+      const template = this.itemTemplate(value, value);
+      return template;
     }
     //need to convert values to strings to be able to compare values with available options that are strings
     const convertToString = (data, valueProperty) => {
@@ -1764,7 +1761,7 @@ export default class SelectComponent extends ListComponent {
         if (Array.isArray(data)) {
           data.forEach((item) => item[valueProperty] = item[valueProperty].toString());
         }
-        else {
+        else if (_.isObject(data)) {
           data[valueProperty] = data[valueProperty].toString();
         }
         return data;
@@ -1775,11 +1772,7 @@ export default class SelectComponent extends ListComponent {
       }
 
       if (Array.isArray(data) && data.some(item => this.isBooleanOrNumber(item))) {
-        data = data.map(item => {
-          if (this.isBooleanOrNumber(item)) {
-            item = item.toString();
-          }
-        });
+        data = data.map(item => this.isBooleanOrNumber(item) ? item.toString() : item);
       }
 
       return data;
@@ -1808,7 +1801,7 @@ export default class SelectComponent extends ListComponent {
       };
       value = (this.component.multiple && Array.isArray(value))
         ? _.filter(items, (item) => value.includes(item.value))
-        : valueProperty
+        : (valueProperty && items)
           ? getFromValues() ?? { value, label: value }
           : value;
     }
@@ -1859,8 +1852,8 @@ export default class SelectComponent extends ListComponent {
   }
 
   focus() {
+    super.focus.call(this);
     if (this.focusableElement) {
-      super.focus.call(this);
       this.focusableElement.focus();
     }
   }

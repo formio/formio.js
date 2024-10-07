@@ -10,13 +10,14 @@ class CDN {
     this.libs = {
       'js': '',
       'ace': '1.4.12',
-      'bootstrap': '5.3.2',
+      'bootstrap': '5.3.3',
       'bootstrap4': '4.6.2',
-      'bootstrap5': '5.3.2',
+      'bootstrap5': '5.3.3',
+      'bootswatch': '5.3.3',
       'bootstrap-icons': '1.11.1',
       'ckeditor': '19.0.0',
-      'flatpickr': '4.6.8',
-      'flatpickr-formio': '4.6.13-formio.3',
+      'dragula': '3.7.3',
+      'flatpickr': '4.6.13',
       'font-awesome': '4.7.0',
       'grid': 'latest',
       'moment-timezone': 'latest',
@@ -67,7 +68,8 @@ class CDN {
     if (lib) {
       url += `/${lib}`;
     }
-    if (version && version !== 'latest') {
+    // Only attach the version if this is the hosted cdn.
+    if (cdnUrl.match(/cdn\.(test-)?form.io/) && version && version !== 'latest') {
       url += `/${version}`;
     }
     return url;

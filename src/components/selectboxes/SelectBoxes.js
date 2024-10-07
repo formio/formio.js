@@ -31,15 +31,22 @@ export default class SelectBoxesComponent extends RadioComponent {
     return {
       ...super.conditionOperatorsSettings,
       valueComponent(classComp) {
-        return {
-          type: 'select',
-          dataSrc: 'custom',
-          valueProperty: 'value',
-          dataType: 'string',
-          data: {
-            custom: `values = ${classComp && classComp.values ? JSON.stringify(classComp.values) : []}`
-          },
-        };
+        const isValuesSrc = !classComp.dataSrc || classComp.dataSrc === 'values';
+        return isValuesSrc
+        ? {
+            type: 'select',
+            dataSrc: 'custom',
+            valueProperty: 'value',
+            dataType: 'string',
+            data: {
+              custom: `values = ${classComp && classComp.values ? JSON.stringify(classComp.values) : []}`
+            },
+          }
+        : {
+            ...classComp,
+            dataType: 'string',
+            type: 'select',
+          }
       }
     };
   }
@@ -97,9 +104,8 @@ export default class SelectBoxesComponent extends RadioComponent {
 
   /**
    * Only empty if the values are all false.
-   *
-   * @param value
-   * @return {boolean}
+   * @param {any} value - The value to check if empty.
+   * @returns {boolean} - If the value is empty.
    */
   isEmpty(value = this.dataValue) {
     let empty = true;
@@ -126,9 +132,8 @@ export default class SelectBoxesComponent extends RadioComponent {
 
   /**
    * Normalize values coming into updateValue.
-   *
-   * @param value
-   * @return {*}
+   * @param {any} value - The value to normalize.
+   * @returns {*} - The normalized value
    */
   normalizeValue(value) {
     value = value || {};
@@ -164,9 +169,9 @@ export default class SelectBoxesComponent extends RadioComponent {
 
   /**
    * Set the value of this component.
-   *
-   * @param value
-   * @param flags
+   * @param {any} value - The value to set.
+   * @param {any} flags - Flags to apply to this update.
+   * @returns {boolean} - If the value has changed.
    */
   setValue(value, flags = {}) {
     const changed = this.updateValue(value, flags);
@@ -294,7 +299,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       return true;
     }
 
-    const values = this.component.values;
+    const values = this.component.dataSrc === 'values' ? this.component.values : this.loadedOptions;
     const availableValueKeys = (values || []).map(({ value: optionValue }) => optionValue);
     const valueKeys = Object.keys(value);
 

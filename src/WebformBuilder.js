@@ -220,7 +220,8 @@ export default class WebformBuilder extends Component {
       params: {
         type: 'resource',
         limit: 1000000,
-        select: '_id,title,name,components'
+        select: '_id,title,name,components',
+        'tags__ne': 'noBuilderResource'
       }
     };
     if (this.options && this.options.resourceTag) {
@@ -439,7 +440,6 @@ export default class WebformBuilder extends Component {
 
   /**
    * Called when everything is ready.
-   *
    * @returns {Promise} - Wait for webform to be ready.
    */
   get ready() {
@@ -495,7 +495,8 @@ export default class WebformBuilder extends Component {
   /**
    * When a component sets its api key, we need to check if it is unique within its namespace. Find the namespace root
    * so we can calculate this correctly.
-   * @param component
+   * @param {import('@formio/core').Component} component - The component to find the namespace root for.
+   * @returns {import('@formio/core').Component[]} - The components root for this namespace.
    */
   findNamespaceRoot(component) {
     const path = getArrayFromComponentPath(component.path);
@@ -1045,10 +1046,18 @@ export default class WebformBuilder extends Component {
       this.options.properties = form.properties;
     }
 
-    this.keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false) || this.options.properties?.keyboardBuilder;
+    let keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false) || this.options.properties?.keyboardBuilder;
+    if (typeof keyboardActionsEnabled === 'string') {
+      keyboardActionsEnabled = keyboardActionsEnabled === 'true';
+    }
+    this.keyboardActionsEnabled = keyboardActionsEnabled;
+
+    const isSubmitButton = (comp) => {
+      return (comp.type === 'button') && ((comp.action === 'submit') || !comp.action);
+    }
 
     const isShowSubmitButton = !this.options.noDefaultSubmitButton
-      && (!form.components.length || !form.components.find(comp => comp.key === 'submit'));
+      && (!form.components.length || !form.components.find(comp => isSubmitButton(comp)));
 
     // Ensure there is at least a submit button.
     if (isShowSubmitButton) {
@@ -1214,7 +1223,10 @@ export default class WebformBuilder extends Component {
           'calculateValue',
           'conditional',
           'customConditional',
-          'id'
+          'id',
+          'fields.day.required',
+          'fields.month.required',
+          'fields.year.required',
         ]));
         const parentComponent = defaultValueComponent.parent;
         let tabIndex = -1;
@@ -1302,10 +1314,11 @@ export default class WebformBuilder extends Component {
 
   /**
    * Called when a new component is saved.
-   *
-   * @param parent
-   * @param component
-   * @return {boolean}
+   * @param {Component} component - The component instance to save.
+   * @param {Component} parent - The parent component.
+   * @param {boolean} isNew - If this is a new component.
+   * @param {Component} original - The original component.
+   * @returns {boolean} - If the component was saved.
    */
   saveComponent(component, parent, isNew, original) {
     this.editForm.detach();
@@ -1441,6 +1454,7 @@ export default class WebformBuilder extends Component {
           helplinks: this.helplinks,
         }));
         this.editForm.attach(this.componentEdit.querySelector(`[${this._referenceAttributeName}="editForm"]`));
+        this.updateComponent(this.editForm.submission.data ?? component);
         this.attachEditComponentControls(component, parent, isNew, original, ComponentClass);
       });
     });
@@ -1778,8 +1792,8 @@ export default class WebformBuilder extends Component {
 
   /**
    * Creates copy of component schema and stores it under sessionStorage.
-   * @param {Component} component
-   * @return {*}
+   * @param {Component} component - The component to copy.
+   * @returns {void}
    */
   copyComponent(component) {
     if (!window.sessionStorage) {
@@ -1791,8 +1805,8 @@ export default class WebformBuilder extends Component {
 
   /**
    * Paste copied component after the current component.
-   * @param {Component} component
-   * @return {*}
+   * @param {Component} component - The component to paste after.
+   * @returns {void}
    */
   pasteComponent(component) {
     if (!window.sessionStorage) {

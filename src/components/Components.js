@@ -1,6 +1,7 @@
 import Component from './_classes/component/Component';
 import EditFormUtils from './_classes/component/editForm/utils';
 import BaseEditForm from './_classes/component/Component.form';
+import { getComponentKey } from '../utils/utils';
 import _ from 'lodash';
 export default class Components {
   static _editFormUtils = EditFormUtils;
@@ -58,13 +59,13 @@ export default class Components {
 
   /**
    * Return a path of component's value.
-   *
-   * @param {Object} component - The component instance.
-   * @return {string} - The component's value path.
+   * @param {Component} component - The component instance.
+   * @returns {string} - The component's value path.
    */
   static getComponentPath(component) {
     let path = '';
-    if (component.component.key) {
+    const componentKey = getComponentKey(component.component);
+    if (componentKey) {
       let thisPath = component.options?.parent || component;
       while (thisPath && !thisPath.allowData && thisPath.parent) {
         thisPath = thisPath.parent;
@@ -76,9 +77,10 @@ export default class Components {
       const rowIndex = component.row;
       const rowIndexPath = rowIndex && !['container'].includes(thisPath.component.type) ? `[${Number.parseInt(rowIndex)}]` : '';
       path = `${thisPath.path}${rowIndexPath}.`;
-      path += component.component.key;
+      path += componentKey;
       return _.trim(path, '.');
     }
+    return path;
   }
 
   static create(component, options, data) {

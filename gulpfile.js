@@ -6,7 +6,6 @@ const concat = require('gulp-concat');
 const replace = require('gulp-replace');
 const rename = require('gulp-rename');
 const cleanCSS = require('gulp-clean-css');
-const eslint = require('gulp-eslint');
 const clean = require('gulp-clean');
 
 // Clean lib folder.
@@ -17,14 +16,6 @@ gulp.task('clean:lib', () => {
   return gulp.src('lib', { read: false, allowEmpty: true }).pipe(clean());
 });
 gulp.task('clean', gulp.parallel('clean:dist', 'clean:lib'));
-
-// ESLint
-gulp.task('eslint', function eslintTask() {
-  return gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError());
-});
 
 // Move font-awesome fonts into dist folder.
 gulp.task('builder-fonts', function builderFonts() {

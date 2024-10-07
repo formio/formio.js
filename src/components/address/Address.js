@@ -100,6 +100,17 @@ export default class AddressComponent extends ContainerComponent {
     };
   }
 
+  static get serverConditionSettings() {
+    return AddressComponent.conditionOperatorsSettings;
+  }
+
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
+  }
+
   mergeSchema(component = {}) {
     let { defaultSchema } = this;
 
@@ -123,6 +134,12 @@ export default class AddressComponent extends ContainerComponent {
           provider,
           providerOptions,
         } = this.component;
+
+        if (_.get(providerOptions, 'params.subscriptionKey')) {
+          _.set(providerOptions, "params['subscription-key']", _.get(providerOptions, 'params.subscriptionKey'));
+          _.unset(providerOptions, 'params.subscriptionKey');
+        }
+
         this.provider = this.initializeProvider(provider, providerOptions);
       }
       else if (this.component.map) {
@@ -216,7 +233,7 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   set address(value) {
-    if (this.manualModeEnabled && !this.isMultiple) {
+    if (this.manualModeEnabled && !this.isMultiple && !_.isEqual(value, this.emptyValue)) {
       this.dataValue.address = value;
     }
     else {
@@ -240,6 +257,18 @@ export default class AddressComponent extends ContainerComponent {
 
   isValueInLegacyFormat(value) {
     return value && !value.mode;
+  }
+
+  set dataValue(value) {
+    super.dataValue = value
+  }
+
+  get dataValue() {
+    const resultValue = _.get(this._data, this.component.path);
+    if (!_.isArray(resultValue) && this.component.multiple) {
+      return [resultValue]
+    }
+    return super.dataValue;
   }
 
   normalizeValue(value) {
