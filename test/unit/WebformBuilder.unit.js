@@ -10,6 +10,8 @@ import testApiKeysUniquifying from '../forms/testApiKeysUniquifying';
 import formBasedOnWizard from '../forms/formBasedOnWizard';
 import formWithFormController from '../forms/formWithFormController';
 import simpleWebform from '../forms/simpleWebform';
+import TextFieldComponent from '../../src/components/textfield/TextField';
+import Input from '../../src/components/_classes/input/Input';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -361,6 +363,51 @@ describe('WebformBuilder tests', function() {
     }).catch(done);
   })
 });
+
+describe('Edit forms', () => {
+  const originalTextFieldSchema = TextFieldComponent.schema;
+  before((done) => {
+    TextFieldComponent.schema = (...extend) => {
+      return Input.schema({
+        key: 'textField',
+        type: 'textfield',
+        mask: false,
+        inputType: 'text',
+        inputFormat: 'plain',
+        inputMask: '',
+        displayMask: '',
+        tableView: true,
+        spellcheck: true,
+        truncateMultipleSpaces: false,
+        validate: {
+          minLength: '',
+          maxLength: '',
+          pattern: ''
+        }
+      }, ...extend);
+    }
+    Harness.builderBefore(done);
+  });
+  afterEach(() => Harness.getBuilder().setForm({ display: 'form', components: []}));
+
+  it('Should not initially show validations for edit forms', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(()=>{
+      const textfield = Harness.buildComponent('textfield');
+      setTimeout(()=> {
+        const label = textfield.editForm.getComponent('label');
+        assert.equal(label.refs.input[0].textContent, '');
+        assert.equal(label.visibleErrors.length, 0);
+        done();
+      },500);
+    });
+  });
+
+  after((done) => {
+    TextFieldComponent.schema = originalTextFieldSchema;
+    Harness.builderAfter(done);
+  })
+})
 
 describe('Select Component selectData property', () => {
   const originalMakeRequest = Formio.makeRequest;
