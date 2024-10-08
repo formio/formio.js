@@ -1761,7 +1761,8 @@ export default class SelectComponent extends ListComponent {
       if (this.inDataTable) {
         value = this.undoValueTyping(value);
       }
-      const template = this.itemTemplate((this.isEntireObjectDisplay() && !_.isObject(value.data)) ? { data: value } : value, value, options);
+     const templateValue = (this.isEntireObjectDisplay() && !_.isObject(value.data)) ? { data: value } : value;
+      const template = this.itemTemplate(templateValue, value, options);
       return template;
     }
     //need to convert values to strings to be able to compare values with available options that are strings
