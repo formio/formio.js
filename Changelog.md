@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.91
+### Changed
+ - Updated @formio/bootstrap@3.0.0-rc.38
+ - Updated @formio/core@2.3.0-rc.10
+ - FIO-7195/FIO-8234: Fixes an issue where Select renders value properties instead of labels in DataTable
+ - FIO-9158: fixed password component error in Edit page
+ - FIO-9153: fixed an issue where tagpad components skip front-end validation before submission
+
 ## 5.0.0-rc.90
 ### Changed
  - Updated @formio/core@2.3.0-rc.9
