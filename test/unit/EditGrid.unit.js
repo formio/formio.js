@@ -19,6 +19,7 @@ import {
   comp15,
   comp16,
   comp17,
+  comp19,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
   compWithCustomDefaultValue,
@@ -1409,6 +1410,32 @@ describe('EditGrid Component', () => {
 
         done();
       }, 300);
+    }).catch(done);
+  });
+
+  it('Should not allow to save invalid row when there are required components inside columns in the editGrod row', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+  
+    form.setForm(comp19).then(() => {
+      const editGrid = form.components[0];
+
+      setTimeout(() => {
+        Harness.dispatchEvent('click', form.element, '[ref="editgrid-editGrid-addRow"]');
+          setTimeout(() => {
+            assert.equal(editGrid.editRows.length, 1);
+            assert.equal(!!editGrid.editRows[0].errors?.length, false);
+            assert.equal(editGrid.editRows[0].state, 'new');
+            Harness.dispatchEvent('click', form.element, '[ref="editgrid-editGrid-saveRow"]');
+            setTimeout(() => {
+              assert.equal(editGrid.editRows.length, 1);
+              assert.equal(editGrid.editRows[0].errors?.length, 1);
+              assert.equal(editGrid.editRows[0].state, 'new');
+              
+              done();
+            }, 300);
+          }, 300);
+      }, 100);
     }).catch(done);
   });
 });
