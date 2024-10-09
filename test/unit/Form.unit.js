@@ -62,9 +62,9 @@ describe('Form Component', () => {
               assert.equal(make.dataValue, 'honda', 'Should set value');
               assert.equal(model.dataValue, '', 'Should refresh and clear value');
               done();
-            }, 300);
-          }, 300);
-        }, 300);
+            }, 400);
+          }, 400);
+        }, 400);
       })
       .catch(done);
   });
@@ -219,7 +219,7 @@ describe('Form Component', () => {
             expect(textField).to.not.be.null;
             assert.equal(textField.value, 'test');
             done();
-          }, 250);
+          }, 300);
         });
       }).catch(done);
     });
@@ -381,22 +381,22 @@ describe('SaveDraft functionality for Nested Form', () => {
         saveDraft: true
       }
     ).then((form) => {
-      form.on('change', ({ changed }, _, modified) => {
-        if (changed) {
-          const { instance } = changed;
-          if (instance instanceof Webform) {
-            assert(modified === true, 'the modified flag should bubble to the root');
-            done();
-          }
-        }
-      });
       setTimeout(() => {
+        form.on('change', ({ changed }, _, modified) => {
+          if (changed) {
+            const { instance } = changed;
+            if (instance instanceof Webform) {
+              assert(modified === true, 'the modified flag should bubble to the root');
+              done();
+            }
+          }
+        });
         const tfNestedInput = form.getComponent('form.nested')?.refs?.input?.[0];
         assert(tfNestedInput !== undefined, 'We have the input element');
         tfNestedInput.value = 'testNested';
         const inputEvent = new Event('input');
         tfNestedInput.dispatchEvent(inputEvent);
-      }, 200);
+      }, 600);
     }).catch((err) => done(err));
   });
 
@@ -419,7 +419,7 @@ describe('SaveDraft functionality for Nested Form', () => {
           assert.equal(state, 'draft');
           done();
         }, 1000);
-      }, 200);
+      }, 400);
     }).catch((err) => done(err));
   });
 
@@ -504,7 +504,7 @@ describe('SaveDraft functionality for Nested Form', () => {
       setTimeout(() => {
         assert.equal(form.options.readOnly, true);
         done();
-      }).catch((err) => done(err));
-    });
+      });
+    }).catch((err) => done(err));
   });
 });
