@@ -1457,7 +1457,7 @@ describe('EditGrid Component', () => {
   it('Should not allow to save invalid row when there are required components inside columns in the editGrod row', (done) => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
-  
+
     form.setForm(comp19).then(() => {
       const editGrid = form.components[0];
 
@@ -1471,8 +1471,7 @@ describe('EditGrid Component', () => {
             setTimeout(() => {
               assert.equal(editGrid.editRows.length, 1);
               assert.equal(editGrid.editRows[0].errors?.length, 1);
-              assert.equal(editGrid.editRows[0].state, 'new');
-              
+              assert.equal(editGrid.editRows[0].state, 'saving');
               done();
             }, 300);
           }, 300);
