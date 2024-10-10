@@ -3392,7 +3392,7 @@ export default class Component extends Element {
       dirty = true;
     }
     if (flags.fromSubmission && !_.isUndefined(_.get(flags?.submission?.data, this.key)) && !(this.pristine && this.protected)) {
-      dirty = this.pristine && this.component.protected ? false : true;
+      dirty = true;
     }
     this.setDirty(dirty);
     return this.setComponentValidity(errors, dirty, flags.silentCheck, flags.fromSubmission);
