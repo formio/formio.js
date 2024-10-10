@@ -1239,7 +1239,7 @@ describe('EditGrid Component', () => {
           setTimeout(() => {
             assert.equal(!!firstRowTextField.errors, true);
             assert.equal(editGrid.editRows[0].errors.length, 1);
-            assert.equal(editGrid.editRows[0].state, 'new');
+            assert.equal(editGrid.editRows[0].state, 'saving');
 
             document.innerHTML = '';
             done();
@@ -1412,6 +1412,47 @@ describe('EditGrid Component', () => {
       }, 300);
     }).catch(done);
   });
+  
+  it('Should not show validation in new row with required conditional fields before attempt to save', (done) => {
+    const form = _.cloneDeep(comp12);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const editGrid = form.getComponent('editGrid');
+      const clickEvent = new Event('click');
+      editGrid.refs['editgrid-editGrid-addRow'][0].dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        const firstRowContainer = editGrid.components[0];
+        const firstRowNumber = firstRowContainer.components[0];
+        const firstRowTextField = firstRowContainer.components[1];
+
+        assert.equal(firstRowTextField.visible, false);
+
+        const inputEvent = new Event('input');
+        const numberInput = firstRowNumber.refs.input[0];
+
+        numberInput.value = 5;
+        numberInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(firstRowTextField.visible, true);
+          assert.equal(editGrid.editRows[0].errors.length, 0);
+
+          editGrid.refs['editgrid-editGrid-saveRow'][0].dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(!!firstRowTextField.errors, true);
+            assert.equal(editGrid.editRows[0].errors.length, 1);
+            assert.equal(editGrid.editRows[0].state, 'saving');
+
+            document.innerHTML = '';
+            done();
+          }, 200);
+        }, 250);
+      }, 300);
+    }).catch(done);
+  });
 
   it('Should not allow to save invalid row when there are required components inside columns in the editGrod row', (done) => {
     const formElement = document.createElement('div');
@@ -1430,8 +1471,7 @@ describe('EditGrid Component', () => {
             setTimeout(() => {
               assert.equal(editGrid.editRows.length, 1);
               assert.equal(editGrid.editRows[0].errors?.length, 1);
-              assert.equal(editGrid.editRows[0].state, 'new');
-              
+              assert.equal(editGrid.editRows[0].state, 'saving');
               done();
             }, 300);
           }, 300);
