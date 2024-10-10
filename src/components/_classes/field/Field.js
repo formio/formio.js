@@ -1,6 +1,14 @@
 import Component from '../component/Component';
 
+/*
+ * Field class is a base class for all fields.
+ * @extends Component
+ */
 export default class Field extends Component {
+  /**
+   * @param {object} element - The component to create.
+   * @returns {Field} - The created field.
+   */
   render(element) {
     if (this.noField) {
       return super.render(element);
@@ -20,7 +28,11 @@ export default class Field extends Component {
     }
   }
 
-  // Saves current caret position to restore it after the component is redrawn
+  /**
+  /* Saves current caret position to restore it after the component is redrawn
+   * @param {HTMLElement} element - The element to save the caret position for.
+   * @param {number} index - The index of the element.
+   */
   saveCaretPosition(element, index) {
     if (this.root?.focusedComponent?.path === this.path) {
       try {

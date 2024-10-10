@@ -1022,11 +1022,206 @@ const form6 = {
   machineName: 'cpxkpoxmfvhivle:selectBoxesCond',
 };
 
+const form7 = {
+  type: 'form',
+  display: 'form',
+  components: [
+    {
+      label: 'Checkbox',
+      tableView: false,
+      key: 'checkbox',
+      type: 'checkbox',
+      input: true,
+    },
+    {
+      label: 'Text Field',
+      applyMaskOn: 'change',
+      tableView: true,
+      key: 'textField',
+      conditional: {
+        show: true,
+        conjunction: 'all',
+        conditions: [
+          {
+            component: 'checkbox',
+            operator: 'isEqual',
+            value: 'false',
+          },
+        ],
+      },
+      type: 'textfield',
+      input: true,
+    },
+    {
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      disableOnInvalid: true,
+      input: true,
+      tableView: false,
+    },
+  ],
+};
+const form8 = {
+  type: 'form',
+  display: 'form',
+  components: [
+    {
+      label: 'note',
+      widget: '',
+      applyMaskOn: 'change',
+      autoExpand: false,
+      tableView: true,
+      key: 'note',
+      conditional: {
+        show: true,
+        conjunction: 'all',
+        conditions: [
+          {
+            component: 'container.editGrid1.editGrid2.innerSelect1',
+            operator: 'isEmpty'
+          }
+        ]
+      },
+      type: 'textarea',
+      validateWhenHidden: false,
+      input: true
+    },
+    {
+      label: 'container',
+      tableView: false,
+      key: 'container',
+      type: 'container',
+      input: true,
+      components: [
+        {
+          label: 'editGrid1',
+          tableView: false,
+          rowDrafts: false,
+          key: 'editGrid1',
+          type: 'editgrid',
+          displayAsTable: false,
+          input: true,
+          components: [
+            {
+              label: 'editGrid2',
+              tableView: false,
+              rowDrafts: false,
+              key: 'editGrid2',
+              type: 'editgrid',
+              displayAsTable: false,
+              input: true,
+              components: [
+                {
+                  label: 'innerSelect1',
+                  widget: 'choicesjs',
+                  tableView: true,
+                  data: {
+                    values: [
+                      {
+                        label: '44',
+                        value: '44'
+                      },
+                      {
+                        label: '6t',
+                        value: '6T'
+                      }
+                    ]
+                  },
+                  key: 'innerSelect1',
+                  type: 'select',
+                  input: true
+                },
+                {
+                  label: 'innerSelect2',
+                  widget: 'choicesjs',
+                  tableView: true,
+                  data: {
+                    values: [
+                      {
+                        label: 'nnn',
+                        value: 'nnn'
+                      },
+                      {
+                        label: 'kkk',
+                        value: 'kkk'
+                      }
+                    ]
+                  },
+                  key: 'innerSelect2',
+                  type: 'select',
+                  input: true
+                }
+              ]
+            },
+            {
+              label: 'order',
+              widget: 'choicesjs',
+              tableView: true,
+              data: {
+                values: [
+                  {
+                    label: 'first',
+                    value: '1'
+                  },
+                  {
+                    label: 'second',
+                    value: '2'
+                  },
+                  {
+                    label: 'third',
+                    value: '3'
+                  }
+                ]
+              },
+              key: 'order',
+              type: 'select',
+              validateWhenHidden: false,
+              input: true
+            },
+            {
+              label: 'lesson',
+              widget: 'choicesjs',
+              tableView: true,
+              data: {
+                values: [
+                  {
+                    label: 'math',
+                    value: 'math'
+                  },
+                  {
+                    label: 'lit',
+                    value: 'lit'
+                  }
+                ]
+              },
+              validateWhenHidden: false,
+              key: 'lesson',
+              type: 'select',
+              input: true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      disableOnInvalid: true,
+      input: true,
+      tableView: false
+    }
+  ],
+};
+
 export default {
   form1,
   form2,
   form3,
   form4,
   form5,
-  form6
+  form6,
+  form7,
+  form8
 };

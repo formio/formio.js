@@ -122,7 +122,7 @@ export default class Input extends Multivalue {
       }).trim();
       if (this.component.prefix !== calendarIcon) {
         // converting string to HTML markup to render correctly DateTime component in portal.form.io
-        return convertStringToHTMLElement(calendarIcon, '[ref="icon"]');
+        return convertStringToHTMLElement(calendarIcon, `[${this._referenceAttributeName}="icon"]`);
       }
     }
     return this.component.suffix;
@@ -172,13 +172,15 @@ export default class Input extends Multivalue {
       else {
         this.addClass(element, 'text-danger');
       }
-      this.setContent(element, this.t(`{{ remaining }} ${type} remaining.`, {
-        remaining: remaining
+      this.setContent(element, this.t(`typeRemaining`, {
+        remaining: remaining,
+        type: type
       }));
     }
     else {
-      this.setContent(element, this.t(`{{ count }} ${type}`, {
-        count: count
+      this.setContent(element, this.t(`typeCount`, {
+        count: count,
+        type: type
       }));
     }
   }
@@ -267,7 +269,30 @@ export default class Input extends Multivalue {
         if (key === 13) {
           event.preventDefault();
           event.stopPropagation();
-          this.emit('submitButton');
+          let submitButton = null;
+          if (this.root?.everyComponent) {
+            this.root.everyComponent((component) => {
+              if (
+                component?.component.type === 'button' &&
+                component?.component.action === 'submit'
+              ) {
+                submitButton = component;
+                return false;
+              }
+            });
+          }
+          const options = {};
+          if (submitButton) {
+            options.instance = submitButton;
+            options.component = submitButton.component;
+            options.noValidate = this.component.state === 'draft';
+            options.state = this.component.state || 'submitted';
+            submitButton.loading = true;
+            this.emit('submitButton', options);
+          }
+          else {
+            this.emit('submitButton', options);
+          }
         }
       });
     }
@@ -276,8 +301,8 @@ export default class Input extends Multivalue {
 
   /**
    * Creates an instance of a widget for this component.
-   *
-   * @return {null}
+   * @param {number} index - The index of the widget.
+   * @returns {*} - The widget instance.
    */
   createWidget(index) {
     // Return null if no widget is found.

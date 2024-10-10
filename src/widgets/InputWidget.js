@@ -46,8 +46,8 @@ export default class InputWidget extends Element {
     return value;
   }
 
-  validationValue(value) {
-    return value;
+  get validationValue() {
+    return this.dataValue;
   }
 
   addPrefix() {

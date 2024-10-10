@@ -12,7 +12,7 @@ export default class IsEqualTo extends ConditionOperator {
     }
 
     execute({ value, comparedValue, instance, conditionComponentPath }) {
-        if (value && comparedValue && typeof value !== typeof comparedValue && _.isString(comparedValue)) {
+        if ((value || value === false) && comparedValue && typeof value !== typeof comparedValue && _.isString(comparedValue)) {
             try {
                 comparedValue = JSON.parse(comparedValue);
             }
@@ -20,7 +20,7 @@ export default class IsEqualTo extends ConditionOperator {
             catch (e) {}
         }
 
-        if (instance && instance.root) {
+        if (instance?.root?.getComponent) {
             const conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
 
             if (

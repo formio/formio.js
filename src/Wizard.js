@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import Webform from './Webform';
 import { Formio } from './Formio';
 import {
@@ -6,30 +7,28 @@ import {
   checkCondition,
   firstNonNil,
   uniqueKey,
-  eachComponent
+  eachComponent,
 } from './utils/utils';
 
 export default class Wizard extends Webform {
   /**
-   * Constructor for wizard based forms
-   * @param element Dom element to place this wizard.
-   * @param {Object} options Options object, supported options are:
-   *    - breadcrumbSettings.clickable: true (default) determines if the breadcrumb bar is clickable or not
-   *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not
-   *    - allowPrevious: false (default) determines if the breadcrumb bar is clickable or not for visited tabs
+   * Constructor for wizard-based forms.
+   * @param {HTMLElement | object | import('Form').FormOptions} [elementOrOptions] - The DOM element to render this form within or the options to create this form instance.
+   * @param {import('Form').FormOptions} [_options] - The options to create a new form instance.
+   *    - breadcrumbSettings.clickable: true (default) - determines if the breadcrumb bar is clickable.
+   *    - buttonSettings.show*(Previous, Next, Cancel): true (default) - determines if the button is shown.
+   *    - allowPrevious: false (default) - determines if the breadcrumb bar is clickable for visited tabs.
    */
-  constructor() {
+  constructor(elementOrOptions = undefined, _options = undefined) {
     let element, options;
-    if (arguments[0] instanceof HTMLElement || arguments[1]) {
-      element = arguments[0];
-      options = arguments[1] || {};
-    }
-    else {
-      options = arguments[0] || {};
+    if (elementOrOptions instanceof HTMLElement || _options) {
+        element = elementOrOptions;
+        options = _options || {};
+    } else {
+        options = elementOrOptions || {};
     }
 
     options.display = 'wizard';
-
     super(element, options);
     this.pages = [];
     this.prefixComps = [];
@@ -112,11 +111,6 @@ export default class Wizard extends Webform {
       showSubmit: true,
       showCancel: !this.options.readOnly
     });
-
-    if (!this.isSecondInit) {
-      this.isClickableDefined = this.options?.breadcrumbSettings?.hasOwnProperty('clickable');
-      this.isSecondInit = true;
-    }
 
     this.options.breadcrumbSettings = _.defaults(this.options.breadcrumbSettings, {
       clickable: true
@@ -286,6 +280,13 @@ export default class Wizard extends Webform {
     }
   }
 
+  /**
+   * Attaches the wizard to the provided DOM element, initializes component references, sets up navigation,
+   * and emits a render event. It will initialize the wizard's index if necessary,
+   * attach event hooks, and make sure that the current page is rendered and displayed correctly.
+   * @param {HTMLElement} element - The DOM element to which the wizard will be attached.
+   * @returns {Promise} A promise that resolves when all components have been successfully attached.
+   */
   attach(element) {
     this.setElement(element);
     this.loadRefs(element, {
@@ -341,7 +342,15 @@ export default class Wizard extends Webform {
       }
     });
 
-    return this.isClickableDefined ? this.options.breadcrumbSettings.clickable : _.get(currentPage, 'component.breadcrumbClickable', true);
+    if (_.has(currentPage, 'component.breadcrumbClickable')) {
+      return _.get(currentPage, 'component.breadcrumbClickable');
+    }
+
+    if (_.has(this.options, 'breadcrumbSettings.clickable')) {
+      return this.options.breadcrumbSettings.clickable;
+    }
+
+    return true;
   }
 
   isAllowPrevious() {
@@ -355,6 +364,10 @@ export default class Wizard extends Webform {
     return _.get(currentPage.component, 'allowPrevious', this.options.allowPrevious);
   }
 
+  /**
+   * Handles navigate on 'Enter' key event in a wizard form.
+   * @param {KeyboardEvent} event - The keyboard event object that triggered the handler.
+   */
   handleNaviageteOnEnter(event) {
     if (event.keyCode === 13) {
       const clickEvent = new CustomEvent('click');
@@ -365,6 +378,10 @@ export default class Wizard extends Webform {
     }
   }
 
+  /**
+   * Handles save on 'Enter' key event in a wizard form.
+   * @param {KeyboardEvent} event - The keyboard event object that triggered the handler.
+   */
   handleSaveOnEnter(event) {
     if (event.keyCode === 13) {
       const clickEvent = new CustomEvent('click');
@@ -403,6 +420,12 @@ export default class Wizard extends Webform {
     });
   }
 
+
+  /**
+   * Emits an event indicating that a wizard page has been selected.
+   * @param {number} index - Index of the selected wizard page in the `pages` array.
+   * @fires emit - Emits the 'wizardPageSelected' event with the page object and index.
+   */
   emitWizardPageSelected(index) {
     this.emit('wizardPageSelected', this.pages[index], index);
   }
@@ -667,6 +690,7 @@ export default class Wizard extends Webform {
       }
       this.redraw().then(() => {
         this.checkData(this.submission.data);
+        this.validateCurrentPage();
       });
       return Promise.resolve();
     }
@@ -778,7 +802,8 @@ export default class Wizard extends Webform {
     }
 
     // Validate the form, before go to the next page
-    if (this.checkValidity(this.localData, true, this.localData, true)) {
+    const errors = this.validateCurrentPage({ dirty: true });
+    if (errors.length === 0) {
       this.checkData(this.submission.data);
       return this.beforePage(true).then(() => {
         return this.setPage(this.getNextPage()).then(() => {
@@ -793,9 +818,14 @@ export default class Wizard extends Webform {
     }
     else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
-      this.scrollIntoView(this.element);
-      return Promise.reject(this.showErrors([], true));
+      this.scrollIntoView(this.element, true);
+      return Promise.reject(this.showErrors(errors, true));
     }
+  }
+
+  validateCurrentPage(flags = {}) {
+    // Accessing the parent ensures the right instance (whether it's the parent Wizard or a nested Wizard) performs its validation
+    return this.currentPage?.parent.validateComponents(this.currentPage.component.components, this.currentPage.parent.data, flags);
   }
 
   emitPrevPage() {
@@ -856,7 +886,10 @@ export default class Wizard extends Webform {
           this.options.show = this.options.show || {};
           this.options.show[item.key] = true;
         }
-        else if (this.wizard.hasOwnProperty('full') && !_.isEqual(this.originalOptions.show, this.options.show)) {
+        else if (
+          Object.prototype.hasOwnProperty.call(this.wizard, 'full')
+          && !_.isEqual(this.originalOptions.show, this.options.show)
+        ) {
           this.options.show = { ...(this.originalOptions.show || {}) };
         }
       }
@@ -876,7 +909,7 @@ export default class Wizard extends Webform {
     }
   }
 
-  setForm(form, flags) {
+  setForm(form, flags = {}) {
     if (!form) {
       return;
     }
@@ -885,7 +918,7 @@ export default class Wizard extends Webform {
   }
 
   onSetForm(clonedForm, initialForm) {
-    this.component.components = (this._parentPath ? initialForm.components : clonedForm.components) || [];
+    this.component.components = (this.parent ? initialForm.components : clonedForm.components) || [];
     this.setComponentSchema();
   }
 
@@ -967,9 +1000,9 @@ export default class Wizard extends Webform {
 
   onChange(flags, changed, modified, changes) {
     super.onChange(flags, changed, modified, changes);
-    if (this.alert && !this.submitted) {
-      this.checkValidity(this.localData, false, this.localData, true);
-      this.showErrors([], true, true);
+    const errors = this.validate(this.localData, { dirty: false });
+    if (this.alert) {
+      this.showErrors(errors, true, true);
     }
 
     // If the pages change, need to redraw the header.
@@ -1016,7 +1049,7 @@ export default class Wizard extends Webform {
     return super.rebuild().then(setCurrentPage);
   }
 
-  checkValidity(data, dirty, row, currentPageOnly) {
+  checkValidity(data, dirty, row, currentPageOnly, childErrors = []) {
     if (!this.checkCondition(row, data)) {
       this.setCustomValidity('');
       return true;
@@ -1027,7 +1060,7 @@ export default class Wizard extends Webform {
       : this.currentPage.components;
 
     return components.reduce(
-      (check, comp) => comp.checkValidity(data, dirty, row) && check,
+      (check, comp) => comp.checkValidity(data, dirty, row, childErrors) && check,
       true
     );
   }
@@ -1040,26 +1073,34 @@ export default class Wizard extends Webform {
     return super.errors;
   }
 
-  focusOnComponent(key) {
-    let pageIndex = 0;
-
-    const [page] = this.pages.filter((page, index) => {
-      let hasComponent = false;
-      page.getComponent(key, (comp) => {
-        if (comp.path === key) {
-          pageIndex = index;
-          hasComponent = true;
+  showErrors(errors, triggerEvent) {
+    if (this.hasExtraPages) {
+      this.subWizards.forEach((subWizard) => {
+        if(Array.isArray(subWizard.errors)) {
+          errors = [...errors, ...subWizard.errors]
         }
-      });
-      return hasComponent;
-    });
+      })
+    }
+    return super.showErrors(errors, triggerEvent)
+  }
 
-    if (page && page !== this.currentPage) {
-      return this.setPage(pageIndex).then(() => {
-        this.checkValidity(this.submission.data, true, this.submission.data);
-        this.showErrors();
-        super.focusOnComponent(key);
-      });
+  focusOnComponent(key) {
+    const component = this.getComponent(key);
+    if (component) {
+      let topPanel = component.parent;
+      while (!(topPanel.parent instanceof Wizard)) {
+        topPanel = topPanel.parent;
+      }
+      const pageIndex = this.pages.findIndex(page => page.id === topPanel.id);
+      if (pageIndex >= 0) {
+        const page = this.pages[pageIndex];
+        if (page && page !== this.currentPage) {
+          return this.setPage(pageIndex).then(() => {
+            this.showErrors(this.validate(this.localData, { dirty: true }));
+            super.focusOnComponent(key);
+          });
+        }
+      }
     }
     return super.focusOnComponent(key);
   }

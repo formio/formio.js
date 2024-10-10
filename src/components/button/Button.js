@@ -214,7 +214,7 @@ export default class ButtonComponent extends Field {
       const isSilent = flags && flags.silent;
       //check root validity only if disableOnInvalid is set and when it is not possible to make submission because of validation errors
       if (flags && flags.noValidate && (this.component.disableOnInvalid || this.hasError)) {
-        isValid = flags.rootValidity || (this.root ? this.root.checkValidity(this.root.data, null, null, true) : true);
+        isValid = flags.rootValidity || (this.root ? (this.root.validate(this.root.data, { dirty: false, silentCheck: true }).length === 0) : true);
         flags.rootValidity = isValid;
       }
       this.isDisabledOnInvalid = this.component.disableOnInvalid && (isSilent || !isValid);
@@ -253,6 +253,11 @@ export default class ButtonComponent extends Field {
     this.disabled = this.shouldDisabled;
     this.setDisabled(this.refs.button, this.disabled);
 
+    /**
+     * Get url parameter by name
+     * @param {string} name - The url parameter
+     * @returns {string} - The url parameter value
+     */
     function getUrlParameter(name) {
       name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
       const regex = new RegExp(`[\\?&]${name}=([^&#]*)`);
@@ -297,7 +302,7 @@ export default class ButtonComponent extends Field {
   }
 
   onClick(event) {
-    this.triggerReCaptcha();
+    this.triggerCaptcha();
     // Don't click if disabled or in builder mode.
     if (this.disabled || this.options.attachMode === 'builder') {
       return;
@@ -313,6 +318,7 @@ export default class ButtonComponent extends Field {
         event.stopPropagation();
         this.loading = true;
         this.emit('submitButton', {
+          noValidate: this.component.state === 'draft',
           state: this.component.state || 'submitted',
           component: this.component,
           instance: this
@@ -504,23 +510,23 @@ export default class ButtonComponent extends Field {
     }
   }
 
-  triggerReCaptcha() {
+  triggerCaptcha() {
     if (!this.root) {
       return;
     }
 
-    let recaptchaComponent;
+    let captchaComponent;
 
     this.root.everyComponent((component)=> {
-      if ( component.component.type === 'recaptcha' &&
+      if (/^(re)?captcha$/.test(component.component.type) &&
         component.component.eventType === 'buttonClick' &&
         component.component.buttonKey === this.component.key) {
-          recaptchaComponent = component;
+          captchaComponent = component;
         }
     });
 
-    if (recaptchaComponent) {
-      recaptchaComponent.verify(`${this.component.key}Click`);
+    if (captchaComponent) {
+      captchaComponent.verify(`${this.component.key}Click`);
     }
   }
 }

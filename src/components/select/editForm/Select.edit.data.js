@@ -1,4 +1,51 @@
+import _ from 'lodash';
 import { eachComponent } from '../../../utils/utils';
+
+const calculateSingleSelectData = (context, defaultValue) => {
+  const { instance, data } = context;
+  const rawDefaultValue = instance.downloadedResources.find(resource => _.get(resource, data.valueProperty) === defaultValue);
+  const options = { data: {}, noeval: true };
+  instance.interpolate(data.template, {
+    item: rawDefaultValue,
+  }, options);
+  return options.data.item;
+};
+
+const calculateSelectData = (context) => {
+  const { instance } = context;
+  const defaultValue = instance.getValue();
+  if (instance.component.multiple) {
+    const multiSelectData = {};
+    (defaultValue ?? []).forEach((defaultValueItem) => {
+      multiSelectData[defaultValueItem] = calculateSingleSelectData(context, defaultValueItem);
+    });
+    return multiSelectData;
+  }
+  else {
+    return calculateSingleSelectData(context, defaultValue);
+  }
+};
+
+const setSelectData = (context) => {
+  // Wait before downloadedResources will be set
+  setTimeout(() => {
+    const { instance, data } = context;
+    const selectDataComponent = instance?.root?.getComponent('selectData');
+    // clear selectData if conditions are not met or clearing default value
+    if (selectDataComponent && (!selectDataComponent.visible || !data.defaultValue)) {
+      selectDataComponent.setValue(null, { resetValue: true});
+      return;
+    }
+    // nothing can set if don't have downloaded resources
+    if (!selectDataComponent || !instance.getValue() || !instance.downloadedResources?.length) {
+      return;
+    }
+    const shouldCalculateUrlData = data.dataSrc === 'url' && data.data.url && data.valueProperty;
+    const shouldCalculateResourceData = data.dataSrc === 'resource' && data.data.resource && data.valueProperty;
+    const newValue = shouldCalculateUrlData || shouldCalculateResourceData ? calculateSelectData(context) : null;
+    selectDataComponent.setValue(newValue, { resetValue: newValue === null});
+  }, 0);
+};
 
 export default [
   {
@@ -625,5 +672,52 @@ export default [
     key: 'useExactSearch',
     label: 'Use exact search',
     tooltip: 'Disables search algorithm threshold.',
-  }
+  },
+  {
+    key: 'defaultValue',
+    onSetItems(component) {
+      setSelectData(component.evalContext());
+    },
+    onChange(context) {
+      if (context && context.flags && context.flags.modified) {
+        setSelectData(context);
+      }
+    },
+  },
+  {
+    key: 'selectData',
+    conditional: {
+      json: {
+        and: [
+          { var: 'data.valueProperty' },
+          { '===': [{ var: 'data.lazyLoad' }, true]},
+          { '!==': [{ var: 'data.widget' }, 'html5'] },
+          {
+            or: [
+              { '===': [{ var: 'data.dataSrc' }, 'url'] },
+              {
+                and: [
+                  { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+                  // 'data' means entire object from resource will be used
+                  { '!==': [{ var: 'data.valueProperty' }, 'data'] },
+                ],
+              }
+            ]
+          }
+        ]
+      },
+    },
+  },
+  {
+    key: 'template',
+    onChange(context) {
+      if (context && context.flags && context.flags.modified) {
+        const defaultValueComponent = context.instance.root.getComponent('defaultValue');
+        if (!defaultValueComponent) {
+          return;
+        }
+        setSelectData(defaultValueComponent.evalContext());
+      }
+    },
+  },
 ];

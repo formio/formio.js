@@ -17,9 +17,13 @@ import {
   comp13,
   comp14,
   comp15,
+  comp16,
+  comp17,
+  comp18,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
   compWithCustomDefaultValue,
+  compTestEvents
 } from './fixtures';
 import formsWithEditGridAndConditions from './fixtures/formsWithEditGridAndConditions';
 
@@ -28,8 +32,10 @@ import EditGridOpenWhenEmpty from '../../../test/forms/editGridOpenWhenEmpty';
 import Webform from '../../Webform';
 import { displayAsModalEditGrid } from '../../../test/formtest';
 import { Formio } from '../../Formio';
+import { fastCloneDeep } from '@formio/core';
 
 describe('EditGrid Component', () => {
+
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
     Harness.testCreate(EditGridComponent, comp4).then((component) => {
       component.setValue([{ dataMap: { key111: '111' } }]);
@@ -97,7 +103,7 @@ describe('EditGrid Component', () => {
       Harness.testElements(component, 'div.editRow', 0);
       Harness.testElements(component, 'div.removeRow', 0);
       assert.equal(component.refs[`${component.editgridKey}-addRow`].length, 1);
-      assert(component.checkValidity(component.getValue()), 'Item should be valid');
+      assert(component.checkValidity(), 'Item should be valid');
     });
   });
 
@@ -127,7 +133,7 @@ describe('EditGrid Component', () => {
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(2) div.row div:nth-child(2)', 'foo');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(3) div.row div:nth-child(1)', 'good');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(3) div.row div:nth-child(2)', 'bar');
-      assert(component.checkValidity(component.getValue()), 'Item should be valid');
+      assert(component.checkValidity(), 'Item should be valid');
     });
   });
 
@@ -141,7 +147,7 @@ describe('EditGrid Component', () => {
       Harness.clickElement(component, component.refs[`${component.editgridKey}-addRow`][0]);
       Harness.testElements(component, 'li.list-group-item', 3);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '0');
-      assert(!component.checkValidity(component.getValue(), true), 'Item should not be valid');
+      assert(!component.checkValidity(null, true), 'Item should not be valid');
     });
   });
 
@@ -170,7 +176,7 @@ describe('EditGrid Component', () => {
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '3');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(4) div.row div:nth-child(1)', 'good');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(4) div.row div:nth-child(2)', 'baz');
-      assert(component.checkValidity(component.getValue()), 'Item should be valid');
+      assert(component.checkValidity(), 'Item should be valid');
     });
   });
 
@@ -197,7 +203,7 @@ describe('EditGrid Component', () => {
       Harness.testElements(component, 'li.list-group-item', 3);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
       assert.equal(component.editRows.length, 2);
-      assert(component.checkValidity(component.getValue(), true), 'Item should be valid');
+      assert(component.checkValidity(null, true), 'Item should be valid');
     });
   });
 
@@ -224,7 +230,7 @@ describe('EditGrid Component', () => {
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(2) div.row div:nth-child(2)', 'foo');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(3) div.row div:nth-child(1)', 'good');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(3) div.row div:nth-child(2)', 'baz');
-      assert(component.checkValidity(component.getValue(), true), 'Item should be valid');
+      assert(component.checkValidity(null, true), 'Item should be valid');
     });
   });
 
@@ -245,7 +251,7 @@ describe('EditGrid Component', () => {
       Harness.getInputValue(component, 'data[editgrid][1][field2]', 'bar');
       Harness.testElements(component, 'div.editgrid-actions button.btn-primary', 1);
       Harness.testElements(component, 'div.editgrid-actions button.btn-danger', 1);
-      assert(!component.checkValidity(component.getValue(), true), 'Item should not be valid');
+      assert(!component.checkValidity(null, true), 'Item should not be valid');
     });
   });
 
@@ -268,7 +274,7 @@ describe('EditGrid Component', () => {
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(3) div.row div:nth-child(1)', 'good');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(3) div.row div:nth-child(2)', 'baz');
-      assert(component.checkValidity(component.getValue(), true), 'Item should be valid');
+      assert(component.checkValidity(null, true), 'Item should be valid');
     });
   });
 
@@ -291,10 +297,11 @@ describe('EditGrid Component', () => {
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(3) div.row div:nth-child(1)', 'good');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(3) div.row div:nth-child(2)', 'bar');
-      assert(component.checkValidity(component.getValue(), true), 'Item should be valid');
+      assert(component.checkValidity(null, true), 'Item should be valid');
     });
   });
 
+  // TODO: find out if this is deprecated in the new (3.x and above) versions of the renderer, if so ditch this test
   it('Should show error messages for existing data in rows', () => {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
@@ -311,9 +318,9 @@ describe('EditGrid Component', () => {
           field2: 'baz'
         }
       ]);
+      assert(!component.checkValidity(null, true), 'Item should not be valid');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(2) div.has-error div.editgrid-row-error', 'Must be good');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(4) div.has-error div.editgrid-row-error', 'Must be good');
-      assert(!component.checkValidity(component.getValue(), true), 'Item should not be valid');
     });
   });
 
@@ -323,20 +330,20 @@ describe('EditGrid Component', () => {
       Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
       Harness.getInputValue(component, 'data[editgrid][0][field1]', '');
       Harness.getInputValue(component, 'data[editgrid][0][field2]', '');
-      assert(!component.checkValidity(component.getValue(), true), 'Item should not be valid');
+      assert(!component.checkValidity(null, true), 'Item should not be valid');
       Harness.setInputValue(component, 'data[editgrid][0][field2]', 'baz');
       Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
       Harness.getInputValue(component, 'data[editgrid][0][field1]', '');
       Harness.getInputValue(component, 'data[editgrid][0][field2]', 'baz');
-      assert(!component.checkValidity(component.getValue(), true), 'Item should not be valid');
+      assert(!component.checkValidity(null, true), 'Item should not be valid');
       Harness.setInputValue(component, 'data[editgrid][0][field1]', 'bad');
       Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
       Harness.getInputValue(component, 'data[editgrid][0][field1]', 'bad');
       Harness.getInputValue(component, 'data[editgrid][0][field2]', 'baz');
-      assert(!component.checkValidity(component.getValue(), true), 'Item should not be valid');
+      assert(!component.checkValidity(null, true), 'Item should not be valid');
       Harness.setInputValue(component, 'data[editgrid][0][field1]', 'good');
       Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
-      assert(component.checkValidity(component.getValue(), true), 'Item should be valid');
+      assert(component.checkValidity(null, true), 'Item should be valid');
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '1');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(2) div.row div:nth-child(1)', 'good');
       Harness.testInnerHtml(component, 'li.list-group-item:nth-child(2) div.row div:nth-child(2)', 'baz');
@@ -356,15 +363,38 @@ describe('EditGrid Component', () => {
         }
       ]);
       Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.editRow');
-      assert(!component.checkValidity(component.getValue(), true), 'Item should not be valid');
+      assert(!component.checkValidity(null, true), 'Item should not be valid');
       Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
-      assert(component.checkValidity(component.getValue(), true), 'Item should be valid');
+      assert(component.checkValidity(null, true), 'Item should be valid');
       Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.editRow');
-      assert(!component.checkValidity(component.getValue(), true), 'Item should not be valid');
+      assert(!component.checkValidity(null, true), 'Item should not be valid');
       Harness.clickElement(component, 'div.editgrid-actions button.btn-danger');
-      assert(component.checkValidity(component.getValue(), true), 'Item should be valid');
+      assert(component.checkValidity(null, true), 'Item should be valid');
     });
   });
+
+  it('Should not allow to go to the next page if row is not saved', (done) => {
+    const form = _.cloneDeep(comp16);
+    const element = document.createElement('div');
+    Formio.createForm(element, form).then((form) => {
+      const editGrid = form.getComponent('editGrid');
+      assert(editGrid.checkValidity(null, true), 'Item should be valid');
+      assert.equal(form.page, 0);
+      editGrid.addRow();
+      const clickEvent = new Event('click');
+      setTimeout(() => {
+        const nextBtn = _.get(form.refs, `wizard-${form.originalComponent.id}-next`);
+        nextBtn.dispatchEvent(clickEvent);
+        setTimeout(()=> {
+          assert(!editGrid.checkValidity(null, true), 'Item should not be valid');
+          assert.equal(form.page, 0);
+          assert.equal(form.errors.length, 1);
+          done();
+        }, 500)
+
+      }, 200)
+    }).catch(done);
+  })
 
   it('Should disable components when in read only', () => {
     return Harness.testCreate(EditGridComponent, comp1, { readOnly: true }).then((component) => {
@@ -544,7 +574,7 @@ describe('EditGrid Component', () => {
         component.addRow();
         Harness.clickElement(component, '[ref="editgrid-editGrid1-saveRow"]');
         assert.deepEqual(component.dataValue, [{ textField: '' }]);
-        const isInvalid = !component.checkValidity(component.dataValue, true);
+        const isInvalid = !component.checkValidity(null, true);
         assert(isInvalid, 'Item should not be valid');
         assert(component.editRows[0].state === 'draft', 'Row should be saved as draft if it has errors');
         done();
@@ -624,7 +654,6 @@ describe('EditGrid Component', () => {
 
           setTimeout(() => {
             const alert = dialog.querySelector('.alert.alert-danger');
-            assert.equal(form.errors.length, 0, 'Should not add new errors when drafts are enabled');
             assert(!alert, 'Should not show an error alert when drafts are enabled and form is not submitted');
 
             const textField = editRow.components[0].getComponent('textField');
@@ -643,17 +672,14 @@ describe('EditGrid Component', () => {
 
                 setTimeout(() => {
                   assert.equal(textField.dataValue, '');
-                  assert.equal(editGrid.editRows[0].errors.length, 0, 'Should not add error to components inside draft row');
-
                   const textFieldComponent = textField.element;
                   assert(textFieldComponent.className.includes('has-error'), 'Should add error class to component even when drafts enabled if the component is not pristine');
-
                   document.innerHTML = '';
                   done();
                 }, 300);
               }, 300);
             }, 150);
-          }, 100);
+          }, 800);
         }, 100);
       }).catch(done)
       .finally(() => {
@@ -680,11 +706,9 @@ describe('EditGrid Component', () => {
 
           setTimeout(() => {
             // 3. Submit the form
-            Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
-
-            setTimeout(() => {
-              assert.equal(editGrid.errors.length, 3, 'Should be validated after an attempt to submit');
-              assert.equal(editGrid.editRows[0].errors.length, 2, 'Should dd errors to the row after an attempt to submit');
+            form.submit().finally(() => {
+              assert.equal(form.errors.length, 2, 'Should be validated after an attempt to submit');
+              assert.equal(editGrid.editRows[0].errors.length, 2, 'Should add errors to the row after an attempt to submit');
               const rows = editGrid.element.querySelectorAll('[ref="editgrid-editGrid-row"]');
               const firstRow = rows[0];
               Harness.dispatchEvent('click', firstRow, '.editRow');
@@ -761,7 +785,7 @@ describe('EditGrid Component', () => {
                   }, 300);
                 }, 300);
               }, 450);
-            }, 250);
+            });
           }, 100);
         }, 100);
       }).catch(done)
@@ -1214,7 +1238,7 @@ describe('EditGrid Component', () => {
           editGrid.refs['editgrid-editGrid-saveRow'][0].dispatchEvent(clickEvent);
 
           setTimeout(() => {
-            assert.equal(!!firstRowTextField.error, true);
+            assert.equal(!!firstRowTextField.errors, true);
             assert.equal(editGrid.editRows[0].errors.length, 1);
             assert.equal(editGrid.editRows[0].state, 'new');
 
@@ -1226,25 +1250,26 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should render form with a submission in a draft-state without validation errors', (done) => {
+  it('Should submit a form with a submission in a draft-state without validation errors', (done) => {
     const form = _.cloneDeep(comp13);
     const element = document.createElement('div');
-
     Formio.createForm(element, form).then(form => {
-      form.submission = {
+      form.nosubmit = true;
+      form.setSubmission({
+        state: 'draft',
         data: {
           'container': {
             'textField': '',
           },
           'editGrid': []
         }
-      };
-
-      setTimeout(() => {
-        const editGrid = form.getComponent(['editGrid']);
-        assert.equal(editGrid.errors.length, 0);
-        done();
-      }, 100);
+      }).then(() => {
+        form.submitForm().then((event) => {
+          // It should allow the submission in the renderer.
+          assert.equal(event.submission.state, 'draft');
+          done();
+        }).catch((err) => done(err));
+      }).catch(done);
     }).catch(done);
   });
 
@@ -1537,8 +1562,7 @@ describe('EditGrid Open when Empty', () => {
         Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
           setTimeout(() => {
             const editRow = editGrid.editRows[0];
-            assert(!editGrid.error, 'Should be no errors on EditGrid');
-            assert.equal(editRow.errors, null, 'Should not be any errors on open row');
+            assert.equal(editRow.errors.length, 0, 'Should not be any errors on open row');
             assert.equal(form.submission.state, 'submitted', 'Form should be submitted');
             done();
           }, 450);
@@ -1558,7 +1582,6 @@ describe('EditGrid Open when Empty', () => {
           setTimeout(() => {
             assert(!form.submission.state, 'Form should not be submitted');
             const editRow = editGrid.editRows[0];
-            assert(editGrid.error, 'Should show error on EditGrid');
             assert.equal(editRow.errors.length, 1, 'Should show error on row');
             const textField = editRow.components[0];
             assert(textField.element.className.includes('formio-error-wrapper'), 'Should add error class to component');
@@ -1567,4 +1590,175 @@ describe('EditGrid Open when Empty', () => {
       }, 100);
     }).catch(done);
   });
+});
+
+describe('EditGrid Fired Events', () => {
+  const eventParams = ['row', 'component', 'instance']
+  it('Should fire editGridEditRow event on the row edit button click', (done) => {
+    const formElement = document.createElement('div');
+    let eventsCount = 0;
+    Formio.createForm(formElement, compTestEvents)
+      .then((form) => {
+        form.on('editGridEditRow', (eventArgs) => {
+          _.each(eventParams, (param) => {
+            assert.equal(!!eventArgs[param], true);
+          });
+          eventsCount = eventsCount + 1;
+        });
+
+        form.setSubmission({
+          data: {
+          editGrid: [
+              {
+                  textField: 'test1'
+              },
+              {
+                  textField: 'test2'
+              }
+          ],
+        }})
+        .then(() => {
+          const editBtn = form.element.querySelector('.editRow');
+          const clickEvent = new Event('click');
+          editBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(eventsCount, 1);
+            done();
+
+          }, 350);
+        });
+      })
+      .catch(done);
+  });
+
+  it('Should fire editGridOpenModal event on the row edit button click when modal is enabled', (done) => {
+    const formElement = document.createElement('div');
+    let eventsCount = 0;
+    const testForm = fastCloneDeep(compTestEvents);
+    testForm.components[0].modal = true;
+
+    Formio.createForm(formElement, testForm)
+      .then((form) => {
+        form.on('editGridOpenModal', (eventArgs) => {
+          _.each(eventParams, (param) => {
+            assert.equal(!!eventArgs[param], true);
+          });
+          eventsCount = eventsCount + 1;
+        });
+
+        form.setSubmission({
+          data: {
+          editGrid: [
+              {
+                  textField: 'test1'
+              },
+              {
+                  textField: 'test2'
+              }
+          ],
+        }})
+        .then(() => {
+          const editBtn = form.element.querySelector('.editRow');
+          const clickEvent = new Event('click');
+          editBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(eventsCount, 1);
+            done();
+          }, 350);
+        })
+      })
+      .catch(done);
+  });
+
+  it('Should fire editGridOpenModal event when adding new row and modal is enabled', (done) => {
+    const formElement = document.createElement('div');
+    let eventsCount = 0;
+    const testForm = fastCloneDeep(compTestEvents);
+    testForm.components[0].modal = true;
+
+    Formio.createForm(formElement, testForm)
+      .then((form) => {
+        form.on('editGridOpenModal', (eventArgs) => {
+          _.each(eventParams, (param) => {
+            assert.equal(!!eventArgs[param], true);
+          });
+          eventsCount = eventsCount + 1;
+        });
+
+        const editGrid = form.getComponent('editGrid');
+          const addBtn = editGrid.refs['editgrid-editGrid-addRow'][0];
+          const clickEvent = new Event('click');
+          addBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(eventsCount, 1);
+            done();
+          }, 350);
+      })
+      .catch(done);
+  });
+
+  it('Should prepare correct email table template with nested layout components', (done) => {
+    const formElement = document.createElement('div');
+    const testForm = fastCloneDeep(comp17);
+    Formio.createForm(formElement, testForm)
+      .then((form) => {
+        form.setSubmission({
+          data: {
+            editGrid: [{
+              radio: 'yes',
+              textArea: 'text area 1',
+            }, {
+              radio: 'no',
+              textArea: 'text area 2',
+            }],
+          },
+        });
+
+        const editGridComp = form.getComponent('editGrid');
+
+        setTimeout(() => {
+          const table = editGridComp.getValueAsString(editGridComp.dataValue, { email: true});
+          assert.ok(table.includes('table'));
+          assert.ok(table.includes('Radio'));
+          assert.ok(table.includes('Text Area'));
+          assert.ok(table.includes('yes'));
+          assert.ok(table.includes('text area 1'));
+          assert.ok(table.includes('no'));
+          assert.ok(table.includes('text area 2'));
+          done();
+        }, 200);
+      })
+      .catch(done);
+  });
+
+  it('Should not show validation errors when inside component has validateOn: submit', (done) => {
+    Formio.createForm(document.createElement('div'), comp18).then((form) => {
+      const editGrid = form.getComponent('editGrid');
+      // Open Edit Grid first row for editing
+      editGrid.addRow();
+
+      const select = form.getComponent('select1');
+
+      // Open Select dropdown
+      const clickEvent = new Event('click');
+      const options = select.element.querySelector('.fluid.selection.dropdown');
+      options.dispatchEvent(clickEvent);
+
+      const mouseDownEvent = new Event('mousedown');
+      const firstOption = select.element.querySelector('.choices__list[role="listbox"]').children[0]
+      // Select the first option
+      firstOption.dispatchEvent(mouseDownEvent);
+
+      setTimeout(()=> {
+        // Check no visible errors appeared on the form
+        const errors = form.element.querySelectorAll('.formio-error-wrapper');
+        assert.strictEqual(errors.length, 0);
+        assert.strictEqual(form.visibleErrors.length, 0);
+        done();
+      }, 300)
+    }).catch(done);
+  })
 });

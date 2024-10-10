@@ -15,7 +15,7 @@ import './components/builder';
 if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
   window.global = window;
 }
-import dragula from 'dragula/dist/dragula.min.js';
+import dragula from 'dragula';
 
 export default class WebformBuilder extends Component {
   // eslint-disable-next-line max-statements
@@ -134,6 +134,7 @@ export default class WebformBuilder extends Component {
         html,
         disableBuilderActions: self?.component?.disableBuilderActions,
         childComponent: component,
+        design: self?.options?.design
       });
     };
 
@@ -181,7 +182,7 @@ export default class WebformBuilder extends Component {
         return element;
       }
       // Attach container and component to element for later reference.
-      const containerElement = element.querySelector(`[ref="${component.component.key}-container"]`) || element;
+      const containerElement = element.querySelector(`[${this._referenceAttributeName}="${component.component.key}-container"]`) || element;
       containerElement.formioContainer = container;
       containerElement.formioComponent = component;
 
@@ -219,7 +220,8 @@ export default class WebformBuilder extends Component {
       params: {
         type: 'resource',
         limit: 1000000,
-        select: '_id,title,name,components'
+        select: '_id,title,name,components',
+        'tags__ne': 'noBuilderResource'
       }
     };
     if (this.options && this.options.resourceTag) {
@@ -438,7 +440,6 @@ export default class WebformBuilder extends Component {
 
   /**
    * Called when everything is ready.
-   *
    * @returns {Promise} - Wait for webform to be ready.
    */
   get ready() {
@@ -494,7 +495,8 @@ export default class WebformBuilder extends Component {
   /**
    * When a component sets its api key, we need to check if it is unique within its namespace. Find the namespace root
    * so we can calculate this correctly.
-   * @param component
+   * @param {import('@formio/core').Component} component - The component to find the namespace root for.
+   * @returns {import('@formio/core').Component[]} - The components root for this namespace.
    */
   findNamespaceRoot(component) {
     const path = getArrayFromComponentPath(component.path);
@@ -559,7 +561,8 @@ export default class WebformBuilder extends Component {
 
   attach(element) {
     this.on('change', (form) => {
-      this.populateRecaptchaSettings(form);
+      this.populateCaptchaSettings(form);
+      this.webform.setAlert(false);
     });
     return super.attach(element).then(() => {
       this.loadRefs(element, {
@@ -945,6 +948,21 @@ export default class WebformBuilder extends Component {
       }
     }
 
+    if (draggableComponent.uniqueComponent) {
+      let isCompAlreadyExists = false;
+      eachComponent(this.webform.components, (component) => {
+        if (component.key === draggableComponent.schema.key) {
+          isCompAlreadyExists = true;
+          return;
+        }
+      }, true);
+      if (isCompAlreadyExists) {
+        this.webform.redraw();
+        this.webform.setAlert('danger', `You cannot add more than one ${draggableComponent.title} component to one page.`);
+        return;
+      }
+    }
+
     if (target !== source) {
       // Ensure the key remains unique in its new container.
       BuilderUtils.uniquify(this.findNamespaceRoot(target.formioComponent), info);
@@ -982,7 +1000,7 @@ export default class WebformBuilder extends Component {
 
     const componentInDataGrid = parent.type === 'datagrid';
 
-    if (isNew && !this.options.noNewEdit && !info.noNewEdit) {
+    if (isNew && !this.options.noNewEdit && !info.noNewEdit && !(this.options.design && info.type === 'reviewpage')) {
       this.editComponent(info, target, isNew, null, null, { inDataGrid: componentInDataGrid });
     }
 
@@ -1028,10 +1046,18 @@ export default class WebformBuilder extends Component {
       this.options.properties = form.properties;
     }
 
-    this.keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false) || this.options.properties?.keyboardBuilder;
+    let keyboardActionsEnabled = _.get(this.options, 'keyboardBuilder', false) || this.options.properties?.keyboardBuilder;
+    if (typeof keyboardActionsEnabled === 'string') {
+      keyboardActionsEnabled = keyboardActionsEnabled === 'true';
+    }
+    this.keyboardActionsEnabled = keyboardActionsEnabled;
+
+    const isSubmitButton = (comp) => {
+      return (comp.type === 'button') && ((comp.action === 'submit') || !comp.action);
+    }
 
     const isShowSubmitButton = !this.options.noDefaultSubmitButton
-      && (!form.components.length || !form.components.find(comp => comp.key === 'submit'));
+      && (!form.components.length || !form.components.find(comp => isSubmitButton(comp)));
 
     // Ensure there is at least a submit button.
     if (isShowSubmitButton) {
@@ -1063,24 +1089,24 @@ export default class WebformBuilder extends Component {
     return Promise.resolve(form);
   }
 
-  populateRecaptchaSettings(form) {
-    //populate isEnabled for recaptcha form settings
-    let isRecaptchaEnabled = false;
+  populateCaptchaSettings(form) {
+    //populate isEnabled for captcha form settings
+    let isCaptchaEnabled = false;
     if (this.form.components) {
       eachComponent(form.components, component => {
-        if (isRecaptchaEnabled) {
+        if (isCaptchaEnabled) {
           return;
         }
-        if (component.type === 'recaptcha') {
-          isRecaptchaEnabled = true;
+        if (component.type === 'captcha') {
+          isCaptchaEnabled = true;
           return false;
         }
       });
-      if (isRecaptchaEnabled) {
-        _.set(form, 'settings.recaptcha.isEnabled', true);
+      if (isCaptchaEnabled) {
+        _.set(form, 'settings.captcha.isEnabled', true);
       }
-      else if (_.get(form, 'settings.recaptcha.isEnabled')) {
-        _.set(form, 'settings.recaptcha.isEnabled', false);
+      else if (_.get(form, 'settings.captcha.isEnabled')) {
+        _.set(form, 'settings.captcha.isEnabled', false);
       }
     }
   }
@@ -1114,8 +1140,14 @@ export default class WebformBuilder extends Component {
       else if (parent.formioComponent && parent.formioComponent.removeChildComponent) {
         parent.formioComponent.removeChildComponent(component);
       }
-      if (component.input && componentInstance && componentInstance.parent) {
-        _.unset(componentInstance._data, componentInstance.key);
+      if (component.input && componentInstance && parent.formioComponent) {
+        const parentDefaultValue = _.get(parent.formioComponent, 'component.defaultValue', null);
+        if (Array.isArray(parentDefaultValue)) {
+          parentDefaultValue.forEach(v => _.unset(v, componentInstance.key));
+        }
+        else if (typeof parentDefaultValue === 'object') {
+          _.unset(parentDefaultValue, componentInstance.key);
+        }
       }
       const rebuild = parent.formioComponent.rebuild() || Promise.resolve();
       rebuild.then(() => {
@@ -1158,7 +1190,7 @@ export default class WebformBuilder extends Component {
 
       this.preview.form.components.forEach(component => this.replaceDoubleQuotes(component, fieldsToRemoveDoubleQuotes));
 
-      const previewElement = this.componentEdit.querySelector('[ref="preview"]');
+      const previewElement = this.componentEdit.querySelector(`[${this._referenceAttributeName}="preview"]`);
       if (previewElement) {
         this.setContent(previewElement, this.preview.render(), null, sanitizeConfig);
         this.preview.attach(previewElement);
@@ -1191,7 +1223,10 @@ export default class WebformBuilder extends Component {
           'calculateValue',
           'conditional',
           'customConditional',
-          'id'
+          'id',
+          'fields.day.required',
+          'fields.month.required',
+          'fields.year.required',
         ]));
         const parentComponent = defaultValueComponent.parent;
         let tabIndex = -1;
@@ -1265,24 +1300,20 @@ export default class WebformBuilder extends Component {
   highlightInvalidComponents() {
     const repeatablePaths = this.findRepeatablePaths();
     let hasInvalidComponents = false;
-    // Matches anything expect letters and  '_' at the begginnig of the key and anything except of letters, numbers, '-', '.' and '_' in the rest of the key
+    // Matches anything expect letters and  '_' at the beginning of the key and anything except of letters, numbers,
+    // '-', '.' and '_' in the rest of the key
     const badCharacters = /^[^A-Za-z_]+|[^A-Za-z0-9\-._]+/g;
 
     this.webform.everyComponent((comp) => {
       const path = comp.path;
       if (repeatablePaths.includes(path)) {
-        comp.setCustomValidity(`API Key is not unique: ${comp.key}`);
+        comp.setCustomValidity(this.t('apiKey', { key: comp.key }));
         hasInvalidComponents = true;
-      }
-      else if (comp.error?.message?.startsWith('API Key is not unique')) {
-        comp.setCustomValidity('');
       }
 
       if (comp.key.replace(badCharacters, '') === '') {
-        comp.setCustomValidity(`API Key is not valid: ${comp.key}`);
-      }
-      else if (comp.error?.message?.startsWith('API Key is not valid')) {
-        comp.setCustomValidity('');
+        comp.setCustomValidity(this.t('apiKeyNotValid', { key: comp.key }));
+        hasInvalidComponents = true;
       }
     });
 
@@ -1291,10 +1322,11 @@ export default class WebformBuilder extends Component {
 
   /**
    * Called when a new component is saved.
-   *
-   * @param parent
-   * @param component
-   * @return {boolean}
+   * @param {Component} component - The component instance to save.
+   * @param {Component} parent - The parent component.
+   * @param {boolean} isNew - If this is a new component.
+   * @param {Component} original - The original component.
+   * @returns {boolean} - If the component was saved.
    */
   saveComponent(component, parent, isNew, original) {
     this.editForm.detach();
@@ -1321,9 +1353,8 @@ export default class WebformBuilder extends Component {
           comp = component;
         }
       });
-      const originalComp = comp.component;
-      const originalComponentSchema = comp.schema;
-
+      const originalComp = comp?.component;
+      const originalComponentSchema = comp?.schema;
       const isParentSaveChildMethod = this.isParentSaveChildMethod(parent.formioComponent);
 
       if (parentContainer && !isParentSaveChildMethod) {
@@ -1376,7 +1407,7 @@ export default class WebformBuilder extends Component {
   }
 
   attachEditComponentControls(component, parent, isNew, original, ComponentClass) {
-    const cancelButtons = this.componentEdit.querySelectorAll('[ref="cancelButton"]');
+    const cancelButtons = this.componentEdit.querySelectorAll(`[${this._referenceAttributeName}="cancelButton"]`);
     cancelButtons.forEach((cancelButton) => {
       this.editForm.addEventListener(cancelButton, 'click', (event) => {
         event.preventDefault();
@@ -1387,7 +1418,7 @@ export default class WebformBuilder extends Component {
       });
     });
 
-    const removeButtons = this.componentEdit.querySelectorAll('[ref="removeButton"]');
+    const removeButtons = this.componentEdit.querySelectorAll(`[${this._referenceAttributeName}="removeButton"]`);
     removeButtons.forEach((removeButton) => {
       this.editForm.addEventListener(removeButton, 'click', (event) => {
         event.preventDefault();
@@ -1400,13 +1431,16 @@ export default class WebformBuilder extends Component {
       });
     });
 
-    const saveButtons = this.componentEdit.querySelectorAll('[ref="saveButton"]');
+    const saveButtons = this.componentEdit.querySelectorAll(`[${this._referenceAttributeName}="saveButton"]`);
     saveButtons.forEach((saveButton) => {
       this.editForm.addEventListener(saveButton, 'click', (event) => {
         event.preventDefault();
-        if (!this.editForm.checkValidity(this.editForm.data, true, this.editForm.data)) {
+        const errors = this.editForm.validate(this.editForm.data, {
+          dirty: true
+        });
+        if (errors.length) {
           this.editForm.setPristine(false);
-          this.editForm.showErrors();
+          this.editForm.showErrors(errors);
           return false;
         }
         this.saved = true;
@@ -1414,7 +1448,7 @@ export default class WebformBuilder extends Component {
       });
     });
 
-    const previewButtons = this.componentEdit.querySelectorAll('[ref="previewButton"]');
+    const previewButtons = this.componentEdit.querySelectorAll(`[${this._referenceAttributeName}="previewButton"]`);
     previewButtons.forEach((previewButton) => {
       this.editForm.addEventListener(previewButton, 'click', (event) => {
         event.preventDefault();
@@ -1427,7 +1461,8 @@ export default class WebformBuilder extends Component {
           showPreview: this.showPreview,
           helplinks: this.helplinks,
         }));
-        this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
+        this.editForm.attach(this.componentEdit.querySelector(`[${this._referenceAttributeName}="editForm"]`));
+        this.updateComponent(this.editForm.submission.data ?? component);
         this.attachEditComponentControls(component, parent, isNew, original, ComponentClass);
       });
     });
@@ -1545,7 +1580,7 @@ export default class WebformBuilder extends Component {
     this.dialog = this.createModal(this.componentEdit, _.get(this.options, 'dialogAttr', {}));
 
     // This is the attach step.
-    this.editForm.attach(this.componentEdit.querySelector('[ref="editForm"]'));
+    this.editForm.attach(this.componentEdit.querySelector(`[${this._referenceAttributeName}="editForm"]`));
 
     this.hook('editFormWrapper');
 
@@ -1765,8 +1800,8 @@ export default class WebformBuilder extends Component {
 
   /**
    * Creates copy of component schema and stores it under sessionStorage.
-   * @param {Component} component
-   * @return {*}
+   * @param {Component} component - The component to copy.
+   * @returns {void}
    */
   copyComponent(component) {
     if (!window.sessionStorage) {
@@ -1778,8 +1813,8 @@ export default class WebformBuilder extends Component {
 
   /**
    * Paste copied component after the current component.
-   * @param {Component} component
-   * @return {*}
+   * @param {Component} component - The component to paste after.
+   * @returns {void}
    */
   pasteComponent(component) {
     if (!window.sessionStorage) {

@@ -45,7 +45,7 @@ export default [
     },
     searchField: 'title__regex',
     template: '<span>{{ item._vid }}</span>',
-    valueProperty: '_id',
+    valueProperty: 'revisionId',
     authenticate: true,
     label: 'Form Revision',
     key: 'revision',

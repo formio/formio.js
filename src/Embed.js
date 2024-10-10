@@ -1,17 +1,60 @@
 import CDN from './CDN.js';
 export class Formio {
+    static FormioClass = null;
     static baseUrl;
     static projectUrl;
+    static pathType;
     static language;
     static config = {};
-    static cdn = null;
-    static proxy = true;
+    static cdn;
+    static modules = [];
+    static icons = '';
+    static license = '';
+    static formioReady = new Promise((ready, reject) => {
+        Formio._formioReady = ready;
+        Formio._formioReadyReject = reject;
+    });
     static version = 'FORMIO_VERSION';
-    static async setBaseUrl(url) {
-        Formio.baseUrl = url;
+    static setLicense(license, norecurse = false) {
+        Formio.license = license;
+        if (!norecurse && Formio.FormioClass) {
+            Formio.FormioClass.setLicense(license);
+        }
     }
-    static async setProjectUrl(url) {
+
+    static setBaseUrl(url, norecurse = false) {
+        Formio.baseUrl = url;
+        if (!norecurse && Formio.FormioClass) {
+            Formio.FormioClass.setBaseUrl(url);
+        }
+    }
+
+    static setApiUrl(url, norecurse = false) {
+        Formio.baseUrl = url;
+        if (!norecurse && Formio.FormioClass) {
+            Formio.FormioClass.setApiUrl(url);
+        }
+    }
+
+    static setProjectUrl(url, norecurse = false) {
         Formio.projectUrl = url;
+        if (!norecurse && Formio.FormioClass) {
+            Formio.FormioClass.setProjectUrl(url);
+        }
+    }
+
+    static setAppUrl(url, norecurse = false) {
+        Formio.projectUrl = url;
+        if (!norecurse && Formio.FormioClass) {
+            Formio.FormioClass.setAppUrl(url);
+        }
+    }
+
+    static setPathType(type, norecurse = false) {
+        Formio.pathType = type;
+        if (!norecurse && Formio.FormioClass) {
+            Formio.FormioClass.setPathType(type);
+        }
     }
 
     static debug(...args) {
@@ -26,17 +69,29 @@ export class Formio {
         }
     }
 
-    static global(prop) {
+    static global(prop, flag = '') {
         const globalValue = window[prop];
-        if (globalValue && globalValue.proxy) {
+        if (flag && globalValue && !globalValue[flag]) {
             return null;
         }
         Formio.debug(`Getting global ${prop}`, globalValue);
         return globalValue;
     }
 
+    static use(module) {
+        if (Formio.FormioClass && Formio.FormioClass.isRenderer) {
+            Formio.FormioClass.use(module);
+        }
+        else {
+            Formio.modules.push(module);
+        }
+    }
+
     static createElement(type, attrs, children) {
         const element = document.createElement(type);
+        if (!attrs) {
+            return element;
+        }
         Object.keys(attrs).forEach(key => {
             element.setAttribute(key, attrs[key]);
         });
@@ -46,28 +101,34 @@ export class Formio {
         return element;
     }
 
-    static async addScript(wrapper, src, name) {
+    static async addScript(wrapper, src, name, flag = '') {
         if (!src) {
             return Promise.resolve();
         }
         if (typeof src !== 'string' && src.length) {
             return Promise.all(src.map(ref => Formio.addScript(wrapper, ref)));
         }
-        if (name && Formio.global(name)) {
+        if (name && Formio.global(name, flag)) {
             Formio.debug(`${name} already loaded.`);
             return Promise.resolve(Formio.global(name));
         }
         Formio.debug('Adding Script', src);
-        wrapper.appendChild(Formio.createElement('script', {
-            src
-        }));
+        try {
+            wrapper.appendChild(Formio.createElement('script', {
+                src
+            }));
+        }
+        catch (err) {
+            Formio.debug(err);
+            return Promise.resolve();
+        }
         if (!name) {
             return Promise.resolve();
         }
         return new Promise((resolve) => {
             Formio.debug(`Waiting to load ${name}`);
             const wait = setInterval(() => {
-                if (Formio.global(name)) {
+                if (Formio.global(name, flag)) {
                     clearInterval(wait);
                     Formio.debug(`${name} loaded.`);
                     resolve(Formio.global(name));
@@ -93,6 +154,10 @@ export class Formio {
 
     static async submitDone(instance, submission) {
         Formio.debug('Submision Complete', submission);
+        if (Formio.config.submitDone) {
+            Formio.config.submitDone(submission, instance);
+        }
+
         const successMessage = (Formio.config.success || '').toString();
         if (successMessage && successMessage.toLowerCase() !== 'false' && instance.element) {
             instance.element.innerHTML = `<div class="alert-success" role="alert">${successMessage}</div>`;
@@ -134,6 +199,7 @@ export class Formio {
 
     // Return the full script if the builder is being used.
     static formioScript(script, builder) {
+        builder = builder || Formio.config.includeBuilder;
         if (Formio.fullAdded || builder) {
             Formio.fullAdded = true;
             return script.replace('formio.form', 'formio.full');
@@ -141,45 +207,39 @@ export class Formio {
         return script;
     }
 
-    // eslint-disable-next-line max-statements
-    static async init(element, options = {}, builder = false) {
-        Formio.cdn = new CDN(Formio.config.cdn);
-        Formio.config.libs = Formio.config.libs || {
-            uswds: {
-                fa: true,
-                js: `${Formio.cdn.uswds}/uswds.min.js`,
-                css: `${Formio.cdn.uswds}/uswds.min.css`,
-            },
-            fontawesome: {
-                css: `${Formio.cdn['font-awesome']}/css/font-awesome.min.css`
-            },
-            bootstrap: {
-                css: `${Formio.cdn.bootstrap}/css/bootstrap.min.css`
-            }
-        };
-        const id = Formio.config.id || `formio-${Math.random().toString(36).substring(7)}`;
-
-        // Create a new wrapper and add the element inside of a new wrapper.
-        let wrapper = Formio.createElement('div', {
-            'id': `"${id}-wrapper"`
-        });
-        element.parentNode.insertBefore(wrapper, element);
-
-        // If we include the libraries, then we will attempt to run this in shadow dom.
-        if (Formio.config.includeLibs && (typeof wrapper.attachShadow === 'function') && !Formio.config.premium) {
-            wrapper = wrapper.attachShadow({
-                mode: 'open'
-            });
-            options.shadowRoot = wrapper;
+    static async addLibrary(libWrapper, lib, name) {
+        if (!lib) {
+            return;
         }
+        if (lib.dependencies) {
+            for (let i = 0; i < lib.dependencies.length; i++) {
+                const libName = lib.dependencies[i];
+                await Formio.addLibrary(libWrapper, Formio.config.libs[libName], libName);
+            }
+        }
+        if (lib.css) {
+            await Formio.addStyles((lib.global ? document.body : libWrapper), lib.css);
+        }
+        if (lib.js) {
+            const module = await Formio.addScript((lib.global ? document.body : libWrapper), lib.js, lib.use ? name : false);
+            if (lib.use) {
+                Formio.debug(`Using ${name}`);
+                const options = lib.options || {};
+                if (!options.license && Formio.license) {
+                    options.license = Formio.license;
+                }
+                Formio.use((typeof lib.use === 'function' ? lib.use(module) : module), options);
+            }
+        }
+        if (lib.globalStyle) {
+            const style = Formio.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = lib.globalStyle;
+            document.body.appendChild(style);
+        }
+    }
 
-        element.parentNode.removeChild(element);
-        wrapper.appendChild(element);
-
-        // Load the renderer styles.
-        await Formio.addStyles(wrapper, Formio.config.embedCSS || `${Formio.cdn.js}/formio.embed.css`);
-
-        // Add a loader.
+    static async addLoader(wrapper) {
         wrapper.appendChild(Formio.createElement('div', {
             'class': 'formio-loader'
         }, [{
@@ -194,114 +254,214 @@ export class Formio {
                 }
             }]
         }]));
+    }
 
+    // eslint-disable-next-line max-statements
+    static async init(element, options = {}, builder = false) {
+        Formio.cdn = new CDN(Formio.config.cdn, Formio.config.cdnUrls || {});
+        Formio.config.libs = Formio.config.libs || {
+            uswds: {
+                dependencies: ['fontawesome'],
+                js: `${Formio.cdn.uswds}/uswds.min.js`,
+                css: `${Formio.cdn.uswds}/uswds.min.css`,
+                use: true
+            },
+            fontawesome: {
+                // Due to an issue with font-face not loading in the shadowdom (https://issues.chromium.org/issues/41085401), we need
+                // to do 2 things. 1.) Load the fonts from the global cdn, and 2.) add the font-face to the global styles on the page.
+                css: `https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css`,
+                globalStyle: `@font-face {
+                    font-family: 'FontAwesome';
+                    src: url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.eot?v=4.7.0');
+                    src: url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'), url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.woff2?v=4.7.0') format('woff2'), url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.woff?v=4.7.0') format('woff'), url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.ttf?v=4.7.0') format('truetype'), url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
+                    font-weight: normal;
+                    font-style: normal;
+                  }`
+            },
+            bootstrap4: {
+                dependencies: ['fontawesome'],
+                css: `${Formio.cdn.bootstrap4}/css/bootstrap.min.css`
+            },
+            bootstrap: {
+                dependencies: ['bootstrap-icons'],
+                css: `${Formio.cdn.bootstrap}/css/bootstrap.min.css`
+            },
+            'bootstrap-icons': {
+                // Due to an issue with font-face not loading in the shadowdom (https://issues.chromium.org/issues/41085401), we need
+                // to do 2 things. 1.) Load the fonts from the global cdn, and 2.) add the font-face to the global styles on the page.
+                css: 'https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.min.css',
+                globalStyle: `@font-face {
+                    font-display: block;
+                    font-family: "bootstrap-icons";
+                    src: url("https://cdn.jsdelivr.net/npm/bootstrap-icons/font/fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6") format("woff2"),
+                         url("https://cdn.jsdelivr.net/npm/bootstrap-icons/font/fonts/bootstrap-icons.woff?dd67030699838ea613ee6dbda90effa6") format("woff");
+                }`
+            }
+        };
+        // Add all bootswatch templates.
+        ['cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera', 'lumen', 'lux', 'materia', 'minty', 'pulse', 'sandstone', 'simplex', 'sketchy', 'slate', 'solar', 'spacelab', 'superhero', 'united', 'yeti'].forEach((template) => {
+            Formio.config.libs[template] = {
+                dependencies: ['bootstrap-icons'],
+                css: `${Formio.cdn.bootswatch}/dist/${template}/bootstrap.min.css`
+            };
+        });
+        const id = Formio.config.id || `formio-${Math.random().toString(36).substring(7)}`;
+
+        // Create a new wrapper and add the element inside of a new wrapper.
+        let wrapper = Formio.createElement('div', {
+            'id': `${id}-wrapper`
+        });
+        element.parentNode.insertBefore(wrapper, element);
+
+        // If we include the libraries, then we will attempt to run this in shadow dom.
+        const useShadowDom = Formio.config.includeLibs && !Formio.config.noshadow && (typeof wrapper.attachShadow === 'function');
+        if (useShadowDom) {
+            wrapper = wrapper.attachShadow({
+                mode: 'open'
+            });
+            options.shadowRoot = wrapper;
+        }
+
+        element.parentNode.removeChild(element);
+        wrapper.appendChild(element);
+
+        // If this is inside of shadow dom, then we need to add the styles and scripts to the shadow dom.
+        const libWrapper = useShadowDom ? wrapper : document.body;
+
+        // Load the renderer styles.
+        await Formio.addStyles(libWrapper, Formio.config.embedCSS || `${Formio.cdn.js}/formio.embed.css`);
+
+        // Add a loader.
+        Formio.addLoader(wrapper);
+
+        const formioSrc = Formio.config.full ? 'formio.full' : 'formio.form';
+        const renderer = Formio.config.debug ? formioSrc : `${formioSrc}.min`;
         Formio.FormioClass = await Formio.addScript(
-            wrapper,
-            Formio.formioScript(Formio.config.script || `${Formio.cdn.js}/formio.form.min.js`, builder),
-            'Formio'
+            libWrapper,
+            Formio.formioScript(Formio.config.script || `${Formio.cdn.js}/${renderer}.js`, builder),
+            'Formio',
+            builder ? 'isBuilder' : 'isRenderer'
         );
-        Formio.FormioClass.setBaseUrl(Formio.baseUrl || Formio.config.base);
-        Formio.FormioClass.setProjectUrl(Formio.projectUrl || Formio.config.project);
+        Formio.FormioClass.cdn = Formio.cdn;
+        Formio.FormioClass.setBaseUrl(options.baseUrl || Formio.baseUrl || Formio.config.base);
+        Formio.FormioClass.setProjectUrl(options.projectUrl || Formio.projectUrl || Formio.config.project);
         Formio.FormioClass.language = Formio.language;
+        Formio.setLicense(Formio.license || Formio.config.license || false);
+        Formio.modules.forEach((module) => {
+            Formio.FormioClass.use(module);
+        });
 
-        // Add premium modules
-        if (Formio.global('premium')) {
-            Formio.debug('Using premium module.');
-            Formio.FormioClass.use(Formio.global('premium'));
-        }
-
-        if (Formio.global('vpat')) {
-            Formio.debug('Using vpat module.');
-            Formio.FormioClass.use(Formio.global('vpat'));
+        if (Formio.icons) {
+            Formio.FormioClass.icons = Formio.icons;
         }
 
-        if (Formio.config.template) {
-            if (Formio.config.includeLibs) {
-                await Formio.addStyles(wrapper, Formio.config.libs[Formio.config.template].css);
-                await Formio.addScript(wrapper, Formio.config.libs[Formio.config.template].js);
-                if (Formio.config.libs[Formio.config.template].fa) {
-                    await Formio.addStyles(wrapper, Formio.config.libs.fontawesome.css);
-                }
-            }
+        if (Formio.pathType) {
+            Formio.FormioClass.setPathType(Formio.pathType);
+        }
 
-            if (Formio.cdn[Formio.config.template]) {
-                const templateSrc = `${Formio.cdn[Formio.config.template]}/${Formio.config.template}.min`;
-                await Formio.addStyles(wrapper, `${templateSrc}.css`);
-                Formio.debug(`Using ${Formio.config.template}`);
-                Formio.FormioClass.use(await Formio.addScript(wrapper, `${templateSrc}.js`, Formio.config.template));
-            }
+        // Add libraries if they wish to include the libs.
+        if (Formio.config.template && Formio.config.includeLibs) {
+            await Formio.addLibrary(
+                libWrapper, 
+                Formio.config.libs[Formio.config.template], 
+                Formio.config.template
+            );
         }
-        else if (Formio.global('uswds')) {
-            Formio.debug('Using uswds module.');
-            Formio.FormioClass.use(Formio.global('uswds'));
+
+        if (!Formio.config.libraries) {
+            Formio.config.libraries = Formio.config.modules || {};
         }
-        // Default bootstrap + fontawesome.
-        else if (Formio.config.includeLibs) {
-            await Formio.addStyles(wrapper, Formio.config.libs.fontawesome.css);
-            await Formio.addStyles(wrapper, Formio.config.libs.bootstrap.css);
-        }
+
+        // Adding premium if it is provided via the config.
         if (Formio.config.premium) {
-            await Formio.addStyles(wrapper, Formio.config.premium.css);
-            Formio.debug('Using premium');
-            Formio.FormioClass.use(await Formio.addScript(wrapper, Formio.config.premium.js, 'premium'));
+            Formio.config.libraries.premium = Formio.config.premium;
         }
 
-        await Formio.addStyles(wrapper, Formio.formioScript(Formio.config.style || `${Formio.cdn.js}/formio.form.min.css`, builder));
+        // Allow adding dynamic modules.
+        if (Formio.config.libraries) {
+            for (const name in Formio.config.libraries) {
+                const lib = Formio.config.libraries[name];
+                lib.use = lib.use || true;
+                await Formio.addLibrary(libWrapper, lib, name);
+            }
+        }
+
+        await Formio.addStyles(libWrapper, Formio.formioScript(Formio.config.style || `${Formio.cdn.js}/${renderer}.css`, builder));
         if (Formio.config.before) {
             await Formio.config.before(Formio.FormioClass, element, Formio.config);
         }
         Formio.FormioClass.license = true;
+        Formio._formioReady(Formio.FormioClass);
         return wrapper;
     }
 
-    static async createForm(element, form, options) {
+    // Called after an instance has been created.
+    static async afterCreate(instance, wrapper, readyEvent) {
+        const loader = wrapper.querySelector('.formio-loader');
+        if (loader) {
+            wrapper.removeChild(loader);
+        }
+        Formio.FormioClass.events.emit(readyEvent, instance);
+        if (Formio.config.after) {
+            Formio.debug('Calling ready callback');
+            Formio.config.after(instance, Formio.config);
+        }
+        return instance;
+    }
+
+    // Create a new form.
+    static async createForm(element, form, options = {}) {
+        if (Formio.FormioClass) {
+            return Formio.FormioClass.createForm(element, form, {
+                ...options,
+                ...{ noLoader: true }
+            });
+        }
         const wrapper = await Formio.init(element, options);
         return Formio.FormioClass.createForm(element, form, {
             ...options,
             ...{ noLoader: true }
         }).then((instance) => {
-            Formio.debug('Form created', instance);
-
-            // Remove the loader.
-            Formio.debug('Removing loader');
-            wrapper.removeChild(wrapper.querySelector('.formio-loader'));
-
             // Set the default submission data.
             if (Formio.config.submission) {
                 Formio.debug('Setting submission', Formio.config.submission);
                 instance.submission = Formio.config.submission;
             }
 
-            // Allow them to provide additional configs.
-            Formio.debug('Triggering embed event');
-            Formio.FormioClass.events.emit('formEmbedded', instance);
-
-            // Trigger the after handler.
-            if (Formio.config.after) {
-                Formio.debug('Calling ready callback');
-                Formio.config.after(instance, Formio.config);
-            }
-
+            // Call the after create method.
+            Formio.afterCreate(instance, wrapper, 'formEmbedded');
             return instance;
         });
     }
 
-    static async builder(element, form, options) {
+    // Create a form builder.
+    static async builder(element, form, options = {}) {
+        if (Formio.FormioClass?.builder) {
+            return Formio.FormioClass.builder(element, form, options);
+        }
         const wrapper = await Formio.init(element, options, true);
         return Formio.FormioClass.builder(element, form, options).then((instance) => {
-            Formio.debug('Builder created', instance);
-            Formio.debug('Removing loader');
-            wrapper.removeChild(wrapper.querySelector('.formio-loader'));
-            Formio.debug('Triggering embed event');
-            Formio.FormioClass.events.emit('builderEmbedded', instance);
-            if (Formio.config.after) {
-                Formio.debug('Calling ready callback');
-                Formio.config.after(instance, Formio.config);
-            }
+            Formio.afterCreate(instance, wrapper, 'builderEmbedded');
             return instance;
         });
     }
+
+    // Create a report.
+    static Report = {
+        create: async(element, submission, options = {}) => {
+            if (Formio.FormioClass?.Report) {
+                return Formio.FormioClass.Report.create(element, submission, options);
+            }
+            const wrapper = await Formio.init(element, options, true);
+            return Formio.FormioClass.Report.create(element, submission, options).then((instance) => {
+                Formio.afterCreate(instance, wrapper, 'reportEmbedded');
+                return instance;
+            });
+        }
+    };
 }
+
+CDN.defaultCDN = Formio.version.includes('rc') ? 'https://cdn.test-form.io' : 'https://cdn.form.io';
 
 export class Form {
     constructor(element, form, options) {
@@ -317,6 +477,9 @@ export class Form {
     }
 
     init() {
+        if (this.instance && !this.instance.proxy) {
+            this.instance.destroy();
+        }
         this.element.innerHTML = '';
         this.ready = this.create().then((instance) => {
             this.instance = instance;
@@ -329,12 +492,23 @@ export class Form {
         return Formio.createForm(this.element, this.form, this.options);
     }
 
+    setForm(form) {
+        this.form = form;
+        if (this.instance) {
+            this.instance.setForm(form);
+        }
+    }
+
     setDisplay(display) {
         if (this.instance.proxy) {
             return this.ready;
         }
         this.form.display = display;
-        this.init();
+        this.instance.destroy();
+        this.ready = this.create().then((instance) => {
+            this.instance = instance;
+            this.setForm(this.form);
+        });
         return this.ready;
     }
 }
