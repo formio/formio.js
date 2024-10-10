@@ -1534,14 +1534,14 @@ export default class WebformBuilder extends Component {
     const instance = new ComponentClass(componentCopy, instanceOptions);
     const schema = this.hook('builderComponentSchema', component, instance);
 
-    this.editForm.submission = isJsonEdit ? {
+    this.editForm.setSubmission(isJsonEdit ? {
       data: {
         componentJson: schema,
         showFullSchema: this.options.showFullJsonSchema
       },
     } : {
       data: instance.component,
-    };
+    }, {noValidate: true});
 
     if (this.preview) {
       this.preview.destroy();
