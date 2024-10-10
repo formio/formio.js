@@ -927,22 +927,24 @@ export default class NestedComponent extends Field {
 
   setNestedValue(component, value, flags = {}) {
     component._data = this.componentContext(component);
+    let componentFlags = {...flags};
+
     if (component.type === 'button') {
       return false;
     }
     if (component.type === 'components') {
       if (component.tree && component.hasValue(value)) {
-        return component.setValue(_.get(value, component.key), flags);
+        return component.setValue(_.get(value, component.key), componentFlags);
       }
-      return component.setValue(value, flags);
+      return component.setValue(value, componentFlags);
     }
     else if (value && component.hasValue(value)) {
-      return component.setValue(_.get(value, component.key), flags);
+      return component.setValue(_.get(value, component.key), componentFlags);
     }
     else if ((!this.rootPristine || component.visible) && component.shouldAddDefaultValue) {
-      flags.noValidate = !flags.dirty;
-      flags.resetValue = true;
-      return component.setValue(component.defaultValue, flags);
+      componentFlags.noValidate = !componentFlags.dirty;
+      componentFlags.resetValue = true;
+      return component.setValue(component.defaultValue, componentFlags);
     }
   }
 

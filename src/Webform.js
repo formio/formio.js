@@ -795,6 +795,7 @@ export default class Webform extends NestedDataComponent {
      */
     onSetSubmission(submission, flags = {}) {
       this.submissionSet = true;
+      flags.submission = structuredClone(submission);
       this.triggerChange(flags);
       this.emit('beforeSetSubmission', submission);
       this.setValue(submission, flags);
@@ -952,7 +953,6 @@ export default class Webform extends NestedDataComponent {
         if (!flags.sanitize) {
             this.mergeData(this.data, submission.data);
         }
-
         submission.data = this.data;
         this._submission = submission;
         return changed;
@@ -1438,10 +1438,10 @@ export default class Webform extends NestedDataComponent {
         }
 
         this.checkData(value.data, flags);
-        const shouldValidate =
-            !flags.noValidate ||
+        let shouldValidate = flags.noValidate ? false :
+            _.isUndefined(flags.noValidate) ||
             flags.fromIframe ||
-            (flags.fromSubmission && this.rootPristine && this.pristine && flags.changed);
+            (flags.fromSubmission && this.rootPristine && this.pristine);
         const errors = shouldValidate
             ? this.validate(value.data, {
                 ...flags,

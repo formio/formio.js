@@ -1168,6 +1168,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       editRow.state === EditRowState.Saving ||
       editRow.state === EditRowState.Editing ||
       editRow.alerts ||
+      this.dirty ||
       dirty;
   }
 
