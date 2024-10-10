@@ -1,7 +1,7 @@
 import Component from './_classes/component/Component';
 import EditFormUtils from './_classes/component/editForm/utils';
 import BaseEditForm from './_classes/component/Component.form';
-import { getComponentKey } from '../utils/utils';
+import { getComponentKey, getModelType } from '../utils/utils';
 import _ from 'lodash';
 export default class Components {
   static _editFormUtils = EditFormUtils;
@@ -77,6 +77,9 @@ export default class Components {
       const rowIndex = component.row;
       const rowIndexPath = rowIndex && !['container'].includes(thisPath.component.type) ? `[${Number.parseInt(rowIndex)}]` : '';
       path = `${thisPath.path}${rowIndexPath}.`;
+      if (rowIndexPath && getModelType(thisPath) === 'nestedDataArray') {
+        path = `${path}data.`;
+      }
       path += componentKey;
       return _.trim(path, '.');
     }
