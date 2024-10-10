@@ -580,7 +580,7 @@ describe(&apos;SelectBoxes Component&apos;, () =&gt; {
     });
   });
 
-  it(&apos;Should show validation errors when the value property is set&apos;, () =&gt; {
+  it(&apos;Should show validation errors when the value property is set&apos;, (done) =&gt; {
     const originalMakeRequest = Formio.makeRequest;
     Formio.makeRequest = async() =&gt; {
       return [
@@ -605,10 +605,19 @@ describe(&apos;SelectBoxes Component&apos;, () =&gt; {
       ];
     };
     const newComp12 = _.cloneDeep(comp12);
+    newComp12.components.push({
+      &apos;type&apos;: &apos;button&apos;,
+      &apos;key&apos;: &apos;submit&apos;
+    });
     _.set(newComp12.components[0], &apos;validate.required&apos;, true);
-    return Formio.createForm(document.createElement(&apos;div&apos;), newComp12, {}).then((form) =&gt; {
+    Formio.createForm(document.createElement(&apos;div&apos;), newComp12, {}).then((form) =&gt; {
       const selectBoxesComponent = form.getComponent(&apos;selectBoxes&apos;);
-      assert.equal(selectBoxesComponent.errors.length, 1);
+      const buttonComponent = form.getComponent(&apos;submit&apos;);
+      buttonComponent.refs.button.click();
+      setTimeout(() =&gt; {
+        assert.equal(selectBoxesComponent.errors.length, 1);
+        done();
+      },200);
       Formio.makeRequest = originalMakeRequest;
     });
   });
