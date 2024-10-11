@@ -1982,12 +1982,12 @@ export default class Component extends Element {
   restoreCaretPosition() {
     if (this.root?.currentSelection) {
       if (this.refs.input?.length) {
-        const { selection, index } = this.root.currentSelection;
+        const { index } = this.root.currentSelection;
         let input = this.refs.input[index];
         const isInputRangeSelectable = (i) => /text|search|password|tel|url/i.test(i?.type || '');
         if (input) {
           if (isInputRangeSelectable(input)) {
-            input.setSelectionRange(...selection);
+            input.setSelectionRange(input.value.length, input.value.length);
           }
         }
         else {
