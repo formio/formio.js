@@ -15,9 +15,9 @@ import {
   comp7,
   comp8,
   comp9,
-  comp10
+  comp10,
+  comp11
 } from './fixtures';
-import CurrencyComponent from "../currency/Currency";
 
 describe('Number Component', () => {
   it('Should build an number component', () => {
@@ -469,6 +469,26 @@ describe('Number Component', () => {
       const numberComponent = form.getComponent("number");
       assert.equal(numberComponent._errors.length, 0);
     });
+  });
+
+  it('Should maintain the correct caret (cursor) position when rendering value with thousands separators after restoreCaretPosition is called', (done) => { 
+    Formio.createForm(document.createElement('div'), comp11, {}).then((form) => {
+      const numberComponent = form.getComponent('number');
+      form.root.focusedComponent = numberComponent;
+      const numberElement = numberComponent.refs.input[0];
+      const inputEvent = new Event('input'); 
+ 
+      numberElement.value = 1234567;
+      numberElement.dispatchEvent(inputEvent);
+      // see https://formio.atlassian.net/browse/FIO-9144
+      // before the fix, the caret was moving back by one after being restored
+      numberComponent.restoreCaretPosition();
+      assert.equal(numberElement.value, '1,234,567');
+      // selectionStart (a.k.a cursor position) is 9 with the delimiters
+      // it would be 7 without them and 8 with the previous bug
+      assert.equal(numberElement.selectionStart, 9);
+      done();
+    }).catch(done);
   });
 
   // it('Should add trailing zeros on blur, if decimal required', (done) => {
