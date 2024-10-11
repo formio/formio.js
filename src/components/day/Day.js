@@ -655,6 +655,9 @@ export default class DayComponent extends Field {
    * @returns {string|null} - The string value of the date.
    */
   getValueAsString(value) {
+    if (!value) {
+      return '';
+    }
     return this.getDate(value) || '';
   }
 

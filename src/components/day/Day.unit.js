@@ -418,7 +418,7 @@ describe('Day Component', () => {
         assert.equal(dayComponent.errors[0].message, 'Day - Table is required');
         done();
       },200);
-    });
+    }).catch(done);
   });
 
   it('Should save empty value after deleting the values', (done) => {
@@ -436,7 +436,7 @@ describe('Day Component', () => {
         assert.equal(component.getValue(), '');
         done();
       }, 100);
-    });
+    }).catch(done);
   });
 
   it('Should save empty value after deleting the values if the day field is hidden', (done) => {
@@ -452,7 +452,7 @@ describe('Day Component', () => {
         assert.equal(component.getValue(), '');
         done();
       }, 100);
-    });
+    }).catch(done);
     comp1.fields.day.hide = false;
   });
 
@@ -470,7 +470,22 @@ describe('Day Component', () => {
         assert.equal(component.getValue(), '');
         done();
       }, 100);
-    });
+    }).catch(done);
+    delete comp1.defaultValue;
+  });
+
+  it('Should return correct values from getValueAsString without using default value', (done) => {
+    comp1.defaultValue = '10/12/2024';
+    Harness.testCreate(DayComponent, comp1)
+      .then((component) => {
+        assert.equal(component.getValue(), '10/12/2024');
+        assert.equal(component.getValueAsString('11/12/2024'), '11/12/2024');
+        assert.equal(component.getValueAsString(''), '');
+        assert.equal(component.getValueAsString(null), '');
+        assert.equal(component.getValueAsString(), '');
+        done();
+      })
+      .catch(done);
     delete comp1.defaultValue;
   });
 });
