@@ -639,7 +639,7 @@ describe('Wizard tests', () => {
         };
 
         clickWizardBtn('link[4]');
-        
+
         setTimeout(() => {
           checkPage(4);
           clickWizardBtn('submit');
@@ -666,7 +666,7 @@ describe('Wizard tests', () => {
     })
     .catch((err) => done(err));
   });
-  
+
 
   it('Should execute advanced logic for wizard pages', function(done) {
     const formElement = document.createElement('div');
@@ -1180,7 +1180,7 @@ describe('Wizard tests', () => {
 
             assert.equal(wizard.visibleErrors.length, 3, 'Should have page validation error');
             assert.equal(wizard.refs.errorRef.length, 3, 'Should keep alert with validation errors');
-            checkInvalidComp('textField');
+            checkInvalidComp('textField', true);
             clickWizardBtn('errorRef[1]', true);
 
             setTimeout(() => {
@@ -1188,7 +1188,7 @@ describe('Wizard tests', () => {
 
               assert.equal(wizard.visibleErrors.length, 3, 'Should have page validation error');
               assert.equal(wizard.refs.errorRef.length, 3, 'Should keep alert with validation errors');
-              checkInvalidComp('checkbox');
+              checkInvalidComp('checkbox', true);
               wizard.getComponent('checkbox').setValue(true);
 
               setTimeout(() => {

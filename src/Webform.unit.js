@@ -2304,7 +2304,7 @@ describe('Webform tests', function() {
     });
   });
 
-  it('Should show errors on setSubmission when providing explicit data values.', (done) => {
+  it('Should not show errors on setSubmission when providing explicit data values.', (done) => {
     formElement.innerHTML = '';
     const form = new Webform(formElement,{ language: 'en' });
     form.setForm(
@@ -2330,12 +2330,17 @@ describe('Webform tests', function() {
         }],
       }
     ).then(() => {
-      checkForErrors(form, {}, {
-        data:{
+      form.setSubmission({
+        data: {
           number: 2,
           textArea: ''
         }
-      }, 2, done);
+      });
+      setTimeout(() => {
+        assert.equal(form.errors.length, 2);
+        assert.equal(form.visibleErrors.length, 0);
+        done();
+      },200);
     });
   });
 
@@ -5186,7 +5191,7 @@ describe('Webform tests', function() {
     form.setForm(formWithCheckboxRadioTypeAndValidation).then(() => {
       const submitButton = form.getComponent('submit');
       assert.ok(submitButton.disabled, 'Submit button should be disabled');
-      const errors = form.validate(); 
+      const errors = form.validate();
       assert.strictEqual(errors.length, 1, 'Should return 1 error for the checkbox');
       assert.strictEqual(errors[0].component.label, 'Checkbox 1', 'The error should be for the checkbox component');
       assert.strictEqual(errors[0].errorKeyOrMessage, 'required', 'Should show required validation error');

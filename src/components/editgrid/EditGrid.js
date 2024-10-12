@@ -1151,17 +1151,18 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.root?.submitted;
   }
 
-  shouldValidateRow(editRow, dirty) {
+  shouldValidateRow(editRow, dirty, fromSubmission) {
     return this.shouldValidateDraft(editRow) ||
       editRow.state === EditRowState.Saving ||
       editRow.state === EditRowState.Editing ||
       editRow.alerts ||
+      fromSubmission ||
       dirty;
   }
 
-  validateRow(editRow, dirty, forceSilentCheck) {
+  validateRow(editRow, dirty, forceSilentCheck, fromSubmission) {
     editRow.errors = [];
-    if (this.shouldValidateRow(editRow, dirty)) {
+    if (this.shouldValidateRow(editRow, dirty, fromSubmission)) {
       const silentCheck = (this.component.rowDrafts && !this.shouldValidateDraft(editRow)) || forceSilentCheck;
       const rootValue = fastCloneDeep(this.rootValue);
       const editGridValue = _.get(rootValue, this.path, []);
@@ -1238,7 +1239,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   checkComponentValidity(data, dirty, row, options = {}, errors = []) {
-    const { silentCheck } = options;
+    const { silentCheck, fromSubmission } = options;
     const superValid = super.checkComponentValidity(data, dirty, row, options, errors);
 
     // If super tells us that component invalid and there is no need to update alerts, just return false
@@ -1250,7 +1251,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     const allRowErrors = [];
     this.editRows.forEach((editRow, index) => {
       // Trigger all errors on the row.
-      const rowErrors = this.validateRow(editRow, dirty, silentCheck);
+      const rowErrors = this.validateRow(editRow, dirty, silentCheck, fromSubmission);
       errors.push(...rowErrors);
       allRowErrors.push(...rowErrors);
 

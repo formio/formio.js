@@ -314,6 +314,10 @@ describe('Component', () => {
           type: 'email',
           input: true
         },
+        {
+          type: 'button',
+          key: 'submit'
+        }
       ],
     };
 
@@ -329,6 +333,8 @@ describe('Component', () => {
       });
     })
     .then(() => {
+      const submitButton = form.getComponent('submit');
+      submitButton.refs.button.click();
       setTimeout(() => {
         const email = form.getComponent('email');
         expect(email.refs.input[0].classList.contains('is-invalid')).to.be.false;

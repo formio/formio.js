@@ -3360,14 +3360,12 @@ export default class Component extends Element {
     if (flags.silentCheck) {
       return [];
     }
+    let isDirty = this.dirty || flags.dirty;
     if (this.options.alwaysDirty) {
-      flags.dirty = true;
+      isDirty = true;
     }
-    if (flags.fromSubmission && this.hasValue(data)) {
-      flags.dirty = this.pristine && this.component.protected ? false : true;
-    }
-    this.setDirty(flags.dirty);
-    return this.setComponentValidity(errors, flags.dirty, flags.silentCheck, flags.fromSubmission);
+    this.setDirty(isDirty);
+    return this.setComponentValidity(errors, isDirty, flags.silentCheck, flags.fromSubmission);
   }
 
   /**
