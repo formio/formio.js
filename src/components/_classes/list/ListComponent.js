@@ -213,6 +213,7 @@ export default class ListComponent extends Field {
           return;
         }
         let { url } = this.component.data;
+        url = _.trim(url);
         let method;
         let body;
         if (url.startsWith('/')) {

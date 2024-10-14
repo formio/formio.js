@@ -3005,10 +3005,18 @@ export default class Component extends Element {
     }
     for (const i in this.refs.input) {
       if (this.refs.input.hasOwnProperty(i)) {
-        this.setValueAt(i, isArray ? value[i] : value, flags);
+        this.setValueAt(i, isArray && !this.isSingleInputValue() ? value[i] : value, flags);
       }
     }
     return changed;
+  }
+
+  /**
+   * Returns if the value (e.g. array) should be divided between several inputs
+   * @returns {boolean}
+   */
+  isSingleInputValue() {
+    return false;
   }
 
   /**
@@ -3428,7 +3436,7 @@ export default class Component extends Element {
       flags.dirty = true;
     }
     if (flags.fromSubmission && this.hasValue(data)) {
-      flags.dirty = true;
+      flags.dirty = this.pristine && this.component.protected ? false : true;
     }
     this.setDirty(flags.dirty);
     return this.setComponentValidity(errors, flags.dirty, flags.silentCheck, flags.fromSubmission);
@@ -3455,6 +3463,7 @@ export default class Component extends Element {
       value: this.validationValue,
       path: this.path || this.component.key,
       instance: this,
+      form: this.root ? this.root._form : {},
       scope: { errors: [] },
       processors: [
         validateProcessInfo
@@ -3991,7 +4000,11 @@ export default class Component extends Element {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
-    index = index || this.refs.input?.length - 1;
+
+    if (!index && !_.isNumber(index) && this.refs?.input?.length) {
+      index = this.refs.input.length - 1;
+    }
+
     if (this.refs.input?.length) {
       const focusingInput = this.refs.input[index];
       if (this.component.widget?.type === 'calendar') {

@@ -71,6 +71,7 @@ import optionalSanitize from '../forms/optionalSanitize.js';
 import formsWithNewSimpleConditions from '../forms/formsWithNewSimpleConditions.js';
 import formWithRadioInsideDataGrid from '../forms/formWithRadioInsideDataGrid.js';
 import formWithCheckboxRadioType from '../forms/formWithCheckboxRadioType.js';
+import formWithCheckboxRadioTypeAndValidation from '../forms/formWithCheckboxRadioTypeAndValidation.js';
 import formWithFormController from '../forms/formWithFormController.js';
 import calculateValueOnServerForEditGrid from '../forms/calculateValueOnServerForEditGrid.js';
 import formsWithAllowOverride from '../forms/formsWithAllowOverrideComps.js';
@@ -82,6 +83,8 @@ import formWithEditGrid from '../forms/formWithEditGrid.js';
 import formWithSelectRadioUrlDataSource from '../forms/selectRadioUrlDataSource.js';
 import wizardWithRequiredFields from '../forms/wizardWithRequiredFields';
 import webformWithNestedWizard from '../forms/webformWIthNestedWizard';
+import formWithUniqueValidation from '../forms/formWithUniqueValidation.js';
+import formWithConditionalEmail from '../forms/formWithConditionalEmail.js';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
 if (_.has(Formio, 'Components.setComponents')) {
@@ -91,6 +94,68 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+  it('Should validate email input when it is simple conditionally visible', done => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, formWithConditionalEmail)
+      .then(formInst => {
+        const radio = formInst.getComponent('radio');
+        const email = formInst.getComponent('email');
+
+        assert.equal(email.visible, false);
+        radio.setValue('english');
+
+        setTimeout(()=> {
+          assert.equal(email.visible, true);
+
+          const inputEvent = new Event('input');
+          const emailInput = email.refs.input[0];
+          emailInput.value = 'test';
+          emailInput.dispatchEvent(inputEvent);
+
+          setTimeout(()=> {
+            assert.equal(email.visibleErrors.length, 1);
+            assert.equal(email.visibleErrors[0].ruleName, 'email');
+            assert.equal(email.errors.length, 1);
+            done()
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
+  });
+
+  it('Should not disable submit btn when only server errors present for the form', done => {
+    const formElement = document.createElement('div');
+    const {form, submission, serverErrors} = formWithUniqueValidation;
+    Formio.createForm(formElement, form)
+      .then(formInst => {
+        const comp1 = formInst.getComponent('textField');
+        const uniqueComp = formInst.getComponent('textFieldUnique');
+        const btn = formInst.getComponent('submit');
+        assert.deepEqual(btn.disabled, true);
+        comp1.setValue(submission.data.textField);
+        uniqueComp.setValue(submission.data.textFieldUnique);
+        setTimeout(()=> {
+          assert.deepEqual(submission.data, formInst.submission.data);
+          assert.deepEqual(btn.disabled, false);
+          formInst.setServerErrors(serverErrors);
+          formInst.onSubmissionError(serverErrors);
+          setTimeout(()=> {
+            assert.deepEqual(formInst.serverErrors.length, 1);
+            assert.deepEqual(btn.disabled, false);
+            const inputEvent = new Event('input');
+            const comp1Input = comp1.refs.input[0];
+            comp1Input.value = 'test1';
+            comp1Input.dispatchEvent(inputEvent);
+            setTimeout(()=> {
+              assert.deepEqual(formInst.serverErrors.length, 1);
+              assert.deepEqual(btn.disabled, false);
+              done()
+            }, 400);
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
+  });
 
   it('Should validate hidden and conditionally hidden components when validateWhenHidden is enabled for those components', done => {
     const formElement = document.createElement('div');
@@ -5113,6 +5178,20 @@ describe('Webform tests', function() {
       }, 300);
     })
       .catch((err) => done(err));
+  });
+
+  it('Should show validation errors for checkbox component with inputType of radio', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm(formWithCheckboxRadioTypeAndValidation).then(() => {
+      const submitButton = form.getComponent('submit');
+      assert.ok(submitButton.disabled, 'Submit button should be disabled');
+      const errors = form.validate(); 
+      assert.strictEqual(errors.length, 1, 'Should return 1 error for the checkbox');
+      assert.strictEqual(errors[0].component.label, 'Checkbox 1', 'The error should be for the checkbox component');
+      assert.strictEqual(errors[0].errorKeyOrMessage, 'required', 'Should show required validation error');
+      done();
+    }).catch(done);
   });
 
   for (const formTest of FormTests) {

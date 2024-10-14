@@ -322,7 +322,7 @@ export default class DayComponent extends Field {
         if (!this.component.fields.day.hide && maxDay) {
           this.refs.day.max = maxDay;
         }
-        if (maxDay && day > maxDay) {
+        if (maxDay && day > maxDay && this.refs.day) {
           this.refs.day.value = this.refs.day.max;
         }
         updateValueAndSaveFocus(this.refs.month, 'month')();
@@ -556,30 +556,43 @@ export default class DayComponent extends Field {
       defaults = defaultValue.split('/').map(x => parseInt(x, 10));
     }
 
+    const isModalEditClosed = this.component.modalEdit && !this.componentModal.isOpened;
     if (this.showDay && this.refs.day) {
-      day = parseInt(this.refs.day.value, 10);
+      day = (this.refs.day.value === '' && !isModalEditClosed) ? '' : parseInt(this.refs.day.value, 10);
     }
-    if (day === undefined || _.isNaN(day)) {
-      day = defaults[DAY] && !_.isNaN(defaults[DAY]) ? defaults[DAY] : 0;
+    if (day === undefined || _.isNaN(day) || value) {
+      day = (defaults.length !== 3)
+        ? this.getDayWithHiddenFields(defaults).day
+        : (defaults[DAY] && !_.isNaN(defaults[DAY]) ? defaults[DAY] : 0);
     }
 
     if (this.showMonth && this.refs.month) {
       // Months are 0 indexed.
-      month = parseInt(this.refs.month.value, 10);
+      month = (this.refs.month.value === '' && !isModalEditClosed) ? '' : parseInt(this.refs.month.value, 10);
     }
-    if (month === undefined || _.isNaN(month)) {
-      month = defaults[MONTH] && !_.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0;
+    if (month === undefined || _.isNaN(month) || value) {
+      month = (defaults.length !== 3)
+        ? this.getDayWithHiddenFields(defaults).month
+        : (defaults[MONTH] && !_.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0);
     }
 
     if (this.showYear && this.refs.year) {
-      year = parseInt(this.refs.year.value);
+      year = (this.refs.year.value === '' && !isModalEditClosed) ? '' : parseInt(this.refs.year.value);
     }
-    if (year === undefined || _.isNaN(year)) {
-      year = defaults[YEAR] && !_.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0;
+    if (year === undefined || _.isNaN(year) || value) {
+      year = (defaults.length !== 3)
+        ? this.getDayWithHiddenFields(defaults).year
+        : (defaults[YEAR] && !_.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0);
     }
 
     let result;
     if (!day && !month && !year) {
+      if (!isModalEditClosed) {
+        this.dataValue = this.emptyValue;
+        if (this.options.building) {
+          this.triggerChange();
+        }
+      }
       return null;
     }
 
