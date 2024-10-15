@@ -33,6 +33,7 @@ import Webform from '../../src/Webform'
 import { displayAsModalEditGrid } from '../formtest';
 import { Formio } from '../../src/Formio';
 import { fastCloneDeep } from '@formio/core';
+import comp20 from './fixtures/editgrid/comp20';
 
 describe('EditGrid Component', () => {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
@@ -1479,6 +1480,31 @@ describe('EditGrid Component', () => {
 
     }).catch(done);
   });
+
+  it('Validation error should contain the correct path to the component inside editGrid without openWhenEmpty', async() => {
+    let form = _.cloneDeep(comp20);
+    const element = document.createElement('div');
+    try {
+      form = await Formio.createForm(element, form);
+    }
+    catch(validationError) {
+      assert.equal(validationError.length, 1, 'Should have 1 validation error');
+      assert.equal(validationError[0].context.path, 'editGrid[0].textField', 'Should have correct path to insure that component can be accessed via link from error message ' );
+    }
+  }).timeout(3000);
+
+  it('Validation error should contain the correct path to the component inside editGrid with openWhenEmpty', async () => {
+    let form = _.cloneDeep(comp20);
+    const element = document.createElement('div');
+    form.components[0].openWhenEmpty = true;
+    try {
+      form = await Formio.createForm(element, form);
+    }
+    catch(validationError) {
+      assert.equal(validationError.length, 1, 'Should have 1 validation error');
+      assert.equal(validationError[0].context.path, 'editGrid[0].textField', 'Should have correct path to insure that component can be accessed via link from error message ' );
+    }
+  }).timeout(3000);
 });
 
 describe('EditGrid Open when Empty', () => {
