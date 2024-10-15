@@ -413,6 +413,9 @@ export default class DayComponent extends Field {
    * @param value
    */
   setValueAt(index, value) {
+    if (value === '') {
+      value = this.emptyValue;
+    }
     // temporary solution to avoid input reset
     // on invalid date.
     if (!value || value === 'Invalid date') {
