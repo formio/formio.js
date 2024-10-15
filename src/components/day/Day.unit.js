@@ -35,6 +35,21 @@ describe('Day Component', () => {
     });
   });
 
+  it('Should not show error when form loaded with defaultValue = "00/00/0000"', (done) => {
+      Formio.createForm(document.createElement('div'), comp5, {}).then((form) => {
+        const dayComponent = form.getComponent('day');
+        assert.equal(dayComponent.visibleErrors.length, 0);
+        assert.equal(form.data.day, '');
+        const buttonComponent = form.getComponent('submit');
+        buttonComponent.refs.button.click();
+        setTimeout(()=>{
+          assert.equal(dayComponent.visibleErrors.length, 1);
+          assert.equal(dayComponent.visibleErrors[0].message, 'Day is required');
+          done();
+        },200);
+      });
+  });
+
   it('Should change the max day when the month changes', (done) => {
     Harness.testCreate(DayComponent, comp1).then((component) => {
       Harness.testElements(component, 'option', 13);
