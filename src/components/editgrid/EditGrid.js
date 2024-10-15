@@ -15,6 +15,7 @@ import {
 const EditRowState = {
   New: 'new',
   Editing: 'editing',
+  Saving: 'saving',
   Saved: 'saved',
   Viewing: 'viewing',
   Removed: 'removed',
@@ -951,6 +952,11 @@ export default class EditGridComponent extends NestedArrayComponent {
       editRow.components.forEach((comp) => comp.setPristine(false));
     }
 
+    // Mark the row with a 'Saving' state to trigger validation for future row changes
+    if (editRow.state === EditRowState.New) {
+      editRow.state = EditRowState.Saving;
+    }
+
     const errors = this.validateRow(editRow, true);
 
     if (!this.component.rowDrafts) {
@@ -965,7 +971,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         this.root.focusedComponent = null;
       }
       switch (editRow.state) {
-        case EditRowState.New: {
+        case EditRowState.Saving: {
           const newIndex = dataValue.length;
           dataValue.push(editRow.data);
           editRow.components.forEach(component=>component.rowIndex = newIndex);
@@ -1159,7 +1165,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   shouldValidateRow(editRow, dirty) {
     return this.shouldValidateDraft(editRow) ||
-      editRow.state === EditRowState.New ||
+      editRow.state === EditRowState.Saving ||
       editRow.state === EditRowState.Editing ||
       editRow.alerts ||
       dirty;
@@ -1273,6 +1279,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           }
           else if (errorContainer) {
             errorContainer.textContent = '';
+            this.removeClass(errorContainer,  'help-block' );
           }
         }
       }

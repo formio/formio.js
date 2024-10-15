@@ -12,9 +12,9 @@
         "args": [
           "-b",
           "-t",
-          "20000",
+          "0",
           "--colors",
-          "${workspaceFolder}/src/**/*.unit.js",
+          "${workspaceFolder}/test/**/*.unit.js",
           "-t",
           "30000"
         ],

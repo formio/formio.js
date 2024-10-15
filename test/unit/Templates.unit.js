@@ -71,8 +71,8 @@ describe('Rendering Tests', () => {
               done();
             });
 
-            if (fs.existsSync(`./lib/${componentDir}/${component}/fixtures/values.js`)) {
-              const values = require(`../${componentDir}/${component}/fixtures/values.js`).default.slice(0);
+            if (fs.existsSync(`./fixtures/${component}/values.js`)) {
+              const values = require(`./fixtures/${component}/values.js`).default.slice(0);
 
               values.unshift(undefined);
 

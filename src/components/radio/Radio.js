@@ -93,6 +93,15 @@ export default class RadioComponent extends ListComponent {
     return defaultValue;
   }
 
+  resetValue() {
+    this.unset();
+    this.setValue(this.emptyValue, {
+      noUpdateEvent: true,
+      noValidate: true,
+      resetValue: true
+    });
+  }
+
   get inputInfo() {
     const info = super.elementInfo();
     info.type = 'input';
@@ -149,7 +158,7 @@ export default class RadioComponent extends ListComponent {
     this.loadedOptions = [];
 
     if (!this.visible) {
-      this.itemsLoadedResolve(); 
+      this.itemsLoadedResolve();
     }
 
     // Get the template keys for this radio component.
@@ -157,7 +166,7 @@ export default class RadioComponent extends ListComponent {
   }
 
   beforeSubmit() {
-    return new Promise(res => { 
+    return new Promise(res => {
       this.dataReady.then(() => res(true));
     });
   }

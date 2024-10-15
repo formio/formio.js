@@ -144,4 +144,22 @@ describe('Password Component', () => {
     testValidity(validValues, true);
     testValidity(invalidValues, false, 'Password does not match the pattern \\D+', invalidValues[invalidValues.length-1]);
   });
+
+  it('Should not show required validation error message in edit page before editing', (done) => {
+    const form = _.cloneDeep(comp2);
+    form.components[0].validate = { required: true };
+    const element = document.createElement('div');
+    
+    Formio.createForm(element, form).then(form => {
+      const component = form.getComponent('password');
+      component.setValue('');
+      form.root.editing = true;
+      form.setPristine(true);
+      setTimeout(() => {
+        assert.equal(component.visibleErrors.length, 0);
+        assert.equal(component.errors.length, 1);
+        done();
+      }, 300);
+    }).catch(done);
+  });
 });

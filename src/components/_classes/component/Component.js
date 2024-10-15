@@ -1982,12 +1982,12 @@ export default class Component extends Element {
   restoreCaretPosition() {
     if (this.root?.currentSelection) {
       if (this.refs.input?.length) {
-        const { selection, index } = this.root.currentSelection;
+        const { index } = this.root.currentSelection;
         let input = this.refs.input[index];
         const isInputRangeSelectable = (i) => /text|search|password|tel|url/i.test(i?.type || '');
         if (input) {
           if (isInputRangeSelectable(input)) {
-            input.setSelectionRange(...selection);
+            input.setSelectionRange(input.value.length, input.value.length);
           }
         }
         else {
@@ -3392,7 +3392,7 @@ export default class Component extends Element {
       flags.dirty = true;
     }
     if (flags.fromSubmission && this.hasValue(data)) {
-      flags.dirty = true;
+      flags.dirty = this.pristine && this.component.protected ? false : true;
     }
     this.setDirty(flags.dirty);
     return this.setComponentValidity(errors, flags.dirty, flags.silentCheck, flags.fromSubmission);
@@ -3419,6 +3419,7 @@ export default class Component extends Element {
       value: this.validationValue,
       path: this.path || this.component.key,
       instance: this,
+      form: this.root ? this.root._form : {},
       scope: { errors: [] },
       processors: [
         validateProcessInfo
@@ -3955,7 +3956,11 @@ export default class Component extends Element {
     if ('beforeFocus' in this.parent) {
       this.parent.beforeFocus(this);
     }
-    index = index || this.refs.input?.length - 1;
+
+    if (!index && !_.isNumber(index) && this.refs?.input?.length) {
+      index = this.refs.input.length - 1;
+    }
+
     if (this.refs.input?.length) {
       const focusingInput = this.refs.input[index];
       if (this.component.widget?.type === 'calendar') {

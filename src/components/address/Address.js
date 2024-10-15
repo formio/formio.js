@@ -259,6 +259,18 @@ export default class AddressComponent extends ContainerComponent {
     return value && !value.mode;
   }
 
+  set dataValue(value) {
+    super.dataValue = value
+  }
+
+  get dataValue() {
+    const resultValue = _.get(this._data, this.component.path);
+    if (!_.isArray(resultValue) && this.component.multiple) {
+      return [resultValue]
+    }
+    return super.dataValue;
+  }
+
   normalizeValue(value) {
     return (this.manualModeEnabled && this.isValueInLegacyFormat(value))
       ? {
