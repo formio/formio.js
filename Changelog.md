@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.92
+### Changed
+ - Updated @formio/bootstrap@3.0.0-rc.39
+ - Updated @formio/core@2.3.0-rc.13
+ - FIO-9196: Fixed issue with getting default value instead of requested value in Day component
+ - FIO-9208: Changing the links to go to help.form.io instead of github page.
+ - FIO-8510: changes in nested forms trigger modified change in the parent
+ - FIO-9086: time component default value validation
+ - FIO-9186: added test for the issue reated to validation inside layout components insode editGrid
+ - FIO-9184: Fixed edit grid row validation for new row
+
 ## 5.0.0-rc.91
 ### Changed
  - Updated @formio/bootstrap@3.0.0-rc.38
