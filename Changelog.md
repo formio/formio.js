@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-9086: time component default value validation
  - FIO-9186: added test for the issue reated to validation inside layout components insode editGrid
  - FIO-9184: Fixed edit grid row validation for new row
+ - FIO-9144 Fix cursor jump in number component
 
 ## 5.0.0-rc.91
 ### Changed
