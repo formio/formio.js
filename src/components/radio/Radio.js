@@ -282,13 +282,16 @@ export default class RadioComponent extends ListComponent {
       value = _.toString(value);
     }
 
-    const isModalPreviewWithUrlDataSource = options.modalPreview && this.component.dataSrc === 'url';
-    if (this.component.dataSrc !== 'values' && !isModalPreviewWithUrlDataSource) {
+    const shouldUseSelectData = (options.modalPreview || this.inDataTable)
+      && this.component.dataSrc === 'url' && (this.loadedOptions.length || this.selectData);
+    if (this.component.dataSrc !== 'values' && !shouldUseSelectData) {
       return value;
     }
 
-    const values = isModalPreviewWithUrlDataSource ? this.loadedOptions : this.component.values;
-    const option = _.find(values, (v) => v.value === value);
+    const values = shouldUseSelectData ? this.loadedOptions : this.component.values;
+    const option = !values?.length && shouldUseSelectData ? {
+      label: this.itemTemplate(this.selectData),
+    } : _.find(values, (v) => v.value === value);
 
     if (!value) {
       return _.get(option, 'label', '');

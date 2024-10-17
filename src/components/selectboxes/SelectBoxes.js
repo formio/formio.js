@@ -200,8 +200,13 @@ export default class SelectBoxesComponent extends RadioComponent {
     }
 
     if (this.isSelectURL) {
-      if (options.modalPreview && this.loadedOptions) {
-        return this.loadedOptions.filter((option) => value[option.value]).map((option) => option.label).join(', ');
+      if (options.modalPreview || this.options.readOnly || this.inDataTable) {
+        const checkedItems = _.keys(_.pickBy(value, (val) => val));
+        if (this.selectData?.length === checkedItems.length) {
+          return this.selectData.map(item => this.itemTemplate(item)).join(', ');
+        } else if (this.loadedOptions?.length) {
+          return this.loadedOptions.filter((option) => value[option.value]).map((option) => option.label).join(', ');
+        }
       }
       return _(value).pickBy((val) => val).keys().join(', ');
     }
