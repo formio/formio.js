@@ -22,7 +22,7 @@ export default class ListComponent extends Field {
 
   get selectData() {
     const selectData = _.get(this.root, 'submission.metadata.selectData', {});
-    return _.get(selectData, this.path);
+    return _.get(selectData, this.path) || this.component.selectData;
   }
 
   get dataReady() {
@@ -145,7 +145,7 @@ export default class ListComponent extends Field {
   set itemsLoaded(promise) {
     this._itemsLoaded = promise;
   }
-  
+
   handleLoadingError(err) {
     this.loading = false;
     if (err.networkError) {
