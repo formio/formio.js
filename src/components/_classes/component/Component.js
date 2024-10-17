@@ -2137,24 +2137,6 @@ export default class Component extends Element {
    * @param {any} row - The row data to check against.
    * @returns {boolean} - TRUE if the component is visible.
    */
-  // checkComponentConditions(data, flags, row) {
-  //   data = data || this.rootValue;
-  //   flags = flags || {};
-  //   row = row || this.data;
-
-  //   if (!this.builderMode & !this.previewMode && this.fieldLogic(data, row)) {
-  //     this.redraw();
-  //   }
-
-  //   // Check advanced conditions
-  //   const visible = this.conditionallyVisible(data, row);
-
-  //   if (this.visible !== visible) {
-  //     this.visible = visible;
-  //   }
-
-  //   return visible;
-  // }
 
   async checkComponentConditions(data, flags, row) {
     data = data || this.rootValue;
