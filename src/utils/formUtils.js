@@ -35,7 +35,10 @@ const {
   applyFormChanges,
   findComponent,
   getEmptyValue,
-  isComponentDataEmpty
+  isComponentDataEmpty,
+  isSelectResourceWithObjectValue,
+  compareSelectResourceWithObjectTypeValues,
+  getItemTemplateKeys
 } = Utils;
 
 /**
@@ -85,5 +88,8 @@ export {
   applyFormChanges,
   findComponent,
   getEmptyValue,
-  isComponentDataEmpty
+  isComponentDataEmpty,
+  isSelectResourceWithObjectValue,
+  compareSelectResourceWithObjectTypeValues,
+  getItemTemplateKeys
 };

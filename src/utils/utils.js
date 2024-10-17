@@ -1783,37 +1783,3 @@ export const interpolateErrors = (component, errors, interpolateFn) => {
     return { ...error, message: unescapeHTML(interpolateFn(toInterpolate, context)), context: { ...context } };
   });
 };
-
-/**
- * Returns the template keys inside the template code.
- * @param {string} template - The template to get the keys from.
- * @returns {Array<string>} - The keys inside the template.
- */
-export function getItemTemplateKeys(template) {
-  const templateKeys = [];
-  if (!template) {
-    return templateKeys;
-  }
-  const keys = template.match(/({{\s*(.*?)\s*}})/g);
-
-  if (keys) {
-    keys.forEach((key) => {
-      const propKey = key.match(/{{\s*item\.(.*?)\s*}}/);
-      if (propKey && propKey.length > 1) {
-        templateKeys.push(propKey[1]);
-      }
-    });
-  }
-
-  return templateKeys;
-}
-
-/**
- * Returns if the component is a select resource with an object for its value.
- * @param {import('@formio/core').Component} comp - The component to check.
- * @returns {boolean} - TRUE if the component is a select resource with an object for its value; FALSE otherwise.
- */
-export function isSelectResourceWithObjectValue(comp = {}) {
-  const { reference, dataSrc, valueProperty } = comp;
-  return reference || (dataSrc === 'resource' && (!valueProperty || valueProperty === 'data'));
-}

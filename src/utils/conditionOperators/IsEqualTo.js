@@ -1,6 +1,6 @@
 import ConditionOperator from './ConditionOperator';
 import _ from 'lodash';
-import { getItemTemplateKeys, isSelectResourceWithObjectValue } from '../utils';
+import { compareSelectResourceWithObjectTypeValues, isSelectResourceWithObjectValue } from '../utils';
 
 export default class IsEqualTo extends ConditionOperator {
     static get operatorKey() {
@@ -28,18 +28,7 @@ export default class IsEqualTo extends ConditionOperator {
                 && isSelectResourceWithObjectValue(conditionTriggerComponent.component)
                 && conditionTriggerComponent.component?.template
             ) {
-                if (!value || !_.isPlainObject(value)) {
-                    return false;
-                }
-
-                const { template, valueProperty } = conditionTriggerComponent.component;
-
-                if (valueProperty === 'data') {
-                    value = { data: value };
-                    comparedValue = { data: comparedValue };
-                }
-
-                return _.every(getItemTemplateKeys(template) || [], k => _.isEqual(_.get(value, k), _.get(comparedValue, k)));
+                return compareSelectResourceWithObjectTypeValues(value, comparedValue, conditionTriggerComponent.component);
             }
         }
 
