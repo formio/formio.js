@@ -111,6 +111,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-9127 fixed saving an empty value for day component after deleting values
  - FIO-9120: Fix issue with unchecking radio default value
  - FIO-7195/FIO-8234: Fixes an issue where Select renders value properties instead of labels in DataTable
+ - FIO-7195: Fixes an issue where Radio/SelectBoxes will show values instead of labels on View tab and in DataTable
 
 ### New Features
 
