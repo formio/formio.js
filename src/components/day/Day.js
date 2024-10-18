@@ -54,6 +54,9 @@ export default class DayComponent extends Field {
     return getComponentSavedTypes(schema) || [componentValueTypes.string];
   }
 
+  // Empty value used before 9.3.x
+  static oldEmptyValue = '00/00/0000';
+
   constructor(component, options, data) {
     if (component.maxDate && component.maxDate.indexOf('moment(') === -1) {
       component.maxDate = moment(component.maxDate, 'YYYY-MM-DD').toISOString();
@@ -118,6 +121,13 @@ export default class DayComponent extends Field {
     info.attr.type = 'hidden';
     info.changeEvent = 'input';
     return info;
+  }
+
+  isEmpty(value = this.dataValue) {
+    if (value === DayComponent.oldEmptyValue) {
+      return true
+    }
+    return super.isEmpty(value);
   }
 
   inputDefinition(name) {
@@ -379,6 +389,11 @@ export default class DayComponent extends Field {
   }
 
   normalizeValue(value) {
+    // Adjust the value from old to new format
+    if (value === DayComponent.oldEmptyValue) {
+      value = '';
+    }
+
     if (!value || this.valueMask.test(value)) {
       return value;
     }
@@ -390,7 +405,6 @@ export default class DayComponent extends Field {
     let defaultDay = '';
     let defaultMonth = '';
     let defaultYear = '';
-    
     if(defaultValue) {
       const hasHiddenFields = defaultValue.length !==3;
       defaultDay = hasHiddenFields ? this.getDayWithHiddenFields(defaultValue).day : defaultValue[DAY];
