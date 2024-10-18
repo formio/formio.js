@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - FIO-9105: trigger error in test
  - FIO-8944 fixed navigation through the errors list
- - FIO-8660: Fixed email component re-rendering with unique setting option
 
 ## 4.21.5-rc.5
 ### Changed
