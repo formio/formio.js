@@ -117,6 +117,10 @@ describe('SelectBoxes Component', () => {
             validate: {
               minSelectedCount: 2
             }
+          },
+          {
+            type: 'button',
+            key: 'submit'
           }
         ]
       };
@@ -129,6 +133,8 @@ describe('SelectBoxes Component', () => {
             }
           };
           const comp = form.getComponent('options');
+          const submitButton = form.getComponent('submit');
+          submitButton.refs.button.click();
           setTimeout(() => {
             const { messageContainer } = comp.refs;
             assert.equal(
@@ -155,6 +161,10 @@ describe('SelectBoxes Component', () => {
               minSelectedCount: 2,
             },
             minSelectedCountMessage: 'Please select at least {{minCount}} items.'
+          },
+          {
+            type: 'button',
+            key: 'submit'
           }
         ]
       };
@@ -167,6 +177,8 @@ describe('SelectBoxes Component', () => {
             }
           };
           const comp = form.getComponent('options');
+          const submitButton = form.getComponent('submit');
+          submitButton.refs.button.click();
           setTimeout(() => {
             const { messageContainer } = comp.refs;
             assert.equal(
@@ -209,6 +221,10 @@ describe('SelectBoxes Component', () => {
             validate: {
               maxSelectedCount: 2
             }
+          },
+          {
+            type: 'button',
+            key: 'submit'
           }
         ]
       };
@@ -221,6 +237,8 @@ describe('SelectBoxes Component', () => {
             }
           };
           const comp = form.getComponent('options');
+          const submitButton = form.getComponent('submit');
+          submitButton.refs.button.click();
           setTimeout(() => {
             const { messageContainer } = comp.refs;
             assert.equal(
@@ -247,6 +265,10 @@ describe('SelectBoxes Component', () => {
               maxSelectedCount: 2,
             },
             maxSelectedCountMessage: 'Please select {{maxCount}} items at most.'
+          },
+          {
+            type: 'button',
+            key: 'submit'
           }
         ]
       };
@@ -259,6 +281,8 @@ describe('SelectBoxes Component', () => {
             }
           };
           const comp = form.getComponent('options');
+          const submitButton = form.getComponent('submit');
+          submitButton.refs.button.click();
           setTimeout(() => {
             const { messageContainer } = comp.refs;
             assert.equal(
