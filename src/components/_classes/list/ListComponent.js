@@ -22,7 +22,7 @@ export default class ListComponent extends Field {
 
   get selectData() {
     const selectData = _.get(this.root, 'submission.metadata.selectData', {});
-    return _.get(selectData, this.path) || this.component.selectData;
+    return _.get(selectData, this.path);
   }
 
   get dataReady() {

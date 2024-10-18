@@ -128,6 +128,14 @@ export default class RadioComponent extends ListComponent {
     return _.get(listData, this.path);
   }
 
+  get selectMetadata() {
+    return super.selectData;
+  }
+
+  get selectData() {
+    return this.selectMetadata || this.component.selectData;
+  }
+
   init() {
     super.init();
     this.templateData = {};
