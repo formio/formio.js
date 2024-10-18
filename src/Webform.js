@@ -959,6 +959,9 @@ export default class Webform extends NestedDataComponent {
     }
 
     getValue() {
+        if (!this._submission) {
+            this._submission = {};
+        }
         if (!this._submission.data) {
             this._submission.data = {};
         }
