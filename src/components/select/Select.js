@@ -288,7 +288,12 @@ export default class SelectComponent extends ListComponent {
       return this.sanitize(value, this.shouldSanitizeValue);
     }
 
-    if (this.component.multiple && _.isArray(this.dataValue) ? this.dataValue.find((val) => this.normalizeSingleValue(value) === val) : (this.dataValue === this.normalizeSingleValue(value))) {
+    // Inside DataTable component won't have dataValue set
+    const shouldUseSelectData = (this.component.multiple && _.isArray(this.dataValue)
+      ? this.dataValue.find((val) => this.normalizeSingleValue(value) === val)
+      : (this.dataValue === this.normalizeSingleValue(value))) || this.inDataTable;
+
+    if (shouldUseSelectData) {
       const selectData = this.selectData;
       if (selectData) {
         const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
@@ -1461,7 +1466,7 @@ export default class SelectComponent extends ListComponent {
     // Check to see if we need to save off the template data into our metadata.
     const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
     const shouldSaveData = !valueIsObject || this.component.reference;
-    if (templateValue && shouldSaveData && this.templateData && this.templateData[templateValue] && this.root?.submission) {
+    if (!_.isNil(templateValue) && shouldSaveData && this.templateData && this.templateData[templateValue] && this.root?.submission) {
       const submission = this.root.submission;
       if (!submission.metadata) {
         submission.metadata = {};
@@ -1751,8 +1756,12 @@ export default class SelectComponent extends ListComponent {
   asString(value, options = {}) {
     value = value ?? this.getValue();
 
-    if (options.modalPreview) {
-      const template = this.itemTemplate(value, value);
+    if (options.modalPreview || this.inDataTable) {
+      if (this.inDataTable) {
+        value = this.undoValueTyping(value);
+      }
+     const templateValue = (this.isEntireObjectDisplay() && !_.isObject(value.data)) ? { data: value } : value;
+      const template = this.itemTemplate(templateValue, value, options);
       return template;
     }
     //need to convert values to strings to be able to compare values with available options that are strings

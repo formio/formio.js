@@ -187,7 +187,11 @@ describe('TextField Component', () => {
           key: 'textField',
           type: 'textfield',
           input: true
-       }]
+       },
+        {
+          type: 'button',
+          key: 'submit'
+        }]
     };
     const element = document.createElement('div');
     Formio.createForm(element, formJson)
@@ -198,6 +202,8 @@ describe('TextField Component', () => {
           }
         };
         const textField = form.getComponent('textField');
+        const sumbitButton = form.getComponent('submit');
+        sumbitButton.refs.button.click();
         setTimeout(() => {
           assert.equal(textField.refs.messageContainer.children.length, 1);
           assert.equal(textField.refs.messageContainer.children[0].innerHTML, 'Custom Error Message');
