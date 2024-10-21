@@ -43,6 +43,7 @@ import { fastCloneDeep } from './utils/utils';
 import formsWithAllowOverride from '../test/forms/formsWithAllowOverrideComps';
 import WizardWithCheckboxes from '../test/forms/wizardWithCheckboxes';
 import WizardWithRequiredFields from '../test/forms/wizardWithRequiredFields';
+import formWithNestedWizardAndRequiredFields from '../test/forms/formWithNestedWizardAndRequiredFields';
 
 // eslint-disable-next-line max-statements
 describe('Wizard tests', () => {
@@ -443,6 +444,55 @@ describe('Wizard tests', () => {
               assert.equal(error.message, 'Text Field is required' , 'Should set correct lebel in the error message');
             });
             done();
+          }, 300)
+        }, 300)
+      }, 300)
+    })
+    .catch((err) => done(err));
+  })
+
+  it('Should have validation errors when parent form is valid but nested wizard is not', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const nestedWizard = _.cloneDeep(formWithNestedWizardAndRequiredFields.childWizard);
+    const parentWizard = _.cloneDeep(formWithNestedWizardAndRequiredFields.parentWizard);
+    const clickEvent = new Event('click');
+
+    wizard.setForm(parentWizard).then(() => {
+      const formio = new Formio('http://test.localhost/test', {});
+      wizard.formio = formio;
+      const nestedFormComp = wizard.getComponent('child');
+
+      nestedFormComp.loadSubForm = ()=> {
+        nestedFormComp.formObj = nestedWizard;
+        nestedFormComp.subFormLoading = false;
+        return new Promise((resolve) => resolve(nestedWizard));
+      };
+
+      nestedFormComp.createSubForm();
+      setTimeout(() => {
+        const checkPage = (pageNumber) => {
+          assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+        };
+        checkPage(0);
+        const firstPageComponentInput = wizard.allPages[0].components[0].refs.input[0];
+        const inputEvent = new Event('input');
+        firstPageComponentInput.value = 'test';
+        firstPageComponentInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(wizard.submission.data.textField, 'test');
+          const nestedWizardBreadcrumbBtn = _.get(wizard.refs, `${wizard.wizardKey}-link[4]`);
+          nestedWizardBreadcrumbBtn.dispatchEvent(clickEvent);
+   
+          setTimeout(() => {
+            checkPage(4);
+            _.get(wizard.refs, `${wizard.wizardKey}-submit`).dispatchEvent(clickEvent);
+           
+            setTimeout(() => {
+              assert.equal(wizard.errors.length, 2);
+              done();
+            }, 300)
           }, 300)
         }, 300)
       }, 300)
