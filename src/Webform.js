@@ -14,7 +14,7 @@ import {
     convertStringToHTMLElement,
     getArrayFromComponentPath,
 } from "./utils/utils";
-import { eachComponent } from "./utils/formUtils";
+import { eachComponent, eachComponentData } from "./utils/formUtils";
 
 // We need this here because dragula pulls in CustomEvent class that requires global to exist.
 if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
@@ -1777,7 +1777,7 @@ export default class Webform extends NestedDataComponent {
             return;
         }
         const captchaComponent = [];
-        eachComponent(this.components, (component) => {
+        eachComponentData(this.components, {}, (component) => {
             if (/^(re)?captcha$/.test(component.type) && component.component.eventType === 'formLoad') {
                 captchaComponent.push(component);
             }
