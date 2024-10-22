@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.93
+### Changed
+ - Updated @formio/bootstrap@3.0.0-rc.40
+ - Updated @formio/core@2.3.0-rc.14
+ - FIO-9197: Fix Day component triggered required validation when loading form
+ - FIO-7195: Fixes an issue where Radio/SelectBoxes will show values instead of labels on View tab and in DataTable
+ - FIO-7778: validation link does not open modal
+ - FIO-9072: removed setting dirty flag to true on set submission and changed tests
+ - FIO-9189: moved some methods to core
+ - FIO-9228: fixed an issue where error messages are duplicated in error list for nested wizard
+
 ## 5.0.0-rc.92
 ### Changed
  - Updated @formio/bootstrap@3.0.0-rc.39
