@@ -13,6 +13,15 @@ export default {
       'inputMask': '99:99'
     },
     {
+      'label': 'Multiple Time',
+      'inputType': 'text',
+      'tableView': true,
+      'key': 'multipleTime',
+      'type': 'time',
+      'input': true,
+      'inputMask': '99:99'
+    },
+    {
       'label': 'Submit',
       'showValidations': false,
       'disableOnInvalid': true,

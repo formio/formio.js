@@ -1982,12 +1982,12 @@ export default class Component extends Element {
   restoreCaretPosition() {
     if (this.root?.currentSelection) {
       if (this.refs.input?.length) {
-        const { selection, index } = this.root.currentSelection;
+        const { index } = this.root.currentSelection;
         let input = this.refs.input[index];
         const isInputRangeSelectable = (i) => /text|search|password|tel|url/i.test(i?.type || '');
         if (input) {
           if (isInputRangeSelectable(input)) {
-            input.setSelectionRange(...selection);
+            input.setSelectionRange(input.value.length, input.value.length);
           }
         }
         else {
@@ -3414,14 +3414,12 @@ export default class Component extends Element {
     if (flags.silentCheck) {
       return [];
     }
+    let isDirty = this.dirty || flags.dirty;
     if (this.options.alwaysDirty) {
-      flags.dirty = true;
+      isDirty = true;
     }
-    if (flags.fromSubmission && this.hasValue(data)) {
-      flags.dirty = this.pristine && this.component.protected ? false : true;
-    }
-    this.setDirty(flags.dirty);
-    return this.setComponentValidity(errors, flags.dirty, flags.silentCheck, flags.fromSubmission);
+    this.setDirty(isDirty);
+    return this.setComponentValidity(errors, isDirty, flags.silentCheck, flags.fromSubmission);
   }
 
   /**
