@@ -93,6 +93,15 @@ export default class RadioComponent extends ListComponent {
     return defaultValue;
   }
 
+  resetValue() {
+    this.unset();
+    this.setValue(this.emptyValue, {
+      noUpdateEvent: true,
+      noValidate: true,
+      resetValue: true
+    });
+  }
+
   get inputInfo() {
     const info = super.elementInfo();
     info.type = 'input';
@@ -117,6 +126,14 @@ export default class RadioComponent extends ListComponent {
   get listData() {
     const listData = _.get(this.root, 'submission.metadata.listData', {});
     return _.get(listData, this.path);
+  }
+
+  get selectMetadata() {
+    return super.selectData;
+  }
+
+  get selectData() {
+    return this.selectMetadata || this.component.selectData;
   }
 
   init() {
@@ -149,7 +166,7 @@ export default class RadioComponent extends ListComponent {
     this.loadedOptions = [];
 
     if (!this.visible) {
-      this.itemsLoadedResolve(); 
+      this.itemsLoadedResolve();
     }
 
     // Get the template keys for this radio component.
@@ -157,7 +174,7 @@ export default class RadioComponent extends ListComponent {
   }
 
   beforeSubmit() {
-    return new Promise(res => { 
+    return new Promise(res => {
       this.dataReady.then(() => res(true));
     });
   }
@@ -273,13 +290,16 @@ export default class RadioComponent extends ListComponent {
       value = _.toString(value);
     }
 
-    const isModalPreviewWithUrlDataSource = options.modalPreview && this.component.dataSrc === 'url';
-    if (this.component.dataSrc !== 'values' && !isModalPreviewWithUrlDataSource) {
+    const shouldUseSelectData = (options.modalPreview || this.inDataTable)
+      && this.component.dataSrc === 'url' && (this.loadedOptions.length || this.selectData);
+    if (this.component.dataSrc !== 'values' && !shouldUseSelectData) {
       return value;
     }
 
-    const values = isModalPreviewWithUrlDataSource ? this.loadedOptions : this.component.values;
-    const option = _.find(values, (v) => v.value === value);
+    const values = shouldUseSelectData ? this.loadedOptions : this.component.values;
+    const option = !values?.length && shouldUseSelectData ? {
+      label: this.itemTemplate(this.selectData),
+    } : _.find(values, (v) => v.value === value);
 
     if (!value) {
       return _.get(option, 'label', '');
