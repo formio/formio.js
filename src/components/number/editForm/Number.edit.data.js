@@ -24,6 +24,14 @@ export default [
     tooltip: 'Always show decimals, even if trailing zeros.'
   },
   {
+    type: 'checkbox',
+    input: true,
+    weight: 100,
+    key: 'allowScientificNotation',
+    label: 'Allow Scientific Notation',
+    tooltip: 'Allow scientific notation for numbers.'
+  },
+  {
     key: 'case',
     ignore: true,
   },
