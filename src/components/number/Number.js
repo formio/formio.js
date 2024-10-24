@@ -94,6 +94,7 @@ export default class NumberComponent extends Input {
       decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
       allowNegative: _.get(this.component, 'allowNegative', true),
       allowDecimal: this.isDecimalAllowed(),
+      allowScientificNotation: _.get(this.component, 'allowScientificNotation', false),
     });
   }
 
@@ -131,6 +132,11 @@ export default class NumberComponent extends Input {
   parseNumber(value) {
     // Remove delimiters and convert decimal separator to dot.
     value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
+
+    // Add support for scientific notation
+    if (/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/.test(value)) {
+      return Number(value);
+    }
 
     if (this.component.validate && this.component.validate.integer) {
       return parseInt(value, 10);
@@ -193,9 +199,17 @@ export default class NumberComponent extends Input {
       input = input.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
     }
     let value = parseFloat(input);
+    if (this.component.allowScientificNotation) {
+      value = Number(input);
+    }
 
     if (!_.isNaN(value)) {
-      value = String(value).replace('.', this.decimalSeparator);
+      // Format scientific notation
+      if (/e/i.test(String(value))) {
+        value = value.toExponential(this.decimalLimit);
+      } else {
+        value = String(value).replace('.', this.decimalSeparator);
+      }
     }
     else {
       value = null;
