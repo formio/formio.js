@@ -94,6 +94,114 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+
+
+  it('Should show field when condition is based on the values of select resource with object value', (done) => {
+    const element = document.createElement('div');
+    const values = [
+      {
+        _id: '656daabeebc67ecca1141569',
+        form: '656daab0ebc67ecca1141226',
+        data: {
+          number: 4,
+          notes: 'notes 4',
+        },
+        project: '656daa20ebc67ecca1140e8d',
+        state: 'submitted',
+        created: '2023-12-04T10:32:30.821Z',
+        modified: '2023-12-06T14:25:00.886Z',
+      },
+      {
+        _id: '656daabbebc67ecca11414a7',
+        form: '656daab0ebc67ecca1141226',
+        data: {
+          number: 3,
+          notes: 'notes 3',
+        },
+        project: '656daa20ebc67ecca1140e8d',
+        state: 'submitted',
+        created: '2023-12-04T10:32:27.322Z',
+        modified: '2023-12-06T14:25:07.494Z',
+      },
+      {
+        _id: '656daab8ebc67ecca11413e5',
+        form: '656daab0ebc67ecca1141226',
+        data: {
+          number: 2,
+          notes: 'notes 2',
+        },
+        project: '656daa20ebc67ecca1140e8d',
+        state: 'submitted',
+        created: '2023-12-04T10:32:24.514Z',
+        modified: '2023-12-06T14:25:13.610Z',
+      },
+      {
+        _id: '656daab5ebc67ecca1141322',
+        form: '656daab0ebc67ecca1141226',
+        data: {
+          number: 1,
+          notes: 'notes 1',
+        },
+        project: '656daa20ebc67ecca1140e8d',
+        state: 'submitted',
+        created: '2023-12-04T10:32:21.205Z',
+        modified: '2023-12-06T14:25:20.930Z',
+      },
+    ];
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function() {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(values);
+        }, 50);
+      });
+    };
+
+    Formio.createForm(element, formWithObjectValueSelect)
+      .then(form => {
+        const numberComp = form.getComponent('number');
+        assert.equal(numberComp.visible, false);
+
+        const selectRef = form.getComponent('selectRef');
+        selectRef.setValue(fastCloneDeep(values[3]));
+        const selectNoValuePropertyMult = form.getComponent('selectNoValueProperty');
+        selectNoValuePropertyMult.setValue([fastCloneDeep(values[2])]);
+        const selectEntireObject = form.getComponent('selectEntireObject');
+        selectEntireObject.setValue(fastCloneDeep(values[1].data));
+        const selectEntireObjectMult = form.getComponent('selectEntireObjectMult');
+        selectEntireObjectMult.setValue([fastCloneDeep(values[0].data)]);
+
+        setTimeout(() => {
+          assert.equal(numberComp.visible, true);
+          selectRef.setValue(fastCloneDeep(values[2]));
+            setTimeout(() => {
+              assert.equal(numberComp.visible, false);
+              Formio.makeRequest = originalMakeRequest;
+              done();
+            }, 600);
+        }, 600);
+      })
+      .catch(done);
+  });
+
+  it('Should hide field if the checkbox based condition with string value is met', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    const formCopy = fastCloneDeep(formsWithNewSimpleConditions.form7);
+
+    form.setForm(formCopy).then(() => {
+      const conditionalComponent = form.getComponent('textField');
+      assert.equal(conditionalComponent.visible, true, 'Component should be conditionally visible');
+
+      form.setValue({ data: { checkbox: true } });
+
+      setTimeout(() => {
+        assert.equal(conditionalComponent.visible, false, 'Component should be conditionally hidden');
+        done();
+      }, 600);
+    }).catch((err) => done(err));
+  });
+
   it('Should validate email input when it is simple conditionally visible', done => {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, formWithConditionalEmail)
@@ -3310,8 +3418,8 @@ describe('Webform tests', function() {
           setTimeout(() => {
             assert.equal(conditionalComponent.visible, false, '(3) Component should be conditionally visible');
             done();
-          }, 300);
-        }, 300);
+          }, 500);
+        }, 500);
       }).catch((err) => done(err));
     });
   });

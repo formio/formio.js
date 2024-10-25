@@ -2169,12 +2169,17 @@ export default class Component extends Element {
         ]
       };
 
+      let visible = true;
+      if (this.builderMode || this.previewMode || !this.hasCondition()) {
+        visible = !this.component.hidden;
+      }
+      else {
       processOneSync(processContext);
       const componentPath = pathCorrect || this.component.key;
       const componentCondition = processContext.scope?.conditionals?.find(x => x.path === componentPath)
-      const visible = !componentCondition?.conditionallyHidden;
+      visible = !componentCondition?.conditionallyHidden;
 
-
+     }
       if (this.visible !== visible) {
         this.visible = visible;
       }
