@@ -15,7 +15,6 @@ import {
 const EditRowState = {
   New: 'new',
   Editing: 'editing',
-  Saving: 'saving',
   Saved: 'saved',
   Viewing: 'viewing',
   Removed: 'removed',
@@ -952,11 +951,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       editRow.components.forEach((comp) => comp.setPristine(false));
     }
 
-    // Mark the row with a 'Saving' state to trigger validation for future row changes
-    if (editRow.state === EditRowState.New) {
-      editRow.state = EditRowState.Saving;
-    }
-
     const errors = this.validateRow(editRow, true);
 
     if (!this.component.rowDrafts) {
@@ -971,7 +965,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         this.root.focusedComponent = null;
       }
       switch (editRow.state) {
-        case EditRowState.Saving: {
+        case EditRowState.New: {
           const newIndex = dataValue.length;
           dataValue.push(editRow.data);
           editRow.components.forEach(component=>component.rowIndex = newIndex);
@@ -1165,7 +1159,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   shouldValidateRow(editRow, dirty, fromSubmission) {
     return this.shouldValidateDraft(editRow) ||
-      editRow.state === EditRowState.Saving ||
+      editRow.state === EditRowState.New ||
       editRow.state === EditRowState.Editing ||
       editRow.alerts ||
       fromSubmission ||
@@ -1181,7 +1175,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       editGridValue[editRow.rowIndex] = editRow.data;
       _.set(rootValue, this.path, editGridValue);
       const validationProcessorProcess = (context) => this.validationProcessor(context, { dirty, silentCheck });
-      editRow.errors = processSync({
+      const errors = processSync({
         components: fastCloneDeep(this.component.components).map((component) => {
           component.parentPath = `${this.path}[${editRow.rowIndex}]`;
           return component;
@@ -1198,6 +1192,10 @@ export default class EditGridComponent extends NestedArrayComponent {
           }
         ]
       }).errors;
+
+      editRow.errors = (this.component.modal || this.component.rowDrafts)
+      ? errors
+      : errors.filter((err) => _.find(this.visibleErrors, ['component.id', err.component.id]));
     }
 
     // TODO: this is essentially running its own custom validation and should be moved into a validation rule
