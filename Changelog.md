@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0-rc.95]
+## 5.0.0-rc.95
 ### Changed
+ - Updated @formio/core@2.3.0-rc.17
+ - FIO-9205: fixed an issue where Select Filter feature does not work
  - FIO-9173: Allow Scientific Notations
+ - FIO-9247 fixed triggering custom validation inside Edit Grid
+
 
 ## 5.0.0-rc.94
 ### Changed

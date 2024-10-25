@@ -1239,7 +1239,7 @@ describe('EditGrid Component', () => {
           setTimeout(() => {
             assert.equal(!!firstRowTextField.errors, true);
             assert.equal(editGrid.editRows[0].errors.length, 1);
-            assert.equal(editGrid.editRows[0].state, 'saving');
+            assert.equal(editGrid.editRows[0].state, 'new');
 
             document.innerHTML = '';
             done();
@@ -1444,13 +1444,49 @@ describe('EditGrid Component', () => {
           setTimeout(() => {
             assert.equal(!!firstRowTextField.errors, true);
             assert.equal(editGrid.editRows[0].errors.length, 1);
-            assert.equal(editGrid.editRows[0].state, 'saving');
+            assert.equal(editGrid.editRows[0].state, 'new');
 
             document.innerHTML = '';
             done();
           }, 200);
         }, 250);
       }, 300);
+    }).catch(done);
+  });
+
+  it('Should trigger validation onChange before attempt to save', (done) => {
+    const form = _.cloneDeep(comp20);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const rootTextField = form.getComponent('text');
+      rootTextField.setValue('test');
+      const editGrid = form.getComponent('editGrid');
+      const clickEvent = new Event('click');
+      editGrid.refs['editgrid-editGrid-addRow'][0].dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        const egRowTextField = editGrid.components[0];
+
+        const inputEvent = new Event('input');
+        const textFieldEGInput = egRowTextField.refs.input[0];
+
+        textFieldEGInput.value = 'te';
+        textFieldEGInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(editGrid.editRows[0].errors.length, 1, 'Should include custom validation error');
+          assert.equal(editGrid.editRows[0].errors[0].message, 'data must match root textfield');
+          textFieldEGInput.value = 'test';
+          textFieldEGInput.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(editGrid.editRows[0].errors.length, 0, 'Should not include custom validation error');
+            document.innerHTML = '';
+            done();
+          }, 300);
+        }, 300);
+      }, 300)
     }).catch(done);
   });
 
@@ -1471,7 +1507,7 @@ describe('EditGrid Component', () => {
             setTimeout(() => {
               assert.equal(editGrid.editRows.length, 1);
               assert.equal(editGrid.editRows[0].errors?.length, 1);
-              assert.equal(editGrid.editRows[0].state, 'saving');
+              assert.equal(editGrid.editRows[0].state, 'new');
               done();
             }, 300);
           }, 300);
