@@ -15,7 +15,6 @@ import {
 const EditRowState = {
   New: 'new',
   Editing: 'editing',
-  Saving: 'saving',
   Saved: 'saved',
   Viewing: 'viewing',
   Removed: 'removed',
@@ -952,11 +951,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       editRow.components.forEach((comp) => comp.setPristine(false));
     }
 
-    // Mark the row with a 'Saving' state to trigger validation for future row changes
-    if (editRow.state === EditRowState.New) {
-      editRow.state = EditRowState.Saving;
-    }
-
     const errors = this.validateRow(editRow, true);
 
     if (!this.component.rowDrafts) {
@@ -971,7 +965,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         this.root.focusedComponent = null;
       }
       switch (editRow.state) {
-        case EditRowState.Saving: {
+        case EditRowState.New: {
           const newIndex = dataValue.length;
           dataValue.push(editRow.data);
           editRow.components.forEach(component=>component.rowIndex = newIndex);
@@ -1163,24 +1157,25 @@ export default class EditGridComponent extends NestedArrayComponent {
       this.root?.submitted;
   }
 
-  shouldValidateRow(editRow, dirty) {
+  shouldValidateRow(editRow, dirty, fromSubmission) {
     return this.shouldValidateDraft(editRow) ||
-      editRow.state === EditRowState.Saving ||
+      editRow.state === EditRowState.New ||
       editRow.state === EditRowState.Editing ||
       editRow.alerts ||
+      fromSubmission ||
       dirty;
   }
 
-  validateRow(editRow, dirty, forceSilentCheck) {
+  validateRow(editRow, dirty, forceSilentCheck, fromSubmission) {
     editRow.errors = [];
-    if (this.shouldValidateRow(editRow, dirty)) {
+    if (this.shouldValidateRow(editRow, dirty, fromSubmission)) {
       const silentCheck = (this.component.rowDrafts && !this.shouldValidateDraft(editRow)) || forceSilentCheck;
       const rootValue = fastCloneDeep(this.rootValue);
       const editGridValue = _.get(rootValue, this.path, []);
       editGridValue[editRow.rowIndex] = editRow.data;
       _.set(rootValue, this.path, editGridValue);
       const validationProcessorProcess = (context) => this.validationProcessor(context, { dirty, silentCheck });
-      editRow.errors = processSync({
+      const errors = processSync({
         components: fastCloneDeep(this.component.components).map((component) => {
           component.parentPath = `${this.path}[${editRow.rowIndex}]`;
           return component;
@@ -1197,6 +1192,10 @@ export default class EditGridComponent extends NestedArrayComponent {
           }
         ]
       }).errors;
+
+      editRow.errors = (this.component.modal || this.component.rowDrafts)
+      ? errors
+      : errors.filter((err) => _.find(this.visibleErrors, ['component.id', err.component.id]));
     }
 
     // TODO: this is essentially running its own custom validation and should be moved into a validation rule
@@ -1250,7 +1249,7 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   checkComponentValidity(data, dirty, row, options = {}, errors = []) {
-    const { silentCheck } = options;
+    const { silentCheck, fromSubmission } = options;
     const superValid = super.checkComponentValidity(data, dirty, row, options, errors);
 
     // If super tells us that component invalid and there is no need to update alerts, just return false
@@ -1262,7 +1261,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     const allRowErrors = [];
     this.editRows.forEach((editRow, index) => {
       // Trigger all errors on the row.
-      const rowErrors = this.validateRow(editRow, dirty, silentCheck);
+      const rowErrors = this.validateRow(editRow, dirty, silentCheck, fromSubmission);
       errors.push(...rowErrors);
       allRowErrors.push(...rowErrors);
 

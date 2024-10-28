@@ -26,5 +26,11 @@ export default {
       input: true,
       defaultValue: '00/00/0000'
     },
+    {
+      type: 'button',
+      action: 'submit',
+      label: 'Submit',
+      theme: 'primary'
+    }
   ]
 };

@@ -356,10 +356,10 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   /**
- * Normalize values coming into updateValue. For example, depending on the configuration, string value `"true"` will be normalized to boolean `true`.
- * @param {*} value - The value to normalize
- * @returns {*} - Returns the normalized value
- */
+   * Normalize values coming into updateValue. For example, depending on the configuration, string value `"true"` will be normalized to boolean `true`.
+   * @param {*} value - The value to normalize
+   * @returns {*} - Returns the normalized value
+   */
   normalizeValue(value) {
     if (this.component.multiple && Array.isArray(value)) {
       return value.map((singleValue) => this.normalizeSingleValue(singleValue));

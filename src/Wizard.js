@@ -1060,7 +1060,7 @@ export default class Wizard extends Webform {
       : this.currentPage.components;
 
     return components.reduce(
-      (check, comp) => comp.checkValidity(data, dirty, row, childErrors) && check,
+      (check, comp) => comp.checkValidity(data, dirty, row, currentPageOnly, childErrors) && check,
       true
     );
   }

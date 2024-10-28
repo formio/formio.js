@@ -145,7 +145,7 @@ export default class ListComponent extends Field {
   set itemsLoaded(promise) {
     this._itemsLoaded = promise;
   }
-  
+
   handleLoadingError(err) {
     this.loading = false;
     if (err.networkError) {
