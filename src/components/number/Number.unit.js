@@ -18,7 +18,7 @@ import {
   comp10,
   comp11,
   scientificNotation
-} from './fixtures/number';
+} from './fixtures';
 
 describe('Number Component', () => {
   it('Should build an number component', () => {
