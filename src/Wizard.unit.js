@@ -717,6 +717,59 @@ describe('Wizard tests', () => {
     .catch((err) => done(err));
   });
 
+  it('should set correct errors list for parent wizard before clicking on the Next button', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const nestedWizard = _.cloneDeep(wizardTestForm.form);
+    const parentWizardForm = _.cloneDeep(formWithNestedWizard);
+    parentWizardForm.components[1].components.push({
+      label: 'Parent Text',
+      applyMaskOn: 'change',
+      tableView: true,
+      validate: {
+        required: true
+      },
+      validateWhenHidden: false,
+      key: 'parentText',
+      type: 'textfield',
+      input: true
+    })
+    const clickEvent = new Event('click');
+
+    wizard.setForm(parentWizardForm).then(() => {
+      const nestedFormComp = wizard.getComponent('formNested');
+
+      nestedFormComp.loadSubForm = ()=> {
+        nestedFormComp.formObj = nestedWizard;
+        nestedFormComp.subFormLoading = false;
+        return new Promise((resolve) => resolve(nestedWizard));
+      };
+
+      nestedFormComp.createSubForm();
+
+      setTimeout(() => {
+        const clickWizardBtn = (pathPart) => {
+          const btn = _.get(wizard.refs, `${wizard.wizardKey}-${pathPart}`);
+          btn.dispatchEvent(clickEvent);
+        };
+
+        clickWizardBtn('link[1]');
+
+        setTimeout(() => {
+          assert.equal(wizard.page, 1, `Should open wizard page 2`);
+          clickWizardBtn('next');
+
+          setTimeout(() => {
+            assert.equal(wizard.errors.length, 1);
+            assert.equal(wizard.refs.errorRef.length, 1, 'Should have an error');
+            assert.equal(wizard.errors[0].message, 'Parent Text is required');
+            done();
+          }, 200);
+        }, 200);
+      }, 200)
+    })
+    .catch((err) => done(err));
+  })
 
   it('Should execute advanced logic for wizard pages', function(done) {
     const formElement = document.createElement('div');
