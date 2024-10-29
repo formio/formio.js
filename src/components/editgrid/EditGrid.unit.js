@@ -1686,6 +1686,8 @@ describe('EditGrid Open when Empty', () => {
             assert.equal(editRow.errors.length, 1, 'Should show error on row');
             const textField = editRow.components[0];
             assert(textField.element.className.includes('formio-error-wrapper'), 'Should add error class to component');
+            const error = editRow.errors[0];
+            assert.equal(error.formattedKeyOrPath, 'editGrid[0].textField');
             done();
           }, 450);
       }, 100);

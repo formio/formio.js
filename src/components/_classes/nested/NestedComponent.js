@@ -773,6 +773,11 @@ export default class NestedComponent extends Field {
     if (!instance) {
       return;
     }
+
+    if(!instance.component.path) {
+      instance.component.path = component.path;
+    }
+
     instance.checkComponentValidity(data, dirty, row, flags, scope.errors);
     if (instance.processOwnValidation) {
       scope.noRecurse = true;
