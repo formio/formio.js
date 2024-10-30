@@ -2138,7 +2138,7 @@ export default class Component extends Element {
    * @returns {boolean} - TRUE if the component is visible.
    */
 
-  async checkComponentConditions(data, flags, row) {
+  checkComponentConditions(data, flags, row) {
     data = data || this.rootValue;
     flags = flags || {};
     // const async = flags?.async
@@ -2150,42 +2150,41 @@ export default class Component extends Element {
 
     let pathCorrect = this.path;
 
-    if (this.parent?.type !=='datagrid') {
-       pathCorrect = this.path.replace(/\[[0-9]+\]/g, '');
+    if (this.parent?.type !== 'datagrid') {
+      pathCorrect = this.path.replace(/\[[0-9]+\]/g, '');
     }
 
-      // Check advanced conditions
-      const processContext = {
-        component: this.component,
-        data,
-        row,
-        value: this.validationValue,
-        path: pathCorrect || this.component.key,
-        instance: this,
-        scope: { errors: [] },
-        form: this.root,
-        processors: [
-          conditionProcessInfo
-        ]
-      };
+    // Check advanced conditions
+    const processContext = {
+      component: this.component,
+      data,
+      row,
+      value: this.validationValue,
+      path: pathCorrect || this.component.key,
+      instance: this,
+      scope: { errors: [] },
+      form: this.root,
+      processors: [
+        conditionProcessInfo
+      ]
+    };
 
-      let visible = true;
-      if (this.builderMode || this.previewMode || !this.hasCondition()) {
-        visible = !this.component.hidden;
-      }
-      else {
+    let visible = true;
+    if (this.builderMode || this.previewMode || !this.hasCondition()) {
+      visible = !this.component.hidden;
+    }
+    else {
       processOneSync(processContext);
       const componentPath = pathCorrect || this.component.key;
       const componentCondition = processContext.scope?.conditionals?.find(x => x.path === componentPath)
       visible = !componentCondition?.conditionallyHidden;
-
-     }
-      if (this.visible !== visible) {
-        this.visible = visible;
-      }
-
-      return visible
     }
+    if (this.visible !== visible) {
+      this.visible = visible;
+    }
+
+    return visible
+  }
 
   /**
    * Checks conditions for this component and any sub components.

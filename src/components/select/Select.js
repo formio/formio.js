@@ -1487,24 +1487,7 @@ export default class SelectComponent extends ListComponent {
         }
         templateData[value] = this.templateData[value];
       }
-      // if (this.path === 'dataGrid.select') {
-      //   this.path = 'dataGrid[0].select'
-      //  }
-
-      let newPath = '';
-
-      if (this.parent.type === 'datagrid') {
-        const splitedData = this.path.split(".");
-        const compIndexToCheck = splitedData.length -2
-        const lastComp = splitedData[compIndexToCheck];
-        const isPaths = lastComp.match(/\[[0-9]+\]/g);
-        if(!isPaths) {
-          splitedData[compIndexToCheck] = `${splitedData[compIndexToCheck]}[0]`
-        }
-        newPath =  splitedData.join(".");
-       }
-
-      _.set(submission.metadata.selectData, newPath? newPath: this.path, templateData);
+      _.set(submission.metadata.selectData, this.path, templateData);
     }
   }
 
