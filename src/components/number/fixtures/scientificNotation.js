@@ -3,11 +3,11 @@ export default {
   'mask': false,
   'spellcheck': true,
   'tableView': true,
-  'delimiter': true,
-  'requireDecimal': true,
+  'delimiter': false,
+  'requireDecimal': false,
   'inputFormat': 'plain',
   'key': 'number',
   'type': 'number',
-  'decimalLimit': 2,
+  'decimalLimit': false,
   'input': true
 };
