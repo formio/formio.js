@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0-rc.96
+### Changed
+ - Updated @formio/core@2.3.0-rc.18
+ - FIO-9259 fixed errors list for parent wizard with nested wizard
+ - FIO-9176: updated instance.component.path
+ - FIO-9205: fixed labels in select filter feature
+
 ## 5.0.0-rc.95
 ### Changed
  - Updated @formio/core@2.3.0-rc.17
