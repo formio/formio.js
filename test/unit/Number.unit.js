@@ -16,13 +16,34 @@ import {
   comp8,
   comp9,
   comp10,
-  comp11
+  comp11,
+  scientificNotation
 } from './fixtures/number';
 
 describe('Number Component', () => {
   it('Should build an number component', () => {
     return Harness.testCreate(NumberComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
+    });
+  });
+
+  it('Should correctly handle scientific notation', () => {
+    return Harness.testCreate(NumberComponent, scientificNotation, { allowScientificNotation: true }).then((component) => {
+      const testCases = [
+        [6.54635E+12, 6546350000000, '6546350000000'],
+        [1.23e-5, 0.0000123, '0.0000123'],
+        [3.14159e2, 314.159, '314.159'],
+        [2e-3, 0.002, '0.002'],
+        [7.5e5, 750000, '750000'],
+        [1.2345e10, 12345000000, '12345000000'],
+      ];
+
+      testCases.forEach(([input, expectedValue, expectedDisplayValue]) => {
+
+        component.setValue(input);
+        assert.equal(component.dataValue, expectedValue, `setValue: ${input} should result in ${expectedValue}`);
+        assert.equal(component.getValueAsString(input), expectedDisplayValue, `getValueAsString: ${input} should result in ${expectedDisplayValue}`);
+      });
     });
   });
 
