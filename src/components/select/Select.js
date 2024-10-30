@@ -1466,7 +1466,7 @@ export default class SelectComponent extends ListComponent {
     }
     // Check to see if we need to save off the template data into our metadata.
     const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
-    const shouldSaveData = !valueIsObject || this.component.reference;
+    const shouldSaveData = (!valueIsObject || this.component.reference) && !this.inDataTable;
     if (!_.isNil(templateValue) && shouldSaveData && this.templateData && this.templateData[templateValue] && this.root?.submission) {
       const submission = this.root.submission;
       if (!submission.metadata) {
