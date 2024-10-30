@@ -2141,7 +2141,6 @@ export default class Component extends Element {
   checkComponentConditions(data, flags, row) {
     data = data || this.rootValue;
     flags = flags || {};
-    // const async = flags?.async
     row = row || this.data;
 
     if (!this.builderMode & !this.previewMode && this.fieldLogic(data, row)) {
@@ -2176,14 +2175,14 @@ export default class Component extends Element {
     else {
       processOneSync(processContext);
       const componentPath = pathCorrect || this.component.key;
-      const componentCondition = processContext.scope?.conditionals?.find(x => x.path === componentPath)
+      const componentCondition = processContext.scope?.conditionals?.find(x => x.path === componentPath);
       visible = !componentCondition?.conditionallyHidden;
     }
     if (this.visible !== visible) {
       this.visible = visible;
     }
 
-    return visible
+    return visible;
   }
 
   /**
