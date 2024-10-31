@@ -275,6 +275,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 ```
 
 ### Breaking Changes
+ - Sketchpad imageType is being removed. All image types are now treated the same. You no longer need the imageType property in your form json
  - Bootstrap 5 Default Template - With the 5.x version of the renderer, the default template is now **Bootstrap 5** and is found @ https://github.com/formio/bootstrap repo.
  - Bootstrap Icons - Now, instead of Font Awesome being the default icon set for our renderer, we are using Bootstrap Icons as the default icon set which is compatible with Bootstrap 5. Of course, you can always change out icon sets, but this is now the default.
  - This version implements a new validation system. Within this, there are some changes that you should be aware of.
