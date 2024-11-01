@@ -353,12 +353,13 @@ export default class RadioComponent extends ListComponent {
     .then((response) => {
       this.loading = false;
       this.setItems(response);
-      this.optionsLoaded = true;
-      this.redraw();
     })
     .catch((err) => {
-      this.optionsLoaded = true;
       this.handleLoadingError(err);
+    })
+    .finally(() => {
+      this.optionsLoaded = true;
+      this.redraw();
     });
   }
 
