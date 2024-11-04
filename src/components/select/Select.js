@@ -1490,7 +1490,7 @@ export default class SelectComponent extends ListComponent {
 
       _.set(submission.metadata.selectData, this.path, templateData);
     }
-    if (flags.resetValue && this.root?.submission) {
+    if (flags.resetValue && this.root?.submission && !this.options.readOnly) {
       const submission = this.root.submission;
       if (!submission.metadata) {
         submission.metadata = {};

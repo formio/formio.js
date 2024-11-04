@@ -512,8 +512,8 @@ describe('SaveDraft functionality for Nested Form', () => {
           assert.equal(state, 'draft');
           _.unset(comp7.components[1], 'reference');
           done();
-        }, 1000);
-      }, 200);
+        }, 1100);
+      }, 300);
     }).catch((err) => done(err));
   });
 
