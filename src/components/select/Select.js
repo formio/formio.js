@@ -1454,7 +1454,7 @@ export default class SelectComponent extends ListComponent {
     return super.normalizeValue(this.normalizeSingleValue(value));
   }
 
-  setMetadata(value) {
+  setMetadata(value, flags = {}) {
     if (_.isNil(value)) {
       return;
     }
@@ -1465,7 +1465,7 @@ export default class SelectComponent extends ListComponent {
     }
     // Check to see if we need to save off the template data into our metadata.
     const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
-    const shouldSaveData = !valueIsObject || this.component.reference;
+    const shouldSaveData = (!valueIsObject || this.component.reference) && !this.inDataTable;
     if (!_.isNil(templateValue) && shouldSaveData && this.templateData && this.templateData[templateValue] && this.root?.submission) {
       const submission = this.root.submission;
       if (!submission.metadata) {
@@ -1490,16 +1490,23 @@ export default class SelectComponent extends ListComponent {
 
       _.set(submission.metadata.selectData, this.path, templateData);
     }
+    if (flags.resetValue && this.root?.submission) {
+      const submission = this.root.submission;
+      if (!submission.metadata) {
+        submission.metadata = {};
+      }
+      submission.metadata.selectData = {};
+    }
   }
 
   updateValue(value, flags) {
     const changed = super.updateValue(value, flags);
-    if (changed || !this.selectMetadata) {
+    if (changed || !this.selectMetadata || flags.resetValue) {
       if (this.component.multiple && Array.isArray(this.dataValue)) {
-        this.dataValue.forEach(singleValue => this.setMetadata(singleValue));
+        this.dataValue.forEach(singleValue => this.setMetadata(singleValue, flags));
       }
       else {
-        this.setMetadata(this.dataValue);
+        this.setMetadata(this.dataValue, flags);
       }
     }
     return changed;

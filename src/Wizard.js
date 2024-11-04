@@ -819,7 +819,7 @@ export default class Wizard extends Webform {
     else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
       this.scrollIntoView(this.element, true);
-      return Promise.reject(this.showErrors(errors, true));
+      return Promise.reject(super.showErrors(errors, true));
     }
   }
 
@@ -1060,7 +1060,7 @@ export default class Wizard extends Webform {
       : this.currentPage.components;
 
     return components.reduce(
-      (check, comp) => comp.checkValidity(data, dirty, row, childErrors) && check,
+      (check, comp) => comp.checkValidity(data, dirty, row, currentPageOnly, childErrors) && check,
       true
     );
   }

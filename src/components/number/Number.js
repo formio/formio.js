@@ -195,7 +195,12 @@ export default class NumberComponent extends Input {
     let value = parseFloat(input);
 
     if (!_.isNaN(value)) {
-      value = String(value).replace('.', this.decimalSeparator);
+      // Format scientific notation
+      if (/e/i.test(String(value))) {
+        value = value.toExponential(this.decimalLimit);
+      } else {
+        value = String(value).replace('.', this.decimalSeparator);
+      }
     }
     else {
       value = null;

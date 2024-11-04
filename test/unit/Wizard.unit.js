@@ -41,6 +41,7 @@ import { fastCloneDeep } from '../../src/utils/utils';
 import formsWithAllowOverride from '../forms/formsWithAllowOverrideComps';
 import WizardWithCheckboxes from '../forms/wizardWithCheckboxes';
 import WizardWithRequiredFields from '../forms/wizardWithRequiredFields';
+import formWithNestedWizardAndRequiredFields from '../forms/formWithNestedWizardAndRequiredFields';
 
 // eslint-disable-next-line max-statements
 describe('Wizard tests', () => {
@@ -448,6 +449,55 @@ describe('Wizard tests', () => {
     .catch((err) => done(err));
   })
 
+  it('Should have validation errors when parent form is valid but nested wizard is not', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const nestedWizard = _.cloneDeep(formWithNestedWizardAndRequiredFields.childWizard);
+    const parentWizard = _.cloneDeep(formWithNestedWizardAndRequiredFields.parentWizard);
+    const clickEvent = new Event('click');
+
+    wizard.setForm(parentWizard).then(() => {
+      const formio = new Formio('http://test.localhost/test', {});
+      wizard.formio = formio;
+      const nestedFormComp = wizard.getComponent('child');
+
+      nestedFormComp.loadSubForm = ()=> {
+        nestedFormComp.formObj = nestedWizard;
+        nestedFormComp.subFormLoading = false;
+        return new Promise((resolve) => resolve(nestedWizard));
+      };
+
+      nestedFormComp.createSubForm();
+      setTimeout(() => {
+        const checkPage = (pageNumber) => {
+          assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+        };
+        checkPage(0);
+        const firstPageComponentInput = wizard.allPages[0].components[0].refs.input[0];
+        const inputEvent = new Event('input');
+        firstPageComponentInput.value = 'test';
+        firstPageComponentInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(wizard.submission.data.textField, 'test');
+          const nestedWizardBreadcrumbBtn = _.get(wizard.refs, `${wizard.wizardKey}-link[4]`);
+          nestedWizardBreadcrumbBtn.dispatchEvent(clickEvent);
+   
+          setTimeout(() => {
+            checkPage(4);
+            _.get(wizard.refs, `${wizard.wizardKey}-submit`).dispatchEvent(clickEvent);
+           
+            setTimeout(() => {
+              assert.equal(wizard.errors.length, 2);
+              done();
+            }, 300)
+          }, 300)
+        }, 300)
+      }, 300)
+    })
+    .catch((err) => done(err));
+  })
+
   it('Should render values in HTML render mode', function(done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement, {
@@ -665,6 +715,59 @@ describe('Wizard tests', () => {
     .catch((err) => done(err));
   });
 
+  it('should set correct errors list for parent wizard before clicking on the Next button', function(done) {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const nestedWizard = _.cloneDeep(wizardTestForm.form);
+    const parentWizardForm = _.cloneDeep(formWithNestedWizard);
+    parentWizardForm.components[1].components.push({
+      label: 'Parent Text',
+      applyMaskOn: 'change',
+      tableView: true,
+      validate: {
+        required: true
+      },
+      validateWhenHidden: false,
+      key: 'parentText',
+      type: 'textfield',
+      input: true
+    })
+    const clickEvent = new Event('click');
+
+    wizard.setForm(parentWizardForm).then(() => {
+      const nestedFormComp = wizard.getComponent('formNested');
+
+      nestedFormComp.loadSubForm = ()=> {
+        nestedFormComp.formObj = nestedWizard;
+        nestedFormComp.subFormLoading = false;
+        return new Promise((resolve) => resolve(nestedWizard));
+      };
+
+      nestedFormComp.createSubForm();
+
+      setTimeout(() => {
+        const clickWizardBtn = (pathPart) => {
+          const btn = _.get(wizard.refs, `${wizard.wizardKey}-${pathPart}`);
+          btn.dispatchEvent(clickEvent);
+        };
+
+        clickWizardBtn('link[1]');
+
+        setTimeout(() => {
+          assert.equal(wizard.page, 1, `Should open wizard page 2`);
+          clickWizardBtn('next');
+
+          setTimeout(() => {
+            assert.equal(wizard.errors.length, 1);
+            assert.equal(wizard.refs.errorRef.length, 1, 'Should have an error');
+            assert.equal(wizard.errors[0].message, 'Parent Text is required');
+            done();
+          }, 200);
+        }, 200);
+      }, 200)
+    })
+    .catch((err) => done(err));
+  })
 
   it('Should execute advanced logic for wizard pages', function(done) {
     const formElement = document.createElement('div');

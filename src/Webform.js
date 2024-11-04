@@ -838,7 +838,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     saveDraft() {
-        if (!this.draftEnabled) {
+        if (!this.draftEnabled || this.parent?.component.reference === false) {
             return;
         }
         if (!this.formio) {
