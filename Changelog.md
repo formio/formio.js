@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.0.0-rc.97]
+### Changed
+ - FIO-9283: fixed an issue where select with resource dataSrc does not display values in readOnly mode
+
 ## 5.0.0-rc.96
 ### Changed
  - Updated @formio/core@2.3.0-rc.18
