@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypes, boolValue } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, boolValue, getComponent } from '../../utils/utils';
 import RadioComponent from '../radio/Radio';
 
 export default class SelectBoxesComponent extends RadioComponent {
@@ -297,6 +297,17 @@ export default class SelectBoxesComponent extends RadioComponent {
     }
 
     return super.checkComponentValidity(data, dirty, rowData, options, errors);
+  }
+
+  setCustomValidity(messages, dirty, external) {
+    if (this.options.building && _.find(messages, {ruleName: 'invalidValueProperty'})) {
+      setTimeout(() => {
+        this.root && getComponent(this.root.components, 'valueProperty').setCustomValidity(messages, dirty);
+      }, 0);
+      return super.setCustomValidity(_.filter(messages, (message) => message.ruleName !=='invalidValueProperty'), dirty, external);
+    } else {
+      return super.setCustomValidity(messages, dirty, external);
+    };
   }
 
   validateValueAvailability(setting, value) {
