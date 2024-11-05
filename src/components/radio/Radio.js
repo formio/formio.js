@@ -398,10 +398,9 @@ export default class RadioComponent extends ListComponent {
       };
       listData.push(this.templateData[this.component.valueProperty ? valueAtProperty : i]);
 
-      if ((this.component.valueProperty || !this.isRadio) && (
-        _.isUndefined(valueAtProperty) ||
-        (!this.isRadio && _.isObject(valueAtProperty)) ||
-        (!this.isRadio && _.isBoolean(valueAtProperty))
+      const value = this.loadedOptions[i].value;
+      if (!this.isRadio && (
+        _.isObject(value) || _.isBoolean(value) || _.isUndefined(value)
       )) {
         this.loadedOptions[i].invalid = true;
       }
