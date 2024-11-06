@@ -265,12 +265,14 @@ export function checkCalculated(component, submission, rowData) {
 export function getComponentActualValue(compPath, data, row) {
   let value = null;
 
-  if (row) {
-    value = getValue({ data: row }, compPath);
-  }
-  if (data && _.isNil(value)) {
+  if (data) {
     value = getValue({ data }, compPath);
   }
+
+  if (row && _.isNil(value)) {
+    value = getValue({ data: row }, compPath);
+  }
+  
   // FOR-400 - Fix issue where falsey values were being evaluated as show=true
   if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
     value = '';
