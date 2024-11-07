@@ -85,6 +85,7 @@ import wizardWithRequiredFields from '../forms/wizardWithRequiredFields';
 import webformWithNestedWizard from '../forms/webformWIthNestedWizard';
 import formWithUniqueValidation from '../forms/formWithUniqueValidation.js';
 import formWithConditionalEmail from '../forms/formWithConditionalEmail.js';
+import formsWithSimpleConditionals from '../forms/formsWithSimpleConditionals.js';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
 if (_.has(Formio, 'Components.setComponents')) {
@@ -94,6 +95,80 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+  it('Should show fields correctly if there are 2 components with the same key in the form', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formsWithSimpleConditionals.form1).then(() => {
+      const compWithDuplicatedKey1 = form.getComponent('anotherContainerKey.someDuplicatedKey');
+      const compWithDuplicatedKey2 = form.getComponent('someDuplicatedKey');
+      const conditionalCompShownOnDupl1 = form.getComponent('anotherContainerKey.textField');
+      const conditionalCompShownOnDupl2 = form.getComponent('anotherContainerKey.additionalContainer');
+      assert.equal(conditionalCompShownOnDupl1.visible, false);
+      assert.equal(conditionalCompShownOnDupl2.visible, false);
+      compWithDuplicatedKey1.setValue('more');
+
+      setTimeout(() => {
+        assert.equal(conditionalCompShownOnDupl1.visible, true);
+        assert.equal(conditionalCompShownOnDupl2.visible, false);
+
+        compWithDuplicatedKey2.setValue('more');
+
+        setTimeout(() => {
+          assert.equal(conditionalCompShownOnDupl1.visible, true);
+          assert.equal(conditionalCompShownOnDupl2.visible, true);
+
+          compWithDuplicatedKey1.setValue('less');
+          setTimeout(() => {
+            assert.equal(conditionalCompShownOnDupl1.visible, false);
+            assert.equal(conditionalCompShownOnDupl2.visible, true);
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should show fields correctly inside dataGrid row if there are components with the same key in the form and dataGrid component visibility depennds on component inside row and outside dataGrid', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formsWithSimpleConditionals.form2).then(() => {
+      const compWithDuplicatedKey1 = form.getComponent('container.textField');
+      const compWithDuplicatedKey2 = form.getComponent('dataGrid.container.textField')[0];
+      const conditionalCompShownOnDupl1Or2 = form.getComponent('dataGrid.number')[0];
+      const dataGrid = form.getComponent('dataGrid');
+      assert.equal(conditionalCompShownOnDupl1Or2.visible, false);
+      compWithDuplicatedKey1.setValue('6');
+
+      setTimeout(() => {
+        assert.equal(conditionalCompShownOnDupl1Or2.visible, true);
+        compWithDuplicatedKey1.setValue('7');
+
+        setTimeout(() => {
+          const conditionalCompShownOnDupl1Or2 = form.getComponent('dataGrid.number')[0];
+          assert.equal(conditionalCompShownOnDupl1Or2.visible, false);
+          compWithDuplicatedKey2.setValue('5');
+          setTimeout(() => {
+            assert.equal(conditionalCompShownOnDupl1Or2.visible, true);
+            dataGrid.addRow();
+            setTimeout(() => {
+              const conditionalComp2ShownOnDupl1Or2 = form.getComponent('dataGrid.number')[1];
+              assert.equal(conditionalCompShownOnDupl1Or2.visible, true);
+              assert.equal(conditionalComp2ShownOnDupl1Or2.visible, false);
+              compWithDuplicatedKey1.setValue('6');
+              setTimeout(() => {
+                assert.equal(conditionalCompShownOnDupl1Or2.visible, true);
+                assert.equal(conditionalComp2ShownOnDupl1Or2.visible, true);
+                done();
+              }, 400);
+            }, 400);
+          }, 400);
+        }, 400);
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
   it('Should validate email input when it is simple conditionally visible', done => {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, formWithConditionalEmail)
