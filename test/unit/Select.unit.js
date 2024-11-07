@@ -37,7 +37,8 @@ import {
   comp24,
   comp25,
   comp26,
-  comp27
+  comp27,
+  comp28
 } from './fixtures/select';
 
 // eslint-disable-next-line max-statements
@@ -1551,6 +1552,42 @@ describe('Select Component with Entire Object Value Property', () => {
 
         done();
       }, 300);
+    })
+      .catch((err) => done(err));
+  });
+
+  it('Should render label for Select Resource type in readOnly mode', (done) => {
+    const element = document.createElement('div');
+    Formio.createForm(element, comp28, { readOnly: true }).then((form) => {
+      const select = form.getComponent('selectResource');
+      form.setSubmission({
+        form: '672483c1d9abe46bcd70bca4',
+        metadata: {
+          selectData: {
+            selectResource: {
+              data: {
+                textField: 'test1',
+              },
+            },
+          },
+        },
+        data: {
+          selectResource: 'test1',
+          submit: true,
+        },
+        _id: '6724d15cd9abe46bcd7115d1',
+        project: '67211a9aa929e4e6ebc2bf77',
+        state: 'submitted',
+        created: '2024-11-01T13:02:20.349Z',
+        modified: '2024-11-01T13:02:20.349Z',
+      });
+
+      setTimeout(() => {
+        const previewSelect = select.element.querySelector('[aria-selected="true"] span');
+        assert.equal(previewSelect.innerHTML, 'test1');
+
+        done();
+      }, 400);
     })
       .catch((err) => done(err));
   });
