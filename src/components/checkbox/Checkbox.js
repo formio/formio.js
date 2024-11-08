@@ -243,4 +243,12 @@ export default class CheckBoxComponent extends Field {
 
     return changed;
   }
+
+  calculateComponentValue(data, flags, row) {
+    if (this.options.pdf && _.get(this.root, 'submission._id', false)) {
+      flags = flags || {};
+      flags.fromSubmission = true;
+    }
+    return super.calculateComponentValue(data, flags, row);
+  }
 }
