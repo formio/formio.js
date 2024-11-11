@@ -475,11 +475,11 @@ export default class FormComponent extends Component {
   }
 
   hideSubmitButton(component) {
-    const isSubmitButton = (component.type === 'button') &&
-      ((component.action === 'submit') || !component.action);
+    const isSubmitButton = component.type === 'button' && (component.action === 'submit' || !component.action);
 
     if (isSubmitButton) {
       component.hidden = true;
+      component.customConditional = 'show = false';
     }
   }
 
@@ -489,7 +489,7 @@ export default class FormComponent extends Component {
    * @returns {Promise} - The promise that resolves when the subform is loaded.
    */
   loadSubForm(fromAttach) {
-    if (this.builderMode || this.isHidden() || (this.isSubFormLazyLoad() && !fromAttach)) {
+    if (this.builderMode || this.conditionallyHidden || (this.isSubFormLazyLoad() && !fromAttach)) {
       return Promise.resolve();
     }
 
@@ -586,7 +586,7 @@ export default class FormComponent extends Component {
    * @returns {*|boolean} - TRUE if the subform should be submitted, FALSE if it should not.
    */
   get shouldSubmit() {
-    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.isHidden();
+    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.conditionallyHidden;
   }
 
   /**
