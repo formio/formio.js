@@ -1,7 +1,7 @@
 'use strict';
 import _ from 'lodash';
 import Field from '../field/Field';
-import Components from '../../Components';
+import Components from '../../Components';''
 import { getArrayFromComponentPath, getStringFromComponentPath, getRandomComponentId } from '../../../utils/utils';
 import { process as processAsync, processSync } from '@formio/core/process';
 
@@ -772,10 +772,6 @@ export default class NestedComponent extends Field {
     }
     if (!instance) {
       return;
-    }
-
-    if(!instance.component.path) {
-      instance.component.path = component.path;
     }
 
     instance.checkComponentValidity(data, dirty, row, flags, scope.errors);

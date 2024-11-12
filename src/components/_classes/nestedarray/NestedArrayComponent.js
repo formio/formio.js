@@ -1,6 +1,8 @@
 'use strict';
 
 import _ from 'lodash';
+import { Utils } from '@formio/core/utils';
+const { componentPath, COMPONENT_PATH, setComponentScope } = Utils;
 import { componentValueTypes, getStringFromComponentPath, isLayoutComponent } from '../../../utils/utils';
 
 import Component from '../component/Component';
@@ -26,10 +28,13 @@ export default class NestedArrayComponent extends NestedDataComponent {
   }
 
   get rowIndex() {
-    return super.rowIndex;
+    return this._rowIndex;
   }
 
   set rowIndex(value) {
+    setComponentScope(this.component, 'dataIndex', value);
+    setComponentScope(this.component, 'dataPath', componentPath(this.component, COMPONENT_PATH.DATA));
+    setComponentScope(this.component, 'localDataPath', componentPath(this.component, COMPONENT_PATH.LOCAL_DATA));
     this._rowIndex = value;
   }
 

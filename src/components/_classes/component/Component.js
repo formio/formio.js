@@ -1,5 +1,7 @@
 /* globals Quill, ClassicEditor, CKEDITOR */
 import { conformToMask } from '@formio/vanilla-text-mask';
+import { Utils } from '@formio/core/utils';
+const { componentPath, COMPONENT_PATH, setComponentScope, setDefaultComponentPaths, setParentReference } = Utils;
 import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
@@ -257,6 +259,11 @@ export default class Component extends Element {
     this._hasCondition = null;
 
     /**
+     * The row index for this component.
+     */
+    this._rowIndex = undefined;
+
+    /**
      * References to dom elements
      */
     this.refs = {};
@@ -269,12 +276,6 @@ export default class Component extends Element {
     ) {
       _.merge(component, this.options.components[component.type]);
     }
-
-    /**
-     * The data path to this specific component instance.
-     * @type {string}
-     */
-    this.path = component?.key || '';
 
     /**
      * An array of all the children components errors.
@@ -360,6 +361,11 @@ export default class Component extends Element {
      */
     this.parent = this.options.parent;
 
+    // Set the component paths for this component.
+    setParentReference(component, this.parent?.component);
+    setDefaultComponentPaths(component);
+    setComponentScope(component, 'dataPath', componentPath(component, COMPONENT_PATH.DATA));
+    setComponentScope(component, 'localDataPath', componentPath(component, COMPONENT_PATH.LOCAL_DATA));
     this.options.name = this.options.name || 'data';
 
     this._path = '';
@@ -541,6 +547,26 @@ export default class Component extends Element {
     }
   }
 
+  /**
+   * Get Row Index.
+   * @returns {number} - The row index.
+   */
+  get rowIndex() {
+    return this._rowIndex;
+  }
+  
+  /**
+   * Set Row Index to row and update each component.
+   * @param {number} value - The row index.
+   * @returns {void}
+   */
+  set rowIndex(value) {
+    setComponentScope(this.component, 'dataIndex', value);
+    setComponentScope(this.component, 'dataPath', componentPath(this.component, COMPONENT_PATH.DATA));
+    setComponentScope(this.component, 'localDataPath', componentPath(this.component, COMPONENT_PATH.LOCAL_DATA));
+    this._rowIndex = value;
+  }
+
   afterComponentAssign() {
     //implement in extended classes
   }
@@ -621,6 +647,14 @@ export default class Component extends Element {
 
   get key() {
     return _.get(this.component, 'key', '');
+  }
+
+  get path() {
+    return this.component.scope?.dataPath;
+  }
+
+  set path(path) {
+    throw new Error('Should not be setting the path of a component.');
   }
 
   set parentVisible(value) {

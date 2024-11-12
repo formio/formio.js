@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
-import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
-import Components from '../Components';
+import { fastCloneDeep, getFocusableElements, setComponentScope } from '../../utils/utils';
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -504,7 +503,6 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
       component.rowIndex = rowIndex;
       component.row = `${rowIndex}-${colIndex}`;
-      component.path = Components.getComponentPath(component);
     });
   }
 
@@ -589,6 +587,7 @@ export default class DataGridComponent extends NestedArrayComponent {
         columnComponent = { ...col, id: (col.id + rowIndex) };
       }
 
+      setComponentScope(this.component, 'dataIndex', rowIndex);
       const component = this.createComponent(columnComponent, options, row);
       component.parentDisabled = !!this.disabled;
       component.rowIndex = rowIndex;

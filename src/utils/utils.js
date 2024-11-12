@@ -32,17 +32,6 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
 });
 
 export { jsonLogic, ConditionOperators, moment };
-/**
- * Sets the path to the component and parent schema.
- * @param {import('@formio/core').Component} component - The component to set the path for.
- */
-function setPathToComponentAndPerentSchema(component) {
-  component.path = getComponentPath(component);
-  const dataParent = getDataParentComponent(component);
-  if (dataParent && typeof dataParent === 'object') {
-    dataParent.path = getComponentPath(dataParent);
-  }
-}
 
 /**
  * Evaluate a method.
@@ -377,7 +366,6 @@ function getRow(component, row, instance, conditional) {
   // If no component's instance passed (happens only in 6.x server), calculate its path based on the schema
   if (!instance) {
     instance = _.cloneDeep(component);
-    setPathToComponentAndPerentSchema(instance);
   }
   const dataParent = getDataParentComponent(instance);
   const parentPath = dataParent ? getComponentPath(dataParent) : null;
@@ -1664,15 +1652,10 @@ export function getComponentPathWithoutIndicies(path = '') {
 /**
  * Returns a path to the component which based on its schema
  * @param {import('@formio/core').Component} component - Component containing link to its parent's schema in the 'parent' property
- * @param {string} path - Path to the component
  * @returns {string} - Path to the component
  */
-export function getComponentPath(component, path = '') {
-  if (!component || !component.key || component?._form?.display === 'wizard') { // unlike the Webform, the Wizard has the key and it is a duplicate of the panel key
-    return path;
-  }
-  path = component.isInputComponent || component.input === true ? `${component.key}${path ? '.' : ''}${path}` : path;
-  return getComponentPath(component.parent, path);
+export function getComponentPath(component) {
+  return component.component.scope?.dataPath;
 }
 
 /**
