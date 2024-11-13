@@ -3755,7 +3755,7 @@ export default class Component extends Element {
       () => this.isValueHidden(),
       // Force valid if component is hidden.
       () => {
-        if (!this.component.validateWhenHidden && !this.visible) {
+        if (!this.component.validateWhenHidden && (!this.visible || !this.checkCondition(row, data))) {
           this._errors = [];
           return true;
         }
