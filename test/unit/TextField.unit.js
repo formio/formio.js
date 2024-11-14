@@ -16,6 +16,8 @@ import {
   requiredFieldLogicComp
 } from './fixtures/textfield';
 
+import { comp10 as formWithCalendarTextField } from './fixtures/datetime';
+
 describe('TextField Component', () => {
   it('Should create a new TextField', () => {
     const textField = new TextFieldComponent({
@@ -1360,6 +1362,23 @@ describe('TextField Component', () => {
           }, 300);
         }, 300);
       }, 300);
+    }).catch(done);
+  });
+  // see https://formio.atlassian.net/browse/FIO-9217
+  it('Should allow the populating of a calendar widget–text field component with a custom default value that is a moment datetime', (done) => {
+    const form = _.cloneDeep(formWithCalendarTextField);
+    const textFieldComponent = form.components[1];
+    textFieldComponent.customDefaultValue = "value=moment('2024-11-13 15:00:00')";
+
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(renderedForm => {
+      const renderedTextFieldComponent = renderedForm.getComponent('textField');
+      setTimeout(() => {
+        const input = renderedTextFieldComponent.element.querySelector('.input');
+        assert.equal(input.value, '2024-11-13 03:00 PM');
+        done();
+      }, 200);
     }).catch(done);
   });
 
