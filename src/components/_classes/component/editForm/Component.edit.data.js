@@ -128,10 +128,10 @@ export default [
   {
     weight: 700,
     type: 'checkbox',
-    label: 'Clear Value When Hidden',
+    label: 'Omit Value From Submission Data When Conditionally Hidden',
     key: 'clearOnHide',
     defaultValue: true,
-    tooltip: 'When a field is hidden, clear the value.',
+    tooltip: 'When a field is conditionally hidden, omit the value from the submission data.',
     input: true
   },
   EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 'customDefaultValue', 1000,

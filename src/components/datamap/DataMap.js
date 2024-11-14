@@ -80,7 +80,7 @@ export default class DataMapComponent extends DataGridComponent {
   get dataValue() {
     if (
       !this.key ||
-      (!this.visible && this.component.clearOnHide)
+      (this.conditionallyHidden && this.component.clearOnHide)
     ) {
       return this.emptyValue;
     }

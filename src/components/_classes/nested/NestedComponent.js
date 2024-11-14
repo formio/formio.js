@@ -86,18 +86,27 @@ export default class NestedComponent extends Field {
     const visibilityChanged = this._visible !== value;
     this._visible = value;
     const isVisible = this.visible;
+    const isConditionallyHidden = this.checkConditionallyHidden();
     const forceShow = this.shouldForceShow();
     const forceHide = this.shouldForceHide();
-    this.components.forEach(component => {
+    this.components.forEach((component) => {
       // Set the parent visibility first since we may have nested components within nested components
       // and they need to be able to determine their visibility based on the parent visibility.
       component.parentVisible = isVisible;
+      component._parentConditionallyHidden = isConditionallyHidden;
+      let visible;
+      if (component.hasCondition()) {
+        component._conditionallyHidden = component.checkConditionallyHidden() || component._parentConditionallyHidden;
+        visible = !component.conditionallyHidden;
+      }
+      else {
+        visible = !component.component.hidden;
+      }
 
-      const conditionallyVisible = component.conditionallyVisible();
-      if (forceShow || conditionallyVisible) {
+      if (forceShow || visible) {
         component.visible = true;
       }
-      else if (forceHide || !isVisible || !conditionallyVisible) {
+      else if (forceHide || !isVisible || !visible ) {
         component.visible = false;
       }
       // If hiding a nested component, clear all errors below.
@@ -105,8 +114,8 @@ export default class NestedComponent extends Field {
         component.error = '';
       }
     });
+
     if (visibilityChanged) {
-      this.clearOnHide();
       this.redraw();
     }
   }
@@ -421,6 +430,7 @@ export default class NestedComponent extends Field {
     data = data || this.data;
     options.parent = this;
     options.parentVisible = this.visible;
+    options.parentConditionallyHidden = this.conditionallyHidden;
     options.root = options?.root || this.root || this;
     options.localRoot = this.localRoot;
     options.skipInit = true;
@@ -710,7 +720,7 @@ export default class NestedComponent extends Field {
   clearOnHide(show) {
     super.clearOnHide(show);
     if (this.component.clearOnHide) {
-      if (this.allowData && !this.hasValue() && !(this.options.server && !this.visible)) {
+      if (this.allowData && !this.hasValue() && !this.conditionallyHidden) {
         this.dataValue = this.defaultValue;
       }
       if (this.hasValue()) {
@@ -743,7 +753,7 @@ export default class NestedComponent extends Field {
 
   calculateValue(data, flags, row) {
     // Do not iterate into children and calculateValues if this nested component is conditionally hidden.
-    if (!this.conditionallyVisible()) {
+    if (this.conditionallyHidden) {
       return false;
     }
     return this.getComponents().reduce(

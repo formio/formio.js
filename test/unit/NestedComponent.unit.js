@@ -123,7 +123,7 @@ describe('NestedComponent class', () => {
       comp.setValue(data);
       comp.checkConditions(data);
       assert.equal(comp.components[1]._visible, false);
-      assert.equal(comp.components[1].components[0]._visible, true);
+      assert.equal(comp.components[1].components[0]._visible, false);
       assert.equal(comp.components[1].components[1]._visible, false);
 
       // overrideParent is depricated.
@@ -131,8 +131,8 @@ describe('NestedComponent class', () => {
       comp.setValue(data);
       comp.checkConditions(data);
       assert.equal(comp.components[1]._visible, false);
-      assert.equal(comp.components[1].components[0]._visible, true);
-      assert.equal(comp.components[1].components[1]._visible, true);
+      assert.equal(comp.components[1].components[0]._visible, false);
+      assert.equal(comp.components[1].components[1]._visible, false);
     });
   });
 
