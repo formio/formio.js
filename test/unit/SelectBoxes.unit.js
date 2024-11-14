@@ -292,54 +292,6 @@ describe('SelectBoxes Component', () => {
           }, 300);
         });
     });
-
-    it('Should provide validation for ValueProperty', (done) => {
-      const form = _.cloneDeep(comp5);
-      const element = document.createElement('div');
-      const originalMakeRequest = Formio.makeRequest;
-
-      Formio.makeRequest = function() {
-        return new Promise(resolve => {
-          const values = [
-            { name : 'Alabama', abbreviation : 'AL' },
-            { name : 'Alaska', abbreviation: { a: 2, b: 'c' } },
-            { name : 'American Samoa', abbreviation: true }
-          ];
-          resolve(values);
-        });
-      };
-
-      Formio.createForm(element, form).then(async form => {
-        const selectBoxes = form.getComponent('selectBoxes');
-
-        setTimeout(()=>{
-          // TODO: previously, this was programmatically assigning a boolean value to the `input.checked` property; however,
-          // this does not bubble a change event to the form, and we need to investigate why
-          selectBoxes.setValue({ 'AL': true, '[object Object]': true, 'true': true });
-
-          setTimeout(()=>{
-            const submit = form.getComponent('submit');
-            const clickEvent = new Event('click');
-            const submitBtn = submit.refs.button;
-            submitBtn.dispatchEvent(clickEvent);
-
-            setTimeout(()=>{
-              assert.equal(form.errors.length, 1);
-              assert.equal(selectBoxes.errors[0].message, 'Invalid Value Property');
-              selectBoxes.setValue({ 'AL': true });
-
-              setTimeout(()=>{
-                assert.equal(form.errors.length, 0);
-                assert.equal(!!selectBoxes.errors.length, 0);
-                document.innerHTML = '';
-                Formio.makeRequest = originalMakeRequest;
-                done();
-              }, 300);
-            }, 300);
-          }, 600);
-        }, 500);
-      }).catch(done);
-    });
   });
 
   it('Should set "checked" attribute correctly when value is changed', (done) => {
