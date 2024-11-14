@@ -431,6 +431,7 @@ describe("Validate When Hidden behavior", function () {
             type: 'container',
             key: 'container',
             hidden: true,
+            clearOnHide: false,
             components: [
               {
                 type: 'textfield',
