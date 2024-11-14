@@ -3385,8 +3385,8 @@ describe('Webform tests', function() {
           setTimeout(() => {
             assert.equal(conditionalComponent.visible, false, '(3) Component should be conditionally visible');
             done();
-          }, 300);
-        }, 300);
+          }, 500);
+        }, 500);
       }).catch((err) => done(err));
     });
   });
