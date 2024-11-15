@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
-import { fastCloneDeep, getFocusableElements, setComponentScope } from '../../utils/utils';
+import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -576,6 +576,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
+      options.rowIndex = rowIndex;
 
       let columnComponent;
 
@@ -587,7 +588,6 @@ export default class DataGridComponent extends NestedArrayComponent {
         columnComponent = { ...col, id: (col.id + rowIndex) };
       }
 
-      setComponentScope(this.component, 'dataIndex', rowIndex);
       const component = this.createComponent(columnComponent, options, row);
       component.parentDisabled = !!this.disabled;
       component.rowIndex = rowIndex;
@@ -723,53 +723,6 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   restoreComponentsContext() {
     this.rows.forEach((row, index) => _.forIn(row, (component) => component.data = this.dataValue[index]));
-  }
-
-  getComponent(path, fn) {
-    path = Array.isArray(path) ? path : [path];
-    const [key, ...remainingPath] = path;
-    let result = [];
-    if (_.isNumber(key) && remainingPath.length) {
-      const compKey = remainingPath.pop();
-      result = this.rows[key][compKey];
-      // If the component is inside a Layout Component, try to find it among all the row's components
-      if (!result) {
-        Object.entries(this.rows[key]).forEach(([, comp]) => {
-          if ('getComponent' in comp) {
-            const possibleResult = comp.getComponent([compKey], fn);
-            if (possibleResult) {
-              result = possibleResult;
-            }
-          }
-        });
-      }
-      if (result && _.isFunction(fn)) {
-        fn(result, this.getComponents());
-      }
-      if (remainingPath.length && 'getComponent' in result) {
-        return result.getComponent(remainingPath, fn);
-      }
-      return result;
-    }
-    if (!_.isString(key)) {
-      return result;
-    }
-
-    this.everyComponent((component, components) => {
-      if (component.component.key === key) {
-        let comp = component;
-        if (remainingPath.length > 0 && 'getComponent' in component) {
-          comp = component.getComponent(remainingPath, fn);
-        }
-        else if (fn) {
-          fn(component, components);
-        }
-
-        result = result.concat(comp);
-      }
-    });
-
-    return result.length > 0 ? result : null;
   }
 
   toggleGroup(element, index) {

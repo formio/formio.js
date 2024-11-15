@@ -660,6 +660,7 @@ export default class Webform extends NestedDataComponent {
         try {
             // Do not set the form again if it has been already set
             if (isFormAlreadySet && JSON.stringify(this._form) === JSON.stringify(form)) {
+                this.formReadyResolve();
                 return Promise.resolve();
             }
 
@@ -671,11 +672,13 @@ export default class Webform extends NestedDataComponent {
             }
 
             if (this.parent?.component?.modalEdit) {
+                this.formReadyResolve();
                 return Promise.resolve();
             }
         } catch (err) {
             console.warn(err);
             // If provided form is not a valid JSON object, do not set it too
+            this.formReadyReject(err);
             return Promise.resolve();
         }
 
@@ -1274,32 +1277,24 @@ export default class Webform extends NestedDataComponent {
         }
 
         // Mark any components as invalid if in a custom message.
+        const componentErrors = {};
         errors.forEach((err) => {
-            const { components = [] } = err;
-            if (err.component) {
-                components.push(err.component);
+            const path = err.path || err.context?.path || err.component?.key;
+            if (!componentErrors[path]) {
+                componentErrors[path] = [];
             }
-
-            if (err.path) {
-                components.push(err.path);
-            }
-
-            components.forEach((path) => {
-                const originalPath = getStringFromComponentPath(path);
-                const component = this.getComponent(path, _.identity, originalPath);
-
-                if (err.fromServer) {
-                    if (component.serverErrors) {
-                        component.serverErrors.push(err);
-                    } else {
-                        component.serverErrors = [err];
-                    }
-                }
-                const components = _.compact(Array.isArray(component) ? component : [component]);
-
-                components.forEach((component) => component.setCustomValidity(err.message, true));
-            });
+            componentErrors[path].push(err);
         });
+
+        // Iterate through all of our component errors and apply them to the components.
+        for (let path in componentErrors) {
+            const component = this.getComponent(path);
+            const errors = componentErrors[path];
+            if (component) {
+                component.serverErrors = errors.filter((err) => err.fromServer);
+                component.setCustomValidity(errors, true)
+            }
+        }
 
         const displayedErrors = [];
         if (errors.length) {

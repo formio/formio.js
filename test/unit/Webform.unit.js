@@ -135,8 +135,8 @@ describe('Webform tests', function() {
 
     form.setForm(formsWithSimpleConditionals.form2).then(() => {
       const compWithDuplicatedKey1 = form.getComponent('container.textField');
-      const compWithDuplicatedKey2 = form.getComponent('dataGrid.container.textField')[0];
-      const conditionalCompShownOnDupl1Or2 = form.getComponent('dataGrid.number')[0];
+      const compWithDuplicatedKey2 = form.getComponent('dataGrid[0].container.textField');
+      const conditionalCompShownOnDupl1Or2 = form.getComponent('dataGrid[0].number');
       const dataGrid = form.getComponent('dataGrid');
       assert.equal(conditionalCompShownOnDupl1Or2.visible, false);
       compWithDuplicatedKey1.setValue('6');
@@ -146,14 +146,14 @@ describe('Webform tests', function() {
         compWithDuplicatedKey1.setValue('7');
 
         setTimeout(() => {
-          const conditionalCompShownOnDupl1Or2 = form.getComponent('dataGrid.number')[0];
+          const conditionalCompShownOnDupl1Or2 = form.getComponent('dataGrid[0].number');
           assert.equal(conditionalCompShownOnDupl1Or2.visible, false);
           compWithDuplicatedKey2.setValue('5');
           setTimeout(() => {
             assert.equal(conditionalCompShownOnDupl1Or2.visible, true);
             dataGrid.addRow();
             setTimeout(() => {
-              const conditionalComp2ShownOnDupl1Or2 = form.getComponent('dataGrid.number')[1];
+              const conditionalComp2ShownOnDupl1Or2 = form.getComponent('dataGrid[1].number');
               assert.equal(conditionalCompShownOnDupl1Or2.visible, true);
               assert.equal(conditionalComp2ShownOnDupl1Or2.visible, false);
               compWithDuplicatedKey1.setValue('6');
@@ -645,8 +645,8 @@ describe('Webform tests', function() {
     const form = new Webform(formElement);
 
     form.setForm(formWithEventLogicInHiddenComponent).then(() => {
-      const regesteredAddress = form.getComponent('registeredAddressInformation').getComponent('streetAddress')[0];
-      const address = form.getComponent('addressInformation').getComponent('streetAddress')[0];
+      const regesteredAddress = form.getComponent('registeredAddressInformation').getComponent('streetAddress');
+      const address = form.getComponent('addressInformation').getComponent('streetAddress');
 
       assert.equal(address.visible, true);
       assert.equal(regesteredAddress.visible, false);

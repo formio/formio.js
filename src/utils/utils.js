@@ -368,15 +368,16 @@ function getRow(component, row, instance, conditional) {
     instance = _.cloneDeep(component);
   }
   const dataParent = getDataParentComponent(instance);
-  const parentPath = dataParent ? getComponentPath(dataParent) : null;
-  const isTriggerCondtionComponentPath = condition.when || !condition.conditions
-    ? condition.when?.startsWith(parentPath)
-    : _.some(condition.conditions, cond => cond.component.startsWith(parentPath));
-
-  if (dataParent && isTriggerCondtionComponentPath) {
-    const newRow = {};
-    _.set(newRow, parentPath, row);
-    row = newRow;
+  if (dataParent) {
+    const parentPath = dataParent.paths?.localDataPath;
+    const isTriggerCondtionComponentPath = condition.when || !condition.conditions
+      ? condition.when?.startsWith(dataParent.paths?.localPath)
+      : _.some(condition.conditions, cond => cond.component.startsWith(dataParent.paths?.localPath));
+    if (isTriggerCondtionComponentPath) {
+      const newRow = {};
+      _.set(newRow, parentPath, row);
+      row = newRow;
+    }
   }
 
   return row;
@@ -1655,7 +1656,7 @@ export function getComponentPathWithoutIndicies(path = '') {
  * @returns {string} - Path to the component
  */
 export function getComponentPath(component) {
-  return component.component.scope?.dataPath;
+  return component.paths.localDataPath;
 }
 
 /**

@@ -3,13 +3,7 @@ import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import ComponentModal from '../_classes/componentModal/ComponentModal';
 import EventEmitter from 'eventemitter3';
-import {
-  isMongoId,
-  eachComponent,
-  getStringFromComponentPath,
-  getArrayFromComponentPath,
-  componentValueTypes
-} from '../../utils/utils';
+import {isMongoId, eachComponent, componentValueTypes} from '../../utils/utils';
 import { Formio } from '../../Formio';
 import Form from '../../Form';
 
@@ -154,15 +148,11 @@ export default class FormComponent extends Component {
     }
   }
 
-  getComponent(path, fn) {
-    path = getArrayFromComponentPath(path);
-    if (path[0] === 'data') {
-      path.shift();
+  getComponent(path) {
+    if (!this.subForm) {
+      return null;
     }
-    const originalPathStr = `${this.path}.data.${getStringFromComponentPath(path)}`;
-    if (this.subForm) {
-      return this.subForm.getComponent(path, fn, originalPathStr);
-    }
+    return this.subForm.getComponent(path);
   }
 
   /* eslint-disable max-statements */
@@ -233,6 +223,7 @@ export default class FormComponent extends Component {
     if (this.options.skipDraftRestore) {
       options.skipDraftRestore = this.options.skipDraftRestore;
     }
+    options.parent = this;
     return options;
   }
   /* eslint-enable max-statements */
@@ -448,6 +439,9 @@ export default class FormComponent extends Component {
       return (new Form(form, this.getSubOptions())).ready.then((instance) => {
         this.subForm = instance;
         this.subForm.currentForm = this;
+        const componentsMap = this.componentsMap;
+        const formComponentsMap = this.subForm.componentsMap;
+        _.assign(componentsMap, formComponentsMap);
         this.subForm.parent = this;
         this.subForm.parentVisible = this.visible;
         this.subForm.on('change', () => {
@@ -466,6 +460,8 @@ export default class FormComponent extends Component {
         this.valueChanged = this.hasSetValue;
         this.onChange();
         return this.subForm;
+      }).catch((err) => {
+        console.log(err);
       });
     }).then((subForm) => {
       this.updateSubWizards(subForm);
@@ -527,21 +523,6 @@ export default class FormComponent extends Component {
     return Promise.resolve();
   }
 
-  get subFormData() {
-    return this.dataValue?.data || {};
-  }
-
-  checkComponentValidity(data, dirty, row, options, errors = []) {
-    options = options || {};
-    const silentCheck = options.silentCheck || false;
-
-    if (this.subForm && !this.isNestedWizard) {
-      return this.subForm.checkValidity(this.subFormData, dirty, null, silentCheck, errors);
-    }
-
-    return super.checkComponentValidity(data, dirty, row, options, errors);
-  }
-
   checkComponentConditions(data, flags, row) {
     const visible = super.checkComponentConditions(data, flags, row);
 
@@ -551,14 +532,14 @@ export default class FormComponent extends Component {
     }
 
     if (this.subForm) {
-      return this.subForm.checkConditions(this.subFormData);
+      return this.subForm.checkConditions(data, flags, row);
     }
     // There are few cases when subForm is not loaded when a change is triggered,
     // so we need to perform checkConditions after it is ready, or some conditional fields might be hidden in View mode
     else if (this.subFormReady) {
       this.subFormReady.then(() => {
         if (this.subForm) {
-          return this.subForm.checkConditions(this.subFormData);
+          return this.subForm.checkConditions(data, flags, row);
         }
       });
     }
@@ -568,7 +549,7 @@ export default class FormComponent extends Component {
 
   calculateValue(data, flags, row) {
     if (this.subForm) {
-      return this.subForm.calculateValue(this.subFormData, flags);
+      return this.subForm.calculateValue(data, flags, row);
     }
 
     return super.calculateValue(data, flags, row);

@@ -264,6 +264,7 @@ export default class DataMapComponent extends DataGridComponent {
     options.events = new EventEmitter();
     options.name += `[${rowIndex}]`;
     options.row = `${rowIndex}`;
+    options.rowIndex = rowIndex;
 
     const components = {};
     components['__key'] = this.createComponent(this.keySchema, options, { __key: this.builderMode ? this.defaultRowKey : key });

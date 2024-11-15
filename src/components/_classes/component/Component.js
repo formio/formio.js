@@ -1,7 +1,5 @@
 /* globals Quill, ClassicEditor, CKEDITOR */
 import { conformToMask } from '@formio/vanilla-text-mask';
-import { Utils } from '@formio/core/utils';
-const { componentPath, COMPONENT_PATH, setComponentScope, setDefaultComponentPaths, setParentReference } = Utils;
 import tippy from 'tippy.js';
 import _ from 'lodash';
 import isMobile from 'ismobilejs';
@@ -10,7 +8,7 @@ import { processOne, processOneSync, validateProcessInfo } from '@formio/core/pr
 import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import {
-  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent, currentTimezone, getScriptPlugin
+  fastCloneDeep, boolValue, isInsideScopingComponent, currentTimezone, getScriptPlugin
 } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
@@ -361,11 +359,14 @@ export default class Component extends Element {
      */
     this.parent = this.options.parent;
 
-    // Set the component paths for this component.
-    setParentReference(component, this.parent?.component);
-    setDefaultComponentPaths(component);
-    setComponentScope(component, 'dataPath', componentPath(component, COMPONENT_PATH.DATA));
-    setComponentScope(component, 'localDataPath', componentPath(component, COMPONENT_PATH.LOCAL_DATA));
+    /**
+     * The component paths for this component.
+     * @type {import('@formio/core').ComponentPaths} - The component paths.
+     */
+    this.paths = FormioUtils.getComponentPaths(this.component, this.parent?.component, {
+      ...this.parent?.paths,
+      dataIndex: this.options.rowIndex === undefined ? this.parent?.paths?.dataIndex : this.options.rowIndex
+    });
     this.options.name = this.options.name || 'data';
 
     this._path = '';
@@ -485,12 +486,7 @@ export default class Component extends Element {
   /* eslint-enable max-statements */
 
   get componentsMap() {
-    if (this.localRoot?.childComponentsMap) {
-      return this.localRoot.childComponentsMap;
-    }
-    const localMap = {};
-    localMap[this.path] = this;
-    return localMap;
+    return this.root.childComponentsMap;
   }
 
   get data() {
@@ -561,9 +557,10 @@ export default class Component extends Element {
    * @returns {void}
    */
   set rowIndex(value) {
-    setComponentScope(this.component, 'dataIndex', value);
-    setComponentScope(this.component, 'dataPath', componentPath(this.component, COMPONENT_PATH.DATA));
-    setComponentScope(this.component, 'localDataPath', componentPath(this.component, COMPONENT_PATH.LOCAL_DATA));
+    this.paths = FormioUtils.getComponentPaths(this.component, this.parent?.component, {
+      ...(this.parent?.paths || {}),
+      ...{ dataIndex: value }
+    });
     this._rowIndex = value;
   }
 
@@ -650,7 +647,7 @@ export default class Component extends Element {
   }
 
   get path() {
-    return this.component.scope?.dataPath;
+    return this.paths.dataPath;
   }
 
   set path(path) {
@@ -1491,7 +1488,7 @@ export default class Component extends Element {
       this.refresh(this.data, changed, flags);
     }
     else if (
-      (changePath && getComponentPath(changed.instance) === refreshData) && changed && changed.instance &&
+      (changePath && (changed.instance?.paths?.localPath === refreshData)) && changed && changed.instance &&
       // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
       // in fields inside EditGrids could alter their state from other rows (which is bad).
       this.inContext(changed.instance)
@@ -3422,7 +3419,7 @@ export default class Component extends Element {
     if (flags.silentCheck) {
       return [];
     }
-    let isDirty = this.dirty || flags.dirty;
+    let isDirty = (flags.dirty === false) ? false : (this.dirty || flags.dirty);
     if (this.options.alwaysDirty) {
       isDirty = true;
     }
@@ -3449,6 +3446,7 @@ export default class Component extends Element {
       data,
       row,
       value: this.validationValue,
+      paths: this.paths,
       path: this.path || this.component.key,
       instance: this,
       form: this.root ? this.root._form : {},

@@ -330,7 +330,7 @@ describe('WebformBuilder tests', function() {
         },
       ],
     }).then(() => {
-      const textField = builder.webform.getComponent(['dataGrid', 'textField'])[0];
+      const textField = builder.webform.getComponent('dataGrid[0].textField');
       textField.refs.removeComponent.dispatchEvent( new MouseEvent('click', {
         view: window,
         bubbles: true,

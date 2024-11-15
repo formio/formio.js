@@ -10,7 +10,12 @@ const {
   resetComponentScope,
   isComponentNestedDataType,
   componentPath,
-  setComponentPaths,
+  getComponentPaths,
+  componentMatches,
+  getBestMatch,
+  getComponentFromPath,
+  getComponentValue,
+  findComponents,
   eachComponentDataAsync,
   eachComponentData,
   getComponentKey,
@@ -42,17 +47,6 @@ const {
   getItemTemplateKeys
 } = Utils;
 
-/**
- * Deprecated version of findComponents. Renamed to searchComponents.
- * @param {import('@formio/core').Component[]} components - The components to find components within.
- * @param {object} query - The query to use when searching for the components.
- * @returns {import('@formio/core').Component[]} - The result of the component that is found.
- */
-export function findComponents(components, query) {
-  console.warn('formio.js/utils findComponents is deprecated. Use searchComponents instead.');
-  return searchComponents(components, query);
-}
-
 export {
   flattenComponents,
   guid,
@@ -64,7 +58,12 @@ export {
   resetComponentScope,
   isComponentNestedDataType,
   componentPath,
-  setComponentPaths,
+  getComponentPaths,
+  componentMatches,
+  getBestMatch,
+  getComponentFromPath,
+  getComponentValue,
+  findComponents,
   eachComponentDataAsync,
   eachComponentData,
   getComponentKey,

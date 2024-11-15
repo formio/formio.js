@@ -1080,7 +1080,7 @@ export default class Wizard extends Webform {
           errors = [...errors, ...subWizard.errors]
         }
       })
-    };
+    }
     return super.showErrors(errors, triggerEvent)
   }
 
