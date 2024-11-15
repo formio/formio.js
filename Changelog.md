@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 5.0.0-rc.99]
 ### Changed
  - FIO-9329: validateWhenHidden respects both conditionally hidden and intentionally hidden
+ - FIO-9354: Fix custom translation not applied to error message
 
 ## 5.0.0-rc.98
 ### Changed
