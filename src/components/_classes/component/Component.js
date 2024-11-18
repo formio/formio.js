@@ -3678,12 +3678,6 @@ export default class Component extends Element {
   }
 
   shouldSkipValidation(data, row, flags = {}) {
-    const { validateWhenHidden = false } = this.component || {};
-    const forceValidOnHidden = (!this.visible || !this.checkCondition(row, data)) && !validateWhenHidden;
-    if (forceValidOnHidden) {
-      // If this component is forced valid when it is hidden, then we also need to reset the errors for this component.
-      this._errors = [];
-    }
     const rules = [
       // Do not validate if the flags say not too.
       () => flags.noValidate,
@@ -3694,7 +3688,14 @@ export default class Component extends Element {
       // Check to see if we are editing and if so, check component persistence.
       () => this.isValueHidden(),
       // Force valid if component is hidden.
-      () => forceValidOnHidden
+      () => {
+        if (!this.component.validateWhenHidden && (!this.visible || !this.checkCondition(row, data))) {
+          // If this component is forced valid when it is hidden, then we also need to reset the errors for this component.
+          this._errors = [];
+          return true;
+        }
+        return false;
+      }
     ];
 
     return rules.some(pred => pred());

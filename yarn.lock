@@ -282,9 +282,9 @@
   dependencies:
     "@types/json-logic-js" "^2.0.7"
     browser-cookies "^1.2.0"
-    core-js "^3.37.1"
-    dayjs "^1.11.11"
-    dompurify "^3.1.4"
+    core-js "^3.38.0"
+    dayjs "^1.11.12"
+    dompurify "^3.1.7"
     eventemitter3 "^5.0.0"
     fast-json-patch "^3.1.1"
     fetch-ponyfill "^7.1.0"
@@ -2298,6 +2298,11 @@ dompurify@^3.1.3, dompurify@^3.1.4:
   version "3.1.6"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.1.6.tgz#43c714a94c6a7b8801850f82e756685300a027e2"
   integrity sha512-cTOAhc36AalkjtBpfG6O8JimdTMWNXjiePT2xQH/ppBGi/4uIpmj8eKyIkMJErXWARyINV/sB38yf8JCLF5pbQ==
+
+dompurify@^3.1.7:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.2.0.tgz#53c414317c51503183696fcdef6dd3f916c607ed"
+  integrity sha512-AMdOzK44oFWqHEi0wpOqix/fUNY707OmoeFDnbi3Q5I8uOpy21ufUA5cDJPr0bosxrflOVD/H2DMSvuGKJGfmQ==
 
 downloadjs@^1.4.7:
   version "1.4.7"

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.0.0-rc.99]
+### Changed
+ - FIO-9329: validateWhenHidden respects both conditionally hidden and intentionally hidden
+
 ## 5.0.0-rc.98
 ### Changed
  - FIO-9280 fixed validation for select boxes with valid values and when value property is not set
