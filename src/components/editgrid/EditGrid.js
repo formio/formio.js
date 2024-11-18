@@ -1184,7 +1184,10 @@ export default class EditGridComponent extends NestedArrayComponent {
         instances: this.componentsMap,
         scope: { errors: [] },
         parent: this.component,
-        parentPaths: this.paths,
+        parentPaths: {
+          ...this.paths,
+          dataIndex: editRow.rowIndex
+        },
         processors: [
           {
             process: validationProcessorProcess,

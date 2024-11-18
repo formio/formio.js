@@ -432,7 +432,7 @@ export default class Wizard extends Webform {
 
   attachHeader() {
     const isAllowPrevious = this.isAllowPrevious();
-    this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`], this.currentPanel.tooltip);
+    this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`], this.currentPanel?.tooltip);
 
     if (this.isBreadcrumbClickable() || isAllowPrevious) {
       this.refs[`${this.wizardKey}-link`]?.forEach((link, index) => {
