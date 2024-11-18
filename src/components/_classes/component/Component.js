@@ -8,7 +8,7 @@ import { processOne, processOneSync, validateProcessInfo } from '@formio/core/pr
 import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import {
-  fastCloneDeep, boolValue, isInsideScopingComponent, currentTimezone, getScriptPlugin
+  fastCloneDeep, boolValue, isInsideScopingComponent, currentTimezone, getScriptPlugin, getContextualRowData
 } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
@@ -3342,6 +3342,9 @@ export default class Component extends Element {
    * @returns {string} - The message to show when the component is invalid.
    */
   invalidMessage(data, dirty, ignoreCondition, row) {
+    if (!row) {
+      row = getContextualRowData(this.component, data, this.paths);
+    }
     if (!ignoreCondition && !this.checkCondition(row, data)) {
       return '';
     }
@@ -3362,6 +3365,8 @@ export default class Component extends Element {
       data,
       row,
       path: this.path || this.component.key,
+      parent: this.parent?.component,
+      paths: this.paths,
       scope: validationScope,
       instance: this,
       processors: [
@@ -3446,6 +3451,7 @@ export default class Component extends Element {
       data,
       row,
       value: this.validationValue,
+      parent: this.parent?.component,
       paths: this.paths,
       path: this.path || this.component.key,
       instance: this,
