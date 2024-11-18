@@ -275,16 +275,16 @@
     fuse.js "^6.6.2"
     redux "^4.2.0"
 
-"@formio/core@2.3.0-rc.21":
-  version "2.3.0-rc.21"
-  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.3.0-rc.21.tgz#4bf20a5a82e74dd9eeebff73d48261298670a9ea"
-  integrity sha512-o4sinbDZkcVJDvJoVVUVMBZStEGRQstfJ6d5DfclcvXwv6RfTlP0uGzmQspoU9GH/i9MwA7pNkGf1n3vEWET7g==
+"@formio/core@2.3.0-rc.22":
+  version "2.3.0-rc.22"
+  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.3.0-rc.22.tgz#ff27bedf8b267130ecf5efd056c4f1b881c53f74"
+  integrity sha512-3ULqbd8e8Y5AQW5Um2N9gs4I4T0RHKSGcKtE0H8D6jIA3Cbia8/l/TnRGYPqp95L8zubXLJBUoPqKOuI3kjWwQ==
   dependencies:
     "@types/json-logic-js" "^2.0.7"
     browser-cookies "^1.2.0"
-    core-js "^3.38.0"
-    dayjs "^1.11.12"
-    dompurify "^3.1.7"
+    core-js "^3.37.1"
+    dayjs "^1.11.11"
+    dompurify "^3.1.4"
     eventemitter3 "^5.0.0"
     fast-json-patch "^3.1.1"
     fetch-ponyfill "^7.1.0"
@@ -2298,11 +2298,6 @@ dompurify@^3.1.3, dompurify@^3.1.4:
   version "3.1.6"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.1.6.tgz#43c714a94c6a7b8801850f82e756685300a027e2"
   integrity sha512-cTOAhc36AalkjtBpfG6O8JimdTMWNXjiePT2xQH/ppBGi/4uIpmj8eKyIkMJErXWARyINV/sB38yf8JCLF5pbQ==
-
-dompurify@^3.1.7:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.2.0.tgz#53c414317c51503183696fcdef6dd3f916c607ed"
-  integrity sha512-AMdOzK44oFWqHEi0wpOqix/fUNY707OmoeFDnbi3Q5I8uOpy21ufUA5cDJPr0bosxrflOVD/H2DMSvuGKJGfmQ==
 
 downloadjs@^1.4.7:
   version "1.4.7"
