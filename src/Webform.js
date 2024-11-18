@@ -1775,7 +1775,7 @@ export default class Webform extends NestedDataComponent {
             return;
         }
         const captchaComponent = [];
-        eachComponent(this.components, (component) => {
+        this.eachComponent((component) => {
             if (/^(re)?captcha$/.test(component.type) && component.component.eventType === 'formLoad') {
                 captchaComponent.push(component);
             }
