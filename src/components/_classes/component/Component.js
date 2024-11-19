@@ -8,7 +8,7 @@ import { processOne, processOneSync, validateProcessInfo } from '@formio/core/pr
 import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import {
-  fastCloneDeep, boolValue, getComponentPath, isInsideScopingComponent, currentTimezone, getScriptPlugin
+  fastCloneDeep, boolValue, isInsideScopingComponent, currentTimezone, getScriptPlugin, getContextualRowData
 } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
@@ -257,6 +257,11 @@ export default class Component extends Element {
     this._hasCondition = null;
 
     /**
+     * The row index for this component.
+     */
+    this._rowIndex = undefined;
+
+    /**
      * References to dom elements
      */
     this.refs = {};
@@ -269,12 +274,6 @@ export default class Component extends Element {
     ) {
       _.merge(component, this.options.components[component.type]);
     }
-
-    /**
-     * The data path to this specific component instance.
-     * @type {string}
-     */
-    this.path = component?.key || '';
 
     /**
      * An array of all the children components errors.
@@ -360,6 +359,14 @@ export default class Component extends Element {
      */
     this.parent = this.options.parent;
 
+    /**
+     * The component paths for this component.
+     * @type {import('@formio/core').ComponentPaths} - The component paths.
+     */
+    this.paths = FormioUtils.getComponentPaths(this.component, this.parent?.component, {
+      ...this.parent?.paths,
+      dataIndex: this.options.rowIndex === undefined ? this.parent?.paths?.dataIndex : this.options.rowIndex
+    });
     this.options.name = this.options.name || 'data';
 
     this._path = '';
@@ -479,12 +486,7 @@ export default class Component extends Element {
   /* eslint-enable max-statements */
 
   get componentsMap() {
-    if (this.localRoot?.childComponentsMap) {
-      return this.localRoot.childComponentsMap;
-    }
-    const localMap = {};
-    localMap[this.path] = this;
-    return localMap;
+    return this.root?.childComponentsMap || {};
   }
 
   get data() {
@@ -539,6 +541,27 @@ export default class Component extends Element {
     if (this.component.addons?.length) {
       this.component.addons.forEach((addon) => this.createAddon(addon));
     }
+  }
+
+  /**
+   * Get Row Index.
+   * @returns {number} - The row index.
+   */
+  get rowIndex() {
+    return this._rowIndex;
+  }
+  
+  /**
+   * Set Row Index to row and update each component.
+   * @param {number} value - The row index.
+   * @returns {void}
+   */
+  set rowIndex(value) {
+    this.paths = FormioUtils.getComponentPaths(this.component, this.parent?.component, {
+      ...(this.parent?.paths || {}),
+      ...{ dataIndex: value }
+    });
+    this._rowIndex = value;
   }
 
   afterComponentAssign() {
@@ -621,6 +644,14 @@ export default class Component extends Element {
 
   get key() {
     return _.get(this.component, 'key', '');
+  }
+
+  get path() {
+    return this.paths.dataPath;
+  }
+
+  set path(path) {
+    throw new Error('Should not be setting the path of a component.');
   }
 
   set parentVisible(value) {
@@ -1457,7 +1488,7 @@ export default class Component extends Element {
       this.refresh(this.data, changed, flags);
     }
     else if (
-      (changePath && getComponentPath(changed.instance) === refreshData) && changed && changed.instance &&
+      (changePath && (changed.instance?.paths?.localPath === refreshData)) && changed && changed.instance &&
       // Make sure the changed component is not in a different "context". Solves issues where refreshOn being set
       // in fields inside EditGrids could alter their state from other rows (which is bad).
       this.inContext(changed.instance)
@@ -3311,6 +3342,9 @@ export default class Component extends Element {
    * @returns {string} - The message to show when the component is invalid.
    */
   invalidMessage(data, dirty, ignoreCondition, row) {
+    if (!row) {
+      row = getContextualRowData(this.component, data, this.paths);
+    }
     if (!ignoreCondition && !this.checkCondition(row, data)) {
       return '';
     }
@@ -3331,6 +3365,8 @@ export default class Component extends Element {
       data,
       row,
       path: this.path || this.component.key,
+      parent: this.parent?.component,
+      paths: this.paths,
       scope: validationScope,
       instance: this,
       processors: [
@@ -3388,7 +3424,7 @@ export default class Component extends Element {
     if (flags.silentCheck) {
       return [];
     }
-    let isDirty = this.dirty || flags.dirty;
+    let isDirty = (flags.dirty === false) ? false : (this.dirty || flags.dirty);
     if (this.options.alwaysDirty) {
       isDirty = true;
     }
@@ -3414,7 +3450,10 @@ export default class Component extends Element {
       component: this.component,
       data,
       row,
+      local: !!flags.local,
       value: this.validationValue,
+      parent: this.parent?.component,
+      paths: this.paths,
       path: this.path || this.component.key,
       instance: this,
       form: this.root ? this.root._form : {},
