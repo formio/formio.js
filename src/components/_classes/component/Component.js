@@ -2884,7 +2884,7 @@ export default class Component extends Element {
       return value;
     };
 
-    if (this.defaultMask) {
+    if (Array.isArray(this.defaultMask) ? this.defaultMask.length > 0 : this.defaultMask) {
       if (Array.isArray(defaultValue)) {
         defaultValue = defaultValue.map(checkMask);
       }
