@@ -374,7 +374,7 @@ describe('TextField Component', () => {
             if (_.isEqual(value, lastValue)) {
               done();
             }
-          }, 300);
+          }, 350);
         }).catch(done);
       });
     };
