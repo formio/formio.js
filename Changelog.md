@@ -112,6 +112,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-9120: Fix issue with unchecking radio default value
  - FIO-7195/FIO-8234: Fixes an issue where Select renders value properties instead of labels in DataTable
  - FIO-7195: Fixes an issue where Radio/SelectBoxes will show values instead of labels on View tab and in DataTable
+ - FIO-9217 Fix: allow moment.js datetime custom default values in calendar widget-text field components
+ - FIO-8677: Fixes an issue where its possible to draweon Signature on the View tab of PDF form
 
 ### New Features
 
