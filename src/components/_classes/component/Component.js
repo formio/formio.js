@@ -3450,6 +3450,7 @@ export default class Component extends Element {
       component: this.component,
       data,
       row,
+      local: !!flags.local,
       value: this.validationValue,
       parent: this.parent?.component,
       paths: this.paths,

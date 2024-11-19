@@ -786,6 +786,7 @@ export default class NestedComponent extends Field {
       components,
       instances: this.componentsMap,
       data: data,
+      local: !!flags.local,
       scope: { errors: [] },
       parent: this.component,
       parentPaths: this.paths,

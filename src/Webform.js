@@ -1519,7 +1519,7 @@ export default class Webform extends NestedDataComponent {
         });
     }
 
-    submitForm(options = {}) {
+    submitForm(options = {}, local = false) {
         this.clearServerErrors();
 
         return new Promise((resolve, reject) => {
@@ -1554,6 +1554,7 @@ export default class Webform extends NestedDataComponent {
                                 return reject("Invalid Submission");
                             }
                             const errors = this.validate(submission.data, {
+                                local,
                                 dirty: true,
                                 silentCheck: false,
                                 process: "submit",
@@ -1573,11 +1574,11 @@ export default class Webform extends NestedDataComponent {
 
                     this.everyComponent((comp) => {
                         if (submission._vnote && comp.type === "form" && comp.component.reference) {
-                            _.get(submission.data, comp.path, {})._vnote = submission._vnote;
+                            _.get(submission.data, local ? comp.paths?.localDataPath : comp.path, {})._vnote = submission._vnote;
                         }
                         const { persistent } = comp.component;
                         if (persistent === "client-only") {
-                            _.unset(submission.data, comp.path);
+                            _.unset(submission.data, local ? comp.paths?.localDataPath : comp.path);
                         }
                     });
 

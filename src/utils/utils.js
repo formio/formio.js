@@ -245,13 +245,12 @@ function getConditionalPathsRecursive(conditionPaths, data) {
 
       const conditionalPaths = instance?.parent?.type === 'datagrid' || instance?.parent?.type === 'editgrid'  ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
 
-      if (conditionalPaths.length>0) {
+      if (conditionalPaths.length > 0) {
         return conditionalPaths.map((path) => {
           const value = getComponentActualValue(path, data, row);
-
           const ConditionOperator = ConditionOperators[operator];
           return ConditionOperator
-            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, path })
             : true;
         });
       }
@@ -259,7 +258,7 @@ function getConditionalPathsRecursive(conditionPaths, data) {
         const value = getComponentActualValue(conditionComponentPath, data, row);
         const СonditionOperator = ConditionOperators[operator];
         return СonditionOperator
-          ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+          ? new СonditionOperator().getResult({ value, comparedValue, instance, component, path: conditionComponentPath })
           : true;
       }
     });

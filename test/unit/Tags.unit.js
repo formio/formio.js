@@ -143,20 +143,22 @@ describe('Tags Component', function() {
     const element = document.createElement('div');
 
     Formio.createForm(element, comp6).then(form => {
-      const tags = form.getComponent('tags');
-      // tags.setValue(['1', '2', '3']);
-      Harness.setTagsValue(['test', 'test1', 'test2'], tags);
-      tags.choices.input.element.focus();
-
       setTimeout(() => {
-        assert.equal(tags.errors.length, 0, 'Tags should be valid while changing');
-        tags.choices.input.element.dispatchEvent(new Event('blur'));
-
+        const tags = form.getComponent('tags');
+        // tags.setValue(['1', '2', '3']);
+        Harness.setTagsValue(['test', 'test1', 'test2'], tags);
+        tags.choices.input.element.focus();
+  
         setTimeout(() => {
-          assert.equal(tags.errors.length, 1, 'Should set error after Tags component was blurred');
-          done();
-        }, 500);
-      }, 350);
+          assert.equal(tags.errors.length, 0, 'Tags should be valid while changing');
+          tags.choices.input.element.dispatchEvent(new Event('blur'));
+  
+          setTimeout(() => {
+            assert.equal(tags.errors.length, 1, 'Should set error after Tags component was blurred');
+            done();
+          }, 500);
+        }, 350);
+      }, 10);
     }).catch(done);
   });
 });
