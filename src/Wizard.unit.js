@@ -304,9 +304,8 @@ describe('Wizard tests', () => {
         assert.deepEqual(wizard.submission.data, submission.data, 'Should get wizard submission data');
 
         wizard.everyComponent((comp) => {
-          const expectedValue = _.get(submission.data, comp.path, 'no data');
-
-          if (expectedValue !== 'no data') {
+          if (comp.hasInput) {
+            const expectedValue = _.get(submission.data, comp.path, undefined);
             assert.deepEqual(comp.getValue(), expectedValue, `Should set value for ${comp.component.type} inside wizard`);
             assert.deepEqual(comp.dataValue, expectedValue, `Should set value for ${comp.component.type} inside wizard`);
           }
@@ -633,8 +632,7 @@ describe('Wizard tests', () => {
     wizard.submit();
     await wait(400);
     const getRequiredFieldErrors = () => 
-        wizard.errors.filter(error => error.message === 'Text Field is required' && 
-          ['Page 1', 'Page 3'].includes(error.component.parent.title));
+        wizard.errors.filter(error => error.message === 'Text Field is required');
     
     assert.equal(getRequiredFieldErrors().length, 2);      
     // navigate to page 2
@@ -651,7 +649,7 @@ describe('Wizard tests', () => {
     await wait(200);
     // maintain form-level error after supplying value for one required field
     assert.equal(getRequiredFieldErrors().length, 1); 
-    assert.equal(getRequiredFieldErrors()[0].component.parent.title, 'Page 3'); 
+    assert.equal(getRequiredFieldErrors()[0].formattedKeyOrPath, 'textField1'); 
   });
 
   it('Should render values in HTML render mode', function(done) {

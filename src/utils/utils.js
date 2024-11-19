@@ -32,17 +32,6 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
 });
 
 export { jsonLogic, ConditionOperators, moment };
-/**
- * Sets the path to the component and parent schema.
- * @param {import('@formio/core').Component} component - The component to set the path for.
- */
-function setPathToComponentAndPerentSchema(component) {
-  component.path = getComponentPath(component);
-  const dataParent = getDataParentComponent(component);
-  if (dataParent && typeof dataParent === 'object') {
-    dataParent.path = getComponentPath(dataParent);
-  }
-}
 
 /**
  * Evaluate a method.
@@ -256,13 +245,12 @@ function getConditionalPathsRecursive(conditionPaths, data) {
 
       const conditionalPaths = instance?.parent?.type === 'datagrid' || instance?.parent?.type === 'editgrid'  ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
 
-      if (conditionalPaths.length>0) {
+      if (conditionalPaths.length > 0) {
         return conditionalPaths.map((path) => {
           const value = getComponentActualValue(path, data, row);
-
           const ConditionOperator = ConditionOperators[operator];
           return ConditionOperator
-            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, path })
             : true;
         });
       }
@@ -270,7 +258,7 @@ function getConditionalPathsRecursive(conditionPaths, data) {
         const value = getComponentActualValue(conditionComponentPath, data, row);
         const СonditionOperator = ConditionOperators[operator];
         return СonditionOperator
-          ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+          ? new СonditionOperator().getResult({ value, comparedValue, instance, component, path: conditionComponentPath })
           : true;
       }
     });
@@ -375,18 +363,18 @@ function getRow(component, row, instance, conditional) {
   // If no component's instance passed (happens only in 6.x server), calculate its path based on the schema
   if (!instance) {
     instance = _.cloneDeep(component);
-    setPathToComponentAndPerentSchema(instance);
   }
   const dataParent = getDataParentComponent(instance);
-  const parentPath = dataParent ? getComponentPath(dataParent) : null;
-  const isTriggerCondtionComponentPath = condition.when || !condition.conditions
-    ? condition.when?.startsWith(parentPath)
-    : _.some(condition.conditions, cond => cond.component.startsWith(parentPath));
-
-  if (dataParent && isTriggerCondtionComponentPath) {
-    const newRow = {};
-    _.set(newRow, parentPath, row);
-    row = newRow;
+  if (dataParent) {
+    const parentPath = dataParent.paths?.localDataPath;
+    const isTriggerCondtionComponentPath = condition.when || !condition.conditions
+      ? condition.when?.startsWith(dataParent.paths?.localPath)
+      : _.some(condition.conditions, cond => cond.component.startsWith(dataParent.paths?.localPath));
+    if (isTriggerCondtionComponentPath) {
+      const newRow = {};
+      _.set(newRow, parentPath, row);
+      row = newRow;
+    }
   }
 
   return row;
@@ -1662,15 +1650,10 @@ export function getComponentPathWithoutIndicies(path = '') {
 /**
  * Returns a path to the component which based on its schema
  * @param {import('@formio/core').Component} component - Component containing link to its parent's schema in the 'parent' property
- * @param {string} path - Path to the component
  * @returns {string} - Path to the component
  */
-export function getComponentPath(component, path = '') {
-  if (!component || !component.key || component?._form?.display === 'wizard') { // unlike the Webform, the Wizard has the key and it is a duplicate of the panel key
-    return path;
-  }
-  path = component.isInputComponent || component.input === true ? `${component.key}${path ? '.' : ''}${path}` : path;
-  return getComponentPath(component.parent, path);
+export function getComponentPath(component) {
+  return component.paths.localDataPath;
 }
 
 /**

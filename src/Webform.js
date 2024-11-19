@@ -663,6 +663,7 @@ export default class Webform extends NestedDataComponent {
         try {
             // Do not set the form again if it has been already set
             if (isFormAlreadySet && JSON.stringify(this._form) === JSON.stringify(form)) {
+                this.formReadyResolve();
                 return Promise.resolve();
             }
 
@@ -672,13 +673,10 @@ export default class Webform extends NestedDataComponent {
             if (this.onSetForm) {
                 this.onSetForm(_.cloneDeep(this._form), form);
             }
-
-            if (this.parent?.component?.modalEdit) {
-                return Promise.resolve();
-            }
         } catch (err) {
             console.warn(err);
             // If provided form is not a valid JSON object, do not set it too
+            this.formReadyReject(err);
             return Promise.resolve();
         }
 
@@ -962,6 +960,9 @@ export default class Webform extends NestedDataComponent {
     }
 
     getValue() {
+        if (!this._submission) {
+            this._submission = {};
+        }
         if (!this._submission.data) {
             this._submission.data = {};
         }
@@ -1272,32 +1273,24 @@ export default class Webform extends NestedDataComponent {
         }
 
         // Mark any components as invalid if in a custom message.
+        const componentErrors = {};
         errors.forEach((err) => {
-            const { components = [] } = err;
-            if (err.component) {
-                components.push(err.component);
+            const path = err.path || err.context?.path || err.component?.key;
+            if (!componentErrors[path]) {
+                componentErrors[path] = [];
             }
-
-            if (err.path) {
-                components.push(err.path);
-            }
-
-            components.forEach((path) => {
-                const originalPath = getStringFromComponentPath(path);
-                const component = this.getComponent(path, _.identity, originalPath);
-
-                if (err.fromServer) {
-                    if (component.serverErrors) {
-                        component.serverErrors.push(err);
-                    } else {
-                        component.serverErrors = [err];
-                    }
-                }
-                const components = _.compact(Array.isArray(component) ? component : [component]);
-
-                components.forEach((component) => component.setCustomValidity(err.message, true));
-            });
+            componentErrors[path].push(err);
         });
+
+        // Iterate through all of our component errors and apply them to the components.
+        for (let path in componentErrors) {
+            const component = this.getComponent(path);
+            const errors = componentErrors[path];
+            if (component) {
+                component.serverErrors = errors.filter((err) => err.fromServer);
+                component.setCustomValidity(errors, true)
+            }
+        }
 
         const displayedErrors = [];
         if (errors.length) {
@@ -1522,7 +1515,7 @@ export default class Webform extends NestedDataComponent {
         });
     }
 
-    submitForm(options = {}) {
+    submitForm(options = {}, local = false) {
         this.clearServerErrors();
 
         return new Promise((resolve, reject) => {
@@ -1557,6 +1550,7 @@ export default class Webform extends NestedDataComponent {
                                 return reject("Invalid Submission");
                             }
                             const errors = this.validate(submission.data, {
+                                local,
                                 dirty: true,
                                 silentCheck: false,
                                 process: "submit",
@@ -1576,11 +1570,11 @@ export default class Webform extends NestedDataComponent {
 
                     this.everyComponent((comp) => {
                         if (submission._vnote && comp.type === "form" && comp.component.reference) {
-                            _.get(submission.data, comp.path, {})._vnote = submission._vnote;
+                            _.get(submission.data, local ? comp.paths?.localDataPath : comp.path, {})._vnote = submission._vnote;
                         }
                         const { persistent } = comp.component;
                         if (persistent === "client-only") {
-                            _.unset(submission.data, comp.path);
+                            _.unset(submission.data, local ? comp.paths?.localDataPath : comp.path);
                         }
                     });
 
@@ -1778,7 +1772,7 @@ export default class Webform extends NestedDataComponent {
             return;
         }
         const captchaComponent = [];
-        eachComponent(this.components, (component) => {
+        this.eachComponent((component) => {
             if (/^(re)?captcha$/.test(component.type) && component.component.eventType === 'formLoad') {
                 captchaComponent.push(component);
             }
