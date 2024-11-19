@@ -83,6 +83,10 @@ export class I18n {
 
     t(text, ...args) {
         if (this.currentLanguage[text]) {
+            const customTranslationFieldName = args[0]?.field;
+            if (customTranslationFieldName && this.currentLanguage[customTranslationFieldName]) {
+                args[0].field = this.currentLanguage[customTranslationFieldName]
+            }
             return Evaluator.interpolateString(this.currentLanguage[text], ...args);
         }
         return Evaluator.interpolateString(text, ...args);
