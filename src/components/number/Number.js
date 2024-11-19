@@ -196,7 +196,7 @@ export default class NumberComponent extends Input {
 
     if (!_.isNaN(input)) {
       // Format scientific notation
-      if (/[eE]/.test(String(input))) {
+      if (/[0-9]+[eE]/.test(String(input))) {
         // Convert to exponential notation will depend on the decimal limit set in the component
         // Example: 1.23e-5 will be converted to 1.23e-5 if decimal limit is set to 2
         // Example: 1.23e5 will be converted to 1.23e+5 if decimal limit is set to 2
@@ -206,7 +206,7 @@ export default class NumberComponent extends Input {
         value = value.toExponential(this.decimalLimit); 
       } else {
         value = parseFloat(input);
-        value = String(value).replace('.', this.decimalSeparator);
+        value = !_.isNaN(value) ? String(value).replace('.', this.decimalSeparator) : null;
       }
     }
     else {
