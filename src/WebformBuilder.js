@@ -1361,6 +1361,7 @@ export default class WebformBuilder extends Component {
 
       const rebuild = parentComponent.rebuild() || Promise.resolve();
       return rebuild.then(() => {
+        parentComponent.resetValue();
         const schema = parentContainer ? parentContainer[index] : (comp ? comp.schema : []);
         this.emitSaveComponentEvent(
           schema,
