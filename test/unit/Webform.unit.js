@@ -86,6 +86,7 @@ import webformWithNestedWizard from '../forms/webformWIthNestedWizard';
 import formWithUniqueValidation from '../forms/formWithUniqueValidation.js';
 import formWithConditionalEmail from '../forms/formWithConditionalEmail.js';
 import formsWithSimpleConditionals from '../forms/formsWithSimpleConditionals.js';
+import translationErrorMessages from '../forms/translationErrorMessages.js';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
 if (_.has(Formio, 'Components.setComponents')) {
@@ -925,6 +926,29 @@ describe('Webform tests', function() {
       assert.equal(label, 'English Label');
       document.body.innerHTML = '';
       done();
+    }).catch(done);
+  });
+
+  it('Should translate field name in error messages', (done) => {
+    const element = document.createElement('div');
+    const form = new Webform(element, {
+      language: 'en',
+      i18n: {
+        en: {
+          'My textField': 'My Value'
+        },
+      }
+    });
+    form.setForm(translationErrorMessages).then(() => {
+      const textField = form.getComponent('textField');
+      textField.setValue('123');
+      textField.onChange()
+      setTimeout(() => {
+        assert.equal(form.errors.length, 2);
+        assert.equal(form.errors[0].message, 'My Value must have at least 5 characters.');
+        assert.equal(form.errors[1].message, 'My Value must have at least 2 words.');
+        done();
+      }, 300);
     }).catch(done);
   });
 

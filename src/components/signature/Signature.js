@@ -180,7 +180,9 @@ export default class SignatureComponent extends Input {
         this.setDataToSigaturePad();
       }
 
-      this.showCanvas(true);
+      if (!this.disabled) {
+        this.showCanvas(true);
+      }
     }
   }
 
