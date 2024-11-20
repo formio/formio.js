@@ -617,6 +617,7 @@ describe('Select Component selectData property', () => {
 
         setTimeout(() => {
           const defaultValue = builder.editForm.getComponent('defaultValue');
+          assert.equal(defaultValue.type, 'select');
           defaultValue.setValue('value1');
           defaultValue.updateItems(null, true);
 
@@ -631,16 +632,19 @@ describe('Select Component selectData property', () => {
                 'Label 1',
               );
 
-              builder.editComponent(
-                builder.webform.getComponent('select').schema,
-                builder.element.querySelector('.builder-components'),
-                false,
-                false,
-                builder.webform.getComponent('select').component,
-                { inDataGrid: false }
-              );
+              const click = new MouseEvent('click', {
+                view: window,
+                bubbles: true,
+                cancelable: true
+              });
+
+              builder.webform.getComponent('select').element
+                .querySelector('.component-settings-button-edit')
+                .dispatchEvent(click);
+
               setTimeout(() => {
                 const defaultValue = builder.editForm.getComponent('defaultValue');
+                assert.equal(defaultValue.type, 'select');
                 defaultValue.setValue('value2');
                 defaultValue.updateItems(null, true);
 
@@ -656,8 +660,8 @@ describe('Select Component selectData property', () => {
                     );
                     done();
                   }, 150);
-                }, 150);
-              }, 350);
+                }, 250);
+              }, 500);
             }, 150);
           }, 250);
         }, 250);
@@ -682,6 +686,7 @@ describe('Select Component selectData property', () => {
 
         setTimeout(() => {
           const defaultValue = builder.editForm.getComponent('defaultValue');
+          assert.equal(defaultValue.type, 'select');
           defaultValue.setValue(['value1', 'value3']);
           defaultValue.updateItems(null, true);
 
@@ -702,16 +707,19 @@ describe('Select Component selectData property', () => {
                 ['Label 1', 'Label 3'],
               );
 
-              builder.editComponent(
-                builder.webform.getComponent('select').schema,
-                builder.element.querySelector('.builder-components'),
-                false,
-                false,
-                builder.webform.getComponent('select').component,
-                { inDataGrid: false }
-              );
+              const click = new MouseEvent('click', {
+                view: window,
+                bubbles: true,
+                cancelable: true
+              });
+
+              builder.webform.getComponent('select').element
+                .querySelector('.component-settings-button-edit')
+                .dispatchEvent(click);
+
               setTimeout(() => {
                 const defaultValue = builder.editForm.getComponent('defaultValue');
+                assert.equal(defaultValue.type, 'select');
                 defaultValue.setValue(['value2', 'value3']);
                 defaultValue.updateItems(null, true);
 
@@ -734,7 +742,7 @@ describe('Select Component selectData property', () => {
                     done();
                   }, 150);
                 }, 250);
-              }, 350);
+              }, 500);
             }, 150);
           }, 250);
         }, 250);
