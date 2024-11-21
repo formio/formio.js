@@ -933,32 +933,20 @@ export default class WebformBuilder extends Component {
     const compKey = (group === 'resource') ? `component-${key}` : key;
     const draggableComponent = this.groups[group]?.components[compKey] || {};
 
-    if (draggableComponent.disableSiblings) {
+    if (draggableComponent.disableSiblings || draggableComponent.uniqueComponent) {
       let isCompAlreadyExists = false;
       eachComponent(this.webform.components, (component) => {
-        if (component.type === draggableComponent.schema.type) {
+        if (
+          (draggableComponent.disableSiblings && component.type === draggableComponent.schema.type) ||
+          (draggableComponent.uniqueComponent && component.component.key === draggableComponent.schema.key)
+        ) {
           isCompAlreadyExists = true;
           return;
         }
       }, true);
       if (isCompAlreadyExists) {
         this.webform.redraw();
-        this.webform.setAlert('danger', `You cannot add more than one ${draggableComponent.key} component to one page.`);
-        return;
-      }
-    }
-
-    if (draggableComponent.uniqueComponent) {
-      let isCompAlreadyExists = false;
-      eachComponent(this.webform.components, (component) => {
-        if (component.key === draggableComponent.schema.key) {
-          isCompAlreadyExists = true;
-          return;
-        }
-      }, true);
-      if (isCompAlreadyExists) {
-        this.webform.redraw();
-        this.webform.setAlert('danger', `You cannot add more than one ${draggableComponent.title} component to one page.`);
+        this.webform.setAlert('danger', `You cannot add more than one ${_.get(draggableComponent, draggableComponent.uniqueComponent ? 'title' : 'key')} component to one page.`);
         return;
       }
     }
