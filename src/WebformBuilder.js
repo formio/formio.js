@@ -1051,15 +1051,19 @@ export default class WebformBuilder extends Component {
     }
     this.keyboardActionsEnabled = keyboardActionsEnabled;
 
-    const isSubmitButton = (comp) => {
-      return (comp.type === 'button') && ((comp.action === 'submit') || !comp.action);
-    }
+    const { display, noAddSubmitButton, noDefaultSubmitButton } = this.options;
+    const { _id, components } = form;
 
-    const isShowSubmitButton = !this.options.noDefaultSubmitButton
-      && (!form.components.length || !form.components.find(comp => isSubmitButton(comp)));
+    const isSubmitButton = ({ type, action }) => type === 'button' && (action === 'submit' || !action);
+    const hasSubmitButton = components.some(isSubmitButton);
+    // Add submit button if form display was switched from wizard
+    // Don't add if there is noAddSubmitButton flag passed, or the form has id, or the form has a submit button already
+    const shouldAddSubmitButton =
+      (display === 'wizard' && !hasSubmitButton) ||
+      (!noAddSubmitButton && !_id && !hasSubmitButton);
 
-    // Ensure there is at least a submit button.
-    if (isShowSubmitButton) {
+      // Ensure there is at least a submit button.
+    if (!noDefaultSubmitButton && shouldAddSubmitButton) {
       form.components.push({
         type: 'button',
         label: 'Submit',
