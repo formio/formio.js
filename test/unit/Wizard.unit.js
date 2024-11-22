@@ -517,7 +517,7 @@ describe('Wizard tests', () => {
     await wait(200);
     assert.equal(form.errors.length, 1, 'Should have one error from the first page');
   });
-  
+
   it('Should validate the entire wizard\'s components when the form has been submitted', async function () {
     const wizardDefinition = {
       display: 'wizard',
@@ -580,13 +580,12 @@ describe('Wizard tests', () => {
     const form = await Formio.createForm(document.createElement('div'), wizardDefinition);
     assert(form, 'Form should be created');
     form.submitted = true;
-    const checkbox = form.getComponent('triggerChange');
-    const clickEvent = new Event('click');
-    checkbox.refs.input[0].dispatchEvent(clickEvent);
+    form.setSubmission({ data: { triggerChange: true } });
     await wait(200);
-    assert.equal(form.errors.length, 2, 'Should have two errors total');
+    assert(form.alert, 'Form should have an error list');
+    assert.equal(form.alert.querySelectorAll("span[ref=errorRef]").length, 2, 'Should have two errors total');
   });
-  
+
 
   it('Should have validation errors when parent form is valid but nested wizard is not', function(done) {
     const formElement = document.createElement('div');
