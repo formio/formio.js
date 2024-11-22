@@ -42,6 +42,7 @@ import formsWithAllowOverride from '../forms/formsWithAllowOverrideComps';
 import WizardWithCheckboxes from '../forms/wizardWithCheckboxes';
 import WizardWithRequiredFields from '../forms/wizardWithRequiredFields';
 import formWithNestedWizardAndRequiredFields from '../forms/formWithNestedWizardAndRequiredFields';
+import { wait } from '../util';
 
 // eslint-disable-next-line max-statements
 describe('Wizard tests', () => {
@@ -390,7 +391,7 @@ describe('Wizard tests', () => {
     .catch((err) => done(err));
   }).timeout(6000);
 
-  it('Should trigger validation of nested wizard before going to the next page', function(done) {
+  it('Should trigger validation of nested wizard before going to the next page', function (done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
     const nestedWizard = _.cloneDeep(WizardWithRequiredFields);
@@ -415,7 +416,7 @@ describe('Wizard tests', () => {
     wizard.setForm(parentWizard).then(() => {
       const nestedFormComp = wizard.getComponent('formNested');
 
-      nestedFormComp.loadSubForm = ()=> {
+      nestedFormComp.loadSubForm = () => {
         nestedFormComp.formObj = nestedWizard;
         nestedFormComp.subFormLoading = false;
         return new Promise((resolve) => resolve(nestedWizard));
@@ -439,15 +440,153 @@ describe('Wizard tests', () => {
             assert.equal(errors.length, 2, 'Must err before next page');
             errors.forEach((error) => {
               assert.equal(error.ruleName, 'required');
-              assert.equal(error.message, 'Text Field is required' , 'Should set correct lebel in the error message');
+              assert.equal(error.message, 'Text Field is required', 'Should set correct lebel in the error message');
             });
             done();
           }, 300)
         }, 300)
       }, 300)
     })
-    .catch((err) => done(err));
-  })
+      .catch((err) => done(err));
+  });
+
+  it('Should only validate the current page components when the form has not been submitted', async function () {
+    const wizardDefinition = {
+      display: 'wizard',
+      components: [
+        {
+          title: 'Page 1',
+          collapsible: false,
+          key: 'page1',
+          type: 'panel',
+          label: 'Panel',
+          input: false,
+          tableView: false,
+          components: [
+            {
+              type: 'checkbox',
+              label: 'Trigger Change',
+              input: true,
+              key: 'triggerChange',
+            },
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+              validate: {
+                required: true
+              }
+            },
+          ],
+        },
+        {
+          title: 'Page 2',
+          collapsible: false,
+          key: 'page2',
+          type: 'panel',
+          label: 'Panel',
+          input: false,
+          tableView: false,
+          components: [
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textField1',
+              type: 'textfield',
+              validate: {
+                required: true
+              },
+              input: true,
+            },
+          ],
+        },
+      ],
+    };
+
+    const form = await Formio.createForm(document.createElement('div'), wizardDefinition);
+    assert(form, 'Form should be created');
+    const checkbox = form.getComponent('triggerChange');
+    const clickEvent = new Event('click');
+    checkbox.refs.input[0].dispatchEvent(clickEvent);
+    await wait(200);
+    assert.equal(form.errors.length, 1, 'Should have one error from the first page');
+  });
+  
+  it('Should validate the entire wizard\'s components when the form has been submitted', async function () {
+    const wizardDefinition = {
+      display: 'wizard',
+      components: [
+        {
+          title: 'Page 1',
+          collapsible: false,
+          key: 'page1',
+          type: 'panel',
+          label: 'Panel',
+          input: false,
+          tableView: false,
+          components: [
+            {
+              type: 'checkbox',
+              label: 'Trigger Change',
+              input: true,
+              key: 'triggerChange',
+            },
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+              validate: {
+                required: true
+              }
+            },
+          ],
+        },
+        {
+          title: 'Page 2',
+          collapsible: false,
+          key: 'page2',
+          type: 'panel',
+          label: 'Panel',
+          input: false,
+          tableView: false,
+          components: [
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textField1',
+              type: 'textfield',
+              validate: {
+                required: true
+              },
+              input: true,
+            },
+          ],
+        },
+      ],
+    };
+
+    const form = await Formio.createForm(document.createElement('div'), wizardDefinition);
+    assert(form, 'Form should be created');
+    form.submitted = true;
+    const checkbox = form.getComponent('triggerChange');
+    const clickEvent = new Event('click');
+    checkbox.refs.input[0].dispatchEvent(clickEvent);
+    await wait(200);
+    assert.equal(form.errors.length, 2, 'Should have two errors total');
+  });
+  
 
   it('Should have validation errors when parent form is valid but nested wizard is not', function(done) {
     const formElement = document.createElement('div');
@@ -482,11 +621,11 @@ describe('Wizard tests', () => {
           assert.equal(wizard.submission.data.textField, 'test');
           const nestedWizardBreadcrumbBtn = _.get(wizard.refs, `${wizard.wizardKey}-link[4]`);
           nestedWizardBreadcrumbBtn.dispatchEvent(clickEvent);
-   
+
           setTimeout(() => {
             checkPage(4);
             _.get(wizard.refs, `${wizard.wizardKey}-submit`).dispatchEvent(clickEvent);
-           
+
             setTimeout(() => {
               assert.equal(wizard.errors.length, 2);
               done();

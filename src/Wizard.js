@@ -1075,17 +1075,6 @@ export default class Wizard extends Webform {
     return super.errors;
   }
 
-  showErrors(errors, triggerEvent) {
-    // if (this.hasExtraPages) {
-    //   this.subWizards.forEach((subWizard) => {
-    //     if(Array.isArray(subWizard.errors)) {
-    //       errors = [...errors, ...subWizard.errors]
-    //     }
-    //   })
-    // }
-    return super.showErrors(errors, triggerEvent)
-  }
-
   focusOnComponent(key) {
     const component = this.getComponent(key);
     if (component) {
