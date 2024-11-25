@@ -824,8 +824,9 @@ export default class Wizard extends Webform {
   }
 
   validateCurrentPage(flags = {}) {
+    const components = this.currentPage?.components.map((component) => component.component);
     // Accessing the parent ensures the right instance (whether it's the parent Wizard or a nested Wizard) performs its validation
-    return this.currentPage?.parent.validateComponents(this.currentPage.component.components, this.currentPage.parent.data, flags);
+    return this.currentPage?.parent.validateComponents(components, this.currentPage.parent.data, flags);
   }
 
   emitPrevPage() {
@@ -1000,7 +1001,8 @@ export default class Wizard extends Webform {
 
   onChange(flags, changed, modified, changes) {
     super.onChange(flags, changed, modified, changes);
-    const errors = this.validate(this.localData, { dirty: false });
+    // The onChange loop doesn't need all components for wizards
+    const errors = this.submitted ? this.validate(this.localData, { dirty: true }) : this.validateCurrentPage();
     if (this.alert) {
       this.showErrors(errors, true, true);
     }
@@ -1071,17 +1073,6 @@ export default class Wizard extends Webform {
     }
 
     return super.errors;
-  }
-
-  showErrors(errors, triggerEvent) {
-    if (this.hasExtraPages) {
-      this.subWizards.forEach((subWizard) => {
-        if(Array.isArray(subWizard.errors)) {
-          errors = [...errors, ...subWizard.errors]
-        }
-      })
-    };
-    return super.showErrors(errors, triggerEvent)
   }
 
   focusOnComponent(key) {
