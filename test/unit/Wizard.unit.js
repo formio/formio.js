@@ -42,6 +42,7 @@ import formsWithAllowOverride from '../forms/formsWithAllowOverrideComps';
 import WizardWithCheckboxes from '../forms/wizardWithCheckboxes';
 import WizardWithRequiredFields from '../forms/wizardWithRequiredFields';
 import formWithNestedWizardAndRequiredFields from '../forms/formWithNestedWizardAndRequiredFields';
+import simpleWizardWithRequiredFields from '../forms/simpleWizardWithRequiredFields';
 import { wait } from '../util';
 
 // eslint-disable-next-line max-statements
@@ -629,6 +630,39 @@ describe('Wizard tests', () => {
     })
     .catch((err) => done(err));
   })
+
+  it('Should show form-level errors after failed submission even when the current page has no errors', async () => {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    await wizard.setForm(simpleWizardWithRequiredFields);
+    // link[2] is the button for page 3
+    clickWizardBtn(wizard, 'link[2]');
+    await wait(200);
+    // need to click on page 3 and submit the form to see all the errors
+    // you can't submit the form without first navigating to page 3
+    wizard.submit();
+    await wait(400);
+    const getRequiredFieldErrors = () => 
+        wizard.errors.filter(error => error.message === 'Text Field is required' && 
+          ['Page 1', 'Page 3'].includes(error.component.parent.title));
+    
+    assert.equal(getRequiredFieldErrors().length, 2);      
+    // navigate to page 2
+    clickWizardBtn(wizard, 'link[1]');
+    await wait(200);
+    // the form-level errors should still be the same
+    assert.equal(getRequiredFieldErrors().length, 2); 
+    // navigate to page 1 
+    clickWizardBtn(wizard, 'link[0]');
+    const page1Input = wizard.element.querySelector('input[name="data[textField]"]');
+    const inputEvent = new Event('input');
+    page1Input.value = '1';
+    page1Input.dispatchEvent(inputEvent);
+    await wait(200);
+    // maintain form-level error after supplying value for one required field
+    assert.equal(getRequiredFieldErrors().length, 1); 
+    assert.equal(getRequiredFieldErrors()[0].component.parent.title, 'Page 3'); 
+  });
 
   it('Should render values in HTML render mode', function(done) {
     const formElement = document.createElement('div');
