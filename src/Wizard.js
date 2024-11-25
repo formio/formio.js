@@ -824,7 +824,7 @@ export default class Wizard extends Webform {
     else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
       this.scrollIntoView(this.element, true);
-      return Promise.reject(super.showErrors(errors, true));
+      return Promise.reject(this.showErrors(errors, true));
     }
   }
 
@@ -1072,12 +1072,8 @@ export default class Wizard extends Webform {
     );
   }
 
-  get errors() {
-    if (!this.isLastPage()) {
-      return this.currentPage.errors;
-    }
-
-    return super.errors;
+  get errors() { 
+    return !this.isLastPage() && !this.submitted ? this.currentPage.errors : super.errors;
   }
 
   focusOnComponent(key) {
