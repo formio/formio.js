@@ -690,7 +690,10 @@ export default class Wizard extends Webform {
       }
       this.redraw().then(() => {
         this.checkData(this.submission.data);
-        this.validateCurrentPage();
+        const errors = this.submitted ? this.validate(this.localData, { dirty: true }) : this.validateCurrentPage();
+        if (this.alert) {
+          this.showErrors(errors, true, true);
+        }
       });
       return Promise.resolve();
     }
@@ -801,9 +804,11 @@ export default class Wizard extends Webform {
       });
     }
 
-    // Validate the form, before go to the next page
-    const errors = this.validateCurrentPage({ dirty: true });
-    if (errors.length === 0) {
+    // Validate the form before going to the next page
+    const currentPageErrors = this.validateCurrentPage({ dirty: true });
+    const errors = this.submitted ? this.validate(this.localData, { dirty: true }) : currentPageErrors;
+    // allow going to the next page if the current page is valid, even if there are form level errors
+    if (currentPageErrors.length === 0) {
       this.checkData(this.submission.data);
       return this.beforePage(true).then(() => {
         return this.setPage(this.getNextPage()).then(() => {
