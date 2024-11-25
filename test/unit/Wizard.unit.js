@@ -317,80 +317,68 @@ describe('Wizard tests', () => {
     .catch((err) => done(err));
   });
 
-  it('Should show conditional page inside nested wizard', function(done) {
+  it('Should show conditional page inside nested wizard', async () => {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);
     const nestedWizard = _.cloneDeep(wizardTestForm.form);
     nestedWizard.components[2].conditional = { show: true, when: 'checkbox', eq: 'true' };
 
-    wizard.setForm(formWithNestedWizard).then(() => {
-      const nestedFormComp = wizard.getComponent('formNested');
+    await wizard.setForm(formWithNestedWizard);
+   
+    const nestedFormComp = wizard.getComponent('formNested');
 
-      nestedFormComp.loadSubForm = ()=> {
-        nestedFormComp.formObj = nestedWizard;
-        nestedFormComp.subFormLoading = false;
-        return new Promise((resolve) => resolve(nestedWizard));
-      };
+    nestedFormComp.loadSubForm = () => {
+      nestedFormComp.formObj = nestedWizard;
+      nestedFormComp.subFormLoading = false;
+      return new Promise((resolve) => resolve(nestedWizard));
+    };
 
-      nestedFormComp.createSubForm();
+    nestedFormComp.createSubForm();
+    await wait(300);
 
-      setTimeout(() => {
-      const checkPage = (pageNumber) => {
-        assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
-      };
+    const checkPage = (pageNumber) => {
+      assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
+    };
+    
+    checkPage(0);
+    assert.equal(wizard.pages.length, 4, 'Should have 4 pages');
+    assert.equal(wizard.allPages.length, 4, 'Should have 4 pages');
+    assert.equal(wizard.refs[`${wizard.wizardKey}-link`].length, 4, 'Should contain refs to breadcrumbs of parent and nested wizard');
 
-      checkPage(0);
-      assert.equal(wizard.pages.length, 4, 'Should have 4 pages');
-      assert.equal(wizard.allPages.length, 4, 'Should have 4 pages');
-      assert.equal(wizard.refs[`${wizard.wizardKey}-link`].length, 4, 'Should contain refs to breadcrumbs of parent and nested wizard');
+    clickWizardBtn(wizard, 'link[3]');
+    await wait(300);
+    
+    checkPage(3);
+    assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, 'Should hav submit btn on the last page');
+    wizard.getComponent('checkbox').setValue(true);
+    await wait(300);
 
-      clickWizardBtn(wizard, 'link[3]');
+    checkPage(3);
+    assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, 'Should have submit btn on the last page');
+    wizard.getComponent('checkbox').setValue(true);
+    await wait(500);
 
-      setTimeout(() => {
-        checkPage(3);
+    checkPage(3);
+    assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], false, 'Should not have submit btn ');
+    assert.equal(wizard.pages.length, 5, 'Should show conditional page');
+    assert.equal(wizard.allPages.length, 5, 'Should show conditional page');
+    assert.equal(wizard.refs[`${wizard.wizardKey}-link`].length, 5, 'Should contain refs to breadcrumbs of visible conditional page');
 
-        assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, 'Should hav submit btn on the last page');
-        wizard.getComponent('checkbox').setValue(true);
+    clickWizardBtn(wizard, 'next');
+    await wait(300);
 
-        setTimeout(() => {
-          checkPage(3);
+    checkPage(4);
+    clickWizardBtn(wizard, 'previous');
+    await wait(300);
+            
+    checkPage(3);
+    wizard.getComponent('checkbox').setValue(false);
+    await wait(500);
 
-          assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, 'Should have submit btn on the last page');
-          wizard.getComponent('checkbox').setValue(true);
-
-          setTimeout(() => {
-            checkPage(3);
-            assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], false, 'Should not have submit btn ');
-            assert.equal(wizard.pages.length, 5, 'Should show conditional page');
-            assert.equal(wizard.allPages.length, 5, 'Should show conditional page');
-            assert.equal(wizard.refs[`${wizard.wizardKey}-link`].length, 5, 'Should contain refs to breadcrumbs of visible conditional page');
-
-            clickWizardBtn(wizard, 'next');
-
-            setTimeout(() => {
-              checkPage(4);
-              clickWizardBtn(wizard, 'previous');
-
-              setTimeout(() => {
-                checkPage(3);
-                wizard.getComponent('checkbox').setValue(false);
-
-                setTimeout(() => {
-                  assert.equal(wizard.pages.length, 4, 'Should hide conditional page');
-                  assert.equal(wizard.allPages.length, 4, 'Should hide conditional page');
-                  assert.equal(wizard.refs[`${wizard.wizardKey}-link`].length, 4, 'Should contain refs to breadcrumbs of visible pages');
-                  assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, 'Should have submit btn on the last page');
-
-                  done();
-                }, 500);
-              }, 300);
-            }, 300);
-          }, 500);
-        }, 300);
-      }, 300);
-    }, 300);
-    })
-    .catch((err) => done(err));
+    assert.equal(wizard.pages.length, 4, 'Should hide conditional page');
+    assert.equal(wizard.allPages.length, 4, 'Should hide conditional page');
+    assert.equal(wizard.refs[`${wizard.wizardKey}-link`].length, 4, 'Should contain refs to breadcrumbs of visible pages');
+    assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, 'Should have submit btn on the last page');  
   }).timeout(6000);
 
   it('Should trigger validation of nested wizard before going to the next page', function (done) {
