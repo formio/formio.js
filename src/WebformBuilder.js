@@ -1223,6 +1223,7 @@ export default class WebformBuilder extends Component {
           'conditional',
           'customConditional',
           'id',
+          'logic',
           'fields.day.required',
           'fields.month.required',
           'fields.year.required',
