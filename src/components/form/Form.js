@@ -535,7 +535,7 @@ export default class FormComponent extends Component {
     options = options || {};
     const silentCheck = options.silentCheck || false;
 
-    if (this.subForm && !this.isNestedWizard) {
+    if (this.subForm) {
       return this.subForm.checkValidity(this.subFormData, dirty, null, silentCheck, errors);
     }
 
