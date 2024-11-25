@@ -77,12 +77,7 @@ export default class SelectBoxesComponent extends RadioComponent {
   }
 
   get emptyValue() {
-    return this.component.values.reduce((prev, value) => {
-      if (value.value) {
-        prev[value.value] = false;
-      }
-      return prev;
-    }, {});
+    return {};
   }
 
   get defaultValue() {
@@ -307,7 +302,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       return super.setCustomValidity(_.filter(messages, (message) => message.ruleName !=='invalidValueProperty'), dirty, external);
     } else {
       return super.setCustomValidity(messages, dirty, external);
-    };
+    }
   }
 
   validateValueAvailability(setting, value) {
