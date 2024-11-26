@@ -4,7 +4,7 @@ export default {
   'spellcheck': true,
   'tableView': true,
   'delimiter': true,
-  'requireDecimal': true,
+  'requireDecimal': false,
   'inputFormat': 'plain',
   'key': 'number',
   'type': 'number',
