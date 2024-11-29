@@ -3291,7 +3291,8 @@ export default class Component extends Element {
       (this.options.readOnly && !this.options.pdf && !this.component.calculateValue) ||
       !(this.component.calculateValue || this.component.calculateValueVariable) ||
       (this.options.server && !this.component.calculateServer) ||
-      (flags.dataSourceInitialLoading && allowOverride)
+      (flags.dataSourceInitialLoading && allowOverride) ||
+      (this.options.readOnly && this.options.pdf && allowOverride && _.get(this.root, 'submission._id', false))
     ) {
       return false;
     }
