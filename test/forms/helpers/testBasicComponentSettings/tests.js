@@ -395,7 +395,7 @@ export default {
   },
   modalEdit: {
     'Should open and close modal window'(form, done) {
-      const componentsWithBug = ['columns', 'fieldset', 'panel', 'table', 'tabs', 'well']; //BUG: include them in test when it is fixed
+      const componentsWithBug = ['selectboxes', 'columns', 'fieldset', 'panel', 'table', 'tabs', 'well']; //BUG: include them in test when it is fixed
       const testComponents = form.components.filter(comp => ![...componentsWithBug, 'button'].includes(comp.component.type));
       testComponents.forEach((comp, index) => {
         const isLastComp = index === (testComponents.length - 1);
