@@ -1256,7 +1256,7 @@ export default class WebformBuilder extends Component {
           newComp.build(defaultValueComponent.element);
           if (this.preview && !this.preview.defaultChanged) {
             const defaultValue = _.get(this.preview._data, this.editForm._data.key);
-            if (_.isObject(defaultValue)) {
+            if (_.isObject(defaultValue) && !_.isArray(defaultValue)) {
               this.editForm._data.defaultValue = defaultValue;
             }
           }
