@@ -1254,7 +1254,9 @@ export default class WebformBuilder extends Component {
           parentComponent.tabs[tabIndex].splice(index, 1, newComp);
           newComp.checkValidity = () => true;
           newComp.build(defaultValueComponent.element);
-          this.editForm._data.defaultValue = _.get(this.preview._data, this.editForm._data.key);
+          if (this.preview && !this.preview.defaultChanged) {
+            this.editForm._data.defaultValue = _.get(this.preview._data, this.editForm._data.key);
+          }
         }
       }
       else {
@@ -1268,6 +1270,7 @@ export default class WebformBuilder extends Component {
           dataPath = getStringFromComponentPath(path);
         }
 
+        this.preview.defaultChanged = true;
         _.set(this.preview._data, dataPath, changed.value);
         _.set(this.webform._data, dataPath, changed.value);
       }
