@@ -1243,6 +1243,7 @@ export default class WebformBuilder extends Component {
           parentComponent.tabs[tabIndex].splice(index, 1, newComp);
           newComp.checkValidity = () => true;
           newComp.build(defaultValueComponent.element);
+          this.editForm._data.defaultValue = _.get(this.preview._data, this.editForm._data.key);
         }
       }
       else {
