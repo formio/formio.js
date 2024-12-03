@@ -275,10 +275,10 @@
     fuse.js "^6.6.2"
     redux "^4.2.0"
 
-"@formio/core@2.3.0-rc.22":
-  version "2.3.0-rc.22"
-  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.3.0-rc.22.tgz#ff27bedf8b267130ecf5efd056c4f1b881c53f74"
-  integrity sha512-3ULqbd8e8Y5AQW5Um2N9gs4I4T0RHKSGcKtE0H8D6jIA3Cbia8/l/TnRGYPqp95L8zubXLJBUoPqKOuI3kjWwQ==
+"@formio/core@2.3.0-rc.23":
+  version "2.3.0-rc.23"
+  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.3.0-rc.23.tgz#12a75d0266a90d78e308021c4f6c9bd8ae85177f"
+  integrity sha512-13ZrvnV3YAVFjU6lXrdcPkH9yfsTOim7RKVmcYzg5MYpXVaEpw5pRt5Y44zM2eSyvU23LxJv18v9/3wBCOHNOA==
   dependencies:
     "@types/json-logic-js" "^2.0.7"
     browser-cookies "^1.2.0"
@@ -288,7 +288,7 @@
     eventemitter3 "^5.0.0"
     fast-json-patch "^3.1.1"
     fetch-ponyfill "^7.1.0"
-    inputmask "5.0.8"
+    inputmask "^5.0.9"
     json-logic-js "^2.0.2"
     lodash "^4.17.21"
     moment "^2.29.4"
@@ -3969,12 +3969,7 @@ ini@^1.3.4:
   resolved "https://registry.npmjs.org/ini/-/ini-1.3.8.tgz#a29da425b48806f34767a4efce397269af28432c"
   integrity sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==
 
-inputmask@5.0.8:
-  version "5.0.8"
-  resolved "https://registry.yarnpkg.com/inputmask/-/inputmask-5.0.8.tgz#cd0f70b058c3291a0d4f27de25dbfc179c998bb4"
-  integrity sha512-1WcbyudPTXP1B28ozWWyFa6QRIUG4KiLoyR6LFHlpT4OfTzRqFfWgHFadNvRuMN1S9XNVz9CdNvCGjJi+uAMqQ==
-
-inputmask@^5.0.8:
+inputmask@^5.0.8, inputmask@^5.0.9:
   version "5.0.9"
   resolved "https://registry.yarnpkg.com/inputmask/-/inputmask-5.0.9.tgz#7bf4e83f5e199c88c0edf28545dc23fa208ef4be"
   integrity sha512-s0lUfqcEbel+EQXtehXqwCJGShutgieOaIImFKC/r4reYNvX3foyrChl6LOEvaEgxEbesePIrw1Zi2jhZaDZbQ==
