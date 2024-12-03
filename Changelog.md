@@ -4,10 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.0-rc.101]
+## 5.0.0-rc.101
 ### Changed
+ - FIO-9361: Fix showing extra submit buttons
+ - FIO-9327: Fixed an issue where select boxes default values would become messed up during builder mode.
  - FIO-9350 Wizard: Show form-level errors after failed submission on subsequent form interaction when current page has no errors
- 
+
 ## 5.0.0-rc.100
 ### Changed
  - FIO-8423: change default parent tag from p to div
