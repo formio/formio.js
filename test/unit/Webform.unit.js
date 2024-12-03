@@ -38,6 +38,7 @@ import {
   formWithObjectValueSelect,
 } from '../formtest/index.js';
 import UpdateErrorClassesWidgets from '../forms/updateErrorClasses-widgets.js';
+import NestedFormWithConditionals from '../forms/nestedFormWithConditionals.json';
 import nestedModalWizard from '../forms/nestedModalWizard';
 import disableSubmitButton from '../forms/disableSubmitButton';
 import formWithAddressComponent from '../forms/formWithAddressComponent.js';
@@ -168,6 +169,58 @@ describe('Webform tests', function() {
         }, 400);
       }, 300);
     }).catch((err) => done(err));
+  });
+
+  it('Should trigger the correct conditional when a nested form uses the same key as a parent form.', done => {
+    Formio.createForm(document.createElement('div'), NestedFormWithConditionals).then(form => {
+      const textArea = form.getComponent('textArea');
+      const textField = form.getComponent('textField');
+      assert.equal(textArea.visible, false);
+      assert.equal(textField.visible, false);
+      form.submission = {
+        data: {
+          number: 3,
+          form: {
+            data: {
+              number: 5
+            }
+          }
+        }
+      };
+      setTimeout(() => {
+        assert.equal(textArea.visible, false);
+        assert.equal(textField.visible, true);
+        form.submission = {
+          data: {
+            number: 5,
+            form: {
+              data: {
+                number: 3
+              }
+            }
+          }
+        };
+        setTimeout(() => {
+          assert.equal(textArea.visible, true);
+          assert.equal(textField.visible, false);
+          form.submission = {
+            data: {
+              number: 5,
+              form: {
+                data: {
+                  number: 5
+                }
+              }
+            }
+          };
+          setTimeout(() => {
+            assert.equal(textArea.visible, true);
+            assert.equal(textField.visible, true);
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    });
   });
 
   it('Should validate email input when it is simple conditionally visible', done => {
@@ -345,6 +398,39 @@ describe('Webform tests', function() {
         }, 300);
       })
       .catch(done);
+  });
+
+  it('Should set a conditional nested form values.', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, formWithDeeplyNestedConditionalComps, { server: true }).then((form) => {
+      const submission = {
+        data: {
+          submit: false,
+          radio1: 'yes',
+          container: {
+            checkbox: true,
+            checkboxInPanelInHiddenContainer: true,
+            textField: 'test',
+            editGrid: [
+              {
+                number: 1,
+                textField: 'test2',
+              },
+              {
+                number: 2,
+              },
+            ],
+          },
+        },
+      };
+
+      form.setValue(fastCloneDeep(submission), { sanitize: true });
+      setTimeout(() => {
+        assert.deepEqual(form.data, submission.data);
+        assert.deepEqual(form.getValue(), submission);
+        done();
+      }, 500);
+    }).catch((err) => done(err));
   });
 
   it('Should not lose values of conditionally visible components on setValue when server option is passed', function(done) {
