@@ -1219,8 +1219,11 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
     }
 
-    if (!this.component.rowDrafts || this.root?.submitted) {
+    if (editRow.alerts && (!this.component.rowDrafts || this.root?.submitted)) {
       this.showRowErrorAlerts(editRow, editRow.errors);
+    }
+    else if (editRow.errors?.length) {
+      this.setCustomValidity(editRow.errors, dirty);
     }
 
     return editRow.errors;
