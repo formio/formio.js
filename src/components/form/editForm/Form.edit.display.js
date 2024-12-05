@@ -24,4 +24,4 @@ export default [
     ignore: true
   },
 ];
-/* eslint-enable max-len */
+ 

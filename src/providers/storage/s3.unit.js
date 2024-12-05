@@ -2,13 +2,12 @@ import assert from 'assert';
 import sinon from 'sinon';
 import fetchMock from 'fetch-mock';
 
-import { Formio } from '../../Formio';
 import S3 from './s3';
 import { withRetries } from './util';
 
-describe('S3 Provider', () => {
-  describe('Function Unit Tests', () => {
-    it('withRetries should retry a given function three times, then throw the provided error', (done) => {
+describe('S3 Provider', function() {
+  describe('Function Unit Tests', function() {
+    it('withRetries should retry a given function three times, then throw the provided error', function(done) {
       function sleepAndReject(ms) {
         return new Promise((_, reject) => setTimeout(reject, ms));
       }
@@ -22,9 +21,9 @@ describe('S3 Provider', () => {
     });
   });
 
-  describe('Provider Integration Tests', () => {
-    describe('AWS S3 Multipart Uploads', () => {
-      before('Mocks fetch', () => {
+  describe('Provider Integration Tests', function() {
+    describe('AWS S3 Multipart Uploads', function() {
+      before('Mocks fetch', function() {
         fetchMock
           .post('https://fakeproject.form.io/fakeform/storage/s3', {
             signed: new Array(5).fill('https://fakebucketurl.aws.com/signed'),
@@ -40,7 +39,8 @@ describe('S3 Provider', () => {
           .post('https://fakeproject.form.io/fakeform/storage/s3/multipart/complete', 200)
           .post('https://fakeproject.form.io/fakeform/storage/s3/multipart/abort', 200);
       });
-      it('Given an array of signed urls it should upload a file to S3 using multipart upload', (done) => {
+
+      it('Given an array of signed urls it should upload a file to S3 using multipart upload', function(done) {
         const mockFormio = {
           formUrl: 'https://fakeproject.form.io/fakeform',
           getToken: () => {}

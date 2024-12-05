@@ -3,7 +3,7 @@ import _isEqual from 'lodash/isEqual';
 import _omit from 'lodash/omit';
 import _difference from 'lodash/difference';
 import _keys from 'lodash/keys';
-/* eslint-disable quotes, max-len */
+ 
 const title = 'Advanced Next Page';
 const jsonProp = 'nextPage';
 const jsProp = 'nextPage';
@@ -46,4 +46,4 @@ export default [
     }
   }
 ];
-/* eslint-enable quotes, max-len */
+ 

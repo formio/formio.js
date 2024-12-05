@@ -138,7 +138,7 @@ export default class CurrencyComponent extends NumberComponent {
   getValueAsString(value, options) {
     const stringValue = super.getValueAsString(value, options);
 
-    // eslint-disable-next-line eqeqeq
+
     if (value || value == '0') {
       if (Array.isArray(value)) {
         return value.map((val) => this.addZerosAndFormatValue(super.getValueAsString(val, options))).join(', ');
@@ -176,7 +176,7 @@ export default class CurrencyComponent extends NumberComponent {
           value ='0';
         }
       }
-      catch (err) {
+      catch (ignoreErr) {
         // If value doesn't have a replace method, continue on as before.
       }
     }

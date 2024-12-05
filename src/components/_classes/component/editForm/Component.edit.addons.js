@@ -11,12 +11,12 @@ export default [
     key: 'addons',
     label: 'Addons',
     templates: {
-      // eslint-disable-next-line quotes
+       
       header: `<div class="row">
                 <div class="col-6">{{ t(components[0].label) }}</div>
                 <div class="col-4">Settings</div>
               </div>`,
-      // eslint-disable-next-line quotes
+       
       row: `<div class="row">
               <div class="col-6">
                 {{ row.name.label }}

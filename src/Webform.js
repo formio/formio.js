@@ -328,7 +328,7 @@ export default class Webform extends NestedDataComponent {
         this.root = this;
         this.localRoot = this;
     }
-    /* eslint-enable max-statements */
+
 
     get language() {
         return this.options.language;
@@ -606,7 +606,7 @@ export default class Webform extends NestedDataComponent {
                 });
                 this.loader.appendChild(spinner);
             }
-            /* eslint-disable max-depth */
+
             if (this.loader) {
                 try {
                     if (loading) {
@@ -614,11 +614,11 @@ export default class Webform extends NestedDataComponent {
                     } else {
                         this.removeChildFrom(this.loader, this.wrapper);
                     }
-                } catch (err) {
+                } catch (ignoreErr) {
                     // ingore
                 }
             }
-            /* eslint-enable max-depth */
+
         }
     }
 
@@ -1183,7 +1183,7 @@ export default class Webform extends NestedDataComponent {
                 }
                 this.removeChild(this.alert);
                 this.alert = null;
-            } catch (err) {
+            } catch (ignoreErr) {
                 // ignore
             }
         }
@@ -1246,7 +1246,7 @@ export default class Webform extends NestedDataComponent {
      * @param {object} error - An optional additional error to display along with the component errors.
      * @returns {*}
      */
-    /* eslint-disable no-unused-vars */
+
     /**
      *
      * @param {Array} errors - An array of errors to display.
@@ -1343,7 +1343,7 @@ export default class Webform extends NestedDataComponent {
 
         return errors;
     }
-    /* eslint-enable no-unused-vars */
+
 
     /**
      * Called when the submission has completed, or if the submission needs to be sent to an external library.

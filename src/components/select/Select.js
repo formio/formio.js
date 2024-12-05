@@ -415,7 +415,7 @@ export default class SelectComponent extends ListComponent {
     this.serverCount = this.downloadedResources.length;
   }
 
-  /* eslint-disable max-statements */
+   
   setItems(items, fromSearch) {
     this.selectItems = items;
     // If the items is a string, then parse as JSON.
@@ -572,7 +572,7 @@ export default class SelectComponent extends ListComponent {
     return this.getSingleItemValueForHTMLMode(value);
   }
 
-  /* eslint-enable max-statements */
+   
 
   get defaultValue() {
     let defaultValue = super.defaultValue;
@@ -942,7 +942,7 @@ export default class SelectComponent extends ListComponent {
     };
   }
 
-  /* eslint-disable max-statements */
+   
   attach(element) {
     const superAttach = super.attach(element);
     this.loadRefs(element, {
@@ -1223,7 +1223,7 @@ export default class SelectComponent extends ListComponent {
     }
   }
 
-  /* eslint-enable max-statements */
+   
   update() {
     if (this.component.dataSrc === 'custom') {
       this.updateCustomItems();

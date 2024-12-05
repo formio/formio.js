@@ -236,7 +236,7 @@ export default class Component extends Element {
    * @param {object} options - The options for this component.
    * @param {object} data - The global data submission object this component will belong.
    */
-  /* eslint-disable max-statements */
+   
   constructor(component, options, data) {
     super(Object.assign({
       renderMode: 'form',
@@ -476,7 +476,7 @@ export default class Component extends Element {
       this.init();
     }
   }
-  /* eslint-enable max-statements */
+   
 
   get componentsMap() {
     if (this.localRoot?.childComponentsMap) {
@@ -3153,7 +3153,7 @@ export default class Component extends Element {
       }, 'value');
   }
 
-  /* eslint-disable max-statements */
+   
   calculateComponentValue(data, flags, row) {
     // Skip value calculation for the component if we don't have entire form data set or in builder mode
     if (this.builderMode || _.isUndefined(_.get(this, 'root.data'))) {
@@ -3259,7 +3259,7 @@ export default class Component extends Element {
     }
     return false;
   }
-  /* eslint-enable max-statements */
+   
 
   /**
    * Performs calculations in this component plus any child components.
@@ -3617,7 +3617,7 @@ export default class Component extends Element {
     });
   }
 
-  // eslint-disable-next-line max-statements
+   
   setCustomValidity(messages, dirty, external) {
     const inputRefs = this.isInputComponent ? this.refs.input || [] : null;
 

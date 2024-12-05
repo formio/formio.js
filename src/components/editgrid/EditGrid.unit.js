@@ -34,9 +34,9 @@ import { displayAsModalEditGrid } from '../../../test/formtest';
 import { Formio } from '../../Formio';
 import { fastCloneDeep } from '@formio/core';
 
-describe('EditGrid Component', () => {
+describe('EditGrid Component', function() {
 
-  it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
+  it('Should set correct values in dataMap inside editGrid and allow aditing them', function(done) {
     Harness.testCreate(EditGridComponent, comp4).then((component) => {
       component.setValue([{ dataMap: { key111: '111' } }]);
 
@@ -60,7 +60,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should set correct values after reset', (done) => {
+  it('Should set correct values after reset', function(done) {
     Harness.testCreate(EditGridComponent, comp5)
       .then((component) => {
         assert.equal(component.components.length, 0);
@@ -77,7 +77,7 @@ describe('EditGrid Component', () => {
       });
   });
 
-  it('Should display saved values if there are more then 1 nested components', (done) => {
+  it('Should display saved values if there are more then 1 nested components', function(done) {
     Harness.testCreate(EditGridComponent, comp3).then((component) => {
       component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);
 
@@ -92,7 +92,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should build an empty edit grid component', () => {
+  it('Should build an empty edit grid component', function() {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(1)', 'Field 1');
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(2)', 'Field 2');
@@ -107,7 +107,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should build an edit grid component', () => {
+  it('Should build an edit grid component', function() {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(1)', 'Field 1');
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(2)', 'Field 2');
@@ -137,7 +137,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should add a row when add another is clicked', () => {
+  it('Should add a row when add another is clicked', function() {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testElements(component, 'li.list-group-item', 1);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '0');
@@ -151,7 +151,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should save a new row when save is clicked', () => {
+  it('Should save a new row when save is clicked', function() {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       component.pristine = false;
       Harness.testSetGet(component, [
@@ -180,7 +180,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should cancel add a row when cancel is clicked', () => {
+  it('Should cancel add a row when cancel is clicked', function() {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
@@ -207,7 +207,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should delete a row when delete is clicked', () => {
+  it('Should delete a row when delete is clicked', function() {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
@@ -234,7 +234,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should edit a row when edit is clicked', () => {
+  it('Should edit a row when edit is clicked', function() {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
@@ -255,7 +255,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should save a row when save is clicked', () => {
+  it('Should save a row when save is clicked', function() {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
@@ -278,7 +278,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should cancel edit row when cancel is clicked', () => {
+  it('Should cancel edit row when cancel is clicked', function() {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
@@ -302,7 +302,7 @@ describe('EditGrid Component', () => {
   });
 
   // TODO: find out if this is deprecated in the new (3.x and above) versions of the renderer, if so ditch this test
-  it('Should show error messages for existing data in rows', () => {
+  it('Should show error messages for existing data in rows', function() {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
@@ -324,7 +324,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should not allow saving when errors exist', () => {
+  it('Should not allow saving when errors exist', function() {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.clickElement(component, 'button.btn-primary');
       Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
@@ -350,7 +350,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should not allow saving when rows are open', () => {
+  it('Should not allow saving when rows are open', function() {
     return Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
@@ -373,7 +373,7 @@ describe('EditGrid Component', () => {
     });
   });
 
-  it('Should not allow to go to the next page if row is not saved', (done) => {
+  it('Should not allow to go to the next page if row is not saved', function(done) {
     const form = _.cloneDeep(comp16);
     const element = document.createElement('div');
     Formio.createForm(element, form).then((form) => {
@@ -396,7 +396,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   })
 
-  it('Should disable components when in read only', () => {
+  it('Should disable components when in read only', function() {
     return Harness.testCreate(EditGridComponent, comp1, { readOnly: true }).then((component) => {
       Harness.testSetGet(component, [
         {
@@ -415,8 +415,8 @@ describe('EditGrid Component', () => {
     });
   });
 
-  describe('Display As Modal', () => {
-    it('Should show add error classes to invalid components', (done) => {
+  describe('Display As Modal', function() {
+    it('Should show add error classes to invalid components', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(displayAsModalEditGrid).then(() => {
@@ -442,7 +442,7 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
-    it('Should set alert with validation errors on save and update them', (done) => {
+    it('Should set alert with validation errors on save and update them', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(ModalEditGrid).then(() => {
@@ -483,7 +483,7 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
-    it('Confirmation dialog', (done) => {
+    it('Confirmation dialog', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(comp6).then(() => {
@@ -512,7 +512,7 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
-    it('Confirmation dialog shouldn\'t occure if no values within the row are changed', (done) => {
+    it('Confirmation dialog shouldn\'t occure if no values within the row are changed', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(comp6).then(() => {
@@ -532,7 +532,7 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
-    it('Should not produce many components in Edit view when minLength validation set', done => {
+    it('Should not produce many components in Edit view when minLength validation set', function(done) {
       const formElement = document.createElement('div');
       Formio.createForm(formElement, comp15, { attachMode:'builder' } )
         .then(form => {
@@ -547,7 +547,7 @@ describe('EditGrid Component', () => {
         .catch(done);
     });
 
-    it('Should close row when Display as Modal checked', (done) => {
+    it('Should close row when Display as Modal checked', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       form.setForm(comp14).then(() => {
@@ -568,8 +568,8 @@ describe('EditGrid Component', () => {
     });
   });
 
-  describe('Draft Rows', () => {
-    it('Check saving rows as draft', (done) => {
+  describe('Draft Rows', function() {
+    it('Check saving rows as draft', function(done) {
       Harness.testCreate(EditGridComponent, comp5).then((component) => {
         component.addRow();
         Harness.clickElement(component, '[ref="editgrid-editGrid1-saveRow"]');
@@ -581,7 +581,7 @@ describe('EditGrid Component', () => {
       }).catch(done);
     });
 
-    it('Should not show row errors alerts if drafts enabled in modal-edit EditGrid', (done) => {
+    it('Should not show row errors alerts if drafts enabled in modal-edit EditGrid', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       ModalEditGrid.components[0].rowDrafts = true;
@@ -631,7 +631,7 @@ describe('EditGrid Component', () => {
       });
     });
 
-    it('Should keep fields valid inside NestedForms if drafts are enabled', (done) => {
+    it('Should keep fields valid inside NestedForms if drafts are enabled', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       ModalEditGrid.components[0].rowDrafts = true;
@@ -687,7 +687,7 @@ describe('EditGrid Component', () => {
       });
     });
 
-    it('Should keep fields valid inside NestedForms if drafts are enabled', (done) => {
+    it('Should keep fields valid inside NestedForms if drafts are enabled', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
       ModalEditGrid.components[0].rowDrafts = true;
@@ -803,7 +803,7 @@ describe('EditGrid Component', () => {
     // });
   });
 
-  it('Test simple conditions based on the EditGrid\'s child\'s value and default values when adding rows', (done) => {
+  it('Test simple conditions based on the EditGrid\'s child\'s value and default values when adding rows', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm({ display: 'form', components: [comp7], type: 'form' }).then(() => {
@@ -818,7 +818,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Test clearOnHide inside EditGrid', (done) => {
+  it('Test clearOnHide inside EditGrid', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm({ display: 'form', components: [comp7], type: 'form' }).then(() => {
@@ -852,7 +852,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Test refreshing inside EditGrid', (done) => {
+  it('Test refreshing inside EditGrid', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm({ display: 'form', components: [comp8], type: 'form' }).then(() => {
@@ -874,7 +874,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should display summary with values only for components that are visible at least in one row', (done) => {
+  it('Should display summary with values only for components that are visible at least in one row', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm(comp9).then(() => {
@@ -943,7 +943,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should add component to the header only if it is visible in saved row', (done) => {
+  it('Should add component to the header only if it is visible in saved row', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm(comp9).then(() => {
@@ -997,7 +997,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   }).timeout(3000);
 
-  it('Should add/save/cancel/delete/edit rows', (done) => {
+  it('Should add/save/cancel/delete/edit rows', function(done) {
     const form = _.cloneDeep(comp10);
     const element = document.createElement('div');
 
@@ -1077,7 +1077,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   }).timeout(3000);
 
-  it('Should open first row when empty and allow saving openned row', (done) => {
+  it('Should open first row when empty and allow saving openned row', function(done) {
     const form = _.cloneDeep(comp10);
     const element = document.createElement('div');
     form.components[0].openWhenEmpty = true;
@@ -1115,7 +1115,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   }).timeout(3000);
 
-  it('Should disable adding/removing rows', (done) => {
+  it('Should disable adding/removing rows', function(done) {
     const form = _.cloneDeep(comp10);
     const element = document.createElement('div');
     form.components[0].disableAddingRemovingRows = true;
@@ -1137,7 +1137,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should show conditional eddRow btn if condition is met', (done) => {
+  it('Should show conditional eddRow btn if condition is met', function(done) {
     const form = _.cloneDeep(comp10);
     const element = document.createElement('div');
     form.components[0].conditionalAddButton = 'show = data.number11 === 5';
@@ -1171,7 +1171,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should use custom text for save/cancel/add btns', (done) => {
+  it('Should use custom text for save/cancel/add btns', function(done) {
     const form = _.cloneDeep(comp10);
     const element = document.createElement('div');
     form.components[0].addAnother = 'add custom';
@@ -1194,7 +1194,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should render headers when openWhenEmpry is enabled', (done) => {
+  it('Should render headers when openWhenEmpry is enabled', function(done) {
     const form = _.cloneDeep(comp11);
     const element = document.createElement('div');
 
@@ -1211,7 +1211,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should show validation when saving a row with required conditional filed inside container', (done) => {
+  it('Should show validation when saving a row with required conditional filed inside container', function(done) {
     const form = _.cloneDeep(comp12);
     const element = document.createElement('div');
 
@@ -1250,7 +1250,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should submit a form with a submission in a draft-state without validation errors', (done) => {
+  it('Should submit a form with a submission in a draft-state without validation errors', function(done) {
     const form = _.cloneDeep(comp13);
     const element = document.createElement('div');
     Formio.createForm(element, form).then(form => {
@@ -1273,7 +1273,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should keep value for conditional editGrid on setValue when server option is provided', (done) => {
+  it('Should keep value for conditional editGrid on setValue when server option is provided', function(done) {
     const element = document.createElement('div');
 
     Formio.createForm(element, formsWithEditGridAndConditions.form1, { server: true }).then(form => {
@@ -1297,7 +1297,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should set value for conditional editGrid inside editGrid on event when form is not pristine ', (done) => {
+  it('Should set value for conditional editGrid inside editGrid on event when form is not pristine ', function(done) {
     const element = document.createElement('div');
 
     Formio.createForm(element, formsWithEditGridAndConditions.form2).then(form => {
@@ -1319,7 +1319,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should keep value for conditional editGrid in tabs on setValue when server option is provided', (done) => {
+  it('Should keep value for conditional editGrid in tabs on setValue when server option is provided', function(done) {
     const element = document.createElement('div');
 
     Formio.createForm(element, formsWithEditGridAndConditions.form3, { server: true }).then(form => {
@@ -1356,7 +1356,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should calculate editGrid value when calculateOnServer is enabled and server option is passed', (done) => {
+  it('Should calculate editGrid value when calculateOnServer is enabled and server option is passed', function(done) {
     const element = document.createElement('div');
 
     Formio.createForm(element, formsWithEditGridAndConditions.form4, { server: true }).then(form => {
@@ -1367,7 +1367,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should keep value for conditional editGrid deeply nested in panels and containers on setValue when server option is provided', (done) => {
+  it('Should keep value for conditional editGrid deeply nested in panels and containers on setValue when server option is provided', function(done) {
     const element = document.createElement('div');
 
     Formio.createForm(element, formsWithEditGridAndConditions.form5, { server: true }).then(form => {
@@ -1398,7 +1398,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should calculate editGrid value when condition is met in advanced logic', (done) => {
+  it('Should calculate editGrid value when condition is met in advanced logic', function(done) {
     const element = document.createElement('div');
 
     Formio.createForm(element, formsWithEditGridAndConditions.form6).then(form => {
@@ -1415,8 +1415,8 @@ describe('EditGrid Component', () => {
   });
 });
 
-describe('EditGrid Open when Empty', () => {
-  it('Should be opened when shown conditionally', (done) => {
+describe('EditGrid Open when Empty', function() {
+  it('Should be opened when shown conditionally', function(done) {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, withOpenWhenEmptyAndConditions)
       .then((form) => {
@@ -1461,7 +1461,7 @@ describe('EditGrid Open when Empty', () => {
       .catch(done);
   });
 
-  it('Should create new row with empty data and no defaults', (done) => {
+  it('Should create new row with empty data and no defaults', function(done) {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, compOpenWhenEmpty, { noDefaults: true })
       .then((form) => {
@@ -1476,7 +1476,7 @@ describe('EditGrid Open when Empty', () => {
       .catch(done);
   });
 
-  it('Should always add a first row', (done) => {
+  it('Should always add a first row', function(done) {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, compOpenWhenEmpty)
       .then((form) => {
@@ -1524,7 +1524,7 @@ describe('EditGrid Open when Empty', () => {
       .catch(done);
   });
 
-  it('Should restore focus on the proper component after change event', (done) => {
+  it('Should restore focus on the proper component after change event', function(done) {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, compWithCustomDefaultValue)
       .then((form) => {
@@ -1551,7 +1551,7 @@ describe('EditGrid Open when Empty', () => {
       .catch(done);
   });
 
-  it('Should submit form with empty rows when submit button is pressed and no rows are saved', (done) => {
+  it('Should submit form with empty rows when submit button is pressed and no rows are saved', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
 
@@ -1570,7 +1570,7 @@ describe('EditGrid Open when Empty', () => {
     }).catch(done);
   });
 
-  it('Should not submit form if any row inputs are set as required', (done) => {
+  it('Should not submit form if any row inputs are set as required', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
 
@@ -1594,9 +1594,10 @@ describe('EditGrid Open when Empty', () => {
   });
 });
 
-describe('EditGrid Fired Events', () => {
+describe('EditGrid Fired Events', function() {
   const eventParams = ['row', 'component', 'instance']
-  it('Should fire editGridEditRow event on the row edit button click', (done) => {
+
+  it('Should fire editGridEditRow event on the row edit button click', function(done) {
     const formElement = document.createElement('div');
     let eventsCount = 0;
     Formio.createForm(formElement, compTestEvents)
@@ -1634,7 +1635,7 @@ describe('EditGrid Fired Events', () => {
       .catch(done);
   });
 
-  it('Should fire editGridOpenModal event on the row edit button click when modal is enabled', (done) => {
+  it('Should fire editGridOpenModal event on the row edit button click when modal is enabled', function(done) {
     const formElement = document.createElement('div');
     let eventsCount = 0;
     const testForm = fastCloneDeep(compTestEvents);
@@ -1674,7 +1675,7 @@ describe('EditGrid Fired Events', () => {
       .catch(done);
   });
 
-  it('Should fire editGridOpenModal event when adding new row and modal is enabled', (done) => {
+  it('Should fire editGridOpenModal event when adding new row and modal is enabled', function(done) {
     const formElement = document.createElement('div');
     let eventsCount = 0;
     const testForm = fastCloneDeep(compTestEvents);
@@ -1702,7 +1703,7 @@ describe('EditGrid Fired Events', () => {
       .catch(done);
   });
 
-  it('Should prepare correct email table template with nested layout components', (done) => {
+  it('Should prepare correct email table template with nested layout components', function(done) {
     const formElement = document.createElement('div');
     const testForm = fastCloneDeep(comp17);
     Formio.createForm(formElement, testForm)
@@ -1736,7 +1737,7 @@ describe('EditGrid Fired Events', () => {
       .catch(done);
   });
 
-  it('Should not show validation errors when inside component has validateOn: submit', (done) => {
+  it('Should not show validation errors when inside component has validateOn: submit', function(done) {
     Formio.createForm(document.createElement('div'), comp18).then((form) => {
       const editGrid = form.getComponent('editGrid');
       // Open Edit Grid first row for editing

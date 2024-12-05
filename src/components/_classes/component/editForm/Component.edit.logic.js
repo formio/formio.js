@@ -1,7 +1,7 @@
 import EditFormUtils from './utils';
 import { getContextComponents } from '../../../../utils/utils';
 
-/* eslint-disable quotes, max-len */
+ 
 export default [
   {
     weight: 0,
@@ -410,4 +410,4 @@ export default [
     ],
   },
 ];
-/* eslint-enable quotes, max-len */
+ 

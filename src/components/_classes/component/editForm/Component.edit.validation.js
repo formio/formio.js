@@ -1,7 +1,7 @@
 import EditFormUtils from './utils';
 import { Evaluator } from '../../../../utils/Evaluator';
 
-/* eslint-disable quotes, max-len */
+ 
 export default [
   {
     weight: 10,
@@ -121,7 +121,7 @@ export default [
       {
         type: 'htmlelement',
         tag: 'div',
-        /* eslint-disable prefer-template */
+         
         content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank" rel="noopener noreferrer">JSONLogic</a>.</p>' +
           '<h5>Example:</h5>' +
           '<pre>' + JSON.stringify({
@@ -131,7 +131,7 @@ export default [
               "Your name must be 'Bob'!"
             ]
           }, null, 2) + '</pre>'
-        /* eslint-enable prefer-template */
+         
       },
       {
         type: 'textarea',
@@ -210,4 +210,4 @@ export default [
     ]
   }
 ];
-/* eslint-enable quotes, max-len */
+ 

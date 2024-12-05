@@ -262,7 +262,7 @@ export default class SignatureComponent extends Input {
     this.setValue(this.dataValue);
     return superAttach;
   }
-  /* eslint-enable max-statements */
+   
 
   detach() {
     if (this.observer) {

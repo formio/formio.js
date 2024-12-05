@@ -217,7 +217,7 @@ export default class Form extends Element {
       return new Displays.displays[display](this.element, this.options);
     }
     else {
-      // eslint-disable-next-line new-cap
+       
       return new Displays.displays['webform'](this.element, this.options);
     }
   }

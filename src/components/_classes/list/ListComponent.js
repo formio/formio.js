@@ -159,7 +159,7 @@ export default class ListComponent extends Field {
     console.warn(`Unable to load resources for ${this.key}`);
   }
 
-  /* eslint-disable max-statements */
+
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
       console.warn(`Select component ${this.key} does not have data configuration.`);
@@ -197,7 +197,7 @@ export default class ListComponent extends Field {
           try {
             this.loadItems(resourceUrl, searchInput, this.requestHeaders);
           }
-          catch (err) {
+          catch (ignoreErr) {
             console.warn(`Unable to load resources for ${this.key}`);
           }
         }
@@ -291,5 +291,5 @@ export default class ListComponent extends Field {
       }
     }
   }
-  /* eslint-enable max-statements */
+
 }

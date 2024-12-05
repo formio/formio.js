@@ -154,7 +154,7 @@ export function checkCalculated(component, submission, rowData) {
 }
 
 /**
- * Check if a simple conditional evaluates to true. 
+ * Check if a simple conditional evaluates to true.
  * @param {import('@formio/core').Component} component - The component to check for the conditional.
  * @param {import('@formio/core').SimpleConditional} condition - The condition to check.
  * @param {*} row - The row data for the component.
@@ -306,7 +306,7 @@ export function getComponentActualValue(compPath, data, row) {
   if (row && _.isNil(value)) {
     value = getValue({ data: row }, compPath);
   }
-  
+
   // FOR-400 - Fix issue where falsey values were being evaluated as show=true
   if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
     value = '';
@@ -341,7 +341,7 @@ export function checkCustomConditional(component, custom, row, data, form, varia
 
 /**
  * Check a component for JSON conditionals.
- * @param {import('@formio/core').Component} component - The component 
+ * @param {import('@formio/core').Component} component - The component
  * @param {import('@formio/core').JSONConditional} json - The json conditional to check.
  * @param {*} row - The contextual row data for the component.
  * @param {*} data - The full submission data.
@@ -610,7 +610,7 @@ export function getDateSetting(date) {
       dateSetting = moment(value);
     }
   }
-  catch (e) {
+  catch (ignoreErr) {
     return null;
   }
 

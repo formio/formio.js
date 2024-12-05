@@ -18,7 +18,7 @@ if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
 import dragula from 'dragula';
 
 export default class WebformBuilder extends Component {
-  // eslint-disable-next-line max-statements
+   
   constructor() {
     let element, options;
     if (arguments[0] instanceof HTMLElement || arguments[1]) {
@@ -887,7 +887,7 @@ export default class WebformBuilder extends Component {
     return path;
   }
 
-  /* eslint-disable max-statements */
+   
   onDrop(element, target, source, sibling) {
     if (!target) {
       return;

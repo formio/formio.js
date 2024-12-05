@@ -102,7 +102,7 @@ export default class ReCaptchaComponent extends Component {
         }
       });
     }
-    catch (err) {
+    catch (ignoreErr) {
       this.loading = false;
     }
   }

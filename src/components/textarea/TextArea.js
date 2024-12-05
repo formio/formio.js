@@ -573,7 +573,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       try {
         value = JSON.parse(value);
       }
-      catch (err) {
+      catch (ignoreErr) {
         // console.warn(err);
       }
     }

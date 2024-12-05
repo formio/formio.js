@@ -146,7 +146,7 @@ export default class Alert {
       this.parentComponent.removeChildFrom(this.alert, this.container);
       this.alert = null;
     }
-    catch (err) {
+    catch (ignoreErr) {
       // ignore
     }
   }

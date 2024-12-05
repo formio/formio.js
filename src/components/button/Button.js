@@ -292,7 +292,7 @@ export default class ButtonComponent extends Field {
     this.attachButton();
     return superAttach;
   }
-  /* eslint-enable max-statements */
+   
 
   detach(element) {
     if (element && this.refs.button) {
@@ -403,7 +403,7 @@ export default class ButtonComponent extends Field {
       return;
     }
 
-    /*eslint-disable camelcase */
+     
     let params = {
       response_type: 'code',
       client_id: settings.clientId,
@@ -418,7 +418,7 @@ export default class ButtonComponent extends Field {
       params.code_challenge_method = 'S256';
     }
 
-    /*eslint-enable camelcase */
+     
 
     // Needs for the correct redirection URI for the OpenID
     const originalRedirectUri = params.redirect_uri;

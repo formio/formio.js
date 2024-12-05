@@ -16,8 +16,9 @@ export default class IsEqualTo extends ConditionOperator {
             try {
                 comparedValue = JSON.parse(comparedValue);
             }
-            // eslint-disable-next-line no-empty
-            catch (e) {}
+            catch (ignoreErr) {
+              // do nothing
+            }
         }
 
         if (instance?.root?.getComponent) {

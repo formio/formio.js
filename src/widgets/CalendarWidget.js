@@ -23,7 +23,7 @@ const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
 const isIEBrowser = getBrowserInfo().ie;
 
 export default class CalendarWidget extends InputWidget {
-  /* eslint-disable camelcase */
+   
   static get defaultSettings() {
     return {
       type: 'calendar',
@@ -49,7 +49,7 @@ export default class CalendarWidget extends InputWidget {
       maxDate: ''
     };
   }
-  /* eslint-enable camelcase */
+   
 
   constructor(settings, component, instance, index) {
     super(settings, component, instance, index);
@@ -522,7 +522,7 @@ export default class CalendarWidget extends InputWidget {
 
   initShortcutButtonsPlugin(ShortcutButtonsPlugin) {
     this.settings.plugins = [
-      // eslint-disable-next-line new-cap
+       
       ShortcutButtonsPlugin({
         button: this.component.shortcutButtons.map((btn) => ({ label: btn.label, attributes: btn.attribute })),
         onClick: (index) => {

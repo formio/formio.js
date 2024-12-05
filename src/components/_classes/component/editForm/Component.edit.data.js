@@ -1,5 +1,5 @@
 import EditFormUtils from './utils';
-/* eslint-disable max-len */
+ 
 export default [
   {
     weight: 0,
@@ -160,4 +160,4 @@ export default [
     tooltip: 'When checked, this will allow the user to manually override the calculated value.'
   },
 ];
-/* eslint-enable max-len */
+ 

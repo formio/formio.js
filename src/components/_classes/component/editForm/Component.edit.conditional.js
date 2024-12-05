@@ -1,6 +1,6 @@
 import EditFormUtils from './utils';
 import { getContextComponents } from '../../../../utils/utils';
-/* eslint-disable quotes, max-len */
+ 
 export default [
   {
     type: 'panel',
@@ -50,4 +50,4 @@ export default [
     '<p><a href="https://help.form.io/userguide/form-building/logic-and-conditions" target="_blank" rel="noopener noreferrer">Click here for an example</a></p>'
   )
 ];
-/* eslint-enable quotes, max-len */
+ 

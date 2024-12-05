@@ -256,7 +256,7 @@ export class Formio {
         }]));
     }
 
-    // eslint-disable-next-line max-statements
+     
     static async init(element, options = {}, builder = false) {
         Formio.cdn = new CDN(Formio.config.cdn, Formio.config.cdnUrls || {});
         Formio.config.libs = Formio.config.libs || {

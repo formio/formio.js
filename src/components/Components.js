@@ -92,19 +92,19 @@ export default class Components {
       comp = new Components.components[component.type](component, options, data);
     }
     else if (component.arrayTree) {
-      // eslint-disable-next-line new-cap
+       
       comp = new Components.components['datagrid'](component, options, data);
     }
     else if (component.tree) {
-      // eslint-disable-next-line new-cap
+       
       comp = new Components.components['nesteddata'](component, options, data);
     }
     else if (Array.isArray(component.components)) {
-      // eslint-disable-next-line new-cap
+       
       comp = new Components.components['nested'](component, options, data);
     }
     else if (options && options.server) {
-      // eslint-disable-next-line new-cap
+       
       comp = new Components.components['hidden'](component, options, data);
     }
     else {

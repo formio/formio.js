@@ -580,14 +580,14 @@ export default class FileComponent extends Field {
     return superAttach;
   }
 
-  /* eslint-disable max-len */
+
   fileSize(a, b, c, d, e) {
     return `${(b = Math, c = b.log, d = 1024, e = c(a) / c(d) | 0, a / b.pow(d, e)).toFixed(2)} ${e ? `${'kMGTPEZY'[--e]}B` : 'Bytes'}`;
   }
 
-  /* eslint-enable max-len */
 
-  /* eslint-disable max-depth */
+
+
   globStringToRegex(str) {
     str = str.replace(/\s/g, '');
 
@@ -627,7 +627,7 @@ export default class FileComponent extends Field {
     return { regexp, excludes };
   }
 
-  /* eslint-enable max-depth */
+
 
   translateScalars(str) {
     if (typeof str === 'string') {
@@ -853,7 +853,7 @@ export default class FileComponent extends Field {
         const fileProcessorHandler = fileProcessor(this.fileService, this.root.options.fileProcessor);
         processedFile = await fileProcessorHandler(file, this.component.properties);
       }
-      catch (err) {
+      catch (ignoreErr) {
         this.fileDropHidden = false;
         return {
           status: 'error',
@@ -1131,7 +1131,7 @@ export default class FileComponent extends Field {
       this.triggerChange();
       return Promise.resolve();
     }
-    catch (err) {
+    catch (ignoreErr) {
       return Promise.reject();
     }
     finally {

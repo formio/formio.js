@@ -1,5 +1,5 @@
 import EditFormUtils from '../../_classes/component/editForm/utils';
-/* eslint-disable max-len */
+ 
 export default [
   EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 'customDefaultValue', 120,
     '<p><h4>Example:</h4><pre>value = data.firstName + " " + data.lastName;</pre></p>',
@@ -19,4 +19,4 @@ export default [
     input: true
   },
 ];
-/* eslint-enable max-len */
+ 

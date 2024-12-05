@@ -52,7 +52,7 @@ function url(formio) {
             respData = (typeof xhr.response === 'string') ? JSON.parse(xhr.response) : {};
             respData = (respData && respData.data) ? respData.data : respData;
           }
-          catch (err) {
+          catch (ignoreErr) {
             respData = {};
           }
 

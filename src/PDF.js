@@ -320,7 +320,7 @@ if (typeof window !== 'undefined') {
     try {
       eventData = JSON.parse(event.data);
     }
-    catch (err) {
+    catch (ignoreErr) {
       eventData = null;
     }
 

@@ -1,4 +1,4 @@
-/* eslint-disable max-statements */
+ 
 import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import ComponentModal from '../_classes/componentModal/ComponentModal';
@@ -165,7 +165,7 @@ export default class FormComponent extends Component {
     }
   }
 
-  /* eslint-disable max-statements */
+   
   getSubOptions(options = {}) {
     options.events = this.createEmitter();
 
@@ -235,7 +235,7 @@ export default class FormComponent extends Component {
     }
     return options;
   }
-  /* eslint-enable max-statements */
+   
 
   render() {
     if (this.builderMode) {

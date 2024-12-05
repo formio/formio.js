@@ -3,8 +3,8 @@ import _ from 'lodash';
 import utils from './utils';
 
 describe('Edit Form Utils', function() {
-  describe('unifyComponents', () => {
-    it('should merge all objects with the same key', () => {
+  describe('unifyComponents', function() {
+    it('should merge all objects with the same key', function() {
       const components = [
         { key: 'a', label: 1, input: true },
         { key: 'a', one: 1, two: 2 },
@@ -17,7 +17,7 @@ describe('Edit Form Utils', function() {
       ]);
     });
 
-    it('should not merge objects with "skipMerge" flag', () => {
+    it('should not merge objects with "skipMerge" flag', function() {
       const components = [
         { key: 'a', label: 1 },
         { key: 'a', label: 2, skipMerge: true },
@@ -33,7 +33,7 @@ describe('Edit Form Utils', function() {
       ]);
     });
 
-    it('should override with "override" flag', () => {
+    it('should override with "override" flag', function() {
       const components = [
         { key: 'a', label: 1, ok: true },
         { key: 'a', label: 2, overrideEditForm: true }

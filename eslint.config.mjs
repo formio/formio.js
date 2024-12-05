@@ -5,7 +5,7 @@ import mochaPlugin from 'eslint-plugin-mocha';
 export default [
   { files: ['**/*.{js,mjs,cjs}'] },
   {
-    languageOptions: { globals: { ...globals.browser } },
+    languageOptions: { globals: { ...globals.browser, global: 'writable' } },
   },
   pluginJs.configs.recommended,
   mochaPlugin.configs.flat.recommended,

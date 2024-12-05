@@ -115,7 +115,7 @@ export default class DateTimeComponent extends Input {
       }
     }
 
-    /* eslint-disable camelcase */
+     
     this.component.widget = {
       type: 'calendar',
       timezone,
@@ -139,7 +139,7 @@ export default class DateTimeComponent extends Input {
       maxDate: _.get(this.component, 'datePicker.maxDate'),
       ...customOptions,
     };
-    /* eslint-enable camelcase */
+     
   }
 
   get defaultSchema() {
