@@ -54,7 +54,7 @@
     "release": "yarn build-app && yarn deploy-s3",
     "tag": "VERSION=$(yarn version);git add -A; git commit -m \"Build $Version\";git push origin master;git tag v$VERSION;git push origin --tags;",
     "dopublish": "npm run build && npm run tag && npm publish",
-    "lint": "eslint ./src --fix",
+    "lint": "eslint --fix",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "nyc --reporter=lcov --reporter=text --reporter=text-summary mocha test/unit/*.unit.js",
     "show-coverage": "open coverage/lcov-report/index.html"

@@ -1,4 +1,5 @@
 import Harness from '../harness';
+import { Formio } from '../../src/index';
 import assert from 'power-assert';
 import TimeComponent from '../../src/components/time/Time';
 import {
@@ -11,12 +12,12 @@ import {
 } from './fixtures/time';
 import Webform from '../../src/Webform';
 
-describe('Time Component', () => {
-  it('Should build a time component', () => {
+describe('Time Component', function() {
+  it('Should build a time component', function() {
     return Harness.testCreate(TimeComponent, comp1);
   });
 
-  it('Should format value on blur', (done) => {
+  it('Should format value on blur', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm(timeForm).then(() => {
@@ -42,7 +43,7 @@ describe('Time Component', () => {
       .catch(done);
   });
 
-  it('Should not show error if value corresponds to the mask', (done) => {
+  it('Should not show error if value corresponds to the mask', function(done) {
     Harness.testCreate(TimeComponent, comp2).then((component) => {
       const inputEvent = new Event('input', { bubbles: true, cancelable: true });
       const timeInput = component.element.querySelector('input[name="data[time]"]');
@@ -59,7 +60,7 @@ describe('Time Component', () => {
     });
   });
 
-  it('Should be invalid if time is not real', (done) => {
+  it('Should be invalid if time is not real', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm(timeForm2).then(() => {
@@ -72,7 +73,7 @@ describe('Time Component', () => {
     }).catch(done);
   });
 
-  it('Should return error if data in multiple time component is not valid', (done) => {
+  it('Should return error if data in multiple time component is not valid', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm(timeForm2).then(() => {
@@ -85,7 +86,7 @@ describe('Time Component', () => {
     }).catch(done);
   });
 
-  it('Should not return error if data in multiple time component is not valid', (done) => {
+  it('Should not return error if data in multiple time component is not valid', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm(timeForm2).then(() => {
@@ -98,14 +99,14 @@ describe('Time Component', () => {
     }).catch(done);
   });
 
-  it('Should build a time component', (done) => {
+  it('Should build a time component and set its default value', function(done) {
     Harness.testCreate(TimeComponent, comp3).then((time) => {
       assert.deepEqual(time.dataValue, ['10:00:00', '11:00:00'], 'Should be set to default value');
       done();
     }).catch(done);
   });
 
-  it('Should not display error when embedded in a wizard form', () => {
+  it('Should not display error when embedded in a wizard form', function() {
     return Formio.createForm(document.createElement('div'), comp4, {}).then((form) => {
       const timeComponent = form.getComponent('time1');
       assert.equal(timeComponent._errors.length, 0);

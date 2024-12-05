@@ -21,12 +21,12 @@ import {
   comp14
 } from './fixtures/datetime';
 
-describe('DateTime Component', () => {
-  it('Should build a date time component', () => {
+describe('DateTime Component', function() {
+  it('Should build a date time component', function() {
     return Harness.testCreate(DateTimeComponent, comp1).then((dateTime) => dateTime.destroy());
   });
 
-  it('Test formatting', (done) => {
+  it('Test formatting', function(done) {
     Harness.testCreate(DateTimeComponent, comp2).then((dateTime) => {
       const value = '2020-09-22T00:00:00';
       const formattedValue = '2020-09-22';
@@ -39,7 +39,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should format value', () => {
+  it('Should format value', function() {
     comp2.format = 'yyyy-MM-dd hh:mm a';
     return Harness.testCreate(DateTimeComponent, comp2)
       .then((dateTime) => {
@@ -48,7 +48,7 @@ describe('DateTime Component', () => {
       });
   });
 
-  it('Should not change manually entered value on blur when time is disabled', (done) => {
+  it('Should not change manually entered value on blur when time is disabled', function(done) {
     const form = _.cloneDeep(comp11);
     const element = document.createElement('div');
 
@@ -69,7 +69,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should allow manual input', (done) => {
+  it('Should allow manual input', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
 
@@ -96,7 +96,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should allow manual input for date with full month format (like MMMM)', (done) => {
+  it('Should allow manual input for date with full month format (like MMMM)', function(done) {
     const form = _.cloneDeep(comp12);
     const element = document.createElement('div');
 
@@ -121,7 +121,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should not allow manual input', (done) => {
+  it('Should not allow manual input', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].allowInput = false;
@@ -145,7 +145,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should format date correctly', (done) => {
+  it('Should format date correctly', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     const formatsInitial = [
@@ -296,7 +296,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   }).timeout(4000);
 
-  it('Should disable weekends', (done) => {
+  it('Should disable weekends', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].datePicker.disableWeekends = true;
@@ -311,7 +311,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should disable weekdays', (done) => {
+  it('Should disable weekdays', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].datePicker.disableWeekdays = true;
@@ -326,7 +326,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should disable time', (done) => {
+  it('Should disable time', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].enableTime = false;
@@ -342,7 +342,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should disable date', (done) => {
+  it('Should disable date', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].enableDate = false;
@@ -357,7 +357,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should enable time', (done) => {
+  it('Should enable time', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].enableTime = true;
@@ -373,7 +373,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should enable date', (done) => {
+  it('Should enable date', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].enableDate = true;
@@ -389,7 +389,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should not input the date that is disabled', (done) => {
+  it('Should not input the date that is disabled', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].datePicker.disable = '2021-04-15';
@@ -413,7 +413,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should not input the date that is in disabled range', (done) => {
+  it('Should not input the date that is in disabled range', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].datePicker.disable = '2021-04-15-2021-04-20';
@@ -437,7 +437,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should not allow inputting the date that meets condition of "custom disabled date"', (done) => {
+  it('Should not allow inputting the date that meets condition of "custom disabled date"', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].datePicker.disableFunction = 'date.getDay() === 2';
@@ -461,7 +461,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should not allow inputting the date if it is out of min/max date range', (done) => {
+  it('Should not allow inputting the date if it is out of min/max date range', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].datePicker.minDate = '2021-04-04T12:00:00';
@@ -496,7 +496,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should set hour and minutes step', (done) => {
+  it('Should set hour and minutes step', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].timePicker = { hourStep:3, minuteStep:10 };
@@ -512,7 +512,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should allow inputting 24h time', (done) => {
+  it('Should allow inputting 24h time', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].timePicker = { showMeridian: false };
@@ -536,7 +536,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should not set value if it does not meet minDate validation', (done) => {
+  it('Should not set value if it does not meet minDate validation', function(done) {
     const form = _.cloneDeep(comp5);
     const element = document.createElement('div');
 
@@ -554,7 +554,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should set value in readOnly mode even if it does not meet current minDate validation conditions', (done) => {
+  it('Should set value in readOnly mode even if it does not meet current minDate validation conditions', function(done) {
     const form = _.cloneDeep(comp5);
     const element = document.createElement('div');
 
@@ -572,7 +572,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should save hours and minutes values on first change', (done) => {
+  it('Should save hours and minutes values on first change', function(done) {
     const form = _.cloneDeep(comp6);
     const element = document.createElement('div');
     form.components[0].enableDate = false;
@@ -604,7 +604,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should provide correct value after submission', (done) => {
+  it('Should provide correct value after submission', function(done) {
     const form = _.cloneDeep(comp7);
     const element = document.createElement('div');
     form.components[0].enableTime = false;
@@ -627,7 +627,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should not highlight the field when it is valid when multiple values and required validation are enabled', (done) => {
+  it('Should not highlight the field when it is valid when multiple values and required validation are enabled', function(done) {
     const form = _.cloneDeep(comp8);
     const element = document.createElement('div');
 
@@ -664,7 +664,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should provide correct values with time after submission', (done) => {
+  it('Should provide correct values with time after submission', function(done) {
     const form = _.cloneDeep(comp10);
     const element = document.createElement('div');
 
@@ -693,7 +693,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should add date to format if enableDate is true', (done) => {
+  it('Should add date to format if enableDate is true', function(done) {
     const form = _.cloneDeep(comp3);
     form.components[0].format = 'hh:mm a';
     form.components[0].enableDate = true;
@@ -706,7 +706,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should add time to format if enableTime is true', (done) => {
+  it('Should add time to format if enableTime is true', function(done) {
     const form = _.cloneDeep(comp3);
     form.components[0].format = 'yyyy-MM-dd';
     form.components[0].enableTime = true;
@@ -719,7 +719,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should refresh disabled dates when other fields values change', (done) => {
+  it('Should refresh disabled dates when other fields values change', function(done) {
     const form = _.cloneDeep(comp13);
     const element = document.createElement('div');
 
@@ -746,7 +746,7 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should not change incomplete input if a manual value is given ', (done) => {
+  it('Should not change incomplete input if a manual value is given ', function(done) {
     Formio.createForm(document.createElement('div'), comp14, {}).then((form) => {
       const dateTimeComponent = form.getComponent('dateTime');
       const calendar = dateTimeComponent.element.querySelector('.flatpickr-input').widget.calendar;

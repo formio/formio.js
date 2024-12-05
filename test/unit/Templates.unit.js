@@ -1,3 +1,4 @@
+/* eslint-disable mocha/no-setup-in-describe */
 const renders = require('../renders');
 const forms = require('../formtest');
 const pretty = require('pretty');
@@ -8,7 +9,6 @@ const Components = require('../../src/components/Components').default;
 const templates = require('../../src/templates/index').default;
 const Form = require('../../src/Form').default;
 Components.setComponents(AllComponents);
-const componentDir = 'components';
 
 const fixComponent = (instance, index = 0) => {
   instance.id = instance.key;
@@ -25,12 +25,12 @@ const fixComponent = (instance, index = 0) => {
   }
 };
 
-describe('Rendering Tests', () => {
+describe('Rendering Tests', function() {
   Object.keys(templates).forEach(framework => {
-    describe(`Framework ${framework}`, () => {
-      describe('Form Renders', () => {
+    describe(`Framework ${framework}`, function() {
+      describe('Form Renders', function() {
         Object.keys(forms).forEach(form => {
-          it(`Form renders ${form}`, () => {
+          it(`Form renders ${form}`, function() {
             return new Form(forms[form], { template: framework }).ready.then(instance => {
               fixComponent(instance);
               assert.equal(renders[`form-${framework}-${form}`], pretty(instance.render(), { ocd: true }));
@@ -41,14 +41,15 @@ describe('Rendering Tests', () => {
 
       Object.keys(AllComponents).forEach(component => {
         if (component !== 'componentmodal') {
-          describe(`Component ${component}`, () => {
-            it(`Renders ${component} for ${framework}`, (done) => {
+          describe(`Component ${component}`, function() {
+            it(`Renders ${component} for ${framework}`, function(done) {
               const instance = new AllComponents[component]({}, { template: framework });
               fixComponent(instance);
               assert.equal(renders[`component-${framework}-${component}`], pretty(instance.render(), { ocd: true }));
               done();
             });
-            it(`Renders ${component} for ${framework} as required`, (done) => {
+
+            it(`Renders ${component} for ${framework} as required`, function(done) {
               const instance = new AllComponents[component]({
                 validate: {
                   required: true
@@ -60,7 +61,8 @@ describe('Rendering Tests', () => {
               assert.equal(renders[`component-${framework}-${component}-required`], pretty(instance.render(), { ocd: true }));
               done();
             });
-            it(`Renders ${component} for ${framework} as multiple`, (done) => {
+
+            it(`Renders ${component} for ${framework} as multiple`, function(done) {
               const instance = new AllComponents[component]({
                 multiple: true
               }, {
@@ -77,7 +79,7 @@ describe('Rendering Tests', () => {
               values.unshift(undefined);
 
               values.forEach((value, index) => {
-                it(`Renders ${component} for ${framework} value ${index} as html`, (done) => {
+                it(`Renders ${component} for ${framework} value ${index} as html`, function(done) {
                   const instance = new AllComponents[component]({}, {
                     template: framework,
                     flatten: true,
@@ -88,7 +90,7 @@ describe('Rendering Tests', () => {
                   assert.equal(renders[`component-${framework}-${component}-html-value${index}`], pretty(instance.render(), { ocd: true }));
                   done();
                 });
-                it(`Renders ${component} for ${framework} value ${index} as string`, (done) => {
+                it(`Renders ${component} for ${framework} value ${index} as string`, function(done) {
                   const instance = new AllComponents[component]({}, {
                     template: framework,
                     flatten: true,

@@ -12,14 +12,14 @@ import TextAreaComponent from '../../src/components/textarea/TextArea';
 import { fastCloneDeep } from '@formio/core';
 window.ace = require('ace-builds');
 
-describe('TextArea Component', () => {
-  it('Should build a TextArea component', () => {
+describe('TextArea Component', function() {
+  it('Should build a TextArea component', function() {
     return Harness.testCreate(TextAreaComponent, comp1).then((component) => {
       Harness.testElements(component, 'textarea', 1);
     });
   });
 
-  it('setValue should be called only once', () => {
+  it('setValue should be called only once', function() {
     return Harness.testCreate(TextAreaComponent, comp2).then((component) => {
       const valueToSet = [
         {
@@ -39,7 +39,7 @@ describe('TextArea Component', () => {
     });
   });
 
-  it('Should provide min/max length validation', (done) => {
+  it('Should provide min/max length validation', function(done) {
     const form = _.cloneDeep(comp3);
     form.components[0].validate = { minLength: 5, maxLength: 10 };
 
@@ -110,7 +110,7 @@ describe('TextArea Component', () => {
     testValidity(invalidMax, false, 'Text Area must have no more than 10 characters.', invalidMax[invalidMax.length-1]);
   });
 
-  it('Should provide min/max words validation', (done) => {
+  it('Should provide min/max words validation', function(done) {
     const form = _.cloneDeep(comp3);
     form.components[0].validate = { minWords: 2, maxWords: 5 };
 
@@ -181,7 +181,7 @@ describe('TextArea Component', () => {
     testValidity(invalidMax, false, 'Text Area must have no more than 5 words.', invalidMax[invalidMax.length-1]);
   });
 
-  it('Should provide pattern validation', (done) => {
+  it('Should provide pattern validation', function(done) {
     const form = _.cloneDeep(comp3);
     form.components[0].validate = { pattern: '\\D+' };
 
@@ -243,7 +243,7 @@ describe('TextArea Component', () => {
     );
   });
 
-  it('Should set custom number of rows', (done) => {
+  it('Should set custom number of rows', function(done) {
     const form = _.cloneDeep(comp3);
     form.components[0].rows = 5;
     const element = document.createElement('div');
@@ -256,7 +256,7 @@ describe('TextArea Component', () => {
     }).catch(done);
   });
 
-  it('Should render HTML', (done) => {
+  it('Should render HTML', function(done) {
     const form = _.cloneDeep(comp3);
     form.components[0].inputFormat = 'html';
     const element = document.createElement('div');
@@ -277,7 +277,7 @@ describe('TextArea Component', () => {
     }).catch(done);
   });
 
-  it('Should render plain text', (done) => {
+  it('Should render plain text', function(done) {
     const form = _.cloneDeep(comp3);
     form.components[0].inputFormat = 'plain';
     const element = document.createElement('div');
@@ -298,7 +298,7 @@ describe('TextArea Component', () => {
     }).catch(done);
   });
 
-  it('Should correctly count characters if character counter is enabled', (done) => {
+  it('Should correctly count characters if character counter is enabled', function(done) {
     const form = _.cloneDeep(comp3);
     form.components[0].showCharCount = true;
     const element = document.createElement('div');
@@ -340,7 +340,7 @@ describe('TextArea Component', () => {
     }).catch(done);
   });
 
-  it('Should correctly count words if word counter is enabled', (done) => {
+  it('Should correctly count words if word counter is enabled', function(done) {
     const form = _.cloneDeep(comp3);
     form.components[0].showWordCount = true;
     const element = document.createElement('div');
@@ -383,7 +383,7 @@ describe('TextArea Component', () => {
     }).catch(done);
   });
 
-  it('Should translate character counter if it is enabled', (done) => {
+  it('Should translate character counter if it is enabled', function(done) {
     const form = _.cloneDeep(comp3);
     form.components[0].showCharCount = true;
     form.components[0].validate = {
@@ -411,9 +411,9 @@ describe('TextArea Component', () => {
     }).catch(done);
   });
 
-  describe('Rich text editors', () => {
-    describe('CKEditor', () => {
-      it('Should allow to insert media fiels and show the in them read-only mode', (done) => {
+  describe('Rich text editors', function() {
+    describe('CKEditor', function() {
+      it('Should allow to insert media fiels and show the in them read-only mode', function(done) {
         const element = document.createElement('div');
 
         Formio.createForm(element, formWithCKEditor, { readOnly: true }).then(form => {
@@ -452,7 +452,7 @@ describe('TextArea Component', () => {
       });
     });
 
-    it('Should clear value in the editor on Reset', (done) => {
+    it('Should clear value in the editor on Reset', function(done) {
       const element = document.createElement('div');
 
       Formio.createForm(element, formWithRichTextAreas).then(form => {
@@ -494,7 +494,7 @@ describe('TextArea Component', () => {
       }).catch(done);
     });
 
-    it('Should set empty value properly when save as JSON', (done) => {
+    it('Should set empty value properly when save as JSON', function(done) {
       const element = document.createElement('div');
 
       Formio.createForm(element, comp4).then(form => {
@@ -504,7 +504,7 @@ describe('TextArea Component', () => {
       }).catch(done);
     });
 
-    it('Should not autofocus until the editor is ready', (done) => {
+    it('Should not autofocus until the editor is ready', function(done) {
       const element = document.createElement('div');
       const testComponents = [
         {
@@ -527,7 +527,7 @@ describe('TextArea Component', () => {
       }).catch(done);
     });
 
-    it('Should not autofocus if the form is readOnly', (done) => {
+    it('Should not autofocus if the form is readOnly', function(done) {
       const element = document.createElement('div');
       const testComponents = [
         {
@@ -550,7 +550,7 @@ describe('TextArea Component', () => {
       }).catch(done);
     });
 
-    it('Should set array as value for textarea with ace editor with json data type', (done) => {
+    it('Should set array as value for textarea with ace editor with json data type', function(done) {
       const element = document.createElement('div');
      
       Formio.createForm(element, textAreaJsonType).then(form => {

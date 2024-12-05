@@ -10,12 +10,12 @@ import {
   comp4,
 } from './fixtures/address';
 
-describe('Address Component', () => {
-  it('Should build an address component', () => {
+describe('Address Component', function() {
+  it('Should build an address component', function() {
     return Harness.testCreate(AddressComponent, comp1);
   });
 
-  it('Should set default value and clear it on "clear icon" click (openStreetMap provider)', (done) => {
+  it('Should set default value and clear it on "clear icon" click (openStreetMap provider)', function(done) {
     const form = _.cloneDeep(comp2);
     const element = document.createElement('div');
 
@@ -38,7 +38,7 @@ describe('Address Component', () => {
     }).catch(done);
   });
 
-  it('Should disable "clear icon"', (done) => {
+  it('Should disable "clear icon"', function(done) {
     const form = _.cloneDeep(comp2);
     const element = document.createElement('div');
     form.components[0].disableClearIcon = true;
@@ -52,7 +52,7 @@ describe('Address Component', () => {
     }).catch(done);
   });
 
-  it('Test manual mode', (done) => {
+  it('Test manual mode', function(done) {
     const form = _.cloneDeep(comp2);
     const element = document.createElement('div');
     form.components[0].disableClearIcon = true;
@@ -104,7 +104,7 @@ describe('Address Component', () => {
     }).catch(done);
   });
 
-  it('Should close modal window without showing dialog if value not changed', (done) => {
+  it('Should close modal window without showing dialog if value not changed', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
 
@@ -178,7 +178,7 @@ describe('Address Component', () => {
     }).catch(done);
   });
 
-  it('Should correctly display component that has a conditional based on the Address component', (done) => {
+  it('Should correctly display component that has a conditional based on the Address component', function(done) {
     const value = {
       'place_id': 298032694,
       licence: 'Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright',

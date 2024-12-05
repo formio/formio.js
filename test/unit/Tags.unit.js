@@ -53,7 +53,7 @@ describe('Tags Component', function() {
     }).catch(done);
   });
 
-  it('Check getValueAsString', (done) => {
+  it('Check getValueAsString', function(done) {
     const element = document.createElement('div');
     Formio.createForm(element, modalTagsComponent)
       .then(form => {
@@ -73,7 +73,7 @@ describe('Tags Component', function() {
       .catch(done);
   });
 
-  it('Should use correct delimiter for value', (done) => {
+  it('Should use correct delimiter for value', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].delimeter = '-';
@@ -95,7 +95,7 @@ describe('Tags Component', function() {
     }).catch(done);
   });
 
-  it('Should use store value as array', (done) => {
+  it('Should use store value as array', function(done) {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
     form.components[0].storeas = 'array';
@@ -117,7 +117,7 @@ describe('Tags Component', function() {
     }).catch(done);
   });
 
-  it('Should show the specified delimiter when get value as string', (done) => {
+  it('Should show the specified delimiter when get value as string', function(done) {
     const form = _.cloneDeep(comp5);
     const element = document.createElement('div');
 
@@ -139,7 +139,7 @@ describe('Tags Component', function() {
     }).catch(done);
   });
 
-  it('OnBlur validation should work properly with Tags component', (done) => {
+  it('OnBlur validation should work properly with Tags component', function(done) {
     const element = document.createElement('div');
 
     Formio.createForm(element, comp6).then(form => {

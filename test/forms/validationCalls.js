@@ -4,7 +4,7 @@ import Harness from '../harness';
 
 export default {
   title: 'Form Validation Test',
-  /* eslint-disable */
+   
   form: {
     "components": [
       {
@@ -57,7 +57,7 @@ export default {
       }
     ]
   },
-  /* eslint-enable */
+   
   tests: {
     'validationCall Text 1 change should not trigger number validation'(form, done) {
       const [textfield, number] = form.components;

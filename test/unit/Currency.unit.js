@@ -1,3 +1,4 @@
+/* eslint-disable no-loss-of-precision */
 import Harness from '../harness';
 import CurrencyComponent from '../../src/components/currency/Currency';
 import assert from 'power-assert';
@@ -8,21 +9,21 @@ import {
   comp4,
 } from './fixtures/currency';
 
-describe('Currency Component', () => {
-  before(done => {
+describe('Currency Component', function() {
+  before(function(done) {
     // Need to polyfill some Intl.locale support, since node doesn't include it in standard builds
     require('../numberFormatPolyfill');
 
     done();
   });
 
-  it('Should build a currency component', () => {
+  it('Should build a currency component', function() {
     return Harness.testCreate(CurrencyComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
     });
   });
 
-  it('Should place a caret between the period and the underline.', (done) => {
+  it('Should place a caret between the period and the underline.', function(done) {
     Harness.testCreate(CurrencyComponent, comp3, { language: 'en-US' })
       .then((component) => {
         const inputEvent = new Event('input');
@@ -41,7 +42,7 @@ describe('Currency Component', () => {
       });
   });
 
-  it('Should format value on blur for USA locale', (done) => {
+  it('Should format value on blur for USA locale', function(done) {
     Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {
       component.root = {
         onChange: ()=>{},
@@ -81,7 +82,7 @@ describe('Currency Component', () => {
     });
   });
 
-  it('Should format value on blur for French locale', (done) => {
+  it('Should format value on blur for French locale', function(done) {
     Harness.testCreate(CurrencyComponent, comp1, { language: 'fr' }).then((component) => {
       component.root = {
         onChange: ()=>{},
@@ -121,7 +122,7 @@ describe('Currency Component', () => {
     });
   });
 
-  it('Should not change entered value on blur if multiple value is set', (done) => {
+  it('Should not change entered value on blur if multiple value is set', function(done) {
     Harness.testCreate(CurrencyComponent, comp2).then((component) => {
       component.root = {
         onChange: ()=>{},
@@ -147,7 +148,7 @@ describe('Currency Component', () => {
     });
   });
 
-  it('Should format currency submissions for table view for French locale', () => {
+  it('Should format currency submissions for table view for French locale', function() {
     return Harness.testCreate(CurrencyComponent, comp1, { language: 'fr' }).then((component) => {
       const value1 = component.getValueAsString(1);
       const value2 = component.getValueAsString(1.1);
@@ -165,7 +166,7 @@ describe('Currency Component', () => {
     });
   });
 
-  it('Should format currency sumbissions for table view for USA locale', () => {
+  it('Should format currency sumbissions for table view for USA locale', function() {
     return Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {
       const value1 = component.getValueAsString(1);
       const value2 = component.getValueAsString(1.1);
@@ -183,7 +184,7 @@ describe('Currency Component', () => {
     });
   });
 
-  it('Should add trailing zeros', () => {
+  it('Should add trailing zeros', function() {
     return Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {
       assert.equal(component.addZerosAndFormatValue(null),);
       assert.equal(component.addZerosAndFormatValue('3'), '3.00');
@@ -196,7 +197,7 @@ describe('Currency Component', () => {
     });
   });
 
-  it('Should set values with trailing zeros', () => {
+  it('Should set values with trailing zeros', function() {
     return Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {
       assert.equal(component.formatValue(null), null);
       assert.equal(component.formatValue('0'), '0.00');
@@ -206,8 +207,8 @@ describe('Currency Component', () => {
     });
   });
 
-  it('Should format currency for USA locale', () => {
-    /* eslint-disable max-statements */
+  it('Should format currency for USA locale', function() {
+
     return Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, undefined, null, '');
@@ -258,10 +259,10 @@ describe('Currency Component', () => {
       Harness.testSetInput(component, '$123456789.123456789', 123456789.12, '$123,456,789.12');
       Harness.testSetInput(component, '-$123456789.123456789', -123456789.12, '-$123,456,789.12');
     });
-    /* eslint-enable max-statements */
+
   });
 
-  it('Should format currency for British locale', () => {
+  it('Should format currency for British locale', function() {
     return Harness.testCreate(CurrencyComponent, comp1, { language: 'en-GB' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, 'US$0.00');
@@ -280,7 +281,7 @@ describe('Currency Component', () => {
     });
   });
 
-  it('Should format currency for French locale', () => {
+  it('Should format currency for French locale', function() {
     return Harness.testCreate(CurrencyComponent, comp1, { language: 'fr' }).then((component) => {
       // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
       Harness.testSetInput(component, null, null, '');
@@ -300,7 +301,7 @@ describe('Currency Component', () => {
     });
   });
 
-  it('Should format currency for German locale', () => {
+  it('Should format currency for German locale', function() {
     return Harness.testCreate(CurrencyComponent, comp1, { language: 'de' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0,00 $');
@@ -319,7 +320,7 @@ describe('Currency Component', () => {
     });
   });
 
-  it('Should return value as string properly for multiple values', (done) => {
+  it('Should return value as string properly for multiple values', function(done) {
     Harness.testCreate(CurrencyComponent, comp4).then((component) => {
       component.refs.input = null;
       assert.equal(component.getValueAsString([100, 200, 300, 500]), '$100.00, $200.00, $300.00, $500.00');

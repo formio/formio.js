@@ -17,8 +17,8 @@ import {
 
 import { comp10 as formWithCalendarTextField } from './fixtures/datetime';
 
-describe('TextField Component', () => {
-  it('Should create a new TextField', () => {
+describe('TextField Component', function() {
+  it('Should create a new TextField', function() {
     const textField = new TextFieldComponent({
       label: 'First Name',
       key: 'firstName',
@@ -29,20 +29,20 @@ describe('TextField Component', () => {
     assert.equal(textField.component.key, 'firstName');
   });
 
-  it('Should build a TextField component', () => {
+  it('Should build a TextField component', function() {
     return Harness.testCreate(TextFieldComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
     });
   });
 
-  it('Should disable multiple mask selector if component is disabled', (done) => {
+  it('Should disable multiple mask selector if component is disabled', function(done) {
     Harness.testCreate(TextFieldComponent, comp4).then((component) => {
       Harness.testElements(component, '[disabled]', 2);
       done();
     });
   });
 
-  it('Should check mask and value in the textfield component in the email template', (done) => {
+  it('Should check mask and value in the textfield component in the email template', function(done) {
     const formJson =  {
       components: [{
           label: 'Text Field',
@@ -84,7 +84,7 @@ describe('TextField Component', () => {
       .catch(done);
   });
 
-  it('Should provide required validation', () => {
+  it('Should provide required validation', function() {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { required: true }
     })).then((component) => {
@@ -94,7 +94,7 @@ describe('TextField Component', () => {
     });
   });
 
-  it('Should provide minWords validation', () => {
+  it('Should provide minWords validation', function() {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { minWords: 2 }
     })).then((component) => {
@@ -104,7 +104,7 @@ describe('TextField Component', () => {
     });
   });
 
-  it('Should correctly calculate remaining words', (done) => {
+  it('Should correctly calculate remaining words', function(done) {
     Harness.testCreate(TextFieldComponent, comp5).then((component) => {
       const inputEvent = new Event('input', { bubbles: true, cancelable: true });
       const element = component.refs.input[0];
@@ -134,7 +134,7 @@ describe('TextField Component', () => {
     });
   });
 
-  it('Should provide maxWords validation', () => {
+  it('Should provide maxWords validation', function() {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { maxWords: 2 }
     })).then((component) => {
@@ -144,7 +144,7 @@ describe('TextField Component', () => {
     });
   });
 
-  it('Should provide minLength validation', () => {
+  it('Should provide minLength validation', function() {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { minLength: 2 }
     })).then((component) => {
@@ -154,7 +154,7 @@ describe('TextField Component', () => {
     });
   });
 
-  it('Should provide maxLength validation', () => {
+  it('Should provide maxLength validation', function() {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: { maxLength: 5 }
     })).then(component => {
@@ -164,7 +164,7 @@ describe('TextField Component', () => {
     });
   });
 
-  it('Should provide custom validation', () => {
+  it('Should provide custom validation', function() {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: {
         custom: 'valid = (input !== "Joe") ? true : "You cannot be Joe"'
@@ -176,7 +176,7 @@ describe('TextField Component', () => {
     });
   });
 
-  it('Should provide one custom error message', (done) => {
+  it('Should provide one custom error message', function(done) {
     const formJson =  {
       components: [{
           label: 'Text Field',
@@ -215,7 +215,7 @@ describe('TextField Component', () => {
       .catch(done);
   });
 
-  it('Should provide json validation', () => {
+  it('Should provide json validation', function() {
     return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
       validate: {
         json: {
@@ -238,7 +238,7 @@ describe('TextField Component', () => {
     });
   });
 
-  it('Should provide number input mask only after blur event if applyMaskOn setting on blur', (done) => {
+  it('Should provide number input mask only after blur event if applyMaskOn setting on blur', function(done) {
     const form = _.cloneDeep(comp7);
     const element = document.createElement('div');
     form.components[0].inputMask = '99-99';
@@ -266,7 +266,7 @@ describe('TextField Component', () => {
     }).catch(done);
   });
 
-  it('Should provide validation of number input mask only after blur event if applyMaskOn setting on blur', (done) => {
+  it('Should provide validation of number input mask only after blur event if applyMaskOn setting on blur', function(done) {
     const form = _.cloneDeep(comp7);
     const element = document.createElement('div');
     form.components[0].inputMask = '99-99';
@@ -319,7 +319,7 @@ describe('TextField Component', () => {
     }).catch(done);
   });
 
-  it('Should provide validation of number input mask after setting value', (done) => {
+  it('Should provide validation of number input mask after setting value', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '99/99-99.99:99,99';
 
@@ -385,7 +385,7 @@ describe('TextField Component', () => {
     testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
   });
 
-  it('Should allow inputing only numbers and format input according to input mask', (done) => {
+  it('Should allow inputing only numbers and format input according to input mask', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '99/99-99.99:99,99';
 
@@ -435,7 +435,7 @@ describe('TextField Component', () => {
     testFormatting(values, values[values.length-1]);
   });
 
-  it('Should allow dynamic syntax for input mask', (done) => {
+  it('Should allow dynamic syntax for input mask', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = 'aa-9{1,3}/9[99]';
 
@@ -493,7 +493,7 @@ describe('TextField Component', () => {
     testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
   });
 
-  it('Should provide validation for alphabetic input mask after setting value', (done) => {
+  it('Should provide validation for alphabetic input mask after setting value', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = 'a/A/a-a:a.a,aa';
 
@@ -554,7 +554,7 @@ describe('TextField Component', () => {
     testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
   });
 
-  it('Should allow inputing only letters and format input according to input mask', (done) => {
+  it('Should allow inputing only letters and format input according to input mask', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = 'a/a/a-a:a.a,aa';
 
@@ -596,7 +596,7 @@ describe('TextField Component', () => {
     testFormatting(values, values[values.length-1]);
   });
 
-  it('Should provide validation for alphanumeric input mask after setting value', (done) => {
+  it('Should provide validation for alphanumeric input mask after setting value', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '**/***.*-*,**';
 
@@ -656,7 +656,7 @@ describe('TextField Component', () => {
     testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
   });
 
-  it('Should allow inputing only letters and digits and format input according to input mask', (done) => {
+  it('Should allow inputing only letters and digits and format input according to input mask', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '**/***.*-*,**';
 
@@ -698,7 +698,7 @@ describe('TextField Component', () => {
     testFormatting(values, values[values.length-1].value);
   });
 
-  it('Should provide validation for mixed input mask after setting value', (done) => {
+  it('Should provide validation for mixed input mask after setting value', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '**/99-aa';
 
@@ -759,7 +759,7 @@ describe('TextField Component', () => {
     testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
   });
 
-  it('Should allow inputing only letters and digits and format input according to mixed input mask', (done) => {
+  it('Should allow inputing only letters and digits and format input according to mixed input mask', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '**/99-aa';
 
@@ -798,7 +798,7 @@ describe('TextField Component', () => {
     testFormatting(values, values[values.length-1].value);
   });
 
-  it('Should allow multiple masks', async () => {
+  it('Should allow multiple masks', async function() {
     const form = _.cloneDeep(comp6);
     const tf = form.components[0];
     tf.allowMultipleMasks = true;
@@ -851,7 +851,7 @@ describe('TextField Component', () => {
     }
   });
 
-  it('Should provide validation of number input mask with low dash and placeholder char after setting value', (done) => {
+  it('Should provide validation of number input mask with low dash and placeholder char after setting value', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '99_99/99';
     form.components[0].inputMaskPlaceholderChar = '.';
@@ -909,7 +909,7 @@ describe('TextField Component', () => {
     testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
   });
 
-  it('Should format input according to input mask with low dash when placeholder char is set', (done) => {
+  it('Should format input according to input mask with low dash when placeholder char is set', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '99_99/99';
     form.components[0].inputMaskPlaceholderChar = '.';
@@ -946,7 +946,7 @@ describe('TextField Component', () => {
     testFormatting(values, values[values.length-1].value);
   });
 
-  it('Should correctly count characters if character counter is enabled', (done) => {
+  it('Should correctly count characters if character counter is enabled', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].showCharCount = true;
     const element = document.createElement('div');
@@ -988,7 +988,7 @@ describe('TextField Component', () => {
     }).catch(done);
   });
 
-  it('Should format value to uppercase', (done) => {
+  it('Should format value to uppercase', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].case = 'uppercase';
     const element = document.createElement('div');
@@ -1029,7 +1029,7 @@ describe('TextField Component', () => {
     }).catch(done);
   });
 
-  it('Should format value to lowercase', (done) => {
+  it('Should format value to lowercase', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].case = 'lowercase';
     const element = document.createElement('div');
@@ -1070,7 +1070,7 @@ describe('TextField Component', () => {
     }).catch(done);
   });
 
-  it('Should render and open/close calendar on click', (done) => {
+  it('Should render and open/close calendar on click', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].widget = {
       allowInput: true,
@@ -1129,7 +1129,7 @@ describe('TextField Component', () => {
     }).catch(done);
   });
 
-  it('Should set value into calendar', (done) => {
+  it('Should set value into calendar', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].widget = {
       allowInput: true,
@@ -1195,7 +1195,7 @@ describe('TextField Component', () => {
     }).catch(done);
   });
 
-  it('Should allow manual input and set value on blur if calendar widget is enabled with allowed input', (done) => {
+  it('Should allow manual input and set value on blur if calendar widget is enabled with allowed input', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].widget = {
       allowInput: true,
@@ -1276,7 +1276,7 @@ describe('TextField Component', () => {
     }).catch(done);
   });
 
-  it('Should allow removing date value if calendar widget is enabled with allowed input', (done) => {
+  it('Should allow removing date value if calendar widget is enabled with allowed input', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].widget = {
       allowInput: true,
@@ -1362,7 +1362,7 @@ describe('TextField Component', () => {
     }).catch(done);
   });
   // see https://formio.atlassian.net/browse/FIO-9217
-  it('Should allow the populating of a calendar widget–text field component with a custom default value that is a moment datetime', (done) => {
+  it('Should allow the populating of a calendar widget–text field component with a custom default value that is a moment datetime', function(done) {
     const form = _.cloneDeep(formWithCalendarTextField);
     const textFieldComponent = form.components[1];
     textFieldComponent.customDefaultValue = "value=moment('2024-11-13 15:00:00')";
@@ -1379,7 +1379,7 @@ describe('TextField Component', () => {
     }).catch(done);
   });
 
-  it('Test Display mask', (done) => {
+  it('Test Display mask', function(done) {
     const element = document.createElement('div');
 
     Formio.createForm(element, withDisplayAndInputMasks).then(form => {
@@ -1444,7 +1444,7 @@ describe('TextField Component', () => {
     }).catch(done);
   });
 
-  it('Should render HTML', (done) => {
+  it('Should render HTML', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputFormat = 'html';
     const element = document.createElement('div');
@@ -1468,7 +1468,7 @@ describe('TextField Component', () => {
     }).catch(done);
   });
 
-  it('Should render plain text', (done) => {
+  it('Should render plain text', function(done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputFormat = 'plain';
     const element = document.createElement('div');
@@ -1489,8 +1489,8 @@ describe('TextField Component', () => {
     }).catch(done);
   });
 
-  describe('TextFields with `multiple` attribute', () => {
-    it('Should normalize the dataValue to an array when a field is marked as multiple', (done) => {
+  describe('TextFields with `multiple` attribute', function() {
+    it('Should normalize the dataValue to an array when a field is marked as multiple', function(done) {
       const element = document.createElement('div');
 
       Formio.createForm(element, {
@@ -1515,7 +1515,7 @@ describe('TextField Component', () => {
       }).catch(done);
     });
 
-    it('Should normalize the dataValue to a string when a field is not marked as multiple', (done) => {
+    it('Should normalize the dataValue to a string when a field is not marked as multiple', function(done) {
       const element = document.createElement('div');
 
       Formio.createForm(element, {

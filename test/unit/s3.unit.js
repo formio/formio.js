@@ -2,8 +2,8 @@ import assert from 'assert';
 import sinon from 'sinon';
 import fetchMock from 'fetch-mock';
 
-import S3 from './s3';
-import { withRetries } from './util';
+import S3 from '../../src/providers/storage/s3';
+import { withRetries } from '../../src/providers/storage/util';
 
 describe('S3 Provider', function() {
   describe('Function Unit Tests', function() {

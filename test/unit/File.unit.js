@@ -5,8 +5,8 @@ import { comp1, comp2 } from './fixtures/file';
 import { Formio } from '../../src/Formio';
 import _ from 'lodash';
 
-describe('File Component', () => {
-  it('Should create a File Component', () => {
+describe('File Component', function() {
+  it('Should create a File Component', function() {
     return Harness.testCreate(FileComponent, comp1).then((component) => {
       const parentNode = document.createElement('div');
       const element = document.createElement('div');
@@ -41,7 +41,7 @@ describe('File Component', () => {
     });
   });
 
-  it('Should hide loader after loading process', () => {
+  it('Should hide loader after loading process', function() {
     return Harness.testCreate(FileComponent, comp1).then((component) => {
       const parentNode = document.createElement('div');
       const element = document.createElement('div');
@@ -62,7 +62,7 @@ describe('File Component', () => {
     });
   });
 
-  it('Should create a multiple File Component', () => {
+  it('Should create a multiple File Component', function() {
     comp1.multiple = true;
     return Harness.testCreate(FileComponent, comp1).then((component) => {
       const parentNode = document.createElement('div');
@@ -98,7 +98,7 @@ describe('File Component', () => {
     });
   });
 
-  it('Should validate uploaded file according to the pattern', (done) => {
+  it('Should validate uploaded file according to the pattern', function(done) {
     Harness.testCreate(FileComponent, comp1).then((component) => {
       const validFiles =[
         {
@@ -145,7 +145,7 @@ describe('File Component', () => {
     });
   });
 
-  it('Should display uploaded file in file component only after saving', (done) => {
+  it('Should display uploaded file in file component only after saving', function(done) {
     const form = _.cloneDeep(comp2);
     const element = document.createElement('div');
 
@@ -197,7 +197,7 @@ describe('File Component', () => {
     }).catch(done);
   });
 
-  it('Should not incorrectly validate a non-multiple File component', () => {
+  it('Should not incorrectly validate a non-multiple File component', function() {
     comp1.multiple = false;
     return Harness.testCreate(FileComponent, comp1).then((component) => {
       assert(component.checkValidity(), 'Item should be valid');
@@ -215,7 +215,7 @@ describe('File Component', () => {
     });
   })
 
-  it('Should not incorrectly validate a multiple File Component', () => {
+  it('Should not incorrectly validate a multiple File Component', function() {
     comp1.multiple = true;
     return Harness.testCreate(FileComponent, comp1).then((component) => {
       assert(component.checkValidity(), 'Item should be valid');
@@ -233,7 +233,7 @@ describe('File Component', () => {
     });
   });
 
-  it('Should abort the correct file when user clicks the file remove button', (done) => {
+  it('Should abort the correct file when user clicks the file remove button', function(done) {
     const cmp =  _.cloneDeep(comp1);
     const abortedFiles = [];
     cmp.multiple = true;
@@ -307,14 +307,15 @@ describe('File Component', () => {
       }, 100);
     });
   });
-  it('should not error on upload when noDefaults is set to true', () => {
+
+  it('should not error on upload when noDefaults is set to true', function() {
     return Formio.createForm(document.createElement('div'), comp2,{ noDefaults: true }).then((form)=>{
       const file = form.getComponent('file');
       return file.handleFilesToUpload([{ name: 'mypdf.pdf', size: 123123, type: 'application/pdf' }]);
     });
   });
 
-  it('Should emit fileUploadError event on file upload failure', (done) => {
+  it('Should emit fileUploadError event on file upload failure', function(done) {
     const cmp = _.cloneDeep(comp1);
     const fileServiceError = new Error('Upload failed');
 

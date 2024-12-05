@@ -2,8 +2,8 @@ import assert from 'power-assert';
 import { Formio } from '../../src/formio.form';
 import { comp1 } from './fixtures/tabs';
 
-describe('Tabs Component', () => {
-  it('Test setting error classes when set to modalEdit', (done) => {
+describe('Tabs Component', function() {
+  it('Test setting error classes when set to modalEdit', function(done) {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, { display: 'form', type: 'form', components: [comp1] }).then((form) => {
       const comp = form.components[0];

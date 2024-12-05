@@ -9,14 +9,14 @@ import {
   comp2
 } from './fixtures/password';
 
-describe('Password Component', () => {
-  it('Should build a password component', () => {
+describe('Password Component', function() {
+  it('Should build a password component', function() {
     return Harness.testCreate(PasswordComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="password"]', 1);
     });
   });
 
-  it('Should provide min/max length validation', (done) => {
+  it('Should provide min/max length validation', function(done) {
     const form = _.cloneDeep(comp2);
     form.components[0].validate = { minLength: 5, maxLength: 10 };
 
@@ -87,7 +87,7 @@ describe('Password Component', () => {
     testValidity(invalidMax, false, 'Password must have no more than 10 characters.', invalidMax[invalidMax.length-1]);
   });
 
-  it('Should provide pattern validation', (done) => {
+  it('Should provide pattern validation', function(done) {
     const form = _.cloneDeep(comp2);
     form.components[0].validate = { pattern: '\\D+' };
 
@@ -145,7 +145,7 @@ describe('Password Component', () => {
     testValidity(invalidValues, false, 'Password does not match the pattern \\D+', invalidValues[invalidValues.length-1]);
   });
 
-  it('Should not show required validation error message in edit page before editing', (done) => {
+  it('Should not show required validation error message in edit page before editing', function(done) {
     const form = _.cloneDeep(comp2);
     form.components[0].validate = { required: true };
     const element = document.createElement('div');

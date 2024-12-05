@@ -7,9 +7,10 @@ import Webform from '../../src/Webform';
 import Harness from '../harness';
 import { comp1, comp4, comp3, comp5, comp6, comp7 } from './fixtures/component';
 import _merge from 'lodash/merge';
+import { Formio } from '../../src/index';
 
-describe('Component', () => {
-  it('Should create a Component', (done) => {
+describe('Component', function() {
+  it('Should create a Component', function(done) {
     const component = new Component();
 
     // Test that we have a proper constructed component.
@@ -20,14 +21,14 @@ describe('Component', () => {
     done();
   });
 
-  it('Should build a base component', () => {
+  it('Should build a base component', function() {
     return Harness.testCreate(Component, { type: 'base' }).then((component) => {
       const element = component.element.querySelector('[ref="component"]');
       assert.equal(element.textContent.trim(), 'Unknown component: base');
     });
   });
 
-  it('Should provide required validation', (done) => {
+  it('Should provide required validation', function(done) {
     Harness.testCreate(Component, _merge({}, comp1, {
       validate: { required: true }
     })).then((component) => Harness.testComponent(component, {
@@ -42,7 +43,7 @@ describe('Component', () => {
     }, done)).catch(done);
   });
 
-  it('Should provide minLength validation', (done) => {
+  it('Should provide minLength validation', function(done) {
     Harness.testCreate(Component, _merge({}, comp1, {
       validate: { minLength: 2 }
     })).then((component) => Harness.testComponent(component, {
@@ -57,7 +58,7 @@ describe('Component', () => {
     }, done));
   });
 
-  it('Should provide maxLength validation', (done) => {
+  it('Should provide maxLength validation', function(done) {
     Harness.testCreate(Component, _merge({}, comp1, {
       validate: { maxLength: 5 }
     })).then((component) => Harness.testComponent(component, {
@@ -72,7 +73,7 @@ describe('Component', () => {
     }, done));
   });
 
-  it('Should provide maxWords validation', (done) => {
+  it('Should provide maxWords validation', function(done) {
     Harness.testCreate(Component, _merge({}, comp1, {
       validate: { maxWords: 2 }
     })).then((component) => Harness.testComponent(component, {
@@ -87,7 +88,7 @@ describe('Component', () => {
     }, done));
   });
 
-  it('Should provide minWords validation', (done) => {
+  it('Should provide minWords validation', function(done) {
     Harness.testCreate(Component, _merge({}, comp1, {
       validate: { minWords: 2 }
     })).then((component) => Harness.testComponent(component, {
@@ -102,7 +103,7 @@ describe('Component', () => {
     }, done));
   });
 
-  it('Should provide custom validation', (done) => {
+  it('Should provide custom validation', function(done) {
     Harness.testCreate(Component, _merge({}, comp1, {
       validate: {
         custom: 'valid = (input !== "Joe") ? true : "You cannot be Joe"'
@@ -119,7 +120,7 @@ describe('Component', () => {
     }, done));
   });
 
-  it('Should provide json validation', (done) => {
+  it('Should provide json validation', function(done) {
     Harness.testCreate(Component, _merge({}, comp1, {
       validate: {
         json: {
@@ -204,8 +205,8 @@ describe('Component', () => {
     .catch(done);
   });
 
-  describe('shouldSkipValidation', () => {
-    it('should return true if component is hidden', done => {
+  describe('shouldSkipValidation', function() {
+    it('should return true if component is hidden', function(done) {
       Harness.testCreate(Component, comp1)
         .then(cmp => {
           cmp.visible = false;
@@ -218,7 +219,7 @@ describe('Component', () => {
         .catch(done);
     });
 
-    it('should return true if component is conditionally hidden', done => {
+    it('should return true if component is conditionally hidden', function(done) {
       Harness.testCreate(Component, comp1)
         .then(cmp => {
           cmp.visible = true;
@@ -231,7 +232,7 @@ describe('Component', () => {
         .catch(done);
     });
 
-    it('should return false if not hidden', done => {
+    it('should return false if not hidden', function(done) {
       Harness.testCreate(Component, comp1)
         .then(cmp => {
           cmp.visible = true;
@@ -245,8 +246,8 @@ describe('Component', () => {
     });
   });
 
-  describe('Component Modal', () => {
-    it('Modal window should stay opened after redrawing component if it was opened ont hte moment of calling', (done) => {
+  describe('Component Modal', function() {
+    it('Modal window should stay opened after redrawing component if it was opened ont hte moment of calling', function(done) {
       Harness.testCreate(Component, comp3).then((component) => {
         component.componentModal.openModal();
         component.redraw().then(() => {
@@ -258,7 +259,7 @@ describe('Component', () => {
     });
   });
 
-  it('Should return value for HTML mode', () => {
+  it('Should return value for HTML mode', function() {
     return Harness.testCreate(Component, comp1).then((component) => {
       assert.equal(component.itemValueForHTMLMode(['option 1', 'option 2', 'option 3']), 'option 1, option 2, option 3');
       assert.equal(component.itemValueForHTMLMode(['option 1', ['option 2', 'option 3']]), 'option 1, option 2, option 3');
@@ -343,14 +344,14 @@ describe('Component', () => {
     .catch(done);
   });
 
-  it('Should sanitize HTML even if options.pdf is set', (done) => {
+  it('Should sanitize HTML even if options.pdf is set', function(done) {
     const component = new Component({}, { pdf: true });
     assert.equal(component.sanitize('<a href="javascript:console.log("untrusted")></a>'), '<a></a>');
     done();
   });
 
-  describe('shouldDisplayRedAsterisk', () => {
-    it('modalPreview template should have className "field-required" if component is required', done => {
+  describe('shouldDisplayRedAsterisk', function() {
+    it('modalPreview template should have className "field-required" if component is required', function(done) {
       Harness.testCreate(Component, _merge({}, comp4, {
         validate: { required: true }
       })).then(cmp => {
@@ -361,7 +362,7 @@ describe('Component', () => {
     });
   });
 
-  it('Should not execute code inside Tooltips/Description', (done) => {
+  it('Should not execute code inside Tooltips/Description', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
 
@@ -374,7 +375,7 @@ describe('Component', () => {
       .catch(done);
   });
 
-  it('Should reset value to default value if default value is given', (done) => {
+  it('Should reset value to default value if default value is given', function(done) {
     Formio.createForm(document.createElement('div'), comp6, {}).then((form) => {
       const inputValue = (value, component) => {
         const input = component.refs.input?.[0] || component.refs.selectContainer;
@@ -398,7 +399,7 @@ describe('Component', () => {
     }).catch(done);
   });
 
-  it('Should set the state of hidden permanently if a logic event action sets the hidden state', (done) => {
+  it('Should set the state of hidden permanently if a logic event action sets the hidden state', function(done) {
     Formio.createForm(document.createElement('div'), comp7, {}).then((form) => {
       const showButtonComponent = form.getComponent('show');
       const textFieldComponent = form.getComponent('textField1');

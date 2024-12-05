@@ -1,3 +1,4 @@
+/* eslint-disable no-loss-of-precision */
 import assert from 'power-assert';
 import _ from 'lodash';
 import _merge from 'lodash/merge';
@@ -20,14 +21,14 @@ import {
   scientificNotation
 } from './fixtures/number';
 
-describe('Number Component', () => {
-  it('Should build an number component', () => {
+describe('Number Component', function() {
+  it('Should build an number component', function() {
     return Harness.testCreate(NumberComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
     });
   });
 
-  it('Should correctly handle scientific notation', () => {
+  it('Should correctly handle scientific notation', function() {
     return Harness.testCreate(NumberComponent, scientificNotation, { allowScientificNotation: true }).then((component) => {
       const testCases = [
         [6.54635E+12, 6546350000000, '6546350000000'],
@@ -47,25 +48,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format submissions for table view for French locale', () => {
-    return Harness.testCreate(NumberComponent, comp4, { language: 'fr' }).then((component) => {
-      const value1 = component.getValueAsString(1);
-      const value2 = component.getValueAsString(1.1);
-      const value3 = component.getValueAsString(1.11);
-      const value4 = component.getValueAsString(1111);
-      const value5 = component.getValueAsString(1111111);
-      const value6 = component.getValueAsString(-11111);
-
-      assert.equal(value1, '1,00');
-      assert.equal(value2, '1,10');
-      assert.equal(value3, '1,11');
-      assert.equal(value4, '1 111,00');
-      assert.equal(value5, '1 111 111,00');
-      assert.equal(value6, '-11 111,00');
-    });
-  });
-
-  it('Should format sumbissions for table view for USA locale', () => {
+  it('Should format sumbissions for table view for USA locale', function() {
     return Harness.testCreate(NumberComponent, comp4, { language: 'en-US' }).then((component) => {
       const value1 = component.getValueAsString(1);
       const value2 = component.getValueAsString(1.1);
@@ -83,7 +66,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format value on blur for USA locale', () => {
+  it('Should format value on blur for USA locale', function() {
    return Harness.testCreate(NumberComponent, comp4, { language: 'en-US' }).then((component) => {
       component.root = {
         onChange: ()=>{},
@@ -116,7 +99,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format value on blur for French locale', (done) => {
+  it('Should format value on blur for French locale', function(done) {
     Harness.testCreate(NumberComponent, comp4, { language: 'fr' }).then((component) => {
       component.root = {
         onChange: ()=>{},
@@ -156,7 +139,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should not change entered value on blur if multiple value is set', (done) => {
+  it('Should not change entered value on blur if multiple value is set', function(done) {
     Harness.testCreate(NumberComponent, comp5).then((component) => {
       component.root = {
         onChange: ()=>{},
@@ -182,7 +165,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should limit decimals using step', () => {
+  it('Should limit decimals using step', function() {
     return Harness.testCreate(NumberComponent, _merge({}, comp2, {
       validate: {
         step: '0.001'
@@ -195,7 +178,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format submissions for table view for French locale', () => {
+  it('Should format submissions for table view for French locale', function() {
     return Harness.testCreate(NumberComponent, comp2, { language: 'fr' }).then((component) => {
       const value1 = component.getValueAsString(1);
       const value2 = component.getValueAsString(1.1);
@@ -213,7 +196,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format sumissions for table view for USA locale', () => {
+  it('Should format sumissions for table view for USA locale', function() {
     return Harness.testCreate(NumberComponent, comp2, { language: 'en-US' }).then((component) => {
       const value1 = component.getValueAsString(1);
       const value2 = component.getValueAsString(1.1);
@@ -231,8 +214,8 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format numbers for USA locale', () => {
-    /* eslint-disable max-statements */
+  it('Should format numbers for USA locale', function() {
+
     return Harness.testCreate(NumberComponent, comp2, { language: 'en-US' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, undefined, null, '');
@@ -277,10 +260,10 @@ describe('Number Component', () => {
       Harness.testSetInput(component, '123456789.123456789', 123456789.123456789, '123,456,789.12345679');
       Harness.testSetInput(component, '-123456789.123456789', -123456789.123456789, '-123,456,789.12345679');
     });
-    /* eslint-enable max-statements */
+
   });
 
-  it('Should format numbers for British locale', () => {
+  it('Should format numbers for British locale', function() {
     return Harness.testCreate(NumberComponent, comp2, { language: 'en-GB' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
@@ -301,7 +284,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format numbers for French locale', () => {
+  it('Should format numbers for French locale', function() {
     return Harness.testCreate(NumberComponent, comp2, { language: 'fr' }).then((component) => {
       // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
       Harness.testSetInput(component, null, null, '');
@@ -323,7 +306,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should format numbers for German locale', () => {
+  it('Should format numbers for German locale', function() {
     return Harness.testCreate(NumberComponent, comp2, { language: 'de' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
@@ -344,13 +327,13 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should display default integer value', () => {
+  it('Should display default integer value', function() {
     return Harness.testCreate(NumberComponent, comp3).then(number => {
       assert.deepEqual(_.get(number, ['refs', 'input', '0', 'value']), '42');
     });
   });
 
-  it('Should display default decimal value', () => {
+  it('Should display default decimal value', function() {
     const TEST_VAL = 4.2;
     const comp = _.cloneDeep(comp3);
 
@@ -363,7 +346,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should provide min/max validation', (done) => {
+  it('Should provide min/max validation', function(done) {
     const form = _.cloneDeep(comp6);
 
     const validValues = [
@@ -429,7 +412,7 @@ describe('Number Component', () => {
     testValidity(invalidMax, false, 'Number cannot be greater than 555.', invalidMax[invalidMax.length-1]);
   });
 
-  it('Should be able to switch between multiple and single values', (done) => {
+  it('Should be able to switch between multiple and single values', function(done) {
     Harness.testCreate(NumberComponent, comp5).then((component) => {
       assert.equal(_.isEqual(component.defaultValue, [null]), true);
       component.component.multiple = false;
@@ -440,7 +423,7 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should return value as string properly for multiple values', (done) => {
+  it('Should return value as string properly for multiple values', function(done) {
     Harness.testCreate(NumberComponent, comp7).then((component) => {
       component.refs.input = null;
       assert.equal(component.getValueAsString([1, 2, 3, 4, 5]), '1, 2, 3, 4, 5');
@@ -448,7 +431,7 @@ describe('Number Component', () => {
     }).catch(done);
   });
 
-  it('Should not remove decimal symbol and numbers after decimal symbol when submit is pressed', (done) => {
+  it('Should not remove decimal symbol and numbers after decimal symbol when submit is pressed', function(done) {
     Formio.createForm(document.createElement('div'), comp8, {}).then((form) => {
       const inputEvent = new Event('input');
       const numberComponent = form.getComponent('number');
@@ -465,12 +448,12 @@ describe('Number Component', () => {
     });
   });
 
-  it('Should remove thousands separator in parseValue function if set on component JSON', () => {
+  it('Should remove thousands separator in parseValue function if set on component JSON', function() {
     const numberComponent = new NumberComponent({thousandsSeparator: '.', decimalSymbol: ',', delimiter: true});
     assert.equal(numberComponent.parseValue('123.456.789,1'), '123456789,1');
   });
 
-  it('Should use a . thousands separator when delimiter is true and thousands separator is set to .', (done) => {
+  it('Should use a . thousands separator when delimiter is true and thousands separator is set to .', function(done) {
     Formio.createForm(document.createElement('div'), comp9, {}).then((form) => {
       const numberComponent = form.getComponent('number');
       const inputEvent = new Event('input');
@@ -485,20 +468,20 @@ describe('Number Component', () => {
     })
   });
 
-  it('Should not display a number validation error if the default value is set to a numeric string', () => {
+  it('Should not display a number validation error if the default value is set to a numeric string', function() {
     return Formio.createForm(document.createElement('div'), comp10, {}).then((form) => {
       const numberComponent = form.getComponent("number");
       assert.equal(numberComponent._errors.length, 0);
     });
   });
 
-  it('Should maintain the correct caret (cursor) position when rendering value with thousands separators after restoreCaretPosition is called', (done) => { 
+  it('Should maintain the correct caret (cursor) position when rendering value with thousands separators after restoreCaretPosition is called', function(done) {
     Formio.createForm(document.createElement('div'), comp11, {}).then((form) => {
       const numberComponent = form.getComponent('number');
       form.root.focusedComponent = numberComponent;
       const numberElement = numberComponent.refs.input[0];
-      const inputEvent = new Event('input'); 
- 
+      const inputEvent = new Event('input');
+
       numberElement.value = 1234567;
       numberElement.dispatchEvent(inputEvent);
       // see https://formio.atlassian.net/browse/FIO-9144

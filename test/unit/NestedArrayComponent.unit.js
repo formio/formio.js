@@ -3,8 +3,8 @@ import NestedArrayComponent from '../../src/components/_classes/nestedarray/Nest
 import Harness from '../harness';
 
 let component = null;
-describe('NestedArrayComponent class', () => {
-  it('Should create a new NestedArrayComponent class', () => {
+describe('NestedArrayComponent class', function() {
+  it('Should create a new NestedArrayComponent class', function() {
     return Harness.testCreate(NestedArrayComponent, {
       // key: 'nested',
       components: [

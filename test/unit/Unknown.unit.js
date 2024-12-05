@@ -4,8 +4,8 @@ import {
   comp1
 } from './fixtures/unknown';
 
-describe('Custom Component', () => {
-  it('Should build a Custom component in builder mode', (done) => {
+describe('Custom Component', function() {
+  it('Should build a Custom component in builder mode', function(done) {
     new UnknownComponent(comp1, {
       builder: true
     });

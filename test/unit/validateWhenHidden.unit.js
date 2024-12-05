@@ -1,11 +1,9 @@
-import Harness from "../harness";
 import assert from "power-assert";
 import { Formio } from "../../src/Formio";
-import { wait } from "../util";
 
 describe("Validate When Hidden behavior", function () {
   describe("Simple components", function () {
-    it("Should not validate intentionally hidden components that do not include the `validateWhenHidden` parameter", async () => {
+    it("Should not validate intentionally hidden components that do not include the `validateWhenHidden` parameter", async function() {
       const formWithIntentionallyHiddenField = {
         components: [
           {
@@ -27,7 +25,7 @@ describe("Validate When Hidden behavior", function () {
       assert.equal(errors.length, 0);
     });
 
-    it("Should not validate conditionally hidden components that do not include the `validateWhenHidden` parameter", async () => {
+    it("Should not validate conditionally hidden components that do not include the `validateWhenHidden` parameter", async function() {
       const formWithConditionallyHiddenField = {
         components: [
           {
@@ -59,7 +57,7 @@ describe("Validate When Hidden behavior", function () {
       assert.equal(errors.length, 0);
     });
 
-    it("Should validate intentionally hidden components that include the `validateWhenHidden` parameter", async () => {
+    it("Should validate intentionally hidden components that include the `validateWhenHidden` parameter", async function() {
       const formWithIntentionallyHiddenField = {
         components: [
           {
@@ -82,7 +80,7 @@ describe("Validate When Hidden behavior", function () {
       assert.equal(errors.length, 1);
     });
 
-    it("Should validate conditionally hidden components that include the `validateWhenHidden` parameter", async () => {
+    it("Should validate conditionally hidden components that include the `validateWhenHidden` parameter", async function() {
       const formWithConditionallyHiddenField = {
         components: [
           {

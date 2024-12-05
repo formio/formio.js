@@ -9,14 +9,14 @@ import {
   comp2
 } from './fixtures/panel';
 
-describe('Panel Component', () => {
-  it('Should build a panel component', () => {
+describe('Panel Component', function() {
+  it('Should build a panel component', function() {
     return Harness.testCreate(PanelComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 2);
     });
   });
 
-  it('Should keep validation errors after expanding collapsed panel', (done) => {
+  it('Should keep validation errors after expanding collapsed panel', function(done) {
     const element = document.createElement('div');
 
     Formio.createForm(element, comp2).then(form => {
@@ -68,8 +68,8 @@ describe('Panel Component', () => {
     }).catch(done);
   });
 
-  describe('Edit Form', () => {
-    it('should include components for important settings', () => {
+  describe('Edit Form', function() {
+    it('should include components for important settings', function() {
       const components = flattenComponents(panelEditForm().components);
       const keys = Object.keys(components).map(path => components[path].key);
       const settings = [

@@ -185,6 +185,5 @@ export default {
   revisions: '',
   _vid: 0,
   title: 'FIO-3326',
-  title: 'FIO-3326',
   display: 'form',
 };

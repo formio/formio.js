@@ -9,14 +9,14 @@ import {
   comp2
 } from './fixtures/url';
 
-describe('Url Component', () => {
-  it('Should build a url component', (done) => {
+describe('Url Component', function() {
+  it('Should build a url component', function(done) {
     Harness.testCreate(UrlComponent, comp1).then(() => {
       done();
     });
   });
 
-  it('Should provide min/max length validation', (done) => {
+  it('Should provide min/max length validation', function(done) {
     const form = _.cloneDeep(comp2);
     form.components[0].validate = { minLength: 6, maxLength: 10 };
 
@@ -78,7 +78,7 @@ describe('Url Component', () => {
     testValidity(invalidMax, false, 'Url must have no more than 10 characters.', invalidMax[invalidMax.length-1]);
   });
 
-  it('Should provide pattern validation', (done) => {
+  it('Should provide pattern validation', function(done) {
     const form = _.cloneDeep(comp2);
     form.components[0].validate = { pattern: '^(https?):\\/\\/(-\\.)?([^\\s\\/?\\.#-]+\\.?)+(\\/[^\\s]*)?$' };
 
@@ -137,7 +137,7 @@ describe('Url Component', () => {
     );
   });
 
-  it('Should provide url validation', (done) => {
+  it('Should provide url validation', function(done) {
     const form = _.cloneDeep(comp2);
 
     const validValues = [

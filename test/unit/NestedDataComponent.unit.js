@@ -6,8 +6,8 @@ import assert from 'power-assert';
 import nestedDataCompWithModalPreview from '../forms/nestedDataWithModalViewAndLayoutComponents';
 
 let component = null;
-describe('NestedDataComponent class', () => {
-  it('Should create a new NestedDataComponent class', () => {
+describe('NestedDataComponent class', function() {
+  it('Should create a new NestedDataComponent class', function() {
     return Harness.testCreate(NestedDataComponent, {
       // key: 'nested',
       components: [
@@ -28,7 +28,8 @@ describe('NestedDataComponent class', () => {
       Harness.testElements(component, 'input[name="data[lastName]"]', 1);
     });
   });
-  it('Should show preview of the modal view component properly', (done) => {
+
+  it('Should show preview of the modal view component properly', function(done) {
     Formio.createForm(document.createElement('div'), nestedDataCompWithModalPreview)
       .then((form) => {
         const openModalBtn = form.element.querySelector('.open-modal-button');

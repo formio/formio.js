@@ -1,3 +1,4 @@
+/* eslint-disable mocha/no-setup-in-describe */
 import { Formio } from '../../src/index';
 import { fastCloneDeep } from '../../src/utils/utils';
 import assert from 'power-assert';
@@ -26,20 +27,21 @@ const runTests = function(fn, options) {
   const tests = {};
   const noBefore = fn(tests);
   if (!noBefore) {
-    beforeEach(() => {
+    // eslint-disable-next-line mocha/no-top-level-hooks
+    beforeEach(function() {
       Formio.setBaseUrl(baseUrl);
       Formio.setProjectUrl('https://api.form.io');
     });
   }
-  _.each(tests, (test, path) => {
-    it(`Should initialize for ${path}`, (done) => {
-      if (typeof test === 'function') {
-        test();
+  _.each(tests, (testFn, path) => {
+    it(`Should initialize for ${path}`, function(done) {
+      if (typeof testFn === 'function') {
+        testFn();
       }
       else {
         const formio = new Formio(path, options);
-        for (const param in test) {
-          assert.equal(formio[param], test[param], `${param} is not equal. ${formio[param]} == ${test[param]}\n`);
+        for (const param in testFn) {
+          assert.equal(formio[param], testFn[param], `${param} is not equal. ${formio[param]} == ${testFn[param]}\n`);
         }
       }
       done();
@@ -47,8 +49,9 @@ const runTests = function(fn, options) {
   });
 };
 
-describe('Formio.js Tests', () => {
-  describe('Formio Constructor Tests', () => {
+describe('Formio.js Tests', function() {
+  describe('Formio Constructor Tests', function() {
+     
     runTests((tests) => {
       tests[`http://form.io/project/${  projectId  }/form/${  formId}`] = {
         projectUrl: `http://form.io/project/${  projectId}`,
@@ -308,10 +311,11 @@ describe('Formio.js Tests', () => {
     });
   });
 
-  describe('Localhost Constructor Tests', () => {
+  describe('Localhost Constructor Tests', function() {
     const testBaseUrl = 'localhost:3000';
     const projectName = 'myproject';
     const projectUrl = `${protocol}://${projectName}.${testBaseUrl}`;
+     
     runTests((tests) => {
       tests[`${projectUrl}/user/actionform/?test=foo`] = {
         projectUrl: projectUrl,
@@ -346,7 +350,7 @@ describe('Formio.js Tests', () => {
     }, { base: baseUrl });
   });
 
-  describe('Subdomain Constructor Tests', () => {
+  describe('Subdomain Constructor Tests', function() {
     const testBaseUrl = 'foo.blah.form.io';
     const projectName = 'myproject';
     const projectUrl = `${protocol}://${projectName}.${testBaseUrl}`;
@@ -384,7 +388,7 @@ describe('Formio.js Tests', () => {
     }, { base: baseUrl });
   });
 
-  describe('Subdirectory Constructor Tests', () => {
+  describe('Subdirectory Constructor Tests', function() {
     const testBaseUrl = 'foo.blah.form.io';
     const projectName = 'myproject';
     const projectUrl = `${protocol}://${testBaseUrl}/${projectName}`;
@@ -437,7 +441,7 @@ describe('Formio.js Tests', () => {
     }, { base: `${protocol}://${testBaseUrl}` });
   });
 
-  describe('Simple Form Constructor Tests', () => {
+  describe('Simple Form Constructor Tests', function() {
     runTests((tests) => {
       tests['init'] = () => {
         Formio.setBaseUrl('https://api.form.io');
@@ -462,7 +466,7 @@ describe('Formio.js Tests', () => {
     });
   });
 
-  describe('Open Source Constructor Tests', () => {
+  describe('Open Source Constructor Tests', function() {
     const formBaseUrl = 'http://localhost:3000';
     runTests((tests) => {
       tests[`${formBaseUrl}/user`] = {
@@ -498,9 +502,10 @@ describe('Formio.js Tests', () => {
     }, { base: formBaseUrl, project: formBaseUrl });
   });
 
-  describe('Plugins', () => {
+  describe('Plugins', function() {
     let plugin = null;
-    beforeEach(() => {
+
+    beforeEach(function() {
       assert.equal(Formio.getPlugin('test-plugin'), undefined, 'No plugin may be returned under the name `test-plugin`');
       plugin = { init: sinon.spy() };
       Formio.registerPlugin(plugin, 'test-plugin');
@@ -510,7 +515,7 @@ describe('Formio.js Tests', () => {
       assert.equal(Formio.getPlugin('test-plugin'), plugin, 'getPlugin must return plugin');
     });
 
-    afterEach(() => {
+    afterEach(function() {
       assert.equal(Formio.getPlugin('test-plugin'), plugin, 'getPlugin must return plugin');
       plugin.deregister = sinon.spy();
       Formio.deregisterPlugin(plugin, 'test-plugin');
@@ -530,7 +535,7 @@ describe('Formio.js Tests', () => {
         case 'DELETE': fnName = `delete${_.capitalize(type)}`; break;
       }
 
-      it(`Plugin ${method} ${fnName}`, (done) => {
+      it(`Plugin ${method} ${fnName}`, function(done) {
         let step = 0;
         const formio = new Formio(url);
         method = method.toUpperCase();
@@ -705,7 +710,7 @@ describe('Formio.js Tests', () => {
     });
 
     const testStaticRequest = function testStaticRequest(fnName, url, method) {
-      it(`Plugin ${fnName}`, (done) => {
+      it(`Plugin ${fnName}`, function(done) {
         let step = 0;
         const testResult = { _id: 'TEST_ID', testResult: 'TEST_RESULT' };
         const expectedArgs = {
@@ -771,7 +776,7 @@ describe('Formio.js Tests', () => {
     });
 
     const testFileRequest = function testFileRequest(fnName, formUrl, args) {
-      it(`Plugin ${fnName}`, (done) => {
+      it(`Plugin ${fnName}`, function(done) {
         let step = 0;
         const testResult = { _id: 'TEST_ID', testResult: 'TEST_RESULT' };
         let expectedArgs;
@@ -879,9 +884,9 @@ describe('Formio.js Tests', () => {
     });
   });
 
-  describe('Test Formio.js capabilities', () => {
+  describe('Test Formio.js capabilities', function() {
     const testCapability = function(test) {
-      it(test.name, (done) => {
+      it(test.name, function(done) {
         // need to clear Formio cache before every test, otherwise mock results might be ignored for same URLs
         Formio.clearCache();
         if (test.mock) {
@@ -2269,9 +2274,10 @@ describe('Formio.js Tests', () => {
     tests.forEach(testCapability);
   });
 
-  describe('Formio.currentUser', () => {
+  describe('Formio.currentUser', function() {
     let plugin = null;
-    beforeEach(() => {
+
+    beforeEach(function() {
       plugin = {
         wrapStaticRequestPromise: sinon.spy((promise) => promise),
         staticRequest: sinon.spy(() => {
@@ -2295,11 +2301,11 @@ describe('Formio.js Tests', () => {
       Formio.registerPlugin(plugin, 'currentUserTestPlugin');
     });
 
-    afterEach(() => {
+    afterEach(function() {
       Formio.deregisterPlugin(plugin);
     });
 
-    it('Initial currentUser() should make static request', (done) => {
+    it('Initial currentUser() should make static request', function(done) {
       // Force token
       Formio.token = chance.string({ length: 30 });
       Formio.currentUser()
@@ -2310,7 +2316,7 @@ describe('Formio.js Tests', () => {
       assert.ok(plugin.wrapStaticRequestPromise.calledOnce, 'wrapStaticRequestPromise should be called once');
     });
 
-    it('Next currentUser() should return cached value', (done) => {
+    it('Next currentUser() should return cached value', function(done) {
       // Clear token
       Formio.currentUser()
         .then(() => {
@@ -2320,7 +2326,7 @@ describe('Formio.js Tests', () => {
       assert.ok(plugin.wrapStaticRequestPromise.calledOnce, 'wrapStaticRequestPromise should be called once');
     });
 
-    it('Should render after form submission if renderMode = \'html\'', (done) => {
+    it('Should render after form submission if renderMode = \'html\'', function(done) {
       const formJson =  {
         components: [{
           label: 'Text Field',
@@ -2359,7 +2365,7 @@ describe('Formio.js Tests', () => {
         .catch(done);
     });
 
-    it('Should render after form submission if renderMode = \'html\' with Nested Form', (done) => {
+    it('Should render after form submission if renderMode = \'html\' with Nested Form', function(done) {
       const formJson =  {
         components: [
           {

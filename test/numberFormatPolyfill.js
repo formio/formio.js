@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Need to polyfill some Intl.locale support, since node doesn't include it in standard builds
 // Adapted from here: https://polyfill.io/v3/polyfill.js?features=Intl.~locale.en-US,Intl.~locale.de,Intl.~locale.fr,Intl.~locale.en-GB&flags=always
 
