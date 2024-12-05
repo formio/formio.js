@@ -324,7 +324,7 @@ describe('Wizard tests', () => {
     nestedWizard.components[2].conditional = { show: true, when: 'checkbox', eq: 'true' };
 
     await wizard.setForm(formWithNestedWizard);
-   
+
     const nestedFormComp = wizard.getComponent('formNested');
 
     nestedFormComp.loadSubForm = () => {
@@ -339,7 +339,7 @@ describe('Wizard tests', () => {
     const checkPage = (pageNumber) => {
       assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
     };
-    
+
     checkPage(0);
     assert.equal(wizard.pages.length, 4, 'Should have 4 pages');
     assert.equal(wizard.allPages.length, 4, 'Should have 4 pages');
@@ -347,7 +347,7 @@ describe('Wizard tests', () => {
 
     clickWizardBtn(wizard, 'link[3]');
     await wait(300);
-    
+
     checkPage(3);
     assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, 'Should hav submit btn on the last page');
     wizard.getComponent('checkbox').setValue(true);
@@ -370,7 +370,7 @@ describe('Wizard tests', () => {
     checkPage(4);
     clickWizardBtn(wizard, 'previous');
     await wait(300);
-            
+
     checkPage(3);
     wizard.getComponent('checkbox').setValue(false);
     await wait(500);
@@ -378,7 +378,7 @@ describe('Wizard tests', () => {
     assert.equal(wizard.pages.length, 4, 'Should hide conditional page');
     assert.equal(wizard.allPages.length, 4, 'Should hide conditional page');
     assert.equal(wizard.refs[`${wizard.wizardKey}-link`].length, 4, 'Should contain refs to breadcrumbs of visible pages');
-    assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, 'Should have submit btn on the last page');  
+    assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, 'Should have submit btn on the last page');
   }).timeout(6000);
 
   it('Should trigger validation of nested wizard before going to the next page', function (done) {
@@ -630,17 +630,17 @@ describe('Wizard tests', () => {
     // you can't submit the form without first navigating to page 3
     wizard.submit();
     await wait(400);
-    const getRequiredFieldErrors = () => 
-        wizard.errors.filter(error => error.message === 'Text Field is required' && 
+    const getRequiredFieldErrors = () =>
+        wizard.errors.filter(error => error.message === 'Text Field is required' &&
           ['Page 1', 'Page 3'].includes(error.component.parent.title));
-    
-    assert.equal(getRequiredFieldErrors().length, 2);      
+
+    assert.equal(getRequiredFieldErrors().length, 2);
     // navigate to page 2
     clickWizardBtn(wizard, 'link[1]');
     await wait(200);
     // the form-level errors should still be the same
-    assert.equal(getRequiredFieldErrors().length, 2); 
-    // navigate to page 1 
+    assert.equal(getRequiredFieldErrors().length, 2);
+    // navigate to page 1
     clickWizardBtn(wizard, 'link[0]');
     const page1Input = wizard.element.querySelector('input[name="data[textField]"]');
     const inputEvent = new Event('input');
@@ -648,8 +648,8 @@ describe('Wizard tests', () => {
     page1Input.dispatchEvent(inputEvent);
     await wait(200);
     // maintain form-level error after supplying value for one required field
-    assert.equal(getRequiredFieldErrors().length, 1); 
-    assert.equal(getRequiredFieldErrors()[0].component.parent.title, 'Page 3'); 
+    assert.equal(getRequiredFieldErrors().length, 1);
+    assert.equal(getRequiredFieldErrors()[0].component.parent.title, 'Page 3');
   });
 
   it('Should render values in HTML render mode', function(done) {
@@ -877,7 +877,7 @@ describe('Wizard tests', () => {
       nestedFormComp.createSubForm();
 
       setTimeout(() => {
-  
+
         clickWizardBtn(wizard, 'link[1]');
 
         setTimeout(() => {
@@ -2252,7 +2252,7 @@ it('Should show tooltip for wizard pages', function(done) {
 
   it('Should retain previous checkbox checked property when navigating to another page (unchecked)', (done) => {
     const wizard = new Wizard(document.createElement('div'));
-    wizard.setForm(WizardWithCheckboxes).then(()=> {      
+    wizard.setForm(WizardWithCheckboxes).then(()=> {
       wizard.element.querySelector('input').click();
       wizard.element.querySelector('input').click();
       clickWizardBtn(wizard, 'next');
@@ -2265,4 +2265,32 @@ it('Should show tooltip for wizard pages', function(done) {
       },200);
     });
   });
+
+  describe('getPreviousPage', function() {
+    it('should return previous page number or zero', function() {
+      const { getPreviousPage } = Wizard.prototype;
+      expect(getPreviousPage.call({ page: 3 })).to.equal(2);
+      expect(getPreviousPage.call({ page: 9 })).to.equal(8);
+      expect(getPreviousPage.call({ page: 199 })).to.equal(198);
+      expect(getPreviousPage.call({ page: 1 })).to.equal(0);
+      expect(getPreviousPage.call({ page: 0 })).to.equal(0);
+    });
+  });
+
+  describe('WizardRenderer tests', function() {
+    each(WizardTests, (wizardTest) => {
+      each(wizardTest.tests, (wizardTestTest, title) => {
+        it(title, function(done) {
+          const wizardElement = document.createElement('div');
+          const wizard = new Wizard(wizardElement);
+          wizard.setForm(wizardTest.form).then(() => {
+            return wizardTestTest(wizard, done);
+          }).catch((error) => {
+            done(error);
+          });
+        });
+      });
+    });
+  });
+
 });

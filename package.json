@@ -57,8 +57,6 @@
     "lint": "eslint ./src --fix",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "nyc --reporter=lcov --reporter=text --reporter=text-summary mocha test/unit/*.unit.js",
-    "test:updateRenders": "npm run lib && cross-env TZ=UTC node --require jsdom-global/register test/updateRenders.js",
-    "test:e2e": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --verbose --single-run",
     "show-coverage": "open coverage/lcov-report/index.html"
   },
   "repository": {
