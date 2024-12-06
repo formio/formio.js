@@ -10,25 +10,25 @@ export default {
         values: [
           {
             label: 'Banana',
-            value: 'banana'
+            value: 'banana',
           },
           {
             label: 'Apple',
-            value: 'apple'
+            value: 'apple',
           },
           {
             label: 'Pineapple',
-            value: 'pineapple'
-          }
-        ]
+            value: 'pineapple',
+          },
+        ],
       },
       validateOn: 'blur',
       validate: {
-        custom: "valid = data.select == 'apple' ? true : 'You must select an apple';"
+        custom: "valid = data.select == 'apple' ? true : 'You must select an apple';",
       },
       key: 'select',
       type: 'select',
-      input: true
+      input: true,
     },
-  ]
+  ],
 };

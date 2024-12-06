@@ -6,7 +6,7 @@ export default {
       tableView: true,
       key: 'textField',
       type: 'textfield',
-      input: true
+      input: true,
     },
     {
       label: 'Text Area',
@@ -14,14 +14,14 @@ export default {
       tableView: true,
       key: 'textArea',
       type: 'textarea',
-      input: true
+      input: true,
     },
     {
       label: 'Checkbox',
       tableView: false,
       key: 'checkbox',
       type: 'checkbox',
-      input: true
+      input: true,
     },
     {
       type: 'button',
@@ -29,8 +29,8 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   title: 'Optional Sanitize Test',
   display: 'form',

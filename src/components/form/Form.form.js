@@ -8,23 +8,26 @@ import FormEditData from './editForm/Form.edit.data';
  * @param {...any} extend - The components that extend the edit form.
  * @returns {import('@formio/core').Component[]} - The edit form components.
  */
-export default function(...extend) {
-  return nestedComponentForm([
-    {
-      key: 'display',
-      components: FormEditDisplay
-    },
-    {
-      label: 'Form',
-      key: 'form',
-      weight: 10,
-      components: FormEditForm
-    },
-    {
-      label: 'Data',
-      key: 'data',
-      weight: 10,
-      components: FormEditData
-    },
-  ], ...extend);
+export default function (...extend) {
+  return nestedComponentForm(
+    [
+      {
+        key: 'display',
+        components: FormEditDisplay,
+      },
+      {
+        label: 'Form',
+        key: 'form',
+        weight: 10,
+        components: FormEditForm,
+      },
+      {
+        label: 'Data',
+        key: 'data',
+        weight: 10,
+        components: FormEditData,
+      },
+    ],
+    ...extend,
+  );
 }

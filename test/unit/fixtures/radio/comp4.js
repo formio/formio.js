@@ -8,18 +8,18 @@ export default {
     {
       label: 'Yes',
       value: 'true',
-      shortcut: ''
+      shortcut: '',
     },
     {
       label: 'No',
       value: 'false',
-      shortcut: ''
-    }
+      shortcut: '',
+    },
   ],
   validate: {
-    onlyAvailableItems: false
+    onlyAvailableItems: false,
   },
   key: 'radio1',
   type: 'radio',
-  input: true
+  input: true,
 };

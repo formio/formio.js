@@ -32,8 +32,7 @@ export default {
           tableView: true,
         },
       ],
-      calculateValue:
-        'if (options.server){\n  value = [{ fielda: data.first, fieldb: "test"}];\n}',
+      calculateValue: 'if (options.server){\n  value = [{ fielda: data.first, fieldb: "test"}];\n}',
       displayAsTable: false,
       calculateServer: true,
     },

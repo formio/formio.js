@@ -5,6 +5,7 @@ section: examples
 weight: 19
 lib: builder
 ---
+
 The Form.io renderer allows for the creation of Custom components. These can be created by extending the base components within Form.io and then registering them within the core renderer. This can be done as follows.
 
 For a full example of creating your own module that does this, please see the [Contributed Components](https://github.com/formio/contrib) repository. Here is an example of what a custom component looks like.
@@ -161,7 +162,7 @@ export default class CheckMatrix extends (FieldComponent as any) {
 }
 ```
 
-These modules will then be compiled into a Module file that can either be imported within your own application, or using ```<script>``` tags in the browser like the following.
+These modules will then be compiled into a Module file that can either be imported within your own application, or using `<script>` tags in the browser like the following.
 
 ```js
 import { Formio } from '@formio/js';
@@ -170,23 +171,23 @@ Formio.use(YourModule);
 ```
 
 ```html
-<link rel="stylesheet" href="https://cdn.form.io/js/formio.full.min.css">
+<link rel="stylesheet" href="https://cdn.form.io/js/formio.full.min.css" />
 <script src="https://cdn.form.io/js/formio.full.min.js"></script>
 <script src="./contrib/YourModule.js"></script>
 <script type="text/javascript">
-    Formio.use(YourModule);
+  Formio.use(YourModule);
 </script>
 ```
 
 As an example, you can import the Contributed Components into your application using the following.
 
 ```html
-<link rel="stylesheet" href="https://cdn.form.io/js/formio.full.min.css">
+<link rel="stylesheet" href="https://cdn.form.io/js/formio.full.min.css" />
 <script src="https://cdn.form.io/js/formio.full.min.js"></script>
 <script src="https://unpkg.com/@formio/contrib@latest/dist/formio-contrib.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/@formio/contrib@latest/dist/formio-contrib.css">
+<link rel="stylesheet" href="https://unpkg.com/@formio/contrib@latest/dist/formio-contrib.css" />
 <script type="text/javascript">
-    Formio.use(FormioContrib);
+  Formio.use(FormioContrib);
 </script>
 <div class="card card-body bg-light">
   <div id="builder"></div>
@@ -200,29 +201,33 @@ As an example, you can import the Contributed Components into your application u
   <pre id="json"></pre>
 </div>
 <script type="text/javascript">
-  Formio.builder(document.getElementById('builder'), {}, {
-    builder: {
-      basic: false,
-      advanced: false,
-      data: false,
-      layout: false,
-      customBasic: {
-        title: 'Basic Components',
-        default: true,
-        weight: 0,
-        components: {
-          checkmatrix: true
-        }
-      }
-    }
-  }).then(function(builder) {
-    Formio.createForm(document.getElementById('formio'), builder.form).then(function(instance) {
+  Formio.builder(
+    document.getElementById('builder'),
+    {},
+    {
+      builder: {
+        basic: false,
+        advanced: false,
+        data: false,
+        layout: false,
+        customBasic: {
+          title: 'Basic Components',
+          default: true,
+          weight: 0,
+          components: {
+            checkmatrix: true,
+          },
+        },
+      },
+    },
+  ).then(function (builder) {
+    Formio.createForm(document.getElementById('formio'), builder.form).then(function (instance) {
       var json = document.getElementById('json');
-      instance.on('change', function() {
+      instance.on('change', function () {
         json.innerHTML = '';
         json.appendChild(document.createTextNode(JSON.stringify(instance.submission, null, 4)));
       });
-      builder.on('change', function(schema) {
+      builder.on('change', function (schema) {
         if (schema.components) {
           instance.resetValue();
           instance.form = schema;

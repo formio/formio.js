@@ -1,7 +1,6 @@
-/* eslint-disable max-statements */
 import assert from 'power-assert';
 import cloneDeep from 'lodash/cloneDeep';
-import set from 'lodash/set'
+import set from 'lodash/set';
 import sinon from 'sinon';
 import Harness from '../harness';
 import SelectComponent from '../../src/components/select/Select';
@@ -38,25 +37,24 @@ import {
   comp25,
   comp26,
   comp27,
-  comp28
+  comp28,
 } from './fixtures/select';
 
-// eslint-disable-next-line max-statements
-describe('Select Component', () => {
-  it('should not stringify select option value', function(done) {
+describe('Select Component', function () {
+  it('should not stringify select option value', function (done) {
     Harness.testCreate(SelectComponent, comp6).then((component) => {
-      component.setValue({ value:'a', label:'A' });
-      setTimeout(()=> {
+      component.setValue({ value: 'a', label: 'A' });
+      setTimeout(() => {
         assert.equal(component.choices._currentState.items[0].value.value, 'a');
-        assert.equal(typeof component.choices._currentState.items[0].value , 'object');
+        assert.equal(typeof component.choices._currentState.items[0].value, 'object');
         assert.equal(component.dataValue.value, 'a');
-        assert.equal(typeof component.dataValue , 'object');
+        assert.equal(typeof component.dataValue, 'object');
         done();
       }, 200);
     });
   });
 
-  it('should return string value for different value types', function(done) {
+  it('should return string value for different value types', function (done) {
     Harness.testCreate(SelectComponent, comp4).then((component) => {
       const stringValue = component.asString(true);
       const stringValue1 = component.asString(11);
@@ -72,21 +70,21 @@ describe('Select Component', () => {
     });
   });
 
-  it('should return string value if dataSrc set as custom', function(done) {
+  it('should return string value if dataSrc set as custom', function (done) {
     Harness.testCreate(SelectComponent, comp27).then((component) => {
       const stringValue = component.asString('California');
       assert.equal(stringValue, 'California');
       done();
     });
-  })
+  });
 
-  it('Should return plain text when csv option is provided', () => {
+  it('Should return plain text when csv option is provided', function () {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
-      assert.equal(component.getView('red', { csv:true }), 'Red');
+      assert.equal(component.getView('red', { csv: true }), 'Red');
     });
   });
 
-  it('should correctly determine storage type when dataType is auto', function(done) {
+  it('should correctly determine storage type when dataType is auto', function (done) {
     Harness.testCreate(SelectComponent, comp4).then((component) => {
       const value = component.normalizeSingleValue('true');
       const value1 = component.normalizeSingleValue('11');
@@ -106,7 +104,7 @@ describe('Select Component', () => {
     });
   });
 
-  it('should not stringify default empty values', function(done) {
+  it('should not stringify default empty values', function (done) {
     Harness.testCreate(SelectComponent, comp4).then((component) => {
       const value = component.normalizeSingleValue({});
       const value1 = component.normalizeSingleValue([]);
@@ -116,7 +114,7 @@ describe('Select Component', () => {
     });
   });
 
-  it('should not change value letter case', function(done) {
+  it('should not change value letter case', function (done) {
     Harness.testCreate(SelectComponent, comp4).then((component) => {
       const value = component.normalizeSingleValue('data.textArea');
       const value1 = component.normalizeSingleValue('ECMAScript');
@@ -128,7 +126,7 @@ describe('Select Component', () => {
     });
   });
 
-  it('should define boolean value', function(done) {
+  it('should define boolean value', function (done) {
     Harness.testCreate(SelectComponent, comp4).then((component) => {
       const value = component.normalizeSingleValue('TRUE');
       const value1 = component.normalizeSingleValue('False');
@@ -140,65 +138,87 @@ describe('Select Component', () => {
     });
   });
 
-  it('1/2 should not display empty choice options if property value is not defined', function(done) {
+  it('1/2 should not display empty choice options if property value is not defined', function (done) {
     Harness.testCreate(SelectComponent, comp5).then((component) => {
-      component.setItems([{
-        'label': '111',
-        'value': '111'
-      }, {
-        'label': '222',
-        'value': '222'
-      }, {
-        'label': '333',
-        'value': '333'
-      }], false);
+      component.setItems(
+        [
+          {
+            label: '111',
+            value: '111',
+          },
+          {
+            label: '222',
+            value: '222',
+          },
+          {
+            label: '333',
+            value: '333',
+          },
+        ],
+        false,
+      );
       assert.equal(component.selectOptions.length, 0);
       done();
     });
   });
 
-  it('2/2 should display choice option if property value is set', function(done) {
+  it('2/2 should display choice option if property value is set', function (done) {
     comp5.template = '<span>{{ item.label }}</span>';
     Harness.testCreate(SelectComponent, comp5).then((component) => {
-      component.setItems([{
-        'label': '111',
-        'value': '111'
-      }, {
-        'label': '222',
-        'value': '222'
-      }, {
-        'label': '333',
-        'value': '333'
-      }], false);
+      component.setItems(
+        [
+          {
+            label: '111',
+            value: '111',
+          },
+          {
+            label: '222',
+            value: '222',
+          },
+          {
+            label: '333',
+            value: '333',
+          },
+        ],
+        false,
+      );
       assert.equal(component.selectOptions.length, 3);
       done();
     });
   });
 
-  it('should have only unique dropdown options', function(done) {
+  it('should have only unique dropdown options', function (done) {
     comp5.template = '<span>{{ item.label }}</span>';
     comp5.uniqueOptions = true;
     Harness.testCreate(SelectComponent, comp5).then((component) => {
-      component.setItems([{
-        'label': 'Label 1',
-        'value': 'value1'
-      }, {
-        'label': 'Label 2',
-        'value': 'value2'
-      }, {
-        'label': 'Label 3',
-        'value': 'value3'
-      }, {
-        'label': 'Label 4',
-        'value': 'value3'
-      }], false);
+      component.setItems(
+        [
+          {
+            label: 'Label 1',
+            value: 'value1',
+          },
+          {
+            label: 'Label 2',
+            value: 'value2',
+          },
+          {
+            label: 'Label 3',
+            value: 'value3',
+          },
+          {
+            label: 'Label 4',
+            value: 'value3',
+          },
+        ],
+        false,
+      );
 
       assert.equal(component.selectOptions.length, 3);
       done();
     });
   });
 
-  it('should format unlisted values', function(done) {
+  it('should format unlisted values', function (done) {
     comp5.template = '<span>{{ item.label }}</span>';
     Harness.testCreate(SelectComponent, comp5).then((component) => {
       const formattedValue1 = component.getView('Unlisted value');
@@ -210,7 +230,7 @@ describe('Select Component', () => {
     });
   });
 
-  it('should set multiple selected values not repeating them', function(done) {
+  it('should set multiple selected values not repeating them', function (done) {
     Harness.testCreate(SelectComponent, multiSelect).then((component) => {
       component.setItems(multiSelectOptions, false);
       component.setChoicesValue(['Cheers']);
@@ -222,7 +242,7 @@ describe('Select Component', () => {
     });
   });
 
-  it('should not show selected values in dropdown when searching', function(done) {
+  it('should not show selected values in dropdown when searching', function (done) {
     Harness.testCreate(SelectComponent, multiSelect).then((component) => {
       component.setItems(multiSelectOptions, false);
       component.setChoicesValue(['Cheers']);
@@ -236,27 +256,31 @@ describe('Select Component', () => {
     });
   });
 
-  it('Should build a Select component', () => {
+  it('Should build a Select component', function () {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       Harness.testElements(component, 'select', 1);
     });
   });
 
-  it('Should preserve the tabindex', () => {
+  it('Should preserve the tabindex', function () {
     return Harness.testCreate(SelectComponent, comp2).then((component) => {
-      const element = component.element.getElementsByClassName('choices__list choices__list--single')[0];
+      const element = component.element.getElementsByClassName(
+        'choices__list choices__list--single',
+      )[0];
       Harness.testElementAttribute(element, 'tabindex', '10');
     });
   });
 
-  it('Should default to 0 when tabindex is not specified', () => {
+  it('Should default to 0 when tabindex is not specified', function () {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
-      const element = component.element.getElementsByClassName('choices__list choices__list--single')[0];
+      const element = component.element.getElementsByClassName(
+        'choices__list choices__list--single',
+      )[0];
       Harness.testElementAttribute(element, 'tabindex', '0');
     });
   });
 
-  it('Should allow to override threshold option of fuzzy search', () => {
+  it('Should allow to override threshold option of fuzzy search', function () {
     try {
       const c1 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.2 });
       const c2 = Object.assign(cloneDeep(comp1), { selectThreshold: 0.4 });
@@ -267,20 +291,17 @@ describe('Select Component', () => {
         Harness.testCreate(SelectComponent, c3),
       ];
 
-      return Promise
-        .all(comps)
-        .then(([a, b, c]) => {
-          expect(a.choices.config.fuseOptions.threshold).to.equal(0.2);
-          expect(b.choices.config.fuseOptions.threshold).to.equal(0.4);
-          expect(c.choices.config.fuseOptions.threshold).to.equal(0.8);
-        });
-    }
-    catch (error) {
+      return Promise.all(comps).then(([a, b, c]) => {
+        expect(a.choices.config.fuseOptions.threshold).to.equal(0.2);
+        expect(b.choices.config.fuseOptions.threshold).to.equal(0.4);
+        expect(c.choices.config.fuseOptions.threshold).to.equal(0.8);
+      });
+    } catch (error) {
       return Promise.reject(error);
     }
   });
 
-  it('should set component value', () => {
+  it('should set component value', function () {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       assert.deepEqual(component.dataValue, '');
       component.setValue('red');
@@ -288,7 +309,7 @@ describe('Select Component', () => {
     });
   });
 
-  it('should remove selected item', () => {
+  it('should remove selected item', function () {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       assert.deepEqual(component.dataValue, '');
       component.setValue('red');
@@ -301,15 +322,17 @@ describe('Select Component', () => {
     });
   });
 
-  it('should open dropdown after item has been removed', () => {
-    global.requestAnimationFrame = cb => cb();
-    window.matchMedia = window.matchMedia || function() {
-      return {
-        matches : false,
-        addListener : function() {},
-        removeListener: function() {}
+  it('should open dropdown after item has been removed', function () {
+    global.requestAnimationFrame = (cb) => cb();
+    window.matchMedia =
+      window.matchMedia ||
+      function () {
+        return {
+          matches: false,
+          addListener: function () {},
+          removeListener: function () {},
+        };
       };
-    };
 
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       component.setValue('red');
@@ -323,13 +346,15 @@ describe('Select Component', () => {
     });
   });
 
-  it('should keep dropdown closed after item has been removed by keypress', () => {
+  it('should keep dropdown closed after item has been removed by keypress', function () {
     return Harness.testCreate(SelectComponent, comp1).then((component) => {
       component.setValue('red');
 
       const element = component.element.querySelector('.choices__button');
       const ke = new KeyboardEvent('keydown', {
-        bubbles: true, cancelable: true, keyCode: 13
+        bubbles: true,
+        cancelable: true,
+        keyCode: 13,
       });
 
       element.dispatchEvent(ke);
@@ -339,201 +364,215 @@ describe('Select Component', () => {
     });
   });
 
-  it('Should render and set values in selects with different widget types', (done) => {
+  it('Should render and set values in selects with different widget types', function (done) {
     const form = _.cloneDeep(comp7);
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const selectHTML = form.getComponent('selectHtml');
-      const selectChoices = form.getComponent('selectChoices');
-      assert.equal(!!selectHTML.choices, false);
-      assert.equal(!!selectChoices.choices, true);
-
-      setTimeout(() => {
-        assert.equal(selectChoices.element.querySelectorAll('.choices__item--choice').length, 3);
-        const value = 'b';
-        selectHTML.setValue(value);
-        selectChoices.setValue(value);
+    Formio.createForm(element, form)
+      .then((form) => {
+        const selectHTML = form.getComponent('selectHtml');
+        const selectChoices = form.getComponent('selectChoices');
+        assert.equal(!!selectHTML.choices, false);
+        assert.equal(!!selectChoices.choices, true);
 
         setTimeout(() => {
-          assert.equal(selectHTML.dataValue, value);
-          assert.equal(selectChoices.dataValue, value);
-          assert.equal(selectHTML.getValue(), value);
-          assert.equal(selectChoices.getValue(), value);
+          assert.equal(selectChoices.element.querySelectorAll('.choices__item--choice').length, 3);
+          const value = 'b';
+          selectHTML.setValue(value);
+          selectChoices.setValue(value);
 
-          done();
+          setTimeout(() => {
+            assert.equal(selectHTML.dataValue, value);
+            assert.equal(selectChoices.dataValue, value);
+            assert.equal(selectHTML.getValue(), value);
+            assert.equal(selectChoices.getValue(), value);
+
+            done();
+          }, 200);
         }, 200);
-      }, 200);
-    }).catch(done);
+      })
+      .catch(done);
   });
 
-  it('Should clear select value when "clear value on refresh options" and "refresh options on" is enable and number component is changed   ', (done) => {
+  it('Should clear select value when "clear value on refresh options" and "refresh options on" is enable and number component is changed   ', function (done) {
     const form = _.cloneDeep(comp8);
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      const numberComp = form.getComponent('number');
-      const value = 'b';
-      select.setValue(value);
-
-      setTimeout(() => {
-        assert.equal(select.dataValue, value);
-        assert.equal(select.getValue(), value);
-        const numberInput = numberComp.refs.input[0];
-        const numberValue = 5;
-        const inputEvent = new Event('input');
-        numberInput.value = numberValue;
-        numberInput.dispatchEvent(inputEvent);
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        const numberComp = form.getComponent('number');
+        const value = 'b';
+        select.setValue(value);
 
         setTimeout(() => {
-          assert.equal(numberComp.dataValue, numberValue);
-          assert.equal(numberComp.getValue(), numberValue);
-          assert.equal(select.dataValue, '');
-          assert.equal(select.getValue(), '');
+          assert.equal(select.dataValue, value);
+          assert.equal(select.getValue(), value);
+          const numberInput = numberComp.refs.input[0];
+          const numberValue = 5;
+          const inputEvent = new Event('input');
+          numberInput.value = numberValue;
+          numberInput.dispatchEvent(inputEvent);
 
-          done();
-        }, 400);
-      }, 200);
-    }).catch(done);
+          setTimeout(() => {
+            assert.equal(numberComp.dataValue, numberValue);
+            assert.equal(numberComp.getValue(), numberValue);
+            assert.equal(select.dataValue, '');
+            assert.equal(select.getValue(), '');
+
+            done();
+          }, 400);
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should update select items when "refresh options on" is enable and number component is changed', (done) => {
+  it('Should update select items when "refresh options on" is enable and number component is changed', function (done) {
     const form = _.cloneDeep(comp9);
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
-    Formio.makeRequest = function(formio, type, url) {
-      return new Promise(resolve => {
-        let values =[{ name: 'Ivan' }, { name: 'Mike' }];
+    Formio.makeRequest = function (formio, type, url) {
+      return new Promise((resolve) => {
+        let values = [{ name: 'Ivan' }, { name: 'Mike' }];
 
         if (url.endsWith('5')) {
           values = [{ name: 'Kate' }, { name: 'Ann' }, { name: 'Lana' }];
         }
-         resolve(values);
+        resolve(values);
       });
     };
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      const numberComp = form.getComponent('number');
-      setTimeout(() => {
-        assert.equal(select.selectOptions.length, 2);
-        assert.deepEqual(select.selectOptions[0].value, { name: 'Ivan' });
-
-        const numberValue = 5;
-        const inputEvent = new Event('input');
-        const numberInput = numberComp.refs.input[0];
-
-        numberInput.value = numberValue;
-        numberInput.dispatchEvent(inputEvent);
-
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        const numberComp = form.getComponent('number');
         setTimeout(() => {
-          assert.equal(numberComp.dataValue, numberValue);
-          assert.equal(numberComp.getValue(), numberValue);
-          assert.equal(select.selectOptions.length, 3);
-          assert.deepEqual(select.selectOptions[0].value, { name: 'Kate' });
+          assert.equal(select.selectOptions.length, 2);
+          assert.deepEqual(select.selectOptions[0].value, { name: 'Ivan' });
 
-          Formio.makeRequest = originalMakeRequest;
-          done();
-        }, 500);
-      }, 200);
-    }).catch(done);
+          const numberValue = 5;
+          const inputEvent = new Event('input');
+          const numberInput = numberComp.refs.input[0];
+
+          numberInput.value = numberValue;
+          numberInput.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(numberComp.dataValue, numberValue);
+            assert.equal(numberComp.getValue(), numberValue);
+            assert.equal(select.selectOptions.length, 3);
+            assert.deepEqual(select.selectOptions[0].value, { name: 'Kate' });
+
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 500);
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should update select items when "refresh options on blur" is enable and number component is changed', (done) => {
+  it('Should update select items when "refresh options on blur" is enable and number component is changed', function (done) {
     const form = _.cloneDeep(comp9);
     form.components[1].refreshOn = null;
     form.components[1].refreshOnBlur = 'number';
 
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
-    Formio.makeRequest = function(formio, type, url) {
-      return new Promise(resolve => {
-        let values =[{ name: 'Ivan' }, { name: 'Mike' }];
+    Formio.makeRequest = function (formio, type, url) {
+      return new Promise((resolve) => {
+        let values = [{ name: 'Ivan' }, { name: 'Mike' }];
 
         if (url.endsWith('5')) {
           values = [{ name: 'Kate' }, { name: 'Ann' }, { name: 'Lana' }];
         }
-         resolve(values);
+        resolve(values);
       });
     };
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      const numberComp = form.getComponent('number');
-      setTimeout(() => {
-        assert.equal(select.selectOptions.length, 2);
-        assert.deepEqual(select.selectOptions[0].value, { name: 'Ivan' });
-
-        const numberValue = 5;
-        const inputEvent = new Event('input');
-        const focusEvent = new Event('focus');
-        const blurEvent = new Event('blur');
-        const numberInput = numberComp.refs.input[0];
-        numberInput.dispatchEvent(focusEvent);
-        numberInput.value = numberValue;
-        numberInput.dispatchEvent(inputEvent);
-        numberInput.dispatchEvent(blurEvent);
-
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        const numberComp = form.getComponent('number');
         setTimeout(() => {
-          assert.equal(numberComp.dataValue, numberValue);
-          assert.equal(numberComp.getValue(), numberValue);
-          assert.equal(select.selectOptions.length, 3);
-          assert.deepEqual(select.selectOptions[0].value, { name: 'Kate' });
+          assert.equal(select.selectOptions.length, 2);
+          assert.deepEqual(select.selectOptions[0].value, { name: 'Ivan' });
 
-          Formio.makeRequest = originalMakeRequest;
-          done();
-        }, 500);
-      }, 200);
-    }).catch(done);
+          const numberValue = 5;
+          const inputEvent = new Event('input');
+          const focusEvent = new Event('focus');
+          const blurEvent = new Event('blur');
+          const numberInput = numberComp.refs.input[0];
+          numberInput.dispatchEvent(focusEvent);
+          numberInput.value = numberValue;
+          numberInput.dispatchEvent(inputEvent);
+          numberInput.dispatchEvent(blurEvent);
+
+          setTimeout(() => {
+            assert.equal(numberComp.dataValue, numberValue);
+            assert.equal(numberComp.getValue(), numberValue);
+            assert.equal(select.selectOptions.length, 3);
+            assert.deepEqual(select.selectOptions[0].value, { name: 'Kate' });
+
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 500);
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should be able to search if static search is enable', (done) => {
+  it('Should be able to search if static search is enable', function (done) {
     const form = _.cloneDeep(comp10);
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
 
-      const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
-      const focusEvent = new Event('focus');
-      searchField.dispatchEvent(focusEvent);
-
-      setTimeout(() => {
-        assert.equal(select.choices.dropdown.isActive, true);
-        const items = select.choices.choiceList.element.children;
-        assert.equal(items.length, 5);
-
-        const keyupEvent = new Event('keyup');
         const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
-        searchField.value = 'par';
-        searchField.dispatchEvent(keyupEvent);
+        const focusEvent = new Event('focus');
+        searchField.dispatchEvent(focusEvent);
 
         setTimeout(() => {
+          assert.equal(select.choices.dropdown.isActive, true);
           const items = select.choices.choiceList.element.children;
-          assert.equal(items.length, 1);
+          assert.equal(items.length, 5);
 
-          done();
-        }, 400);
-      }, 200);
-    }).catch(done);
+          const keyupEvent = new Event('keyup');
+          const searchField = select.element.querySelector(
+            '.choices__input.choices__input--cloned',
+          );
+          searchField.value = 'par';
+          searchField.dispatchEvent(keyupEvent);
+
+          setTimeout(() => {
+            const items = select.choices.choiceList.element.children;
+            assert.equal(items.length, 1);
+
+            done();
+          }, 400);
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should not be able to search if static search is disable', (done) => {
+  it('Should not be able to search if static search is disable', function (done) {
     const form = _.cloneDeep(comp10);
     form.components[0].searchEnabled = false;
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
-      assert.equal(searchField, null);
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
+        assert.equal(searchField, null);
 
-      done();
-    }).catch(done);
+        done();
+      })
+      .catch(done);
   });
 
-  it('Should save correct value if value property and item template property are different', (done) => {
+  it('Should save correct value if value property and item template property are different', function (done) {
     const form = _.cloneDeep(comp9);
     form.components[1].refreshOn = null;
     form.components[1].valueProperty = 'age';
@@ -542,71 +581,84 @@ describe('Select Component', () => {
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
 
-    Formio.makeRequest = function() {
-      return new Promise(resolve => {
-        const values =[{ name: 'Ivan', age: 35 }, { name: 'Mike', age: 41 }];
+    Formio.makeRequest = function () {
+      return new Promise((resolve) => {
+        const values = [
+          { name: 'Ivan', age: 35 },
+          { name: 'Mike', age: 41 },
+        ];
         resolve(values);
       });
     };
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      assert.equal(select.selectOptions.length, 0);
-      select.choices.showDropdown();
-
-      setTimeout(() => {
-        assert.equal(select.selectOptions.length, 2);
-        assert.deepEqual(select.selectOptions[0].value, 35);
-        assert.deepEqual(select.selectOptions[0].label, '<span>Ivan</span>');
-
-        const items = select.choices.choiceList.element.children;
-        assert.equal(items.length, 2);
-        assert.equal(items[0].textContent.trim(), 'Ivan');
-
-        select.setValue(41);
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        assert.equal(select.selectOptions.length, 0);
+        select.choices.showDropdown();
 
         setTimeout(() => {
-          assert.equal(select.getValue(), 41);
-          assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'Mike');
+          assert.equal(select.selectOptions.length, 2);
+          assert.deepEqual(select.selectOptions[0].value, 35);
+          assert.deepEqual(select.selectOptions[0].label, '<span>Ivan</span>');
 
-          Formio.makeRequest = originalMakeRequest;
+          const items = select.choices.choiceList.element.children;
+          assert.equal(items.length, 2);
+          assert.equal(items[0].textContent.trim(), 'Ivan');
 
-          done();
-        }, 400);
-      }, 200);
-    }).catch(done);
+          select.setValue(41);
+
+          setTimeout(() => {
+            assert.equal(select.getValue(), 41);
+            assert.equal(
+              select.choices.containerInner.element.children[1].children[0].children[0].textContent,
+              'Mike',
+            );
+
+            Formio.makeRequest = originalMakeRequest;
+
+            done();
+          }, 400);
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should set custom header when sending request in select url', (done) => {
+  it('Should set custom header when sending request in select url', function (done) {
     const form = _.cloneDeep(comp9);
     form.components[1].refreshOn = null;
     form.components[1].lazyLoad = true;
-    form.components[1].data.headers = [{ key:'testHeader', value:'test' }];
+    form.components[1].data.headers = [{ key: 'testHeader', value: 'test' }];
 
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
 
-    Formio.makeRequest = function(formio, type, url, method, data, opts) {
+    Formio.makeRequest = function (formio, type, url, method, data, opts) {
       assert.equal(opts.header.get('testHeader'), 'test');
-      return new Promise(resolve => {
-        const values = [{ name: 'Ivan', age: 35 }, { name: 'Mike', age: 41 }];
+      return new Promise((resolve) => {
+        const values = [
+          { name: 'Ivan', age: 35 },
+          { name: 'Mike', age: 41 },
+        ];
         resolve(values);
       });
     };
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      assert.equal(select.selectOptions.length, 0);
-      select.choices.showDropdown();
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        assert.equal(select.selectOptions.length, 0);
+        select.choices.showDropdown();
 
-      setTimeout(() => {
-        Formio.makeRequest = originalMakeRequest;
-        done();
-      }, 200);
-    }).catch(done);
+        setTimeout(() => {
+          Formio.makeRequest = originalMakeRequest;
+          done();
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should set value in select url with lazy load option', (done) => {
+  it('Should set value in select url with lazy load option', function (done) {
     const form = _.cloneDeep(comp9);
     form.components[1].refreshOn = null;
     form.components[1].lazyLoad = true;
@@ -614,29 +666,34 @@ describe('Select Component', () => {
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
 
-    Formio.makeRequest = function() {
-      return new Promise(resolve => {
+    Formio.makeRequest = function () {
+      return new Promise((resolve) => {
         const values = [{ name: 'Ivan' }, { name: 'Mike' }];
         resolve(values);
       });
     };
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      select.setValue({ name: 'Ivan' });
-      setTimeout(() => {
-        assert.deepEqual(select.getValue(), { name: 'Ivan' });
-        assert.deepEqual(select.dataValue, { name: 'Ivan' });
-        assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'Ivan');
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        select.setValue({ name: 'Ivan' });
+        setTimeout(() => {
+          assert.deepEqual(select.getValue(), { name: 'Ivan' });
+          assert.deepEqual(select.dataValue, { name: 'Ivan' });
+          assert.equal(
+            select.choices.containerInner.element.children[1].children[0].children[0].textContent,
+            'Ivan',
+          );
 
-        Formio.makeRequest = originalMakeRequest;
+          Formio.makeRequest = originalMakeRequest;
 
-        done();
-      }, 200);
-    }).catch(done);
+          done();
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should set value in select url with lazy load option when value property is defined', (done) => {
+  it('Should set value in select url with lazy load option when value property is defined', function (done) {
     const form = _.cloneDeep(comp9);
     form.components[1].refreshOn = null;
     form.components[1].lazyLoad = true;
@@ -644,60 +701,34 @@ describe('Select Component', () => {
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
 
-    Formio.makeRequest = function() {
-      return new Promise(resolve => {
+    Formio.makeRequest = function () {
+      return new Promise((resolve) => {
         const values = [{ name: 'Ivan' }, { name: 'Mike' }];
         resolve(values);
       });
     };
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      select.setValue('Ivan');
-      setTimeout(() => {
-        assert.equal(select.getValue(), 'Ivan');
-        assert.equal(select.dataValue, 'Ivan');
-        assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'Ivan');
-
-        Formio.makeRequest = originalMakeRequest;
-
-        done();
-      }, 200);
-    }).catch(done);
-  });
-
-  it('Should be able to search if static search is enable', (done) => {
-    const form = _.cloneDeep(comp10);
-    const element = document.createElement('div');
-
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-
-      const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
-      const focusEvent = new Event('focus');
-      searchField.dispatchEvent(focusEvent);
-
-      setTimeout(() => {
-        assert.equal(select.choices.dropdown.isActive, true);
-        const items = select.choices.choiceList.element.children;
-        assert.equal(items.length, 5);
-
-        const keyupEvent = new Event('keyup');
-        const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
-        searchField.value = 'par';
-        searchField.dispatchEvent(keyupEvent);
-
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        select.setValue('Ivan');
         setTimeout(() => {
-          const items = select.choices.choiceList.element.children;
-          assert.equal(items.length, 1);
+          assert.equal(select.getValue(), 'Ivan');
+          assert.equal(select.dataValue, 'Ivan');
+          assert.equal(
+            select.choices.containerInner.element.children[1].children[0].children[0].textContent,
+            'Ivan',
+          );
+
+          Formio.makeRequest = originalMakeRequest;
 
           done();
-        }, 400);
-      }, 200);
-    }).catch(done);
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Server side search is debounced with the correct timeout', (done) => {
+  it('Server side search is debounced with the correct timeout', function (done) {
     const form = _.cloneDeep(comp9);
     form.components[1].lazyLoad = false;
     form.components[1].searchDebounce = 0.7;
@@ -706,8 +737,8 @@ describe('Select Component', () => {
     const element = document.createElement('div');
 
     const originalMakeRequest = Formio.makeRequest;
-    Formio.makeRequest = function() {
-      return new Promise(resolve => {
+    Formio.makeRequest = function () {
+      return new Promise((resolve) => {
         resolve([]);
       });
     };
@@ -719,130 +750,154 @@ describe('Select Component', () => {
       return originalDebounce(fn, 0, opts);
     };
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
-      const focusEvent = new Event('focus');
-      searchField.dispatchEvent(focusEvent);
-
-      setTimeout(() => {
-        const keyupEvent = new Event('keyup');
-        searchField.value = 'the_name';
-        searchField.dispatchEvent(keyupEvent);
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
+        const focusEvent = new Event('focus');
+        searchField.dispatchEvent(focusEvent);
 
         setTimeout(() => {
-          _.debounce = originalDebounce;
-          Formio.makeRequest = originalMakeRequest;
+          const keyupEvent = new Event('keyup');
+          searchField.value = 'the_name';
+          searchField.dispatchEvent(keyupEvent);
 
-          assert.equal(searchHasBeenDebounced, true);
-          done();
-        }, 500);
-      }, 300);
-    }).catch(done);
+          setTimeout(() => {
+            _.debounce = originalDebounce;
+            Formio.makeRequest = originalMakeRequest;
+
+            assert.equal(searchHasBeenDebounced, true);
+            done();
+          }, 500);
+        }, 300);
+      })
+      .catch(done);
   });
 
-  it('Should provide "Allow only available values" validation', (done) => {
+  it('Should provide "Allow only available values" validation', function (done) {
     const form = _.cloneDeep(comp10);
     form.components[0].validate.onlyAvailableItems = true;
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      const value = 'Dallas';
-      select.setValue(value);
-
-      setTimeout(() => {
-        assert.equal(select.getValue(), value);
-        assert.equal(select.dataValue, value);
-        const submit = form.getComponent('submit');
-        const clickEvent = new Event('click');
-        const submitBtn = submit.refs.button;
-        submitBtn.dispatchEvent(clickEvent);
-
-        setTimeout(() => {
-          assert.equal(form.errors.length, 1);
-          assert.equal(select.errors[0].message, 'Select is an invalid value.');
-          document.innerHTML = '';
-          done();
-        }, 400);
-      }, 200);
-    }).catch(done);
-  });
-
-  it('Should render and set value in select json', (done) => {
-    const formObj = _.cloneDeep(comp11);
-    const element = document.createElement('div');
-
-    Formio.createForm(element, formObj).then(form => {
-      const select = form.getComponent('select');
-      assert.equal(select.choices.containerInner.element.children[1].children[0].dataset.value, '');
-      select.choices.showDropdown();
-
-      setTimeout(() => {
-        const items = select.choices.choiceList.element.children;
-        assert.equal(items.length, 4);
-
-        const value = { value: 'a', label:'A' };
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        const value = 'Dallas';
         select.setValue(value);
 
         setTimeout(() => {
-          assert.deepEqual(select.getValue(), value);
-          assert.deepEqual(select.dataValue, value);
-          assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'A');
+          assert.equal(select.getValue(), value);
+          assert.equal(select.dataValue, value);
+          const submit = form.getComponent('submit');
+          const clickEvent = new Event('click');
+          const submitBtn = submit.refs.button;
+          submitBtn.dispatchEvent(clickEvent);
 
-          done();
-        }, 400);
-      }, 200);
-    }).catch(done);
+          setTimeout(() => {
+            assert.equal(form.errors.length, 1);
+            assert.equal(select.errors[0].message, 'Select is an invalid value.');
+            document.innerHTML = '';
+            done();
+          }, 400);
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should load and set items in select resource and set value', (done) => {
+  it('Should render and set value in select json', function (done) {
+    const formObj = _.cloneDeep(comp11);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formObj)
+      .then((form) => {
+        const select = form.getComponent('select');
+        assert.equal(
+          select.choices.containerInner.element.children[1].children[0].dataset.value,
+          '',
+        );
+        select.choices.showDropdown();
+
+        setTimeout(() => {
+          const items = select.choices.choiceList.element.children;
+          assert.equal(items.length, 4);
+
+          const value = { value: 'a', label: 'A' };
+          select.setValue(value);
+
+          setTimeout(() => {
+            assert.deepEqual(select.getValue(), value);
+            assert.deepEqual(select.dataValue, value);
+            assert.equal(
+              select.choices.containerInner.element.children[1].children[0].children[0].textContent,
+              'A',
+            );
+
+            done();
+          }, 400);
+        }, 200);
+      })
+      .catch(done);
+  });
+
+  it('Should load and set items in select resource and set value', function (done) {
     const form = _.cloneDeep(comp12);
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
 
-    Formio.makeRequest = function(formio, type, url) {
-      return new Promise(resolve => {
+    Formio.makeRequest = function (formio, type, url) {
+      return new Promise((resolve) => {
         let values = [{ data: { name: 'Ivan' } }, { data: { name: 'Mike' } }];
 
         if (url.endsWith('Ivan')) {
-          assert.equal(url.endsWith('/form/60114dd32cab36ad94ac4f94/submission?limit=100&skip=0&data.name__regex=Ivan'), true);
+          assert.equal(
+            url.endsWith(
+              '/form/60114dd32cab36ad94ac4f94/submission?limit=100&skip=0&data.name__regex=Ivan',
+            ),
+            true,
+          );
           values = [{ data: { name: 'Ivan' } }];
-        }
-        else {
-          assert.equal(url.endsWith('/form/60114dd32cab36ad94ac4f94/submission?limit=100&skip=0'), true);
+        } else {
+          assert.equal(
+            url.endsWith('/form/60114dd32cab36ad94ac4f94/submission?limit=100&skip=0'),
+            true,
+          );
         }
 
         resolve(values);
       });
     };
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      const items = select.choices.choiceList.element.children;
-      assert.equal(items.length, 1);
-      select.setValue('Ivan');
-
-      setTimeout(() => {
-        assert.equal(select.getValue(), 'Ivan');
-        assert.equal(select.dataValue, 'Ivan');
-        assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'Ivan');
-        select.choices.showDropdown();
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        const items = select.choices.choiceList.element.children;
+        assert.equal(items.length, 1);
+        select.setValue('Ivan');
 
         setTimeout(() => {
-          const items = select.choices.choiceList.element.children;
+          assert.equal(select.getValue(), 'Ivan');
+          assert.equal(select.dataValue, 'Ivan');
+          assert.equal(
+            select.choices.containerInner.element.children[1].children[0].children[0].textContent,
+            'Ivan',
+          );
+          select.choices.showDropdown();
 
-          assert.equal(items.length, 2);
-          assert.equal(items[0].textContent, 'Ivan');
+          setTimeout(() => {
+            const items = select.choices.choiceList.element.children;
 
-          Formio.makeRequest = originalMakeRequest;
-          done();
-        }, 400);
-      }, 200);
-    }).catch(done);
+            assert.equal(items.length, 2);
+            assert.equal(items[0].textContent, 'Ivan');
+
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }, 400);
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should not have "limit" and "skip" query params when "Disable limit" option checked', (done) => {
+  it('Should not have "limit" and "skip" query params when "Disable limit" option checked', function (done) {
     const form = _.cloneDeep(comp9);
     const element = document.createElement('div');
     const originalMakeRequest = Formio.makeRequest;
@@ -851,23 +906,25 @@ describe('Select Component', () => {
       return Promise.resolve({});
     };
 
-    Formio.createForm(element, form).then(() => {
-      setTimeout(() => {
-        Formio.makeRequest = originalMakeRequest;
-        done();
-      }, 200);
-    }).catch(done);
+    Formio.createForm(element, form)
+      .then(() => {
+        setTimeout(() => {
+          Formio.makeRequest = originalMakeRequest;
+          done();
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('The empty option in html5 shouldn\'t have the [Object Object] value', () => {
+  it("The empty option in html5 shouldn't have the [Object Object] value", function () {
     return Harness.testCreate(SelectComponent, comp13).then((component) => {
-     const emptyOption = component.element.querySelectorAll('option')[0];
+      const emptyOption = component.element.querySelectorAll('option')[0];
       assert.notEqual(emptyOption.value, '[object Object]');
       assert.equal(emptyOption.value, '');
     });
   });
 
-  it('Should not have default values in schema', (done) => {
+  it('Should not have default values in schema', function (done) {
     const form = _.cloneDeep(comp14);
     const element = document.createElement('div');
 
@@ -876,109 +933,89 @@ describe('Select Component', () => {
       tableView: true,
       key: 'select',
       type: 'select',
-      input: true
+      input: true,
     };
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      assert.deepEqual(requiredSchema, select.schema);
-      done();
-    }).catch(done);
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        assert.deepEqual(requiredSchema, select.schema);
+        done();
+      })
+      .catch(done);
   });
 
-  it('Should show async custom values and be able to set submission', (done) => {
+  it('Should show async custom values and be able to set submission', function (done) {
     const formObj = _.cloneDeep(comp16);
     const element = document.createElement('div');
 
-    Formio.createForm(element, formObj).then(form => {
-      const select = form.getComponent('select');
-     select.choices.showDropdown();
-
-      setTimeout(() => {
-        const items = select.choices.choiceList.element.children;
-        assert.equal(items.length, 3);
-        const value = 'bb';
-        form.submission = { data: { select: value } };
+    Formio.createForm(element, formObj)
+      .then((form) => {
+        const select = form.getComponent('select');
+        select.choices.showDropdown();
 
         setTimeout(() => {
-          assert.deepEqual(select.getValue(), value);
-          assert.deepEqual(select.dataValue, value);
-          assert.equal(select.choices.containerInner.element.children[1].children[0].children[0].textContent, 'B');
+          const items = select.choices.choiceList.element.children;
+          assert.equal(items.length, 3);
+          const value = 'bb';
+          form.submission = { data: { select: value } };
 
-          done();
-        }, 400);
-      }, 200);
-    }).catch(done);
+          setTimeout(() => {
+            assert.deepEqual(select.getValue(), value);
+            assert.deepEqual(select.dataValue, value);
+            assert.equal(
+              select.choices.containerInner.element.children[1].children[0].children[0].textContent,
+              'B',
+            );
+
+            done();
+          }, 400);
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should provide metadata.selectData for Select component pointed to a resource where value property is set to a field', (done) => {
+  it('Should provide metadata.selectData for Select component pointed to a resource where value property is set to a field', function (done) {
     const form = _.cloneDeep(comp17);
-    const testItems = [
-      { textField: 'John' },
-      { textField: 'Mary' },
-      { textField: 'Sally' }
-    ];
+    const testItems = [{ textField: 'John' }, { textField: 'Mary' }, { textField: 'Sally' }];
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      select.setItems(testItems.map(item => ({ data: item })));
-      const value = 'John';
-      select.setValue(value);
-
-      setTimeout(() => {
-        assert.equal(select.dataValue, value);
-        const submit = form.getComponent('submit');
-        const clickEvent = new Event('click');
-        const submitBtn = submit.refs.button;
-        submitBtn.dispatchEvent(clickEvent);
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        select.setItems(testItems.map((item) => ({ data: item })));
+        const value = 'John';
+        select.setValue(value);
 
         setTimeout(() => {
-          assert.equal(_.isEqual(form.submission.metadata.selectData.select.data, testItems[0]), true);
-          done();
+          assert.equal(select.dataValue, value);
+          const submit = form.getComponent('submit');
+          const clickEvent = new Event('click');
+          const submitBtn = submit.refs.button;
+          submitBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(
+              _.isEqual(form.submission.metadata.selectData.select.data, testItems[0]),
+              true,
+            );
+            done();
+          }, 200);
         }, 200);
-      }, 200);
-    }).catch(done);
+      })
+      .catch(done);
   });
 
-  it('Should provide correct metadata.selectData for multiple Select', (done) => {
+  it('Should provide correct metadata.selectData for multiple Select', function (done) {
     const form = _.cloneDeep(comp20);
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      const values = ['apple', 'orange'];
-      select.setValue(values);
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        const values = ['apple', 'orange'];
+        select.setValue(values);
 
-      setTimeout(()=> {
-        const submit = form.getComponent('submit');
-        const clickEvent = new Event('click');
-        const submitBtn = submit.refs.button;
-        submitBtn.dispatchEvent(clickEvent);
-
-        setTimeout(() => {
-          const metadata = form.submission.metadata.selectData.select;
-          assert.equal(_.keys(metadata).length, 2);
-          values.forEach((value) => {
-            assert.equal(_.find(select.component.data.values, { value }).label, metadata[value].label);
-          });
-          done();
-        }, 200);
-      }, 200);
-    }).catch(done);
-  });
-
-  it('Should provide correct metadata.selectData for HTML5 Select', (done) => {
-    const element = document.createElement('div');
-
-    Formio.createForm(element, comp21).then(form => {
-      const select = form.getComponent('animals');
-      const checkbox = form.getComponent('checkbox');
-      const value = 'dog';
-      select.setValue(value);
-
-      setTimeout(()=> {
-        checkbox.setValue(true);
         setTimeout(() => {
           const submit = form.getComponent('submit');
           const clickEvent = new Event('click');
@@ -986,609 +1023,686 @@ describe('Select Component', () => {
           submitBtn.dispatchEvent(clickEvent);
 
           setTimeout(() => {
-            const metadata = form.submission.metadata.selectData.animals2;
-            assert.equal(metadata.label, 'Dog');
+            const metadata = form.submission.metadata.selectData.select;
+            assert.equal(_.keys(metadata).length, 2);
+            values.forEach((value) => {
+              assert.equal(
+                _.find(select.component.data.values, { value }).label,
+                metadata[value].label,
+              );
+            });
             done();
           }, 200);
-        }, 300);
-      }, 200);
-    }).catch(done);
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should provide correct metadata.selectData for HTML5 Select with default value', (done) => {
+  it('Should provide correct metadata.selectData for HTML5 Select', function (done) {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, comp21)
+      .then((form) => {
+        const select = form.getComponent('animals');
+        const checkbox = form.getComponent('checkbox');
+        const value = 'dog';
+        select.setValue(value);
+
+        setTimeout(() => {
+          checkbox.setValue(true);
+          setTimeout(() => {
+            const submit = form.getComponent('submit');
+            const clickEvent = new Event('click');
+            const submitBtn = submit.refs.button;
+            submitBtn.dispatchEvent(clickEvent);
+
+            setTimeout(() => {
+              const metadata = form.submission.metadata.selectData.animals2;
+              assert.equal(metadata.label, 'Dog');
+              done();
+            }, 200);
+          }, 300);
+        }, 200);
+      })
+      .catch(done);
+  });
+
+  it('Should provide correct metadata.selectData for HTML5 Select with default value', function (done) {
     const form = _.cloneDeep(comp22);
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const submit = form.getComponent('submit');
-      const clickEvent = new Event('click');
-      const submitBtn = submit.refs.button;
-      submitBtn.dispatchEvent(clickEvent);
+    Formio.createForm(element, form)
+      .then((form) => {
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
 
-      setTimeout(()=> {
-        const metadata = form.submission.metadata.selectData.select;
-        assert.equal(metadata.label, 'Label 1');
-        done();
-      }, 200);
-    }).catch(done);
+        setTimeout(() => {
+          const metadata = form.submission.metadata.selectData.select;
+          assert.equal(metadata.label, 'Label 1');
+          done();
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should provide correct metadata.selectData for ChoicesJS Select with default value', (done) => {
+  it('Should provide correct metadata.selectData for ChoicesJS Select with default value', function (done) {
     const form = _.cloneDeep(comp22);
-    form.components[0].widget='choicesjs';
+    form.components[0].widget = 'choicesjs';
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const submit = form.getComponent('submit');
-      const clickEvent = new Event('click');
-      const submitBtn = submit.refs.button;
-      submitBtn.dispatchEvent(clickEvent);
+    Formio.createForm(element, form)
+      .then((form) => {
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
 
-      setTimeout(()=> {
-        const metadata = form.submission.metadata.selectData.select;
-        assert.equal(metadata.label, 'Label 1');
-        done();
-      }, 200);
-    }).catch(done);
+        setTimeout(() => {
+          const metadata = form.submission.metadata.selectData.select;
+          assert.equal(metadata.label, 'Label 1');
+          done();
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should set correct label from metadata for ChoicesJS Select with default value', (done) => {
+  it('Should set correct label from metadata for ChoicesJS Select with default value', function (done) {
     const form = _.cloneDeep(comp22);
-    form.components[0].widget='choicesjs';
+    form.components[0].widget = 'choicesjs';
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      form.submission = {
-        data: {
-          select: 'value2',
-        },
-        metadata: {
-          selectData: {
-            select: {
-              label: 'Label 2',
-            },
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        form.submission = {
+          data: {
+            select: 'value2',
           },
-        },
-      };
-
-      setTimeout(()=> {
-        assert.equal(select.templateData['value2'].label, 'Label 2');
-        done();
-      }, 200);
-    }).catch(done);
-  });
-
-  it('Should provide correct metadata.selectData for multiple Select with default value', (done) => {
-    const form = _.cloneDeep(comp23);
-    const element = document.createElement('div');
-
-    Formio.createForm(element, form).then(form => {
-      const submit = form.getComponent('submit');
-      const clickEvent = new Event('click');
-      const submitBtn = submit.refs.button;
-      submitBtn.dispatchEvent(clickEvent);
-
-      setTimeout(()=> {
-        const metadata = form.submission.metadata.selectData.select;
-        assert.deepEqual(metadata, {
-          value1: {
-            label: 'Label 1',
-          },
-          value3: {
-            label: 'Label 3',
-          },
-        });
-        done();
-      }, 200);
-    }).catch(done);
-  });
-
-  it('Should set correct label from metadata for multiple Select with default value', (done) => {
-    const form = _.cloneDeep(comp23);
-    const element = document.createElement('div');
-
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      form.submission = {
-        data: {
-          select: ['value1', 'value2'],
-        },
-        metadata: {
-          selectData: {
-            select: {
-              value1: {
-                label: 'Label 1',
-              },
-              value2: {
+          metadata: {
+            selectData: {
+              select: {
                 label: 'Label 2',
               },
             },
           },
-        },
-      };
+        };
 
-      setTimeout(()=> {
-        assert.equal(select.templateData['value1'].label, 'Label 1');
-        assert.equal(select.templateData['value2'].label, 'Label 2');
-        done();
-      }, 200);
-    }).catch(done);
+        setTimeout(() => {
+          assert.equal(select.templateData['value2'].label, 'Label 2');
+          done();
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('OnBlur validation should work properly with Select component', function(done) {
+  it('Should provide correct metadata.selectData for multiple Select with default value', function (done) {
+    const form = _.cloneDeep(comp23);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form)
+      .then((form) => {
+        const submit = form.getComponent('submit');
+        const clickEvent = new Event('click');
+        const submitBtn = submit.refs.button;
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          const metadata = form.submission.metadata.selectData.select;
+          assert.deepEqual(metadata, {
+            value1: {
+              label: 'Label 1',
+            },
+            value3: {
+              label: 'Label 3',
+            },
+          });
+          done();
+        }, 200);
+      })
+      .catch(done);
+  });
+
+  it('Should set correct label from metadata for multiple Select with default value', function (done) {
+    const form = _.cloneDeep(comp23);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        form.submission = {
+          data: {
+            select: ['value1', 'value2'],
+          },
+          metadata: {
+            selectData: {
+              select: {
+                value1: {
+                  label: 'Label 1',
+                },
+                value2: {
+                  label: 'Label 2',
+                },
+              },
+            },
+          },
+        };
+
+        setTimeout(() => {
+          assert.equal(select.templateData['value1'].label, 'Label 1');
+          assert.equal(select.templateData['value2'].label, 'Label 2');
+          done();
+        }, 200);
+      })
+      .catch(done);
+  });
+
+  it('OnBlur validation should work properly with Select component', function (done) {
     this.timeout(0);
     const element = document.createElement('div');
 
-    Formio.createForm(element, comp19).then(form => {
-      const select = form.components[0];
-      select.setValue('banana');
-      select.choices.input.element.focus();
-      select.pristine = false;
-
-      setTimeout(() => {
-        assert(!select.visibleErrors.length, 'Select should be valid while changing');
-        select.choices.input.element.dispatchEvent(new Event('blur'));
+    Formio.createForm(element, comp19)
+      .then((form) => {
+        const select = form.components[0];
+        select.setValue('banana');
+        select.choices.input.element.focus();
+        select.pristine = false;
 
         setTimeout(() => {
-          assert(select.visibleErrors.length, 'Should set error after Select component was blurred');
-          done();
+          assert(!select.visibleErrors.length, 'Select should be valid while changing');
+          select.choices.input.element.dispatchEvent(new Event('blur'));
+
+          setTimeout(() => {
+            assert(
+              select.visibleErrors.length,
+              'Should set error after Select component was blurred',
+            );
+            done();
+          }, 300);
         }, 300);
-      }, 300);
-    }).catch(done);
+      })
+      .catch(done);
   });
 
-  it('Should escape special characters in regex search field', done => {
+  it('Should escape special characters in regex search field', function (done) {
     const form = _.cloneDeep(comp17);
     const element = document.createElement('div');
     Formio.setProjectUrl('https://formio.form.io');
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
-      const focusEvent = new Event('focus');
-      searchField.dispatchEvent(focusEvent);
-
-      setTimeout(() => {
-        const keyupEvent = new Event('keyup');
-        searchField.value = '^$.*+?()[]{}|';
-        searchField.dispatchEvent(keyupEvent);
-
-        const spy = sinon.spy(Formio, 'makeRequest');
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        const searchField = select.element.querySelector('.choices__input.choices__input--cloned');
+        const focusEvent = new Event('focus');
+        searchField.dispatchEvent(focusEvent);
 
         setTimeout(() => {
-          assert.equal(spy.callCount, 1);
+          const keyupEvent = new Event('keyup');
+          searchField.value = '^$.*+?()[]{}|';
+          searchField.dispatchEvent(keyupEvent);
 
-          const urlArg = spy.args[0][2];
+          const spy = sinon.spy(Formio, 'makeRequest');
 
-          assert.ok(urlArg && typeof urlArg === 'string' && urlArg.startsWith('http'), 'A URL should be passed as the third argument to "Formio.makeRequest()"');
+          setTimeout(() => {
+            assert.equal(spy.callCount, 1);
 
-          assert.ok(urlArg.includes('__regex=%5C%5E%5C%24%5C.%5C*%5C%2B%5C%3F%5C(%5C)%5C%5B%5C%5D%5C%7B%5C%7D%5C%7C'), 'The URL should contain escaped and encoded search value regex');
-          done();
-        }, 500);
-      }, 200);
-    }).catch(done);
+            const urlArg = spy.args[0][2];
+
+            assert.ok(
+              urlArg && typeof urlArg === 'string' && urlArg.startsWith('http'),
+              'A URL should be passed as the third argument to "Formio.makeRequest()"',
+            );
+
+            assert.ok(
+              urlArg.includes(
+                '__regex=%5C%5E%5C%24%5C.%5C*%5C%2B%5C%3F%5C(%5C)%5C%5B%5C%5D%5C%7B%5C%7D%5C%7C',
+              ),
+              'The URL should contain escaped and encoded search value regex',
+            );
+            done();
+          }, 500);
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should perfom simple conditional logic for number data type', (done) => {
+  it('Should perfom simple conditional logic for number data type', function (done) {
     const form = _.cloneDeep(comp26);
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      const textfield = form.getComponent('textField');
-      select.setValue('1');
-
-      setTimeout(() => {
-        assert.equal(select.dataValue, 1);
-        assert.equal(textfield.visible, true);
-        select.setValue('2');
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        const textfield = form.getComponent('textField');
+        select.setValue('1');
 
         setTimeout(() => {
-          assert.equal(select.dataValue, 2);
+          assert.equal(select.dataValue, 1);
           assert.equal(textfield.visible, true);
-          select.setValue('10');
+          select.setValue('2');
 
           setTimeout(() => {
-            assert.equal(select.dataValue, 10);
-            assert.equal(textfield.visible, false);
-            select.setValue('1d');
+            assert.equal(select.dataValue, 2);
+            assert.equal(textfield.visible, true);
+            select.setValue('10');
 
             setTimeout(() => {
-              assert.equal(select.dataValue, '1d');
+              assert.equal(select.dataValue, 10);
               assert.equal(textfield.visible, false);
-              done();
+              select.setValue('1d');
+
+              setTimeout(() => {
+                assert.equal(select.dataValue, '1d');
+                assert.equal(textfield.visible, false);
+                done();
+              }, 300);
             }, 300);
           }, 300);
         }, 300);
-      }, 300);
-    }).catch(done);
+      })
+      .catch(done);
   });
 
-  it('Should open edit grid modal when clicking on validation link when editing a submission', (done) => {
+  it('Should open edit grid modal when clicking on validation link when editing a submission', function (done) {
     Formio.createForm(document.createElement('div'), comp25, {}).then((form) => {
       form.submission = {
-        "data": {
-          "editGrid": [
+        data: {
+          editGrid: [
             {
-              "notselect": "",
-              "textField": ""
-            }
+              notselect: '',
+              textField: '',
+            },
           ],
-          "draft": true,
-          "submit": false
+          draft: true,
+          submit: false,
         },
-        "state": "draft",
+        state: 'draft',
       };
       const buttonComponent = form.getComponent('submit');
       buttonComponent.refs.button.click();
       setTimeout(() => {
         form.refs.errorRef[0].click();
         setTimeout(() => {
-          assert(document.querySelector('body').classList.contains('modal-open'), 'modal should be open');
+          assert(
+            document.querySelector('body').classList.contains('modal-open'),
+            'modal should be open',
+          );
           done();
         }, 200);
       }, 200);
     });
   });
 
-
-  it('Should render label for multiple Select when Data Source is Resource in read only mode', (done) => {
+  it('Should render label for multiple Select when Data Source is Resource in read only mode', function (done) {
     const element = document.createElement('div');
     const form = cloneDeep(comp24);
     set(form, 'components[0].multiple', true);
-    Formio.createForm(element, form, { readOnly: true }).then((form) => {
-      form.setSubmission({
-        metadata: {
-          selectData: {
-            select: {
-              1: {
-                data: {
-                  textField1: 'One'
-                }
+    Formio.createForm(element, form, { readOnly: true })
+      .then((form) => {
+        form.setSubmission({
+          metadata: {
+            selectData: {
+              select: {
+                1: {
+                  data: {
+                    textField1: 'One',
+                  },
+                },
+                olivia: {
+                  data: {
+                    textField1: 'Olivia Miller',
+                  },
+                },
               },
-              olivia: {
-                data: {
-                  textField1: 'Olivia Miller'
-                }
-              }
             },
           },
-        },
-        data: {
-          select: [1, 'olivia'],
-          submit: true,
-        },
-        state: 'submitted',
-      });
+          data: {
+            select: [1, 'olivia'],
+            submit: true,
+          },
+          state: 'submitted',
+        });
 
-      setTimeout(() => {
-        const select = form.getComponent('select');
-        const selectedItems = select.element.querySelectorAll('[aria-selected="true"] span');
-        assert.equal(selectedItems[0].innerHTML, 'One', 'Should show correct label for numeric values');
-        assert.equal(selectedItems[1].innerHTML, 'Olivia Miller', 'Should show correct label for string values');;
-        done();
-      }, 700);
-    })
-    .catch((err) => done(err));
+        setTimeout(() => {
+          const select = form.getComponent('select');
+          const selectedItems = select.element.querySelectorAll('[aria-selected="true"] span');
+          assert.equal(
+            selectedItems[0].innerHTML,
+            'One',
+            'Should show correct label for numeric values',
+          );
+          assert.equal(
+            selectedItems[1].innerHTML,
+            'Olivia Miller',
+            'Should show correct label for string values',
+          );
+          done();
+        }, 700);
+      })
+      .catch((err) => done(err));
   });
-  // it('should reset input value when called with empty value', () => {
-  //   const comp = Object.assign({}, comp1);
-  //   delete comp.placeholder;
-  //
-  //   return Harness.testCreate(SelectComponent, comp).then((component) => {
-  //     assert.deepEqual(component.dataValue, '');
-  //     assert.equal(component.refs.input[0].value, '');
-  //     component.setValue('red');
-  //     assert.equal(component.dataValue, 'red');
-  //     assert.equal(component.refs.input[0].value, 'red');
-  //     component.setValue('');
-  //     assert.equal(component.dataValue, '');
-  //     assert.equal(component.refs.input[0].value, '');
-  //   });
-  // });
-});
 
-describe('Select Component', () => {
-  it('Select Component should work correctly with the values in the form of an array', (done) => {
+  it('Select Component should work correctly with the values in the form of an array', function (done) {
     const form = _.cloneDeep(comp18);
     const testItems = [
-      { textField: ['one','two'] },
-      { textField: ['three','four'] },
-      { textField: ['five','six'] },
+      { textField: ['one', 'two'] },
+      { textField: ['three', 'four'] },
+      { textField: ['five', 'six'] },
     ];
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      select.setItems(testItems.map(item => ({ data: item })));
-      const value = ['three','four'];
-      select.setValue(value);
-      assert.equal(select.selectOptions.length, 3);
-      setTimeout(() => {
-        assert.deepEqual(select.getValue(), value);
-        assert.deepEqual(select.dataValue, value);
-        const submit = form.getComponent('submit');
-        const clickEvent = new Event('click');
-        const submitBtn = submit.refs.button;
-        submitBtn.dispatchEvent(clickEvent);
-
+    Formio.createForm(element, form)
+      .then((form) => {
+        const select = form.getComponent('select');
+        select.setItems(testItems.map((item) => ({ data: item })));
+        const value = ['three', 'four'];
+        select.setValue(value);
+        assert.equal(select.selectOptions.length, 3);
         setTimeout(() => {
-          assert.equal(select.dataValue, value);
-          done();
+          assert.deepEqual(select.getValue(), value);
+          assert.deepEqual(select.dataValue, value);
+          const submit = form.getComponent('submit');
+          const clickEvent = new Event('click');
+          const submitBtn = submit.refs.button;
+          submitBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(select.dataValue, value);
+            done();
+          }, 200);
         }, 200);
-      }, 200);
-    }).catch(done);
-  });
-});
-
-describe('Select Component with Entire Object Value Property', () => {
-  it('Should provide correct value', (done) => {
-    const form = _.cloneDeep(comp15);
-    const element = document.createElement('div');
-
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      const value = { 'textField':'rgd','submit':true,'number':11 };
-      select.setValue(value);
-
-      setTimeout(() => {
-        assert.equal(select.getValue(), value);
-        assert.equal(select.dataValue, value);
-        const submit = form.getComponent('submit');
-        const clickEvent = new Event('click');
-        const submitBtn = submit.refs.button;
-        submitBtn.dispatchEvent(clickEvent);
-
-        setTimeout(() => {
-          assert.equal(select.dataValue, value);
-          done();
-        }, 200);
-      }, 200);
-    }).catch(done);
+      })
+      .catch(done);
   });
 
-  it('Should provide correct items for Resource DataSrc Type and Entire Object Value Property', (done) => {
-    const form = _.cloneDeep(comp15);
-    const testItems = [
-      { textField: 'Jone', number: 1 },
-      { textField: 'Mary', number: 2 },
-      { textField: 'Sally', number: 3 }
-    ];
-    const element = document.createElement('div');
+  describe('Select Component with Entire Object Value Property', function () {
+    it('Should provide correct value', function (done) {
+      const form = _.cloneDeep(comp15);
+      const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      select.setItems(testItems.map(item => ({ data: item })));
-      const value = { textField: 'Jone', number: 1 };
-      select.setValue(value);
-      assert.equal(select.selectOptions.length, 3);
+      Formio.createForm(element, form)
+        .then((form) => {
+          const select = form.getComponent('select');
+          const value = { textField: 'rgd', submit: true, number: 11 };
+          select.setValue(value);
 
-      setTimeout(() => {
-        assert.equal(select.dataValue, value);
-        const submit = form.getComponent('submit');
-        const clickEvent = new Event('click');
-        const submitBtn = submit.refs.button;
-        submitBtn.dispatchEvent(clickEvent);
+          setTimeout(() => {
+            assert.equal(select.getValue(), value);
+            assert.equal(select.dataValue, value);
+            const submit = form.getComponent('submit');
+            const clickEvent = new Event('click');
+            const submitBtn = submit.refs.button;
+            submitBtn.dispatchEvent(clickEvent);
 
-        setTimeout(() => {
-          assert.equal(typeof select.dataValue, 'object');
-          done();
-        }, 200);
-      }, 200);
-    }).catch(done);
-  });
-
-  it('Should provide correct html value for Resource DataSrc Type and Entire Object Value Property', (done) => {
-    const form = _.cloneDeep(comp15);
-    const testItems = [
-      { textField: 'Jone', number: 1 },
-      { textField: 'Mary', number: 2 },
-      { textField: 'Sally', number: 3 }
-    ];
-    const element = document.createElement('div');
-
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      select.setItems(testItems.map(item => ({ data: item })));
-      const selectContainer = element.querySelector('[ref="selectContainer"]');
-      assert.notEqual(selectContainer, null);
-      const options = selectContainer.childNodes;
-      assert.equal(options.length, 4);
-      options.forEach((option) => {
-        assert.notEqual(option.value, '[object Object]');
-      });
-      const value = { textField: 'Jone', number: 1 };
-      select.setValue(value);
-      assert.equal(select.selectOptions.length, 3);
-
-      setTimeout(() => {
-        assert.equal(select.dataValue, value);
-        const submit = form.getComponent('submit');
-        const clickEvent = new Event('click');
-        const submitBtn = submit.refs.button;
-        submitBtn.dispatchEvent(clickEvent);
-
-        setTimeout(() => {
-          assert.equal(typeof select.dataValue, 'object');
-          done();
-        }, 200);
-      }, 200);
-    }).catch(done);
-  });
-
-  it('Should set submission value for Resource DataSrc Type and Entire Object Value Property', (done) => {
-    const form = _.cloneDeep(comp15);
-    const element = document.createElement('div');
-
-    Formio.createForm(element, form).then(form => {
-      const select = form.getComponent('select');
-      const value = { textField: 'Jone', nubmer: 1 };
-      form.submission = {
-        data: {
-          select: value
-        }
-      };
-
-      setTimeout(() => {
-        assert.equal(typeof select.dataValue,  'object');
-        const selectContainer = element.querySelector('[ref="selectContainer"]');
-        assert.notEqual(selectContainer, null);
-        assert.notEqual(selectContainer.value, '');
-        const options = selectContainer.childNodes;
-        assert.equal(options.length, 2);
-        done();
-      }, 1000);
-    }).catch(done);
-  });
-
-  it('Should get string representation of value for Resource DataSrc Type and Entire Object Value Property', (done) => {
-    Harness.testCreate(SelectComponent, comp15.components[0]).then((component) => {
-      const entireObject = {
-        a: '1',
-        b: '2',
-      };
-      const formattedValue = component.getView(entireObject);
-      assert.equal(formattedValue, JSON.stringify(entireObject));
-      done();
+            setTimeout(() => {
+              assert.equal(select.dataValue, value);
+              done();
+            }, 200);
+          }, 200);
+        })
+        .catch(done);
     });
-  });
 
-  it('Should render label for Select components when Data Source is Resource in read only mode', (done) => {
-    const element = document.createElement('div');
-    Formio.createForm(element, comp24, { readOnly: true }).then((form) => {
-      const select = form.getComponent('select');
-      form.setSubmission({
-        metadata: {
-          selectData: {
-            select: {
-              data: {
+    it('Should provide correct items for Resource DataSrc Type and Entire Object Value Property', function (done) {
+      const form = _.cloneDeep(comp15);
+      const testItems = [
+        { textField: 'Jone', number: 1 },
+        { textField: 'Mary', number: 2 },
+        { textField: 'Sally', number: 3 },
+      ];
+      const element = document.createElement('div');
+
+      Formio.createForm(element, form)
+        .then((form) => {
+          const select = form.getComponent('select');
+          select.setItems(testItems.map((item) => ({ data: item })));
+          const value = { textField: 'Jone', number: 1 };
+          select.setValue(value);
+          assert.equal(select.selectOptions.length, 3);
+
+          setTimeout(() => {
+            assert.equal(select.dataValue, value);
+            const submit = form.getComponent('submit');
+            const clickEvent = new Event('click');
+            const submitBtn = submit.refs.button;
+            submitBtn.dispatchEvent(clickEvent);
+
+            setTimeout(() => {
+              assert.equal(typeof select.dataValue, 'object');
+              done();
+            }, 200);
+          }, 200);
+        })
+        .catch(done);
+    });
+
+    it('Should provide correct html value for Resource DataSrc Type and Entire Object Value Property', function (done) {
+      const form = _.cloneDeep(comp15);
+      const testItems = [
+        { textField: 'Jone', number: 1 },
+        { textField: 'Mary', number: 2 },
+        { textField: 'Sally', number: 3 },
+      ];
+      const element = document.createElement('div');
+
+      Formio.createForm(element, form)
+        .then((form) => {
+          const select = form.getComponent('select');
+          select.setItems(testItems.map((item) => ({ data: item })));
+          const selectContainer = element.querySelector('[ref="selectContainer"]');
+          assert.notEqual(selectContainer, null);
+          const options = selectContainer.childNodes;
+          assert.equal(options.length, 4);
+          options.forEach((option) => {
+            assert.notEqual(option.value, '[object Object]');
+          });
+          const value = { textField: 'Jone', number: 1 };
+          select.setValue(value);
+          assert.equal(select.selectOptions.length, 3);
+
+          setTimeout(() => {
+            assert.equal(select.dataValue, value);
+            const submit = form.getComponent('submit');
+            const clickEvent = new Event('click');
+            const submitBtn = submit.refs.button;
+            submitBtn.dispatchEvent(clickEvent);
+
+            setTimeout(() => {
+              assert.equal(typeof select.dataValue, 'object');
+              done();
+            }, 200);
+          }, 200);
+        })
+        .catch(done);
+    });
+
+    it('Should set submission value for Resource DataSrc Type and Entire Object Value Property', function (done) {
+      const form = _.cloneDeep(comp15);
+      const element = document.createElement('div');
+
+      Formio.createForm(element, form)
+        .then((form) => {
+          const select = form.getComponent('select');
+          const value = { textField: 'Jone', nubmer: 1 };
+          form.submission = {
+            data: {
+              select: value,
+            },
+          };
+
+          setTimeout(() => {
+            assert.equal(typeof select.dataValue, 'object');
+            const selectContainer = element.querySelector('[ref="selectContainer"]');
+            assert.notEqual(selectContainer, null);
+            assert.notEqual(selectContainer.value, '');
+            const options = selectContainer.childNodes;
+            assert.equal(options.length, 2);
+            done();
+          }, 1000);
+        })
+        .catch(done);
+    });
+
+    it('Should get string representation of value for Resource DataSrc Type and Entire Object Value Property', function (done) {
+      Harness.testCreate(SelectComponent, comp15.components[0]).then((component) => {
+        const entireObject = {
+          a: '1',
+          b: '2',
+        };
+        const formattedValue = component.getView(entireObject);
+        assert.equal(formattedValue, JSON.stringify(entireObject));
+        done();
+      });
+    });
+
+    it('Should render label for Select components when Data Source is Resource in read only mode', function (done) {
+      const element = document.createElement('div');
+      Formio.createForm(element, comp24, { readOnly: true })
+        .then((form) => {
+          const select = form.getComponent('select');
+          form.setSubmission({
+            metadata: {
+              selectData: {
+                select: {
+                  data: {
+                    textField1: 'A',
+                  },
+                },
+              },
+              timezone: 'Europe/Kiev',
+              offset: 180,
+              origin: 'http://localhost:3001',
+              referrer: '',
+              browserName: 'Netscape',
+              userAgent:
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+              pathName: '/',
+              onLine: true,
+              headers: {
+                host: 'qvecgdgwpwujbpi.localhost:3000',
+                connection: 'keep-alive',
+                'content-length': '457',
+                'sec-ch-ua': '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
+                accept: 'application/json',
+                'content-type': 'application/json',
+                'sec-ch-ua-mobile': '?0',
+                'user-agent':
+                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+                'sec-ch-ua-platform': '"Windows"',
+                origin: 'http://localhost:3001',
+                'sec-fetch-site': 'cross-site',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-dest': 'empty',
+                referer: 'http://localhost:3001/',
+                'accept-encoding': 'gzip, deflate, br, zstd',
+                'accept-language': 'en-US,en;q=0.9,ru-RU;q=0.8,ru;q=0.7',
+              },
+            },
+            data: {
+              select: 1,
+              select1: {
                 textField1: 'A',
+                textField2: '1',
+                submit: true,
+              },
+              submit: true,
+            },
+            state: 'submitted',
+          });
+
+          setTimeout(() => {
+            const previewSelect = select.element.querySelector('[aria-selected="true"] span');
+
+            assert.equal(
+              previewSelect.innerHTML,
+              'A',
+              'Should show label as a selected value' + ' for Select component',
+            );
+
+            done();
+          }, 300);
+        })
+        .catch((err) => done(err));
+    });
+
+    it('Should render label for Select components when Data Source is Resource for modal preview', function (done) {
+      const element = document.createElement('div');
+      const comp = { ...comp24, modalEdit: true };
+      Formio.createForm(element, comp)
+        .then((form) => {
+          const select = form.getComponent('select');
+          form.setSubmission({
+            metadata: {
+              selectData: {
+                select: {
+                  data: {
+                    textField1: 'A',
+                  },
+                },
               },
             },
-          },
-          timezone: 'Europe/Kiev',
-          offset: 180,
-          origin: 'http://localhost:3001',
-          referrer: '',
-          browserName: 'Netscape',
-          userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
-          pathName: '/',
-          onLine: true,
-          headers: {
-            host: 'qvecgdgwpwujbpi.localhost:3000',
-            connection: 'keep-alive',
-            'content-length': '457',
-            'sec-ch-ua': '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
-            accept: 'application/json',
-            'content-type': 'application/json',
-            'sec-ch-ua-mobile': '?0',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
-            'sec-ch-ua-platform': '"Windows"',
-            origin: 'http://localhost:3001',
-            'sec-fetch-site': 'cross-site',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-dest': 'empty',
-            referer: 'http://localhost:3001/',
-            'accept-encoding': 'gzip, deflate, br, zstd',
-            'accept-language': 'en-US,en;q=0.9,ru-RU;q=0.8,ru;q=0.7',
-          },
-        },
-        data: {
-          select: 1,
-          select1: {
-            textField1: 'A',
-            textField2: '1',
-            submit: true,
-          },
-          submit: true,
-        },
-        state: 'submitted',
-      });
-
-      setTimeout(() => {
-        const previewSelect = select.element.querySelector('[aria-selected="true"] span');
-
-        assert.equal(previewSelect.innerHTML, 'A', 'Should show label as a selected value' +
-          ' for Select component');
-
-        done();
-      }, 300);
-    })
-      .catch((err) => done(err));
-  });
-
-  it('Should render label for Select components when Data Source is Resource for modal preview', (done) => {
-    const element = document.createElement('div');
-    const comp = { ...comp24, modalEdit: true };
-    Formio.createForm(element, comp).then((form) => {
-      const select = form.getComponent('select');
-      form.setSubmission({
-        metadata: {
-          selectData: {
-            select: {
-              data: {
+            data: {
+              select: 1,
+              select1: {
                 textField1: 'A',
+                textField2: '1',
+                submit: true,
+              },
+              submit: true,
+            },
+            state: 'submitted',
+          });
+
+          setTimeout(() => {
+            const previewSelect = select.element.querySelector('[aria-selected="true"] span');
+
+            assert.equal(
+              previewSelect.innerHTML,
+              'A',
+              'Should show label as a selected value' + ' for Select component',
+            );
+
+            done();
+          }, 300);
+        })
+        .catch((err) => done(err));
+    });
+
+    it('Should render label for Select Resource type in readOnly mode', function (done) {
+      const element = document.createElement('div');
+      Formio.createForm(element, comp28, { readOnly: true })
+        .then((form) => {
+          const select = form.getComponent('selectResource');
+          form.setSubmission({
+            form: '672483c1d9abe46bcd70bca4',
+            metadata: {
+              selectData: {
+                selectResource: {
+                  data: {
+                    textField: 'test1',
+                  },
+                },
               },
             },
-          },
-        },
-        data: {
-          select: 1,
-          select1: {
-            textField1: 'A',
-            textField2: '1',
-            submit: true,
-          },
-          submit: true,
-        },
-        state: 'submitted',
-      });
-
-      setTimeout(() => {
-        const previewSelect = select.element.querySelector('[aria-selected="true"] span');
-
-        assert.equal(previewSelect.innerHTML, 'A', 'Should show label as a selected value' +
-          ' for Select component');
-
-        done();
-      }, 300);
-    })
-      .catch((err) => done(err));
-  });
-
-  it('Should render label for Select Resource type in readOnly mode', (done) => {
-    const element = document.createElement('div');
-    Formio.createForm(element, comp28, { readOnly: true }).then((form) => {
-      const select = form.getComponent('selectResource');
-      form.setSubmission({
-        form: '672483c1d9abe46bcd70bca4',
-        metadata: {
-          selectData: {
-            selectResource: {
-              data: {
-                textField: 'test1',
-              },
+            data: {
+              selectResource: 'test1',
+              submit: true,
             },
-          },
-        },
-        data: {
-          selectResource: 'test1',
-          submit: true,
-        },
-        _id: '6724d15cd9abe46bcd7115d1',
-        project: '67211a9aa929e4e6ebc2bf77',
-        state: 'submitted',
-        created: '2024-11-01T13:02:20.349Z',
-        modified: '2024-11-01T13:02:20.349Z',
-      });
+            _id: '6724d15cd9abe46bcd7115d1',
+            project: '67211a9aa929e4e6ebc2bf77',
+            state: 'submitted',
+            created: '2024-11-01T13:02:20.349Z',
+            modified: '2024-11-01T13:02:20.349Z',
+          });
 
-      setTimeout(() => {
-        const previewSelect = select.element.querySelector('[aria-selected="true"] span');
-        assert.equal(previewSelect.innerHTML, 'test1');
+          setTimeout(() => {
+            const previewSelect = select.element.querySelector('[aria-selected="true"] span');
+            assert.equal(previewSelect.innerHTML, 'test1');
 
-        done();
-      }, 400);
-    })
-      .catch((err) => done(err));
+            done();
+          }, 400);
+        })
+        .catch((err) => done(err));
+    });
   });
 });

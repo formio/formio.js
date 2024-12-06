@@ -13,7 +13,7 @@ export default {
       tableView: false,
       datePicker: {
         disableWeekends: false,
-        disableWeekdays: false
+        disableWeekdays: false,
       },
       enableTime: false,
       enableMinDateInput: false,
@@ -35,12 +35,12 @@ export default {
         format: 'yyyy-MM-dd',
         hourIncrement: 1,
         minuteIncrement: 1,
-        'time_24hr': false,
+        time_24hr: false,
         minDate: null,
         disableWeekends: false,
         disableWeekdays: false,
-        maxDate: null
-      }
+        maxDate: null,
+      },
     },
     {
       label: 'Date / Time',
@@ -49,7 +49,7 @@ export default {
       tableView: false,
       datePicker: {
         disableWeekends: false,
-        disableWeekdays: false
+        disableWeekdays: false,
       },
       enableTime: false,
       enableMinDateInput: false,
@@ -71,12 +71,12 @@ export default {
         format: 'yyyy-MM-dd',
         hourIncrement: 1,
         minuteIncrement: 1,
-        'time_24hr': false,
+        time_24hr: false,
         minDate: null,
         disableWeekends: false,
         disableWeekdays: false,
-        maxDate: null
-      }
+        maxDate: null,
+      },
     },
     {
       type: 'button',
@@ -84,8 +84,8 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   settings: {},
   properties: {},

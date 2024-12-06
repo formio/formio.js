@@ -3,19 +3,22 @@ import { isChildOf } from '../../utils/utils';
 
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {
-    return NestedComponent.schema({
-      label: 'Panel',
-      type: 'panel',
-      key: 'panel',
-      title: 'Panel',
-      theme: 'default',
-      breadcrumb: 'default',
-      components: [],
-      clearOnHide: false,
-      input: false,
-      tableView: false,
-      persistent: false
-    }, ...extend);
+    return NestedComponent.schema(
+      {
+        label: 'Panel',
+        type: 'panel',
+        key: 'panel',
+        title: 'Panel',
+        theme: 'default',
+        breadcrumb: 'default',
+        components: [],
+        clearOnHide: false,
+        input: false,
+        tableView: false,
+        persistent: false,
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -26,7 +29,7 @@ export default class PanelComponent extends NestedComponent {
       documentation: '/userguide/form-building/layout-components#panel',
       showPreview: false,
       weight: 30,
-      schema: PanelComponent.schema()
+      schema: PanelComponent.schema(),
     };
   }
 

@@ -12,7 +12,8 @@ export default {
           label: 'Yes',
           value: 'yes',
           shortcut: '',
-        }, {
+        },
+        {
           label: 'No',
           value: 'no',
           shortcut: '',
@@ -21,7 +22,8 @@ export default {
       key: 'nestedForm',
       type: 'radio',
       input: true,
-    }, {
+    },
+    {
       label: 'second question to open Nested form',
       optionsLabelPosition: 'right',
       inline: false,
@@ -31,11 +33,13 @@ export default {
           label: 'Open child form',
           value: 'openChildForm',
           shortcut: '',
-        }, {
+        },
+        {
           label: '2',
           value: '2',
           shortcut: '',
-        }, {
+        },
+        {
           label: '3',
           value: '3',
           shortcut: '',
@@ -49,7 +53,8 @@ export default {
       },
       type: 'radio',
       input: true,
-    }, {
+    },
+    {
       label: 'Form',
       tableView: true,
       components: [
@@ -69,7 +74,8 @@ export default {
                   label: 'unhide page3',
                   value: 'unhidePage3',
                   shortcut: '',
-                }, {
+                },
+                {
                   label: 'Next question',
                   value: 'nextQuestion',
                   shortcut: '',
@@ -82,7 +88,8 @@ export default {
           ],
           input: false,
           tableView: false,
-        }, {
+        },
+        {
           title: 'Page 2',
           breadcrumbClickable: true,
           buttonSettings: {
@@ -107,7 +114,8 @@ export default {
               value: 'Checkbox1',
               input: true,
               defaultValue: false,
-            }, {
+            },
+            {
               label: 'Checkbox2',
               inputType: 'radio',
               tableView: false,
@@ -117,7 +125,8 @@ export default {
               name: 'question',
               value: 'Checkbox2',
               input: true,
-            }, {
+            },
+            {
               label: 'Data Grid',
               reorder: false,
               addAnotherPosition: 'bottom',
@@ -133,7 +142,7 @@ export default {
                 },
               ],
               key: 'dataGrid',
-              customConditional: 'show = data.question === \'Checkbox2\';',
+              customConditional: "show = data.question === 'Checkbox2';",
               type: 'datagrid',
               input: true,
               components: [
@@ -146,7 +155,8 @@ export default {
                   key: 'textField',
                   type: 'textfield',
                   input: true,
-                }, {
+                },
+                {
                   label: 'Number',
                   mask: false,
                   spellcheck: true,
@@ -164,7 +174,8 @@ export default {
               ],
             },
           ],
-        }, {
+        },
+        {
           title: 'Page 3',
           breadcrumbClickable: true,
           buttonSettings: {
@@ -204,7 +215,8 @@ export default {
       },
       type: 'form',
       input: true,
-    }, {
+    },
+    {
       type: 'button',
       label: 'Submit',
       key: 'submit',

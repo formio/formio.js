@@ -14,7 +14,7 @@ import EditFormUtils from './editForm/utils';
  * @param {...any} extend - The components that extend the edit form.
  * @returns {import('@formio/core').Component[]} - The edit form components.
  */
-export default function(...extend) {
+export default function (...extend) {
   const components = _.cloneDeep([
     {
       type: 'tabs',
@@ -24,55 +24,57 @@ export default function(...extend) {
           label: 'Display',
           key: 'display',
           weight: 0,
-          components: ComponentEditDisplay
+          components: ComponentEditDisplay,
         },
         {
           label: 'Data',
           key: 'data',
           weight: 10,
-          components: ComponentEditData
+          components: ComponentEditData,
         },
         {
           label: 'Validation',
           key: 'validation',
           weight: 20,
-          components: ComponentEditValidation
+          components: ComponentEditValidation,
         },
         {
           label: 'API',
           key: 'api',
           weight: 30,
-          components: ComponentEditAPI
+          components: ComponentEditAPI,
         },
         {
           label: 'Conditional',
           key: 'conditional',
           weight: 40,
-          components: ComponentEditConditional
+          components: ComponentEditConditional,
         },
         {
           label: 'Logic',
           key: 'logic',
           weight: 50,
-          components: ComponentEditLogic
+          components: ComponentEditLogic,
         },
         {
           label: 'Layout',
           key: 'layout',
           weight: 60,
-          components: ComponentEditLayout
+          components: ComponentEditLayout,
         },
-      ]
-    }
-  ]).concat(extend.map((items) => ({
-    type: 'tabs',
-    key: 'tabs',
-    components: _.cloneDeep(items),
-  })));
+      ],
+    },
+  ]).concat(
+    extend.map((items) => ({
+      type: 'tabs',
+      key: 'tabs',
+      components: _.cloneDeep(items),
+    })),
+  );
   return {
     components: _.unionWith(components, EditFormUtils.unifyComponents).concat({
       type: 'hidden',
-      key: 'type'
-    })
+      key: 'type',
+    }),
   };
 }

@@ -6,23 +6,23 @@ export default {
       tableView: true,
       truncateMultipleSpaces: true,
       validate: {
-        required: true
+        required: true,
       },
       key: 'textField1',
       type: 'textfield',
-      input: true
+      input: true,
     },
     {
       label: 'Text Field',
       tableView: true,
       validate: {
         minLength: 5,
-        maxLength: 10
+        maxLength: 10,
       },
       key: 'textField',
       type: 'textfield',
       input: true,
-      truncateMultipleSpaces: true
+      truncateMultipleSpaces: true,
     },
     {
       label: 'Text Area',
@@ -30,12 +30,12 @@ export default {
       tableView: true,
       validate: {
         minLength: 5,
-        maxLength: 10
+        maxLength: 10,
       },
       key: 'textArea',
       type: 'textarea',
       input: true,
-      truncateMultipleSpaces: true
+      truncateMultipleSpaces: true,
     },
     {
       type: 'button',
@@ -43,8 +43,8 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   title: 'FIO-2503',
   display: 'form',

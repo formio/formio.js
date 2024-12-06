@@ -20,7 +20,7 @@ export default {
             yearRows: 4,
             yearColumns: 5,
             minDate: null,
-            maxDate: null
+            maxDate: null,
           },
           enableMinDateInput: false,
           enableMaxDateInput: false,
@@ -43,7 +43,7 @@ export default {
             minDate: null,
             disableWeekends: false,
             disableWeekdays: false,
-            maxDate: null
+            maxDate: null,
           },
           placeholder: '',
           prefix: '',
@@ -80,19 +80,19 @@ export default {
             customPrivate: false,
             strictDateValidation: false,
             multiple: false,
-            unique: false
+            unique: false,
           },
           conditional: {
             show: null,
             when: null,
-            eq: ''
+            eq: '',
           },
           overlay: {
             style: '',
             left: '',
             top: '',
             width: '',
-            height: ''
+            height: '',
           },
           allowCalculateOverride: false,
           encrypted: false,
@@ -116,11 +116,11 @@ export default {
             showMeridian: true,
             readonlyInput: false,
             mousewheel: true,
-            arrowkeys: true
+            arrowkeys: true,
           },
           customOptions: {},
-          id: 'en3rnqk'
-        }
+          id: 'en3rnqk',
+        },
       ],
       input: false,
       placeholder: '',
@@ -160,19 +160,19 @@ export default {
         customPrivate: false,
         strictDateValidation: false,
         multiple: false,
-        unique: false
+        unique: false,
       },
       conditional: {
         show: null,
         when: null,
-        eq: ''
+        eq: '',
       },
       overlay: {
         style: '',
         left: '',
         top: '',
         width: '',
-        height: ''
+        height: '',
       },
       allowCalculateOverride: false,
       encrypted: false,
@@ -185,7 +185,7 @@ export default {
       lazyLoad: false,
       theme: 'default',
       breadcrumb: 'default',
-      id: 'elx26b'
+      id: 'elx26b',
     },
     {
       title: 'Page 2',
@@ -202,7 +202,7 @@ export default {
           prefix: '',
           suffix: '',
           widget: {
-            type: 'input'
+            type: 'input',
           },
           inputMask: '',
           displayMask: '',
@@ -246,7 +246,7 @@ export default {
             maxLength: '',
             strictDateValidation: false,
             multiple: false,
-            unique: false
+            unique: false,
           },
           unique: false,
           errorLabel: '',
@@ -258,7 +258,7 @@ export default {
             show: null,
             when: null,
             eq: '',
-            json: ''
+            json: '',
           },
           customConditional: '',
           logic: [],
@@ -269,7 +269,7 @@ export default {
             left: '',
             top: '',
             width: '',
-            height: ''
+            height: '',
           },
           type: 'textfield',
           input: true,
@@ -278,8 +278,8 @@ export default {
           addons: [],
           inputType: 'text',
           id: 'euivbgw',
-          defaultValue: null
-        }
+          defaultValue: null,
+        },
       ],
       input: false,
       placeholder: '',
@@ -319,19 +319,19 @@ export default {
         customPrivate: false,
         strictDateValidation: false,
         multiple: false,
-        unique: false
+        unique: false,
       },
       conditional: {
         show: null,
         when: null,
-        eq: ''
+        eq: '',
       },
       overlay: {
         style: '',
         left: '',
         top: '',
         width: '',
-        height: ''
+        height: '',
       },
       allowCalculateOverride: false,
       encrypted: false,
@@ -344,7 +344,7 @@ export default {
       lazyLoad: false,
       theme: 'default',
       breadcrumb: 'default',
-      id: 'edm9ey'
+      id: 'edm9ey',
     },
     {
       title: 'Page 3',
@@ -361,7 +361,7 @@ export default {
           prefix: '',
           suffix: '',
           widget: {
-            type: 'input'
+            type: 'input',
           },
           inputMask: '',
           displayMask: '',
@@ -405,7 +405,7 @@ export default {
             maxLength: '',
             strictDateValidation: false,
             multiple: false,
-            unique: false
+            unique: false,
           },
           unique: false,
           errorLabel: '',
@@ -417,7 +417,7 @@ export default {
             show: null,
             when: null,
             eq: '',
-            json: ''
+            json: '',
           },
           customConditional: '',
           logic: [],
@@ -428,7 +428,7 @@ export default {
             left: '',
             top: '',
             width: '',
-            height: ''
+            height: '',
           },
           type: 'textfield',
           input: true,
@@ -437,8 +437,8 @@ export default {
           addons: [],
           inputType: 'text',
           id: 'ea1kbm9',
-          defaultValue: null
-        }
+          defaultValue: null,
+        },
       ],
       input: false,
       placeholder: '',
@@ -478,19 +478,19 @@ export default {
         customPrivate: false,
         strictDateValidation: false,
         multiple: false,
-        unique: false
+        unique: false,
       },
       conditional: {
         show: null,
         when: null,
-        eq: ''
+        eq: '',
       },
       overlay: {
         style: '',
         left: '',
         top: '',
         width: '',
-        height: ''
+        height: '',
       },
       allowCalculateOverride: false,
       encrypted: false,
@@ -503,7 +503,7 @@ export default {
       lazyLoad: false,
       theme: 'default',
       breadcrumb: 'default',
-      id: 'ej30156'
+      id: 'ej30156',
     },
     {
       title: 'Page 4',
@@ -520,7 +520,7 @@ export default {
           prefix: '',
           suffix: '',
           widget: {
-            type: 'input'
+            type: 'input',
           },
           inputMask: '',
           displayMask: '',
@@ -564,7 +564,7 @@ export default {
             maxLength: '',
             strictDateValidation: false,
             multiple: false,
-            unique: false
+            unique: false,
           },
           unique: false,
           errorLabel: '',
@@ -576,7 +576,7 @@ export default {
             show: null,
             when: null,
             eq: '',
-            json: ''
+            json: '',
           },
           customConditional: '',
           logic: [],
@@ -587,7 +587,7 @@ export default {
             left: '',
             top: '',
             width: '',
-            height: ''
+            height: '',
           },
           type: 'textfield',
           input: true,
@@ -596,8 +596,8 @@ export default {
           addons: [],
           inputType: 'text',
           id: 'e6qc7ks',
-          defaultValue: null
-        }
+          defaultValue: null,
+        },
       ],
       input: false,
       placeholder: '',
@@ -637,19 +637,19 @@ export default {
         customPrivate: false,
         strictDateValidation: false,
         multiple: false,
-        unique: false
+        unique: false,
       },
       conditional: {
         show: null,
         when: null,
-        eq: ''
+        eq: '',
       },
       overlay: {
         style: '',
         left: '',
         top: '',
         width: '',
-        height: ''
+        height: '',
       },
       allowCalculateOverride: false,
       encrypted: false,
@@ -662,7 +662,7 @@ export default {
       lazyLoad: false,
       theme: 'default',
       breadcrumb: 'default',
-      id: 'e6kih4r'
+      id: 'e6kih4r',
     },
     {
       title: 'Page 5',
@@ -679,7 +679,7 @@ export default {
           prefix: '',
           suffix: '',
           widget: {
-            type: 'input'
+            type: 'input',
           },
           inputMask: '',
           displayMask: '',
@@ -723,7 +723,7 @@ export default {
             maxLength: '',
             strictDateValidation: false,
             multiple: false,
-            unique: false
+            unique: false,
           },
           unique: false,
           errorLabel: '',
@@ -735,7 +735,7 @@ export default {
             show: null,
             when: null,
             eq: '',
-            json: ''
+            json: '',
           },
           customConditional: '',
           logic: [],
@@ -746,7 +746,7 @@ export default {
             left: '',
             top: '',
             width: '',
-            height: ''
+            height: '',
           },
           type: 'textfield',
           input: true,
@@ -755,7 +755,7 @@ export default {
           addons: [],
           inputType: 'text',
           id: 'edk9c1d',
-          defaultValue: null
+          defaultValue: null,
         },
         {
           input: true,
@@ -790,7 +790,7 @@ export default {
           calculateValue: '',
           calculateServer: false,
           widget: {
-            type: 'input'
+            type: 'input',
           },
           attributes: {},
           validateOn: 'change',
@@ -805,19 +805,19 @@ export default {
             maxLength: '',
             pattern: '',
             minWords: '',
-            maxWords: ''
+            maxWords: '',
           },
           conditional: {
             show: null,
             when: null,
-            eq: ''
+            eq: '',
           },
           overlay: {
             style: '',
             left: '',
             top: '',
             width: '',
-            height: ''
+            height: '',
           },
           allowCalculateOverride: false,
           encrypted: false,
@@ -838,8 +838,8 @@ export default {
           wysiwyg: false,
           editor: '',
           fixedSize: true,
-          id: 'e7dd0e8'
-        }
+          id: 'e7dd0e8',
+        },
       ],
       input: false,
       placeholder: '',
@@ -879,19 +879,19 @@ export default {
         customPrivate: false,
         strictDateValidation: false,
         multiple: false,
-        unique: false
+        unique: false,
       },
       conditional: {
         show: null,
         when: null,
-        eq: ''
+        eq: '',
       },
       overlay: {
         style: '',
         left: '',
         top: '',
         width: '',
-        height: ''
+        height: '',
       },
       allowCalculateOverride: false,
       encrypted: false,
@@ -904,8 +904,8 @@ export default {
       lazyLoad: false,
       theme: 'default',
       breadcrumb: 'default',
-      id: 'euq9qhq'
-    }
+      id: 'euq9qhq',
+    },
   ],
   display: 'wizard',
   type: 'form',

@@ -2,12 +2,13 @@ export default {
   label: 'Edit Grid',
   tableView: false,
   validate: {
-    custom: "valid = true;\ndata.editGrid.forEach((r) => {\n  if (r.textField === data.name) {\n    valid = 'Invalid Name';\n  }\n});",
+    custom:
+      "valid = true;\ndata.editGrid.forEach((r) => {\n  if (r.textField === data.name) {\n    valid = 'Invalid Name';\n  }\n});",
     required: false,
     customPrivate: false,
     strictDateValidation: false,
     multiple: false,
-    unique: false
+    unique: false,
   },
   rowDrafts: false,
   key: 'editGrid',
@@ -20,7 +21,7 @@ export default {
       defaultValue: true,
       key: 'checkbox',
       type: 'checkbox',
-      input: true
+      input: true,
     },
     {
       label: 'Text Field',
@@ -29,10 +30,10 @@ export default {
       conditional: {
         show: true,
         when: 'editGrid.checkbox',
-        eq: 'true'
+        eq: 'true',
       },
       type: 'textfield',
-      input: true
+      input: true,
     },
     {
       title: 'Child',
@@ -50,13 +51,13 @@ export default {
           conditional: {
             show: true,
             when: 'editGrid.checkbox',
-            eq: 'true'
+            eq: 'true',
           },
           type: 'textfield',
-          input: true
-        }
-      ]
-    }
+          input: true,
+        },
+      ],
+    },
   ],
   placeholder: '',
   prefix: '',
@@ -90,14 +91,14 @@ export default {
   conditional: {
     show: null,
     when: null,
-    eq: ''
+    eq: '',
   },
   overlay: {
     style: '',
     left: '',
     top: '',
     width: '',
-    height: ''
+    height: '',
   },
   allowCalculateOverride: false,
   encrypted: false,
@@ -113,9 +114,10 @@ export default {
   modal: false,
   inlineEdit: false,
   templates: {
-    header: "<div class=\"row\">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}\n          <div class=\"col-sm-2\">{{ component.label }}</div>\n        {% } %}\n      {% }) %}\n    </div>",
-    row: "<div class=\"row\">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}\n          <div class=\"col-sm-2\">\n            {{ getView(component, row[component.key]) }}\n          </div>\n        {% } %}\n      {% }) %}\n      {% if (!instance.disabled) { %}\n        <div class=\"col-sm-2\">\n          <div class=\"btn-group pull-right\">\n            <button class=\"btn btn-default btn-light btn-sm editRow\"><i class=\"{{ iconClass('edit') }}\"></i></button>\n            {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}\n              <button class=\"btn btn-danger btn-sm removeRow\"><i class=\"{{ iconClass('trash') }}\"></i></button>\n            {% } %}\n          </div>\n        </div>\n      {% } %}\n    </div>",
-    footer: ''
+    header:
+      '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty(\'tableView\') || component.tableView) { %}\n          <div class="col-sm-2">{{ component.label }}</div>\n        {% } %}\n      {% }) %}\n    </div>',
+    row: '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty(\'tableView\') || component.tableView) { %}\n          <div class="col-sm-2">\n            {{ getView(component, row[component.key]) }}\n          </div>\n        {% } %}\n      {% }) %}\n      {% if (!instance.disabled) { %}\n        <div class="col-sm-2">\n          <div class="btn-group pull-right">\n            <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass(\'edit\') }}"></i></button>\n            {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}\n              <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass(\'trash\') }}"></i></button>\n            {% } %}\n          </div>\n        </div>\n      {% } %}\n    </div>',
+    footer: '',
   },
-  id: 'e10uov'
+  id: 'e10uov',
 };

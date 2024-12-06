@@ -4,12 +4,10 @@ export default {
   tableView: true,
   src: 'https://remote.form.io/testproject/example',
   type: 'form',
-  tags: [
-
-  ],
+  tags: [],
   conditional: {
     show: '',
     when: null,
-    eq: ''
-  }
+    eq: '',
+  },
 };

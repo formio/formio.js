@@ -6,27 +6,29 @@ export default [
     type: 'htmlelement',
     tag: 'div',
     className: 'alert alert-danger',
-    content: 'This component has been deprecated and will be removed. Use the CAPTCHA component instead.',
+    content:
+      'This component has been deprecated and will be removed. Use the CAPTCHA component instead.',
   },
   {
     key: 'eventType',
     label: 'Type of event',
-    tooltip: 'Specify type of event that this CAPTCHA would react to. If Button Click is selected, then the CAPTCHA widget will be displayed and verification will occur after clicking on the button.',
+    tooltip:
+      'Specify type of event that this CAPTCHA would react to. If Button Click is selected, then the CAPTCHA widget will be displayed and verification will occur after clicking on the button.',
     type: 'radio',
     values: [
       {
         label: 'Form Load',
-        value: 'formLoad'
+        value: 'formLoad',
       },
       {
         label: 'Button Click',
-        value: 'buttonClick'
-      }
+        value: 'buttonClick',
+      },
     ],
     validate: {
-      required: true
+      required: true,
     },
-    weight: 650
+    weight: 650,
   },
   {
     type: 'select',
@@ -43,75 +45,75 @@ export default [
     data: {
       custom(context) {
         return getContextButtons(context);
-      }
-    }
+      },
+    },
   },
   {
     key: 'label',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'hideLabel',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'labelPosition',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'description',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tooltip',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'errorLabel',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'customClass',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tabindex',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'multiple',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'clearOnHide',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'hidden',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'mask',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'dataGridLabel',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'disabled',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'autofocus',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tableView',
-    ignore: true
+    ignore: true,
   },
 ];

@@ -4,16 +4,19 @@ import Field from '../_classes/field/Field';
 
 export default class CheckBoxComponent extends Field {
   static schema(...extend) {
-    return Field.schema({
-      type: 'checkbox',
-      inputType: 'checkbox',
-      label: 'Checkbox',
-      key: 'checkbox',
-      dataGridLabel: true,
-      labelPosition: 'right',
-      value: '',
-      name: ''
-    }, ...extend);
+    return Field.schema(
+      {
+        type: 'checkbox',
+        inputType: 'checkbox',
+        label: 'Checkbox',
+        key: 'checkbox',
+        dataGridLabel: true,
+        labelPosition: 'right',
+        value: '',
+        name: '',
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -23,7 +26,7 @@ export default class CheckBoxComponent extends Field {
       icon: 'check-square',
       documentation: '/userguide/form-building/form-components#check-box',
       weight: 50,
-      schema: CheckBoxComponent.schema()
+      schema: CheckBoxComponent.schema(),
     };
   }
 
@@ -40,13 +43,13 @@ export default class CheckBoxComponent extends Field {
           valueType: 'boolean',
           data: {
             values: [
-                { label: 'Checked', value: 'true' },
-                { label: 'Not Checked', value: 'false' },
-              ]
+              { label: 'Checked', value: 'true' },
+              { label: 'Not Checked', value: 'false' },
+            ],
           },
-          type: 'select'
+          type: 'select',
         };
-      }
+      },
     };
   }
 
@@ -71,10 +74,12 @@ export default class CheckBoxComponent extends Field {
 
   get labelClass() {
     let className = '';
-    if (this.isInputComponent
-      && !this.options.inputsOnly
-      && this.component.validate
-      && this.component.validate.required) {
+    if (
+      this.isInputComponent &&
+      !this.options.inputsOnly &&
+      this.component.validate &&
+      this.component.validate.required
+    ) {
       className += ' field-required';
     }
     return `${className}`;
@@ -101,25 +106,31 @@ export default class CheckBoxComponent extends Field {
 
   get labelInfo() {
     return {
-      hidden: true
+      hidden: true,
     };
   }
 
   render() {
-    return super.render(this.renderTemplate('checkbox', {
-      input: this.inputInfo,
-      checked: this.checked,
-      tooltip: this.interpolate(this.t(this.component.tooltip) || '', { _userInput: true }).replace(/(?:\r\n|\r|\n)/g, '<br />')
-    }));
+    return super.render(
+      this.renderTemplate('checkbox', {
+        input: this.inputInfo,
+        checked: this.checked,
+        tooltip: this.interpolate(this.t(this.component.tooltip) || '', {
+          _userInput: true,
+        }).replace(/(?:\r\n|\r|\n)/g, '<br />'),
+      }),
+    );
   }
 
   attach(element) {
     this.loadRefs(element, { input: 'multiple' });
     this.input = this.refs.input[0];
     if (this.refs.input) {
-      this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue(null, {
-        modified: true
-      }));
+      this.addEventListener(this.input, this.inputInfo.changeEvent, () =>
+        this.updateValue(null, {
+          modified: true,
+        }),
+      );
       this.addShortcut(this.input);
     }
     return super.attach(element);
@@ -155,15 +166,14 @@ export default class CheckBoxComponent extends Field {
     const value = super.getValue();
     if (this.component.name) {
       return value ? this.setCheckedState(value) : this.setCheckedState(this.dataValue);
-    }
-    else {
-      return (value === '') ? this.dataValue : !!value;
+    } else {
+      return value === '' ? this.dataValue : !!value;
     }
   }
 
   get checked() {
     if (this.component.name) {
-      return (this.dataValue === this.component.value);
+      return this.dataValue === this.component.value;
     }
     return !!this.dataValue;
   }
@@ -173,29 +183,24 @@ export default class CheckBoxComponent extends Field {
       return;
     }
     if (this.component.name) {
-      this.input.value = (value === this.component.value) ? this.component.value : 0;
-      this.input.checked = (value === this.component.value) ? 1 : 0;
-    }
-    else if (value === 'on') {
+      this.input.value = value === this.component.value ? this.component.value : 0;
+      this.input.checked = value === this.component.value ? 1 : 0;
+    } else if (value === 'on') {
       this.input.value = 1;
       this.input.checked = 1;
-    }
-    else if (value === 'off') {
+    } else if (value === 'off') {
       this.input.value = 0;
       this.input.checked = 0;
-    }
-    else if (value) {
+    } else if (value) {
       this.input.value = 1;
       this.input.checked = 1;
-    }
-    else {
+    } else {
       this.input.value = 0;
       this.input.checked = 0;
     }
     if (this.input.checked) {
       this.input.setAttribute('checked', true);
-    }
-    else {
+    } else {
       this.input.removeAttribute('checked');
     }
     return value;
@@ -218,7 +223,7 @@ export default class CheckBoxComponent extends Field {
 
   updateValue(value, flags) {
     // If this is a radio and is alredy checked, uncheck it.
-    if (this.component.name && flags.modified && (this.dataValue === this.component.value)) {
+    if (this.component.name && flags.modified && this.dataValue === this.component.value) {
       this.input.checked = 0;
       this.input.value = 0;
       this.dataValue = '';
@@ -231,8 +236,7 @@ export default class CheckBoxComponent extends Field {
     if (changed && this.input) {
       if (this.input.checked) {
         this.input.setAttribute('checked', 'true');
-      }
-      else {
+      } else {
         this.input.removeAttribute('checked');
       }
     }

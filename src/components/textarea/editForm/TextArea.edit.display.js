@@ -4,15 +4,15 @@ import { Formio } from '../../../Formio';
 export default [
   {
     key: 'inputMask',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'allowMultipleMasks',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'mask',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'number',
@@ -21,7 +21,7 @@ export default [
     label: 'Rows',
     weight: 210,
     tooltip: 'This allows control over how many rows are visible in the text area.',
-    placeholder: 'Enter the amount of rows'
+    placeholder: 'Enter the amount of rows',
   },
   {
     weight: 1350,
@@ -29,7 +29,7 @@ export default [
     input: true,
     key: 'spellcheck',
     defaultValue: true,
-    label: 'Allow Spellcheck'
+    label: 'Allow Spellcheck',
   },
   {
     type: 'select',
@@ -44,25 +44,23 @@ export default [
         { label: 'ACE', value: 'ace' },
         { label: 'CKEditor', value: 'ckeditor' },
         { label: 'Quill', value: 'quill' },
-      ]
+      ],
     },
-    weight: 415
+    weight: 415,
   },
   {
     type: 'checkbox',
     input: true,
     key: 'autoExpand',
     label: 'Auto Expand',
-    tooltip: 'This will make the TextArea auto expand it\'s height as the user is typing into the area.',
+    tooltip:
+      "This will make the TextArea auto expand it's height as the user is typing into the area.",
     weight: 415,
     conditional: {
       json: {
-        '==': [
-          { var: 'data.editor' },
-          ''
-        ]
-      }
-    }
+        '==': [{ var: 'data.editor' }, ''],
+      },
+    },
   },
   {
     type: 'checkbox',
@@ -74,20 +72,14 @@ export default [
       json: {
         or: [
           {
-            '===': [
-              { var: 'data.editor' },
-              'quill'
-            ],
+            '===': [{ var: 'data.editor' }, 'quill'],
           },
           {
-            '===': [
-              { var: 'data.editor' },
-              'ckeditor'
-            ],
-          }
-        ]
-      }
-    }
+            '===': [{ var: 'data.editor' }, 'ckeditor'],
+          },
+        ],
+      },
+    },
   },
   {
     type: 'select',
@@ -103,18 +95,15 @@ export default [
       custom() {
         return _.map(Formio.Providers.getProviders('storage'), (storage, key) => ({
           label: storage.title,
-          value: key
+          value: key,
         }));
-      }
+      },
     },
     conditional: {
       json: {
-        '===': [
-          { var: 'data.isUploadEnabled' },
-          true
-        ]
-      }
-    }
+        '===': [{ var: 'data.isUploadEnabled' }, true],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -123,10 +112,11 @@ export default [
     label: 'Image Upload Url',
     weight: 415.3,
     placeholder: 'Enter the url to post the files to.',
-    tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#server-side\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#server-side</a> for how to set up the server.',
+    tooltip:
+      "See <a href='https://github.com/danialfarid/ng-file-upload#server-side' target='_blank'>https://github.com/danialfarid/ng-file-upload#server-side</a> for how to set up the server.",
     conditional: {
-      json: { '===': [{ var: 'data.uploadStorage' }, 'url'] }
-    }
+      json: { '===': [{ var: 'data.uploadStorage' }, 'url'] },
+    },
   },
   {
     type: 'textarea',
@@ -142,11 +132,14 @@ export default [
     }`,
     conditional: {
       json: {
-        '===': [{
-          var: 'data.uploadStorage'
-        }, 'url']
-      }
-    }
+        '===': [
+          {
+            var: 'data.uploadStorage',
+          },
+          'url',
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -158,12 +151,9 @@ export default [
     weight: 415.5,
     conditional: {
       json: {
-        '===': [
-          { var: 'data.isUploadEnabled' },
-          true
-        ]
-      }
-    }
+        '===': [{ var: 'data.isUploadEnabled' }, true],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -177,21 +167,12 @@ export default [
     conditional: {
       json: {
         and: [
-          { '===': [
-            { var: 'data.editor' },
-            'quill'
-          ] },
-          { '===': [
-            { var: 'data.isUploadEnabled' },
-            true
-          ] },
-          { '===': [
-            { var: 'data.uploadStorage' },
-            'url'
-          ] },
-        ]
-      }
-    }
+          { '===': [{ var: 'data.editor' }, 'quill'] },
+          { '===': [{ var: 'data.isUploadEnabled' }, true] },
+          { '===': [{ var: 'data.uploadStorage' }, 'url'] },
+        ],
+      },
+    },
   },
   {
     type: 'select',
@@ -205,24 +186,18 @@ export default [
       values: [
         { label: 'String', value: 'string' },
         { label: 'JSON', value: 'json' },
-        { label: 'HTML', value: 'html' }
-      ]
+        { label: 'HTML', value: 'html' },
+      ],
     },
     conditional: {
       json: {
         or: [
-          { '===': [
-            { var: 'data.editor' },
-            'quill'
-          ] },
-          { '===': [
-            { var: 'data.editor' },
-            'ace'
-          ] }
-        ]
-      }
+          { '===': [{ var: 'data.editor' }, 'quill'] },
+          { '===': [{ var: 'data.editor' }, 'ace'] },
+        ],
+      },
     },
-    weight: 416
+    weight: 416,
   },
   {
     type: 'textarea',
@@ -239,21 +214,12 @@ export default [
     conditional: {
       json: {
         or: [
-          { '===': [
-              { var: 'data.editor' },
-              'ace'
-            ] },
-          { '===': [
-            { var: 'data.editor' },
-            'ckeditor'
-          ] },
-          { '===': [
-            { var: 'data.editor' },
-            'quill'
-          ] },
-        ]
-      }
+          { '===': [{ var: 'data.editor' }, 'ace'] },
+          { '===': [{ var: 'data.editor' }, 'ckeditor'] },
+          { '===': [{ var: 'data.editor' }, 'quill'] },
+        ],
+      },
     },
-    weight: 417
-  }
+    weight: 417,
+  },
 ];

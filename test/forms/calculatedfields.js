@@ -11,14 +11,14 @@ export default {
         label: 'A',
         key: 'a',
         input: true,
-        inputType: 'text'
+        inputType: 'text',
       },
       {
         type: 'textfield',
         label: 'B',
         key: 'b',
         input: true,
-        inputType: 'text'
+        inputType: 'text',
       },
       {
         type: 'textfield',
@@ -28,13 +28,10 @@ export default {
         inputType: 'text',
         disabled: true,
         calculateValue: {
-          '+': [
-            {var: 'data.a'},
-            {var: 'data.b'}
-          ]
-        }
-      }
-    ]
+          '+': [{ var: 'data.a' }, { var: 'data.b' }],
+        },
+      },
+    ],
   },
   tests: {
     'Test calculated fields'(form, done) {
@@ -43,11 +40,13 @@ export default {
         assert.equal(value.data.total, '25');
         done();
       });
-      Harness.testSetGet(form, {data: {
-        a: '10',
-        b: '15',
-        total: ''
-      }});
-    }
-  }
+      Harness.testSetGet(form, {
+        data: {
+          a: '10',
+          b: '15',
+          total: '',
+        },
+      });
+    },
+  },
 };

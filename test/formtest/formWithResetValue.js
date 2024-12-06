@@ -9,23 +9,21 @@ export default {
         values: [
           {
             label: 'Yes',
-            value: 'yes'
+            value: 'yes',
           },
           {
             label: 'No',
-            value: 'no'
-          }
-        ]
+            value: 'no',
+          },
+        ],
       },
       selectThreshold: 0.3,
       key: 'showPanel',
       type: 'select',
       indexeddb: {
-        filter: {
-
-        }
+        filter: {},
       },
-      input: true
+      input: true,
     },
     {
       collapsible: false,
@@ -33,7 +31,7 @@ export default {
       conditional: {
         show: true,
         when: 'showPanel',
-        eq: 'yes'
+        eq: 'yes',
       },
       type: 'panel',
       label: 'Panel',
@@ -45,7 +43,7 @@ export default {
           tableView: true,
           key: 'textField',
           type: 'textfield',
-          input: true
+          input: true,
         },
         {
           label: 'Text Area',
@@ -53,9 +51,9 @@ export default {
           tableView: true,
           key: 'textArea',
           type: 'textarea',
-          input: true
-        }
-      ]
+          input: true,
+        },
+      ],
     },
     {
       label: 'Reset',
@@ -65,7 +63,7 @@ export default {
       tableView: false,
       key: 'reset',
       type: 'button',
-      input: true
+      input: true,
     },
     {
       type: 'button',
@@ -73,8 +71,8 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   title: 'FJS-1369',
   display: 'form',

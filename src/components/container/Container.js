@@ -1,5 +1,9 @@
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypes, getFocusableElements } from '../../utils/utils';
+import {
+  componentValueTypes,
+  getComponentSavedTypes,
+  getFocusableElements,
+} from '../../utils/utils';
 
 import Component from '../_classes/component/Component';
 import Field from '../_classes/field/Field';
@@ -7,16 +11,19 @@ import NestedDataComponent from '../_classes/nesteddata/NestedDataComponent';
 
 export default class ContainerComponent extends NestedDataComponent {
   static schema(...extend) {
-    return NestedDataComponent.schema({
-      label: 'Container',
-      type: 'container',
-      key: 'container',
-      clearOnHide: true,
-      input: true,
-      tree: true,
-      hideLabel: true,
-      components: []
-    }, ...extend);
+    return NestedDataComponent.schema(
+      {
+        label: 'Container',
+        type: 'container',
+        key: 'container',
+        clearOnHide: true,
+        input: true,
+        tree: true,
+        hideLabel: true,
+        components: [],
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -27,7 +34,7 @@ export default class ContainerComponent extends NestedDataComponent {
       documentation: '/userguide/form-building/data-components#container',
       showPreview: false,
       weight: 10,
-      schema: ContainerComponent.schema()
+      schema: ContainerComponent.schema(),
     };
   }
 
@@ -37,7 +44,7 @@ export default class ContainerComponent extends NestedDataComponent {
   }
 
   static savedValueTypes(schema) {
-    return  getComponentSavedTypes(schema) || [componentValueTypes.object];
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   addComponents(data, options) {
@@ -72,15 +79,15 @@ export default class ContainerComponent extends NestedDataComponent {
 
   focus() {
     const focusableElements = getFocusableElements(this.element);
-      if (focusableElements && focusableElements[0]) {
-        focusableElements[0].focus();
-      }
+    if (focusableElements && focusableElements[0]) {
+      focusableElements[0].focus();
+    }
   }
 
   checkConditions(data, flags, row) {
     // check conditions of parent component first, because it may influence on visibility of it's children
     const check = Field.prototype.checkConditions.call(this, data, flags, row);
-    this.getComponents().forEach(comp => comp.checkConditions(data, flags, this.dataValue));
+    this.getComponents().forEach((comp) => comp.checkConditions(data, flags, this.dataValue));
     return check;
   }
 }

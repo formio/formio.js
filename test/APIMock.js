@@ -6,7 +6,7 @@ import Chance from 'chance';
 import esc from 'escape-string-regexp';
 const chance = Chance();
 export const APIMock = {
-  submission: function(url, form) {
+  submission: function (url, form) {
     const submissions = {};
     const domain = url.match(/http[s]?:\/\/[^/]+/)[0];
     const requests = {
@@ -16,7 +16,7 @@ export const APIMock = {
       submissionCreate: new RegExp(esc(`${url}/submission`)),
       submissionGet: new RegExp(`${esc(`${url}/submission/`)}(.*)`),
       submissionUpdate: new RegExp(`${esc(`${url}/submission/`)}(.*)`),
-      submissionIndex: new RegExp(`${esc(`${url}/submission?`)}(.*)`)
+      submissionIndex: new RegExp(`${esc(`${url}/submission?`)}(.*)`),
     };
     fetchMock
       .get(requests.formLoad, () => {
@@ -71,12 +71,15 @@ export const APIMock = {
         if (!matches[2]) {
           return [];
         }
-        return _.filter(submissions, _.chain(matches[2])
-          .split('&')
-          .map(_.partial(_.split, _, '=', 2))
-          .fromPairs()
-          .omit(['limit', 'skip'])
-          .value());
+        return _.filter(
+          submissions,
+          _.chain(matches[2])
+            .split('&')
+            .map(_.partial(_.split, _, '=', 2))
+            .fromPairs()
+            .omit(['limit', 'skip'])
+            .value(),
+        );
       })
       // Mock the submission index.
       .get(requests.submissionIndex, (url) => {
@@ -84,12 +87,15 @@ export const APIMock = {
         if (!matches[1]) {
           return [];
         }
-        return _.filter(submissions, _.chain(matches[1])
-          .split('&')
-          .map(_.partial(_.split, _, '=', 2))
-          .fromPairs()
-          .omit(['limit', 'skip'])
-          .value());
+        return _.filter(
+          submissions,
+          _.chain(matches[1])
+            .split('&')
+            .map(_.partial(_.split, _, '=', 2))
+            .fromPairs()
+            .omit(['limit', 'skip'])
+            .value(),
+        );
       });
-  }
+  },
 };

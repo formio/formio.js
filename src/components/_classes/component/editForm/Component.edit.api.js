@@ -8,9 +8,10 @@ export default [
     tooltip: 'The name of this field in the API endpoint.',
     validate: {
       pattern: '(\\w|\\w[\\w-.]*\\w)',
-      patternMessage: 'The property name must only contain alphanumeric characters, underscores, dots and dashes and should not be ended by dash or dot.',
-      required: true
-    }
+      patternMessage:
+        'The property name must only contain alphanumeric characters, underscores, dots and dashes and should not be ended by dash or dot.',
+      required: true,
+    },
   },
   {
     weight: 100,
@@ -19,7 +20,7 @@ export default [
     label: 'Field Tags',
     storeas: 'array',
     tooltip: 'Tag the field for use in custom logic.',
-    key: 'tags'
+    key: 'tags',
   },
   {
     weight: 200,
@@ -32,7 +33,7 @@ export default [
       key: 'value',
       label: 'Value',
       placeholder: 'Value',
-      input: true
-    }
+      input: true,
+    },
   },
 ];

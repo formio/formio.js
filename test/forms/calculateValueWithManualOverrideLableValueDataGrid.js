@@ -12,8 +12,8 @@ export default {
       defaultValue: [
         {
           label: '',
-          value: ''
-        }
+          value: '',
+        },
       ],
       allowCalculateOverride: true,
       key: 'dataGrid',
@@ -25,7 +25,7 @@ export default {
           tableView: true,
           key: 'label',
           type: 'textfield',
-          input: true
+          input: true,
         },
         {
           label: 'Value',
@@ -34,9 +34,9 @@ export default {
           allowCalculateOverride: true,
           key: 'value',
           type: 'textfield',
-          input: true
-        }
-      ]
+          input: true,
+        },
+      ],
     },
     {
       type: 'button',
@@ -44,8 +44,8 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   title: 'FIO-3254',
   display: 'form',

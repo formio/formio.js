@@ -343,8 +343,7 @@ const form3 = {
                       input: true,
                     },
                     {
-                      label:
-                        'here select the first option, then go to the second tab',
+                      label: 'here select the first option, then go to the second tab',
                       optionsLabelPosition: 'right',
                       customClass: 'ml-3',
                       inline: false,
@@ -487,8 +486,7 @@ const form3 = {
                           defaultValue: false,
                         },
                         {
-                          label:
-                            'Try to add a row in this grid, it will disappear',
+                          label: 'Try to add a row in this grid, it will disappear',
                           tableView: true,
                           templates: {
                             header:
@@ -517,8 +515,7 @@ const form3 = {
                           input: true,
                           components: [
                             {
-                              title:
-                                'Try to add a row in this grid, it will disappear',
+                              title: 'Try to add a row in this grid, it will disappear',
                               theme: 'primary',
                               collapsible: false,
                               key: 'entitiesPanel',
@@ -528,8 +525,7 @@ const form3 = {
                               tableView: false,
                               components: [
                                 {
-                                  title:
-                                    'Try to add a row in this grid, it will disappear',
+                                  title: 'Try to add a row in this grid, it will disappear',
                                   collapsible: false,
                                   key: 'periodImpactEstimationPanel',
                                   customConditional:
@@ -606,8 +602,7 @@ const form4 = {
     {
       label: 'Edit Grid',
       tableView: false,
-      calculateValue:
-        'if (options.server){\r\nvalue = [{ "textArea": "test"}];\r\n}',
+      calculateValue: 'if (options.server){\r\nvalue = [{ "textArea": "test"}];\r\n}',
       calculateServer: true,
       rowDrafts: false,
       key: 'editGrid',
@@ -678,8 +673,7 @@ const form5 = {
                   },
                 ],
               },
-              template:
-                '<span>{{ item.longName }} [{{item.countryCode}}] {{item.leiCode}}</span>',
+              template: '<span>{{ item.longName }} [{{item.countryCode}}] {{item.leiCode}}</span>',
               customOptions: {
                 searchResultLimit: 100,
                 fuseOptions: {
@@ -892,8 +886,7 @@ const form6 = {
                 {
                   name: 'ter',
                   type: 'value',
-                  value:
-                    "value = [{number:1, textArea: 'test'}, {number:2, textArea: 'test2'}]",
+                  value: "value = [{number:1, textArea: 'test'}, {number:2, textArea: 'test2'}]",
                 },
               ],
             },

@@ -1,10 +1,10 @@
 export default [
   {
     key: 'unique',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'validateOn',
-    ignore: true
+    ignore: true,
   },
 ];

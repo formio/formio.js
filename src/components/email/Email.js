@@ -2,15 +2,18 @@ import TextFieldComponent from '../textfield/TextField';
 
 export default class EmailComponent extends TextFieldComponent {
   static schema(...extend) {
-    return TextFieldComponent.schema({
-      type: 'email',
-      label: 'Email',
-      key: 'email',
-      inputType: 'email',
-      kickbox: {
-        enabled: false
-      }
-    }, ...extend);
+    return TextFieldComponent.schema(
+      {
+        type: 'email',
+        label: 'Email',
+        key: 'email',
+        inputType: 'email',
+        kickbox: {
+          enabled: false,
+        },
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -20,7 +23,7 @@ export default class EmailComponent extends TextFieldComponent {
       icon: 'at',
       documentation: '/userguide/form-building/advanced-components#email',
       weight: 10,
-      schema: EmailComponent.schema()
+      schema: EmailComponent.schema(),
     };
   }
 
@@ -42,9 +45,8 @@ export default class EmailComponent extends TextFieldComponent {
     value = super.normalizeValue(value, flags);
     if (this.options.server && !!value) {
       if (Array.isArray(value)) {
-        value = value.map(val => val.toLowerCase());
-      }
-      else {
+        value = value.map((val) => val.toLowerCase());
+      } else {
         value = value.toLowerCase();
       }
     }

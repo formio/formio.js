@@ -38,7 +38,7 @@ const {
   isComponentDataEmpty,
   isSelectResourceWithObjectValue,
   compareSelectResourceWithObjectTypeValues,
-  getItemTemplateKeys
+  getItemTemplateKeys,
 } = Utils;
 
 /**
@@ -91,5 +91,5 @@ export {
   isComponentDataEmpty,
   isSelectResourceWithObjectValue,
   compareSelectResourceWithObjectTypeValues,
-  getItemTemplateKeys
+  getItemTemplateKeys,
 };

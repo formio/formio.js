@@ -83,8 +83,7 @@ const form = {
                 {
                   legend: 'Innermost Field Set B',
                   key: 'innermostFieldSetB',
-                  customConditional:
-                    "show=!!_.get(data,'outerContainer.firstComponent');",
+                  customConditional: "show=!!_.get(data,'outerContainer.firstComponent');",
                   type: 'fieldset',
                   label: 'Field Set',
                   input: false,
@@ -124,7 +123,8 @@ const form = {
                 {
                   legend: 'Innermost Field Set C',
                   key: 'innermostFieldSetC',
-                  customConditional: "let firstComponent=row.firstComponent;\nlet secondComponent=row.secondComponent;\nshow=false;\nif (!!firstComponent && !!secondComponent) {\n  let selected=_.find(_.find(_.get(form,'config.containerDataSource',[]),item=>item.firstComponent===firstComponent).types,item=>item.secondComponent===secondComponent);\n  show=_.isEmpty(_.get(selected,'requiredComponent'))===false;\n}\n",
+                  customConditional:
+                    "let firstComponent=row.firstComponent;\nlet secondComponent=row.secondComponent;\nshow=false;\nif (!!firstComponent && !!secondComponent) {\n  let selected=_.find(_.find(_.get(form,'config.containerDataSource',[]),item=>item.firstComponent===firstComponent).types,item=>item.secondComponent===secondComponent);\n  show=_.isEmpty(_.get(selected,'requiredComponent'))===false;\n}\n",
                   type: 'fieldset',
                   label: 'Innermost Field Set C',
                   input: false,

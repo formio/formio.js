@@ -1,26 +1,28 @@
 declare namespace _default {
-    const type: string;
-    const components: ({
+  const type: string;
+  const components: (
+    | {
         label: string;
         tableView: boolean;
         truncateMultipleSpaces: boolean;
         validate: {
-            required: boolean;
-            minLength?: undefined;
-            maxLength?: undefined;
+          required: boolean;
+          minLength?: undefined;
+          maxLength?: undefined;
         };
         key: string;
         type: string;
         input: boolean;
         autoExpand?: undefined;
         disableOnInvalid?: undefined;
-    } | {
+      }
+    | {
         label: string;
         tableView: boolean;
         validate: {
-            minLength: number;
-            maxLength: number;
-            required?: undefined;
+          minLength: number;
+          maxLength: number;
+          required?: undefined;
         };
         key: string;
         type: string;
@@ -28,21 +30,23 @@ declare namespace _default {
         truncateMultipleSpaces: boolean;
         autoExpand?: undefined;
         disableOnInvalid?: undefined;
-    } | {
+      }
+    | {
         label: string;
         autoExpand: boolean;
         tableView: boolean;
         validate: {
-            minLength: number;
-            maxLength: number;
-            required?: undefined;
+          minLength: number;
+          maxLength: number;
+          required?: undefined;
         };
         key: string;
         type: string;
         input: boolean;
         truncateMultipleSpaces: boolean;
         disableOnInvalid?: undefined;
-    } | {
+      }
+    | {
         type: string;
         label: string;
         key: string;
@@ -52,8 +56,9 @@ declare namespace _default {
         truncateMultipleSpaces?: undefined;
         validate?: undefined;
         autoExpand?: undefined;
-    })[];
-    const title: string;
-    const display: string;
+      }
+  )[];
+  const title: string;
+  const display: string;
 }
 export default _default;

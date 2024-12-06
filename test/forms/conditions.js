@@ -16,16 +16,16 @@ export default {
               {
                 '==': [
                   {
-                    var: 'data.typeShow'
+                    var: 'data.typeShow',
                   },
-                  'Show'
-                ]
+                  'Show',
+                ],
               },
               true,
-              'You must type "Show"'
-            ]
-          }
-        }
+              'You must type "Show"',
+            ],
+          },
+        },
       },
       {
         type: 'textfield',
@@ -39,26 +39,26 @@ export default {
               {
                 '==': [
                   {
-                    var: 'data.typeMe'
+                    var: 'data.typeMe',
                   },
-                  'Me'
-                ]
+                  'Me',
+                ],
               },
               true,
-              'You must type "Me"'
-            ]
-          }
+              'You must type "Me"',
+            ],
+          },
         },
         conditional: {
           json: {
             '===': [
               {
-                var: 'data.typeShow'
+                var: 'data.typeShow',
               },
-              'Show'
-            ]
-          }
-        }
+              'Show',
+            ],
+          },
+        },
       },
       {
         type: 'textfield',
@@ -72,26 +72,26 @@ export default {
               {
                 '==': [
                   {
-                    var: 'data.typeThe'
+                    var: 'data.typeThe',
                   },
-                  'The'
-                ]
+                  'The',
+                ],
               },
               true,
-              'You must type "The"'
-            ]
-          }
+              'You must type "The"',
+            ],
+          },
         },
         conditional: {
           json: {
             '===': [
               {
-                var: 'data.typeMe'
+                var: 'data.typeMe',
               },
-              'Me'
-            ]
-          }
-        }
+              'Me',
+            ],
+          },
+        },
       },
       {
         type: 'textfield',
@@ -105,26 +105,26 @@ export default {
               {
                 '==': [
                   {
-                    var: 'data.typeMonkey'
+                    var: 'data.typeMonkey',
                   },
-                  'Monkey!'
-                ]
+                  'Monkey!',
+                ],
               },
               true,
-              'You must type "Monkey!"'
-            ]
-          }
+              'You must type "Monkey!"',
+            ],
+          },
         },
         conditional: {
           json: {
             '===': [
               {
-                var: 'data.typeThe'
+                var: 'data.typeThe',
               },
-              'The'
-            ]
-          }
-        }
+              'The',
+            ],
+          },
+        },
       },
       {
         key: 'monkey',
@@ -133,12 +133,13 @@ export default {
         attrs: [
           {
             attr: 'src',
-            value: 'https://ichef.bbci.co.uk/news/660/cpsprodpb/025B/production/_85730600_monkey2.jpg'
+            value:
+              'https://ichef.bbci.co.uk/news/660/cpsprodpb/025B/production/_85730600_monkey2.jpg',
           },
           {
             attr: 'style',
-            value: 'width: 100%;'
-          }
+            value: 'width: 100%;',
+          },
         ],
         className: '',
         content: '',
@@ -147,19 +148,24 @@ export default {
           json: {
             '===': [
               {
-                var: 'data.typeMonkey'
+                var: 'data.typeMonkey',
               },
-              'Monkey!'
-            ]
-          }
-        }
-      }
-    ]
+              'Monkey!',
+            ],
+          },
+        },
+      },
+    ],
   },
   tests: {
     'Test hidden components'(form, done) {
       Harness.testElements(form, 'input[type="text"]', 1);
-      Harness.testConditionals(form, {data: {}}, ['typeMe', 'typeThe', 'typeMonkey', 'monkey'], done);
+      Harness.testConditionals(
+        form,
+        { data: {} },
+        ['typeMe', 'typeThe', 'typeMonkey', 'monkey'],
+        done,
+      );
     },
     'Test validation errors on typeShow field'(form, done) {
       Harness.testErrors(
@@ -169,90 +175,131 @@ export default {
             typeShow: 'sho',
             typeMe: '',
             typeThe: '',
-            typeMonkey: ''
-          }
+            typeMonkey: '',
+          },
         },
         [
           {
             component: 'typeShow',
-            message: 'You must type "Show"'
-          }
+            message: 'You must type "Show"',
+          },
         ],
-        done
+        done,
       );
     },
     'Test validation errors on typeMe field'(form, done) {
-      Harness.testErrors(form, {data: {
-        typeShow: 'Show',
-        typeMe: 'me',
-        typeThe: '',
-        typeMonkey: ''
-      }}, [
+      Harness.testErrors(
+        form,
         {
-          component: 'typeMe',
-          message: 'You must type "Me"'
-        }
-      ], done);
+          data: {
+            typeShow: 'Show',
+            typeMe: 'me',
+            typeThe: '',
+            typeMonkey: '',
+          },
+        },
+        [
+          {
+            component: 'typeMe',
+            message: 'You must type "Me"',
+          },
+        ],
+        done,
+      );
     },
     'Test validation errors on typeThe field'(form, done) {
-      Harness.testErrors(form, {data: {
-        typeShow: 'Show',
-        typeMe: 'Me',
-        typeThe: 'the',
-        typeMonkey: ''
-      }}, [
+      Harness.testErrors(
+        form,
         {
-          component: 'typeThe',
-          message: 'You must type "The"'
-        }
-      ], done);
+          data: {
+            typeShow: 'Show',
+            typeMe: 'Me',
+            typeThe: 'the',
+            typeMonkey: '',
+          },
+        },
+        [
+          {
+            component: 'typeThe',
+            message: 'You must type "The"',
+          },
+        ],
+        done,
+      );
     },
     'Test validation errors on typeMonkey field'(form, done) {
-      Harness.testErrors(form, {data: {
-        typeShow: 'Show',
-        typeMe: 'Me',
-        typeThe: 'The',
-        typeMonkey: 'Monkey'
-      }}, [
+      Harness.testErrors(
+        form,
         {
-          component: 'typeMonkey',
-          message: 'You must type "Monkey!"'
-        }
-      ], done);
+          data: {
+            typeShow: 'Show',
+            typeMe: 'Me',
+            typeThe: 'The',
+            typeMonkey: 'Monkey',
+          },
+        },
+        [
+          {
+            component: 'typeMonkey',
+            message: 'You must type "Monkey!"',
+          },
+        ],
+        done,
+      );
     },
     'Test conditional when typeShow is set'(form, done) {
-      Harness.testConditionals(form, {
-        data: {
-          typeShow: 'Show'
-        }
-      }, ['typeThe', 'typeMonkey', 'monkey'], done);
+      Harness.testConditionals(
+        form,
+        {
+          data: {
+            typeShow: 'Show',
+          },
+        },
+        ['typeThe', 'typeMonkey', 'monkey'],
+        done,
+      );
     },
     'Test conditional when typeShow, typeMe is set'(form, done) {
-      Harness.testConditionals(form, {
-        data: {
-          typeShow: 'Show',
-          typeMe: 'Me'
-        }
-      }, ['typeMonkey', 'monkey'], done);
+      Harness.testConditionals(
+        form,
+        {
+          data: {
+            typeShow: 'Show',
+            typeMe: 'Me',
+          },
+        },
+        ['typeMonkey', 'monkey'],
+        done,
+      );
     },
     'Test conditional when typeShow, typeMe, typeThe is set'(form, done) {
-      Harness.testConditionals(form, {
-        data: {
-          typeShow: 'Show',
-          typeMe: 'Me',
-          typeThe: 'The'
-        }
-      }, ['monkey'], done);
+      Harness.testConditionals(
+        form,
+        {
+          data: {
+            typeShow: 'Show',
+            typeMe: 'Me',
+            typeThe: 'The',
+          },
+        },
+        ['monkey'],
+        done,
+      );
     },
     'Test conditional when typeShow, typeMe, typeThe, typeMonkey is set'(form, done) {
-      Harness.testConditionals(form, {
-        data: {
-          typeShow: 'Show',
-          typeMe: 'Me',
-          typeThe: 'The',
-          typeMonkey: 'Monkey!'
-        }
-      }, [], done);
-    }
-  }
+      Harness.testConditionals(
+        form,
+        {
+          data: {
+            typeShow: 'Show',
+            typeMe: 'Me',
+            typeThe: 'The',
+            typeMonkey: 'Monkey!',
+          },
+        },
+        [],
+        done,
+      );
+    },
+  },
 };

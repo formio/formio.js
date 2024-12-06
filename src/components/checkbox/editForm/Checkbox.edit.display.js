@@ -12,7 +12,7 @@ export default [
   },
   {
     key: 'labelMargin',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
@@ -33,7 +33,7 @@ export default [
       custom(context) {
         return BuilderUtils.getAvailableShortcuts(
           _.get(context, 'instance.options.editForm', {}),
-          _.get(context, 'instance.options.editComponent', {})
+          _.get(context, 'instance.options.editComponent', {}),
         );
       },
     },

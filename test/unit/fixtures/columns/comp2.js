@@ -9,14 +9,14 @@ export default {
           tableView: true,
           key: 'textField1',
           type: 'textfield',
-          input: true
+          input: true,
         },
         {
           label: 'Text Field',
           tableView: true,
           key: 'textField2',
           type: 'textfield',
-          input: true
+          input: true,
         },
       ],
       width: 2,
@@ -34,7 +34,7 @@ export default {
           tableView: true,
           key: 'textField3',
           type: 'textfield',
-          input: true
+          input: true,
         },
       ],
       width: 2,
@@ -52,7 +52,7 @@ export default {
           tableView: true,
           key: 'textField4',
           type: 'textfield',
-          input: true
+          input: true,
         },
       ],
       size: 'md',
@@ -70,7 +70,7 @@ export default {
           tableView: true,
           key: 'textField5',
           type: 'textfield',
-          input: true
+          input: true,
         },
       ],
       size: 'md',
@@ -88,7 +88,7 @@ export default {
           tableView: true,
           key: 'textField6',
           type: 'textfield',
-          input: true
+          input: true,
         },
       ],
       size: 'md',
@@ -106,7 +106,7 @@ export default {
           tableView: true,
           key: 'textField7',
           type: 'textfield',
-          input: true
+          input: true,
         },
       ],
       size: 'md',

@@ -149,8 +149,7 @@ export default {
               key: 'address1',
               type: 'textfield',
               input: true,
-              customConditional:
-                'show = _.get(instance, \'parent.manualMode\', false);',
+              customConditional: "show = _.get(instance, 'parent.manualMode', false);",
             },
             {
               label: 'Address 2',
@@ -158,8 +157,7 @@ export default {
               key: 'address2',
               type: 'textfield',
               input: true,
-              customConditional:
-                'show = _.get(instance, \'parent.manualMode\', false);',
+              customConditional: "show = _.get(instance, 'parent.manualMode', false);",
             },
             {
               label: 'City',
@@ -167,8 +165,7 @@ export default {
               key: 'city',
               type: 'textfield',
               input: true,
-              customConditional:
-                'show = _.get(instance, \'parent.manualMode\', false);',
+              customConditional: "show = _.get(instance, 'parent.manualMode', false);",
             },
             {
               label: 'State',
@@ -176,8 +173,7 @@ export default {
               key: 'state',
               type: 'textfield',
               input: true,
-              customConditional:
-                'show = _.get(instance, \'parent.manualMode\', false);',
+              customConditional: "show = _.get(instance, 'parent.manualMode', false);",
             },
             {
               label: 'Country',
@@ -185,8 +181,7 @@ export default {
               key: 'country',
               type: 'textfield',
               input: true,
-              customConditional:
-                'show = _.get(instance, \'parent.manualMode\', false);',
+              customConditional: "show = _.get(instance, 'parent.manualMode', false);",
             },
             {
               label: 'Zip Code',
@@ -194,8 +189,7 @@ export default {
               key: 'zip',
               type: 'textfield',
               input: true,
-              customConditional:
-                'show = _.get(instance, \'parent.manualMode\', false);',
+              customConditional: "show = _.get(instance, 'parent.manualMode', false);",
             },
           ],
         },
@@ -220,7 +214,7 @@ export default {
             format: 'yyyy-MM-dd hh:mm a',
             hourIncrement: 1,
             minuteIncrement: 1,
-            'time_24hr': false,
+            time_24hr: false,
             minDate: null,
             disableWeekends: false,
             disableWeekdays: false,

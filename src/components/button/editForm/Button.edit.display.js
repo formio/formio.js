@@ -64,7 +64,8 @@ export default [
     label: 'Save in state',
     key: 'state',
     weight: 112,
-    tooltip: 'The state you wish to save the submission under when this button is pressed. Example "draft" would save the submission in Draft Mode.',
+    tooltip:
+      'The state you wish to save the submission under when this button is pressed. Example "draft" would save the submission in Draft Mode.',
     placeholder: 'submitted',
     input: true,
     conditional: {
@@ -139,7 +140,7 @@ export default [
         label: 'Value',
         input: true,
         type: 'textfield',
-      }
+      },
     ],
     conditional: {
       json: { '===': [{ var: 'data.action' }, 'url'] },
@@ -227,7 +228,7 @@ export default [
       custom(context) {
         return BuilderUtils.getAvailableShortcuts(
           _.get(context, 'instance.options.editForm', {}),
-          _.get(context, 'instance.options.editComponent', {})
+          _.get(context, 'instance.options.editComponent', {}),
         );
       },
     },

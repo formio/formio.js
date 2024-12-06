@@ -23,5 +23,5 @@ export default {
     },
   ],
   project: '63cead09be0090345b109e22',
-  machineName: 'idwqwhclwioyqbw:testdraftparent'
+  machineName: 'idwqwhclwioyqbw:testdraftparent',
 };

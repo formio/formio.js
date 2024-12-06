@@ -1,6 +1,5 @@
 import { AddressProvider } from './AddressProvider';
 
-
 /**
  * @typedef {object} AzureAddressProviderOptionsParams
  * @property {string} 'api-version' - The version of the Azure Maps API.

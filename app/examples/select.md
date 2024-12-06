@@ -4,8 +4,9 @@ layout: vtabs
 section: examples
 weight: 200
 ---
+
 Form.io incorporates the amazing [Choices.js](https://github.com/jshjohnson/Choices) library to be used as a Select control,
-but also has the ability to render raw HTML select dropdowns. Below are some examples of different configurations for 
+but also has the ability to render raw HTML select dropdowns. Below are some examples of different configurations for
 Select dropdowns.
 
 <script type="text/javascript">

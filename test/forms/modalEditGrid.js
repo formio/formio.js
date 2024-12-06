@@ -9,7 +9,7 @@ export default {
       tableView: false,
       modal: true,
       validate: {
-        required: true
+        required: true,
       },
       key: 'editGrid',
       type: 'editgrid',
@@ -30,13 +30,13 @@ export default {
                       label: 'Text Field',
                       tableView: true,
                       validate: {
-                        required: true
+                        required: true,
                       },
                       key: 'textField',
                       type: 'textfield',
-                      input: true
-                    }
-                  ]
+                      input: true,
+                    },
+                  ],
                 },
                 {
                   label: 'Tab 2',
@@ -46,19 +46,19 @@ export default {
                       label: 'Text Field 2',
                       tableView: true,
                       validate: {
-                        required: true
+                        required: true,
                       },
                       key: 'textField2',
                       type: 'textfield',
-                      input: true
-                    }
-                  ]
-                }
+                      input: true,
+                    },
+                  ],
+                },
               ],
               tableView: false,
               key: 'tabs',
               type: 'tabs',
-              input: false
+              input: false,
             },
             {
               label: 'Submit',
@@ -66,14 +66,14 @@ export default {
               tableView: false,
               key: 'submit',
               type: 'button',
-              input: true
-            }
+              input: true,
+            },
           ],
           key: 'form',
           type: 'form',
-          input: true
-        }
-      ]
+          input: true,
+        },
+      ],
     },
     {
       label: 'Submit',
@@ -81,8 +81,8 @@ export default {
       tableView: false,
       key: 'submit',
       type: 'button',
-      input: true
-    }
+      input: true,
+    },
   ],
   controller: '',
   revisions: '',
@@ -91,18 +91,13 @@ export default {
   display: 'form',
   access: [
     {
-      roles: [
-        '5e96e79ee1c3ad3178454100',
-        '5e96e79ee1c3ad3178454101',
-        '5e96e79ee1c3ad3178454102'
-      ],
-      type: 'read_all'
-    }
+      roles: ['5e96e79ee1c3ad3178454100', '5e96e79ee1c3ad3178454101', '5e96e79ee1c3ad3178454102'],
+      type: 'read_all',
+    },
   ],
   submissionAccess: [],
   settings: {},
   properties: {},
   name: 'modalEditGridValidation',
-  path: 'modaleditgridvalidation'
+  path: 'modaleditgridvalidation',
 };
-

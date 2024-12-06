@@ -11,7 +11,10 @@ export default class Multivalue extends Field {
    * @returns {*} - The normalized value.
    */
   normalizeValue(value, flags = {}, emptyValue = this.emptyValue) {
-    const underlyingValueShouldBeArray = Utils.getModelType(this.component) === 'array' || this.component.storeas === 'array' || Array.isArray(emptyValue);
+    const underlyingValueShouldBeArray =
+      Utils.getModelType(this.component) === 'array' ||
+      this.component.storeas === 'array' ||
+      Array.isArray(emptyValue);
     if (this.component.multiple) {
       if (Array.isArray(value)) {
         if (underlyingValueShouldBeArray) {
@@ -55,8 +58,7 @@ export default class Multivalue extends Field {
     if (this.component.multiple) {
       if (_.isArray(value)) {
         value = !value.length ? [super.emptyValue] : value;
-      }
-      else {
+      } else {
         value = [value];
       }
     }
@@ -78,14 +80,12 @@ export default class Multivalue extends Field {
             rows: dataValue.map(this.renderRow.bind(this)).join(''),
             disabled: this.disabled,
             addAnother: this.addAnother,
-          })
+          }),
         )
       : super.render(
           `<div ${this._referenceAttributeName}="element">
-            ${this.renderElement(
-              this.component.type !== 'hidden' ? dataValue : ''
-            )}
-          </div>`
+            ${this.renderElement(this.component.type !== 'hidden' ? dataValue : '')}
+          </div>`,
         );
   }
 
@@ -150,7 +150,6 @@ export default class Multivalue extends Field {
     });
   }
 
-
   /**
    * Remove all event handlers.
    */
@@ -186,10 +185,7 @@ export default class Multivalue extends Field {
       const textCase = _.get(this.component, 'case', 'mixed');
 
       if (textCase !== 'mixed') {
-        const {
-          selectionStart,
-          selectionEnd,
-        } = element;
+        const { selectionStart, selectionEnd } = element;
 
         if (textCase === 'uppercase' && element.value) {
           element.value = element.value.toUpperCase();
@@ -206,23 +202,29 @@ export default class Multivalue extends Field {
 
       try {
         this.saveCaretPosition(element, index);
-      }
-      catch (err) {
+      } catch (err) {
         console.warn('An error occurred while trying to save caret position', err);
       }
 
       // If a mask is present, delay the update to allow mask to update first.
       if (element.mask) {
         setTimeout(() => {
-          return this.updateValue(null, {
-            modified: (this.component.type !== 'hidden')
-          }, index);
+          return this.updateValue(
+            null,
+            {
+              modified: this.component.type !== 'hidden',
+            },
+            index,
+          );
         }, 1);
-      }
-      else {
-        return this.updateValue(null, {
-          modified: (this.component.type !== 'hidden')
-        }, index);
+      } else {
+        return this.updateValue(
+          null,
+          {
+            modified: this.component.type !== 'hidden',
+          },
+          index,
+        );
       }
     });
 
@@ -246,8 +248,7 @@ export default class Multivalue extends Field {
             this.updateComponentValue(this.refs.input[0].value);
           }
         });
-      }
-      else {
+      } else {
         applyMask();
       }
     }
@@ -273,7 +274,7 @@ export default class Multivalue extends Field {
     if (this.multiMasks[maskName]) {
       return this.multiMasks[maskName];
     }
-    const mask = this.component.inputMasks.find(inputMask => inputMask.label === maskName);
+    const mask = this.component.inputMasks.find((inputMask) => inputMask.label === maskName);
     this.multiMasks[maskName] = mask ? mask.mask : this.component.inputMasks[0].mask;
     return this.multiMasks[maskName];
   }
@@ -284,7 +285,9 @@ export default class Multivalue extends Field {
    * @returns {boolean} - Returns true if the mask was successfully attached
    */
   attachMultiMask(index) {
-    if (!(this.isMultipleMasksField && this.component.inputMasks.length && this.refs.input.length)) {
+    if (
+      !(this.isMultipleMasksField && this.component.inputMasks.length && this.refs.input.length)
+    ) {
       return false;
     }
 
@@ -320,8 +323,7 @@ export default class Multivalue extends Field {
    */
   addNewValue(value) {
     if (value === undefined) {
-      value = this.component.defaultValue ?
-      this.component.defaultValue : this.emptyValue;
+      value = this.component.defaultValue ? this.component.defaultValue : this.emptyValue;
       // If default is an empty aray, default back to empty value.
       if (Array.isArray(value) && value.length === 0) {
         value = this.emptyValue;
@@ -334,8 +336,7 @@ export default class Multivalue extends Field {
 
     if (Array.isArray(value)) {
       dataValue = dataValue.concat(value);
-    }
-    else {
+    } else {
       dataValue.push(value);
     }
     this.dataValue = dataValue;

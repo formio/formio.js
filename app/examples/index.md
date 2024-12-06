@@ -4,11 +4,15 @@ layout: vtabs
 section: examples
 weight: 0
 ---
+
 You can create a form with the simple JSON schema as follows.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css" />
 <script src="https://cdn.form.io/js/formio.embed.js"></script>
 <div id="formio"></div>
 ```
@@ -23,7 +27,7 @@ Formio.createForm(document.getElementById('formio'), {
       placeholder: 'Enter your first name.',
       input: true,
       tooltip: 'Enter your <strong>First Name</strong>',
-      description: 'Enter your <strong>First Name</strong>'
+      description: 'Enter your <strong>First Name</strong>',
     },
     {
       type: 'textfield',
@@ -32,47 +36,47 @@ Formio.createForm(document.getElementById('formio'), {
       placeholder: 'Enter your last name',
       input: true,
       tooltip: 'Enter your <strong>Last Name</strong>',
-      description: 'Enter your <strong>Last Name</strong>'
+      description: 'Enter your <strong>Last Name</strong>',
     },
     {
-      type: "select",
-      label: "Favorite Things",
-      key: "favoriteThings",
-      placeholder: "These are a few of your favorite things...",
+      type: 'select',
+      label: 'Favorite Things',
+      key: 'favoriteThings',
+      placeholder: 'These are a few of your favorite things...',
       data: {
         values: [
           {
-            value: "raindropsOnRoses",
-            label: "Raindrops on roses"
+            value: 'raindropsOnRoses',
+            label: 'Raindrops on roses',
           },
           {
-            value: "whiskersOnKittens",
-            label: "Whiskers on Kittens"
+            value: 'whiskersOnKittens',
+            label: 'Whiskers on Kittens',
           },
           {
-            value: "brightCopperKettles",
-            label: "Bright Copper Kettles"
+            value: 'brightCopperKettles',
+            label: 'Bright Copper Kettles',
           },
           {
-            value: "warmWoolenMittens",
-            label: "Warm Woolen Mittens"
-          }
-        ]
+            value: 'warmWoolenMittens',
+            label: 'Warm Woolen Mittens',
+          },
+        ],
       },
-      dataSrc: "values",
-      template: "<span>{% raw %}{{ item.label }}{% endraw %}</span>",
+      dataSrc: 'values',
+      template: '<span>{% raw %}{{ item.label }}{% endraw %}</span>',
       multiple: true,
-      input: true
+      input: true,
     },
     {
       type: 'button',
       action: 'submit',
       label: 'Submit',
-      theme: 'primary'
-    }
-  ]
-}).then(function(form) {
-  form.on('submit', function(submission) {
+      theme: 'primary',
+    },
+  ],
+}).then(function (form) {
+  form.on('submit', function (submission) {
     console.log(submission);
   });
 });

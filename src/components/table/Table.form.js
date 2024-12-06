@@ -7,11 +7,14 @@ import TableEditDisplay from './editForm/Table.edit.display';
  * @param {...any} extend - The components that extend the edit form.
  * @returns {import('@formio/core').Component[]} - The edit form components.
  */
-export default function(...extend) {
-  return nestedComponentForm([
-    {
-      key: 'display',
-      components: TableEditDisplay
-    },
-  ], ...extend);
+export default function (...extend) {
+  return nestedComponentForm(
+    [
+      {
+        key: 'display',
+        components: TableEditDisplay,
+      },
+    ],
+    ...extend,
+  );
 }

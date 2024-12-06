@@ -3,20 +3,23 @@ import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class ColumnsComponent extends NestedComponent {
   static schema(...extend) {
-    return NestedComponent.schema({
-      label: 'Columns',
-      key: 'columns',
-      type: 'columns',
-      columns: [
-        { components: [], width: 6, offset: 0, push: 0, pull: 0, size: 'md' },
-        { components: [], width: 6, offset: 0, push: 0, pull: 0, size: 'md' }
-      ],
-      clearOnHide: false,
-      input: false,
-      tableView: false,
-      persistent: false,
-      autoAdjust: false
-    }, ...extend);
+    return NestedComponent.schema(
+      {
+        label: 'Columns',
+        key: 'columns',
+        type: 'columns',
+        columns: [
+          { components: [], width: 6, offset: 0, push: 0, pull: 0, size: 'md' },
+          { components: [], width: 6, offset: 0, push: 0, pull: 0, size: 'md' },
+        ],
+        clearOnHide: false,
+        input: false,
+        tableView: false,
+        persistent: false,
+        autoAdjust: false,
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -27,7 +30,7 @@ export default class ColumnsComponent extends NestedComponent {
       documentation: '/userguide/form-building/layout-components#columns',
       showPreview: false,
       weight: 10,
-      schema: ColumnsComponent.schema()
+      schema: ColumnsComponent.schema(),
     };
   }
 
@@ -96,16 +99,18 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   render() {
-    return super.render(this.renderTemplate('columns', {
-      columnKey: this.columnKey,
-      columnComponents: this.columns.map(column => this.renderComponents(column))
-    }));
+    return super.render(
+      this.renderTemplate('columns', {
+        columnKey: this.columnKey,
+        columnComponents: this.columns.map((column) => this.renderComponents(column)),
+      }),
+    );
   }
 
   justifyColumn(items, index) {
-    const toAdjust = _.every(items, item => !item.visible);
+    const toAdjust = _.every(items, (item) => !item.visible);
     const column = this.component.columns[index];
-    const width = (toAdjust && items.length) ? 0 : column.width;
+    const width = toAdjust && items.length ? 0 : column.width;
     const shouldRedraw = !_.isEqual(width, column.currentWidth);
 
     column.currentWidth = width;
@@ -114,7 +119,10 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   justify() {
-    return this.columns.reduce((redraw, items, index) => this.justifyColumn(items, index) || redraw, false);
+    return this.columns.reduce(
+      (redraw, items, index) => this.justifyColumn(items, index) || redraw,
+      false,
+    );
   }
 
   attach(element) {
@@ -122,7 +130,11 @@ export default class ColumnsComponent extends NestedComponent {
     const superAttach = super.attach(element);
     if (this.refs[this.columnKey]) {
       this.refs[this.columnKey].forEach((column, index) =>
-        this.attachComponents(column, this.columns[index], this.component.columns[index].components)
+        this.attachComponents(
+          column,
+          this.columns[index],
+          this.component.columns[index].components,
+        ),
       );
     }
     return superAttach;
@@ -134,23 +146,26 @@ export default class ColumnsComponent extends NestedComponent {
 
   /**
    * Group columns in rows.
-   * @returns {Array.<ColumnComponent[]>} - The array of columns 
+   * @returns {Array.<ColumnComponent[]>} - The array of columns
    */
   groupByRow() {
     const initVal = { stack: [], rows: [] };
-    const width = x => x.component.width;
-    const result = _.reduce(this.components, (acc, next) => {
-      const stack = [...acc.stack, next];
-      if (_.sumBy(stack, width) <= this.gridSize) {
-        acc.stack = stack;
-        return acc;
-      }
-      else {
-        acc.rows = [...acc.rows, acc.stack];
-        acc.stack = [next];
-        return acc;
-      }
-    }, initVal);
+    const width = (x) => x.component.width;
+    const result = _.reduce(
+      this.components,
+      (acc, next) => {
+        const stack = [...acc.stack, next];
+        if (_.sumBy(stack, width) <= this.gridSize) {
+          acc.stack = stack;
+          return acc;
+        } else {
+          acc.rows = [...acc.rows, acc.stack];
+          acc.stack = [next];
+          return acc;
+        }
+      },
+      initVal,
+    );
 
     return _.concat(result.rows, [result.stack]);
   }
