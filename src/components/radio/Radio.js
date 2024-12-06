@@ -93,13 +93,15 @@ export default class RadioComponent extends ListComponent {
     return defaultValue;
   }
 
-  resetValue() {
+  uncheckValue(flags = {}) {
     this.unset();
     this.setValue(this.emptyValue, {
       noUpdateEvent: true,
       noValidate: true,
       resetValue: true
     });
+    this.triggerChange(flags);
+    this.setSelectedClasses();
   }
 
   get inputInfo() {
@@ -459,9 +461,7 @@ export default class RadioComponent extends ListComponent {
     this.currentValue = this.dataValue;
     const shouldResetValue = flags && flags.modified && !flags.noUpdateEvent && this.previousValue === this.currentValue;
     if (shouldResetValue) {
-      this.resetValue();
-      this.triggerChange(flags);
-      this.setSelectedClasses();
+      this.uncheckValue(flags);
     }
     this.previousValue = this.dataValue;
     return changed;

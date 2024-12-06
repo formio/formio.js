@@ -1417,7 +1417,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   resetValue() {
     super.resetValue();
-    this.emptyRows();
+    // this.emptyRows();
   }
 }
 
