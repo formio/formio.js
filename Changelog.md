@@ -121,6 +121,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - FIO-9347: fixed select preview issue in form builder
 - FIO-8518: fixed adding checkbox with radio type to pdf design page
 
+# Change Log
+
+All notable changes to this project will be documented in this file
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## 5.0.0
+
+### Changed
+
+- Official Release
+- Updated @formio/bootstrap@3.0.0
+- Updated @formio/core@2.3.0
+
 ### New Features
 
 #### New package name
