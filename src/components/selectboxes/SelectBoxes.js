@@ -307,7 +307,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       return super.setCustomValidity(_.filter(messages, (message) => message.ruleName !=='invalidValueProperty'), dirty, external);
     } else {
       return super.setCustomValidity(messages, dirty, external);
-    };
+    }
   }
 
   validateValueAvailability(setting, value) {
