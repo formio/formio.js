@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased: 4.21.6-rc.1]
 ### Changed
 - FIO-9027 fixed display of the overridden values on download page
+- FIO-9271: Scientific notation in number component
   
 ## 4.21.5
 ### Changed
