@@ -667,6 +667,10 @@ export default class FormComponent extends Component {
   }
 
   isHidden() {
+    if (this.shouldForceShow()) {
+      return false;
+    }
+
     if (!this.visible) {
       return true;
     }
