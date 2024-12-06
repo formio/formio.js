@@ -272,7 +272,7 @@ export function getComponentActualValue(compPath, data, row) {
   if (row && _.isNil(value)) {
     value = getValue({ data: row }, compPath);
   }
-  
+
   // FOR-400 - Fix issue where falsey values were being evaluated as show=true
   if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
     value = '';

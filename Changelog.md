@@ -4,10 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.21.6-rc.1]
+## 4.21.6-rc.1
 ### Changed
 - FIO-9027 fixed display of the overridden values on download page
 - FIO-9271: Scientific notation in number component
+- FIO-9312: fixed an issue where conditionals does not work well when there are several components with the same key/path
   
 ## 4.21.5
 ### Changed

@@ -203,7 +203,8 @@ import {
   comp6,
   comp7,
   comp8,
-  comp9
+  comp9,
+  scientificNotation
 } from &apos;./fixtures&apos;;
 import CurrencyComponent from &apos;../currency/Currency&apos;;
 
@@ -211,6 +212,24 @@ describe(&apos;Number Component&apos;, () =&gt; {
   it(&apos;Should build an number component&apos;, () =&gt; {
     return Harness.testCreate(NumberComponent, comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 1);
+    });
+  });
+
+  it(&apos;Should correctly handle scientific notation&apos;, () =&gt; {
+    return Harness.testCreate(NumberComponent, scientificNotation).then((component) =&gt; {
+      const testCases = [
+        [&apos;6.54e+12&apos;, 6.54e+12, &apos;6.54e+12&apos;],
+        [&apos;1.23e-5&apos;, 1.23e-5, &apos;1.23e-5&apos;],
+        [&apos;3.14e+2&apos;, 3.14e+2, &apos;3.14e+2&apos;],
+        [&apos;2e-3&apos;, 2e-3, &apos;2e-3&apos;],
+        [&apos;7.5e+5&apos;, 7.5e+5, &apos;7.5e+5&apos;],
+        [&apos;1.23e+10&apos;, 1.23e+10, &apos;1.23e+10&apos;],
+      ];
+      testCases.forEach(([input, expectedValue, expectedDisplayValue]) =&gt; {
+        component.setValue(input);
+        assert.equal(component.dataValue, expectedValue, `setValue: ${input} should result in ${expectedValue}`);
+        assert.equal(component.getValueAsString(input), expectedDisplayValue, `getValueAsString: ${input} should result in ${expectedDisplayValue}`);
+      });
     });
   });
 

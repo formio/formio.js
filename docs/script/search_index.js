@@ -4608,6 +4608,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/number/fixtures/scientificnotation.js",
+    "file/src/components/number/fixtures/scientificNotation.js.html",
+    "src/components/number/fixtures/scientificNotation.js",
+    "file"
+  ],
+  [
     "src/components/number/fixtures/values.js",
     "file/src/components/number/fixtures/values.js.html",
     "src/components/number/fixtures/values.js",
