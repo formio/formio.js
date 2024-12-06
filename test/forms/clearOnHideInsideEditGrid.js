@@ -18,13 +18,15 @@ export default {
           input: false,
           tableView: false,
           components: [],
-        }, {
+        },
+        {
           label: 'Subsidiary Edit Grid',
           openWhenEmpty: true,
           hideLabel: true,
           tableView: false,
           templates: {
-            header: '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty(\'tableView\') || component.tableView) { %}\n          <div class="col-sm-6">{{ component.label }}</div>\n        {% } %}\n      {% }) %}\n    </div>',
+            header:
+              '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty(\'tableView\') || component.tableView) { %}\n          <div class="col-sm-6">{{ component.label }}</div>\n        {% } %}\n      {% }) %}\n    </div>',
             row: '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty(\'tableView\') || component.tableView) { %}\n          <div class="col-sm-6">\n            {{ getView(component, row[component.key]) }}\n          </div>\n        {% } %}\n      {% }) %}\n      {% if (!instance.disabled) { %}\n        <div class="col-sm-6">\n          <div class="btn-group pull-right">\n            <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass(\'edit\') }}"></i></button>\n            {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}\n              <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass(\'trash\') }}"></i></button>\n            {% } %}\n          </div>\n        </div>\n      {% } %}\n    </div>',
           },
           addAnother: 'Add Another',
@@ -67,14 +69,16 @@ export default {
                       pull: 0,
                       size: 'md',
                       currentWidth: 6,
-                    }, {
+                    },
+                    {
                       components: [
                         {
                           label: 'Division #',
                           tableView: false,
                           validate: {
                             pattern: '(^\\d{3}$)',
-                            customMessage: 'Division Number must be 3 digits long (can use leading zeros).',
+                            customMessage:
+                              'Division Number must be 3 digits long (can use leading zeros).',
                           },
                           key: 'divisionNum',
                           type: 'textfield',
@@ -88,7 +92,8 @@ export default {
                       pull: 0,
                       size: 'md',
                       currentWidth: 2,
-                    }, {
+                    },
+                    {
                       components: [],
                       size: 'md',
                       width: 4,
@@ -103,7 +108,8 @@ export default {
                   input: false,
                   tableView: false,
                   clearOnHide: true,
-                }, {
+                },
+                {
                   label: 'Columns',
                   columns: [
                     {
@@ -118,11 +124,13 @@ export default {
                               label: 'Subsidiary',
                               value: 'subsidiary',
                               shortcut: '',
-                            }, {
+                            },
+                            {
                               label: 'Affiliate',
                               value: 'affiliate',
                               shortcut: '',
-                            }, {
+                            },
+                            {
                               label: 'Other Entity',
                               value: 'otherEntity',
                               shortcut: '',
@@ -140,7 +148,8 @@ export default {
                       pull: 0,
                       size: 'md',
                       currentWidth: 4,
-                    }, {
+                    },
+                    {
                       components: [],
                       width: 8,
                       offset: 0,
@@ -155,14 +164,15 @@ export default {
                   input: false,
                   tableView: false,
                   clearOnHide: true,
-                }, {
-                  label: 'If \'Other Entity\', please explain',
+                },
+                {
+                  label: "If 'Other Entity', please explain",
                   tableView: false,
                   validate: {
                     maxLength: 200,
                   },
                   key: 'ifOtherEntityPleaseExplain',
-                  customConditional: 'show = row.entityType === \'otherEntity\';',
+                  customConditional: "show = row.entityType === 'otherEntity';",
                   type: 'textfield',
                   input: true,
                   hideOnChildrenHidden: false,
@@ -173,7 +183,8 @@ export default {
         },
       ],
       clearOnHide: true,
-    }, {
+    },
+    {
       label: 'Submit',
       showValidations: false,
       tableView: false,

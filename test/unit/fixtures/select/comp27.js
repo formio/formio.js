@@ -5,7 +5,7 @@ export default {
   tableView: true,
   dataSrc: 'custom',
   data: {
-    custom: 'values = data.dataSource;'
+    custom: 'values = data.dataSource;',
   },
   dataType: 'string',
   idPath: 'name',
@@ -13,5 +13,5 @@ export default {
   template: '<span>{{ item.name }}</span>',
   validateWhenHidden: false,
   key: 'select',
-  input: true
+  input: true,
 };

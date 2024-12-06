@@ -9,15 +9,15 @@ export default [
     key: 'defaultValue',
     weight: 5,
     placeholder: 'Default Value',
-    tooltip: 'The Default Value will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
+    tooltip:
+      'The Default Value will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
     input: true,
-    customDefaultValue: ({ instance }) => (
+    customDefaultValue: ({ instance }) =>
       instance.manualModeEnabled
         ? {
-          mode: 'autocomplete',
-          address: {},
-        }
-        : {}
-    ),
+            mode: 'autocomplete',
+            address: {},
+          }
+        : {},
   },
 ];

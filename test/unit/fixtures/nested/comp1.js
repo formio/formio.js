@@ -3,12 +3,12 @@ export default {
     {
       type: 'textfield',
       key: 'firstName',
-      input: true
+      input: true,
     },
     {
       type: 'textfield',
       key: 'lastName',
-      input: true
-    }
-  ]
+      input: true,
+    },
+  ],
 };

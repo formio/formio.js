@@ -6,11 +6,14 @@ import NumberComponent from '../number/Number';
 
 export default class CurrencyComponent extends NumberComponent {
   static schema(...extend) {
-    return NumberComponent.schema({
-      type: 'currency',
-      label: 'Currency',
-      key: 'currency'
-    }, ...extend);
+    return NumberComponent.schema(
+      {
+        type: 'currency',
+        label: 'Currency',
+        key: 'currency',
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -20,7 +23,7 @@ export default class CurrencyComponent extends NumberComponent {
       icon: 'usd',
       documentation: '/userguide/form-building/advanced-components#currency',
       weight: 70,
-      schema: CurrencyComponent.schema()
+      schema: CurrencyComponent.schema(),
     };
   }
 
@@ -42,7 +45,7 @@ export default class CurrencyComponent extends NumberComponent {
       currency: this.component.currency,
       decimalLimit: decimalLimit,
       decimalSeparator: this.decimalSeparator,
-      lang: this.options.language
+      lang: this.options.language,
     });
     this.currencyPrefix = this.options.prefix || affixes.prefix;
     this.currencySuffix = this.options.suffix || affixes.suffix;
@@ -85,7 +88,7 @@ export default class CurrencyComponent extends NumberComponent {
         }
         return conformedValue;
       },
-      shadowRoot: this.root ? this.root.shadowRoot : null
+      shadowRoot: this.root ? this.root.shadowRoot : null,
     });
   }
 
@@ -102,7 +105,7 @@ export default class CurrencyComponent extends NumberComponent {
   }
 
   addZerosAndFormatValue(value) {
-   if (!value && value !== 0) return;
+    if (!value && value !== 0) return;
 
     const decimalLimit = _.get(this.component, 'decimalLimit', 2);
 
@@ -114,13 +117,12 @@ export default class CurrencyComponent extends NumberComponent {
     const hasSuffix = this.currencySuffix ? value.includes(this.currencySuffix) : false;
     const isNegative = value.includes(negativeValueSymbol) || false;
 
-    value = this.stripPrefixSuffix(isNegative ? value.replace(negativeValueSymbol,'') : value);
+    value = this.stripPrefixSuffix(isNegative ? value.replace(negativeValueSymbol, '') : value);
 
     if (value.includes(this.decimalSeparator)) {
       [integerPart, decimalPart] = value.split(this.decimalSeparator);
-      decimalPartNumbers =[...decimalPart.split('')] ;
-    }
-    else {
+      decimalPartNumbers = [...decimalPart.split('')];
+    } else {
       integerPart = value;
     }
 
@@ -130,7 +132,7 @@ export default class CurrencyComponent extends NumberComponent {
       }
     }
 
-    const formattedValue = `${isNegative ? negativeValueSymbol:''}${hasPrefix ? this.currencyPrefix : ''}${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}${hasSuffix ? this.currencySuffix : ''}`;
+    const formattedValue = `${isNegative ? negativeValueSymbol : ''}${hasPrefix ? this.currencyPrefix : ''}${integerPart}${this.decimalSeparator}${decimalPartNumbers.join('')}${hasSuffix ? this.currencySuffix : ''}`;
 
     return super.formatValue(formattedValue);
   }
@@ -138,10 +140,11 @@ export default class CurrencyComponent extends NumberComponent {
   getValueAsString(value, options) {
     const stringValue = super.getValueAsString(value, options);
 
-
     if (value || value == '0') {
       if (Array.isArray(value)) {
-        return value.map((val) => this.addZerosAndFormatValue(super.getValueAsString(val, options))).join(', ');
+        return value
+          .map((val) => this.addZerosAndFormatValue(super.getValueAsString(val, options)))
+          .join(', ');
       }
       return this.addZerosAndFormatValue(stringValue);
     }
@@ -172,11 +175,15 @@ export default class CurrencyComponent extends NumberComponent {
           value = value.replace(this.currencySuffix, '');
         }
         //when we enter $ in the field using dashboard, it contains '_' that is NaN
-        if ((hasPrefix || hasSuffix) && !hasDelimiter && !hasDecimalSeparator && (Number.isNaN(+value) || !value)) {
-          value ='0';
+        if (
+          (hasPrefix || hasSuffix) &&
+          !hasDelimiter &&
+          !hasDecimalSeparator &&
+          (Number.isNaN(+value) || !value)
+        ) {
+          value = '0';
         }
-      }
-      catch (ignoreErr) {
+      } catch (ignoreErr) {
         // If value doesn't have a replace method, continue on as before.
       }
     }
@@ -192,7 +199,9 @@ export default class CurrencyComponent extends NumberComponent {
       }
     });
     this.addEventListener(element, 'blur', () => {
-      element.value = this.getValueAsString(this.addZerosAndFormatValue(this.parseValue(element.value)));
+      element.value = this.getValueAsString(
+        this.addZerosAndFormatValue(this.parseValue(element.value)),
+      );
     });
   }
 }

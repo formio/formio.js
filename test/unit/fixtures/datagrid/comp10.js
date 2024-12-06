@@ -13,11 +13,9 @@ export default {
       enableRowGroups: false,
       initEmpty: false,
       tableView: false,
-      defaultValue: [
-        {}
-      ],
+      defaultValue: [{}],
       validate: {
-        required: true
+        required: true,
       },
       key: 'dataGrid',
       type: 'datagrid',
@@ -34,15 +32,15 @@ export default {
                   tableView: true,
                   key: 'textField',
                   type: 'textfield',
-                  input: true
-                }
+                  input: true,
+                },
               ],
               width: 6,
               offset: 0,
               push: 0,
               pull: 0,
               size: 'md',
-              currentWidth: 6
+              currentWidth: 6,
             },
             {
               components: [
@@ -51,23 +49,23 @@ export default {
                   tableView: false,
                   key: 'checkbox',
                   type: 'checkbox',
-                  input: true
-                }
+                  input: true,
+                },
               ],
               width: 6,
               offset: 0,
               push: 0,
               pull: 0,
               size: 'md',
-              currentWidth: 6
-            }
+              currentWidth: 6,
+            },
           ],
           key: 'columns',
           type: 'columns',
           input: false,
-          tableView: false
-        }
-      ]
+          tableView: false,
+        },
+      ],
     },
     {
       type: 'button',
@@ -75,11 +73,11 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   pdfComponents: [],
   settings: {
-    logs: 'true'
-  }
+    logs: 'true',
+  },
 };

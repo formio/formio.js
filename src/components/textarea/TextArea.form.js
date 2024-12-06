@@ -7,15 +7,18 @@ import TextAreaEditValidation from './editForm/TextArea.edit.validation';
  * @param {...any} extend - The components that extend the edit form.
  * @returns {import('@formio/core').Component[]} - The edit form components.
  */
-export default function(...extend) {
-  return textEditForm([
-    {
-      key: 'display',
-      components: TextAreaEditDisplay
-    },
-    {
-      key: 'validation',
-      components: TextAreaEditValidation
-    },
-  ], ...extend);
+export default function (...extend) {
+  return textEditForm(
+    [
+      {
+        key: 'display',
+        components: TextAreaEditDisplay,
+      },
+      {
+        key: 'validation',
+        components: TextAreaEditValidation,
+      },
+    ],
+    ...extend,
+  );
 }

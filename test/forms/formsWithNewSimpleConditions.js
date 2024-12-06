@@ -1079,13 +1079,13 @@ const form8 = {
         conditions: [
           {
             component: 'container.editGrid1.editGrid2.innerSelect1',
-            operator: 'isEmpty'
-          }
-        ]
+            operator: 'isEmpty',
+          },
+        ],
       },
       type: 'textarea',
       validateWhenHidden: false,
-      input: true
+      input: true,
     },
     {
       label: 'container',
@@ -1120,17 +1120,17 @@ const form8 = {
                     values: [
                       {
                         label: '44',
-                        value: '44'
+                        value: '44',
                       },
                       {
                         label: '6t',
-                        value: '6T'
-                      }
-                    ]
+                        value: '6T',
+                      },
+                    ],
                   },
                   key: 'innerSelect1',
                   type: 'select',
-                  input: true
+                  input: true,
                 },
                 {
                   label: 'innerSelect2',
@@ -1140,19 +1140,19 @@ const form8 = {
                     values: [
                       {
                         label: 'nnn',
-                        value: 'nnn'
+                        value: 'nnn',
                       },
                       {
                         label: 'kkk',
-                        value: 'kkk'
-                      }
-                    ]
+                        value: 'kkk',
+                      },
+                    ],
                   },
                   key: 'innerSelect2',
                   type: 'select',
-                  input: true
-                }
-              ]
+                  input: true,
+                },
+              ],
             },
             {
               label: 'order',
@@ -1162,22 +1162,22 @@ const form8 = {
                 values: [
                   {
                     label: 'first',
-                    value: '1'
+                    value: '1',
                   },
                   {
                     label: 'second',
-                    value: '2'
+                    value: '2',
                   },
                   {
                     label: 'third',
-                    value: '3'
-                  }
-                ]
+                    value: '3',
+                  },
+                ],
               },
               key: 'order',
               type: 'select',
               validateWhenHidden: false,
-              input: true
+              input: true,
             },
             {
               label: 'lesson',
@@ -1187,22 +1187,22 @@ const form8 = {
                 values: [
                   {
                     label: 'math',
-                    value: 'math'
+                    value: 'math',
                   },
                   {
                     label: 'lit',
-                    value: 'lit'
-                  }
-                ]
+                    value: 'lit',
+                  },
+                ],
               },
               validateWhenHidden: false,
               key: 'lesson',
               type: 'select',
-              input: true
-            }
-          ]
-        }
-      ]
+              input: true,
+            },
+          ],
+        },
+      ],
     },
     {
       type: 'button',
@@ -1210,8 +1210,8 @@ const form8 = {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
 };
 
@@ -1223,5 +1223,5 @@ export default {
   form5,
   form6,
   form7,
-  form8
+  form8,
 };

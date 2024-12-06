@@ -1,13 +1,14 @@
 declare namespace _default {
-    const type: string;
-    const owner: string;
-    const components: ({
+  const type: string;
+  const owner: string;
+  const components: (
+    | {
         title: string;
         breadcrumbClickable: boolean;
         buttonSettings: {
-            previous: boolean;
-            cancel: boolean;
-            next: boolean;
+          previous: boolean;
+          cancel: boolean;
+          next: boolean;
         };
         collapsible: boolean;
         alwaysEnabled: boolean;
@@ -16,14 +17,15 @@ declare namespace _default {
         type: string;
         label: string;
         components: {
-            legend: string;
-            alwaysEnabled: boolean;
-            tableView: boolean;
-            key: string;
-            type: string;
-            label: string;
-            input: boolean;
-            components: ({
+          legend: string;
+          alwaysEnabled: boolean;
+          tableView: boolean;
+          key: string;
+          type: string;
+          label: string;
+          input: boolean;
+          components: (
+            | {
                 label: string;
                 mask: boolean;
                 alwaysEnabled: boolean;
@@ -34,7 +36,8 @@ declare namespace _default {
                 key: string;
                 type: string;
                 input: boolean;
-            } | {
+              }
+            | {
                 label: string;
                 mask: boolean;
                 alwaysEnabled: boolean;
@@ -46,12 +49,14 @@ declare namespace _default {
                 key: string;
                 type: string;
                 input: boolean;
-            })[];
-            path: string;
+              }
+          )[];
+          path: string;
         }[];
         input: boolean;
         showValidations?: undefined;
-    } | {
+      }
+    | {
         label: string;
         showValidations: boolean;
         tableView: boolean;
@@ -64,8 +69,9 @@ declare namespace _default {
         collapsible?: undefined;
         alwaysEnabled?: undefined;
         components?: undefined;
-    })[];
-    const title: string;
-    const display: string;
+      }
+  )[];
+  const title: string;
+  const display: string;
 }
 export default _default;

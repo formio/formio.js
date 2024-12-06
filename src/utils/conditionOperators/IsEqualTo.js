@@ -1,43 +1,54 @@
 import ConditionOperator from './ConditionOperator';
 import _ from 'lodash';
-import { compareSelectResourceWithObjectTypeValues, isSelectResourceWithObjectValue } from '../utils';
+import {
+  compareSelectResourceWithObjectTypeValues,
+  isSelectResourceWithObjectValue,
+} from '../utils';
 
 export default class IsEqualTo extends ConditionOperator {
-    static get operatorKey() {
-        return 'isEqual';
+  static get operatorKey() {
+    return 'isEqual';
+  }
+
+  static get displayedName() {
+    return 'Is Equal To';
+  }
+
+  execute({ value, comparedValue, instance, conditionComponentPath }) {
+    if (
+      (value || value === false) &&
+      comparedValue &&
+      typeof value !== typeof comparedValue &&
+      _.isString(comparedValue)
+    ) {
+      try {
+        comparedValue = JSON.parse(comparedValue);
+      } catch (ignoreErr) {
+        // do nothing
+      }
     }
 
-    static get displayedName() {
-        return 'Is Equal To';
+    if (instance?.root?.getComponent) {
+      const conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
+
+      if (
+        conditionTriggerComponent &&
+        isSelectResourceWithObjectValue(conditionTriggerComponent.component) &&
+        conditionTriggerComponent.component?.template
+      ) {
+        return compareSelectResourceWithObjectTypeValues(
+          value,
+          comparedValue,
+          conditionTriggerComponent.component,
+        );
+      }
     }
 
-    execute({ value, comparedValue, instance, conditionComponentPath }) {
-        if ((value || value === false) && comparedValue && typeof value !== typeof comparedValue && _.isString(comparedValue)) {
-            try {
-                comparedValue = JSON.parse(comparedValue);
-            }
-            catch (ignoreErr) {
-              // do nothing
-            }
-        }
-
-        if (instance?.root?.getComponent) {
-            const conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
-
-            if (
-                conditionTriggerComponent
-                && isSelectResourceWithObjectValue(conditionTriggerComponent.component)
-                && conditionTriggerComponent.component?.template
-            ) {
-                return compareSelectResourceWithObjectTypeValues(value, comparedValue, conditionTriggerComponent.component);
-            }
-        }
-
-        //special check for select boxes
-        if (_.isObject(value) && comparedValue && _.isBoolean(value[comparedValue])) {
-            return value[comparedValue];
-        }
-
-        return  _.isEqual(value, comparedValue);
+    //special check for select boxes
+    if (_.isObject(value) && comparedValue && _.isBoolean(value[comparedValue])) {
+      return value[comparedValue];
     }
+
+    return _.isEqual(value, comparedValue);
+  }
 }

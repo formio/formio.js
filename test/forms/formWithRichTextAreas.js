@@ -7,7 +7,7 @@ export default {
       key: 'textArea',
       type: 'textarea',
       input: true,
-      isUploadEnabled: false
+      isUploadEnabled: false,
     },
     {
       label: 'Text Area Ace',
@@ -16,7 +16,7 @@ export default {
       key: 'textAreaAce',
       type: 'textarea',
       input: true,
-      isUploadEnabled: false
+      isUploadEnabled: false,
     },
     {
       type: 'button',
@@ -24,8 +24,8 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   display: 'form',
 };

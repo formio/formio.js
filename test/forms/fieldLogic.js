@@ -5,151 +5,151 @@ export default {
   form: {
     components: [
       {
-        'properties': {},
-        'tags': [],
-        'labelPosition': 'top',
-        'hideLabel': false,
-        'type': 'textfield',
-        'conditional': {
-          'eq': '',
-          'when': null,
-          'show': ''
+        properties: {},
+        tags: [],
+        labelPosition: 'top',
+        hideLabel: false,
+        type: 'textfield',
+        conditional: {
+          eq: '',
+          when: null,
+          show: '',
         },
-        'validate': {
-          'customPrivate': false,
-          'custom': '',
-          'pattern': '',
-          'maxLength': '',
-          'minLength': '',
-          'required': false
+        validate: {
+          customPrivate: false,
+          custom: '',
+          pattern: '',
+          maxLength: '',
+          minLength: '',
+          required: false,
         },
-        'clearOnHide': true,
-        'hidden': false,
-        'persistent': true,
-        'unique': false,
-        'protected': false,
-        'defaultValue': '',
-        'multiple': false,
-        'suffix': '',
-        'prefix': '',
-        'placeholder': '',
-        'key': 'test',
-        'label': 'Test',
-        'inputMask': '',
-        'inputType': 'text',
-        'tableView': true,
-        'input': true
+        clearOnHide: true,
+        hidden: false,
+        persistent: true,
+        unique: false,
+        protected: false,
+        defaultValue: '',
+        multiple: false,
+        suffix: '',
+        prefix: '',
+        placeholder: '',
+        key: 'test',
+        label: 'Test',
+        inputMask: '',
+        inputType: 'text',
+        tableView: true,
+        input: true,
       },
       {
-        'properties': {},
-        'tags': [],
-        'labelPosition': 'top',
-        'hideLabel': false,
-        'type': 'textfield',
-        'conditional': {
-          'eq': '',
-          'when': null,
-          'show': ''
+        properties: {},
+        tags: [],
+        labelPosition: 'top',
+        hideLabel: false,
+        type: 'textfield',
+        conditional: {
+          eq: '',
+          when: null,
+          show: '',
         },
-        'validate': {
-          'customPrivate': false,
-          'custom': '',
-          'pattern': '',
-          'maxLength': '',
-          'minLength': '',
-          'required': false
+        validate: {
+          customPrivate: false,
+          custom: '',
+          pattern: '',
+          maxLength: '',
+          minLength: '',
+          required: false,
         },
-        'clearOnHide': true,
-        'hidden': false,
-        'persistent': true,
-        'unique': false,
-        'protected': false,
-        'defaultValue': '',
-        'multiple': false,
-        'suffix': '',
-        'prefix': '',
-        'placeholder': '',
-        'key': 'changeme',
-        'label': 'Change me',
-        'inputMask': '',
-        'inputType': 'text',
-        'tableView': true,
-        'input': true,
-        'logic': [
+        clearOnHide: true,
+        hidden: false,
+        persistent: true,
+        unique: false,
+        protected: false,
+        defaultValue: '',
+        multiple: false,
+        suffix: '',
+        prefix: '',
+        placeholder: '',
+        key: 'changeme',
+        label: 'Change me',
+        inputMask: '',
+        inputType: 'text',
+        tableView: true,
+        input: true,
+        logic: [
           {
-            'name': 'Test 1',
-            'trigger': {
-              'javascript': "result = data.test === '1';",
-              'type': 'javascript'
+            name: 'Test 1',
+            trigger: {
+              javascript: "result = data.test === '1';",
+              type: 'javascript',
             },
-            'actions': [
+            actions: [
               {
-                'name': 'Set Title to One',
-                'text': 'One',
-                'property': {
-                  'type': 'string',
-                  'value': 'label',
-                  'label': 'Title'
+                name: 'Set Title to One',
+                text: 'One',
+                property: {
+                  type: 'string',
+                  value: 'label',
+                  label: 'Title',
                 },
-                'type': 'property'
+                type: 'property',
               },
               {
-                'name': 'Set Description',
-                'type': 'property',
-                'property': {
-                  'label': 'Description',
-                  'value': 'description',
-                  'type': 'string'
+                name: 'Set Description',
+                type: 'property',
+                property: {
+                  label: 'Description',
+                  value: 'description',
+                  type: 'string',
                 },
-                'text': 'You have selected One'
+                text: 'You have selected One',
               },
               {
-                'name': 'Set Disabled',
-                'type': 'property',
-                'property': {
-                  'label': 'Disabled',
-                  'value': 'disabled',
-                  'type': 'boolean'
+                name: 'Set Disabled',
+                type: 'property',
+                property: {
+                  label: 'Disabled',
+                  value: 'disabled',
+                  type: 'boolean',
                 },
-                'state': true
-              }
-            ]
+                state: true,
+              },
+            ],
           },
           {
-            'name': 'Test 2',
-            'trigger': {
-              'javascript': "result = data.test === '2';",
-              'type': 'javascript'
+            name: 'Test 2',
+            trigger: {
+              javascript: "result = data.test === '2';",
+              type: 'javascript',
             },
-            'actions': [
+            actions: [
               {
-                'name': 'Set Required',
-                'type': 'property',
-                'property': {
-                  'label': 'Required',
-                  'value': 'validate.required',
-                  'type': 'boolean'
+                name: 'Set Required',
+                type: 'property',
+                property: {
+                  label: 'Required',
+                  value: 'validate.required',
+                  type: 'boolean',
                 },
-                'state': true
-              }
-            ]
+                state: true,
+              },
+            ],
           },
           {
-            'name': 'Test 3',
-            'trigger': {
-              'javascript': "result = data.test === '3';",
-              'type': 'javascript'
+            name: 'Test 3',
+            trigger: {
+              javascript: "result = data.test === '3';",
+              type: 'javascript',
             },
-            'actions': [
+            actions: [
               {
-                'name': 'Set Required',
-                'type': 'value',
-                'value': "return 'foo';"
-              }
-            ]
-          }
-        ]
-      }
+                name: 'Set Required',
+                type: 'value',
+                value: "return 'foo';",
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
   tests: {
@@ -158,7 +158,12 @@ export default {
       form.onChange({}, true);
       Harness.testInnerHtml(form, '.formio-component-changeme .col-form-label', 'One');
       Harness.testInnerHtml(form, '.formio-component-changeme .form-text', 'You have selected One');
-      Harness.testAttribute(form, '.formio-component-changeme .form-control', 'disabled', 'disabled');
+      Harness.testAttribute(
+        form,
+        '.formio-component-changeme .form-control',
+        'disabled',
+        'disabled',
+      );
       done();
     },
     'Test Required'(form, done) {
@@ -172,6 +177,6 @@ export default {
       form.onChange({}, true);
       Harness.getInputValue(form, 'data[changeme]', 'foo');
       done();
-    }
-  }
+    },
+  },
 };

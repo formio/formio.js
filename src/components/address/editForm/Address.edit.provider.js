@@ -15,10 +15,12 @@ export default [
     dataSrc: 'custom',
     data: {
       custom() {
-        return _.values(Formio.Providers.getProviders('address')).sort().map((provider) => ({
-          label: provider.displayName,
-          value: provider.name,
-        }));
+        return _.values(Formio.Providers.getProviders('address'))
+          .sort()
+          .map((provider) => ({
+            label: provider.displayName,
+            value: provider.name,
+          }));
       },
     },
     validate: {
@@ -28,7 +30,7 @@ export default [
   {
     type: 'textfield',
     input: true,
-    key: "providerOptions.params.subscriptionKey",
+    key: 'providerOptions.params.subscriptionKey',
     label: 'Subscription Key',
     placeholder: 'Enter Subscription Key',
     weight: 10,
@@ -75,7 +77,8 @@ export default [
     label: 'Response Property',
     placeholder: 'Enter Response Property',
     weight: 30,
-    tooltip: 'The property within the response data, where iterable addresses reside. For example: results.',
+    tooltip:
+      'The property within the response data, where iterable addresses reside. For example: results.',
     conditional: {
       json: { '===': [{ var: 'data.provider' }, 'custom'] },
     },
@@ -128,12 +131,13 @@ export default [
     key: 'providerOptions.params.autocompleteOptions',
     label: 'Provider options',
     placeholder: 'Enter provider options as JSON object',
-    defaultValue:{},
+    defaultValue: {},
     weight: 60,
     rows: 5,
     as: 'json',
     editor: 'ace',
-    tooltip: 'Specify Google Maps Autocomplete options used for address searching as JSON object. Follow the <a href =\'https://developers.google.com/maps/documentation/javascript/places-autocomplete\' target=\'_blank\'>link</a> for available options',
+    tooltip:
+      "Specify Google Maps Autocomplete options used for address searching as JSON object. Follow the <a href ='https://developers.google.com/maps/documentation/javascript/places-autocomplete' target='_blank'>link</a> for available options",
     conditional: {
       json: { '===': [{ var: 'data.provider' }, 'google'] },
     },
@@ -144,10 +148,12 @@ export default [
     key: 'manualModeViewString',
     label: 'Manual Mode View String',
     placeholder: 'Enter Manual Mode View String',
-    description: '"address" variable references component value, "data" - submission data and "component" - address component schema.',
+    description:
+      '"address" variable references component value, "data" - submission data and "component" - address component schema.',
     weight: 60,
     rows: 5,
     editor: 'ace',
-    tooltip: 'Specify template which should be when quering view string for the component value entered in manual mode. This string is used in table view, CSV export and email rendering. When left blank combined value of all components joined with comma will be used.',
+    tooltip:
+      'Specify template which should be when quering view string for the component value entered in manual mode. This string is used in table view, CSV export and email rendering. When left blank combined value of all components joined with comma will be used.',
   },
 ];

@@ -89,5 +89,5 @@ module.exports = {
   wizardWithTooltip,
   resourceKeyCamelCase,
   tooltipActivateCheckbox,
-  formWithObjectValueSelect
+  formWithObjectValueSelect,
 };

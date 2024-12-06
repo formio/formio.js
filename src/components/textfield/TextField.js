@@ -6,24 +6,27 @@ import _ from 'lodash';
 
 export default class TextFieldComponent extends Input {
   static schema(...extend) {
-    return Input.schema({
-      label: 'Text Field',
-      key: 'textField',
-      type: 'textfield',
-      mask: false,
-      inputType: 'text',
-      inputFormat: 'plain',
-      inputMask: '',
-      displayMask: '',
-      tableView: true,
-      spellcheck: true,
-      truncateMultipleSpaces: false,
-      validate: {
-        minLength: '',
-        maxLength: '',
-        pattern: ''
-      }
-    }, ...extend);
+    return Input.schema(
+      {
+        label: 'Text Field',
+        key: 'textField',
+        type: 'textfield',
+        mask: false,
+        inputType: 'text',
+        inputFormat: 'plain',
+        inputMask: '',
+        displayMask: '',
+        tableView: true,
+        spellcheck: true,
+        truncateMultipleSpaces: false,
+        validate: {
+          minLength: '',
+          maxLength: '',
+          pattern: '',
+        },
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -33,7 +36,7 @@ export default class TextFieldComponent extends Input {
       group: 'basic',
       documentation: '/userguide/form-building/form-components#text-field',
       weight: 0,
-      schema: TextFieldComponent.schema()
+      schema: TextFieldComponent.schema(),
     };
   }
 
@@ -44,18 +47,24 @@ export default class TextFieldComponent extends Input {
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
-      operators: [...super.conditionOperatorsSettings.operators, 'includes', 'notIncludes', 'endsWith', 'startsWith'],
+      operators: [
+        ...super.conditionOperatorsSettings.operators,
+        'includes',
+        'notIncludes',
+        'endsWith',
+        'startsWith',
+      ],
       valueComponent(classComp) {
         return {
           ...classComp,
           type: 'textfield',
         };
-      }
+      },
     };
   }
 
   static savedValueTypes(schema) {
-    return  FormioUtils.getComponentSavedTypes(schema) || [FormioUtils.componentValueTypes.string];
+    return FormioUtils.getComponentSavedTypes(schema) || [FormioUtils.componentValueTypes.string];
   }
 
   get defaultSchema() {
@@ -72,11 +81,10 @@ export default class TextFieldComponent extends Input {
 
     if (this.component.mask) {
       info.attr.type = 'password';
+    } else {
+      info.attr.type = this.component.inputType === 'password' ? 'password' : 'text';
     }
-    else {
-      info.attr.type = (this.component.inputType === 'password') ? 'password' : 'text';
-    }
-    info.changeEvent = (this.component.applyMaskOn === 'blur') ? 'blur' : 'input';
+    info.changeEvent = this.component.applyMaskOn === 'blur' ? 'blur' : 'input';
     return info;
   }
 
@@ -87,8 +95,8 @@ export default class TextFieldComponent extends Input {
   constructor(component, options, data) {
     super(component, options, data);
 
-    const timezone = (this.component.widget?.timezone || this.options.timezone);
-    const displayInTimezone = (this.component.widget?.displayInTimezone || 'viewer');
+    const timezone = this.component.widget?.timezone || this.options.timezone;
+    const displayInTimezone = this.component.widget?.displayInTimezone || 'viewer';
 
     if (this.component.widget?.type === 'calendar') {
       this.component.widget = {
@@ -97,7 +105,7 @@ export default class TextFieldComponent extends Input {
         timezone,
         displayInTimezone,
         locale: this.component.widget.locale || this.options.language,
-        saveAs: 'text'
+        saveAs: 'text',
       };
     }
   }
@@ -117,10 +125,10 @@ export default class TextFieldComponent extends Input {
    */
   maskValue(value, flags = {}) {
     // Convert it into the correct format.
-    if (!value || (typeof value !== 'object')) {
+    if (!value || typeof value !== 'object') {
       value = {
         value,
-        maskName: this.component.inputMasks[0].label
+        maskName: this.component.inputMasks[0].label,
       };
     }
 
@@ -163,7 +171,7 @@ export default class TextFieldComponent extends Input {
     value = this.maskValue(value, flags);
     const textValue = value.value || '';
     const textInput = this.refs.mask ? this.refs.mask[index] : null;
-    const maskInput = this.refs.select ? this.refs.select[index]: null;
+    const maskInput = this.refs.select ? this.refs.select[index] : null;
     const mask = this.getMaskPattern(value.maskName);
     if (textInput && maskInput && mask) {
       // We need to set the maskInput (select dropdown) value before calling inputmask.setValue because, this
@@ -172,13 +180,13 @@ export default class TextFieldComponent extends Input {
       if (textInput.inputmask) {
         this.setInputMask(textInput, mask);
         textInput.inputmask.setValue(textValue);
-      }
-      else {
+      } else {
         const placeholderChar = this.placeholderChar;
-        textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask), { placeholderChar }).conformedValue;
+        textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask), {
+          placeholderChar,
+        }).conformedValue;
       }
-    }
-    else {
+    } else {
       return super.setValueAt(index, textValue, flags);
     }
   }
@@ -202,7 +210,7 @@ export default class TextFieldComponent extends Input {
 
       // If the input has only the valueMask or the displayMask is the same as the valueMask,
       // just return the value which is already formatted
-      if (valueMask && !displayMask || displayMask === valueMask) {
+      if ((valueMask && !displayMask) || displayMask === valueMask) {
         return value;
       }
 
@@ -223,30 +231,32 @@ export default class TextFieldComponent extends Input {
       return value;
     }
     const textInput = this.refs.mask ? this.refs.mask[index] : null;
-    const maskInput = this.refs.select ? this.refs.select[index]: null;
+    const maskInput = this.refs.select ? this.refs.select[index] : null;
     return {
       value: textInput ? textInput.value : undefined,
-      maskName: maskInput ? maskInput.value : undefined
+      maskName: maskInput ? maskInput.value : undefined,
     };
   }
   checkInputMaskValue(inputMask) {
     let valid = true;
-    const maskValues = _.values(inputMask.split('').reduce((acc, el, i, mask) => {
-      if (el === '{' || el === '}') {
-        if (mask[i+1] === '{' || mask[i+1] === '}') {
-          valid = false;
+    const maskValues = _.values(
+      inputMask.split('').reduce((acc, el, i, mask) => {
+        if (el === '{' || el === '}') {
+          if (mask[i + 1] === '{' || mask[i + 1] === '}') {
+            valid = false;
+          }
+          acc[el] = (acc[el] ?? 0) + 1;
         }
-        acc[el] = (acc[el] ?? 0) + 1;
-      }
-      return acc;
-    },{}));
+        return acc;
+      }, {}),
+    );
     if (maskValues[0] !== maskValues[1]) {
       valid = false;
     }
     return valid;
   }
 
-   setInputMask(input, inputMask, usePlaceholder) {
+  setInputMask(input, inputMask, usePlaceholder) {
     if (this.type !== 'textfield') {
       super.setInputMask(input, inputMask, usePlaceholder);
       return;
@@ -269,8 +279,7 @@ export default class TextFieldComponent extends Input {
             placeholder: this.placeholderChar || '',
           }).mask(input);
         }
-      }
-      catch (e) {
+      } catch (e) {
         console.warn(e);
       }
       if (mask.numeric) {
@@ -284,17 +293,22 @@ export default class TextFieldComponent extends Input {
   }
 
   isHtmlRenderMode() {
-    return super.isHtmlRenderMode() ||
+    return (
+      super.isHtmlRenderMode() ||
       ((this.options.readOnly || this.disabled) &&
-      this.component.inputFormat === 'html' &&
-      this.type === 'textfield');
+        this.component.inputFormat === 'html' &&
+        this.type === 'textfield')
+    );
   }
 
   isEmpty(value = this.dataValue) {
     if (!this.isMultipleMasksField) {
       return super.isEmpty((value || '').toString().trim());
     }
-    return super.isEmpty(value) || (this.component.multiple ? value.length === 0 : (!value.maskName || !value.value));
+    return (
+      super.isEmpty(value) ||
+      (this.component.multiple ? value.length === 0 : !value.maskName || !value.value)
+    );
   }
 
   truncateMultipleSpaces(value) {
@@ -325,7 +339,7 @@ export default class TextFieldComponent extends Input {
 
   getValueAsString(value, options) {
     if (options?.email && this.visible && !this.skipInEmail && _.isObject(value)) {
-      const result = (`
+      const result = `
         <table border="1" style="width:100%">
           <tbody>
           <tr>
@@ -334,13 +348,13 @@ export default class TextFieldComponent extends Input {
           </tr>
           </tbody>
         </table>
-      `);
+      `;
 
       return result;
     }
 
     if (value && this.component.inputFormat === 'plain' && /<[^<>]+>/g.test(value)) {
-      value = value.replaceAll('<','&lt;').replaceAll('>', '&gt;');
+      value = value.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
     }
     return super.getValueAsString(value, options);
   }

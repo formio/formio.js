@@ -3,13 +3,16 @@ import _ from 'lodash';
 
 export default class PasswordComponent extends TextFieldComponent {
   static schema(...extend) {
-    return TextFieldComponent.schema({
-      type: 'password',
-      label: 'Password',
-      key: 'password',
-      protected: true,
-      tableView: false,
-    }, ...extend);
+    return TextFieldComponent.schema(
+      {
+        type: 'password',
+        label: 'Password',
+        key: 'password',
+        protected: true,
+        tableView: false,
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -19,7 +22,7 @@ export default class PasswordComponent extends TextFieldComponent {
       group: 'basic',
       documentation: '/userguide/form-building/form-components#password',
       weight: 40,
-      schema: PasswordComponent.schema()
+      schema: PasswordComponent.schema(),
     };
   }
 

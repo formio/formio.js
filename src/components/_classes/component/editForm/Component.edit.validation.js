@@ -1,7 +1,6 @@
 import EditFormUtils from './utils';
 import { Evaluator } from '../../../../utils/Evaluator';
 
- 
 export default [
   {
     weight: 10,
@@ -9,23 +8,25 @@ export default [
     label: 'Required',
     tooltip: 'A required field must be filled in before the form can be submitted.',
     key: 'validate.required',
-    input: true
+    input: true,
   },
   {
     weight: 100,
     type: 'checkbox',
     label: 'Unique',
-    tooltip: 'Makes sure the data submitted for this field is unique, and has not been submitted before.',
+    tooltip:
+      'Makes sure the data submitted for this field is unique, and has not been submitted before.',
     key: 'unique',
-    input: true
+    input: true,
   },
   {
     weight: 100,
     type: 'checkbox',
     label: 'Validate When Hidden',
-    tooltip: 'Validates the component when it is hidden/conditionally hidden. Vaildation errors are displayed in the error alert on the form submission. Use caution when enabling this setting, as it can cause a hidden component to be invalid with no way for the form user to correct it.',
+    tooltip:
+      'Validates the component when it is hidden/conditionally hidden. Vaildation errors are displayed in the error alert on the form submission. Use caution when enabling this setting, as it can cause a hidden component to be invalid with no way for the form user to correct it.',
     key: 'validateWhenHidden',
-    input: true
+    input: true,
   },
   {
     weight: 0,
@@ -39,9 +40,9 @@ export default [
     data: {
       values: [
         { label: 'Change', value: 'change' },
-        { label: 'Blur', value: 'blur' }
-      ]
-    }
+        { label: 'Blur', value: 'blur' },
+      ],
+    },
   },
   {
     weight: 190,
@@ -50,7 +51,7 @@ export default [
     key: 'errorLabel',
     label: 'Error Label',
     placeholder: 'Error Label',
-    tooltip: 'The label for this field when an error occurs.'
+    tooltip: 'The label for this field when an error occurs.',
   },
   {
     weight: 200,
@@ -59,7 +60,7 @@ export default [
     placeholder: 'Custom Error Message',
     type: 'textfield',
     tooltip: 'Error message displayed if any error occurred.',
-    input: true
+    input: true,
   },
   {
     type: 'panel',
@@ -73,7 +74,9 @@ export default [
       return !Evaluator.noeval || Evaluator.protectedEval;
     },
     components: [
-      EditFormUtils.logicVariablesTable('<tr><th>input</th><td>The value that was input into this component</td></tr>'),
+      EditFormUtils.logicVariablesTable(
+        '<tr><th>input</th><td>The value that was input into this component</td></tr>',
+      ),
       {
         type: 'textarea',
         key: 'validate.custom',
@@ -81,7 +84,7 @@ export default [
         editor: 'ace',
         hideLabel: true,
         as: 'javascript',
-        input: true
+        input: true,
       },
       {
         type: 'htmlelement',
@@ -92,7 +95,7 @@ export default [
             <p>You must assign the <strong>valid</strong> variable as either <strong>true</strong> or an error message if validation fails.</p>
             <h5>Example:</h5>
             <pre>valid = (input === 'Joe') ? true : 'Your name must be "Joe"';</pre>
-          </small>`
+          </small>`,
       },
       {
         type: 'well',
@@ -101,14 +104,16 @@ export default [
             weight: 100,
             type: 'checkbox',
             label: 'Secret Validation',
-            tooltip: 'Check this if you wish to perform the validation ONLY on the server side. This keeps your validation logic private and secret.',
-            description: 'Check this if you wish to perform the validation ONLY on the server side. This keeps your validation logic private and secret.',
+            tooltip:
+              'Check this if you wish to perform the validation ONLY on the server side. This keeps your validation logic private and secret.',
+            description:
+              'Check this if you wish to perform the validation ONLY on the server side. This keeps your validation logic private and secret.',
             key: 'validate.customPrivate',
-            input: true
-          }
-        ]
-      }
-    ]
+            input: true,
+          },
+        ],
+      },
+    ],
   },
   {
     type: 'panel',
@@ -121,17 +126,19 @@ export default [
       {
         type: 'htmlelement',
         tag: 'div',
-         
-        content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank" rel="noopener noreferrer">JSONLogic</a>.</p>' +
+
+        content:
+          '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank" rel="noopener noreferrer">JSONLogic</a>.</p>' +
           '<h5>Example:</h5>' +
-          '<pre>' + JSON.stringify({
-            "if": [
-              { "===": [{ "var": "input" }, "Bob"] },
-              true,
-              "Your name must be 'Bob'!"
-            ]
-          }, null, 2) + '</pre>'
-         
+          '<pre>' +
+          JSON.stringify(
+            {
+              if: [{ '===': [{ var: 'input' }, 'Bob'] }, true, "Your name must be 'Bob'!"],
+            },
+            null,
+            2,
+          ) +
+          '</pre>',
       },
       {
         type: 'textarea',
@@ -140,9 +147,9 @@ export default [
         rows: 5,
         editor: 'ace',
         as: 'json',
-        input: true
-      }
-    ]
+        input: true,
+      },
+    ],
   },
   {
     type: 'panel',
@@ -159,7 +166,7 @@ export default [
         rows: 5,
         editor: 'ace',
         as: 'json',
-        input: true
+        input: true,
       },
       {
         type: 'htmlelement',
@@ -205,9 +212,8 @@ export default [
            <li><code>{<span/>{ m<span/>axYear }}</code></li>
            <li><code>{<span/>{ r<span/>egex }}</code></li>
           </ul>
-        `
-      }
-    ]
-  }
+        `,
+      },
+    ],
+  },
 ];
- 

@@ -6,25 +6,29 @@ const defaultDataFormat = 'HH:mm:ss';
 
 export default class TimeComponent extends TextFieldComponent {
   static schema(...extend) {
-    return TextFieldComponent.schema({
-      type: 'time',
-      label: 'Time',
-      key: 'time',
-      inputType: 'time',
-      format: 'HH:mm',
-      dataFormat: defaultDataFormat,
-    }, ...extend);
+    return TextFieldComponent.schema(
+      {
+        type: 'time',
+        label: 'Time',
+        key: 'time',
+        inputType: 'time',
+        format: 'HH:mm',
+        dataFormat: defaultDataFormat,
+      },
+      ...extend,
+    );
   }
 
   constructor(component, options, data) {
     super(component, options, data);
     const { edge: isEdgeBrowser, version: edgeVersion } = getBrowserInfo();
     this.component.inputMask = this.getInputMaskFromFormat(this.component.format);
-    this.component.inputType = isEdgeBrowser && edgeVersion <= 18
-      ? 'text'
-      : (this.component.inputType || 'time');
+    this.component.inputType =
+      isEdgeBrowser && edgeVersion <= 18 ? 'text' : this.component.inputType || 'time';
     // If default value is given then the raw data needs to be set
-    this.rawData = this.component.multiple ? [] : this.getValueAsString(this.defaultValue) || this.emptyValue;
+    this.rawData = this.component.multiple
+      ? []
+      : this.getValueAsString(this.defaultValue) || this.emptyValue;
   }
 
   static get builderInfo() {
@@ -49,16 +53,14 @@ export default class TimeComponent extends TextFieldComponent {
   get defaultValue() {
     let value = super.defaultValue;
     if (this.component.multiple && Array.isArray(value)) {
-      value = value.map(item => item ? this.getStringAsValue(item) : item);
-    }
-    else {
+      value = value.map((item) => (item ? this.getStringAsValue(item) : item));
+    } else {
       if (value) {
         value = this.getStringAsValue(value);
       }
     }
     return value;
   }
-
 
   get inputInfo() {
     const info = super.inputInfo;
@@ -75,15 +77,16 @@ export default class TimeComponent extends TextFieldComponent {
   }
 
   removeValue(index) {
-    this.rawData = Array.isArray(this.rawData) ? [...this.rawData.slice(0, index), ...this.rawData.slice(index + 1)] : this.emptyValue;
+    this.rawData = Array.isArray(this.rawData)
+      ? [...this.rawData.slice(0, index), ...this.rawData.slice(index + 1)]
+      : this.emptyValue;
     super.removeValue(index);
   }
 
   resetRawData(index) {
     if (index) {
       this.setRawValue(this.emptyValue, index);
-    }
-    else {
+    } else {
       this.rawData = [];
     }
   }
@@ -91,8 +94,7 @@ export default class TimeComponent extends TextFieldComponent {
   setRawValue(value, index) {
     if (Array.isArray(this.rawData)) {
       this.rawData[index] = value;
-    }
-    else {
+    } else {
       this.rawData = value;
     }
   }
@@ -100,8 +102,7 @@ export default class TimeComponent extends TextFieldComponent {
   getRawValue(index) {
     if (index && Array.isArray(this.rawData)) {
       return this.rawData[index] || this.emptyValue;
-    }
-    else {
+    } else {
       return this.rawData;
     }
   }
@@ -133,9 +134,13 @@ export default class TimeComponent extends TextFieldComponent {
 
   getValueAsString(value) {
     if (Array.isArray(value) && this.component.multiple) {
-      return value.map(item => moment(item, this.component.dataFormat).format(this.component.format)).join(', ');
+      return value
+        .map((item) => moment(item, this.component.dataFormat).format(this.component.format))
+        .join(', ');
     }
-    return (value ? moment(value, this.component.dataFormat).format(this.component.format) : value) || '';
+    return (
+      (value ? moment(value, this.component.dataFormat).format(this.component.format) : value) || ''
+    );
   }
 
   getInputMaskFromFormat(format) {
@@ -145,8 +150,7 @@ export default class TimeComponent extends TextFieldComponent {
     if (format === 'LTS') {
       return '99:99:99 AA';
     }
-    return format.replace(/[hHmMsSk]/g, '9')
-                 .replace(/[aA]/, 'AA');
+    return format.replace(/[hHmMsSk]/g, '9').replace(/[aA]/, 'AA');
   }
 
   addFocusBlurEvents(element) {

@@ -1,10 +1,10 @@
 export default {
-	title: 'Test',
-	name: 'test',
-	path: 'test',
-	type: 'form',
-	display: 'form',
-	components: [
+  title: 'Test',
+  name: 'test',
+  path: 'test',
+  type: 'form',
+  display: 'form',
+  components: [
     {
       label: 'Radio',
       optionsLabelPosition: 'right',
@@ -14,18 +14,18 @@ export default {
         {
           label: '0',
           value: '0',
-          shortcut: ''
+          shortcut: '',
         },
         {
           label: '1',
           value: '1',
-          shortcut: ''
-        }
+          shortcut: '',
+        },
       ],
       key: 'radioNumber',
       type: 'radio',
       dataType: 'number',
-      input: true
+      input: true,
     },
     {
       label: 'Radio',
@@ -33,20 +33,21 @@ export default {
       inline: false,
       tableView: false,
       values: [
-      {
-        label: '0',
-        value: '0',
-        shortcut: ''
-      },
-      {
-        label: '1',
-        value: '1',
-        shortcut: ''
-      }],
+        {
+          label: '0',
+          value: '0',
+          shortcut: '',
+        },
+        {
+          label: '1',
+          value: '1',
+          shortcut: '',
+        },
+      ],
       key: 'radioString',
       dataType: 'string',
       type: 'radio',
-      input: true
+      input: true,
     },
     {
       label: 'Radio',
@@ -54,20 +55,21 @@ export default {
       inline: false,
       tableView: false,
       values: [
-      {
-        label: 'true',
-        value: 'true',
-        shortcut: ''
-      },
-      {
-        label: 'false',
-        value: 'false',
-        shortcut: ''
-      }],
+        {
+          label: 'true',
+          value: 'true',
+          shortcut: '',
+        },
+        {
+          label: 'false',
+          value: 'false',
+          shortcut: '',
+        },
+      ],
       key: 'radioBoolean',
       dataType: 'boolean',
       type: 'radio',
-      input: true
+      input: true,
     },
     {
       type: 'button',
@@ -75,7 +77,7 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
-  ]
+      tableView: false,
+    },
+  ],
 };

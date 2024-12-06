@@ -7,7 +7,7 @@ export default {
       tableView: false,
       key: 'checkbox',
       type: 'checkbox',
-      input: true
+      input: true,
     },
     {
       label: 'Data Map',
@@ -20,9 +20,9 @@ export default {
           {
             component: 'checkbox',
             operator: 'isEqual',
-            value: 'true'
-          }
-        ]
+            value: 'true',
+          },
+        ],
       },
       type: 'datamap',
       input: true,
@@ -32,8 +32,8 @@ export default {
         label: 'Value',
         input: true,
         hideLabel: true,
-        tableView: true
-      }
+        tableView: true,
+      },
     },
     {
       collapsible: false,
@@ -45,9 +45,9 @@ export default {
           {
             component: 'checkbox',
             operator: 'isEqual',
-            value: 'true'
-          }
-        ]
+            value: 'true',
+          },
+        ],
       },
       type: 'panel',
       label: 'Panel',
@@ -66,10 +66,10 @@ export default {
             label: 'Value',
             input: true,
             hideLabel: true,
-            tableView: true
-          }
-        }
-      ]
+            tableView: true,
+          },
+        },
+      ],
     },
     {
       type: 'button',
@@ -77,7 +77,7 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
 };

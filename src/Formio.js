@@ -5,104 +5,125 @@ import Providers from './providers';
 FormioCore.cdn = new CDN();
 FormioCore.Providers = Providers;
 FormioCore.version = 'FORMIO_VERSION';
-CDN.defaultCDN = FormioCore.version.includes('rc') ? 'https://cdn.test-form.io' : 'https://cdn.form.io';
+CDN.defaultCDN = FormioCore.version.includes('rc')
+  ? 'https://cdn.test-form.io'
+  : 'https://cdn.form.io';
 
 const isNil = (val) => val === null || val === undefined;
-FormioCore.prototype.uploadFile = function(storage, file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, uploadStartCallback, abortCallback, multipartOptions) {
+FormioCore.prototype.uploadFile = function (
+  storage,
+  file,
+  fileName,
+  dir,
+  progressCallback,
+  url,
+  options,
+  fileKey,
+  groupPermissions,
+  groupId,
+  uploadStartCallback,
+  abortCallback,
+  multipartOptions,
+) {
   const requestArgs = {
     provider: storage,
     method: 'upload',
     file: file,
     fileName: fileName,
-    dir: dir
+    dir: dir,
   };
   fileKey = fileKey || 'file';
-  const request = FormioCore.pluginWait('preRequest', requestArgs)
-    .then(() => {
-      return FormioCore.pluginGet('fileRequest', requestArgs)
-        .then((result) => {
-          if (storage && isNil(result)) {
-            const Provider = Providers.getProvider('storage', storage);
-            if (Provider) {
-              const provider = new Provider(this);
-              if (uploadStartCallback) {
-                uploadStartCallback();
-              }
-              return provider.uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback, multipartOptions);
-            }
-            else {
-              throw ('Storage provider not found');
-            }
+  const request = FormioCore.pluginWait('preRequest', requestArgs).then(() => {
+    return FormioCore.pluginGet('fileRequest', requestArgs).then((result) => {
+      if (storage && isNil(result)) {
+        const Provider = Providers.getProvider('storage', storage);
+        if (Provider) {
+          const provider = new Provider(this);
+          if (uploadStartCallback) {
+            uploadStartCallback();
           }
-          return result || { url: '' };
-        });
+          return provider.uploadFile(
+            file,
+            fileName,
+            dir,
+            progressCallback,
+            url,
+            options,
+            fileKey,
+            groupPermissions,
+            groupId,
+            abortCallback,
+            multipartOptions,
+          );
+        } else {
+          throw 'Storage provider not found';
+        }
+      }
+      return result || { url: '' };
     });
+  });
 
   return FormioCore.pluginAlter('wrapFileRequestPromise', request, requestArgs);
 };
 
-FormioCore.prototype.downloadFile = function(file, options) {
+FormioCore.prototype.downloadFile = function (file, options) {
   const requestArgs = {
     method: 'download',
-    file: file
+    file: file,
   };
 
-  const request = FormioCore.pluginWait('preRequest', requestArgs)
-    .then(() => {
-      return FormioCore.pluginGet('fileRequest', requestArgs)
-        .then((result) => {
-          if (file.storage && isNil(result)) {
-            const Provider = Providers.getProvider('storage', file.storage);
-            if (Provider) {
-              const provider = new Provider(this);
-              return provider.downloadFile(file, options);
-            }
-            else {
-              throw ('Storage provider not found');
-            }
-          }
-          return result || { url: '' };
-        });
+  const request = FormioCore.pluginWait('preRequest', requestArgs).then(() => {
+    return FormioCore.pluginGet('fileRequest', requestArgs).then((result) => {
+      if (file.storage && isNil(result)) {
+        const Provider = Providers.getProvider('storage', file.storage);
+        if (Provider) {
+          const provider = new Provider(this);
+          return provider.downloadFile(file, options);
+        } else {
+          throw 'Storage provider not found';
+        }
+      }
+      return result || { url: '' };
     });
+  });
 
   return FormioCore.pluginAlter('wrapFileRequestPromise', request, requestArgs);
 };
 
-FormioCore.prototype.deleteFile = function(file, options) {
+FormioCore.prototype.deleteFile = function (file, options) {
   const requestArgs = {
     method: 'delete',
-    file: file
+    file: file,
   };
 
-  const request = FormioCore.pluginWait('preRequest', requestArgs)
-    .then(() => {
-      return FormioCore.pluginGet('fileRequest', requestArgs)
-        .then((result) => {
-          if (file.storage && isNil(result)) {
-            const Provider = Providers.getProvider('storage', file.storage);
-            if (Provider) {
-              const provider = new Provider(this);
-              return provider.deleteFile(file, options);
-            }
-            else {
-              throw ('Storage provider not found');
-            }
-          }
-          return result || { url: '' };
-        });
+  const request = FormioCore.pluginWait('preRequest', requestArgs).then(() => {
+    return FormioCore.pluginGet('fileRequest', requestArgs).then((result) => {
+      if (file.storage && isNil(result)) {
+        const Provider = Providers.getProvider('storage', file.storage);
+        if (Provider) {
+          const provider = new Provider(this);
+          return provider.deleteFile(file, options);
+        } else {
+          throw 'Storage provider not found';
+        }
+      }
+      return result || { url: '' };
     });
+  });
 
   return FormioCore.pluginAlter('wrapFileRequestPromise', request, requestArgs);
 };
 
 // Esnure we proxy the following methods to the FormioEmbed class.
-['setBaseUrl', 'setApiUrl', 'setAppUrl', 'setProjectUrl', 'setPathType', 'setLicense'].forEach((fn) => {
-  const baseFn = FormioCore[fn];
-  FormioCore[fn] = function(arg) {
-    const retVal = FormioEmbed[fn](arg, true);
-    return baseFn ? baseFn.call(this, arg) : retVal;
-  };
-});
+['setBaseUrl', 'setApiUrl', 'setAppUrl', 'setProjectUrl', 'setPathType', 'setLicense'].forEach(
+  (fn) => {
+    const baseFn = FormioCore[fn];
+    FormioCore[fn] = function (arg) {
+      const retVal = FormioEmbed[fn](arg, true);
+      return baseFn ? baseFn.call(this, arg) : retVal;
+    };
+  },
+);
 
 // For reverse compatability.
 FormioCore.Promise = Promise;

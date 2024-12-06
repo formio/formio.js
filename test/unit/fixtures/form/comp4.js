@@ -16,18 +16,18 @@ export default {
             values: [
               {
                 value: 'ford',
-                label: 'Ford'
+                label: 'Ford',
               },
               {
                 value: 'honda',
-                label: 'Honda'
-              }
+                label: 'Honda',
+              },
             ],
           },
           dataSrc: 'values',
           template: '<span>{{ item.label }}</span>',
           validate: {
-            required: true
+            required: true,
           },
           type: 'select',
         },
@@ -42,9 +42,9 @@ export default {
             headers: [
               {
                 key: '',
-                value: ''
-              }
-            ]
+                value: '',
+              },
+            ],
           },
           valueProperty: 'Model_Name',
           template: '<span>{{ item.Model_Name }}</span>',
@@ -53,29 +53,29 @@ export default {
           selectThreshold: 0.3,
           clearOnHide: false,
           validate: {
-            required: true
+            required: true,
           },
           key: 'model',
           type: 'select',
           indexeddb: {
-            filter: {}
+            filter: {},
           },
           selectValues: 'Results',
           input: true,
           disableLimit: false,
-          lazyLoad: false
+          lazyLoad: false,
         },
         {
           input: true,
           label: 'Submit',
           tableView: false,
           key: 'submit',
-          type: 'button'
-        }
+          type: 'button',
+        },
       ],
       key: 'form',
       type: 'form',
-      input: true
+      input: true,
     },
     {
       type: 'button',
@@ -83,7 +83,7 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
 };

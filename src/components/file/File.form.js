@@ -9,25 +9,28 @@ import FileEditValidation from './editForm/File.edit.validation';
  * @param {...any} extend - The components that extend the edit form.
  * @returns {import('@formio/core').Component[]} - The edit form components.
  */
-export default function(...extend) {
-  return Components.baseEditForm([
-    {
-      key: 'display',
-      components: FileEditDisplay
-    },
-    {
-      key: 'data',
-      components: FileEditData
-    },
-    {
-      label: 'File',
-      key: 'file',
-      weight: 5,
-      components: FileEditFile
-    },
-    {
-      key: 'validation',
-      components: FileEditValidation
-    },
-  ], ...extend);
+export default function (...extend) {
+  return Components.baseEditForm(
+    [
+      {
+        key: 'display',
+        components: FileEditDisplay,
+      },
+      {
+        key: 'data',
+        components: FileEditData,
+      },
+      {
+        label: 'File',
+        key: 'file',
+        weight: 5,
+        components: FileEditFile,
+      },
+      {
+        key: 'validation',
+        components: FileEditValidation,
+      },
+    ],
+    ...extend,
+  );
 }

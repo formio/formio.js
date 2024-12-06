@@ -16,62 +16,63 @@ To test this example, click the 'Submit' button and you will see Submission JSON
 ```js
 Formio.setProjectUrl('https://examples.test-form.io');
 const formJSON = {
-  'components': [
+  components: [
     {
-      'label': 'Test',
-      'action': 'event',
-      'type': 'button',
-      'key': 'test',
-      'event': 'test'
+      label: 'Test',
+      action: 'event',
+      type: 'button',
+      key: 'test',
+      event: 'test',
     },
     {
-      'eventType': 'buttonClick',
-      'type': 'recaptcha',
-      'key': 'reCaptcha',
-      'label': 'reCAPTCHA',
-      'buttonKey': 'test'
+      eventType: 'buttonClick',
+      type: 'recaptcha',
+      key: 'reCaptcha',
+      label: 'reCAPTCHA',
+      buttonKey: 'test',
     },
     {
-      'eventType': 'formLoad',
-      'type': 'recaptcha',
-      'key': 'reCaptcha2',
-      'label': 'reCAPTCHA'
+      eventType: 'formLoad',
+      type: 'recaptcha',
+      key: 'reCaptcha2',
+      label: 'reCAPTCHA',
     },
     {
-      'type': 'button',
-      'label': 'Submit',
-      'key': 'submit',
-      'action': 'submit'
-    }
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      action: 'submit',
+    },
   ],
-  'name': 'testRecaptchaForm',
-  'settings': {
-    'recaptcha': {
-      'isEnabled': 'true',
-      'siteKey': '6Ldc54MUAAAAAP4KjayrT1InduuvCnXvNZUpZpQj'
-    }
-  }
+  name: 'testRecaptchaForm',
+  settings: {
+    recaptcha: {
+      isEnabled: 'true',
+      siteKey: '6Ldc54MUAAAAAP4KjayrT1InduuvCnXvNZUpZpQj',
+    },
+  },
 };
-Formio.createForm(document.getElementById('formio'), formJSON).then(function(form) {
+Formio.createForm(document.getElementById('formio'), formJSON).then(function (form) {
   // Provide a default submission.
   form.submission = {
-    data: {
-    }
+    data: {},
   };
-  form.on('submit', function(submission){
+  form.on('submit', function (submission) {
     console.log(submission);
     var jsonElement = document.getElementById('formio-submission-json');
     jsonElement.innerHTML = JSON.stringify(submission, null, 4);
-  })
+  });
 });
-````
+```
 
 ### Rendered form
+
 <div class='card card-body bg-light'>
   <div id='formio'></div>
 </div>
 
-### Submission 
+### Submission
+
 <div class='card card-body bg-light'>
   <pre id='formio-submission-json'></pre>
 </div>

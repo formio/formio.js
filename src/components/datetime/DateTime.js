@@ -6,41 +6,44 @@ import Input from '../_classes/input/Input';
 
 export default class DateTimeComponent extends Input {
   static schema(...extend) {
-    return Input.schema({
-      type: 'datetime',
-      label: 'Date / Time',
-      key: 'dateTime',
-      format: 'yyyy-MM-dd hh:mm a',
-      useLocaleSettings: false,
-      allowInput: true,
-      enableDate: true,
-      enableTime: true,
-      defaultValue: '',
-      defaultDate: '',
-      displayInTimezone: 'viewer',
-      timezone: '',
-      datepickerMode: 'day',
-      datePicker: {
-        showWeeks: true,
-        startingDay: 0,
-        initDate: '',
-        minMode: 'day',
-        maxMode: 'year',
-        yearRows: 4,
-        yearColumns: 5,
-        minDate: null,
-        maxDate: null
+    return Input.schema(
+      {
+        type: 'datetime',
+        label: 'Date / Time',
+        key: 'dateTime',
+        format: 'yyyy-MM-dd hh:mm a',
+        useLocaleSettings: false,
+        allowInput: true,
+        enableDate: true,
+        enableTime: true,
+        defaultValue: '',
+        defaultDate: '',
+        displayInTimezone: 'viewer',
+        timezone: '',
+        datepickerMode: 'day',
+        datePicker: {
+          showWeeks: true,
+          startingDay: 0,
+          initDate: '',
+          minMode: 'day',
+          maxMode: 'year',
+          yearRows: 4,
+          yearColumns: 5,
+          minDate: null,
+          maxDate: null,
+        },
+        timePicker: {
+          hourStep: 1,
+          minuteStep: 1,
+          showMeridian: true,
+          readonlyInput: false,
+          mousewheel: true,
+          arrowkeys: true,
+        },
+        customOptions: {},
       },
-      timePicker: {
-        hourStep: 1,
-        minuteStep: 1,
-        showMeridian: true,
-        readonlyInput: false,
-        mousewheel: true,
-        arrowkeys: true
-      },
-      customOptions: {},
-    }, ...extend);
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -50,7 +53,7 @@ export default class DateTimeComponent extends Input {
       icon: 'calendar',
       documentation: '/userguide/form-building/advanced-components#date-and-time',
       weight: 40,
-      schema: DateTimeComponent.schema()
+      schema: DateTimeComponent.schema(),
     };
   }
 
@@ -61,45 +64,58 @@ export default class DateTimeComponent extends Input {
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
-      operators: ['isDateEqual', 'isNotDateEqual', 'isEmpty', 'isNotEmpty','dateLessThan', 'dateGreaterThan', 'dateLessThanOrEqual','dateGreaterThanOrEqual'],
+      operators: [
+        'isDateEqual',
+        'isNotDateEqual',
+        'isEmpty',
+        'isNotEmpty',
+        'dateLessThan',
+        'dateGreaterThan',
+        'dateLessThanOrEqual',
+        'dateGreaterThanOrEqual',
+      ],
       valueComponent(classComp) {
         return {
           ...classComp,
           type: 'datetime',
         };
-      }
+      },
     };
   }
 
   static savedValueTypes(schema) {
     schema = schema || {};
 
-    return  getComponentSavedTypes(schema) || [componentValueTypes.date];
+    return getComponentSavedTypes(schema) || [componentValueTypes.date];
   }
 
   constructor(component, options, data) {
     super(component, options, data);
-    const timezone = (this.component.timezone || this.options.timezone);
+    const timezone = this.component.timezone || this.options.timezone;
     const time24hr = !_.get(this.component, 'timePicker.showMeridian', true);
 
     // Change the format to map to the settings.
     if (!this.component.enableDate) {
       this.component.format = this.component.format.replace(/yyyy-MM-dd /g, '');
-    }
-    else if (this.component.enableDate && !/[yMd]/.test(this.component.format) && this.builderMode) {
+    } else if (
+      this.component.enableDate &&
+      !/[yMd]/.test(this.component.format) &&
+      this.builderMode
+    ) {
       this.component.format = `yyyy-MM-dd ${this.component.format}`;
     }
 
     if (!this.component.enableTime) {
       this.component.format = this.component.format.replace(/ hh:mm a$/g, '');
-    }
-    else if (this.component.enableTime && !/[mhH]/.test(this.component.format) && this.builderMode) {
+    } else if (
+      this.component.enableTime &&
+      !/[mhH]/.test(this.component.format) &&
+      this.builderMode
+    ) {
       this.component.format = `${this.component.format} hh:mm a`;
-    }
-    else if (time24hr) {
+    } else if (time24hr) {
       this.component.format = this.component.format.replace(/hh:mm a$/g, 'HH:mm');
-    }
-    else {
+    } else {
       this.component.format = this.component.format.replace(/HH:mm$/g, 'hh:mm a');
     }
 
@@ -108,14 +124,12 @@ export default class DateTimeComponent extends Input {
     if (typeof customOptions === 'string') {
       try {
         customOptions = JSON.parse(customOptions);
-      }
-      catch (err) {
+      } catch (err) {
         console.warn(err.message);
         customOptions = {};
       }
     }
 
-     
     this.component.widget = {
       type: 'calendar',
       timezone,
@@ -139,7 +153,6 @@ export default class DateTimeComponent extends Input {
       maxDate: _.get(this.component, 'datePicker.maxDate'),
       ...customOptions,
     };
-     
   }
 
   get defaultSchema() {
@@ -164,7 +177,7 @@ export default class DateTimeComponent extends Input {
   }
 
   isEmpty(value = this.dataValue) {
-    if (value && (value.toString() === 'Invalid Date')) {
+    if (value && value.toString() === 'Invalid Date') {
       return true;
     }
     return super.isEmpty(value);
@@ -176,8 +189,10 @@ export default class DateTimeComponent extends Input {
   }
 
   isEqual(valueA, valueB = this.dataValue) {
-    return (this.isEmpty(valueA) && this.isEmpty(valueB))
-      || moment.utc(valueA).format(this.momentFormat) === moment.utc(valueB).format(this.momentFormat);
+    return (
+      (this.isEmpty(valueA) && this.isEmpty(valueB)) ||
+      moment.utc(valueA).format(this.momentFormat) === moment.utc(valueB).format(this.momentFormat)
+    );
   }
 
   createWrapper() {
@@ -201,13 +216,15 @@ export default class DateTimeComponent extends Input {
     const timezone = this.timezone;
     if (value && !this.attached && timezone) {
       if (Array.isArray(value) && this.component.multiple) {
-        return value.map(item => _.trim(FormioUtils.momentDate(item, format, timezone).format(format))).join(', ');
+        return value
+          .map((item) => _.trim(FormioUtils.momentDate(item, format, timezone).format(format)))
+          .join(', ');
       }
       return _.trim(FormioUtils.momentDate(value, format, timezone).format(format));
     }
 
     if (Array.isArray(value) && this.component.multiple) {
-      return value.map(item => _.trim(moment(item).format(format))).join(', ');
+      return value.map((item) => _.trim(moment(item).format(format))).join(', ');
     }
     return (value ? _.trim(moment(value).format(format)) : value) || '';
   }

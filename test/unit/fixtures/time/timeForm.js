@@ -9,13 +9,13 @@ export default {
       inputType: 'text',
       tableView: true,
       validate: {
-        required: true
+        required: true,
       },
       key: 'time',
       type: 'time',
       format: 'HH:mm A',
       input: true,
-      inputMask: '99:99 AA'
+      inputMask: '99:99 AA',
     },
     {
       type: 'button',
@@ -23,8 +23,8 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   controller: '',
   revisions: '',
@@ -33,18 +33,14 @@ export default {
   display: 'form',
   access: [
     {
-      roles: [
-        '5e96e79ee1c3ad3178454100',
-        '5e96e79ee1c3ad3178454101',
-        '5e96e79ee1c3ad3178454102'
-      ],
-      type: 'read_all'
-    }
+      roles: ['5e96e79ee1c3ad3178454100', '5e96e79ee1c3ad3178454101', '5e96e79ee1c3ad3178454102'],
+      type: 'read_all',
+    },
   ],
   submissionAccess: [],
   settings: {},
   properties: {},
   name: 'time',
   path: 'time',
-  project: '5e96e79ee1c3ad31784540ff'
+  project: '5e96e79ee1c3ad31784540ff',
 };

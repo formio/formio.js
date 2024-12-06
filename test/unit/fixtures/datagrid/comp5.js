@@ -12,8 +12,8 @@ export default {
     {
       textField: '',
       radio1: '',
-      email: ''
-    }
+      email: '',
+    },
   ],
   key: 'dataGrid',
   type: 'datagrid',
@@ -24,7 +24,7 @@ export default {
       tableView: true,
       key: 'textField',
       type: 'textfield',
-      input: true
+      input: true,
     },
     {
       label: 'Number',
@@ -36,7 +36,7 @@ export default {
       inputFormat: 'plain',
       key: 'number',
       type: 'number',
-      input: true
+      input: true,
     },
     {
       label: 'Radio',
@@ -47,29 +47,29 @@ export default {
         {
           label: 'Ra',
           value: 'ra',
-          shortcut: ''
+          shortcut: '',
         },
         {
           label: 'Rb',
           value: 'rb',
-          shortcut: ''
+          shortcut: '',
         },
         {
           label: 'Rc',
           value: 'rc',
-          shortcut: ''
-        }
+          shortcut: '',
+        },
       ],
       key: 'radio1',
       type: 'radio',
-      input: true
+      input: true,
     },
     {
       label: 'Email',
       tableView: true,
       key: 'email',
       type: 'email',
-      input: true
-    }
-  ]
+      input: true,
+    },
+  ],
 };

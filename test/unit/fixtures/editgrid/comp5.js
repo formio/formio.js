@@ -10,11 +10,11 @@ export default {
       label: 'Text Field',
       tableView: true,
       validate: {
-        required: true
+        required: true,
       },
       key: 'textField',
       type: 'textfield',
-      input: true
-    }
-  ]
+      input: true,
+    },
+  ],
 };

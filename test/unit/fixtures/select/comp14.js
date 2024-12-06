@@ -5,18 +5,23 @@ export default {
       label: 'Select',
       tableView: true,
       data: {
-        values: [
-          { label: '', value: '' }
-        ]
+        values: [{ label: '', value: '' }],
       },
       selectThreshold: 0.3,
       validate: { onlyAvailableItems: false },
       key: 'select',
       type: 'select',
       indexeddb: { filter: {} },
-      input: true
+      input: true,
     },
-    { type: 'button', label: 'Submit', key: 'submit', disableOnInvalid: true, input: true, tableView: false }
+    {
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      disableOnInvalid: true,
+      input: true,
+      tableView: false,
+    },
   ],
   title: 'test',
   display: 'form',

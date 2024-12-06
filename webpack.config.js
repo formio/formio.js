@@ -4,14 +4,14 @@ const packageJSON = require('./package.json');
 module.exports = {
   mode: 'development',
   performance: {
-    hints: false
+    hints: false,
   },
   entry: {
-    'formio': './lib/cjs/Formio.js',
+    formio: './lib/cjs/Formio.js',
     'formio.utils': './lib/cjs/utils/utils.js',
     'formio.full': './lib/cjs/index.js',
     'formio.form': './lib/cjs/formio.form.js',
-    'formio.embed': './lib/cjs/formio.embed.js'
+    'formio.embed': './lib/cjs/formio.embed.js',
   },
   output: {
     library: 'Formio',
@@ -20,7 +20,7 @@ module.exports = {
     path: path.resolve(__dirname, './dist'),
     filename: '[name].js',
     environment: {
-      arrowFunction: false
+      arrowFunction: false,
     },
   },
   module: {
@@ -31,17 +31,17 @@ module.exports = {
         options: {
           search: 'FORMIO_VERSION',
           replace: packageJSON.version,
-        }
-      }
-    ]
+        },
+      },
+    ],
   },
   plugins: [
     new webpack.IgnorePlugin({
       resourceRegExp: /^\.\/locale$/,
-      contextRegExp: /moment$/
+      contextRegExp: /moment$/,
     }),
   ],
   resolve: {
     extensions: ['.js'],
-  }
+  },
 };

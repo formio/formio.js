@@ -5,7 +5,9 @@ import Webform from '../../src/Webform.js';
 
 export default {
   title: 'Nested Form Event Bubbling',
-  form: { components: [{ key: 'form', type: 'form', components: [{ key: 'name', type: 'textfield' }] }] },
+  form: {
+    components: [{ key: 'form', type: 'form', components: [{ key: 'name', type: 'textfield' }] }],
+  },
   tests: {
     'Event should bubble up to parent form'(form, done) {
       try {
@@ -24,8 +26,8 @@ export default {
         // Check wrapper
         expect(formCmp).to.be.an.instanceof(FormComponent);
 
-        formCmp.subFormReady.
-          then(subForm => {
+        formCmp.subFormReady
+          .then((subForm) => {
             // Check nested form
             expect(subForm).to.be.an.instanceof(Webform);
 
@@ -53,12 +55,11 @@ export default {
             expect(listener3nested.callCount, ENE).to.equal(2);
             expect(listener3parent.callCount, EBB).to.equal(2);
             done();
-          }, done).
-          catch(done);
-      }
-      catch (error) {
+          }, done)
+          .catch(done);
+      } catch (error) {
         done(error);
       }
-    }
-  }
+    },
+  },
 };

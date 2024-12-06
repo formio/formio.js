@@ -2,12 +2,15 @@ import TextFieldComponent from '../textfield/TextField';
 
 export default class UrlComponent extends TextFieldComponent {
   static schema(...extend) {
-    return TextFieldComponent.schema({
-      type: 'url',
-      label: 'Url',
-      key: 'url',
-      inputType: 'url'
-    }, ...extend);
+    return TextFieldComponent.schema(
+      {
+        type: 'url',
+        label: 'Url',
+        key: 'url',
+        inputType: 'url',
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -17,7 +20,7 @@ export default class UrlComponent extends TextFieldComponent {
       icon: 'link',
       documentation: '/userguide/form-building/advanced-components#url',
       weight: 20,
-      schema: UrlComponent.schema()
+      schema: UrlComponent.schema(),
     };
   }
 

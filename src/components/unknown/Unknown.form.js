@@ -4,7 +4,7 @@ import UnknownEditDisplay from './editForm/Unknown.edit.display';
  * Unknown Component schema.
  * @returns {object} - The Unknown Component edit form.
  */
-export default function() {
+export default function () {
   return {
     components: [
       {
@@ -15,10 +15,10 @@ export default function() {
             label: 'Custom',
             key: 'display',
             weight: 0,
-            components: UnknownEditDisplay
-          }
-        ]
-      }
-    ]
+            components: UnknownEditDisplay,
+          },
+        ],
+      },
+    ],
   };
 }

@@ -1,15 +1,16 @@
 export default [
   {
     key: 'labelPosition',
-    ignore: true
+    ignore: true,
   },
   {
     weight: 15,
     type: 'checkbox',
     label: 'Hide Input Labels',
-    tooltip: 'Hide the labels of component inputs. This allows you to show the labels in the form builder, but not when it is rendered.',
+    tooltip:
+      'Hide the labels of component inputs. This allows you to show the labels in the form builder, but not when it is rendered.',
     key: 'hideInputLabels',
-    input: true
+    input: true,
   },
   {
     type: 'select',
@@ -25,13 +26,13 @@ export default [
         { label: 'Top', value: 'top' },
         { label: 'Left', value: 'left' },
         { label: 'Right', value: 'right' },
-        { label: 'Bottom', value: 'bottom' }
-      ]
-    }
+        { label: 'Bottom', value: 'bottom' },
+      ],
+    },
   },
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     weight: 213,
@@ -39,6 +40,6 @@ export default [
     label: 'Use Locale Settings',
     tooltip: 'Use locale settings to display day.',
     key: 'useLocaleSettings',
-    input: true
+    input: true,
   },
 ];

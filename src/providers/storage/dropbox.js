@@ -6,8 +6,19 @@ import { setXhrHeaders } from './xhr';
  */
 function dropbox(formio) {
   return {
-    uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
-      return new Promise(((resolve, reject) => {
+    uploadFile(
+      file,
+      fileName,
+      dir,
+      progressCallback,
+      url,
+      options,
+      fileKey,
+      groupPermissions,
+      groupId,
+      abortCallback,
+    ) {
+      return new Promise((resolve, reject) => {
         // Send the file with data.
         const xhr = new XMLHttpRequest();
 
@@ -40,8 +51,7 @@ function dropbox(formio) {
             response.groupPermissions = groupPermissions;
             response.url = response.path_lower;
             resolve(response);
-          }
-          else {
+          } else {
             reject(xhr.response || 'Unable to upload file');
           }
         };
@@ -57,14 +67,13 @@ function dropbox(formio) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
         xhr.send(fd);
-      }));
+      });
     },
     downloadFile(file) {
       const token = formio.getToken();
-      file.url =
-        `${formio.formUrl}/storage/dropbox?path_lower=${file.path_lower}${token ? `&x-jwt-token=${token}` : ''}`;
+      file.url = `${formio.formUrl}/storage/dropbox?path_lower=${file.path_lower}${token ? `&x-jwt-token=${token}` : ''}`;
       return Promise.resolve(file);
-    }
+    },
   };
 }
 dropbox.title = 'Dropbox';

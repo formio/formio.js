@@ -11,19 +11,20 @@ export default [
       values: [
         {
           value: 'plain',
-          label: 'Plain'
+          label: 'Plain',
         },
         {
           value: 'html',
-          label: 'HTML'
-        },{
+          label: 'HTML',
+        },
+        {
           value: 'raw',
-          label: 'Raw (Insecure)'
-        }
-      ]
+          label: 'Raw (Insecure)',
+        },
+      ],
     },
     defaultValue: 'plain',
-    input: true
+    input: true,
   },
   {
     weight: 200,
@@ -35,16 +36,17 @@ export default [
     values: [
       {
         value: 'mixed',
-        label: 'Mixed (Allow upper and lower case)'
+        label: 'Mixed (Allow upper and lower case)',
       },
       {
         value: 'uppercase',
-        label: 'Uppercase'
-      },{
+        label: 'Uppercase',
+      },
+      {
         value: 'lowercase',
-        label: 'Lowercase'
-      }
-    ]
+        label: 'Lowercase',
+      },
+    ],
   },
   {
     weight: 205,

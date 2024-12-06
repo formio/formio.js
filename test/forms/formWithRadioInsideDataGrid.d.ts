@@ -1,10 +1,11 @@
 declare namespace _default {
-    const title: string;
-    const name: string;
-    const path: string;
-    const type: string;
-    const display: string;
-    const components: ({
+  const title: string;
+  const name: string;
+  const path: string;
+  const type: string;
+  const display: string;
+  const components: (
+    | {
         label: string;
         reorder: boolean;
         addAnotherPosition: string;
@@ -17,21 +18,22 @@ declare namespace _default {
         type: string;
         input: boolean;
         components: {
+          label: string;
+          optionsLabelPosition: string;
+          inline: boolean;
+          tableView: boolean;
+          values: {
             label: string;
-            optionsLabelPosition: string;
-            inline: boolean;
-            tableView: boolean;
-            values: {
-                label: string;
-                value: string;
-                shortcut: string;
-            }[];
-            key: string;
-            type: string;
-            input: boolean;
+            value: string;
+            shortcut: string;
+          }[];
+          key: string;
+          type: string;
+          input: boolean;
         }[];
         showValidations?: undefined;
-    } | {
+      }
+    | {
         label: string;
         showValidations: boolean;
         tableView: boolean;
@@ -45,6 +47,7 @@ declare namespace _default {
         initEmpty?: undefined;
         defaultValue?: undefined;
         components?: undefined;
-    })[];
+      }
+  )[];
 }
 export default _default;

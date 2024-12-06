@@ -1,7 +1,7 @@
 export default [
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'select',
@@ -17,9 +17,9 @@ export default [
         { label: 'Top', value: 'top' },
         { label: 'Left', value: 'left' },
         { label: 'Right', value: 'right' },
-        { label: 'Bottom', value: 'bottom' }
-      ]
-    }
+        { label: 'Bottom', value: 'bottom' },
+      ],
+    },
   },
   {
     type: 'checkbox',
@@ -27,6 +27,6 @@ export default [
     key: 'inline',
     label: 'Inline Layout',
     tooltip: 'Displays the checkboxes/radios horizontally.',
-    weight: 650
-  }
+    weight: 650,
+  },
 ];

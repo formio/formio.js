@@ -1,39 +1,39 @@
 export default [
   {
     key: 'labelPosition',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'description',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'autofocus',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tooltip',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tabindex',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'disabled',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tableView',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'hideLabel',
-    ignore: true
+    ignore: true,
   },
   {
     weight: 0,
@@ -44,10 +44,10 @@ export default [
     placeholder: 'Field Label',
     tooltip: 'The label for this field.',
     validate: {
-      required: true
+      required: true,
     },
     autofocus: true,
-    overrideEditForm: true
+    overrideEditForm: true,
   },
   {
     key: 'components',
@@ -61,7 +61,7 @@ export default [
         type: 'textfield',
         input: true,
         key: 'label',
-        label: 'Label'
+        label: 'Label',
       },
       {
         type: 'textfield',
@@ -69,9 +69,9 @@ export default [
         key: 'key',
         label: 'Key',
         allowCalculateOverride: true,
-        calculateValue: { _camelCase: [{ var: 'row.label' }] }
-      }
-    ]
+        calculateValue: { _camelCase: [{ var: 'row.label' }] },
+      },
+    ],
   },
   {
     weight: 1100,
@@ -79,10 +79,10 @@ export default [
     label: 'Vertical Layout',
     tooltip: 'Make this field display in vertical orientation.',
     key: 'verticalLayout',
-    input: true
+    input: true,
   },
   {
     key: 'hideLabel',
-    ignore: true
+    ignore: true,
   },
 ];

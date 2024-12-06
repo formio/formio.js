@@ -1,16 +1,23 @@
 'use strict';
 
 import _ from 'lodash';
-import { componentValueTypes, getStringFromComponentPath, isLayoutComponent } from '../../../utils/utils';
+import {
+  componentValueTypes,
+  getStringFromComponentPath,
+  isLayoutComponent,
+} from '../../../utils/utils';
 
 import Component from '../component/Component';
 import NestedDataComponent from '../nesteddata/NestedDataComponent';
 
 export default class NestedArrayComponent extends NestedDataComponent {
   static schema(...extend) {
-    return NestedDataComponent.schema({
-      disableAddingRemovingRows: false
-    }, ...extend);
+    return NestedDataComponent.schema(
+      {
+        disableAddingRemovingRows: false,
+      },
+      ...extend,
+    );
   }
 
   static savedValueTypes() {
@@ -52,21 +59,22 @@ export default class NestedArrayComponent extends NestedDataComponent {
     row = row || this.data;
     this.checkAddButtonChanged();
 
-    return this.processRows('checkData', data, flags, Component.prototype.checkData.call(this, data, flags, row));
+    return this.processRows(
+      'checkData',
+      data,
+      flags,
+      Component.prototype.checkData.call(this, data, flags, row),
+    );
   }
 
   processRows(method, data, opts, defaultValue, silentCheck) {
-    return this.iteratableRows.reduce(
-      (valid, row, rowIndex) => {
-        if (!opts?.rowIndex || opts?.rowIndex === rowIndex) {
-          return this.processRow(method, data, opts, row.data, row.components, silentCheck) && valid;
-        }
-        else {
-          return valid;
-        }
-      },
-      defaultValue,
-    );
+    return this.iteratableRows.reduce((valid, row, rowIndex) => {
+      if (!opts?.rowIndex || opts?.rowIndex === rowIndex) {
+        return this.processRow(method, data, opts, row.data, row.components, silentCheck) && valid;
+      } else {
+        return valid;
+      }
+    }, defaultValue);
   }
 
   validate(data, flags = {}) {
@@ -100,15 +108,22 @@ export default class NestedArrayComponent extends NestedDataComponent {
     const maxLength = _.get(this.component, 'validate.maxLength');
     const conditionalAddButton = _.get(this.component, 'conditionalAddButton');
 
-    return !this.component.disableAddingRemovingRows &&
+    return (
+      !this.component.disableAddingRemovingRows &&
       !this.options.readOnly &&
       !this.disabled &&
       this.fullMode &&
       !this.options.preview &&
-      (!maxLength || (this.iteratableRows.length < maxLength)) &&
-      (!conditionalAddButton || this.evaluate(conditionalAddButton, {
-        value: this.dataValue,
-      }, 'show'));
+      (!maxLength || this.iteratableRows.length < maxLength) &&
+      (!conditionalAddButton ||
+        this.evaluate(
+          conditionalAddButton,
+          {
+            value: this.dataValue,
+          },
+          'show',
+        ))
+    );
   }
 
   getComponent(path, fn, originalPath) {
@@ -116,8 +131,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
     if (this.componentsMap.hasOwnProperty(originalPath)) {
       if (fn) {
         return fn(this.componentsMap[originalPath]);
-      }
-      else {
+      } else {
         return this.componentsMap[originalPath];
       }
     }
@@ -142,8 +156,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
         possibleComp = component;
         if (remainingPath.length > 0 && 'getComponent' in component) {
           comp = component.getComponent(remainingPath, fn, originalPath);
-        }
-        else if (fn) {
+        } else if (fn) {
           fn(component, components);
         }
         result = rowIndex !== null ? comp : result.concat(comp || possibleComp);
@@ -195,8 +208,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
     for (const component of components) {
       if (component.isInputComponent) {
         row += getHeaderCell(component);
-      }
-      else if (isLayoutComponent(component) && typeof component.everyComponent === 'function') {
+      } else if (isLayoutComponent(component) && typeof component.everyComponent === 'function') {
         component.everyComponent((comp) => {
           row += getHeaderCell(comp);
         }, options);
@@ -213,7 +225,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
       }
 
       return `<td style="padding: 5px 10px;">${component.getView(component.dataValue, options)}</td>`;
-    }
+    };
 
     const rows = [];
     for (const { components } of this.iteratableRows) {
@@ -221,8 +233,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
       for (const component of components) {
         if (component.isInputComponent) {
           row += getBodyCell(component);
-        }
-        else if (isLayoutComponent(component) && typeof component.everyComponent === 'function') {
+        } else if (isLayoutComponent(component) && typeof component.everyComponent === 'function') {
           component.everyComponent((comp) => {
             row += getBodyCell(comp);
           }, options);

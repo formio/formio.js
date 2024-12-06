@@ -4,6 +4,7 @@ layout: vtabs
 section: examples
 weight: 24
 ---
+
 With this form renderer, you can also configure any Text area to render as a WYSIWYG editor using the amazing [Quill editor](https://quilljs.com).
 
 <pre>
@@ -88,6 +89,7 @@ Formio.createForm(document.getElementById('formio'), {
 </div>
 
 ### Custom Configurations
+
 It is also possible to provide your own custom configurations to the WYSIWYG editor found @ https://quilljs.com/docs/configuration. These configurations
 can be provided instead of the "true" value of the wysiwyg attribute. Like so.
 

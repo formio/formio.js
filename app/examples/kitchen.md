@@ -4,6 +4,7 @@ layout: vtabs
 section: examples
 weight: 400
 ---
+
 Here is a large form which includes all fields with many different configurations (the kitchen sink).
 
 <div class="card card-body bg-light">

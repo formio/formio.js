@@ -5,9 +5,9 @@ import fetchMock from 'fetch-mock';
 import S3 from '../../src/providers/storage/s3';
 import { withRetries } from '../../src/providers/storage/util';
 
-describe('S3 Provider', function() {
-  describe('Function Unit Tests', function() {
-    it('withRetries should retry a given function three times, then throw the provided error', function(done) {
+describe('S3 Provider', function () {
+  describe('Function Unit Tests', function () {
+    it('withRetries should retry a given function three times, then throw the provided error', function (done) {
       function sleepAndReject(ms) {
         return new Promise((_, reject) => setTimeout(reject, ms));
       }
@@ -21,9 +21,9 @@ describe('S3 Provider', function() {
     });
   });
 
-  describe('Provider Integration Tests', function() {
-    describe('AWS S3 Multipart Uploads', function() {
-      before('Mocks fetch', function() {
+  describe('Provider Integration Tests', function () {
+    describe('AWS S3 Multipart Uploads', function () {
+      before('Mocks fetch', function () {
         fetchMock
           .post('https://fakeproject.form.io/fakeform/storage/s3', {
             signed: new Array(5).fill('https://fakebucketurl.aws.com/signed'),
@@ -33,17 +33,20 @@ describe('S3 Provider', function() {
             uploadId: 'fakeuploadid',
             key: 'test.jpg',
             partSizeActual: 1,
-            data: {}
+            data: {},
           })
-          .put('https://fakebucketurl.aws.com/signed', { status: 200, headers: { 'Etag': 'fakeetag' } })
+          .put('https://fakebucketurl.aws.com/signed', {
+            status: 200,
+            headers: { Etag: 'fakeetag' },
+          })
           .post('https://fakeproject.form.io/fakeform/storage/s3/multipart/complete', 200)
           .post('https://fakeproject.form.io/fakeform/storage/s3/multipart/abort', 200);
       });
 
-      it('Given an array of signed urls it should upload a file to S3 using multipart upload', function(done) {
+      it('Given an array of signed urls it should upload a file to S3 using multipart upload', function (done) {
         const mockFormio = {
           formUrl: 'https://fakeproject.form.io/fakeform',
-          getToken: () => {}
+          getToken: () => {},
         };
         const s3 = new S3(mockFormio);
         const uploadSpy = sinon.spy(s3, 'uploadParts');
@@ -61,7 +64,7 @@ describe('S3 Provider', function() {
           {},
           '',
           () => {},
-          { partSize: 1, changeMessage: () => {}, progressCallback: () => {} }
+          { partSize: 1, changeMessage: () => {}, progressCallback: () => {} },
         ).then((response) => {
           assert.equal(response.storage, 's3');
           assert.equal(response.name, 'test.jpg');

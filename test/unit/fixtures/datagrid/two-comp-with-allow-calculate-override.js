@@ -10,21 +10,21 @@ export default {
         values: [
           {
             label: 'a',
-            value: 'a'
+            value: 'a',
           },
           {
             label: 'b',
-            value: 'b'
+            value: 'b',
           },
           {
             label: 'c',
-            value: 'c'
-          }
-        ]
+            value: 'c',
+          },
+        ],
       },
       key: 'select',
       type: 'select',
-      input: true
+      input: true,
     },
     {
       label: 'Data Grid',
@@ -37,10 +37,11 @@ export default {
       defaultValue: [
         {
           firstName: '',
-          lastName: ''
-        }
+          lastName: '',
+        },
       ],
-      calculateValue: "var temp = instance.defaultValue;\n  if(data.select === 'a')\n  {\n    temp = [{'firstName': 'A f 1','lastName': 'A l 1'}];\n  } else if(data.select === 'b') {  \n    temp = [{'firstName': 'B f 1','lastName': 'B l 1'}  \n    ,{'firstName': 'B f 2','lastName': 'B l 2'}];\n  } else if(data.select === 'c') {  \n    temp = [{'firstName': 'C f 1','lastName': 'C l 1'}];\n  }\n  value = temp;",
+      calculateValue:
+        "var temp = instance.defaultValue;\n  if(data.select === 'a')\n  {\n    temp = [{'firstName': 'A f 1','lastName': 'A l 1'}];\n  } else if(data.select === 'b') {  \n    temp = [{'firstName': 'B f 1','lastName': 'B l 1'}  \n    ,{'firstName': 'B f 2','lastName': 'B l 2'}];\n  } else if(data.select === 'c') {  \n    temp = [{'firstName': 'C f 1','lastName': 'C l 1'}];\n  }\n  value = temp;",
       allowCalculateOverride: true,
       key: 'dataGrid',
       type: 'datagrid',
@@ -51,16 +52,16 @@ export default {
           tableView: true,
           key: 'firstName',
           type: 'textfield',
-          input: true
+          input: true,
         },
         {
           label: 'Last Name',
           tableView: true,
           key: 'lastName',
           type: 'textfield',
-          input: true
-        }
-      ]
+          input: true,
+        },
+      ],
     },
     {
       label: 'Data Grid 2',
@@ -73,10 +74,11 @@ export default {
       defaultValue: [
         {
           firstName: '',
-          lastName: ''
-        }
+          lastName: '',
+        },
       ],
-      calculateValue: "var temp = instance.defaultValue;\n  if(data.select === 'a')\n  {\n    temp = [{'firstName': 'A f 1','lastName': 'A l 1'}];\n  } else if(data.select === 'b') {  \n    temp = [{'firstName': 'B f 1','lastName': 'B l 1'}  \n    ,{'firstName': 'B f 2','lastName': 'B l 2'}];\n  } else if(data.select === 'c') {  \n    temp = [{'firstName': 'C f 1','lastName': 'C l 1'}];\n  }\n  value = temp;",
+      calculateValue:
+        "var temp = instance.defaultValue;\n  if(data.select === 'a')\n  {\n    temp = [{'firstName': 'A f 1','lastName': 'A l 1'}];\n  } else if(data.select === 'b') {  \n    temp = [{'firstName': 'B f 1','lastName': 'B l 1'}  \n    ,{'firstName': 'B f 2','lastName': 'B l 2'}];\n  } else if(data.select === 'c') {  \n    temp = [{'firstName': 'C f 1','lastName': 'C l 1'}];\n  }\n  value = temp;",
       allowCalculateOverride: true,
       key: 'dataGrid2',
       type: 'datagrid',
@@ -87,16 +89,16 @@ export default {
           tableView: true,
           key: 'firstName',
           type: 'textfield',
-          input: true
+          input: true,
         },
         {
           label: 'Last Name',
           tableView: true,
           key: 'lastName',
           type: 'textfield',
-          input: true
-        }
-      ]
-    }
-  ]
+          input: true,
+        },
+      ],
+    },
+  ],
 };

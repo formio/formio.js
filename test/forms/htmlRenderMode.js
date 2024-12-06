@@ -10,7 +10,7 @@ export default {
       conditional: {
         eq: '',
         when: null,
-        show: ''
+        show: '',
       },
       theme: 'default',
       key: 'page1',
@@ -22,7 +22,7 @@ export default {
           conditional: {
             eq: '',
             when: null,
-            show: ''
+            show: '',
           },
           validate: {
             customPrivate: false,
@@ -30,7 +30,7 @@ export default {
             pattern: '',
             maxLength: '',
             minLength: '',
-            required: false
+            required: false,
           },
           persistent: true,
           unique: false,
@@ -49,14 +49,14 @@ export default {
           hidden: false,
           clearOnHide: true,
           autofocus: false,
-          spellcheck: true
+          spellcheck: true,
         },
         {
           hideLabel: false,
           conditional: {
             eq: '',
             when: null,
-            show: ''
+            show: '',
           },
           type: 'number',
           validate: {
@@ -66,7 +66,7 @@ export default {
             step: 'any',
             max: '',
             min: '',
-            required: true
+            required: true,
           },
           persistent: true,
           protected: false,
@@ -84,12 +84,12 @@ export default {
           autofocus: false,
           labelPosition: 'top',
           tags: [],
-          properties: {}
-        }
+          properties: {},
+        },
       ],
       title: 'First',
       type: 'panel',
-      tableView: false
+      tableView: false,
     },
     {
       hideLabel: false,
@@ -107,7 +107,7 @@ export default {
           conditional: {
             eq: '',
             when: null,
-            show: ''
+            show: '',
           },
           validate: {
             customPrivate: false,
@@ -115,7 +115,7 @@ export default {
             pattern: '',
             maxLength: '',
             minLength: '',
-            required: true
+            required: true,
           },
           persistent: true,
           unique: false,
@@ -136,7 +136,7 @@ export default {
           labelPosition: 'top',
           inputFormat: 'plain',
           tags: [],
-          properties: {}
+          properties: {},
         },
         {
           input: true,
@@ -148,8 +148,8 @@ export default {
             values: [
               {
                 value: '',
-                label: ''
-              }
+                label: '',
+              },
             ],
             json: '',
             url: 'https://examples.form.io/customer/submission',
@@ -158,9 +158,9 @@ export default {
             headers: [
               {
                 value: '',
-                key: ''
-              }
-            ]
+                key: '',
+              },
+            ],
           },
           dataSrc: 'url',
           valueProperty: 'data.email',
@@ -176,7 +176,7 @@ export default {
           hidden: false,
           clearOnHide: true,
           validate: {
-            required: false
+            required: false,
           },
           type: 'select',
           lazyLoad: true,
@@ -187,11 +187,11 @@ export default {
           conditional: {
             show: '',
             when: null,
-            eq: ''
+            eq: '',
           },
           properties: {},
           searchField: 'data.email',
-          autofocus: false
+          autofocus: false,
         },
         {
           hideLabel: false,
@@ -199,7 +199,7 @@ export default {
           conditional: {
             eq: '',
             when: null,
-            show: ''
+            show: '',
           },
           type: 'fieldset',
           components: [
@@ -211,7 +211,7 @@ export default {
               conditional: {
                 eq: '',
                 when: null,
-                show: ''
+                show: '',
               },
               validate: {
                 customPrivate: false,
@@ -219,7 +219,7 @@ export default {
                 pattern: '',
                 maxLength: '',
                 minLength: '',
-                required: false
+                required: false,
               },
               persistent: true,
               unique: false,
@@ -236,25 +236,25 @@ export default {
               tableView: true,
               input: true,
               autofocus: false,
-              spellcheck: true
-            }
+              spellcheck: true,
+            },
           ],
           legend: 'FieldSet Label',
           tableView: true,
-          input: false
-        }
+          input: false,
+        },
       ],
       title: 'Page 2',
-      type: 'panel'
+      type: 'panel',
     },
     {
       properties: {
-        '': ''
+        '': '',
       },
       conditional: {
         eq: '',
         when: null,
-        show: ''
+        show: '',
       },
       tags: [],
       hideLabel: false,
@@ -286,27 +286,27 @@ export default {
             maxLength: '',
             pattern: '',
             custom: '',
-            customPrivate: false
+            customPrivate: false,
           },
           conditional: {
             show: '',
             when: null,
-            eq: ''
+            eq: '',
           },
           type: 'textfield',
           labelPosition: 'top',
           inputFormat: 'plain',
           tags: [],
-          properties: {}
+          properties: {},
         },
         {
           properties: {
-            '': ''
+            '': '',
           },
           conditional: {
             eq: '',
             when: null,
-            show: ''
+            show: '',
           },
           tags: [],
           hideLabel: false,
@@ -321,7 +321,7 @@ export default {
           components: [
             {
               properties: {
-                '': ''
+                '': '',
               },
               tags: [],
               labelPosition: 'top',
@@ -330,7 +330,7 @@ export default {
               conditional: {
                 eq: '',
                 when: null,
-                show: ''
+                show: '',
               },
               validate: {
                 customPrivate: false,
@@ -338,7 +338,7 @@ export default {
                 pattern: '',
                 maxLength: '',
                 minLength: '',
-                required: false
+                required: false,
               },
               clearOnHide: true,
               hidden: false,
@@ -358,11 +358,11 @@ export default {
               input: true,
               autofocus: false,
               spellcheck: true,
-              inDataGrid: true
+              inDataGrid: true,
             },
             {
               properties: {
-                '': ''
+                '': '',
               },
               tags: [],
               labelPosition: 'top',
@@ -371,7 +371,7 @@ export default {
               conditional: {
                 eq: '',
                 when: null,
-                show: ''
+                show: '',
               },
               validate: {
                 customPrivate: false,
@@ -379,7 +379,7 @@ export default {
                 pattern: '',
                 maxLength: '',
                 minLength: '',
-                required: false
+                required: false,
               },
               clearOnHide: true,
               hidden: false,
@@ -399,11 +399,11 @@ export default {
               input: true,
               autofocus: false,
               spellcheck: true,
-              inDataGrid: true
+              inDataGrid: true,
             },
             {
               properties: {
-                '': ''
+                '': '',
               },
               tags: [],
               labelPosition: 'top',
@@ -412,7 +412,7 @@ export default {
               conditional: {
                 eq: '',
                 when: null,
-                show: ''
+                show: '',
               },
               validate: {
                 customPrivate: false,
@@ -420,7 +420,7 @@ export default {
                 pattern: '',
                 maxLength: '',
                 minLength: '',
-                required: false
+                required: false,
               },
               clearOnHide: true,
               hidden: false,
@@ -440,11 +440,11 @@ export default {
               input: true,
               autofocus: false,
               spellcheck: true,
-              inDataGrid: true
+              inDataGrid: true,
             },
             {
               properties: {
-                '': ''
+                '': '',
               },
               tags: [],
               labelPosition: 'top',
@@ -453,7 +453,7 @@ export default {
               conditional: {
                 eq: '',
                 when: null,
-                show: ''
+                show: '',
               },
               validate: {
                 customPrivate: false,
@@ -461,7 +461,7 @@ export default {
                 pattern: '',
                 maxLength: '',
                 minLength: '',
-                required: false
+                required: false,
               },
               clearOnHide: true,
               hidden: false,
@@ -481,12 +481,12 @@ export default {
               input: true,
               autofocus: false,
               spellcheck: true,
-              inDataGrid: true
-            }
+              inDataGrid: true,
+            },
           ],
           tree: true,
           input: true,
-          autofocus: false
+          autofocus: false,
         },
         {
           autofocus: false,
@@ -499,29 +499,29 @@ export default {
             values: [
               {
                 value: 'orange',
-                label: 'Orange'
+                label: 'Orange',
               },
               {
                 value: 'apple',
-                label: 'Apple'
+                label: 'Apple',
               },
               {
                 value: 'banana',
-                label: 'Banana'
+                label: 'Banana',
               },
               {
                 value: 'strawberry',
-                label: 'Strawberry'
+                label: 'Strawberry',
               },
               {
                 value: 'kiwi',
-                label: 'Kiwi'
-              }
+                label: 'Kiwi',
+              },
             ],
             json: '',
             url: '',
             resource: '',
-            custom: ''
+            custom: '',
           },
           widget: 'html5',
           dataSrc: 'values',
@@ -538,7 +538,7 @@ export default {
           hidden: false,
           clearOnHide: true,
           validate: {
-            required: false
+            required: false,
           },
           type: 'select',
           labelPosition: 'top',
@@ -546,17 +546,17 @@ export default {
           conditional: {
             show: '',
             when: null,
-            eq: ''
+            eq: '',
           },
-          properties: {}
-        }
+          properties: {},
+        },
       ],
       tableView: false,
       theme: 'default',
       title: 'Page 3',
       input: false,
       key: 'panel',
-      clearOnHide: false
+      clearOnHide: false,
     },
     {
       hideLabel: false,
@@ -564,7 +564,7 @@ export default {
       conditional: {
         eq: '',
         when: null,
-        show: ''
+        show: '',
       },
       theme: 'default',
       key: 'page3',
@@ -576,7 +576,7 @@ export default {
           conditional: {
             eq: '',
             when: null,
-            show: ''
+            show: '',
           },
           validate: {
             customPrivate: false,
@@ -584,7 +584,7 @@ export default {
             pattern: '',
             maxLength: '',
             minLength: '',
-            required: false
+            required: false,
           },
           persistent: true,
           unique: false,
@@ -603,7 +603,7 @@ export default {
           hidden: false,
           clearOnHide: true,
           autofocus: false,
-          spellcheck: true
+          spellcheck: true,
         },
         {
           autofocus: false,
@@ -621,7 +621,7 @@ export default {
           value: '',
           clearOnHide: true,
           validate: {
-            required: false
+            required: false,
           },
           type: 'checkbox',
           labelPosition: 'right',
@@ -630,9 +630,9 @@ export default {
           conditional: {
             show: '',
             when: null,
-            eq: ''
+            eq: '',
           },
-          properties: {}
+          properties: {},
         },
         {
           input: true,
@@ -652,7 +652,7 @@ export default {
           hidden: false,
           clearOnHide: true,
           validate: {
-            required: false
+            required: false,
           },
           type: 'signature',
           hideLabel: true,
@@ -660,17 +660,17 @@ export default {
           conditional: {
             show: '',
             when: null,
-            eq: ''
+            eq: '',
           },
           properties: {
-            '': ''
+            '': '',
           },
-          lockKey: true
-        }
+          lockKey: true,
+        },
       ],
       title: 'Last',
       type: 'panel',
-      tableView: false
+      tableView: false,
     },
     {
       hideLabel: false,
@@ -685,7 +685,7 @@ export default {
       key: 'submit',
       tableView: false,
       label: 'Submit',
-      input: true
-    }
+      input: true,
+    },
   ],
 };

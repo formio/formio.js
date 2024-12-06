@@ -29,7 +29,7 @@ export default {
         format: 'yyyy-MM-dd',
         hourIncrement: 1,
         minuteIncrement: 1,
-        'time_24hr': false,
+        time_24hr: false,
         minDate: null,
         disableWeekends: false,
         disableWeekdays: false,

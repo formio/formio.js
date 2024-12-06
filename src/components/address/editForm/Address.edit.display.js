@@ -27,7 +27,7 @@ export default [
     input: true,
     key: 'disableClearIcon',
     label: 'Disable Clear Icon',
-    tooltip: 'Clear Icon allows easily clear component\'s value.',
+    tooltip: "Clear Icon allows easily clear component's value.",
   },
   {
     type: 'textfield',

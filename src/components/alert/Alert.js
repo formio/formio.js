@@ -7,12 +7,12 @@ export default class Alert {
     this.alert = null;
     this.parentComponent = component;
     this.refs = {};
-    this.loadRefs  = this.parentComponent.loadRefs.bind(this);
+    this.loadRefs = this.parentComponent.loadRefs.bind(this);
   }
 
   get refsNames() {
     return {
-      messageRef: 'multiple'
+      messageRef: 'multiple',
     };
   }
 
@@ -21,7 +21,7 @@ export default class Alert {
       error: 'danger',
       success: 'success',
       info: 'info',
-      warning: 'warning'
+      warning: 'warning',
     };
   }
 
@@ -42,10 +42,9 @@ export default class Alert {
     let messageElement = message;
     if (messageElement instanceof HTMLElement) {
       messageElement.setAttribute('ref', 'messageRef');
-    }
-    else {
+    } else {
       messageElement = this.parentComponent.ce('p', {
-        ref: 'messageRef'
+        ref: 'messageRef',
       });
     }
     this.showAlert(type, messageElement, options);
@@ -64,7 +63,7 @@ export default class Alert {
     const ul = this.parentComponent.ce('ul');
     const messagesList = document.createDocumentFragment();
 
-    errors.forEach(err => this.appendErrorToList(err, ul));
+    errors.forEach((err) => this.appendErrorToList(err, ul));
 
     p.appendChild(ul);
     messagesList.appendChild(p);
@@ -89,13 +88,12 @@ export default class Alert {
     if (messagesList) {
       const {
         id = `${type}-list-${this.parentComponent.id}`,
-        customClasses = `alert alert-${alertType}`
+        customClasses = `alert alert-${alertType}`,
       } = options;
       this.alert = this.parentComponent.ce('div', { id, class: customClasses });
       if (messagesList instanceof HTMLElement) {
         this.parentComponent.appendTo(messagesList, this.alert);
-      }
-      else {
+      } else {
         this.parentComponent.setContent(this.alert, messagesList);
       }
     }
@@ -114,21 +112,23 @@ export default class Alert {
         (e) => {
           const key = e.currentTarget.dataset.componentKey;
           this.focusOnComponent(key);
-        }
+        },
       ],
       keypress: [
         ...keyPressListeners,
         (e) => {
           const key = e.currentTarget.dataset.componentKey;
           this.focusOnComponent(key);
-        }
-      ]
+        },
+      ],
     };
 
     if (this.refs.messageRef?.length) {
-      this.refs.messageRef.forEach(el => {
+      this.refs.messageRef.forEach((el) => {
         Object.entries(customEvents).forEach(([event, listeners]) => {
-          listeners.forEach((listener) => this.parentComponent.addEventListener(el, event, listener));
+          listeners.forEach((listener) =>
+            this.parentComponent.addEventListener(el, event, listener),
+          );
           this.eventListenersKeys.push(event);
         });
       });
@@ -138,22 +138,25 @@ export default class Alert {
   clear() {
     try {
       if (this.refs.messageRef?.length) {
-        this.refs.messageRef.forEach(el => {
-          this.eventListenersKeys.forEach(event => this.parentComponent.removeEventListener(el, event));
+        this.refs.messageRef.forEach((el) => {
+          this.eventListenersKeys.forEach((event) =>
+            this.parentComponent.removeEventListener(el, event),
+          );
         });
       }
       this.refs = {};
       this.parentComponent.removeChildFrom(this.alert, this.container);
       this.alert = null;
-    }
-    catch (ignoreErr) {
+    } catch (ignoreErr) {
       // ignore
     }
   }
 
   focusOnComponent(keyOrPath) {
     if (keyOrPath) {
-      const path = this.parentComponent._parentPath ? keyOrPath.replace(this.parentComponent._parentPath, '') : keyOrPath;
+      const path = this.parentComponent._parentPath
+        ? keyOrPath.replace(this.parentComponent._parentPath, '')
+        : keyOrPath;
       const component = this.parentComponent.root?.getComponent(path, null, keyOrPath);
       if (component && _.isFunction(component.focus)) {
         component.focus();
@@ -173,7 +176,7 @@ export default class Alert {
       style: 'cursor: pointer',
       ref: 'messageRef',
       tabIndex: 0,
-      'aria-label': `${message}. Click to navigate to the field with following error.`
+      'aria-label': `${message}. Click to navigate to the field with following error.`,
     };
 
     const li = this.parentComponent.ce('li', params);
@@ -194,8 +197,7 @@ export default class Alert {
       err.messages.forEach(({ message }, index) => {
         this.createMessage('error', ul, message, index, err);
       });
-    }
-    else if (err) {
+    } else if (err) {
       const message = _.isObject(err) ? err.message || '' : err;
       this.createMessage('error', ul, message);
     }

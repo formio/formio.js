@@ -3,15 +3,18 @@ import _ from 'lodash';
 
 export default class HTMLComponent extends Component {
   static schema(...extend) {
-    return Component.schema({
-      label: 'HTML',
-      type: 'htmlelement',
-      tag: 'div',
-      attrs: [],
-      content: '',
-      input: false,
-      persistent: false
-    }, ...extend);
+    return Component.schema(
+      {
+        label: 'HTML',
+        type: 'htmlelement',
+        tag: 'div',
+        attrs: [],
+        content: '',
+        input: false,
+        persistent: false,
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -22,7 +25,7 @@ export default class HTMLComponent extends Component {
       weight: 0,
       documentation: '/userguide/form-building/layout-components#html-element',
       showPreview: false,
-      schema: HTMLComponent.schema()
+      schema: HTMLComponent.schema(),
     };
   }
 
@@ -45,14 +48,14 @@ export default class HTMLComponent extends Component {
     }
 
     const submission = _.get(this.root, 'submission', {});
-    const content = this.component.content ? this.interpolate(
-      this.sanitize(this.component.content, this.shouldSanitizeValue),
-      {
-        metadata: submission.metadata || {},
-        submission: submission,
-        data: this.rootValue,
-        row: this.data
-    }) : '';
+    const content = this.component.content
+      ? this.interpolate(this.sanitize(this.component.content, this.shouldSanitizeValue), {
+          metadata: submission.metadata || {},
+          submission: submission,
+          data: this.rootValue,
+          row: this.data,
+        })
+      : '';
     return content;
   }
 
@@ -62,9 +65,14 @@ export default class HTMLComponent extends Component {
 
   checkRefreshOn(changed) {
     super.checkRefreshOn(changed);
-    if (!this.builderMode && this.component.refreshOnChange && this.element &&
-      !_.isUndefined(changed) && ((_.isBoolean(changed) && changed) || !_.isEmpty(changed)) &&
-      this.conditionallyVisible(this.data, this.row)) {
+    if (
+      !this.builderMode &&
+      this.component.refreshOnChange &&
+      this.element &&
+      !_.isUndefined(changed) &&
+      ((_.isBoolean(changed) && changed) || !_.isEmpty(changed)) &&
+      this.conditionallyVisible(this.data, this.row)
+    ) {
       this.setContent(this.element, this.renderContent());
     }
   }
@@ -81,8 +89,8 @@ export default class HTMLComponent extends Component {
             metadata: submission.metadata || {},
             submission: submission,
             data: this.rootValue,
-            row: this.data
-          })
+            row: this.data,
+          }),
         };
       }),
       content: this.content,

@@ -1,7 +1,7 @@
 export default [
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'checkbox',
@@ -49,7 +49,7 @@ export default [
     input: true,
     customConditional(context) {
       return !context.data.disableAddingRemovingRows;
-    }
+    },
   },
   {
     type: 'select',
@@ -63,13 +63,13 @@ export default [
       values: [
         { label: 'Top', value: 'top' },
         { label: 'Bottom', value: 'bottom' },
-        { label: 'Both', value: 'both' }
-      ]
+        { label: 'Both', value: 'both' },
+      ],
     },
     weight: 411,
     customConditional(context) {
       return !context.data.disableAddingRemovingRows;
-    }
+    },
   },
   {
     type: 'checkbox',
@@ -83,7 +83,7 @@ export default [
     type: 'checkbox',
     label: 'Enable Row Groups',
     weight: 440,
-    input: true
+    input: true,
   },
   {
     label: 'Groups',
@@ -110,9 +110,9 @@ export default [
         input: true,
         key: 'label',
         widget: {
-          type: ''
+          type: '',
         },
-        row: '0-0'
+        row: '0-0',
       },
       {
         label: 'Number of Rows',
@@ -122,11 +122,11 @@ export default [
         type: 'number',
         input: true,
         key: 'numberOfRows',
-        row: '0-1'
-      }
+        row: '0-1',
+      },
     ],
     weight: 441,
-    conditional: { json: { var: 'data.enableRowGroups' } }
+    conditional: { json: { var: 'data.enableRowGroups' } },
   },
   {
     label: 'Hide Group on Header Click',
@@ -134,7 +134,7 @@ export default [
     input: true,
     key: 'groupToggle',
     weight: 442,
-    conditional: { json: { var: 'data.enableRowGroups' } }
+    conditional: { json: { var: 'data.enableRowGroups' } },
   },
   {
     label: 'Initialize Empty',
@@ -142,6 +142,6 @@ export default [
     input: true,
     key: 'initEmpty',
     tooltip: 'The DataGrid will have no visible rows when initialized.',
-    weight: 450
-  }
+    weight: 450,
+  },
 ];

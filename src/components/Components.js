@@ -41,8 +41,13 @@ export default class Components {
     // Set the tableView method on BaseComponent.
     if (comps.base) {
       // Implement the tableView method.
-      comps.base.tableView = function(value, options) {
-        const comp = Components.create(options.component, options.options || {}, options.data || {}, true);
+      comps.base.tableView = function (value, options) {
+        const comp = Components.create(
+          options.component,
+          options.options || {},
+          options.data || {},
+          true,
+        );
         return comp.getView(value);
       };
     }
@@ -75,7 +80,10 @@ export default class Components {
       // `editGrid[0].container[0].textField` rather than `editGrid[0].container.textField`. This should be adapted for other
       // components with a tree-like data model
       const rowIndex = component.row;
-      const rowIndexPath = rowIndex && !['container'].includes(thisPath.component.type) ? `[${Number.parseInt(rowIndex)}]` : '';
+      const rowIndexPath =
+        rowIndex && !['container'].includes(thisPath.component.type)
+          ? `[${Number.parseInt(rowIndex)}]`
+          : '';
       path = `${thisPath.path}${rowIndexPath}.`;
       if (rowIndexPath && getModelType(thisPath) === 'nestedDataArray') {
         path = `${path}data.`;
@@ -90,24 +98,15 @@ export default class Components {
     let comp = null;
     if (component.type && Components.components.hasOwnProperty(component.type)) {
       comp = new Components.components[component.type](component, options, data);
-    }
-    else if (component.arrayTree) {
-       
+    } else if (component.arrayTree) {
       comp = new Components.components['datagrid'](component, options, data);
-    }
-    else if (component.tree) {
-       
+    } else if (component.tree) {
       comp = new Components.components['nesteddata'](component, options, data);
-    }
-    else if (Array.isArray(component.components)) {
-       
+    } else if (Array.isArray(component.components)) {
       comp = new Components.components['nested'](component, options, data);
-    }
-    else if (options && options.server) {
-       
+    } else if (options && options.server) {
       comp = new Components.components['hidden'](component, options, data);
-    }
-    else {
+    } else {
       comp = new Component(component, options, data);
     }
     const path = Components.getComponentPath(comp);

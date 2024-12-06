@@ -10,7 +10,7 @@ export default {
       tableView: true,
       key: 'textField',
       type: 'textfield',
-      input: true
+      input: true,
     },
     {
       type: 'button',
@@ -18,7 +18,7 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
 };

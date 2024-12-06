@@ -10,90 +10,90 @@ export default class Form extends Element {
    * @typedef {(string | number | boolean | null | JSONArray | JSONObject)} JSON
    */
 
-/**
- * Represents a JSON array.
- * @typedef {Array<JSON>} JSONArray
- */
+  /**
+   * Represents a JSON array.
+   * @typedef {Array<JSON>} JSONArray
+   */
 
-/**
- * Represents a JSON object.
- * @typedef {{[key: string]: JSON}} JSONObject
- */
+  /**
+   * Represents a JSON object.
+   * @typedef {{[key: string]: JSON}} JSONObject
+   */
 
-/**
- * @typedef {object} FormioHooks
- * @property {Function} [beforeSubmit] - Called before a submission is made.
- * @property {Function} [beforeCancel] - Called before a cancel is made.
- * @property {Function} [beforeNext] - Called before the next page is navigated to.
- * @property {Function} [beforePrev] - Called before the previous page is navigated to.
- * @property {Function} [attachComponent] - Called when a component is attached.
- * @property {Function} [setDataValue] - Called when a data value is set.
- * @property {Function} [addComponents] - Called when components are added.
- * @property {Function} [addComponent] - Called when a component is added.
- * @property {Function} [customValidation] - Called when a custom validation is made.
- * @property {Function} [attachWebform] - Called when a webform is attached.
- */
+  /**
+   * @typedef {object} FormioHooks
+   * @property {Function} [beforeSubmit] - Called before a submission is made.
+   * @property {Function} [beforeCancel] - Called before a cancel is made.
+   * @property {Function} [beforeNext] - Called before the next page is navigated to.
+   * @property {Function} [beforePrev] - Called before the previous page is navigated to.
+   * @property {Function} [attachComponent] - Called when a component is attached.
+   * @property {Function} [setDataValue] - Called when a data value is set.
+   * @property {Function} [addComponents] - Called when components are added.
+   * @property {Function} [addComponent] - Called when a component is added.
+   * @property {Function} [customValidation] - Called when a custom validation is made.
+   * @property {Function} [attachWebform] - Called when a webform is attached.
+   */
 
-/**
- * @typedef {object} SanitizeConfig
- * @property {string[]} [addAttr] - The html attributes to allow with sanitization.
- * @property {string[]} [addTags] - The html tags to allow with sanitization.
- * @property {string[]} [allowedAttrs] - The html attributes to allow with sanitization.
- * @property {string[]} [allowedTags] - The html tags to allow with sanitization.
- * @property {string[]} [allowedUriRegex] - The regex for allowed URIs.
- * @property {string[]} [addUriSafeAttr] - The URI attributes to allow with sanitization.
- */
+  /**
+   * @typedef {object} SanitizeConfig
+   * @property {string[]} [addAttr] - The html attributes to allow with sanitization.
+   * @property {string[]} [addTags] - The html tags to allow with sanitization.
+   * @property {string[]} [allowedAttrs] - The html attributes to allow with sanitization.
+   * @property {string[]} [allowedTags] - The html tags to allow with sanitization.
+   * @property {string[]} [allowedUriRegex] - The regex for allowed URIs.
+   * @property {string[]} [addUriSafeAttr] - The URI attributes to allow with sanitization.
+   */
 
-/**
- * @typedef {object} ButtonSettings
- * @property {boolean} [showPrevious] - Show the previous button in wizard forms.
- * @property {boolean} [showNext] - Show the next button in wizard forms.
- * @property {boolean} [showCancel] - Show the cancel button in wizard forms.
- * @property {boolean} [showSubmit] - Show the submit button in wizard forms.
- */
+  /**
+   * @typedef {object} ButtonSettings
+   * @property {boolean} [showPrevious] - Show the previous button in wizard forms.
+   * @property {boolean} [showNext] - Show the next button in wizard forms.
+   * @property {boolean} [showCancel] - Show the cancel button in wizard forms.
+   * @property {boolean} [showSubmit] - Show the submit button in wizard forms.
+   */
 
-/**
- * @typedef {object} FormOptions
- * @property {boolean} [saveDraft] - Enable the save draft feature.
- * @property {number} [saveDraftThrottle] - The throttle for the save draft feature.
- * @property {boolean} [readOnly] - Set this form to readOnly.
- * @property {boolean} [noAlerts] - Disable the alerts dialog.
- * @property {{[key: string]: string}} [i18n] - The translation file for this rendering.
- * @property {string} [template] - Custom logic for creation of elements.
- * @property {boolean} [noDefaults] - Exclude default values from the settings.
- * @property {any} [fileService] - The file service for this form.
- * @property {EventEmitter} [events] - The EventEmitter for this form.
- * @property {string} [language] - The language to render this form in.
- * @property {{[key: string]: string}} [i18next] - The i18next configuration for this form.
- * @property {boolean} [viewAsHtml] - View the form as raw HTML.
- * @property {'form' | 'html' | 'flat' | 'builder' | 'pdf'} [renderMode] - The render mode for this form.
- * @property {boolean} [highlightErrors] - Highlight any errors on the form.
- * @property {string} [componentErrorClass] - The error class for components.
- * @property {any} [templates] - The templates for this form.
- * @property {string} [iconset] - The iconset for this form.
- * @property {import('@formio/core').Component[]} [components] - The components for this form.
- * @property {{[key: string]: boolean}} [disabled] - Disabled components for this form.
- * @property {boolean} [showHiddenFields] - Show hidden fields.
- * @property {{[key: string]: boolean}} [hide] - Hidden components for this form.
- * @property {{[key: string]: boolean}} [show] - Components to show for this form.
- * @property {Formio} [formio] - The Formio instance for this form.
- * @property {string} [decimalSeparator] - The decimal separator for this form.
- * @property {string} [thousandsSeparator] - The thousands separator for this form.
- * @property {FormioHooks} [hooks] - The hooks for this form.
- * @property {boolean} [alwaysDirty] - Always be dirty.
- * @property {boolean} [skipDraftRestore] - Skip restoring a draft.
- * @property {'form' | 'wizard' | 'pdf'} [display] - The display for this form.
- * @property {string} [cdnUrl] - The CDN url for this form.
- * @property {boolean} [flatten] - Flatten the form.
- * @property {boolean} [sanitize] - Sanitize the form.
- * @property {SanitizeConfig} [sanitizeConfig] - The sanitize configuration for this form.
- * @property {ButtonSettings} [buttonSettings] - The button settings for this form.
- * @property {object} [breadcrumbSettings] - The breadcrumb settings for this form.
- * @property {boolean} [allowPrevious] - Allow the previous button (for Wizard forms).
- * @property {string[]} [wizardButtonOrder] - The order of the buttons (for Wizard forms).
- * @property {boolean} [showCheckboxBackground] - Show the checkbox background.
- * @property {number} [zoom] - The zoom for PDF forms.
- */
+  /**
+   * @typedef {object} FormOptions
+   * @property {boolean} [saveDraft] - Enable the save draft feature.
+   * @property {number} [saveDraftThrottle] - The throttle for the save draft feature.
+   * @property {boolean} [readOnly] - Set this form to readOnly.
+   * @property {boolean} [noAlerts] - Disable the alerts dialog.
+   * @property {{[key: string]: string}} [i18n] - The translation file for this rendering.
+   * @property {string} [template] - Custom logic for creation of elements.
+   * @property {boolean} [noDefaults] - Exclude default values from the settings.
+   * @property {any} [fileService] - The file service for this form.
+   * @property {EventEmitter} [events] - The EventEmitter for this form.
+   * @property {string} [language] - The language to render this form in.
+   * @property {{[key: string]: string}} [i18next] - The i18next configuration for this form.
+   * @property {boolean} [viewAsHtml] - View the form as raw HTML.
+   * @property {'form' | 'html' | 'flat' | 'builder' | 'pdf'} [renderMode] - The render mode for this form.
+   * @property {boolean} [highlightErrors] - Highlight any errors on the form.
+   * @property {string} [componentErrorClass] - The error class for components.
+   * @property {any} [templates] - The templates for this form.
+   * @property {string} [iconset] - The iconset for this form.
+   * @property {import('@formio/core').Component[]} [components] - The components for this form.
+   * @property {{[key: string]: boolean}} [disabled] - Disabled components for this form.
+   * @property {boolean} [showHiddenFields] - Show hidden fields.
+   * @property {{[key: string]: boolean}} [hide] - Hidden components for this form.
+   * @property {{[key: string]: boolean}} [show] - Components to show for this form.
+   * @property {Formio} [formio] - The Formio instance for this form.
+   * @property {string} [decimalSeparator] - The decimal separator for this form.
+   * @property {string} [thousandsSeparator] - The thousands separator for this form.
+   * @property {FormioHooks} [hooks] - The hooks for this form.
+   * @property {boolean} [alwaysDirty] - Always be dirty.
+   * @property {boolean} [skipDraftRestore] - Skip restoring a draft.
+   * @property {'form' | 'wizard' | 'pdf'} [display] - The display for this form.
+   * @property {string} [cdnUrl] - The CDN url for this form.
+   * @property {boolean} [flatten] - Flatten the form.
+   * @property {boolean} [sanitize] - Sanitize the form.
+   * @property {SanitizeConfig} [sanitizeConfig] - The sanitize configuration for this form.
+   * @property {ButtonSettings} [buttonSettings] - The button settings for this form.
+   * @property {object} [breadcrumbSettings] - The breadcrumb settings for this form.
+   * @property {boolean} [allowPrevious] - Allow the previous button (for Wizard forms).
+   * @property {string[]} [wizardButtonOrder] - The order of the buttons (for Wizard forms).
+   * @property {boolean} [showCheckboxBackground] - Show the checkbox background.
+   * @property {number} [zoom] - The zoom for PDF forms.
+   */
 
   /**
    * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
@@ -117,8 +117,7 @@ export default class Form extends Element {
       element = elementOrForm;
       form = formOrOptions;
       formOptions = options;
-    }
-    else {
+    } else {
       element = null;
       form = elementOrForm;
       formOptions = formOrOptions || {};
@@ -144,8 +143,7 @@ export default class Form extends Element {
         delete this.element.component;
       }
       this.element = element;
-    }
-    else {
+    } else {
       this.element = null;
     }
     this.options = formOptions;
@@ -165,7 +163,7 @@ export default class Form extends Element {
         element.setAttribute(attr, attrs[attr]);
       }
     }
-    (children || []).forEach(child => {
+    (children || []).forEach((child) => {
       element.appendChild(this.createElement(child.tag, child.attrs, child.children));
     });
     return element;
@@ -179,23 +177,30 @@ export default class Form extends Element {
       if (this.loader) {
         return;
       }
-      this.loader = this.createElement('div', {
-        'class': 'formio-loader'
-      }, [{
-        tag: 'div',
-        attrs: {
-          class: 'loader-wrapper'
+      this.loader = this.createElement(
+        'div',
+        {
+          class: 'formio-loader',
         },
-        children: [{
-          tag: 'div',
-          attrs: {
-            class: 'loader text-center'
-          }
-        }]
-      }]);
+        [
+          {
+            tag: 'div',
+            attrs: {
+              class: 'loader-wrapper',
+            },
+            children: [
+              {
+                tag: 'div',
+                attrs: {
+                  class: 'loader text-center',
+                },
+              },
+            ],
+          },
+        ],
+      );
       this.element.appendChild(this.loader);
-    }
-    else if (this.loader) {
+    } else if (this.loader) {
       if (this.element.contains(this.loader)) {
         this.element.removeChild(this.loader);
       }
@@ -215,9 +220,7 @@ export default class Form extends Element {
     this.display = display;
     if (Displays.displays[display]) {
       return new Displays.displays[display](this.element, this.options);
-    }
-    else {
-       
+    } else {
       return new Displays.displays['webform'](this.element, this.options);
     }
   }
@@ -235,21 +238,21 @@ export default class Form extends Element {
     return {
       components: [
         {
-          'label': 'HTML',
-          'tag': 'div',
-          'className': 'error error-message alert alert-danger ui red message',
-          'attrs': [
+          label: 'HTML',
+          tag: 'div',
+          className: 'error error-message alert alert-danger ui red message',
+          attrs: [
             {
-              'attr': 'role',
-              'value': 'alert'
-            }
+              attr: 'role',
+              value: 'alert',
+            },
           ],
-          'key': 'errorMessage',
-          'type': 'htmlelement',
-          'input': false,
-          'content': typeof err === 'string' ? err : err.message,
-        }
-      ]
+          key: 'errorMessage',
+          type: 'htmlelement',
+          input: false,
+          content: typeof err === 'string' ? err : err.message,
+        },
+      ],
     };
   }
 
@@ -269,7 +272,7 @@ export default class Form extends Element {
     const projectUrl = url.substring(0, index - 1);
     const urlParts = Formio.getUrlParts(projectUrl);
     // project url doesn't include subdirectories path
-    if (!urlParts || urlParts.filter(part => !!part).length < 4) {
+    if (!urlParts || urlParts.filter((part) => !!part).length < 4) {
       return options;
     }
     const baseUrl = `${urlParts[1]}${urlParts[2]}`;
@@ -301,40 +304,42 @@ export default class Form extends Element {
           error = err;
         })
         .then((submission) => {
-          return formio.loadForm()
-          // If the form returned an error, show it instead of the form.
-            .catch(err => {
-              error = err;
-            })
-            .then((form) => {
-              // If the submission returned an error, show it instead of the form.
-              if (error) {
-                form = this.errorForm(error);
-              }
-              this.loading = false;
-              this.instance = this.instance || this.create(form.display);
+          return (
+            formio
+              .loadForm()
+              // If the form returned an error, show it instead of the form.
+              .catch((err) => {
+                error = err;
+              })
+              .then((form) => {
+                // If the submission returned an error, show it instead of the form.
+                if (error) {
+                  form = this.errorForm(error);
+                }
+                this.loading = false;
+                this.instance = this.instance || this.create(form.display);
 
-              // If we're in builder mode, instance.setUrl is not a function, so just manually set the URL.
-              if (this.instance.setUrl) {
-                const options = this.getFormInitOptions(formParam, form);
-                this.instance.setUrl(formParam, options);
-              } else {
-                this.instance.url = formParam;
-              }
+                // If we're in builder mode, instance.setUrl is not a function, so just manually set the URL.
+                if (this.instance.setUrl) {
+                  const options = this.getFormInitOptions(formParam, form);
+                  this.instance.setUrl(formParam, options);
+                } else {
+                  this.instance.url = formParam;
+                }
 
-              this.instance.nosubmit = false;
-              this._form = this.instance.form = form;
-              if (submission) {
-                this.instance.submission = submission;
-              }
-              if (error) {
-                throw error;
-              }
-              return this.instance;
-            });
+                this.instance.nosubmit = false;
+                this._form = this.instance.form = form;
+                if (submission) {
+                  this.instance.submission = submission;
+                }
+                if (error) {
+                  throw error;
+                }
+                return this.instance;
+              })
+          );
         });
-    }
-    else {
+    } else {
       this.instance = this.instance || this.create(formParam.display);
       this._form = this.instance.form = formParam;
       result = this.instance.ready;
@@ -371,7 +376,7 @@ export default class Form extends Element {
    * @returns {Promise<Webform|Wizard|PDF>} - The form instance that was created after changing the display.
    */
   setDisplay(display) {
-    if ((this.display === display) && this.instance) {
+    if (this.display === display && this.instance) {
       return Promise.resolve(this.instance);
     }
 
@@ -447,14 +452,15 @@ export default class Form extends Element {
     }
 
     // Add temporary loader.
-    const template = (this.options && this.options.template) ? this.options.template : 'bootstrap';
+    const template = this.options && this.options.template ? this.options.template : 'bootstrap';
     const loader = templates[template].loader || templates.bootstrap.loader;
     this.setContent(this.element, loader.form);
 
-    return this.render().then(html => {
-      this.setContent(this.element, html);
-      return this.attach(this.element).then(() => this.instance);
-    })
+    return this.render()
+      .then((html) => {
+        this.setContent(this.element, html);
+        return this.attach(this.element).then(() => this.instance);
+      })
       .then((param) => {
         this.emit('build', param);
         return param;
@@ -465,11 +471,10 @@ export default class Form extends Element {
     if (!this.instance) {
       return Promise.reject('Form not ready. Use form.ready promise');
     }
-    return Promise.resolve(this.instance.render())
-      .then((param) => {
-        this.emit('render', param);
-        return param;
-      });
+    return Promise.resolve(this.instance.render()).then((param) => {
+      this.emit('render', param);
+      return param;
+    });
   }
 
   attach(element) {
@@ -480,11 +485,10 @@ export default class Form extends Element {
       delete this.element.component;
     }
     this.element = element;
-    return this.instance.attach(this.element)
-      .then((param) => {
-        this.emit('attach', param);
-        return param;
-      });
+    return this.instance.attach(this.element).then((param) => {
+      this.emit('attach', param);
+      return param;
+    });
   }
 
   teardown() {
@@ -508,10 +512,9 @@ Formio.embedForm = (embed) => Form.embed(embed);
  * Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
  */
 Formio.createForm = (elementOrForm, formOrOptions, options) => {
-  return (new Form(elementOrForm, formOrOptions, options)).ready;
+  return new Form(elementOrForm, formOrOptions, options).ready;
 };
 
 Formio.Form = Form;
 
-
-export {  };
+export {};

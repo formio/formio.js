@@ -1,6 +1,6 @@
 export default [
   {
     key: 'validateOn',
-    ignore: true
+    ignore: true,
   },
 ];

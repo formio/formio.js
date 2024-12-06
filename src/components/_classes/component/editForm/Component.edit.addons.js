@@ -11,12 +11,11 @@ export default [
     key: 'addons',
     label: 'Addons',
     templates: {
-       
       header: `<div class="row">
                 <div class="col-6">{{ t(components[0].label) }}</div>
                 <div class="col-4">Settings</div>
               </div>`,
-       
+
       row: `<div class="row">
               <div class="col-6">
                 {{ row.name.label }}
@@ -45,7 +44,7 @@ export default [
         type: 'select',
         dataSrc: 'custom',
         data: {
-          custom: function({ instance }) {
+          custom: function ({ instance }) {
             const componentType = instance?.root?.data?.type;
             const availableAddons = Object.keys(Addons).filter((key) => {
               if (Addons[key]?.info?.supportedComponents?.includes(componentType)) {
@@ -65,6 +64,6 @@ export default [
         },
       },
       ...editForms,
-    ]
-  }
+    ],
+  },
 ];

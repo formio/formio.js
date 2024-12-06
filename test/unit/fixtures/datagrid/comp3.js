@@ -9,13 +9,13 @@ export default {
       label: 'First Name',
       key: 'firstName',
       type: 'textfield',
-      input: true
+      input: true,
     },
     {
       label: 'Second Name',
       key: 'secondName',
       type: 'textfield',
-      input: true
-    }
-  ]
+      input: true,
+    },
+  ],
 };

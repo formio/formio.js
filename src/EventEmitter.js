@@ -6,12 +6,15 @@ export default class EventEmitter extends EventEmitter3 {
     super();
 
     const overloadHandler = () => {
-      console.warn(`There were more than ${loadLimit} events emitted in ${eventsSafeInterval} ms. It might be caused by events' infinite loop`, this.id);
+      console.warn(
+        `There were more than ${loadLimit} events emitted in ${eventsSafeInterval} ms. It might be caused by events' infinite loop`,
+        this.id,
+      );
     };
 
     const dispatch = utils.observeOverload(overloadHandler, {
       limit: loadLimit,
-      delay: eventsSafeInterval
+      delay: eventsSafeInterval,
     });
 
     this.emit = (...args) => {

@@ -659,7 +659,7 @@ export default {
           inputFormat: 'plain',
           protected: false,
           dbIndex: false,
-          'case': '',
+          case: '',
           truncateMultipleSpaces: false,
           encrypted: false,
           redrawOn: '',

@@ -8,7 +8,7 @@ export default {
       buttonSettings: {
         previous: true,
         cancel: true,
-        next: true
+        next: true,
       },
       collapsible: false,
       alwaysEnabled: false,
@@ -36,7 +36,7 @@ export default {
               inputFormat: 'plain',
               key: 'a',
               type: 'number',
-              input: true
+              input: true,
             },
             {
               label: 'B',
@@ -48,7 +48,7 @@ export default {
               inputFormat: 'plain',
               key: 'b',
               type: 'number',
-              input: true
+              input: true,
             },
             {
               label: 'Total',
@@ -61,13 +61,13 @@ export default {
               calculateValue: "value = (data['a'] || 0) + (data['b'] || 0);",
               key: 'total',
               type: 'number',
-              input: true
-            }
+              input: true,
+            },
           ],
-          path: 'fieldset'
-        }
+          path: 'fieldset',
+        },
       ],
-      input: false
+      input: false,
     },
     {
       label: 'Submit',
@@ -75,8 +75,8 @@ export default {
       tableView: false,
       key: 'submit',
       type: 'button',
-      input: true
-    }
+      input: true,
+    },
   ],
   title: 'FIO-3086',
   display: 'form',

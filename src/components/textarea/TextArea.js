@@ -5,20 +5,23 @@ import { uniqueName, getBrowserInfo } from '../../utils/utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
-    return TextFieldComponent.schema({
-      type: 'textarea',
-      label: 'Text Area',
-      key: 'textArea',
-      rows: 3,
-      wysiwyg: false,
-      editor: '',
-      fixedSize: true,
-      inputFormat: 'html',
-      validate: {
-        minWords: '',
-        maxWords: ''
-      }
-    }, ...extend);
+    return TextFieldComponent.schema(
+      {
+        type: 'textarea',
+        label: 'Text Area',
+        key: 'textArea',
+        rows: 3,
+        wysiwyg: false,
+        editor: '',
+        fixedSize: true,
+        inputFormat: 'html',
+        validate: {
+          minWords: '',
+          maxWords: '',
+        },
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -28,7 +31,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       icon: 'font',
       documentation: '/userguide/form-building/form-components#text-area',
       weight: 20,
-      schema: TextAreaComponent.schema()
+      schema: TextAreaComponent.schema(),
     };
   }
 
@@ -70,7 +73,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       return this.renderTemplate('well', {
         children,
         nestedKey: this.key,
-        value
+        value,
       });
     }
 
@@ -79,7 +82,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       suffix: this.suffix,
       input: info,
       value,
-      index
+      index,
     });
   }
 
@@ -101,10 +104,14 @@ export default class TextAreaComponent extends TextFieldComponent {
       newValue = newArray;
     }
 
-    if ((!_.isEqual(newValue, dataValue)) && (!_.isEmpty(newValue) || !_.isEmpty(dataValue))) {
-      this.updateValue(newValue, {
-        modified: !this.autoModified
-      }, index);
+    if (!_.isEqual(newValue, dataValue) && (!_.isEmpty(newValue) || !_.isEmpty(dataValue))) {
+      this.updateValue(
+        newValue,
+        {
+          modified: !this.autoModified,
+        },
+        index,
+      );
     }
     this.autoModified = false;
   }
@@ -124,8 +131,8 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.component.editor = 'ckeditor';
     }
 
-    let settings = _.isEmpty(this.component.wysiwyg) ?
-      this.wysiwygDefault[this.component.editor] || this.wysiwygDefault.default
+    let settings = _.isEmpty(this.component.wysiwyg)
+      ? this.wysiwygDefault[this.component.editor] || this.wysiwygDefault.default
       : this.component.wysiwyg;
 
     // Keep track of when this editor is ready.
@@ -136,81 +143,93 @@ export default class TextAreaComponent extends TextFieldComponent {
           if (!settings) {
             settings = {};
           }
-          settings.mode = this.component.as ? `ace/mode/${this.component.as}` : 'ace/mode/javascript';
-          this.addAce(element, settings, (newValue) => this.updateEditorValue(index, newValue)).then((ace) => {
-            this.editors[index] = ace;
-            let dataValue = this.dataValue;
-            dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-            ace.setValue(this.setConvertedValue(dataValue, index));
-            editorReady(ace);
-            return ace;
-          }).catch(err => console.warn(err));
+          settings.mode = this.component.as
+            ? `ace/mode/${this.component.as}`
+            : 'ace/mode/javascript';
+          this.addAce(element, settings, (newValue) => this.updateEditorValue(index, newValue))
+            .then((ace) => {
+              this.editors[index] = ace;
+              let dataValue = this.dataValue;
+              dataValue =
+                this.component.multiple && Array.isArray(dataValue) ? dataValue[index] : dataValue;
+              ace.setValue(this.setConvertedValue(dataValue, index));
+              editorReady(ace);
+              return ace;
+            })
+            .catch((err) => console.warn(err));
           break;
         case 'quill':
           // Normalize the configurations for quill.
           if (settings.hasOwnProperty('toolbarGroups') || settings.hasOwnProperty('toolbar')) {
-            console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
+            console.warn(
+              'The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.',
+            );
             settings = this.wysiwygDefault.quill;
           }
 
           // Add the quill editor.
-          this.addQuill(
-            element,
-            settings, () => this.updateEditorValue(index, this.editors[index].root.innerHTML)
-          ).then((quill) => {
-            this.editors[index] = quill;
-            if (this.component.isUploadEnabled) {
-              const _this = this;
-              quill.getModule('uploader').options.handler = function(...args) {
-                //we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
-                //we also need current component instance as we use some fields and methods from it as well
-                _this.imageHandler.call(_this, this, ...args);
-              };
-            }
-            quill.root.spellcheck = this.component.spellcheck;
-            if (this.options.readOnly || this.disabled) {
-              quill.disable();
-            }
+          this.addQuill(element, settings, () =>
+            this.updateEditorValue(index, this.editors[index].root.innerHTML),
+          )
+            .then((quill) => {
+              this.editors[index] = quill;
+              if (this.component.isUploadEnabled) {
+                const _this = this;
+                quill.getModule('uploader').options.handler = function (...args) {
+                  //we need initial 'this' because quill calls this method with its own context and we need some inner quill methods exposed in it
+                  //we also need current component instance as we use some fields and methods from it as well
+                  _this.imageHandler.call(_this, this, ...args);
+                };
+              }
+              quill.root.spellcheck = this.component.spellcheck;
+              if (this.options.readOnly || this.disabled) {
+                quill.disable();
+              }
 
-            let dataValue = this.dataValue;
-            dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-            quill.setContents(quill.clipboard.convert({ html: this.setConvertedValue(dataValue, index) }));
-            editorReady(quill);
-            return quill;
-          }).catch(err => console.warn(err));
+              let dataValue = this.dataValue;
+              dataValue =
+                this.component.multiple && Array.isArray(dataValue) ? dataValue[index] : dataValue;
+              quill.setContents(
+                quill.clipboard.convert({ html: this.setConvertedValue(dataValue, index) }),
+              );
+              editorReady(quill);
+              return quill;
+            })
+            .catch((err) => console.warn(err));
           break;
         case 'ckeditor':
           settings = settings || {};
           settings.rows = this.component.rows;
-          this.addCKE(element, settings, (newValue) => this.updateEditorValue(index, newValue))
-            .then((editor) => {
-              this.editors[index] = editor;
-              let dataValue = this.dataValue;
-              dataValue = (this.component.multiple && Array.isArray(dataValue)) ? dataValue[index] : dataValue;
-              const value = this.setConvertedValue(dataValue, index);
-              const isReadOnly = this.options.readOnly || this.disabled;
-              // Use ckeditor 4 in IE browser
-              if (getBrowserInfo().ie) {
-                editor.on('instanceReady', () => {
-                  editor.setReadOnly(isReadOnly);
-                  editor.setData(value);
-                });
-              }
-              else {
-                const numRows = parseInt(this.component.rows, 10);
+          this.addCKE(element, settings, (newValue) =>
+            this.updateEditorValue(index, newValue),
+          ).then((editor) => {
+            this.editors[index] = editor;
+            let dataValue = this.dataValue;
+            dataValue =
+              this.component.multiple && Array.isArray(dataValue) ? dataValue[index] : dataValue;
+            const value = this.setConvertedValue(dataValue, index);
+            const isReadOnly = this.options.readOnly || this.disabled;
+            // Use ckeditor 4 in IE browser
+            if (getBrowserInfo().ie) {
+              editor.on('instanceReady', () => {
+                editor.setReadOnly(isReadOnly);
+                editor.setData(value);
+              });
+            } else {
+              const numRows = parseInt(this.component.rows, 10);
 
-                if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
-                  // Default height is 21px with 10px margin + a 14px top margin.
-                  const editorHeight = (numRows * 31) + 14;
-                  editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
-                }
-                editor.isReadOnly = isReadOnly;
-                editor.data.set(value);
+              if (_.isFinite(numRows) && _.has(editor, 'ui.view.editable.editableElement')) {
+                // Default height is 21px with 10px margin + a 14px top margin.
+                const editorHeight = numRows * 31 + 14;
+                editor.ui.view.editable.editableElement.style.height = `${editorHeight}px`;
               }
+              editor.isReadOnly = isReadOnly;
+              editor.data.set(value);
+            }
 
-              editorReady(editor);
-              return editor;
-            });
+            editorReady(editor);
+            return editor;
+          });
           break;
         default:
           super.attachElement(element, index);
@@ -248,35 +267,39 @@ export default class TextAreaComponent extends TextFieldComponent {
         null,
         uploadUrl,
         uploadOptions,
-        fileKey
+        fileKey,
       )
-      .then(result => {
+      .then((result) => {
         requestData = result;
         return this.fileService.downloadFile(result);
       })
-      .then(result => {
+      .then((result) => {
         quillInstance.enable(true);
         const Delta = Quill.import('delta');
-        quillInstance.updateContents(new Delta()
+        quillInstance.updateContents(
+          new Delta()
             .retain(range.index)
             .delete(range.length)
             .insert(
               {
-                image: result.url
+                image: result.url,
               },
               {
                 alt: JSON.stringify(requestData),
-              })
-          , Quill.sources.USER);
-      }).catch(error => {
-      console.warn('Quill image upload failed');
-      console.warn(error);
-      quillInstance.enable(true);
-    });
+              },
+            ),
+          Quill.sources.USER,
+        );
+      })
+      .catch((error) => {
+        console.warn('Quill image upload failed');
+        console.warn(error);
+        quillInstance.enable(true);
+      });
   }
 
   get isPlain() {
-    return (!this.component.wysiwyg && !this.component.editor);
+    return !this.component.wysiwyg && !this.component.editor;
   }
 
   get htmlView() {
@@ -296,13 +319,11 @@ export default class TextAreaComponent extends TextFieldComponent {
               break;
             case 'quill':
               if (this.component.isUploadEnabled) {
-                this.setAsyncConvertedValue(value)
-                  .then(result => {
-                    const content = editor.clipboard.convert({ html: result });
-                    editor.setContents(content);
-                  });
-              }
-              else {
+                this.setAsyncConvertedValue(value).then((result) => {
+                  const content = editor.clipboard.convert({ html: result });
+                  editor.setContents(content);
+                });
+              } else {
                 const convertedValue = this.setConvertedValue(value, index);
                 const content = editor.clipboard.convert({ html: convertedValue });
                 editor.setContents(content);
@@ -321,12 +342,14 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   setValue(value, flags = {}) {
     if (this.isPlain || this.options.readOnly || this.disabled) {
-      value = (this.component.multiple && Array.isArray(value)) ?
-        value.map((val, index) => this.setConvertedValue(val, index)) :
-        this.setConvertedValue(value);
+      value =
+        this.component.multiple && Array.isArray(value)
+          ? value.map((val, index) => this.setConvertedValue(val, index))
+          : this.setConvertedValue(value);
       return super.setValue(value, flags);
     }
-    flags.skipWysiwyg = value === '' && flags.resetValue ? false : _.isEqual(value, this.getValue());
+    flags.skipWysiwyg =
+      value === '' && flags.resetValue ? false : _.isEqual(value, this.getValue());
     return super.setValue(value, flags);
   }
 
@@ -342,10 +365,15 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.options.readOnly || this.disabled) {
       if (this.refs.input && this.refs.input[index]) {
         if (this.component.inputFormat === 'plain') {
-          this.refs.input[index].innerText = this.isPlain ? value : this.interpolate(value, {}, { noeval: true });
-        }
-        else {
-          this.setContent(this.refs.input[index], this.isPlain ? value : this.interpolate(value, {}, { noeval: true }), this.shouldSanitizeValue);
+          this.refs.input[index].innerText = this.isPlain
+            ? value
+            : this.interpolate(value, {}, { noeval: true });
+        } else {
+          this.setContent(
+            this.refs.input[index],
+            this.isPlain ? value : this.interpolate(value, {}, { noeval: true }),
+            this.shouldSanitizeValue,
+          );
         }
       }
     }
@@ -384,8 +412,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.isJsonValue && !_.isNil(value)) {
       try {
         value = JSON.stringify(value, null, 2);
-      }
-      catch (err) {
+      } catch (err) {
         console.warn(err);
       }
     }
@@ -402,8 +429,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.isJsonValue && value) {
       try {
         value = JSON.stringify(value, null, 2);
-      }
-      catch (err) {
+      } catch (err) {
         console.warn(err);
       }
     }
@@ -412,35 +438,33 @@ export default class TextAreaComponent extends TextFieldComponent {
       value = '';
     }
 
-    const htmlDoc = new DOMParser().parseFromString(value,'text/html');
+    const htmlDoc = new DOMParser().parseFromString(value, 'text/html');
     const images = htmlDoc.getElementsByTagName('img');
     if (images.length) {
-      return this.setImagesUrl(images)
-        .then( () => {
-          value = htmlDoc.getElementsByTagName('body')[0].innerHTML;
-          return value;
-        });
-    }
-    else {
+      return this.setImagesUrl(images).then(() => {
+        value = htmlDoc.getElementsByTagName('body')[0].innerHTML;
+        return value;
+      });
+    } else {
       return Promise.resolve(value);
     }
   }
 
   setImagesUrl(images) {
-    return Promise.all(_.map(images, image => {
-      let requestData;
-      try {
-        requestData = JSON.parse(image.getAttribute('alt'));
-      }
-      catch (error) {
-        console.warn(error);
-      }
+    return Promise.all(
+      _.map(images, (image) => {
+        let requestData;
+        try {
+          requestData = JSON.parse(image.getAttribute('alt'));
+        } catch (error) {
+          console.warn(error);
+        }
 
-      return this.fileService.downloadFile(requestData)
-        .then((result) => {
+        return this.fileService.downloadFile(requestData).then((result) => {
           image.setAttribute('src', result.url);
         });
-    }));
+      }),
+    );
   }
 
   addAutoExpanding(textarea, index) {
@@ -495,8 +519,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       let currentHeight = textarea.offsetHeight;
       if (currentHeight < styleHeight && computed.overflowY === 'hidden') {
         changeOverflow('scroll');
-      }
-      else if (computed.overflowY !== 'hidden') {
+      } else if (computed.overflowY !== 'hidden') {
         changeOverflow('hidden');
       }
 
@@ -510,7 +533,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     const computedStyle = window.getComputedStyle(textarea, null);
 
     textarea.style.resize = 'none';
-    heightOffset = parseFloat(computedStyle.borderTopWidth) + parseFloat(computedStyle.borderBottomWidth) || 0;
+    heightOffset =
+      parseFloat(computedStyle.borderTopWidth) + parseFloat(computedStyle.borderBottomWidth) || 0;
 
     if (window) {
       this.addEventListener(window, 'resize', update);
@@ -539,8 +563,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       value.forEach((input, index) => {
         value[index] = trimBlanks(input);
       });
-    }
-    else {
+    } else {
       value = trimBlanks(value);
     }
     return value;
@@ -548,7 +571,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   onChange(flags, fromRoot) {
     const changed = super.onChange(flags, fromRoot);
-    this.updateSizes.forEach(updateSize => updateSize());
+    this.updateSizes.forEach((updateSize) => updateSize());
     return changed;
   }
 
@@ -572,8 +595,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.isJsonValue && value) {
       try {
         value = JSON.parse(value);
-      }
-      catch (ignoreErr) {
+      } catch (ignoreErr) {
         // console.warn(err);
       }
     }
@@ -582,14 +604,16 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   detach() {
     // Destroy all editors.
-    this.editors.forEach(editor => {
+    this.editors.forEach((editor) => {
       if (editor.destroy) {
         editor.destroy();
       }
     });
     this.editors = [];
     this.editorsReady = [];
-    this.updateSizes.forEach(updateSize => this.removeEventListener(window, 'resize', updateSize));
+    this.updateSizes.forEach((updateSize) =>
+      this.removeEventListener(window, 'resize', updateSize),
+    );
     this.updateSizes = [];
     super.detach();
   }
@@ -607,31 +631,37 @@ export default class TextAreaComponent extends TextFieldComponent {
     switch (this.component.editor) {
       case 'ckeditor': {
         // Wait for the editor to be ready.
-        this.editorsReady[0]?.then(() => {
-          if (this.editors[0].editing?.view?.focus) {
-            this.editors[0].editing.view.focus();
-          }
-          this.element.scrollIntoView();
-        }).catch((err) => {
-          console.warn('An editor did not initialize properly when trying to focus:', err);
-        });
+        this.editorsReady[0]
+          ?.then(() => {
+            if (this.editors[0].editing?.view?.focus) {
+              this.editors[0].editing.view.focus();
+            }
+            this.element.scrollIntoView();
+          })
+          .catch((err) => {
+            console.warn('An editor did not initialize properly when trying to focus:', err);
+          });
         break;
       }
       case 'ace': {
-        this.editorsReady[0]?.then(() => {
-          this.editors[0].focus();
-          this.element.scrollIntoView();
-        }).catch((err) => {
-          console.warn('An editor did not initialize properly when trying to focus:', err);
-        });
+        this.editorsReady[0]
+          ?.then(() => {
+            this.editors[0].focus();
+            this.element.scrollIntoView();
+          })
+          .catch((err) => {
+            console.warn('An editor did not initialize properly when trying to focus:', err);
+          });
         break;
       }
       case 'quill': {
-        this.editorsReady[0]?.then(() => {
-          this.editors[0].focus();
-        }).catch((err) => {
-          console.warn('An editor did not initialize properly when trying to focus:', err);
-        });
+        this.editorsReady[0]
+          ?.then(() => {
+            this.editors[0].focus();
+          })
+          .catch((err) => {
+            console.warn('An editor did not initialize properly when trying to focus:', err);
+          });
         break;
       }
     }

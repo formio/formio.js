@@ -99,7 +99,7 @@ export default {
             format: 'dd-MMM-yyyy HH:mm',
             hourIncrement: 1,
             minuteIncrement: 1,
-            'time_24hr': true,
+            time_24hr: true,
             minDate: null,
             disableWeekends: true,
             disableWeekdays: false,
@@ -154,7 +154,7 @@ export default {
               name: 'On Hide',
               trigger: {
                 type: 'event',
-                event: 'hide'
+                event: 'hide',
               },
               actions: [
                 {
@@ -163,17 +163,17 @@ export default {
                   property: {
                     label: 'Hidden',
                     value: 'hidden',
-                    type: 'boolean'
+                    type: 'boolean',
                   },
-                  state: true
-                }
-              ]
-            }
+                  state: true,
+                },
+              ],
+            },
           ],
           type: 'textfield',
           input: true,
         },
       ],
-    }
-  ]
+    },
+  ],
 };

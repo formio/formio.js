@@ -4,60 +4,60 @@ import Harness from '../harness';
 
 export default {
   title: 'Form Validation Test',
-   
+
   form: {
-    "components": [
+    components: [
       {
-        "label": "validationCall Text 1",
-        "allowMultipleMasks": false,
-        "showWordCount": false,
-        "showCharCount": false,
-        "tableView": true,
-        "alwaysEnabled": false,
-        "type": "textfield",
-        "input": true,
-        "key": "textField",
-        "defaultValue": "",
-        "validate": {
-          "custom": "console.log('1');\nvalid = true;",
-          "unique": false,
-          "customMessage": "",
-          "json": ""
+        label: 'validationCall Text 1',
+        allowMultipleMasks: false,
+        showWordCount: false,
+        showCharCount: false,
+        tableView: true,
+        alwaysEnabled: false,
+        type: 'textfield',
+        input: true,
+        key: 'textField',
+        defaultValue: '',
+        validate: {
+          custom: "console.log('1');\nvalid = true;",
+          unique: false,
+          customMessage: '',
+          json: '',
         },
-        "inputFormat": "plain",
-        "encrypted": false
+        inputFormat: 'plain',
+        encrypted: false,
       },
       {
-        "label": "validationCall Number 1",
-        "mask": false,
-        "tableView": true,
-        "alwaysEnabled": false,
-        "type": "number",
-        "input": true,
-        "key": "number",
-        "validate": {
-          "custom": "console.log('2');\nvalid = true;",
-          "customMessage": "",
-          "json": ""
+        label: 'validationCall Number 1',
+        mask: false,
+        tableView: true,
+        alwaysEnabled: false,
+        type: 'number',
+        input: true,
+        key: 'number',
+        validate: {
+          custom: "console.log('2');\nvalid = true;",
+          customMessage: '',
+          json: '',
         },
-        "delimiter": false,
-        "requireDecimal": false,
-        "encrypted": false,
-        "properties": {},
-        "tags": []
+        delimiter: false,
+        requireDecimal: false,
+        encrypted: false,
+        properties: {},
+        tags: [],
       },
       {
-        "type": "button",
-        "label": "Submit",
-        "key": "submit",
-        "disableOnInvalid": true,
-        "theme": "primary",
-        "input": true,
-        "tableView": true
-      }
-    ]
+        type: 'button',
+        label: 'Submit',
+        key: 'submit',
+        disableOnInvalid: true,
+        theme: 'primary',
+        input: true,
+        tableView: true,
+      },
+    ],
   },
-   
+
   tests: {
     'validationCall Text 1 change should not trigger number validation'(form, done) {
       const [textfield, number] = form.components;
@@ -110,6 +110,6 @@ export default {
         assert.equal(numberEvalSpy.callCount, 1);
         done();
       }, 250);
-    }
-  }
+    },
+  },
 };

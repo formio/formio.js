@@ -1,9 +1,10 @@
 declare namespace _default {
-    const _id: string;
-    const type: string;
-    const tags: never[];
-    const owner: string;
-    const components: ({
+  const _id: string;
+  const type: string;
+  const tags: never[];
+  const owner: string;
+  const components: (
+    | {
         label: string;
         labelPosition: string;
         placeholder: string;
@@ -12,7 +13,7 @@ declare namespace _default {
         prefix: string;
         suffix: string;
         widget: {
-            type: string;
+          type: string;
         };
         inputMask: string;
         allowMultipleMasks: boolean;
@@ -44,17 +45,17 @@ declare namespace _default {
         allowCalculateOverride: boolean;
         validateOn: string;
         validate: {
-            required: boolean;
-            pattern: string;
-            customMessage: string;
-            custom: string;
-            customPrivate: boolean;
-            json: string;
-            minLength: string;
-            maxLength: string;
-            strictDateValidation: boolean;
-            multiple: boolean;
-            unique: boolean;
+          required: boolean;
+          pattern: string;
+          customMessage: string;
+          custom: string;
+          customPrivate: boolean;
+          json: string;
+          minLength: string;
+          maxLength: string;
+          strictDateValidation: boolean;
+          multiple: boolean;
+          unique: boolean;
         };
         unique: boolean;
         errorLabel: string;
@@ -62,21 +63,21 @@ declare namespace _default {
         tags: never[];
         properties: {};
         conditional: {
-            show: null;
-            when: null;
-            eq: string;
-            json: string;
+          show: null;
+          when: null;
+          eq: string;
+          json: string;
         };
         customConditional: string;
         logic: never[];
         attributes: {};
         overlay: {
-            style: string;
-            page: string;
-            left: string;
-            top: string;
-            width: string;
-            height: string;
+          style: string;
+          page: string;
+          left: string;
+          top: string;
+          width: string;
+          height: string;
         };
         type: string;
         input: boolean;
@@ -103,7 +104,8 @@ declare namespace _default {
         leftIcon?: undefined;
         rightIcon?: undefined;
         dataGridLabel?: undefined;
-    } | {
+      }
+    | {
         label: string;
         labelPosition: string;
         description: string;
@@ -138,17 +140,17 @@ declare namespace _default {
         allowCalculateOverride: boolean;
         validateOn: string;
         validate: {
-            required: boolean;
-            minLength: string;
-            maxLength: string;
-            customMessage: string;
-            custom: string;
-            customPrivate: boolean;
-            json: string;
-            strictDateValidation: boolean;
-            multiple: boolean;
-            unique: boolean;
-            pattern?: undefined;
+          required: boolean;
+          minLength: string;
+          maxLength: string;
+          customMessage: string;
+          custom: string;
+          customPrivate: boolean;
+          json: string;
+          strictDateValidation: boolean;
+          multiple: boolean;
+          unique: boolean;
+          pattern?: undefined;
         };
         unique: boolean;
         errorLabel: string;
@@ -156,21 +158,21 @@ declare namespace _default {
         tags: never[];
         properties: {};
         conditional: {
-            show: null;
-            when: null;
-            eq: string;
-            json: string;
+          show: null;
+          when: null;
+          eq: string;
+          json: string;
         };
         customConditional: string;
         logic: never[];
         attributes: {};
         overlay: {
-            style: string;
-            page: string;
-            left: string;
-            top: string;
-            width: string;
-            height: string;
+          style: string;
+          page: string;
+          left: string;
+          top: string;
+          width: string;
+          height: string;
         };
         type: string;
         input: boolean;
@@ -184,44 +186,45 @@ declare namespace _default {
         showWordCount: boolean;
         allowMultipleMasks: boolean;
         tree: boolean;
-        components: ({
-            label: string;
-            labelPosition: string;
-            placeholder: string;
-            description: string;
-            tooltip: string;
-            prefix: string;
-            suffix: string;
-            widget: {
+        components: (
+          | {
+              label: string;
+              labelPosition: string;
+              placeholder: string;
+              description: string;
+              tooltip: string;
+              prefix: string;
+              suffix: string;
+              widget: {
                 type: string;
-            };
-            customClass: string;
-            tabindex: string;
-            autocomplete: string;
-            hidden: boolean;
-            hideLabel: boolean;
-            mask: boolean;
-            autofocus: boolean;
-            spellcheck: boolean;
-            disabled: boolean;
-            tableView: boolean;
-            modalEdit: boolean;
-            multiple: boolean;
-            persistent: boolean;
-            delimiter: boolean;
-            requireDecimal: boolean;
-            inputFormat: string;
-            protected: boolean;
-            dbIndex: boolean;
-            encrypted: boolean;
-            redrawOn: string;
-            clearOnHide: boolean;
-            customDefaultValue: string;
-            calculateValue: string;
-            calculateServer: boolean;
-            allowCalculateOverride: boolean;
-            validateOn: string;
-            validate: {
+              };
+              customClass: string;
+              tabindex: string;
+              autocomplete: string;
+              hidden: boolean;
+              hideLabel: boolean;
+              mask: boolean;
+              autofocus: boolean;
+              spellcheck: boolean;
+              disabled: boolean;
+              tableView: boolean;
+              modalEdit: boolean;
+              multiple: boolean;
+              persistent: boolean;
+              delimiter: boolean;
+              requireDecimal: boolean;
+              inputFormat: string;
+              protected: boolean;
+              dbIndex: boolean;
+              encrypted: boolean;
+              redrawOn: string;
+              clearOnHide: boolean;
+              customDefaultValue: string;
+              calculateValue: string;
+              calculateServer: boolean;
+              allowCalculateOverride: boolean;
+              validateOn: string;
+              validate: {
                 required: boolean;
                 customMessage: string;
                 custom: string;
@@ -234,75 +237,76 @@ declare namespace _default {
                 unique: boolean;
                 step: string;
                 integer: string;
-            };
-            errorLabel: string;
-            key: string;
-            tags: never[];
-            properties: {};
-            conditional: {
+              };
+              errorLabel: string;
+              key: string;
+              tags: never[];
+              properties: {};
+              conditional: {
                 show: boolean;
                 when: string;
                 eq: string;
                 json: string;
-            };
-            customConditional: string;
-            logic: never[];
-            attributes: {};
-            overlay: {
+              };
+              customConditional: string;
+              logic: never[];
+              attributes: {};
+              overlay: {
                 style: string;
                 page: string;
                 left: string;
                 top: string;
                 width: string;
                 height: string;
-            };
-            type: string;
-            input: boolean;
-            unique: boolean;
-            refreshOn: string;
-            showCharCount: boolean;
-            showWordCount: boolean;
-            allowMultipleMasks: boolean;
-            id: string;
-            defaultValue: null;
-        } | {
-            label: string;
-            labelPosition: string;
-            placeholder: string;
-            description: string;
-            tooltip: string;
-            prefix: string;
-            suffix: string;
-            widget: {
+              };
+              type: string;
+              input: boolean;
+              unique: boolean;
+              refreshOn: string;
+              showCharCount: boolean;
+              showWordCount: boolean;
+              allowMultipleMasks: boolean;
+              id: string;
+              defaultValue: null;
+            }
+          | {
+              label: string;
+              labelPosition: string;
+              placeholder: string;
+              description: string;
+              tooltip: string;
+              prefix: string;
+              suffix: string;
+              widget: {
                 type: string;
-            };
-            customClass: string;
-            tabindex: string;
-            autocomplete: string;
-            hidden: boolean;
-            hideLabel: boolean;
-            mask: boolean;
-            autofocus: boolean;
-            spellcheck: boolean;
-            disabled: boolean;
-            tableView: boolean;
-            modalEdit: boolean;
-            multiple: boolean;
-            persistent: boolean;
-            delimiter: boolean;
-            requireDecimal: boolean;
-            inputFormat: string;
-            protected: boolean;
-            dbIndex: boolean;
-            encrypted: boolean;
-            redrawOn: string;
-            clearOnHide: boolean;
-            customDefaultValue: string;
-            calculateValue: string;
-            calculateServer: boolean;
-            allowCalculateOverride: boolean;
-            validateOn: string;
-            validate: {
+              };
+              customClass: string;
+              tabindex: string;
+              autocomplete: string;
+              hidden: boolean;
+              hideLabel: boolean;
+              mask: boolean;
+              autofocus: boolean;
+              spellcheck: boolean;
+              disabled: boolean;
+              tableView: boolean;
+              modalEdit: boolean;
+              multiple: boolean;
+              persistent: boolean;
+              delimiter: boolean;
+              requireDecimal: boolean;
+              inputFormat: string;
+              protected: boolean;
+              dbIndex: boolean;
+              encrypted: boolean;
+              redrawOn: string;
+              clearOnHide: boolean;
+              customDefaultValue: string;
+              calculateValue: string;
+              calculateServer: boolean;
+              allowCalculateOverride: boolean;
+              validateOn: string;
+              validate: {
                 required: boolean;
                 customMessage: string;
                 custom: string;
@@ -315,38 +319,39 @@ declare namespace _default {
                 unique: boolean;
                 step: string;
                 integer: string;
-            };
-            errorLabel: string;
-            key: string;
-            tags: never[];
-            properties: {};
-            conditional: {
+              };
+              errorLabel: string;
+              key: string;
+              tags: never[];
+              properties: {};
+              conditional: {
                 show: null;
                 when: null;
                 eq: string;
                 json: string;
-            };
-            customConditional: string;
-            logic: never[];
-            attributes: {};
-            overlay: {
+              };
+              customConditional: string;
+              logic: never[];
+              attributes: {};
+              overlay: {
                 style: string;
                 page: string;
                 left: string;
                 top: string;
                 width: string;
                 height: string;
-            };
-            type: string;
-            input: boolean;
-            unique: boolean;
-            refreshOn: string;
-            showCharCount: boolean;
-            showWordCount: boolean;
-            allowMultipleMasks: boolean;
-            id: string;
-            defaultValue: null;
-        })[];
+              };
+              type: string;
+              input: boolean;
+              unique: boolean;
+              refreshOn: string;
+              showCharCount: boolean;
+              showWordCount: boolean;
+              allowMultipleMasks: boolean;
+              id: string;
+              defaultValue: null;
+            }
+        )[];
         id: string;
         inputMask?: undefined;
         autocomplete?: undefined;
@@ -363,7 +368,8 @@ declare namespace _default {
         leftIcon?: undefined;
         rightIcon?: undefined;
         dataGridLabel?: undefined;
-    } | {
+      }
+    | {
         type: string;
         label: string;
         key: string;
@@ -401,36 +407,36 @@ declare namespace _default {
         calculateValue: string;
         calculateServer: boolean;
         widget: {
-            type: string;
+          type: string;
         };
         attributes: {};
         validateOn: string;
         validate: {
-            required: boolean;
-            custom: string;
-            customPrivate: boolean;
-            strictDateValidation: boolean;
-            multiple: boolean;
-            unique: boolean;
-            pattern?: undefined;
-            customMessage?: undefined;
-            json?: undefined;
-            minLength?: undefined;
-            maxLength?: undefined;
+          required: boolean;
+          custom: string;
+          customPrivate: boolean;
+          strictDateValidation: boolean;
+          multiple: boolean;
+          unique: boolean;
+          pattern?: undefined;
+          customMessage?: undefined;
+          json?: undefined;
+          minLength?: undefined;
+          maxLength?: undefined;
         };
         conditional: {
-            show: null;
-            when: null;
-            eq: string;
-            json?: undefined;
+          show: null;
+          when: null;
+          eq: string;
+          json?: undefined;
         };
         overlay: {
-            style: string;
-            left: string;
-            top: string;
-            width: string;
-            height: string;
-            page?: undefined;
+          style: string;
+          left: string;
+          top: string;
+          width: string;
+          height: string;
+          page?: undefined;
         };
         allowCalculateOverride: boolean;
         encrypted: boolean;
@@ -462,11 +468,12 @@ declare namespace _default {
         initEmpty?: undefined;
         tree?: undefined;
         components?: undefined;
-    })[];
-    const title: string;
-    const display: string;
-    const name: string;
-    const path: string;
-    const machineName: string;
+      }
+  )[];
+  const title: string;
+  const display: string;
+  const name: string;
+  const path: string;
+  const machineName: string;
 }
 export default _default;

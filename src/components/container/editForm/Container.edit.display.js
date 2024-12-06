@@ -1,18 +1,18 @@
 export default [
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'description',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'autofocus',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tabindex',
-    ignore: true
+    ignore: true,
   },
 ];

@@ -1,4 +1,3 @@
- 
 export default [
   {
     weight: 0,
@@ -9,7 +8,7 @@ export default [
     placeholder: 'Field Label',
     tooltip: 'The label for this field that will appear next to it.',
     validate: {
-      required: true
+      required: true,
     },
     autofocus: true,
   },
@@ -29,9 +28,9 @@ export default [
         { label: 'Left (Right-aligned)', value: 'left-right' },
         { label: 'Right (Left-aligned)', value: 'right-left' },
         { label: 'Right (Right-aligned)', value: 'right-right' },
-        { label: 'Bottom', value: 'bottom' }
-      ]
-    }
+        { label: 'Bottom', value: 'bottom' },
+      ],
+    },
   },
   {
     type: 'number',
@@ -45,16 +44,16 @@ export default [
     suffix: '%',
     validate: {
       min: 0,
-      max: 100
+      max: 100,
     },
     conditional: {
       json: {
         and: [
           { '!==': [{ var: 'data.labelPosition' }, 'top'] },
           { '!==': [{ var: 'data.labelPosition' }, 'bottom'] },
-        ]
-      }
-    }
+        ],
+      },
+    },
   },
   {
     type: 'number',
@@ -68,16 +67,16 @@ export default [
     suffix: '%',
     validate: {
       min: 0,
-      max: 100
+      max: 100,
     },
     conditional: {
       json: {
         and: [
           { '!==': [{ var: 'data.labelPosition' }, 'top'] },
           { '!==': [{ var: 'data.labelPosition' }, 'bottom'] },
-        ]
-      }
-    }
+        ],
+      },
+    },
   },
   {
     weight: 100,
@@ -86,7 +85,7 @@ export default [
     key: 'placeholder',
     label: 'Placeholder',
     placeholder: 'Placeholder',
-    tooltip: 'The placeholder text that will appear when this field is empty.'
+    tooltip: 'The placeholder text that will appear when this field is empty.',
   },
   {
     weight: 200,
@@ -125,7 +124,7 @@ export default [
     key: 'customClass',
     label: 'Custom CSS Class',
     placeholder: 'Custom CSS Class',
-    tooltip: 'Custom CSS class to add to this component.'
+    tooltip: 'Custom CSS class to add to this component.',
   },
   {
     weight: 600,
@@ -134,7 +133,8 @@ export default [
     key: 'tabindex',
     label: 'Tab Index',
     placeholder: '0',
-    tooltip: 'Sets the tabindex attribute of this component to override the tab order of the form. See the <a href=\'https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex\'>MDN documentation</a> on tabindex for more information.'
+    tooltip:
+      "Sets the tabindex attribute of this component to override the tab order of the form. See the <a href='https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex'>MDN documentation</a> on tabindex for more information.",
   },
   {
     weight: 1100,
@@ -142,15 +142,16 @@ export default [
     label: 'Hidden',
     tooltip: 'A hidden field is still a part of the form, but is hidden from view.',
     key: 'hidden',
-    input: true
+    input: true,
   },
   {
     weight: 1200,
     type: 'checkbox',
     label: 'Hide Label',
-    tooltip: 'Hide the label (title, if no label) of this component. This allows you to show the label in the form builder, but not when it is rendered.',
+    tooltip:
+      'Hide the label (title, if no label) of this component. This allows you to show the label in the form builder, but not when it is rendered.',
     key: 'hideLabel',
-    input: true
+    input: true,
   },
   {
     weight: 1350,
@@ -158,7 +159,7 @@ export default [
     label: 'Initial Focus',
     tooltip: 'Make this field the initially focused element on this form.',
     key: 'autofocus',
-    input: true
+    input: true,
   },
   {
     weight: 1370,
@@ -169,7 +170,7 @@ export default [
     input: true,
     customConditional(context) {
       return context.instance.options?.flags?.inDataGrid;
-    }
+    },
   },
   {
     weight: 1400,
@@ -177,7 +178,7 @@ export default [
     label: 'Disabled',
     tooltip: 'Disable the form input.',
     key: 'disabled',
-    input: true
+    input: true,
   },
   {
     weight: 1500,
@@ -185,7 +186,7 @@ export default [
     label: 'Table View',
     tooltip: 'Shows this value within the table view of the submissions.',
     key: 'tableView',
-    input: true
+    input: true,
   },
   {
     weight: 1600,
@@ -193,7 +194,6 @@ export default [
     label: 'Modal Edit',
     tooltip: 'Opens up a modal to edit the value of this component.',
     key: 'modalEdit',
-    input: true
-  }
+    input: true,
+  },
 ];
- 

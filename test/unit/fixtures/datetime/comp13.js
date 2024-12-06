@@ -7,7 +7,7 @@ export default {
       tableView: false,
       datePicker: {
         disableWeekends: false,
-        disableWeekdays: false
+        disableWeekdays: false,
       },
       enableMinDateInput: false,
       enableMaxDateInput: false,
@@ -26,13 +26,13 @@ export default {
         format: 'yyyy-MM-dd hh:mm a',
         hourIncrement: 1,
         minuteIncrement: 1,
-         
+
         time_24hr: false,
         minDate: null,
         disableWeekends: false,
         disableWeekdays: false,
-        maxDate: null
-      }
+        maxDate: null,
+      },
     },
     {
       label: 'Max Date',
@@ -40,11 +40,12 @@ export default {
       enableMinDateInput: false,
       datePicker: {
         disableWeekends: false,
-        disableWeekdays: false
+        disableWeekdays: false,
       },
       enableMaxDateInput: false,
       validate: {
-        custom: "var minDate = moment(data.minDate);\nvar maxDate = moment(data.maxDate);\nvalid = maxDate.isAfter(minDate)? true : 'Max date must be after min date'"
+        custom:
+          "var minDate = moment(data.minDate);\nvar maxDate = moment(data.maxDate);\nvalid = maxDate.isAfter(minDate)? true : 'Max date must be after min date'",
       },
       key: 'maxDate',
       type: 'datetime',
@@ -61,13 +62,13 @@ export default {
         format: 'yyyy-MM-dd hh:mm a',
         hourIncrement: 1,
         minuteIncrement: 1,
-         
+
         time_24hr: false,
         minDate: null,
         disableWeekends: false,
         disableWeekdays: false,
-        maxDate: null
-      }
+        maxDate: null,
+      },
     },
     {
       label: 'In Between Date',
@@ -75,7 +76,7 @@ export default {
       datePicker: {
         disableFunction: '!moment(date).isBetween(moment(data.minDate), moment(data.maxDate))',
         disableWeekends: false,
-        disableWeekdays: false
+        disableWeekdays: false,
       },
       enableMinDateInput: false,
       enableMaxDateInput: false,
@@ -95,14 +96,14 @@ export default {
         format: 'yyyy-MM-dd hh:mm a',
         hourIncrement: 1,
         minuteIncrement: 1,
-         
+
         time_24hr: false,
         minDate: null,
         disableWeekends: false,
         disableWeekdays: false,
         disableFunction: '!moment(date).isBetween(moment(data.minDate), moment(data.maxDate))',
-        maxDate: null
-      }
+        maxDate: null,
+      },
     },
     {
       type: 'button',
@@ -110,7 +111,7 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
 };

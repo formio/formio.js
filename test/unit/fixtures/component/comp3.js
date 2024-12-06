@@ -4,9 +4,9 @@ export default {
   modalEdit: true,
   multiple: true,
   validate: {
-    multiple: true
+    multiple: true,
   },
   key: 'textField',
   type: 'textfield',
-  input: true
+  input: true,
 };

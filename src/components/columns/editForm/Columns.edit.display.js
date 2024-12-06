@@ -1,39 +1,39 @@
 export default [
   {
     key: 'labelPosition',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'description',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tooltip',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'autofocus',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tabindex',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'disabled',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tableView',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'hideLabel',
-    ignore: true
+    ignore: true,
   },
   {
     weight: 0,
@@ -44,10 +44,10 @@ export default [
     placeholder: 'Field Label',
     tooltip: 'The label for this field.',
     validate: {
-      required: true
+      required: true,
     },
     autofocus: true,
-    overrideEditForm: true
+    overrideEditForm: true,
   },
   {
     weight: 150,
@@ -56,13 +56,14 @@ export default [
     key: 'columns',
     label: 'Column Properties',
     addAnother: 'Add Column',
-    tooltip: 'The size and width settings for each column. One row is equal to 12. (e.g., a row with two columns spanning the entire page should be 6 and 6)',
+    tooltip:
+      'The size and width settings for each column. One row is equal to 12. (e.g., a row with two columns spanning the entire page should be 6 and 6)',
     reorder: true,
     components: [
       {
         type: 'hidden',
         key: 'components',
-        defaultValue: []
+        defaultValue: [],
       },
       {
         type: 'select',
@@ -83,9 +84,9 @@ export default [
         type: 'number',
         key: 'width',
         defaultValue: 6,
-        label: 'Width'
-      }
-    ]
+        label: 'Width',
+      },
+    ],
   },
   {
     weight: 160,
@@ -93,10 +94,10 @@ export default [
     label: 'Auto adjust columns',
     tooltip: 'Will automatically adjust columns based on if nested components are hidden.',
     key: 'autoAdjust',
-    input: true
+    input: true,
   },
   {
     key: 'hideLabel',
-    ignore: true
+    ignore: true,
   },
 ];

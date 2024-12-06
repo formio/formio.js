@@ -11,26 +11,26 @@ export default {
       fields: {
         day: {
           hide: false,
-          required: true
+          required: true,
         },
         month: {
-          hide: false
+          hide: false,
         },
         year: {
-          hide: false
-        }
+          hide: false,
+        },
       },
       validateOn: 'blur',
       key: 'day',
       type: 'day',
       input: true,
-      defaultValue: '00/00/0000'
+      defaultValue: '00/00/0000',
     },
     {
       type: 'button',
       action: 'submit',
       label: 'Submit',
-      theme: 'primary'
-    }
-  ]
+      theme: 'primary',
+    },
+  ],
 };

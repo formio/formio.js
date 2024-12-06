@@ -88,7 +88,7 @@ export function getElementRect(element) {
     x: getPropertyValue(style, 'left'),
     y: getPropertyValue(style, 'top'),
     width: getPropertyValue(style, 'width'),
-    height: getPropertyValue(style, 'height')
+    height: getPropertyValue(style, 'height'),
   };
 }
 
@@ -100,8 +100,13 @@ export function getElementRect(element) {
 export function getScriptPlugin(property) {
   const obj = window[property];
   if (
-    typeof HTMLElement === 'object' ? obj instanceof HTMLElement : //DOM2
-      obj && typeof obj === 'object' && true && obj.nodeType === 1 && typeof obj.nodeName === 'string'
+    typeof HTMLElement === 'object'
+      ? obj instanceof HTMLElement //DOM2
+      : obj &&
+        typeof obj === 'object' &&
+        true &&
+        obj.nodeType === 1 &&
+        typeof obj.nodeName === 'string'
   ) {
     return undefined;
   }
@@ -116,11 +121,9 @@ export function getScriptPlugin(property) {
 export function boolValue(value) {
   if (_.isBoolean(value)) {
     return value;
-  }
-  else if (_.isString(value)) {
-    return (value.toLowerCase() === 'true');
-  }
-  else {
+  } else if (_.isString(value)) {
+    return value.toLowerCase() === 'true';
+  } else {
     return !!value;
   }
 }
@@ -143,13 +146,21 @@ export function isMongoId(text) {
 export function checkCalculated(component, submission, rowData) {
   // Process calculated value stuff if present.
   if (component.calculateValue) {
-    _.set(rowData, component.key, evaluate(component.calculateValue, {
-      value: undefined,
-      data: submission ? submission.data : rowData,
-      row: rowData,
-      util: this,
-      component
-    }, 'value'));
+    _.set(
+      rowData,
+      component.key,
+      evaluate(
+        component.calculateValue,
+        {
+          value: undefined,
+          data: submission ? submission.data : rowData,
+          row: rowData,
+          util: this,
+          component,
+        },
+        'value',
+      ),
+    );
   }
 }
 
@@ -178,19 +189,20 @@ function getConditionalPathsRecursive(conditionPaths, data) {
     const currentData = _.get(data, currentPath);
 
     if (Array.isArray(currentData) && currentData.filter(Boolean).length > 0) {
-      if (currentData.some(element => typeof element !== 'object')) {
+      if (currentData.some((element) => typeof element !== 'object')) {
         return;
       }
 
-      const hasInnerDataArray = currentData.find(x => Array.isArray(x[conditionPaths[currentLocalIndex]]));
+      const hasInnerDataArray = currentData.find((x) =>
+        Array.isArray(x[conditionPaths[currentLocalIndex]]),
+      );
 
       if (hasInnerDataArray) {
         currentData.forEach((_, indexOutside) => {
           const innerCompDataPath = `${currentPath}[${indexOutside}].${conditionPaths[currentLocalIndex]}`;
           getConditionalPaths(data, innerCompDataPath, currentLocalIndex + 1);
         });
-      }
-      else {
+      } else {
         currentData.forEach((x, index) => {
           if (!_.isNil(x[conditionPaths[currentLocalIndex]])) {
             const compDataPath = `${currentPath}[${index}].${conditionPaths[currentLocalIndex]}`;
@@ -198,13 +210,16 @@ function getConditionalPathsRecursive(conditionPaths, data) {
           }
         });
       }
-    }
-    else {
+    } else {
       if (!conditionPaths[currentGlobalIndex]) {
         return;
       }
       currentGlobalIndex = currentGlobalIndex + 1;
-      getConditionalPaths(data, `${currentPath}.${conditionPaths[currentGlobalIndex - 1]}`, currentGlobalIndex);
+      getConditionalPaths(
+        data,
+        `${currentPath}.${conditionPaths[currentGlobalIndex - 1]}`,
+        currentGlobalIndex,
+      );
     }
   };
 
@@ -213,15 +228,15 @@ function getConditionalPathsRecursive(conditionPaths, data) {
   return conditionalPathsArray;
 }
 
- /**
-  *
-  * @param component
-  * @param condition
-  * @param row
-  * @param data
-  * @param instance
-  */
- export function checkSimpleConditional(component, condition, row, data, instance) {
+/**
+ *
+ * @param component
+ * @param condition
+ * @param row
+ * @param data
+ * @param instance
+ */
+export function checkSimpleConditional(component, condition, row, data, instance) {
   if (condition.when) {
     const value = getComponentActualValue(condition.when, data, row);
 
@@ -238,9 +253,8 @@ function getConditionalPathsRecursive(conditionPaths, data) {
     }
 
     return (String(value) === eq) === (show === 'true');
-  }
-  else {
-    const { conditions = [], conjunction = 'all',  show = true } = condition;
+  } else {
+    const { conditions = [], conjunction = 'all', show = true } = condition;
 
     if (!conditions.length) {
       return true;
@@ -254,23 +268,37 @@ function getConditionalPathsRecursive(conditionPaths, data) {
 
       const splittedConditionPath = conditionComponentPath.split('.');
 
-      const conditionalPaths = instance?.parent?.type === 'datagrid' || instance?.parent?.type === 'editgrid'  ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
+      const conditionalPaths =
+        instance?.parent?.type === 'datagrid' || instance?.parent?.type === 'editgrid'
+          ? []
+          : getConditionalPathsRecursive(splittedConditionPath, data);
 
-      if (conditionalPaths.length>0) {
+      if (conditionalPaths.length > 0) {
         return conditionalPaths.map((path) => {
           const value = getComponentActualValue(path, data, row);
 
           const ConditionOperator = ConditionOperators[operator];
           return ConditionOperator
-            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+            ? new ConditionOperator().getResult({
+                value,
+                comparedValue,
+                instance,
+                component,
+                conditionComponentPath,
+              })
             : true;
         });
-      }
-      else {
+      } else {
         const value = getComponentActualValue(conditionComponentPath, data, row);
         const СonditionOperator = ConditionOperators[operator];
         return СonditionOperator
-          ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+          ? new СonditionOperator().getResult({
+              value,
+              comparedValue,
+              instance,
+              component,
+              conditionComponentPath,
+            })
           : true;
       }
     });
@@ -279,10 +307,10 @@ function getConditionalPathsRecursive(conditionPaths, data) {
 
     switch (conjunction) {
       case 'any':
-        result = _.some(conditionsResult.flat(), res => !!res);
+        result = _.some(conditionsResult.flat(), (res) => !!res);
         break;
       default:
-        result = _.every(conditionsResult.flat(), res => !!res);
+        result = _.every(conditionsResult.flat(), (res) => !!res);
     }
 
     return show ? result : !result;
@@ -326,13 +354,23 @@ export function getComponentActualValue(compPath, data, row) {
  * @param {import('../../src/components/_classes/component/Component').Component} instance - The component instance.
  * @returns {*} - The result of the evaulation.
  */
-export function checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {
+export function checkCustomConditional(
+  component,
+  custom,
+  row,
+  data,
+  form,
+  variable,
+  onError,
+  instance,
+) {
   if (typeof custom === 'string') {
     custom = `var ${variable} = true; ${custom}; return ${variable};`;
   }
-  const value = (instance && instance.evaluate) ?
-    instance.evaluate(custom, { row, data, form }) :
-    evaluate(custom, { row, data, form });
+  const value =
+    instance && instance.evaluate
+      ? instance.evaluate(custom, { row, data, form })
+      : evaluate(custom, { row, data, form });
   if (value === null) {
     return onError;
   }
@@ -357,8 +395,7 @@ export function checkJsonConditional(component, json, row, data, form, onError) 
       form,
       _,
     });
-  }
-  catch (err) {
+  } catch (err) {
     console.warn(`An error occurred in jsonLogic advanced condition for ${component.key}`, err);
     return onError;
   }
@@ -381,9 +418,10 @@ function getRow(component, row, instance, conditional) {
   }
   const dataParent = getDataParentComponent(instance);
   const parentPath = dataParent ? getComponentPath(dataParent) : null;
-  const isTriggerCondtionComponentPath = condition.when || !condition.conditions
-    ? condition.when?.startsWith(parentPath)
-    : _.some(condition.conditions, cond => cond.component.startsWith(parentPath));
+  const isTriggerCondtionComponentPath =
+    condition.when || !condition.conditions
+      ? condition.when?.startsWith(parentPath)
+      : _.some(condition.conditions, (cond) => cond.component.startsWith(parentPath));
 
   if (dataParent && isTriggerCondtionComponentPath) {
     const newRow = {};
@@ -406,13 +444,27 @@ function getRow(component, row, instance, conditional) {
 export function checkCondition(component, row, data, form, instance) {
   const { customConditional, conditional } = component;
   if (customConditional) {
-    return checkCustomConditional(component, customConditional, row, data, form, 'show', true, instance);
-  }
-  else if (conditional && (conditional.when || _.some(conditional.conditions || [], condition => condition.component && condition.operator))) {
+    return checkCustomConditional(
+      component,
+      customConditional,
+      row,
+      data,
+      form,
+      'show',
+      true,
+      instance,
+    );
+  } else if (
+    conditional &&
+    (conditional.when ||
+      _.some(
+        conditional.conditions || [],
+        (condition) => condition.component && condition.operator,
+      ))
+  ) {
     row = getRow(component, row, instance);
     return checkSimpleConditional(component, conditional, row, data, instance);
-  }
-  else if (conditional && conditional.json) {
+  } else if (conditional && conditional.json) {
     return checkJsonConditional(component, conditional.json, row, data, form, true);
   }
 
@@ -441,7 +493,16 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
       row = getRow(component, row, instance, trigger.simple);
       return checkSimpleConditional(component, trigger.simple, row, data, instance);
     case 'javascript':
-      return checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
+      return checkCustomConditional(
+        component,
+        trigger.javascript,
+        row,
+        data,
+        form,
+        'result',
+        false,
+        instance,
+      );
     case 'json':
       return checkJsonConditional(component, trigger.json, row, data, form, false);
   }
@@ -482,9 +543,10 @@ export function setActionProperty(component, action, result, row, data, instance
       };
       const textValue = action.property.component ? action[action.property.component] : action.text;
       const currentValue = _.get(component, property, '');
-      const newValue = (instance && instance.interpolate)
-        ? instance.interpolate(textValue, evalData)
-        : Evaluator.interpolate(textValue, evalData);
+      const newValue =
+        instance && instance.interpolate
+          ? instance.interpolate(textValue, evalData)
+          : Evaluator.interpolate(textValue, evalData);
 
       if (newValue !== currentValue) {
         _.set(component, property, newValue);
@@ -547,17 +609,18 @@ export function uniqueName(name, template, evalContext) {
   }
   const parts = name.split('.');
   let fileName = parts.slice(0, parts.length - 1).join('.');
-  const extension = parts.length > 1
-    ? `.${_.last(parts)}`
-    : '';
+  const extension = parts.length > 1 ? `.${_.last(parts)}` : '';
   //allow only 100 characters from original name to avoid issues with filename length restrictions
   fileName = fileName.substr(0, 100);
   evalContext = Object.assign(evalContext || {}, {
     fileName,
-    guid: guid()
+    guid: guid(),
   });
   //only letters, numbers, dots, dashes, underscores and spaces are allowed. Anything else will be replaced with dash
-  const uniqueName = `${Evaluator.interpolate(template, evalContext)}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, '-');
+  const uniqueName = `${Evaluator.interpolate(template, evalContext)}${extension}`.replace(
+    /[^0-9a-zA-Z.\-_ ]/g,
+    '-',
+  );
   return uniqueName;
 }
 
@@ -567,10 +630,8 @@ export function uniqueName(name, template, evalContext) {
  */
 export function guid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random()*16|0;
-    const v = c === 'x'
-      ? r
-      : (r&0x3|0x8);
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
@@ -587,12 +648,12 @@ export function getDateSetting(date) {
 
   if (date instanceof Date) {
     return date;
-  }
-  else if (typeof date.toDate === 'function') {
+  } else if (typeof date.toDate === 'function') {
     return date.isValid() ? date.toDate() : null;
   }
 
-  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date) : null;
+  let dateSetting =
+    typeof date !== 'string' || date.indexOf('moment(') === -1 ? moment(date) : null;
   if (dateSetting && dateSetting.isValid()) {
     return dateSetting.toDate();
   }
@@ -602,15 +663,12 @@ export function getDateSetting(date) {
     const value = Evaluator.evaluator(`return ${date};`, 'moment')(moment);
     if (typeof value === 'string') {
       dateSetting = moment(value);
-    }
-    else if (typeof value.toDate === 'function') {
+    } else if (typeof value.toDate === 'function') {
       dateSetting = moment(value.toDate().toUTCString());
-    }
-    else if (value instanceof Date) {
+    } else if (value instanceof Date) {
       dateSetting = moment(value);
     }
-  }
-  catch (ignoreErr) {
+  } catch (ignoreErr) {
     return null;
   }
 
@@ -656,14 +714,14 @@ export function currentTimezone() {
 export function offsetDate(date, timezone) {
   if (timezone === 'UTC') {
     return {
-      date: new Date(date.getTime() + (date.getTimezoneOffset() * 60000)),
-      abbr: 'UTC'
+      date: new Date(date.getTime() + date.getTimezoneOffset() * 60000),
+      abbr: 'UTC',
     };
   }
   const dateMoment = moment(date).tz(timezone);
   return {
-    date: new Date(date.getTime() + ((dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000)),
-    abbr: dateMoment.format('z')
+    date: new Date(date.getTime() + (dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000),
+    abbr: dateMoment.format('z'),
   };
 }
 
@@ -702,18 +760,19 @@ export function loadZones(url, timezone) {
   if (moment.zonesPromise) {
     return moment.zonesPromise;
   }
-  return moment.zonesPromise = fetch(url)
-  .then(resp => resp.json().then(zones => {
-    moment.tz.load(zones);
-    moment.zonesLoaded = true;
+  return (moment.zonesPromise = fetch(url).then((resp) =>
+    resp.json().then((zones) => {
+      moment.tz.load(zones);
+      moment.zonesLoaded = true;
 
-    // Trigger a global event that the timezones have finished loading.
-    if (document && document.createEvent && document.body && document.body.dispatchEvent) {
-      var event = document.createEvent('Event');
-      event.initEvent('zonesLoaded', true, true);
-      document.body.dispatchEvent(event);
-    }
-  }));
+      // Trigger a global event that the timezones have finished loading.
+      if (document && document.createEvent && document.body && document.body.dispatchEvent) {
+        var event = document.createEvent('Event');
+        event.initEvent('zonesLoaded', true, true);
+        document.body.dispatchEvent(event);
+      }
+    }),
+  ));
 }
 
 /**
@@ -731,7 +790,10 @@ export function momentDate(value, format, timezone) {
   if (timezone === 'UTC') {
     timezone = 'Etc/UTC';
   }
-  if ((timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) && moment.zonesLoaded) {
+  if (
+    (timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) &&
+    moment.zonesLoaded
+  ) {
     return momentDate.tz(timezone);
   }
   return momentDate;
@@ -754,8 +816,7 @@ export function formatDate(timezonesUrl, value, format, timezone, flatPickrInput
       loadZones(timezonesUrl);
       if (moment.zonesLoaded) {
         return momentDate.tz(timezone).format(convertFormatToMoment(format));
-      }
-      else {
+      } else {
         return momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, '')));
       }
     }
@@ -772,8 +833,7 @@ export function formatDate(timezonesUrl, value, format, timezone, flatPickrInput
   loadZones(timezonesUrl);
   if (moment.zonesLoaded && timezone) {
     return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
-  }
-  else {
+  } else {
     return momentDate.format(convertFormatToMoment(format));
   }
 }
@@ -800,8 +860,7 @@ export function formatOffset(timezonesUrl, formatFn, date, format, timezone) {
   if (moment.zonesLoaded) {
     const offset = offsetDate(date, timezone);
     return `${formatFn(offset.date, format)} ${offset.abbr}`;
-  }
-  else {
+  } else {
     return formatFn(date, format);
   }
 }
@@ -829,35 +888,37 @@ export function getLocaleDateFormatInfo(locale) {
  * @returns {string} - The converted format.
  */
 export function convertFormatToFlatpickr(format) {
-  return format
-  // Remove the Z timezone offset, not supported by flatpickr.
-    .replace(/Z/g, '')
+  return (
+    format
+      // Remove the Z timezone offset, not supported by flatpickr.
+      .replace(/Z/g, '')
 
-    // Year conversion.
-    .replace(/y/g, 'Y')
-    .replace('YYYY', 'Y')
-    .replace('YY', 'y')
+      // Year conversion.
+      .replace(/y/g, 'Y')
+      .replace('YYYY', 'Y')
+      .replace('YY', 'y')
 
-    // Month conversion.
-    .replace('MMMM', 'F')
-    .replace(/M/g, 'n')
-    .replace('nnn', 'M')
-    .replace('nn', 'm')
+      // Month conversion.
+      .replace('MMMM', 'F')
+      .replace(/M/g, 'n')
+      .replace('nnn', 'M')
+      .replace('nn', 'm')
 
-    // Day in month.
-    .replace(/d/g, 'j')
-    .replace(/jj/g, 'd')
+      // Day in month.
+      .replace(/d/g, 'j')
+      .replace(/jj/g, 'd')
 
-    // Day in week.
-    .replace('EEEE', 'l')
-    .replace('EEE', 'D')
+      // Day in week.
+      .replace('EEEE', 'l')
+      .replace('EEE', 'D')
 
-    // Hours, minutes, seconds
-    .replace('HH', 'H')
-    .replace('hh', 'G')
-    .replace('mm', 'i')
-    .replace('ss', 'S')
-    .replace(/a/g, 'K');
+      // Hours, minutes, seconds
+      .replace('HH', 'H')
+      .replace('hh', 'G')
+      .replace('mm', 'i')
+      .replace('ss', 'S')
+      .replace(/a/g, 'K')
+  );
 }
 
 /**
@@ -866,17 +927,19 @@ export function convertFormatToFlatpickr(format) {
  * @returns {string} - The converted format.
  */
 export function convertFormatToMoment(format) {
-  return format
-  // Year conversion.
-    .replace(/y/g, 'Y')
-    // Day in month.
-    .replace(/d/g, 'D')
-    // Day in week.
-    .replace(/E/g, 'd')
-    // AM/PM marker
-    .replace(/a/g, 'A')
-    // Unix Timestamp
-    .replace(/U/g, 'X');
+  return (
+    format
+      // Year conversion.
+      .replace(/y/g, 'Y')
+      // Day in month.
+      .replace(/d/g, 'D')
+      // Day in week.
+      .replace(/E/g, 'd')
+      // AM/PM marker
+      .replace(/a/g, 'A')
+      // Unix Timestamp
+      .replace(/U/g, 'X')
+  );
 }
 
 /**
@@ -885,19 +948,21 @@ export function convertFormatToMoment(format) {
  * @returns {string} - The converted format.
  */
 export function convertFormatToMask(format) {
-  return format
-  // Long month replacement.
-    .replace(/M{4}/g, 'MM')
-    // Initial short month conversion.
-    .replace(/M{3}/g, '***')
-    // Short month conversion if input as text.
-    .replace(/e/g, 'Q')
-    // Month number conversion.
-    .replace(/W/g, '99')
-    // Year conversion.
-    .replace(/[ydhmswHMG]/g, '9')
-    // AM/PM conversion.
-    .replace(/a/g, 'AA');
+  return (
+    format
+      // Long month replacement.
+      .replace(/M{4}/g, 'MM')
+      // Initial short month conversion.
+      .replace(/M{3}/g, '***')
+      // Short month conversion if input as text.
+      .replace(/e/g, 'Q')
+      // Month number conversion.
+      .replace(/W/g, '99')
+      // Year conversion.
+      .replace(/[ydhmswHMG]/g, '9')
+      // AM/PM conversion.
+      .replace(/a/g, 'AA')
+  );
 }
 
 /**
@@ -991,7 +1056,7 @@ export function matchInputMask(value, inputMask) {
     const char = value[i] || '';
     const charPart = inputMask[i];
 
-    if (!(_.isRegExp(charPart) && charPart.test(char) || charPart === char)) {
+    if (!((_.isRegExp(charPart) && charPart.test(char)) || charPart === char)) {
       return false;
     }
   }
@@ -1010,12 +1075,12 @@ export function getNumberSeparators(lang = 'en') {
   if (!delimeters) {
     return {
       delimiter: ',',
-      decimalSeparator: '.'
+      decimalSeparator: '.',
     };
   }
   return {
-    delimiter: (delimeters.length > 1) ? delimeters[1] : ',',
-    decimalSeparator: (delimeters.length > 2) ? delimeters[2] : '.',
+    delimiter: delimeters.length > 1 ? delimeters[1] : ',',
+    decimalSeparator: delimeters.length > 2 ? delimeters[2] : '.',
   };
 }
 
@@ -1052,28 +1117,26 @@ export function getNumberDecimalLimit(component, defaultLimit) {
  * @param {string} arg0.lang - The language code to use.
  * @returns {{prefix: string, suffix: string}} - The currency affixes.
  */
-export function getCurrencyAffixes({
-   currency,
-   decimalLimit,
-   decimalSeparator,
-   lang,
- }) {
+export function getCurrencyAffixes({ currency, decimalLimit, decimalSeparator, lang }) {
   // Get the prefix and suffix from the localized string.
   let regex = `(.*)?${(100).toLocaleString(lang)}`;
   if (decimalLimit) {
     regex += `${decimalSeparator === '.' ? '\\.' : decimalSeparator}${(0).toLocaleString(lang)}{${decimalLimit}}`;
   }
   regex += '(.*)?';
-  const parts = (100).toLocaleString(lang, {
-    style: 'currency',
-    currency: currency ? currency : 'USD',
-    useGrouping: true,
-    maximumFractionDigits: decimalLimit || 0,
-    minimumFractionDigits: decimalLimit || 0
-  }).replace('.', decimalSeparator).match(new RegExp(regex));
+  const parts = (100)
+    .toLocaleString(lang, {
+      style: 'currency',
+      currency: currency ? currency : 'USD',
+      useGrouping: true,
+      maximumFractionDigits: decimalLimit || 0,
+      minimumFractionDigits: decimalLimit || 0,
+    })
+    .replace('.', decimalSeparator)
+    .match(new RegExp(regex));
   return {
     prefix: parts?.[1] || '',
-    suffix: parts?.[2] || ''
+    suffix: parts?.[2] || '',
   };
 }
 
@@ -1116,8 +1179,7 @@ export function fieldData(data, component) {
       value = value[key];
     }
     return value;
-  }
-  else {
+  } else {
     // Convert old single field data in submissions to multiple
     if (component.multiple && !Array.isArray(data[component.key])) {
       data[component.key] = [data[component.key]];
@@ -1176,7 +1238,7 @@ export function iterateKey(key) {
     return `${key}1`;
   }
 
-  return key.replace(/(\d+)$/, function(suffix) {
+  return key.replace(/(\d+)$/, function (suffix) {
     return Number(suffix) + 1;
   });
 }
@@ -1205,7 +1267,7 @@ export function bootstrapVersion(options) {
   if (options.bootstrap) {
     return options.bootstrap;
   }
-  if ((typeof jQuery === 'function') && (typeof jQuery().collapse === 'function')) {
+  if (typeof jQuery === 'function' && typeof jQuery().collapse === 'function') {
     return parseInt(jQuery.fn.collapse.Constructor.VERSION.split('.')[0], 10);
   }
   if (window.bootstrap && window.bootstrap.Collapse) {
@@ -1235,7 +1297,7 @@ export function unfold(e) {
  */
 export const firstNonNil = _.flow([
   _.partialRight(_.map, unfold),
-  _.partialRight(_.find, v => !_.isUndefined(v))
+  _.partialRight(_.find, (v) => !_.isUndefined(v)),
 ]);
 
 /**
@@ -1281,7 +1343,7 @@ export function observeOverload(callback, options = {}) {
   let callCount = 0;
   let timeoutID = 0;
 
-  const reset = () => callCount = 0;
+  const reset = () => (callCount = 0);
 
   return () => {
     if (timeoutID !== 0) {
@@ -1313,7 +1375,11 @@ export function getContextComponents(context, excludeNested, excludedTypes = [])
 
   context.utils.eachComponent(context.instance.options.editForm.components, (component, path) => {
     const addToContextComponents = excludeNested ? !component.tree : true;
-    if (component.key !== context.data.key && addToContextComponents && !_.includes(excludedTypes, component.type)) {
+    if (
+      component.key !== context.data.key &&
+      addToContextComponents &&
+      !_.includes(excludedTypes, component.type)
+    ) {
       values.push({
         label: `${component.label || component.key} (${path})`,
         value: path,
@@ -1345,7 +1411,21 @@ export function getContextButtons(context) {
 }
 
 // Tags that could be in text, that should be ommited or handled in a special way
-const inTextTags = ['#text', 'A', 'B', 'EM', 'I', 'SMALL', 'STRONG', 'SUB', 'SUP', 'INS', 'DEL', 'MARK', 'CODE'];
+const inTextTags = [
+  '#text',
+  'A',
+  'B',
+  'EM',
+  'I',
+  'SMALL',
+  'STRONG',
+  'SUB',
+  'SUP',
+  'INS',
+  'DEL',
+  'MARK',
+  'CODE',
+];
 
 /**
  * Helper function for 'translateHTMLTemplate'. Translates text value of the passed html element.
@@ -1358,7 +1438,10 @@ function translateElemValue(elem, translate) {
     return elem.innerHTML;
   }
 
-  const elemValue = elem.innerText.replace(Evaluator.templateSettings.interpolate, '').replace(/\s\s+/g, ' ').trim();
+  const elemValue = elem.innerText
+    .replace(Evaluator.templateSettings.interpolate, '')
+    .replace(/\s\s+/g, ' ')
+    .trim();
   const translatedValue = translate(elemValue);
 
   if (elemValue !== translatedValue) {
@@ -1369,19 +1452,17 @@ function translateElemValue(elem, translate) {
         return elem.innerHTML.replace(elemValue, translatedValue);
       }
 
-      const translatedLinks = links.map(link => {
+      const translatedLinks = links.map((link) => {
         const linkElem = document.createElement('a');
         linkElem.innerHTML = link;
         return translateElemValue(linkElem, translate);
       });
 
       return `${translatedValue} (${translatedLinks.join(', ')})`;
-    }
-    else {
+    } else {
       return elem.innerText.replace(elemValue, translatedValue);
     }
-  }
-  else {
+  } else {
     return elem.innerHTML;
   }
 }
@@ -1394,16 +1475,16 @@ function translateElemValue(elem, translate) {
  */
 function translateDeepTag(tag, translate) {
   const children = tag.children.length && [...tag.children];
-  const shouldTranslateEntireContent = children && children.every(child =>
-    child.children.length === 0
-    && inTextTags.some(tag => child.nodeName === tag)
-  );
+  const shouldTranslateEntireContent =
+    children &&
+    children.every(
+      (child) => child.children.length === 0 && inTextTags.some((tag) => child.nodeName === tag),
+    );
 
   if (!children || shouldTranslateEntireContent) {
     tag.innerHTML = translateElemValue(tag, translate);
-  }
-  else {
-    children.forEach(child => translateDeepTag(child, translate));
+  } else {
+    children.forEach((child) => translateDeepTag(child, translate));
   }
 }
 
@@ -1444,39 +1525,61 @@ export function sanitize(string, options) {
   // Dompurify configuration
   const sanitizeOptions = {
     ADD_ATTR: ['ref', 'target'],
-    USE_PROFILES: { html: true }
+    USE_PROFILES: { html: true },
   };
   // Use profiles
   if (options.sanitizeConfig && options.sanitizeConfig.useProfiles) {
-    Object.keys(options.sanitizeConfig.useProfiles).forEach(key => {
+    Object.keys(options.sanitizeConfig.useProfiles).forEach((key) => {
       sanitizeOptions.USE_PROFILES[key] = options.sanitizeConfig.useProfiles[key];
     });
   }
   // Add attrs
-  if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.addAttr) && options.sanitizeConfig.addAttr.length > 0) {
+  if (
+    options.sanitizeConfig &&
+    Array.isArray(options.sanitizeConfig.addAttr) &&
+    options.sanitizeConfig.addAttr.length > 0
+  ) {
     options.sanitizeConfig.addAttr.forEach((attr) => {
       sanitizeOptions.ADD_ATTR.push(attr);
     });
   }
   // Add tags
-  if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.addTags) && options.sanitizeConfig.addTags.length > 0) {
+  if (
+    options.sanitizeConfig &&
+    Array.isArray(options.sanitizeConfig.addTags) &&
+    options.sanitizeConfig.addTags.length > 0
+  ) {
     sanitizeOptions.ADD_TAGS = options.sanitizeConfig.addTags;
   }
   // Allow tags
-  if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.allowedTags) && options.sanitizeConfig.allowedTags.length > 0) {
+  if (
+    options.sanitizeConfig &&
+    Array.isArray(options.sanitizeConfig.allowedTags) &&
+    options.sanitizeConfig.allowedTags.length > 0
+  ) {
     sanitizeOptions.ALLOWED_TAGS = options.sanitizeConfig.allowedTags;
   }
   // Allow attributes
-  if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.allowedAttrs) && options.sanitizeConfig.allowedAttrs.length > 0) {
+  if (
+    options.sanitizeConfig &&
+    Array.isArray(options.sanitizeConfig.allowedAttrs) &&
+    options.sanitizeConfig.allowedAttrs.length > 0
+  ) {
     sanitizeOptions.ALLOWED_ATTR = options.sanitizeConfig.allowedAttrs;
   }
   // Allowd URI Regex
   if (options.sanitizeConfig && options.sanitizeConfig.allowedUriRegex) {
     const allowedUriRegex = options.sanitizeConfig.allowedUriRegex;
-    sanitizeOptions.ALLOWED_URI_REGEXP = _.isString(allowedUriRegex) ? new RegExp(allowedUriRegex) : allowedUriRegex;
+    sanitizeOptions.ALLOWED_URI_REGEXP = _.isString(allowedUriRegex)
+      ? new RegExp(allowedUriRegex)
+      : allowedUriRegex;
   }
   // Allow to extend the existing array of elements that are safe for URI-like values
-  if (options.sanitizeConfig && Array.isArray(options.sanitizeConfig.addUriSafeAttr) && options.sanitizeConfig.addUriSafeAttr.length > 0) {
+  if (
+    options.sanitizeConfig &&
+    Array.isArray(options.sanitizeConfig.addUriSafeAttr) &&
+    options.sanitizeConfig.addUriSafeAttr.length > 0
+  ) {
     sanitizeOptions.ADD_URI_SAFE_ATTR = options.sanitizeConfig.addUriSafeAttr;
   }
   return dompurify.sanitize(string, sanitizeOptions);
@@ -1530,11 +1633,12 @@ export function getArrayFromComponentPath(pathStr) {
     }
     return pathStr;
   }
-  return pathStr.replace(/[[\]]/g, '.')
+  return pathStr
+    .replace(/[[\]]/g, '.')
     .replace(/\.\./g, '.')
     .replace(/(^\.)|(\.$)/g, '')
     .split('.')
-    .map(part => _.defaultTo(_.toNumber(part), part));
+    .map((part) => _.defaultTo(_.toNumber(part), part));
 }
 
 /**
@@ -1566,8 +1670,7 @@ export function getStringFromComponentPath(path) {
   path.forEach((part, i) => {
     if (_.isNumber(part)) {
       strPath += `[${part}]`;
-    }
-    else {
+    } else {
       strPath += i === 0 ? part : `.${part}`;
     }
   });
@@ -1610,22 +1713,23 @@ export function getBrowserInfo() {
   }
 
   const ua = window.navigator.userAgent.toLowerCase();
-  const match = /(edge|edg)\/([\w.]+)/.exec(ua) ||
-                /(opr)[/]([\w.]+)/.exec(ua) ||
-                /(yabrowser)[ /]([\w.]+)/.exec(ua) ||
-                /(chrome)[ /]([\w.]+)/.exec(ua) ||
-                /(iemobile)[/]([\w.]+)/.exec(ua) ||
-                /(version)(applewebkit)[ /]([\w.]+).*(safari)[ /]([\w.]+)/.exec(ua) ||
-                /(webkit)[ /]([\w.]+).*(version)[ /]([\w.]+).*(safari)[ /]([\w.]+)/.exec(ua) ||
-                /(webkit)[ /]([\w.]+)/.exec(ua) ||
-                /(opera)(?:.*version|)[ /]([\w.]+)/.exec(ua) ||
-                /(msie) ([\w.]+)/.exec(ua) ||
-                ua.indexOf('trident') >= 0 && /(rv)(?::| )([\w.]+)/.exec(ua) ||
-                ua.indexOf('compatible') < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
-                [];
+  const match =
+    /(edge|edg)\/([\w.]+)/.exec(ua) ||
+    /(opr)[/]([\w.]+)/.exec(ua) ||
+    /(yabrowser)[ /]([\w.]+)/.exec(ua) ||
+    /(chrome)[ /]([\w.]+)/.exec(ua) ||
+    /(iemobile)[/]([\w.]+)/.exec(ua) ||
+    /(version)(applewebkit)[ /]([\w.]+).*(safari)[ /]([\w.]+)/.exec(ua) ||
+    /(webkit)[ /]([\w.]+).*(version)[ /]([\w.]+).*(safari)[ /]([\w.]+)/.exec(ua) ||
+    /(webkit)[ /]([\w.]+)/.exec(ua) ||
+    /(opera)(?:.*version|)[ /]([\w.]+)/.exec(ua) ||
+    /(msie) ([\w.]+)/.exec(ua) ||
+    (ua.indexOf('trident') >= 0 && /(rv)(?::| )([\w.]+)/.exec(ua)) ||
+    (ua.indexOf('compatible') < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua)) ||
+    [];
   const matched = {
     browser: match[5] || match[3] || match[1] || '',
-    version: match[4] || match[2] || '0'
+    version: match[4] || match[2] || '0',
   };
 
   if (matched.browser) {
@@ -1668,10 +1772,14 @@ export function getComponentPathWithoutIndicies(path = '') {
  * @returns {string} - Path to the component
  */
 export function getComponentPath(component, path = '') {
-  if (!component || !component.key || component?._form?.display === 'wizard') { // unlike the Webform, the Wizard has the key and it is a duplicate of the panel key
+  if (!component || !component.key || component?._form?.display === 'wizard') {
+    // unlike the Webform, the Wizard has the key and it is a duplicate of the panel key
     return path;
   }
-  path = component.isInputComponent || component.input === true ? `${component.key}${path ? '.' : ''}${path}` : path;
+  path =
+    component.isInputComponent || component.input === true
+      ? `${component.key}${path ? '.' : ''}${path}`
+      : path;
   return getComponentPath(component.parent, path);
 }
 
@@ -1687,8 +1795,7 @@ export function getDataParentComponent(componentInstance) {
   const { parent } = componentInstance;
   if (parent && (parent.isInputComponent || parent.input)) {
     return parent;
-  }
-  else {
+  } else {
     return getDataParentComponent(parent);
   }
 }
@@ -1698,12 +1805,14 @@ export function getDataParentComponent(componentInstance) {
  * @param {any} value - The value to check
  * @returns {boolean} - TRUE if the value is a promise; FALSE otherwise
  */
- export function isPromise(value) {
-   return value
-     && value.then
-     && typeof value.then === 'function'
-     && Object.prototype.toString.call(value) === '[object Promise]';
- }
+export function isPromise(value) {
+  return (
+    value &&
+    value.then &&
+    typeof value.then === 'function' &&
+    Object.prototype.toString.call(value) === '[object Promise]'
+  );
+}
 
 /**
  * Determines if the component has a scoping parent in tree (a component which scopes its children and manages its
@@ -1719,8 +1828,7 @@ export function isInsideScopingComponent(componentInstance, firstPass = true) {
   const dataParent = getDataParentComponent(componentInstance);
   if (dataParent?.hasScopedChildren) {
     return true;
-  }
-  else if (dataParent?.parent) {
+  } else if (dataParent?.parent) {
     return isInsideScopingComponent(dataParent.parent, false);
   }
   return false;
@@ -1732,8 +1840,7 @@ export function isInsideScopingComponent(componentInstance, firstPass = true) {
  * @returns {NodeList<HTMLElement>} - The focusable elements within the provided element.
  */
 export function getFocusableElements(element) {
-  const focusableSelector =
-    `button:not([disabled]), input:not([disabled]), select:not([disabled]),
+  const focusableSelector = `button:not([disabled]), input:not([disabled]), select:not([disabled]),
     textarea:not([disabled]), button:not([disabled]), [href]`;
   return element.querySelectorAll(focusableSelector);
 }
@@ -1778,10 +1885,17 @@ export function getComponentSavedTypes(fullSchema) {
  * @returns {[]} - The interpolated errors
  */
 export const interpolateErrors = (component, errors, interpolateFn) => {
- return errors.map((error) => {
+  return errors.map((error) => {
     error.component = component;
     const { errorKeyOrMessage, context } = error;
-    const toInterpolate = component.errors && component.errors[errorKeyOrMessage] ? component.errors[errorKeyOrMessage] : errorKeyOrMessage;
-    return { ...error, message: unescapeHTML(interpolateFn(toInterpolate, context)), context: { ...context } };
+    const toInterpolate =
+      component.errors && component.errors[errorKeyOrMessage]
+        ? component.errors[errorKeyOrMessage]
+        : errorKeyOrMessage;
+    return {
+      ...error,
+      message: unescapeHTML(interpolateFn(toInterpolate, context)),
+      context: { ...context },
+    };
   });
 };

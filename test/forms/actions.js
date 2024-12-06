@@ -7,18 +7,18 @@ export default {
       {
         type: 'hidden',
         input: true,
-        key: 'priority'
+        key: 'priority',
       },
       {
         type: 'hidden',
         input: true,
-        key: 'name'
+        key: 'name',
       },
       {
         type: 'textfield',
         input: true,
         label: 'Title',
-        key: 'title'
+        key: 'title',
       },
       {
         type: 'fieldset',
@@ -48,42 +48,43 @@ export default {
                           values: [
                             {
                               value: '',
-                              label: 'Match'
+                              label: 'Match',
                             },
                             {
                               value: 'get',
-                              label: 'GET'
+                              label: 'GET',
                             },
                             {
                               value: 'post',
-                              label: 'POST'
+                              label: 'POST',
                             },
                             {
                               value: 'put',
-                              label: 'PUT'
+                              label: 'PUT',
                             },
                             {
                               value: 'delete',
-                              label: 'DELETE'
+                              label: 'DELETE',
                             },
                             {
                               value: 'patch',
-                              label: 'PATCH'
-                            }
-                          ]
+                              label: 'PATCH',
+                            },
+                          ],
                         },
                         dataSrc: 'values',
                         valueProperty: 'value',
                         template: '<span>{{ item.label }}</span>',
                         persistent: true,
                         type: 'select',
-                        description: 'If set to Match it will use the same Request Type as sent to the Form.io server.'
-                      }
+                        description:
+                          'If set to Match it will use the same Request Type as sent to the Form.io server.',
+                      },
                     ],
                     width: 2,
                     offset: 0,
                     push: 0,
-                    pull: 0
+                    pull: 0,
                   },
                   {
                     components: [
@@ -99,18 +100,18 @@ export default {
                         type: 'textfield',
                         multiple: false,
                         validate: {
-                          required: true
+                          required: true,
                         },
-                        description: ''
-                      }
+                        description: '',
+                      },
                     ],
                     width: 10,
                     offset: 0,
                     push: 0,
-                    pull: 0
-                  }
+                    pull: 0,
+                  },
                 ],
-                type: 'columns'
+                type: 'columns',
               },
               {
                 key: 'panel1',
@@ -128,7 +129,7 @@ export default {
                     tooltip: 'Pass on any headers received by the form.io server.',
                     hideLabel: false,
                     inputType: 'checkbox',
-                    input: true
+                    input: true,
                   },
                   {
                     key: 'fieldset',
@@ -144,7 +145,7 @@ export default {
                         input: true,
                         placeholder: 'User for Basic Authentication',
                         type: 'textfield',
-                        multiple: false
+                        multiple: false,
                       },
                       {
                         label: 'Authorize Password',
@@ -154,11 +155,11 @@ export default {
                         input: true,
                         placeholder: 'Password for Basic Authentication',
                         type: 'textfield',
-                        multiple: false
-                      }
+                        multiple: false,
+                      },
                     ],
                     type: 'fieldset',
-                    label: 'fieldset'
+                    label: 'fieldset',
                   },
                   {
                     input: true,
@@ -174,7 +175,7 @@ export default {
                         persistent: true,
                         clearOnHide: true,
                         type: 'textfield',
-                        inDataGrid: true
+                        inDataGrid: true,
                       },
                       {
                         input: true,
@@ -186,18 +187,18 @@ export default {
                         persistent: true,
                         clearOnHide: true,
                         type: 'textfield',
-                        inDataGrid: true
-                      }
+                        inDataGrid: true,
+                      },
                     ],
                     label: 'Additional Headers',
                     key: 'headers',
                     persistent: true,
                     type: 'datagrid',
-                    addAnother: 'Add Header'
-                  }
+                    addAnother: 'Add Header',
+                  },
                 ],
                 type: 'panel',
-                label: 'Panel'
+                label: 'Panel',
               },
               {
                 key: 'panel2',
@@ -210,7 +211,7 @@ export default {
                     input: false,
                     html: '<p>By default the request payload will contain an object with the following information:</p> <div style="background:#eeeeee;border:1px solid #cccccc;padding:5px 10px;">{<br /> &nbsp;&nbsp;request: request, // an object containing request body to the form.io server.<br /> &nbsp;&nbsp;response: response, // an object containing the server response from the form.io server.<br /> &nbsp;&nbsp;submission: submission, // an object containing the submission object from the request.<br /> &nbsp;&nbsp;params: params, // an object containing the params for the request such as query parameters or url parameters.<br /> }</div> <p>You can use the transform payload javascript to modify the contents of the payload that will be send in this webhook. The following variables are also available: headers</p>',
                     type: 'content',
-                    label: 'content'
+                    label: 'content',
                   },
                   {
                     autofocus: false,
@@ -228,11 +229,11 @@ export default {
                     wysiwyg: false,
                     spellcheck: true,
                     type: 'textarea',
-                    description: 'Available variables are payload, externalId, and headers.'
-                  }
+                    description: 'Available variables are payload, externalId, and headers.',
+                  },
                 ],
                 type: 'panel',
-                label: 'Panel'
+                label: 'Panel',
               },
               {
                 key: 'panel3',
@@ -249,14 +250,14 @@ export default {
                     label: 'Wait for webhook response before continuing actions',
                     hideLabel: false,
                     inputType: 'checkbox',
-                    input: true
+                    input: true,
                   },
                   {
                     key: 'content',
                     input: false,
                     html: '<p>When making a request to an external service, you may want to save an external Id in association with this submission so you can refer to the same external resource later. To do that, enter an external ID reference name and the path to the id in the response data object. This value will then be available as externalId in the Request URL and Transform Payload fields.</p>',
                     type: 'content',
-                    label: 'content'
+                    label: 'content',
                   },
                   {
                     input: true,
@@ -268,7 +269,7 @@ export default {
                     unique: false,
                     persistent: true,
                     type: 'textfield',
-                    description: 'The name to store and reference the external Id for this request'
+                    description: 'The name to store and reference the external Id for this request',
                   },
                   {
                     input: true,
@@ -279,13 +280,13 @@ export default {
                     protected: false,
                     clearOnHide: true,
                     type: 'textfield',
-                    description: 'The path to the data in the webhook response object'
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                    description: 'The path to the data in the webhook response object',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       },
       {
         type: 'fieldset',
@@ -302,11 +303,11 @@ export default {
             placeholder: 'Select which handler(s) you would like to trigger',
             dataSrc: 'json',
             data: {
-              json: '[{"name":"before","title":"Before"},{"name":"after","title":"After"}]'
+              json: '[{"name":"before","title":"Before"},{"name":"after","title":"After"}]',
             },
             template: '<span>{{ item.title }}</span>',
             valueProperty: 'name',
-            multiple: true
+            multiple: true,
           },
           {
             type: 'select',
@@ -316,13 +317,13 @@ export default {
             placeholder: 'Trigger action on method(s)',
             dataSrc: 'json',
             data: {
-              json: '[{"name":"create","title":"Create"},{"name":"update","title":"Update"},{"name":"read","title":"Read"},{"name":"delete","title":"Delete"},{"name":"index","title":"Index"}]'
+              json: '[{"name":"create","title":"Create"},{"name":"update","title":"Update"},{"name":"read","title":"Read"},{"name":"delete","title":"Delete"},{"name":"index","title":"Index"}]',
             },
             template: '<span>{{ item.title }}</span>',
             valueProperty: 'name',
-            multiple: true
-          }
-        ]
+            multiple: true,
+          },
+        ],
       },
       {
         key: 'fieldset',
@@ -353,10 +354,10 @@ export default {
                         template: '<span>{{ item.label || item.key }}</span>',
                         dataSrc: 'json',
                         data: {
-                          json: '[{"key":""},{"label":"A","labelPosition":"top","placeholder":"","description":"","tooltip":"","prefix":"","suffix":"","widget":{"type":"input"},"inputMask":"","allowMultipleMasks":false,"customClass":"","tabindex":"","hidden":false,"hideLabel":false,"showWordCount":false,"showCharCount":false,"mask":false,"autofocus":false,"spellcheck":true,"disabled":false,"tableView":true,"modalEdit":false,"multiple":false,"persistent":true,"inputFormat":"plain","protected":false,"dbIndex":false,"case":"","encrypted":false,"redrawOn":"","clearOnHide":true,"customDefaultValue":"","calculateValue":"","calculateServer":false,"allowCalculateOverride":false,"validateOn":"change","validate":{"required":false,"pattern":"","customMessage":"","custom":"","customPrivate":false,"json":"","minLength":"","maxLength":"","strictDateValidation":false,"multiple":false,"unique":false},"unique":false,"errorLabel":"","key":"a","tags":[],"properties":{},"conditional":{"show":null,"when":null,"eq":"","json":""},"customConditional":"","logic":[],"attributes":{},"overlay":{"style":"","page":"","left":"","top":"","width":"","height":""},"type":"textfield","input":true,"refreshOn":"","inputType":"text","id":"e2wbkzv","defaultValue":""},{"label":"B","labelPosition":"top","placeholder":"","description":"","tooltip":"","prefix":"","suffix":"","widget":{"type":"input"},"inputMask":"","allowMultipleMasks":false,"customClass":"","tabindex":"","hidden":false,"hideLabel":false,"showWordCount":false,"showCharCount":false,"mask":false,"autofocus":false,"spellcheck":true,"disabled":false,"tableView":true,"modalEdit":false,"multiple":false,"persistent":true,"inputFormat":"plain","protected":false,"dbIndex":false,"case":"","encrypted":false,"redrawOn":"","clearOnHide":true,"customDefaultValue":"","calculateValue":"","calculateServer":false,"allowCalculateOverride":false,"validateOn":"change","validate":{"required":false,"pattern":"","customMessage":"","custom":"","customPrivate":false,"json":"","minLength":"","maxLength":"","strictDateValidation":false,"multiple":false,"unique":false},"unique":false,"errorLabel":"","key":"b","tags":[],"properties":{},"conditional":{"show":null,"when":null,"eq":"","json":""},"customConditional":"","logic":[],"attributes":{},"overlay":{"style":"","page":"","left":"","top":"","width":"","height":""},"type":"textfield","input":true,"refreshOn":"","inputType":"text","id":"e8j79z","defaultValue":""},{"label":"C","labelPosition":"top","placeholder":"","description":"","tooltip":"","prefix":"","suffix":"","widget":{"type":"input"},"inputMask":"","allowMultipleMasks":false,"customClass":"","tabindex":"","hidden":false,"hideLabel":false,"showWordCount":false,"showCharCount":false,"mask":false,"autofocus":false,"spellcheck":true,"disabled":false,"tableView":true,"modalEdit":false,"multiple":false,"persistent":true,"inputFormat":"plain","protected":false,"dbIndex":false,"case":"","encrypted":false,"redrawOn":"","clearOnHide":true,"customDefaultValue":"","calculateValue":"","calculateServer":false,"allowCalculateOverride":false,"validateOn":"change","validate":{"required":false,"pattern":"","customMessage":"","custom":"","customPrivate":false,"json":"","minLength":"","maxLength":"","strictDateValidation":false,"multiple":false,"unique":false},"unique":false,"errorLabel":"","key":"c","tags":[],"properties":{},"conditional":{"show":null,"when":null,"eq":"","json":""},"customConditional":"","logic":[],"attributes":{},"overlay":{"style":"","page":"","left":"","top":"","width":"","height":""},"type":"textfield","input":true,"refreshOn":"","inputType":"text","id":"etrp7lb","defaultValue":""},{"type":"button","label":"Submit","key":"submit","size":"md","block":false,"action":"submit","disableOnInvalid":true,"theme":"primary","input":true,"placeholder":"","prefix":"","customClass":"","suffix":"","multiple":false,"defaultValue":null,"protected":false,"unique":false,"persistent":false,"hidden":false,"clearOnHide":true,"refreshOn":"","redrawOn":"","tableView":false,"modalEdit":false,"labelPosition":"top","description":"","errorLabel":"","tooltip":"","hideLabel":false,"tabindex":"","disabled":false,"autofocus":false,"dbIndex":false,"customDefaultValue":"","calculateValue":"","widget":{"type":"input"},"attributes":{},"validateOn":"change","validate":{"required":false,"custom":"","customPrivate":false,"strictDateValidation":false,"multiple":false,"unique":false},"conditional":{"show":null,"when":null,"eq":""},"overlay":{"style":"","left":"","top":"","width":"","height":""},"allowCalculateOverride":false,"encrypted":false,"showCharCount":false,"showWordCount":false,"properties":{},"allowMultipleMasks":false,"leftIcon":"","rightIcon":"","dataGridLabel":true,"id":"ew4sbvh"}]'
+                          json: '[{"key":""},{"label":"A","labelPosition":"top","placeholder":"","description":"","tooltip":"","prefix":"","suffix":"","widget":{"type":"input"},"inputMask":"","allowMultipleMasks":false,"customClass":"","tabindex":"","hidden":false,"hideLabel":false,"showWordCount":false,"showCharCount":false,"mask":false,"autofocus":false,"spellcheck":true,"disabled":false,"tableView":true,"modalEdit":false,"multiple":false,"persistent":true,"inputFormat":"plain","protected":false,"dbIndex":false,"case":"","encrypted":false,"redrawOn":"","clearOnHide":true,"customDefaultValue":"","calculateValue":"","calculateServer":false,"allowCalculateOverride":false,"validateOn":"change","validate":{"required":false,"pattern":"","customMessage":"","custom":"","customPrivate":false,"json":"","minLength":"","maxLength":"","strictDateValidation":false,"multiple":false,"unique":false},"unique":false,"errorLabel":"","key":"a","tags":[],"properties":{},"conditional":{"show":null,"when":null,"eq":"","json":""},"customConditional":"","logic":[],"attributes":{},"overlay":{"style":"","page":"","left":"","top":"","width":"","height":""},"type":"textfield","input":true,"refreshOn":"","inputType":"text","id":"e2wbkzv","defaultValue":""},{"label":"B","labelPosition":"top","placeholder":"","description":"","tooltip":"","prefix":"","suffix":"","widget":{"type":"input"},"inputMask":"","allowMultipleMasks":false,"customClass":"","tabindex":"","hidden":false,"hideLabel":false,"showWordCount":false,"showCharCount":false,"mask":false,"autofocus":false,"spellcheck":true,"disabled":false,"tableView":true,"modalEdit":false,"multiple":false,"persistent":true,"inputFormat":"plain","protected":false,"dbIndex":false,"case":"","encrypted":false,"redrawOn":"","clearOnHide":true,"customDefaultValue":"","calculateValue":"","calculateServer":false,"allowCalculateOverride":false,"validateOn":"change","validate":{"required":false,"pattern":"","customMessage":"","custom":"","customPrivate":false,"json":"","minLength":"","maxLength":"","strictDateValidation":false,"multiple":false,"unique":false},"unique":false,"errorLabel":"","key":"b","tags":[],"properties":{},"conditional":{"show":null,"when":null,"eq":"","json":""},"customConditional":"","logic":[],"attributes":{},"overlay":{"style":"","page":"","left":"","top":"","width":"","height":""},"type":"textfield","input":true,"refreshOn":"","inputType":"text","id":"e8j79z","defaultValue":""},{"label":"C","labelPosition":"top","placeholder":"","description":"","tooltip":"","prefix":"","suffix":"","widget":{"type":"input"},"inputMask":"","allowMultipleMasks":false,"customClass":"","tabindex":"","hidden":false,"hideLabel":false,"showWordCount":false,"showCharCount":false,"mask":false,"autofocus":false,"spellcheck":true,"disabled":false,"tableView":true,"modalEdit":false,"multiple":false,"persistent":true,"inputFormat":"plain","protected":false,"dbIndex":false,"case":"","encrypted":false,"redrawOn":"","clearOnHide":true,"customDefaultValue":"","calculateValue":"","calculateServer":false,"allowCalculateOverride":false,"validateOn":"change","validate":{"required":false,"pattern":"","customMessage":"","custom":"","customPrivate":false,"json":"","minLength":"","maxLength":"","strictDateValidation":false,"multiple":false,"unique":false},"unique":false,"errorLabel":"","key":"c","tags":[],"properties":{},"conditional":{"show":null,"when":null,"eq":"","json":""},"customConditional":"","logic":[],"attributes":{},"overlay":{"style":"","page":"","left":"","top":"","width":"","height":""},"type":"textfield","input":true,"refreshOn":"","inputType":"text","id":"etrp7lb","defaultValue":""},{"type":"button","label":"Submit","key":"submit","size":"md","block":false,"action":"submit","disableOnInvalid":true,"theme":"primary","input":true,"placeholder":"","prefix":"","customClass":"","suffix":"","multiple":false,"defaultValue":null,"protected":false,"unique":false,"persistent":false,"hidden":false,"clearOnHide":true,"refreshOn":"","redrawOn":"","tableView":false,"modalEdit":false,"labelPosition":"top","description":"","errorLabel":"","tooltip":"","hideLabel":false,"tabindex":"","disabled":false,"autofocus":false,"dbIndex":false,"customDefaultValue":"","calculateValue":"","widget":{"type":"input"},"attributes":{},"validateOn":"change","validate":{"required":false,"custom":"","customPrivate":false,"strictDateValidation":false,"multiple":false,"unique":false},"conditional":{"show":null,"when":null,"eq":""},"overlay":{"style":"","left":"","top":"","width":"","height":""},"allowCalculateOverride":false,"encrypted":false,"showCharCount":false,"showWordCount":false,"properties":{},"allowMultipleMasks":false,"leftIcon":"","rightIcon":"","dataGridLabel":true,"id":"ew4sbvh"}]',
                         },
                         valueProperty: 'key',
-                        multiple: false
+                        multiple: false,
                       },
                       {
                         type: 'select',
@@ -370,23 +371,23 @@ export default {
                           values: [
                             {
                               value: '',
-                              label: ''
+                              label: '',
                             },
                             {
                               value: 'equals',
-                              label: 'Equals'
+                              label: 'Equals',
                             },
                             {
                               value: 'notEqual',
-                              label: 'Does Not Equal'
-                            }
+                              label: 'Does Not Equal',
+                            },
                           ],
                           json: '',
                           url: '',
-                          resource: ''
+                          resource: '',
                         },
                         valueProperty: 'value',
-                        multiple: false
+                        multiple: false,
                       },
                       {
                         input: true,
@@ -395,9 +396,9 @@ export default {
                         label: '',
                         key: 'value',
                         placeholder: 'Enter value',
-                        multiple: false
-                      }
-                    ]
+                        multiple: false,
+                      },
+                    ],
                   },
                   {
                     components: [
@@ -411,8 +412,9 @@ export default {
                             type: 'htmlelement',
                             tag: 'h4',
                             input: false,
-                            content: 'Or you can provide your own custom JavaScript or <a href="http://jsonlogic.com" target="_blank">JSON</a> condition logic here',
-                            className: ''
+                            content:
+                              'Or you can provide your own custom JavaScript or <a href="http://jsonlogic.com" target="_blank">JSON</a> condition logic here',
+                            className: '',
                           },
                           {
                             label: '',
@@ -429,7 +431,7 @@ export default {
                                 prefix: '',
                                 suffix: '',
                                 widget: {
-                                  type: 'input'
+                                  type: 'input',
                                 },
                                 inputMask: '',
                                 allowMultipleMasks: false,
@@ -470,7 +472,7 @@ export default {
                                   maxLength: '',
                                   strictDateValidation: false,
                                   multiple: false,
-                                  unique: false
+                                  unique: false,
                                 },
                                 unique: false,
                                 errorLabel: '',
@@ -481,7 +483,7 @@ export default {
                                   show: null,
                                   when: null,
                                   eq: '',
-                                  json: ''
+                                  json: '',
                                 },
                                 customConditional: '',
                                 logic: [],
@@ -492,14 +494,14 @@ export default {
                                   left: '',
                                   top: '',
                                   width: '',
-                                  height: ''
+                                  height: '',
                                 },
                                 type: 'textfield',
                                 input: true,
                                 refreshOn: '',
                                 inputType: 'text',
                                 id: 'e2wbkzv',
-                                defaultValue: ''
+                                defaultValue: '',
                               },
                               {
                                 label: 'B',
@@ -510,7 +512,7 @@ export default {
                                 prefix: '',
                                 suffix: '',
                                 widget: {
-                                  type: 'input'
+                                  type: 'input',
                                 },
                                 inputMask: '',
                                 allowMultipleMasks: false,
@@ -551,7 +553,7 @@ export default {
                                   maxLength: '',
                                   strictDateValidation: false,
                                   multiple: false,
-                                  unique: false
+                                  unique: false,
                                 },
                                 unique: false,
                                 errorLabel: '',
@@ -562,7 +564,7 @@ export default {
                                   show: null,
                                   when: null,
                                   eq: '',
-                                  json: ''
+                                  json: '',
                                 },
                                 customConditional: '',
                                 logic: [],
@@ -573,14 +575,14 @@ export default {
                                   left: '',
                                   top: '',
                                   width: '',
-                                  height: ''
+                                  height: '',
                                 },
                                 type: 'textfield',
                                 input: true,
                                 refreshOn: '',
                                 inputType: 'text',
                                 id: 'e8j79z',
-                                defaultValue: ''
+                                defaultValue: '',
                               },
                               {
                                 label: 'C',
@@ -591,7 +593,7 @@ export default {
                                 prefix: '',
                                 suffix: '',
                                 widget: {
-                                  type: 'input'
+                                  type: 'input',
                                 },
                                 inputMask: '',
                                 allowMultipleMasks: false,
@@ -632,7 +634,7 @@ export default {
                                   maxLength: '',
                                   strictDateValidation: false,
                                   multiple: false,
-                                  unique: false
+                                  unique: false,
                                 },
                                 unique: false,
                                 errorLabel: '',
@@ -643,7 +645,7 @@ export default {
                                   show: null,
                                   when: null,
                                   eq: '',
-                                  json: ''
+                                  json: '',
                                 },
                                 customConditional: '',
                                 logic: [],
@@ -654,14 +656,14 @@ export default {
                                   left: '',
                                   top: '',
                                   width: '',
-                                  height: ''
+                                  height: '',
                                 },
                                 type: 'textfield',
                                 input: true,
                                 refreshOn: '',
                                 inputType: 'text',
                                 id: 'etrp7lb',
-                                defaultValue: ''
+                                defaultValue: '',
                               },
                               {
                                 type: 'button',
@@ -700,7 +702,7 @@ export default {
                                 customDefaultValue: '',
                                 calculateValue: '',
                                 widget: {
-                                  type: 'input'
+                                  type: 'input',
                                 },
                                 attributes: {},
                                 validateOn: 'change',
@@ -710,19 +712,19 @@ export default {
                                   customPrivate: false,
                                   strictDateValidation: false,
                                   multiple: false,
-                                  unique: false
+                                  unique: false,
                                 },
                                 conditional: {
                                   show: null,
                                   when: null,
-                                  eq: ''
+                                  eq: '',
                                 },
                                 overlay: {
                                   style: '',
                                   left: '',
                                   top: '',
                                   width: '',
-                                  height: ''
+                                  height: '',
                                 },
                                 allowCalculateOverride: false,
                                 encrypted: false,
@@ -733,20 +735,21 @@ export default {
                                 leftIcon: '',
                                 rightIcon: '',
                                 dataGridLabel: true,
-                                id: 'ew4sbvh'
-                              }
+                                id: 'ew4sbvh',
+                              },
                             ],
-                            placeholder: '// Example: Only execute if submitted roles has authenticated".\nJavaScript: execute = (data.roles.indexOf("authenticated") !== -1);\nJSON: { "in": [ "authenticated", { "var: "data.roles" } ] }'
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                            placeholder:
+                              '// Example: Only execute if submitted roles has authenticated".\nJavaScript: execute = (data.roles.indexOf("authenticated") !== -1);\nJSON: { "in": [ "authenticated", { "var: "data.roles" } ] }',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       },
       {
         key: 'html2',
@@ -754,7 +757,7 @@ export default {
         tag: 'hr',
         input: false,
         content: '',
-        className: ''
+        className: '',
       },
       {
         type: 'button',
@@ -767,100 +770,87 @@ export default {
         block: false,
         action: 'submit',
         disableOnInvalid: true,
-        theme: 'primary'
-      }
+        theme: 'primary',
+      },
     ],
-    action: '/project/5e447ffae9d4804078d70048/form/5e5f11d53a26d9d7682492f3/action'
+    action: '/project/5e447ffae9d4804078d70048/form/5e5f11d53a26d9d7682492f3/action',
   },
   tests: {
     'Test initialize action with data'(form, done) {
-      form.setSubmission({
-        data: {
-          settings: {},
-          condition: {},
-          _id: '5e5f14a23a26d9d768249322',
-          handler: [
-            'after'
-          ],
-          method: [
-            'create',
-            'update'
-          ],
-          priority: 0,
-          name: 'webhook',
-          title: 'Webhook (Premium)',
-          form: '5e5f11d53a26d9d7682492f3',
-          machineName: 'ozvjjccvueotocl:webhooks:webhook'
-        }
-      }).then(() => {
-        const formSubmission = {
-          data:{
-            ...form.submission.data,
-            condition: {},
-            settings: {}
-          }
-        };
-        assert.deepEqual(formSubmission, {
+      form
+        .setSubmission({
           data: {
+            settings: {},
+            condition: {},
+            _id: '5e5f14a23a26d9d768249322',
+            handler: ['after'],
+            method: ['create', 'update'],
             priority: 0,
             name: 'webhook',
             title: 'Webhook (Premium)',
-            settings: {},
-            handler: [
-              'after'
-            ],
-            method: [
-              'create',
-              'update'
-            ],
-            condition: {},
-            submit: false,
-            _id: '5e5f14a23a26d9d768249322',
             form: '5e5f11d53a26d9d7682492f3',
-            machineName: 'ozvjjccvueotocl:webhooks:webhook'
-          }
-        });
-        form.on('componentChange', function() {
-          const formSubmissionAfterChange = {
-            data:{
+            machineName: 'ozvjjccvueotocl:webhooks:webhook',
+          },
+        })
+        .then(() => {
+          const formSubmission = {
+            data: {
               ...form.submission.data,
               condition: {},
-              settings: {
-                url: form.submission.data.settings.url,
-              }
-            }
+              settings: {},
+            },
           };
-
-          assert.deepEqual(formSubmissionAfterChange, {
+          assert.deepEqual(formSubmission, {
             data: {
               priority: 0,
               name: 'webhook',
               title: 'Webhook (Premium)',
-              settings: {
-                url: 'https://google.com'
-              },
-              handler: [
-                'after'
-              ],
-              method: [
-                'create',
-                'update'
-              ],
+              settings: {},
+              handler: ['after'],
+              method: ['create', 'update'],
               condition: {},
               submit: false,
               _id: '5e5f14a23a26d9d768249322',
               form: '5e5f11d53a26d9d7682492f3',
-              machineName: 'ozvjjccvueotocl:webhooks:webhook'
-            }
+              machineName: 'ozvjjccvueotocl:webhooks:webhook',
+            },
+          });
+          form.on('componentChange', function () {
+            const formSubmissionAfterChange = {
+              data: {
+                ...form.submission.data,
+                condition: {},
+                settings: {
+                  url: form.submission.data.settings.url,
+                },
+              },
+            };
+
+            assert.deepEqual(formSubmissionAfterChange, {
+              data: {
+                priority: 0,
+                name: 'webhook',
+                title: 'Webhook (Premium)',
+                settings: {
+                  url: 'https://google.com',
+                },
+                handler: ['after'],
+                method: ['create', 'update'],
+                condition: {},
+                submit: false,
+                _id: '5e5f14a23a26d9d768249322',
+                form: '5e5f11d53a26d9d7682492f3',
+                machineName: 'ozvjjccvueotocl:webhooks:webhook',
+              },
+            });
+
+            form.destroy();
+            done();
           });
 
-          form.destroy();
-          done();
+          const requestUrl = form.getComponent('url');
+          requestUrl.updateValue('https://google.com');
         });
-
-        const requestUrl = form.getComponent('url');
-        requestUrl.updateValue('https://google.com');
-      });
-    }
-  }
+    },
+  },
 };

@@ -9,7 +9,7 @@ import Choices from '@formio/choices.js';
  * @type {Choices._generatePlaceholderValue}
  * @private
  */
-Choices.prototype._generatePlaceholderValue = function() {
+Choices.prototype._generatePlaceholderValue = function () {
   if (this._isSelectElement && this.passedElement.placeholderOption) {
     const { placeholderOption } = this.passedElement;
     return placeholderOption ? placeholderOption.text : false;
@@ -58,12 +58,12 @@ class ChoicesWrapper extends Choices {
     var target = (event || event.touches[0]).target;
     var touchWasWithinContainer = this._wasTap && this.containerOuter.element.contains(target);
     if (touchWasWithinContainer) {
-      var containerWasExactTarget = target === this.containerOuter.element || target === this.containerInner.element;
+      var containerWasExactTarget =
+        target === this.containerOuter.element || target === this.containerInner.element;
       if (containerWasExactTarget) {
         if (this._isTextElement) {
           this.input.focus();
-        }
-        else if (this._isSelectMultipleElement) {
+        } else if (this._isSelectMultipleElement) {
           this.input.focus();
           this.showDropdown();
         }
@@ -79,12 +79,7 @@ class ChoicesWrapper extends Choices {
       return super._handleButtonAction(activeItems, element);
     }
 
-    if (
-      !activeItems ||
-      !element ||
-      !this.config.removeItems ||
-      !this.config.removeItemButton
-    ) {
+    if (!activeItems || !element || !this.config.removeItems || !this.config.removeItemButton) {
       return;
     }
 
@@ -123,9 +118,7 @@ class ChoicesWrapper extends Choices {
   }
 
   _selectHighlightedChoice() {
-    const highlightedChoice = this.dropdown.getChild(
-      `.${this.config.classNames.highlightedState}`,
-    );
+    const highlightedChoice = this.dropdown.getChild(`.${this.config.classNames.highlightedState}`);
 
     if (highlightedChoice) {
       const id = highlightedChoice.dataset.id;
@@ -137,7 +130,7 @@ class ChoicesWrapper extends Choices {
         groupId: choice.groupId,
         customProperties: choice.customProperties,
         placeholder: choice.placeholder,
-        keyCode: choice.keyCode
+        keyCode: choice.keyCode,
       });
       this._triggerChange(choice.value);
     }
@@ -152,10 +145,7 @@ class ChoicesWrapper extends Choices {
 
     const { target, keyCode, ctrlKey, metaKey } = event;
 
-    if (
-      target !== this.input.element &&
-      !this.containerOuter.element.contains(target)
-    ) {
+    if (target !== this.input.element && !this.containerOuter.element.contains(target)) {
       return;
     }
 
@@ -181,7 +171,7 @@ class ChoicesWrapper extends Choices {
 
     // If a user is typing and the dropdown is not active
     if (!hasActiveDropdown && !this._isTextElement && /[a-zA-Z0-9-_ ]/.test(keyString)) {
-      const currentValue =  this.input.element.value;
+      const currentValue = this.input.element.value;
       this.input.element.value = currentValue ? `${currentValue}${keyString}` : keyString;
       this.showDropdown();
     }
@@ -218,9 +208,8 @@ class ChoicesWrapper extends Choices {
 
   onSelectValue({ event, activeItems, hasActiveDropdown }) {
     if (hasActiveDropdown) {
-     this._selectHighlightedChoice(activeItems);
-    }
-    else if (this._isSelectOneElement) {
+      this._selectHighlightedChoice(activeItems);
+    } else if (this._isSelectOneElement) {
       this.showDropdown();
       event.preventDefault();
     }

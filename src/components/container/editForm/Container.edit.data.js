@@ -1,14 +1,14 @@
 export default [
   {
     key: 'multiple',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'allowCalculateOverride',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'defaultValue',
-    ignore: true
+    ignore: true,
   },
 ];

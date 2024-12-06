@@ -9,10 +9,10 @@ export default [
   },
   {
     key: 'showWordCount',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'showCharCount',
-    ignore: true
-  }
+    ignore: true,
+  },
 ];

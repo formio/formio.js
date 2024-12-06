@@ -1,53 +1,57 @@
 declare namespace _default {
-    const _id: string;
-    const type: string;
-    const components: ({
+  const _id: string;
+  const type: string;
+  const components: (
+    | {
         label: string;
         tableView: boolean;
         useOriginalRevision: boolean;
-        components: ({
-            label: string;
-            tableView: boolean;
-            key: string;
-            type: string;
-            input: boolean;
-            inputType?: undefined;
-            inputMask?: undefined;
-            title?: undefined;
-            collapsible?: undefined;
-            components?: undefined;
-            reorder?: undefined;
-            addAnotherPosition?: undefined;
-            layoutFixed?: undefined;
-            enableRowGroups?: undefined;
-            initEmpty?: undefined;
-            defaultValue?: undefined;
-        } | {
-            label: string;
-            inputType: string;
-            tableView: boolean;
-            key: string;
-            type: string;
-            input: boolean;
-            inputMask: string;
-            title?: undefined;
-            collapsible?: undefined;
-            components?: undefined;
-            reorder?: undefined;
-            addAnotherPosition?: undefined;
-            layoutFixed?: undefined;
-            enableRowGroups?: undefined;
-            initEmpty?: undefined;
-            defaultValue?: undefined;
-        } | {
-            title: string;
-            collapsible: boolean;
-            key: string;
-            type: string;
-            label: string;
-            input: boolean;
-            tableView: boolean;
-            components: {
+        components: (
+          | {
+              label: string;
+              tableView: boolean;
+              key: string;
+              type: string;
+              input: boolean;
+              inputType?: undefined;
+              inputMask?: undefined;
+              title?: undefined;
+              collapsible?: undefined;
+              components?: undefined;
+              reorder?: undefined;
+              addAnotherPosition?: undefined;
+              layoutFixed?: undefined;
+              enableRowGroups?: undefined;
+              initEmpty?: undefined;
+              defaultValue?: undefined;
+            }
+          | {
+              label: string;
+              inputType: string;
+              tableView: boolean;
+              key: string;
+              type: string;
+              input: boolean;
+              inputMask: string;
+              title?: undefined;
+              collapsible?: undefined;
+              components?: undefined;
+              reorder?: undefined;
+              addAnotherPosition?: undefined;
+              layoutFixed?: undefined;
+              enableRowGroups?: undefined;
+              initEmpty?: undefined;
+              defaultValue?: undefined;
+            }
+          | {
+              title: string;
+              collapsible: boolean;
+              key: string;
+              type: string;
+              label: string;
+              input: boolean;
+              tableView: boolean;
+              components: {
                 label: string;
                 mask: boolean;
                 spellcheck: boolean;
@@ -58,40 +62,42 @@ declare namespace _default {
                 key: string;
                 type: string;
                 input: boolean;
-            }[];
-            inputType?: undefined;
-            inputMask?: undefined;
-            reorder?: undefined;
-            addAnotherPosition?: undefined;
-            layoutFixed?: undefined;
-            enableRowGroups?: undefined;
-            initEmpty?: undefined;
-            defaultValue?: undefined;
-        } | {
-            label: string;
-            reorder: boolean;
-            addAnotherPosition: string;
-            layoutFixed: boolean;
-            enableRowGroups: boolean;
-            initEmpty: boolean;
-            tableView: boolean;
-            defaultValue: {}[];
-            key: string;
-            type: string;
-            input: boolean;
-            components: {
+              }[];
+              inputType?: undefined;
+              inputMask?: undefined;
+              reorder?: undefined;
+              addAnotherPosition?: undefined;
+              layoutFixed?: undefined;
+              enableRowGroups?: undefined;
+              initEmpty?: undefined;
+              defaultValue?: undefined;
+            }
+          | {
+              label: string;
+              reorder: boolean;
+              addAnotherPosition: string;
+              layoutFixed: boolean;
+              enableRowGroups: boolean;
+              initEmpty: boolean;
+              tableView: boolean;
+              defaultValue: {}[];
+              key: string;
+              type: string;
+              input: boolean;
+              components: {
                 label: string;
                 autoExpand: boolean;
                 tableView: boolean;
                 key: string;
                 type: string;
                 input: boolean;
-            }[];
-            inputType?: undefined;
-            inputMask?: undefined;
-            title?: undefined;
-            collapsible?: undefined;
-        })[];
+              }[];
+              inputType?: undefined;
+              inputMask?: undefined;
+              title?: undefined;
+              collapsible?: undefined;
+            }
+        )[];
         key: string;
         type: string;
         input: boolean;
@@ -148,7 +154,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         tableView: boolean;
         key: string;
@@ -209,7 +216,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         autoExpand: boolean;
         tableView: boolean;
@@ -270,7 +278,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         mask: boolean;
         spellcheck: boolean;
@@ -331,7 +340,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         tableView: boolean;
         key: string;
@@ -392,17 +402,18 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         optionsLabelPosition: string;
         tableView: boolean;
         values: {
-            label: string;
-            value: string;
-            shortcut: string;
+          label: string;
+          value: string;
+          shortcut: string;
         }[];
         validate: {
-            onlyAvailableItems: boolean;
+          onlyAvailableItems: boolean;
         };
         key: string;
         type: string;
@@ -459,24 +470,25 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         widget: string;
         tableView: boolean;
         data: {
-            values: {
-                label: string;
-                value: string;
-            }[];
+          values: {
+            label: string;
+            value: string;
+          }[];
         };
         selectThreshold: number;
         validate: {
-            onlyAvailableItems: boolean;
+          onlyAvailableItems: boolean;
         };
         key: string;
         type: string;
         indexeddb: {
-            filter: {};
+          filter: {};
         };
         input: boolean;
         useOriginalRevision?: undefined;
@@ -529,18 +541,19 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         optionsLabelPosition: string;
         inline: boolean;
         tableView: boolean;
         values: {
-            label: string;
-            value: string;
-            shortcut: string;
+          label: string;
+          value: string;
+          shortcut: string;
         }[];
         validate: {
-            onlyAvailableItems: boolean;
+          onlyAvailableItems: boolean;
         };
         key: string;
         type: string;
@@ -596,25 +609,26 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         tableView: boolean;
         provider: string;
         key: string;
         type: string;
         providerOptions: {
-            params: {
-                autocompleteOptions: {};
-            };
+          params: {
+            autocompleteOptions: {};
+          };
         };
         input: boolean;
         components: {
-            label: string;
-            tableView: boolean;
-            key: string;
-            type: string;
-            input: boolean;
-            customConditional: string;
+          label: string;
+          tableView: boolean;
+          key: string;
+          type: string;
+          input: boolean;
+          customConditional: string;
         }[];
         useOriginalRevision?: undefined;
         form?: undefined;
@@ -668,35 +682,36 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         tableView: boolean;
         enableMinDateInput: boolean;
         datePicker: {
-            disableWeekends: boolean;
-            disableWeekdays: boolean;
+          disableWeekends: boolean;
+          disableWeekdays: boolean;
         };
         enableMaxDateInput: boolean;
         key: string;
         type: string;
         input: boolean;
         widget: {
-            type: string;
-            displayInTimezone: string;
-            locale: string;
-            useLocaleSettings: boolean;
-            allowInput: boolean;
-            mode: string;
-            enableTime: boolean;
-            noCalendar: boolean;
-            format: string;
-            hourIncrement: number;
-            minuteIncrement: number;
-            time_24hr: boolean;
-            minDate: null;
-            disableWeekends: boolean;
-            disableWeekdays: boolean;
-            maxDate: null;
+          type: string;
+          displayInTimezone: string;
+          locale: string;
+          useLocaleSettings: boolean;
+          allowInput: boolean;
+          mode: string;
+          enableTime: boolean;
+          noCalendar: boolean;
+          format: string;
+          hourIncrement: number;
+          minuteIncrement: number;
+          time_24hr: boolean;
+          minDate: null;
+          disableWeekends: boolean;
+          disableWeekdays: boolean;
+          maxDate: null;
         };
         useOriginalRevision?: undefined;
         components?: undefined;
@@ -749,22 +764,23 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         hideInputLabels: boolean;
         inputsLabelPosition: string;
         useLocaleSettings: boolean;
         tableView: boolean;
         fields: {
-            day: {
-                hide: boolean;
-            };
-            month: {
-                hide: boolean;
-            };
-            year: {
-                hide: boolean;
-            };
+          day: {
+            hide: boolean;
+          };
+          month: {
+            hide: boolean;
+          };
+          year: {
+            hide: boolean;
+          };
         };
         key: string;
         type: string;
@@ -820,7 +836,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         tableView: boolean;
         key: string;
@@ -881,7 +898,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         mask: boolean;
         spellcheck: boolean;
@@ -942,16 +960,17 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         tableView: boolean;
         questions: {
-            label: string;
-            value: string;
+          label: string;
+          value: string;
         }[];
         values: {
-            label: string;
-            value: string;
+          label: string;
+          value: string;
         }[];
         key: string;
         type: string;
@@ -1009,11 +1028,12 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         attrs: {
-            attr: string;
-            value: string;
+          attr: string;
+          value: string;
         }[];
         content: string;
         refreshOnChange: boolean;
@@ -1073,7 +1093,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         html: string;
         label: string;
         refreshOnChange: boolean;
@@ -1134,10 +1155,12 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
-        columns: ({
-            components: {
+        columns: (
+          | {
+              components: {
                 label: string;
                 mask: boolean;
                 spellcheck: boolean;
@@ -1149,27 +1172,29 @@ declare namespace _default {
                 type: string;
                 input: boolean;
                 hideOnChildrenHidden: boolean;
-            }[];
-            width: number;
-            offset: number;
-            push: number;
-            pull: number;
-            size: string;
-        } | {
-            components: {
+              }[];
+              width: number;
+              offset: number;
+              push: number;
+              pull: number;
+              size: string;
+            }
+          | {
+              components: {
                 label: string;
                 tableView: boolean;
                 key: string;
                 type: string;
                 input: boolean;
                 hideOnChildrenHidden: boolean;
-            }[];
-            width: number;
-            offset: number;
-            push: number;
-            pull: number;
-            size: string;
-        })[];
+              }[];
+              width: number;
+              offset: number;
+              push: number;
+              pull: number;
+              size: string;
+            }
+        )[];
         key: string;
         type: string;
         input: boolean;
@@ -1228,7 +1253,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         legend: string;
         key: string;
         type: string;
@@ -1236,16 +1262,16 @@ declare namespace _default {
         input: boolean;
         tableView: boolean;
         components: {
-            label: string;
-            mask: boolean;
-            spellcheck: boolean;
-            tableView: boolean;
-            delimiter: boolean;
-            requireDecimal: boolean;
-            inputFormat: string;
-            key: string;
-            type: string;
-            input: boolean;
+          label: string;
+          mask: boolean;
+          spellcheck: boolean;
+          tableView: boolean;
+          delimiter: boolean;
+          requireDecimal: boolean;
+          inputFormat: string;
+          key: string;
+          type: string;
+          input: boolean;
         }[];
         useOriginalRevision?: undefined;
         form?: undefined;
@@ -1300,7 +1326,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         collapsible: boolean;
         key: string;
         type: string;
@@ -1308,16 +1335,16 @@ declare namespace _default {
         input: boolean;
         tableView: boolean;
         components: {
-            label: string;
-            mask: boolean;
-            spellcheck: boolean;
-            tableView: boolean;
-            delimiter: boolean;
-            requireDecimal: boolean;
-            inputFormat: string;
-            key: string;
-            type: string;
-            input: boolean;
+          label: string;
+          mask: boolean;
+          spellcheck: boolean;
+          tableView: boolean;
+          delimiter: boolean;
+          requireDecimal: boolean;
+          inputFormat: string;
+          key: string;
+          type: string;
+          input: boolean;
         }[];
         useOriginalRevision?: undefined;
         form?: undefined;
@@ -1372,7 +1399,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         cellAlignment: string;
         key: string;
@@ -1381,83 +1409,92 @@ declare namespace _default {
         numCols: number;
         input: boolean;
         tableView: boolean;
-        rows: (({
-            components: {
-                label: string;
-                widget: string;
-                tableView: boolean;
-                data: {
-                    values: {
+        rows: (
+          | (
+              | {
+                  components: {
+                    label: string;
+                    widget: string;
+                    tableView: boolean;
+                    data: {
+                      values: {
                         label: string;
                         value: string;
-                    }[];
-                };
-                selectThreshold: number;
-                validate: {
-                    onlyAvailableItems: boolean;
-                };
-                key: string;
-                type: string;
-                indexeddb: {
-                    filter: {};
-                };
-                input: boolean;
-            }[];
-        } | {
-            components: {
-                label: string;
-                tableView: boolean;
-                key: string;
-                type: string;
-                input: boolean;
-                defaultValue: boolean;
-            }[];
-        })[] | ({
-            components: {
-                label: string;
-                tableView: boolean;
-                enableMinDateInput: boolean;
-                datePicker: {
-                    disableWeekends: boolean;
-                    disableWeekdays: boolean;
-                };
-                enableMaxDateInput: boolean;
-                key: string;
-                type: string;
-                input: boolean;
-                widget: {
+                      }[];
+                    };
+                    selectThreshold: number;
+                    validate: {
+                      onlyAvailableItems: boolean;
+                    };
+                    key: string;
                     type: string;
-                    displayInTimezone: string;
-                    locale: string;
-                    useLocaleSettings: boolean;
-                    allowInput: boolean;
-                    mode: string;
-                    enableTime: boolean;
-                    noCalendar: boolean;
-                    format: string;
-                    hourIncrement: number;
-                    minuteIncrement: number;
-                    time_24hr: boolean;
-                    minDate: null;
-                    disableWeekends: boolean;
-                    disableWeekdays: boolean;
-                    maxDate: null;
-                };
-            }[];
-        } | {
-            components: {
-                label: string;
-                mask: boolean;
-                spellcheck: boolean;
-                tableView: boolean;
-                currency: string;
-                inputFormat: string;
-                key: string;
-                type: string;
-                input: boolean;
-                delimiter: boolean;
-            }[];
-        })[])[];
+                    indexeddb: {
+                      filter: {};
+                    };
+                    input: boolean;
+                  }[];
+                }
+              | {
+                  components: {
+                    label: string;
+                    tableView: boolean;
+                    key: string;
+                    type: string;
+                    input: boolean;
+                    defaultValue: boolean;
+                  }[];
+                }
+            )[]
+          | (
+              | {
+                  components: {
+                    label: string;
+                    tableView: boolean;
+                    enableMinDateInput: boolean;
+                    datePicker: {
+                      disableWeekends: boolean;
+                      disableWeekdays: boolean;
+                    };
+                    enableMaxDateInput: boolean;
+                    key: string;
+                    type: string;
+                    input: boolean;
+                    widget: {
+                      type: string;
+                      displayInTimezone: string;
+                      locale: string;
+                      useLocaleSettings: boolean;
+                      allowInput: boolean;
+                      mode: string;
+                      enableTime: boolean;
+                      noCalendar: boolean;
+                      format: string;
+                      hourIncrement: number;
+                      minuteIncrement: number;
+                      time_24hr: boolean;
+                      minDate: null;
+                      disableWeekends: boolean;
+                      disableWeekdays: boolean;
+                      maxDate: null;
+                    };
+                  }[];
+                }
+              | {
+                  components: {
+                    label: string;
+                    mask: boolean;
+                    spellcheck: boolean;
+                    tableView: boolean;
+                    currency: string;
+                    inputFormat: string;
+                    key: string;
+                    type: string;
+                    input: boolean;
+                    delimiter: boolean;
+                  }[];
+                }
+            )[]
+        )[];
         useOriginalRevision?: undefined;
         components?: undefined;
         form?: undefined;
@@ -1509,12 +1546,14 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
-        components: ({
-            label: string;
-            key: string;
-            components: {
+        components: (
+          | {
+              label: string;
+              key: string;
+              components: {
                 label: string;
                 mask: boolean;
                 spellcheck: boolean;
@@ -1525,18 +1564,20 @@ declare namespace _default {
                 key: string;
                 type: string;
                 input: boolean;
-            }[];
-        } | {
-            label: string;
-            key: string;
-            components: {
+              }[];
+            }
+          | {
+              label: string;
+              key: string;
+              components: {
                 label: string;
                 tableView: boolean;
                 key: string;
                 type: string;
                 input: boolean;
-            }[];
-        })[];
+              }[];
+            }
+        )[];
         key: string;
         type: string;
         input: boolean;
@@ -1595,18 +1636,19 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         key: string;
         type: string;
         input: boolean;
         tableView: boolean;
         components: {
-            label: string;
-            tableView: boolean;
-            key: string;
-            type: string;
-            input: boolean;
+          label: string;
+          tableView: boolean;
+          key: string;
+          type: string;
+          input: boolean;
         }[];
         useOriginalRevision?: undefined;
         form?: undefined;
@@ -1662,7 +1704,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         tableView: boolean;
         key: string;
@@ -1670,11 +1713,11 @@ declare namespace _default {
         hideLabel: boolean;
         input: boolean;
         components: {
-            label: string;
-            tableView: boolean;
-            key: string;
-            type: string;
-            input: boolean;
+          label: string;
+          tableView: boolean;
+          key: string;
+          type: string;
+          input: boolean;
         }[];
         useOriginalRevision?: undefined;
         form?: undefined;
@@ -1729,19 +1772,20 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         tableView: boolean;
         key: string;
         type: string;
         input: boolean;
         valueComponent: {
-            type: string;
-            key: string;
-            label: string;
-            input: boolean;
-            hideLabel: boolean;
-            tableView: boolean;
+          type: string;
+          key: string;
+          label: string;
+          input: boolean;
+          hideLabel: boolean;
+          tableView: boolean;
         };
         useOriginalRevision?: undefined;
         components?: undefined;
@@ -1797,7 +1841,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         reorder: boolean;
         addAnotherPosition: string;
@@ -1810,11 +1855,11 @@ declare namespace _default {
         type: string;
         input: boolean;
         components: {
-            label: string;
-            tableView: boolean;
-            key: string;
-            type: string;
-            input: boolean;
+          label: string;
+          tableView: boolean;
+          key: string;
+          type: string;
+          input: boolean;
         }[];
         useOriginalRevision?: undefined;
         form?: undefined;
@@ -1864,7 +1909,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         tableView: boolean;
         rowDrafts: boolean;
@@ -1872,11 +1918,11 @@ declare namespace _default {
         type: string;
         input: boolean;
         components: {
-            label: string;
-            tableView: boolean;
-            key: string;
-            type: string;
-            input: boolean;
+          label: string;
+          tableView: boolean;
+          key: string;
+          type: string;
+          input: boolean;
         }[];
         useOriginalRevision?: undefined;
         form?: undefined;
@@ -1931,7 +1977,8 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         tableView: boolean;
         key: string;
@@ -1939,11 +1986,11 @@ declare namespace _default {
         input: boolean;
         tree: boolean;
         components: {
-            label: string;
-            tableView: boolean;
-            key: string;
-            type: string;
-            input: boolean;
+          label: string;
+          tableView: boolean;
+          key: string;
+          type: string;
+          input: boolean;
         }[];
         useOriginalRevision?: undefined;
         form?: undefined;
@@ -1998,14 +2045,15 @@ declare namespace _default {
         storage?: undefined;
         webcam?: undefined;
         fileTypes?: undefined;
-    } | {
+      }
+    | {
         label: string;
         tableView: boolean;
         storage: string;
         webcam: boolean;
         fileTypes: {
-            label: string;
-            value: string;
+          label: string;
+          value: string;
         }[];
         key: string;
         type: string;
@@ -2062,10 +2110,11 @@ declare namespace _default {
         initEmpty?: undefined;
         rowDrafts?: undefined;
         tree?: undefined;
-    })[];
-    const title: string;
-    const display: string;
-    const name: string;
-    const path: string;
+      }
+  )[];
+  const title: string;
+  const display: string;
+  const name: string;
+  const path: string;
 }
 export default _default;

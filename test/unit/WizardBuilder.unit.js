@@ -5,10 +5,10 @@ import simpleWizard from '../forms/simpleWizard';
 import formWithFormController from '../forms/formWithFormController';
 import { fastCloneDeep } from '../../src/utils/utils';
 
-describe('WizardBuilder tests', function() {
+describe('WizardBuilder tests', function () {
   let formBuilderElement, formBuilder;
 
-  after(function(done) {
+  after(function (done) {
     destroyWizardBuilder();
     done();
   });
@@ -24,11 +24,15 @@ describe('WizardBuilder tests', function() {
     destroyWizardBuilder();
     formBuilderElement = document.createElement('div');
     document.body.appendChild(formBuilderElement);
-    formBuilder = new FormBuilder(formBuilderElement, { ...form, components: [...form.components] }, {});
+    formBuilder = new FormBuilder(
+      formBuilderElement,
+      { ...form, components: [...form.components] },
+      {},
+    );
     return formBuilder;
   }
 
-  it('Test page remove with cancellation', function(done) {
+  it('Test page remove with cancellation', function (done) {
     const builder = createWizardBuilder(simpleWizard);
 
     setTimeout(() => {
@@ -39,15 +43,22 @@ describe('WizardBuilder tests', function() {
       };
       Harness.clickElement(panel, removeComponentRef);
       setTimeout(() => {
-        assert.equal(builder.instance._form.components.length, 5, 'Should not remove the page on cancel');
-        assert.equal(builder.instance.webform.components[0].key, 'page1', 'Should stay on page 1 since we' +
-          ' canceled the deletion');
+        assert.equal(
+          builder.instance._form.components.length,
+          5,
+          'Should not remove the page on cancel',
+        );
+        assert.equal(
+          builder.instance.webform.components[0].key,
+          'page1',
+          'Should stay on page 1 since we' + ' canceled the deletion',
+        );
         done();
       }, 300);
     }, 500);
   });
 
-  it('Test page remove with confirmation', function(done) {
+  it('Test page remove with confirmation', function (done) {
     const builder = createWizardBuilder(simpleWizard);
 
     setTimeout(() => {
@@ -58,15 +69,22 @@ describe('WizardBuilder tests', function() {
       };
       Harness.clickElement(panel, removeComponentRef);
       setTimeout(() => {
-        assert.equal(builder.instance._form.components.length, 4, 'Should remove the page on confirm');
-        assert.equal(builder.instance.webform.components[0].key, 'page2', 'Should switch to the next page when' +
-          ' deletion is confirmed');
+        assert.equal(
+          builder.instance._form.components.length,
+          4,
+          'Should remove the page on confirm',
+        );
+        assert.equal(
+          builder.instance.webform.components[0].key,
+          'page2',
+          'Should switch to the next page when' + ' deletion is confirmed',
+        );
         done();
       }, 300);
     }, 500);
   });
 
-  it('Test page remove with confirmation when remove from component settings window', function(done) {
+  it('Test page remove with confirmation when remove from component settings window', function (done) {
     const builder = createWizardBuilder(simpleWizard);
 
     setTimeout(() => {
@@ -82,16 +100,23 @@ describe('WizardBuilder tests', function() {
         const removeButton = builder.instance.componentEdit.querySelector('[ref="removeButton"]');
         Harness.clickElement(panel, removeButton);
         setTimeout(() => {
-          assert.equal(builder.instance._form.components.length, 4, 'Should remove the page on confirm');
-          assert.equal(builder.instance.webform.components[0].key, 'page2', 'Should switch to the next page when' +
-            ' deletion is confirmed');
+          assert.equal(
+            builder.instance._form.components.length,
+            4,
+            'Should remove the page on confirm',
+          );
+          assert.equal(
+            builder.instance.webform.components[0].key,
+            'page2',
+            'Should switch to the next page when' + ' deletion is confirmed',
+          );
           done();
         }, 300);
       }, 300);
     }, 500);
   });
 
-  it('Should execute form controller', function(done) {
+  it('Should execute form controller', function (done) {
     const form = fastCloneDeep(formWithFormController);
     form.display = 'wizard';
     const builder = createWizardBuilder(form).instance;
@@ -106,7 +131,7 @@ describe('WizardBuilder tests', function() {
     }, 500);
   });
 
-  it('Test pages reorder', function(done) {
+  it('Test pages reorder', function (done) {
     const builder = createWizardBuilder(simpleWizard);
 
     setTimeout(() => {
@@ -114,7 +139,11 @@ describe('WizardBuilder tests', function() {
       const addPageBtn = builder.instance.element.querySelector('.wizard-add-page');
       assert.equal(drake.canMove(addPageBtn), false, 'Should not be able to move Add Page button');
       const pagesElements = builder.instance.element.querySelectorAll('.wizard-pages li');
-      assert.equal(pagesElements.length, 6, 'Should contain all buttons for all the pages + Add Page button');
+      assert.equal(
+        pagesElements.length,
+        6,
+        'Should contain all buttons for all the pages + Add Page button',
+      );
       const firstPage = pagesElements[0];
       assert.equal(drake.canMove(firstPage), true, 'Should be able to move page button');
       done();

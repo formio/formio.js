@@ -4,13 +4,16 @@ import { boolValue, componentValueTypes, getComponentSavedTypes } from '../../ut
 
 export default class SurveyComponent extends Field {
   static schema(...extend) {
-    return Field.schema({
-      type: 'survey',
-      label: 'Survey',
-      key: 'survey',
-      questions: [],
-      values: []
-    }, ...extend);
+    return Field.schema(
+      {
+        type: 'survey',
+        label: 'Survey',
+        key: 'survey',
+        questions: [],
+        values: [],
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -20,7 +23,7 @@ export default class SurveyComponent extends Field {
       icon: 'list',
       weight: 110,
       documentation: '/userguide/form-building/advanced-components#survey',
-      schema: SurveyComponent.schema()
+      schema: SurveyComponent.schema(),
     };
   }
 
@@ -53,11 +56,12 @@ export default class SurveyComponent extends Field {
     this.refs.input.forEach((input) => {
       if (this.disabled) {
         input.setAttribute('disabled', 'disabled');
-      }
-      else {
-        this.addEventListener(input, 'change', () => this.updateValue(null, {
-          modified: true
-        }));
+      } else {
+        this.addEventListener(input, 'change', () =>
+          this.updateValue(null, {
+            modified: true,
+          }),
+        );
       }
     });
     this.setValue(this.dataValue);
@@ -72,7 +76,7 @@ export default class SurveyComponent extends Field {
     _.each(this.component.questions, (question) => {
       _.each(this.refs.input, (input) => {
         if (input.name === this.getInputName(question)) {
-          input.checked = (input.value === value[question.value]);
+          input.checked = input.value === value[question.value];
         }
       });
     });
@@ -93,10 +97,14 @@ export default class SurveyComponent extends Field {
   get defaultValue() {
     const defaultValue = super.defaultValue;
     //support for default values created in old formio.js versions
-    if (defaultValue && !_.isObject(defaultValue) && this.component.values.some(value => value.value === defaultValue)) {
+    if (
+      defaultValue &&
+      !_.isObject(defaultValue) &&
+      this.component.values.some((value) => value.value === defaultValue)
+    ) {
       const adoptedDefaultValue = {};
 
-      this.component.questions.forEach(question => {
+      this.component.questions.forEach((question) => {
         adoptedDefaultValue[question.value] = defaultValue;
       });
 
@@ -113,7 +121,7 @@ export default class SurveyComponent extends Field {
     const value = {};
     _.each(this.component.questions, (question) => {
       _.each(this.refs.input, (input) => {
-        if (input.checked && (input.name === this.getInputName(question))) {
+        if (input.checked && input.name === this.getInputName(question)) {
           value[question.value] = input.value;
           return false;
         }
@@ -137,8 +145,10 @@ export default class SurveyComponent extends Field {
     if (!boolValue(setting)) {
       return true;
     }
-    return this.component.questions.reduce((result, question) =>
-      result && Boolean(value[question.value]), true);
+    return this.component.questions.reduce(
+      (result, question) => result && Boolean(value[question.value]),
+      true,
+    );
   }
 
   getInputName(question) {
@@ -147,7 +157,7 @@ export default class SurveyComponent extends Field {
 
   getValueAsString(value, options) {
     if (options?.email) {
-      let result = (`
+      let result = `
         <table border="1" style="width:100%">
           <thead>
             <tr>
@@ -156,38 +166,46 @@ export default class SurveyComponent extends Field {
             </tr>
           </thead>
           <tbody>
-      `);
+      `;
 
-        _.forIn(value, (value, key) => {
-          const question = _.find(this.component.questions, ['value', key]);
-          const answer = _.find(this.component.values, ['value', value]);
+      _.forIn(value, (value, key) => {
+        const question = _.find(this.component.questions, ['value', key]);
+        const answer = _.find(this.component.values, ['value', value]);
 
-          if (!question || !answer) {
-            return;
-          }
+        if (!question || !answer) {
+          return;
+        }
 
-          result += (`
+        result += `
             <tr>
               <td style="text-align:center;padding: 5px 10px;">${question.label}</td>
               <td style="text-align:center;padding: 5px 10px;">${answer.label}</td>
             </tr>
-          `);
-        });
+          `;
+      });
 
-        result += '</tbody></table>';
+      result += '</tbody></table>';
 
-        return result;
+      return result;
     }
 
     if (_.isPlainObject(value)) {
       const { values = [], questions = [] } = this.component;
       return _.isEmpty(value)
         ? ''
-        : _.map(value,(v, q) => {
-          const valueLabel = _.get(_.find(values, val => _.isEqual(val.value, v)), 'label', v);
-          const questionLabel = _.get(_.find(questions, quest => _.isEqual(quest.value, q)), 'label', q);
-          return `${questionLabel}: ${valueLabel}`;
-        }).join('; ');
+        : _.map(value, (v, q) => {
+            const valueLabel = _.get(
+              _.find(values, (val) => _.isEqual(val.value, v)),
+              'label',
+              v,
+            );
+            const questionLabel = _.get(
+              _.find(questions, (quest) => _.isEqual(quest.value, q)),
+              'label',
+              q,
+            );
+            return `${questionLabel}: ${valueLabel}`;
+          }).join('; ');
     }
 
     return super.getValueAsString(value, options);

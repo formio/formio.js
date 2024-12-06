@@ -4,7 +4,7 @@ export const setXhrHeaders = (formio, xhr) => {
   if (headers) {
     const ValidHeaders = {
       'Content-Disposition': true,
-      'Authorization': true,
+      Authorization: true,
     };
 
     for (const header in headers) {
@@ -19,9 +19,24 @@ const XHR = {
     return _trim(text, '/');
   },
   path(items) {
-    return items.filter(item => !!item).map(XHR.trim).join('/');
+    return items
+      .filter((item) => !!item)
+      .map(XHR.trim)
+      .join('/');
   },
-  async upload(formio, type, xhrCallback, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback, multipartOptions) {
+  async upload(
+    formio,
+    type,
+    xhrCallback,
+    file,
+    fileName,
+    dir,
+    progressCallback,
+    groupPermissions,
+    groupId,
+    abortCallback,
+    multipartOptions,
+  ) {
     // make request to Form.io server
     const token = formio.getToken();
     let response;
@@ -29,7 +44,7 @@ const XHR = {
       response = await fetch(`${formio.formUrl}/storage/${type}`, {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'Content-Type': 'application/json; charset=UTF-8',
           ...(token ? { 'x-jwt-token': token } : {}),
         },
@@ -39,11 +54,10 @@ const XHR = {
           type: file.type,
           groupPermissions,
           groupId,
-          multipart: multipartOptions
-        })
+          multipart: multipartOptions,
+        }),
       });
-    }
-    catch (err) {
+    } catch (err) {
       // only throws on network errors
       err.networkError = true;
       throw err;
@@ -59,7 +73,13 @@ const XHR = {
       throw new Error(message || 'Unable to sign file.');
     }
     const serverResponse = await response.json();
-    return await XHR.makeXhrRequest(formio, xhrCallback, serverResponse, progressCallback, abortCallback);
+    return await XHR.makeXhrRequest(
+      formio,
+      xhrCallback,
+      serverResponse,
+      progressCallback,
+      abortCallback,
+    );
   },
   makeXhrRequest(formio, xhrCallback, serverResponse, progressCallback, abortCallback) {
     return new Promise((resolve, reject) => {
@@ -69,53 +89,53 @@ const XHR = {
         xhr.open(...params);
         setXhrHeaders(formio, xhr);
       };
-      Promise.resolve(xhrCallback(xhr, serverResponse, abortCallback)).then((payload) => {
-        // if payload is nullish we can assume the provider took care of the entire upload process
-        if (!payload) {
-          return resolve(serverResponse);
-        }
-        // Fire on network error.
-        xhr.onerror = (err) => {
-          err.networkError = true;
-          reject(err);
-        };
-
-        // Fire on network abort.
-        xhr.onabort = (err) => {
-          err.networkError = true;
-          reject(err);
-        };
-
-        // Set the onabort error callback.
-        xhr.onabort = reject;
-
-        if (typeof progressCallback === 'function') {
-          xhr.upload.onprogress = progressCallback;
-        }
-
-        if (typeof abortCallback === 'function') {
-          abortCallback(() => xhr.abort());
-        }
-        // Fired when the response has made it back from the server.
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            resolve(serverResponse);
+      Promise.resolve(xhrCallback(xhr, serverResponse, abortCallback))
+        .then((payload) => {
+          // if payload is nullish we can assume the provider took care of the entire upload process
+          if (!payload) {
+            return resolve(serverResponse);
           }
-          else if (xhr.status === 504) {
-            const error = new Error('Network request failed');
-            error.networkError = true;
-            reject(error);
-          }
-          else {
-            reject(xhr.response || 'Unable to upload file');
-          }
-        };
+          // Fire on network error.
+          xhr.onerror = (err) => {
+            err.networkError = true;
+            reject(err);
+          };
 
-        // Get the request and send it to the server.
-        xhr.send(payload);
-      }).catch(reject);
+          // Fire on network abort.
+          xhr.onabort = (err) => {
+            err.networkError = true;
+            reject(err);
+          };
+
+          // Set the onabort error callback.
+          xhr.onabort = reject;
+
+          if (typeof progressCallback === 'function') {
+            xhr.upload.onprogress = progressCallback;
+          }
+
+          if (typeof abortCallback === 'function') {
+            abortCallback(() => xhr.abort());
+          }
+          // Fired when the response has made it back from the server.
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(serverResponse);
+            } else if (xhr.status === 504) {
+              const error = new Error('Network request failed');
+              error.networkError = true;
+              reject(error);
+            } else {
+              reject(xhr.response || 'Unable to upload file');
+            }
+          };
+
+          // Get the request and send it to the server.
+          xhr.send(payload);
+        })
+        .catch(reject);
     });
-  }
+  },
 };
 
 export default XHR;

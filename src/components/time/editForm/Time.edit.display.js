@@ -3,7 +3,7 @@ export default [
     type: 'select',
     input: true,
     weight: 40,
-    tooltip: 'Select the type of widget you\'d like to use.',
+    tooltip: "Select the type of widget you'd like to use.",
     key: 'inputType',
     defaultValue: 'time',
     label: 'Input Type',
@@ -26,15 +26,12 @@ export default [
     defaultValue: 'HH:mm',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.inputType' },
-          'text',
-        ],
+        '===': [{ var: 'data.inputType' }, 'text'],
       },
     },
   },
   {
     key: 'placeholder',
     ignore: true,
-  }
+  },
 ];

@@ -5,10 +5,10 @@ export default {
   tableView: false,
   modalEdit: true,
   validate: {
-    required: true
+    required: true,
   },
   key: 'checkbox',
   type: 'checkbox',
   input: true,
-  defaultValue: false
+  defaultValue: false,
 };

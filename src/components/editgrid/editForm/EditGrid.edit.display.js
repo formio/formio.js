@@ -14,7 +14,7 @@ export default [
     input: true,
     conditional: {
       json: { '!==': [{ var: 'data.modal' }, true] },
-    }
+    },
   },
   {
     type: 'checkbox',

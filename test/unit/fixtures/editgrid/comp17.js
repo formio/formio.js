@@ -32,25 +32,25 @@ export default {
                         {
                           label: 'yes',
                           value: 'yes',
-                          shortcut: ''
+                          shortcut: '',
                         },
                         {
                           label: 'no',
                           value: 'no',
-                          shortcut: ''
-                        }
+                          shortcut: '',
+                        },
                       ],
                       key: 'radio',
                       type: 'radio',
-                      input: true
-                    }
+                      input: true,
+                    },
                   ],
                   width: 6,
                   offset: 0,
                   push: 0,
                   pull: 0,
                   size: 'md',
-                  currentWidth: 6
+                  currentWidth: 6,
                 },
                 {
                   components: [
@@ -62,28 +62,28 @@ export default {
                       key: 'textArea',
                       conditional: {
                         show: true,
-                        conjunction: 'all'
+                        conjunction: 'all',
                       },
                       type: 'textarea',
-                      input: true
-                    }
+                      input: true,
+                    },
                   ],
                   width: 6,
                   offset: 0,
                   push: 0,
                   pull: 0,
                   size: 'md',
-                  currentWidth: 6
-                }
+                  currentWidth: 6,
+                },
               ],
               key: 'columns',
               type: 'columns',
               input: false,
-              tableView: false
-            }
-          ]
-        }
-      ]
+              tableView: false,
+            },
+          ],
+        },
+      ],
     },
     {
       type: 'button',
@@ -91,7 +91,7 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
-  ]
-}
+      tableView: false,
+    },
+  ],
+};

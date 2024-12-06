@@ -4,140 +4,150 @@ import { Formio } from '../../src/Formio';
 import assert from 'power-assert';
 import _ from 'lodash';
 
-import {
-  comp1,
-  comp2
-} from './fixtures/url';
+import { comp1, comp2 } from './fixtures/url';
 
-describe('Url Component', function() {
-  it('Should build a url component', function(done) {
+describe('Url Component', function () {
+  it('Should build a url component', function (done) {
     Harness.testCreate(UrlComponent, comp1).then(() => {
       done();
     });
   });
 
-  it('Should provide min/max length validation', function(done) {
+  it('Should provide min/max length validation', function (done) {
     const form = _.cloneDeep(comp2);
     form.components[0].validate = { minLength: 6, maxLength: 10 };
 
-    const validValues = [
-      '',
-      'www.hhh.by',
-      'uuu.by',
-      'TE2-t.est',
-      'te2-t.est'
-    ];
+    const validValues = ['', 'www.hhh.by', 'uuu.by', 'TE2-t.est', 'te2-t.est'];
 
-    const invalidMin = [
-      'hh.jj',
-      'w.by'
-    ];
+    const invalidMin = ['hh.jj', 'w.by'];
 
-    const invalidMax = [
-      'Test-t.Test',
-      'test.test.test',
-      't-t-t-t-t.tt'
-    ];
+    const invalidMax = ['Test-t.Test', 'test.test.test', 't-t-t-t-t.tt'];
 
     const testValidity = (values, valid, message, lastValue) => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('url');
-          const changed = component.setValue(value);
-          const error = message;
+            const component = form.getComponent('url');
+            const changed = component.setValue(value);
+            const error = message;
 
-          if (value) {
-            assert.equal(changed, true, 'Should set value');
-          }
-
-          setTimeout(() => {
-            if (valid) {
-              assert.equal(component.errors.length, 0, 'Should not contain error');
-            }
-            else {
-              assert.equal(component.errors.length, 1, 'Should contain error');
-              assert.equal(component.errors[0].message, error, 'Should contain error message');
-              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
-              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+            if (value) {
+              assert.equal(changed, true, 'Should set value');
             }
 
-            if (_.isEqual(value, lastValue)) {
-              done();
-            }
-          }, 300);
-        }).catch(done);
+            setTimeout(() => {
+              if (valid) {
+                assert.equal(component.errors.length, 0, 'Should not contain error');
+              } else {
+                assert.equal(component.errors.length, 1, 'Should contain error');
+                assert.equal(component.errors[0].message, error, 'Should contain error message');
+                assert.equal(
+                  component.element.classList.contains('has-error'),
+                  true,
+                  'Should contain error class',
+                );
+                assert.equal(
+                  component.refs.messageContainer.textContent.trim(),
+                  error,
+                  'Should show error',
+                );
+              }
+
+              if (_.isEqual(value, lastValue)) {
+                done();
+              }
+            }, 300);
+          })
+          .catch(done);
       });
     };
 
     testValidity(validValues, true);
     testValidity(invalidMin, false, 'Url must have at least 6 characters.');
-    testValidity(invalidMax, false, 'Url must have no more than 10 characters.', invalidMax[invalidMax.length-1]);
+    testValidity(
+      invalidMax,
+      false,
+      'Url must have no more than 10 characters.',
+      invalidMax[invalidMax.length - 1],
+    );
   });
 
-  it('Should provide pattern validation', function(done) {
+  it('Should provide pattern validation', function (done) {
     const form = _.cloneDeep(comp2);
-    form.components[0].validate = { pattern: '^(https?):\\/\\/(-\\.)?([^\\s\\/?\\.#-]+\\.?)+(\\/[^\\s]*)?$' };
+    form.components[0].validate = {
+      pattern: '^(https?):\\/\\/(-\\.)?([^\\s\\/?\\.#-]+\\.?)+(\\/[^\\s]*)?$',
+    };
 
     const validValues = [
       'https://someTest.com',
       'http://test.com',
       'http://userid@example.com:8080',
-      ''
+      '',
     ];
 
-    const invalidValues = [
-      'www.test.com',
-      'test.hh',
-      'http://at--er.b.co'
-    ];
+    const invalidValues = ['www.test.com', 'test.hh', 'http://at--er.b.co'];
 
     const testValidity = (values, valid, message, lastValue) => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('url');
-          const changed = component.setValue(value);
-          const error = message;
+            const component = form.getComponent('url');
+            const changed = component.setValue(value);
+            const error = message;
 
-          if (value) {
-            assert.equal(changed, true, 'Should set value');
-          }
-
-          setTimeout(() => {
-            if (valid) {
-              assert.equal(component.errors.length, 0, 'Should not contain error');
-            }
-            else {
-              assert.equal(component.errors.length, 1, 'Should contain error');
-              assert.equal(component.errors[0].message.trim(), error, 'Should contain error message');
-              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
-              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+            if (value) {
+              assert.equal(changed, true, 'Should set value');
             }
 
-            if (_.isEqual(value, lastValue)) {
-              done();
-            }
-          }, 300);
-        }).catch(done);
+            setTimeout(() => {
+              if (valid) {
+                assert.equal(component.errors.length, 0, 'Should not contain error');
+              } else {
+                assert.equal(component.errors.length, 1, 'Should contain error');
+                assert.equal(
+                  component.errors[0].message.trim(),
+                  error,
+                  'Should contain error message',
+                );
+                assert.equal(
+                  component.element.classList.contains('has-error'),
+                  true,
+                  'Should contain error class',
+                );
+                assert.equal(
+                  component.refs.messageContainer.textContent.trim(),
+                  error,
+                  'Should show error',
+                );
+              }
+
+              if (_.isEqual(value, lastValue)) {
+                done();
+              }
+            }, 300);
+          })
+          .catch(done);
       });
     };
 
     testValidity(validValues, true);
-    testValidity(invalidValues,
+    testValidity(
+      invalidValues,
       false,
       'Url does not match the pattern ^(https?):\\/\\/(-\\.)?([^\\s\\/?\\.#-]+\\.?)+(\\/[^\\s]*)?$',
-      invalidValues[invalidValues.length-1]
+      invalidValues[invalidValues.length - 1],
     );
   });
 
-  it('Should provide url validation', function(done) {
+  it('Should provide url validation', function (done) {
     const form = _.cloneDeep(comp2);
 
     const validValues = [
@@ -148,7 +158,7 @@ describe('Url Component', function() {
       'email://test1111@test.to',
       'email://t-e-s-t@te-st.to',
       'te.S-T.test',
-      'www.1111111.test'
+      'www.1111111.test',
     ];
 
     const invalidValues = [
@@ -179,48 +189,62 @@ describe('Url Component', function() {
       '//a',
       '///a',
       '///',
-      'http:///a'
+      'http:///a',
     ];
 
     const testValidity = (values, valid, message, lastValue) => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('url');
-          const changed = component.setValue(value);
-          const error = message;
+            const component = form.getComponent('url');
+            const changed = component.setValue(value);
+            const error = message;
 
-          if (value) {
-            assert.equal(changed, true, 'Should set value');
-          }
-
-          setTimeout(() => {
-            if (valid) {
-              assert.equal(component.errors.length, 0, 'Should not contain error');
-            }
-            else {
-              assert.equal(component.errors.length, 1, 'Should contain error');
-              assert.equal(component.errors[0].message.trim(), error, 'Should contain error message');
-              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
-              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+            if (value) {
+              assert.equal(changed, true, 'Should set value');
             }
 
-            if (_.isEqual(value, lastValue)) {
-              done();
-            }
-          }, 300);
-        }).catch(done);
+            setTimeout(() => {
+              if (valid) {
+                assert.equal(component.errors.length, 0, 'Should not contain error');
+              } else {
+                assert.equal(component.errors.length, 1, 'Should contain error');
+                assert.equal(
+                  component.errors[0].message.trim(),
+                  error,
+                  'Should contain error message',
+                );
+                assert.equal(
+                  component.element.classList.contains('has-error'),
+                  true,
+                  'Should contain error class',
+                );
+                assert.equal(
+                  component.refs.messageContainer.textContent.trim(),
+                  error,
+                  'Should show error',
+                );
+              }
+
+              if (_.isEqual(value, lastValue)) {
+                done();
+              }
+            }, 300);
+          })
+          .catch(done);
       });
     };
 
     testValidity(validValues, true);
-    testValidity(invalidValues,
+    testValidity(
+      invalidValues,
       false,
       'Url must be a valid url.',
-      invalidValues[invalidValues.length-1]
+      invalidValues[invalidValues.length - 1],
     );
   });
 });

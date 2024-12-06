@@ -15,72 +15,75 @@ export const AddressComponentMode = {
 };
 
 const RemoveValueIconHiddenClass = 'address-autocomplete-remove-value-icon--hidden';
-const ChildConditional = 'show = _.get(instance, \'parent.manualMode\', false);';
+const ChildConditional = "show = _.get(instance, 'parent.manualMode', false);";
 
 export default class AddressComponent extends ContainerComponent {
   static schema(...extend) {
-    return ContainerComponent.schema({
-      type: 'address',
-      label: 'Address',
-      key: 'address',
-      switchToManualModeLabel: 'Can\'t find address? Switch to manual mode.',
-      provider: '',
-      providerOptions: {},
-      manualModeViewString: '',
-      hideLabel: false,
-      disableClearIcon: false,
-      enableManualMode: false,
-      components: [
-        {
-          label: 'Address 1',
-          tableView: false,
-          key: 'address1',
-          type: 'textfield',
-          input: true,
-          customConditional: ChildConditional,
-        },
-        {
-          label: 'Address 2',
-          tableView: false,
-          key: 'address2',
-          type: 'textfield',
-          input: true,
-          customConditional: ChildConditional,
-        },
-        {
-          label: 'City',
-          tableView: false,
-          key: 'city',
-          type: 'textfield',
-          input: true,
-          customConditional: ChildConditional,
-        },
-        {
-          label: 'State',
-          tableView: false,
-          key: 'state',
-          type: 'textfield',
-          input: true,
-          customConditional: ChildConditional,
-        },
-        {
-          label: 'Country',
-          tableView: false,
-          key: 'country',
-          type: 'textfield',
-          input: true,
-          customConditional: ChildConditional,
-        },
-        {
-          label: 'Zip Code',
-          tableView: false,
-          key: 'zip',
-          type: 'textfield',
-          input: true,
-          customConditional: ChildConditional,
-        },
-      ],
-    }, ...extend);
+    return ContainerComponent.schema(
+      {
+        type: 'address',
+        label: 'Address',
+        key: 'address',
+        switchToManualModeLabel: "Can't find address? Switch to manual mode.",
+        provider: '',
+        providerOptions: {},
+        manualModeViewString: '',
+        hideLabel: false,
+        disableClearIcon: false,
+        enableManualMode: false,
+        components: [
+          {
+            label: 'Address 1',
+            tableView: false,
+            key: 'address1',
+            type: 'textfield',
+            input: true,
+            customConditional: ChildConditional,
+          },
+          {
+            label: 'Address 2',
+            tableView: false,
+            key: 'address2',
+            type: 'textfield',
+            input: true,
+            customConditional: ChildConditional,
+          },
+          {
+            label: 'City',
+            tableView: false,
+            key: 'city',
+            type: 'textfield',
+            input: true,
+            customConditional: ChildConditional,
+          },
+          {
+            label: 'State',
+            tableView: false,
+            key: 'state',
+            type: 'textfield',
+            input: true,
+            customConditional: ChildConditional,
+          },
+          {
+            label: 'Country',
+            tableView: false,
+            key: 'country',
+            type: 'textfield',
+            input: true,
+            customConditional: ChildConditional,
+          },
+          {
+            label: 'Zip Code',
+            tableView: false,
+            key: 'zip',
+            type: 'textfield',
+            input: true,
+            customConditional: ChildConditional,
+          },
+        ],
+      },
+      ...extend,
+    );
   }
 
   static savedValueTypes(schema) {
@@ -118,7 +121,7 @@ export default class AddressComponent extends ContainerComponent {
       defaultSchema = _.omit(defaultSchema, 'components');
     }
 
-    return _.defaultsDeep(component , defaultSchema);
+    return _.defaultsDeep(component, defaultSchema);
   }
 
   init() {
@@ -130,33 +133,26 @@ export default class AddressComponent extends ContainerComponent {
 
     if (!this.builderMode) {
       if (this.component.provider) {
-        const {
-          provider,
-          providerOptions,
-        } = this.component;
+        const { provider, providerOptions } = this.component;
 
         if (_.get(providerOptions, 'params.subscriptionKey')) {
-          _.set(providerOptions, "params['subscription-key']", _.get(providerOptions, 'params.subscriptionKey'));
+          _.set(
+            providerOptions,
+            "params['subscription-key']",
+            _.get(providerOptions, 'params.subscriptionKey'),
+          );
           _.unset(providerOptions, 'params.subscriptionKey');
         }
 
         this.provider = this.initializeProvider(provider, providerOptions);
-      }
-      else if (this.component.map) {
+      } else if (this.component.map) {
         // Fallback to legacy version where Google Maps was the only provider.
         this.component.provider = GoogleAddressProvider.name;
         this.component.providerOptions = this.component.providerOptions || {};
 
-        const {
-          map,
-          provider,
-          providerOptions,
-        } = this.component;
+        const { map, provider, providerOptions } = this.component;
 
-        const {
-          key,
-          region,
-        } = map;
+        const { key, region } = map;
 
         if (key) {
           _.set(providerOptions, 'params.key', key);
@@ -179,9 +175,9 @@ export default class AddressComponent extends ContainerComponent {
   get emptyValue() {
     return this.manualModeEnabled
       ? {
-        mode: AddressComponentMode.Autocomplete,
-        address: {},
-      }
+          mode: AddressComponentMode.Autocomplete,
+          address: {},
+        }
       : {};
   }
 
@@ -229,14 +225,13 @@ export default class AddressComponent extends ContainerComponent {
       return _.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
     }
     // Manual mode is not implementing for multiple value
-    return (this.manualModeEnabled && this.dataValue) ? this.dataValue.address : this.dataValue;
+    return this.manualModeEnabled && this.dataValue ? this.dataValue.address : this.dataValue;
   }
 
   set address(value) {
     if (this.manualModeEnabled && !this.isMultiple && !_.isEqual(value, this.emptyValue)) {
       this.dataValue.address = value;
-    }
-    else {
+    } else {
       this.dataValue = value;
     }
   }
@@ -248,7 +243,7 @@ export default class AddressComponent extends ContainerComponent {
       defaultValue = _.isArray(defaultValue) ? defaultValue : [defaultValue];
     }
 
-    return  defaultValue;
+    return defaultValue;
   }
 
   get defaultSchema() {
@@ -260,23 +255,23 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   set dataValue(value) {
-    super.dataValue = value
+    super.dataValue = value;
   }
 
   get dataValue() {
     const resultValue = _.get(this._data, this.component.path);
     if (!_.isArray(resultValue) && this.component.multiple) {
-      return [resultValue]
+      return [resultValue];
     }
     return super.dataValue;
   }
 
   normalizeValue(value) {
-    return (this.manualModeEnabled && this.isValueInLegacyFormat(value))
+    return this.manualModeEnabled && this.isValueInLegacyFormat(value)
       ? {
-        mode: AddressComponentMode.Autocomplete,
-        address: value,
-      }
+          mode: AddressComponentMode.Autocomplete,
+          address: value,
+        }
       : value;
   }
 
@@ -287,7 +282,7 @@ export default class AddressComponent extends ContainerComponent {
       this.restoreComponentsContext();
     }
 
-    if (changed || !_.isEmpty(value) && flags.fromSubmission) {
+    if (changed || (!_.isEmpty(value) && flags.fromSubmission)) {
       this.redraw();
     }
 
@@ -315,33 +310,23 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get modeSwitcher() {
-    return this.refs
-      ? (this.refs[AddressComponent.modeSwitcherRef] || null)
-      : null;
+    return this.refs ? this.refs[AddressComponent.modeSwitcherRef] || null : null;
   }
 
   get removeValueIcon() {
-    return this.refs
-      ? (this.refs[AddressComponent.removeValueIconRef] || null)
-      : null;
+    return this.refs ? this.refs[AddressComponent.removeValueIconRef] || null : null;
   }
 
   get searchInput() {
-    return this.refs
-      ? (this.refs[AddressComponent.searchInputRef] || null)
-      : null;
+    return this.refs ? this.refs[AddressComponent.searchInputRef] || null : null;
   }
 
   get addRowButton() {
-    return this.refs
-      ? (this.refs[AddressComponent.addRowButtonRef] || null)
-      : null;
+    return this.refs ? this.refs[AddressComponent.addRowButtonRef] || null : null;
   }
 
   get removeRowButton() {
-    return this.refs
-      ? (this.refs[AddressComponent.removeRowButtonRef] || null)
-      : null;
+    return this.refs ? this.refs[AddressComponent.removeRowButtonRef] || null : null;
   }
 
   get searchInputAttributes() {
@@ -354,7 +339,7 @@ export default class AddressComponent extends ContainerComponent {
     };
 
     if (this.component.placeholder) {
-      attr.placeholder = this.t(this.component.placeholder), { _userInput: true };
+      (attr.placeholder = this.t(this.component.placeholder)), { _userInput: true };
     }
 
     if (this.disabled) {
@@ -432,8 +417,7 @@ export default class AddressComponent extends ContainerComponent {
     if (this.isMultiple) {
       this.address[index] = address;
       this.address = [...this.address];
-    }
-    else {
+    } else {
       this.address = address;
     }
 
@@ -454,14 +438,13 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   attach(element) {
-    const result = ((this.builderMode || this.manualMode) ? super.attach : Field.prototype.attach).call(this, element);
+    const result = (
+      this.builderMode || this.manualMode ? super.attach : Field.prototype.attach
+    ).call(this, element);
 
     if (!this.builderMode) {
       if (!this.provider && this.component.provider) {
-        const {
-          provider,
-          providerOptions,
-        } = this.component;
+        const { provider, providerOptions } = this.component;
         this.provider = this.initializeProvider(provider, providerOptions);
       }
     }
@@ -478,8 +461,7 @@ export default class AddressComponent extends ContainerComponent {
       if (!this.builderMode && element && this.provider) {
         if (this.component.provider === 'google') {
           this.provider.attachAutocomplete(element, index, this.onSelectAddress.bind(this));
-        }
-        else {
+        } else {
           autocompleter({
             input: element,
             debounceWaitMs: 300,
@@ -504,7 +486,9 @@ export default class AddressComponent extends ContainerComponent {
           }
 
           if (element.value) {
-            element.value = this.getDisplayValue(this.isMultiple ? this.address[index] : this.address);
+            element.value = this.getDisplayValue(
+              this.isMultiple ? this.address[index] : this.address,
+            );
           }
         });
 
@@ -520,13 +504,13 @@ export default class AddressComponent extends ContainerComponent {
       }
     });
     if (this.addRowButton) {
-      this.addEventListener(this.addRowButton, 'click', event => {
+      this.addEventListener(this.addRowButton, 'click', (event) => {
         event.preventDefault();
         this.addRow();
       });
     }
     this.removeRowButton.forEach((removeRowButton, index) => {
-      this.addEventListener(removeRowButton, 'click', event => {
+      this.addEventListener(removeRowButton, 'click', (event) => {
         event.preventDefault();
         this.removeValue(index);
       });
@@ -578,7 +562,7 @@ export default class AddressComponent extends ContainerComponent {
         });
       });
 
-      _.each(this.refs.searchInput || [], el => this.addFocusBlurEvents(el));
+      _.each(this.refs.searchInput || [], (el) => this.addFocusBlurEvents(el));
     }
 
     return result;
@@ -589,16 +573,15 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   redraw() {
-    const modeSwitcherInFocus = (this.modeSwitcher && (document.activeElement === this.modeSwitcher));
+    const modeSwitcherInFocus = this.modeSwitcher && document.activeElement === this.modeSwitcher;
 
-    return super.redraw()
-      .then((result) => {
-        if (modeSwitcherInFocus && this.modeSwitcher) {
-          this.modeSwitcher.focus();
-        }
+    return super.redraw().then((result) => {
+      if (modeSwitcherInFocus && this.modeSwitcher) {
+        this.modeSwitcher.focus();
+      }
 
-        return result;
-      });
+      return result;
+    });
   }
 
   clearAddress(element, index) {
@@ -608,8 +591,7 @@ export default class AddressComponent extends ContainerComponent {
 
     if (this.address?.[index]) {
       this.address[index] = this.emptyValue;
-    }
-    else {
+    } else {
       this.address = this.emptyValue;
     }
     if (element) {
@@ -619,9 +601,7 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   getDisplayValue(value = this.address) {
-    return (this.provider && !this.manualMode)
-      ? this.provider.getDisplayValue(value)
-      : '';
+    return this.provider && !this.manualMode ? this.provider.getDisplayValue(value) : '';
   }
 
   validateMultiple() {
@@ -634,8 +614,7 @@ export default class AddressComponent extends ContainerComponent {
       const value = this.isMultiple ? this.address[index] : this.address;
       if (this.isEmpty(value) || this.disabled) {
         this.addClass(removeValueIcon, RemoveValueIconHiddenClass);
-      }
-      else {
+      } else {
         this.removeClass(removeValueIcon, RemoveValueIconHiddenClass);
       }
     }
@@ -648,18 +627,13 @@ export default class AddressComponent extends ContainerComponent {
 
     const normalizedValue = this.normalizeValue(value);
 
-    const {
-      address,
-      mode,
-    } = (
-      this.manualModeEnabled
-        ? normalizedValue
-        : {
+    const { address, mode } = this.manualModeEnabled
+      ? normalizedValue
+      : {
           address: normalizedValue,
           mode: AddressComponentMode.Autocomplete,
-        }
-    );
-    const valueInManualMode = (mode === AddressComponentMode.Manual);
+        };
+    const valueInManualMode = mode === AddressComponentMode.Manual;
 
     if (this.provider && !valueInManualMode) {
       return this.getDisplayValue(address);

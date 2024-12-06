@@ -9,19 +9,22 @@ import NumberEditValidation from './editForm/Number.edit.validation';
  * @param {...any} extend - The components that extend the edit form.
  * @returns {import('@formio/core').Component[]} - The edit form components.
  */
-export default function(...extend) {
-  return textEditForm([
-    {
-      key: 'display',
-      components: NumberEditDisplay
-    },
-    {
-      key: 'data',
-      components: NumberEditData
-    },
-    {
-      key: 'validation',
-      components: NumberEditValidation
-    },
-  ], ...extend);
+export default function (...extend) {
+  return textEditForm(
+    [
+      {
+        key: 'display',
+        components: NumberEditDisplay,
+      },
+      {
+        key: 'data',
+        components: NumberEditData,
+      },
+      {
+        key: 'validation',
+        components: NumberEditValidation,
+      },
+    ],
+    ...extend,
+  );
 }

@@ -8,23 +8,23 @@ class CDN {
     this.baseUrl = baseUrl || CDN.defaultCDN;
     this.overrides = overrides;
     this.libs = {
-      'js': '',
-      'ace': '1.4.12',
-      'bootstrap': '5.3.3',
-      'bootstrap4': '4.6.2',
-      'bootstrap5': '5.3.3',
-      'bootswatch': '5.3.3',
+      js: '',
+      ace: '1.4.12',
+      bootstrap: '5.3.3',
+      bootstrap4: '4.6.2',
+      bootstrap5: '5.3.3',
+      bootswatch: '5.3.3',
       'bootstrap-icons': '1.11.1',
-      'ckeditor': '19.0.0',
-      'dragula': '3.7.3',
-      'flatpickr': '4.6.13',
+      ckeditor: '19.0.0',
+      dragula: '3.7.3',
+      flatpickr: '4.6.13',
       'font-awesome': '4.7.0',
-      'grid': 'latest',
+      grid: 'latest',
       'moment-timezone': 'latest',
-      'quill': '2.0.0-dev.3',
+      quill: '2.0.0-dev.3',
       'shortcut-buttons-flatpickr': '0.4.0',
-      'uswds': '2.4.8',
-      'core': ''
+      uswds: '2.4.8',
+      core: '',
     };
     this.updateUrls();
   }
@@ -80,13 +80,11 @@ class CDN {
       if (lib in this.overrides) {
         if (typeof this.overrides[lib] === 'string') {
           this[lib] = this.buildUrl(this.overrides[lib], lib, this.libs[lib]);
-        }
-        else {
+        } else {
           const override = this.overrides[lib];
           this[lib] = this.buildUrl(override.cdn, override.lib || '', override.version || '');
         }
-      }
-      else {
+      } else {
         this[lib] = this.buildUrl(this.baseUrl, lib, this.libs[lib]);
       }
     }

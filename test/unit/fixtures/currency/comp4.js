@@ -12,7 +12,5 @@ export default {
   type: 'currency',
   input: true,
   delimiter: true,
-  defaultValue: [
-    null
-  ]
+  defaultValue: [null],
 };

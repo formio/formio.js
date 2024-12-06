@@ -6,7 +6,7 @@ export default class UnknownComponent extends Component {
       type: 'custom',
       key: 'custom',
       protected: false,
-      persistent: true
+      persistent: true,
     };
   }
 
@@ -17,7 +17,7 @@ export default class UnknownComponent extends Component {
       group: 'premium',
       documentation: '/userguide/form-building/premium-components#custom',
       weight: 120,
-      schema: UnknownComponent.schema()
+      schema: UnknownComponent.schema(),
     };
   }
 

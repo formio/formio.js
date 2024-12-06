@@ -11,14 +11,14 @@ export default [
       values: [
         {
           label: 'Number',
-          value: 'number'
+          value: 'number',
         },
         {
           label: 'Select',
-          value: 'select'
+          value: 'select',
         },
-      ]
-    }
+      ],
+    },
   },
   {
     weight: 210,
@@ -27,7 +27,7 @@ export default [
     key: 'fields.day.placeholder',
     label: 'Placeholder',
     placeholder: 'Day Placeholder',
-    tooltip: 'The placeholder text that will appear when Day field is empty.'
+    tooltip: 'The placeholder text that will appear when Day field is empty.',
   },
   {
     weight: 215,
@@ -35,22 +35,24 @@ export default [
     label: 'Hidden',
     tooltip: 'Hide the Day part of the component.',
     key: 'fields.day.hide',
-    onChange: ({data}) => {
+    onChange: ({ data }) => {
       if (data.defaultValue) {
         const defaultValueParts = data.defaultValue.split('/');
-        if (!data.fields.day.hide && defaultValueParts.length !==3) {
+        if (!data.fields.day.hide && defaultValueParts.length !== 3) {
           const newDefaultValue = ['00'];
           if (!data.fields.month.hide) {
-            data.dayFirst ? newDefaultValue.push(defaultValueParts[0]) : newDefaultValue.unshift(defaultValueParts[0])
+            data.dayFirst
+              ? newDefaultValue.push(defaultValueParts[0])
+              : newDefaultValue.unshift(defaultValueParts[0]);
           }
           if (!data.fields.year.hide) {
-            newDefaultValue.push(defaultValueParts[1])
+            newDefaultValue.push(defaultValueParts[1]);
           }
           _.set(data, 'defaultValue', newDefaultValue.join('/'));
         }
       }
     },
-    input: true
+    input: true,
   },
   {
     weight: 214,
@@ -58,6 +60,6 @@ export default [
     label: 'Day First',
     tooltip: 'Display the Day field before the Month field.',
     key: 'dayFirst',
-    input: true
+    input: true,
   },
 ];

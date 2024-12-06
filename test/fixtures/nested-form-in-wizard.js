@@ -6,7 +6,7 @@ export default {
       label: 'Page 1',
       type: 'panel',
       key: 'page1',
-      components: []
+      components: [],
     },
     {
       title: 'Page 2',
@@ -27,18 +27,18 @@ export default {
                 {
                   label: 'Yes',
                   value: 'true',
-                  shortcut: ''
+                  shortcut: '',
                 },
                 {
                   label: 'No',
                   value: 'false',
-                  shortcut: ''
-                }
+                  shortcut: '',
+                },
               ],
               key: 'radio',
               type: 'radio',
-              input: true
-            }
+              input: true,
+            },
           ],
           useOriginalRevision: false,
           reference: false,
@@ -46,10 +46,10 @@ export default {
           key: 'form',
           type: 'form',
           persistent: true,
-        }
+        },
       ],
       input: false,
-    }
+    },
   ],
   title: 'FIO-1133',
   display: 'wizard',

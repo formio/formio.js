@@ -15,33 +15,33 @@ export default {
             {
               label: 'One',
               value: 'one',
-              shortcut: ''
+              shortcut: '',
             },
             {
               label: 'Two',
               value: 'two',
-              shortcut: ''
+              shortcut: '',
             },
             {
               label: 'Three',
               value: 'three',
-              shortcut: ''
+              shortcut: '',
             },
             {
               label: 'Four',
               value: 'four',
-              shortcut: ''
+              shortcut: '',
             },
             {
               label: 'Five',
               value: 'five',
-              shortcut: ''
-            }
+              shortcut: '',
+            },
           ],
           validate: {
             onlyAvailableItems: false,
             minSelectedCount: 2,
-            maxSelectedCount: 4
+            maxSelectedCount: 4,
           },
           key: 'selectBoxes',
           type: 'selectboxes',
@@ -52,12 +52,12 @@ export default {
             two: false,
             three: false,
             four: false,
-            five: false
-          }
-        }
+            five: false,
+          },
+        },
       ],
       input: false,
-      tableView: false
+      tableView: false,
     },
     {
       title: 'Page 2',
@@ -71,12 +71,12 @@ export default {
           tableView: true,
           key: 'textArea',
           type: 'textarea',
-          input: true
-        }
+          input: true,
+        },
       ],
       input: false,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   display: 'wizard',
 };

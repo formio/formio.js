@@ -1,6 +1,7 @@
 declare namespace _default {
-    const type: string;
-    const components: ({
+  const type: string;
+  const components: (
+    | {
         label: string;
         reorder: boolean;
         addAnotherPosition: string;
@@ -9,31 +10,35 @@ declare namespace _default {
         initEmpty: boolean;
         tableView: boolean;
         defaultValue: {
-            label: string;
-            value: string;
+          label: string;
+          value: string;
         }[];
         allowCalculateOverride: boolean;
         key: string;
         type: string;
         input: boolean;
-        components: ({
-            label: string;
-            tableView: boolean;
-            key: string;
-            type: string;
-            input: boolean;
-            allowCalculateOverride?: undefined;
-        } | {
-            label: string;
-            tableView: boolean;
-            calculateValue: string;
-            allowCalculateOverride: boolean;
-            key: string;
-            type: string;
-            input: boolean;
-        })[];
+        components: (
+          | {
+              label: string;
+              tableView: boolean;
+              key: string;
+              type: string;
+              input: boolean;
+              allowCalculateOverride?: undefined;
+            }
+          | {
+              label: string;
+              tableView: boolean;
+              calculateValue: string;
+              allowCalculateOverride: boolean;
+              key: string;
+              type: string;
+              input: boolean;
+            }
+        )[];
         disableOnInvalid?: undefined;
-    } | {
+      }
+    | {
         type: string;
         label: string;
         key: string;
@@ -48,8 +53,9 @@ declare namespace _default {
         defaultValue?: undefined;
         allowCalculateOverride?: undefined;
         components?: undefined;
-    })[];
-    const title: string;
-    const display: string;
+      }
+  )[];
+  const title: string;
+  const display: string;
 }
 export default _default;

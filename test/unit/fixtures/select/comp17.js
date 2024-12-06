@@ -1,28 +1,28 @@
 export default {
-    _id: '6110fab8ca845631779c2bc5',
+  _id: '6110fab8ca845631779c2bc5',
   type: 'form',
   components: [
     {
-        label: 'Select',
-        widget: 'choicesjs',
-        tableView: true,
-        dataSrc: 'resource',
-        data: {
-          resource: '63f8a8d04890866e84b9540c'
-        },
-        dataType: 'string',
-        valueProperty: 'data.textField',
-        template: '<span>{{ item.data.textField }}</span>',
-        validate: {
-          select: false
-        },
-        key: 'select',
-        type: 'select',
-        searchField: 'data.textField__regex',
-        noRefreshOnScroll: false,
-        addResource: false,
-        reference: false,
-        input: true
+      label: 'Select',
+      widget: 'choicesjs',
+      tableView: true,
+      dataSrc: 'resource',
+      data: {
+        resource: '63f8a8d04890866e84b9540c',
+      },
+      dataType: 'string',
+      valueProperty: 'data.textField',
+      template: '<span>{{ item.data.textField }}</span>',
+      validate: {
+        select: false,
+      },
+      key: 'select',
+      type: 'select',
+      searchField: 'data.textField__regex',
+      noRefreshOnScroll: false,
+      addResource: false,
+      reference: false,
+      input: true,
     },
     {
       label: 'Submit',

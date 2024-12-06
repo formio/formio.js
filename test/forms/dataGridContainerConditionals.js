@@ -30,20 +30,20 @@ export default {
                 {
                   label: 'Yes',
                   value: 'yes',
-                  shortcut: ''
+                  shortcut: '',
                 },
                 {
                   label: 'No',
                   value: 'no',
-                  shortcut: ''
-                }
+                  shortcut: '',
+                },
               ],
               validate: {
-                required: true
+                required: true,
               },
               key: 'radio1',
               type: 'radio',
-              input: true
+              input: true,
             },
             {
               label: 'Radio',
@@ -54,39 +54,39 @@ export default {
                 {
                   label: 'one',
                   value: 'one',
-                  shortcut: ''
+                  shortcut: '',
                 },
                 {
                   label: 'two',
                   value: 'two',
-                  shortcut: ''
+                  shortcut: '',
                 },
                 {
                   label: 'three',
                   value: 'three',
-                  shortcut: ''
+                  shortcut: '',
                 },
                 {
                   label: 'four',
                   value: 'four',
-                  shortcut: ''
-                }
+                  shortcut: '',
+                },
               ],
               validate: {
-                required: true
+                required: true,
               },
               key: 'radio2',
               conditional: {
                 show: true,
                 when: 'dataGrid.container.radio1',
-                eq: 'yes'
+                eq: 'yes',
               },
               type: 'radio',
-              input: true
-            }
-          ]
-        }
-      ]
+              input: true,
+            },
+          ],
+        },
+      ],
     },
     {
       type: 'button',
@@ -94,8 +94,8 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   title: 'FJs',
   display: 'form',

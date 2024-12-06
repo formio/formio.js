@@ -5,15 +5,18 @@ import { getItemTemplateKeys } from '../../../utils/utils';
 
 export default class ListComponent extends Field {
   static schema(...extend) {
-    return Field.schema({
-      dataSrc: 'values',
-      authenticate: false,
-      ignoreCache: false,
-      template: '<span>{{ item.label }}</span>',
-      validate: {
-        onlyAvailableItems: false
+    return Field.schema(
+      {
+        dataSrc: 'values',
+        authenticate: false,
+        ignoreCache: false,
+        template: '<span>{{ item.label }}</span>',
+        validate: {
+          onlyAvailableItems: false,
+        },
       },
-    }, ...extend);
+      ...extend,
+    );
   }
 
   get isSelectURL() {
@@ -28,11 +31,7 @@ export default class ListComponent extends Field {
   get dataReady() {
     // If the root submission has been set, and we are still not attached, then assume
     // that our data is ready.
-    if (
-      this.root &&
-      this.root.submissionSet &&
-      !this.attached
-    ) {
+    if (this.root && this.root.submissionSet && !this.attached) {
       return Promise.resolve();
     }
     return this.itemsLoaded;
@@ -53,8 +52,11 @@ export default class ListComponent extends Field {
       const dataValue = this.dataValue;
       const selectData = this.selectData;
       return this.templateKeys.reduce((shouldLoad, key) => {
-        const hasValue =  _.has(dataValue, key) ||
-          (_.isArray(selectData) ? selectData.every((data) => _.has(data, key)) : _.has(selectData, key));
+        const hasValue =
+          _.has(dataValue, key) ||
+          (_.isArray(selectData)
+            ? selectData.every((data) => _.has(data, key))
+            : _.has(selectData, key));
         return shouldLoad || !hasValue;
       }, false);
     }
@@ -65,9 +67,7 @@ export default class ListComponent extends Field {
 
   getTemplateKeys() {
     const template = this.component.template;
-    this.templateKeys = this.options.readOnly && template
-      ? getItemTemplateKeys(template)
-      : [];
+    this.templateKeys = this.options.readOnly && template ? getItemTemplateKeys(template) : [];
   }
 
   get requestHeaders() {
@@ -81,8 +81,7 @@ export default class ListComponent extends Field {
             headers.set(header.key, this.interpolate(header.value));
           }
         });
-      }
-      catch (err) {
+      } catch (err) {
         console.warn(err.message);
       }
     }
@@ -103,7 +102,7 @@ export default class ListComponent extends Field {
     }
     const options = {
       noeval: true,
-      data: {}
+      data: {},
     };
     const template = this.sanitize(
       this.component.template
@@ -127,13 +126,15 @@ export default class ListComponent extends Field {
       return '';
     }
 
-    const template = this.sanitize(this.getOptionTemplate(data, value, index), this.shouldSanitizeValue);
+    const template = this.sanitize(
+      this.getOptionTemplate(data, value, index),
+      this.shouldSanitizeValue,
+    );
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
       if (!label) return;
       return template.replace(label, this.t(label, { _userInput: true }));
-    }
-    else {
+    } else {
       return this.sanitize(JSON.stringify(data), this.shouldSanitizeValue);
     }
   }
@@ -158,7 +159,6 @@ export default class ListComponent extends Field {
     });
     console.warn(`Unable to load resources for ${this.key}`);
   }
-
 
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
@@ -190,24 +190,29 @@ export default class ListComponent extends Field {
           return;
         }
 
-        let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
-        resourceUrl += (`/${this.component.data.resource}/submission`);
+        let resourceUrl = this.options.formio
+          ? this.options.formio.formsUrl
+          : `${Formio.getProjectUrl()}/form`;
+        resourceUrl += `/${this.component.data.resource}/submission`;
 
         if (forceUpdate || this.additionalResourcesAvailable || !this.serverCount) {
           try {
             this.loadItems(resourceUrl, searchInput, this.requestHeaders);
-          }
-          catch (ignoreErr) {
+          } catch (ignoreErr) {
             console.warn(`Unable to load resources for ${this.key}`);
           }
-        }
-        else {
+        } else {
           this.setItems(this.downloadedResources);
         }
         break;
       }
       case 'url': {
-        if (!forceUpdate && !this.active && !this.calculatedValue && this.component.type === 'select') {
+        if (
+          !forceUpdate &&
+          !this.active &&
+          !this.calculatedValue &&
+          this.component.type === 'select'
+        ) {
           // If we are lazyLoading, wait until activated.
           this.itemsLoadedResolve();
           return;
@@ -218,19 +223,19 @@ export default class ListComponent extends Field {
         let body;
         if (url.startsWith('/')) {
           // if URL starts with '/project', we should use base URL to avoid issues with URL formed like <base_url>/<project_name>/project/<project_id>/...
-          const baseUrl = url.startsWith('/project') ? Formio.getBaseUrl() : Formio.getProjectUrl() || Formio.getBaseUrl();
+          const baseUrl = url.startsWith('/project')
+            ? Formio.getBaseUrl()
+            : Formio.getProjectUrl() || Formio.getBaseUrl();
           url = baseUrl + url;
         }
 
         if (!this.component.data.method) {
           method = 'GET';
-        }
-        else {
+        } else {
           method = this.component.data.method;
           if (method.toUpperCase() === 'POST') {
             body = this.component.data.body;
-          }
-          else {
+          } else {
             body = null;
           }
         }
@@ -248,13 +253,20 @@ export default class ListComponent extends Field {
           window.alert("Your browser doesn't support current version of indexedDB");
         }
 
-        if (this.component.indexeddb && this.component.indexeddb.database && this.component.indexeddb.table) {
+        if (
+          this.component.indexeddb &&
+          this.component.indexeddb.database &&
+          this.component.indexeddb.table
+        ) {
           const request = window.indexedDB.open(this.component.indexeddb.database);
 
           request.onupgradeneeded = (event) => {
             if (this.component.customOptions) {
               const db = event.target.result;
-              const objectStore = db.createObjectStore(this.component.indexeddb.table, { keyPath: 'myKey', autoIncrement: true });
+              const objectStore = db.createObjectStore(this.component.indexeddb.table, {
+                keyPath: 'myKey',
+                autoIncrement: true,
+              });
               objectStore.transaction.oncomplete = () => {
                 const transaction = db.transaction(this.component.indexeddb.table, 'readwrite');
                 this.component.customOptions.forEach((item) => {
@@ -291,5 +303,4 @@ export default class ListComponent extends Field {
       }
     }
   }
-
 }

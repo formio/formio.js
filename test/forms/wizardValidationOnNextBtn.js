@@ -16,7 +16,7 @@ export default {
           prefix: '',
           suffix: '',
           widget: {
-            type: 'input'
+            type: 'input',
           },
           inputMask: '',
           allowMultipleMasks: false,
@@ -35,9 +35,9 @@ export default {
           multiple: false,
           persistent: true,
           inputFormat: 'plain',
-          'protected': false,
+          protected: false,
           dbIndex: false,
-          'case': '',
+          case: '',
           encrypted: false,
           redrawOn: '',
           clearOnHide: true,
@@ -57,7 +57,7 @@ export default {
             maxLength: '',
             strictDateValidation: false,
             multiple: false,
-            unique: false
+            unique: false,
           },
           unique: false,
           errorLabel: '',
@@ -68,7 +68,7 @@ export default {
             show: null,
             when: null,
             eq: '',
-            json: ''
+            json: '',
           },
           customConditional: '',
           logic: [],
@@ -79,14 +79,14 @@ export default {
             left: '',
             top: '',
             width: '',
-            height: ''
+            height: '',
           },
           type: 'textfield',
           input: true,
           refreshOn: '',
           inputType: 'text',
           id: 'eap4fh',
-          defaultValue: ''
+          defaultValue: '',
         },
         {
           label: 'b',
@@ -97,7 +97,7 @@ export default {
           prefix: '',
           suffix: '',
           widget: {
-            type: 'input'
+            type: 'input',
           },
           inputMask: '',
           allowMultipleMasks: false,
@@ -116,9 +116,9 @@ export default {
           multiple: false,
           persistent: true,
           inputFormat: 'plain',
-          'protected': false,
+          protected: false,
           dbIndex: false,
-          'case': '',
+          case: '',
           encrypted: false,
           redrawOn: '',
           clearOnHide: true,
@@ -138,7 +138,7 @@ export default {
             maxLength: 4,
             strictDateValidation: false,
             multiple: false,
-            unique: false
+            unique: false,
           },
           unique: false,
           errorLabel: '',
@@ -149,7 +149,7 @@ export default {
             show: null,
             when: null,
             eq: '',
-            json: ''
+            json: '',
           },
           customConditional: '',
           logic: [],
@@ -160,15 +160,15 @@ export default {
             left: '',
             top: '',
             width: '',
-            height: ''
+            height: '',
           },
           type: 'textfield',
           input: true,
           refreshOn: '',
           inputType: 'text',
           id: 'eo1khi9',
-          defaultValue: ''
-        }
+          defaultValue: '',
+        },
       ],
       input: false,
       placeholder: '',
@@ -177,7 +177,7 @@ export default {
       suffix: '',
       multiple: false,
       defaultValue: null,
-      'protected': false,
+      protected: false,
       unique: false,
       persistent: false,
       hidden: false,
@@ -206,19 +206,19 @@ export default {
         customPrivate: false,
         strictDateValidation: false,
         multiple: false,
-        unique: false
+        unique: false,
       },
       conditional: {
         show: null,
         when: null,
-        eq: ''
+        eq: '',
       },
       overlay: {
         style: '',
         left: '',
         top: '',
         width: '',
-        height: ''
+        height: '',
       },
       allowCalculateOverride: false,
       encrypted: false,
@@ -229,7 +229,7 @@ export default {
       tree: false,
       theme: 'default',
       breadcrumb: 'default',
-      id: 'etrhlbe'
+      id: 'etrhlbe',
     },
     {
       title: 'Page 2',
@@ -246,7 +246,7 @@ export default {
           prefix: '',
           suffix: '',
           widget: {
-            type: 'input'
+            type: 'input',
           },
           inputMask: '',
           allowMultipleMasks: false,
@@ -265,9 +265,9 @@ export default {
           multiple: false,
           persistent: true,
           inputFormat: 'plain',
-          'protected': false,
+          protected: false,
           dbIndex: false,
-          'case': '',
+          case: '',
           encrypted: false,
           redrawOn: '',
           clearOnHide: true,
@@ -287,7 +287,7 @@ export default {
             maxLength: '',
             strictDateValidation: false,
             multiple: false,
-            unique: false
+            unique: false,
           },
           unique: false,
           errorLabel: '',
@@ -298,7 +298,7 @@ export default {
             show: null,
             when: null,
             eq: '',
-            json: ''
+            json: '',
           },
           customConditional: '',
           logic: [],
@@ -309,15 +309,15 @@ export default {
             left: '',
             top: '',
             width: '',
-            height: ''
+            height: '',
           },
           type: 'textfield',
           input: true,
           refreshOn: '',
           inputType: 'text',
           id: 'euovhcc',
-          defaultValue: ''
-        }
+          defaultValue: '',
+        },
       ],
       input: false,
       placeholder: '',
@@ -326,7 +326,7 @@ export default {
       suffix: '',
       multiple: false,
       defaultValue: null,
-      'protected': false,
+      protected: false,
       unique: false,
       persistent: false,
       hidden: false,
@@ -355,19 +355,19 @@ export default {
         customPrivate: false,
         strictDateValidation: false,
         multiple: false,
-        unique: false
+        unique: false,
       },
       conditional: {
         show: null,
         when: null,
-        eq: ''
+        eq: '',
       },
       overlay: {
         style: '',
         left: '',
         top: '',
         width: '',
-        height: ''
+        height: '',
       },
       allowCalculateOverride: false,
       encrypted: false,
@@ -378,8 +378,7 @@ export default {
       tree: false,
       theme: 'default',
       breadcrumb: 'default',
-      id: 'eij9ua'
-    }
+      id: 'eij9ua',
+    },
   ],
 };
-

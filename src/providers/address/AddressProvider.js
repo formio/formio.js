@@ -28,7 +28,6 @@ export class AddressProvider {
    * @description The name of the address provider.
    */
   static get name() {
-
     return 'address';
   }
 
@@ -38,7 +37,6 @@ export class AddressProvider {
    * @description The display name of the address provider.
    */
   static get displayName() {
-
     return 'Address';
   }
 
@@ -47,7 +45,6 @@ export class AddressProvider {
    * @param {object} options - The options for the address provider.
    */
   constructor(options = {}) {
-
     this.beforeMergeOptions(options);
     this.options = _.merge({}, this.defaultOptions, options);
   }
@@ -57,7 +54,6 @@ export class AddressProvider {
    * @description Executes before merging the options.
    */
   beforeMergeOptions() {
-
     return;
   }
 
@@ -80,7 +76,6 @@ export class AddressProvider {
     return 'query';
   }
 
-
   /**
    * @private
    * @type {string|null}
@@ -89,7 +84,6 @@ export class AddressProvider {
   get responseProperty() {
     return null;
   }
-
 
   /**
    * @private
@@ -106,7 +100,9 @@ export class AddressProvider {
    * @returns {string} The serialized parameters.
    */
   serialize(params) {
-    return _.toPairs(params).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&');
+    return _.toPairs(params)
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
   }
 
   /**
@@ -147,10 +143,11 @@ export class AddressProvider {
    */
   search(query, options = {}) {
     const requestOptions = this.getRequestOptions(options);
-    const params = requestOptions.params = requestOptions.params || {};
+    const params = (requestOptions.params = requestOptions.params || {});
     params[this.queryProperty] = query;
-    return this.makeRequest(requestOptions)
-      .then((result) => this.responseProperty ? _.get(result, this.responseProperty, []) : result);
+    return this.makeRequest(requestOptions).then((result) =>
+      this.responseProperty ? _.get(result, this.responseProperty, []) : result,
+    );
   }
 
   /**
@@ -159,6 +156,8 @@ export class AddressProvider {
    * @returns {string} The display value of the address.
    */
   getDisplayValue(address) {
-    return this.displayValueProperty ? _.get(address, this.displayValueProperty, '') : String(address);
+    return this.displayValueProperty
+      ? _.get(address, this.displayValueProperty, '')
+      : String(address);
   }
 }

@@ -9,5 +9,5 @@ export default {
   delimiter: false,
   requireDecimal: false,
   encrypted: false,
-  defaultValue: 42
+  defaultValue: 42,
 };

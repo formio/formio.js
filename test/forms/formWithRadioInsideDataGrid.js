@@ -54,5 +54,5 @@ export default {
       type: 'button',
       input: true,
     },
-  ]
+  ],
 };

@@ -7,11 +7,7 @@ import { componentValueTypes, getComponentSavedTypes } from '../../../utils/util
 export default class NestedDataComponent extends NestedComponent {
   hasChanged(newValue, oldValue) {
     // If we do not have a value and are getting set to anything other than undefined or null, then we changed.
-    if (
-      newValue !== undefined &&
-      newValue !== null &&
-      !this.hasValue()
-    ) {
+    if (newValue !== undefined && newValue !== null && !this.hasValue()) {
       return true;
     }
     return !_.isEqual(newValue, oldValue);
@@ -35,29 +31,32 @@ export default class NestedDataComponent extends NestedComponent {
 
   getValueAsString(value, options) {
     if (options?.email) {
-      let result = (`
+      let result = `
         <table border="1" style="width:100%">
           <tbody>
-      `);
+      `;
 
-      this.everyComponent((component) => {
-        if (component.isInputComponent && component.visible && !component.skipInEmail) {
-          result += (`
+      this.everyComponent(
+        (component) => {
+          if (component.isInputComponent && component.visible && !component.skipInEmail) {
+            result += `
             <tr>
               <th style="padding: 5px 10px;">${component.label}</th>
               <td style="width:100%;padding:5px 10px;">${component.getView(component.dataValue, options)}</td>
             </tr>
-          `);
-        }
-      }, {
-        ...options,
-        fromRoot: true,
-      });
+          `;
+          }
+        },
+        {
+          ...options,
+          fromRoot: true,
+        },
+      );
 
-      result += (`
+      result += `
           </tbody>
         </table>
-      `);
+      `;
 
       return result;
     }
@@ -73,35 +72,41 @@ export default class NestedDataComponent extends NestedComponent {
   }
 
   getDataValueAsTable(value, options) {
-    let result = (`
+    let result = `
       <table border="1" style="width:100%">
         <tbody>
-    `);
+    `;
 
     const htmlTagRegExp = new RegExp('<(.*?)>');
 
-    this.everyComponent((component) => {
-      if (component.isInputComponent && component.visible && !component.skipInEmail) {
-        const componentValue = component.getView(component.dataValue, options);
-        result += (`
+    this.everyComponent(
+      (component) => {
+        if (component.isInputComponent && component.visible && !component.skipInEmail) {
+          const componentValue = component.getView(component.dataValue, options);
+          result += `
           <tr>
             <th style="padding: 5px 10px;">${component.label}</th>
-            <td style="width:100%;padding:5px 10px;">${component.component && component.component.inputFormat === 'html' && htmlTagRegExp.test(componentValue)
-            ?  componentValue
-            :  `<input type="text" value="${componentValue.replace(/"/g, '&quot;')}" readonly/>`
+            <td style="width:100%;padding:5px 10px;">${
+              component.component &&
+              component.component.inputFormat === 'html' &&
+              htmlTagRegExp.test(componentValue)
+                ? componentValue
+                : `<input type="text" value="${componentValue.replace(/"/g, '&quot;')}" readonly/>`
             }</td>
           </tr>
-        `);
-      }
-    }, {
-      ...options,
-      fromRoot: true,
-    });
+        `;
+        }
+      },
+      {
+        ...options,
+        fromRoot: true,
+      },
+    );
 
-    result += (`
+    result += `
         </tbody>
       </table>
-    `);
+    `;
 
     return result;
   }
@@ -110,8 +115,7 @@ export default class NestedDataComponent extends NestedComponent {
     if (options?.email) {
       if (options.fromRoot) {
         delete options.fromRoot;
-      }
-      else {
+      } else {
         return;
       }
     }

@@ -8,15 +8,18 @@ import PanelEditConditional from './editForm/Panel.edit.conditional';
  * @param {...any} extend - The components that extend the edit form.
  * @returns {import('@formio/core').Component[]} - The edit form components.
  */
-export default function(...extend) {
-  return nestedComponentForm([
-    {
-      key: 'display',
-      components: PanelEditDisplay
-    },
-    {
-      key: 'conditional',
-      components: PanelEditConditional,
-    },
-  ], ...extend);
+export default function (...extend) {
+  return nestedComponentForm(
+    [
+      {
+        key: 'display',
+        components: PanelEditDisplay,
+      },
+      {
+        key: 'conditional',
+        components: PanelEditConditional,
+      },
+    ],
+    ...extend,
+  );
 }

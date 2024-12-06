@@ -1,7 +1,6 @@
 import EditFormUtils from './utils';
 import { getContextComponents } from '../../../../utils/utils';
 
- 
 export default [
   {
     weight: 0,
@@ -9,7 +8,8 @@ export default [
     label: 'Advanced Logic',
     key: 'logic',
     templates: {
-      header: '<div class="row"> \n  <div class="col-sm-6">\n    <strong>{{ value.length }} {{ ctx.t("Advanced Logic Configured") }}</strong>\n  </div>\n</div>',
+      header:
+        '<div class="row"> \n  <div class="col-sm-6">\n    <strong>{{ value.length }} {{ ctx.t("Advanced Logic Configured") }}</strong>\n  </div>\n</div>',
       row: '<div class="row"> \n  <div class="col-sm-6">\n    <div>{{ row.name }} </div>\n  </div>\n  <div class="col-sm-2"> \n    <div class="btn-group pull-right"> \n      <button class="btn btn-default editRow">{{ ctx.t("Edit") }}</button> \n      <button class="btn btn-danger removeRow">{{ ctx.t("Delete") }}</button> \n    </div> \n  </div> \n</div>',
       footer: '',
     },
@@ -123,7 +123,8 @@ export default [
                 input: true,
                 tableView: false,
                 placeholder: `result = (data['mykey'] > 1);`,
-                description: '"row", "data", and "component" variables are available. Return "result".',
+                description:
+                  '"row", "data", and "component" variables are available. Return "result".',
                 customConditional({ row }) {
                   return row.type === 'javascript';
                 },
@@ -139,7 +140,8 @@ export default [
                 input: true,
                 tableView: false,
                 placeholder: `{ ... }`,
-                description: '"row", "data", "component" and "_" variables are available. Return the result to be passed to the action if truthy.',
+                description:
+                  '"row", "data", "component" and "_" variables are available. Return the result to be passed to the action if truthy.',
                 customConditional({ row }) {
                   return row.type === 'json';
                 },
@@ -150,7 +152,8 @@ export default [
                 key: 'event',
                 label: 'Event Name',
                 placeholder: 'event',
-                description: 'The event that will trigger this logic. You can trigger events externally or via a button.',
+                description:
+                  'The event that will trigger this logic. You can trigger events externally or via a button.',
                 tableView: false,
                 customConditional({ row }) {
                   return row.type === 'event';
@@ -170,7 +173,8 @@ export default [
         key: 'actions',
         tableView: false,
         templates: {
-          header: '<div class="row"> \n  <div class="col-sm-6"><strong>{{ value.length }} {{ ctx.t("actions") }}</strong></div>\n</div>',
+          header:
+            '<div class="row"> \n  <div class="col-sm-6"><strong>{{ value.length }} {{ ctx.t("actions") }}</strong></div>\n</div>',
           row: '<div class="row"> \n  <div class="col-sm-6">\n    <div>{{ row.name }} </div>\n  </div>\n  <div class="col-sm-2"> \n    <div class="btn-group pull-right"> \n      <button class="btn btn-default editRow">{{ ctx.t("Edit") }}</button> \n      <button class="btn btn-danger removeRow">{{ ctx.t("Delete") }}</button> \n    </div> \n  </div> \n</div>',
           footer: '',
         },
@@ -329,9 +333,11 @@ export default [
                 template: '<span>{{ item.label }}</span>',
                 type: 'select',
                 customConditional({ row }) {
-                  return row.type === 'property' &&
+                  return (
+                    row.type === 'property' &&
                     row.hasOwnProperty('property') &&
-                    row.property.type === 'boolean';
+                    row.property.type === 'boolean'
+                  );
                 },
               },
               {
@@ -342,12 +348,15 @@ export default [
                 inputType: 'text',
                 input: true,
                 tableView: false,
-                description: 'Can use templating with {{ data.myfield }}. "data", "row", "component" and "result" variables are available.',
+                description:
+                  'Can use templating with {{ data.myfield }}. "data", "row", "component" and "result" variables are available.',
                 customConditional({ row }) {
-                  return row.type === 'property' &&
+                  return (
+                    row.type === 'property' &&
                     row.hasOwnProperty('property') &&
                     row.property.type === 'string' &&
-                    !row.property.component;
+                    !row.property.component
+                  );
                 },
               },
               {
@@ -361,7 +370,8 @@ export default [
                 placeholder: `value = data.myfield;`,
                 type: 'textarea',
                 tableView: false,
-                description: '"row", "data", "component", and "result" variables are available. Return the value.',
+                description:
+                  '"row", "data", "component", and "result" variables are available. Return the value.',
                 customConditional({ row }) {
                   return row.type === 'value';
                 },
@@ -377,17 +387,21 @@ export default [
                 placeholder: `schema = { label: 'Updated' };`,
                 type: 'textarea',
                 tableView: false,
-                description: '"row", "data", "component", and "result" variables are available. Return the schema.',
+                description:
+                  '"row", "data", "component", and "result" variables are available. Return the schema.',
                 customConditional({ row }) {
                   return row.type === 'mergeComponentSchema';
                 },
-               },
-              Object.assign(EditFormUtils.logicVariablesTable('<tr><th>input</th><td>The value that was input into this component</td></tr>'),
-               {
+              },
+              Object.assign(
+                EditFormUtils.logicVariablesTable(
+                  '<tr><th>input</th><td>The value that was input into this component</td></tr>',
+                ),
+                {
                   customConditional({ row }) {
                     return row.type === 'customAction';
-                   }
-                }
+                  },
+                },
               ),
               {
                 weight: 20,
@@ -410,4 +424,3 @@ export default [
     ],
   },
 ];
- 
