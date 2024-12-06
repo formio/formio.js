@@ -192,7 +192,9 @@ describe('Form Component', () => {
         const preview = form.element.querySelector('[ref="openModal"]');
         assert(preview, 'Should contain element to open a modal window');
         done();
-      }).catch(done);
+      }).catch(function(err) {
+        done(err);
+      });
     });
   });
 

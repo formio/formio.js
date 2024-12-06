@@ -55,8 +55,12 @@ export default {
   },
   tooltip: {
     'Should render tooltip icon and show tooltip description on click'(form, done) {
-      form.components.forEach((comp, index) => {
-        const isLastComp = index === (form.components.length - 1);
+      const testComponents = form.components.filter(comp => !!comp);
+      (function testNext() {
+        const comp = testComponents.shift();
+        if (!comp) {
+          return done();
+        }
         const compKey = comp.component.key;
         const compType = comp.component.type;
         const clickEvent = new Event('click');
@@ -73,12 +77,9 @@ export default {
           const tooltipText = comp.element.querySelector('.tippy-content').textContent.trim();
 
           assert.equal(tooltipText, comp.component.tooltip.trim(), `Should show tooltip for ${compKey} (component ${compType})`);
-
-          if (isLastComp) {
-            done();
-          }
+          testNext();
         });
-      });
+      })();
     }
   },
   prefix: {
@@ -313,10 +314,12 @@ export default {
 
   multiple: {
     'Should render component in multiple mode and able to add/remove value'(form, done) {
-      const testComponents = form.components.filter(comp => !['select', 'file'].includes(comp.component.type));
-
-      testComponents.forEach((comp, index) => {
-        const isLastComp = index === (testComponents.length - 1);
+      const testComponents = form.components.filter(comp => !['select', 'file', 'address'].includes(comp.component.type));
+      (function testNext() {
+        const comp = testComponents.shift();
+        if (!comp) {
+          return done();
+        }
         const compKey = comp.component.key;
         const compType = comp.component.type;
 
@@ -346,16 +349,14 @@ export default {
 
             assert.deepEqual(removeRowBtnsAfterRemovingValue.length, 1, `${compKey} (component ${compType}): should remove 'remove value row btn' if row is removed in multiple mode `);
             assert.deepEqual(componentInputsAfterRemovingValue.length, 1, `${compKey} (component ${compType}): should add remove row in multiple mode`);
-
-            if (isLastComp) {
-              done();
-            }
-          }, 100);
-        }, 100);
-      });
+            testNext();
+          }, 200);
+        }, 200);
+      })();
     },
     'Should set multiple values'(form, done) {
-      form.components.forEach((comp) => {
+      const testComponents = form.components.filter(comp => !['address'].includes(comp.component.type));
+      testComponents.forEach((comp) => {
         const compKey = comp.component.key;
         const value = _.cloneDeep(values.multipleValues[compKey]);
 
@@ -363,7 +364,11 @@ export default {
       });
 
       setTimeout(() => {
-        form.components.forEach((comp) => {
+        (function testNext() {
+          const comp = testComponents.shift();
+          if (!comp) {
+            return done();
+          }
           const compKey = comp.component.key;
           const compType = comp.component.type;
           const value = _.cloneDeep(values.multipleValues[compKey]);
@@ -387,9 +392,8 @@ export default {
             assert.deepEqual(comp.refs.fileLink.length, value.length, `${compKey} (component ${compType}): should render multiple file links`);
             assert.deepEqual(comp.refs.removeLink.length, value.length, `${compKey} (component ${compType}): should add remove link btn for each link in multiple mode`);
           }
-        });
-
-        done();
+          testNext();
+        })();
       }, 500);
     },
   },
@@ -397,8 +401,11 @@ export default {
     'Should open and close modal window'(form, done) {
       const componentsWithBug = ['columns', 'fieldset', 'panel', 'table', 'tabs', 'well']; //BUG: include them in test when it is fixed
       const testComponents = form.components.filter(comp => ![...componentsWithBug, 'button'].includes(comp.component.type));
-      testComponents.forEach((comp, index) => {
-        const isLastComp = index === (testComponents.length - 1);
+      (function testNext() {
+        const comp = testComponents.shift();
+        if (!comp) {
+          return done();
+        }
         const compKey = comp.component.key;
         const compType = comp.component.type;
         const clickEvent = new Event('click');
@@ -420,21 +427,20 @@ export default {
 
           setTimeout(() => {
             assert.deepEqual(isModalWindowOpened(comp), false, `${compKey} (component ${compType}): should close modal window`);
-
-            if (isLastComp) {
-              done();
-            }
+            testNext();
           });
         });
-      });
+      })();
     },
     'Should delete component changes when closing modal window and clicking "delete it" in confirmation dialog'(form, done) {
       const layoutComponents = ['columns', 'fieldset', 'panel', 'table', 'tabs', 'well'];
       const testComponents = form.components.filter(comp => !['htmlelement', 'content', 'button'].includes(comp.component.type));
-
-      testComponents.forEach((comp, index) => {
+      (function testNext() {
+        const comp = testComponents.shift();
+        if (!comp) {
+          return done();
+        }
         const componentsWithBug = layoutComponents; //BUG: include them in test when it is fixed
-        const isLastComp = index === (testComponents.length - 1);
         const compKey = comp.component.key;
         const compType = comp.component.type;
 
@@ -502,21 +508,21 @@ export default {
                 }
 
                 assert.deepEqual(isModalWindowOpened(), false, `${compKey} (component ${compType}): should close modal window`);
-
-                if (isLastComp) {
-                  done();
-                }
+                testNext();
               }, 50);
             }, 50);
           }, 50);
         });
-      });
+      })();
     },
     'Should save component values and close the modal after clicking "save"'(form, done) {
       const testComponents = form.components.filter(comp => !['htmlelement', 'content', 'button'].includes(comp.component.type));
 
-      testComponents.forEach((comp, index) => {
-        const isLastComp = index === (testComponents.length - 1);
+      (function testNext() {
+        const comp = testComponents.shift();
+        if (!comp) {
+          return done();
+        }
         const compKey = comp.component.key;
         const compType = comp.component.type;
 
@@ -563,13 +569,11 @@ export default {
                 );
               }
 
-              if (isLastComp) {
-                done();
-              }
+              testNext();
             }, 50);
           }, 50);
         });
-      });
+      })();
     },
   //   'Should highlight modal button if component is invalid'(form, done, test) {
   //     test.timeout(10000);

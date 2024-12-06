@@ -432,7 +432,7 @@ export default class Wizard extends Webform {
 
   attachHeader() {
     const isAllowPrevious = this.isAllowPrevious();
-    this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`], this.currentPanel.tooltip);
+    this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`], this.currentPanel?.tooltip);
 
     if (this.isBreadcrumbClickable() || isAllowPrevious) {
       this.refs[`${this.wizardKey}-link`]?.forEach((link, index) => {
@@ -831,7 +831,7 @@ export default class Wizard extends Webform {
   validateCurrentPage(flags = {}) {
     const components = this.currentPage?.components.map((component) => component.component);
     // Accessing the parent ensures the right instance (whether it's the parent Wizard or a nested Wizard) performs its validation
-    return this.currentPage?.parent.validateComponents(components, this.currentPage.parent.data, flags);
+    return this.currentPage?.parent.validateComponents(components, this.root.data, flags);
   }
 
   emitPrevPage() {
@@ -1041,13 +1041,6 @@ export default class Wizard extends Webform {
     if (this.options.readOnly && (this.prefixComps.length || this.suffixComps.length)) {
       this.redraw();
     }
-  }
-
-  redraw() {
-    if (this.parent?.component?.modalEdit) {
-      return this.parent.redraw();
-    }
-    return super.redraw();
   }
 
   rebuild() {
