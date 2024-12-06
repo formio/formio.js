@@ -2,6 +2,8 @@ import assert from 'power-assert';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import _ from 'lodash';
+import resetActionDefaultValueBasicComponents from '../forms/resetActionDefaultValueBasicComponents';
+import resetActionDefaultValuesDataComponentsForm from '../forms/resetActionDefaultValuesDataComponentsForm';
 import Harness from '../harness.js';
 import FormTests from '../forms/index.js';
 import Webform from '../../src/Webform.js';
@@ -2898,6 +2900,194 @@ describe('Webform tests', function() {
           });
         });
       });
+    });
+
+    it('Should reset all default values correctly (Data components).', (done) => {
+      formElement.innerHTML = '';
+      Formio.createForm(formElement, resetActionDefaultValuesDataComponentsForm).then((form) => {
+        const nonDefaultValue = {
+          hidden: '500',
+          container: {
+            textField: 'Test',
+            number: 1,
+            currency: 1,
+          },
+          dataGrid: [
+            {
+              textField1: 'Test',
+              number1: 1,
+              currency2: 1,
+            },
+            {
+              textField1: 'Test',
+              number1: 1,
+              currency2: 1,
+            },
+            {
+              textField1: 'Test',
+              number1: 1,
+              currency2: 1,
+            },
+            {
+              textField1: 'Test',
+              number1: 1,
+              currency2: 1,
+            },
+          ],
+          editGrid: [
+            {
+              textField2: 'Test',
+              number2: 1,
+              currency1: 1,
+            },
+            {
+              textField2: 'Test',
+              number2: 1,
+              currency1: 1,
+            },
+            {
+              textField2: 'Test',
+              number2: 1,
+              currency1: 1,
+            },
+          ],
+          reset: false,
+          resetCustom: false,
+          submit: true,
+        };
+        const defaultValue = {
+          hidden: '500',
+          container: {
+            textField: 'Officia consequuntur',
+            number: 1000,
+            currency: 1001,
+          },
+          dataGrid: [
+            {
+              textField1: 'Eaque esse est dele',
+              number1: 796,
+              currency2: 0,
+            },
+            {
+              textField1: 'Default Value ',
+              number1: 100,
+              currency2: 200,
+            },
+            {
+              textField1: 'Default Value ',
+              number1: 100,
+              currency2: 200,
+            },
+          ],
+          editGrid: [
+            {
+              textField2: 'Default Value ',
+              number2: 100,
+              currency1: 200,
+            },
+            {
+              textField2: 'Default Value ',
+              number2: 100,
+              currency1: 200,
+            },
+          ],
+          reset: false,
+          resetCustom: false,
+          submit: true,
+        };
+        form.setSubmission({ data: { ...nonDefaultValue } }).then(() => {
+          expect(form.submission).to.deep.equal({ data: nonDefaultValue });
+          form.resetValue();
+
+          setTimeout(() => {
+            expect(form.submission).to.deep.equal({ data: defaultValue });
+            done();
+          }, 200);
+        });
+      }).catch(done);
+    });
+
+    it('Should reset all default values correctly (Basic components).', (done) => {
+      formElement.innerHTML = '';
+      Formio.createForm(formElement, resetActionDefaultValueBasicComponents).then((form) => {
+        const nonDefaultValue = {
+          hidden: '500',
+          container: {
+            textField: 'Test',
+            number: 1,
+            currency: 1,
+          },
+          dataGrid: [
+            {
+              textField1: 'Test',
+              number1: 1,
+              currency2: 1,
+            },
+            {
+              textField1: 'Test',
+              number1: 1,
+              currency2: 1,
+            },
+            {
+              textField1: 'Test',
+              number1: 1,
+              currency2: 1,
+            },
+            {
+              textField1: 'Test',
+              number1: 1,
+              currency2: 1,
+            },
+          ],
+          editGrid: [
+            {
+              textField2: 'Test',
+              number2: 1,
+              currency1: 1,
+            },
+            {
+              textField2: 'Test',
+              number2: 1,
+              currency1: 1,
+            },
+            {
+              textField2: 'Test',
+              number2: 1,
+              currency1: 1,
+            },
+          ],
+          reset: false,
+          resetCustom: false,
+          submit: true,
+        };
+        const defaultValue = {
+          textFieldPopulate: '1',
+          numberPopulate: 1,
+          textField: '1',
+          textArea: '1',
+          number: 1,
+          checkbox: false,
+          selectBoxes: {
+            '1': false,
+            '2': true,
+            '3': true,
+          },
+          select: 2,
+          radio: 3,
+          reset: false,
+          resetCustom: false,
+          submit: true,
+        };
+        form.setSubmission({ data: { ...nonDefaultValue } }).then(() => {
+          expect(form.submission).to.deep.equal({ data: nonDefaultValue });
+          form.resetValue();
+
+          setTimeout(() => {
+            expect(form.submission).to.deep.equal({ data: defaultValue });
+            done();
+          }, 200);
+        });
+      }).catch(done);
     });
   });
 

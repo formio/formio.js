@@ -2964,6 +2964,13 @@ export default class Component extends Element {
         this.setValueAt(i, isArray && !this.isSingleInputValue() ? value[i] : value, flags);
       }
     }
+
+    // Also reset value of the modal component, otherwise it will keep the old value locally and the preview
+    // element won't refresh
+    if (this.componentModal && flags && flags.resetValue) {
+      this.componentModal.setValue(value);
+    }
+
     return changed;
   }
 
