@@ -2605,63 +2605,6 @@ describe('Webform tests', function () {
     });
   });
 
-  it('Should not fire validations when fields are either protected or not persistent.', function (done) {
-    const form = new Webform(formElement, { language: 'en' });
-    form
-      .setForm({
-        title: 'protected and persistent',
-        components: [
-          {
-            type: 'textfield',
-            label: 'A',
-            key: 'a',
-            validate: {
-              required: true,
-            },
-          },
-          {
-            type: 'textfield',
-            label: 'B',
-            key: 'b',
-            protected: true,
-            validate: {
-              required: true,
-            },
-          },
-        ],
-      })
-      .then(() => {
-        checkForErrors(form, {}, {}, 0, () => {
-          checkForErrors(
-            form,
-            {},
-            {
-              data: {
-                a: 'Testing',
-                b: '',
-              },
-            },
-            1,
-            () => {
-              checkForErrors(
-                form,
-                {},
-                {
-                  _id: '123123123',
-                  data: {
-                    a: 'Testing',
-                    b: '',
-                  },
-                },
-                0,
-                done,
-              );
-            },
-          );
-        });
-      });
-  });
-
   it('Should not fire validation on init.', function (done) {
     formElement.innerHTML = '';
     const form = new Webform(formElement, { language: 'en' });

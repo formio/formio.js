@@ -32,10 +32,6 @@ describe('WebformBuilder tests', function () {
     return Harness.getBuilder().setForm({ display: 'form', components: [] });
   });
 
-  after(function (done) {
-    Harness.builderAfter(done);
-  });
-
   it('Should create a new form builder class', function (done) {
     const builder = Harness.getBuilder();
     assert(builder instanceof WebformBuilder, 'Builder must be an instance of FormioFormBuilder');
@@ -434,7 +430,7 @@ describe('WebformBuilder tests', function () {
       .catch(done);
   });
 
-  it('Should not hilight error for default values', function (done) {
+  it('Should not highlight error for default values', function (done) {
     const builder = Harness.getBuilder();
     builder
       .setForm({})
@@ -455,7 +451,7 @@ describe('WebformBuilder tests', function () {
 
   describe('Select Component selectData property', function () {
     let originalMakeRequest;
-    
+
     before(function (done) {
       originalMakeRequest = Formio.makeRequest;
       Formio.makeRequest = () => {
