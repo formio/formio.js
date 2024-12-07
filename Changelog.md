@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.21.6-rc.2]
+## 4.21.6-rc.2
 ### Changed
  - Update text-mask-addons to formio.4
 
