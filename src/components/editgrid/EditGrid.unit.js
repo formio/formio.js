@@ -971,12 +971,12 @@ describe('EditGrid Component', () => {
       setTimeout(() => {
         assert.equal(editGrid.editRows.length, 1);
         checkHeader(2);
-        const checkbox = editGrid.getComponent('checkbox')[0];
+        const checkbox = editGrid.getComponent('checkbox');
         checkbox.setValue(true);
 
         setTimeout(() => {
           checkHeader(2);
-          assert.equal(editGrid.getComponent('textArea')[0].visible, true);
+          assert.equal(editGrid.getComponent('textArea').visible, true);
           clickAddRow();
 
           setTimeout(() => {
@@ -1306,11 +1306,11 @@ describe('EditGrid Component', () => {
       editGrid1.addRow();
 
       setTimeout(() => {
-        const btn = editGrid1.getComponent('setPanelValue')[0];
+        const btn = editGrid1.getComponent('setPanelValue');
         const clickEvent = new Event('click');
         btn.refs.button.dispatchEvent(clickEvent);
         setTimeout(() => {
-          const conditionalEditGrid = editGrid1.getComponent('editGrid')[0];
+          const conditionalEditGrid = editGrid1.getComponent('editGrid');
           assert.deepEqual(conditionalEditGrid.dataValue, [{ textField:'testyyyy' }]);
           assert.equal(conditionalEditGrid.editRows.length, 1);
           done();

@@ -445,18 +445,18 @@ describe('DataGrid Component', () => {
 
   it('Should retain previous checkboxes checked property when add another is pressed (checked)', () => {
     return Harness.testCreate(DataGridComponent, withCheckboxes).then((component) => {
-      component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').click();
+      component.componentsMap['dataGrid[0].radio'].element.querySelector('input').click();
       component.addRow();
-      assert.equal(component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').checked, true);
+      assert.equal(component.componentsMap['dataGrid[0].radio'].element.querySelector('input').checked, true);
     });
   });
 
   it('Should retain previous checkboxes checked property when add another is pressed (unchecked)', () => {
     return Harness.testCreate(DataGridComponent, withCheckboxes).then((component) => {
-      component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').click();
-      component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').click();
+      component.componentsMap['dataGrid[0].radio'].element.querySelector('input').click();
+      component.componentsMap['dataGrid[0].radio'].element.querySelector('input').click();
       component.addRow();
-      assert.equal(component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').checked, false);
+      assert.equal(component.componentsMap['dataGrid[0].radio'].element.querySelector('input').checked, false);
     });
   });
 

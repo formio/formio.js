@@ -1275,25 +1275,14 @@ export default class WebformBuilder extends Component {
   findRepeatablePaths() {
     const repeatablePaths = [];
     const keys = new Map();
-
-    eachComponent(this.form.components, (comp, path) => {
-      if (!comp.key) {
-        return;
-      }
-
-      if (keys.has(comp.key)) {
-        if (keys.get(comp.key).includes(path)) {
-          repeatablePaths.push(path);
-        }
-        else {
-          keys.set(comp.key, [...keys.get(comp.key), path]);
-        }
+    eachComponent(this.form.components, (comp, path, components, parent, paths) => {
+      if (keys.has(paths.dataPath)) {
+        repeatablePaths.push(paths.dataPath);
       }
       else {
-        keys.set(comp.key, [path]);
+        keys.set(paths.dataPath, true);
       }
     }, true);
-
     return repeatablePaths;
   }
 
