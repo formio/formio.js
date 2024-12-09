@@ -4,9 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.1.0-rc.1]
+## 5.1.0-rc.1
 ### Changed
+ - Updated @formio/bootstrap@3.1.0-rc.1
+ - Updated @formio/core@2.4.0-rc.1
  - Increment minor version
+ - 5.x - FIO-8426: changes required for eSignature
+ - Refactor the component path system to ensure we are always referencing the correct path.
+ - FIO-9312: fixed an issue where conditionals does not work well when there are several components with the same key/path
 
 ## 5.0.0
 ### Changed
