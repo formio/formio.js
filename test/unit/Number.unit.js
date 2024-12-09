@@ -28,7 +28,7 @@ describe('Number Component', function () {
     });
   });
 
-  xit('Should correctly handle scientific notation', function () {
+  it('Should correctly handle scientific notation', function () {
     return Harness.testCreate(NumberComponent, scientificNotation, {
       allowScientificNotation: true,
     }).then((component) => {
