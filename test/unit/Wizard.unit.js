@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 import Harness from '../harness';
 import Wizard from '../../src/Wizard';
 import { Formio } from '../../src/Formio';
