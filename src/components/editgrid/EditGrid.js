@@ -344,13 +344,16 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   checkRowVariableTypeComponents(editRow, rowIndex) {
     const rowComponents = editRow.components;
+    let typeChanged = false;
 
     if (_.some(this.variableTypeComponentsIndexes, (compIndex) => {
       const variableTypeComp = rowComponents[compIndex];
       return variableTypeComp.type !== variableTypeComp.component.type;
     })) {
       editRow.components = this.createRowComponents(editRow.data, rowIndex, true);
+      typeChanged = true;
     }
+    return typeChanged;
   }
 
   setVariableTypeComponents() {
@@ -1120,8 +1123,10 @@ export default class EditGridComponent extends NestedArrayComponent {
         }
 
         if (this.variableTypeComponentsIndexes.length) {
-          this.checkRowVariableTypeComponents(editRow, rowIndex);
-          this.redraw();
+          const typeChanged = this.checkRowVariableTypeComponents(editRow, rowIndex);
+          if (typeChanged) {
+            this.redraw();
+          }
         }
       };
 
