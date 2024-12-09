@@ -1,34 +1,34 @@
 export default [
   {
     key: 'labelPosition',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'description',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'hideLabel',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'autofocus',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tableView',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'label',
     hidden: true,
     calculateValue(context) {
       return context.data.legend;
-    }
+    },
   },
   {
     weight: 1,
@@ -37,6 +37,6 @@ export default [
     key: 'legend',
     label: 'Legend',
     placeholder: 'Legend',
-    tooltip: 'The legend for this Fieldset.'
+    tooltip: 'The legend for this Fieldset.',
   },
 ];

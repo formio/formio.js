@@ -1,39 +1,39 @@
 export default [
   {
     key: 'labelPosition',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'description',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'autofocus',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tooltip',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tabindex',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'disabled',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tableView',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'hideLabel',
-    ignore: true
+    ignore: true,
   },
   {
     weight: 0,
@@ -44,10 +44,10 @@ export default [
     placeholder: 'Field Label',
     tooltip: 'The label for this field.',
     validate: {
-      required: true
+      required: true,
     },
     autofocus: true,
-    overrideEditForm: true
+    overrideEditForm: true,
   },
   {
     type: 'number',
@@ -56,7 +56,7 @@ export default [
     input: true,
     weight: 1,
     placeholder: 'Number of Rows',
-    tooltip: 'Enter the number or rows that should be displayed by this table.'
+    tooltip: 'Enter the number or rows that should be displayed by this table.',
   },
   {
     type: 'number',
@@ -65,7 +65,7 @@ export default [
     input: true,
     weight: 2,
     placeholder: 'Number of Columns',
-    tooltip: 'Enter the number or columns that should be displayed by this table.'
+    tooltip: 'Enter the number or columns that should be displayed by this table.',
   },
   {
     type: 'checkbox',
@@ -73,7 +73,8 @@ export default [
     key: 'cloneRows',
     input: true,
     weight: 3,
-    tooltip: 'Check this if you would like to \'clone\' the first row of components to all additional empty rows of the table.'
+    tooltip:
+      "Check this if you would like to 'clone' the first row of components to all additional empty rows of the table.",
   },
   {
     type: 'select',
@@ -86,11 +87,11 @@ export default [
       values: [
         { label: 'Left', value: 'left' },
         { label: 'Center', value: 'center' },
-        { label: 'Right', value: 'right' }
-      ]
+        { label: 'Right', value: 'right' },
+      ],
     },
     defaultValue: 'left',
-    weight: 3
+    weight: 3,
   },
   {
     type: 'checkbox',
@@ -98,7 +99,7 @@ export default [
     key: 'striped',
     tooltip: 'This will stripe the table if checked.',
     input: true,
-    weight: 701
+    weight: 701,
   },
   {
     type: 'checkbox',
@@ -106,7 +107,7 @@ export default [
     key: 'bordered',
     input: true,
     tooltip: 'This will border the table if checked.',
-    weight: 702
+    weight: 702,
   },
   {
     type: 'checkbox',
@@ -114,7 +115,7 @@ export default [
     key: 'hover',
     input: true,
     tooltip: 'Highlight a row on hover.',
-    weight: 703
+    weight: 703,
   },
   {
     type: 'checkbox',
@@ -122,10 +123,10 @@ export default [
     key: 'condensed',
     input: true,
     tooltip: 'Condense the size of the table.',
-    weight: 704
+    weight: 704,
   },
   {
     key: 'hideLabel',
-    ignore: true
+    ignore: true,
   },
 ];

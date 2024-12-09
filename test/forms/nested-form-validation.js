@@ -10,7 +10,7 @@ export default {
       const submission = {
         data: {
           radio: 'no',
-        }
+        },
       };
 
       Harness.onNext(form, 'change', () => {
@@ -23,23 +23,24 @@ export default {
       const submission = {
         data: {
           radio: 'yes',
-        }
+        },
       };
 
       Harness.onNext(form, 'change', () => {
-        form.submit()
+        form
+          .submit()
           .then(
             () => expect.fail('Submit should reject'),
-            errors => {
+            (errors) => {
               expect(errors).to.be.lengthOf(1);
               expect(errors[0].message).to.equal('Name is required');
               done();
-            }
+            },
           )
           .catch(done);
       });
 
       form.submission = submission;
-    }
-  }
+    },
+  },
 };

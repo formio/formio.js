@@ -3,6 +3,7 @@ title: Home
 layout: default
 section: home
 ---
+
 <div class="p-3 mb-4 bg-light rounded-3 shadow">
   <div class="p-2 bg-light rounded-3">
     <div class="container-fluid py-3">
@@ -21,12 +22,19 @@ section: home
 </div>
 
 ### Simple Example
+
 ```html
 <html>
   <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css"
+    />
     <script src="https://cdn.form.io/js/formio.embed.js"></script>
   </head>
   <body>
@@ -39,7 +47,9 @@ section: home
 ```
 
 ### Application Import
+
 Or you can import this within your own application as follows.
+
 ```
 npm install --save @formio/js
 ```
@@ -50,6 +60,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 ```
 
 ### Result
+
 <div class="card card-body mb-4">
 <div id="formio"></div>
 <script type="text/javascript">
@@ -60,5 +71,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 </div>
 
 ### JSFiddle
+
 To play around with this renderer, we recommend using JSFiddle. Here is an example you can fork and use as a sandbox.
+
 <script async src="//jsfiddle.net/travistidwell/z63jvwkp/embed/"></script>

@@ -7,7 +7,7 @@ export default {
       buttonSettings: {
         previous: true,
         cancel: true,
-        next: true
+        next: true,
       },
       scrollToTop: false,
       collapsible: false,
@@ -22,7 +22,7 @@ export default {
           buttonSettings: {
             previous: true,
             cancel: true,
-            next: true
+            next: true,
           },
           scrollToTop: false,
           collapsible: false,
@@ -36,13 +36,13 @@ export default {
               label: 'Text Field',
               tableView: true,
               validate: {
-                required: true
+                required: true,
               },
               key: 'textField',
               type: 'textfield',
-              input: true
-            }
-          ]
+              input: true,
+            },
+          ],
         },
         {
           label: 'Edit Grid',
@@ -59,34 +59,32 @@ export default {
                 values: [
                   {
                     label: 'a',
-                    value: 'a'
+                    value: 'a',
                   },
                   {
                     label: 'b',
-                    value: 'b'
+                    value: 'b',
                   },
                   {
                     label: 'c',
-                    value: 'c'
-                  }
-                ]
+                    value: 'c',
+                  },
+                ],
               },
               selectThreshold: 0.3,
               validate: {
-                onlyAvailableItems: false
+                onlyAvailableItems: false,
               },
               key: 'select',
               type: 'select',
               indexeddb: {
-                filter: {
-
-                }
+                filter: {},
               },
-              input: true
-            }
-          ]
-        }
-      ]
+              input: true,
+            },
+          ],
+        },
+      ],
     },
     {
       title: 'Page 2',
@@ -94,7 +92,7 @@ export default {
       buttonSettings: {
         previous: true,
         cancel: true,
-        next: true
+        next: true,
       },
       collapsible: false,
       key: 'page2',
@@ -106,8 +104,8 @@ export default {
             simple: {
               show: true,
               when: 'textField',
-              eq: 'hide'
-            }
+              eq: 'hide',
+            },
           },
           actions: [
             {
@@ -116,12 +114,12 @@ export default {
               property: {
                 label: 'Hidden',
                 value: 'hidden',
-                type: 'boolean'
+                type: 'boolean',
               },
-              state: true
-            }
-          ]
-        }
+              state: true,
+            },
+          ],
+        },
       ],
       type: 'panel',
       label: 'Page 2',
@@ -135,20 +133,20 @@ export default {
                   label: 'Checkbox',
                   tableView: false,
                   validate: {
-                    required: true
+                    required: true,
                   },
                   key: 'checkbox',
                   type: 'checkbox',
                   input: true,
                   hideOnChildrenHidden: false,
-                  defaultValue: false
-                }
+                  defaultValue: false,
+                },
               ],
               width: 6,
               offset: 0,
               push: 0,
               pull: 0,
-              size: 'md'
+              size: 'md',
             },
             {
               components: [
@@ -160,12 +158,12 @@ export default {
                   enableMinDateInput: false,
                   datePicker: {
                     disableWeekends: false,
-                    disableWeekdays: false
+                    disableWeekdays: false,
                   },
                   enableMaxDateInput: false,
                   enableTime: false,
                   timePicker: {
-                    showMeridian: false
+                    showMeridian: false,
                   },
                   key: 'dateTime',
                   type: 'datetime',
@@ -186,22 +184,22 @@ export default {
                     minDate: null,
                     disableWeekends: false,
                     disableWeekdays: false,
-                    maxDate: null
+                    maxDate: null,
                   },
-                  hideOnChildrenHidden: false
-                }
+                  hideOnChildrenHidden: false,
+                },
               ],
               width: 6,
               offset: 0,
               push: 0,
               pull: 0,
-              size: 'md'
-            }
+              size: 'md',
+            },
           ],
           key: 'columns',
           type: 'columns',
           input: false,
-          tableView: false
+          tableView: false,
         },
         {
           label: 'Data Grid',
@@ -211,11 +209,7 @@ export default {
           enableRowGroups: false,
           initEmpty: false,
           tableView: false,
-          defaultValue: [
-            {
-
-            }
-          ],
+          defaultValue: [{}],
           key: 'dataGrid',
           type: 'datagrid',
           input: true,
@@ -225,13 +219,13 @@ export default {
               tableView: true,
               key: 'textFielde',
               type: 'textfield',
-              input: true
-            }
-          ]
-        }
+              input: true,
+            },
+          ],
+        },
       ],
       input: false,
-      tableView: false
+      tableView: false,
     },
     {
       title: 'Page 3',
@@ -239,7 +233,7 @@ export default {
       buttonSettings: {
         previous: true,
         cancel: true,
-        next: true
+        next: true,
       },
       scrollToTop: false,
       collapsible: false,
@@ -247,7 +241,7 @@ export default {
       conditional: {
         show: false,
         when: 'textField',
-        eq: 'hide2'
+        eq: 'hide2',
       },
       type: 'panel',
       label: 'Page 3',
@@ -264,14 +258,14 @@ export default {
               tableView: true,
               key: 'email',
               type: 'email',
-              input: true
-            }
-          ]
-        }
+              input: true,
+            },
+          ],
+        },
       ],
       input: false,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   title: 'FIO-2494 2',
   display: 'wizard',

@@ -1,10 +1,10 @@
-export default     {
+export default {
   label: 'Tabs',
   components: [
     {
       label: 'Tab 1',
       key: 'tab1',
-      components: []
+      components: [],
     },
     {
       label: 'Tab 2',
@@ -14,14 +14,14 @@ export default     {
           label: 'Text Field',
           tableView: true,
           validate: {
-            required: true
+            required: true,
           },
           key: 'textField',
           type: 'textfield',
-          input: true
-        }
-      ]
-    }
+          input: true,
+        },
+      ],
+    },
   ],
   key: 'tabs',
   type: 'tabs',

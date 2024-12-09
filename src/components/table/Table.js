@@ -16,23 +16,26 @@ export default class TableComponent extends NestedComponent {
   }
 
   static schema(...extend) {
-    return NestedComponent.schema({
-      label: 'Table',
-      type: 'table',
-      input: false,
-      key: 'table',
-      numRows: 3,
-      numCols: 3,
-      rows: TableComponent.emptyTable(3, 3),
-      header: [],
-      caption: '',
-      cloneRows: false,
-      striped: false,
-      bordered: false,
-      hover: false,
-      condensed: false,
-      persistent: false
-    }, ...extend);
+    return NestedComponent.schema(
+      {
+        label: 'Table',
+        type: 'table',
+        input: false,
+        key: 'table',
+        numRows: 3,
+        numCols: 3,
+        rows: TableComponent.emptyTable(3, 3),
+        header: [],
+        caption: '',
+        cloneRows: false,
+        striped: false,
+        bordered: false,
+        hover: false,
+        condensed: false,
+        persistent: false,
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -43,7 +46,7 @@ export default class TableComponent extends NestedComponent {
       weight: 40,
       documentation: '/userguide/form-building/layout-components#table',
       showPreview: false,
-      schema: TableComponent.schema()
+      schema: TableComponent.schema(),
     };
   }
 
@@ -115,9 +118,14 @@ export default class TableComponent extends NestedComponent {
     for (let rowIndex = 0; rowIndex < this.component.numRows; rowIndex++) {
       this.component.rows[rowIndex] = this.component.rows[rowIndex] || [];
       for (let colIndex = 0; colIndex < this.component.numCols; colIndex++) {
-        this.component.rows[rowIndex][colIndex] = this.component.rows[rowIndex][colIndex] || { components: [] };
+        this.component.rows[rowIndex][colIndex] = this.component.rows[rowIndex][colIndex] || {
+          components: [],
+        };
       }
-      this.component.rows[rowIndex] = this.component.rows[rowIndex].slice(0, this.component.numCols);
+      this.component.rows[rowIndex] = this.component.rows[rowIndex].slice(
+        0,
+        this.component.numCols,
+      );
     }
     this.component.rows = this.component.rows.slice(0, this.component.numRows);
 
@@ -130,8 +138,7 @@ export default class TableComponent extends NestedComponent {
         if (this.component.cloneRows) {
           if (column.components.length) {
             lastNonEmptyRow[colIndex] = column;
-          }
-          else if (lastNonEmptyRow[colIndex]) {
+          } else if (lastNonEmptyRow[colIndex]) {
             column.components = _.cloneDeep(lastNonEmptyRow[colIndex].components);
             BuilderUtils.uniquify(this.root._form.components, column);
           }
@@ -142,9 +149,8 @@ export default class TableComponent extends NestedComponent {
           if (this.builderMode) {
             comp.id = comp.id + rowIndex;
             columnComponent = comp;
-          }
-          else {
-            columnComponent = { ...comp, id: (comp.id + rowIndex) };
+          } else {
+            columnComponent = { ...comp, id: comp.id + rowIndex };
           }
 
           const component = this.createComponent(columnComponent);
@@ -157,16 +163,16 @@ export default class TableComponent extends NestedComponent {
   }
 
   render() {
-    return super.render(this.renderTemplate('table', {
-      cellClassName: this.cellClassName,
-      tableKey: this.tableKey,
-      colWidth: this.colWidth,
-      tableComponents: this.table.map(row =>
-        row.map(column =>
-          this.renderComponents(column)
-        )
-      )
-    }));
+    return super.render(
+      this.renderTemplate('table', {
+        cellClassName: this.cellClassName,
+        tableKey: this.tableKey,
+        colWidth: this.colWidth,
+        tableComponents: this.table.map((row) =>
+          row.map((column) => this.renderComponents(column)),
+        ),
+      }),
+    );
   }
 
   attach(element) {
@@ -178,7 +184,11 @@ export default class TableComponent extends NestedComponent {
     const superAttach = super.attach(element);
     this.table.forEach((row, rowIndex) => {
       row.forEach((column, columnIndex) => {
-        this.attachComponents(this.refs[`${this.tableKey}-${rowIndex}`][columnIndex], this.table[rowIndex][columnIndex], this.component.rows[rowIndex][columnIndex].components);
+        this.attachComponents(
+          this.refs[`${this.tableKey}-${rowIndex}`][columnIndex],
+          this.table[rowIndex][columnIndex],
+          this.component.rows[rowIndex][columnIndex].components,
+        );
       });
     });
     return superAttach;

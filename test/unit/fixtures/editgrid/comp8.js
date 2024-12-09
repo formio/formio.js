@@ -15,32 +15,32 @@ export default {
         values: [
           {
             label: 'Chevy',
-            value: 'chevy'
+            value: 'chevy',
           },
           {
             value: 'honda',
-            label: 'Honda'
+            label: 'Honda',
           },
           {
             label: 'Ford',
-            value: 'ford'
+            value: 'ford',
           },
           {
             label: 'Toyota',
-            value: 'toyota'
-          }
-        ]
+            value: 'toyota',
+          },
+        ],
       },
       selectThreshold: 0.3,
       validate: {
-        required: true
+        required: true,
       },
       key: 'make',
       type: 'select',
       indexeddb: {
-        filter: {}
+        filter: {},
       },
-      input: true
+      input: true,
     },
     {
       label: 'Model',
@@ -52,16 +52,16 @@ export default {
         values: [
           {
             label: '',
-            value: ''
-          }
+            value: '',
+          },
         ],
         url: 'https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/{{ row.make }}?format=json',
         headers: [
           {
             key: '',
-            value: ''
-          }
-        ]
+            value: '',
+          },
+        ],
       },
       valueProperty: 'Model_Name',
       template: '<span>{{ item.Model_Name }}</span>',
@@ -70,18 +70,18 @@ export default {
       selectThreshold: 0.3,
       clearOnHide: false,
       validate: {
-        required: true
+        required: true,
       },
       key: 'model',
       type: 'select',
       indexeddb: {
-        filter: {}
+        filter: {},
       },
       selectValues: 'Results',
       input: true,
       disableLimit: false,
-      lazyLoad: false
-    }
+      lazyLoad: false,
+    },
   ],
   placeholder: '',
   prefix: '',
@@ -118,19 +118,19 @@ export default {
     customPrivate: false,
     strictDateValidation: false,
     multiple: false,
-    unique: false
+    unique: false,
   },
   conditional: {
     show: null,
     when: null,
-    eq: ''
+    eq: '',
   },
   overlay: {
     style: '',
     left: '',
     top: '',
     width: '',
-    height: ''
+    height: '',
   },
   allowCalculateOverride: false,
   encrypted: false,
@@ -146,9 +146,10 @@ export default {
   modal: false,
   inlineEdit: false,
   templates: {
-    header: "<div class=\"row\">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}\n          <div class=\"col-sm-2\">{{ component.label }}</div>\n        {% } %}\n      {% }) %}\n    </div>",
-    row: "<div class=\"row\">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}\n          <div class=\"col-sm-2\">\n            {{ getView(component, row[component.key]) }}\n          </div>\n        {% } %}\n      {% }) %}\n      {% if (!instance.disabled) { %}\n        <div class=\"col-sm-2\">\n          <div class=\"btn-group pull-right\">\n            <button class=\"btn btn-default btn-light btn-sm editRow\"><i class=\"{{ iconClass('edit') }}\"></i></button>\n            {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}\n              <button class=\"btn btn-danger btn-sm removeRow\"><i class=\"{{ iconClass('trash') }}\"></i></button>\n            {% } %}\n          </div>\n        </div>\n      {% } %}\n    </div>",
-    footer: ''
+    header:
+      '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty(\'tableView\') || component.tableView) { %}\n          <div class="col-sm-2">{{ component.label }}</div>\n        {% } %}\n      {% }) %}\n    </div>',
+    row: '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (!component.hasOwnProperty(\'tableView\') || component.tableView) { %}\n          <div class="col-sm-2">\n            {{ getView(component, row[component.key]) }}\n          </div>\n        {% } %}\n      {% }) %}\n      {% if (!instance.disabled) { %}\n        <div class="col-sm-2">\n          <div class="btn-group pull-right">\n            <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass(\'edit\') }}"></i></button>\n            {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}\n              <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass(\'trash\') }}"></i></button>\n            {% } %}\n          </div>\n        </div>\n      {% } %}\n    </div>',
+    footer: '',
   },
-  id: 'e7p0y9a'
+  id: 'e7p0y9a',
 };

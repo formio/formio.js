@@ -8,9 +8,7 @@ export default {
   initEmpty: false,
   tableView: false,
   modalEdit: true,
-  defaultValue: [
-    {}
-  ],
+  defaultValue: [{}],
   key: 'dataGrid',
   type: 'datagrid',
   input: true,
@@ -19,22 +17,22 @@ export default {
       label: 'Text Field',
       tableView: true,
       validate: {
-        required: true
+        required: true,
       },
       key: 'textField',
       type: 'textfield',
-      input: true
+      input: true,
     },
     {
       label: 'Text Area',
       autoExpand: false,
       tableView: true,
       validate: {
-        required: true
+        required: true,
       },
       key: 'textArea',
       type: 'textarea',
-      input: true
-    }
-  ]
+      input: true,
+    },
+  ],
 };

@@ -10,7 +10,7 @@ export default [
     placeholder: 'Minimum Length',
     type: 'textfield',
     tooltip: 'The minimum length requirement this field must meet.',
-    input: true
+    input: true,
   },
   {
     weight: 120,
@@ -19,6 +19,6 @@ export default [
     placeholder: 'Maximum Length',
     type: 'textfield',
     tooltip: 'The maximum length requirement this field must meet.',
-    input: true
-  }
+    input: true,
+  },
 ];

@@ -8,6 +8,6 @@ export default {
     key: 'value',
     label: 'Value',
     defaultValue: 'Value',
-    input: true
-  }
+    input: true,
+  },
 };

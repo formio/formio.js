@@ -1,11 +1,11 @@
 export default [
   {
     key: 'validate.minWords',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'validate.maxWords',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'panel',
@@ -19,8 +19,8 @@ export default [
         label: 'Enable',
         tooltip: 'Enable Kickbox validation for this email field.',
         description: 'Validate this email using the Kickbox email validation service.',
-        key: 'kickbox.enabled'
-      }
-    ]
-  }
+        key: 'kickbox.enabled',
+      },
+    ],
+  },
 ];

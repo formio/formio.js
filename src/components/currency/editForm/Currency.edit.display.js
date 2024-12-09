@@ -1,23 +1,23 @@
 export default [
   {
     key: 'inputMask',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'allowMultipleMasks',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'showWordCount',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'showCharCount',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'spellcheck',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'textfield',
@@ -25,7 +25,7 @@ export default [
     weight: 310,
     key: 'prefix',
     label: 'prefix',
-    tooltip: 'Specify the prefix symbol after the component (e.g.: USD, EUR)'
+    tooltip: 'Specify the prefix symbol after the component (e.g.: USD, EUR)',
   },
   {
     type: 'textfield',
@@ -33,6 +33,6 @@ export default [
     weight: 320,
     key: 'suffix',
     label: 'suffix',
-    tooltip: 'Specify the suffix symbol after the component (e.g.: USD, EUR).'
-  }
+    tooltip: 'Specify the suffix symbol after the component (e.g.: USD, EUR).',
+  },
 ];

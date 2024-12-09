@@ -1,5 +1,1 @@
-export default [
-  '<p>asdf</p>',
-  '<div>foobar</div>',
-];
-
+export default ['<p>asdf</p>', '<div>foobar</div>'];

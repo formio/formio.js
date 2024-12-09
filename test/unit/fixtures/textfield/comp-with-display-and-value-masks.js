@@ -7,7 +7,7 @@ export default {
       key: 'textField',
       type: 'textfield',
       inputMask: '999-999',
-      input: true
+      input: true,
     },
     {
       label: 'Text Field with Display Mask',
@@ -15,7 +15,7 @@ export default {
       key: 'textFieldDisplayMask',
       type: 'textfield',
       displayMask: '999-999',
-      input: true
+      input: true,
     },
     {
       label: 'Text Field with Display and Input Masks',
@@ -24,7 +24,7 @@ export default {
       type: 'textfield',
       displayMask: '+9(99)-999',
       inputMask: '999-999',
-      input: true
+      input: true,
     },
     {
       label: 'Text Field with Display and Input Masks',
@@ -33,9 +33,16 @@ export default {
       type: 'textfield',
       displayMask: '999-999',
       inputMask: '+9(99)-999',
-      input: true
+      input: true,
     },
-    { type: 'button', label: 'Submit', key: 'submit', disableOnInvalid: true, input: true, tableView: false }
+    {
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      disableOnInvalid: true,
+      input: true,
+      tableView: false,
+    },
   ],
   revisions: '',
   _vid: 0,

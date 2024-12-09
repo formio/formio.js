@@ -8,12 +8,12 @@ export default {
       tableView: true,
       dataSrc: 'resource',
       data: {
-        resource: '6450b4bb441fa8778d1ca69e'
+        resource: '6450b4bb441fa8778d1ca69e',
       },
       valueProperty: 'data.textField',
       template: '<span>{{ item.data.textField }}</span>',
       validate: {
-        select: false
+        select: false,
       },
       key: 'select',
       type: 'select',
@@ -21,7 +21,7 @@ export default {
       noRefreshOnScroll: false,
       addResource: false,
       reference: false,
-      input: true
+      input: true,
     },
     {
       label: 'Submit',

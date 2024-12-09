@@ -18,11 +18,11 @@ export default [
       values: [
         { label: 'Input Field', value: 'input' },
         { label: 'Calendar Picker', value: 'calendar' },
-      ]
+      ],
     },
     conditional: {
-      json: { '===': [{ var: 'data.type' }, 'textfield'] }
-    }
+      json: { '===': [{ var: 'data.type' }, 'textfield'] },
+    },
   },
   {
     weight: 405,
@@ -47,8 +47,7 @@ export default [
         const existWidget = context.instance._currentForm.options.editComponent.widget;
         if (existWidget && !_.isEmpty(_.omit(existWidget, 'type')) && type === existWidget.type) {
           return _.omit(existWidget, 'language');
-        }
-        else if (type) {
+        } else if (type) {
           return _.omit(Widgets[type].defaultSettings, 'language');
         }
       }
@@ -59,8 +58,8 @@ export default [
     editor: 'ace',
     as: 'json',
     conditional: {
-      json: { '!==': [{ var: 'data.widget.type' }, 'input'] }
-    }
+      json: { '!==': [{ var: 'data.widget.type' }, 'input'] },
+    },
   },
   {
     weight: 410,
@@ -68,7 +67,8 @@ export default [
     input: true,
     key: 'inputMask',
     label: 'Input Mask',
-    tooltip: 'An input mask helps the user with input by ensuring a predefined format.<br><br>9: numeric<br>a: alphabetical<br>*: alphanumeric<br><br>Example telephone mask: (999) 999-9999<br><br>See the <a target=\'_blank\' href=\'https://github.com/RobinHerbots/jquery.inputmask\'>jquery.inputmask documentation</a> for more information.</a>',
+    tooltip:
+      "An input mask helps the user with input by ensuring a predefined format.<br><br>9: numeric<br>a: alphabetical<br>*: alphanumeric<br><br>Example telephone mask: (999) 999-9999<br><br>See the <a target='_blank' href='https://github.com/RobinHerbots/jquery.inputmask'>jquery.inputmask documentation</a> for more information.</a>",
     customConditional(context) {
       return !context.data.allowMultipleMasks;
     },
@@ -79,7 +79,8 @@ export default [
     input: true,
     key: 'displayMask',
     label: 'Display Mask',
-    tooltip: 'A display mask helps to display the input in a readable way, this won\'t affect the  value which will be saved (to affect both view and saved value, delete Display Mask and use Input Mask).<br><br>9: numeric<br>a: alphabetical<br>*: alphanumeric<br><br>Example telephone mask: (999) 999-9999<br><br>See the <a target=\'_blank\' href=\'https://github.com/RobinHerbots/jquery.inputmask\'>jquery.inputmask documentation</a> for more information.</a>',
+    tooltip:
+      "A display mask helps to display the input in a readable way, this won't affect the  value which will be saved (to affect both view and saved value, delete Display Mask and use Input Mask).<br><br>9: numeric<br>a: alphabetical<br>*: alphanumeric<br><br>Example telephone mask: (999) 999-9999<br><br>See the <a target='_blank' href='https://github.com/RobinHerbots/jquery.inputmask'>jquery.inputmask documentation</a> for more information.</a>",
     customConditional(context) {
       return !context.data.allowMultipleMasks;
     },
@@ -109,20 +110,21 @@ export default [
     input: true,
     key: 'inputMaskPlaceholderChar',
     label: 'Input Mask Placeholder Char',
-    tooltip: 'You can specify a char which will be used as a placeholder in the field. <br>E.g., \u02cd<br>Make note that placeholder char will be replaced by a space if it is used inside the mask',
+    tooltip:
+      'You can specify a char which will be used as a placeholder in the field. <br>E.g., \u02cd<br>Make note that placeholder char will be replaced by a space if it is used inside the mask',
     validation: {
-      maxLength: 1
+      maxLength: 1,
     },
     customConditional(context) {
       return context.data.inputMask || context.data.displayMask;
-    }
+    },
   },
   {
     weight: 413,
     type: 'checkbox',
     input: true,
     key: 'allowMultipleMasks',
-    label: 'Allow Multiple Masks'
+    label: 'Allow Multiple Masks',
   },
   {
     weight: 1350,
@@ -130,7 +132,7 @@ export default [
     input: true,
     key: 'spellcheck',
     defaultValue: true,
-    label: 'Allow Spellcheck'
+    label: 'Allow Spellcheck',
   },
   {
     weight: 417,
@@ -147,29 +149,29 @@ export default [
         type: 'textfield',
         key: 'label',
         label: 'Label',
-        input: true
+        input: true,
       },
       {
         type: 'textfield',
         key: 'mask',
         label: 'Mask',
-        input: true
-      }
-    ]
+        input: true,
+      },
+    ],
   },
   {
     weight: 320,
     type: 'textfield',
     input: true,
     key: 'prefix',
-    label: 'Prefix'
+    label: 'Prefix',
   },
   {
     weight: 330,
     type: 'textfield',
     input: true,
     key: 'suffix',
-    label: 'Suffix'
+    label: 'Suffix',
   },
   {
     weight: 700,
@@ -178,15 +180,17 @@ export default [
     key: 'autocomplete',
     label: 'Autocomplete',
     placeholder: 'on',
-    tooltip: 'Indicates whether input elements can by default have their values automatically completed by the browser. See the <a href=\'https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete\'>MDN documentation</a> on autocomplete for more information.'
+    tooltip:
+      "Indicates whether input elements can by default have their values automatically completed by the browser. See the <a href='https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete'>MDN documentation</a> on autocomplete for more information.",
   },
   {
     weight: 1300,
     type: 'checkbox',
     label: 'Hide Input',
-    tooltip: 'Hide the input in the browser. This does not encrypt on the server. Do not use for passwords.',
+    tooltip:
+      'Hide the input in the browser. This does not encrypt on the server. Do not use for passwords.',
     key: 'mask',
-    input: true
+    input: true,
   },
   {
     weight: 1200,
@@ -194,7 +198,7 @@ export default [
     label: 'Show Word Counter',
     tooltip: 'Show a live count of the number of words.',
     key: 'showWordCount',
-    input: true
+    input: true,
   },
   {
     weight: 1201,
@@ -202,6 +206,6 @@ export default [
     label: 'Show Character Counter',
     tooltip: 'Show a live count of the number of characters.',
     key: 'showCharCount',
-    input: true
+    input: true,
   },
 ];

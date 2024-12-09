@@ -1,22 +1,22 @@
 export default [
   {
     key: 'validate.minLength',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'validate.maxLength',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'validate.pattern',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'validate.minWords',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'validate.maxWords',
-    ignore: true
-  }
+    ignore: true,
+  },
 ];

@@ -13,11 +13,13 @@ import Licenses from './licenses';
 import EventEmitter from './EventEmitter';
 import Webform from './Webform';
 
-Formio.loadModules = (path = `${Formio.getApiUrl()  }/externalModules.js`, name = 'externalModules') => {
-  Formio.requireLibrary(name, name, path, true)
-    .then((modules) => {
-      Formio.use(modules);
-    });
+Formio.loadModules = (
+  path = `${Formio.getApiUrl()}/externalModules.js`,
+  name = 'externalModules',
+) => {
+  Formio.requireLibrary(name, name, path, true).then((modules) => {
+    Formio.use(modules);
+  });
 };
 
 // This is needed to maintain correct imports using the "dist" file.
@@ -115,9 +117,8 @@ export function useModule(defaultFn = null) {
 
     plugins.forEach((plugin) => {
       if (Array.isArray(plugin)) {
-        plugin.forEach(p => registerModule(p, defaultFn, options));
-      }
-      else {
+        plugin.forEach((p) => registerModule(p, defaultFn, options));
+      } else {
         registerModule(plugin, defaultFn, options);
       }
     });
@@ -134,4 +135,16 @@ Formio.use = useModule();
 export { Formio as FormioCore } from './Formio';
 
 // Export the components.
-export { Components, Displays, Providers, Widgets, Templates, Utils, Form, Formio, Licenses, EventEmitter, Webform };
+export {
+  Components,
+  Displays,
+  Providers,
+  Widgets,
+  Templates,
+  Utils,
+  Form,
+  Formio,
+  Licenses,
+  EventEmitter,
+  Webform,
+};

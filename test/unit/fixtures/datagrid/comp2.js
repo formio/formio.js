@@ -13,15 +13,15 @@ export default {
           label: 'First Name',
           key: 'firstName',
           type: 'textfield',
-          input: true
+          input: true,
         },
         {
           label: 'Last Name',
           key: 'lastName',
           type: 'textfield',
-          input: true
-        }
-      ]
-    }
-  ]
+          input: true,
+        },
+      ],
+    },
+  ],
 };

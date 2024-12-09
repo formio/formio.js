@@ -35,7 +35,7 @@ const ConditionOperators = {
   [`${LessThanOrEqual.operatorKey}`]: LessThanOrEqual,
   [`${GreaterThanOrEqual.operatorKey}`]: GreaterThanOrEqual,
   [`${IsDateEqual.operatorKey}`]: IsDateEqual,
-  [`${IsNotDateEqual.operatorKey}`]: IsNotDateEqual
+  [`${IsNotDateEqual.operatorKey}`]: IsNotDateEqual,
 };
 
 export default ConditionOperators;

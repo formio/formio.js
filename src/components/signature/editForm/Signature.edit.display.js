@@ -6,7 +6,7 @@ export default [
     label: 'Footer Label',
     tooltip: 'The footer text that appears below the signature area.',
     placeholder: 'Footer Label',
-    weight: 10
+    weight: 10,
   },
   {
     type: 'textfield',
@@ -16,9 +16,9 @@ export default [
     tooltip: 'The width of the signature area.',
     placeholder: 'Width',
     conditional: {
-      json: { '!' : [{ var: 'data.keepOverlayRatio' }] },
+      json: { '!': [{ var: 'data.keepOverlayRatio' }] },
     },
-    weight: 50
+    weight: 50,
   },
   {
     type: 'textfield',
@@ -26,10 +26,11 @@ export default [
     key: 'height',
     label: 'Height',
     tooltip: 'The height of the signature area.',
-    placeholder: 'Height',    conditional: {
-      json: { '!' : [{ var: 'data.keepOverlayRatio' }] },
+    placeholder: 'Height',
+    conditional: {
+      json: { '!': [{ var: 'data.keepOverlayRatio' }] },
     },
-    weight: 51
+    weight: 51,
   },
   {
     weight: 52,
@@ -37,7 +38,7 @@ export default [
     label: 'Keep Overlay Aspect Ratio',
     tooltip: 'If checked, the field will have the same aspect ratio as its preview.',
     key: 'keepOverlayRatio',
-    input: true
+    input: true,
   },
   {
     type: 'textfield',
@@ -46,7 +47,7 @@ export default [
     label: 'Background Color',
     tooltip: 'The background color of the signature area.',
     placeholder: 'Background Color',
-    weight: 52
+    weight: 52,
   },
   {
     type: 'textfield',
@@ -55,7 +56,7 @@ export default [
     label: 'Pen Color',
     tooltip: 'The ink color for the signature area.',
     placeholder: 'Pen Color',
-    weight: 53
+    weight: 53,
   },
   {
     key: 'placeholder',

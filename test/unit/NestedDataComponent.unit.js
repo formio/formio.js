@@ -6,29 +6,30 @@ import assert from 'power-assert';
 import nestedDataCompWithModalPreview from '../forms/nestedDataWithModalViewAndLayoutComponents';
 
 let component = null;
-describe('NestedDataComponent class', () => {
-  it('Should create a new NestedDataComponent class', () => {
+describe('NestedDataComponent class', function () {
+  it('Should create a new NestedDataComponent class', function () {
     return Harness.testCreate(NestedDataComponent, {
       // key: 'nested',
       components: [
         {
           type: 'textfield',
           key: 'firstName',
-          input: true
+          input: true,
         },
         {
           type: 'textfield',
           key: 'lastName',
-          input: true
-        }
-      ]
+          input: true,
+        },
+      ],
     }).then((_component) => {
       component = _component;
       Harness.testElements(component, 'input[name="data[firstName]"]', 1);
       Harness.testElements(component, 'input[name="data[lastName]"]', 1);
     });
   });
-  it('Should show preview of the modal view component properly', (done) => {
+
+  it('Should show preview of the modal view component properly', function (done) {
     Formio.createForm(document.createElement('div'), nestedDataCompWithModalPreview)
       .then((form) => {
         const openModalBtn = form.element.querySelector('.open-modal-button');
@@ -38,19 +39,25 @@ describe('NestedDataComponent class', () => {
         const dataGrid = form.getComponent(['dataGrid']);
         dataGrid.setValue([
           {
-            textField: 'test'
+            textField: 'test',
           },
           {
-            textField: 'test2'
-          }
+            textField: 'test2',
+          },
         ]);
 
         setTimeout(() => {
-          const modalPreviewValues = form.element.querySelectorAll('.open-modal-button tr td input');
+          const modalPreviewValues = form.element.querySelectorAll(
+            '.open-modal-button tr td input',
+          );
           assert.equal(modalPreviewValues.length, 2);
-          assert.deepEqual(Array.prototype.map.call(modalPreviewValues, (i) => i.value), ['test', 'test2']);
+          assert.deepEqual(
+            Array.prototype.map.call(modalPreviewValues, (i) => i.value),
+            ['test', 'test2'],
+          );
           done();
         }, 300);
-      }).catch(done);
+      })
+      .catch(done);
   });
 });

@@ -4,6 +4,7 @@ layout: vtabs
 section: examples
 weight: 18
 ---
+
 ```html
 <script src="https://cdn.form.io/js/formio.embed.js"></script>
 <div id="formio"></div>
@@ -11,7 +12,7 @@ weight: 18
 
 ```js
 Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/w4', {
-  zoom: '-20'
+  zoom: '-20',
 });
 ```
 

@@ -8,19 +8,22 @@ import DataGridEditValidation from './editForm/DataGrid.edit.validation';
  * @param {...any} extend - The components that extend the edit form.
  * @returns {import('@formio/core').Component[]} - The edit form components.
  */
-export default function(...extend) {
-  return Components.baseEditForm([
-    {
-      key: 'display',
-      components: DataGridEditDisplay
-    },
-    {
-      key: 'data',
-      components: DataGridEditData
-    },
-    {
-      key: 'validation',
-      components: DataGridEditValidation
-    },
-  ], ...extend);
+export default function (...extend) {
+  return Components.baseEditForm(
+    [
+      {
+        key: 'display',
+        components: DataGridEditDisplay,
+      },
+      {
+        key: 'data',
+        components: DataGridEditData,
+      },
+      {
+        key: 'validation',
+        components: DataGridEditValidation,
+      },
+    ],
+    ...extend,
+  );
 }

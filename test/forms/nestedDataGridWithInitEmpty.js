@@ -61,25 +61,28 @@ const form = {
     },
   ],
   title: 'FIO-2721',
-  display: 'form',  
+  display: 'form',
   name: 'fio2721',
   path: 'fio2721',
 };
 
 const submission = {
   data: {
-    editGrid: [{
-      dataGrid: [{
-        select: 'email',
-        email: 'hhh@gmail.com',
-      }]
-    }],
-    submit: true
-  }
+    editGrid: [
+      {
+        dataGrid: [
+          {
+            select: 'email',
+            email: 'hhh@gmail.com',
+          },
+        ],
+      },
+    ],
+    submit: true,
+  },
 };
 
 export default {
   form,
   submission,
 };
-

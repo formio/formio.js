@@ -6,7 +6,7 @@ export default {
       label: 'Edit Grid',
       tableView: false,
       validate: {
-        minLength: 6
+        minLength: 6,
       },
       rowDrafts: false,
       key: 'editGrid',
@@ -20,7 +20,7 @@ export default {
           tableView: true,
           key: 'text',
           type: 'textfield',
-          input: true
+          input: true,
         },
         {
           label: 'Number',
@@ -33,9 +33,9 @@ export default {
           truncateMultipleSpaces: false,
           key: 'number',
           type: 'number',
-          input: true
-        }
-      ]
+          input: true,
+        },
+      ],
     },
     {
       type: 'button',
@@ -43,7 +43,7 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
-  ]
+      tableView: false,
+    },
+  ],
 };

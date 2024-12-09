@@ -31,7 +31,7 @@ function onNext(cmp, event, cb) {
 
 const Harness = {
   builderBefore(done, options = {}) {
-    var html;    // Unsure what _your code_ needs here -- using `undefined` to trigger default value
+    var html; // Unsure what _your code_ needs here -- using `undefined` to trigger default value
     var opt = { url: 'http://localhost/' };
     this.jsdom = require('jsdom-global')(html, opt);
     window.confirm = () => true;
@@ -55,7 +55,7 @@ const Harness = {
     const click = new MouseEvent('click', {
       view: window,
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     });
 
     const saveBtn = formBuilder.instance.componentEdit.querySelector('[ref="saveButton"]');
@@ -90,12 +90,12 @@ const Harness = {
     let component = webformBuilder.element.querySelector(`span[data-type='${type}']`);
     if (component) {
       component = component && component.cloneNode(true);
-      const element = container || webformBuilder.element.querySelector('.drag-container.formio-builder-form');
+      const element =
+        container || webformBuilder.element.querySelector('.drag-container.formio-builder-form');
       element.appendChild(component);
       builderGroup = document.getElementById(`group-container-${groupName}`);
       webformBuilder.onDrop(component, element, builderGroup);
-    }
-    else {
+    } else {
       return;
     }
 
@@ -127,15 +127,21 @@ const Harness = {
   },
 
   getDate() {
-    let timestamp = (new Date()).getTime();
+    let timestamp = new Date().getTime();
     timestamp = parseInt(timestamp / 1000, 10);
-    return (new Date(timestamp * 1000)).toISOString();
+    return new Date(timestamp * 1000).toISOString();
   },
   testCreate(Component, componentSettings, options = {}) {
     const compSettings = _.cloneDeep(componentSettings);
-    const component = new Component(compSettings, _.merge({
-      events: new EventEmitter(),
-    }, options));
+    const component = new Component(
+      compSettings,
+      _.merge(
+        {
+          events: new EventEmitter(),
+        },
+        options,
+      ),
+    );
     component.pristine = false;
     component.componentsMap[component.key] = component;
     return new Promise((resolve) => {
@@ -154,9 +160,12 @@ const Harness = {
         if (hidden.includes(comp.component.key)) {
           // Should be hidden.
           assert(!comp.visible, 'Element should not be visible');
-          assert.equal(comp.element.childElementCount, 0, 'Hidden elements should not have children');
-        }
-        else {
+          assert.equal(
+            comp.element.childElementCount,
+            0,
+            'Hidden elements should not have children',
+          );
+        } else {
           // Should be visible.
           assert(comp.visible, 'Element should not be hidden');
           assert.notEqual(comp.element.childElementCount, 0, 'Element must be visible');
@@ -170,9 +179,11 @@ const Harness = {
     const element = component.element.querySelector(query);
     assert(element, `${query} not found`);
     if (visible) {
-      assert((element.style.visibility === '') || (element.style.visibility === 'visible'), 'Element must be visible');
-    }
-    else {
+      assert(
+        element.style.visibility === '' || element.style.visibility === 'visible',
+        'Element must be visible',
+      );
+    } else {
       assert(element.style.visibility === 'hidden', 'Element must be hidden');
     }
   },
@@ -182,8 +193,7 @@ const Harness = {
     const isHidden = element.className.includes('formio-hidden');
     if (visible) {
       assert(!isHidden, 'Element must be visible');
-    }
-    else {
+    } else {
       assert(isHidden, 'Element must be hidden');
     }
   },
@@ -191,7 +201,7 @@ const Harness = {
     const clickEvent = new MouseEvent('click', {
       view: window,
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     });
     let element = query;
     if (typeof query === 'string') {
@@ -236,18 +246,22 @@ const Harness = {
     assert(element, `${query} not found`);
     assert(element.className.split(' ').includes(className));
   },
-  testModalWrapperErrorClasses(component, shouldBeInvalid = true, query = '[ref="openModalWrapper"]') {
+  testModalWrapperErrorClasses(
+    component,
+    shouldBeInvalid = true,
+    query = '[ref="openModalWrapper"]',
+  ) {
     const modalWrapper = component.element.querySelector(query);
     assert(modalWrapper, `${query} not found`);
     assert.equal(
       modalWrapper.className.split(' ').includes('formio-error-wrapper'),
       shouldBeInvalid,
-      `Should ${shouldBeInvalid ? '' : 'not'} have error class`
+      `Should ${shouldBeInvalid ? '' : 'not'} have error class`,
     );
     assert.equal(
       modalWrapper.className.split(' ').includes('has-message'),
       shouldBeInvalid,
-      `Should ${shouldBeInvalid ? '' : 'not'} have class indicating that the component has a message`
+      `Should ${shouldBeInvalid ? '' : 'not'} have class indicating that the component has a message`,
     );
   },
   testElementAttribute(element, attribute, expected) {
@@ -279,7 +293,7 @@ const Harness = {
     const inputEvent = new Event('input', { bubbles: true, cancelable: true });
     const element = component.choices.input.element;
 
-    values.forEach(value => {
+    values.forEach((value) => {
       element.value = value;
       element.dispatchEvent(inputEvent);
       element.dispatchEvent(blurEvent);
@@ -326,8 +340,7 @@ const Harness = {
         if (valid) {
           assert.equal(component.dataValue, value);
           resolve();
-        }
-        else {
+        } else {
           reject('Component should be valid');
         }
         resolved = true;
@@ -426,6 +439,6 @@ const Harness = {
     assert.strictEqual(cmp.getValueAt(index), outv);
     assert.strictEqual(input.value, display);
   },
-  onNext
+  onNext,
 };
 export default Harness;

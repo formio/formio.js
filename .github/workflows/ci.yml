@@ -30,7 +30,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-
       - name: Installing dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         uses: borales/actions-yarn@v4

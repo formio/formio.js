@@ -8,7 +8,7 @@ export default class FormioAddon extends Element {
       name: 'formioAddon',
       components: [],
       label: 'Formio Addon',
-      defaultSettings: {}
+      defaultSettings: {},
     };
   }
 

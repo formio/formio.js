@@ -5,13 +5,14 @@ section: examples
 noFormio: true
 weight: 31
 ---
-Using the formio.embed.js file, you can also lazy load the Javascript and CSS resources required for creating a form. This allows you to embed a form within your application without adding much size to the page load, and then once the page is loaded, a loader is shown where the form will be rendered while it is downloading the renderer resources needed to render the form. You can still use the ```Formio.createForm``` method, just like you do for the "formio.form.min.js" file, but instead you would just include the formio.embed.js file which will lazy load the form into place.
+
+Using the formio.embed.js file, you can also lazy load the Javascript and CSS resources required for creating a form. This allows you to embed a form within your application without adding much size to the page load, and then once the page is loaded, a loader is shown where the form will be rendered while it is downloading the renderer resources needed to render the form. You can still use the `Formio.createForm` method, just like you do for the "formio.form.min.js" file, but instead you would just include the formio.embed.js file which will lazy load the form into place.
 
 ```html
 <script src="https://cdn.form.io/js/formio.embed.js"></script>
 <div id="formio"></div>
 <script type="text/javascript">
-    Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
+  Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
 </script>
 ```
 

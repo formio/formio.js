@@ -16,19 +16,20 @@ export default [
       custom() {
         return _.map(Formio.Providers.getProviders('storage'), (storage, key) => ({
           label: storage.title,
-          value: key
+          value: key,
         }));
-      }
-    }
+      },
+    },
   },
   {
     type: 'checkbox',
     input: true,
     key: 'useMultipartUpload',
     label: 'Use the S3 Multipart Upload API',
-    tooltip: "The <a href='https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html'>S3 Multipart Upload API</a> is designed to improve the upload experience for larger objects (> 5GB).",
+    tooltip:
+      "The <a href='https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html'>S3 Multipart Upload API</a> is designed to improve the upload experience for larger objects (> 5GB).",
     conditional: {
-      json: { '===': [{ var: 'data.storage' }, 's3'] }
+      json: { '===': [{ var: 'data.storage' }, 's3'] },
     },
   },
   {
@@ -58,7 +59,7 @@ export default [
       },
     ],
     conditional: {
-      json: { '===': [{ var: 'data.useMultipartUpload' }, true] }
+      json: { '===': [{ var: 'data.useMultipartUpload' }, true] },
     },
   },
   {
@@ -68,10 +69,11 @@ export default [
     label: 'Url',
     weight: 10,
     placeholder: 'Enter the url to post the files to.',
-    tooltip: "See <a href='https://github.com/danialfarid/ng-file-upload#server-side' target='_blank'>https://github.com/danialfarid/ng-file-upload#server-side</a> for how to set up the server.",
+    tooltip:
+      "See <a href='https://github.com/danialfarid/ng-file-upload#server-side' target='_blank'>https://github.com/danialfarid/ng-file-upload#server-side</a> for how to set up the server.",
     conditional: {
-      json: { '===': [{ var: 'data.storage' }, 'url'] }
-    }
+      json: { '===': [{ var: 'data.storage' }, 'url'] },
+    },
   },
   {
     type: 'textfield',
@@ -84,12 +86,12 @@ export default [
       json: {
         in: [
           {
-            var: 'data.storage'
+            var: 'data.storage',
           },
-          ['indexeddb']
+          ['indexeddb'],
         ],
-      }
-    }
+      },
+    },
   },
   {
     type: 'textfield',
@@ -102,12 +104,12 @@ export default [
       json: {
         in: [
           {
-            var: 'data.storage'
+            var: 'data.storage',
           },
-          ['indexeddb']
+          ['indexeddb'],
         ],
-      }
-    }
+      },
+    },
   },
   {
     type: 'textarea',
@@ -126,11 +128,14 @@ export default [
     }`,
     conditional: {
       json: {
-        '===': [{
-          var: 'data.storage'
-        }, 'url']
-      }
-    }
+        '===': [
+          {
+            var: 'data.storage',
+          },
+          'url',
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -142,11 +147,14 @@ export default [
     tooltip: 'Key name that you would like to modify for the file while calling API request.',
     conditional: {
       json: {
-        '===': [{
-          var: 'data.storage'
-        }, 'url']
-      }
-    }
+        '===': [
+          {
+            var: 'data.storage',
+          },
+          'url',
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -158,11 +166,14 @@ export default [
     weight: 20,
     conditional: {
       json: {
-        '!==': [{
-          var: 'data.storage'
-        }, 'googledrive']
-      }
-    }
+        '!==': [
+          {
+            var: 'data.storage',
+          },
+          'googledrive',
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -174,11 +185,14 @@ export default [
     weight: 20,
     conditional: {
       json: {
-        '===': [{
-          var: 'data.storage'
-        }, 'googledrive']
-      }
-    }
+        '===': [
+          {
+            var: 'data.storage',
+          },
+          'googledrive',
+        ],
+      },
+    },
   },
   {
     type: 'textfield',
@@ -186,8 +200,9 @@ export default [
     key: 'fileNameTemplate',
     label: 'File Name Template',
     placeholder: '(optional) { {name} }-{ {guid} }',
-    tooltip: 'Specify template for name of uploaded file(s). Regular template variables are available (`data`, `component`, `user`, `value`, `moment` etc.), also `fileName`, `guid` variables are available. `guid` part must be present, if not found in template, will be added at the end.',
-    weight: 25
+    tooltip:
+      'Specify template for name of uploaded file(s). Regular template variables are available (`data`, `component`, `user`, `value`, `moment` etc.), also `fileName`, `guid` variables are available. `guid` part must be present, if not found in template, will be added at the end.',
+    weight: 25,
   },
   {
     type: 'checkbox',
@@ -195,14 +210,15 @@ export default [
     key: 'image',
     label: 'Display as image(s)',
     tooltip: 'Instead of a list of linked files, images will be rendered in the view.',
-    weight: 30
+    weight: 30,
   },
   {
     type: 'checkbox',
     input: true,
     key: 'uploadOnly',
     label: 'Upload Only',
-    tooltip: 'When this is checked, will only allow you to upload file(s) and consequently the download, in this component, will be unavailable.',
+    tooltip:
+      'When this is checked, will only allow you to upload file(s) and consequently the download, in this component, will be unavailable.',
     weight: 33,
   },
   {
@@ -210,11 +226,12 @@ export default [
     input: true,
     key: 'privateDownload',
     label: 'Private Download',
-    tooltip: 'When this is checked, the file download will send a POST request to the download URL with the x-jwt-token header. This will allow your endpoint to create a Private download system.',
+    tooltip:
+      'When this is checked, the file download will send a POST request to the download URL with the x-jwt-token header. This will allow your endpoint to create a Private download system.',
     weight: 31,
     conditional: {
-      json: { '===': [{ var: 'data.storage' }, 'url'] }
-    }
+      json: { '===': [{ var: 'data.storage' }, 'url'] },
+    },
   },
   {
     type: 'textfield',
@@ -225,16 +242,17 @@ export default [
     tooltip: 'The image size for previewing images.',
     weight: 40,
     conditional: {
-      json: { '==': [{ var: 'data.image' }, true] }
-    }
+      json: { '==': [{ var: 'data.image' }, true] },
+    },
   },
   {
     type: 'checkbox',
     input: true,
     key: 'webcam',
     label: 'Enable web camera',
-    tooltip: 'This will allow using an attached camera to directly take a picture instead of uploading an existing file.',
-    weight: 32
+    tooltip:
+      'This will allow using an attached camera to directly take a picture instead of uploading an existing file.',
+    weight: 32,
   },
   {
     type: 'textfield',
@@ -245,54 +263,56 @@ export default [
     tooltip: 'The webcam size for taking pictures.',
     weight: 38,
     conditional: {
-      json: { '==': [{ var: 'data.webcam' }, true] }
-    }
+      json: { '==': [{ var: 'data.webcam' }, true] },
+    },
   },
   {
     type: 'radio',
     input: true,
     key: 'capture',
     label: 'Enable device capture',
-    tooltip: 'This will allow a mobile device to open the camera or microphone directly in capture mode.',
+    tooltip:
+      'This will allow a mobile device to open the camera or microphone directly in capture mode.',
     optionsLabelPosition: 'right',
     inline: true,
     defaultValue: false,
     values: [
       {
         label: 'Disabled',
-        value: 'false'
+        value: 'false',
       },
       {
         label: 'Environment (rear camera)',
-        value: 'environment'
+        value: 'environment',
       },
       {
         label: 'User (front camera)',
-        value: 'user'
-      }
-    ]
+        value: 'user',
+      },
+    ],
   },
   {
     type: 'datagrid',
     input: true,
     label: 'File Types',
     key: 'fileTypes',
-    tooltip: 'Specify file types to classify the uploads. This is useful if you allow multiple types of uploads but want to allow the user to specify which type of file each is.',
+    tooltip:
+      'Specify file types to classify the uploads. This is useful if you allow multiple types of uploads but want to allow the user to specify which type of file each is.',
     weight: 11,
     components: [
       {
         label: 'Label',
         key: 'label',
         input: true,
-        type: 'textfield'
+        type: 'textfield',
       },
       {
         label: 'Value',
         key: 'value',
         input: true,
-        type: 'textfield'
-      }
-    ]
+        type: 'textfield',
+      },
+    ],
   },
   {
     type: 'textfield',
@@ -300,8 +320,9 @@ export default [
     key: 'filePattern',
     label: 'File Pattern',
     placeholder: '.jpg,video/*,application/pdf',
-    tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file patterns.',
-    weight: 50
+    tooltip:
+      "See <a href='https://github.com/danialfarid/ng-file-upload#full-reference' target='_blank'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file patterns.",
+    weight: 50,
   },
   {
     type: 'textfield',
@@ -309,8 +330,9 @@ export default [
     key: 'fileMinSize',
     label: 'File Minimum Size',
     placeholder: '1MB',
-    tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file sizes.',
-    weight: 60
+    tooltip:
+      "See <a href='https://github.com/danialfarid/ng-file-upload#full-reference' target='_blank'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file sizes.",
+    weight: 60,
   },
   {
     type: 'textfield',
@@ -318,7 +340,8 @@ export default [
     key: 'fileMaxSize',
     label: 'File Maximum Size',
     placeholder: '10MB',
-    tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file sizes.',
-    weight: 70
+    tooltip:
+      "See <a href='https://github.com/danialfarid/ng-file-upload#full-reference' target='_blank'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file sizes.",
+    weight: 70,
   },
 ];

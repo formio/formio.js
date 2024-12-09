@@ -10,5 +10,5 @@ export default {
   truncateMultipleSpaces: false,
   key: 'number',
   type: 'number',
-  input: true
+  input: true,
 };

@@ -60,11 +60,7 @@ export default {
   display: 'wizard',
   access: [
     {
-      roles: [
-        '5f47eadc8aeb8509a99f61b6',
-        '5f47eadc8aeb8509a99f61b7',
-        '5f47eadc8aeb8509a99f61b8',
-      ],
+      roles: ['5f47eadc8aeb8509a99f61b6', '5f47eadc8aeb8509a99f61b7', '5f47eadc8aeb8509a99f61b8'],
       type: 'read_all',
     },
   ],

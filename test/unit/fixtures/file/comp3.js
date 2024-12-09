@@ -10,12 +10,12 @@ export default {
       fileTypes: [
         {
           label: '',
-          value: ''
-        }
+          value: '',
+        },
       ],
       key: 'file',
       type: 'file',
-      input: true
+      input: true,
     },
     {
       type: 'button',
@@ -23,7 +23,7 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
 };

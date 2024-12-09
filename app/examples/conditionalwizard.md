@@ -4,12 +4,16 @@ layout: vtabs
 section: examples
 weight: 20
 ---
-Not only can you build multi-page forms, but you can also create conditional wizards where the pages are determined by 
+
+Not only can you build multi-page forms, but you can also create conditional wizards where the pages are determined by
 conditional logic that is executed as the person is filling out the form.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css" />
 <script src="https://cdn.form.io/js/formio.embed.js"></script>
 <div id="wizard"></div>
 ```

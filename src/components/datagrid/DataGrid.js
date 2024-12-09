@@ -5,15 +5,18 @@ import Components from '../Components';
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
-    return NestedArrayComponent.schema({
-      label: 'Data Grid',
-      key: 'dataGrid',
-      type: 'datagrid',
-      clearOnHide: true,
-      input: true,
-      tree: true,
-      components: []
-    }, ...extend);
+    return NestedArrayComponent.schema(
+      {
+        label: 'Data Grid',
+        key: 'dataGrid',
+        type: 'datagrid',
+        clearOnHide: true,
+        input: true,
+        tree: true,
+        components: [],
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -24,7 +27,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       documentation: '/userguide/form-building/data-components#data-grid',
       showPreview: false,
       weight: 30,
-      schema: DataGridComponent.schema()
+      schema: DataGridComponent.schema(),
     };
   }
 
@@ -45,7 +48,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       this.createRows(true);
     }
 
-    if(this.allowReorder) {
+    if (this.allowReorder) {
       this.dragulaReady = this.getDragula();
     }
 
@@ -89,8 +92,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   get minLength() {
     if (this.hasRowGroups()) {
       return _.sum(this.getGroupSizes());
-    }
-    else {
+    } else {
       return _.get(this.component, 'validate.minLength', 0);
     }
   }
@@ -108,11 +110,9 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     if (Array.isArray(value)) {
       defaultValue = value;
-    }
-    else if (value && (typeof value === 'object')) {
+    } else if (value && typeof value === 'object') {
       defaultValue = [value];
-    }
-    else {
+    } else {
       defaultValue = this.emptyValue;
     }
 
@@ -175,9 +175,10 @@ export default class DataGridComponent extends NestedArrayComponent {
       ([startIndex, acc], size) => {
         const endIndex = startIndex + size;
         return [endIndex, [...acc, [startIndex, endIndex]]];
-      }, [0, []]
+      },
+      [0, []],
     );
-    return chunks.map(range => _.slice(rows, ...range));
+    return chunks.map((range) => _.slice(rows, ...range));
   }
 
   /**
@@ -188,20 +189,20 @@ export default class DataGridComponent extends NestedArrayComponent {
   getGroups() {
     const groups = _.get(this.component, 'rowGroups', []);
     const sizes = _.map(groups, 'numberOfRows').slice(0, -1);
-    const indexes = sizes.reduce((groupIndexes, size) => {
-      const last = groupIndexes[groupIndexes.length - 1];
-      return groupIndexes.concat(last + size);
-    }, [0]);
-
-    return groups.reduce(
-      (gidxs, group, idx) => {
-        return {
-          ...gidxs,
-          [indexes[idx]]: group
-        };
+    const indexes = sizes.reduce(
+      (groupIndexes, size) => {
+        const last = groupIndexes[groupIndexes.length - 1];
+        return groupIndexes.concat(last + size);
       },
-      {}
+      [0],
     );
+
+    return groups.reduce((gidxs, group, idx) => {
+      return {
+        ...gidxs,
+        [indexes[idx]]: group,
+      };
+    }, {});
   }
 
   /**
@@ -225,15 +226,18 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   hasExtraColumn() {
-    return (this.hasRemoveButtons() || this.canAddColumn);
+    return this.hasRemoveButtons() || this.canAddColumn;
   }
 
   hasRemoveButtons() {
-    return !this.builderMode && !this.component.disableAddingRemovingRows &&
+    return (
+      !this.builderMode &&
+      !this.component.disableAddingRemovingRows &&
       !this.options.readOnly &&
       !this.disabled &&
       this.fullMode &&
-      (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
+      this.dataValue.length > _.get(this.component, 'validate.minLength', 0)
+    );
   }
 
   hasTopSubmit() {
@@ -262,34 +266,36 @@ export default class DataGridComponent extends NestedArrayComponent {
       columnExtra++;
     }
     const colWidth = Math.floor(12 / (columns.length + columnExtra));
-    return super.render(this.renderTemplate('datagrid', {
-      rows: this.getRows(),
-      columns: columns,
-      groups: this.hasRowGroups() ? this.getGroups() : [],
-      visibleColumns: this.visibleColumns,
-      hasToggle: _.get(this, 'component.groupToggle', false),
-      hasHeader: this.hasHeader(),
-      hasExtraColumn: this.hasExtraColumn(),
-      hasAddButton: this.hasAddButton(),
-      hasRemoveButtons,
-      hasTopSubmit: this.hasTopSubmit(),
-      hasBottomSubmit: this.hasBottomSubmit(),
-      hasGroups: this.hasRowGroups(),
-      numColumns: columns.length + (this.hasExtraColumn() ? 1 : 0),
-      datagridKey: this.datagridKey,
-      allowReorder: this.allowReorder,
-      builder: this.builderMode,
-      canAddColumn: this.canAddColumn,
-      tabIndex: this.tabIndex,
-      placeholder: this.renderTemplate('builderPlaceholder', {
-        position: this.componentComponents.length,
+    return super.render(
+      this.renderTemplate('datagrid', {
+        rows: this.getRows(),
+        columns: columns,
+        groups: this.hasRowGroups() ? this.getGroups() : [],
+        visibleColumns: this.visibleColumns,
+        hasToggle: _.get(this, 'component.groupToggle', false),
+        hasHeader: this.hasHeader(),
+        hasExtraColumn: this.hasExtraColumn(),
+        hasAddButton: this.hasAddButton(),
+        hasRemoveButtons,
+        hasTopSubmit: this.hasTopSubmit(),
+        hasBottomSubmit: this.hasBottomSubmit(),
+        hasGroups: this.hasRowGroups(),
+        numColumns: columns.length + (this.hasExtraColumn() ? 1 : 0),
+        datagridKey: this.datagridKey,
+        allowReorder: this.allowReorder,
+        builder: this.builderMode,
+        canAddColumn: this.canAddColumn,
+        tabIndex: this.tabIndex,
+        placeholder: this.renderTemplate('builderPlaceholder', {
+          position: this.componentComponents.length,
+        }),
+        colWidth: colWidth.toString(),
       }),
-      colWidth: colWidth.toString()
-    }));
+    );
   }
 
   getRows() {
-    return this.rows.map(row => {
+    return this.rows.map((row) => {
       const components = {};
       _.each(row, (col, key) => {
         components[key] = col.render();
@@ -300,7 +306,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   getColumns() {
     return this.columns.filter((comp) => {
-      return (!this.visibleColumns.hasOwnProperty(comp.key) || this.visibleColumns[comp.key]);
+      return !this.visibleColumns.hasOwnProperty(comp.key) || this.visibleColumns[comp.key];
     });
   }
 
@@ -323,7 +329,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     if (this.allowReorder) {
       this.refs[`${this.datagridKey}-row`].forEach((row, index) => {
-        row.dragInfo = {index};
+        row.dragInfo = { index };
       });
       this.dragulaReady.then((dragula) => {
         // The drop event may call redraw twice which calls attach twice and because this block of code is asynchronous
@@ -342,10 +348,11 @@ export default class DataGridComponent extends NestedArrayComponent {
             if (oldParentKey === clickedElementKey) {
               return clickedElement.classList.contains('formio-drag-button');
             }
-          }
-        }).on('drop', this.onReorder.bind(this))
+          },
+        })
+          .on('drop', this.onReorder.bind(this))
           .on('cloned', this.onCloned.bind(this));
-      })
+      });
     }
 
     this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {
@@ -357,7 +364,10 @@ export default class DataGridComponent extends NestedArrayComponent {
     });
 
     if (this.hasRowGroups()) {
-      this.refs.chunks = this.getRowChunks(this.getGroupSizes(), this.refs[`${this.datagridKey}-row`]);
+      this.refs.chunks = this.getRowChunks(
+        this.getGroupSizes(),
+        this.refs[`${this.datagridKey}-row`],
+      );
       this.refs[`${this.datagridKey}-group-header`].forEach((header, index) => {
         this.addEventListener(header, 'click', () => this.toggleGroup(header, index));
       });
@@ -369,7 +379,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       let columnIndex = 0;
       columns.forEach((col) => {
         this.attachComponents(
-          this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],
+          this.refs[this.datagridKey][rowIndex * rowLength + columnIndex],
           [this.rows[rowIndex][col.key]],
           this.getComponentsContainer(),
         );
@@ -416,7 +426,12 @@ export default class DataGridComponent extends NestedArrayComponent {
     const dataValue = fastCloneDeep(this.dataValue);
     this.reorderValues(dataValue, oldPosition, newPosition, movedBelow);
     //reorder select data
-    this.reorderValues(_.get(this.root, `submission.metadata.selectData.${this.path}`, []), oldPosition, newPosition, movedBelow);
+    this.reorderValues(
+      _.get(this.root, `submission.metadata.selectData.${this.path}`, []),
+      oldPosition,
+      newPosition,
+      movedBelow,
+    );
 
     // When components are reordered we need to set the dataGrid and form pristine properties to false
     this.root.pristine = false;
@@ -435,14 +450,9 @@ export default class DataGridComponent extends NestedArrayComponent {
         if (styles.cssText !== '') {
           el.children[index].style.cssText = styles.cssText;
         } else {
-          const cssText = Object.values(styles).reduce(
-            (css, propertyName) => {
-              return `${css}${propertyName}:${styles.getPropertyValue(
-                propertyName
-              )};`;
-            },
-            ''
-          );
+          const cssText = Object.values(styles).reduce((css, propertyName) => {
+            return `${css}${propertyName}:${styles.getPropertyValue(propertyName)};`;
+          }, '');
 
           el.children[index].style.cssText = cssText;
         }
@@ -479,15 +489,14 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (this.initEmpty && defaultValue[index]) {
       row = defaultValue[index];
       dataValue[index] = row;
-    }
-    else {
+    } else {
       row = dataValue[index];
     }
 
     this.rows[index] = this.createRowComponents(row, index);
     this.emit('dataGridAddRow', {
       component: this.component,
-      row
+      row,
     });
     this.checkConditions();
     this.triggerChange();
@@ -500,7 +509,10 @@ export default class DataGridComponent extends NestedArrayComponent {
     components.forEach((component, colIndex) => {
       if (component.options?.name) {
         const newName = `[${this.key}][${rowIndex}]`;
-        component.options.name = component.options.name.replace(`[${this.key}][${component.rowIndex}]`, newName);
+        component.options.name = component.options.name.replace(
+          `[${this.key}][${component.rowIndex}]`,
+          newName,
+        );
       }
       component.rowIndex = rowIndex;
       component.row = `${rowIndex}-${colIndex}`;
@@ -537,7 +549,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   setRowComponentsData(rowIndex, rowData) {
     _.each(this.rows[rowIndex], (component) => {
-     component.data = rowData;
+      component.data = rowData;
     });
   }
 
@@ -548,8 +560,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     rowValues.forEach((row, index) => {
       if (!rebuild && this.rows[index]) {
         this.setRowComponentsData(index, row);
-      }
-      else {
+      } else {
         if (this.rows[index]) {
           this.removeRowComponents(this.rows[index]);
         }
@@ -562,7 +573,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     const removed = !!removedRows.length;
     // Delete components of extra rows (to make sure that this.components contain only components of exisiting rows)
     if (removed) {
-      removedRows.forEach(row => this.removeRowComponents(row));
+      removedRows.forEach((row) => this.removeRowComponents(row));
     }
 
     if (!init && (added || removed)) {
@@ -584,19 +595,15 @@ export default class DataGridComponent extends NestedArrayComponent {
       if (this.builderMode) {
         col.id = col.id + rowIndex;
         columnComponent = col;
-      }
-      else {
-        columnComponent = { ...col, id: (col.id + rowIndex) };
+      } else {
+        columnComponent = { ...col, id: col.id + rowIndex };
       }
 
       const component = this.createComponent(columnComponent, options, row);
       component.parentDisabled = !!this.disabled;
       component.rowIndex = rowIndex;
       component.inDataGrid = true;
-      if (
-        columnComponent.tabindex &&
-        parseInt(columnComponent.tabindex) > this.tabIndex
-      ) {
+      if (columnComponent.tabindex && parseInt(columnComponent.tabindex) > this.tabIndex) {
         this.tabIndex = parseInt(columnComponent.tabindex);
       }
       components[col.key] = component;
@@ -623,19 +630,24 @@ export default class DataGridComponent extends NestedArrayComponent {
     const dataValue = this.dataValue;
     this.rows.forEach((row, rowIndex) => {
       _.each(row, (col, key) => {
-        if (col && (typeof col.checkConditions === 'function')) {
+        if (col && typeof col.checkConditions === 'function') {
           const firstRowCheck = visibility[key] === undefined;
-          visibility[key] = !!visibility[key] ||
+          visibility[key] =
+            !!visibility[key] ||
             (col.checkConditions(data, flags, dataValue[rowIndex]) && col.type !== 'hidden');
 
           if (col.component.logic && firstRowCheck) {
             const compIndex = _.findIndex(this.columns, ['key', key]);
-            const equalColumns = _.isEqualWith(this.columns[compIndex], col.component, (col1, col2, key) => {
-              // Don't compare columns by their auto-generated ids.
-              if (key === 'id') {
-                return true;
-              }
-            });
+            const equalColumns = _.isEqualWith(
+              this.columns[compIndex],
+              col.component,
+              (col1, col2, key) => {
+                // Don't compare columns by their auto-generated ids.
+                if (key === 'id') {
+                  return true;
+                }
+              },
+            );
 
             if (!equalColumns) {
               logicRebuild = true;
@@ -680,8 +692,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (!Array.isArray(value)) {
       if (typeof value === 'object') {
         value = [value];
-      }
-      else {
+      } else {
         this.createRows();
         value = [{}];
       }
@@ -697,8 +708,11 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     this.dataValue = value;
 
-    if (this.initRows || isSettingSubmission ||
-        (Array.isArray(this.dataValue) && this.dataValue.length !== this.rows.length)) {
+    if (
+      this.initRows ||
+      isSettingSubmission ||
+      (Array.isArray(this.dataValue) && this.dataValue.length !== this.rows.length)
+    ) {
       if (!this.createRows() && changed) {
         this.redraw();
       }
@@ -723,7 +737,9 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   restoreComponentsContext() {
-    this.rows.forEach((row, index) => _.forIn(row, (component) => component.data = this.dataValue[index]));
+    this.rows.forEach((row, index) =>
+      _.forIn(row, (component) => (component.data = this.dataValue[index])),
+    );
   }
 
   getComponent(path, fn) {
@@ -761,8 +777,7 @@ export default class DataGridComponent extends NestedArrayComponent {
         let comp = component;
         if (remainingPath.length > 0 && 'getComponent' in component) {
           comp = component.getComponent(remainingPath, fn);
-        }
-        else if (fn) {
+        } else if (fn) {
           fn(component, components);
         }
 
@@ -775,7 +790,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   toggleGroup(element, index) {
     element.classList.toggle('collapsed');
-    _.each(this.refs.chunks[index], row => {
+    _.each(this.refs.chunks[index], (row) => {
       row.classList.toggle('hidden');
     });
   }
