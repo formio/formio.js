@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from './moment-wrapper';
 import _ from 'lodash';
 
 export const CALENDAR_ERROR_MESSAGES = {

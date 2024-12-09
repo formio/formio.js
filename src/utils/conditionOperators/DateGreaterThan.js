@@ -1,5 +1,5 @@
 import ConditionOperator from './ConditionOperator';
-import moment from 'moment';
+import moment from '../moment-wrapper';
 export default class DateGeaterThan extends ConditionOperator {
     static get operatorKey() {
         return 'dateGreaterThan';

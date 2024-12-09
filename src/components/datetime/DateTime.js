@@ -1,8 +1,17 @@
 import _ from 'lodash';
-import moment from 'moment';
+import moment from '../../utils/moment-wrapper';
+import dayjs from 'dayjs';
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 import FormioUtils from '../../utils';
 import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Input from '../_classes/input/Input';
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(customParseFormat);
+dayjs.extend(advancedFormat);
 
 export default class DateTimeComponent extends Input {
   static schema(...extend) {
@@ -207,8 +216,8 @@ export default class DateTimeComponent extends Input {
     }
 
     if (Array.isArray(value) && this.component.multiple) {
-      return value.map(item => _.trim(moment(item).format(format))).join(', ');
+      return value.map(item => _.trim(dayjs(item).format(format))).join(', ');
     }
-    return (value ? _.trim(moment(value).format(format)) : value) || '';
+    return (value ? _.trim(dayjs(value).format(format)) : value) || '';
   }
 }
