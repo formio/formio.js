@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from '../../utils/moment-wrapper';
 import TextFieldComponent from '../textfield/TextField';
 import { getBrowserInfo } from '../../utils/utils';
 

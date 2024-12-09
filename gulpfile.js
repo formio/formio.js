@@ -81,14 +81,8 @@ gulp.task('embed-css', () => gulp.src('./dist/formio.embed.min.css').pipe(rename
 gulp.task('clean:embed-js', () => gulp.src('./dist/formio.embed.js', { read: false, allowEmpty: true }).pipe(clean()));
 gulp.task('embed-js', () => gulp.src('./dist/formio.embed.min.js').pipe(rename('formio.embed.js')).pipe(gulp.dest('./dist')));
 
-// Copy over the moment-timezones to the resource folder.
-gulp.task('timezones', () => gulp.src('./node_modules/moment-timezone/data/packed/latest.json').pipe(gulp.dest('./resources')));
-
 // Create a new build.
 gulp.task('build', gulp.series(
-  gulp.parallel(
-    'timezones'
-  ),
   gulp.parallel(
     'styles-embed',
     'styles-form',
