@@ -1,4 +1,4 @@
-@import './formio.embed.scss';
+@use 'formio.embed.scss';
 $dialog-z-index: 10000;
 $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 

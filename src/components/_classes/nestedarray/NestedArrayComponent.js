@@ -1,7 +1,9 @@
 'use strict';
 
 import _ from 'lodash';
-import { componentValueTypes, getStringFromComponentPath, isLayoutComponent } from '../../../utils/utils';
+import { Utils } from '@formio/core/utils';
+const { getComponentPaths } = Utils;
+import { componentValueTypes, isLayoutComponent } from '../../../utils/utils';
 
 import Component from '../component/Component';
 import NestedDataComponent from '../nesteddata/NestedDataComponent';
@@ -26,10 +28,14 @@ export default class NestedArrayComponent extends NestedDataComponent {
   }
 
   get rowIndex() {
-    return super.rowIndex;
+    return this._rowIndex;
   }
 
   set rowIndex(value) {
+    this.paths = getComponentPaths(this.component, this.parent?.component, {
+      ...(this.parent?.paths || {}),
+      ...{ dataIndex: value }
+    });
     this._rowIndex = value;
   }
 
@@ -109,50 +115,6 @@ export default class NestedArrayComponent extends NestedDataComponent {
       (!conditionalAddButton || this.evaluate(conditionalAddButton, {
         value: this.dataValue,
       }, 'show'));
-  }
-
-  getComponent(path, fn, originalPath) {
-    originalPath = originalPath || getStringFromComponentPath(path);
-    if (this.componentsMap.hasOwnProperty(originalPath)) {
-      if (fn) {
-        return fn(this.componentsMap[originalPath]);
-      }
-      else {
-        return this.componentsMap[originalPath];
-      }
-    }
-    path = Array.isArray(path) ? path : [path];
-    let key = path.shift();
-    const remainingPath = path;
-    let result = [];
-    let possibleComp = null;
-    let comp = null;
-    let rowIndex = null;
-
-    if (_.isNumber(key)) {
-      rowIndex = key;
-      key = remainingPath.shift();
-    }
-    if (!_.isString(key)) {
-      return result;
-    }
-
-    this.everyComponent((component, components) => {
-      if (component.component.key === key) {
-        possibleComp = component;
-        if (remainingPath.length > 0 && 'getComponent' in component) {
-          comp = component.getComponent(remainingPath, fn, originalPath);
-        }
-        else if (fn) {
-          fn(component, components);
-        }
-        result = rowIndex !== null ? comp : result.concat(comp || possibleComp);
-      }
-    }, rowIndex);
-    if ((!result || result.length === 0) && possibleComp) {
-      result = rowIndex !== null ? possibleComp : [possibleComp];
-    }
-    return result;
   }
 
   everyComponent(fn, rowIndex, options = {}) {

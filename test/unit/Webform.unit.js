@@ -38,6 +38,7 @@ import {
   formWithObjectValueSelect,
 } from '../formtest/index.js';
 import UpdateErrorClassesWidgets from '../forms/updateErrorClasses-widgets.js';
+import NestedFormWithConditionals from '../forms/nestedFormWithConditionals.json';
 import nestedModalWizard from '../forms/nestedModalWizard';
 import disableSubmitButton from '../forms/disableSubmitButton';
 import formWithAddressComponent from '../forms/formWithAddressComponent.js';
@@ -86,6 +87,7 @@ import webformWithNestedWizard from '../forms/webformWIthNestedWizard';
 import formWithUniqueValidation from '../forms/formWithUniqueValidation.js';
 import formWithConditionalEmail from '../forms/formWithConditionalEmail.js';
 import formsWithSimpleConditionals from '../forms/formsWithSimpleConditionals.js';
+import translationErrorMessages from '../forms/translationErrorMessages.js';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
 if (_.has(Formio, 'Components.setComponents')) {
@@ -135,8 +137,8 @@ describe('Webform tests', function() {
 
     form.setForm(formsWithSimpleConditionals.form2).then(() => {
       const compWithDuplicatedKey1 = form.getComponent('container.textField');
-      const compWithDuplicatedKey2 = form.getComponent('dataGrid.container.textField')[0];
-      const conditionalCompShownOnDupl1Or2 = form.getComponent('dataGrid.number')[0];
+      const compWithDuplicatedKey2 = form.getComponent('dataGrid[0].container.textField');
+      const conditionalCompShownOnDupl1Or2 = form.getComponent('dataGrid[0].number');
       const dataGrid = form.getComponent('dataGrid');
       assert.equal(conditionalCompShownOnDupl1Or2.visible, false);
       compWithDuplicatedKey1.setValue('6');
@@ -146,14 +148,14 @@ describe('Webform tests', function() {
         compWithDuplicatedKey1.setValue('7');
 
         setTimeout(() => {
-          const conditionalCompShownOnDupl1Or2 = form.getComponent('dataGrid.number')[0];
+          const conditionalCompShownOnDupl1Or2 = form.getComponent('dataGrid[0].number');
           assert.equal(conditionalCompShownOnDupl1Or2.visible, false);
           compWithDuplicatedKey2.setValue('5');
           setTimeout(() => {
             assert.equal(conditionalCompShownOnDupl1Or2.visible, true);
             dataGrid.addRow();
             setTimeout(() => {
-              const conditionalComp2ShownOnDupl1Or2 = form.getComponent('dataGrid.number')[1];
+              const conditionalComp2ShownOnDupl1Or2 = form.getComponent('dataGrid[1].number');
               assert.equal(conditionalCompShownOnDupl1Or2.visible, true);
               assert.equal(conditionalComp2ShownOnDupl1Or2.visible, false);
               compWithDuplicatedKey1.setValue('6');
@@ -167,6 +169,58 @@ describe('Webform tests', function() {
         }, 400);
       }, 300);
     }).catch((err) => done(err));
+  });
+
+  it('Should trigger the correct conditional when a nested form uses the same key as a parent form.', done => {
+    Formio.createForm(document.createElement('div'), NestedFormWithConditionals).then(form => {
+      const textArea = form.getComponent('textArea');
+      const textField = form.getComponent('textField');
+      assert.equal(textArea.visible, false);
+      assert.equal(textField.visible, false);
+      form.submission = {
+        data: {
+          number: 3,
+          form: {
+            data: {
+              number: 5
+            }
+          }
+        }
+      };
+      setTimeout(() => {
+        assert.equal(textArea.visible, false);
+        assert.equal(textField.visible, true);
+        form.submission = {
+          data: {
+            number: 5,
+            form: {
+              data: {
+                number: 3
+              }
+            }
+          }
+        };
+        setTimeout(() => {
+          assert.equal(textArea.visible, true);
+          assert.equal(textField.visible, false);
+          form.submission = {
+            data: {
+              number: 5,
+              form: {
+                data: {
+                  number: 5
+                }
+              }
+            }
+          };
+          setTimeout(() => {
+            assert.equal(textArea.visible, true);
+            assert.equal(textField.visible, true);
+            done();
+          }, 300);
+        }, 300);
+      }, 300);
+    });
   });
 
   it('Should validate email input when it is simple conditionally visible', done => {
@@ -344,6 +398,39 @@ describe('Webform tests', function() {
         }, 300);
       })
       .catch(done);
+  });
+
+  it('Should set a conditional nested form values.', function(done) {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, formWithDeeplyNestedConditionalComps, { server: true }).then((form) => {
+      const submission = {
+        data: {
+          submit: false,
+          radio1: 'yes',
+          container: {
+            checkbox: true,
+            checkboxInPanelInHiddenContainer: true,
+            textField: 'test',
+            editGrid: [
+              {
+                number: 1,
+                textField: 'test2',
+              },
+              {
+                number: 2,
+              },
+            ],
+          },
+        },
+      };
+
+      form.setValue(fastCloneDeep(submission), { sanitize: true });
+      setTimeout(() => {
+        assert.deepEqual(form.data, submission.data);
+        assert.deepEqual(form.getValue(), submission);
+        done();
+      }, 500);
+    }).catch((err) => done(err));
   });
 
   it('Should not lose values of conditionally visible components on setValue when server option is passed', function(done) {
@@ -645,8 +732,8 @@ describe('Webform tests', function() {
     const form = new Webform(formElement);
 
     form.setForm(formWithEventLogicInHiddenComponent).then(() => {
-      const regesteredAddress = form.getComponent('registeredAddressInformation').getComponent('streetAddress')[0];
-      const address = form.getComponent('addressInformation').getComponent('streetAddress')[0];
+      const regesteredAddress = form.getComponent('registeredAddressInformation').getComponent('streetAddress');
+      const address = form.getComponent('addressInformation').getComponent('streetAddress');
 
       assert.equal(address.visible, true);
       assert.equal(regesteredAddress.visible, false);
@@ -925,6 +1012,29 @@ describe('Webform tests', function() {
       assert.equal(label, 'English Label');
       document.body.innerHTML = '';
       done();
+    }).catch(done);
+  });
+
+  it('Should translate field name in error messages', (done) => {
+    const element = document.createElement('div');
+    const form = new Webform(element, {
+      language: 'en',
+      i18n: {
+        en: {
+          'My textField': 'My Value'
+        },
+      }
+    });
+    form.setForm(translationErrorMessages).then(() => {
+      const textField = form.getComponent('textField');
+      textField.setValue('123');
+      textField.onChange()
+      setTimeout(() => {
+        assert.equal(form.errors.length, 2);
+        assert.equal(form.errors[0].message, 'My Value must have at least 5 characters.');
+        assert.equal(form.errors[1].message, 'My Value must have at least 2 words.');
+        done();
+      }, 300);
     }).catch(done);
   });
 
@@ -2728,24 +2838,26 @@ describe('Webform tests', function() {
       formElement.innerHTML = '';
       const form = new Webform(formElement, { language: 'en' });
       form.setForm(validationOnBlur).then(() => {
-        const field = form.components[0];
-        const field2 = form.components[1];
-        const fieldInput = field.refs.input[0];
-
-        Harness.setInputValue(field, 'data[textField]', '12');
-
         setTimeout(() => {
-          assert.equal(field.errors.length, 0, 'Should be valid while changing');
-          const blurEvent = new Event('blur');
-          fieldInput.dispatchEvent(blurEvent);
-
+          const field = form.components[0];
+          const field2 = form.components[1];
+          const fieldInput = field.refs.input[0];
+  
+          Harness.setInputValue(field, 'data[textField]', '12');
+  
           setTimeout(() => {
-            assert.equal(field.errors.length, 1, 'Should set error after component was blurred');
-            Harness.setInputValue(field2, 'data[textField1]', 'ab');
-
+            assert.equal(field.errors.length, 0, 'Should be valid while changing');
+            const blurEvent = new Event('blur');
+            fieldInput.dispatchEvent(blurEvent);
+  
             setTimeout(() => {
-              assert.equal(field.errors.length, 1, 'Should keep error when editing another component');
-              done();
+              assert.equal(field.errors.length, 1, 'Should set error after component was blurred');
+              Harness.setInputValue(field2, 'data[textField1]', 'ab');
+  
+              setTimeout(() => {
+                assert.equal(field.errors.length, 1, 'Should keep error when editing another component');
+                done();
+              }, 200);
             }, 200);
           }, 200);
         }, 200);
@@ -5284,18 +5396,23 @@ describe('Webform tests', function() {
           it(title, function(done) {
             const self = this;
             const formElement = document.createElement('div');
-            let form = new Webform(formElement, _.cloneDeep(formTest.formOptions || {}));
-            form.setForm(formTest.form).then(function() {
-              formTestTest(form, function(error) {
-                form.destroy();
-                form = null;
-                formElement.innerHTML = '';
-                if (error) {
-                  return done(error);
-                }
-                done();
-              }, self);
-            });
+            try {
+              let form = new Webform(formElement, _.cloneDeep(formTest.formOptions || {}));
+              form.setForm(formTest.form).then(function() {
+                formTestTest(form, function(error) {
+                  form.destroy();
+                  form = null;
+                  formElement.innerHTML = '';
+                  if (error) {
+                    return done(error);
+                  }
+                  done();
+                }, self);
+              });
+            }
+            catch (err) {
+              done(err);
+            }
           });
         }
       });

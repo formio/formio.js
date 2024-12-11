@@ -933,32 +933,20 @@ export default class WebformBuilder extends Component {
     const compKey = (group === 'resource') ? `component-${key}` : key;
     const draggableComponent = this.groups[group]?.components[compKey] || {};
 
-    if (draggableComponent.disableSiblings) {
+    if (draggableComponent.disableSiblings || draggableComponent.uniqueComponent) {
       let isCompAlreadyExists = false;
       eachComponent(this.webform.components, (component) => {
-        if (component.type === draggableComponent.schema.type) {
+        if (
+          (draggableComponent.disableSiblings && component.type === draggableComponent.schema.type) ||
+          (draggableComponent.uniqueComponent && component.component.key === draggableComponent.schema.key)
+        ) {
           isCompAlreadyExists = true;
           return;
         }
       }, true);
       if (isCompAlreadyExists) {
         this.webform.redraw();
-        this.webform.setAlert('danger', `You cannot add more than one ${draggableComponent.key} component to one page.`);
-        return;
-      }
-    }
-
-    if (draggableComponent.uniqueComponent) {
-      let isCompAlreadyExists = false;
-      eachComponent(this.webform.components, (component) => {
-        if (component.key === draggableComponent.schema.key) {
-          isCompAlreadyExists = true;
-          return;
-        }
-      }, true);
-      if (isCompAlreadyExists) {
-        this.webform.redraw();
-        this.webform.setAlert('danger', `You cannot add more than one ${draggableComponent.title} component to one page.`);
+        this.webform.setAlert('danger', `You cannot add more than one ${_.get(draggableComponent, draggableComponent.uniqueComponent ? 'title' : 'key')} component to one page.`);
         return;
       }
     }
@@ -1052,15 +1040,19 @@ export default class WebformBuilder extends Component {
     }
     this.keyboardActionsEnabled = keyboardActionsEnabled;
 
-    const isSubmitButton = (comp) => {
-      return (comp.type === 'button') && ((comp.action === 'submit') || !comp.action);
-    }
+    const { display, noAddSubmitButton, noDefaultSubmitButton } = this.options;
+    const { _id, components } = form;
 
-    const isShowSubmitButton = !this.options.noDefaultSubmitButton
-      && (!form.components.length || !form.components.find(comp => isSubmitButton(comp)));
+    const isSubmitButton = ({ type, action }) => type === 'button' && (action === 'submit' || !action);
+    const hasSubmitButton = components.some(isSubmitButton);
+    // Add submit button if form display was switched from wizard
+    // Don't add if there is noAddSubmitButton flag passed, or the form has id, or the form has a submit button already
+    const shouldAddSubmitButton =
+      (display === 'wizard' && !hasSubmitButton) ||
+      (!noAddSubmitButton && !_id && !hasSubmitButton);
 
-    // Ensure there is at least a submit button.
-    if (isShowSubmitButton) {
+      // Ensure there is at least a submit button.
+    if (!noDefaultSubmitButton && shouldAddSubmitButton) {
       form.components.push({
         type: 'button',
         label: 'Submit',
@@ -1224,6 +1216,7 @@ export default class WebformBuilder extends Component {
           'conditional',
           'customConditional',
           'id',
+          'logic',
           'fields.day.required',
           'fields.month.required',
           'fields.year.required',
@@ -1250,6 +1243,12 @@ export default class WebformBuilder extends Component {
           parentComponent.tabs[tabIndex].splice(index, 1, newComp);
           newComp.checkValidity = () => true;
           newComp.build(defaultValueComponent.element);
+          if (this.preview && !this.preview.defaultChanged) {
+            const defaultValue = _.get(this.preview._data, this.editForm._data.key);
+            if (_.isObject(defaultValue) && !_.isArray(defaultValue)) {
+              this.editForm._data.defaultValue = defaultValue;
+            }
+          }
         }
       }
       else {
@@ -1263,6 +1262,7 @@ export default class WebformBuilder extends Component {
           dataPath = getStringFromComponentPath(path);
         }
 
+        this.preview.defaultChanged = true;
         _.set(this.preview._data, dataPath, changed.value);
         _.set(this.webform._data, dataPath, changed.value);
       }
@@ -1275,25 +1275,14 @@ export default class WebformBuilder extends Component {
   findRepeatablePaths() {
     const repeatablePaths = [];
     const keys = new Map();
-
-    eachComponent(this.form.components, (comp, path) => {
-      if (!comp.key) {
-        return;
-      }
-
-      if (keys.has(comp.key)) {
-        if (keys.get(comp.key).includes(path)) {
-          repeatablePaths.push(path);
-        }
-        else {
-          keys.set(comp.key, [...keys.get(comp.key), path]);
-        }
+    eachComponent(this.form.components, (comp, path, components, parent, paths) => {
+      if (keys.has(paths.dataPath)) {
+        repeatablePaths.push(paths.dataPath);
       }
       else {
-        keys.set(comp.key, [path]);
+        keys.set(paths.dataPath, true);
       }
     }, true);
-
     return repeatablePaths;
   }
 
@@ -1361,6 +1350,7 @@ export default class WebformBuilder extends Component {
 
       const rebuild = parentComponent.rebuild() || Promise.resolve();
       return rebuild.then(() => {
+        parentComponent.resetValue();
         const schema = parentContainer ? parentContainer[index] : (comp ? comp.schema : []);
         this.emitSaveComponentEvent(
           schema,
