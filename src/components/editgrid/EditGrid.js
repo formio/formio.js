@@ -1339,7 +1339,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     const changed = this.hasChanged(value, this.dataValue);
-    if (this.parent && !this.options.server) {
+    if (this.parent) {
       this.parent.checkComponentConditions();
     }
     this.dataValue = value;
@@ -1374,10 +1374,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.openWhenEmpty();
     this.updateOnChange(flags, changed);
-    // do not call checkData with server option, it is called when change is triggered in updateOnChange
-    if (!this.options.server) {
-      this.checkData();
-    }
+    this.checkData();
 
     this.changeState(changed, flags);
 
