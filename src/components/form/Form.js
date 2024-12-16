@@ -477,6 +477,7 @@ export default class FormComponent extends Component {
 
     if (isSubmitButton) {
       component.hidden = true;
+      // clearOnHide no longer clears from the JSON `hidden` flag, so we make the button conditionally hidden to clear its data
       component.customConditional = 'show = false';
     }
   }
