@@ -71,7 +71,7 @@ describe('Panel Component', () => {
 
   it('Should show its label in DataGrid when "Hide Label" is set to true and "Show Label in DataGrid" is set to true', () => {
     return Formio.createForm(document.createElement('div'), comp3, {}).then((form) => {
-      assert(form.getComponent('panel').element.querySelector('.card-title'), 'Panel should display its label');
+        assert(form.getComponent('dataGrid[0]').element.querySelector('.card-title'), 'Panel should display its label');
     });
   });
 
