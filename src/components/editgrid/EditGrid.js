@@ -344,13 +344,16 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   checkRowVariableTypeComponents(editRow, rowIndex) {
     const rowComponents = editRow.components;
+    let typeChanged = false;
 
     if (_.some(this.variableTypeComponentsIndexes, (compIndex) => {
       const variableTypeComp = rowComponents[compIndex];
       return variableTypeComp.type !== variableTypeComp.component.type;
     })) {
       editRow.components = this.createRowComponents(editRow.data, rowIndex, true);
+      typeChanged = true;
     }
+    return typeChanged;
   }
 
   setVariableTypeComponents() {
@@ -1097,6 +1100,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
+      options.rowIndex = rowIndex;
       options.onChange = (flags = {}, changed, modified) => {
         if (changed.instance.root?.id && (this.root?.id !== changed.instance.root.id)) {
           changed.instance.root.triggerChange(flags, changed, modified);
@@ -1116,12 +1120,14 @@ export default class EditGridComponent extends NestedArrayComponent {
             ...flags,
             changed,
           }, editRow.data, editRow.components);
-          this.validateRow(editRow, false);
+          this.validateRow(editRow, false, false);
         }
 
         if (this.variableTypeComponentsIndexes.length) {
-          this.checkRowVariableTypeComponents(editRow, rowIndex);
-          this.redraw();
+          const typeChanged = this.checkRowVariableTypeComponents(editRow, rowIndex);
+          if (typeChanged) {
+            this.redraw();
+          }
         }
       };
 
@@ -1169,22 +1175,24 @@ export default class EditGridComponent extends NestedArrayComponent {
   validateRow(editRow, dirty, forceSilentCheck, fromSubmission) {
     editRow.errors = [];
     if (this.shouldValidateRow(editRow, dirty, fromSubmission)) {
-      const silentCheck = (this.component.rowDrafts && !this.shouldValidateDraft(editRow)) || forceSilentCheck;
+      const silentCheck = forceSilentCheck === false ? false : ((this.component.rowDrafts && !this.shouldValidateDraft(editRow)) || forceSilentCheck);
       const rootValue = fastCloneDeep(this.rootValue);
       const editGridValue = _.get(rootValue, this.path, []);
       editGridValue[editRow.rowIndex] = editRow.data;
       _.set(rootValue, this.path, editGridValue);
       const validationProcessorProcess = (context) => this.validationProcessor(context, { dirty, silentCheck });
       const errors = processSync({
-        components: fastCloneDeep(this.component.components).map((component) => {
-          component.parentPath = `${this.path}[${editRow.rowIndex}]`;
-          return component;
-        }),
+        components: this.component.components,
         data: rootValue,
         row: editRow.data,
         process: 'validateRow',
         instances: this.componentsMap,
         scope: { errors: [] },
+        parent: this.component,
+        parentPaths: {
+          ...this.paths,
+          dataIndex: editRow.rowIndex
+        },
         processors: [
           {
             process: validationProcessorProcess,
@@ -1219,8 +1227,11 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
     }
 
-    if (!this.component.rowDrafts || this.root?.submitted) {
+    if (editRow.alerts && (!this.component.rowDrafts || this.root?.submitted)) {
       this.showRowErrorAlerts(editRow, editRow.errors);
+    }
+    else if (editRow.errors?.length) {
+      this.setCustomValidity(editRow.errors, dirty);
     }
 
     return editRow.errors;
@@ -1348,7 +1359,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     const changed = this.hasChanged(value, this.dataValue);
-    if (this.parent && !this.options.server) {
+    if (this.parent) {
       this.parent.checkComponentConditions();
     }
     this.dataValue = value;
@@ -1383,10 +1394,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.openWhenEmpty();
     this.updateOnChange(flags, changed);
-    // do not call checkData with server option, it is called when change is triggered in updateOnChange
-    if (!this.options.server) {
-      this.checkData();
-    }
+    this.checkData();
 
     this.changeState(changed, flags);
 

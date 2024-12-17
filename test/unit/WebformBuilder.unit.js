@@ -250,11 +250,14 @@ describe('WebformBuilder tests', function() {
 
   it('Should add submit button after switching from wizard form', (done) => {
     const builder = Harness.getBuilder();
+    builder.options.noAddSubmitButton = true;
+    builder.options.display = 'wizard';
     builder.setForm(formBasedOnWizard).then(() => {
       const components = builder.webform.components;
       const submit = components[components.length - 1];
-
       assert.equal(submit.key, 'submit');
+      builder.options.noAddSubmitButton = false;
+      builder.options.display = 'form';
       done();
     }).catch(done);
   });
@@ -266,6 +269,22 @@ describe('WebformBuilder tests', function() {
       const submit = components[1];
       assert.equal(components.length, 2);
       assert.equal(components[1].key, 'testSubmit');
+      done();
+    }).catch(done);
+  });
+
+  it('Should not add extra submit button if button action was changed', (done) => {
+    const builder = Harness.getBuilder();
+    builder.options.noAddSubmitButton = true;
+
+    const cloneForm = _.cloneDeep(simpleWebform);
+    cloneForm.components[1].action = 'reset'
+
+    builder.setForm(cloneForm).then(() => {
+      const components = builder.webform.components;
+      assert.equal(components.length, 2);
+      assert.equal(components[1].component.action, 'reset');
+      builder.options.noAddSubmitButton = false;
       done();
     }).catch(done);
   });
@@ -330,7 +349,7 @@ describe('WebformBuilder tests', function() {
         },
       ],
     }).then(() => {
-      const textField = builder.webform.getComponent(['dataGrid', 'textField'])[0];
+      const textField = builder.webform.getComponent('dataGrid[0].textField');
       textField.refs.removeComponent.dispatchEvent( new MouseEvent('click', {
         view: window,
         bubbles: true,
@@ -595,6 +614,154 @@ describe('Select Component selectData property', () => {
             Harness.saveComponent();
             setTimeout(() => {
               done();
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
+  it('Should show correct default value for select component in form builder', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('select');
+
+      setTimeout(() => {
+        const dataSrc = builder.editForm.getComponent('dataSrc');
+        dataSrc.setValue('url');
+        const url = builder.editForm.getComponent(['data.url']);
+        const valueProperty = builder.editForm.getComponent('valueProperty');
+        url.setValue('htts//fakeurl.com');
+        valueProperty.setValue('value');
+
+        setTimeout(() => {
+          const defaultValue = builder.editForm.getComponent('defaultValue');
+          assert.equal(defaultValue.type, 'select');
+          defaultValue.setValue('value1');
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() => {
+            assert.deepEqual(builder.editForm.data.selectData, {
+              label: 'Label 1',
+            });
+            Harness.saveComponent();
+            setTimeout(() => {
+              assert.equal(
+                builder.webform.getComponent('select').element.querySelector('[aria-selected="true"] span').innerHTML,
+                'Label 1',
+              );
+
+              const click = new MouseEvent('click', {
+                view: window,
+                bubbles: true,
+                cancelable: true
+              });
+
+              builder.webform.getComponent('select').element
+                .querySelector('.component-settings-button-edit')
+                .dispatchEvent(click);
+
+              setTimeout(() => {
+                const defaultValue = builder.editForm.getComponent('defaultValue');
+                assert.equal(defaultValue.type, 'select');
+                defaultValue.setValue('value2');
+                defaultValue.updateItems(null, true);
+
+                setTimeout(() => {
+                  assert.deepEqual(builder.editForm.data.selectData, {
+                    label: 'Label 2',
+                  });
+                  Harness.saveComponent();
+                  setTimeout(() => {
+                    assert.equal(
+                      builder.webform.getComponent('select').element.querySelector('[aria-selected="true"] span').innerHTML,
+                      'Label 2',
+                    );
+                    done();
+                  }, 150);
+                }, 250);
+              }, 500);
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
+  it('Should show correct default value for multiple select component in form builder', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('select');
+
+      setTimeout(() => {
+        const multiple = builder.editForm.getComponent('multiple');
+        multiple.setValue(true);
+        const dataSrc = builder.editForm.getComponent('dataSrc');
+        dataSrc.setValue('url');
+        const url = builder.editForm.getComponent(['data.url']);
+        const valueProperty = builder.editForm.getComponent('valueProperty');
+        url.setValue('htts//fakeurl.com');
+        valueProperty.setValue('value');
+
+        setTimeout(() => {
+          const defaultValue = builder.editForm.getComponent('defaultValue');
+          assert.equal(defaultValue.type, 'select');
+          defaultValue.setValue(['value1', 'value3']);
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() => {
+            assert.deepEqual(builder.editForm.data.selectData, {
+              value1: {
+                label: 'Label 1',
+              },
+              value3: {
+                label: 'Label 3',
+              },
+            });
+            Harness.saveComponent();
+            setTimeout(() => {
+              const elements = builder.webform.getComponent('select').element.querySelectorAll('.choices__list--multiple span');
+              assert.deepEqual(
+                Array.prototype.map.call(elements, (element) => element.innerHTML),
+                ['Label 1', 'Label 3'],
+              );
+
+              const click = new MouseEvent('click', {
+                view: window,
+                bubbles: true,
+                cancelable: true
+              });
+
+              builder.webform.getComponent('select').element
+                .querySelector('.component-settings-button-edit')
+                .dispatchEvent(click);
+
+              setTimeout(() => {
+                const defaultValue = builder.editForm.getComponent('defaultValue');
+                assert.equal(defaultValue.type, 'select');
+                defaultValue.setValue(['value2', 'value3']);
+                defaultValue.updateItems(null, true);
+
+                setTimeout(() => {
+                  assert.deepEqual(builder.editForm.data.selectData, {
+                    value2: {
+                      label: 'Label 2',
+                    },
+                    value3: {
+                      label: 'Label 3',
+                    },
+                  });
+                  Harness.saveComponent();
+                  setTimeout(() => {
+                    const elements = builder.webform.getComponent('select').element.querySelectorAll('.choices__list--multiple span');
+                    assert.deepEqual(
+                      Array.prototype.map.call(elements, (element) => element.innerHTML),
+                      ['Label 2', 'Label 3'],
+                    );
+                    done();
+                  }, 150);
+                }, 250);
+              }, 500);
             }, 150);
           }, 250);
         }, 250);

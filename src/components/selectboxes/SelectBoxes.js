@@ -164,6 +164,14 @@ export default class SelectBoxesComponent extends RadioComponent {
       _.set(submission.metadata.selectData, this.path, selectData);
     }
 
+    // Ensure that for dataSrc == 'values' that there are not any other superfluous values.
+    if (this.component.dataSrc === 'values') {
+      for (const key in value) {
+        if (!this.component.values.find((val) => val.value === key)) {
+          delete value[key];
+        }
+      }
+    }
     return value;
   }
 
@@ -307,7 +315,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       return super.setCustomValidity(_.filter(messages, (message) => message.ruleName !=='invalidValueProperty'), dirty, external);
     } else {
       return super.setCustomValidity(messages, dirty, external);
-    };
+    }
   }
 
   validateValueAvailability(setting, value) {
