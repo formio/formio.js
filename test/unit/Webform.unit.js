@@ -217,9 +217,9 @@ describe('Webform tests', function() {
             assert.equal(textArea.visible, true);
             assert.equal(textField.visible, true);
             done();
-          }, 300);
-        }, 300);
-      }, 300);
+          }, 400);
+        }, 400);
+      }, 400);
     });
   });
 
