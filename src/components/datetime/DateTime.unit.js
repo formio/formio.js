@@ -18,6 +18,8 @@ import {
   comp11,
   comp12,
   comp13,
+  comp14,
+  requiredFieldLogicComp
 } from './fixtures';
 
 describe('DateTime Component', () => {
@@ -729,6 +731,14 @@ describe('DateTime Component', () => {
         }, 400);
       }, 400);
     }).catch(done);
+  });
+
+  it('Should preserve the calendar widget settings after field logic is evaluated', async () => {
+    // see https://formio.atlassian.net/browse/FIO-9385
+    // emulate viewing a submission in the portal with { readOnly: true }
+    const form = await Formio.createForm(document.createElement('div'), requiredFieldLogicComp, { readOnly: true });
+    const dateTimeComponent = form.getComponent('dateTime');
+    assert.equal(dateTimeComponent.widget.settings.readOnly, true);
   });
 
   // it('Should provide correct date in selected timezone after submission', (done) => {

@@ -13,6 +13,7 @@ import {
   comp6,
   withDisplayAndInputMasks,
   comp7,
+  requiredFieldLogicComp
 } from './fixtures';
 
 describe('TextField Component', () => {
@@ -1360,6 +1361,14 @@ describe('TextField Component', () => {
         }, 300);
       }, 300);
     }).catch(done);
+  });
+
+  it('Should preserve the calendar widget settings after field logic is evaluated', async () => {
+    // see https://formio.atlassian.net/browse/FIO-9385
+    // emulate viewing a submission in the portal with { readOnly: true }
+    const form = await Formio.createForm(document.createElement('div'), requiredFieldLogicComp, { readOnly: true });
+    const textFieldComponent = form.getComponent('textField');
+     assert.equal(textFieldComponent.widget.settings.readOnly, true);
   });
 
   it('Test Display mask', (done) => {
