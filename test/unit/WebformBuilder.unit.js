@@ -250,11 +250,14 @@ describe('WebformBuilder tests', function() {
 
   it('Should add submit button after switching from wizard form', (done) => {
     const builder = Harness.getBuilder();
+    builder.options.noAddSubmitButton = true;
+    builder.options.display = 'wizard';
     builder.setForm(formBasedOnWizard).then(() => {
       const components = builder.webform.components;
       const submit = components[components.length - 1];
-
       assert.equal(submit.key, 'submit');
+      builder.options.noAddSubmitButton = false;
+      builder.options.display = 'form';
       done();
     }).catch(done);
   });
@@ -266,6 +269,22 @@ describe('WebformBuilder tests', function() {
       const submit = components[1];
       assert.equal(components.length, 2);
       assert.equal(components[1].key, 'testSubmit');
+      done();
+    }).catch(done);
+  });
+
+  it('Should not add extra submit button if button action was changed', (done) => {
+    const builder = Harness.getBuilder();
+    builder.options.noAddSubmitButton = true;
+
+    const cloneForm = _.cloneDeep(simpleWebform);
+    cloneForm.components[1].action = 'reset'
+
+    builder.setForm(cloneForm).then(() => {
+      const components = builder.webform.components;
+      assert.equal(components.length, 2);
+      assert.equal(components[1].component.action, 'reset');
+      builder.options.noAddSubmitButton = false;
       done();
     }).catch(done);
   });
@@ -330,7 +349,7 @@ describe('WebformBuilder tests', function() {
         },
       ],
     }).then(() => {
-      const textField = builder.webform.getComponent(['dataGrid', 'textField'])[0];
+      const textField = builder.webform.getComponent('dataGrid[0].textField');
       textField.refs.removeComponent.dispatchEvent( new MouseEvent('click', {
         view: window,
         bubbles: true,

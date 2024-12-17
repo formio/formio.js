@@ -432,7 +432,7 @@ export default class Wizard extends Webform {
 
   attachHeader() {
     const isAllowPrevious = this.isAllowPrevious();
-    this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`], this.currentPanel.tooltip);
+    this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`], this.currentPanel?.tooltip);
 
     if (this.isBreadcrumbClickable() || isAllowPrevious) {
       this.refs[`${this.wizardKey}-link`]?.forEach((link, index) => {
@@ -690,7 +690,10 @@ export default class Wizard extends Webform {
       }
       this.redraw().then(() => {
         this.checkData(this.submission.data);
-        this.validateCurrentPage();
+        const errors = this.submitted ? this.validate(this.localData, { dirty: true }) : this.validateCurrentPage();
+        if (this.alert) {
+          this.showErrors(errors, true, true);
+        }
       });
       return Promise.resolve();
     }
@@ -801,9 +804,11 @@ export default class Wizard extends Webform {
       });
     }
 
-    // Validate the form, before go to the next page
-    const errors = this.validateCurrentPage({ dirty: true });
-    if (errors.length === 0) {
+    // Validate the form before going to the next page
+    const currentPageErrors = this.validateCurrentPage({ dirty: true });
+    const errors = this.submitted ? this.validate(this.localData, { dirty: true }) : currentPageErrors;
+    // allow going to the next page if the current page is valid, even if there are form level errors
+    if (currentPageErrors.length === 0) {
       this.checkData(this.submission.data);
       return this.beforePage(true).then(() => {
         return this.setPage(this.getNextPage()).then(() => {
@@ -819,14 +824,14 @@ export default class Wizard extends Webform {
     else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
       this.scrollIntoView(this.element, true);
-      return Promise.reject(super.showErrors(errors, true));
+      return Promise.reject(this.showErrors(errors, true));
     }
   }
 
   validateCurrentPage(flags = {}) {
     const components = this.currentPage?.components.map((component) => component.component);
     // Accessing the parent ensures the right instance (whether it's the parent Wizard or a nested Wizard) performs its validation
-    return this.currentPage?.parent.validateComponents(components, this.currentPage.parent.data, flags);
+    return this.currentPage?.parent.validateComponents(components, this.root.data, flags);
   }
 
   emitPrevPage() {
@@ -1038,13 +1043,6 @@ export default class Wizard extends Webform {
     }
   }
 
-  redraw() {
-    if (this.parent?.component?.modalEdit) {
-      return this.parent.redraw();
-    }
-    return super.redraw();
-  }
-
   rebuild() {
     const currentPage = this.page;
     const setCurrentPage = () => this.setPage(currentPage);
@@ -1067,12 +1065,8 @@ export default class Wizard extends Webform {
     );
   }
 
-  get errors() {
-    if (!this.isLastPage()) {
-      return this.currentPage.errors;
-    }
-
-    return super.errors;
+  get errors() { 
+    return !this.isLastPage() && !this.submitted ? this.currentPage.errors : super.errors;
   }
 
   focusOnComponent(key) {
