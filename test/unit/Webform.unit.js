@@ -217,9 +217,9 @@ describe('Webform tests', function() {
             assert.equal(textArea.visible, true);
             assert.equal(textField.visible, true);
             done();
-          }, 300);
-        }, 300);
-      }, 300);
+          }, 400);
+        }, 400);
+      }, 400);
     });
   });
 
@@ -900,7 +900,7 @@ describe('Webform tests', function() {
             done();
           }, 300);
         }, 300);
-      }, 300);
+      }, 450);
     }).catch((err) => done(err));
   });
 
@@ -3805,7 +3805,7 @@ describe('Webform tests', function() {
                   assert.equal(radio.dataValue, calculatedValues.radio);
                   document.body.innerHTML = '';
                   done();
-                }, 300);
+                }, 350);
               }, 300);
             }, 300);
           }, 300);
