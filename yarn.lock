@@ -209,10 +209,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.1.tgz#de633db3ec2ef6a3c89e2f19038063e8a122e2c2"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
-"@formio/bootstrap@3.0.0-dev.119.c4cb299":
-  version "3.0.0-dev.119.c4cb299"
-  resolved "https://registry.yarnpkg.com/@formio/bootstrap/-/bootstrap-3.0.0-dev.119.c4cb299.tgz#bfdf821171da3f29f2315215d0dccdc64a3fc717"
-  integrity sha512-V+NCuZXjmEpLy9H5E+20D6alGQBABMiqongLuZR0FuuCPEDyrKO5UR5dbP2dx2vaV+ue1qUO8DscrhJRftGhgA==
+"@formio/bootstrap@3.1.0-dev.1-dev.120.01bbe80":
+  version "3.1.0-dev.1-dev.120.01bbe80"
+  resolved "https://registry.yarnpkg.com/@formio/bootstrap/-/bootstrap-3.1.0-dev.1-dev.120.01bbe80.tgz#dec9f47327894a9c8da4b05d86196e724e880e70"
+  integrity sha512-giRVA0uTM/g7FsM26YYr29HY5aW24xMloHze568TDocOCwGHfZiU09qJgbVyNH7VYuqkEu2fZZYMuDX9WSekFw==
 
 "@formio/choices.js@^10.2.1":
   version "10.2.1"
@@ -223,15 +223,15 @@
     fuse.js "^6.6.2"
     redux "^4.2.0"
 
-"@formio/core@2.1.0-dev.193.68cf8c3":
-  version "2.1.0-dev.193.68cf8c3"
-  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.1.0-dev.193.68cf8c3.tgz#b53fe5aa352d6b89bbd598c3e0c2b7609f1671d9"
-  integrity sha512-s8gFmaAj7ZTG3rJs09dJS59k6WrBfBm/y4kRikt7rndx/F5Hi5/alIb6Fy6XGL6Vl1SfrhzjQhro6y0ZG8EwWQ==
+"@formio/core@2.4.0-dev.205.f4cc49f":
+  version "2.4.0-dev.205.f4cc49f"
+  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.4.0-dev.205.f4cc49f.tgz#9cf71bfe12575666ecfe40592c8ebd622784d721"
+  integrity sha512-uA2a5TUlr/I+pIYBTZY5SiJyg/UrmpMpzS0fgWis4+4OZHD4L81epGBVndN1M7TxpNpcqBzdpJVe/mzuilGgNA==
   dependencies:
     browser-cookies "^1.2.0"
-    core-js "^3.38.0"
+    core-js "^3.39.0"
     dayjs "^1.11.12"
-    dompurify "^3.1.7"
+    dompurify "^3.2.0"
     eventemitter3 "^5.0.0"
     fast-json-patch "^3.1.1"
     fetch-ponyfill "^7.1.0"
@@ -2032,7 +2032,7 @@ core-js@^2.0.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
-core-js@^3.0.0, core-js@^3.30.2, core-js@^3.37.1, core-js@^3.38.0:
+core-js@^3.0.0, core-js@^3.30.2, core-js@^3.37.1, core-js@^3.39.0:
   version "3.39.0"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.39.0.tgz#57f7647f4d2d030c32a72ea23a0555b2eaa30f83"
   integrity sha512-raM0ew0/jJUqkJ0E6e8UDtl+y/7ktFivgWvqw8dNSQeNWoSDLvQ1H/RN3aPXB9tBd4/FhyR4RDPGhsNIMsAn7g==
@@ -2434,7 +2434,7 @@ domexception@^4.0.0:
   dependencies:
     webidl-conversions "^7.0.0"
 
-dompurify@^3.1.6, dompurify@^3.1.7:
+dompurify@^3.1.6, dompurify@^3.2.0:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.2.3.tgz#05dd2175225324daabfca6603055a09b2382a4cd"
   integrity sha512-U1U5Hzc2MO0oW3DF+G9qYN0aT7atAou4AgI0XjWz061nyBPbdxkfdhfy5uMgGn6+oLFCfn44ZGbdDqCzVmlOWA==
