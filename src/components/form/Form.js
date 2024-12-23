@@ -171,6 +171,10 @@ export default class FormComponent extends Component {
 
     // Make sure to not show the submit button in wizards in the nested forms.
     _.set(options, 'buttonSettings.showSubmit', false);
+    
+    // Set the parent options to the subform so those references are stable when the subform is created
+    options.parent = this;
+    options.parentVisible = this.visible;
 
     if (!this.options) {
       return options;
@@ -448,8 +452,6 @@ export default class FormComponent extends Component {
       return (new Form(form, this.getSubOptions())).ready.then((instance) => {
         this.subForm = instance;
         this.subForm.currentForm = this;
-        this.subForm.parent = this;
-        this.subForm.parentVisible = this.visible;
         this.subForm.on('change', () => {
           if (this.subForm) {
             this.dataValue = this.subForm.getValue();
