@@ -19,6 +19,10 @@ export class I18n {
         this.changeLanguage(this.language);
     }
 
+    get defaultKeys() {
+        return i18n.defaultKeys || {};
+    }
+
     setLanguages(languages) {
         if (languages.resources) {
             for (const lang in languages.resources) {
@@ -82,12 +86,21 @@ export class I18n {
     }
 
     t(text, ...args) {
-        if (this.currentLanguage[text]) {
+        let currentTranslation = this.currentLanguage[text];
+        // provide compatibility with cases where the entire phrase is used as a key
+        // get the phrase that is possibly being used as a key
+        const defaultKey = this.defaultKeys[text];
+        if (defaultKey && this.currentLanguage[defaultKey]) {
+            // get translation using the phrase as a key
+            currentTranslation = this.currentLanguage[defaultKey];
+        }
+
+        if (currentTranslation) {
             const customTranslationFieldName = args[0]?.field;
             if (customTranslationFieldName && this.currentLanguage[customTranslationFieldName]) {
                 args[0].field = this.currentLanguage[customTranslationFieldName]
             }
-            return Evaluator.interpolateString(this.currentLanguage[text], ...args);
+            return Evaluator.interpolateString(currentTranslation, ...args);
         }
         return Evaluator.interpolateString(text, ...args);
     }

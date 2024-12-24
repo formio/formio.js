@@ -588,7 +588,10 @@ export default class Component extends Element {
         this.addons.push(addon);
       }
       else {
-        console.warn(`Addon ${name.label} does not support component of type ${this.component.type}.`);
+        console.warn(this.t('addonSupportTypeError', {
+          type: this.component.type,
+          label: name.label
+        }));
       }
     }
 
@@ -651,7 +654,7 @@ export default class Component extends Element {
   }
 
   set path(path) {
-    throw new Error('Should not be setting the path of a component.');
+    throw new Error(this.t('setPathError'));
   }
 
   set parentVisible(value) {
@@ -746,7 +749,7 @@ export default class Component extends Element {
   }
 
   get calculatedPath() {
-    console.error('component.calculatedPath was deprecated, use component.path instead.');
+    console.error(this.t('calculatedPathDeprecation'));
     return this.path;
   }
 
@@ -937,7 +940,7 @@ export default class Component extends Element {
     const templatesByName = Templates.defaultTemplates[name];
 
     if (!templatesByName) {
-      return { template: `Unknown template: ${name}` };
+      return { template: this.t('unknownTemplate', { name })};
     }
 
     const templateByMode = this.checkTemplateMode(templatesByName, modes);
@@ -1006,9 +1009,7 @@ export default class Component extends Element {
     data.disabled = this.disabled;
     data.builder = this.builderMode;
     data.render = (...args) => {
-      console.warn(`Form.io 'render' template function is deprecated.
-      If you need to render template (template A) inside of another template (template B),
-      pass pre-compiled template A (use this.renderTemplate('template_A_name') as template context variable for template B`);
+      console.warn(this.t('renderTemplateFunctionDeprecation'));
       return this.renderTemplate(...args);
     };
     data.label = data.labelInfo || this.labelInfo;
@@ -1246,7 +1247,7 @@ export default class Component extends Element {
     }
 
     return this.renderModalPreview({
-      previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value'),
+      previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('clickToSetValue'),
       messages: '',
       labelInfo: modalLabel,
     });
@@ -1274,7 +1275,7 @@ export default class Component extends Element {
    * @param {boolean} topLevel - If this is the topmost component that is being rendered.
    * @returns {string} - The rendered HTML string of a component.
    */
-  render(children = `Unknown component: ${this.component.type}`, topLevel = false) {
+  render(children = this.t('unknownComponent', { type: this.component.type }), topLevel = false) {
     const isVisible = this.visible;
     this.rendered = true;
 
@@ -3770,7 +3771,7 @@ export default class Component extends Element {
 
   // Maintain reverse compatibility.
   whenReady() {
-    console.warn('The whenReady() method has been deprecated. Please use the dataReady property instead.');
+    console.warn(this.t('whenReadyDeprecation'));
     return this.dataReady;
   }
 

@@ -284,7 +284,7 @@ export default class SelectBoxesComponent extends RadioComponent {
 
         if (!isValid && maxCount && count > maxCount) {
           const message = this.t(
-            this.component.maxSelectedCountMessage || 'You may only select up to {{maxCount}} items',
+            this.component.maxSelectedCountMessage || 'maxSelectItems',
             { maxCount }
           );
           this.errors.push({ message });
@@ -294,7 +294,7 @@ export default class SelectBoxesComponent extends RadioComponent {
         else if (!isValid && minCount && count < minCount) {
           this.setInputsDisabled(false);
           const message = this.t(
-            this.component.minSelectedCountMessage || 'You must select at least {{minCount}} items',
+            this.component.minSelectedCountMessage || 'minSelectItems',
             { minCount }
           );
           this.errors.push({ message });
