@@ -7,7 +7,7 @@ import Component from '../component/Component';
 export default class Field extends Component {
   /**
    * @param {object} element - The component to create.
-   * @returns {Field} - The created field.
+   * @returns {string} - The rendered HTML string of a component
    */
   render(element) {
     if (this.noField) {
