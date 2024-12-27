@@ -9,7 +9,6 @@ export default {
   keySeparator: '.|.',
   pluralSeparator: '._.',
   contextSeparator: '._.',
-  defaultKeys: fastCloneDeep(enTranslation),
   resources: {
     en: {
       translation: fastCloneDeep(enTranslation)
