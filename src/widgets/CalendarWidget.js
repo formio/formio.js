@@ -14,7 +14,7 @@ import {
   shouldLoadZones,
   loadZones,
 } from '../utils/utils';
-import moment from 'moment';
+import moment from '../utils/moment-wrapper';
 import _ from 'lodash';
 
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
@@ -346,7 +346,7 @@ export default class CalendarWidget extends InputWidget {
   setValue(value) {
     const saveAsText = (this.settings.saveAs === 'text');
     if (!this.calendar) {
-      value = value ? formatDate(this.timezonesUrl, value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
+      value = value ? formatDate(value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
       return super.setValue(value);
     }
 
@@ -373,7 +373,7 @@ export default class CalendarWidget extends InputWidget {
     if (this.settings.saveAs === 'text' && this.componentInstance.parent && !this.settings.readOnly) {
       return moment(value, convertFormatToMoment(valueFormat)).format(convertFormatToMoment(valueFormat));
     }
-    return formatDate(this.timezonesUrl, value, inputFormat, this.timezone, convertFormatToMoment(valueFormat));
+    return formatDate(value, inputFormat, this.timezone, convertFormatToMoment(valueFormat));
   }
 
   setErrorClasses(hasErrors) {
@@ -552,9 +552,9 @@ export default class CalendarWidget extends InputWidget {
 
         const currentValue = new Date(this.getValue());
         if (currentValue.toString() === date.toString()) {
-          return formatOffset(this.timezonesUrl, Flatpickr.formatDate.bind(Flatpickr), new Date(this.componentValue), format, this.timezone);
+          return formatOffset(Flatpickr.formatDate.bind(Flatpickr), new Date(this.componentValue), format, this.timezone);
         }
-        return formatOffset(this.timezonesUrl, Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
+        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
       }
 
       return Flatpickr.formatDate(date, format);

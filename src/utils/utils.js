@@ -2,8 +2,10 @@
 
 import _ from 'lodash';
 import jsonLogic from 'json-logic-js';
-import moment from 'moment-timezone/moment-timezone';
-import jtz from 'jstimezonedetect';
+import moment from './moment-wrapper';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import { lodashOperators } from './jsonlogic/operators';
 import dompurify from 'dompurify';
 import { getValue } from './formUtils';
@@ -13,22 +15,25 @@ const interpolate = Evaluator.interpolate;
 
 export * from './formUtils';
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
 
 // Retrieve Any Date
 jsonLogic.add_operation('getDate', (date) => {
-  return moment(date).toISOString();
+  return dayjs(date).toISOString();
 });
 
 // Set Relative Minimum Date
 jsonLogic.add_operation('relativeMinDate', (relativeMinDate) => {
-  return moment().subtract(relativeMinDate, 'days').toISOString();
+  return dayjs().subtract(relativeMinDate, 'days').toISOString();
 });
 
 // Set Relative Maximum Date
 jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
-  return moment().add(relativeMaxDate, 'days').toISOString();
+  return dayjs().add(relativeMaxDate, 'days').toISOString();
 });
 
 export { jsonLogic, ConditionOperators, moment };
@@ -592,22 +597,22 @@ export function getDateSetting(date) {
     return date.isValid() ? date.toDate() : null;
   }
 
-  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date) : null;
+  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? dayjs(date) : null;
   if (dateSetting && dateSetting.isValid()) {
     return dateSetting.toDate();
   }
 
   dateSetting = null;
   try {
-    const value = Evaluator.evaluator(`return ${date};`, 'moment')(moment);
+    const value = Evaluator.evaluator(`return ${date};`, 'moment')(dayjs);
     if (typeof value === 'string') {
-      dateSetting = moment(value);
+      dateSetting = dayjs(value);
     }
     else if (typeof value.toDate === 'function') {
-      dateSetting = moment(value.toDate().toUTCString());
+      dateSetting = dayjs(value.toDate().toUTCString());
     }
     else if (value instanceof Date) {
-      dateSetting = moment(value);
+      dateSetting = dayjs(value);
     }
   }
   catch (e) {
@@ -640,11 +645,7 @@ export function isValidDate(date) {
  * @returns {string} - The current timezone.
  */
 export function currentTimezone() {
-  if (moment.currentTimezone) {
-    return moment.currentTimezone;
-  }
-  moment.currentTimezone = jtz.determine().name();
-  return moment.currentTimezone;
+  return dayjs.tz.guess();
 }
 
 /**
@@ -660,7 +661,7 @@ export function offsetDate(date, timezone) {
       abbr: 'UTC'
     };
   }
-  const dateMoment = moment(date).tz(timezone);
+  const dateMoment = dayjs(date).tz(timezone);
   return {
     date: new Date(date.getTime() + ((dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000)),
     abbr: dateMoment.format('z')
@@ -672,7 +673,7 @@ export function offsetDate(date, timezone) {
  * @returns {boolean} - TRUE if the zones are loaded; FALSE otherwise.
  */
 export function zonesLoaded() {
-  return moment.zonesLoaded;
+  return typeof dayjs.tz === 'function';
 }
 
 /**
@@ -724,14 +725,11 @@ export function loadZones(url, timezone) {
  * @returns {Date} - The moment date object.
  */
 export function momentDate(value, format, timezone) {
-  const momentDate = moment(value);
-  if (!timezone) {
-    return momentDate;
-  }
+  const momentDate = dayjs(value);
   if (timezone === 'UTC') {
-    timezone = 'Etc/UTC';
+    return dayjs.utc();
   }
-  if ((timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) && moment.zonesLoaded) {
+  if (timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) {
     return momentDate.tz(timezone);
   }
   return momentDate;
@@ -739,55 +737,33 @@ export function momentDate(value, format, timezone) {
 
 /**
  * Format a date provided a value, format, and timezone object.
- * @param {string} timezonesUrl - The URL to load the timezone data from.
  * @param {string|Date} value - The value to format.
  * @param {string} format - The format to format the date to.
  * @param {string} timezone - The timezone to format the date to.
  * @param {string} flatPickrInputFormat - The format to use for flatpickr input.
  * @returns {string} - The formatted date.
  */
-export function formatDate(timezonesUrl, value, format, timezone, flatPickrInputFormat) {
-  const momentDate = moment(value, flatPickrInputFormat || undefined);
-  if (timezone === currentTimezone()) {
-    // See if our format contains a "z" timezone character.
-    if (format.match(/\s(z$|z\s)/)) {
-      loadZones(timezonesUrl);
-      if (moment.zonesLoaded) {
-        return momentDate.tz(timezone).format(convertFormatToMoment(format));
-      }
-      else {
-        return momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, '')));
-      }
-    }
-
-    // Return the standard format.
-    return momentDate.format(convertFormatToMoment(format));
-  }
+export function formatDate(value, format, timezone, flatPickrInputFormat) {
+  const date = dayjs(value, flatPickrInputFormat);
+  const dayjsFormat = convertFormatToMoment(format);
   if (timezone === 'UTC') {
-    const offset = offsetDate(momentDate.toDate(), 'UTC');
-    return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;
+    return `${date.utc().format(dayjsFormat)} UTC`;
   }
-
-  // Load the zones since we need timezone information.
-  loadZones(timezonesUrl);
-  if (moment.zonesLoaded && timezone) {
-    return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
+  if (timezone) {
+    return date.tz(timezone).format(`${dayjsFormat} z`);
   }
-  else {
-    return momentDate.format(convertFormatToMoment(format));
-  }
+  return date.format(dayjsFormat);
 }
 
 /**
  * Pass a format function to format within a timezone.
- * @param {string} timezonesUrl - The URL to load the timezone data from.
  * @param {Function} formatFn - The format function to use.
  * @param {Date|string} date - The date to format.
  * @param {string} format - The format to format the date to.
  * @param {string} timezone - The timezone to format the date to.
  * @returns {string} - The formatted date.
  */
-export function formatOffset(timezonesUrl, formatFn, date, format, timezone) {
+export function formatOffset(formatFn, date, format, timezone) {
   if (timezone === currentTimezone()) {
     return formatFn(date, format);
   }
