@@ -67,7 +67,7 @@ export default [
     input: true,
     weight: 20,
     key: 'reference',
-    label: 'Save as reference',
-    tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.'
+    label: 'Submit as reference',
+    tooltip: 'Using this option will submit this field as a reference id and link its value to the value of the origin record.'
   }
 ];
