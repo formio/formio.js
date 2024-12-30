@@ -1974,7 +1974,10 @@ describe('Webform tests', function() {
   it('Should get the language passed via options', () => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, {
-      language: 'es'
+      language: 'es',
+      i18n:{
+        es: {}
+      }
     });
 
     assert.equal(form.language, 'es');
