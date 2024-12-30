@@ -260,7 +260,7 @@ export default class WizardBuilder extends WebformBuilder {
     const isSiblingAnAddPageButton = sibling?.classList.contains('wizard-add-page');
     // We still can paste before Add Page button
     if (!element.dragInfo || (sibling && !sibling.dragInfo && !isSiblingAnAddPageButton)) {
-      console.warn('There is no Drag Info available for either dragged or sibling element');
+      console.warn(this.t('noDragInfoError'));
       return;
     }
     const oldPosition = element.dragInfo.index;

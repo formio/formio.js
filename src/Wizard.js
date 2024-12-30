@@ -701,7 +701,7 @@ export default class Wizard extends Webform {
       this.redraw();
       return Promise.resolve();
     }
-    return Promise.reject('Page not found');
+    return Promise.reject(this.t('pageNotFound'));
   }
 
   pageFieldLogic(page) {

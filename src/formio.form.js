@@ -12,6 +12,7 @@ import { Evaluator } from './utils/Evaluator';
 import Licenses from './licenses';
 import EventEmitter from './EventEmitter';
 import Webform from './Webform';
+import { I18n } from './utils/i18n';
 
 Formio.loadModules = (path = `${Formio.getApiUrl()  }/externalModules.js`, name = 'externalModules') => {
   Formio.requireLibrary(name, name, path, true)
@@ -91,6 +92,9 @@ export function registerModule(mod, defaultFn = null, options = {}) {
         break;
       case 'evaluator':
         Formio.Evaluator.registerEvaluator(mod.evaluator);
+        break;
+      case 'translations':
+        I18n.setDefaultTranslations(mod.translations);
         break;
       case 'library':
         options.license

@@ -404,7 +404,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   onReorder(element, _target, _source, sibling) {
     if (!element.dragInfo || (sibling && !sibling.dragInfo)) {
-      console.warn('There is no Drag Info available for either dragged or sibling element');
+      console.warn(this.t('noDragInfoError'));
       return;
     }
 

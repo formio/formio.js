@@ -151,8 +151,8 @@ export default class SurveyComponent extends Field {
         <table border="1" style="width:100%">
           <thead>
             <tr>
-              <th>Question</th>
-              <th>Value</th>
+              <th>${this.t('surveyQuestion')}</th>
+              <th>${this.t('surveyQuestionValue')}</th>
             </tr>
           </thead>
           <tbody>

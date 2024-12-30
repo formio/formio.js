@@ -383,7 +383,7 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get addAnother() {
-    return this.t(this.component.addAnother || 'Add Another');
+    return this.t(this.component.addAnother || 'addAnother');
   }
 
   renderElement(value) {
