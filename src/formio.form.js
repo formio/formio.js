@@ -62,6 +62,10 @@ export function registerModule(mod, defaultFn = null, options = {}) {
       case 'templates':
         for (const framework of Object.keys(mod.templates)) {
           Formio.Templates.extendTemplate(framework, mod.templates[framework]);
+          Formio.Templates.defaultTemplates = _.defaults(
+            mod.templates[framework],
+            Formio.Templates.defaultTemplates
+          );
         }
         if (mod.templates[current]) {
           Formio.Templates.current = mod.templates[current];
