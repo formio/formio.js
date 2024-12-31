@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import FormioUtils from '../../utils';
-import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { componentValueTypes, fastCloneDeep, getComponentSavedTypes } from '../../utils/utils';
 import Input from '../_classes/input/Input';
 
 export default class DateTimeComponent extends Input {
@@ -139,6 +139,10 @@ export default class DateTimeComponent extends Input {
       maxDate: _.get(this.component, 'datePicker.maxDate'),
       ...customOptions,
     };
+    // update originalComponent to include widget and other updated settings
+    // it is done here since these settings depend on properties present after the component is initialized 
+    // originalComponent is used to restore the component (and widget) after evaluating field logic 
+    this.originalComponent = fastCloneDeep(this.component);
     /* eslint-enable camelcase */
   }
 
