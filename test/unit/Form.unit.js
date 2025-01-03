@@ -13,6 +13,7 @@ import {
   comp6,
   comp7,
   comp8,
+  comp9,
   nestedWizardForm,
 } from './fixtures/form';
 import Webform from '../../src/Webform.js';
@@ -532,6 +533,46 @@ describe('SaveDraft functionality for Nested Form', () => {
         assert.equal(form.options.readOnly, true);
         done();
       });
+    }).catch((err) => done(err));
+  });
+});
+
+describe('Rendering nested forms', () => {
+  const originalMakeRequest = Formio.makeRequest;
+  let urlRequests = [];
+
+  before((done) => {
+    Formio.makeRequest = (formio, type, url, method, data) => {
+        urlRequests.push(url);
+        return Promise.resolve({})
+    };
+    done();
+  });
+
+  afterEach(() => {
+    urlRequests = [];
+   });
+
+  after((done) => {
+    Formio.makeRequest = originalMakeRequest;
+    done();
+  });
+
+   const options = {
+      "baseUrl": "http://someHost",
+      "hooks": {},
+      "sanitize": true,
+      "readOnly": false,
+      "project": "http://soneHost/skpbdisfmqlnydv"
+  }
+  it('Should provide correct url for requsted nested form', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, comp9, options).then((form) => {
+      setTimeout(() => {
+        const isProjectIncluded = urlRequests.some(url => url.includes("skpbdisfmqlnydv"))
+        assert.equal(isProjectIncluded, true);
+        done()
+        600});
     }).catch((err) => done(err));
   });
 });
