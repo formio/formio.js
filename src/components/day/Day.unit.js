@@ -192,9 +192,13 @@ describe('Day Component', () => {
     Harness.testCreate(DayComponent, comp3).then((component) => {
       component.setValue('01/02/2020');
       assert(!component.checkValidity(component.data, true), 'Component should not be valid');
+      assert.equal(component.errors?.length, 1);
+      assert.equal(component.errors[0]?.message, 'Date should not contain date before 1/3/2020');
 
       component.setValue('04/01/2021');
       assert(!component.checkValidity(component.data, true), 'Component should not be valid');
+      assert.equal(component.errors?.length, 1);
+      assert.equal(component.errors[0]?.message, 'Date should not contain date after 3/1/2021');
 
       component.setValue('03/01/2021');
       assert(component.checkValidity(component.data, true), 'Component should be valid');

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.0.1-rc.2]
+### Changed
+ - FIO-9511: fixed day min/max validation message
+ 
 ## 5.0.1-rc.1
 ### Changed
  - FIO-9480: establish parent references before subform creation
