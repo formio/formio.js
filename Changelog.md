@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.1.0-rc.9]
+ - FIO-9511: fixed day min/max validation message
+ 
 ## 5.1.0-rc.8
 ### Changed
  - FIO-9499 Component: Check if ref is instance of NodeList on detach
