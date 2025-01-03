@@ -539,18 +539,18 @@ describe('SaveDraft functionality for Nested Form', () => {
 
 describe('Rendering nested forms', () => {
   const originalMakeRequest = Formio.makeRequest;
-  let urlRequest = "";
+  let urlRequests = [];
 
   before((done) => {
     Formio.makeRequest = (formio, type, url, method, data) => {
-        urlRequest = url;
+        urlRequests.push(url);
         return Promise.resolve({})
     };
     done();
   });
 
   afterEach(() => {
-    urlRequest = "";
+    urlRequests = [];
    });
 
   after((done) => {
@@ -569,7 +569,8 @@ describe('Rendering nested forms', () => {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, comp9, options).then((form) => {
       setTimeout(() => {
-        assert.equal(urlRequest.includes("skpbdisfmqlnydv"), true);
+        const isProjectIncluded = urlRequests.some(url => url.includes("skpbdisfmqlnydv"))
+        assert.equal(isProjectIncluded, true);
         done()
         600});
     }).catch((err) => done(err));
