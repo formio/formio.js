@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased: 5.1.0-rc.5]
  - FIO-8575: Added ability to reload google maps library with correct API key
+ - FIO-9552: Fixing the embed code to export the Formio construct
 
 ## 5.1.0-rc.4
 ### Changed
