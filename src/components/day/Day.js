@@ -2,6 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import Field from '../_classes/field/Field';
 import { boolValue, componentValueTypes, getComponentSavedTypes, getLocaleDateFormatInfo } from '../../utils/utils';
+import { getDayFormat } from '@formio/core';
 
 export default class DayComponent extends Field {
   static schema(...extend) {
@@ -536,24 +537,7 @@ export default class DayComponent extends Field {
    * @returns {string} - the format for the value string.
    */
   get format() {
-    let format = '';
-    if (this.component.dayFirst && this.showDay) {
-      format += 'D/';
-    }
-    if (this.showMonth) {
-      format += 'M/';
-    }
-    if (!this.component.dayFirst && this.showDay) {
-      format += 'D/';
-    }
-    if (this.showYear) {
-      format += 'YYYY';
-      return format;
-    }
-    else {
-      // Trim off the "/" from the end of the format string.
-      return format.length ? format.substring(0, format.length - 1) : format;
-    }
+    return getDayFormat(this.component);
   }
 
   /**
