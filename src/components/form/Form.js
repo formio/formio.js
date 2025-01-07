@@ -233,7 +233,7 @@ export default class FormComponent extends Component {
 
   render() {
     if (this.builderMode) {
-      return super.render(this.component.label || 'Nested form');
+      return super.render(this.t(this.component.label || 'nestedForm'));
     }
     const subform = this.subForm ? this.subForm.render() : this.renderTemplate('loading');
     return super.render(subform);
@@ -249,13 +249,13 @@ export default class FormComponent extends Component {
 
   getValueAsString(value, options) {
     if (!value) {
-      return 'No data provided';
+      return this.t('noDataProvided');
     }
     if (!value.data && value._id) {
       return value._id;
     }
     if (!value.data || !Object.keys(value.data).length) {
-      return 'No data provided';
+      return this.t('noDataProvided');
     }
     if (options?.email) {
       let result = (`
@@ -708,7 +708,7 @@ export default class FormComponent extends Component {
       : {};
       this.subForm.setUrl(submissionUrl, { ...this.options, ...options });
       this.subForm.loadSubmission().catch((err) => {
-        console.error(`Unable to load subform submission ${submission._id}:`, err);
+        console.error(this.t('subformSubmissionLoadingError', { submissionId: submission._id }), err);
       });
     }
     else {

@@ -197,7 +197,7 @@ export default class DayComponent extends Field {
     this._months = [
       {
         value: '',
-        label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '')
+        label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('month') : '')
       },
       { value: 1, label: 'January' },
       { value: 2, label: 'February' },
@@ -304,7 +304,7 @@ export default class DayComponent extends Field {
         this.saveCaretPosition(element, name);
       }
       catch (err) {
-        console.warn('An error occurred while trying to save caret position', err);
+        console.warn(this.t('caretPositionSavingError'), err);
       }
       this.updateValue(null, {
         modified: true,

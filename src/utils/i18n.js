@@ -1,5 +1,7 @@
 import { Evaluator } from '@formio/core/utils';
 import i18n from '../i18n';
+import { isEmpty } from 'lodash';
+import { fastCloneDeep } from '@formio/core';
 const i18Defaults = {};
 for (const lang in i18n.resources) {
     if (i18n.resources.hasOwnProperty(lang)) {
@@ -11,15 +13,32 @@ for (const lang in i18n.resources) {
  * This file is used to mimic the i18n library interface.
  */
 export class I18n {
-    languages = i18Defaults;
+    static languages = i18Defaults;
+    languages = fastCloneDeep(I18n.languages || {});
+    defaultKeys = I18n.languages?.en || {};
     language = 'en';
     currentLanguage = i18Defaults.en;
+
     constructor(languages = {}) {
         this.setLanguages(languages);
         this.changeLanguage(this.language);
     }
 
-    setLanguages(languages) {
+    static setDefaultTranslations(languages) {
+        if (isEmpty(languages)) {
+            return;
+        }
+        for (const lang in languages) {
+            if (lang !== 'language' && languages.hasOwnProperty(lang)) {
+                if (!this.languages[lang]) {
+                    this.languages[lang] = {};
+                }
+                this.languages[lang] = { ...languages[lang], ...this.languages[lang],  };
+            }
+        }
+    }
+
+    setLanguages(languages, noDefaultOverride) {
         if (languages.resources) {
             for (const lang in languages.resources) {
                 if (languages.resources.hasOwnProperty(lang)) {
@@ -47,7 +66,9 @@ export class I18n {
                 if (!this.languages[lang]) {
                     this.languages[lang] = {};
                 }
-                this.languages[lang] = { ...this.languages[lang], ...languages[lang] };
+                this.languages[lang] = noDefaultOverride 
+                    ? { ...languages[lang], ...this.languages[lang] }
+                    : { ...this.languages[lang], ...languages[lang] };
             }
         }
     }
@@ -82,12 +103,21 @@ export class I18n {
     }
 
     t(text, ...args) {
-        if (this.currentLanguage[text]) {
+        let currentTranslation = this.currentLanguage[text];
+        // provide compatibility with cases where the entire phrase is used as a key
+        // get the phrase that is possibly being used as a key
+        const defaultKey = this.defaultKeys[text];
+        if (defaultKey && this.currentLanguage[defaultKey]) {
+            // get translation using the phrase as a key
+            currentTranslation = this.currentLanguage[defaultKey];
+        }
+
+        if (currentTranslation) {
             const customTranslationFieldName = args[0]?.field;
             if (customTranslationFieldName && this.currentLanguage[customTranslationFieldName]) {
                 args[0].field = this.currentLanguage[customTranslationFieldName]
             }
-            return Evaluator.interpolateString(this.currentLanguage[text], ...args);
+            return Evaluator.interpolateString(currentTranslation, ...args);
         }
         return Evaluator.interpolateString(text, ...args);
     }
