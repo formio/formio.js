@@ -489,7 +489,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       row
     });
     this.checkConditions();
-    this.triggerChange();
+    this.triggerChange({ modified: true });
     this.redraw().then(() => {
       this.focusOnNewRowElement(this.rows[index]);
     });
@@ -577,6 +577,9 @@ export default class DataGridComponent extends NestedArrayComponent {
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
       options.rowIndex = rowIndex;
+      options.onChange = (flags, changed, modified) => {
+        this.triggerChange({ modified });
+      }
 
       let columnComponent;
 
