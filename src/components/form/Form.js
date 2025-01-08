@@ -373,6 +373,10 @@ export default class FormComponent extends Component {
     && this.formObj._vid !== this.subFormRevision;
   }
 
+  get subFormData() {
+    return this.dataValue?.data || {};
+  }
+
   destroy(all = false) {
     if (this.subForm) {
       this.subForm.destroy(all);
@@ -537,14 +541,14 @@ export default class FormComponent extends Component {
     }
 
     if (this.subForm) {
-      return this.subForm.checkConditions(data, flags, row);
+      return this.subForm.checkConditions(this.subFormData, flags);
     }
     // There are few cases when subForm is not loaded when a change is triggered,
     // so we need to perform checkConditions after it is ready, or some conditional fields might be hidden in View mode
     else if (this.subFormReady) {
       this.subFormReady.then(() => {
         if (this.subForm) {
-          return this.subForm.checkConditions(data, flags, row);
+          return this.subForm.checkConditions(this.subFormData, flags);
         }
       });
     }
@@ -554,7 +558,7 @@ export default class FormComponent extends Component {
 
   calculateValue(data, flags, row) {
     if (this.subForm) {
-      return this.subForm.calculateValue(data, flags, row);
+      return this.subForm.calculateValue(this.subFormData, flags);
     }
 
     return super.calculateValue(data, flags, row);

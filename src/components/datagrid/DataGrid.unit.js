@@ -426,7 +426,7 @@ describe('DataGrid Component', () => {
                   done();
                 }).catch(done);
               }, 300);
-            }, 300);
+            }, 350);
           }, 300);
         }, 300);
       })
@@ -492,6 +492,93 @@ describe('DataGrid Component', () => {
           done();
         }, 300);
       }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should trigger DataGrid change event when row component value changes', (done) => {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [{
+        label: 'Datagrid',
+        key: 'dataGrid',
+        type: 'datagrid',
+        defaultValue: [{ }],
+        input: true,
+        components: [
+          {
+            label: 'Number',
+            key: 'number',
+            type: 'number',
+            input: true
+          },
+        ],
+      }],
+    }).then((form) => {
+      form.on('change', ({ changed }) => {
+        assert(changed.component.key, 'dataGrid');
+        done();
+      });
+      const numberComp = form.getComponent(['dataGrid', 0, 'number']);
+      numberComp.setValue(1);
+    }).catch((err) => done(err));
+  });
+
+  it('Should trigger DataGrid change event when adding a new row', (done) => {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [{
+        label: 'Datagrid',
+        key: 'dataGrid',
+        type: 'datagrid',
+        defaultValue: [{ }],
+        input: true,
+        components: [
+          {
+            label: 'Number',
+            key: 'number',
+            type: 'number',
+            input: true
+          },
+        ],
+      }],
+    }).then((form) => {
+      form.on('change', ({ changed }) => {
+        assert(changed.component.key, 'dataGrid');
+        done();
+      });
+      const dataGrid = form.getComponent(['dataGrid']);
+      dataGrid.addRow();
+    }).catch((err) => done(err));
+  });
+
+  it('Should trigger DataGrid change event when removing the row', (done) => {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [{
+        label: 'Datagrid',
+        key: 'dataGrid',
+        type: 'datagrid',
+        defaultValue: [{ }],
+        input: true,
+        components: [
+          {
+            label: 'Number',
+            key: 'number',
+            type: 'number',
+            input: true
+          },
+        ],
+      }],
+    }).then((form) => {
+      form.on('change', ({ changed }) => {
+        assert(changed.component.key, 'dataGrid');
+        done();
+      });
+      const dataGrid = form.getComponent(['dataGrid']);
+      dataGrid.removeRow(0);
     }).catch((err) => done(err));
   });
 });
