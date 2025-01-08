@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.1.0-rc.5]
+## 5.1.0-rc.5
+### Changed
+ - Updated @formio/core@2.4.0-rc.4
+
  - FIO-8575: Added ability to reload google maps library with correct API key
  - FIO-9552: Fixing the embed code to export the Formio construct
 
