@@ -41,7 +41,7 @@
     "build": "yarn doc && yarn lib && yarn dist",
     "doc": "typedoc",
     "dist": "gulp clean:dist && webpack --config webpack.config.js && webpack --config webpack.prod.js && gulp build",
-    "lib": "gulp clean:lib && tsc --project tsconfig.cjs.json && tsc --project tsconfig.mjs.json && yarn lib:package",
+    "lib": "gulp clean:lib && tsc --project tsconfig.cjs.json && tsc --project tsconfig.mjs.json && yarn lib:package  && gulp version",
     "lib:package": "node ./libpackage.js",
     "version": "node -e 'console.log(require(`./package.json`).version)'",
     "build-app": "yarn build-app:create-app && yarn build-app:jekyll && yarn build-app:remove-app",
