@@ -223,15 +223,15 @@
     fuse.js "^6.6.2"
     redux "^4.2.0"
 
-"@formio/core@v2.4.0-dev.210.e634ab4":
-  version "2.4.0-dev.210.e634ab4"
-  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.4.0-dev.210.e634ab4.tgz#1f8d0e216b2a103ca9945a4cdc86683be48e4bbd"
-  integrity sha512-t+M9K3si9Sd11dTN7Yzrek5l7V71AifjxM9RvbpJKOPr3P4f0Ceq1Z9P4vESQ8rCBAV3SAVwXzoeSGcVx7b6/Q==
+"@formio/core@v2.4.0-dev.2":
+  version "2.4.0-dev.2"
+  resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.4.0-dev.2.tgz#30ebab054e602c5ce7f487d853d195887e0f62b9"
+  integrity sha512-rodSO272z/bUqOulrCx1mkpCsuW7AHjcxV9tX5Ob7F97JV/6lxtsvxrmhPWFS63yXnecreZO5v67xrcHxBWVMg==
   dependencies:
     browser-cookies "^1.2.0"
     core-js "^3.39.0"
     dayjs "^1.11.12"
-    dompurify "^3.2.0"
+    dompurify "^3.2.3"
     eventemitter3 "^5.0.0"
     fast-json-patch "^3.1.1"
     fetch-ponyfill "^7.1.0"
@@ -2434,7 +2434,7 @@ domexception@^4.0.0:
   dependencies:
     webidl-conversions "^7.0.0"
 
-dompurify@^3.1.6, dompurify@^3.2.0:
+dompurify@^3.1.6, dompurify@^3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.2.3.tgz#05dd2175225324daabfca6603055a09b2382a4cd"
   integrity sha512-U1U5Hzc2MO0oW3DF+G9qYN0aT7atAou4AgI0XjWz061nyBPbdxkfdhfy5uMgGn6+oLFCfn44ZGbdDqCzVmlOWA==
