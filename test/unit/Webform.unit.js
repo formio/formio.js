@@ -975,7 +975,7 @@ describe('Webform tests', function() {
     form.setForm(translationTestForm).then(() => {
       setTimeout(() => {
         const selectComp = form.getComponent('select');
-        const options = selectComp.element.querySelector('[role="listbox"]').children;
+        const options = selectComp.choices.choiceList.element.children;
         const option1 = options[0].textContent.trim();
         const option2 = options[1].textContent.trim();
         const label = selectComp.element.querySelector('label').textContent.trim();
@@ -2842,18 +2842,18 @@ describe('Webform tests', function() {
           const field = form.components[0];
           const field2 = form.components[1];
           const fieldInput = field.refs.input[0];
-  
+
           Harness.setInputValue(field, 'data[textField]', '12');
-  
+
           setTimeout(() => {
             assert.equal(field.errors.length, 0, 'Should be valid while changing');
             const blurEvent = new Event('blur');
             fieldInput.dispatchEvent(blurEvent);
-  
+
             setTimeout(() => {
               assert.equal(field.errors.length, 1, 'Should set error after component was blurred');
               Harness.setInputValue(field2, 'data[textField1]', 'ab');
-  
+
               setTimeout(() => {
                 assert.equal(field.errors.length, 1, 'Should keep error when editing another component');
                 done();
