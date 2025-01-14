@@ -1768,7 +1768,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     triggerCaptcha() {
-        if (!this || !this.components) {
+        if (!this || !this.components || this.options.preview) {
             return;
         }
         const captchaComponent = [];
