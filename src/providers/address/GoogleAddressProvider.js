@@ -233,7 +233,7 @@ export class GoogleAddressProvider extends AddressProvider {
    * @param {ProviderOptions} options - The options for the provider.
    */
   tryRemoveLibrary(options = {}) {
-    if (!Formio.libraries[this.getLibraryName()]) {
+    if (!Formio.libraries[this.getLibraryName()] || !document?.querySelector) {
       return;
     }
 
