@@ -56,6 +56,146 @@ describe('Wizard tests', () => {
     btn.dispatchEvent(clickEvent);
   };
 
+
+
+const parentForm = {
+  "_id": "677d3efea934773d422a05fa",
+  "title": "Wizard parent",
+  "name": "fdAsWizardParent",
+  "path": "fdaswizardparent",
+  "type": "form",
+  "display": "wizard",
+  "components": [
+    {
+      "title": "Page 1",
+      "key": "page1",
+      "type": "panel",
+      "components": []
+    },
+    {
+      "title": "Page 2",
+      "key": "page2",
+      "type": "panel",
+      "components": [
+        {
+          "label": "Form",
+          "key": "form",
+          "type": "form",
+          "form": "677d3efea934773d422a05f3",
+          "lazyLoad": true
+        }
+      ]
+    },
+    {
+      "title": "Page 3",
+      "key": "page3",
+      "type": "panel",
+      "components": []
+    }
+  ]
+};
+
+const childFormOwner = {
+  "_id": "677d3efea934773d422a05f3",
+  "title": "Wizard Child Owner",
+  "name": "fdaWizardChildOwner",
+  "path": "fdawizardchildOwner",
+  "type": "form",
+  "components": [
+    {
+      "label": "Form",
+      "key": "form",
+      "type": "form",
+      "form": "677d3efea934773d422a05ec",
+      "lazyLoad": true
+    },
+    {
+      "label": "Submit",
+      "key": "submit",
+      "type": "button"
+    }
+  ]
+};
+
+
+
+const childForm = {
+  "_id": "677d3efea934773d422a05ec",
+  "title": "Wizard Child",
+  "name": "WizardChild",
+  "path": "wizardchild",
+  "type": "form",
+  "components": [
+    {
+      "label": "Text Field",
+      "key": "textField",
+      "type": "textfield",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Submit",
+      "key": "submit",
+      "type": "button"
+    }
+  ]
+};
+
+describe('Wizard Form with Nested Form validation', () => {
+  const originalMakeRequest = Formio.makeRequest;
+  let postRequestCount = 0;
+
+  before(() => {
+    // Mock Formio.makeRequest to count POST requests and serve mock forms
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get') {
+        if (url.includes('parentForm')) {
+          return Promise.resolve(_.cloneDeep(parentForm));
+        } else if (url.includes('677d3efea934773d422a05ec')) {
+          return Promise.resolve(_.cloneDeep(childForm));
+        } else if (url.includes('677d3efea934773d422a05f3')) {
+          return Promise.resolve(_.cloneDeep(childFormOwner));
+        }
+      }
+      if (type === 'submission' && ['put', 'post'].includes(method)) {
+        postRequestCount++;
+      }
+      return Promise.resolve();
+    };
+  });
+
+  after(() => {
+    // Restore the original makeRequest
+    Formio.makeRequest = originalMakeRequest;
+  });
+
+  it('Should validate wizard with nested forms with lazy load on without POST request (on client side)', async () => {
+    const formElement = document.createElement('div');
+    const wizard = await Formio.createForm(formElement, 'http://localhost:3000/idwqwhclwioyqbw/parentForm')
+      // Navigate directly to the last page, don't open page with nested form to avoid loading before submission process
+      wizard.setPage(2);
+      await(300);
+
+      // Assert we are on last
+      assert.equal(wizard.page, 2, 'Should navigate to last');
+
+      // Try to submit the form with empty data
+      try {
+        wizard.submit();
+      }
+      catch(err) {
+        // Assert validation error
+        assert(err, 'Should trigger validation error');
+        assert.equal(err.length, 1);
+        assert.equal(err[0].ruleName, 'required');
+
+        // Assert no POST requests were made
+        assert.equal(postRequestCount, 0, 'No submission POST requests should be made');
+      }
+  });
+});
+
   it('Should recalculate values for components with "allow override" after wizard is canceled', function(done) {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, formsWithAllowOverride.wizard).then((form) => {
@@ -326,7 +466,7 @@ describe('Wizard tests', () => {
     nestedWizard.components[2].conditional = { show: true, when: 'checkbox', eq: 'true' };
 
     await wizard.setForm(formWithNestedWizard);
-   
+
     const nestedFormComp = wizard.getComponent('formNested');
 
     nestedFormComp.loadSubForm = () => {
@@ -341,7 +481,7 @@ describe('Wizard tests', () => {
     const checkPage = (pageNumber) => {
       assert.equal(wizard.page, pageNumber, `Should open wizard page ${pageNumber + 1}`);
     };
-    
+
     checkPage(0);
     assert.equal(wizard.pages.length, 4, 'Should have 4 pages');
     assert.equal(wizard.allPages.length, 4, 'Should have 4 pages');
@@ -349,7 +489,7 @@ describe('Wizard tests', () => {
 
     clickWizardBtn(wizard, 'link[3]');
     await wait(300);
-    
+
     checkPage(3);
     assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, 'Should hav submit btn on the last page');
     wizard.getComponent('checkbox').setValue(true);
@@ -372,7 +512,7 @@ describe('Wizard tests', () => {
     checkPage(4);
     clickWizardBtn(wizard, 'previous');
     await wait(300);
-            
+
     checkPage(3);
     wizard.getComponent('checkbox').setValue(false);
     await wait(500);
@@ -380,7 +520,7 @@ describe('Wizard tests', () => {
     assert.equal(wizard.pages.length, 4, 'Should hide conditional page');
     assert.equal(wizard.allPages.length, 4, 'Should hide conditional page');
     assert.equal(wizard.refs[`${wizard.wizardKey}-link`].length, 4, 'Should contain refs to breadcrumbs of visible pages');
-    assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, 'Should have submit btn on the last page');  
+    assert.deepEqual(!!wizard.refs[`${wizard.wizardKey}-submit`], true, 'Should have submit btn on the last page');
   }).timeout(6000);
 
   it('Should trigger validation of nested wizard before going to the next page', function (done) {
@@ -641,8 +781,8 @@ describe('Wizard tests', () => {
     clickWizardBtn(wizard, 'link[1]');
     await wait(200);
     // the form-level errors should still be the same
-    assert.equal(getRequiredFieldErrors().length, 2); 
-    // navigate to page 1 
+    assert.equal(getRequiredFieldErrors().length, 2);
+    // navigate to page 1
     clickWizardBtn(wizard, 'link[0]');
     const page1Input = wizard.element.querySelector('input[name="data[textField]"]');
     const inputEvent = new Event('input');
@@ -879,7 +1019,7 @@ describe('Wizard tests', () => {
       nestedFormComp.createSubForm();
 
       setTimeout(() => {
-  
+
         clickWizardBtn(wizard, 'link[1]');
 
         setTimeout(() => {
@@ -2254,7 +2394,7 @@ it('Should show tooltip for wizard pages', function(done) {
 
   it('Should retain previous checkbox checked property when navigating to another page (unchecked)', (done) => {
     const wizard = new Wizard(document.createElement('div'));
-    wizard.setForm(WizardWithCheckboxes).then(()=> {      
+    wizard.setForm(WizardWithCheckboxes).then(()=> {
       wizard.element.querySelector('input').click();
       wizard.element.querySelector('input').click();
       clickWizardBtn(wizard, 'next');

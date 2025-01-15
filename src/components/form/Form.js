@@ -664,11 +664,23 @@ export default class FormComponent extends Component {
       this.dataValue = submission;
       return Promise.resolve(this.dataValue);
     }
-    return this.submitSubForm(false)
+
+    if(this.isSubFormLazyLoad() && !this.subFormLoading){
+      return this.createSubForm(true)
+      .then(this.submitSubForm(false))
+        .then(() => {
+          return this.dataValue;
+        })
+        .then(() => super.beforeSubmit());
+
+    }
+    else {
+      return this.submitSubForm(false)
       .then(() => {
         return this.dataValue;
       })
       .then(() => super.beforeSubmit());
+    }
   }
 
   isSubFormLazyLoad() {
