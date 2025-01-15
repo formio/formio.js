@@ -114,8 +114,6 @@ export default class CalendarWidget extends InputWidget {
     this.settings.disableWeekends ? this.settings.disable.push(this.disableWeekends) : '';
     this.settings.disableWeekdays ? this.settings.disable.push(this.disableWeekdays) : '';
     this.settings.disableFunction ? this.settings.disable.push(this.disableFunction) : '';
-    this.settings.wasDefaultValueChanged = false;
-    this.settings.defaultValue = '';
     this.settings.manualInputValue = '';
     this.settings.isManuallyOverriddenValue = false;
     this.settings.currentValue = '';
@@ -138,10 +136,6 @@ export default class CalendarWidget extends InputWidget {
           this.emit('update');
       }
 
-      if (this.settings.wasDefaultValueChanged) {
-        this.calendar._input.value = this.settings.defaultValue;
-        this.settings.wasDefaultValueChanged = false;
-      }
       if (this.calendar) {
         this.emit('blur');
       }
@@ -424,14 +418,6 @@ export default class CalendarWidget extends InputWidget {
         this.settings.isManuallyOverriddenValue = true;
         this.settings.currentValue = event.target.value;
         this.emit('update');
-      }
-
-      if (event.target.value === '' && this.calendar.selectedDates.length > 0) {
-        this.settings.wasDefaultValueChanged = true;
-        this.settings.defaultValue = event.target.value;
-        this.calendar.clear();
-      } else {
-        this.settings.wasDefaultValueChanged = false;
       }
     });
     if(this.calendar.daysContainer) {
