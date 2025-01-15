@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.1-rc.3
+### Changed
+ - FIO-9482 fixed setting Formio version
+
 ## 5.0.1-rc.2
 ### Changed
  - Updated @formio/bootstrap@3.0.1-rc.1
