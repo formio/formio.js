@@ -264,7 +264,7 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get dataValue() {
-    const resultValue = _.get(this._data, this.component.path);
+    const resultValue = _.get(this._data, this.path);
     if (!_.isArray(resultValue) && this.component.multiple) {
       return [resultValue]
     }
