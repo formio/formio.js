@@ -686,6 +686,7 @@ export default [
   },
   {
     key: 'selectData',
+    type: 'hidden',
     conditional: {
       json: {
         and: [

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypes, boolValue } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, boolValue, getComponent } from '../../utils/utils';
 import RadioComponent from '../radio/Radio';
 
 export default class SelectBoxesComponent extends RadioComponent {
@@ -164,6 +164,14 @@ export default class SelectBoxesComponent extends RadioComponent {
       _.set(submission.metadata.selectData, this.path, selectData);
     }
 
+    // Ensure that for dataSrc == 'values' that there are not any other superfluous values.
+    if (this.component.dataSrc === 'values') {
+      for (const key in value) {
+        if (!this.component.values.find((val) => val.value === key)) {
+          delete value[key];
+        }
+      }
+    }
     return value;
   }
 
@@ -200,8 +208,13 @@ export default class SelectBoxesComponent extends RadioComponent {
     }
 
     if (this.isSelectURL) {
-      if (options.modalPreview && this.loadedOptions) {
-        return this.loadedOptions.filter((option) => value[option.value]).map((option) => option.label).join(', ');
+      if (options.modalPreview || this.options.readOnly || this.inDataTable) {
+        const checkedItems = _.keys(_.pickBy(value, (val) => val));
+        if (this.selectData?.length === checkedItems.length) {
+          return this.selectData.map(item => this.itemTemplate(item)).join(', ');
+        } else if (this.loadedOptions?.length) {
+          return this.loadedOptions.filter((option) => value[option.value]).map((option) => option.label).join(', ');
+        }
       }
       return _(value).pickBy((val) => val).keys().join(', ');
     }
@@ -271,7 +284,7 @@ export default class SelectBoxesComponent extends RadioComponent {
 
         if (!isValid && maxCount && count > maxCount) {
           const message = this.t(
-            this.component.maxSelectedCountMessage || 'You may only select up to {{maxCount}} items',
+            this.component.maxSelectedCountMessage || 'maxSelectItems',
             { maxCount }
           );
           this.errors.push({ message });
@@ -281,7 +294,7 @@ export default class SelectBoxesComponent extends RadioComponent {
         else if (!isValid && minCount && count < minCount) {
           this.setInputsDisabled(false);
           const message = this.t(
-            this.component.minSelectedCountMessage || 'You must select at least {{minCount}} items',
+            this.component.minSelectedCountMessage || 'minSelectItems',
             { minCount }
           );
           this.errors.push({ message });
@@ -292,6 +305,17 @@ export default class SelectBoxesComponent extends RadioComponent {
     }
 
     return super.checkComponentValidity(data, dirty, rowData, options, errors);
+  }
+
+  setCustomValidity(messages, dirty, external) {
+    if (this.options.building && _.find(messages, {ruleName: 'invalidValueProperty'})) {
+      setTimeout(() => {
+        this.root && getComponent(this.root.components, 'valueProperty').setCustomValidity(messages, dirty);
+      }, 0);
+      return super.setCustomValidity(_.filter(messages, (message) => message.ruleName !=='invalidValueProperty'), dirty, external);
+    } else {
+      return super.setCustomValidity(messages, dirty, external);
+    }
   }
 
   validateValueAvailability(setting, value) {

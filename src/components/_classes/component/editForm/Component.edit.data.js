@@ -128,10 +128,10 @@ export default [
   {
     weight: 700,
     type: 'checkbox',
-    label: 'Clear Value When Hidden',
+    label: 'Omit Value From Submission Data When Conditionally Hidden',
     key: 'clearOnHide',
     defaultValue: true,
-    tooltip: 'When a field is hidden, clear the value.',
+    tooltip: 'When a field is conditionally hidden, omit the value from the submission data.',
     input: true
   },
   EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 'customDefaultValue', 1000,
@@ -140,7 +140,7 @@ export default [
   ),
   EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 'calculateValue', 1100,
     '<p><h4>Example:</h4><pre>value = data.a + data.b + data.c;</pre></p>',
-    '<p><h4>Example:</h4><pre>{"+": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a href="http://formio.github.io/formio.js/app/examples/calculated.html" target="_blank" rel="noopener noreferrer">Click here for an example</a></p>',
+    '<p><h4>Example:</h4><pre>{"+": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a href="https://help.form.io/userguide/form-building/logic-and-conditions#calculated-values" target="_blank" rel="noopener noreferrer">Click here for an example</a></p>',
 '<tr><th>token</th><td>The decoded JWT token for the authenticated user.</td></tr>'
   ),
   {

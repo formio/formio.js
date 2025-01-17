@@ -322,6 +322,27 @@ describe('Radio Component', () => {
       done();
     }).catch(done);
   });
+
+  it('Should not show infinite loader for radio with URL data source if options loading failed', (done) => {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise((res, rej) => {
+        setTimeout(() => rej('loading error'), 200);
+      });
+    };
+    Formio.createForm(element, form).then(form => {
+      const radio = form.getComponent('radio');
+      assert.equal(!!radio.element.querySelector('.loader'), true, 'Should show loader.')
+      setTimeout(()=>{
+        assert.equal(!!radio.element.querySelector('.loader'), false, 'Should not show loader.')
+        Formio.makeRequest = originalMakeRequest;
+        done();
+      }, 350);
+    }).catch(done);
+  });
 });
 
 describe('Radio Component', () => {

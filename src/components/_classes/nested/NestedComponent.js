@@ -1,8 +1,8 @@
 'use strict';
 import _ from 'lodash';
 import Field from '../field/Field';
-import Components from '../../Components';
-import { getArrayFromComponentPath, getStringFromComponentPath, getRandomComponentId } from '../../../utils/utils';
+import Components from '../../Components';''
+import { getComponentPaths, getRandomComponentId, componentMatches, getBestMatch, getStringFromComponentPath } from '../../../utils/utils';
 import { process as processAsync, processSync } from '@formio/core/process';
 
 /**
@@ -86,18 +86,27 @@ export default class NestedComponent extends Field {
     const visibilityChanged = this._visible !== value;
     this._visible = value;
     const isVisible = this.visible;
+    const isConditionallyHidden = this.checkConditionallyHidden();
     const forceShow = this.shouldForceShow();
     const forceHide = this.shouldForceHide();
-    this.components.forEach(component => {
+    this.components.forEach((component) => {
       // Set the parent visibility first since we may have nested components within nested components
       // and they need to be able to determine their visibility based on the parent visibility.
       component.parentVisible = isVisible;
+      component._parentConditionallyHidden = isConditionallyHidden;
+      let visible;
+      if (component.hasCondition()) {
+        component._conditionallyHidden = component.checkConditionallyHidden() || component._parentConditionallyHidden;
+        visible = !component.conditionallyHidden;
+      }
+      else {
+        visible = !component.component.hidden;
+      }
 
-      const conditionallyVisible = component.conditionallyVisible();
-      if (forceShow || conditionallyVisible) {
+      if (forceShow || visible) {
         component.visible = true;
       }
-      else if (forceHide || !isVisible || !conditionallyVisible) {
+      else if (forceHide || !isVisible || !visible ) {
         component.visible = false;
       }
       // If hiding a nested component, clear all errors below.
@@ -105,8 +114,8 @@ export default class NestedComponent extends Field {
         component.error = '';
       }
     });
+
     if (visibilityChanged) {
-      this.clearOnHide();
       this.redraw();
     }
   }
@@ -217,6 +226,10 @@ export default class NestedComponent extends Field {
    */
   set rowIndex(value) {
     this._rowIndex = value;
+    this.paths = getComponentPaths(this.component, this.parent?.component, {
+      ...(this.parent?.paths || {}),
+      ...{ dataIndex: value }
+    });
     this.eachComponent((component) => {
       component.rowIndex = value;
     });
@@ -326,62 +339,36 @@ export default class NestedComponent extends Field {
   }
 
   /**
-   * Returns a component provided a key. This performs a deep search within the
-   * component tree.
+   * Returns a component provided a key. This performs a deep search within the component tree.
    * @param {string} path - The path to the component.
-   * @param {Function} [fn] - Called with the component once found.
-   * @param {string} [originalPath] - The original path to the component.
    * @returns {any} - The component that is located.
    */
-  getComponent(path, fn, originalPath) {
-    originalPath = originalPath || getStringFromComponentPath(path);
-    if (this.componentsMap.hasOwnProperty(originalPath)) {
-      if (fn) {
-        return fn(this.componentsMap[originalPath]);
-      }
-      else {
-        return this.componentsMap[originalPath];
-      }
-    }
-
-    path = getArrayFromComponentPath(path);
-    const pathStr = originalPath;
-    const newPath = _.clone(path);
-    let key = newPath.shift();
-    const remainingPath = newPath;
-    let comp = null;
-    let possibleComp = null;
-
-    if (_.isNumber(key)) {
-      key = remainingPath.shift();
-    }
-
-    if (!_.isString(key)) {
-      return comp;
-    }
-
-    this.everyComponent((component, components) => {
-      const matchPath = component.hasInput && component.path ? pathStr.includes(component.path) : true;
-      if (component.component.key === key) {
-        possibleComp = component;
-        if (matchPath) {
-          comp = component;
-          if (remainingPath.length > 0 && 'getComponent' in component) {
-            comp = component.getComponent(remainingPath, fn, originalPath);
-          }
-          else if (fn) {
-            fn(component, components);
-          }
-          return false;
-        }
-      }
+  getComponent(path) {
+    path = getStringFromComponentPath(path);
+    const matches = {
+      path: undefined,
+      fullPath: undefined,
+      localPath: undefined,
+      fullLocalPath: undefined,
+      dataPath: undefined,
+      localDataPath: undefined,
+      key: undefined,
+    };
+    this.everyComponent((component) => {
+      // All searches are relative to this component so replace this path from the child paths.
+      componentMatches(component.component, {
+        path: component.paths?.path?.replace(new RegExp(`^${this.paths?.path}\\.?`), ''),
+        fullPath: component.paths?.fullPath?.replace(new RegExp(`^${this.paths?.fullPath}\\.?`), ''),
+        localPath: component.paths?.localPath?.replace(new RegExp(`^${this.paths?.localPath}\\.?`), ''),
+        fullLocalPath: component.paths?.fullLocalPath?.replace(new RegExp(`^${this.paths?.fullLocalPath}\\.?`), ''),
+        dataPath: component.paths?.dataPath?.replace(new RegExp(`^${this.paths?.dataPath}\\.?`), ''),
+        localDataPath: component.paths?.localDataPath?.replace(new RegExp(`^${this.paths?.localDataPath}\\.?`), ''),
+      }, path, this.rowIndex, matches, (type, match) => {
+        match.instance = component;
+        return match;
+      });
     });
-
-    if (!comp) {
-      comp = possibleComp;
-    }
-
-    return comp;
+    return getBestMatch(matches)?.instance;
   }
 
   /**
@@ -421,6 +408,7 @@ export default class NestedComponent extends Field {
     data = data || this.data;
     options.parent = this;
     options.parentVisible = this.visible;
+    options.parentConditionallyHidden = this.conditionallyHidden;
     options.root = options?.root || this.root || this;
     options.localRoot = this.localRoot;
     options.skipInit = true;
@@ -710,7 +698,7 @@ export default class NestedComponent extends Field {
   clearOnHide(show) {
     super.clearOnHide(show);
     if (this.component.clearOnHide) {
-      if (this.allowData && !this.hasValue() && !(this.options.server && !this.visible)) {
+      if (this.allowData && !this.hasValue() && !this.conditionallyHidden) {
         this.dataValue = this.defaultValue;
       }
       if (this.hasValue()) {
@@ -743,7 +731,7 @@ export default class NestedComponent extends Field {
 
   calculateValue(data, flags, row) {
     // Do not iterate into children and calculateValues if this nested component is conditionally hidden.
-    if (!this.conditionallyVisible()) {
+    if (this.conditionallyHidden) {
       return false;
     }
     return this.getComponents().reduce(
@@ -763,16 +751,17 @@ export default class NestedComponent extends Field {
     );
   }
 
-  validationProcessor({ scope, data, row, instance, component }, flags) {
+  validationProcessor({ scope, data, row, instance, paths }, flags) {
     const { dirty } = flags;
     if (this.root.hasExtraPages && this.page !== this.root.page) {
-      instance = this.childComponentsMap?.hasOwnProperty(component.path)
-        ? this.childComponentsMap[component.path]
-        : this.getComponent(component.path);
+      instance = this.componentsMap?.hasOwnProperty(paths.dataPath)
+        ? this.componentsMap[paths.dataPath]
+        : this.getComponent(paths.dataPath);
     }
     if (!instance) {
       return;
     }
+
     instance.checkComponentValidity(data, dirty, row, flags, scope.errors);
     if (instance.processOwnValidation) {
       scope.noRecurse = true;
@@ -807,7 +796,10 @@ export default class NestedComponent extends Field {
       components,
       instances: this.componentsMap,
       data: data,
+      local: !!flags.local,
       scope: { errors: [] },
+      parent: this.component,
+      parentPaths: this.paths,
       processors: [
         {
           process: validationProcessorProcess,

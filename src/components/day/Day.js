@@ -2,6 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import Field from '../_classes/field/Field';
 import { boolValue, componentValueTypes, getComponentSavedTypes, getLocaleDateFormatInfo } from '../../utils/utils';
+import { getDayFormat } from '@formio/core';
 
 export default class DayComponent extends Field {
   static schema(...extend) {
@@ -53,6 +54,9 @@ export default class DayComponent extends Field {
     schema = schema || {};
     return getComponentSavedTypes(schema) || [componentValueTypes.string];
   }
+
+  // Empty value used before 9.3.x
+  static oldEmptyValue = '00/00/0000';
 
   constructor(component, options, data) {
     if (component.maxDate && component.maxDate.indexOf('moment(') === -1) {
@@ -118,6 +122,13 @@ export default class DayComponent extends Field {
     info.attr.type = 'hidden';
     info.changeEvent = 'input';
     return info;
+  }
+
+  isEmpty(value = this.dataValue) {
+    if (value === DayComponent.oldEmptyValue) {
+      return true
+    }
+    return super.isEmpty(value);
   }
 
   inputDefinition(name) {
@@ -186,7 +197,7 @@ export default class DayComponent extends Field {
     this._months = [
       {
         value: '',
-        label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '')
+        label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('month') : '')
       },
       { value: 1, label: 'January' },
       { value: 2, label: 'February' },
@@ -293,7 +304,7 @@ export default class DayComponent extends Field {
         this.saveCaretPosition(element, name);
       }
       catch (err) {
-        console.warn('An error occurred while trying to save caret position', err);
+        console.warn(this.t('caretPositionSavingError'), err);
       }
       this.updateValue(null, {
         modified: true,
@@ -379,6 +390,11 @@ export default class DayComponent extends Field {
   }
 
   normalizeValue(value) {
+    // Adjust the value from old to new format
+    if (value === DayComponent.oldEmptyValue) {
+      value = '';
+    }
+
     if (!value || this.valueMask.test(value)) {
       return value;
     }
@@ -390,7 +406,6 @@ export default class DayComponent extends Field {
     let defaultDay = '';
     let defaultMonth = '';
     let defaultYear = '';
-    
     if(defaultValue) {
       const hasHiddenFields = defaultValue.length !==3;
       defaultDay = hasHiddenFields ? this.getDayWithHiddenFields(defaultValue).day : defaultValue[DAY];
@@ -522,24 +537,7 @@ export default class DayComponent extends Field {
    * @returns {string} - the format for the value string.
    */
   get format() {
-    let format = '';
-    if (this.component.dayFirst && this.showDay) {
-      format += 'D/';
-    }
-    if (this.showMonth) {
-      format += 'M/';
-    }
-    if (!this.component.dayFirst && this.showDay) {
-      format += 'D/';
-    }
-    if (this.showYear) {
-      format += 'YYYY';
-      return format;
-    }
-    else {
-      // Trim off the "/" from the end of the format string.
-      return format.length ? format.substring(0, format.length - 1) : format;
-    }
+    return getDayFormat(this.component);
   }
 
   /**
@@ -655,6 +653,9 @@ export default class DayComponent extends Field {
    * @returns {string|null} - The string value of the date.
    */
   getValueAsString(value) {
+    if (!value) {
+      return '';
+    }
     return this.getDate(value) || '';
   }
 

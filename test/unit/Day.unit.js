@@ -33,6 +33,21 @@ describe('Day Component', () => {
     });
   });
 
+  it('Should not show error when form loaded with defaultValue = "00/00/0000"', (done) => {
+      Formio.createForm(document.createElement('div'), comp5, {}).then((form) => {
+        const dayComponent = form.getComponent('day');
+        assert.equal(dayComponent.visibleErrors.length, 0);
+        assert.equal(form.data.day, '');
+        const buttonComponent = form.getComponent('submit');
+        buttonComponent.refs.button.click();
+        setTimeout(()=>{
+          assert.equal(dayComponent.visibleErrors.length, 1);
+          assert.equal(dayComponent.visibleErrors[0].message, 'Day is required');
+          done();
+        },200);
+      });
+  });
+
   it('Should change the max day when the month changes', (done) => {
     Harness.testCreate(DayComponent, comp1).then((component) => {
       Harness.testElements(component, 'option', 13);
@@ -175,9 +190,13 @@ describe('Day Component', () => {
     Harness.testCreate(DayComponent, comp3).then((component) => {
       component.setValue('01/02/2020');
       assert(!component.checkValidity(component.data, true), 'Component should not be valid');
+      assert.equal(component.errors?.length, 1);
+      assert.equal(component.errors[0]?.message, 'Date should not contain date before 1/3/2020');
 
       component.setValue('04/01/2021');
       assert(!component.checkValidity(component.data, true), 'Component should not be valid');
+      assert.equal(component.errors?.length, 1);
+      assert.equal(component.errors[0]?.message, 'Date should not contain date after 3/1/2021');
 
       component.setValue('03/01/2021');
       assert(component.checkValidity(component.data, true), 'Component should be valid');
@@ -416,7 +435,7 @@ describe('Day Component', () => {
         assert.equal(dayComponent.errors[0].message, 'Day - Table is required');
         done();
       },200);
-    });
+    }).catch(done);
   });
 
   it('Should save empty value after deleting the values', (done) => {
@@ -434,7 +453,7 @@ describe('Day Component', () => {
         assert.equal(component.getValue(), '');
         done();
       }, 100);
-    });
+    }).catch(done);
   });
 
   it('Should save empty value after deleting the values if the day field is hidden', (done) => {
@@ -450,7 +469,7 @@ describe('Day Component', () => {
         assert.equal(component.getValue(), '');
         done();
       }, 100);
-    });
+    }).catch(done);
     comp1.fields.day.hide = false;
   });
 
@@ -468,7 +487,22 @@ describe('Day Component', () => {
         assert.equal(component.getValue(), '');
         done();
       }, 100);
-    });
+    }).catch(done);
+    delete comp1.defaultValue;
+  });
+
+  it('Should return correct values from getValueAsString without using default value', (done) => {
+    comp1.defaultValue = '10/12/2024';
+    Harness.testCreate(DayComponent, comp1)
+      .then((component) => {
+        assert.equal(component.getValue(), '10/12/2024');
+        assert.equal(component.getValueAsString('11/12/2024'), '11/12/2024');
+        assert.equal(component.getValueAsString(''), '');
+        assert.equal(component.getValueAsString(null), '');
+        assert.equal(component.getValueAsString(), '');
+        done();
+      })
+      .catch(done);
     delete comp1.defaultValue;
   });
 });

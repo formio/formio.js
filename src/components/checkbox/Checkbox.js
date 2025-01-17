@@ -213,7 +213,7 @@ export default class CheckBoxComponent extends Field {
       return '';
     }
 
-    return this.t(hasValue ? 'Yes' : 'No');
+    return this.t(hasValue ? 'yes' : 'no');
   }
 
   updateValue(value, flags) {

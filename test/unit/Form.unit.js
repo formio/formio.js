@@ -192,7 +192,9 @@ describe('Form Component', () => {
         const preview = form.element.querySelector('[ref="openModal"]');
         assert(preview, 'Should contain element to open a modal window');
         done();
-      }).catch(done);
+      }).catch(function(err) {
+        done(err);
+      });
     });
   });
 
@@ -489,6 +491,31 @@ describe('SaveDraft functionality for Nested Form', () => {
           }, 500);
         }, 300);
       }, 200);
+    }).catch((err) => done(err));
+  });
+
+  it('Should not create a draft submission for nested form if Save as reference is set to false', function(done) {
+    _.set(comp7.components[1], 'reference', false);
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/idwqwhclwioyqbw/testdraftparent',
+      {
+        saveDraft: true
+      }
+    ).then((form)=>{
+      setTimeout(() => {
+        const tfNestedInput = form.getComponent('form.nested').refs.input[0];
+        tfNestedInput.value = 'test Nested Input';
+        const inputEvent = new Event('input');
+        tfNestedInput.dispatchEvent(inputEvent);
+        setTimeout(() => {
+          assert.equal(saveDraftCalls, 1);
+          assert.equal(state, 'draft');
+          _.unset(comp7.components[1], 'reference');
+          done();
+        }, 1100);
+      }, 300);
     }).catch((err) => done(err));
   });
 

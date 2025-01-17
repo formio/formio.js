@@ -128,6 +128,14 @@ export default class RadioComponent extends ListComponent {
     return _.get(listData, this.path);
   }
 
+  get selectMetadata() {
+    return super.selectData;
+  }
+
+  get selectData() {
+    return this.selectMetadata || this.component.selectData;
+  }
+
   init() {
     super.init();
     this.templateData = {};
@@ -282,13 +290,16 @@ export default class RadioComponent extends ListComponent {
       value = _.toString(value);
     }
 
-    const isModalPreviewWithUrlDataSource = options.modalPreview && this.component.dataSrc === 'url';
-    if (this.component.dataSrc !== 'values' && !isModalPreviewWithUrlDataSource) {
+    const shouldUseSelectData = (options.modalPreview || this.inDataTable)
+      && this.component.dataSrc === 'url' && (this.loadedOptions.length || this.selectData);
+    if (this.component.dataSrc !== 'values' && !shouldUseSelectData) {
       return value;
     }
 
-    const values = isModalPreviewWithUrlDataSource ? this.loadedOptions : this.component.values;
-    const option = _.find(values, (v) => v.value === value);
+    const values = shouldUseSelectData ? this.loadedOptions : this.component.values;
+    const option = !values?.length && shouldUseSelectData ? {
+      label: this.itemTemplate(this.selectData),
+    } : _.find(values, (v) => v.value === value);
 
     if (!value) {
       return _.get(option, 'label', '');
@@ -354,12 +365,13 @@ export default class RadioComponent extends ListComponent {
     .then((response) => {
       this.loading = false;
       this.setItems(response);
-      this.optionsLoaded = true;
-      this.redraw();
     })
     .catch((err) => {
-      this.optionsLoaded = true;
       this.handleLoadingError(err);
+    })
+    .finally(() => {
+      this.optionsLoaded = true;
+      this.redraw();
     });
   }
 
@@ -386,10 +398,9 @@ export default class RadioComponent extends ListComponent {
       };
       listData.push(this.templateData[this.component.valueProperty ? valueAtProperty : i]);
 
-      if ((this.component.valueProperty || !this.isRadio) && (
-        _.isUndefined(valueAtProperty) ||
-        (!this.isRadio && _.isObject(valueAtProperty)) ||
-        (!this.isRadio && _.isBoolean(valueAtProperty))
+      const value = this.loadedOptions[i].value;
+      if (!this.isRadio && (
+        _.isObject(value) || _.isBoolean(value) || _.isUndefined(value)
       )) {
         this.loadedOptions[i].invalid = true;
       }

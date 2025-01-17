@@ -15,14 +15,33 @@ import {
   comp7,
   comp8,
   comp9,
-  comp10
+  comp10,
+  comp11,
+  scientificNotation
 } from './fixtures/number';
-import CurrencyComponent from "../../src/components/currency/Currency";
 
 describe('Number Component', () => {
   it('Should build an number component', () => {
     return Harness.testCreate(NumberComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
+    });
+  });
+
+  it('Should correctly handle scientific notation', () => {
+    return Harness.testCreate(NumberComponent, scientificNotation).then((component) => {
+      const testCases = [
+        ['6.54e+12', 6.54e+12, '6.54e+12'],
+        ['1.23e-5', 1.23e-5, '1.23e-5'],
+        ['3.14e+2', 3.14e+2, '3.14e+2'],
+        ['2e-3', 2e-3, '2e-3'],
+        ['7.5e+5', 7.5e+5, '7.5e+5'],
+        ['1.23e+10', 1.23e+10, '1.23e+10'],
+      ];
+      testCases.forEach(([input, expectedValue, expectedDisplayValue]) => {
+        component.setValue(input);
+        assert.equal(component.dataValue, expectedValue, `setValue: ${input} should result in ${expectedValue}`);
+        assert.equal(component.getValueAsString(input), expectedDisplayValue, `getValueAsString: ${input} should result in ${expectedDisplayValue}`);
+      });
     });
   });
 
@@ -469,6 +488,26 @@ describe('Number Component', () => {
       const numberComponent = form.getComponent("number");
       assert.equal(numberComponent._errors.length, 0);
     });
+  });
+
+  it('Should maintain the correct caret (cursor) position when rendering value with thousands separators after restoreCaretPosition is called', (done) => { 
+    Formio.createForm(document.createElement('div'), comp11, {}).then((form) => {
+      const numberComponent = form.getComponent('number');
+      form.root.focusedComponent = numberComponent;
+      const numberElement = numberComponent.refs.input[0];
+      const inputEvent = new Event('input'); 
+ 
+      numberElement.value = 1234567;
+      numberElement.dispatchEvent(inputEvent);
+      // see https://formio.atlassian.net/browse/FIO-9144
+      // before the fix, the caret was moving back by one after being restored
+      numberComponent.restoreCaretPosition();
+      assert.equal(numberElement.value, '1,234,567');
+      // selectionStart (a.k.a cursor position) is 9 with the delimiters
+      // it would be 7 without them and 8 with the previous bug
+      assert.equal(numberElement.selectionStart, 9);
+      done();
+    }).catch(done);
   });
 
   // it('Should add trailing zeros on blur, if decimal required', (done) => {
