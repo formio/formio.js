@@ -1779,7 +1779,13 @@ export default class Webform extends NestedDataComponent {
         });
 
         if (captchaComponent.length > 0) {
-            captchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
+            if (this.parent) {
+                this.parent.subFormReady.then(()=> {
+                    captchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
+                });
+            } else {
+                captchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
+            };
         }
     }
 
