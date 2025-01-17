@@ -264,7 +264,7 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get dataValue() {
-    const resultValue = _.get(this._data, this.component.path);
+    const resultValue = _.get(this._data, this.path);
     if (!_.isArray(resultValue) && this.component.multiple) {
       return [resultValue]
     }
@@ -383,7 +383,7 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get addAnother() {
-    return this.t(this.component.addAnother || 'Add Another');
+    return this.t(this.component.addAnother || 'addAnother');
   }
 
   renderElement(value) {

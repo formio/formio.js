@@ -404,7 +404,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   onReorder(element, _target, _source, sibling) {
     if (!element.dragInfo || (sibling && !sibling.dragInfo)) {
-      console.warn('There is no Drag Info available for either dragged or sibling element');
+      console.warn(this.t('noDragInfoError'));
       return;
     }
 
@@ -489,7 +489,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       row
     });
     this.checkConditions();
-    this.triggerChange();
+    this.triggerChange({ modified: true });
     this.redraw().then(() => {
       this.focusOnNewRowElement(this.rows[index]);
     });
@@ -577,6 +577,9 @@ export default class DataGridComponent extends NestedArrayComponent {
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
       options.rowIndex = rowIndex;
+      options.onChange = (flags, changed, modified) => {
+        this.triggerChange({ modified });
+      }
 
       let columnComponent;
 

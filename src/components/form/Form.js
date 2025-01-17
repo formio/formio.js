@@ -233,7 +233,7 @@ export default class FormComponent extends Component {
 
   render() {
     if (this.builderMode) {
-      return super.render(this.component.label || 'Nested form');
+      return super.render(this.t(this.component.label || 'nestedForm'));
     }
     const subform = this.subForm ? this.subForm.render() : this.renderTemplate('loading');
     return super.render(subform);
@@ -249,13 +249,13 @@ export default class FormComponent extends Component {
 
   getValueAsString(value, options) {
     if (!value) {
-      return 'No data provided';
+      return this.t('noDataProvided');
     }
     if (!value.data && value._id) {
       return value._id;
     }
     if (!value.data || !Object.keys(value.data).length) {
-      return 'No data provided';
+      return this.t('noDataProvided');
     }
     if (options?.email) {
       let result = (`
@@ -371,6 +371,10 @@ export default class FormComponent extends Component {
     return _.isNumber(this.subFormRevision)
     && _.isNumber(this.formObj._vid)
     && this.formObj._vid !== this.subFormRevision;
+  }
+
+  get subFormData() {
+    return this.dataValue?.data || {};
   }
 
   destroy(all = false) {
@@ -537,14 +541,14 @@ export default class FormComponent extends Component {
     }
 
     if (this.subForm) {
-      return this.subForm.checkConditions(data, flags, row);
+      return this.subForm.checkConditions(this.subFormData, flags);
     }
     // There are few cases when subForm is not loaded when a change is triggered,
     // so we need to perform checkConditions after it is ready, or some conditional fields might be hidden in View mode
     else if (this.subFormReady) {
       this.subFormReady.then(() => {
         if (this.subForm) {
-          return this.subForm.checkConditions(data, flags, row);
+          return this.subForm.checkConditions(this.subFormData, flags);
         }
       });
     }
@@ -554,7 +558,7 @@ export default class FormComponent extends Component {
 
   calculateValue(data, flags, row) {
     if (this.subForm) {
-      return this.subForm.calculateValue(data, flags, row);
+      return this.subForm.calculateValue(this.subFormData, flags);
     }
 
     return super.calculateValue(data, flags, row);
@@ -708,7 +712,7 @@ export default class FormComponent extends Component {
       : {};
       this.subForm.setUrl(submissionUrl, { ...this.options, ...options });
       this.subForm.loadSubmission().catch((err) => {
-        console.error(`Unable to load subform submission ${submission._id}:`, err);
+        console.error(this.t('subformSubmissionLoadingError', { submissionId: submission._id }), err);
       });
     }
     else {

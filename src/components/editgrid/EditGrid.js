@@ -129,10 +129,10 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   get defaultDialogTemplate() {
     return `
-    <h3 ${this._referenceAttributeName}="dialogHeader">${this.t('Do you want to clear data?')}</h3>
+    <h3 ${this._referenceAttributeName}="dialogHeader">${this.t('wantToClearData')}</h3>
     <div style="display:flex; justify-content: flex-end;">
-      <button ${this._referenceAttributeName}="dialogCancelButton" class="btn btn-secondary" aria-label="${this.t('Cancel')}">${this.t('Cancel')}</button>
-      <button ${this._referenceAttributeName}="dialogYesButton" class="btn btn-danger" aria-label="${this.t('Yes, delete it')}">${this.t('Yes, delete it')}</button>
+      <button ${this._referenceAttributeName}="dialogCancelButton" class="btn btn-secondary" aria-label="${this.t('cancel')}">${this.t('cancel')}</button>
+      <button ${this._referenceAttributeName}="dialogYesButton" class="btn btn-danger" aria-label="${this.t('yesDelete')}">${this.t('yesDelete')}</button>
     </div>
   `;
   }
@@ -1222,7 +1222,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       if (valid === null) {
         editRow.errors.push({
           type: 'error',
-          message: `Invalid row validation for ${this.key}`
+          message: this.t('componentInvalidRowValidation', { componentKey: this.key })
         });
       }
     }

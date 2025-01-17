@@ -439,11 +439,11 @@ export default class Form extends Element {
    */
   build() {
     if (!this.instance) {
-      return Promise.reject('Form not ready. Use form.ready promise');
+      return Promise.reject(this.t('formNotReady'));
     }
 
     if (!this.element) {
-      return Promise.reject('No DOM element for form.');
+      return Promise.reject(this.t('noFormElement'));
     }
 
     // Add temporary loader.
@@ -463,7 +463,7 @@ export default class Form extends Element {
 
   render() {
     if (!this.instance) {
-      return Promise.reject('Form not ready. Use form.ready promise');
+      return Promise.reject(this.t('formNotReady'));
     }
     return Promise.resolve(this.instance.render())
       .then((param) => {
@@ -474,7 +474,7 @@ export default class Form extends Element {
 
   attach(element) {
     if (!this.instance) {
-      return Promise.reject('Form not ready. Use form.ready promise');
+      return Promise.reject(this.t('formNotReady'));
     }
     if (this.element) {
       delete this.element.component;

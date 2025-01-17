@@ -696,7 +696,7 @@ export default class SelectComponent extends ListComponent {
       component: this.component,
       message: err.toString(),
     });
-    console.warn(`Unable to load resources for ${this.key}`);
+    console.warn(this.t('loadResourcesError', { componentKey: this.key}));
   }
   /**
    * Get the request headers for this select dropdown.
@@ -853,7 +853,7 @@ export default class SelectComponent extends ListComponent {
       }
     }
     else if (this.component.dataSrc === 'url' || this.component.dataSrc === 'resource') {
-      this.addOption('', this.t('loading...'));
+      this.addOption('', `${this.t('loading')}...`);
     }
   }
 
@@ -912,9 +912,9 @@ export default class SelectComponent extends ListComponent {
       allowHTML: true,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
-      noResultsText: this.t('No results found'),
-      noChoicesText: this.t('No choices to choose from'),
-      searchPlaceholderValue: this.t('Type to search'),
+      noResultsText: this.t('noResultsFound'),
+      noChoicesText: this.t('noChoices'),
+      searchPlaceholderValue: this.t('typeToSearch'),
       shouldSort: false,
       position: (this.component.dropdown || 'auto'),
       searchEnabled: useSearch,
@@ -1413,7 +1413,7 @@ export default class SelectComponent extends ListComponent {
       return normalize[dataType]().value;
     }
     catch (err) {
-      console.warn('Failed to normalize value', err);
+      console.warn(this.t('failedToNormalize'), err);
       return value;
     }
   }
@@ -1632,7 +1632,7 @@ export default class SelectComponent extends ListComponent {
             return (JSON.stringify(normalizedOptionValue) === JSON.stringify(value));
           }
           catch (err) {
-            console.warn.error('Error while comparing items', err);
+            console.warn.error(this.t('failedToCompareItems'), err);
             return false;
           }
         };
