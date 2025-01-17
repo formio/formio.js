@@ -772,6 +772,49 @@ describe('DateTime Component', () => {
     })
   });
 
+  it('Should set Value after erasing entire data and setting new one', (done) => {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement('div');
+    form.components[0].enableTime = false;
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      const calendar = dateTime.element.querySelector('.flatpickr-input').widget.calendar;
+      const input = dateTime.element.querySelector('.input');
+      calendar.altInput.click();
+
+      setTimeout(()=> {
+        calendar.altInput.value = '2025-01-01';
+        calendar._input.value = '2025-01-01';
+        const inputEvent = new Event('input');
+        calendar.altInput.dispatchEvent(inputEvent);
+        setTimeout(() => {
+          calendar.setDate(calendar._input.value, false, calendar.config.altFormat);
+          calendar.close();
+          assert.equal(input.value, '2025-01-01');
+          input.value = '';
+          input.dispatchEvent(inputEvent);
+          setTimeout(()=> {
+            assert.equal(input.value, '');
+            calendar.altInput.click();
+            setTimeout(() => {
+              calendar.altInput.value = '2025-02-02';
+              calendar._input.value = '2025-02-02';
+              calendar.altInput.dispatchEvent(inputEvent);
+              setTimeout(() => {
+                calendar.setDate(calendar._input.value, false, calendar.config.altFormat);
+                calendar.close();
+                assert.equal(input.value, '2025-02-02');
+                document.innerHTML = '';
+                done();
+              }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
   it('Should preserve the calendar widget settings after field logic is evaluated', async () => {
     // see https://formio.atlassian.net/browse/FIO-9385
     // emulate viewing a submission in the portal with { readOnly: true }
