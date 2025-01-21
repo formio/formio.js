@@ -1768,7 +1768,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     triggerCaptcha() {
-        if (!this || !this.components) {
+        if (!this || !this.components || this.options.preview) {
             return;
         }
         const captchaComponent = [];
@@ -1779,7 +1779,13 @@ export default class Webform extends NestedDataComponent {
         });
 
         if (captchaComponent.length > 0) {
-            captchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
+            if (this.parent) {
+                this.parent.subFormReady.then(()=> {
+                    captchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
+                });
+            } else {
+                captchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
+            };
         }
     }
 
