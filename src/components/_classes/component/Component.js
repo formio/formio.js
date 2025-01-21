@@ -2206,7 +2206,9 @@ export default class Component extends Element {
     const isConditionallyHidden = this.checkConditionallyHidden(data, row) || this._parentConditionallyHidden;
     if (isConditionallyHidden !== this._conditionallyHidden) {
       this._conditionallyHidden = isConditionallyHidden;
-      this.clearOnHide();
+      if (!this.root.pristine) {
+        this.clearOnHide();
+      }
     }
 
     // Check visibility
