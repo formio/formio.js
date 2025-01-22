@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.1.0-rc.7
+### Changed
+ - FIO-9480: ensure parent references are stable before subform creation
+ - FIO-9527: Fixed address component with multiple values
+ - FIO-9517: nested forms with lazy load validation fix
+
 ## 5.1.0-rc.6
 ### Changed
  - Updated @formio/core@2.4.0-rc.5
