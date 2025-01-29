@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.1.0-rc.8]
+## 5.1.0-rc.8
+### Changed
+ - FIO-9499 Component: Check if ref is instance of NodeList on detach
+
  - FIO-9482 fixed setting Formio version
 
 ## 5.1.0-rc.7
