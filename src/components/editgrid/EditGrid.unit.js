@@ -1451,6 +1451,32 @@ describe('EditGrid Open when Empty', () => {
       .catch(done);
   });
 
+  it('Should correctly set data in EditGrid when noDefaults is set', async() => {
+    const element = document.createElement('div');
+    const form = await Formio.createForm(element, compOpenWhenEmpty, { noDefaults: true });
+    const editGrid = form.getComponent('editGrid');
+
+    // Function to add a row and set value to the textField
+    const addRowAndSetValue = async(rowIndex, value) => {
+      await editGrid.addRow();
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      const textField = editGrid.getComponent([rowIndex, 'textField']);
+      textField.setValue(value);
+    };
+
+    await addRowAndSetValue(0, '1');
+    editGrid.saveRow(0);
+    await addRowAndSetValue(1, '2');
+    editGrid.saveRow(1);
+
+    assert.equal(form._data.editGrid.length, 2);
+    assert.deepEqual(form._data, { editGrid: [{ textField: '1' }, { textField: '2' }] });
+    const event = await form.submitForm();
+    const submissionData = event.submission.data;
+
+    assert.deepEqual(submissionData, { editGrid: [{ textField: '1' }, { textField: '2' }] });
+  });
+
   it('Should always add a first row', (done) => {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, compOpenWhenEmpty)
