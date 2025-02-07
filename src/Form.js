@@ -5,10 +5,10 @@ import templates from './templates';
 import * as FormioUtils from './utils/utils';
 
 export default class Form extends Element {
-  /**
-   * Represents a JSON value.
-   * @typedef {(string | number | boolean | null | JSONArray | JSONObject)} JSON
-   */
+/**
+ * Represents a JSON value.
+ * @typedef {(string | number | boolean | null | JSONArray | JSONObject)} JSON
+ */
 
 /**
  * Represents a JSON array.
@@ -51,6 +51,10 @@ export default class Form extends Element {
  * @property {boolean} [showCancel] - Show the cancel button in wizard forms.
  * @property {boolean} [showSubmit] - Show the submit button in wizard forms.
  */
+ 
+/**
+ * @typedef {{ [componentType: string]: { [refName: string]: string[] }}} CustomStyles
+ */
 
 /**
  * @typedef {object} FormOptions
@@ -70,6 +74,7 @@ export default class Form extends Element {
  * @property {boolean} [highlightErrors] - Highlight any errors on the form.
  * @property {string} [componentErrorClass] - The error class for components.
  * @property {any} [templates] - The templates for this form.
+ * @property {CustomStyles} [styles] - The custom styles for this form.
  * @property {string} [iconset] - The iconset for this form.
  * @property {import('@formio/core').Component[]} [components] - The components for this form.
  * @property {{[key: string]: boolean}} [disabled] - Disabled components for this form.
@@ -95,22 +100,21 @@ export default class Form extends Element {
  * @property {number} [zoom] - The zoom for PDF forms.
  */
 
-  /**
-   * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
-   * @param {object} elementOrForm - The DOM element you wish to render this form within, or the form definition.
-   * @param {object | string | FormOptions} formOrOptions - A Form JSON schema, the URL of a hosted form, or the form options.
-   * @param {FormOptions} [options] - The options to create a new form instance.
-   * @example
-   * import Form from '@formio/js/Form';
-   * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
-   * form.build();
-   */
+/**
+ * @type {FormOptions} - the options for this Form.
+ */
+options;
 
-  /**
-   * @type {FormOptions} - the options for this Form.
-   */
-  options;
-
+/**
+ * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
+ * @param {object} elementOrForm - The DOM element you wish to render this form within, or the form definition.
+ * @param {object | string | FormOptions} formOrOptions - A Form JSON schema, the URL of a hosted form, or the form options.
+ * @param {FormOptions} [options] - The options to create a new form instance.
+ * @example
+ * import Form from '@formio/js/Form';
+ * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
+ * form.build();
+ */
   constructor(elementOrForm, formOrOptions, options = {}) {
     let element, form, formOptions;
     if (elementOrForm instanceof HTMLElement) {
@@ -515,5 +519,9 @@ Formio.createForm = (elementOrForm, formOrOptions, options) => {
 
 Formio.Form = Form;
 
-
-export {  };
+/**
+ * @exports
+ * @typedef {FormOptions} FormOptions
+ */
+ 
+export { };
