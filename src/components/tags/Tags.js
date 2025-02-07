@@ -146,7 +146,7 @@ export default class TagsComponent extends Input {
     const changed = super.setValue(value, flags);
     if (this.choices) {
       let dataValue = this.dataValue;
-      this.choices.removeActiveItems();
+      this.choices.clearStore();
       if (dataValue) {
         if (typeof dataValue === 'string') {
           dataValue = dataValue.split(this.delimiter).filter(result => result);
