@@ -96,7 +96,7 @@ function s3(formio) {
       const { changeMessage } = multipart;
       changeMessage('Completing AWS S3 multipart upload...');
       const token = formio.getToken();
-      const response = await fetch(`${formio.formUrl}/storage/s3/multipart/complete`, {
+      const response = await XHR.fetch(`${formio.formUrl}/storage/s3/multipart/complete`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ function s3(formio) {
     abortMultipartUpload(serverResponse) {
       const { uploadId, key } = serverResponse;
       const token = formio.getToken();
-      fetch(`${formio.formUrl}/storage/s3/multipart/abort`, {
+      XHR.fetch(`${formio.formUrl}/storage/s3/multipart/abort`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ function s3(formio) {
         const start = i * partSize;
         const end = (i + 1) * partSize;
         const blob = i < urls.length ? file.slice(start, end) : file.slice(start);
-        const promise = fetch(urls[i], {
+        const promise = XHR.fetch(urls[i], {
           method: 'PUT',
           headers,
           body: blob,
