@@ -67,7 +67,7 @@ export default [
     input: true,
     weight: 20,
     key: 'reference',
-    label: 'Save as reference',
-    tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.'
+    label: 'Submit as reference',
+    tooltip: 'When "Submit as reference" is enabled, the form submission will be recorded against the Parent Form as well as the Child Form. When a submission recorded with "Submit as reference" is edited, the update is applied to each submission made against the Parent Form and Child Form.'
   }
 ];
