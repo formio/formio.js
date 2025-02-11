@@ -488,6 +488,9 @@ export default class Component extends Element {
     this.hook('component');
 
     if (!this.options.skipInit) {
+      if (typeof this.beforeInit === 'function') {
+        this.beforeInit();
+      }
       this.init();
     }
   }
@@ -559,7 +562,7 @@ export default class Component extends Element {
   get rowIndex() {
     return this._rowIndex;
   }
-  
+
   /**
    * Set Row Index to row and update each component.
    * @param {number} value - The row index.
