@@ -4,7 +4,8 @@ import DateTimeComponent from './DateTime';
 import { Formio } from './../../Formio';
 import _ from 'lodash';
 import 'flatpickr';
-import moment from 'moment';
+import moment from 'moment-timezone';
+import Form from '../../src/Form.js'
 import {
   comp1,
   comp2,
@@ -13,7 +14,7 @@ import {
   comp6,
   comp7,
   comp8,
- // comp9,
+  // comp9,
   comp10,
   comp11,
   comp12,
@@ -47,6 +48,19 @@ describe('DateTime Component', () => {
         assert.equal(dateTime.getValueAsString('2020-09-18T12:12:00'), '2020-09-18 12:12 PM');
         dateTime.destroy();
       });
+  });
+
+  it('Should show date and time in submission time zone', async () => {
+    const form = await new Form(_.cloneDeep(comp3), {
+      server: true,
+      noeval: true,
+      noDefaults: true,
+      submissionTimezone: "Europe/Berlin"
+    }).ready;
+
+    const dateTime = form.getComponent('dateTime');
+    const response = dateTime.getValueAsString('2025-02-11T10:00:00.000Z', { email: true })
+    assert.equal(response, "2025-02-11 11:00 AM CET");
   });
 
   it('Should not change manually entered value on blur when time is disabled', (done) => {
