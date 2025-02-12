@@ -2208,11 +2208,11 @@ export default class Component extends Element {
 
     // Check advanced conditions (and cache the result)
     const isConditionallyHidden = this.checkConditionallyHidden(data, row) || this._parentConditionallyHidden;
+    let shouldClear = false;
+
     if (isConditionallyHidden !== this._conditionallyHidden) {
       this._conditionallyHidden = isConditionallyHidden;
-      if (isConditionallyHidden) {
-        this.clearOnHide();
-      }
+      shouldClear = true;
     }
 
     // Check visibility
@@ -2220,6 +2220,12 @@ export default class Component extends Element {
 
     if (this.visible !== visible) {
       this.visible = visible;
+    }
+
+    // Wait for visibility to update for nested components, so the component state is up-to-date when
+    // calling clearOnHide
+    if (shouldClear) {
+      this.clearOnHide();
     }
 
     return visible;
