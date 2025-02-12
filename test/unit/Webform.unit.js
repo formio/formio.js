@@ -88,6 +88,7 @@ import formWithUniqueValidation from '../forms/formWithUniqueValidation.js';
 import formWithConditionalEmail from '../forms/formWithConditionalEmail.js';
 import formsWithSimpleConditionals from '../forms/formsWithSimpleConditionals.js';
 import translationErrorMessages from '../forms/translationErrorMessages.js';
+import simpleController from '../forms/formWithSimpleController.js';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
 if (_.has(Formio, 'Components.setComponents')) {
@@ -2845,18 +2846,18 @@ describe('Webform tests', function() {
           const field = form.components[0];
           const field2 = form.components[1];
           const fieldInput = field.refs.input[0];
-  
+
           Harness.setInputValue(field, 'data[textField]', '12');
-  
+
           setTimeout(() => {
             assert.equal(field.errors.length, 0, 'Should be valid while changing');
             const blurEvent = new Event('blur');
             fieldInput.dispatchEvent(blurEvent);
-  
+
             setTimeout(() => {
               assert.equal(field.errors.length, 1, 'Should set error after component was blurred');
               Harness.setInputValue(field2, 'data[textField1]', 'ab');
-  
+
               setTimeout(() => {
                 assert.equal(field.errors.length, 1, 'Should keep error when editing another component');
                 done();
@@ -5386,6 +5387,20 @@ describe('Webform tests', function() {
       assert.strictEqual(errors[0].component.label, 'Checkbox 1', 'The error should be for the checkbox component');
       assert.strictEqual(errors[0].errorKeyOrMessage, 'required', 'Should show required validation error');
       done();
+    }).catch(done);
+  });
+
+  it('Should execute form controller only once', (done) => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm(simpleController).then(() => {
+      const textField = form.getComponent('textField');
+      assert.equal(textField.value, 'changed', 'Should contain the change made in form controller');
+      form.setForm(simpleController).then(() => {
+        const textField = form.getComponent('textField');
+        assert.equal(textField.value, 'changed', 'Should contain the change made in form controller');
+        done();
+      });
     }).catch(done);
   });
 
