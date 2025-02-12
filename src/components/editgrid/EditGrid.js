@@ -385,7 +385,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
     };
 
-    if (!this.root.pristine && _.isEmpty(rows)) {
+    if (_.isEmpty(rows)) {
       const rowComponents = this.createRowComponents({}, 0);
       let checkComponent;
 
