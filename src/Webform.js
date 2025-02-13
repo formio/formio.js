@@ -1778,11 +1778,11 @@ export default class Webform extends NestedDataComponent {
             return;
         }
         const captchaComponent = [];
-        this.eachComponent((component) => {
+        eachComponent(this.components,(component) => {
             if (/^(re)?captcha$/.test(component.type) && component.component.eventType === 'formLoad') {
                 captchaComponent.push(component);
             }
-        });
+        }, true);
 
         if (captchaComponent.length > 0) {
             if (this.parent) {
