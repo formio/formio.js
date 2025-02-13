@@ -140,8 +140,8 @@ export default class DateTimeComponent extends Input {
       ...customOptions,
     };
     // update originalComponent to include widget and other updated settings
-    // it is done here since these settings depend on properties present after the component is initialized 
-    // originalComponent is used to restore the component (and widget) after evaluating field logic 
+    // it is done here since these settings depend on properties present after the component is initialized
+    // originalComponent is used to restore the component (and widget) after evaluating field logic
     this.originalComponent = fastCloneDeep(this.component);
     /* eslint-enable camelcase */
   }
@@ -199,15 +199,15 @@ export default class DateTimeComponent extends Input {
     return super.checkValidity(data, dirty, rowData);
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, options) {
     let format = FormioUtils.convertFormatToMoment(this.component.format);
     format += format.match(/z$/) ? '' : ' z';
     const timezone = this.timezone;
     if (value && !this.attached && timezone) {
       if (Array.isArray(value) && this.component.multiple) {
-        return value.map(item => _.trim(FormioUtils.momentDate(item, format, timezone).format(format))).join(', ');
+        return value.map(item => _.trim(FormioUtils.momentDate(item, format, timezone, options).format(format))).join(', ');
       }
-      return _.trim(FormioUtils.momentDate(value, format, timezone).format(format));
+      return _.trim(FormioUtils.momentDate(value, format, timezone, options).format(format));
     }
 
     if (Array.isArray(value) && this.component.multiple) {
