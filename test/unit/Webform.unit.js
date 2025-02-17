@@ -5392,13 +5392,12 @@ describe('Webform tests', function() {
 
   it('Should execute form controller only once', (done) => {
     const formElement = document.createElement('div');
-    const form = new Webform(formElement);
-    form.setForm(simpleController).then(() => {
+    Formio.createForm(formElement, simpleController).then((form) => {
       const textField = form.getComponent('textField');
-      assert.equal(textField.value, 'changed', 'Should contain the change made in form controller');
+      assert.equal(textField.dataValue, 'changed', 'Should contain the change made in form controller');
       form.setForm(simpleController).then(() => {
         const textField = form.getComponent('textField');
-        assert.equal(textField.value, 'changed', 'Should contain the change made in form controller');
+        assert.equal(textField.dataValue, 'changed', 'Should contain the change made in form controller');
         done();
       });
     }).catch(done);
