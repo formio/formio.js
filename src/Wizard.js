@@ -766,6 +766,7 @@ export default class Wizard extends Webform {
     const pages = this.getPages({all: true});
 
     return Promise.all(pages.map((page) => {
+      this.triggerButtonCaptcha(page);
       page.options.beforeSubmit = true;
       return page.beforeSubmit();
     }));
@@ -1088,6 +1089,26 @@ export default class Wizard extends Webform {
       }
     }
     return super.focusOnComponent(key);
+  }
+
+  triggerButtonCaptcha(page) {
+    if (!page.components) {
+      return;
+    }
+
+    let captchaComponent;
+
+    page.eachComponent((component)=> {
+      if (/^(re)?captcha$/.test(component.component.type) &&
+        component.component.eventType === 'buttonClick' &&
+        component.component.buttonKey === 'submit') {
+          captchaComponent = component;
+        }
+    });
+
+    if (captchaComponent) {
+      captchaComponent.verify(`submitClick`);
+    }
   }
 }
 
