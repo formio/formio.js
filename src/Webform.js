@@ -330,12 +330,28 @@ export default class Webform extends NestedDataComponent {
     }
     /* eslint-enable max-statements */
 
+    beforeInit() {
+      this.executeFormController = _.once(this._executeFormController);
+    }
+
     get language() {
         return this.options.language;
     }
 
     get emptyValue() {
         return null;
+    }
+
+    get shouldCallFormController() {
+        // If no controller value or
+        // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
+        return (
+            this.form &&
+            this.form.controller &&
+            !((!this.visible || this.component.hidden) &&
+              this.component.clearOnHide &&
+              !this.rootPristine)
+        );
     }
 
     componentContext() {
@@ -1022,24 +1038,14 @@ export default class Webform extends NestedDataComponent {
         this.on('deleteSubmission', () => this.deleteSubmission(), true);
         this.on('refreshData', () => this.updateValue(), true);
 
-        this.executeFormController();
+        if (this.shouldCallFormController) {
+              this.executeFormController();
+        }
 
         return this.formReady;
     }
 
-    executeFormController() {
-        // If no controller value or
-        // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-        if (
-            !this.form ||
-            !this.form.controller ||
-            ((!this.visible || this.component.hidden) &&
-                this.component.clearOnHide &&
-                !this.rootPristine)
-        ) {
-            return false;
-        }
-
+    _executeFormController() {
         this.formReady.then(() => {
             this.evaluate(this.form.controller, {
                 components: this.components,
@@ -1768,18 +1774,24 @@ export default class Webform extends NestedDataComponent {
     }
 
     triggerCaptcha() {
-        if (!this || !this.components) {
+        if (!this || !this.components || this.options.preview) {
             return;
         }
         const captchaComponent = [];
-        this.eachComponent((component) => {
+        eachComponent(this.components,(component) => {
             if (/^(re)?captcha$/.test(component.type) && component.component.eventType === 'formLoad') {
                 captchaComponent.push(component);
             }
-        });
+        }, true);
 
         if (captchaComponent.length > 0) {
-            captchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
+            if (this.parent) {
+                this.parent.subFormReady.then(()=> {
+                    captchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
+                });
+            } else {
+                captchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
+            };
         }
     }
 
