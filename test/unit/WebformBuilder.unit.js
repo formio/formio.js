@@ -386,7 +386,7 @@ describe('WebformBuilder tests', function() {
     builder.webform.setForm(formWithNumericKeys).then(() => {
       builder.highlightInvalidComponents();
       const component = builder.webform.components[1];
-      assert.equal(component.errors.length, 1);
+      assert.equal(component.refs.messageContainer.textContent.trim(), 'apiKeyNotValid');
       done();
     }).catch(done);
   });
