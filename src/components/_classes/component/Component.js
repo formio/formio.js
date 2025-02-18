@@ -1018,8 +1018,22 @@ export default class Component extends Element {
   }
 
   renderTemplate(name, data = {}, modeOption = '') {
-    // Need to make this fall back to form if renderMode is not found similar to how we search templates.
+    // Allow more specific template names
+    const names = [
+      `${name}-${this.component.type}-${this.key}`,
+      `${name}-${this.component.type}`,
+      `${name}-${this.key}`,
+      `${name}`,
+    ];
+
+    // Allow template alters.
     const mode = modeOption || this.options.renderMode || 'form';
+    const { referenceAttributeName, template } = this.getTemplate(names, mode);
+    if (referenceAttributeName) {
+      this._referenceAttributeName = referenceAttributeName;
+    }
+    
+    // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     data.component = this.component;
     data.self = this;
     data.options = this.options;
@@ -1039,20 +1053,8 @@ export default class Component extends Element {
     };
     data.label = data.labelInfo || this.labelInfo;
     data.tooltip = this.getFormattedTooltip(this.component.tooltip);
+    data.customStyles = this.getCustomStyles(names);
 
-    // Allow more specific template names
-    const names = [
-      `${name}-${this.component.type}-${this.key}`,
-      `${name}-${this.component.type}`,
-      `${name}-${this.key}`,
-      `${name}`,
-    ];
-
-    // Allow template alters.
-    const { referenceAttributeName, template } = this.getTemplate(names, mode);
-    if (referenceAttributeName) {
-      this._referenceAttributeName = referenceAttributeName;
-    }
     return this.hook(
       `render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`,
       this.interpolate(template, data),
@@ -1856,6 +1858,21 @@ export default class Component extends Element {
       }
     });
     return customCSS;
+  }
+  
+  /**
+   * Build custom styles from the styles form option or global config.
+   * @param {string[]} templateNames - The possible template names.
+   * @returns {{ [refName: string]: string[] }} - The custom styles object for the named template.
+   * @todo - Rename this to a better method name that doesn't clash
+   */
+  getCustomStyles(templateNames) {
+    for (const name of templateNames) {
+      if (this.options.styles?.[name]) {
+        return this.options.styles[name];
+      }
+    }
+    return {};
   }
 
   /**
@@ -3987,7 +4004,6 @@ export default class Component extends Element {
     const attributes = {
       name: this.options.name,
       type: this.component.inputType || 'text',
-      class: 'form-control',
       lang: this.options.language
     };
 

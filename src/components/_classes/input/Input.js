@@ -21,7 +21,6 @@ export default class Input extends Multivalue {
     const attr = {
       name: this.options.name,
       type: this.component.inputType || 'text',
-      class: 'form-control',
       lang: this.options.language
     };
 
