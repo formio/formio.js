@@ -159,5 +159,16 @@ export default [
     label: 'Allow Manual Override of Calculated Value',
     tooltip: 'When checked, this will allow the user to manually override the calculated value.'
   },
-];
-/* eslint-enable max-len */
+  {
+    type: 'textarea',
+    as: 'json',
+    editor: 'ace',
+    weight: 1400,
+    input: true,
+    key: 'serverOverride',
+    label: 'Server Override',
+    tooltip: 'A JSON object containing the component settings that should be overriden when the form submission is processed on the server side.',
+    defaultValue: {},
+    description: '<b>Example</b>: { "clearOnHide": true }',
+  }
+]
