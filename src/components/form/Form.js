@@ -425,10 +425,11 @@ export default class FormComponent extends Component {
   /**
    * Create a subform instance.
    * @param {boolean} [fromAttach] - This function is being called from an `attach` method.
+   * @param {boolean} [beforeSubmit] - This function is being called from a `beforeSubmit` method.
    * @returns {*} - The subform instance.
    */
-  createSubForm(fromAttach) {
-    this.subFormReady = this.loadSubForm(fromAttach).then((form) => {
+  createSubForm(fromAttach, beforeSubmit) {
+    this.subFormReady = this.loadSubForm(fromAttach, beforeSubmit).then((form) => {
       if (!form) {
         return;
       }
@@ -491,10 +492,12 @@ export default class FormComponent extends Component {
   /**
    * Load the subform.
    * @param {boolean} fromAttach - This function is being called from an `attach` method.
+   * @param {boolean} beforeSubmit - This function is being called from a `beforeSubmit` method.
    * @returns {Promise} - The promise that resolves when the subform is loaded.
    */
-  loadSubForm(fromAttach) {
-    if (this.builderMode || this.conditionallyHidden || (this.isSubFormLazyLoad() && !fromAttach)) {
+  loadSubForm(fromAttach, beforeSubmit) {
+    const loadHiddenForm = beforeSubmit && !this.component.clearOnHide;
+    if (this.builderMode || (this.conditionallyHidden && !loadHiddenForm) || (this.isSubFormLazyLoad() && !fromAttach)) {
       return Promise.resolve();
     }
 
@@ -576,7 +579,7 @@ export default class FormComponent extends Component {
    * @returns {*|boolean} - TRUE if the subform should be submitted, FALSE if it should not.
    */
   get shouldSubmit() {
-    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.conditionallyHidden;
+    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && (!this.conditionallyHidden || !this.component.clearOnHide);
   }
 
   /**
@@ -652,9 +655,10 @@ export default class FormComponent extends Component {
       this.dataValue = submission;
       return Promise.resolve(this.dataValue);
     }
-
-    if(this.isSubFormLazyLoad() && !this.subFormLoading){
-      return this.createSubForm(true)
+    // we need to load a hidden form (when clearOnHide is disabled) in order to get and submit (if needed) its data
+    const loadHiddenForm = !this.subForm && !this.component.clearOnHide;
+    if((this.isSubFormLazyLoad() || loadHiddenForm) && !this.subFormLoading){
+      return this.createSubForm(true, true)
       .then(this.submitSubForm(false))
         .then(() => {
           return this.dataValue;
