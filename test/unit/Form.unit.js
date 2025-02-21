@@ -19,6 +19,7 @@ import Webform from '../../src/Webform.js';
 import { Formio } from '../../src/formio.form.js';
 import formModalEdit from './fixtures/form/formModalEdit.js';
 import { formComponentWithConditionalRenderingForm } from '../formtest/index.js';
+import * as nestedFormWithDisabledClearOnHide from '../forms/nestedFormWithDisabledClearOnHide.js';
 
 describe('Form Component', () => {
   it('Should build a form component', () => {
@@ -535,3 +536,104 @@ describe('SaveDraft functionality for Nested Form', () => {
     }).catch((err) => done(err));
   });
 });
+
+describe('Disabled clearOnHide functionality for Nested Form', () => {
+  const originalMakeRequest = Formio.makeRequest;
+  let loadSubForm = false;
+  let submitSubForm = false;
+  let subFormSubmission = null;
+  let mainFormSubmission = null;
+  let saveAsRef = true;
+
+
+  before((done) => {
+    Formio.setUser({
+      _id: '123'
+    });
+
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get' && (url).includes('/clearonhidetest')) {
+        const mainForm = fastCloneDeep(nestedFormWithDisabledClearOnHide.mainForm);
+        mainForm.components[0].reference = saveAsRef;
+        return Promise.resolve(mainForm);
+      };
+      if (type === 'form' && method === 'get' && (url).includes('/67b5d190ac6f65931c9a320a')) {
+        loadSubForm = true;
+        return Promise.resolve(nestedFormWithDisabledClearOnHide.nestedForm);
+      };
+
+      if (type === 'submission' && method === 'post' && (url).includes('67b5d190ac6f65931c9a320a')) {
+        submitSubForm = true;
+        subFormSubmission = fastCloneDeep(data);
+        return Promise.resolve({
+            ...data,
+            _id: 'nestedSubmissionId',
+            data: fastCloneDeep(data.data)
+          });
+      };
+
+      if (type === 'submission' && method === 'post' && (url).includes('/clearonhidetest')) {
+        mainFormSubmission = fastCloneDeep(data);
+        return Promise.resolve({
+            ...data,
+            _id: 'mainSubmissionId',
+            data: fastCloneDeep(data.data)
+          });
+      };
+    };
+    done();
+  });
+
+  afterEach(() => {
+    loadSubForm = false;
+    submitSubForm = false;
+    subFormSubmission = null;
+    mainFormSubmission = null;
+    saveAsRef = true;
+  });
+
+  after((done) => {
+    Formio.makeRequest = originalMakeRequest;
+    Formio.setUser();
+    done();
+  });
+
+  it('Should submit hidden nested form with enabled saveAsReference and disabled clearOnHide', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/ryyclyrmbzvuqog/clearonhidetest',
+    ).then((instance) => {
+      instance.submit().then(() => {
+        assert.equal(loadSubForm, true);
+        assert.equal(submitSubForm, true);
+        assert.deepEqual(subFormSubmission.data, { textField: 'test', textArea: '' });
+        assert.equal(mainFormSubmission.data?.form?._id, 'nestedSubmissionId');
+        assert.deepEqual(mainFormSubmission.data?.form?.data, { textField: 'test', textArea: '' });
+        done();
+      });
+    }).catch((err) => done(err));
+  });
+
+  it('Should submit hidden nested form data with disabled saveAsReference and disabled clearOnHide', (done) => {
+    saveAsRef = false;
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/ryyclyrmbzvuqog/clearonhidetest',
+    ).then((instance) => {
+      instance.submit().then(() => {
+        assert.equal(loadSubForm, true);
+        assert.equal(submitSubForm, false);
+        assert.deepEqual(!!subFormSubmission, false);
+        assert.equal(!!mainFormSubmission.data?.form?._id, false);
+        assert.deepEqual(mainFormSubmission.data?.form?.data, { textField: 'test', textArea: '' });
+        console.log(555, loadSubForm,      submitSubForm,          subFormSubmission,          mainFormSubmission)
+        done();
+      });
+    }).catch((err) => done(err));
+  });
+});
+
+
+
