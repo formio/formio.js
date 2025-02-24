@@ -13,12 +13,13 @@ import {
   comp6,
   comp7,
   comp8,
- // comp9,
+  // comp9,
   comp10,
   comp11,
   comp12,
   comp13,
-  comp14
+  comp14,
+  requiredFieldLogicComp,
 } from './fixtures/datetime';
 
 describe('DateTime Component', () => {
@@ -46,6 +47,19 @@ describe('DateTime Component', () => {
         assert.equal(dateTime.getValueAsString('2020-09-18T12:12:00'), '2020-09-18 12:12 PM');
         dateTime.destroy();
       });
+  });
+
+  it('Should show date and time in submission time zone', async () => {
+    const form = await new Form(_.cloneDeep(comp3), {
+      server: true,
+      noeval: true,
+      noDefaults: true,
+      submissionTimezone: "Europe/Berlin"
+    }).ready;
+
+    const dateTime = form.getComponent('dateTime');
+    const response = dateTime.getValueAsString('2025-02-11T10:00:00.000Z', { email: true })
+    assert.equal(response, "2025-02-11 11:00 AM CET");
   });
 
   it('Should not change manually entered value on blur when time is disabled', (done) => {
@@ -769,6 +783,57 @@ describe('DateTime Component', () => {
         },200);
       },200);
     })
+  });
+
+  it('Should set Value after erasing entire data and setting new one', (done) => {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement('div');
+    form.components[0].enableTime = false;
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      const calendar = dateTime.element.querySelector('.flatpickr-input').widget.calendar;
+      const input = dateTime.element.querySelector('.input');
+      calendar.altInput.click();
+
+      setTimeout(()=> {
+        calendar.altInput.value = '2025-01-01';
+        calendar._input.value = '2025-01-01';
+        const inputEvent = new Event('input');
+        calendar.altInput.dispatchEvent(inputEvent);
+        setTimeout(() => {
+          calendar.setDate(calendar._input.value, false, calendar.config.altFormat);
+          calendar.close();
+          assert.equal(input.value, '2025-01-01');
+          input.value = '';
+          input.dispatchEvent(inputEvent);
+          setTimeout(()=> {
+            assert.equal(input.value, '');
+            calendar.altInput.click();
+            setTimeout(() => {
+              calendar.altInput.value = '2025-02-02';
+              calendar._input.value = '2025-02-02';
+              calendar.altInput.dispatchEvent(inputEvent);
+              setTimeout(() => {
+                calendar.setDate(calendar._input.value, false, calendar.config.altFormat);
+                calendar.close();
+                assert.equal(input.value, '2025-02-02');
+                document.innerHTML = '';
+                done();
+              }, 200);
+            }, 200);
+          }, 200);
+        }, 200);
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should preserve the calendar widget settings after field logic is evaluated', async () => {
+    // see https://formio.atlassian.net/browse/FIO-9385
+    // emulate viewing a submission in the portal with { readOnly: true }
+    const form = await Formio.createForm(document.createElement('div'), requiredFieldLogicComp, { readOnly: true });
+    const dateTimeComponent = form.getComponent('dateTime');
+    assert.equal(dateTimeComponent.widget.settings.readOnly, true);
   });
 
   // it('Should provide correct date in selected timezone after submission', (done) => {

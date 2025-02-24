@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
-import Components from '../Components';
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -405,7 +404,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   onReorder(element, _target, _source, sibling) {
     if (!element.dragInfo || (sibling && !sibling.dragInfo)) {
-      console.warn('There is no Drag Info available for either dragged or sibling element');
+      console.warn(this.t('noDragInfoError'));
       return;
     }
 
@@ -490,7 +489,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       row
     });
     this.checkConditions();
-    this.triggerChange();
+    this.triggerChange({ modified: true });
     this.redraw().then(() => {
       this.focusOnNewRowElement(this.rows[index]);
     });
@@ -504,7 +503,6 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
       component.rowIndex = rowIndex;
       component.row = `${rowIndex}-${colIndex}`;
-      component.path = Components.getComponentPath(component);
     });
   }
 
@@ -578,6 +576,10 @@ export default class DataGridComponent extends NestedArrayComponent {
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
+      options.rowIndex = rowIndex;
+      options.onChange = (flags, changed, modified) => {
+        this.triggerChange({ modified });
+      }
 
       let columnComponent;
 
@@ -724,53 +726,6 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   restoreComponentsContext() {
     this.rows.forEach((row, index) => _.forIn(row, (component) => component.data = this.dataValue[index]));
-  }
-
-  getComponent(path, fn) {
-    path = Array.isArray(path) ? path : [path];
-    const [key, ...remainingPath] = path;
-    let result = [];
-    if (_.isNumber(key) && remainingPath.length) {
-      const compKey = remainingPath.pop();
-      result = this.rows[key][compKey];
-      // If the component is inside a Layout Component, try to find it among all the row's components
-      if (!result) {
-        Object.entries(this.rows[key]).forEach(([, comp]) => {
-          if ('getComponent' in comp) {
-            const possibleResult = comp.getComponent([compKey], fn);
-            if (possibleResult) {
-              result = possibleResult;
-            }
-          }
-        });
-      }
-      if (result && _.isFunction(fn)) {
-        fn(result, this.getComponents());
-      }
-      if (remainingPath.length && 'getComponent' in result) {
-        return result.getComponent(remainingPath, fn);
-      }
-      return result;
-    }
-    if (!_.isString(key)) {
-      return result;
-    }
-
-    this.everyComponent((component, components) => {
-      if (component.component.key === key) {
-        let comp = component;
-        if (remainingPath.length > 0 && 'getComponent' in component) {
-          comp = component.getComponent(remainingPath, fn);
-        }
-        else if (fn) {
-          fn(component, components);
-        }
-
-        result = result.concat(comp);
-      }
-    });
-
-    return result.length > 0 ? result : null;
   }
 
   toggleGroup(element, index) {

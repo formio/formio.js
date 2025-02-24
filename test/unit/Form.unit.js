@@ -192,7 +192,9 @@ describe('Form Component', () => {
         const preview = form.element.querySelector('[ref="openModal"]');
         assert(preview, 'Should contain element to open a modal window');
         done();
-      }).catch(done);
+      }).catch(function(err) {
+        done(err);
+      });
     });
   });
 
@@ -492,7 +494,7 @@ describe('SaveDraft functionality for Nested Form', () => {
     }).catch((err) => done(err));
   });
 
-  it('Should not create a draft submission for nested form if Save as reference is set to false', function(done) {
+  it('Should not create a draft submission for nested form if Submit as reference is set to false', function(done) {
     _.set(comp7.components[1], 'reference', false);
     const formElement = document.createElement('div');
     Formio.createForm(

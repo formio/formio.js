@@ -7,6 +7,7 @@ const replace = require('gulp-replace');
 const rename = require('gulp-rename');
 const cleanCSS = require('gulp-clean-css');
 const clean = require('gulp-clean');
+const packageJson = require('./package.json');
 
 // Clean lib folder.
 gulp.task('clean:dist', () => {
@@ -21,6 +22,12 @@ gulp.task('clean', gulp.parallel('clean:dist', 'clean:lib'));
 gulp.task('builder-fonts', function builderFonts() {
   return gulp.src('./node_modules/bootstrap-icons/font/fonts/*').pipe(gulp.dest('dist/fonts'));
 });
+
+gulp.task('version', () => {
+  return gulp.src(['./lib/**/Formio.js', './lib/**/Embed.js'])
+    .pipe(replace('FORMIO_VERSION', packageJson.version))
+    .pipe(gulp.dest('lib'));
+})
 
 // Generate styles
 const compileStyles = (styles, file) => {

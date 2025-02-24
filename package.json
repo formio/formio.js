@@ -1,6 +1,6 @@
 {
   "name": "@formio/js",
-  "version": "5.0.0-rc.59",
+  "version": "5.1.0-dev.2",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "lib/cjs/index.js",
   "exports": {
@@ -41,7 +41,7 @@
     "build": "yarn doc && yarn lib && yarn dist",
     "doc": "typedoc",
     "dist": "gulp clean:dist && webpack --config webpack.config.js && webpack --config webpack.prod.js && gulp build",
-    "lib": "gulp clean:lib && tsc --project tsconfig.cjs.json && tsc --project tsconfig.mjs.json && yarn lib:package",
+    "lib": "gulp clean:lib && tsc --project tsconfig.cjs.json && tsc --project tsconfig.mjs.json && yarn lib:package  && gulp version",
     "lib:package": "node ./libpackage.js",
     "version": "node -e 'console.log(require(`./package.json`).version)'",
     "build-app": "yarn build-app:create-app && yarn build-app:jekyll && yarn build-app:remove-app",
@@ -80,10 +80,10 @@
   },
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
-    "@formio/bootstrap": "3.0.0-dev.98.17ba6ea",
+    "@formio/bootstrap": "v3.0.0-dev.121.085d187",
     "@formio/choices.js": "^10.2.1",
-    "@formio/core": "2.1.0-dev.201.2792d73",
-    "@formio/text-mask-addons": "^3.8.0-formio.3",
+    "@formio/core": "2.4.0-dev.201.69b9c54",
+    "@formio/text-mask-addons": "3.8.0-formio.4",
     "@formio/vanilla-text-mask": "^5.1.1-formio.1",
     "abortcontroller-polyfill": "^1.7.5",
     "autocompleter": "^8.0.4",

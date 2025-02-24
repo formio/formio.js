@@ -1955,7 +1955,8 @@ describe('Formio.js Tests', () => {
                     components: [
                       {
                         defaultPermission: 'read',
-                        key: 'groupField'
+                        key: 'groupField',
+                        type: 'hidden'
                       }
                     ]
                   },
@@ -2012,7 +2013,8 @@ describe('Formio.js Tests', () => {
                     components: [
                       {
                         defaultPermission: 'create',
-                        key: 'groupField'
+                        key: 'groupField',
+                        type: 'hidden'
                       }
                     ]
                   },
@@ -2069,7 +2071,8 @@ describe('Formio.js Tests', () => {
                     components: [
                       {
                         defaultPermission: 'write',
-                        key: 'groupField'
+                        key: 'groupField',
+                        type: 'hidden'
                       }
                     ]
                   },
@@ -2126,7 +2129,8 @@ describe('Formio.js Tests', () => {
                     components: [
                       {
                         defaultPermission: 'admin',
-                        key: 'groupField'
+                        key: 'groupField',
+                        type: 'hidden'
                       }
                     ]
                   },
@@ -2200,7 +2204,8 @@ describe('Formio.js Tests', () => {
                     components: [
                       {
                         defaultPermission: 'read',
-                        key: 'groupField'
+                        key: 'groupField',
+                        type: 'hidden'
                       }
                     ]
                   },

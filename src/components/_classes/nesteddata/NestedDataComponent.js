@@ -29,6 +29,10 @@ export default class NestedDataComponent extends NestedComponent {
     return {};
   }
 
+  get shouldAddDefaultValue() {
+    return !this.options.noDefaults || !this.options.server;
+  }
+
   componentContext() {
     return this.dataValue;
   }

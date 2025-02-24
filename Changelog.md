@@ -113,6 +113,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-9314: made select data property a hidden component and changed hidden component empty value to null
  - FIO-9347: fixed select preview issue in form builder
  - FIO-8518: fixed adding checkbox with radio type to pdf design page
+ - FIO-9418: Fixed the edit grid errors to show the outer error wrapper if any fields in the edit grid are invalid
 
 # Change Log
 All notable changes to this project will be documented in this file

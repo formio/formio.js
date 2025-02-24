@@ -432,7 +432,7 @@ export default class Wizard extends Webform {
 
   attachHeader() {
     const isAllowPrevious = this.isAllowPrevious();
-    this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`], this.currentPanel.tooltip);
+    this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`], this.currentPanel?.tooltip);
 
     if (this.isBreadcrumbClickable() || isAllowPrevious) {
       this.refs[`${this.wizardKey}-link`]?.forEach((link, index) => {
@@ -701,7 +701,7 @@ export default class Wizard extends Webform {
       this.redraw();
       return Promise.resolve();
     }
-    return Promise.reject('Page not found');
+    return Promise.reject(this.t('pageNotFound'));
   }
 
   pageFieldLogic(page) {
@@ -763,7 +763,7 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    const pages = this.getPages();
+    const pages = this.getPages({all: true});
 
     return Promise.all(pages.map((page) => {
       page.options.beforeSubmit = true;
@@ -831,7 +831,7 @@ export default class Wizard extends Webform {
   validateCurrentPage(flags = {}) {
     const components = this.currentPage?.components.map((component) => component.component);
     // Accessing the parent ensures the right instance (whether it's the parent Wizard or a nested Wizard) performs its validation
-    return this.currentPage?.parent.validateComponents(components, this.currentPage.parent.data, flags);
+    return this.currentPage?.parent.validateComponents(components, this.root.data, flags);
   }
 
   emitPrevPage() {
@@ -1043,13 +1043,6 @@ export default class Wizard extends Webform {
     }
   }
 
-  redraw() {
-    if (this.parent?.component?.modalEdit) {
-      return this.parent.redraw();
-    }
-    return super.redraw();
-  }
-
   rebuild() {
     const currentPage = this.page;
     const setCurrentPage = () => this.setPage(currentPage);
@@ -1072,7 +1065,7 @@ export default class Wizard extends Webform {
     );
   }
 
-  get errors() { 
+  get errors() {
     return !this.isLastPage() && !this.submitted ? this.currentPage.errors : super.errors;
   }
 

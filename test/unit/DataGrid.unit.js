@@ -436,7 +436,7 @@ describe('DataGrid Component', () => {
                   done();
                 }).catch(done);
               }, 300);
-            }, 300);
+            }, 350);
           }, 300);
         }, 300);
       })
@@ -445,18 +445,18 @@ describe('DataGrid Component', () => {
 
   it('Should retain previous checkboxes checked property when add another is pressed (checked)', () => {
     return Harness.testCreate(DataGridComponent, withCheckboxes).then((component) => {
-      component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').click();
+      component.componentsMap['dataGrid[0].radio'].element.querySelector('input').click();
       component.addRow();
-      assert.equal(component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').checked, true);
+      assert.equal(component.componentsMap['dataGrid[0].radio'].element.querySelector('input').checked, true);
     });
   });
 
   it('Should retain previous checkboxes checked property when add another is pressed (unchecked)', () => {
     return Harness.testCreate(DataGridComponent, withCheckboxes).then((component) => {
-      component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').click();
-      component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').click();
+      component.componentsMap['dataGrid[0].radio'].element.querySelector('input').click();
+      component.componentsMap['dataGrid[0].radio'].element.querySelector('input').click();
       component.addRow();
-      assert.equal(component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').checked, false);
+      assert.equal(component.componentsMap['dataGrid[0].radio'].element.querySelector('input').checked, false);
     });
   });
 
@@ -523,6 +523,93 @@ describe('DataGrid Component', () => {
           done();
         }, 300);
       }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should trigger DataGrid change event when row component value changes', (done) => {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [{
+        label: 'Datagrid',
+        key: 'dataGrid',
+        type: 'datagrid',
+        defaultValue: [{ }],
+        input: true,
+        components: [
+          {
+            label: 'Number',
+            key: 'number',
+            type: 'number',
+            input: true
+          },
+        ],
+      }],
+    }).then((form) => {
+      form.on('change', ({ changed }) => {
+        assert(changed.component.key, 'dataGrid');
+        done();
+      });
+      const numberComp = form.getComponent(['dataGrid', 0, 'number']);
+      numberComp.setValue(1);
+    }).catch((err) => done(err));
+  });
+
+  it('Should trigger DataGrid change event when adding a new row', (done) => {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [{
+        label: 'Datagrid',
+        key: 'dataGrid',
+        type: 'datagrid',
+        defaultValue: [{ }],
+        input: true,
+        components: [
+          {
+            label: 'Number',
+            key: 'number',
+            type: 'number',
+            input: true
+          },
+        ],
+      }],
+    }).then((form) => {
+      form.on('change', ({ changed }) => {
+        assert(changed.component.key, 'dataGrid');
+        done();
+      });
+      const dataGrid = form.getComponent(['dataGrid']);
+      dataGrid.addRow();
+    }).catch((err) => done(err));
+  });
+
+  it('Should trigger DataGrid change event when removing the row', (done) => {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [{
+        label: 'Datagrid',
+        key: 'dataGrid',
+        type: 'datagrid',
+        defaultValue: [{ }],
+        input: true,
+        components: [
+          {
+            label: 'Number',
+            key: 'number',
+            type: 'number',
+            input: true
+          },
+        ],
+      }],
+    }).then((form) => {
+      form.on('change', ({ changed }) => {
+        assert(changed.component.key, 'dataGrid');
+        done();
+      });
+      const dataGrid = form.getComponent(['dataGrid']);
+      dataGrid.removeRow(0);
     }).catch((err) => done(err));
   });
 });
@@ -971,7 +1058,7 @@ describe('SaveDraft functionality', () => {
       {
         saveDraft: true,
         skipDraftRestore: true,
-        saveDraftThrottle: 100
+        saveDraftThrottle: 300
       }
     ).then((form) => {
       setTimeout(() => {
