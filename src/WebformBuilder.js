@@ -134,7 +134,9 @@ export default class WebformBuilder extends Component {
         html,
         disableBuilderActions: self?.component?.disableBuilderActions,
         childComponent: component,
-        design: self?.options?.design
+        design: self?.options?.design,
+        editJson: self?.options?.editJson,
+        editComponent: this.hasEditTabs(component.type)
       });
     };
 
@@ -999,7 +1001,13 @@ export default class WebformBuilder extends Component {
 
     const componentInDataGrid = parent.type === 'datagrid';
 
-    if (isNew && !this.options.noNewEdit && !info.noNewEdit && !(this.options.design && info.type === 'reviewpage')) {
+    if (
+      isNew
+      && !this.options.noNewEdit
+      && !info.noNewEdit
+      && this.hasEditTabs(info.type)
+      && !(this.options.design && info.type === 'reviewpage')
+    ) {
       this.editComponent(info, target, isNew, null, null, { inDataGrid: componentInDataGrid });
     }
 
@@ -1913,5 +1921,11 @@ export default class WebformBuilder extends Component {
       info.placeholder ||
       info.type
     );
+  }
+
+  hasEditTabs(type) {
+    const editTabs = getComponent(Components.components[type].editForm().components, 'tabs', true).components;
+    const hiddenEditTabs = _.filter(_.get(this.options, `editForm.${type}`, []), 'ignore');
+    return _.intersectionBy(editTabs, hiddenEditTabs, 'key').length !== editTabs.length;
   }
 }

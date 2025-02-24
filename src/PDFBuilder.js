@@ -326,7 +326,7 @@ export default class PDFBuilder extends WebformBuilder {
           width: schema.width
         };
 
-        if (!this.options.noNewEdit && !component.component.noNewEdit) {
+        if (!this.options.noNewEdit && !component.component.noNewEdit && this.hasEditTabs(component.type)) {
           this.editComponent(component.component, this.getParentContainer(component), isNew);
         }
         this.emit('updateComponent', component.component);
@@ -352,7 +352,7 @@ export default class PDFBuilder extends WebformBuilder {
 
     this.webform.on('iframe-componentClick', schema => {
       const component = this.webform.getComponentById(schema.id);
-      if (component) {
+      if (component && this.hasEditTabs(component.type)) {
         this.editComponent(component.component, this.getParentContainer(component));
       }
     }, true);
