@@ -5,7 +5,7 @@ import { Formio } from './../../Formio';
 import _ from 'lodash';
 import 'flatpickr';
 import moment from 'moment-timezone';
-import Form from '../../src/Form.js'
+import Form from '../../Form.js'
 import {
   comp1,
   comp2,

@@ -1,7 +1,7 @@
-import Harness from "../harness";
+import Harness from "../test/harness";
 import assert from "power-assert";
-import { Formio } from "../../src/Formio";
-import { wait } from "../util";
+import { Formio } from "./Formio";
+import { wait } from "../test/util";
 
 describe("Validate When Hidden behavior", function () {
   describe("Simple components", function () {

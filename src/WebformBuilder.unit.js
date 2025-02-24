@@ -9,7 +9,7 @@ import sameApiKeysLayoutComps from '../test/forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../test/forms/testApiKeysUniquifying';
 import formBasedOnWizard from '../test/forms/formBasedOnWizard';
 import formWithFormController from '../test/forms/formWithFormController';
-import simpleWebform from '../forms/simpleWebform';
+import simpleWebform from '../test/forms/simpleWebform';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
