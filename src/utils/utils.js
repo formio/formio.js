@@ -714,6 +714,12 @@ export function loadZones(url, timezone) {
  * @returns {Date} - The moment date object.
  */
 
+/**
+ *
+ * @param value
+ * @param format
+ * @param timezone
+ */
 export function momentDate(value, format, timezone) {
   const momentDate = dayjs(value);
   if (timezone === 'UTC') {
@@ -761,15 +767,8 @@ export function formatOffset(formatFn, date, format, timezone) {
     return `${formatFn(offsetDate(date, 'UTC').date, format)} UTC`;
   }
 
-  // Load the zones since we need timezone information.
-  loadZones(timezonesUrl);
-  if (moment.zonesLoaded) {
-    const offset = offsetDate(date, timezone);
-    return `${formatFn(offset.date, format)} ${offset.abbr}`;
-  }
-  else {
-    return formatFn(date, format);
-  }
+  const offset = offsetDate(date, timezone);
+  return `${formatFn(offset.date, format)} ${offset.abbr}`;
 }
 
 /**
