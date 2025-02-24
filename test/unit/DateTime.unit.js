@@ -4,8 +4,7 @@ import DateTimeComponent from '../../src/components/datetime/DateTime';
 import { Formio } from '../../src/Formio';
 import _ from 'lodash';
 import 'flatpickr';
-import moment from 'moment-timezone';
-import Form from '../../src/Form.js'
+import moment from '../../src/utils/moment-wrapper';
 import {
   comp1,
   comp2,

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import moment from 'moment';
+import moment from '../../../../src/utils/moment-wrapper';
 import basicValues from './basicValues';
 
 export default {
