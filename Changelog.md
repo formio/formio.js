@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.1.0-rc.19
+### Changed
+ - Updated @formio/bootstrap@3.1.0-rc.2
+ - FIO-9751 updated modal edit window for components with hidden tabs on builder mode
+ - FIO-9767: fixed an issue where the nested form data is not submitted when clearOnHide is disabled
+
 ## 5.1.0-rc.18
 ### Changed
  - Updated @formio/core@2.4.0-rc.10
