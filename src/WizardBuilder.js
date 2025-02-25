@@ -303,11 +303,27 @@ export default class WizardBuilder extends WebformBuilder {
     if (component instanceof WizardBuilder) {
       return;
     }
-    if (this._form.components.find(comp => _.isEqual(component.component, comp))) {
-      this.addPage(component);
+    if (!window.sessionStorage) {
+      return console.warn(this.t('sessionStorageSupportError'));
+    }
+    const isWizardPageCopied = window.sessionStorage.getItem('formio.isWizardPageCopied') === 'true' ? true : false;
+    if (isWizardPageCopied) {
+      const data = window.sessionStorage.getItem('formio.clipboard');
+      if (data) {
+        const schema = JSON.parse(data);
+        this.addPage(schema);
+      }
     }
     else {
       return super.pasteComponent(component);
+    }
+  }
+
+  copyComponent(component) {
+    super.copyComponent(component);
+    if (window.sessionStorage) {
+      const isWizardPageCopied = this._form.components.indexOf(comp => _.isEqual(component.component, comp)) !== -1;
+      window.sessionStorage.setItem('formio.isWizardPageCopied', isWizardPageCopied.toString());
     }
   }
 }
