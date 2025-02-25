@@ -1767,18 +1767,21 @@ export default class Webform extends NestedDataComponent {
         }
     }
 
-    triggerCaptcha() {
+triggerCaptcha(components = null) {
         if (!this || !this.components) {
             return;
         }
         const captchaComponent = [];
-        eachComponent(this.components,(component) => {
+        eachComponent(components || this.components,(component) => {
             if (/^(re)?captcha$/.test(component.type) && component.component.eventType === 'formLoad') {
                 captchaComponent.push(component);
             }
         }, true);
 
         if (captchaComponent.length > 0) {
+            if (captchaComponent[0].component.provider === 'google' && components) {
+                return;
+            }
             captchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
         }
     }
