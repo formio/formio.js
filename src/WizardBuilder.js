@@ -311,6 +311,10 @@ export default class WizardBuilder extends WebformBuilder {
       const data = window.sessionStorage.getItem('formio.clipboard');
       if (data) {
         const schema = JSON.parse(data);
+        if (schema.type !== 'panel') {
+          window.sessionStorage.setItem('formio.isWizardPageCopied', 'false');
+          return super.pasteComponent(component);
+        }
         this.addPage(schema);
       }
     }
