@@ -690,7 +690,7 @@ export default class Wizard extends Webform {
       }
       this.redraw().then(() => {
         this.checkData(this.submission.data);
-        this.triggerCaptcha(this.currentPanel.componets);
+        this.triggerCaptcha(this.currentPanel.components);
         const errors = this.submitted ? this.validate(this.localData, { dirty: true }) : this.validateCurrentPage();
         if (this.alert) {
           this.showErrors(errors, true, true);
