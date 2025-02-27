@@ -35,6 +35,9 @@ const EditFormUtils = {
     }
     return _.isEqual(objValue, srcValue);
   },
+  tokenVariableDescription() {
+    return '<tr><th>token</th><td>The decoded JWT token for the authenticated user.</td></tr>';
+  },
   logicVariablesTable(additional) {
     additional = additional || '';
     return {

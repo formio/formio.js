@@ -143,7 +143,7 @@ export function checkCalculated(component, submission, rowData) {
 }
 
 /**
- * Check if a simple conditional evaluates to true. 
+ * Check if a simple conditional evaluates to true.
  * @param {import('@formio/core').Component} component - The component to check for the conditional.
  * @param {import('@formio/core').SimpleConditional} condition - The condition to check.
  * @param {*} row - The row data for the component.
@@ -294,7 +294,7 @@ export function getComponentActualValue(compPath, data, row) {
   if (row && _.isNil(value)) {
     value = getValue({ data: row }, compPath);
   }
-  
+
   // FOR-400 - Fix issue where falsey values were being evaluated as show=true
   if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
     value = '';
@@ -329,7 +329,7 @@ export function checkCustomConditional(component, custom, row, data, form, varia
 
 /**
  * Check a component for JSON conditionals.
- * @param {import('@formio/core').Component} component - The component 
+ * @param {import('@formio/core').Component} component - The component
  * @param {import('@formio/core').JSONConditional} json - The json conditional to check.
  * @param {*} row - The contextual row data for the component.
  * @param {*} data - The full submission data.
@@ -709,9 +709,10 @@ export function loadZones(url, timezone) {
  * @param {string|Date} value - The value to convert into a moment date.
  * @param {string} format - The format to convert the date to.
  * @param {string} timezone - The timezone to convert the date to.
+ * @param {object} options - The options object
  * @returns {Date} - The moment date object.
  */
-export function momentDate(value, format, timezone) {
+export function momentDate(value, format, timezone, options) {
   const momentDate = moment(value);
   if (!timezone) {
     return momentDate;
@@ -719,7 +720,7 @@ export function momentDate(value, format, timezone) {
   if (timezone === 'UTC') {
     timezone = 'Etc/UTC';
   }
-  if ((timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) && moment.zonesLoaded) {
+  if ((timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) && (moment.zonesLoaded || options?.email)) {
     return momentDate.tz(timezone);
   }
   return momentDate;

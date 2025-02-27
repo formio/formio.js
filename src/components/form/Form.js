@@ -161,10 +161,10 @@ export default class FormComponent extends Component {
 
     // Make sure to not show the submit button in wizards in the nested forms.
     _.set(options, 'buttonSettings.showSubmit', false);
-    
+
     // Set the parent option to the subform so those references are stable when the subform is created
     options.parent = this;
-    
+
     if (!this.options) {
       return options;
     }
@@ -425,10 +425,11 @@ export default class FormComponent extends Component {
   /**
    * Create a subform instance.
    * @param {boolean} [fromAttach] - This function is being called from an `attach` method.
+   * @param {boolean} [beforeSubmit] - This function is being called from a `beforeSubmit` method.
    * @returns {*} - The subform instance.
    */
-  createSubForm(fromAttach) {
-    this.subFormReady = this.loadSubForm(fromAttach).then((form) => {
+  createSubForm(fromAttach, beforeSubmit) {
+    this.subFormReady = this.loadSubForm(fromAttach, beforeSubmit).then((form) => {
       if (!form) {
         return;
       }
@@ -451,7 +452,7 @@ export default class FormComponent extends Component {
         const componentsMap = this.componentsMap;
         const formComponentsMap = this.subForm.componentsMap;
         _.assign(componentsMap, formComponentsMap);
-        this.component.components = this.subForm.components.map((comp) => comp.component); 
+        this.component.components = this.subForm.components.map((comp) => comp.component);
         this.subForm.on('change', () => {
           if (this.subForm) {
             this.dataValue = this.subForm.getValue();
@@ -491,10 +492,12 @@ export default class FormComponent extends Component {
   /**
    * Load the subform.
    * @param {boolean} fromAttach - This function is being called from an `attach` method.
+   * @param {boolean} beforeSubmit - This function is being called from a `beforeSubmit` method.
    * @returns {Promise} - The promise that resolves when the subform is loaded.
    */
-  loadSubForm(fromAttach) {
-    if (this.builderMode || this.conditionallyHidden || (this.isSubFormLazyLoad() && !fromAttach)) {
+  loadSubForm(fromAttach, beforeSubmit) {
+    const loadHiddenForm = beforeSubmit && !this.component.clearOnHide;
+    if (this.builderMode || (this.conditionallyHidden && !loadHiddenForm) || (this.isSubFormLazyLoad() && !fromAttach)) {
       return Promise.resolve();
     }
 
@@ -576,7 +579,7 @@ export default class FormComponent extends Component {
    * @returns {*|boolean} - TRUE if the subform should be submitted, FALSE if it should not.
    */
   get shouldSubmit() {
-    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.conditionallyHidden;
+    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && (!this.conditionallyHidden || !this.component.clearOnHide);
   }
 
   /**
@@ -652,11 +655,24 @@ export default class FormComponent extends Component {
       this.dataValue = submission;
       return Promise.resolve(this.dataValue);
     }
-    return this.submitSubForm(false)
+    // we need to load a hidden form (when clearOnHide is disabled) in order to get and submit (if needed) its data
+    const loadHiddenForm = !this.subForm && !this.component.clearOnHide;
+    if((this.isSubFormLazyLoad() || loadHiddenForm) && !this.subFormLoading){
+      return this.createSubForm(true, true)
+      .then(this.submitSubForm(false))
+        .then(() => {
+          return this.dataValue;
+        })
+        .then(() => super.beforeSubmit());
+
+    }
+    else {
+      return this.submitSubForm(false)
       .then(() => {
         return this.dataValue;
       })
       .then(() => super.beforeSubmit());
+    }
   }
 
   isSubFormLazyLoad() {

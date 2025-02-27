@@ -190,6 +190,7 @@ export default class Component extends Element {
       properties: {},
       allowMultipleMasks: false,
       addons: [],
+      serverOverride: {},
     }, ...sources);
   }
   /**
@@ -488,6 +489,9 @@ export default class Component extends Element {
     this.hook('component');
 
     if (!this.options.skipInit) {
+      if (typeof this.beforeInit === 'function') {
+        this.beforeInit();
+      }
       this.init();
     }
   }
@@ -559,7 +563,7 @@ export default class Component extends Element {
   get rowIndex() {
     return this._rowIndex;
   }
-  
+
   /**
    * Set Row Index to row and update each component.
    * @param {number} value - The row index.
@@ -1480,7 +1484,7 @@ export default class Component extends Element {
   detach() {
     // First iterate through each ref and delete the component so there are no dangling component references.
     _.each(this.refs, (ref) => {
-      if (typeof ref === NodeList) {
+      if (ref instanceof NodeList) {
         ref.forEach((elem) => {
           delete elem.component;
         });
@@ -2205,9 +2209,11 @@ export default class Component extends Element {
 
     // Check advanced conditions (and cache the result)
     const isConditionallyHidden = this.checkConditionallyHidden(data, row) || this._parentConditionallyHidden;
+    let shouldClear = false;
+
     if (isConditionallyHidden !== this._conditionallyHidden) {
       this._conditionallyHidden = isConditionallyHidden;
-      this.clearOnHide();
+      shouldClear = true;
     }
 
     // Check visibility
@@ -2215,6 +2221,12 @@ export default class Component extends Element {
 
     if (this.visible !== visible) {
       this.visible = visible;
+    }
+
+    // Wait for visibility to update for nested components, so the component state is up-to-date when
+    // calling clearOnHide
+    if (shouldClear) {
+      this.clearOnHide();
     }
 
     return visible;

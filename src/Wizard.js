@@ -690,6 +690,7 @@ export default class Wizard extends Webform {
       }
       this.redraw().then(() => {
         this.checkData(this.submission.data);
+        this.triggerCaptcha(this.currentPanel.components);
         const errors = this.submitted ? this.validate(this.localData, { dirty: true }) : this.validateCurrentPage();
         if (this.alert) {
           this.showErrors(errors, true, true);
@@ -763,7 +764,7 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    const pages = this.getPages();
+    const pages = this.getPages({all: true});
 
     return Promise.all(pages.map((page) => {
       page.options.beforeSubmit = true;
@@ -1065,7 +1066,7 @@ export default class Wizard extends Webform {
     );
   }
 
-  get errors() { 
+  get errors() {
     return !this.isLastPage() && !this.submitted ? this.currentPage.errors : super.errors;
   }
 

@@ -141,7 +141,7 @@ export default [
   EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 'calculateValue', 1100,
     '<p><h4>Example:</h4><pre>value = data.a + data.b + data.c;</pre></p>',
     '<p><h4>Example:</h4><pre>{"+": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a href="https://help.form.io/userguide/form-building/logic-and-conditions#calculated-values" target="_blank" rel="noopener noreferrer">Click here for an example</a></p>',
-'<tr><th>token</th><td>The decoded JWT token for the authenticated user.</td></tr>'
+    EditFormUtils.tokenVariableDescription()
   ),
   {
     type: 'checkbox',
@@ -159,5 +159,16 @@ export default [
     label: 'Allow Manual Override of Calculated Value',
     tooltip: 'When checked, this will allow the user to manually override the calculated value.'
   },
-];
-/* eslint-enable max-len */
+  {
+    type: 'textarea',
+    as: 'json',
+    editor: 'ace',
+    weight: 1400,
+    input: true,
+    key: 'serverOverride',
+    label: 'Server Override',
+    tooltip: 'A JSON object containing the component settings that should be overriden when the form submission is processed on the server side.',
+    defaultValue: {},
+    description: '<b>Example</b>: { "clearOnHide": true }',
+  }
+]

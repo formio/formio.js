@@ -88,6 +88,7 @@ import formWithUniqueValidation from '../forms/formWithUniqueValidation.js';
 import formWithConditionalEmail from '../forms/formWithConditionalEmail.js';
 import formsWithSimpleConditionals from '../forms/formsWithSimpleConditionals.js';
 import translationErrorMessages from '../forms/translationErrorMessages.js';
+import simpleController from '../forms/formWithSimpleController.js';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
 if (_.has(Formio, 'Components.setComponents')) {
@@ -5386,6 +5387,19 @@ describe('Webform tests', function() {
       assert.strictEqual(errors[0].component.label, 'Checkbox 1', 'The error should be for the checkbox component');
       assert.strictEqual(errors[0].errorKeyOrMessage, 'required', 'Should show required validation error');
       done();
+    }).catch(done);
+  });
+
+  it('Should execute form controller only once', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(formElement, simpleController).then((form) => {
+      const textField = form.getComponent('textField');
+      assert.equal(textField.dataValue, 'changed', 'Should contain the change made in form controller');
+      form.setForm(simpleController).then(() => {
+        const textField = form.getComponent('textField');
+        assert.equal(textField.dataValue, 'changed', 'Should contain the change made in form controller');
+        done();
+      });
     }).catch(done);
   });
 
