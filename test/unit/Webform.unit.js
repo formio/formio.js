@@ -1092,7 +1092,7 @@ describe('Webform tests', function() {
     form.setForm(translationTestForm).then(() => {
       setTimeout(() => {
         const selectComp = form.getComponent('select');
-        const options = selectComp.element.querySelector('[role="listbox"]').children;
+        const options = selectComp.choices.choiceList.element.children;
         const option1 = options[0].textContent.trim();
         const option2 = options[1].textContent.trim();
         const label = selectComp.element.querySelector('label').textContent.trim();
