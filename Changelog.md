@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.1.0-rc.21
+### Changed
+ - FIO-9720 fixed typo
+
 ## 5.1.0-rc.20
 ### Changed
  - Updated @formio/core@2.4.0-rc.11
