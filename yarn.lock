@@ -214,13 +214,6 @@
   resolved "https://registry.yarnpkg.com/@formio/bootstrap/-/bootstrap-3.0.0-dev.121.085d187.tgz#7cc8c3a62e531b9b508e68d08fa513241c659da6"
   integrity sha512-V9AgDNTiFuvw0g/+QbUu2e8c061obSInmwn3qjsxkySg1VtpuVO2hrhgS8Lqxa5Q3IKbgmkrbCJGex8GCxNAnA==
 
-"@formio/choices.js@11.0.3-rc.1":
-  version "11.0.3-rc.1"
-  resolved "https://registry.yarnpkg.com/@formio/choices.js/-/choices.js-11.0.3-rc.1.tgz#4b09cc348de7a20ef9e0084e25a15cec4ee3c821"
-  integrity sha512-hkgXxOWov/vPT/w7cJX+qPRkfYu6O6OfeE+8RB5GxieHQU0gWSEAu7QUJfyW5aP9U1bdm1ZvXtPAe9lgXd2XgQ==
-  dependencies:
-    fuse.js "^7.0.0"
-
 "@formio/core@v2.4.0-dev.2":
   version "2.4.0-dev.2"
   resolved "https://registry.yarnpkg.com/@formio/core/-/core-2.4.0-dev.2.tgz#30ebab054e602c5ce7f487d853d195887e0f62b9"
@@ -1698,6 +1691,13 @@ check-error@^1.0.3:
   integrity sha512-iKEoDYaRmd1mxM90a2OEfWhjsjPpYPuQ+lMYsoxB126+t8fw7ySEO48nmDg5COTjxDI65/Y2OWpeEHk3ZOe8zg==
   dependencies:
     get-func-name "^2.0.2"
+
+choices.js@^11.0.6:
+  version "11.0.6"
+  resolved "https://registry.yarnpkg.com/choices.js/-/choices.js-11.0.6.tgz#2b18a817cbcffc736933093c2c29b44f0233ee73"
+  integrity sha512-BQrdTQtO2CL5sUnJL2b5qelgYd6GjwkZDdl93IDPy+idNAe0knJHX+WBWnFXH8cTVOJ6JWI4bxpBM29vz44pUQ==
+  dependencies:
+    fuse.js "^7.0.0"
 
 chokidar@^2.0.0:
   version "2.1.8"

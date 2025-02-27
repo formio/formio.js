@@ -938,6 +938,7 @@ export default class SelectComponent extends ListComponent {
       ),
       valueComparer: _.isEqual,
       resetScrollPosition: false,
+      duplicateItemsAllowed: false,
       ...customOptions,
     };
   }

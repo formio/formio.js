@@ -1,4 +1,4 @@
-import Choices, { KeyCodeMap } from '@formio/choices.js';
+import Choices, { KeyCodeMap } from 'choices.js';
 
 const ExtendedKeyCodeMap = {
   ...KeyCodeMap,

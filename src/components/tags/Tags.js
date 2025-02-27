@@ -1,6 +1,6 @@
 import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
 import Input from '../_classes/input/Input';
-import Choices from '@formio/choices.js';
+import Choices from 'choices.js';
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
