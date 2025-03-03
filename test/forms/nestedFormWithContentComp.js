@@ -1,0 +1,122 @@
+export const parentForm = {
+  _id: '67c19d4a0b924378e690a99a',
+  title: 'pdf form',
+  name: 'pdfForm',
+  path: 'pdfform',
+  type: 'form',
+  display: 'wizard',
+  owner: '67c19d9d0b924378e690af80',
+  components: [
+    {
+      title: 'Page 1',
+      label: 'Page 1',
+      type: 'panel',
+      key: 'page1',
+      components: [
+        {
+          label: 'database',
+          calculateValue: 'instance.setValue({name: "hey", last:"foo"});',
+          key: 'database',
+          type: 'hidden',
+          input: true,
+          tableView: false,
+        },
+        {
+          label: 'Form',
+          tableView: true,
+          form: '67c19d4a0b924378e690a993',
+          useOriginalRevision: true,
+          calculateValue:
+            'value = { data: \n{name: data.database.name, \nlast: data.database.last\n}};',
+          key: 'form',
+          type: 'form',
+          lazyLoad: false,
+          input: true,
+        },
+      ],
+      input: false,
+      tableView: false,
+    },
+  ],
+  machineName: 'tlrqtysnoafumph:pdfForm',
+  project: '67bf135578d9de8633fd050e',
+};
+
+export const childForm = {
+  _id: '67c19d4a0b924378e690a993',
+  title: 'child',
+  name: 'child',
+  path: 'child',
+  type: 'form',
+  display: 'form',
+  owner: '67c19dfe0b924378e690b400',
+  components: [
+    {
+      label: 'Name',
+      key: 'name',
+      type: 'hidden',
+      input: true,
+      tableView: false,
+    },
+    {
+      label: 'Last',
+      key: 'last',
+      type: 'hidden',
+      input: true,
+      tableView: false,
+    },
+    {
+      html: '<p>Name: {{data.name}}</p><p>Last: {{data.last}}</p>',
+      label: 'Content',
+      refreshOnChange: true,
+      key: 'content',
+      type: 'content',
+      input: false,
+      tableView: false,
+    },
+    {
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      disableOnInvalid: true,
+      input: true,
+      tableView: false,
+    },
+  ],
+  pdfComponents: [],
+  machineName: 'tlrqtysnoafumph:child',
+  project: '67bf135578d9de8633fd050e',
+  created: '2025-02-28T11:26:02.316Z',
+  modified: '2025-02-28T13:37:46.387Z',
+};
+
+export const submission = {
+  form: '67c19d4a0b924378e690a99a',
+  owner: '637b2e6b48c1227e60b1f910',
+  data: {
+    database: {
+      name: 'hey',
+      last: 'foo',
+    },
+    form: {
+      form: '67c19d4a0b924378e690a993',
+      owner: '637b2e6b48c1227e60b1f910',
+      data: {
+        name: 'hey',
+        last: 'foo',
+      },
+      _id: '67c596918806d7e31b1858de',
+      _fvid: 0,
+      project: '67bf135578d9de8633fd050e',
+      state: 'submitted',
+      created: '2025-03-03T11:46:25.997Z',
+      modified: '2025-03-03T11:46:26.000Z',
+    },
+  },
+  _id: '67c596928806d7e31b185908',
+  _fvid: 0,
+  project: '67bf135578d9de8633fd050e',
+  state: 'submitted',
+  created: '2025-03-03T11:46:26.260Z',
+  modified: '2025-03-03T11:46:26.260Z',
+};
