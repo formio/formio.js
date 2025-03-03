@@ -743,7 +743,7 @@ export default class FormComponent extends Component {
    */
   onSetSubFormValue(submission, flags) {
     this.subForm.setValue(submission, flags);
-    if (flags.fromSubmission) {
+    if (flags?.fromSubmission) {
       this.subForm.submissionReadyResolve(submission);
     }
   }
