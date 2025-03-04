@@ -379,8 +379,7 @@ export default class Component extends Element {
      * This is necessary because of clearOnHide behavior that only clears when conditionally hidden - we need to track
      * conditionallyHidden separately from "regular" visibility.
      */
-    this._parentConditionallyHidden = this.options.hasOwnProperty('parentConditionallyHidden') ? this.options.parentConditionallyHidden : false;
-    this._conditionallyHidden = this.checkConditionallyHidden(null, data) || this._parentConditionallyHidden;
+    this._conditionallyHidden = this.checkConditionallyHidden(null, data) || this.parentConditionallyHidden;
 
     /**
      * Determines if this component is visible, or not.
@@ -495,6 +494,16 @@ export default class Component extends Element {
 
   get componentsMap() {
     return this.root?.childComponentsMap || {};
+  }
+
+  get parentConditionallyHidden() {
+    let parentHidden = false;
+    let currentParent = this.parent;
+    while (currentParent) {
+      parentHidden = parentHidden || currentParent._conditionallyHidden;
+      currentParent = currentParent.parent;
+    }
+    return parentHidden;
   }
 
   get data() {
@@ -738,7 +747,7 @@ export default class Component extends Element {
   }
 
   get conditionallyHidden() {
-    return this._conditionallyHidden || this._parentConditionallyHidden;
+    return this._conditionallyHidden || this.parentConditionallyHidden;
   }
 
   /**
@@ -2203,12 +2212,12 @@ export default class Component extends Element {
     }
 
     // Check advanced conditions (and cache the result)
-    const isConditionallyHidden = this.checkConditionallyHidden(data, row) || this._parentConditionallyHidden;
+    const isConditionallyHidden = this.checkConditionallyHidden(data, row) || this.parentConditionallyHidden;
     let shouldClear = false;
 
     if (isConditionallyHidden !== this._conditionallyHidden) {
       this._conditionallyHidden = isConditionallyHidden;
-      shouldClear = true;
+      shouldClear = isConditionallyHidden;
     }
 
     // Check visibility
