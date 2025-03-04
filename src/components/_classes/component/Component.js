@@ -379,8 +379,7 @@ export default class Component extends Element {
      * This is necessary because of clearOnHide behavior that only clears when conditionally hidden - we need to track
      * conditionallyHidden separately from "regular" visibility.
      */
-    this._parentConditionallyHidden = this.options.hasOwnProperty('parentConditionallyHidden') ? this.options.parentConditionallyHidden : false;
-    this._conditionallyHidden = this.checkConditionallyHidden(null, data) || this._parentConditionallyHidden;
+    this.checkConditionallyHidden(null, data);
 
     /**
      * Determines if this component is visible, or not.
@@ -497,6 +496,19 @@ export default class Component extends Element {
     return this.root?.childComponentsMap || {};
   }
 
+  get parentConditionallyHidden() {
+    let parentHidden = false;
+    let currentParent = this.parent;
+    while (currentParent) {
+      parentHidden = parentHidden || currentParent._conditionallyHidden;
+      if (parentHidden) {
+        break;
+      }
+      currentParent = currentParent.parent;
+    }
+    return parentHidden;
+  }
+
   get data() {
     return this._data;
   }
@@ -545,7 +557,7 @@ export default class Component extends Element {
 
   init() {
     this.disabled = this.shouldDisabled;
-    this._conditionallyHidden = this.checkConditionallyHidden();
+    this.checkConditionallyHidden();
     this._visible = (this.hasCondition() ? !this.conditionallyHidden : !this.component.hidden);
     if (this.component.addons?.length) {
       this.component.addons.forEach((addon) => this.createAddon(addon));
@@ -738,7 +750,7 @@ export default class Component extends Element {
   }
 
   get conditionallyHidden() {
-    return this._conditionallyHidden || this._parentConditionallyHidden;
+    return this._conditionallyHidden || this.parentConditionallyHidden;
   }
 
   /**
@@ -748,10 +760,13 @@ export default class Component extends Element {
    * @returns {boolean} - Whether the component is conditionally hidden.
    */
   checkConditionallyHidden(data = null, row = null) {
+    this._conditionallyHidden = false;
     if (!this.hasCondition()) {
-      return false;
+      this._conditionallyHidden = this.parentConditionallyHidden;
+      return this._conditionallyHidden;
     }
-    return !this.conditionallyVisible(data, row);
+    this._conditionallyHidden = !this.conditionallyVisible(data, row) || this.parentConditionallyHidden;
+    return this._conditionallyHidden;
   }
 
   get currentForm() {
@@ -2203,13 +2218,7 @@ export default class Component extends Element {
     }
 
     // Check advanced conditions (and cache the result)
-    const isConditionallyHidden = this.checkConditionallyHidden(data, row) || this._parentConditionallyHidden;
-    let shouldClear = false;
-
-    if (isConditionallyHidden !== this._conditionallyHidden) {
-      this._conditionallyHidden = isConditionallyHidden;
-      shouldClear = true;
-    }
+    const shouldClear = this.checkConditionallyHidden(data, row);
 
     // Check visibility
     const visible = (this.hasCondition() ? !this.conditionallyHidden : !this.component.hidden);
@@ -2843,10 +2852,7 @@ export default class Component extends Element {
    * @returns {*} - The value for this component.
    */
   get dataValue() {
-    if (
-      !this.key ||
-      (this.conditionallyHidden && this.component.clearOnHide && !this.rootPristine)
-    ) {
+    if (!this.key) {
       return this.emptyValue;
     }
     if (!this.hasValue() && this.shouldAddDefaultValue) {
@@ -2864,11 +2870,7 @@ export default class Component extends Element {
    * @param {*} value - The value to set for this component.
    */
   set dataValue(value) {
-    if (
-      !this.allowData ||
-      !this.key ||
-      (this.conditionallyHidden && this.component.clearOnHide && !this.rootPristine)
-    ) {
+    if (!this.allowData || !this.key) {
       return;
     }
     if ((value !== null) && (value !== undefined)) {

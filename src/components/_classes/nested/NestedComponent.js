@@ -86,18 +86,16 @@ export default class NestedComponent extends Field {
     const visibilityChanged = this._visible !== value;
     this._visible = value;
     const isVisible = this.visible;
-    const isConditionallyHidden = this.checkConditionallyHidden();
+    this.checkConditionallyHidden();
     const forceShow = this.shouldForceShow();
     const forceHide = this.shouldForceHide();
     this.components.forEach((component) => {
       // Set the parent visibility first since we may have nested components within nested components
       // and they need to be able to determine their visibility based on the parent visibility.
       component.parentVisible = isVisible;
-      component._parentConditionallyHidden = isConditionallyHidden;
       let visible;
       if (component.hasCondition()) {
-        component._conditionallyHidden = component.checkConditionallyHidden() || component._parentConditionallyHidden;
-        visible = !component.conditionallyHidden;
+        visible = !component.checkConditionallyHidden();
       }
       else {
         visible = !component.component.hidden;
@@ -408,7 +406,6 @@ export default class NestedComponent extends Field {
     data = data || this.data;
     options.parent = this;
     options.parentVisible = this.visible;
-    options.parentConditionallyHidden = this.conditionallyHidden;
     options.root = options?.root || this.root || this;
     options.localRoot = this.localRoot;
     options.skipInit = true;

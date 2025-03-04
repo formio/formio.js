@@ -582,9 +582,9 @@ describe('Disabled clearOnHide functionality for Nested Form', () => {
       instance.submit().then(() => {
         assert.equal(loadSubForm, true);
         assert.equal(submitSubForm, true);
-        assert.deepEqual(subFormSubmission.data, { textField: 'test', textArea: '' });
+        assert.deepEqual(subFormSubmission.data, { textField: 'test' });
         assert.equal(mainFormSubmission.data?.form?._id, 'nestedSubmissionId');
-        assert.deepEqual(mainFormSubmission.data?.form?.data, { textField: 'test', textArea: '' });
+        assert.deepEqual(mainFormSubmission.data?.form?.data, { textField: 'test' });
         done();
       });
     }).catch((err) => done(err));
@@ -602,7 +602,7 @@ describe('Disabled clearOnHide functionality for Nested Form', () => {
         assert.equal(submitSubForm, false);
         assert.deepEqual(!!subFormSubmission, false);
         assert.equal(!!mainFormSubmission.data?.form?._id, false);
-        assert.deepEqual(mainFormSubmission.data?.form?.data, { textField: 'test', textArea: '' });
+        assert.deepEqual(mainFormSubmission.data?.form?.data, { textField: 'test' });
         done();
       });
     }).catch((err) => done(err));
