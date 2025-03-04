@@ -505,6 +505,9 @@ export default class Component extends Element {
     let currentParent = this.parent;
     while (currentParent) {
       parentHidden = parentHidden || currentParent._conditionallyHidden;
+      if (parentHidden) {
+        break;
+      }
       currentParent = currentParent.parent;
     }
     return parentHidden;
