@@ -165,6 +165,7 @@ export default class TabsComponent extends NestedComponent {
       this.addClass(this.refs[this.tabLinkKey][index], 'active');
       this.addClass(this.refs[this.tabLinkKey][index], 'formio-tab-link-active');
     }
+    this.setValue(this.data);
     this.triggerChange();
   }
 
