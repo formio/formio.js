@@ -64,8 +64,7 @@ export default class HTMLComponent extends Component {
     super.checkRefreshOn(changed);
     let visible;
     if (this.hasCondition()) {
-      this._conditionallyHidden = this.checkConditionallyHidden();
-      visible = !this.conditionallyHidden;
+      visible = !this.checkConditionallyHidden();
     }
     else {
       visible = !this.component.hidden;
