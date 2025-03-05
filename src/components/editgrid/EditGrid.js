@@ -1359,9 +1359,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     const changed = this.hasChanged(value, this.dataValue);
-    if (this.parent) {
-      this.parent.checkComponentConditions();
-    }
     this.dataValue = value;
     // Refresh editRow data when data changes.
     this.dataValue.forEach((row, rowIndex) => {
@@ -1394,10 +1391,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.openWhenEmpty();
     this.updateOnChange(flags, changed);
-    this.checkData();
-
     this.changeState(changed, flags);
-
     return changed;
   }
 
