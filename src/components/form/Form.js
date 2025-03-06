@@ -656,21 +656,17 @@ export default class FormComponent extends Component {
       return Promise.resolve(this.dataValue);
     }
     // we need to load a hidden form (when clearOnHide is disabled) in order to get and submit (if needed) its data
-    const loadHiddenForm = !this.subForm && !this.component.clearOnHide;
-    if((this.isSubFormLazyLoad() || loadHiddenForm) && !this.subFormLoading){
+    const loadHiddenForm = !this.component.clearOnHide;
+    if((this.isSubFormLazyLoad() || loadHiddenForm) && !this.subFormLoading && !this.subForm){
       return this.createSubForm(true, true)
-      .then(this.submitSubForm(false))
-        .then(() => {
-          return this.dataValue;
-        })
+        .then(() => this.submitSubForm(false))
+        .then(() => this.dataValue)
         .then(() => super.beforeSubmit());
 
     }
     else {
       return this.submitSubForm(false)
-      .then(() => {
-        return this.dataValue;
-      })
+      .then(() => this.dataValue)
       .then(() => super.beforeSubmit());
     }
   }

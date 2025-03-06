@@ -609,5 +609,99 @@ describe('Disabled clearOnHide functionality for Nested Form', () => {
   });
 });
 
+describe('Nested Form validation inside Wizard', () => {
+  const originalMakeRequest = Formio.makeRequest;
+  let postRequestCount = 0;
+  let childFormRequestCount = 0;
 
+  const parentForm = {
+    "_id": "677d3efea934773d422a05fa",
+    "title": "Wizard parent",
+    "name": "fdAsWizardParent",
+    "path": "fdaswizardparent",
+    "type": "form",
+    "display": "wizard",
+    "components": [{
+      "title": "Page 1",
+      "key": "page1",
+      "type": "panel",
+      "components": [{
+        "label": "Form",
+        "key": "form",
+        "type": "form",
+        "form": "677d3efea934773d422a05ec",
+        "lazyLoad": true
+      }]
+    }, ]
+  
+  };
+  
+  const childForm = {
+    "_id": "677d3efea934773d422a05ec",
+    "title": "Wizard Child",
+    "name": "WizardChild",
+    "path": "wizardchild",
+    "type": "form",
+    "components": [{
+        "label": "Text Field",
+        "key": "textField",
+        "type": "textfield",
+        "validate": {
+          "required": true
+        }
+      },
+      {
+        "label": "Submit",
+        "key": "submit",
+        "type": "button"
+      }
+    ]
+  };
 
+  before((done) => {
+    // Mock Formio.makeRequest to count POST requests and serve mock forms
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get') {
+        if (url.includes('parentForm')) {
+          return Promise.resolve(_.cloneDeep(parentForm));
+        } else if (url.includes('677d3efea934773d422a05ec')) {
+          ++childFormRequestCount;
+          return Promise.resolve(_.cloneDeep(childForm));
+        }
+        if (type === 'submission' && ['post'].includes(method)) {
+          postRequestCount++;
+        }
+        return Promise.resolve();
+      }
+    };
+    done()
+  });
+
+  after((done) => {
+    // Restore the original makeRequest
+    Formio.makeRequest = originalMakeRequest;
+    done();
+  });
+
+  it('Should show validation errors for nested form components inside wizard', (done) => {
+    const formElement = document.createElement('div');
+    postRequestCount = 0;
+    Formio.createForm(formElement, 'http://localhost:3000/idwqwhclwioyqbw/parentForm')
+      .then((wizard) => {
+        setTimeout(() => {
+          const btn = _.get(wizard.refs, `${wizard.wizardKey}-submit`);
+          const clickEvent = new Event('click');
+          btn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(wizard.errors.length, 1, 'Should trigger validation error');
+            assert.equal(wizard.errors[0].ruleName, 'required');
+            assert.equal(wizard.element.querySelectorAll('.formio-error-wrapper').length, 1, 'Should set error classes for invalid component inside nested form')
+            assert.equal(postRequestCount, 0, 'No submission POST requests should be made');
+            assert.equal(childFormRequestCount, 1);
+            done()
+          }, 300);
+        }, 100)
+      });
+  });
+})
