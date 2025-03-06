@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.1.0-rc.22
+### Changed
+ - Updated @formio/core@2.4.0-rc.12
+ - FIO-9766: Fixing issues with conditionally hidden fields and state being stored…
+ - FIO-9811 fixed drag and drop for custom component
+ - FIO-9815: fixed an issue where nested form inside wizard does not highlight validation errors
+
 ## 5.1.0-rc.21
 ### Changed
  - FIO-9720 fixed typo
