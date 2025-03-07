@@ -1517,6 +1517,7 @@ export default class Webform extends NestedDataComponent {
             userAgent: navigator.userAgent,
             pathName: window.location.pathname,
             onLine: navigator.onLine,
+            language: this.language,
         });
     }
 
