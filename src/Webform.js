@@ -2,7 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { compareVersions } from 'compare-versions';
 import EventEmitter from './EventEmitter';
-import i18nDefaults from './i18n';
+import enTranslation from './translations/en';
 import { Formio } from './Formio';
 import Components from './components/Components';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
@@ -114,7 +114,7 @@ function getOptions(options) {
  * @property {number} [saveDraftThrottle] - The throttle for the save draft feature.
  * @property {boolean} [readOnly] - Set this form to readOnly.
  * @property {boolean} [noAlerts] - Disable the alerts dialog.
- * @property {{[key: string]: string}} [i18n] - The translation file for this rendering.
+ * @property {{[key: string]: string}} [enTranslation] - The translation file for this rendering.
  * @property {string} [template] - Custom logic for creation of elements.
  * @property {boolean} [noDefaults] - Exclude default values from the settings.
  * @property {any} [fileService] - The file service for this form.
@@ -395,7 +395,7 @@ export default class Webform extends NestedDataComponent {
      */
     addLanguage(code, lang, active = false) {
         if (this.i18next) {
-            var translations = _.assign(fastCloneDeep(i18nDefaults.resources.en.translation), lang);
+            var translations = _.assign(fastCloneDeep(enTranslation), lang);
             this.i18next.addResourceBundle(code, 'translation', translations, true, true);
             if (active) {
                 this.language = code;
@@ -1516,6 +1516,7 @@ export default class Webform extends NestedDataComponent {
             userAgent: navigator.userAgent,
             pathName: window.location.pathname,
             onLine: navigator.onLine,
+            language: this.language,
         });
     }
 
