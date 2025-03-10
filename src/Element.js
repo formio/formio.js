@@ -435,11 +435,12 @@ export default class Element {
   /**
    * Translate a text using the i18n system.
    * @param {string|Array<string>} text - The i18n identifier.
+   * @param {any} data - contextual data object containing data, component, row, etc.
    * @param {...any} args - The arguments to pass to the i18n translation.
    * @returns {string} - The translated text.
    */
-  t(text, ...args) {
-    return this.i18next ? this.i18next.t(text, ...args): text;
+  t(text, data, ...args) {
+    return this.i18next ? this.i18next.t(text, data, ...args): text;
   }
 
   /**
