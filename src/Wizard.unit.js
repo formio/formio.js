@@ -2241,7 +2241,6 @@ it('Should show tooltip for wizard pages', function(done) {
                   setTimeout(() => {
                     const pages = form.element.querySelectorAll('.formio-form nav .pagination .page-item');
                     assert.equal(pages.length, 3, 'Should show the hidden initially page');
-
                     done();
                   });
                 }, 400);
