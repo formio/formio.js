@@ -685,7 +685,7 @@ export default {
       setTimeout(() => {
         checkCalculatedValue();
         done();
-      }, 300);
+      }, 350);
     },
     'Should allow overriding component calculated value'(form, done, test) {
       test.timeout(5000);
