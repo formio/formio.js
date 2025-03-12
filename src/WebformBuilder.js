@@ -1914,6 +1914,10 @@ export default class WebformBuilder extends Component {
   }
 
   hasEditTabs(type) {
+    // If the component type does not exist then it has no edit tabs
+    if(!Components.components[type]){
+      return false;
+    }
     const editTabs = getComponent(Components.components[type === 'custom' ? 'unknown' : type].editForm().components, 'tabs', true).components;
     const hiddenEditTabs = _.filter(_.get(this.options, `editForm.${type}`, []), 'ignore');
     return _.intersectionBy(editTabs, hiddenEditTabs, 'key').length !== editTabs.length;
