@@ -387,24 +387,6 @@ export default class Component extends Element {
     this._referenceAttributeName = 'ref';
 
     /**
-     * Sometimes the customDefaultValue does not set the "value" within the script, but is just a script to execute. This
-     * flag is used to determine if the customDefaultValue should be used to set the value of the component or not based on 
-     * if there is a "value=" within the script.
-     */
-    this.shouldSetCustomDefault = true;
-    if (this.component.customDefaultValue && (typeof this.component.customDefaultValue === 'string')) {
-      this.shouldSetCustomDefault = this.component.customDefaultValue.match(/value\s*=/);
-    }
-
-    /**
-     * Same as customDefaultValue, but for calculateValue.
-     */
-    this.shouldSetCalculatedValue = true;
-    if (this.component.calculateValue && (typeof this.component.calculateValue === 'string')) {
-      this.shouldSetCalculatedValue = this.component.calculateValue.match(/value\s*=/);
-    }
-
-    /**
      * Used to trigger a new change in this component.
      * @type {Function} - Call to trigger a change in this component.
      */
@@ -2905,20 +2887,37 @@ export default class Component extends Element {
 
   getCustomDefaultValue(defaultValue) {
     if (this.component.customDefaultValue && !this.options.preview) {
-     const customDefaultValue = this.evaluate(
+     defaultValue = this.evaluate(
         this.component.customDefaultValue,
-        { value: '' },
+        { value: this.dataValue },
         'value'
       );
-      if (this.shouldSetCustomDefault) {
-        defaultValue = customDefaultValue;
-      }
     }
     return defaultValue;
   }
 
+  /**
+   * Returns if a component has a default value set.
+   * @returns {boolean} - TRUE if a default value is set.
+   */
+  get hasDefaultValue() {
+    return this.component.customDefaultValue || (
+      this.component.hasOwnProperty('defaultValue') &&
+      (this.component.defaultValue !== null) &&
+      (this.component.defaultValue !== undefined)
+    );
+  }
+
   get shouldAddDefaultValue() {
-    return !this.options.noDefaults || (this.component.defaultValue && !this.isEmpty(this.component.defaultValue)) || this.component.customDefaultValue;
+    // It should add a default value if...
+    //  1.) Ensure they have not set "noDefaults". If that is true, then will always return false.  AND
+    //  2.) The component is pristine (user has not manually modified it).  AND
+    //  3.) There is a default value setting present and it is not NULL or UNDEFINED.
+    return !this.options.noDefaults && this.pristine && (
+      this.hasDefaultValue || 
+      // Empty strings and booleans are allowed primitives whose defaults are automatically added.
+      (this.emptyValue === '' || (typeof this.emptyValue === 'boolean'))
+    );
   }
 
   get defaultValue() {
@@ -3205,7 +3204,7 @@ export default class Component extends Element {
   }
 
   doValueCalculation(dataValue, data, row) {
-      const calculatedValue = this.evaluate(this.component.calculateValue, {
+      return this.evaluate(this.component.calculateValue, {
         value: dataValue,
         data,
         row: row || this.data,
@@ -3213,10 +3212,6 @@ export default class Component extends Element {
           data: this.rootValue
         }
       }, 'value');
-      if (this.shouldSetCalculatedValue) {
-        return calculatedValue;
-      }
-      return dataValue;
   }
 
   /* eslint-disable max-statements */
@@ -3585,6 +3580,15 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
+    // Some components (for legacy reasons) have calls to "checkData" in inappropriate places such
+    // as setValue. Historically, this was bypassed by a series of cached states around the data model
+    // which caused its own problems. We need to ensure that premium and custom components do not fall into 
+    // an infinite loop by only checking this component once.
+    if (this.checkingData) {
+      return;
+    }
+    this.checkingData = true;
+
     // Needs for Nextgen Rules Engine
     this.resetCaches();
 
@@ -3602,6 +3606,9 @@ export default class Component extends Element {
     if (this.id !== flags.triggeredComponentId) {
       this.calculateComponentValue(data, flags, row);
     }
+
+    // We are done checking data.
+    this.checkingData = false;
   }
 
   checkModal(errors = [], dirty = false) {
