@@ -2223,7 +2223,7 @@ export default class Component extends Element {
       this.visible = visible;
     }
 
-    this.clearOnHide();
+    this.clearComponentOnHide();
     return visible;
   }
 
@@ -2547,9 +2547,9 @@ export default class Component extends Element {
   }
 
   /**
-   * Clears the components data if it is conditionally hidden AND clearOnHide is set to true for this component.
+   * Clear any conditionally hidden components for this component only.
    */
-  clearOnHide() {
+  clearComponentOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
       if (this.conditionallyHidden()) {
@@ -2562,6 +2562,13 @@ export default class Component extends Element {
         });
       }
     }
+  }
+
+  /**
+   * Clears the components data if it is conditionally hidden AND clearOnHide is set to true for this component.
+   */
+  clearOnHide() {
+    this.clearComponentOnHide();
   }
 
   /**
