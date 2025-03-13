@@ -398,6 +398,14 @@ export default class Component extends Element {
     }
 
     /**
+     * Same as customDefaultValue, but for calculateValue.
+     */
+    this.shouldSetCalculatedValue = true;
+    if (this.component.calculateValue && (typeof this.component.calculateValue === 'string')) {
+      this.shouldSetCalculatedValue = this.component.calculateValue.match(/value\s*=/);
+    }
+
+    /**
      * Used to trigger a new change in this component.
      * @type {Function} - Call to trigger a change in this component.
      */
@@ -3210,7 +3218,7 @@ export default class Component extends Element {
   }
 
   doValueCalculation(dataValue, data, row) {
-      return this.evaluate(this.component.calculateValue, {
+      const calculatedValue = this.evaluate(this.component.calculateValue, {
         value: dataValue,
         data,
         row: row || this.data,
@@ -3218,6 +3226,10 @@ export default class Component extends Element {
           data: this.rootValue
         }
       }, 'value');
+      if (this.shouldSetCalculatedValue) {
+        return calculatedValue;
+      }
+      return dataValue;
   }
 
   /* eslint-disable max-statements */
