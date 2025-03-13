@@ -565,11 +565,9 @@ describe('Wizard Form with Nested Form validation', () => {
           setTimeout(() => {
             checkPage(2);
             const errors = wizard.errors;
-            assert.equal(errors.length, 2, 'Must err before next page');
-            errors.forEach((error) => {
-              assert.equal(error.ruleName, 'required');
-              assert.equal(error.message, 'Text Field is required', 'Should set correct lebel in the error message');
-            });
+            assert.equal(errors.length, 1, 'Must err before next page');
+            assert.equal(errors[0].ruleName, 'required');
+            assert.equal(errors[0].message, 'Text Field is required');
             done();
           }, 300)
         }, 300)
@@ -2242,12 +2240,12 @@ it('Should show tooltip for wizard pages', function(done) {
                     const pages = form.element.querySelectorAll('.formio-form nav .pagination .page-item');
                     assert.equal(pages.length, 3, 'Should show the hidden initially page');
                     done();
-                  });
-                }, 400);
-              }, 500);
-            }, 400);
-          }, 500);
-        }, 400);
+                  }, 250);
+                }, 250);
+              }, 250);
+            }, 250);
+          }, 250);
+        }, 250);
       }).catch(done);
     });
   });

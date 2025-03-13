@@ -709,10 +709,6 @@ export default class DataGridComponent extends NestedArrayComponent {
     return changed;
   }
 
-  restoreComponentsContext() {
-    this.rows.forEach((row, index) => _.forIn(row, (component) => component.data = this.dataValue[index]));
-  }
-
   toggleGroup(element, index) {
     element.classList.toggle('collapsed');
     _.each(this.refs.chunks[index], row => {

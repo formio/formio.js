@@ -206,7 +206,7 @@ export default [
     label: 'Value Property',
     key: 'valueProperty',
     skipMerge: true,
-    clearOnHide: true,
+    clearOnHide: false,
     tooltip: 'The field to use as the value.',
     weight: 11,
     refreshOn: 'data.resource',
