@@ -648,14 +648,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     });
   }
 
-  restoreComponentsContext() {
-    this.getComponents().forEach((component) => {
-      const rowData = this.dataValue[component.rowIndex];
-      const editRowData = this.editRows[component.rowIndex]?.data;
-      component.data = rowData || editRowData;
-    });
-  }
-
   flattenComponents(rowIndex) {
     const result = {};
 
