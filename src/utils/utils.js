@@ -1690,27 +1690,6 @@ export function getDataParentComponent(componentInstance) {
  }
 
 /**
- * Determines if the component has a scoping parent in tree (a component which scopes its children and manages its
- * changes by itself, e.g. EditGrid)
- * @param {Component} componentInstance - The component to check for the scoping parent.
- * @param {boolean} firstPass - Whether it is the first pass of the function
- * @returns {boolean|*} - TRUE if the component has a scoping parent; FALSE otherwise
- */
-export function isInsideScopingComponent(componentInstance, firstPass = true) {
-  if (!firstPass && componentInstance?.hasScopedChildren) {
-    return true;
-  }
-  const dataParent = getDataParentComponent(componentInstance);
-  if (dataParent?.hasScopedChildren) {
-    return true;
-  }
-  else if (dataParent?.parent) {
-    return isInsideScopingComponent(dataParent.parent, false);
-  }
-  return false;
-}
-
-/**
  * Returns all the focusable elements within the provided dom element.
  * @param {HTMLElement} element - The element to get the focusable elements from.
  * @returns {NodeList<HTMLElement>} - The focusable elements within the provided element.

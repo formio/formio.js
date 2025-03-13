@@ -8,7 +8,7 @@ import { processOne, processOneSync, validateProcessInfo } from '@formio/core/pr
 import { Formio } from '../../../Formio';
 import * as FormioUtils from '../../../utils/utils';
 import {
-  fastCloneDeep, boolValue, isInsideScopingComponent, currentTimezone, getScriptPlugin, getContextualRowData
+  fastCloneDeep, boolValue, currentTimezone, getScriptPlugin, getContextualRowData
 } from '../../../utils/utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
@@ -386,6 +386,16 @@ export default class Component extends Element {
      * The reference attribute name for this component
      */
     this._referenceAttributeName = 'ref';
+
+    /**
+     * Sometimes the customDefaultValue does not set the "value" within the script, but is just a script to execute. This
+     * flag is used to determine if the customDefaultValue should be used to set the value of the component or not based on 
+     * if there is a "value=" within the script.
+     */
+    this.shouldSetCustomDefault = true;
+    if (this.component.customDefaultValue && (typeof this.component.customDefaultValue === 'string')) {
+      this.shouldSetCustomDefault = this.component.customDefaultValue.match(/value\s*=/);
+    }
 
     /**
      * Used to trigger a new change in this component.
@@ -2541,13 +2551,7 @@ export default class Component extends Element {
    */
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (
-      // if change happens inside EditGrid's row, it doesn't trigger change on the root level, so rootPristine will be true
-      (!this.rootPristine || this.options.server || isInsideScopingComponent(this)) &&
-      this.component.clearOnHide !== false &&
-      !this.options.readOnly &&
-      !this.options.showHiddenFields
-    ) {
+    if (this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
       if (this.conditionallyHidden()) {
         this.deleteValue();
       }
@@ -2899,11 +2903,14 @@ export default class Component extends Element {
 
   getCustomDefaultValue(defaultValue) {
     if (this.component.customDefaultValue && !this.options.preview) {
-     defaultValue = this.evaluate(
+     const customDefaultValue = this.evaluate(
         this.component.customDefaultValue,
         { value: '' },
         'value'
       );
+      if (this.shouldSetCustomDefault) {
+        defaultValue = customDefaultValue;
+      }
     }
     return defaultValue;
   }
