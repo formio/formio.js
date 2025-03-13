@@ -1741,7 +1741,7 @@ export default class SelectComponent extends ListComponent {
   asString(value, options = {}) {
     value = value ?? this.getValue();
 
-    if (options.modalPreview || this.inDataTable) {
+    if (options.modalPreview || this.inDataTable || options.email) {
       if (this.inDataTable) {
         value = this.undoValueTyping(value);
       }
