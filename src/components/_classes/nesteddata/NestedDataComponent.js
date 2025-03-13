@@ -110,19 +110,6 @@ export default class NestedDataComponent extends NestedComponent {
     return result;
   }
 
-  everyComponent(fn, options = {}) {
-    if (options?.email) {
-      if (options.fromRoot) {
-        delete options.fromRoot;
-      }
-      else {
-        return;
-      }
-    }
-
-    return super.everyComponent(fn, options);
-  }
-
   /**
    * Get the value of this component.
    * @returns {any} - Return the value of this component.

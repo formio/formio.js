@@ -126,6 +126,11 @@ export default class FormComponent extends Component {
     return { data: {} };
   }
 
+  // In order for the subform values to set properly, we must always say that nested forms have a default value.
+  get hasDefaultValue() {
+    return true;
+  }
+
   get ready() {
     return this.subFormReady || Promise.resolve();
   }
