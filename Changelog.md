@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.1.0-rc.25]
+### Changed
+ - FIO-9838: fix rendering an unknown component on the builder causing error
+ - FIO-9830 fixed captcha trigger for wizard
+ - Fixing issues with the data map and unnecessary reset model functions
+
 ## 5.1.0-rc.24
 ### Changed
  - Updated @formio/bootstrap@3.1.0-rc.4
