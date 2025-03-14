@@ -128,6 +128,16 @@ export default class AddressComponent extends ContainerComponent {
     }
     Field.prototype.init.call(this);
 
+    // Created to maintain reverse compatibility
+    this.component.providerOptions = {
+      params: {subscriptionKey: this.component.subscriptionKey, key: this.component.apiKey, ...this.component.params},
+      url: this.component.url,
+      queryProperty: this.component.queryProperty,
+      responseProperty: this.component.responseProperty,
+      displayValueProperty: this.component.displayValueProperty,
+      autocompleteOptions: this.component.autocompleteOptions
+    }
+
     if (!this.builderMode) {
       if (this.component.provider) {
         const {
