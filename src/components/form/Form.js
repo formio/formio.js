@@ -437,6 +437,12 @@ export default class FormComponent extends Component {
       // Iterate through every component and hide the submit button.
       eachComponent(form.components, (component) => {
         this.hideSubmitButton(component);
+        if (component.validateWhenHidden) {
+          this.component.validateWhenHidden = true;
+          // Change original component as well, so it won't cause any custom logic to be continuously triggered
+          // because the original component does not have this property
+          this.originalComponent.validateWhenHidden = true;
+        }
       });
 
       // If the subform is already created then destroy the old one.
