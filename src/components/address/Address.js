@@ -127,7 +127,7 @@ export default class AddressComponent extends ContainerComponent {
     }
     Field.prototype.init.call(this);
 
-    const provider = this.component.provider;
+    let provider = this.component.provider;
     const providerOptions = this.providerOptions;
     const map = this.component.map;
 
@@ -142,7 +142,7 @@ export default class AddressComponent extends ContainerComponent {
       }
       else if (map) {
         // Fallback to legacy version where Google Maps was the only provider.
-        this.component.provider = GoogleAddressProvider.name;
+        provider = this.component.provider = GoogleAddressProvider.name;
 
         const {
           key,
