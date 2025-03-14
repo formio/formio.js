@@ -25,7 +25,6 @@ export default class AddressComponent extends ContainerComponent {
       key: 'address',
       switchToManualModeLabel: 'Can\'t find address? Switch to manual mode.',
       provider: '',
-      providerOptions: {},
       manualModeViewString: '',
       hideLabel: false,
       disableClearIcon: false,
@@ -128,23 +127,12 @@ export default class AddressComponent extends ContainerComponent {
     }
     Field.prototype.init.call(this);
 
-    // Created to maintain reverse compatibility
-    this.component.providerOptions = {
-      params: {subscriptionKey: this.component.subscriptionKey, key: this.component.apiKey, ...this.component.params},
-      url: this.component.url,
-      queryProperty: this.component.queryProperty,
-      responseProperty: this.component.responseProperty,
-      displayValueProperty: this.component.displayValueProperty,
-      autocompleteOptions: this.component.autocompleteOptions
-    }
+    const provider = this.component.provider;
+    const providerOptions = this.providerOptions;
+    const map = this.component.map;
 
     if (!this.builderMode) {
-      if (this.component.provider) {
-        const {
-          provider,
-          providerOptions,
-        } = this.component;
-
+      if (provider) {
         if (_.get(providerOptions, 'params.subscriptionKey')) {
           _.set(providerOptions, "params['subscription-key']", _.get(providerOptions, 'params.subscriptionKey'));
           _.unset(providerOptions, 'params.subscriptionKey');
@@ -152,16 +140,9 @@ export default class AddressComponent extends ContainerComponent {
 
         this.provider = this.initializeProvider(provider, providerOptions);
       }
-      else if (this.component.map) {
+      else if (map) {
         // Fallback to legacy version where Google Maps was the only provider.
         this.component.provider = GoogleAddressProvider.name;
-        this.component.providerOptions = this.component.providerOptions || {};
-
-        const {
-          map,
-          provider,
-          providerOptions,
-        } = this.component;
 
         const {
           key,
@@ -330,6 +311,17 @@ export default class AddressComponent extends ContainerComponent {
       : null;
   }
 
+  get providerOptions() {
+    return {
+      params: {subscriptionKey: this.component.subscriptionKey, key: this.component.apiKey, ...this.component.params},
+      url: this.component.url,
+      queryProperty: this.component.queryProperty,
+      responseProperty: this.component.responseProperty,
+      displayValueProperty: this.component.displayValueProperty,
+      autocompleteOptions: this.component.autocompleteOptions
+    }
+  }
+
   get removeValueIcon() {
     return this.refs
       ? (this.refs[AddressComponent.removeValueIconRef] || null)
@@ -468,10 +460,8 @@ export default class AddressComponent extends ContainerComponent {
 
     if (!this.builderMode) {
       if (!this.provider && this.component.provider) {
-        const {
-          provider,
-          providerOptions,
-        } = this.component;
+        const provider = this.component.provider;
+        const providerOptions = this.providerOptions;
         this.provider = this.initializeProvider(provider, providerOptions);
       }
     }
