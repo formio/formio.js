@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.1.0-rc.1]
+## [Unreleased: 5.2.0-rc.1]
 ### Changed
  - FIO-8270: panel component closing on logic event trigger
  - FIO-8575: Added ability to reload google maps library with correct API key
@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8126: Fixed select component emitting blur on click
  - FIO-8304: allow for multivalue masks to have blank input mask option
  - 5.x - FIO-8426: changes required for eSignature
- - 
  - FIO-8596: added the editGridEditRow and editGridOpenModal events for editGrid
  - FIO-7733 remove form min height
  - FIO-8414 | FIO-8403 | FIO-8389: Fixes 5x validations and conditionals for array data components
@@ -114,12 +113,147 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-9347: fixed select preview issue in form builder
  - FIO-8518: fixed adding checkbox with radio type to pdf design page
  - FIO-9418: Fixed the edit grid errors to show the outer error wrapper if any fields in the edit grid are invalid
+  
+ - FIO-9532: fixed an issue where select components shows values instead of labels in email
+ - FIO-9758: fixed an issue where interpolated content data is not displayed in PDF download
+ - FIO-8548: Update choices.js to 11 version
+ - FIO-9569: Fixes an issue where Wizard will paste a copy of the current page instead of the copied one
+ - FIO-8409: added serverOverride setting for components
+ - Added test for FIO-9020
+ - FIO-8208: Ensure that all file uploads alter the request options before sending the fetch requests
 
-# Change Log
-All notable changes to this project will be documented in this file
+## 5.1.0-rc.26
+### Changed
+ - FIO-9721 Added Submit button as available trigger option of captcha inside Wizard
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](http://semver.org/).
+## 5.1.0-rc.25
+### Changed
+ - FIO-9838: fix rendering an unknown component on the builder causing error
+ - FIO-9830 fixed captcha trigger for wizard
+ - Fixing issues with the data map and unnecessary reset model functions
+
+## 5.1.0-rc.24
+### Changed
+ - Updated @formio/bootstrap@3.1.0-rc.4
+
+## 5.1.0-rc.23
+### Changed
+ - Updated @formio/bootstrap@3.1.0-rc.3
+ - FIO-9807: Refactor the conditionally hidden check to be performed at runtime.
+ - FIO-9807: Refactor the conditionally hidden check to be performed at runtime.
+
+## 5.1.0-rc.22
+### Changed
+ - Updated @formio/core@2.4.0-rc.12
+ - FIO-9766: Fixing issues with conditionally hidden fields and state being stored…
+ - FIO-9811 fixed drag and drop for custom component
+ - FIO-9815: fixed an issue where nested form inside wizard does not highlight validation errors
+
+## 5.1.0-rc.21
+### Changed
+ - FIO-9720 fixed typo
+
+## 5.1.0-rc.20
+### Changed
+ - Updated @formio/core@2.4.0-rc.11
+ - FIO-9720 fixed triggering captcha for wizard
+
+## 5.1.0-rc.19
+### Changed
+ - Updated @formio/bootstrap@3.1.0-rc.2
+ - FIO-9751 updated modal edit window for components with hidden tabs on builder mode
+ - FIO-9767: fixed an issue where the nested form data is not submitted when clearOnHide is disabled
+
+## 5.1.0-rc.18
+### Changed
+ - Updated @formio/core@2.4.0-rc.10
+
+## 5.1.0-rc.17
+### Changed
+ - FIO-9640: Fix date components have wrong timezone in email
+ - FIO-9720 fixet trigger captcha component inside layout component
+ - FIO-9385 Preserve non-default widget settings after evaluating field logic
+
+## 5.1.0-rc.16
+### Changed
+ - FIO-9515 Fixed Edit grid conditional values not displayed in Edit sub…
+
+## 5.1.0-rc.15
+### Changed
+ - Updated @formio/core@2.4.0-rc.9
+
+## 5.1.0-rc.14
+### Changed
+ - Updated @formio/core@2.4.0-rc.8
+
+## 5.1.0-rc.13
+### Changed
+ - Revert choices back to 10.2.1
+
+## 5.1.0-rc.12
+### Changed
+ - FIO-9620: update copy on Form component editForm
+
+## 5.1.0-rc.11
+### Changed
+ - Updated @formio/choices.js@11.0.3-rc.1
+ - FIO-9548:fixed setting of form._data for  NestedDataComponent into forms with noDefaults option
+ - FIO-8724: Fixed firing change event for DataGrid component
+
+## 5.1.0-rc.10
+### Changed
+ - Updated @formio/core@2.4.0-rc.7
+
+## 5.1.0-rc.9
+### Changed
+ - Updated @formio/core@2.4.0-rc.6
+
+ - FIO-9511: fixed day min/max validation message
+ 
+## 5.1.0-rc.8
+### Changed
+ - FIO-9499 Component: Check if ref is instance of NodeList on detach
+
+ - FIO-9482 fixed setting Formio version
+
+## 5.1.0-rc.7
+### Changed
+ - FIO-9480: ensure parent references are stable before subform creation
+ - FIO-9527: Fixed address component with multiple values
+ - FIO-9517: nested forms with lazy load validation fix
+
+## 5.1.0-rc.6
+### Changed
+ - Updated @formio/core@2.4.0-rc.5
+
+## 5.1.0-rc.5
+### Changed
+ - Updated @formio/core@2.4.0-rc.4
+
+ - FIO-8575: Added ability to reload google maps library with correct API key
+ - FIO-9552: Fixing the embed code to export the Formio construct
+
+## 5.1.0-rc.4
+### Changed
+ - FIO-9506: fixed the return type of the render function
+
+## 5.1.0-rc.3
+### Changed
+ - Updated @formio/core@2.4.0-rc.3
+
+## 5.1.0-rc.2
+### Changed
+ - Updated @formio/core@2.4.0-rc.2
+ - FIO-9159: change clearOnHide behavior to track conditionally hidden state rather than mere visibility
+
+## 5.1.0-rc.1
+### Changed
+ - Updated @formio/bootstrap@3.1.0-rc.1
+ - Updated @formio/core@2.4.0-rc.1
+ - Increment minor version
+ - 5.x - FIO-8426: changes required for eSignature
+ - Refactor the component path system to ensure we are always referencing the correct path.
+ - FIO-9312: fixed an issue where conditionals does not work well when there are several components with the same key/path
 
 ## 5.0.0
 ### Changed
