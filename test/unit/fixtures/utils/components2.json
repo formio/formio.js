@@ -1,0 +1,512 @@
+[
+  {
+    "type": "textfield",
+    "conditional": {
+      "eq": "",
+      "when": null,
+      "show": null
+    },
+    "validate": {
+      "customPrivate": false,
+      "custom": "",
+      "pattern": "",
+      "maxLength": "",
+      "minLength": "",
+      "required": false
+    },
+    "persistent": true,
+    "unique": false,
+    "protected": false,
+    "defaultValue": "",
+    "multiple": false,
+    "suffix": "",
+    "prefix": "",
+    "placeholder": "",
+    "key": "a",
+    "label": "A",
+    "inputMask": "",
+    "inputType": "text",
+    "tableView": true,
+    "input": true
+  },
+  {
+    "lockKey": true,
+    "key": "b",
+    "conditional": {
+      "eq": "",
+      "when": null,
+      "show": null
+    },
+    "type": "fieldset",
+    "components": [
+      {
+        "lockKey": true,
+        "key": "c",
+        "conditional": {
+          "eq": "",
+          "when": null,
+          "show": null
+        },
+        "type": "columns",
+        "columns": [
+          {
+            "components": [
+              {
+                "type": "textfield",
+                "conditional": {
+                  "eq": "",
+                  "when": null,
+                  "show": null
+                },
+                "validate": {
+                  "customPrivate": false,
+                  "custom": "",
+                  "pattern": "",
+                  "maxLength": "",
+                  "minLength": "",
+                  "required": false
+                },
+                "persistent": true,
+                "unique": false,
+                "protected": false,
+                "defaultValue": "",
+                "multiple": false,
+                "suffix": "",
+                "prefix": "",
+                "placeholder": "",
+                "key": "d",
+                "label": "D",
+                "inputMask": "",
+                "inputType": "text",
+                "tableView": true,
+                "input": true
+              },
+              {
+                "conditional": {
+                  "eq": "",
+                  "when": null,
+                  "show": null
+                },
+                "type": "container",
+                "persistent": true,
+                "protected": false,
+                "key": "f",
+                "label": "F",
+                "tableView": true,
+                "components": [
+                  {
+                    "type": "textfield",
+                    "conditional": {
+                      "eq": "",
+                      "when": null,
+                      "show": null
+                    },
+                    "validate": {
+                      "customPrivate": false,
+                      "custom": "",
+                      "pattern": "",
+                      "maxLength": "",
+                      "minLength": "",
+                      "required": false
+                    },
+                    "persistent": true,
+                    "unique": false,
+                    "protected": false,
+                    "defaultValue": "",
+                    "multiple": false,
+                    "suffix": "",
+                    "prefix": "",
+                    "placeholder": "",
+                    "key": "g",
+                    "label": "G",
+                    "inputMask": "",
+                    "inputType": "text",
+                    "tableView": true,
+                    "input": true
+                  },
+                  {
+                    "type": "textfield",
+                    "conditional": {
+                      "eq": "",
+                      "when": null,
+                      "show": null
+                    },
+                    "validate": {
+                      "customPrivate": false,
+                      "custom": "",
+                      "pattern": "",
+                      "maxLength": "",
+                      "minLength": "",
+                      "required": false
+                    },
+                    "persistent": true,
+                    "unique": false,
+                    "protected": false,
+                    "defaultValue": "",
+                    "multiple": false,
+                    "suffix": "",
+                    "prefix": "",
+                    "placeholder": "",
+                    "key": "h",
+                    "label": "H",
+                    "inputMask": "",
+                    "inputType": "text",
+                    "tableView": true,
+                    "input": true
+                  },
+                  {
+                    "type": "textfield",
+                    "conditional": {
+                      "eq": "",
+                      "when": null,
+                      "show": null
+                    },
+                    "validate": {
+                      "customPrivate": false,
+                      "custom": "",
+                      "pattern": "",
+                      "maxLength": "",
+                      "minLength": "",
+                      "required": false
+                    },
+                    "persistent": true,
+                    "unique": false,
+                    "protected": false,
+                    "defaultValue": "",
+                    "multiple": false,
+                    "suffix": "",
+                    "prefix": "",
+                    "placeholder": "",
+                    "key": "i",
+                    "label": "I",
+                    "inputMask": "",
+                    "inputType": "text",
+                    "tableView": true,
+                    "input": true
+                  }
+                ],
+                "tree": true,
+                "input": true
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "textfield",
+                "conditional": {
+                  "eq": "",
+                  "when": null,
+                  "show": null
+                },
+                "validate": {
+                  "customPrivate": false,
+                  "custom": "",
+                  "pattern": "",
+                  "maxLength": "",
+                  "minLength": "",
+                  "required": false
+                },
+                "persistent": true,
+                "unique": false,
+                "protected": false,
+                "defaultValue": "",
+                "multiple": false,
+                "suffix": "",
+                "prefix": "",
+                "placeholder": "",
+                "key": "e",
+                "label": "E",
+                "inputMask": "",
+                "inputType": "text",
+                "tableView": true,
+                "input": true
+              }
+            ]
+          }
+        ],
+        "input": false
+      },
+      {
+        "type": "textfield",
+        "conditional": {
+          "eq": "",
+          "when": null,
+          "show": null
+        },
+        "validate": {
+          "customPrivate": false,
+          "custom": "",
+          "pattern": "",
+          "maxLength": "",
+          "minLength": "",
+          "required": false
+        },
+        "persistent": true,
+        "unique": false,
+        "protected": false,
+        "defaultValue": "",
+        "multiple": false,
+        "suffix": "",
+        "prefix": "",
+        "placeholder": "",
+        "key": "j",
+        "label": "J",
+        "inputMask": "",
+        "inputType": "text",
+        "tableView": true,
+        "input": true
+      }
+    ],
+    "legend": "B",
+    "tableView": true,
+    "input": false
+  },
+  {
+    "conditional": {
+      "eq": "",
+      "when": null,
+      "show": null
+    },
+    "type": "datagrid",
+    "persistent": true,
+    "protected": false,
+    "key": "k",
+    "label": "K",
+    "tableView": true,
+    "components": [
+      {
+        "conditional": {
+          "eq": "",
+          "when": null,
+          "show": null
+        },
+        "hideLabel": true,
+        "type": "container",
+        "persistent": true,
+        "protected": false,
+        "key": "n",
+        "label": "N",
+        "tableView": true,
+        "components": [
+          {
+            "type": "textfield",
+            "conditional": {
+              "eq": "",
+              "when": null,
+              "show": null
+            },
+            "validate": {
+              "customPrivate": false,
+              "custom": "",
+              "pattern": "",
+              "maxLength": "",
+              "minLength": "",
+              "required": false
+            },
+            "persistent": true,
+            "unique": false,
+            "protected": false,
+            "defaultValue": "",
+            "multiple": false,
+            "suffix": "",
+            "prefix": "",
+            "placeholder": "",
+            "key": "o",
+            "label": "O",
+            "inputMask": "",
+            "inputType": "text",
+            "tableView": true,
+            "input": true
+          },
+          {
+            "type": "textfield",
+            "conditional": {
+              "eq": "",
+              "when": null,
+              "show": null
+            },
+            "validate": {
+              "customPrivate": false,
+              "custom": "",
+              "pattern": "",
+              "maxLength": "",
+              "minLength": "",
+              "required": false
+            },
+            "persistent": true,
+            "unique": false,
+            "protected": false,
+            "defaultValue": "",
+            "multiple": false,
+            "suffix": "",
+            "prefix": "",
+            "placeholder": "",
+            "key": "p",
+            "label": "P",
+            "inputMask": "",
+            "inputType": "text",
+            "tableView": true,
+            "input": true
+          },
+          {
+            "type": "textfield",
+            "conditional": {
+              "eq": "",
+              "when": null,
+              "show": null
+            },
+            "validate": {
+              "customPrivate": false,
+              "custom": "",
+              "pattern": "",
+              "maxLength": "",
+              "minLength": "",
+              "required": false
+            },
+            "persistent": true,
+            "unique": false,
+            "protected": false,
+            "defaultValue": "",
+            "multiple": false,
+            "suffix": "",
+            "prefix": "",
+            "placeholder": "",
+            "key": "q",
+            "label": "Q",
+            "inputMask": "",
+            "inputType": "text",
+            "tableView": true,
+            "input": true
+          }
+        ],
+        "tree": true,
+        "input": true
+      },
+      {
+        "hideLabel": true,
+        "type": "textfield",
+        "conditional": {
+          "eq": "",
+          "when": null,
+          "show": null
+        },
+        "validate": {
+          "customPrivate": false,
+          "custom": "",
+          "pattern": "",
+          "maxLength": "",
+          "minLength": "",
+          "required": false
+        },
+        "persistent": true,
+        "unique": false,
+        "protected": false,
+        "defaultValue": "",
+        "multiple": false,
+        "suffix": "",
+        "prefix": "",
+        "placeholder": "",
+        "key": "m",
+        "label": "M",
+        "inputMask": "",
+        "inputType": "text",
+        "tableView": true,
+        "input": true
+      },
+      {
+        "hideLabel": true,
+        "type": "textfield",
+        "conditional": {
+          "eq": "",
+          "when": null,
+          "show": null
+        },
+        "validate": {
+          "customPrivate": false,
+          "custom": "",
+          "pattern": "",
+          "maxLength": "",
+          "minLength": "",
+          "required": false
+        },
+        "persistent": true,
+        "unique": false,
+        "protected": false,
+        "defaultValue": "",
+        "multiple": false,
+        "suffix": "",
+        "prefix": "",
+        "placeholder": "",
+        "key": "l",
+        "label": "L",
+        "inputMask": "",
+        "inputType": "text",
+        "tableView": true,
+        "input": true
+      }
+    ],
+    "tree": true,
+    "input": true
+  },
+  {
+    "type": "textfield",
+    "conditional": {
+      "eq": "",
+      "when": null,
+      "show": null
+    },
+    "validate": {
+      "customPrivate": false,
+      "custom": "",
+      "pattern": "",
+      "maxLength": "",
+      "minLength": "",
+      "required": false
+    },
+    "persistent": true,
+    "unique": false,
+    "protected": false,
+    "defaultValue": "",
+    "multiple": false,
+    "suffix": "",
+    "prefix": "",
+    "placeholder": "",
+    "key": "r",
+    "label": "R",
+    "inputMask": "",
+    "inputType": "text",
+    "tableView": true,
+    "input": true
+  },
+  {
+    "type": "button",
+    "theme": "primary",
+    "disableOnInvalid": true,
+    "action": "submit",
+    "block": false,
+    "rightIcon": "",
+    "leftIcon": "",
+    "size": "md",
+    "key": "submit",
+    "tableView": false,
+    "label": "Submit",
+    "input": true
+  },
+  {
+    "label": "Tagpad",
+    "tableView": false,
+    "key": "tagpad",
+    "type": "tagpad",
+    "input": true,
+    "components": [
+      {
+        "label": "Text Field",
+        "tableView": true,
+        "key": "a",
+        "type": "textfield",
+        "input": true
+      }
+    ]
+  }
+]
