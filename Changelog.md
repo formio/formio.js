@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.1.0-rc.26]
+### Changed
+ - FIO-9837: cant approve valid api key
+ - FIO-9721 Added Submit button as available trigger option of captcha inside Wizard 
+ - FIO-9873: Fixed issues with how default values are set within components to ensure they are set properly at the right time in the lifecycle
+ 
 ## 5.1.0-rc.25
 ### Changed
  - FIO-9838: fix rendering an unknown component on the builder causing error
