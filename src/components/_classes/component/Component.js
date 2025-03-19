@@ -388,24 +388,6 @@ export default class Component extends Element {
     this._referenceAttributeName = 'ref';
 
     /**
-     * Sometimes the customDefaultValue does not set the "value" within the script, but is just a script to execute. This
-     * flag is used to determine if the customDefaultValue should be used to set the value of the component or not based on 
-     * if there is a "value=" within the script.
-     */
-    this.shouldSetCustomDefault = true;
-    if (this.component.customDefaultValue && (typeof this.component.customDefaultValue === 'string')) {
-      this.shouldSetCustomDefault = this.component.customDefaultValue.match(/value\s*=/);
-    }
-
-    /**
-     * Same as customDefaultValue, but for calculateValue.
-     */
-    this.shouldSetCalculatedValue = true;
-    if (this.component.calculateValue && (typeof this.component.calculateValue === 'string')) {
-      this.shouldSetCalculatedValue = this.component.calculateValue.match(/value\s*=/);
-    }
-
-    /**
      * Used to trigger a new change in this component.
      * @type {Function} - Call to trigger a change in this component.
      */
@@ -2918,14 +2900,11 @@ export default class Component extends Element {
 
   getCustomDefaultValue(defaultValue) {
     if (this.component.customDefaultValue && !this.options.preview) {
-     const customDefaultValue = this.evaluate(
+     defaultValue = this.evaluate(
         this.component.customDefaultValue,
-        { value: '' },
+        { value: this.dataValue },
         'value'
       );
-      if (this.shouldSetCustomDefault) {
-        defaultValue = customDefaultValue;
-      }
     }
     return defaultValue;
   }
@@ -3218,7 +3197,7 @@ export default class Component extends Element {
   }
 
   doValueCalculation(dataValue, data, row) {
-      const calculatedValue = this.evaluate(this.component.calculateValue, {
+      return this.evaluate(this.component.calculateValue, {
         value: dataValue,
         data,
         row: row || this.data,
@@ -3226,10 +3205,6 @@ export default class Component extends Element {
           data: this.rootValue
         }
       }, 'value');
-      if (this.shouldSetCalculatedValue) {
-        return calculatedValue;
-      }
-      return dataValue;
   }
 
   /* eslint-disable max-statements */
