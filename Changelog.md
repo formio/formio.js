@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.1.0-rc.26]
+## 5.1.0-rc.26
 ### Changed
  - FIO-9837: cant approve valid api key
  - FIO-9721 Added Submit button as available trigger option of captcha inside Wizard 
