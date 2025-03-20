@@ -3,14 +3,16 @@
     "module": "commonjs",
     "outDir": "lib",
     "target": "ES2015",
-    "allowJs": true,                          /* Allow javascript files to be compiled. */
-    "allowSyntheticDefaultImports": true,     /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
-    "noImplicitThis": false,                  /* Raise error on 'this' expressions with an implied 'any' type. */
-    "declaration": true,                     /* Generates corresponding '.d.ts' file. */
-    "baseUrl": "src",                         /* Base directory to resolve non-absolute module names. */
-    "esModuleInterop": true,                  /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
-    "inlineSourceMap": false,                 /* Emit a single file with source maps instead of having a separate file. */
-    "lib": ["esnext"],                        /* Specify library files to be included in the compilation. */
+    "allowJs": true, /* Allow javascript files to be compiled. */
+    "allowSyntheticDefaultImports": true, /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
+    "noImplicitThis": false, /* Raise error on 'this' expressions with an implied 'any' type. */
+    "declaration": true, /* Generates corresponding '.d.ts' file. */
+    "baseUrl": "src", /* Base directory to resolve non-absolute module names. */
+    "esModuleInterop": true, /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    "inlineSourceMap": false, /* Emit a single file with source maps instead of having a separate file. */
+    "lib": [
+      "esnext"
+    ], /* Specify library files to be included in the compilation. */
     "listEmittedFiles": false,
     "listFiles": false,
     "moduleResolution": "node",
@@ -20,12 +22,64 @@
     "skipLibCheck": true,
     "strict": true,
     "traceResolution": false,
-    "types": ["node"],
-    "experimentalDecorators": true,           /* Enables experimental support for ES7 decorators. */
-    "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
+    "types": [
+      "node"
+    ],
+    "experimentalDecorators": true, /* Enables experimental support for ES7 decorators. */
+    "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
   },
   "include": [
-    "src/**/*.js"
+    "src/**/*.js",
+    "test/unit/CDN.unit.js",
+    "test/unit/Formio.unit.js",
+    "test/unit/PDFBuilder.unit.js",
+    "test/unit/validateWhenHidden.unit.js",
+    "test/unit/Webform.unit.js",
+    "test/unit/WebformBuilder.unit.js",
+    "test/unit/Wizard.unit.js",
+    "test/unit/WizardBuilder.unit.js",
+    "test/unit/s3.unit.js",
+    "test/unit/Templates.unit.js",
+    "test/unit/utils.unit.js",
+    "test/unit/Component.unit.js",
+    "test/unit/NestedComponent.unit.js",
+    "test/unit/NestedArrayComponent.unit.js",
+    "test/unit/NestedDataComponent.unit.js",
+    "test/unit/Address.unit.js",
+    "test/unit/Button.unit.js",
+    "test/unit/Checkbox.unit.js",
+    "test/unit/Columns.unit.js",
+    "test/unit/Container.unit.js",
+    "test/unit/Content.unit.js",
+    "test/unit/Currency.unit.js",
+    "test/unit/DataGrid.unit.js",
+    "test/unit/DataMap.unit.js",
+    "test/unit/DateTime.unit.js",
+    "test/unit/Day.unit.js",
+    "test/unit/Email.unit.js",
+    "test/unit/Fieldset.unit.js",
+    "test/unit/File.unit.js",
+    "test/unit/Form.unit.js",
+    "test/unit/Hidden.unit.js",
+    "test/unit/HTML.unit.js",
+    "test/unit/Number.unit.js",
+    "test/unit/Panel.unit.js",
+    "test/unit/Password.unit.js",
+    "test/unit/PhoneNumber.unit.js",
+    "test/unit/Radio.unit.js",
+    "test/unit/ReCaptcha.unit.js",
+    "test/unit/SelectBoxes.unit.js",
+    "test/unit/Signature.unit.js",
+    "test/unit/Survey.unit.js",
+    "test/unit/Table.unit.js",
+    "test/unit/Tabs.unit.js",
+    "test/unit/Tags.unit.js",
+    "test/unit/TextArea.unit.js",
+    "test/unit/TextField.unit.js",
+    "test/unit/Time.unit.js",
+    "test/unit/Unknown.unit.js",
+    "test/unit/Url.unit.js",
+    "test/unit/Well.unit.js"
   ],
   "exclude": [
     "node_modules",

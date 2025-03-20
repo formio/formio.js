@@ -56,7 +56,7 @@
     "dopublish": "npm run build && npm run tag && npm publish",
     "lint": "eslint ./src --fix",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
-    "test": "mocha 'src/**/*.unit.js'",
+    "test": "mocha 'test/unit/*.unit.js'",
     "test:updateRenders": "npm run lib && TZ=UTC node --require jsdom-global/register test/updateRenders.js",
     "test:e2e": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --verbose --single-run"
   },
