@@ -130,7 +130,8 @@ export default class AddressComponent extends ContainerComponent {
     // Added for backwards compatibility
     if (this.component.providerOptions) {
       const {params, url, queryProperty, responseProperty, displayValueProperty } = this.component.providerOptions;
-      const {key, autocompleteOptions} = params;
+      const key = params?.key;
+      const autocompleteOptions = params?.autocompleteOptions;
 
       delete this.component.providerOptions
       this.component.url = url;
