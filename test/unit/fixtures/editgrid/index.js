@@ -21,4 +21,30 @@ import withOpenWhenEmptyAndConditions from './comp-with-conditions-and-openWhenE
 import compOpenWhenEmpty from './comp-openWhenEmpty';
 import compWithCustomDefaultValue from './comp-with-custom-default-value';
 import compTestEvents from './comp-test-events';
-export { comp1, comp2, comp3, comp4, comp5, comp6, comp7, comp8, comp9, comp10, comp11, comp12, comp13, comp14, comp15, comp16, comp18, comp19, comp20, compOpenWhenEmpty, withOpenWhenEmptyAndConditions, compWithCustomDefaultValue, compTestEvents };
+import formsWithEditGridAndConditions from './formsWithEditGridAndConditions';
+export {
+  comp1,
+  comp2,
+  comp3,
+  comp4,
+  comp5,
+  comp6,
+  comp7,
+  comp8,
+  comp9,
+  comp10,
+  comp11,
+  comp12,
+  comp13,
+  comp14,
+  comp15,
+  comp16,
+  comp18,
+  comp19,
+  comp20,
+  compOpenWhenEmpty,
+  withOpenWhenEmptyAndConditions,
+  compWithCustomDefaultValue,
+  compTestEvents,
+  formsWithEditGridAndConditions
+};
