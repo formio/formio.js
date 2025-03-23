@@ -1,7 +1,7 @@
 import assert from 'power-assert';
 import _ from 'lodash';
-import Harness from '../../../test/harness';
-import EditGridComponent from './EditGrid';
+import Harness from '../harness';
+import EditGridComponent from '../../src/components/editgrid/EditGrid';
 import {
   comp1,
   comp4,
@@ -21,20 +21,20 @@ import {
   comp17,
   comp18,
   comp19,
+  comp20,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
   compWithCustomDefaultValue,
-} from './fixtures';
-import formsWithEditGridAndConditions from './fixtures/formsWithEditGridAndConditions';
+  formsWithEditGridAndConditions
+} from './fixtures/editgrid';
 
-import ModalEditGrid from '../../../test/forms/modalEditGrid';
-import EditGridOpenWhenEmpty from '../../../test/forms/editGridOpenWhenEmpty';
-import Webform from '../../Webform';
-import { displayAsModalEditGrid } from '../../../test/formtest';
-import { Formio } from '../../Formio';
+import ModalEditGrid from '../forms/modalEditGrid';
+import EditGridOpenWhenEmpty from '../forms/editGridOpenWhenEmpty';
+import Webform from '../../src/Webform';
+import { displayAsModalEditGrid } from '../formtest';
+import { Formio } from '../../src/Formio';
 
 describe('EditGrid Component', () => {
-
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
     Harness.testCreate(EditGridComponent, comp4).then((component) => {
       component.setValue([{ dataMap: { key111: '111' } }]);
@@ -390,7 +390,7 @@ describe('EditGrid Component', () => {
           assert.equal(form.errors.length, 1);
           done();
         }, 500)
-        
+
       }, 200)
     }).catch(done);
   })
@@ -594,8 +594,9 @@ describe('EditGrid Component', () => {
 
           setTimeout(() => {
             editGrid.editRow(0).then(() => {
-              const textField = form.getComponent(['editGrid', 0, 'form', 'textField']);
+              const textField = form.getComponent(['editGrid', 0, 'form', 'data', 'textField']);
 
+              assert(textField);
               textField.setValue('someValue');
 
               setTimeout(() => {
@@ -1412,7 +1413,7 @@ describe('EditGrid Component', () => {
       }, 300);
     }).catch(done);
   });
-  
+
   it('Should not show validation in new row with required conditional fields before attempt to save', (done) => {
     const form = _.cloneDeep(comp12);
     const element = document.createElement('div');
@@ -1493,7 +1494,7 @@ describe('EditGrid Component', () => {
   it('Should not allow to save invalid row when there are required components inside columns in the editGrod row', (done) => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
-  
+
     form.setForm(comp19).then(() => {
       const editGrid = form.components[0];
 
