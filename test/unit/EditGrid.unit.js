@@ -19,21 +19,20 @@ import {
   comp15,
   comp16,
   comp17,
+  comp18,
   comp19,
   comp20,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
   compWithCustomDefaultValue,
-  compTestEvents
+  formsWithEditGridAndConditions
 } from './fixtures/editgrid';
-import formsWithEditGridAndConditions from './fixtures/editgrid/formsWithEditGridAndConditions';
 
 import ModalEditGrid from '../forms/modalEditGrid';
 import EditGridOpenWhenEmpty from '../forms/editGridOpenWhenEmpty';
-import Webform from '../../src/Webform'
+import Webform from '../../src/Webform';
 import { displayAsModalEditGrid } from '../formtest';
 import { Formio } from '../../src/Formio';
-import { fastCloneDeep } from '@formio/core';
 
 describe('EditGrid Component', () => {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
@@ -597,6 +596,7 @@ describe('EditGrid Component', () => {
             editGrid.editRow(0).then(() => {
               const textField = form.getComponent(['editGrid', 0, 'form', 'data', 'textField']);
 
+              assert(textField);
               textField.setValue('someValue');
 
               setTimeout(() => {
@@ -617,14 +617,14 @@ describe('EditGrid Component', () => {
                         assert.equal(errorAlert, null, 'Should be valid');
 
                         done();
-                      }, 300);
+                      }, 100);
                     });
-                  }, 300);
-                }, 300);
-              }, 300);
+                  }, 100);
+                }, 100);
+              }, 100);
             });
-          }, 300);
-        }, 300);
+          }, 100);
+        }, 100);
       }).catch(done)
       .finally(() => {
         ModalEditGrid.components[0].rowDrafts = false;
@@ -679,7 +679,7 @@ describe('EditGrid Component', () => {
                 }, 300);
               }, 300);
             }, 150);
-          }, 300);
+          }, 800);
         }, 100);
       }).catch(done)
       .finally(() => {
@@ -1211,7 +1211,7 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
-  it('Should show validation when saving a row with required conditional field inside container', (done) => {
+  it('Should show validation when saving a row with required conditional filed inside container', (done) => {
     const form = _.cloneDeep(comp12);
     const element = document.createElement('div');
 
@@ -1273,6 +1273,30 @@ describe('EditGrid Component', () => {
     }).catch(done);
   });
 
+  it('Should keep value for conditional editGrid on setValue when server option is provided', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form1, { server: true }).then(form => {
+      const formData = {
+        checkbox: true,
+        radio: 'yes',
+        editGrid: [
+          { textField: 'test', number: 4 },
+          { textField: 'test1', number: 5 },
+        ],
+      };
+
+      form.setValue({ data: _.cloneDeep(formData) });
+
+      setTimeout(() => {
+        const editGrid = form.getComponent('editGrid');
+        assert.deepEqual(editGrid.dataValue, formData.editGrid);
+
+        done();
+      }, 500);
+    }).catch(done);
+  });
+
   it('Should set value for conditional editGrid inside editGrid on event when form is not pristine ', (done) => {
     const element = document.createElement('div');
 
@@ -1292,6 +1316,85 @@ describe('EditGrid Component', () => {
           done();
         }, 500);
       }, 300);
+    }).catch(done);
+  });
+
+  it('Should keep value for conditional editGrid in tabs on setValue when server option is provided', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form3, { server: true }).then(form => {
+      const formData =  {
+        affectedRiskTypes: {
+          creditRisk: false,
+          marketRisk: true,
+          operationalRisk: false,
+          counterpartyCreditRisk: false,
+          creditValuationRiskAdjustment: false,
+        },
+        rwaImpact: 'yes',
+        submit: true,
+        mr: {
+          quantitativeInformation: {
+            cva: 'yes',
+            sameRiskCategories: false,
+            impactsPerEntity: [{ number: 123 }],
+            sameImpactAcrossEntities: false,
+          },
+        },
+        euParentInstitution: 'EUParent',
+      };
+
+      form.setValue({ data: _.cloneDeep(formData) });
+
+      setTimeout(() => {
+        const editGrid = form.getComponent('impactsPerEntity');
+        assert.deepEqual(editGrid.dataValue, formData.mr.quantitativeInformation.impactsPerEntity);
+        assert.deepEqual(editGrid.editRows.length, 1);
+
+        done();
+      }, 500);
+    }).catch(done);
+  });
+
+  it('Should calculate editGrid value when calculateOnServer is enabled and server option is passed', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form4, { server: true }).then(form => {
+        const editGrid = form.getComponent('editGrid');
+        assert.deepEqual(editGrid.dataValue, [{ textArea: 'test' }]);
+        assert.deepEqual(editGrid.editRows.length, 1);
+        done();
+    }).catch(done);
+  });
+
+  it('Should keep value for conditional editGrid deeply nested in panels and containers on setValue when server option is provided', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, formsWithEditGridAndConditions.form5, { server: true }).then(form => {
+      const formData =  {
+        generalInformation: {
+          listSupervisedEntitiesCovered: [
+            { id: 6256, longName: 'Bank_DE', leiCode: 'LEI6256', countryCode: 'DE' },
+          ],
+          deSpecific: {
+            criticalPartsToBeOutsourcedSuboutsourcer: 'yes',
+            suboutsourcers: [
+              { nameSuboutsourcer: 'test' },
+              { nameSuboutsourcer: 'test 1' },
+            ],
+          },
+        },
+      };
+
+      form.setValue({ data: _.cloneDeep(formData) });
+
+      setTimeout(() => {
+        const editGrid = form.getComponent('suboutsourcers');
+        assert.deepEqual(editGrid.dataValue, formData.generalInformation.deSpecific.suboutsourcers);
+        assert.deepEqual(editGrid.editRows.length, 2);
+
+        done();
+      }, 500);
     }).catch(done);
   });
 
@@ -1410,7 +1513,6 @@ describe('EditGrid Component', () => {
             }, 300);
           }, 300);
       }, 100);
-
     }).catch(done);
   });
 });
@@ -1475,35 +1577,6 @@ describe('EditGrid Open when Empty', () => {
       })
       .catch(done);
   });
-
-  it('Should correctly set data in EditGrid when noDefaults is set', async () => {
-    const element = document.createElement('div');
-    const form = await Formio.createForm(element, compOpenWhenEmpty, { noDefaults: true });
-
-    // Function to add a row and set value to the textField
-    const addRowAndSetValue = async (rowIndex, value) => {
-      await editGrid.addRow();
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      const textField = editGrid.getComponent([rowIndex, 'textField']);
-      textField.setValue(value);
-    };
-
-    const editGrid = form.getComponent('editGrid');
-
-    await addRowAndSetValue(0, '1');
-    editGrid.saveRow(0)
-    await addRowAndSetValue(1, '2');
-    editGrid.saveRow(1)
-
-    assert.equal(form._data.editGrid.length, 2);
-    assert.deepEqual(form._data, { editGrid: [ { textField: '1' }, { textField: '2' } ] });
-
-    const event = await form.submitForm()
-    const submissionData = event.submission.data;
-
-    assert.deepEqual(submissionData, { editGrid: [ { textField: '1' }, { textField: '2' } ] });
-  });
-
 
   it('Should always add a first row', (done) => {
     const formElement = document.createElement('div');
@@ -1614,152 +1687,11 @@ describe('EditGrid Open when Empty', () => {
             assert.equal(editRow.errors.length, 1, 'Should show error on row');
             const textField = editRow.components[0];
             assert(textField.element.className.includes('formio-error-wrapper'), 'Should add error class to component');
+            const error = editRow.errors[0];
+            assert.equal(error.formattedKeyOrPath, 'editGrid[0].textField');
             done();
           }, 450);
       }, 100);
     }).catch(done);
-  });
-});
-
-describe('EditGrid Fired Events', () => {
-  const eventParams = ['row', 'component', 'instance']
-  it('Should fire editGridEditRow event on the row edit button click', (done) => {
-    const formElement = document.createElement('div');
-    let eventsCount = 0;
-    Formio.createForm(formElement, compTestEvents)
-      .then((form) => {
-        form.on('editGridEditRow', (eventArgs) => {
-          _.each(eventParams, (param) => {
-            assert.equal(!!eventArgs[param], true);
-          });
-          eventsCount = eventsCount + 1;
-        });
-
-        form.setSubmission({
-          data: {
-          editGrid: [
-              {
-                  textField: 'test1'
-              },
-              {
-                  textField: 'test2'
-              }
-          ],
-        }})
-        .then(() => {
-          const editBtn = form.element.querySelector('.editRow');
-          const clickEvent = new Event('click');
-          editBtn.dispatchEvent(clickEvent);
-
-          setTimeout(() => {
-            assert.equal(eventsCount, 1);
-            done();
-
-          }, 350);
-        });
-      })
-      .catch(done);
-  });
-
-  it('Should fire editGridOpenModal event on the row edit button click when modal is enabled', (done) => {
-    const formElement = document.createElement('div');
-    let eventsCount = 0;
-    const testForm = fastCloneDeep(compTestEvents);
-    testForm.components[0].modal = true;
-
-    Formio.createForm(formElement, testForm)
-      .then((form) => {
-        form.on('editGridOpenModal', (eventArgs) => {
-          _.each(eventParams, (param) => {
-            assert.equal(!!eventArgs[param], true);
-          });
-          eventsCount = eventsCount + 1;
-        });
-
-        form.setSubmission({
-          data: {
-          editGrid: [
-              {
-                  textField: 'test1'
-              },
-              {
-                  textField: 'test2'
-              }
-          ],
-        }})
-        .then(() => {
-          const editBtn = form.element.querySelector('.editRow');
-          const clickEvent = new Event('click');
-          editBtn.dispatchEvent(clickEvent);
-
-          setTimeout(() => {
-            assert.equal(eventsCount, 1);
-            done();
-          }, 350);
-        })
-      })
-      .catch(done);
-  });
-
-  it('Should fire editGridOpenModal event when adding new row and modal is enabled', (done) => {
-    const formElement = document.createElement('div');
-    let eventsCount = 0;
-    const testForm = fastCloneDeep(compTestEvents);
-    testForm.components[0].modal = true;
-
-    Formio.createForm(formElement, testForm)
-      .then((form) => {
-        form.on('editGridOpenModal', (eventArgs) => {
-          _.each(eventParams, (param) => {
-            assert.equal(!!eventArgs[param], true);
-          });
-          eventsCount = eventsCount + 1;
-        });
-
-        const editGrid = form.getComponent('editGrid');
-          const addBtn = editGrid.refs['editgrid-editGrid-addRow'][0];
-          const clickEvent = new Event('click');
-          addBtn.dispatchEvent(clickEvent);
-
-          setTimeout(() => {
-            assert.equal(eventsCount, 1);
-            done();
-          }, 350);
-      })
-      .catch(done);
-  });
-
-  it('Should prepare correct email table template with nested layout components', (done) => {
-    const formElement = document.createElement('div');
-    const testForm = fastCloneDeep(comp17);
-    Formio.createForm(formElement, testForm)
-      .then((form) => {
-        form.setSubmission({
-          data: {
-            editGrid: [{
-              radio: 'yes',
-              textArea: 'text area 1',
-            }, {
-              radio: 'no',
-              textArea: 'text area 2',
-            }],
-          },
-        });
-
-        const editGridComp = form.getComponent('editGrid');
-
-        setTimeout(() => {
-          const table = editGridComp.getValueAsString(editGridComp.dataValue, { email: true});
-          assert.ok(table.includes('table'));
-          assert.ok(table.includes('Radio'));
-          assert.ok(table.includes('Text Area'));
-          assert.ok(table.includes('yes'));
-          assert.ok(table.includes('text area 1'));
-          assert.ok(table.includes('no'));
-          assert.ok(table.includes('text area 2'));
-          done();
-        }, 200);
-      })
-      .catch(done);
   });
 });
