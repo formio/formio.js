@@ -127,6 +127,21 @@ export default class AddressComponent extends ContainerComponent {
     }
     Field.prototype.init.call(this);
 
+    // Added for backwards compatibility
+    if (this.component.providerOptions) {
+      const {params, url, queryProperty, responseProperty, displayValueProperty } = this.component.providerOptions;
+      const key = params?.key;
+      const autocompleteOptions = params?.autocompleteOptions;
+
+      delete this.component.providerOptions
+      this.component.url = url;
+      this.component.queryProperty = queryProperty;
+      this.component.responseProperty = responseProperty;
+      this.component.displayValueProperty = displayValueProperty;
+      this.component.apiKey = key;
+      this.component.autocompleteOptions = autocompleteOptions;
+    }
+
     let provider = this.component.provider;
     const providerOptions = this.providerOptions;
     const map = this.component.map;
