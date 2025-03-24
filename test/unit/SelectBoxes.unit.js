@@ -12,8 +12,8 @@ import {
   comp6,
   comp7,
   comp8,
-  comp12,
 } from './fixtures/selectboxes';
+import { comp12 } from './fixtures/radio';
 import wizardWithSelectBoxes from '../forms/wizardWithSelectBoxes';
 import { fastCloneDeep } from '@formio/core';
 

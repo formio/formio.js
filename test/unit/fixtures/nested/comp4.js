@@ -1,4 +1,4 @@
-import comp from './comp2';
+import comp from '../checkbox/comp2';
 
 export default {
     components: [
