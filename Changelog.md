@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.1.0-rc.27]
+## 5.1.0-rc.27
+### Changed
+ - FIO-9889: added backwards compatibility checks for provider options
  - FIO-9887: fix 5.1.x branch tests
 
 ## 5.1.0-rc.26
