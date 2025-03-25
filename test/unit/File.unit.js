@@ -4,6 +4,7 @@ import FileComponent from '../../src/components/file/File';
 import { comp1, comp2 } from './fixtures/file';
 import { Formio } from '../../src/Formio';
 import _ from 'lodash';
+import * as testFileUpload from '../forms/formWithFileComponent';
 
 describe('File Component', () => {
   it('Should create a File Component', () => {
@@ -363,5 +364,38 @@ describe('File Component', () => {
       const file = new File(content, 'file.0');
       component.handleFilesToUpload([file]);
     });
+  });
+
+  it('Should emit fileUploadingStart and fileUploadingEnd events', (done) => {
+      Formio.createForm(document.createElement('div'), testFileUpload.form)
+        .then((form) => {
+          const controlParameters = {
+            uploadStart: 0,
+            uploadStartPromiseEnd: 0,
+            uploadEnd: 0,
+            uploadEndPromiseEnd: 0,
+          };
+
+          form.on('fileUploadingStart', (uploadPromise) => {
+            ++controlParameters.uploadStart;
+            console.log('start'); 
+            uploadPromise.catch(() => {}).finally(() => ++controlParameters.uploadStartPromiseEnd);
+          });
+          form.on('fileUploadingEnd', (uploadPromise) => {
+            ++controlParameters.uploadEnd;
+            console.log('end'); 
+            uploadPromise.catch(() => {}).finally(() => ++controlParameters.uploadEndPromiseEnd);
+          });
+
+          const fileComponent = form.getComponent('file');
+          fileComponent.handleFilesToUpload(testFileUpload.files);
+
+          setTimeout(() => {
+            _.each(controlParameters, (value, param) => {
+              assert.equal(value, 1, `The ${param} should be equal to 1`)
+            })
+            done();
+          }, 300);
+        });
   });
 });
