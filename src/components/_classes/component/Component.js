@@ -758,32 +758,18 @@ export default class Component extends Element {
   }
 
   shouldConditionallyClear(skipParent = false) {
+    // Skip if this component has clearOnHide set to false.
     if (this.component.clearOnHide === false) {
       return false;
     }
+
     // If the component is logically hidden, then it is conditionally hidden and should clear.
     if (this.logicallyHidden) {
       return true;
     }
 
-    // If this component does not have a condition.
-    if (!this.hasCondition()) {
-      if (skipParent) {
-        // Stop recurrsion for the parent checks.
-        return false;
-      }
-
-      // If we are conditionally hidden, then clear.
-      if (this.conditionallyHidden()) {
-        return true;
-      }
-
-      // Try the parent to see if it should conditionally clear.
-      return this.parentShouldConditionallyClear();
-    }
-
-    // If we are not conditionally visible, then we should conditionally clear.
-    if (!this.conditionallyVisible()) {
+    // If we have a condition and it is not conditionally visible, the it should conditionally clear.
+    if (this.hasCondition() && !this.conditionallyVisible()) {
       return true;
     }
 
@@ -792,23 +778,24 @@ export default class Component extends Element {
       return false;
     }
 
-    // Check the parent to see if it should conditionally clear.
-    return this.parentShouldConditionallyClear();
+    // If this component has a set value, then it should ONLY clear if a parent is hidden
+    // and has the clearOnHide set to true.
+    if (this.hasSetValue) {
+      return this.parentShouldConditionallyClear();
+    }
+
+    // Clear the value if the parent is conditionally hidden.
+    return this.parentConditionallyHidden();
   }
 
   conditionallyHidden(skipParent = false) {
     if (this.logicallyHidden) {
       return true;
     }
-    if (!this.hasCondition()) {
-      if (skipParent) {
-        // Stop recurrsion for the parent checks.
-        return false;
-      }
-      // Try the parent.
+    if (!this.hasCondition() && !skipParent) {
       return this.parentConditionallyHidden();
     }
-    // If we are not conditionally visible, then we should conditionally clear.
+    // Return if we are not conditionally visible (conditionallyHidden)
     if (!this.conditionallyVisible()) {
       return true;
     }
