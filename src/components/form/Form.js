@@ -584,7 +584,7 @@ export default class FormComponent extends Component {
    * @returns {*|boolean} - TRUE if the subform should be submitted, FALSE if it should not.
    */
   get shouldSubmit() {
-    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && (!this.conditionallyHidden() || !this.component.clearOnHide);
+    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.shouldConditionallyClear();
   }
 
   /**
