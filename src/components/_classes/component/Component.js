@@ -2923,14 +2923,15 @@ export default class Component extends Element {
 
   get shouldAddDefaultValue() {
     // It should add a default value if...
-    //  1.) Ensure they have not set "noDefaults". If that is true, then will always return false.  AND
-    //  2.) The component is pristine (user has not manually modified it).  AND
-    //  3.) There is a default value setting present and it is not NULL or UNDEFINED.
-    return !this.options.noDefaults && this.pristine && (
+    //  1.) The component is pristine (user has not manually modified it).  AND
+    //      1.) There is a default value setting present OR
+    //      2.) The noDefaults flag is not true AND the empty value is either an empty string or boolean
+    return this.pristine && (
       this.hasDefaultValue || 
-      // Empty strings and booleans are allowed primitives whose defaults are automatically added.
-      (this.emptyValue === '' || (typeof this.emptyValue === 'boolean'))
-    );
+      (
+        !this.options.noDefaults && (this.emptyValue === '' || (typeof this.emptyValue === 'boolean')
+      )
+    ));
   }
 
   get defaultValue() {
