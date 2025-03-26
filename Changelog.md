@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.1.0-rc.28
+### Changed
+ - FIO-9888: Fixed issue where the noDefaults flag would skip defaults even for calculations.
+ - FIO-9913: Fixed problems where conditionally hidden fields would reset when their parents are hidden but have clearOnHide set to false.
+ - FIO-9912: Fixed issue where the default value of the address component would clear and not reset.
+
 ## 5.1.0-rc.27
 ### Changed
  - FIO-9889: added backwards compatibility checks for provider options
