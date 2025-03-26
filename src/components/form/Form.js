@@ -126,6 +126,11 @@ export default class FormComponent extends Component {
     return { data: {} };
   }
 
+  // In order for the subform values to set properly, we must always say that nested forms have a default value.
+  get hasDefaultValue() {
+    return true;
+  }
+
   get ready() {
     return this.subFormReady || Promise.resolve();
   }
@@ -579,7 +584,7 @@ export default class FormComponent extends Component {
    * @returns {*|boolean} - TRUE if the subform should be submitted, FALSE if it should not.
    */
   get shouldSubmit() {
-    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && (!this.conditionallyHidden() || !this.component.clearOnHide);
+    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.shouldConditionallyClear();
   }
 
   /**

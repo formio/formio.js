@@ -915,7 +915,7 @@ export default class NestedComponent extends Field {
     else if (value && component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags);
     }
-    else if ((!this.rootPristine || component.visible) && component.shouldAddDefaultValue) {
+    else if ((!this.rootPristine || component.visible) && (flags.resetValue || component.shouldAddDefaultValue)) {
       flags.noValidate = !flags.dirty;
       flags.resetValue = true;
       return component.setValue(component.defaultValue, flags);
@@ -925,6 +925,13 @@ export default class NestedComponent extends Field {
   setValue(value, flags = {}) {
     if (!value) {
       return false;
+    }
+    // If the value is equal to the empty value, then this means we need to reset the values.
+    if (_.isEqual(value, this.emptyValue)) {
+      // TO-DO: For a future major release, we need to investigate removing the need for the
+      // "resetValue" flag. This seems like a hack that is no longer necessary and the renderer
+      // may behave more deterministically without it.
+      flags.resetValue = true;
     }
     return this.getComponents().reduce((changed, component) => {
       return this.setNestedValue(component, value, flags, changed) || changed;

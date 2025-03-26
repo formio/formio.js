@@ -388,24 +388,6 @@ export default class Component extends Element {
     this._referenceAttributeName = 'ref';
 
     /**
-     * Sometimes the customDefaultValue does not set the "value" within the script, but is just a script to execute. This
-     * flag is used to determine if the customDefaultValue should be used to set the value of the component or not based on 
-     * if there is a "value=" within the script.
-     */
-    this.shouldSetCustomDefault = true;
-    if (this.component.customDefaultValue && (typeof this.component.customDefaultValue === 'string')) {
-      this.shouldSetCustomDefault = this.component.customDefaultValue.match(/value\s*=/);
-    }
-
-    /**
-     * Same as customDefaultValue, but for calculateValue.
-     */
-    this.shouldSetCalculatedValue = true;
-    if (this.component.calculateValue && (typeof this.component.calculateValue === 'string')) {
-      this.shouldSetCalculatedValue = this.component.calculateValue.match(/value\s*=/);
-    }
-
-    /**
      * Used to trigger a new change in this component.
      * @type {Function} - Call to trigger a change in this component.
      */
@@ -473,7 +455,7 @@ export default class Component extends Element {
       if (this.allowData && this.key) {
         this.options.name += `[${this.key}]`;
         // If component is visible or not set to clear on hide, set the default value.
-        if (!(this.conditionallyHidden() && this.component.clearOnHide)) {
+        if (!this.shouldConditionallyClear()) {
           if (!this.hasValue()) {
             if (this.shouldAddDefaultValue) {
               this.dataValue = this.defaultValue;
@@ -509,6 +491,17 @@ export default class Component extends Element {
 
   get componentsMap() {
     return this.root?.childComponentsMap || {};
+  }
+
+  parentShouldConditionallyClear() {
+    let currentParent = this.parent;
+    while (currentParent) {
+      if (currentParent.shouldConditionallyClear(true)) {
+        return true;
+      }
+      currentParent = currentParent.parent;
+    }
+    return false;
   }
 
   parentConditionallyHidden() {
@@ -771,11 +764,54 @@ export default class Component extends Element {
     return this._logicallyHidden;
   }
 
-  conditionallyHidden(skipParent = false) {
-    if (!this.hasCondition()) {
-      return this.logicallyHidden || (skipParent ? false : this.parentConditionallyHidden());
+  shouldConditionallyClear(skipParent = false) {
+    // Skip if this component has clearOnHide set to false.
+    if (this.component.clearOnHide === false) {
+      return false;
     }
-    return !this.conditionallyVisible() || this.logicallyHidden || (skipParent ? false : this.parentConditionallyHidden());
+
+    // If the component is logically hidden, then it is conditionally hidden and should clear.
+    if (this.logicallyHidden) {
+      return true;
+    }
+
+    // If we have a condition and it is not conditionally visible, the it should conditionally clear.
+    if (this.hasCondition() && !this.conditionallyVisible()) {
+      return true;
+    }
+
+    if (skipParent) {
+      // Stop recurrsion for the parent checks.
+      return false;
+    }
+
+    // If this component has a set value, then it should ONLY clear if a parent is hidden
+    // and has the clearOnHide set to true.
+    if (this.hasSetValue) {
+      return this.parentShouldConditionallyClear();
+    }
+
+    // Clear the value if the parent is conditionally hidden.
+    return this.parentConditionallyHidden();
+  }
+
+  conditionallyHidden(skipParent = false) {
+    if (this.logicallyHidden) {
+      return true;
+    }
+    if (!this.hasCondition() && !skipParent) {
+      return this.parentConditionallyHidden();
+    }
+    // Return if we are not conditionally visible (conditionallyHidden)
+    if (!this.conditionallyVisible()) {
+      return true;
+    }
+    if (skipParent) {
+      // Stop recurrsion for the parent checks.
+      return false;
+    }
+    // Check the parent.
+    return this.parentConditionallyHidden();
   }
 
   get currentForm() {
@@ -2392,7 +2428,7 @@ export default class Component extends Element {
             }
           );
 
-          if (!_.isEqual(oldValue, newValue) && !(this.component.clearOnHide && this.conditionallyHidden())) {
+          if (!_.isEqual(oldValue, newValue) && !this.shouldConditionallyClear()) {
             this.setValue(newValue);
 
             if (this.viewOnly) {
@@ -2437,7 +2473,7 @@ export default class Component extends Element {
           },
           'value');
 
-          if (!_.isEqual(oldValue, newValue) && !(this.component.clearOnHide && this.conditionallyHidden())) {
+          if (!_.isEqual(oldValue, newValue) && !this.shouldConditionallyClear()) {
             this.setValue(newValue);
 
             if (this.viewOnly) {
@@ -2560,7 +2596,7 @@ export default class Component extends Element {
   clearComponentOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
-      if (this.conditionallyHidden()) {
+      if (this.shouldConditionallyClear()) {
         this.deleteValue();
       }
       else if (!this.hasValue() && this.shouldAddDefaultValue) {
@@ -2918,22 +2954,39 @@ export default class Component extends Element {
 
   getCustomDefaultValue(defaultValue) {
     if (this.component.customDefaultValue && !this.options.preview) {
-     const customDefaultValue = this.evaluate(
+     defaultValue = this.evaluate(
         this.component.customDefaultValue,
-        { value: '' },
+        { value: this.dataValue },
         'value'
       );
-      if (this.shouldSetCustomDefault) {
-        defaultValue = customDefaultValue;
-      }
     }
     return defaultValue;
   }
 
-  get shouldAddDefaultValue() {
-    return !this.options.noDefaults || (this.component.defaultValue && !this.isEmpty(this.component.defaultValue)) || this.component.customDefaultValue;
+  /**
+   * Returns if a component has a default value set.
+   * @returns {boolean} - TRUE if a default value is set.
+   */
+  get hasDefaultValue() {
+    return this.component.customDefaultValue || (
+      this.component.hasOwnProperty('defaultValue') &&
+      (this.component.defaultValue !== null) &&
+      (this.component.defaultValue !== undefined)
+    );
   }
 
+  /**
+   * Determine if we should add a default value for this component.
+   * @returns {boolean} - TRUE if a default value should be set
+   */
+  get shouldAddDefaultValue() {
+    return this.pristine && this.allowData && (this.hasDefaultValue || !this.options.noDefaults);
+  }
+
+  /**
+   * Get the default value of this component.
+   * @returns {*} - The default value for this component.
+   */
   get defaultValue() {
     let defaultValue = this.emptyValue;
     if (this.component.defaultValue) {
@@ -3218,7 +3271,7 @@ export default class Component extends Element {
   }
 
   doValueCalculation(dataValue, data, row) {
-      const calculatedValue = this.evaluate(this.component.calculateValue, {
+      return this.evaluate(this.component.calculateValue, {
         value: dataValue,
         data,
         row: row || this.data,
@@ -3226,10 +3279,6 @@ export default class Component extends Element {
           data: this.rootValue
         }
       }, 'value');
-      if (this.shouldSetCalculatedValue) {
-        return calculatedValue;
-      }
-      return dataValue;
   }
 
   /* eslint-disable max-statements */
@@ -3240,11 +3289,9 @@ export default class Component extends Element {
     }
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-    const { clearOnHide } = this.component;
-    const shouldBeCleared = this.conditionallyHidden() && clearOnHide;
     const allowOverride = _.get(this.component, 'allowCalculateOverride', false);
 
-    if (shouldBeCleared) {
+    if (this.shouldConditionallyClear()) {
       // remove calculated value so that the value is recalculated once component becomes visible
       if (this.hasOwnProperty('calculatedValue') && allowOverride) {
         _.unset(this, 'calculatedValue');
@@ -3598,6 +3645,15 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
+    // Some components (for legacy reasons) have calls to "checkData" in inappropriate places such
+    // as setValue. Historically, this was bypassed by a series of cached states around the data model
+    // which caused its own problems. We need to ensure that premium and custom components do not fall into 
+    // an infinite loop by only checking this component once.
+    if (this.checkingData) {
+      return;
+    }
+    this.checkingData = true;
+
     // Needs for Nextgen Rules Engine
     this.resetCaches();
 
@@ -3615,6 +3671,9 @@ export default class Component extends Element {
     if (this.id !== flags.triggeredComponentId) {
       this.calculateComponentValue(data, flags, row);
     }
+
+    // We are done checking data.
+    this.checkingData = false;
   }
 
   checkModal(errors = [], dirty = false) {
