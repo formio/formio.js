@@ -6,7 +6,7 @@ const EditFormUtils = {
   },
   unifyComponents(objValue, srcValue) {
     if (objValue.key && srcValue.key) {
-      if (objValue.skipMerge || srcValue.skipMerge) {
+      if ((objValue.skipMerge || srcValue.skipMerge) && !objValue.ignore) {
         return false;
       }
       if (objValue.key === srcValue.key) {
