@@ -1282,6 +1282,8 @@ export default class EditGridComponent extends NestedArrayComponent {
       return false;
     }
 
+    // TODO: this is the only place invalidMessage gets called, and it's not clear why it's needed - we already validate the editGrid
+    // component above with super.checkComponentValidity
     const message = this.invalid || this.invalidMessage(data, dirty, false, row, options);
     if (allRowErrors.length && this.root?.submitted && !message) {
       this._errors = this.setCustomValidity(message, dirty);

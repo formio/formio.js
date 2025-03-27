@@ -2,6 +2,7 @@ import UnknownEditDisplay from './editForm/Unknown.edit.display';
 
 /**
  * Unknown Component schema.
+ * @param {...any} extend
  * @returns {object} - The Unknown Component edit form.
  */
 export default function() {
