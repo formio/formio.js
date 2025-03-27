@@ -3434,9 +3434,11 @@ export default class Component extends Element {
    * @param {boolean} dirty - If the component is dirty.
    * @param {boolean} ignoreCondition - If conditions for the component should be ignored when checking validity.
    * @param {*} row - Contextual row data for this component.
+   * @param {*} options - Additional options for validation.
    * @returns {string} - The message to show when the component is invalid.
    */
-  invalidMessage(data, dirty, ignoreCondition, row) {
+  invalidMessage(data, dirty, ignoreCondition, row, options = {}) {
+    const { local } = options;
     if (!row) {
       row = getContextualRowData(this.component, data, this.paths);
     }
@@ -3459,6 +3461,7 @@ export default class Component extends Element {
       component: this.component,
       data,
       row,
+      local,
       path: this.path || this.component.key,
       parent: this.parent?.component,
       paths: this.paths,
@@ -3647,7 +3650,7 @@ export default class Component extends Element {
 
     // Some components (for legacy reasons) have calls to "checkData" in inappropriate places such
     // as setValue. Historically, this was bypassed by a series of cached states around the data model
-    // which caused its own problems. We need to ensure that premium and custom components do not fall into 
+    // which caused its own problems. We need to ensure that premium and custom components do not fall into
     // an infinite loop by only checking this component once.
     if (this.checkingData) {
       return;

@@ -4,6 +4,7 @@ import EditFormUtils from '../../components/_classes/component/editForm/utils';
 
 /**
  * Unknown Component schema.
+ * @param {...any} extend
  * @returns {object} - The Unknown Component edit form.
  */
 export default function(...extend) {
