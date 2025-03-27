@@ -9,6 +9,8 @@ import dompurify from 'dompurify';
 import { getValue } from './formUtils';
 import { Evaluator } from './Evaluator';
 import ConditionOperators from './conditionOperators';
+import { convertShowToBoolean } from '@formio/core';
+
 const interpolate = Evaluator.interpolate;
 
 export * from './formUtils';
@@ -285,7 +287,7 @@ function getConditionalPathsRecursive(conditionPaths, data) {
         result = _.every(conditionsResult.flat(), res => !!res);
     }
 
-    return show ? result : !result;
+    return convertShowToBoolean(show) ? result : !result;
   }
 }
 

@@ -87,6 +87,7 @@ import formWithUniqueValidation from '../forms/formWithUniqueValidation.js';
 import formWithConditionalEmail from '../forms/formWithConditionalEmail.js';
 import formsWithSimpleConditionals from '../forms/formsWithSimpleConditionals.js';
 import translationErrorMessages from '../forms/translationErrorMessages.js';
+import formWithShowAsString from '../forms/formWithShowAsString.js';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
 if (_.has(Formio, 'Components.setComponents')) {
@@ -2828,6 +2829,49 @@ describe('Webform tests', function() {
   });
 
   describe('New Simple Conditions', () => {
+    it('Should show component correctly when the "show" setting is a string', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const formSchema = fastCloneDeep(formWithShowAsString);
+
+      form.setForm(formSchema).then(() => {
+        const checkbox = form.getComponent('checkbox');
+        const textField = form.getComponent('textField');
+        assert.equal(checkbox.dataValue, false);
+        assert.equal(textField.visible, false);
+        checkbox.setValue(true);
+
+        setTimeout(() => {
+          assert.equal(checkbox.dataValue, true);
+          assert.equal(textField.visible, true);
+
+          done();
+        }, 300);
+      }).catch((err) => done(err));
+    });
+
+    it('Should hide component correctly when the "show" setting is a string', function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const formSchema = fastCloneDeep(formWithShowAsString);
+      formSchema.components[1].conditional.show = 'false';
+
+      form.setForm(formSchema).then(() => {
+        const checkbox = form.getComponent('checkbox');
+        const textField = form.getComponent('textField');
+        assert.equal(checkbox.dataValue, false);
+        assert.equal(textField.visible, true);
+        checkbox.setValue(true);
+
+        setTimeout(() => {
+          assert.equal(checkbox.dataValue, true);
+          assert.equal(textField.visible, false);
+
+          done();
+        }, 300);
+      }).catch((err) => done(err));
+    });
+
     it('Should show field if all conditions are met', function(done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
