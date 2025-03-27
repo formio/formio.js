@@ -1282,7 +1282,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       return false;
     }
 
-    const message = this.invalid || this.invalidMessage(data, dirty, false, row);
+    const message = this.invalid || this.invalidMessage(data, dirty, false, row, options);
     if (allRowErrors.length && this.root?.submitted && !message) {
       this._errors = this.setCustomValidity(message, dirty);
       errors.push(...this._errors);
