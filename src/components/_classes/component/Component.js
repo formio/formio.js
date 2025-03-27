@@ -495,10 +495,6 @@ export default class Component extends Element {
 
   /**
    * Returns if the parent should conditionally clear.
-   * This method does not need to walk up the parent tree since the variables 
-   * _conditionallyClear and _conditionallyHidden are set on the parent component
-   * before the child component is determined, and the parent component also references
-   * its parent component.
    * 
    * @returns {boolean} - If the parent should conditionally clear.
    */
