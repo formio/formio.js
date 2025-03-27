@@ -142,7 +142,7 @@ export default class SurveyComponent extends Field {
   }
 
   getInputName(question) {
-    return `${this.options.name}[${question.value}]`;
+    return `${this.options.name}[${question.value}][${this.id}]`;
   }
 
   getValueAsString(value, options) {
