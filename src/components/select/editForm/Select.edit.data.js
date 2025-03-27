@@ -117,6 +117,7 @@ export default [
     key: 'lazyLoad',
     tooltip: 'When set, this will not fire off the request to the URL until this control is within focus. This can improve performance if you have many Select dropdowns on your form where the API\'s will only fire when the control is activated.',
     weight: 11,
+    defaultValue: true,
     conditional: {
       json: {
         and: [
