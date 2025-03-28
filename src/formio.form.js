@@ -101,6 +101,11 @@ export function registerModule(mod, defaultFn = null, options = {}) {
           ? Formio.Licenses.addLicense(mod.library, options.license)
           : Formio.Licenses.removeLicense(mod.library);
         break;
+      case 'utils':
+        for (const util in mod.utils) {
+          Formio.Utils[util] = mod.utils[util];
+        }
+        break;
       default:
         if (defaultFn) {
           if (!defaultFn(key, mod)) {
