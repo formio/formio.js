@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.1.0-rc.29
+### Changed
+ - FIO-9921: fix issue with local paths not being propogated to edit grid
+ - FIO-9933: Fixed the default value for the Lazy Load option for Select dropdowns.
+
 ## 5.1.0-rc.28
 ### Changed
  - FIO-9888: Fixed issue where the noDefaults flag would skip defaults even for calculations.
