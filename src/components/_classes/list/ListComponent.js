@@ -29,9 +29,9 @@ export default class ListComponent extends Field {
     // If the root submission has been set, and we are still not attached, then assume
     // that our data is ready.
     if (
-      this.root &&
+      (this.root &&
       this.root.submissionSet &&
-      !this.attached
+      !this.attached) || !this.visible
     ) {
       return Promise.resolve();
     }

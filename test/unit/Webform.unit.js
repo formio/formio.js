@@ -89,6 +89,7 @@ import formWithConditionalEmail from '../forms/formWithConditionalEmail.js';
 import formsWithSimpleConditionals from '../forms/formsWithSimpleConditionals.js';
 import translationErrorMessages from '../forms/translationErrorMessages.js';
 import simpleController from '../forms/formWithSimpleController.js';
+import formWithHiddenComponents from '../forms/formWithHiddenComponents.js';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
 if (_.has(Formio, 'Components.setComponents')) {
@@ -98,6 +99,20 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+  it('Should resolve dataReady promise when a form includes hidden/conditionally hidden components', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formWithHiddenComponents).then(() => {
+      let dataReadyResolved = false
+      form.dataReady.then(() => { dataReadyResolved = true; })
+      setTimeout(() => {
+        assert.equal(dataReadyResolved, true);
+        done();
+      }, 300);
+    }).catch((err) => done(err));
+  });
+
   it('Should show fields correctly if there are 2 components with the same key in the form', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
