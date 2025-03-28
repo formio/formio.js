@@ -109,6 +109,10 @@ export default class FormComponent extends Component {
     return this.createSubForm();
   }
 
+  shouldConditionallyClearOnPristine() {
+    return !this.hasSetValue && super.shouldConditionallyClearOnPristine();
+  }
+
   get dataReady() {
     return this.subForm?.dataReady || this.subFormReady || Promise.resolve();
   }
@@ -323,12 +327,13 @@ export default class FormComponent extends Component {
             }
             this.subForm.attach(element);
             this.valueChanged = this.hasSetValue;
-
-            if (!this.valueChanged && this.dataValue.state !== 'submitted') {
-              this.setDefaultValue();
-            }
-            else {
-              this.restoreValue();
+            if (!this.shouldConditionallyClear()) {
+              if (!this.valueChanged && this.dataValue.state !== 'submitted') {
+                this.setDefaultValue();
+              }
+              else {
+                this.restoreValue();
+              }
             }
           }
           if (!this.builderMode && this.component.modalEdit) {
@@ -459,7 +464,7 @@ export default class FormComponent extends Component {
         _.assign(componentsMap, formComponentsMap);
         this.component.components = this.subForm.components.map((comp) => comp.component);
         this.subForm.on('change', () => {
-          if (this.subForm) {
+          if (this.subForm && !this.shouldConditionallyClear()) {
             this.dataValue = this.subForm.getValue();
             this.triggerChange({
               noEmit: true
@@ -750,21 +755,7 @@ export default class FormComponent extends Component {
   }
 
   isEmpty(value = this.dataValue) {
-    return value === null || _.isEqual(value, this.emptyValue) || (this.areAllComponentsEmpty(value?.data) && !value?._id);
-  }
-
-  areAllComponentsEmpty(data) {
-    let res = true;
-    if (this.subForm) {
-      this.subForm.everyComponent((comp) => {
-        const componentValue = _.get(data, comp.key);
-        res &= comp.isEmpty(componentValue);
-      });
-    }
-    else {
-      res = false;
-    }
-    return res;
+    return value === null || _.isEqual(value, this.emptyValue);
   }
 
   getValue() {
