@@ -18,6 +18,7 @@ export default class FormComponent extends Component {
       form: '',
       path: '',
       tableView: true,
+      validateWhenHidden: false,
     }, ...extend);
   }
 
@@ -437,12 +438,6 @@ export default class FormComponent extends Component {
       // Iterate through every component and hide the submit button.
       eachComponent(form.components, (component) => {
         this.hideSubmitButton(component);
-        if (component.validateWhenHidden) {
-          this.component.validateWhenHidden = true;
-          // Change original component as well, so it won't cause any custom logic to be continuously triggered
-          // because the original component does not have this property
-          this.originalComponent.validateWhenHidden = true;
-        }
       });
 
       // If the subform is already created then destroy the old one.
@@ -529,6 +524,9 @@ export default class FormComponent extends Component {
           this.formObj = formObj;
           if (this.options.pdf && this.component.useOriginalRevision) {
             this.formObj.display = 'form';
+          }
+          if (this.component.validateWhenHidden) {
+            this.formObj.validateWhenHidden = true;
           }
           this.subFormLoading = false;
           return formObj;
