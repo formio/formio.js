@@ -88,6 +88,7 @@ import formWithUniqueValidation from '../forms/formWithUniqueValidation.js';
 import formWithConditionalEmail from '../forms/formWithConditionalEmail.js';
 import formsWithSimpleConditionals from '../forms/formsWithSimpleConditionals.js';
 import translationErrorMessages from '../forms/translationErrorMessages.js';
+import formWithMergeComponentSchemaAndCustomLogic from '../forms/formWithMergeComponentSchemaAndCustomLogic.js';
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
 if (_.has(Formio, 'Components.setComponents')) {
@@ -97,6 +98,102 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+  it('Should merge component schema when condition is executed and set/keep values ', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form.setForm(formWithMergeComponentSchemaAndCustomLogic).then(() => {
+      const maxDateCheckbox = form.getComponent('enableMaxDateInput');
+      const minDateCheckbox = form.getComponent('enableMinDateInput');
+      const minDateInput = form.getComponent('datePicker.minDate');
+      const maxDateInput = form.getComponent('datePicker.maxDate');
+      assert.equal(maxDateCheckbox.dataValue, false);
+      assert.equal(minDateCheckbox.dataValue, false);
+      assert.equal(minDateInput.component.type, 'datetime');
+      assert.equal(maxDateInput.component.type, 'datetime');
+      assert.equal(!!minDateInput.refs.suffix.length, true);
+      assert.equal(!!maxDateInput.refs.suffix.length, true);
+      minDateInput.setValue('2025-03-03T12:00:00+03:00');
+      maxDateInput.setValue('2025-03-03T12:00:00+03:00');
+
+      setTimeout(() => {
+        assert.equal(maxDateCheckbox.dataValue, false);
+        assert.equal(minDateCheckbox.dataValue, false);
+        assert.equal(minDateInput.component.type, 'datetime');
+        assert.equal(maxDateInput.component.type, 'datetime');
+        assert.equal(!!minDateInput.refs.suffix.length, true);
+        assert.equal(!!maxDateInput.refs.suffix.length, true);
+        assert.equal(!!minDateInput.dataValue, true);
+        assert.equal(!!maxDateInput.dataValue, true);
+
+        maxDateCheckbox.setValue(true);
+        minDateCheckbox.setValue(true);
+        
+
+        setTimeout(() => {
+          assert.equal(maxDateCheckbox.dataValue, true);
+          assert.equal(minDateCheckbox.dataValue, true);
+          assert.equal(minDateInput.component.type, 'textfield');
+          assert.equal(maxDateInput.component.type, 'textfield');
+          assert.equal(!!minDateInput.refs.suffix.length, false);
+          assert.equal(!!maxDateInput.refs.suffix.length, false);
+          assert.equal(!!minDateInput.dataValue, false, 'Value should be cleared');
+          assert.equal(!!maxDateInput.dataValue, false, 'Value should be cleared');
+
+          minDateInput.setValue('moment().subtract(10, "days")');
+          maxDateInput.setValue('moment().add(10, "days")');
+
+          setTimeout(() => {
+            assert.equal(maxDateCheckbox.dataValue, true);
+            assert.equal(minDateCheckbox.dataValue, true);
+            assert.equal(minDateInput.component.type, 'textfield');
+            assert.equal(maxDateInput.component.type, 'textfield');
+            assert.equal(!!minDateInput.refs.suffix.length, false);
+            assert.equal(!!maxDateInput.refs.suffix.length, false);
+            assert.equal(!!minDateInput.dataValue, true);
+            assert.equal(!!maxDateInput.dataValue, true);
+
+            maxDateCheckbox.setValue(false);
+            minDateCheckbox.setValue(false);
+
+            setTimeout(() => {
+              assert.equal(maxDateCheckbox.dataValue, false);
+              assert.equal(minDateCheckbox.dataValue, false);
+              assert.equal(minDateInput.component.type, 'datetime');
+              assert.equal(maxDateInput.component.type, 'datetime');
+              assert.equal(!!minDateInput.refs.suffix.length, true);
+              assert.equal(!!maxDateInput.refs.suffix.length, true);
+              assert.equal(!!minDateInput.dataValue, false, 'Value should be cleared 2');
+              assert.equal(!!maxDateInput.dataValue, false, 'Value should be cleared 2');
+
+              form.setSubmission({
+                data: {
+                  datePicker: {
+                    minDate: "moment().subtract(10, 'days')",
+                    maxDate: '2025-03-03T12:00:00+03:00',
+                  },
+                  enableMinDateInput: true,
+                  enableMaxDateInput: false,
+                },
+              }).then(() => {
+                setTimeout(() => {
+                  assert.equal(maxDateCheckbox.dataValue, false);
+                  assert.equal(minDateCheckbox.dataValue, true);
+                  assert.equal(minDateInput.component.type, 'textfield');
+                  assert.equal(maxDateInput.component.type, 'datetime');
+                  assert.equal(!!minDateInput.refs.suffix.length, false);
+                  assert.equal(!!maxDateInput.refs.suffix.length, true);
+                  assert.equal(!!minDateInput.dataValue, true);
+                  assert.equal(!!maxDateInput.dataValue, true);
+                  done();
+                }, 300)
+              }).catch(done);
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }).catch((err) => done(err));
+  });
   it('Should show fields correctly if there are 2 components with the same key in the form', function(done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
