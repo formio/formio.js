@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.2-rc.2
+### Changed
+ - Updated @formio/core@2.3.3-rc.1
+ - FIO-9908: fixed an issue where condtion does not work properly if 'show' setting is a string
+
 ## 5.0.2-rc.1
 ### Changed
  - Updated @formio/bootstrap@3.0.2-rc.1
