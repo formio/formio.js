@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.1.0-rc.30]
+### Changed
+ - FIO-9931: fixed an issue wehre min and max date settings are not saved in builder
+
 ## 5.1.0-rc.29
 ### Changed
  - FIO-9921: fix issue with local paths not being propogated to edit grid
