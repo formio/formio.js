@@ -562,5 +562,14 @@ describe('TextArea Component', () => {
           }, 300)
       }).catch(done);
     });
+
+    it('Should render textarea as a Well with special aria tags if the component is readOnly', () => {
+      const component = {...comp2, disabled: true}
+      return Harness.testCreate(TextAreaComponent, component).then((component) => {
+        const textAreaElement = component.element.querySelector('[ref="input"]');
+        assert.equal(textAreaElement.getAttribute('role'), 'textbox');
+        assert.equal(textAreaElement.getAttribute('aria-readonly'), 'true');
+      });
+    })
   });
 });
