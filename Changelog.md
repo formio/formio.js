@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.2-rc.3]
+## 5.0.2-rc.3
 ### Changed
  - FIO-9312: fixed an issue where conditionals does not work well when there are several components with the same key/path
 
