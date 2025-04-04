@@ -8,8 +8,6 @@ export default {
   invalidRowError: 'Invalid row. Please correct it or delete.',
   invalidOption: '{{field}} is an invalid value.',
   invalidDay: '{{field}} is not a valid day.',
-  alertMessageWithLabel: '{{label}}: {{message}}',
-  alertMessage: '{{message}}',
   complete: 'Submission Complete',
   error: 'Please fix the following errors before submitting.',
   errorListHotkey: 'Press Ctrl + Alt + X to go back to the error list.',
