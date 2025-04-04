@@ -55,9 +55,11 @@ class FormioUploadAdapter {
   }
 }
 
-const getFormioUploadAdapterPlugin = (fileService, component) => (editor) => {
-  editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-    return new FormioUploadAdapter(loader, fileService, component);
+const getFormioUploadAdapterPlugin = (fileService, component) => {
+  return function (editor) {
+    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+      return new FormioUploadAdapter(loader, fileService, component);
+    };
   };
 };
 
