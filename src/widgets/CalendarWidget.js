@@ -12,7 +12,7 @@ import {
   momentDate,
   zonesLoaded,
   shouldLoadZones,
-  loadZones,
+  loadZones, hasEncodedTimezone,
 } from '../utils/utils';
 import moment from 'moment';
 import _ from 'lodash';
@@ -164,7 +164,7 @@ export default class CalendarWidget extends InputWidget {
         }
       })
       .then((ShortcutButtonsPlugin) => {
-        return Formio.requireLibrary('flatpickr', 'flatpickr', `${Formio.cdn['flatpickr']}/flatpickr.min.js`, true)
+        return Formio.requireLibrary('flatpickr', 'flatpickr', `${Formio.cdn['flatpickr']}/flatpickr.js`, true)
           .then((Flatpickr) => {
             if (this.component.shortcutButtons?.length && ShortcutButtonsPlugin) {
               this.initShortcutButtonsPlugin(ShortcutButtonsPlugin);
@@ -342,6 +342,12 @@ export default class CalendarWidget extends InputWidget {
     if (!this.calendar) {
       value = value ? formatDate(this.timezonesUrl, value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
       return super.setValue(value);
+    }
+
+    if(this.component.type === 'textfield' && !(hasEncodedTimezone)(value)){
+      this.calendar._input.value = value;
+      this.calendar.altInput.value = value;
+      return;
     }
 
     const zonesLoading = this.loadZones();
