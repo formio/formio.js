@@ -164,7 +164,7 @@ export default class CalendarWidget extends InputWidget {
         }
       })
       .then((ShortcutButtonsPlugin) => {
-        return Formio.requireLibrary('flatpickr', 'flatpickr', `${Formio.cdn['flatpickr']}/flatpickr.js`, true)
+        return Formio.requireLibrary('flatpickr', 'flatpickr', `${Formio.cdn['flatpickr']}/flatpickr.min.js`, true)
           .then((Flatpickr) => {
             if (this.component.shortcutButtons?.length && ShortcutButtonsPlugin) {
               this.initShortcutButtonsPlugin(ShortcutButtonsPlugin);
@@ -344,10 +344,10 @@ export default class CalendarWidget extends InputWidget {
       return super.setValue(value);
     }
 
+    // If the component is a textfield that does not have timezone information included in the string value then skip
+    // the timezone offset
     if(this.component.type === 'textfield' && !(hasEncodedTimezone)(value)){
-      this.calendar._input.value = value;
-      this.calendar.altInput.value = value;
-      return;
+      this.settings.skipOffset = true;
     }
 
     const zonesLoading = this.loadZones();
@@ -538,7 +538,7 @@ export default class CalendarWidget extends InputWidget {
     return (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
-        if (!this.settings.enableTime || this.loadZones()) {
+        if (!this.settings.enableTime || this.loadZones() || this.settings.skipOffset) {
           return Flatpickr.formatDate(date, format);
         }
 

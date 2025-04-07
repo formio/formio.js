@@ -1,6 +1,5 @@
 import Input from '../_classes/input/Input';
 import { conformToMask } from '@formio/vanilla-text-mask';
-import {hasEncodedTimezone} from "../../utils/utils";
 import Inputmask from 'inputmask';
 import * as FormioUtils from '../../utils/utils';
 import _ from 'lodash';
@@ -346,24 +345,6 @@ export default class TextFieldComponent extends Input {
     if (value && this.component.inputFormat === 'plain' && /<[^<>]+>/g.test(value)) {
       value = value.replaceAll('<','&lt;').replaceAll('>', '&gt;');
     }
-    // If the textfield does not have an encoded timezone then return
-    if(!hasEncodedTimezone(value)){
-      if (!value) {
-        return '';
-      }
-      if (Array.isArray(value)) {
-        return value.join(', ');
-      }
-      if (_.isPlainObject(value)) {
-        return JSON.stringify(value);
-      }
-      if (value === null || value === undefined) {
-        return '';
-      }
-      const stringValue = value.toString();
-      return this.sanitize(stringValue);
-    }
-
     return super.getValueAsString(value, options);
   }
 }
