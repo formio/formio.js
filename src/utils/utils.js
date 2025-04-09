@@ -1763,5 +1763,5 @@ export function hasEncodedTimezone(value){
   if (typeof value !== 'string'){
     return false;
   }
-  return (value.substring(value.length - 1) === 'z' || value.substring(value.length - 1) === 'Z' || value.match(/[+|-][0-9]+:[0-9]+/));
+  return (value.substring(value.length - 1) === 'z' || value.substring(value.length - 1) === 'Z' || value.match(/[+|-][0-9]{2}:[0-9]{2}$/));
 }
