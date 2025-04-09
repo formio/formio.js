@@ -729,8 +729,10 @@ export default class Webform extends NestedDataComponent {
         this.initialized = false;
         const rebuild = this.rebuild() || Promise.resolve();
         return rebuild.then(() => {
-            this.emit("formLoad", form);
-            this.triggerCaptcha();
+            this.emit('formLoad', form);
+            if (!this.options.server) {
+              this.triggerCaptcha();
+            }
             // Make sure to trigger onChange after a render event occurs to speed up form rendering.
             setTimeout(() => {
                 this.onChange(flags);
