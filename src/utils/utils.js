@@ -1479,7 +1479,7 @@ export function sanitize(string, options) {
  * @returns {any} - The cloned object.
  */
 export function fastCloneDeep(obj) {
-  return obj ? structuredClone(obj) : obj;
+  return obj ? JSON.parse(JSON.stringify(obj)) : obj;
 }
 
 export { Evaluator, interpolate };
