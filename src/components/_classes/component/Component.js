@@ -491,12 +491,16 @@ export default class Component extends Element {
 
   /**
    * Returns if the parent should conditionally clear.
+   * 
    * @returns {boolean} - If the parent should conditionally clear.
    */
   parentShouldConditionallyClear() {
     let currentParent = this.parent;
     while (currentParent) {
-      if (currentParent.shouldConditionallyClear(true)) {
+      if (
+        (currentParent.allowData && currentParent._conditionallyClear) ||
+        (!currentParent.allowData && currentParent._conditionallyHidden)
+      ) {
         return true;
       }
       currentParent = currentParent.parent;
@@ -507,7 +511,22 @@ export default class Component extends Element {
   parentConditionallyHidden() {
     let currentParent = this.parent;
     while (currentParent) {
-      if (currentParent.conditionallyHidden(true)) {
+      if (currentParent._conditionallyHidden) {
+        return true;
+      }
+      currentParent = currentParent.parent;
+    }
+    return false;
+  }
+
+  /**
+   * Returns true if any of the parents default their component "hidden" property to true.
+   * @returns {boolean} - If any parent defaults the hidden property to true.
+   */
+  anyParentDefaultsHidden() {
+    let currentParent = this.parent;
+    while (currentParent) {
+      if (currentParent.component.hidden) {
         return true;
       }
       currentParent = currentParent.parent;
@@ -761,54 +780,64 @@ export default class Component extends Element {
     return this._logicallyHidden;
   }
 
-  shouldConditionallyClear(skipParent = false) {
+  /**
+   * Determines if the component should clear its value when the root form is pristine.
+   * @returns {boolean} - If the component should clear its value when the root form is pristine.
+   */
+  shouldConditionallyClearOnPristine() {
+    // If the form is pristine, we should NOT clear the value of a conditionally hidden child component
+    // of a layout component that defaults to hidden using the "hidden" component property.
+    return !this.anyParentDefaultsHidden();
+  }
+
+  /**
+   * Returns if the component should clear its value when conditionally hidden.
+   * @returns {boolean} - If the component should clear its value when conditionally hidden.
+   */
+  shouldConditionallyClear() {
     // Skip if this component has clearOnHide set to false.
     if (this.component.clearOnHide === false) {
-      return false;
+      this._conditionallyClear = false;
+      return this._conditionallyClear;
     }
 
     // If the component is logically hidden, then it is conditionally hidden and should clear.
     if (this.logicallyHidden) {
-      return true;
+      this._conditionallyClear = true;
+      return this._conditionallyClear;
     }
 
     // If we have a condition and it is not conditionally visible, the it should conditionally clear.
-    if (this.hasCondition() && !this.conditionallyVisible()) {
-      return true;
+    if (
+      this.hasCondition() && 
+      !this.conditionallyVisible() && 
+      (!this.rootPristine || this.shouldConditionallyClearOnPristine())
+    ) {
+      this._conditionallyClear = true;
+      return this._conditionallyClear;
     }
-
-    if (skipParent) {
-      // Stop recurrsion for the parent checks.
-      return false;
-    }
-
-    // If this component has a set value, then it should ONLY clear if a parent is hidden
-    // and has the clearOnHide set to true.
-    if (this.hasSetValue) {
-      return this.parentShouldConditionallyClear();
-    }
-
-    // Clear the value if the parent is conditionally hidden.
-    return this.parentConditionallyHidden();
+    this._conditionallyClear = this.hasSetValue ? false : this.parentShouldConditionallyClear();
+    return this._conditionallyClear;
   }
 
-  conditionallyHidden(skipParent = false) {
+  /**
+   * Returns if the component is conditionally hidden.
+   * @returns {boolean} - If the component is conditionally hidden.
+   */
+  conditionallyHidden() {
+    // If it is logically hidden, then it is conditionally hidden.
     if (this.logicallyHidden) {
-      return true;
+      this._conditionallyHidden = true;
+      return this._conditionallyHidden;
     }
-    if (!this.hasCondition() && !skipParent) {
-      return this.parentConditionallyHidden();
+    // If it has a condition, and is not conditionally visible, then it is conditionally hidden.
+    if (this.hasCondition() && !this.conditionallyVisible()) {
+      this._conditionallyHidden = true;
+      return this._conditionallyHidden;
     }
-    // Return if we are not conditionally visible (conditionallyHidden)
-    if (!this.conditionallyVisible()) {
-      return true;
-    }
-    if (skipParent) {
-      // Stop recurrsion for the parent checks.
-      return false;
-    }
-    // Check the parent.
-    return this.parentConditionallyHidden();
+    // It is conditionally hidden if its parent is conditionally hidden.
+    this._conditionallyHidden = this.parentConditionallyHidden();
+    return this._conditionallyHidden;
   }
 
   get currentForm() {
