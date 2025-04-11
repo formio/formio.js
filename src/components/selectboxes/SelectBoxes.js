@@ -176,6 +176,9 @@ export default class SelectBoxesComponent extends RadioComponent {
         }
       }
     }
+    else if (_.isEmpty(this.loadedOptions) && !checkedValues.length) {
+      value = {};
+    }
     return value;
   }
 
