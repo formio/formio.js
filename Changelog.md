@@ -4,16 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.1.2-rc.1]
+## 5.1.2-rc.1
 ### Changed
+ - Updated @formio/core@2.4.1-rc.3
  - Updated @formio/bootstrap@3.1.1-rc.1
- - Updated @formio/core@2.4.1-rc.1
  - FIO-9217 Fix: allow moment.js datetime custom default values in calendar widget-text field components
  - FIO-8677: Fixes an issue where its possible to draweon Signature on the View tab of PDF form
  - FIO-9908: fixed an issue where condtion does not work properly if 'show' setting is a string
  - FIO-8706: allow data interpolation for data source in components
  - Fix Scientific notation allowing it by default
  - FIO-9992: check for server when triggering the captcha
+ - FIO-9902-9878: fixed an issue where PDF is not loaded for the form with hidden/conditionally hidden select
 
 ## 5.1.0
 ### Changed
