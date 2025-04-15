@@ -1099,8 +1099,9 @@ export default class SelectComponent extends ListComponent {
     }
 
     // Add value options.
+    const value = this.undoValueTyping(this.dataValue);
     this.addValueOptions();
-    this.setChoicesValue(this.dataValue);
+    this.setChoicesValue(value);
 
     if (this.isSelectResource && this.refs.addResource) {
       this.addEventListener(this.refs.addResource, 'click', (event) => {
@@ -1541,6 +1542,9 @@ export default class SelectComponent extends ListComponent {
       this.lazyLoadInit = true;
       const searchProperty = this.component.searchField || this.component.valueProperty;
       this.triggerUpdate(_.get(value.data || value, searchProperty, value), true);
+      this.itemsLoaded.then(() => {
+        this.setChoicesValue(value, hasPreviousValue, flags);
+      });
       return changed;
     }
 
