@@ -563,9 +563,13 @@ describe('Wizard Form with Nested Form validation', () => {
           setTimeout(() => {
             checkPage(2);
             const errors = wizard.errors;
-            assert.equal(errors.length, 1, 'Must err before next page');
+            assert.equal(errors.length, 2, 'Must err before next page');
             assert.equal(errors[0].ruleName, 'required');
             assert.equal(errors[0].message, 'Text Field is required');
+            assert.equal(errors[0].formattedKeyOrPath, 'formNested.data.textField');
+            assert.equal(errors[1].ruleName, 'required');
+            assert.equal(errors[1].message, 'Text Field is required');
+            assert.equal(errors[1].formattedKeyOrPath, 'formNested.data.dataGrid[0].textField');
             done();
           }, 300)
         }, 300)
