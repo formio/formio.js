@@ -27,28 +27,23 @@ export default {
           "label": "Select",
           "widget": "choicesjs",
           "tableView": true,
-          "dataSrc": "url",
+          "dataSrc": "resource",
           "data": {
-            "resource": "selectResource",
-            "url": "https://mocki.io/v1/bb5821e3-36e3-47af-bd92-4e0ff6c97431",
-            "headers": [
-              {
-                "key": "",
-                "value": ""
-              }
-            ]
+            "resource": "67ee5ec6071452be4a3b490c"
           },
-          "valueProperty": "propertyValue",
+          "valueProperty": "data.valueProperty",
           "dataType": "number",
+          "template": "\u003Cspan\u003E{{ item.data.label }}\u003C/span\u003E",
           "validate": {
             "select": false
           },
           "validateWhenHidden": false,
           "key": "select1",
           "lazyLoad": true,
-          "disableLimit": false,
           "searchField": "data.valueProperty__regex",
           "noRefreshOnScroll": false,
+          "addResource": false,
+          "reference": false,
           "type": "select",
           "input": true
         }
