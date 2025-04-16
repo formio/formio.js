@@ -1235,7 +1235,9 @@ export default class WebformBuilder extends Component {
           }
 
           eachComponent(defaultValueComponent.component.components, (comp => {
-            comp.validate.required = false;
+            if (comp.validate?.required) {
+              comp.validate.required = false;
+            }
           }));
         }
         const parentComponent = defaultValueComponent.parent;
