@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.1.2-rc.2
+### Changed
+ - Updated @formio/bootstrap@3.1.1-rc.2
+ - FIO-9027 fixed display of the overridden values on download page
+ - FIO-9866: added  fileUploadingEnd and fielUplaodingStart events back
+
 ## 5.1.2-rc.1
 ### Changed
  - Updated @formio/core@2.4.1-rc.3
