@@ -60,7 +60,7 @@ describe('DateTime Component', () => {
 
     const dateTime = form.getComponent('dateTime');
     const response = dateTime.getValueAsString('2025-02-11T10:00:00.000Z', { email: true })
-    assert.equal(response, "2025-02-11 11:00 AM CET");
+    assert.equal(response, "2025-02-11 11:00 AM GMT+1");
   });
 
   it('Should not change manually entered value on blur when time is disabled', (done) => {
