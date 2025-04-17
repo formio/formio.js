@@ -4,8 +4,6 @@ import FormioUtils from '../../utils';
 import { componentValueTypes, fastCloneDeep, getComponentSavedTypes } from '../../utils/utils';
 import Input from '../_classes/input/Input';
 
-
-
 export default class DateTimeComponent extends Input {
   static schema(...extend) {
     return Input.schema({
@@ -205,9 +203,9 @@ export default class DateTimeComponent extends Input {
 
   getValueAsString(value, options) {
     let format = FormioUtils.convertFormatToDayjs(this.component.format);
-    format += format.match(/z$/) ? '' : ' z';
     const timezone = this.timezone;
     if (value && !this.attached && timezone) {
+      format += format.match(/z$/) ? '' : ' z';
       if (Array.isArray(value) && this.component.multiple) {
         return value.map(item => _.trim(FormioUtils.dayjsDate(item, format, timezone, options).format(format))).join(', ');
       }
