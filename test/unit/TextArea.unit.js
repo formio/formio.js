@@ -11,6 +11,7 @@ import { comp1, comp2, comp3, comp4 } from './fixtures/textarea';
 import TextAreaComponent from '../../src/components/textarea/TextArea';
 import { fastCloneDeep } from '@formio/core';
 import { getFormioUploadAdapterPlugin } from '../../src/providers/storage/uploadAdapter';
+import FormBuilder from '../../src/FormBuilder';
 window.ace = require('ace-builds');
 
 describe('TextArea Component', () => {
@@ -299,6 +300,45 @@ describe('TextArea Component', () => {
     }).catch(done);
   });
 
+  it('Should show the amount characters and words when we toggle preview button', (done) => {
+    const comp = _.cloneDeep(comp3);
+    comp.components[0].showWordCount = true;
+    comp.components[0].showCharCount = true;
+    comp.components[0].defaultValue = 'My value'
+
+    const builder = new FormBuilder(document.createElement('div'), comp).instance;
+    const textArea = builder.webform.components[0];
+    const editComponentRef = textArea.refs.editComponent;
+    const clickEvent = new Event('click');
+    editComponentRef.dispatchEvent(clickEvent);
+
+    setTimeout(() => {
+      const previewButton = builder.componentEdit.querySelector('[ref="previewButton"]');
+      const preview = builder.componentEdit.querySelector('.component-preview');
+      const charCount = preview.querySelector('[ref="charcount"]');
+      const wordCount = preview.querySelector('[ref="wordcount"]');
+      assert.equal(charCount.textContent, '8 characters');
+      assert.equal(wordCount.textContent, '2 words');
+      previewButton.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        const previewButton = builder.componentEdit.querySelector('[ref="previewButton"]');
+        const preview = builder.componentEdit.querySelector('.component-preview');
+        assert.equal(preview, null);
+        previewButton.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          const preview = builder.componentEdit.querySelector('.component-preview');
+          const charCount = preview.querySelector('[ref="charcount"]');
+          const wordCount = preview.querySelector('[ref="wordcount"]');
+          assert.equal(charCount.textContent, '8 characters');
+          assert.equal(wordCount.textContent, '2 words');
+          done();
+        }, 600);
+      }, 500);
+    }, 500);
+  });
+
   it('Should correctly count characters if character counter is enabled', (done) => {
     const form = _.cloneDeep(comp3);
     form.components[0].showCharCount = true;
@@ -570,7 +610,7 @@ describe('TextArea Component', () => {
 
     it('Should set array as value for textarea with ace editor with json data type', (done) => {
       const element = document.createElement('div');
-     
+
       Formio.createForm(element, textAreaJsonType).then(form => {
           const textArea = form.getComponent('textArea');
           textArea.setValue([1,2,3]);
