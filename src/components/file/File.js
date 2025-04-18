@@ -1031,7 +1031,7 @@ export default class FileComponent extends Field {
     } : false;
   }
 
-  async uploadFile(fileToSync) {
+  uploadFile(fileToSync) {
     const filePromise = this.fileService.uploadFile(
       fileToSync.storage,
       fileToSync.file,
@@ -1054,7 +1054,7 @@ export default class FileComponent extends Field {
       }),
       this.getMultipartOptions(fileToSync),
     );
-    return await filePromise;
+    return filePromise;
   }
 
   async upload() {
@@ -1063,6 +1063,7 @@ export default class FileComponent extends Field {
     }
 
     return await Promise.all(this.filesToSync.filesToUpload.map(async(fileToSync) => {
+      let filePromise = null;
       let fileInfo = null;
       try {
         if (fileToSync.isValidationError) {
@@ -1072,13 +1073,14 @@ export default class FileComponent extends Field {
           };
         }
 
-        fileInfo = await this.uploadFile(fileToSync);
+        filePromise = this.uploadFile(fileToSync);
+        fileInfo = await filePromise;
         fileToSync.status = 'success';
         fileToSync.message = this.t('Succefully uploaded');
 
         fileInfo.originalName = fileToSync.originalName;
         fileInfo.hash = fileToSync.hash;
-        this.emit('fileUploadingEnd', Promise.resolve(fileInfo));
+        this.emit('fileUploadingEnd', filePromise);
       }
       catch (response) {
         fileToSync.status = 'error';
@@ -1088,7 +1090,7 @@ export default class FileComponent extends Field {
           : response.type === 'abort'
             ? this.t('Request was aborted')
             : response.toString();
-        this.emit('fileUploadingEnd', Promise.reject(response));
+        this.emit('fileUploadingEnd', filePromise);
         this.emit('fileUploadError', {
           fileToSync,
           response,
