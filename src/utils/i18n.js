@@ -1,4 +1,4 @@
-import { Evaluator } from '@formio/core/utils';
+import { Evaluator } from '../utils';
 import i18n from '../i18n';
 const i18Defaults = {};
 for (const lang in i18n.resources) {
