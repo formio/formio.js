@@ -10,6 +10,10 @@ const FormioUtils = {
 if (typeof global === 'object') {
   global.FormioUtils = FormioUtils;
 }
+
 export { FormioUtils as Utils };
 export { Evaluator, registerEvaluator } from './Evaluator';
+export * from './utils';
+export * from './formUtils';
+
 export default FormioUtils;

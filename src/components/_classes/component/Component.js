@@ -6,10 +6,10 @@ import isMobile from 'ismobilejs';
 import { processOne, processOneSync, validateProcessInfo } from '@formio/core/process';
 
 import { Formio } from '../../../Formio';
-import * as FormioUtils from '../../../utils/utils';
+import FormioUtils from '../../../utils';
 import {
   fastCloneDeep, boolValue, currentTimezone, getScriptPlugin, getContextualRowData
-} from '../../../utils/utils';
+} from '../../../utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
@@ -815,8 +815,8 @@ export default class Component extends Element {
 
     // If we have a condition and it is not conditionally visible, the it should conditionally clear.
     if (
-      this.hasCondition() && 
-      !this.conditionallyVisible() && 
+      this.hasCondition() &&
+      !this.conditionallyVisible() &&
       (!this.rootPristine || this.shouldConditionallyClearOnPristine())
     ) {
       this._conditionallyClear = true;

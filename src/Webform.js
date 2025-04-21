@@ -13,8 +13,8 @@ import {
     getStringFromComponentPath,
     convertStringToHTMLElement,
     getArrayFromComponentPath,
-} from './utils/utils';
-import { eachComponent } from './utils/formUtils';
+    eachComponent
+} from './utils';
 
 // We need this here because dragula pulls in CustomEvent class that requires global to exist.
 if (typeof window !== 'undefined' && typeof window.global === 'undefined') {

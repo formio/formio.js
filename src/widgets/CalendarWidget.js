@@ -13,7 +13,7 @@ import {
   zonesLoaded,
   shouldLoadZones,
   loadZones, hasEncodedTimezone,
-} from '../utils/utils';
+} from '../utils';
 import moment from 'moment';
 import _ from 'lodash';
 
