@@ -1,10 +1,10 @@
-import EventEmitter from './EventEmitter';
-import { Formio } from './Formio';
-import * as FormioUtils from './utils/utils';
-import { I18n } from './utils/i18n';
 import _ from 'lodash';
 import moment from 'moment';
 import maskInput from '@formio/vanilla-text-mask';
+import EventEmitter from './EventEmitter';
+import { Formio } from './Formio';
+import { I18n } from './utils/i18n';
+import FormioUtils from './utils';
 
 /**
  * The root component for all elements within the Form.io renderer.
