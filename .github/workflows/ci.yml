@@ -6,6 +6,7 @@ on:
 
 env:
   NODE_VERSION: 20.x
+  ACTIONS_RUNNER_DEBUG: true
 
 jobs:
   setup:
