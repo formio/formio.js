@@ -489,6 +489,10 @@ export default class Component extends Element {
     return this.root?.childComponentsMap || {};
   }
 
+  /**
+   * Returns if the parent should conditionally clear.
+   * @returns {boolean} - If the parent should conditionally clear.
+   */
   parentShouldConditionallyClear() {
     let currentParent = this.parent;
     while (currentParent) {
@@ -572,7 +576,7 @@ export default class Component extends Element {
   get rowIndex() {
     return this._rowIndex;
   }
-  
+
   /**
    * Set Row Index to row and update each component.
    * @param {number} value - The row index.
