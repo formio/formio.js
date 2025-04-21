@@ -2,7 +2,7 @@ name: Build, Test, Publish
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
 
 env:
   NODE_VERSION: 20.x
@@ -141,7 +141,7 @@ jobs:
   ## Publish
   ##################################################################
   publish:
-    needs: [setup, test-current, test-target]
+    needs: [ setup, test-current, test-target ]
     if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
     runs-on: ubuntu-latest
     steps:
