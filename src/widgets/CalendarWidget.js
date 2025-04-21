@@ -12,8 +12,8 @@ import {
   momentDate,
   zonesLoaded,
   shouldLoadZones,
-  loadZones,
-} from '../utils/utils';
+  loadZones
+} from '../utils';
 import moment from 'moment';
 import _ from 'lodash';
 

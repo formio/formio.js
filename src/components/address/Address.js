@@ -7,7 +7,7 @@ import { GoogleAddressProvider } from '../../providers/address/GoogleAddressProv
 import Field from '../_classes/field/Field';
 import NestedComponent from '../_classes/nested/NestedComponent';
 import ContainerComponent from '../container/Container';
-import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils';
 
 export const AddressComponentMode = {
   Autocomplete: 'autocomplete',

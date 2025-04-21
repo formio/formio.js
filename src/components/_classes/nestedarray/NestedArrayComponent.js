@@ -3,7 +3,8 @@
 import _ from 'lodash';
 import { Utils } from '@formio/core/utils';
 const { getComponentPaths } = Utils;
-import { componentValueTypes } from '../../../utils/utils';
+import { componentValueTypes } from '../../../utils';
+
 import Component from '../component/Component';
 import NestedDataComponent from '../nesteddata/NestedDataComponent';
 

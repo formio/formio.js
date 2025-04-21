@@ -39,7 +39,7 @@ import nestedConditionalWizard from '../forms/nestedConditionalWizard';
 import wizardWithPrefixComps from '../forms/wizardWithPrefixComps';
 import wizardPermission from '../forms/wizardPermission';
 import formWithFormController from '../forms/formWithFormController';
-import { fastCloneDeep } from '../../src/utils/utils';
+import { fastCloneDeep } from '../../src/utils';
 import formsWithAllowOverride from '../forms/formsWithAllowOverrideComps';
 import WizardWithCheckboxes from '../forms/wizardWithCheckboxes';
 import WizardWithRequiredFields from '../forms/wizardWithRequiredFields';

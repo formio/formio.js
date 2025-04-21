@@ -5,7 +5,6 @@ import sinon from 'sinon';
 import Harness from '../harness';
 import DataGridComponent from '../../src/components/datagrid/DataGrid';
 import { Formio } from '../../src/Formio';
-
 import {
   comp1,
   comp2,

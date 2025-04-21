@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { fastCloneDeep } from '../../src/utils/utils.js';
+import { fastCloneDeep } from '../../src/utils';
 import Harness from '../harness.js';
-import FormComponent from '../../src/components/form/Form.js';
+import FormComponent from '../../src/components/form/Form';
 import { expect } from 'chai';
 import assert from 'power-assert';
 

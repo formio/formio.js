@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import stringHash from 'string-hash';
-import { Evaluator as CoreEvaluator } from '@formio/core';
+import { DefaultEvaluator as CoreEvaluator } from '@formio/core';
 
 export class DefaultEvaluator extends CoreEvaluator {
   cache = {};
@@ -14,7 +14,7 @@ export class DefaultEvaluator extends CoreEvaluator {
     try {
       // Ensure we handle copied templates from the ejs files.
       template = template.replace(/ctx\./g, '');
-      return (this.cache[hash] = _.template(template, DefaultEvaluator.templateSettings));
+      return (this.cache[hash] = _.template(template, this.templateSettings));
     }
     catch (err) {
       console.warn('Error while processing template', err, template);
