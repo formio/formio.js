@@ -495,7 +495,6 @@ export default class Component extends Element {
 
   /**
    * Returns if the parent should conditionally clear.
-   * 
    * @returns {boolean} - If the parent should conditionally clear.
    */
   parentShouldConditionallyClear() {
