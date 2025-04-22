@@ -1,6 +1,6 @@
 import * as utils from './utils';
 import * as formUtils from './formUtils';
-import { Evaluator } from './Evaluator';
+import { Evaluator, registerEvaluator } from './Evaluator';
 
 const FormioUtils = {
   ...utils,
@@ -12,7 +12,7 @@ if (typeof global === 'object') {
 }
 
 export { FormioUtils as Utils };
-export { Evaluator, registerEvaluator } from './Evaluator';
+export { Evaluator, registerEvaluator };
 export * from './utils';
 export * from './formUtils';
 

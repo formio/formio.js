@@ -1,4 +1,4 @@
-import { Evaluator } from '../utils';
+import { Evaluator } from './Evaluator';
 import i18n from '../i18n';
 import { isEmpty } from 'lodash';
 import { fastCloneDeep } from '@formio/core';
