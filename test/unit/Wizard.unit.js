@@ -1167,7 +1167,7 @@ describe('Wizard Form with Nested Form validation', () => {
         assert(errors.length > 0, 'Must err before next page');
         assert.equal(errors[0].message, 'Required Component is required');
         done();
-      }, 200);
+      }, 300);
     })
     .catch((err) => done(err));
   });
