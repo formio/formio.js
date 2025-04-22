@@ -55,11 +55,11 @@ export class DefaultEvaluator extends CoreEvaluator {
   }
 }
 
-export let Evaluator = DefaultEvaluator.create();
+export let Evaluator = new DefaultEvaluator();
 
 /**
  * Set the evaluator to use for evaluating expressions.
- * @param {Evaluator} override - The new evaluator instance to use.
+ * @param {CoreEvaluator} override - The new evaluator instance to use.
  * @returns {void}
  */
 export function registerEvaluator(override) {

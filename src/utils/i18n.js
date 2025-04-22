@@ -1,4 +1,4 @@
-import { Evaluator } from '../utils';
+import { Evaluator } from './Evaluator';
 import i18n from '../i18n';
 const i18Defaults = {};
 for (const lang in i18n.resources) {
