@@ -371,20 +371,16 @@ describe('File Component', () => {
         .then((form) => {
           const controlParameters = {
             uploadStart: 0,
-            uploadStartPromiseEnd: 0,
             uploadEnd: 0,
-            uploadEndPromiseEnd: 0,
           };
 
-          form.on('fileUploadingStart', (uploadPromise) => {
+          form.on('fileUploadingStart', () => {
             ++controlParameters.uploadStart;
             console.log('start'); 
-            uploadPromise.catch(() => {}).finally(() => ++controlParameters.uploadStartPromiseEnd);
           });
-          form.on('fileUploadingEnd', (uploadPromise) => {
+          form.on('fileUploadingEnd', () => {
             ++controlParameters.uploadEnd;
             console.log('end'); 
-            uploadPromise.catch(() => {}).finally(() => ++controlParameters.uploadEndPromiseEnd);
           });
 
           const fileComponent = form.getComponent('file');
