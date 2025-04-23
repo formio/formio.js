@@ -1031,8 +1031,8 @@ export default class FileComponent extends Field {
     } : false;
   }
 
-  uploadFile(fileToSync) {
-    const filePromise = this.fileService.uploadFile(
+  async uploadFile(fileToSync) {
+    return await this.fileService.uploadFile(
       fileToSync.storage,
       fileToSync.file,
       fileToSync.name,
@@ -1045,7 +1045,7 @@ export default class FileComponent extends Field {
       fileToSync.groupPermissions,
       fileToSync.groupResourceId,
       () => {
-        this.emit('fileUploadingStart', filePromise);
+        this.emit('fileUploadingStart');
       },
       // Abort upload callback
       (abort) => this.abortUploads.push({
@@ -1054,7 +1054,6 @@ export default class FileComponent extends Field {
       }),
       this.getMultipartOptions(fileToSync),
     );
-    return filePromise;
   }
 
   async upload() {
@@ -1063,7 +1062,6 @@ export default class FileComponent extends Field {
     }
 
     return await Promise.all(this.filesToSync.filesToUpload.map(async(fileToSync) => {
-      let filePromise = null;
       let fileInfo = null;
       try {
         if (fileToSync.isValidationError) {
@@ -1073,14 +1071,13 @@ export default class FileComponent extends Field {
           };
         }
 
-        filePromise = this.uploadFile(fileToSync);
-        fileInfo = await filePromise;
+        fileInfo = await this.uploadFile(fileToSync);
         fileToSync.status = 'success';
         fileToSync.message = this.t('Succefully uploaded');
 
         fileInfo.originalName = fileToSync.originalName;
         fileInfo.hash = fileToSync.hash;
-        this.emit('fileUploadingEnd', filePromise);
+        this.emit('fileUploadingEnd');
       }
       catch (response) {
         fileToSync.status = 'error';
@@ -1090,7 +1087,7 @@ export default class FileComponent extends Field {
           : response.type === 'abort'
             ? this.t('Request was aborted')
             : response.toString();
-        this.emit('fileUploadingEnd', filePromise);
+        this.emit('fileUploadingEnd');
         this.emit('fileUploadError', {
           fileToSync,
           response,
