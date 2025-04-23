@@ -27,9 +27,9 @@ class FormioUploadAdapter {
           null
         ];
 
-        const uploadPromise = this.fileService.uploadFile(
+        this.fileService.uploadFile(
           ...uploadParams,
-          () => this.component.emit('fileUploadingStart', uploadPromise)
+          () => this.component.emit('fileUploadingStart')
         ).then((result) => {
           return this.fileService.downloadFile(result);
         }).then((result) => {
@@ -40,7 +40,7 @@ class FormioUploadAdapter {
           console.warn('An Error occured while uploading file', err);
           reject(err);
         }).finally(() => {
-          this.component.emit('fileUploadingEnd', uploadPromise);
+          this.component.emit('fileUploadingEnd');
         });
       }));
   }
