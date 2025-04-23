@@ -179,6 +179,13 @@ export default class RadioComponent extends ListComponent {
     });
   }
 
+  mapThroughValues(values) {
+    if (this.options.renderMode === 'html' && this.type === 'radio') {
+      return values.map(x => ({ ...x, value: this.normalize(x.value) }))
+    }
+    return values
+  }
+
   render() {
     if (!this.optionsLoaded) {
       return super.render(this.renderTemplate('loader'));
@@ -186,7 +193,7 @@ export default class RadioComponent extends ListComponent {
     return super.render(this.renderTemplate('radio', {
       input: this.inputInfo,
       inline: this.component.inline,
-      values: this.component.dataSrc === 'values' ? this.component.values : this.loadedOptions,
+      values: this.component.dataSrc === 'values' ? this.mapThroughValues(this.component.values) : this.loadedOptions,
       value: this.dataValue,
       row: this.row,
     }));
@@ -472,7 +479,7 @@ export default class RadioComponent extends ListComponent {
    * @param {*} value - The value to normalize
    * @returns {*} - Returns the normalized value
    */
-  normalizeValue(value) {
+  normalize(value) {
     const dataType = this.component.dataType || 'auto';
     if (value === this.emptyValue) {
       return value;
@@ -480,7 +487,6 @@ export default class RadioComponent extends ListComponent {
 
     switch (dataType) {
       case 'auto':
-
         if (!isNaN(parseFloat(value)) && isFinite(value) && _.toString(value) === Number(value).toString()) {
           value = +value;
         }
@@ -507,15 +513,21 @@ export default class RadioComponent extends ListComponent {
         break;
       }
 
-    if (this.isSelectURL && this.templateData && this.templateData[value]) {
+      return value;
+  }
+
+  normalizeValue(value) {
+    const valueNormalized = this.normalize(value)
+
+    if (this.isSelectURL && this.templateData && this.templateData[valueNormalized]) {
       const submission = this.root.submission;
       if (!submission.metadata.selectData) {
         submission.metadata.selectData = {};
       }
 
-      _.set(submission.metadata.selectData, this.path, this.templateData[value]);
+      _.set(submission.metadata.selectData, this.path, this.templateData[valueNormalized]);
     }
 
-    return super.normalizeValue(value);
+    return super.normalizeValue(valueNormalized);
   }
 }
