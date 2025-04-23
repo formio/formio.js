@@ -179,9 +179,9 @@ export default class RadioComponent extends ListComponent {
     });
   }
 
-  mapThroughValues(values) {
+  convertValues(values) {
     if (this.options.renderMode === 'html' && this.type === 'radio') {
-      return values.map(x => ({ ...x, value: this.normalize(x.value) }))
+      return values.map(x => ({ ...x, value: this.convertByDataType(x.value) }))
     }
     return values
   }
@@ -193,7 +193,7 @@ export default class RadioComponent extends ListComponent {
     return super.render(this.renderTemplate('radio', {
       input: this.inputInfo,
       inline: this.component.inline,
-      values: this.component.dataSrc === 'values' ? this.mapThroughValues(this.component.values) : this.loadedOptions,
+      values: this.component.dataSrc === 'values' ? this.convertValues(this.component.values) : this.loadedOptions,
       value: this.dataValue,
       row: this.row,
     }));
@@ -479,7 +479,7 @@ export default class RadioComponent extends ListComponent {
    * @param {*} value - The value to normalize
    * @returns {*} - Returns the normalized value
    */
-  normalize(value) {
+  convertByDataType(value) {
     const dataType = this.component.dataType || 'auto';
     if (value === this.emptyValue) {
       return value;
@@ -517,17 +517,17 @@ export default class RadioComponent extends ListComponent {
   }
 
   normalizeValue(value) {
-    const valueNormalized = this.normalize(value)
+    const valueConverted = this.convertByDataType(value)
 
-    if (this.isSelectURL && this.templateData && this.templateData[valueNormalized]) {
+    if (this.isSelectURL && this.templateData && this.templateData[valueConverted]) {
       const submission = this.root.submission;
       if (!submission.metadata.selectData) {
         submission.metadata.selectData = {};
       }
 
-      _.set(submission.metadata.selectData, this.path, this.templateData[valueNormalized]);
+      _.set(submission.metadata.selectData, this.path, this.templateData[valueConverted]);
     }
 
-    return super.normalizeValue(valueNormalized);
+    return super.normalizeValue(valueConverted);
   }
 }
