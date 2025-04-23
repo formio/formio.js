@@ -2812,8 +2812,8 @@ describe('Webform tests', function() {
         const filePromise = new Promise((resolve) => {
           setTimeout(() => resolve(), debounce);
         });
-        filePromise.then(() => comp.emit('fileUploadingEnd', filePromise));
-        comp.emit('fileUploadingStart', filePromise);
+        filePromise.then(() => comp.emit('fileUploadingEnd'));
+        comp.emit('fileUploadingStart');
       };
 
       simulateFileUploading(fileA, 1000);
