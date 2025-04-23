@@ -2614,15 +2614,15 @@ describe('Webform tests', function() {
       simulateFileUploading(fileA, 1000);
       textField.setValue('12345');
       setTimeout(() => {
-        assert.equal(submitButton.filesUploading.length, 1);
+        assert.equal(submitButton.filesUploading, 1);
         assert.equal(submitButton.isDisabledOnInvalid, true, 'Should be disabled on invalid due to the invalid TextField\'s value');
         assert.equal(submitButton.disabled, true, 'Should be disabled');
         simulateFileUploading(fileB, 500);
         setTimeout(() => {
-          assert.equal(submitButton.filesUploading.length, 2);
+          assert.equal(submitButton.filesUploading, 2);
           assert.equal(submitButton.disabled, true, 'Should be disabled');
           setTimeout(() => {
-            assert.equal(submitButton.filesUploading.length, 0);
+            assert.equal(submitButton.filesUploading, 0);
             assert.equal(submitButton.disabled, true, 'Should be disabled since TextField is still invalid');
             textField.setValue('123');
             setTimeout(() => {
