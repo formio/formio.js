@@ -41,6 +41,41 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - FIO-8409: added serverOverride setting for components
  - Added test for FIO-9020
  - FIO-8208: Ensure that all file uploads alter the request options before sending the fetch requests
+ - FIO-9985 fixed appearing extra option with an empty key
+ - FIO-9847: time on textfield only changes when timezone included
+ - FIO-9937: Fixed edge cases for clearOnHide with nested forms + new test cases
+ - FIO-9884: Fixed file upload plugin for ckeditor
+ - FIO-9941 fixed errors list translations
+ - FIO-9848 Fixed readonly textarea for screen readers
+ - FIO-9854 fixed appearance of the custom component edit fields
+ - FIO-9510: Fixed the issue with multiple survey components
+ - FIO-9872 fixed opening modal edit window for custom component
+ - FIO-9851 fixed appearing configurable component options
+ - FIO-9855 removed deprecated settings
+ - FIO-9866: added fileUploadingEnd and fielUplaodingStart events back
+ - FIO-9842 removed extra options
+ - FIO-9846 removed encrypted option for EFB
+ - FIO-9837: cant approve valid api key
+ - FIO-9873: Fixed issues with how default values are set within components to ensure they are set properly at the right time in the lifecycle
+ - updated i18n typedef
+ - FIO-9020: Made executeFormController to be called once only for Webform instance
+ - FIO-9669: added token to the list of the available variables for advanced conditions
+ - FIO-9614: fixed an issue where min and max day builder setting changes its value after saving
+ - FIO-9207: Fix image preview for file component when using google drive
+ - FIO-9156 fixed the display of Captcha component for nested forms
+ - FIO-9592: Add emitting form display change event
+ - FIO-8372 fixed setting date after selecting and erasing entire date
+ - fix select styling
+ - FIO-7954: fixed translations
+ - update copy around save as reference
+ - FIO-9506: fixed the return type of the render function
+ - FIO-8727: created test for FIO-8727
+ - FIO-9170 Added a fix for default templates to include custom components
+ - FIO-8862: fixed unnecessary redrawings of the value component in conditional ui
+ - FIO-9339: fixed an issue where preview shows an error when editing component JSON
+ - FIO-9027 fixed display of the overridden values on download page
+ - 
+
 
 ## 5.1.2-rc.1
 ### Changed
