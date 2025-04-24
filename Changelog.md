@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.1.2-rc.4]
+## 5.1.2-rc.4
 ### Changed
  - FIO-10005 fixed next page validation for DataGrid with NestedForm
  - FIO-10028 additional changes
