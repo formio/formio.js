@@ -6,4 +6,5 @@ import comp5 from './comp5';
 import comp6 from './comp6';
 import withDisplayAndInputMasks from './comp-with-display-and-value-masks';
 import comp7 from './comp7';
-export { comp1, comp2, comp3, comp4, comp5, comp6, comp7, withDisplayAndInputMasks };
+import requiredFieldLogicComp from './requiredFieldLogicComp';
+export { comp1, comp2, comp3, comp4, comp5, comp6, comp7, withDisplayAndInputMasks, requiredFieldLogicComp };

@@ -1,4 +1,5 @@
 import _trim from 'lodash/trim';
+import { Formio } from '../../Formio';
 export const setXhrHeaders = (formio, xhr) => {
   const { headers } = formio.options;
   if (headers) {
@@ -21,12 +22,16 @@ const XHR = {
   path(items) {
     return items.filter(item => !!item).map(XHR.trim).join('/');
   },
+  fetch(url, options) {
+    options = Formio.pluginAlter('requestOptions', options, url);
+    return fetch(url, options);
+  },
   async upload(formio, type, xhrCallback, file, fileName, dir, progressCallback, groupPermissions, groupId, abortCallback, multipartOptions) {
     // make request to Form.io server
     const token = formio.getToken();
     let response;
     try {
-      response = await fetch(`${formio.formUrl}/storage/${type}`, {
+      response = await XHR.fetch(`${formio.formUrl}/storage/${type}`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

@@ -2,7 +2,7 @@ const renders = require('../renders');
 const forms = require('../formtest');
 const pretty = require('pretty');
 const fs = require('fs');
-import assert from 'power-assert';
+const assert = require('power-assert');
 const AllComponents = require('../../src/components').default;
 const Components = require('../../src/components/Components').default;
 const templates = require('../../src/templates/index').default;

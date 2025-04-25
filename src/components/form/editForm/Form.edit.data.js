@@ -12,7 +12,7 @@ export default [
   {
     weight: 140,
     type: 'checkbox',
-    label: 'Clear Value When Hidden',
+    label: 'Omit Value From Submission Data When Conditionally Hidden',
     key: 'clearOnHide',
     defaultValue: true,
     tooltip: 'When a field is hidden, clear the value.',

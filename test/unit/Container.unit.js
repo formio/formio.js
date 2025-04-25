@@ -94,4 +94,78 @@ describe('Container Component', () => {
       }, 200);
     }).catch(done);
   });
+
+  describe('Container component calculations when noDefaults Form Renderer Option', () => {
+    const formTemplate = {
+      "_id": "67978d7ab71bdbf9f76c6bf7",
+      "title": "testNoDef",
+      "name": "testNoDef",
+      "path": "testnodef",
+      "type": "form",
+      "display": "form",
+      "components": [
+        {
+          "label": "Container",
+          "tableView": false,
+          "key": "container",
+          "type": "container",
+          "input": true,
+          "components": [
+            {
+              "label": "Text Field",
+              "key": "textField",
+              "type": "textfield",
+              "input": true,
+            },
+            {
+              "label": "Text Field Calculation",
+              "key": "textFieldCalculation",
+              "type": "textfield",
+              "input": true,
+              "calculateValue": "value = data.container.textField"
+            }
+          ]
+        },
+        {
+          "type": "button",
+          "label": "Submit",
+          "key": "submit",
+          "disableOnInvalid": true,
+          "input": true
+        }
+      ]
+    };
+
+    it('Should set correct form data and make correct container component calculations when noDefaults Form Renderer Option is set', async () => {
+      const element = document.createElement('div');
+      const form = await Formio.createForm(element, formTemplate, { noDefaults: true });
+
+      const textField = form.getComponent('textField');
+      textField.setValue('test');
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      assert.deepEqual(form._data, {
+        container: {
+          textField: 'test',
+          textFieldCalculation: 'test'
+        },
+      });
+    });
+
+    it('Should set correct form data and make correct container component calculations when noDefaults Form Renderer Option is not set', async () => {
+      const element = document.createElement('div');
+      const form = await Formio.createForm(element, formTemplate);
+
+      const textField = form.getComponent('textField');
+      textField.setValue('test');
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      assert.ok(Object.hasOwn(form._data, 'container'));
+      assert.deepEqual(form._data.container, {
+          textField: 'test',
+          textFieldCalculation: 'test'
+      });
+    });
+  })
+
 });

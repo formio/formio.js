@@ -27,7 +27,8 @@ import {
   withCollapsibleRowGroups,
   withAllowCalculateOverride,
   twoWithAllowCalculatedOverride, withCheckboxes,
-  withReorder
+  withReorder,
+  wizardWithDataGridWithNestedForm
 } from './fixtures/datagrid';
 
 describe('DataGrid Component', () => {
@@ -436,7 +437,7 @@ describe('DataGrid Component', () => {
                   done();
                 }).catch(done);
               }, 300);
-            }, 300);
+            }, 350);
           }, 300);
         }, 300);
       })
@@ -445,18 +446,18 @@ describe('DataGrid Component', () => {
 
   it('Should retain previous checkboxes checked property when add another is pressed (checked)', () => {
     return Harness.testCreate(DataGridComponent, withCheckboxes).then((component) => {
-      component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').click();
+      component.componentsMap['dataGrid[0].radio'].element.querySelector('input').click();
       component.addRow();
-      assert.equal(component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').checked, true);
+      assert.equal(component.componentsMap['dataGrid[0].radio'].element.querySelector('input').checked, true);
     });
   });
 
   it('Should retain previous checkboxes checked property when add another is pressed (unchecked)', () => {
     return Harness.testCreate(DataGridComponent, withCheckboxes).then((component) => {
-      component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').click();
-      component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').click();
+      component.componentsMap['dataGrid[0].radio'].element.querySelector('input').click();
+      component.componentsMap['dataGrid[0].radio'].element.querySelector('input').click();
       component.addRow();
-      assert.equal(component.childComponentsMap['dataGrid[0].radio'].element.querySelector('input').checked, false);
+      assert.equal(component.componentsMap['dataGrid[0].radio'].element.querySelector('input').checked, false);
     });
   });
 
@@ -523,6 +524,93 @@ describe('DataGrid Component', () => {
           done();
         }, 300);
       }, 300);
+    }).catch((err) => done(err));
+  });
+
+  it('Should trigger DataGrid change event when row component value changes', (done) => {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [{
+        label: 'Datagrid',
+        key: 'dataGrid',
+        type: 'datagrid',
+        defaultValue: [{ }],
+        input: true,
+        components: [
+          {
+            label: 'Number',
+            key: 'number',
+            type: 'number',
+            input: true
+          },
+        ],
+      }],
+    }).then((form) => {
+      form.on('change', ({ changed }) => {
+        assert(changed.component.key, 'dataGrid');
+        done();
+      });
+      const numberComp = form.getComponent(['dataGrid', 0, 'number']);
+      numberComp.setValue(1);
+    }).catch((err) => done(err));
+  });
+
+  it('Should trigger DataGrid change event when adding a new row', (done) => {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [{
+        label: 'Datagrid',
+        key: 'dataGrid',
+        type: 'datagrid',
+        defaultValue: [{ }],
+        input: true,
+        components: [
+          {
+            label: 'Number',
+            key: 'number',
+            type: 'number',
+            input: true
+          },
+        ],
+      }],
+    }).then((form) => {
+      form.on('change', ({ changed }) => {
+        assert(changed.component.key, 'dataGrid');
+        done();
+      });
+      const dataGrid = form.getComponent(['dataGrid']);
+      dataGrid.addRow();
+    }).catch((err) => done(err));
+  });
+
+  it('Should trigger DataGrid change event when removing the row', (done) => {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [{
+        label: 'Datagrid',
+        key: 'dataGrid',
+        type: 'datagrid',
+        defaultValue: [{ }],
+        input: true,
+        components: [
+          {
+            label: 'Number',
+            key: 'number',
+            type: 'number',
+            input: true
+          },
+        ],
+      }],
+    }).then((form) => {
+      form.on('change', ({ changed }) => {
+        assert(changed.component.key, 'dataGrid');
+        done();
+      });
+      const dataGrid = form.getComponent(['dataGrid']);
+      dataGrid.removeRow(0);
     }).catch((err) => done(err));
   });
 });
@@ -971,7 +1059,7 @@ describe('SaveDraft functionality', () => {
       {
         saveDraft: true,
         skipDraftRestore: true,
-        saveDraftThrottle: 100
+        saveDraftThrottle: 300
       }
     ).then((form) => {
       setTimeout(() => {
@@ -996,3 +1084,65 @@ describe('SaveDraft functionality', () => {
     }).catch((err) => done(err));
   })
 })
+
+describe('Wizard Form with Grid with Nested Form validation', () => {
+  const originalMakeRequest = Formio.makeRequest;
+
+  const nestedForm = {
+    _id: '6800c965a969b07fbd8d7077',
+    title: 'Base Simple',
+    name: 'baseSimple',
+    path: 'basesimple',
+    type: 'form',
+    components: [
+      {
+        label: 'First Name',
+        applyMaskOn: 'change',
+        tableView: true,
+        validate: {
+          required: true
+        },
+        validateWhenHidden: false,
+        key: 'firstName',
+        type: 'textfield',
+        input: true
+      },
+      {
+        label: 'Submit',
+        key: 'submit',
+        type: 'button'
+      }
+    ]
+  };
+
+  before(() => {
+    // Mock Formio.makeRequest to serve mock forms
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get' && url.includes('6800c965a969b07fbd8d7077')) {
+        return Promise.resolve(_.cloneDeep(nestedForm));
+      }
+      return Promise.resolve();
+    };
+  });
+
+  after(() => {
+    // Restore the original makeRequest
+    Formio.makeRequest = originalMakeRequest;
+  });
+
+  it('Should validate DataGrid with nested form before going to the next page', function (done) {
+    Formio.createForm(document.createElement('div'), wizardWithDataGridWithNestedForm)
+    .then((wizard) => {
+      const nextBtn = _.get(wizard.refs, `${wizard.wizardKey}-next`);
+      const clickEvent = new Event('click');
+      nextBtn.dispatchEvent(clickEvent);
+      setTimeout(() => {
+        assert.equal(wizard.page, 0, 'Should open wizard page 1');
+        const errors = wizard.errors;
+        assert.equal(errors.length, 1, 'Should have an error');
+        assert.equal(errors[0].ruleName, 'required');
+        done()
+      }, 300);
+    }).catch(done);
+  });
+});

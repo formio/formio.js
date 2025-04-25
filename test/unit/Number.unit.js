@@ -28,18 +28,16 @@ describe('Number Component', () => {
   });
 
   it('Should correctly handle scientific notation', () => {
-    return Harness.testCreate(NumberComponent, scientificNotation, { allowScientificNotation: true }).then((component) => {
+    return Harness.testCreate(NumberComponent, scientificNotation).then((component) => {
       const testCases = [
-        [6.54635E+12, 6546350000000, '6546350000000'],
-        [1.23e-5, 0.0000123, '0.0000123'],
-        [3.14159e2, 314.159, '314.159'],
-        [2e-3, 0.002, '0.002'],
-        [7.5e5, 750000, '750000'],
-        [1.2345e10, 12345000000, '12345000000'],
+        ['6.54e+12', 6.54e+12, '6.54e+12'],
+        ['1.23e-5', 1.23e-5, '1.23e-5'],
+        ['3.14e+2', 3.14e+2, '3.14e+2'],
+        ['2e-3', 2e-3, '2e-3'],
+        ['7.5e+5', 7.5e+5, '7.5e+5'],
+        ['1.23e+10', 1.23e+10, '1.23e+10'],
       ];
-
       testCases.forEach(([input, expectedValue, expectedDisplayValue]) => {
-
         component.setValue(input);
         assert.equal(component.dataValue, expectedValue, `setValue: ${input} should result in ${expectedValue}`);
         assert.equal(component.getValueAsString(input), expectedDisplayValue, `getValueAsString: ${input} should result in ${expectedDisplayValue}`);

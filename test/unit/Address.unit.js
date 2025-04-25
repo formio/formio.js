@@ -8,6 +8,7 @@ import {
   comp2,
   comp3,
   comp4,
+  comp5,
 } from './fixtures/address';
 
 describe('Address Component', () => {
@@ -229,5 +230,50 @@ describe('Address Component', () => {
         }, 300);
       }, 300);
     });
+  });
+
+  it('Should build an address component with multiple values and set value', (done) => {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, _.cloneDeep(comp5)).then(form => {
+      const address = form.getComponent('address');
+      assert.equal(!!address.provider, true);
+      assert.deepEqual(address.dataValue, [{}]);
+      address.addRow();
+      assert.deepEqual(address.dataValue, [{}, {}]);
+
+      const value = [{
+        place_id: 258689701,
+        licence: 'Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright',
+        osm_type: 'relation',
+        osm_id: 65606,
+        lat: '51.4893335',
+        lon: '-0.14405508452768728',
+        class: 'boundary',
+        type: 'ceremonial',
+        place_rank: 25,
+        importance: 0.8820890292539882,
+        addresstype: 'city',
+        name: 'London',
+        display_name: 'London, Greater London, England, United Kingdom',
+        address: {
+          city: 'London',
+          state_district: 'Greater London',
+          state: 'England',
+          'ISO3166-2-lvl4': 'GB-ENG',
+          country: 'United Kingdom',
+          country_code: 'gb'
+        },
+        boundingbox: [
+          '51.2867601',
+          '51.6918741',
+          '-0.5103751',
+          '0.3340155'
+        ]
+      }, {}];
+      address.setValue(value);
+      assert.deepEqual(address.dataValue, value);
+      done();
+    }).catch(done);
   });
 });

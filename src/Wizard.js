@@ -432,7 +432,7 @@ export default class Wizard extends Webform {
 
   attachHeader() {
     const isAllowPrevious = this.isAllowPrevious();
-    this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`], this.currentPanel.tooltip);
+    this.attachTooltips(this.refs[`${this.wizardKey}-tooltip`], this.currentPanel?.tooltip);
 
     if (this.isBreadcrumbClickable() || isAllowPrevious) {
       this.refs[`${this.wizardKey}-link`]?.forEach((link, index) => {
@@ -690,6 +690,7 @@ export default class Wizard extends Webform {
       }
       this.redraw().then(() => {
         this.checkData(this.submission.data);
+        this.triggerCaptcha(this.currentPage.components);
         const errors = this.submitted ? this.validate(this.localData, { dirty: true }) : this.validateCurrentPage();
         if (this.alert) {
           this.showErrors(errors, true, true);
@@ -701,7 +702,7 @@ export default class Wizard extends Webform {
       this.redraw();
       return Promise.resolve();
     }
-    return Promise.reject('Page not found');
+    return Promise.reject(this.t('pageNotFound'));
   }
 
   pageFieldLogic(page) {
@@ -763,9 +764,10 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    const pages = this.getPages();
+    const pages = this.getPages({all: true});
 
     return Promise.all(pages.map((page) => {
+      this.triggerButtonCaptcha(page);
       page.options.beforeSubmit = true;
       return page.beforeSubmit();
     }));
@@ -831,7 +833,10 @@ export default class Wizard extends Webform {
   validateCurrentPage(flags = {}) {
     const components = this.currentPage?.components.map((component) => component.component);
     // Accessing the parent ensures the right instance (whether it's the parent Wizard or a nested Wizard) performs its validation
-    return this.currentPage?.parent.validateComponents(components, this.currentPage.parent.data, flags);
+    if (this.currentPage?.parent) {
+      return this.currentPage?.parent.validateComponents(components, this.root.data, flags);
+    }
+    return this.currentPage?.validateComponents(components, this.root ? this.root.data : this.data, flags);
   }
 
   emitPrevPage() {
@@ -1043,13 +1048,6 @@ export default class Wizard extends Webform {
     }
   }
 
-  redraw() {
-    if (this.parent?.component?.modalEdit) {
-      return this.parent.redraw();
-    }
-    return super.redraw();
-  }
-
   rebuild() {
     const currentPage = this.page;
     const setCurrentPage = () => this.setPage(currentPage);
@@ -1072,7 +1070,7 @@ export default class Wizard extends Webform {
     );
   }
 
-  get errors() { 
+  get errors() {
     return !this.isLastPage() && !this.submitted ? this.currentPage.errors : super.errors;
   }
 
@@ -1095,6 +1093,26 @@ export default class Wizard extends Webform {
       }
     }
     return super.focusOnComponent(key);
+  }
+
+  triggerButtonCaptcha(page) {
+    if (!page.components) {
+      return;
+    }
+
+    let captchaComponent;
+
+    page.eachComponent((component)=> {
+      if (/^(re)?captcha$/.test(component.component.type) &&
+        component.component.eventType === 'buttonClick' &&
+        component.component.buttonKey === 'submit') {
+          captchaComponent = component;
+        }
+    });
+
+    if (captchaComponent) {
+      captchaComponent.verify(`submitClick`);
+    }
   }
 }
 

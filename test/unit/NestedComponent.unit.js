@@ -123,7 +123,7 @@ describe('NestedComponent class', () => {
       comp.setValue(data);
       comp.checkConditions(data);
       assert.equal(comp.components[1]._visible, false);
-      assert.equal(comp.components[1].components[0]._visible, true);
+      assert.equal(comp.components[1].components[0]._visible, false);
       assert.equal(comp.components[1].components[1]._visible, false);
 
       // overrideParent is depricated.
@@ -131,8 +131,8 @@ describe('NestedComponent class', () => {
       comp.setValue(data);
       comp.checkConditions(data);
       assert.equal(comp.components[1]._visible, false);
-      assert.equal(comp.components[1].components[0]._visible, true);
-      assert.equal(comp.components[1].components[1]._visible, true);
+      assert.equal(comp.components[1].components[0]._visible, false);
+      assert.equal(comp.components[1].components[1]._visible, false);
     });
   });
 
@@ -248,11 +248,16 @@ describe('NestedComponent class', () => {
           const dataGrid = childForm.components[1];
           const tabs = childForm.components[2];
 
-          assert(textField.path === 'textField');
-          assert(dataGrid.path === 'dataGrid');
-          assert(dataGrid.components[0].path === 'dataGrid[0].textField');
-          assert(tabs.path === 'tabs');
-          assert(tabs.tabs[0][0].path === 'tabsTextfield');
+          assert(textField.paths.localDataPath === 'textField');
+          assert(textField.path === 'form.data.textField');
+          assert(dataGrid.path === 'form.data.dataGrid');
+          assert(dataGrid.paths.localDataPath === 'dataGrid');
+          assert(dataGrid.components[0].path === 'form.data.dataGrid[0].textField');
+          assert(dataGrid.components[0].paths.localDataPath === 'dataGrid[0].textField');
+          assert(tabs.paths.localPath === '');
+          assert(tabs.path === 'form.data');
+          assert(tabs.tabs[0][0].path === 'form.data.tabsTextfield')
+          assert(tabs.tabs[0][0].paths.localDataPath === 'tabsTextfield');
           done();
         })
         .catch(done);

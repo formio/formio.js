@@ -6,7 +6,7 @@ const EditFormUtils = {
   },
   unifyComponents(objValue, srcValue) {
     if (objValue.key && srcValue.key) {
-      if (objValue.skipMerge || srcValue.skipMerge) {
+      if ((objValue.skipMerge || srcValue.skipMerge) && !objValue.ignore) {
         return false;
       }
       if (objValue.key === srcValue.key) {
@@ -34,6 +34,9 @@ const EditFormUtils = {
       }
     }
     return _.isEqual(objValue, srcValue);
+  },
+  tokenVariableDescription() {
+    return '<tr><th>token</th><td>The decoded JWT token for the authenticated user.</td></tr>';
   },
   logicVariablesTable(additional) {
     additional = additional || '';

@@ -3,13 +3,7 @@ import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import ComponentModal from '../_classes/componentModal/ComponentModal';
 import EventEmitter from 'eventemitter3';
-import {
-  isMongoId,
-  eachComponent,
-  getStringFromComponentPath,
-  getArrayFromComponentPath,
-  componentValueTypes
-} from '../../utils/utils';
+import {isMongoId, eachComponent, componentValueTypes} from '../../utils/utils';
 import { Formio } from '../../Formio';
 import Form from '../../Form';
 
@@ -115,8 +109,12 @@ export default class FormComponent extends Component {
     return this.createSubForm();
   }
 
+  shouldConditionallyClearOnPristine() {
+    return !this.hasSetValue && super.shouldConditionallyClearOnPristine();
+  }
+
   get dataReady() {
-    return this.subFormReady || Promise.resolve();
+    return this.subForm?.dataReady || this.subFormReady || Promise.resolve();
   }
 
   get defaultValue() {
@@ -130,6 +128,11 @@ export default class FormComponent extends Component {
 
   get emptyValue() {
     return { data: {} };
+  }
+
+  // In order for the subform values to set properly, we must always say that nested forms have a default value.
+  get hasDefaultValue() {
+    return true;
   }
 
   get ready() {
@@ -154,15 +157,11 @@ export default class FormComponent extends Component {
     }
   }
 
-  getComponent(path, fn) {
-    path = getArrayFromComponentPath(path);
-    if (path[0] === 'data') {
-      path.shift();
+  getComponent(path) {
+    if (!this.subForm) {
+      return null;
     }
-    const originalPathStr = `${this.path}.data.${getStringFromComponentPath(path)}`;
-    if (this.subForm) {
-      return this.subForm.getComponent(path, fn, originalPathStr);
-    }
+    return this.subForm.getComponent(path);
   }
 
   /* eslint-disable max-statements */
@@ -171,6 +170,9 @@ export default class FormComponent extends Component {
 
     // Make sure to not show the submit button in wizards in the nested forms.
     _.set(options, 'buttonSettings.showSubmit', false);
+
+    // Set the parent option to the subform so those references are stable when the subform is created
+    options.parent = this;
 
     if (!this.options) {
       return options;
@@ -233,13 +235,14 @@ export default class FormComponent extends Component {
     if (this.options.skipDraftRestore) {
       options.skipDraftRestore = this.options.skipDraftRestore;
     }
+    options.parent = this;
     return options;
   }
   /* eslint-enable max-statements */
 
   render() {
     if (this.builderMode) {
-      return super.render(this.component.label || 'Nested form');
+      return super.render(this.t(this.component.label || 'nestedForm'));
     }
     const subform = this.subForm ? this.subForm.render() : this.renderTemplate('loading');
     return super.render(subform);
@@ -255,13 +258,13 @@ export default class FormComponent extends Component {
 
   getValueAsString(value, options) {
     if (!value) {
-      return 'No data provided';
+      return this.t('noDataProvided');
     }
     if (!value.data && value._id) {
       return value._id;
     }
     if (!value.data || !Object.keys(value.data).length) {
-      return 'No data provided';
+      return this.t('noDataProvided');
     }
     if (options?.email) {
       let result = (`
@@ -324,18 +327,20 @@ export default class FormComponent extends Component {
             }
             this.subForm.attach(element);
             this.valueChanged = this.hasSetValue;
-
-            if (!this.valueChanged && this.dataValue.state !== 'submitted') {
-              this.setDefaultValue();
-            }
-            else {
-              this.restoreValue();
+            if (!this.shouldConditionallyClear()) {
+              if (!this.valueChanged && this.dataValue.state !== 'submitted') {
+                this.setDefaultValue();
+              }
+              else {
+                this.restoreValue();
+              }
             }
           }
           if (!this.builderMode && this.component.modalEdit) {
             const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
             const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
             this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue, this._referenceAttributeName);
+            this.subForm.element = this.componentModal.refs.componentContent || this.subForm.element;
             this.setOpenModalElement();
           }
 
@@ -376,6 +381,10 @@ export default class FormComponent extends Component {
     return _.isNumber(this.subFormRevision)
     && _.isNumber(this.formObj._vid)
     && this.formObj._vid !== this.subFormRevision;
+  }
+
+  get subFormData() {
+    return this.dataValue?.data || {};
   }
 
   destroy(all = false) {
@@ -426,10 +435,11 @@ export default class FormComponent extends Component {
   /**
    * Create a subform instance.
    * @param {boolean} [fromAttach] - This function is being called from an `attach` method.
+   * @param {boolean} [beforeSubmit] - This function is being called from a `beforeSubmit` method.
    * @returns {*} - The subform instance.
    */
-  createSubForm(fromAttach) {
-    this.subFormReady = this.loadSubForm(fromAttach).then((form) => {
+  createSubForm(fromAttach, beforeSubmit) {
+    this.subFormReady = this.loadSubForm(fromAttach, beforeSubmit).then((form) => {
       if (!form) {
         return;
       }
@@ -448,10 +458,13 @@ export default class FormComponent extends Component {
       return (new Form(form, this.getSubOptions())).ready.then((instance) => {
         this.subForm = instance;
         this.subForm.currentForm = this;
-        this.subForm.parent = this;
         this.subForm.parentVisible = this.visible;
+        const componentsMap = this.componentsMap;
+        const formComponentsMap = this.subForm.componentsMap;
+        _.assign(componentsMap, formComponentsMap);
+        this.component.components = this.subForm.components.map((comp) => comp.component);
         this.subForm.on('change', () => {
-          if (this.subForm) {
+          if (this.subForm && !this.shouldConditionallyClear()) {
             this.dataValue = this.subForm.getValue();
             this.triggerChange({
               noEmit: true
@@ -466,6 +479,8 @@ export default class FormComponent extends Component {
         this.valueChanged = this.hasSetValue;
         this.onChange();
         return this.subForm;
+      }).catch((err) => {
+        console.log(err);
       });
     }).then((subForm) => {
       this.updateSubWizards(subForm);
@@ -475,21 +490,24 @@ export default class FormComponent extends Component {
   }
 
   hideSubmitButton(component) {
-    const isSubmitButton = (component.type === 'button') &&
-      ((component.action === 'submit') || !component.action);
+    const isSubmitButton = component.type === 'button' && (component.action === 'submit' || !component.action);
 
     if (isSubmitButton) {
       component.hidden = true;
+      // clearOnHide no longer clears from the JSON `hidden` flag, so we make the button conditionally hidden to clear its data
+      component.customConditional = 'show = false';
     }
   }
 
   /**
    * Load the subform.
    * @param {boolean} fromAttach - This function is being called from an `attach` method.
+   * @param {boolean} beforeSubmit - This function is being called from a `beforeSubmit` method.
    * @returns {Promise} - The promise that resolves when the subform is loaded.
    */
-  loadSubForm(fromAttach) {
-    if (this.builderMode || this.isHidden() || (this.isSubFormLazyLoad() && !fromAttach)) {
+  loadSubForm(fromAttach, beforeSubmit) {
+    const loadHiddenForm = beforeSubmit && !this.component.clearOnHide;
+    if (this.builderMode || (this.conditionallyHidden() && !loadHiddenForm) || (this.isSubFormLazyLoad() && !fromAttach)) {
       return Promise.resolve();
     }
 
@@ -527,21 +545,6 @@ export default class FormComponent extends Component {
     return Promise.resolve();
   }
 
-  get subFormData() {
-    return this.dataValue?.data || {};
-  }
-
-  checkComponentValidity(data, dirty, row, options, errors = []) {
-    options = options || {};
-    const silentCheck = options.silentCheck || false;
-
-    if (this.subForm) {
-      return this.subForm.checkValidity(this.subFormData, dirty, null, silentCheck, errors);
-    }
-
-    return super.checkComponentValidity(data, dirty, row, options, errors);
-  }
-
   checkComponentConditions(data, flags, row) {
     const visible = super.checkComponentConditions(data, flags, row);
 
@@ -551,14 +554,14 @@ export default class FormComponent extends Component {
     }
 
     if (this.subForm) {
-      return this.subForm.checkConditions(this.subFormData);
+      return this.subForm.checkConditions(this.subFormData, flags);
     }
     // There are few cases when subForm is not loaded when a change is triggered,
     // so we need to perform checkConditions after it is ready, or some conditional fields might be hidden in View mode
     else if (this.subFormReady) {
       this.subFormReady.then(() => {
         if (this.subForm) {
-          return this.subForm.checkConditions(this.subFormData);
+          return this.subForm.checkConditions(this.subFormData, flags);
         }
       });
     }
@@ -586,7 +589,7 @@ export default class FormComponent extends Component {
    * @returns {*|boolean} - TRUE if the subform should be submitted, FALSE if it should not.
    */
   get shouldSubmit() {
-    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.isHidden();
+    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.shouldConditionallyClear();
   }
 
   /**
@@ -615,7 +618,7 @@ export default class FormComponent extends Component {
         }
         this.subForm.nosubmit = false;
         this.subForm.submitted = true;
-        return this.subForm.submitForm().then(result => {
+        return this.subForm.submitForm({}, true).then(result => {
           this.subForm.loading = false;
           this.subForm.showAllErrors = false;
           this.dataValue = result.submission;
@@ -662,11 +665,20 @@ export default class FormComponent extends Component {
       this.dataValue = submission;
       return Promise.resolve(this.dataValue);
     }
-    return this.submitSubForm(false)
-      .then(() => {
-        return this.dataValue;
-      })
+    // we need to load a hidden form (when clearOnHide is disabled) in order to get and submit (if needed) its data
+    const loadHiddenForm = !this.component.clearOnHide;
+    if((this.isSubFormLazyLoad() || loadHiddenForm) && !this.subFormLoading && !this.subForm){
+      return this.createSubForm(true, true)
+        .then(() => this.submitSubForm(false))
+        .then(() => this.dataValue)
+        .then(() => super.beforeSubmit());
+
+    }
+    else {
+      return this.submitSubForm(false)
+      .then(() => this.dataValue)
       .then(() => super.beforeSubmit());
+    }
   }
 
   isSubFormLazyLoad() {
@@ -722,7 +734,7 @@ export default class FormComponent extends Component {
       : {};
       this.subForm.setUrl(submissionUrl, { ...this.options, ...options });
       this.subForm.loadSubmission().catch((err) => {
-        console.error(`Unable to load subform submission ${submission._id}:`, err);
+        console.error(this.t('subformSubmissionLoadingError', { submissionId: submission._id }), err);
       });
     }
     else {
@@ -737,24 +749,13 @@ export default class FormComponent extends Component {
    */
   onSetSubFormValue(submission, flags) {
     this.subForm.setValue(submission, flags);
+    if (flags?.fromSubmission) {
+      this.subForm.submissionReadyResolve(submission);
+    }
   }
 
   isEmpty(value = this.dataValue) {
-    return value === null || _.isEqual(value, this.emptyValue) || (this.areAllComponentsEmpty(value?.data) && !value?._id);
-  }
-
-  areAllComponentsEmpty(data) {
-    let res = true;
-    if (this.subForm) {
-      this.subForm.everyComponent((comp) => {
-        const componentValue = _.get(data, comp.key);
-        res &= comp.isEmpty(componentValue);
-      });
-    }
-    else {
-      res = false;
-    }
-    return res;
+    return value === null || _.isEqual(value, this.emptyValue);
   }
 
   getValue() {

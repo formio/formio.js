@@ -65,7 +65,15 @@ export default class TextAreaComponent extends TextFieldComponent {
     info.content = value;
     if ((this.options.readOnly || this.disabled) && !this.isHtmlRenderMode()) {
       const elementStyle = this.info.attr.style || '';
-      const children = `<div ${this._referenceAttributeName}="input" class="formio-editor-read-only-content" ${elementStyle ? `style='${elementStyle}'` : ''}></div>`;
+      const children = `
+        <div ${this._referenceAttributeName}="input" 
+          class="formio-editor-read-only-content" 
+          ${elementStyle ? `style='${elementStyle}'` : ''}
+          role="textbox"
+          aria-multiline="true"
+          aria-readonly="true"
+        >
+        </div>`;
 
       return this.renderTemplate('well', {
         children,
@@ -149,7 +157,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         case 'quill':
           // Normalize the configurations for quill.
           if (settings.hasOwnProperty('toolbarGroups') || settings.hasOwnProperty('toolbar')) {
-            console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
+            console.warn(this.t('needConfigurationForQuill'));
             settings = this.wysiwygDefault.quill;
           }
 
@@ -232,7 +240,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     const quillInstance = moduleInstance.quill;
 
     if (!files || !files.length) {
-      console.warn('No files selected');
+      console.warn(this.t('noFilesSelected'));
       return;
     }
 
@@ -269,7 +277,7 @@ export default class TextAreaComponent extends TextFieldComponent {
               })
           , Quill.sources.USER);
       }).catch(error => {
-      console.warn('Quill image upload failed');
+      console.warn(this.t('quillImageUploadFailed'));
       console.warn(error);
       quillInstance.enable(true);
     });
@@ -613,7 +621,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           }
           this.element.scrollIntoView();
         }).catch((err) => {
-          console.warn('An editor did not initialize properly when trying to focus:', err);
+          console.warn(this.t('editorFocusError'), err);
         });
         break;
       }
@@ -622,7 +630,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           this.editors[0].focus();
           this.element.scrollIntoView();
         }).catch((err) => {
-          console.warn('An editor did not initialize properly when trying to focus:', err);
+          console.warn(this.t('editorFocusError'), err);
         });
         break;
       }
@@ -630,7 +638,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         this.editorsReady[0]?.then(() => {
           this.editors[0].focus();
         }).catch((err) => {
-          console.warn('An editor did not initialize properly when trying to focus:', err);
+          console.warn(this.t('editorFocusError'), err);
         });
         break;
       }

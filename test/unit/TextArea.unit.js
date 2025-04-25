@@ -10,6 +10,7 @@ import { Formio } from '../../src/Formio';
 import { comp1, comp2, comp3, comp4 } from './fixtures/textarea';
 import TextAreaComponent from '../../src/components/textarea/TextArea';
 import { fastCloneDeep } from '@formio/core';
+import { getFormioUploadAdapterPlugin } from '../../src/providers/storage/uploadAdapter';
 window.ace = require('ace-builds');
 
 describe('TextArea Component', () => {
@@ -450,6 +451,23 @@ describe('TextArea Component', () => {
           }, 300);
         }).catch(done);
       });
+
+      it('File upload plugin should be constructor', (done) => {
+        try {
+          const fileUploadPlugin = getFormioUploadAdapterPlugin();
+          const plugin = new fileUploadPlugin({
+            plugins: {
+              get: () => ({
+                createUploadAdapter: () => {}
+              }),
+            }
+          });
+          assert.deepEqual(plugin, {});
+          done();
+        } catch (error) {
+          done(error)
+        }
+      });
     });
 
     it('Should clear value in the editor on Reset', (done) => {
@@ -562,5 +580,14 @@ describe('TextArea Component', () => {
           }, 300)
       }).catch(done);
     });
+
+    it('Should render textarea as a Well with special aria tags if the component is readOnly', () => {
+      const component = {...comp2, disabled: true}
+      return Harness.testCreate(TextAreaComponent, component).then((component) => {
+        const textAreaElement = component.element.querySelector('[ref="input"]');
+        assert.equal(textAreaElement.getAttribute('role'), 'textbox');
+        assert.equal(textAreaElement.getAttribute('aria-readonly'), 'true');
+      });
+    })
   });
 });

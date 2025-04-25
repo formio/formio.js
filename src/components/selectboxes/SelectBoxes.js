@@ -76,6 +76,10 @@ export default class SelectBoxesComponent extends RadioComponent {
     return info;
   }
 
+  get hasDefaultValue() {
+    return true;
+  }
+
   get emptyValue() {
     return this.component.values.reduce((prev, value) => {
       if (value.value) {
@@ -171,6 +175,9 @@ export default class SelectBoxesComponent extends RadioComponent {
           delete value[key];
         }
       }
+    }
+    else if (_.isEmpty(this.loadedOptions) && !checkedValues.length) {
+      value = {};
     }
     return value;
   }
@@ -284,7 +291,7 @@ export default class SelectBoxesComponent extends RadioComponent {
 
         if (!isValid && maxCount && count > maxCount) {
           const message = this.t(
-            this.component.maxSelectedCountMessage || 'You may only select up to {{maxCount}} items',
+            this.component.maxSelectedCountMessage || 'maxSelectItems',
             { maxCount }
           );
           this.errors.push({ message });
@@ -294,7 +301,7 @@ export default class SelectBoxesComponent extends RadioComponent {
         else if (!isValid && minCount && count < minCount) {
           this.setInputsDisabled(false);
           const message = this.t(
-            this.component.minSelectedCountMessage || 'You must select at least {{minCount}} items',
+            this.component.minSelectedCountMessage || 'minSelectItems',
             { minCount }
           );
           this.errors.push({ message });
@@ -315,7 +322,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       return super.setCustomValidity(_.filter(messages, (message) => message.ruleName !=='invalidValueProperty'), dirty, external);
     } else {
       return super.setCustomValidity(messages, dirty, external);
-    };
+    }
   }
 
   validateValueAvailability(setting, value) {

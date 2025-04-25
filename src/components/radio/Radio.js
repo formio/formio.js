@@ -461,9 +461,11 @@ export default class RadioComponent extends ListComponent {
       const value = this.dataValue;
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
-        const checked  = (input.type === 'checkbox')
-          ? value[input.value] || input.checked
-          : _.isEqual(this.normalizeValue(this.getValueByInput(input)), value);
+        const checked = (value === undefined || value === null)
+          ? false
+          : (input.type === 'checkbox')
+            ? value[input.value] || input.checked
+            : _.isEqual(this.normalizeValue(this.getValueByInput(input)), value);
         if (checked) {
           //add class to container when selected
           this.addClass(wrapper, this.optionSelectedClass);
