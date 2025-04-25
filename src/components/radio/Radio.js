@@ -484,7 +484,7 @@ export default class RadioComponent extends ListComponent {
     let key = value;
     if (typeof value !== 'string') {
       const checkedInput = Array.prototype.find.call(
-        this.refs.input,
+        this.refs.input ?? [],
         (input => input.type === 'radio' && input.getAttribute('checked'))
       );
       key = checkedInput?.value || key;
