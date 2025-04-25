@@ -415,6 +415,21 @@ export default class SelectComponent extends ListComponent {
     this.serverCount = this.downloadedResources.length;
   }
 
+  shouldResetChoicesItems(items) {
+    if (this.choices._store.choices.length !== items.length) {
+      return true;
+    }
+
+    for (let item of items) {
+      const choicesItem = this.choices._store.choices.find((i) => i.label === item.label);
+      if (!choicesItem) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   /* eslint-disable max-statements */
   setItems(items, fromSearch) {
     this.selectItems = items;
@@ -514,7 +529,14 @@ export default class SelectComponent extends ListComponent {
     });
 
     if (this.choices) {
-      this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+      this.choices.setChoices(
+        this.selectOptions,
+        'value',
+        'label',
+        true,
+        true,
+        !fromSearch && this.shouldResetChoicesItems(this.selectOptions),
+      );
     }
     else if (this.loading) {
       // Re-attach select input.
