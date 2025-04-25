@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
-import { fastCloneDeep, getFocusableElements } from '../../utils/utils';
+import { fastCloneDeep, getFocusableElements, getComponent } from '../../utils/utils';
 
 export default class DataGridComponent extends NestedArrayComponent {
   static schema(...extend) {
@@ -578,6 +578,10 @@ export default class DataGridComponent extends NestedArrayComponent {
       options.row = `${rowIndex}-${colIndex}`;
       options.rowIndex = rowIndex;
       options.onChange = (flags, changed, modified) => {
+        if (changed.component.type === 'form') {
+          const formComp = getComponent(this.component.components, changed.component.key)
+          _.set(formComp, 'components', changed.component.components);
+        }
         this.triggerChange({ modified });
       }
 
