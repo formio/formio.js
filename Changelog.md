@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.2.1-rc.2]
+### Changed
+ - FIO-10298: fixed an issue where server errors are not highlighted inside nested components
+ - FIO-9693: fixed select component with custom data source
+ 
 ## 5.2.1-rc.1
 ### Changed
  - Updated @formio/bootstrap@3.1.2-rc.1
