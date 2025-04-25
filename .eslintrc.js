@@ -9,9 +9,15 @@ module.exports = {
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "plugins": ["jsdoc"],
+    "plugins": ["jsdoc" , "security", "no-unsanitized"],
     "rules": {
       "no-prototype-builtins": "off",
       "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+      // CSP-focused security rules:
+      "security/detect-eval-with-expression": "warn",
+      "security/detect-unsafe-regex": "warn",
+      // Prevent unsanitized DOM injection
+      "no-unsanitized/method": "warn",
+      "no-unsanitized/property": "warn"
     }
 }
