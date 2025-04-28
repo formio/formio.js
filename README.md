@@ -25,6 +25,7 @@ This library has a very powerful JSON form builder, and can be used like the fol
   <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.form.io/js/formio.full.min.css">
     <script src='https://cdn.form.io/js/formio.full.min.js'></script>
   </head>
   <body>
@@ -128,6 +129,8 @@ being set to ```wizard```.
 You can also use this library as a JavaScript embedding of the form using a single line of code. For example, to embed the https://examples.form.io/example form within your application you can simply use the following embed code.
 
 ```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
 <script src="https://cdn.form.io/js/formio.embed.min.js?src=https://examples.form.io/example&libs=true"></script>
 ```
 
@@ -142,6 +145,8 @@ In addition to having a Form Renderer within this application, you can also use 
 ```html
 <html>
   <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
     <script src='https://cdn.form.io/js/formio.min.js'></script>
     <script type='text/javascript'>
       var formio = new Formio('https://examples.form.io/example');
