@@ -11,7 +11,6 @@ import { Formio } from '../../src/formio.form.js';
 import {
   settingErrors,
   clearOnHide,
-  clearOnHideInsideLayoutComponent,
   manualOverride,
   validationOnBlur,
   calculateValueWithManualOverride,
@@ -93,6 +92,7 @@ import simpleController from '../forms/formWithSimpleController.js';
 import formWithHiddenComponents from '../forms/formWithHiddenComponents.js';
 import formWithShowAsString from '../forms/formWithShowAsString.js';
 import formWithMergeComponentSchemaAndCustomLogic from '../forms/formWithMergeComponentSchemaAndCustomLogic.js';
+import clearOnHideInsideLayoutComponent from '../forms/clearOnHideInsideLayoutComponent.js';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
