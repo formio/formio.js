@@ -823,7 +823,7 @@ export default class Component extends Element {
       this._conditionallyClear = true;
       return this._conditionallyClear;
     }
-    this._conditionallyClear = this.hasSetValue ? false : this.parentShouldConditionallyClear();
+    this._conditionallyClear = this.parentShouldConditionallyClear();
     return this._conditionallyClear;
   }
 

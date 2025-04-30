@@ -11,6 +11,7 @@ import { Formio } from '../../src/formio.form.js';
 import {
   settingErrors,
   clearOnHide,
+  clearOnHideInsideLayoutComponent,
   manualOverride,
   validationOnBlur,
   calculateValueWithManualOverride,
@@ -2390,6 +2391,41 @@ describe('Webform tests', function() {
         assert.deepEqual(form.data, visibleData.data);
         Harness.setInputValue(form, 'data[visible]', 'no');
 
+        setTimeout(() => {
+          assert.deepEqual(form.data, hiddenData.data);
+          done();
+        }, 250);
+      }, 250);
+    });
+  });
+
+  it('Should delete value of component inside parent conditionally hidden component if clearOnHide is turned on', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm(clearOnHideInsideLayoutComponent).then(() => {
+      const visibleData = {
+        data: {
+          checkbox: true,
+          textFieldInPanel: 'some text in panel',
+          textFieldInFieldset: 'some text in fieldset',
+          submit: false
+        }
+      };
+
+      const hiddenData = {
+        data: {
+          checkbox: false,
+          submit: false
+        }
+      };
+      const textFieldInPanel = form.getComponent('textFieldInPanel');
+      textFieldInPanel.setValue('some text in panel');
+      const textFieldInFieldset = form.getComponent('textFieldInFieldset');
+      textFieldInFieldset.setValue('some text in fieldset');
+      setTimeout(() => {
+        assert.deepEqual(form.data, visibleData.data);
+        const checkbox = form.getComponent('checkbox');
+        checkbox.setValue(false);
         setTimeout(() => {
           assert.deepEqual(form.data, hiddenData.data);
           done();
