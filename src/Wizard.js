@@ -37,7 +37,6 @@ export default class Wizard extends Webform {
     this.originalComponents = [];
     this.page = 0;
     this.currentPanel = null;
-    this.currentPanels = null;
     this.currentNextPage = 0;
     this._seenPages = [0];
     this.subWizards = [];
@@ -60,14 +59,14 @@ export default class Wizard extends Webform {
 
   getPages(args = {}) {
     const { all = false } = args;
-    const pages = this.hasExtraPages ? this.components : this.pages;
+    const pages = this.hasSubWizards ? this.components : this.pages;
     const filteredPages = pages
       .filter(all ? _.identity : (p, index) => this._seenPages.includes(index));
 
     return filteredPages;
   }
 
-  get hasExtraPages() {
+  get hasSubWizards() {
     return !_.isEmpty(this.subWizards);
   }
 
@@ -216,9 +215,9 @@ export default class Wizard extends Webform {
   render() {
     const ctx = this.renderContext;
 
-    if (this.component.key) {
-      ctx.panels.map(panel => {
-        if (panel.key === this.component.key) {
+    if (this.component.id) {
+      ctx.panels.forEach(panel => {
+        if (panel.id === this.component.id) {
           this.currentPanel = panel;
           ctx.wizardPageTooltip = this.getFormattedTooltip(panel.tooltip);
         }
@@ -676,7 +675,7 @@ export default class Wizard extends Webform {
       this.getNextPage();
 
       let parentNum = num;
-      if (this.hasExtraPages) {
+      if (this.hasSubWizards) {
         const pageFromPages = this.pages[num];
         const pageFromComponents = this.components[num];
         if (!pageFromComponents || pageFromPages?.id !== pageFromComponents.id) {
@@ -1018,24 +1017,18 @@ export default class Wizard extends Webform {
     }
 
     // If the pages change, need to redraw the header.
-    let currentPanels;
-    let panels;
+    const currentPanels = this.pages;
+    // calling this.establishPages() updates/mutates this.pages to be the current pages
+    this.establishPages();
+    const newPanels = this.pages;
     const currentNextPage = this.currentNextPage;
-    if (this.hasExtraPages) {
-      currentPanels = this.pages.map(page => page.component.key);
-      this.establishPages();
-      panels = this.pages.map(page => page.component.key);
+    const panelsUpdated = !_.isEqual(newPanels, currentPanels);
+    
+    if (this.currentPanel?.id && this.pages.length && (!this.hasSubWizards || (this.hasSubWizards && panelsUpdated))) {
+      const newIndex = this.pages.findIndex(page => page.id === this.currentPanel.id);
+      if (newIndex !== -1) this.setPage(newIndex);
     }
-    else {
-      currentPanels = this.currentPanels || this.pages.map(page => page.component.key);
-      panels = this.establishPages().map(panel => panel.key);
-      this.currentPanels = panels;
-      if (this.currentPanel?.key && this.currentPanels?.length) {
-        this.setPage(this.currentPanels.findIndex(panel => panel === this.currentPanel.key));
-      }
-    }
-
-    if (!_.isEqual(panels, currentPanels) || (flags && flags.fromSubmission)) {
+    if (panelsUpdated || (flags && flags.fromSubmission)) {
       this.redrawHeader();
     }
 
