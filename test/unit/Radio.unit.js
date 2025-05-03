@@ -16,7 +16,8 @@ import {
   comp9,
   comp10,
   comp11,
-  comp13
+  comp13,
+  comp14,
 } from './fixtures/radio';
 import { fastCloneDeep } from '@formio/core';
 
@@ -278,7 +279,8 @@ describe('Radio Component', () => {
 
       setTimeout(()=>{
         values.forEach((value, i) => {
-          assert.equal(_.isEqual(value, radio.loadedOptions[i].value), true);
+          assert.equal(radio.loadedOptions[i].label, `<span>${value.name}</span>`);
+          assert.equal(typeof radio.loadedOptions[i].value, 'string');
         });
         radio.setValue(values[1]);
 
@@ -606,5 +608,270 @@ describe('Radio Component', () => {
         })
       })
       .catch(done);
+  });
+
+  describe('Value property refers to different type of values', () => {
+    const originalMakeRequest = Formio.makeRequest;
+    const values = [
+      {
+        label: 'String',
+        value: 'str',
+      },
+      {
+        label: 'Object',
+        value: {
+          a: 2,
+          b: 'c',
+        }
+      },
+      {
+        label: 'Boolean',
+        value: true,
+      },
+      {
+        label: 'Array',
+        value: [
+          10,
+          1330,
+          '132410',
+        ]
+      },
+      {
+        label: 'Number',
+        value: 5,
+      }
+    ];
+
+    const listDataMetadata = {
+      radio: [
+        {
+          label: 'String'
+        },
+        {
+          label: 'Object'
+        },
+        {
+          label: 'Boolean'
+        },
+        {
+          label: 'Array'
+        },
+        {
+          label: 'Number'
+        }
+      ]
+    };
+
+    before(() => {
+      Formio.makeRequest = function() {
+        return new Promise(resolve => {
+          resolve(values);
+        });
+      };
+    });
+
+    after (() => {
+      Formio.makeRequest = originalMakeRequest;
+    });
+
+    it('Should create correct options', (done) => {
+      const form = _.cloneDeep(comp14);
+      const element = document.createElement('div');
+      Formio.createForm(element, form).then(form => {
+        const radio = form.getComponent('radio');
+
+        setTimeout(() => {
+          assert.equal(radio.loadedOptions.length, values.length);
+          values.forEach((value, i) => {
+            assert.equal(radio.loadedOptions[i].label, `<span>${value.label}</span>`);
+            assert.equal(typeof radio.loadedOptions[i].value, 'string');
+            assert.deepEqual(form.submission.metadata.listData, listDataMetadata);
+          });
+          done();
+        }, 200);
+      }).catch(done);
+    });
+
+    it('Should set value by setValue', (done) => {
+      const form = _.cloneDeep(comp14);
+      const element = document.createElement('div');
+      Formio.createForm(element, form).then(form => {
+        const radio = form.getComponent('radio');
+        setTimeout(() => {
+          values.forEach(({label, value}, i) => {
+            radio.setValue(value);
+            assert.equal(radio.refs.input[i].checked, true);
+            assert.deepEqual(radio.dataValue, value);
+            assert.deepEqual(form.submission.metadata.selectData.radio, {
+              label,
+            });
+          });
+
+          done();
+        }, 200);
+      }).catch(done);
+    });
+
+    it('Should work with String value type', (done) => {
+      const form = _.cloneDeep(comp14);
+      const element = document.createElement('div');
+      Formio.createForm(element, form).then(form => {
+        const radio = form.getComponent('radio');
+
+        setTimeout(() => {
+          assert.equal(radio.refs.input.length, values.length);
+          const input = radio.refs.input[0];
+          input.click();
+
+          setTimeout(() => {
+            assert.equal(radio.dataValue, values[0].value);
+            assert.deepEqual(form.submission.metadata.selectData.radio, {
+              label: values[0].label,
+            });
+            done();
+          }, 200);
+        }, 200);
+      }).catch(done);
+    });
+
+    it('Should work with Object value type', (done) => {
+      const form = _.cloneDeep(comp14);
+      const element = document.createElement('div');
+      Formio.createForm(element, form).then(form => {
+        const radio = form.getComponent('radio');
+
+        setTimeout(() => {
+          assert.equal(radio.refs.input.length, values.length);
+          const input = radio.refs.input[1];
+          input.click();
+
+          setTimeout(() => {
+            assert.deepEqual(radio.dataValue, values[1].value);
+            assert.deepEqual(form.submission.metadata.selectData.radio, {
+              label: values[1].label,
+            });
+            done();
+          }, 200);
+        }, 200);
+      }).catch(done);
+    });
+
+    it('Should work with Boolean value type', (done) => {
+      const form = _.cloneDeep(comp14);
+      const element = document.createElement('div');
+      Formio.createForm(element, form).then(form => {
+        const radio = form.getComponent('radio');
+
+        setTimeout(() => {
+          assert.equal(radio.refs.input.length, values.length);
+          const input = radio.refs.input[2];
+          input.click();
+
+          setTimeout(() => {
+            assert.equal(radio.dataValue, values[2].value);
+            assert.deepEqual(form.submission.metadata.selectData.radio, {
+              label: values[2].label,
+            });
+            done();
+          }, 200);
+        }, 200);
+      }).catch(done);
+    });
+
+    it('Should work with Array value type', (done) => {
+      const form = _.cloneDeep(comp14);
+      const element = document.createElement('div');
+      Formio.createForm(element, form).then(form => {
+        const radio = form.getComponent('radio');
+
+        setTimeout(() => {
+          assert.equal(radio.refs.input.length, values.length);
+          const input = radio.refs.input[3];
+          input.click();
+
+          setTimeout(() => {
+            assert.deepEqual(radio.dataValue, values[3].value);
+            assert.deepEqual(form.submission.metadata.selectData.radio, {
+              label: values[3].label,
+            });
+            done();
+          }, 200);
+        }, 200);
+      }).catch(done);
+    });
+
+    it('Should work with Number value type', (done) => {
+      const form = _.cloneDeep(comp14);
+      const element = document.createElement('div');
+      Formio.createForm(element, form).then(form => {
+        const radio = form.getComponent('radio');
+
+        setTimeout(() => {
+          assert.equal(radio.refs.input.length, values.length);
+          const input = radio.refs.input[4];
+          input.click();
+
+          setTimeout(() => {
+            assert.equal(radio.dataValue, values[4].value);
+            assert.deepEqual(form.submission.metadata.selectData.radio, {
+              label: values[4].label,
+            });
+            done();
+          }, 200);
+        }, 200);
+      }).catch(done);
+    });
+
+    it('Should check input with Object value type using submission data', (done) => {
+      const form = _.cloneDeep(comp14);
+      const element = document.createElement('div');
+      Formio.createForm(element, form).then(form => {
+        form.setSubmission({
+          data: {
+            radio: values[1].value,
+          },
+          metadata: {
+            listData: listDataMetadata,
+            selectData: {
+              radio: {
+                label: values[1].label,
+              }
+            }
+          }
+        }).then(() => {
+          const radio = form.getComponent('radio');
+          setTimeout(() => {
+            assert.equal(radio.refs.input[1].checked, true);
+            done();
+          }, 200);
+        })
+      }).catch(done);
+    });
+
+    it('Should check input with Array value type using submission data', (done) => {
+      const form = _.cloneDeep(comp14);
+      const element = document.createElement('div');
+      Formio.createForm(element, form).then(form => {
+        form.setSubmission({
+          data: {
+            radio: values[3].value,
+          },
+          metadata: {
+            listData: listDataMetadata,
+            selectData: {
+              radio: {
+                label: values[3].label,
+              }
+            }
+          }
+        }).then(() => {
+          const radio = form.getComponent('radio');
+          setTimeout(() => {
+            assert.equal(radio.refs.input[3].checked, true);
+            done();
+          }, 200);
+        })
+      }).catch(done);
+    });
   });
 });
