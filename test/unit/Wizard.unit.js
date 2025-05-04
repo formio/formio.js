@@ -32,6 +32,7 @@ import wizardWithPanel from '../forms/wizardWithPanel';
 import wizardWithWizard from '../forms/wizardWithWizard';
 import simpleTwoPagesWizard from '../forms/simpleTwoPagesWizard';
 import wizardWithNestedWizardInEditGrid from '../forms/wizardWithNestedWizardInEditGrid';
+import wizardWithNestedWizardsAdvConditional from '../forms/wizardWithNestedWizardsAdvConditional';
 import wizardNavigateOrSaveOnEnter from '../forms/wizardNavigateOrSaveOnEnter';
 import nestedConditionalWizard from '../forms/nestedConditionalWizard';
 import wizardWithPrefixComps from '../forms/wizardWithPrefixComps';
@@ -2105,6 +2106,31 @@ it('Should show tooltip for wizard pages', function(done) {
       })
       .catch(done);
   });
+
+  it('Should set correct page index after hiding a conditionally hidden page in sibling nested wizard.', async () => {
+    const formElement = document.createElement('div');
+    wizardForm = new Wizard(formElement);
+    await wizardForm.setForm(wizardWithNestedWizardsAdvConditional);
+    // navigate forward 4 pages to B2
+    // A1 -> A2 -> A3 -> B1 -> B2
+    for (let i = 0; i < 4; i++) {
+      wizardForm.nextPage();
+      await wait(200);
+    }
+    const getPageTitles = () => wizardForm.pages.map(p => p.component.title);
+    assert.equal(wizardForm.page, 4);
+    assert.equal(wizardForm.currentPanel.title, 'B2');
+    assert(getPageTitles().includes('A2'));
+    const b2Input = wizardForm.element.querySelector('input[name="data[b2]"]');
+    const inputEvent = new Event('input');
+    b2Input.value = 'hide';
+    b2Input.dispatchEvent(inputEvent);
+    await wait(400);
+    assert(!getPageTitles().includes('A2'), 'A2 is hidden when B2 has a value of "hide"');
+    assert.equal(wizardForm.page, 3, 'A2 is removed from the pages array and the page number/index must be decremented to maintain B2 as the current page');
+    assert.equal(wizardForm.currentPanel.title, 'B2');
+  });
+
   // BUG - uncomment once fixed (ticket FIO-6043)
   // it('Should render all pages as a part of wizard pagination', (done) => {
   //   const formElement = document.createElement('div');

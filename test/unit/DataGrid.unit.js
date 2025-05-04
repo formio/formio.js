@@ -27,7 +27,8 @@ import {
   withCollapsibleRowGroups,
   withAllowCalculateOverride,
   twoWithAllowCalculatedOverride, withCheckboxes,
-  withReorder
+  withReorder,
+  wizardWithDataGridWithNestedForm
 } from './fixtures/datagrid';
 
 describe('DataGrid Component', () => {
@@ -1083,3 +1084,65 @@ describe('SaveDraft functionality', () => {
     }).catch((err) => done(err));
   })
 })
+
+describe('Wizard Form with Grid with Nested Form validation', () => {
+  const originalMakeRequest = Formio.makeRequest;
+
+  const nestedForm = {
+    _id: '6800c965a969b07fbd8d7077',
+    title: 'Base Simple',
+    name: 'baseSimple',
+    path: 'basesimple',
+    type: 'form',
+    components: [
+      {
+        label: 'First Name',
+        applyMaskOn: 'change',
+        tableView: true,
+        validate: {
+          required: true
+        },
+        validateWhenHidden: false,
+        key: 'firstName',
+        type: 'textfield',
+        input: true
+      },
+      {
+        label: 'Submit',
+        key: 'submit',
+        type: 'button'
+      }
+    ]
+  };
+
+  before(() => {
+    // Mock Formio.makeRequest to serve mock forms
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get' && url.includes('6800c965a969b07fbd8d7077')) {
+        return Promise.resolve(_.cloneDeep(nestedForm));
+      }
+      return Promise.resolve();
+    };
+  });
+
+  after(() => {
+    // Restore the original makeRequest
+    Formio.makeRequest = originalMakeRequest;
+  });
+
+  it('Should validate DataGrid with nested form before going to the next page', function (done) {
+    Formio.createForm(document.createElement('div'), wizardWithDataGridWithNestedForm)
+    .then((wizard) => {
+      const nextBtn = _.get(wizard.refs, `${wizard.wizardKey}-next`);
+      const clickEvent = new Event('click');
+      nextBtn.dispatchEvent(clickEvent);
+      setTimeout(() => {
+        assert.equal(wizard.page, 0, 'Should open wizard page 1');
+        const errors = wizard.errors;
+        assert.equal(errors.length, 1, 'Should have an error');
+        assert.equal(errors[0].ruleName, 'required');
+        done()
+      }, 300);
+    }).catch(done);
+  });
+});
