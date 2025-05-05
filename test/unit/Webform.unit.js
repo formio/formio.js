@@ -150,7 +150,7 @@ describe('Webform tests', function() {
 
         maxDateCheckbox.setValue(true);
         minDateCheckbox.setValue(true);
-        
+
 
         setTimeout(() => {
           assert.equal(maxDateCheckbox.dataValue, true);
@@ -3201,7 +3201,7 @@ describe('Webform tests', function() {
           ],
           reset: false,
           resetCustom: false,
-          submit: true,
+          submit: false,
         };
         form.setSubmission({ data: { ...nonDefaultValue } }).then(() => {
           expect(form.submission).to.deep.equal({ data: nonDefaultValue });
@@ -3284,7 +3284,7 @@ describe('Webform tests', function() {
           radio: 3,
           reset: false,
           resetCustom: false,
-          submit: true,
+          submit: false,
         };
         form.setSubmission({ data: { ...nonDefaultValue } }).then(() => {
           expect(form.submission).to.deep.equal({ data: nonDefaultValue });
