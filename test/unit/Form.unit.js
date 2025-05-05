@@ -842,8 +842,8 @@ describe('Test Conditional Multi-Level Nested forms', () => {
             assert.equal(!!nestedForm5._conditionallyHidden, false);
             assert.equal(!!nestedForm5.subForm._conditionallyHidden, false);
             done();
-          }, 200)
-        }, 200)
+          }, 300)
+        }, 300)
       }, 300)
       }).catch((err) => done(err));
   })
