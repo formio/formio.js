@@ -130,7 +130,11 @@ export default class TextFieldComponent extends Input {
     // If no value is provided, then set the defaultValue.
     if (!value.value) {
       const defaultValue = flags.noDefault ? this.emptyValue : this.defaultValue;
-      value.value = Array.isArray(defaultValue) ? defaultValue[0] : defaultValue;
+      if (Array.isArray(defaultValue)) {
+        value.value = _.isObject(defaultValue[0]) ? defaultValue[0].value : defaultValue;
+      } else {
+        value.value = _.isObject(defaultValue) ? defaultValue.value : defaultValue;
+      }
     }
 
     return value;
