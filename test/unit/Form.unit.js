@@ -3,7 +3,7 @@ import { fastCloneDeep } from '../../src/utils/utils.js';
 import Harness from '../harness.js';
 import FormComponent from '../../src/components/form/Form.js';
 import { expect } from 'chai';
-import assert from 'power-assert';
+import assert, { equal } from 'power-assert';
 
 import {
   comp1,
@@ -19,6 +19,8 @@ import Webform from '../../src/Webform.js';
 import { Formio } from '../../src/formio.form.js';
 import formModalEdit from './fixtures/form/formModalEdit.js';
 import { formComponentWithConditionalRenderingForm } from '../formtest/index.js';
+import * as nestedFormWithDisabledClearOnHide from '../forms/nestedFormWithDisabledClearOnHide.js';
+import * as nestedFormWIthContentComponent from '../forms/nestedFormWithContentComp.js';
 
 describe('Form Component', () => {
   it('Should build a form component', () => {
@@ -192,7 +194,9 @@ describe('Form Component', () => {
         const preview = form.element.querySelector('[ref="openModal"]');
         assert(preview, 'Should contain element to open a modal window');
         done();
-      }).catch(done);
+      }).catch(function(err) {
+        done(err);
+      });
     });
   });
 
@@ -492,7 +496,7 @@ describe('SaveDraft functionality for Nested Form', () => {
     }).catch((err) => done(err));
   });
 
-  it('Should not create a draft submission for nested form if Save as reference is set to false', function(done) {
+  it('Should not create a draft submission for nested form if Submit as reference is set to false', function(done) {
     _.set(comp7.components[1], 'reference', false);
     const formElement = document.createElement('div');
     Formio.createForm(
@@ -533,3 +537,243 @@ describe('SaveDraft functionality for Nested Form', () => {
     }).catch((err) => done(err));
   });
 });
+
+describe('Disabled clearOnHide functionality for Nested Form', () => {
+  const originalMakeRequest = Formio.makeRequest;
+  let loadSubForm = false;
+  let submitSubForm = false;
+  let subFormSubmission = null;
+  let mainFormSubmission = null;
+  let saveAsRef = true;
+
+
+  before((done) => {
+    Formio.setUser({
+      _id: '123'
+    });
+
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get' && (url).includes('/clearonhidetest')) {
+        const mainForm = fastCloneDeep(nestedFormWithDisabledClearOnHide.mainForm);
+        mainForm.components[0].reference = saveAsRef;
+        return Promise.resolve(mainForm);
+      };
+      if (type === 'form' && method === 'get' && (url).includes('/67b5d190ac6f65931c9a320a')) {
+        loadSubForm = true;
+        return Promise.resolve(nestedFormWithDisabledClearOnHide.nestedForm);
+      };
+
+      if (type === 'submission' && method === 'post' && (url).includes('67b5d190ac6f65931c9a320a')) {
+        submitSubForm = true;
+        subFormSubmission = fastCloneDeep(data);
+        return Promise.resolve({
+            ...data,
+            _id: 'nestedSubmissionId',
+            data: fastCloneDeep(data.data)
+          });
+      };
+
+      if (type === 'submission' && method === 'post' && (url).includes('/clearonhidetest')) {
+        mainFormSubmission = fastCloneDeep(data);
+        return Promise.resolve({
+            ...data,
+            _id: 'mainSubmissionId',
+            data: fastCloneDeep(data.data)
+          });
+      };
+    };
+    done();
+  });
+
+  afterEach(() => {
+    loadSubForm = false;
+    submitSubForm = false;
+    subFormSubmission = null;
+    mainFormSubmission = null;
+    saveAsRef = true;
+  });
+
+  after((done) => {
+    Formio.makeRequest = originalMakeRequest;
+    Formio.setUser();
+    done();
+  });
+
+  it('Should submit hidden nested form with enabled saveAsReference and disabled clearOnHide', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/ryyclyrmbzvuqog/clearonhidetest',
+    ).then((instance) => {
+      instance.submit().then(() => {
+        assert.equal(loadSubForm, true);
+        assert.equal(submitSubForm, true);
+        assert.deepEqual(subFormSubmission.data, { textField: 'test', textArea: '' });
+        assert.equal(mainFormSubmission.data?.form?._id, 'nestedSubmissionId');
+        assert.deepEqual(mainFormSubmission.data?.form?.data, { textField: 'test', textArea: '' });
+        done();
+      });
+    }).catch((err) => done(err));
+  });
+
+  it('Should submit hidden nested form data with disabled saveAsReference and disabled clearOnHide', (done) => {
+    saveAsRef = false;
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/ryyclyrmbzvuqog/clearonhidetest',
+    ).then((instance) => {
+      instance.submit().then(() => {
+        assert.equal(loadSubForm, true);
+        assert.equal(submitSubForm, false);
+        assert.deepEqual(!!subFormSubmission, false);
+        assert.equal(!!mainFormSubmission.data?.form?._id, false);
+        assert.deepEqual(mainFormSubmission.data?.form?.data, { textField: 'test', textArea: '' });
+        done();
+      });
+    }).catch((err) => done(err));
+  });
+});
+
+describe('Test Nested Form value setting', () => {
+  const originalMakeRequest = Formio.makeRequest;
+  before((done) => {
+    Formio.setUser({
+      _id: '123'
+    });
+
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get' && (url).includes('/datareadytest')) {
+        const mainForm = fastCloneDeep(nestedFormWIthContentComponent.parentForm);
+        return Promise.resolve(mainForm);
+      };
+
+      if (type === 'form' && method === 'get' && (url).includes('/67c19d4a0b924378e690a993')) {
+        return Promise.resolve(nestedFormWIthContentComponent.childForm);
+      };
+    };
+    done();
+  });
+
+
+  after((done) => {
+    Formio.makeRequest = originalMakeRequest;
+    Formio.setUser();
+    done();
+  });
+
+  it('The nested form submission should be set and correctly displayed once dataReady promise is resolved', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/ryyclyrmbzvuqog/datareadytest',
+      { readOnly: true }
+    ).then((instance) => {
+      instance.setSubmission(nestedFormWIthContentComponent.submission).then(function() {
+        instance.dataReady.then(function() {
+            const contentText = instance.element.querySelector('.formio-component-content').textContent;
+            assert.equal(contentText.includes('foo'), true);
+            assert.equal(contentText.includes('hey'), true);
+            done();
+          })
+        })
+      }).catch((err) => done(err));
+    })
+});
+
+describe('Nested Form validation inside Wizard', () => {
+  const originalMakeRequest = Formio.makeRequest;
+  let postRequestCount = 0;
+  let childFormRequestCount = 0;
+
+  const parentForm = {
+    "_id": "677d3efea934773d422a05fa",
+    "title": "Wizard parent",
+    "name": "fdAsWizardParent",
+    "path": "fdaswizardparent",
+    "type": "form",
+    "display": "wizard",
+    "components": [{
+      "title": "Page 1",
+      "key": "page1",
+      "type": "panel",
+      "components": [{
+        "label": "Form",
+        "key": "form",
+        "type": "form",
+        "form": "677d3efea934773d422a05ec",
+        "lazyLoad": true
+      }]
+    }, ]
+  
+  };
+  
+  const childForm = {
+    "_id": "677d3efea934773d422a05ec",
+    "title": "Wizard Child",
+    "name": "WizardChild",
+    "path": "wizardchild",
+    "type": "form",
+    "components": [{
+        "label": "Text Field",
+        "key": "textField",
+        "type": "textfield",
+        "validate": {
+          "required": true
+        }
+      },
+      {
+        "label": "Submit",
+        "key": "submit",
+        "type": "button"
+      }
+    ]
+  };
+
+  before((done) => {
+    // Mock Formio.makeRequest to count POST requests and serve mock forms
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get') {
+        if (url.includes('parentForm')) {
+          return Promise.resolve(_.cloneDeep(parentForm));
+        } else if (url.includes('677d3efea934773d422a05ec')) {
+          ++childFormRequestCount;
+          return Promise.resolve(_.cloneDeep(childForm));
+        }
+        if (type === 'submission' && ['post'].includes(method)) {
+          postRequestCount++;
+        }
+        return Promise.resolve();
+      }
+    };
+    done()
+  });
+
+  after((done) => {
+    // Restore the original makeRequest
+    Formio.makeRequest = originalMakeRequest;
+    done();
+  });
+
+  it('Should show validation errors for nested form components inside wizard', (done) => {
+    const formElement = document.createElement('div');
+    postRequestCount = 0;
+    Formio.createForm(formElement, 'http://localhost:3000/idwqwhclwioyqbw/parentForm')
+      .then((wizard) => {
+        setTimeout(() => {
+          const btn = _.get(wizard.refs, `${wizard.wizardKey}-submit`);
+          const clickEvent = new Event('click');
+          btn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(wizard.errors.length, 1, 'Should trigger validation error');
+            assert.equal(wizard.errors[0].ruleName, 'required');
+            assert.equal(wizard.element.querySelectorAll('.formio-error-wrapper').length, 1, 'Should set error classes for invalid component inside nested form')
+            assert.equal(postRequestCount, 0, 'No submission POST requests should be made');
+            assert.equal(childFormRequestCount, 1);
+            done()
+          }, 300);
+        }, 100)
+      });
+  });
+})

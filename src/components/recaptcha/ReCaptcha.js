@@ -54,7 +54,7 @@ export default class ReCaptchaComponent extends Component {
         this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);
       }
       else {
-        console.warn('There is no Site Key specified in settings in form JSON');
+        console.warn(this.t('noSiteKey'));
       }
     }
   }
@@ -70,7 +70,7 @@ export default class ReCaptchaComponent extends Component {
   async verify(actionName) {
     const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');
     if (!siteKey) {
-      console.warn('There is no Site Key specified in settings in form JSON');
+      console.warn(this.t('noSiteKey'));
       return;
     }
     if (!this.recaptchaApiReady) {

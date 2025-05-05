@@ -218,10 +218,10 @@ export default class PDFBuilder extends WebformBuilder {
         const progress = Math.floor((event.loaded / event.total) * 100);
         this.refs.uploadProgress.style.width = `${progress}%`;
         if (progress > 98) {
-          this.refs.uploadProgress.innerHTML = this.t('Converting PDF. Please wait.');
+          this.refs.uploadProgress.innerHTML = this.t('waitPdfConverting');
         }
         else {
-          this.refs.uploadProgress.innerHTML = `${this.t('Uploading')} ${progress}%`;
+          this.refs.uploadProgress.innerHTML = `${this.t('uploading')} ${progress}%`;
         }
       }
     }, `${this.projectUrl}/upload`, {}, 'file')
@@ -263,7 +263,7 @@ export default class PDFBuilder extends WebformBuilder {
       return;
     }
     this.refs.uploadError.style.display = message ? '' : 'none';
-    this.refs.uploadError.innerHTML = message;
+    this.refs.uploadError.innerHTML = this.t(`${message}`);
   }
 
   createForm(options) {
@@ -326,7 +326,7 @@ export default class PDFBuilder extends WebformBuilder {
           width: schema.width
         };
 
-        if (!this.options.noNewEdit && !component.component.noNewEdit) {
+        if (!this.options.noNewEdit && !component.component.noNewEdit && this.hasEditTabs(component.type)) {
           this.editComponent(component.component, this.getParentContainer(component), isNew);
         }
         this.emit('updateComponent', component.component);
@@ -352,7 +352,7 @@ export default class PDFBuilder extends WebformBuilder {
 
     this.webform.on('iframe-componentClick', schema => {
       const component = this.webform.getComponentById(schema.id);
-      if (component) {
+      if (component && this.hasEditTabs(component.type)) {
         this.editComponent(component.component, this.getParentContainer(component));
       }
     }, true);
@@ -522,7 +522,7 @@ export default class PDFBuilder extends WebformBuilder {
           name: 'showBuilderErrors',
           data: {
             compId: comp.component.id,
-            errorMessage: `API Key is not unique: ${comp.key}`,
+            errorMessage: `${this.t('notUniqueKey')}: ${comp.key}`,
           }
         });
       }

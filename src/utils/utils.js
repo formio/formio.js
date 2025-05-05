@@ -9,6 +9,8 @@ import dompurify from 'dompurify';
 import { getValue } from './formUtils';
 import { Evaluator } from './Evaluator';
 import ConditionOperators from './conditionOperators';
+import { convertShowToBoolean } from '@formio/core';
+
 const interpolate = Evaluator.interpolate;
 
 export * from './formUtils';
@@ -32,17 +34,6 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
 });
 
 export { jsonLogic, ConditionOperators, moment };
-/**
- * Sets the path to the component and parent schema.
- * @param {import('@formio/core').Component} component - The component to set the path for.
- */
-function setPathToComponentAndPerentSchema(component) {
-  component.path = getComponentPath(component);
-  const dataParent = getDataParentComponent(component);
-  if (dataParent && typeof dataParent === 'object') {
-    dataParent.path = getComponentPath(dataParent);
-  }
-}
 
 /**
  * Evaluate a method.
@@ -154,7 +145,7 @@ export function checkCalculated(component, submission, rowData) {
 }
 
 /**
- * Check if a simple conditional evaluates to true. 
+ * Check if a simple conditional evaluates to true.
  * @param {import('@formio/core').Component} component - The component to check for the conditional.
  * @param {import('@formio/core').SimpleConditional} condition - The condition to check.
  * @param {*} row - The row data for the component.
@@ -256,13 +247,12 @@ function getConditionalPathsRecursive(conditionPaths, data) {
 
       const conditionalPaths = instance?.parent?.type === 'datagrid' || instance?.parent?.type === 'editgrid'  ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
 
-      if (conditionalPaths.length>0) {
+      if (conditionalPaths.length > 0) {
         return conditionalPaths.map((path) => {
           const value = getComponentActualValue(path, data, row);
-
           const ConditionOperator = ConditionOperators[operator];
           return ConditionOperator
-            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, path })
             : true;
         });
       }
@@ -270,7 +260,7 @@ function getConditionalPathsRecursive(conditionPaths, data) {
         const value = getComponentActualValue(conditionComponentPath, data, row);
         const СonditionOperator = ConditionOperators[operator];
         return СonditionOperator
-          ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+          ? new СonditionOperator().getResult({ value, comparedValue, instance, component, path: conditionComponentPath })
           : true;
       }
     });
@@ -285,7 +275,7 @@ function getConditionalPathsRecursive(conditionPaths, data) {
         result = _.every(conditionsResult.flat(), res => !!res);
     }
 
-    return show ? result : !result;
+    return convertShowToBoolean(show) ? result : !result;
   }
 }
 
@@ -306,7 +296,7 @@ export function getComponentActualValue(compPath, data, row) {
   if (row && _.isNil(value)) {
     value = getValue({ data: row }, compPath);
   }
-  
+
   // FOR-400 - Fix issue where falsey values were being evaluated as show=true
   if (_.isNil(value) || (_.isObject(value) && _.isEmpty(value))) {
     value = '';
@@ -341,7 +331,7 @@ export function checkCustomConditional(component, custom, row, data, form, varia
 
 /**
  * Check a component for JSON conditionals.
- * @param {import('@formio/core').Component} component - The component 
+ * @param {import('@formio/core').Component} component - The component
  * @param {import('@formio/core').JSONConditional} json - The json conditional to check.
  * @param {*} row - The contextual row data for the component.
  * @param {*} data - The full submission data.
@@ -377,18 +367,18 @@ function getRow(component, row, instance, conditional) {
   // If no component's instance passed (happens only in 6.x server), calculate its path based on the schema
   if (!instance) {
     instance = _.cloneDeep(component);
-    setPathToComponentAndPerentSchema(instance);
   }
   const dataParent = getDataParentComponent(instance);
-  const parentPath = dataParent ? getComponentPath(dataParent) : null;
-  const isTriggerCondtionComponentPath = condition.when || !condition.conditions
-    ? condition.when?.startsWith(parentPath)
-    : _.some(condition.conditions, cond => cond.component.startsWith(parentPath));
-
-  if (dataParent && isTriggerCondtionComponentPath) {
-    const newRow = {};
-    _.set(newRow, parentPath, row);
-    row = newRow;
+  if (dataParent) {
+    const parentPath = dataParent.paths?.localDataPath;
+    const isTriggerCondtionComponentPath = condition.when || !condition.conditions
+      ? condition.when?.startsWith(dataParent.paths?.localPath)
+      : _.some(condition.conditions, cond => cond.component.startsWith(dataParent.paths?.localPath));
+    if (isTriggerCondtionComponentPath) {
+      const newRow = {};
+      _.set(newRow, parentPath, row);
+      row = newRow;
+    }
   }
 
   return row;
@@ -721,9 +711,10 @@ export function loadZones(url, timezone) {
  * @param {string|Date} value - The value to convert into a moment date.
  * @param {string} format - The format to convert the date to.
  * @param {string} timezone - The timezone to convert the date to.
+ * @param {object} options - The options object
  * @returns {Date} - The moment date object.
  */
-export function momentDate(value, format, timezone) {
+export function momentDate(value, format, timezone, options) {
   const momentDate = moment(value);
   if (!timezone) {
     return momentDate;
@@ -731,7 +722,7 @@ export function momentDate(value, format, timezone) {
   if (timezone === 'UTC') {
     timezone = 'Etc/UTC';
   }
-  if ((timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) && moment.zonesLoaded) {
+  if ((timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) && (moment.zonesLoaded || options?.email)) {
     return momentDate.tz(timezone);
   }
   return momentDate;
@@ -1664,15 +1655,10 @@ export function getComponentPathWithoutIndicies(path = '') {
 /**
  * Returns a path to the component which based on its schema
  * @param {import('@formio/core').Component} component - Component containing link to its parent's schema in the 'parent' property
- * @param {string} path - Path to the component
  * @returns {string} - Path to the component
  */
-export function getComponentPath(component, path = '') {
-  if (!component || !component.key || component?._form?.display === 'wizard') { // unlike the Webform, the Wizard has the key and it is a duplicate of the panel key
-    return path;
-  }
-  path = component.isInputComponent || component.input === true ? `${component.key}${path ? '.' : ''}${path}` : path;
-  return getComponentPath(component.parent, path);
+export function getComponentPath(component) {
+  return component.paths.localDataPath;
 }
 
 /**
@@ -1704,27 +1690,6 @@ export function getDataParentComponent(componentInstance) {
      && typeof value.then === 'function'
      && Object.prototype.toString.call(value) === '[object Promise]';
  }
-
-/**
- * Determines if the component has a scoping parent in tree (a component which scopes its children and manages its
- * changes by itself, e.g. EditGrid)
- * @param {Component} componentInstance - The component to check for the scoping parent.
- * @param {boolean} firstPass - Whether it is the first pass of the function
- * @returns {boolean|*} - TRUE if the component has a scoping parent; FALSE otherwise
- */
-export function isInsideScopingComponent(componentInstance, firstPass = true) {
-  if (!firstPass && componentInstance?.hasScopedChildren) {
-    return true;
-  }
-  const dataParent = getDataParentComponent(componentInstance);
-  if (dataParent?.hasScopedChildren) {
-    return true;
-  }
-  else if (dataParent?.parent) {
-    return isInsideScopingComponent(dataParent.parent, false);
-  }
-  return false;
-}
 
 /**
  * Returns all the focusable elements within the provided dom element.
@@ -1785,3 +1750,18 @@ export const interpolateErrors = (component, errors, interpolateFn) => {
     return { ...error, message: unescapeHTML(interpolateFn(toInterpolate, context)), context: { ...context } };
   });
 };
+
+/**
+ * Checks if a string has timezone information encoded in it
+ * Example: 2024-01-01T00:00:00Z -> true
+ * Example: 2024-01-01T00:00:00+03:00 -> true
+ * Example: 2011-05-03T00:00:00 -> false
+ * @param {string} value the string value to check
+ * @returns {boolean} if value has encoded timezone
+ */
+export function hasEncodedTimezone(value){
+  if (typeof value !== 'string'){
+    return false;
+  }
+  return (value.substring(value.length - 1) === 'z' || value.substring(value.length - 1) === 'Z' || value.match(/[+|-][0-9]{2}:[0-9]{2}$/));
+}

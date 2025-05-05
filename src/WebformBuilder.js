@@ -134,7 +134,9 @@ export default class WebformBuilder extends Component {
         html,
         disableBuilderActions: self?.component?.disableBuilderActions,
         childComponent: component,
-        design: self?.options?.design
+        design: self?.options?.design,
+        editJson: self?.options?.editJson,
+        editComponent: this.hasEditTabs(component.type)
       });
     };
 
@@ -246,7 +248,7 @@ export default class WebformBuilder extends Component {
         }
       }
     }).catch((err) => {
-      console.warn(`Could not load project settings: ${err.message || err}`);
+      console.warn(`${this.t('loadingProjectSettingsError')}: ${err.message || err}`);
     });
 
     if (!formio.noProject && !isResourcesDisabled && formio.formsUrl) {
@@ -375,14 +377,14 @@ export default class WebformBuilder extends Component {
     });
 
     if (component.refs.copyComponent) {
-      this.attachTooltip(component.refs.copyComponent, this.t('Copy'));
+      this.attachTooltip(component.refs.copyComponent, this.t('copy'));
 
       component.addEventListener(component.refs.copyComponent, 'click', () =>
         this.copyComponent(component));
     }
 
     if (component.refs.pasteComponent) {
-      const pasteToolTip = this.attachTooltip(component.refs.pasteComponent, this.t('Paste below'));
+      const pasteToolTip = this.attachTooltip(component.refs.pasteComponent, this.t('pasteBelow'));
 
       component.addEventListener(component.refs.pasteComponent, 'click', () => {
         pasteToolTip.hide();
@@ -391,7 +393,7 @@ export default class WebformBuilder extends Component {
     }
 
     if (component.refs.moveComponent) {
-      this.attachTooltip(component.refs.moveComponent, this.t('Move'));
+      this.attachTooltip(component.refs.moveComponent, this.t('move'));
       if (this.keyboardActionsEnabled) {
         component.addEventListener(component.refs.moveComponent, 'click', () => {
           this.moveComponent(component);
@@ -402,21 +404,21 @@ export default class WebformBuilder extends Component {
     const parent = this.getParentElement(element);
 
     if (component.refs.editComponent) {
-      this.attachTooltip(component.refs.editComponent, this.t('Edit'));
+      this.attachTooltip(component.refs.editComponent, this.t('edit'));
 
       component.addEventListener(component.refs.editComponent, 'click', () =>
         this.editComponent(component.schema, parent, false, false, component.component, { inDataGrid: component.isInDataGrid }));
     }
 
     if (component.refs.editJson) {
-      this.attachTooltip(component.refs.editJson, this.t('Edit JSON'));
+      this.attachTooltip(component.refs.editJson, this.t('editJson'));
 
       component.addEventListener(component.refs.editJson, 'click', () =>
         this.editComponent(component.schema, parent, false, true, component.component));
     }
 
     if (component.refs.removeComponent) {
-      this.attachTooltip(component.refs.removeComponent, this.t('Remove'));
+      this.attachTooltip(component.refs.removeComponent, this.t('remove'));
 
       component.addEventListener(component.refs.removeComponent, 'click', () =>
         this.removeComponent(component.schema, parent, component.component, component));
@@ -946,7 +948,7 @@ export default class WebformBuilder extends Component {
       }, true);
       if (isCompAlreadyExists) {
         this.webform.redraw();
-        this.webform.setAlert('danger', `You cannot add more than one ${_.get(draggableComponent, draggableComponent.uniqueComponent ? 'title' : 'key')} component to one page.`);
+        this.webform.setAlert('danger', this.t('builderUniqueError', { componentKeyOrTitle: _.get(draggableComponent, draggableComponent.uniqueComponent ? 'title' : 'key') }));
         return;
       }
     }
@@ -988,7 +990,13 @@ export default class WebformBuilder extends Component {
 
     const componentInDataGrid = parent.type === 'datagrid';
 
-    if (isNew && !this.options.noNewEdit && !info.noNewEdit && !(this.options.design && info.type === 'reviewpage')) {
+    if (
+      isNew
+      && !this.options.noNewEdit
+      && !info.noNewEdit
+      && this.hasEditTabs(info.type)
+      && !(this.options.design && info.type === 'reviewpage')
+    ) {
       this.editComponent(info, target, isNew, null, null, { inDataGrid: componentInDataGrid });
     }
 
@@ -1221,6 +1229,17 @@ export default class WebformBuilder extends Component {
           'fields.month.required',
           'fields.year.required',
         ]));
+        if (defaultValueComponent.component.components) {
+          if (!this.originalDefaultValue) {
+            this.originalDefaultValue = fastCloneDeep(defaultValueComponent.component);
+          }
+
+          eachComponent(defaultValueComponent.component.components, (comp => {
+            if (comp.validate?.required) {
+              comp.validate.required = false;
+            }
+          }));
+        }
         const parentComponent = defaultValueComponent.parent;
         let tabIndex = -1;
         let index = -1;
@@ -1243,6 +1262,12 @@ export default class WebformBuilder extends Component {
           parentComponent.tabs[tabIndex].splice(index, 1, newComp);
           newComp.checkValidity = () => true;
           newComp.build(defaultValueComponent.element);
+          if (this.preview && !this.preview.defaultChanged) {
+            const defaultValue = _.get(this.preview._data, this.editForm._data.key);
+            if (_.isObject(defaultValue) && !_.isArray(defaultValue)) {
+              this.editForm._data.defaultValue = defaultValue;
+            }
+          }
         }
       }
       else {
@@ -1256,6 +1281,7 @@ export default class WebformBuilder extends Component {
           dataPath = getStringFromComponentPath(path);
         }
 
+        this.preview.defaultChanged = true;
         _.set(this.preview._data, dataPath, changed.value);
         _.set(this.webform._data, dataPath, changed.value);
       }
@@ -1268,25 +1294,14 @@ export default class WebformBuilder extends Component {
   findRepeatablePaths() {
     const repeatablePaths = [];
     const keys = new Map();
-
-    eachComponent(this.form.components, (comp, path) => {
-      if (!comp.key) {
-        return;
-      }
-
-      if (keys.has(comp.key)) {
-        if (keys.get(comp.key).includes(path)) {
-          repeatablePaths.push(path);
-        }
-        else {
-          keys.set(comp.key, [...keys.get(comp.key), path]);
-        }
+    eachComponent(this.form.components, (comp, path, components, parent, paths) => {
+      if (keys.has(paths.dataPath)) {
+        repeatablePaths.push(paths.dataPath);
       }
       else {
-        keys.set(comp.key, [path]);
+        keys.set(paths.dataPath, true);
       }
     }, true);
-
     return repeatablePaths;
   }
 
@@ -1326,6 +1341,9 @@ export default class WebformBuilder extends Component {
     if (index !== -1) {
       let submissionData = this.editForm.submission.data;
       submissionData = submissionData.componentJson || submissionData;
+      if (submissionData.components && this.originalDefaultValue) {
+        submissionData.components = this.originalDefaultValue.components;
+      }
       const fieldsToRemoveDoubleQuotes = ['label', 'tooltip'];
 
       this.replaceDoubleQuotes(submissionData, fieldsToRemoveDoubleQuotes);
@@ -1448,7 +1466,8 @@ export default class WebformBuilder extends Component {
           helplinks: this.helplinks,
         }));
         this.editForm.attach(this.componentEdit.querySelector(`[${this._referenceAttributeName}="editForm"]`));
-        this.updateComponent(this.editForm.submission.data ?? component);
+        const editFormData = this.editForm.submission?.data;
+        this.updateComponent(editFormData?.componentJson || editFormData || component);
         this.attachEditComponentControls(component, parent, isNew, original, ComponentClass);
       });
     });
@@ -1791,7 +1810,7 @@ export default class WebformBuilder extends Component {
    */
   copyComponent(component) {
     if (!window.sessionStorage) {
-      return console.warn('Session storage is not supported in this browser.');
+      return console.warn(this.t('sessionStorageSupportError'));
     }
     this.addClass(this.refs.form, 'builder-paste-mode');
     window.sessionStorage.setItem('formio.clipboard', JSON.stringify(component.schema));
@@ -1804,7 +1823,7 @@ export default class WebformBuilder extends Component {
    */
   pasteComponent(component) {
     if (!window.sessionStorage) {
-      return console.warn('Session storage is not supported in this browser.');
+      return console.warn(this.t('sessionStorageSupportError'));
     }
     this.removeClass(this.refs.form, 'builder-paste-mode');
     if (window.sessionStorage) {
@@ -1906,5 +1925,15 @@ export default class WebformBuilder extends Component {
       info.placeholder ||
       info.type
     );
+  }
+
+  hasEditTabs(type) {
+    // If the component type does not exist then it has no edit tabs
+    if(!Components.components[type === 'custom' ? 'unknown' : type]){
+      return false;
+    }
+    const editTabs = getComponent(Components.components[type === 'custom' ? 'unknown' : type].editForm().components, 'tabs', true).components;
+    const hiddenEditTabs = _.filter(_.get(this.options, `editForm.${type}`, []), 'ignore');
+    return _.intersectionBy(editTabs, hiddenEditTabs, 'key').length !== editTabs.length;
   }
 }

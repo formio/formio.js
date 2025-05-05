@@ -155,7 +155,7 @@ describe('Tags Component', function() {
         setTimeout(() => {
           assert.equal(tags.errors.length, 1, 'Should set error after Tags component was blurred');
           done();
-        }, 500);
+        }, 350);
       }, 350);
     }).catch(done);
   });

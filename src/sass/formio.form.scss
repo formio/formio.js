@@ -1,4 +1,4 @@
-@import './formio.embed.scss';
+@use 'formio.embed.scss';
 $dialog-z-index: 10000;
 $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 
@@ -29,6 +29,10 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   color: #856404;
   background-color: #fff3cd;
   border-color: #ffeeba;
+}
+
+.form-control {
+  height: calc(1.4em + 0.75rem + 2px);
 }
 
 .formio-disabled-input .form-control.flatpickr-input {
