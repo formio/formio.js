@@ -1,4 +1,4 @@
-import { uniqueName } from '../../utils/utils';
+import { uniqueName } from '../../utils';
 
 /**
  * UploadAdapter for CKEditor https://ckeditor.com/docs/ckeditor5/latest/framework/guides/deep-dive/upload-adapter.html

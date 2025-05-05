@@ -2,7 +2,7 @@ import WebformBuilder from './WebformBuilder';
 import Webform from './Webform';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
-import { fastCloneDeep } from './utils/utils';
+import { fastCloneDeep } from './utils';
 
 export default class WizardBuilder extends WebformBuilder {
   constructor() {

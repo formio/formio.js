@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import Field from '../_classes/field/Field';
-import { boolValue, componentValueTypes, getComponentSavedTypes, getLocaleDateFormatInfo } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypes, getLocaleDateFormatInfo } from '../../utils';
 import { getDayFormat } from '@formio/core';
 
 export default class DayComponent extends Field {

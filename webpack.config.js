@@ -8,7 +8,7 @@ module.exports = {
   },
   entry: {
     'formio': './lib/cjs/Formio.js',
-    'formio.utils': './lib/cjs/utils/utils.js',
+    'formio.utils': './lib/cjs/utils/index.js',
     'formio.full': './lib/cjs/index.js',
     'formio.form': './lib/cjs/formio.form.js',
     'formio.embed': './lib/cjs/formio.embed.js'

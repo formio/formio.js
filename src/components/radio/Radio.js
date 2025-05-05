@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import ListComponent from '../_classes/list/ListComponent';
 import { Formio } from '../../Formio';
-import { boolValue, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypes } from '../../utils';
 
 export default class RadioComponent extends ListComponent {
   static schema(...extend) {

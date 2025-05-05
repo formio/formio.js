@@ -1,7 +1,7 @@
 import SignaturePad from 'signature_pad';
 import Input from '../_classes/input/Input';
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils';
 
 export default class SignatureComponent extends Input {
   static schema(...extend) {

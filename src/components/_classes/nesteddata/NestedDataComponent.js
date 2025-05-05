@@ -2,7 +2,7 @@
 import Component from '../component/Component';
 import NestedComponent from '../nested/NestedComponent';
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypes } from '../../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../../utils';
 
 export default class NestedDataComponent extends NestedComponent {
   hasChanged(newValue, oldValue) {

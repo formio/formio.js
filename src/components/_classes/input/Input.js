@@ -1,5 +1,5 @@
 import Multivalue from '../multivalue/Multivalue';
-import { convertStringToHTMLElement } from '../../../utils/utils';
+import { convertStringToHTMLElement } from '../../../utils';
 import Widgets from '../../../widgets';
 import _ from 'lodash';
 

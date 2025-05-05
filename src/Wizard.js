@@ -8,7 +8,7 @@ import {
   firstNonNil,
   uniqueKey,
   eachComponent,
-} from './utils/utils';
+} from './utils';
 
 export default class Wizard extends Webform {
   /**

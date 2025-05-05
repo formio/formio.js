@@ -10,7 +10,7 @@ import {
   Evaluator,
   getArrayFromComponentPath,
   eachComponent
-} from '../../utils/utils';
+} from '../../utils';
 
 const EditRowState = {
   New: 'new',

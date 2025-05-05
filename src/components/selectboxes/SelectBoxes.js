@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypes, boolValue, getComponent } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, boolValue, getComponent } from '../../utils';
 import RadioComponent from '../radio/Radio';
 
 export default class SelectBoxesComponent extends RadioComponent {

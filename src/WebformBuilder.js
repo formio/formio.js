@@ -3,8 +3,14 @@ import Component from './components/_classes/component/Component';
 import tippy from 'tippy.js';
 import Components from './components/Components';
 import { Formio } from './Formio';
-import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
-import { eachComponent, getComponent } from './utils/formUtils';
+import {
+  fastCloneDeep,
+  bootstrapVersion,
+  getArrayFromComponentPath,
+  getStringFromComponentPath,
+  eachComponent,
+  getComponent,
+} from './utils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import autoScroll from 'dom-autoscroller';

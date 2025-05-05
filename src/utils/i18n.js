@@ -1,4 +1,4 @@
-import { Evaluator } from '@formio/core/utils';
+import { Evaluator } from './Evaluator';
 import i18n from '../i18n';
 import { isEmpty } from 'lodash';
 import { fastCloneDeep } from '@formio/core';
@@ -66,7 +66,7 @@ export class I18n {
                 if (!this.languages[lang]) {
                     this.languages[lang] = {};
                 }
-                this.languages[lang] = noDefaultOverride 
+                this.languages[lang] = noDefaultOverride
                     ? { ...languages[lang], ...this.languages[lang] }
                     : { ...this.languages[lang], ...languages[lang] };
             }

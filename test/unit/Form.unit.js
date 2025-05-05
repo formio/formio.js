@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { fastCloneDeep } from '../../src/utils/utils.js';
+import { fastCloneDeep } from '../../src/utils';
 import Harness from '../harness.js';
-import FormComponent from '../../src/components/form/Form.js';
+import FormComponent from '../../src/components/form/Form';
 import { expect } from 'chai';
 import assert, { equal } from 'power-assert';
 
@@ -707,9 +707,9 @@ describe('Nested Form validation inside Wizard', () => {
         "lazyLoad": true
       }]
     }, ]
-  
+
   };
-  
+
   const childForm = {
     "_id": "677d3efea934773d422a05ec",
     "title": "Wizard Child",

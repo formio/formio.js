@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import FormioUtils from '../../utils';
-import { componentValueTypes, fastCloneDeep, getComponentSavedTypes } from '../../utils/utils';
+import { componentValueTypes, fastCloneDeep, getComponentSavedTypes } from '../../utils';
 import Input from '../_classes/input/Input';
 
 export default class DateTimeComponent extends Input {

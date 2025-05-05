@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import Harness from '../harness';
 import DataGridComponent from '../../src/components/datagrid/DataGrid';
 import { Formio } from '../../src/Formio';
-import { fastCloneDeep } from '../../src/utils/utils';
+import { fastCloneDeep } from '../../src/utils';
 import dragula from 'dragula'
 import {
   comp1,
@@ -823,10 +823,10 @@ describe('DataGrid calculated values', () => {
                   }]
                 );
                 done();
-              }, 300);
-            }, 300);
-          }, 300);
-        }, 300);
+              }, 400);
+            }, 400);
+          }, 400);
+        }, 400);
       })
       .catch(done);
   });
