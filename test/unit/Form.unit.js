@@ -21,6 +21,8 @@ import formModalEdit from './fixtures/form/formModalEdit.js';
 import { formComponentWithConditionalRenderingForm } from '../formtest/index.js';
 import * as nestedFormWithDisabledClearOnHide from '../forms/nestedFormWithDisabledClearOnHide.js';
 import * as nestedFormWIthContentComponent from '../forms/nestedFormWithContentComp.js';
+import multiLevelNestedForms from '../forms/multiLevelNestedForms.js';
+import download from 'downloadjs';
 
 describe('Form Component', () => {
   it('Should build a form component', () => {
@@ -777,3 +779,144 @@ describe('Nested Form validation inside Wizard', () => {
       });
   });
 })
+
+describe('Test Conditional Multi-Level Nested forms', () => {
+  const originalMakeRequest = Formio.makeRequest;
+  let noNestedWizards = false;
+
+  before((done) => {
+    Formio.setUser({
+      _id: '123'
+    });
+
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get' && (url).includes('/esubmissionsext')) {
+        const mainForm = fastCloneDeep(multiLevelNestedForms.mainForm);
+        return Promise.resolve(mainForm);
+      };
+      const formId = _.last(url.split('/')).split('?')[0];
+      if (type === 'form' && method === 'get' && multiLevelNestedForms[`${formId}`]) {
+        const form = fastCloneDeep(multiLevelNestedForms[`${formId}`]);
+        if (noNestedWizards) {
+          form.display = 'form';
+        }
+        return Promise.resolve(form);
+      }
+      else {
+        console.log(111, 'form not found', type, method,  url, formId)
+      };
+    };
+    done();
+  });
+
+
+  after((done) => {
+    Formio.makeRequest = originalMakeRequest;
+    Formio.setUser();
+    done();
+  });
+
+  it('Should show deeply nested wizard every time when condition is met', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/authoring-lszihwhpgvtoncg/esubmissionsext',
+    ).then((wizard) => {
+      assert.equal(wizard.allPages.length, 1)
+      assert.equal(wizard.pages.length, 1);
+      const textField = wizard.getComponent('textField');
+      const inputEvent = new Event('input');
+      const input = textField.refs.input[0];
+      input.value = '5';
+      input.dispatchEvent(inputEvent);
+      setTimeout(() => {
+        assert.equal(textField.dataValue, '5');
+        assert.equal(wizard.allPages.length, 3);
+        assert.equal(wizard.pages.length, 3);
+        const input = textField.refs.input[0];
+        input.value = '7';
+        input.dispatchEvent(inputEvent);
+        setTimeout(() => {
+          assert.equal(textField.dataValue, '7');
+          assert.equal(wizard.allPages.length, 1);
+          assert.equal(wizard.pages.length, 1);
+          const input = textField.refs.input[0];
+          input.value = '5';
+          input.dispatchEvent(inputEvent);
+          setTimeout(() => {
+            assert.equal(textField.dataValue, '5');
+            assert.equal(wizard.allPages.length, 3);
+            assert.equal(wizard.pages.length, 3);
+            done();
+          }, 200)
+        }, 200)
+      }, 200)
+    }).catch((err) => done(err));
+  })
+
+  it('Should show deeply nested nested forms every time when condition is met', (done) => {
+    const formElement = document.createElement('div');
+    noNestedWizards = true;
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/authoring-lszihwhpgvtoncg/esubmissionsext',
+    ).then((form) => {
+      const textField = form.getComponent('textField');
+      const inputEvent = new Event('input');
+      const input = textField.refs.input[0];
+      input.value = '5';
+      input.dispatchEvent(inputEvent);
+      setTimeout(() => {
+        assert.equal(textField.dataValue, '5');
+        const nestedForm1 = form.getComponent('eSubmissions.pmta');
+        const nestedForm2 = form.getComponent('eSubmissions.pmta.section1.contacts');
+        const nestedForm3 = form.getComponent('eSubmissions.pmta.section1.contacts.section1A.applicantOrganization');
+        const nestedForm4 = form.getComponent('eSubmissions.pmta.section1.contacts.section1B.authorizedRepresentative');
+        const nestedForm5 = form.getComponent('eSubmissions.pmta.section1.contacts.section1B.authorizedRepresentative.organization');
+        assert.equal(!!nestedForm1._conditionallyHidden, false);
+        assert.equal(!!nestedForm1.subForm._conditionallyHidden, false);
+        assert.equal(!!nestedForm2._conditionallyHidden, false);
+        assert.equal(!!nestedForm2.subForm._conditionallyHidden, false);
+        assert.equal(!!nestedForm3._conditionallyHidden, false);
+        assert.equal(!!nestedForm3.subForm._conditionallyHidden, false);
+        assert.equal(!!nestedForm4._conditionallyHidden, false);
+        assert.equal(!!nestedForm4.subForm._conditionallyHidden, false);
+        assert.equal(!!nestedForm5._conditionallyHidden, false);
+        assert.equal(!!nestedForm5.subForm._conditionallyHidden, false);
+
+        const input = textField.refs.input[0];
+        input.value = '7';
+        input.dispatchEvent(inputEvent);
+        setTimeout(() => {
+          assert.equal(textField.dataValue, '7');
+          const nestedForm1 = form.getComponent('eSubmissions.pmta');
+          const nestedForm2 = form.getComponent('eSubmissions.pmta.section1.contacts');
+          assert.equal(!!nestedForm1._conditionallyHidden, true);
+          assert.equal(!!nestedForm2._conditionallyHidden, true);
+          const input = textField.refs.input[0];
+          input.value = '5';
+          input.dispatchEvent(inputEvent);
+          setTimeout(() => {
+            assert.equal(textField.dataValue, '5');
+            const nestedForm1 = form.getComponent('eSubmissions.pmta');
+            const nestedForm2 = form.getComponent('eSubmissions.pmta.section1.contacts');
+            const nestedForm3 = form.getComponent('eSubmissions.pmta.section1.contacts.section1A.applicantOrganization');
+            const nestedForm4 = form.getComponent('eSubmissions.pmta.section1.contacts.section1B.authorizedRepresentative');
+            const nestedForm5 = form.getComponent('eSubmissions.pmta.section1.contacts.section1B.authorizedRepresentative.organization');
+            assert.equal(!!nestedForm1._conditionallyHidden, false);
+            assert.equal(!!nestedForm1.subForm._conditionallyHidden, false);
+            assert.equal(!!nestedForm2._conditionallyHidden, false);
+            assert.equal(!!nestedForm2.subForm._conditionallyHidden, false);
+            assert.equal(!!nestedForm3._conditionallyHidden, false);
+            assert.equal(!!nestedForm3.subForm._conditionallyHidden, false);
+            assert.equal(!!nestedForm4._conditionallyHidden, false);
+            assert.equal(!!nestedForm4.subForm._conditionallyHidden, false);
+            assert.equal(!!nestedForm5._conditionallyHidden, false);
+            assert.equal(!!nestedForm5.subForm._conditionallyHidden, false);
+            done();
+          }, 200)
+        }, 200)
+      }, 300)
+      }).catch((err) => done(err));
+  })
+});
