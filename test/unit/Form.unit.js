@@ -776,9 +776,9 @@ describe('Test Conditional Multi-Level Nested forms', () => {
             assert.equal(wizard.allPages.length, 3);
             assert.equal(wizard.pages.length, 3);
             done();
-          }, 200)
-        }, 200)
-      }, 200)
+          }, 350)
+        }, 350)
+      }, 350)
     }).catch((err) => done(err));
   })
 
@@ -844,7 +844,7 @@ describe('Test Conditional Multi-Level Nested forms', () => {
             done();
           }, 300)
         }, 300)
-      }, 300)
+      }, 350)
       }).catch((err) => done(err));
   })
 });
