@@ -3,16 +3,14 @@ import InputWidget from './InputWidget';
 import {
   convertFormatToFlatpickr,
   convertFormatToMask,
-  convertFormatToMoment,
+  convertFormatToDayjs,
   formatDate,
   formatOffset,
   getBrowserInfo,
   getDateSetting,
   getLocaleDateFormatInfo,
-  momentDate,
-  zonesLoaded,
-  shouldLoadZones,
-  loadZones, hasEncodedTimezone,
+  dayjsDate,
+  hasEncodedTimezone,
 } from '../utils/utils';
 import moment from 'moment';
 import _ from 'lodash';
@@ -63,34 +61,6 @@ export default class CalendarWidget extends InputWidget {
     else if (this.settings.time_24hr) {
       this.settings.format = this.settings.format.replace(/hh:mm a$/g, 'HH:mm');
     }
-    this.zoneLoading = false;
-    this.timezonesUrl = `${Formio.cdn['moment-timezone']}/data/packed/latest.json`;
-  }
-
-  /**
-   * Load the timezones.
-   * @returns {boolean} TRUE if the zones are loading, FALSE otherwise.
-   */
-  loadZones() {
-    const timezone = this.timezone;
-
-    if (this.zoneLoading) {
-      return true;
-    }
-
-    if (!zonesLoaded() && shouldLoadZones(timezone)) {
-      this.zoneLoading = true;
-      loadZones(this.timezonesUrl, timezone).then(() => {
-        this.zoneLoading = false;
-        this.emit('redraw');
-      });
-
-      // Return zones are loading.
-      return true;
-    }
-
-    // Zones are already loaded.
-    return false;
   }
 
   attach(input) {
@@ -104,7 +74,7 @@ export default class CalendarWidget extends InputWidget {
 
     this.closedOn = 0;
     this.valueFormat = (this.settings.saveAs === 'date') ? ISO_8601_FORMAT : this.settings.dateFormat || ISO_8601_FORMAT;
-    this.valueMomentFormat = convertFormatToMoment(this.valueFormat);
+    this.valueMomentFormat = convertFormatToDayjs(this.valueFormat);
 
     const isReadOnly = this.settings.readOnly;
 
@@ -300,9 +270,9 @@ export default class CalendarWidget extends InputWidget {
    */
   getDateValue(date, format, useTimezone) {
     if (useTimezone) {
-      return momentDate(date, this.valueFormat, this.timezone).format(convertFormatToMoment(format));
+      return dayjsDate(date, this.valueFormat, this.timezone).format(convertFormatToDayjs(format));
     }
-    return moment(date).format(convertFormatToMoment(format));
+    return moment(date).format(convertFormatToDayjs(format));
   }
 
   /**
@@ -340,7 +310,7 @@ export default class CalendarWidget extends InputWidget {
   setValue(value) {
     const saveAsText = (this.settings.saveAs === 'text');
     if (!this.calendar) {
-      value = value ? formatDate(this.timezonesUrl, value, convertFormatToMoment(this.settings.format), this.timezone, convertFormatToMoment(this.valueMomentFormat)) : value;
+      value = value ? formatDate(value, convertFormatToDayjs(this.settings.format), this.timezone, convertFormatToDayjs(this.valueMomentFormat)) : value;
       return super.setValue(value);
     }
 
@@ -350,10 +320,9 @@ export default class CalendarWidget extends InputWidget {
       this.settings.skipOffset = true;
     }
 
-    const zonesLoading = this.loadZones();
     if (value) {
-      if (!saveAsText && this.settings.readOnly && !zonesLoading) {
-        this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).format(), false);
+      if (!saveAsText && this.settings.readOnly) {
+        this.calendar.setDate(dayjsDate(value, this.valueFormat, this.timezone).format(), false);
       }
       else if (this.isValueISO8601(value)) {
         this.calendar.setDate(value, false);
@@ -371,9 +340,9 @@ export default class CalendarWidget extends InputWidget {
     const inputFormat = format || this.dateFormat;
     const valueFormat = this.calendar ? this.valueFormat : this.settings.dateFormat;
     if (this.settings.saveAs === 'text' && this.componentInstance.parent && !this.settings.readOnly) {
-      return moment(value, convertFormatToMoment(valueFormat)).format(convertFormatToMoment(valueFormat));
+      return moment(value, convertFormatToDayjs(valueFormat)).format(convertFormatToDayjs(valueFormat));
     }
-    return formatDate(this.timezonesUrl, value, inputFormat, this.timezone, convertFormatToMoment(valueFormat));
+    return formatDate(value, inputFormat, this.timezone, convertFormatToDayjs(valueFormat));
   }
 
   setErrorClasses(hasErrors) {
@@ -479,7 +448,7 @@ export default class CalendarWidget extends InputWidget {
 
       if (!(isIEBrowser && !relatedTarget) && !this.isCalendarElement(relatedTarget)) {
         const inputValue = this.calendar.input.value;
-        const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToMoment(this.valueFormat)).toDate() : inputValue;
+        const dateValue = inputValue ? moment(this.calendar.input.value, convertFormatToDayjs(this.valueFormat)).toDate() : inputValue;
 
         this.calendar.setDate(dateValue, true, this.settings.altFormat);
       }
@@ -538,15 +507,15 @@ export default class CalendarWidget extends InputWidget {
     return (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
-        if (!this.settings.enableTime || this.loadZones() || this.settings.skipOffset) {
+        if (!this.settings.enableTime || this.settings.skipOffset) {
           return Flatpickr.formatDate(date, format);
         }
 
         const currentValue = new Date(this.getValue());
         if (currentValue.toString() === date.toString()) {
-          return formatOffset(this.timezonesUrl, Flatpickr.formatDate.bind(Flatpickr), new Date(this.componentValue), format, this.timezone);
+          return formatOffset(Flatpickr.formatDate.bind(Flatpickr), new Date(this.componentValue), format, this.timezone);
         }
-        return formatOffset(this.timezonesUrl, Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
+        return formatOffset(Flatpickr.formatDate.bind(Flatpickr), date, format, this.timezone);
       }
 
       return Flatpickr.formatDate(date, format);
