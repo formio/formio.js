@@ -358,6 +358,13 @@ export default class Webform extends NestedDataComponent {
         return this._data;
     }
 
+    get validateWhenHidden() {
+        if (this.parent?.component?.type === 'form' && this.parent.component.validateWhenHidden) {
+            return this.parent.validateWhenHidden;
+        }
+        return false;
+    }
+
     /**
      * Sets the language for this form.
      * @param {string} lang - The language to use (e.g. 'en', 'sp', etc.)

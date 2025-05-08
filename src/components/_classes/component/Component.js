@@ -2622,6 +2622,17 @@ export default class Component extends Element {
     element.setAttribute('aria-invalid', invalid ? 'true' : 'false');
   }
 
+  get validateWhenHidden() {
+    if (this.component.validateWhenHidden) {
+      if (this.parent && (this.parent !== this.parent.root)) {
+        return this.parent.validateWhenHidden;
+      } else {
+        return this.component.validateWhenHidden;
+      }
+    }
+    return false;
+  }
+
   /**
    * Clear any conditionally hidden components for this component only.
    */
@@ -3901,7 +3912,7 @@ export default class Component extends Element {
       () => this.isValueHidden(),
       // Force valid if component is hidden.
       () => {
-        if (!this.component.validateWhenHidden && (!this.visible || !this.checkCondition(row, data))) {
+        if (!this.validateWhenHidden && (!this.visible || !this.checkCondition(row, data))) {
           // If this component is forced valid when it is hidden, then we also need to reset the errors for this component.
           this._errors = [];
           return true;
