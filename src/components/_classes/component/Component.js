@@ -2537,11 +2537,12 @@ export default class Component extends Element {
   }
 
   get validateWhenHidden() {
-    if (this.component.validateWhenHidden) {
+    if (this.component.validateWhenHidden || !this.component.input) {
       if (this.parent && (this.parent !== this.parent.root)) {
         return this.parent.validateWhenHidden;
       } else {
-        return this.component.validateWhenHidden;
+        // Skip layout components since they don't have validateWhenHidden
+        return this.component.input ? this.component.validateWhenHidden : true;
       }
     }
     return false;
