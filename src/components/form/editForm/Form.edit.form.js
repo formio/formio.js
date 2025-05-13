@@ -34,7 +34,7 @@ export default [
       const formInfo = formComp?.defaultDownloadedResources.find(res => res._id === data.form);
       const displayMode = 'wizard';
 
-      return  instance.options?.editForm?.display === displayMode && ((data.form && !formInfo) || (formInfo && formInfo.display !== displayMode));
+      return instance.options?.editForm?.display === displayMode && ((data.form && !formInfo) || (formInfo && formInfo.display !== displayMode));
     },
   },
   {
