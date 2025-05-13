@@ -311,6 +311,10 @@ export default class FormComponent extends Component {
           this.createSubForm(true);
         }
 
+        if (!this.subFormReady) {
+          return Promise.resolve();
+        }
+
         return this.subFormReady.then(() => {
           this.empty(element);
           if (this.options.builder) {
@@ -462,7 +466,8 @@ export default class FormComponent extends Component {
         const componentsMap = this.componentsMap;
         const formComponentsMap = this.subForm.componentsMap;
         _.assign(componentsMap, formComponentsMap);
-        this.component.components = this.subForm.components.map((comp) => comp.component);
+        this.component.components = this.subForm._form?.components;
+        this.component.display = this.subForm._form?.display;
         this.subForm.on('change', () => {
           if (this.subForm && !this.shouldConditionallyClear()) {
             this.dataValue = this.subForm.getValue();
@@ -771,6 +776,14 @@ export default class FormComponent extends Component {
       errors = errors.concat(this.subForm.errors);
     }
     return errors;
+  }
+
+  conditionallyHidden() {
+    const conditionallyHidden = super.conditionallyHidden();
+    if (this.subForm) {
+      this.subForm._conditionallyHidden = conditionallyHidden;
+    }
+    return conditionallyHidden;
   }
 
   updateSubFormVisibility() {
