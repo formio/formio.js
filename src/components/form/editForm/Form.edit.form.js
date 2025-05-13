@@ -30,10 +30,11 @@ export default [
     tooltip: 'if it is checked, the subform is loaded after navigation to the page with this component within the wizard.',
     input: true,
     customConditional( { instance, data }) {
-      const formInfo = instance.root?.getComponent('form')?.defaultDownloadedResources.find(res => res._id === data.form);
+      const formComp = instance.root?.getComponent('form');
+      const formInfo = formComp?.defaultDownloadedResources.find(res => res._id === data.form);
       const displayMode = 'wizard';
 
-      return instance.options?.editForm?.display === displayMode && formInfo && formInfo.display !== displayMode;
+      return  instance.options?.editForm?.display === displayMode && ((data.form && !formInfo) || (formInfo && formInfo.display !== displayMode));
     },
   },
   {
