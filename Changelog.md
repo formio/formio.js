@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.2.0-rc.3]
+ - Change 5.2.x to fork from 5.1.x
+
 ## 5.1.2
 ### Changed
  - Official Release
