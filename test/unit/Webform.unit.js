@@ -3010,6 +3010,8 @@ describe('Webform tests', function() {
   });
 
   describe('Reset values', () => {
+    let formElement = document.createElement('div');
+
     it('Should reset all values correctly.', () => {
       formElement.innerHTML = '';
       const form = new Webform(formElement, { language: 'en' });
@@ -3219,79 +3221,47 @@ describe('Webform tests', function() {
       formElement.innerHTML = '';
       Formio.createForm(formElement, resetActionDefaultValueBasicComponents).then((form) => {
         const nonDefaultValue = {
-          hidden: '500',
-          container: {
-            textField: 'Test',
-            number: 1,
-            currency: 1,
+          textFieldPopulate: '1',
+          numberPopulate: 20,
+          textField: 'new',
+          textArea: 'new1',
+          number: 55,
+          checkbox: false,
+          selectBoxes: {
+            '1': true,
+            '2': true,
+            '3': false,
           },
-          dataGrid: [
-            {
-              textField1: 'Test',
-              number1: 1,
-              currency2: 1,
-            },
-            {
-              textField1: 'Test',
-              number1: 1,
-              currency2: 1,
-            },
-            {
-              textField1: 'Test',
-              number1: 1,
-              currency2: 1,
-            },
-            {
-              textField1: 'Test',
-              number1: 1,
-              currency2: 1,
-            },
-          ],
-          editGrid: [
-            {
-              textField2: 'Test',
-              number2: 1,
-              currency1: 1,
-            },
-            {
-              textField2: 'Test',
-              number2: 1,
-              currency1: 1,
-            },
-            {
-              textField2: 'Test',
-              number2: 1,
-              currency1: 1,
-            },
-          ],
+          select: 2,
+          radio: 1,
           reset: false,
           resetCustom: false,
           submit: true,
         };
         const defaultValue = {
-          textFieldPopulate: '1',
-          numberPopulate: 1,
-          textField: '1',
-          textArea: '1',
-          number: 1,
-          checkbox: false,
+          textFieldPopulate: '12345',
+          numberPopulate: 25,
+          textField: '12345new',
+          textArea: '12345new1',
+          number: 50,
+          checkbox: true,
           selectBoxes: {
-            '1': false,
-            '2': true,
+            '1': true,
+            '2': false,
             '3': true,
           },
-          select: 2,
-          radio: 3,
+          select: 1,
+          radio: 2,
+          submit: false,
           reset: false,
           resetCustom: false,
-          submit: false,
-        };
-        form.setSubmission({ data: { ...nonDefaultValue } }).then(() => {
-          expect(form.submission).to.deep.equal({ data: nonDefaultValue });
+      };
+        return form.setSubmission({ data: { ...nonDefaultValue } }).then(() => {
+          expect(form.submission.data).to.deep.equal(nonDefaultValue);
           form.resetValue();
 
           setTimeout(() => {
-            expect(form.submission).to.deep.equal({ data: defaultValue });
+            expect(form.submission.data).to.deep.equal(defaultValue);
             done();
           }, 200);
         });
