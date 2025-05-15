@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import FormioUtils from '../../utils';
 import { componentValueTypes, fastCloneDeep, getComponentSavedTypes } from '../../utils';
 import Input from '../_classes/input/Input';
@@ -163,8 +163,8 @@ export default class DateTimeComponent extends Input {
     return '';
   }
 
-  get momentFormat() {
-    return FormioUtils.convertFormatToMoment(this.component.format);
+  get dayjsFormat() {
+    return FormioUtils.convertFormatToDayjs(this.component.format);
   }
 
   isEmpty(value = this.dataValue) {
@@ -175,13 +175,15 @@ export default class DateTimeComponent extends Input {
   }
 
   formatValue(input) {
-    const result = moment.utc(input).toISOString();
-    return result === 'Invalid date' ? input : result;
+    if(dayjs(input).isValid()){
+      return dayjs.utc(input).toISOString();
+    }
+    return input;
   }
 
   isEqual(valueA, valueB = this.dataValue) {
     return (this.isEmpty(valueA) && this.isEmpty(valueB))
-      || moment.utc(valueA).format(this.momentFormat) === moment.utc(valueB).format(this.momentFormat);
+      || dayjs.utc(valueA).format(this.dayjsFormat) === dayjs.utc(valueB).format(this.dayjsFormat);
   }
 
   createWrapper() {
@@ -200,19 +202,19 @@ export default class DateTimeComponent extends Input {
   }
 
   getValueAsString(value, options) {
-    let format = FormioUtils.convertFormatToMoment(this.component.format);
-    format += format.match(/z$/) ? '' : ' z';
+    let format = FormioUtils.convertFormatToDayjs(this.component.format);
     const timezone = this.timezone;
     if (value && !this.attached && timezone) {
+      format += format.match(/z$/) ? '' : ' z';
       if (Array.isArray(value) && this.component.multiple) {
-        return value.map(item => _.trim(FormioUtils.momentDate(item, format, timezone, options).format(format))).join(', ');
+        return value.map(item => _.trim(FormioUtils.dayjsDate(item, format, timezone, options).format(format))).join(', ');
       }
-      return _.trim(FormioUtils.momentDate(value, format, timezone, options).format(format));
+      return _.trim(FormioUtils.dayjsDate(value, format, timezone, options).format(format));
     }
 
     if (Array.isArray(value) && this.component.multiple) {
-      return value.map(item => _.trim(moment(item).format(format))).join(', ');
+      return value.map(item => _.trim(dayjs(item).format(format))).join(', ');
     }
-    return (value ? _.trim(moment(value).format(format)) : value) || '';
+    return (value ? _.trim(dayjs(value).format(format)) : value) || '';
   }
 }

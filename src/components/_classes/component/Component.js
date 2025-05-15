@@ -3105,6 +3105,7 @@ export default class Component extends Element {
     }
     const isArray = Array.isArray(value);
     const valueInput = this.refs.fileLink || this.refs.input;
+    const isFilelink = !!this.refs.fileLink
     if (
       isArray &&
       Array.isArray(this.defaultValue) &&
@@ -3113,7 +3114,9 @@ export default class Component extends Element {
       (valueInput.length !== value.length) &&
       this.visible
     ) {
-      this.redraw();
+      if (isFilelink || valueInput.length) {
+        this.redraw();
+      }
     }
     if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
       this.redraw();
