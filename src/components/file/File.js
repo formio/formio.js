@@ -1,5 +1,5 @@
 import Field from '../_classes/field/Field';
-import { componentValueTypes, getComponentSavedTypes, uniqueName } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, uniqueName } from '../../utils';
 import download from 'downloadjs';
 import _ from 'lodash';
 import fileProcessor from '../../providers/processor/fileProcessor';

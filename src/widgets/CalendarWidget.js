@@ -1,3 +1,5 @@
+import moment from 'moment';
+import _ from 'lodash';
 import { Formio } from '../Formio';
 import InputWidget from './InputWidget';
 import {
@@ -9,11 +11,9 @@ import {
   getBrowserInfo,
   getDateSetting,
   getLocaleDateFormatInfo,
-  dayjsDate,
   hasEncodedTimezone,
-} from '../utils/utils';
-import moment from 'moment';
-import _ from 'lodash';
+  dayjsDate
+} from '../utils';
 
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';

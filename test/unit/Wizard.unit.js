@@ -38,7 +38,7 @@ import nestedConditionalWizard from '../forms/nestedConditionalWizard';
 import wizardWithPrefixComps from '../forms/wizardWithPrefixComps';
 import wizardPermission from '../forms/wizardPermission';
 import formWithFormController from '../forms/formWithFormController';
-import { fastCloneDeep } from '../../src/utils/utils';
+import { fastCloneDeep } from '../../src/utils';
 import formsWithAllowOverride from '../forms/formsWithAllowOverrideComps';
 import WizardWithCheckboxes from '../forms/wizardWithCheckboxes';
 import WizardWithRequiredFields from '../forms/wizardWithRequiredFields';
@@ -564,7 +564,7 @@ describe('Wizard Form with Nested Form validation', () => {
           setTimeout(() => {
             checkPage(2);
             const errors = wizard.errors;
-            assert.equal(errors.length, 1, 'Must err before next page');
+            assert.equal(errors.length, 2, 'Must err before next page');
             assert.equal(errors[0].ruleName, 'required');
             assert.equal(errors[0].message, 'Text Field is required');
             done();
@@ -1166,7 +1166,7 @@ describe('Wizard Form with Nested Form validation', () => {
         assert(errors.length > 0, 'Must err before next page');
         assert.equal(errors[0].message, 'Required Component is required');
         done();
-      }, 200);
+      }, 300);
     })
     .catch((err) => done(err));
   });

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypes, getFocusableElements } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, getFocusableElements } from '../../utils';
 
 import Component from '../_classes/component/Component';
 import Field from '../_classes/field/Field';

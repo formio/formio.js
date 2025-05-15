@@ -6,10 +6,10 @@ import isMobile from 'ismobilejs';
 import { processOne, processOneSync, validateProcessInfo } from '@formio/core/process';
 
 import { Formio } from '../../../Formio';
-import * as FormioUtils from '../../../utils/utils';
+import FormioUtils from '../../../utils';
 import {
   fastCloneDeep, boolValue, currentTimezone, getScriptPlugin, getContextualRowData
-} from '../../../utils/utils';
+} from '../../../utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';

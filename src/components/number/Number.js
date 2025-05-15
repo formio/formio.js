@@ -2,7 +2,7 @@ import { createNumberMask } from '@formio/text-mask-addons';
 import { conformToMask,maskInput } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
 import Input from '../_classes/input/Input';
-import { getNumberSeparators, getNumberDecimalLimit, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { getNumberSeparators, getNumberDecimalLimit, componentValueTypes, getComponentSavedTypes } from '../../utils/';
 
 export default class NumberComponent extends Input {
   static schema(...extend) {
@@ -203,7 +203,7 @@ export default class NumberComponent extends Input {
         // if decimal limit is 3, 1.23e5 will be converted to 1.230e+5
         // if decimal limit is not set, 1.23e5 will be converted to 1.23000000000000000000e+5
         value = parseFloat(input);
-        value = value.toExponential(this.decimalLimit); 
+        value = value.toExponential(this.decimalLimit);
       } else {
         value = parseFloat(input);
         value = !_.isNaN(value) ? String(value).replace('.', this.decimalSeparator) : null;
