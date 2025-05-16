@@ -286,6 +286,26 @@ export class Formio {
                 dependencies: ['bootstrap-icons'],
                 css: `${Formio.cdn.bootstrap}/css/bootstrap.min.css`
             },
+            autocomplete: {
+                globalStyle: `
+                    .autocomplete {
+                        background: white;
+                        font: 14px/22px "-apple-system", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                        overflow: auto;
+                        box-sizing: border-box;
+                        border: 1px solid rgba(50, 50, 50, 0.6);
+                        z-index: 11000;
+                    }
+                    .autocomplete > div {
+                        cursor: pointer;
+                        padding: 6px 10px;
+                    }
+                    .autocomplete > div:hover:not(.group), .autocomplete > div.selected {
+                        background: #1e90ff;
+                        color: #ffffff;
+                    }
+                `
+            },
             'bootstrap-icons': {
                 // Due to an issue with font-face not loading in the shadowdom (https://issues.chromium.org/issues/41085401), we need
                 // to do 2 things. 1.) Load the fonts from the global cdn, and 2.) add the font-face to the global styles on the page.
@@ -306,7 +326,6 @@ export class Formio {
             };
         });
         const id = Formio.config.id || `formio-${Math.random().toString(36).substring(7)}`;
-
         // Create a new wrapper and add the element inside of a new wrapper.
         let wrapper = Formio.createElement('div', {
             'id': `${id}-wrapper`
@@ -362,10 +381,17 @@ export class Formio {
         // Add libraries if they wish to include the libs.
         if (Formio.config.template && Formio.config.includeLibs) {
             await Formio.addLibrary(
-                libWrapper, 
-                Formio.config.libs[Formio.config.template], 
+                libWrapper,
+                Formio.config.libs[Formio.config.template],
                 Formio.config.template
             );
+            if (useShadowDom) {
+                await Formio.addLibrary(
+                    libWrapper,
+                    Formio.config.libs['autocomplete'],
+                    'autocomplete'
+                );
+            }
         }
 
         if (!Formio.config.libraries) {
