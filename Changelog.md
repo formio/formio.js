@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.3.0-rc.2
+### Changed
+ - Updated @formio/bootstrap@3.2.0-rc.2
+ - Updated @formio/core@2.6.0-rc.2
+ - FIO-9027 fixed display of the overridden values on download page
+ - FIO-10028: fixed an issue where file component blocks to submit
+ - FIO-10005 fixed next page validation for DataGrid with NestedForm
+ - FIO-10096: Text Area causes infinite loop in html render mode
+ - FIO-10051: fixed an issue where conditional nested forms/wizards are not displayed after reentering triggering value
+
 ## 5.3.0-rc.1
 ### Changed
  - Updated @formio/core@2.6.0-rc.1
