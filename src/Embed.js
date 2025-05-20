@@ -296,7 +296,7 @@ export class Formio {
                     src: url("https://cdn.jsdelivr.net/npm/bootstrap-icons/font/fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6") format("woff2"),
                          url("https://cdn.jsdelivr.net/npm/bootstrap-icons/font/fonts/bootstrap-icons.woff?dd67030699838ea613ee6dbda90effa6") format("woff");
                 }`
-            }
+            },
         };
         // Add all bootswatch templates.
         ['cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera', 'lumen', 'lux', 'materia', 'minty', 'pulse', 'sandstone', 'simplex', 'sketchy', 'slate', 'solar', 'spacelab', 'superhero', 'united', 'yeti'].forEach((template) => {
@@ -362,8 +362,8 @@ export class Formio {
         // Add libraries if they wish to include the libs.
         if (Formio.config.template && Formio.config.includeLibs) {
             await Formio.addLibrary(
-                libWrapper, 
-                Formio.config.libs[Formio.config.template], 
+                libWrapper,
+                Formio.config.libs[Formio.config.template],
                 Formio.config.template
             );
         }
@@ -387,6 +387,15 @@ export class Formio {
         }
 
         await Formio.addStyles(libWrapper, Formio.formioScript(Formio.config.style || `${Formio.cdn.js}/${renderer}.css`, builder));
+
+        // In some cases (dropdown list of autocomplete or confirmation popup of skethpad) we render elements outside of shadow dom
+        // and as result we can't get access to this styles outside of shadow dom. Here i added needed styles to work it properly
+        if(useShadowDom) {
+            await Formio.addStyles(document.body, Formio.formioScript(Formio.config.style || `${Formio.cdn.js}/${renderer}.css`, builder));
+            const toGlobalStyleLibs = ["bootstrap", "bootstrap4", "bootstrap-icons"];
+            const libHrefs = toGlobalStyleLibs.map(key => Formio.config.libs[key]).filter(Boolean).map(href => href.css);
+            await Formio.addStyles(document.body, libHrefs, builder);
+        }
         if (Formio.config.before) {
             await Formio.config.before(Formio.FormioClass, element, Formio.config);
         }
