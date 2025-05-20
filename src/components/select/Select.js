@@ -3,8 +3,15 @@ import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Input from '../_classes/input/Input';
 import Form from '../../Form';
-import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes, isSelectResourceWithObjectValue, removeHTML } from '../../utils/utils';
-
+import {
+  getRandomComponentId,
+  boolValue,
+  isPromise,
+  componentValueTypes,
+  getComponentSavedTypes,
+  isSelectResourceWithObjectValue,
+  removeHTML
+} from '../../utils';
 import Choices from '../../utils/ChoicesWrapper';
 
 export default class SelectComponent extends ListComponent {

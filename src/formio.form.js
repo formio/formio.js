@@ -8,12 +8,12 @@ import Providers from './providers';
 import Widgets from './widgets';
 import Form from './Form';
 import Utils from './utils';
-import { Evaluator } from './utils/Evaluator';
 import Licenses from './licenses';
 import EventEmitter from './EventEmitter';
 import Webform from './Webform';
+import { Evaluator, registerEvaluator } from './utils';
 
-Formio.loadModules = (path = `${Formio.getApiUrl()  }/externalModules.js`, name = 'externalModules') => {
+Formio.loadModules = (path = `${Formio.getApiUrl()}/externalModules.js`, name = 'externalModules') => {
   Formio.requireLibrary(name, name, path, true)
     .then((modules) => {
       Formio.use(modules);
@@ -86,7 +86,7 @@ export function registerModule(mod, defaultFn = null, options = {}) {
         Formio.Displays.addDisplays(mod.displays);
         break;
       case 'evaluator':
-        Formio.Evaluator.registerEvaluator(mod.evaluator);
+        registerEvaluator(mod.evaluator);
         break;
       case 'library':
         options.license

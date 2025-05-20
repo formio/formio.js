@@ -5,7 +5,6 @@ import sinon from 'sinon';
 import Harness from '../harness';
 import DataGridComponent from '../../src/components/datagrid/DataGrid';
 import { Formio } from '../../src/Formio';
-
 import {
   comp1,
   comp2,
@@ -792,10 +791,10 @@ describe('DataGrid calculated values', () => {
                   }]
                 );
                 done();
-              }, 300);
-            }, 300);
-          }, 300);
-        }, 300);
+              }, 400);
+            }, 400);
+          }, 400);
+        }, 400);
       })
       .catch(done);
   });

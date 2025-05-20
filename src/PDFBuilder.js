@@ -2,8 +2,7 @@ import _ from 'lodash';
 import { Formio } from './Formio';
 
 import WebformBuilder from './WebformBuilder';
-import { fastCloneDeep, getElementRect , getBrowserInfo } from './utils/utils';
-import { eachComponent } from './utils/formUtils';
+import { fastCloneDeep, getElementRect , getBrowserInfo, eachComponent } from './utils';
 import BuilderUtils from './utils/builder';
 import PDF from './PDF';
 

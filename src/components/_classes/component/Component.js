@@ -6,10 +6,10 @@ import isMobile from 'ismobilejs';
 import { processOne, processOneSync, validateProcessInfo } from '@formio/core/process';
 
 import { Formio } from '../../../Formio';
-import * as FormioUtils from '../../../utils/utils';
+import FormioUtils from '../../../utils';
 import {
   fastCloneDeep, boolValue, currentTimezone, getScriptPlugin, getContextualRowData
-} from '../../../utils/utils';
+} from '../../../utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
@@ -489,6 +489,10 @@ export default class Component extends Element {
     return this.root?.childComponentsMap || {};
   }
 
+  /**
+   * Returns if the parent should conditionally clear.
+   * @returns {boolean} - If the parent should conditionally clear.
+   */
   parentShouldConditionallyClear() {
     let currentParent = this.parent;
     while (currentParent) {
@@ -572,7 +576,7 @@ export default class Component extends Element {
   get rowIndex() {
     return this._rowIndex;
   }
-  
+
   /**
    * Set Row Index to row and update each component.
    * @param {number} value - The row index.

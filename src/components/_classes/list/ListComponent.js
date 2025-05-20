@@ -1,7 +1,7 @@
 import Field from '../field/Field';
 import { Formio } from '../../../Formio';
 import _ from 'lodash';
-import { getItemTemplateKeys } from '../../../utils/utils';
+import { getItemTemplateKeys } from '../../../utils';
 
 export default class ListComponent extends Field {
   static schema(...extend) {

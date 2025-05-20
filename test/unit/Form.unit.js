@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { fastCloneDeep } from '../../src/utils/utils.js';
+import { fastCloneDeep } from '../../src/utils';
 import Harness from '../harness.js';
-import FormComponent from '../../src/components/form/Form.js';
+import FormComponent from '../../src/components/form/Form';
 import { expect } from 'chai';
 import assert from 'power-assert';
 
@@ -819,8 +819,8 @@ describe('Test Conditional Multi-Level Nested forms', () => {
           assert.equal(textField.dataValue, '7');
           const nestedForm1 = form.getComponent('eSubmissions.pmta');
           const nestedForm2 = form.getComponent('eSubmissions.pmta.section1.contacts');
-          assert.equal(!!nestedForm1._conditionallyHidden, true);
-          assert.equal(!!nestedForm2._conditionallyHidden, true);
+          assert.equal(nestedForm1.conditionallyHidden(), true);
+          assert.equal(nestedForm2.conditionallyHidden(), true);
           const input = textField.refs.input[0];
           input.value = '5';
           input.dispatchEvent(inputEvent);

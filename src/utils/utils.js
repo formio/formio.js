@@ -1,39 +1,12 @@
 /* global jQuery */
-
 import _ from 'lodash';
-import jsonLogic from 'json-logic-js';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
-import { lodashOperators } from './jsonlogic/operators';
 import dompurify from 'dompurify';
 import { getValue } from './formUtils';
 import { Evaluator } from './Evaluator';
 import ConditionOperators from './conditionOperators';
-import { convertShowToBoolean } from '@formio/core';
-
-const interpolate = Evaluator.interpolate;
-
-export * from './formUtils';
-
-// Configure JsonLogic
-lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
-
-// Retrieve Any Date
-jsonLogic.add_operation('getDate', (date) => {
-  return moment(date).toISOString();
-});
-
-// Set Relative Minimum Date
-jsonLogic.add_operation('relativeMinDate', (relativeMinDate) => {
-  return moment().subtract(relativeMinDate, 'days').toISOString();
-});
-
-// Set Relative Maximum Date
-jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
-  return moment().add(relativeMaxDate, 'days').toISOString();
-});
-
-export { jsonLogic, ConditionOperators, moment };
+import { jsonLogic, convertShowToBoolean } from '@formio/core';
 
 /**
  * Evaluate a method.
@@ -1482,8 +1455,6 @@ export function fastCloneDeep(obj) {
   return obj ? JSON.parse(JSON.stringify(obj)) : obj;
 }
 
-export { Evaluator, interpolate };
-
 /**
  * Returns if the component is an input component.
  * @param {import('@formio/core').Component} componentJson - The JSON of a component.
@@ -1702,9 +1673,6 @@ export function getFocusableElements(element) {
     textarea:not([disabled]), button:not([disabled]), [href]`;
   return element.querySelectorAll(focusableSelector);
 }
-
-// Export lodash to save space with other libraries.
-export { _ };
 
 export const componentValueTypes = {
   number: 'number',
