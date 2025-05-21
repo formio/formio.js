@@ -1,6 +1,6 @@
-import { sync } from 'monorepo-sync';
+import { syncfromGithubAction } from 'monorepo-sync';
 
-sync()
+syncfromGithubAction()
 	.then(() => {
 		console.log('Sync completed successfully');
 		process.exit(0);
@@ -8,4 +8,4 @@ sync()
 	.catch((error) => {
 		console.error('Error during sync:', error);
 		process.exit(1);
-	});
+	});git
