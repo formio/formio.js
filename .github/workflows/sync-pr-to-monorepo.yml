@@ -28,7 +28,7 @@ jobs:
         run: npm install
         
       - name: Install monorepo-sync package
-        run: npm install git+https://github.com/formio/monorepo-sync.git
+        run: npm install https://github.com/formio/monorepo-sync.git
       
       - name: Sync to Monorepo
         env:
