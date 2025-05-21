@@ -26,9 +26,15 @@ jobs:
       - name: Install dependencies
         # Install project dependencies (including dev dependencies)
         run: npm install
+
+      - name: Install zx
+        run: npm install zx
         
       - name: Install monorepo-sync package
         run: npm install git+https://github.com/formio/monorepo-sync.git
+      - name: Clone Monorepo 
+        run: |
+            gh repo clone formio/formio-monorepo.git monorepo -- --depth=0
       
       - name: Sync to Monorepo
         env:
@@ -38,6 +44,8 @@ jobs:
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
           SOURCE_REPO_NAME: ${{ github.event.repository.name }}
           MONOREPO_PACKAGE_LOCATION: packages/formio.js
+          MONOREPO_PATH: ${{ github.workspace }}/monorepo
+
         run: |
           echo "Syncing PR #${PR_NUMBER}: ${PR_TITLE}"
           node .github/workflows/sync-monorepo.mjs
