@@ -1,5 +1,5 @@
 import NestedComponent from '../_classes/nested/NestedComponent';
-import { isChildOf } from '../../utils/utils';
+import { isChildOf } from '../../utils';
 
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {

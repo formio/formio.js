@@ -26,6 +26,7 @@ jobs:
       - name: Install dependencies
         # Install project dependencies (including dev dependencies)
         run: npm install
+
       - name: Install zx
         run: npm install zx
         

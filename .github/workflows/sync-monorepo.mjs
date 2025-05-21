@@ -1,3 +1,4 @@
+
 import { syncfromGithubAction } from 'monorepo-sync';
 
 syncfromGithubAction()
@@ -8,4 +9,5 @@ syncfromGithubAction()
 	.catch((error) => {
 		console.error('Error during sync:', error);
 		process.exit(1);
-	});git
+
+	});
