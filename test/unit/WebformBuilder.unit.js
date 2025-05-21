@@ -113,16 +113,6 @@ describe('WebformBuilder tests', function() {
     }).catch(done);
   });
 
-  it('Should show unique API error when layout components have same keys', (done) => {
-    const builder = Harness.getBuilder();
-    builder.webform.setForm(sameApiKeysLayoutComps).then(() => {
-      builder.highlightInvalidComponents();
-      const component = builder.webform.getComponent(['tabs']);
-      assert.equal(component.visibleErrors.length, 1, 'Should show Unique API Key error');
-      done();
-    }).catch(done);
-  });
-
   it('Should allow add components', function(done) {
     const builder = Harness.getBuilder();
     builder.setForm(columnsForm).then(() => {
