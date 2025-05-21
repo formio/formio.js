@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         # Install project dependencies (including dev dependencies)
         run: npm install
+      - name: Install zx
+        run: npm install zx
+        
       - name: Install monorepo-sync package
         run: npm install git+https://github.com/formio/monorepo-sync.git
       - name: Clone Monorepo 
