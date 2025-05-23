@@ -58,7 +58,7 @@ export class DefaultEvaluator extends CoreEvaluator {
 export let Evaluator = new DefaultEvaluator();
 
 // preserve the standalone interpolate function for backwards compatibility
-export const interpolate = Evaluator.interpolate;
+export const interpolate = Evaluator.interpolate.bind(Evaluator);
 
 /**
  * Set the evaluator to use for evaluating expressions.

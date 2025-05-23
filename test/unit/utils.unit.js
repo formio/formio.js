@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import { expect, assert } from 'chai';
 import _ from 'lodash';
 import utils from '../../src/utils';
+const {interpolate} = utils;
 const submission1 = JSON.parse(fs.readFileSync('test/unit/fixtures/utils/submission1.json'));
 
 describe('Util Tests', () => {
@@ -631,5 +632,11 @@ describe('Util Tests', () => {
       }
     });
 */
+  });
+
+  describe('interpolate', () => {
+      it('should allow you to use the standalone interpolate function', () => {
+        interpolate('() => {}', {}, {})
+      });
   });
 });
