@@ -1,12 +1,18 @@
 import * as utils from './utils';
 import * as formUtils from './formUtils';
 import { Evaluator, registerEvaluator, interpolate } from './Evaluator';
+import ConditionOperators from './conditionOperators';
+import _ from 'lodash';
+import moment from 'moment';
 
 const FormioUtils = {
   ...utils,
   ...formUtils,
   Evaluator,
-  interpolate
+  interpolate,
+  ConditionOperators,
+  _,
+  moment
 };
 if (typeof global === 'object') {
   global.FormioUtils = FormioUtils;
