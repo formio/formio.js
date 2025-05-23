@@ -657,7 +657,12 @@ describe('Webform tests', function() {
     Formio.makeRequest = function() {
       return new Promise((res, rej) => {
         setTimeout(() => {
-          rej(errorText);
+          rej({
+            ok: false,
+            status: 400,
+            statusText: "Bad Request",
+            error: errorText
+           });
         }, 50);
       });
     };

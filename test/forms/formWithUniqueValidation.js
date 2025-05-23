@@ -45,22 +45,27 @@ export default {
     data: { textField: 'test', textFieldUnique: 'notUnique', submit: false },
   },
   serverErrors: {
-    name: 'ValidationError',
-    details: [
-      {
-        message: 'Text Field unique must be unique',
-        level: 'error',
-        path: ['textFieldUnique'],
-        context: {
-          validator: 'unique',
-          hasLabel: true,
-          key: 'textFieldUnique',
-          label: 'Text Field unique',
-          path: 'textFieldUnique',
-          value: 'notUnique',
-          index: 0,
+    ok: false,
+    status: 400,
+    statusText: "Bad Request",
+    error: {
+      name: 'ValidationError',
+      details: [
+        {
+          message: 'Text Field unique must be unique',
+          level: 'error',
+          path: ['textFieldUnique'],
+          context: {
+            validator: 'unique',
+            hasLabel: true,
+            key: 'textFieldUnique',
+            label: 'Text Field unique',
+            path: 'textFieldUnique',
+            value: 'notUnique',
+            index: 0,
+          },
         },
-      },
-    ],
+      ],
+    }
   },
 };

@@ -1372,17 +1372,18 @@ export default class Webform extends NestedDataComponent {
     }
 
     normalizeError(error) {
-        if (error) {
-            if (typeof error === 'object' && 'details' in error) {
-                error = error.details;
-            }
+        if (error?.error) {
+          let errorData = error.error;
+          if (typeof errorData === 'object' && 'details' in errorData) {
+              error = errorData.details;
+          }
 
-            if (typeof error === 'string') {
-                error = { message: error };
-            }
+          if (typeof errorData === 'string') {
+              error = { message: errorData };
+          }
         }
 
-        return error;
+      return error;
     }
 
     /**
@@ -1659,15 +1660,16 @@ export default class Webform extends NestedDataComponent {
     }
 
     setServerErrors(error) {
-        if (error.details) {
-            this.serverErrors = error.details
+        const errorData = error.error;
+        if (errorData.details) {
+            this.serverErrors = errorData.details
                 .filter((err) => (err.level ? err.level === 'error' : err))
                 .map((err) => {
                     err.fromServer = true;
                     return err;
                 });
-        } else if (typeof error === 'string') {
-            this.serverErrors = [{ fromServer: true, level: 'error', message: error }];
+        } else if (typeof errorData === 'string') {
+            this.serverErrors = [{ fromServer: true, level: 'error', message: errorData }];
         }
     }
 
