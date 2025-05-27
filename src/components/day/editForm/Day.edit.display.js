@@ -4,6 +4,14 @@ export default [
     ignore: true
   },
   {
+    key: 'labelWidth',
+    ignore: true
+  },
+  {
+    key: 'labelMargin',
+    ignore: true
+  },
+  {
     weight: 15,
     type: 'checkbox',
     label: 'Hide Input Labels',

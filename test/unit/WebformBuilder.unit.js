@@ -364,7 +364,7 @@ describe('WebformBuilder tests', function() {
     }).catch(done);
   });
 
-  it('Should not hilight error for default values', (done) => {
+  it('Should not highlight error for default values', (done) => {
     const builder = Harness.getBuilder();
     builder.setForm({}).then(() => {
       Harness.buildComponent('day');
@@ -379,6 +379,21 @@ describe('WebformBuilder tests', function() {
       }, 200)
     }).catch(done);
   })
+
+  it('should be able to render form with unknown component without crashing', () => {
+    return Formio.builder(document.createElement('div'), {
+      components: [
+        {
+          type: 'abc123'
+        }
+      ]
+    })
+  });
+
+  it('should return false if hasEditTabs is passed a type that does not exist', () => {
+    const webformBuilder = new WebformBuilder({});
+    assert.equal(webformBuilder.hasEditTabs('abc123'), false);
+  });
 });
 
 describe('Select Component selectData property', () => {

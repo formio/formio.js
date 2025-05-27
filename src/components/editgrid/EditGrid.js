@@ -10,7 +10,7 @@ import {
   Evaluator,
   getArrayFromComponentPath,
   eachComponent
-} from '../../utils/utils';
+} from '../../utils';
 
 const EditRowState = {
   New: 'new',
@@ -645,14 +645,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       if (fn(component, index) === false) {
         return false;
       }
-    });
-  }
-
-  restoreComponentsContext() {
-    this.getComponents().forEach((component) => {
-      const rowData = this.dataValue[component.rowIndex];
-      const editRowData = this.editRows[component.rowIndex]?.data;
-      component.data = rowData || editRowData;
     });
   }
 
@@ -1310,7 +1302,9 @@ export default class EditGridComponent extends NestedArrayComponent {
       return false;
     }
 
-    const message = this.invalid || this.invalidMessage(data, dirty, false, row);
+    // TODO: this is the only place invalidMessage gets called, and it's not clear why it's needed - we already validate the editGrid
+    // component above with super.checkComponentValidity
+    const message = this.invalid || this.invalidMessage(data, dirty, false, row, options);
     if (allRowErrors.length && this.root?.submitted && !message) {
       this._errors = this.setCustomValidity(message, dirty);
       errors.push(...this._errors);
@@ -1359,9 +1353,6 @@ export default class EditGridComponent extends NestedArrayComponent {
     }
 
     const changed = this.hasChanged(value, this.dataValue);
-    if (this.parent) {
-      this.parent.checkComponentConditions();
-    }
     this.dataValue = value;
     // Refresh editRow data when data changes.
     this.dataValue.forEach((row, rowIndex) => {
@@ -1394,10 +1385,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     this.openWhenEmpty();
     this.updateOnChange(flags, changed);
-    this.checkData();
-
     this.changeState(changed, flags);
-
     return changed;
   }
 

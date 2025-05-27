@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import moment from 'moment';
 import { compareVersions } from 'compare-versions';
 import EventEmitter from './EventEmitter';
 import i18nDefaults from './i18n';
@@ -13,8 +12,10 @@ import {
     getStringFromComponentPath,
     convertStringToHTMLElement,
     getArrayFromComponentPath,
-} from './utils/utils';
-import { eachComponent } from './utils/formUtils';
+    eachComponent
+} from './utils';
+
+import dayjs from "dayjs";
 
 // We need this here because dragula pulls in CustomEvent class that requires global to exist.
 if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
@@ -239,12 +240,28 @@ export default class Webform extends NestedDataComponent {
     }
     /* eslint-enable max-statements */
 
+    beforeInit() {
+      this.executeFormController = _.once(this._executeFormController);
+    }
+
     get language() {
         return this.options.language;
     }
 
     get emptyValue() {
         return null;
+    }
+
+    get shouldCallFormController() {
+        // If no controller value or
+        // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
+        return (
+            this.form &&
+            this.form.controller &&
+            !((!this.visible || this.component.hidden) &&
+              this.component.clearOnHide &&
+              !this.rootPristine)
+        );
     }
 
     componentContext() {
@@ -636,7 +653,9 @@ export default class Webform extends NestedDataComponent {
         const rebuild = this.rebuild() || Promise.resolve();
         return rebuild.then(() => {
             this.emit('formLoad', form);
-            this.triggerCaptcha();
+            if (!this.options.server) {
+              this.triggerCaptcha();
+            }
             // Make sure to trigger onChange after a render event occurs to speed up form rendering.
             setTimeout(() => {
                 this.onChange(flags);
@@ -931,24 +950,14 @@ export default class Webform extends NestedDataComponent {
         this.on('deleteSubmission', () => this.deleteSubmission(), true);
         this.on('refreshData', () => this.updateValue(), true);
 
-        this.executeFormController();
+        if (this.shouldCallFormController) {
+              this.executeFormController();
+        }
 
         return this.formReady;
     }
 
-    executeFormController() {
-        // If no controller value or
-        // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-        if (
-            !this.form ||
-            !this.form.controller ||
-            ((!this.visible || this.component.hidden) &&
-                this.component.clearOnHide &&
-                !this.rootPristine)
-        ) {
-            return false;
-        }
-
+    _executeFormController() {
         this.formReady.then(() => {
             this.evaluate(this.form.controller, {
                 components: this.components,
@@ -1228,11 +1237,8 @@ export default class Webform extends NestedDataComponent {
             errors.forEach(({ message, context, fromServer, component }, index) => {
                 const text =
                     !component?.label || context?.hasLabel || fromServer
-                        ? this.t('alertMessage', { message: this.t(message) })
-                        : this.t('alertMessageWithLabel', {
-                              label: this.t(component?.label),
-                              message: this.t(message),
-                          });
+                        ? this.t(message)
+                        : `${this.t(component?.label)}: ${this.t(message)}`;
                 displayedErrors.push(createListItem(text, index));
             });
         }
@@ -1413,7 +1419,7 @@ export default class Webform extends NestedDataComponent {
         submission.metadata = submission.metadata || {};
         _.defaults(submission.metadata, {
             timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
-            offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
+            offset: parseInt(_.get(this, '_submission.metadata.offset', dayjs().utcOffset()), 10),
             origin: document.location.origin,
             referrer: document.referrer,
             browserName: navigator.appName,
@@ -1676,18 +1682,22 @@ export default class Webform extends NestedDataComponent {
         }
     }
 
-    triggerCaptcha() {
+    triggerCaptcha(components = null) {
         if (!this || !this.components || this.options.preview) {
             return;
         }
         const captchaComponent = [];
-        this.eachComponent((component) => {
+        eachComponent(components || this.components,(component) => {
             if (/^(re)?captcha$/.test(component.type) && component.component.eventType === 'formLoad') {
                 captchaComponent.push(component);
             }
-        });
+        }, true);
 
         if (captchaComponent.length > 0) {
+            if (captchaComponent[0].component.provider === 'google' && components) {
+                return;
+            }
+
             if (this.parent) {
                 this.parent.subFormReady.then(()=> {
                     captchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);

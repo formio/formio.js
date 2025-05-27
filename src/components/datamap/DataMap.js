@@ -2,7 +2,7 @@ import Component from '../_classes/component/Component';
 import DataGridComponent from '../datagrid/DataGrid';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter3';
-import { componentValueTypes, getComponentSavedTypes, uniqueKey } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, uniqueKey } from '../../utils/formUtils';
 
 export default class DataMapComponent extends DataGridComponent {
   static schema(...extend) {
@@ -77,16 +77,10 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   get dataValue() {
-    if (
-      !this.key ||
-      (this.conditionallyHidden && this.component.clearOnHide)
-    ) {
+    if (!this.key) {
       return this.emptyValue;
     }
-    if (!this.hasValue() && this.shouldAddDefaultValue) {
-      this.dataValue = this.emptyValue;
-    }
-    return _.get(this.data, this.key);
+    return _.get(this.data, this.key, this.emptyValue);
   }
 
   set dataValue(value) {

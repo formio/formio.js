@@ -2,8 +2,7 @@ import _ from 'lodash';
 import { Formio } from './Formio';
 
 import WebformBuilder from './WebformBuilder';
-import { fastCloneDeep, getElementRect , getBrowserInfo } from './utils/utils';
-import { eachComponent } from './utils/formUtils';
+import { fastCloneDeep, getElementRect , getBrowserInfo, eachComponent } from './utils';
 import BuilderUtils from './utils/builder';
 import PDF from './PDF';
 
@@ -326,7 +325,7 @@ export default class PDFBuilder extends WebformBuilder {
           width: schema.width
         };
 
-        if (!this.options.noNewEdit && !component.component.noNewEdit) {
+        if (!this.options.noNewEdit && !component.component.noNewEdit && this.hasEditTabs(component.type)) {
           this.editComponent(component.component, this.getParentContainer(component), isNew);
         }
         this.emit('updateComponent', component.component);
@@ -352,7 +351,7 @@ export default class PDFBuilder extends WebformBuilder {
 
     this.webform.on('iframe-componentClick', schema => {
       const component = this.webform.getComponentById(schema.id);
-      if (component) {
+      if (component && this.hasEditTabs(component.type)) {
         this.editComponent(component.component, this.getParentContainer(component));
       }
     }, true);

@@ -617,14 +617,14 @@ describe('EditGrid Component', () => {
                         assert.equal(errorAlert, null, 'Should be valid');
 
                         done();
-                      }, 100);
+                      }, 300);
                     });
-                  }, 100);
-                }, 100);
-              }, 100);
+                  }, 300);
+                }, 300);
+              }, 300);
             });
-          }, 100);
-        }, 100);
+          }, 300);
+        }, 300);
       }).catch(done)
       .finally(() => {
         ModalEditGrid.components[0].rowDrafts = false;
@@ -679,7 +679,7 @@ describe('EditGrid Component', () => {
                 }, 300);
               }, 300);
             }, 150);
-          }, 800);
+          }, 300);
         }, 100);
       }).catch(done)
       .finally(() => {
