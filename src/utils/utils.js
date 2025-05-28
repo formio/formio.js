@@ -1458,7 +1458,7 @@ export function fastCloneDeep(obj) {
 /**
  * Returns if the component is an input component.
  * @param {import('@formio/core').Component} componentJson - The JSON of a component.
- * @returns {bool} - TRUE if the component is an input component; FALSE otherwise.
+ * @returns {boolean} - TRUE if the component is an input component; FALSE otherwise.
  */
 export function isInputComponent(componentJson) {
   if (componentJson.input === false || componentJson.input === true) {
@@ -1483,7 +1483,7 @@ export function isInputComponent(componentJson) {
 /**
  * Takes a component path, and returns a component path array.
  * @param {string} pathStr - The path string to convert to an array.
- * @returns {Arryay<number>} - The array of paths.
+ * @returns {Array<string>} - The array of paths.
  */
 export function getArrayFromComponentPath(pathStr) {
   if (!pathStr || !_.isString(pathStr)) {

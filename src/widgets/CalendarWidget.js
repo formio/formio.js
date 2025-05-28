@@ -376,7 +376,7 @@ export default class CalendarWidget extends InputWidget {
     }
   }
 
-  getValueAsString(value, format) {
+  getValueAsString(value, format = '') {
     const inputFormat = format || this.dateFormat;
     const valueFormat = this.calendar ? this.valueFormat : this.settings.dateFormat;
     if (this.settings.saveAs === 'text' && this.componentInstance.parent && !this.settings.readOnly) {
