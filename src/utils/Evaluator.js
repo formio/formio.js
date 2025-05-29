@@ -58,7 +58,15 @@ export class DefaultEvaluator extends CoreEvaluator {
 export let Evaluator = new DefaultEvaluator();
 
 // preserve the standalone interpolate function for backwards compatibility
-export const interpolate = Evaluator.interpolate;
+/**
+ * For backwards compatibility we a standalone interpolate function. This merely calls the
+ * global mutable Evaluator instance's interpolate function.
+ * @param  {...any} args - interpolate arguments, typically "rawTemplate", "data", and "options"
+ * @returns {any} the interpolation result.
+ */
+export function interpolate(...args) {
+  return Evaluator.interpolate(...args);
+}
 
 /**
  * Set the evaluator to use for evaluating expressions.
