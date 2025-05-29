@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
-import { componentValueTypes, eachComponent, getArrayFromComponentPath, getComponentSavedTypes } from '../../utils/utils';
+import { componentValueTypes, eachComponent, getArrayFromComponentPath, getComponentSavedTypes } from '../../utils/formUtils';
 
 export default class ButtonComponent extends Field {
   static schema(...extend) {
@@ -38,7 +38,7 @@ export default class ButtonComponent extends Field {
 
   constructor(component, options, data) {
     super(component, options, data);
-    this.filesUploading = [];
+    this.filesUploading = 0;
   }
 
   get defaultSchema() {
@@ -162,17 +162,14 @@ export default class ButtonComponent extends Field {
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
 
-      this.on('fileUploadingStart', (filePromise) => {
-        this.filesUploading.push(filePromise);
+      this.on('fileUploadingStart', () => {
+        this.filesUploading++;
         this.disabled = true;
         this.setDisabled(this.refs.button, this.disabled);
       }, true);
 
-      this.on('fileUploadingEnd', (filePromise) => {
-        const index = this.filesUploading.indexOf(filePromise);
-        if (index !== -1) {
-          this.filesUploading.splice(index, 1);
-        }
+      this.on('fileUploadingEnd', () => {
+        this.filesUploading--;
         this.disabled = this.shouldDisabled ? true : false;
         this.setDisabled(this.refs.button, this.disabled);
       }, true);
@@ -278,7 +275,7 @@ export default class ButtonComponent extends Field {
   }
 
   get shouldDisabled() {
-    return super.shouldDisabled || !!this.filesUploading?.length || this.isDisabledOnInvalid;
+    return super.shouldDisabled || this.filesUploading > 0 || this.isDisabledOnInvalid;
   }
 
   attach(element) {

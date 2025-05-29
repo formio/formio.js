@@ -6,10 +6,10 @@ import isMobile from 'ismobilejs';
 import { processOne, processOneSync, validateProcessInfo } from '@formio/core/process';
 
 import { Formio } from '../../../Formio';
-import * as FormioUtils from '../../../utils/utils';
+import FormioUtils from '../../../utils';
 import {
-  fastCloneDeep, boolValue, isInsideScopingComponent, currentTimezone, getScriptPlugin, getContextualRowData
-} from '../../../utils/utils';
+  fastCloneDeep, boolValue, currentTimezone, getScriptPlugin, getContextualRowData
+} from '../../../utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
@@ -190,6 +190,7 @@ export default class Component extends Element {
       properties: {},
       allowMultipleMasks: false,
       addons: [],
+      serverOverride: {},
     }, ...sources);
   }
   /**
@@ -375,18 +376,10 @@ export default class Component extends Element {
     this.resetCaches();
 
     /**
-     * Determines if this component is conditionally hidden. Should generally not be set outside of conditional logic pipeline.
-     * This is necessary because of clearOnHide behavior that only clears when conditionally hidden - we need to track
-     * conditionallyHidden separately from "regular" visibility.
-     */
-    this._parentConditionallyHidden = this.options.hasOwnProperty('parentConditionallyHidden') ? this.options.parentConditionallyHidden : false;
-    this._conditionallyHidden = this.checkConditionallyHidden(null, data) || this._parentConditionallyHidden;
-
-    /**
      * Determines if this component is visible, or not.
      */
     this._parentVisible = this.options.hasOwnProperty('parentVisible') ? this.options.parentVisible : true;
-    this._visible = this._parentVisible && (this.hasCondition() ? !this._conditionallyHidden : !this.component.hidden);
+    this._visible = this._parentVisible && (this.hasCondition() ? !this.conditionallyHidden() : !this.component.hidden);
     this._parentDisabled = false;
 
     /**
@@ -462,7 +455,7 @@ export default class Component extends Element {
       if (this.allowData && this.key) {
         this.options.name += `[${this.key}]`;
         // If component is visible or not set to clear on hide, set the default value.
-        if (!(this.conditionallyHidden && this.component.clearOnHide)) {
+        if (!this.shouldConditionallyClear()) {
           if (!this.hasValue()) {
             if (this.shouldAddDefaultValue) {
               this.dataValue = this.defaultValue;
@@ -498,6 +491,50 @@ export default class Component extends Element {
 
   get componentsMap() {
     return this.root?.childComponentsMap || {};
+  }
+
+  /**
+   * Returns if the parent should conditionally clear.
+   * @returns {boolean} - If the parent should conditionally clear.
+   */
+  parentShouldConditionallyClear() {
+    let currentParent = this.parent;
+    while (currentParent) {
+      if (
+        (currentParent.allowData && currentParent._conditionallyClear) ||
+        (!currentParent.allowData && currentParent._conditionallyHidden)
+      ) {
+        return true;
+      }
+      currentParent = currentParent.parent;
+    }
+    return false;
+  }
+
+  parentConditionallyHidden() {
+    let currentParent = this.parent;
+    while (currentParent) {
+      if (currentParent._conditionallyHidden) {
+        return true;
+      }
+      currentParent = currentParent.parent;
+    }
+    return false;
+  }
+
+  /**
+   * Returns true if any of the parents default their component "hidden" property to true.
+   * @returns {boolean} - If any parent defaults the hidden property to true.
+   */
+  anyParentDefaultsHidden() {
+    let currentParent = this.parent;
+    while (currentParent) {
+      if (currentParent.component.hidden) {
+        return true;
+      }
+      currentParent = currentParent.parent;
+    }
+    return false;
   }
 
   get data() {
@@ -548,8 +585,7 @@ export default class Component extends Element {
 
   init() {
     this.disabled = this.shouldDisabled;
-    this._conditionallyHidden = this.checkConditionallyHidden();
-    this._visible = (this.hasCondition() ? !this.conditionallyHidden : !this.component.hidden);
+    this._visible = (this.hasCondition() ? !this.conditionallyHidden() : !this.component.hidden);
     if (this.component.addons?.length) {
       this.component.addons.forEach((addon) => this.createAddon(addon));
     }
@@ -743,21 +779,71 @@ export default class Component extends Element {
     return this._visible && this._parentVisible;
   }
 
-  get conditionallyHidden() {
-    return this._conditionallyHidden || this._parentConditionallyHidden;
+  get logicallyHidden() {
+    if (this._logicallyHidden && !this.component.hidden) {
+      this._logicallyHidden = false;
+    }
+    return this._logicallyHidden;
   }
 
   /**
-   * Evaluates whether the component is conditionally hidden (as opposed to intentionally hidden, e.g. via the `hidden` component schema property).
-   * @param {object} data - The data object to evaluate the condition against.
-   * @param {object} row - The row object to evaluate the condition against.
-   * @returns {boolean} - Whether the component is conditionally hidden.
+   * Determines if the component should clear its value when the root form is pristine.
+   * @returns {boolean} - If the component should clear its value when the root form is pristine.
    */
-  checkConditionallyHidden(data = null, row = null) {
-    if (!this.hasCondition()) {
-      return false;
+  shouldConditionallyClearOnPristine() {
+    // If the form is pristine, we should NOT clear the value of a conditionally hidden child component
+    // of a layout component that defaults to hidden using the "hidden" component property.
+    return !this.anyParentDefaultsHidden();
+  }
+
+  /**
+   * Returns if the component should clear its value when conditionally hidden.
+   * @returns {boolean} - If the component should clear its value when conditionally hidden.
+   */
+  shouldConditionallyClear() {
+    // Skip if this component has clearOnHide set to false.
+    if (this.component.clearOnHide === false) {
+      this._conditionallyClear = false;
+      return this._conditionallyClear;
     }
-    return !this.conditionallyVisible(data, row);
+
+    // If the component is logically hidden, then it is conditionally hidden and should clear.
+    if (this.logicallyHidden) {
+      this._conditionallyClear = true;
+      return this._conditionallyClear;
+    }
+
+    // If we have a condition and it is not conditionally visible, the it should conditionally clear.
+    if (
+      this.hasCondition() &&
+      !this.conditionallyVisible() &&
+      (!this.rootPristine || this.shouldConditionallyClearOnPristine())
+    ) {
+      this._conditionallyClear = true;
+      return this._conditionallyClear;
+    }
+    this._conditionallyClear = this.hasSetValue ? false : this.parentShouldConditionallyClear();
+    return this._conditionallyClear;
+  }
+
+  /**
+   * Returns if the component is conditionally hidden.
+   * @returns {boolean} - If the component is conditionally hidden.
+   */
+  conditionallyHidden() {
+    // If it is logically hidden, then it is conditionally hidden.
+    if (this.logicallyHidden) {
+      this._conditionallyHidden = true;
+      return this._conditionallyHidden;
+    }
+    // If it has a condition, and is not conditionally visible, then it is conditionally hidden.
+    if (this.hasCondition() && !this.conditionallyVisible()) {
+      this._conditionallyHidden = true;
+      return this._conditionallyHidden;
+    }
+    // It is conditionally hidden if its parent is conditionally hidden.
+    this._conditionallyHidden = this.parentConditionallyHidden();
+    return this._conditionallyHidden;
   }
 
   get currentForm() {
@@ -2088,7 +2174,7 @@ export default class Component extends Element {
   rebuild() {
     this.destroy();
     this.init();
-    this.visible = this.hasCondition() ? !this.conditionallyHidden : !this.component.hidden;
+    this.visible = this.hasCondition() ? !this.conditionallyHidden() : !this.component.hidden;
     return this.redraw();
   }
 
@@ -2206,28 +2292,14 @@ export default class Component extends Element {
       this.redraw();
     }
 
-    // Check advanced conditions (and cache the result)
-    const isConditionallyHidden = this.checkConditionallyHidden(data, row) || this._parentConditionallyHidden;
-    let shouldClear = false;
-
-    if (isConditionallyHidden !== this._conditionallyHidden) {
-      this._conditionallyHidden = isConditionallyHidden;
-      shouldClear = true;
-    }
-
     // Check visibility
-    const visible = (this.hasCondition() ? !this.conditionallyHidden : !this.component.hidden);
+    const visible = (this.hasCondition() ? !this.conditionallyHidden() : !this.component.hidden);
 
     if (this.visible !== visible) {
       this.visible = visible;
     }
 
-    // Wait for visibility to update for nested components, so the component state is up-to-date when
-    // calling clearOnHide
-    if (shouldClear) {
-      this.clearOnHide();
-    }
-
+    this.clearComponentOnHide();
     return visible;
   }
 
@@ -2366,9 +2438,9 @@ export default class Component extends Element {
           if (!_.isEqual(_.get(this.component, property), _.get(newComponent, property))) {
             // Advanced Logic can modify the component's hidden property; because we track conditionally hidden state
             // separately from the component's hidden property, and technically this Advanced Logic conditionally hides
-            // a component, we need to set _conditionallyHidden to the new value
+            // a component, we need to set a temporary variable to the new value
             if (property === 'hidden') {
-              this._conditionallyHidden = newComponent.hidden;
+              this._logicallyHidden = newComponent.hidden;
             }
             changed = true;
           }
@@ -2388,7 +2460,7 @@ export default class Component extends Element {
             }
           );
 
-          if (!_.isEqual(oldValue, newValue) && !(this.component.clearOnHide && this.conditionallyHidden)) {
+          if (!_.isEqual(oldValue, newValue) && !this.shouldConditionallyClear()) {
             this.setValue(newValue);
 
             if (this.viewOnly) {
@@ -2433,7 +2505,7 @@ export default class Component extends Element {
           },
           'value');
 
-          if (!_.isEqual(oldValue, newValue) && !(this.component.clearOnHide && this.conditionallyHidden)) {
+          if (!_.isEqual(oldValue, newValue) && !this.shouldConditionallyClear()) {
             this.setValue(newValue);
 
             if (this.viewOnly) {
@@ -2551,18 +2623,12 @@ export default class Component extends Element {
   }
 
   /**
-   * Clears the components data if it is conditionally hidden AND clearOnHide is set to true for this component.
+   * Clear any conditionally hidden components for this component only.
    */
-  clearOnHide() {
+  clearComponentOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (
-      // if change happens inside EditGrid's row, it doesn't trigger change on the root level, so rootPristine will be true
-      (!this.rootPristine || this.options.server || isInsideScopingComponent(this)) &&
-      this.component.clearOnHide !== false &&
-      !this.options.readOnly &&
-      !this.options.showHiddenFields
-    ) {
-      if (this.conditionallyHidden) {
+    if (this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
+      if (this.shouldConditionallyClear()) {
         this.deleteValue();
       }
       else if (!this.hasValue() && this.shouldAddDefaultValue) {
@@ -2572,6 +2638,13 @@ export default class Component extends Element {
         });
       }
     }
+  }
+
+  /**
+   * Clears the components data if it is conditionally hidden AND clearOnHide is set to true for this component.
+   */
+  clearOnHide() {
+    this.clearComponentOnHide();
   }
 
   /**
@@ -2855,20 +2928,10 @@ export default class Component extends Element {
    * @returns {*} - The value for this component.
    */
   get dataValue() {
-    if (
-      !this.key ||
-      (this.conditionallyHidden && this.component.clearOnHide && !this.rootPristine)
-    ) {
-      return this.emptyValue;
+    if (!this.key) {
+      return this.component.multiple ? [] : this.emptyValue;
     }
-    if (!this.hasValue() && this.shouldAddDefaultValue) {
-      const empty = this.component.multiple ? [] : this.emptyValue;
-      if (!this.rootPristine) {
-        this.dataValue = empty;
-      }
-      return empty;
-    }
-    return _.get(this._data, this.key);
+    return _.get(this._data, this.key, this.component.multiple ? [] : this.emptyValue);
   }
 
   /**
@@ -2876,11 +2939,7 @@ export default class Component extends Element {
    * @param {*} value - The value to set for this component.
    */
   set dataValue(value) {
-    if (
-      !this.allowData ||
-      !this.key ||
-      (this.conditionallyHidden && this.component.clearOnHide && !this.rootPristine)
-    ) {
+    if (!this.allowData || !this.key) {
       return;
     }
     if ((value !== null) && (value !== undefined)) {
@@ -2929,17 +2988,37 @@ export default class Component extends Element {
     if (this.component.customDefaultValue && !this.options.preview) {
      defaultValue = this.evaluate(
         this.component.customDefaultValue,
-        { value: '' },
+        { value: this.dataValue },
         'value'
       );
     }
     return defaultValue;
   }
 
-  get shouldAddDefaultValue() {
-    return !this.options.noDefaults || (this.component.defaultValue && !this.isEmpty(this.component.defaultValue)) || this.component.customDefaultValue;
+  /**
+   * Returns if a component has a default value set.
+   * @returns {boolean} - TRUE if a default value is set.
+   */
+  get hasDefaultValue() {
+    return this.component.customDefaultValue || (
+      this.component.hasOwnProperty('defaultValue') &&
+      (this.component.defaultValue !== null) &&
+      (this.component.defaultValue !== undefined)
+    );
   }
 
+  /**
+   * Determine if we should add a default value for this component.
+   * @returns {boolean} - TRUE if a default value should be set
+   */
+  get shouldAddDefaultValue() {
+    return this.pristine && this.allowData && (this.hasDefaultValue || !this.options.noDefaults);
+  }
+
+  /**
+   * Get the default value of this component.
+   * @returns {*} - The default value for this component.
+   */
   get defaultValue() {
     let defaultValue = this.emptyValue;
     if (this.component.defaultValue) {
@@ -3026,6 +3105,7 @@ export default class Component extends Element {
     }
     const isArray = Array.isArray(value);
     const valueInput = this.refs.fileLink || this.refs.input;
+    const isFilelink = !!this.refs.fileLink
     if (
       isArray &&
       Array.isArray(this.defaultValue) &&
@@ -3034,7 +3114,9 @@ export default class Component extends Element {
       (valueInput.length !== value.length) &&
       this.visible
     ) {
-      this.redraw();
+      if (isFilelink || valueInput.length) {
+        this.redraw();
+      }
     }
     if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
       this.redraw();
@@ -3242,11 +3324,9 @@ export default class Component extends Element {
     }
     // If no calculated value or
     // hidden and set to clearOnHide (Don't calculate a value for a hidden field set to clear when hidden)
-    const { clearOnHide } = this.component;
-    const shouldBeCleared = this.conditionallyHidden && clearOnHide;
     const allowOverride = _.get(this.component, 'allowCalculateOverride', false);
 
-    if (shouldBeCleared) {
+    if (this.shouldConditionallyClear()) {
       // remove calculated value so that the value is recalculated once component becomes visible
       if (this.hasOwnProperty('calculatedValue') && allowOverride) {
         _.unset(this, 'calculatedValue');
@@ -3389,9 +3469,11 @@ export default class Component extends Element {
    * @param {boolean} dirty - If the component is dirty.
    * @param {boolean} ignoreCondition - If conditions for the component should be ignored when checking validity.
    * @param {*} row - Contextual row data for this component.
+   * @param {*} options - Additional options for validation.
    * @returns {string} - The message to show when the component is invalid.
    */
-  invalidMessage(data, dirty, ignoreCondition, row) {
+  invalidMessage(data, dirty, ignoreCondition, row, options = {}) {
+    const { local } = options;
     if (!row) {
       row = getContextualRowData(this.component, data, this.paths);
     }
@@ -3414,6 +3496,7 @@ export default class Component extends Element {
       component: this.component,
       data,
       row,
+      local,
       path: this.path || this.component.key,
       parent: this.parent?.component,
       paths: this.paths,
@@ -3600,6 +3683,19 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
+    if (flags.noCheck) {
+      return true;
+    }
+
+    // Some components (for legacy reasons) have calls to "checkData" in inappropriate places such
+    // as setValue. Historically, this was bypassed by a series of cached states around the data model
+    // which caused its own problems. We need to ensure that premium and custom components do not fall into
+    // an infinite loop by only checking this component once.
+    if (this.checkingData) {
+      return;
+    }
+    this.checkingData = true;
+
     // Needs for Nextgen Rules Engine
     this.resetCaches();
 
@@ -3608,15 +3704,14 @@ export default class Component extends Element {
       this.checkRefreshOn(flags.changes, flags);
     }
 
-    if (flags.noCheck) {
-      return true;
-    }
-
     this.checkComponentConditions(data, flags, row);
 
     if (this.id !== flags.triggeredComponentId) {
       this.calculateComponentValue(data, flags, row);
     }
+
+    // We are done checking data.
+    this.checkingData = false;
   }
 
   checkModal(errors = [], dirty = false) {
@@ -3967,7 +4062,7 @@ export default class Component extends Element {
             // If component definition changed, replace it.
             if (!_.isEqual(this.component, newComponent)) {
               this.component = newComponent;
-              const visible = this.hasCondition() ? !this.conditionallyHidden : !this.component.hidden;
+              const visible = this.hasCondition() ? !this.conditionallyHidden() : !this.component.hidden;
               const disabled = this.shouldDisabled;
 
               // Change states which won't be recalculated during redrawing

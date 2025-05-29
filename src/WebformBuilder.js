@@ -3,8 +3,14 @@ import Component from './components/_classes/component/Component';
 import tippy from 'tippy.js';
 import Components from './components/Components';
 import { Formio } from './Formio';
-import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
-import { eachComponent, getComponent } from './utils/formUtils';
+import {
+  fastCloneDeep,
+  bootstrapVersion,
+  getArrayFromComponentPath,
+  getStringFromComponentPath,
+  eachComponent,
+  getComponent,
+} from './utils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import autoScroll from 'dom-autoscroller';
@@ -134,7 +140,9 @@ export default class WebformBuilder extends Component {
         html,
         disableBuilderActions: self?.component?.disableBuilderActions,
         childComponent: component,
-        design: self?.options?.design
+        design: self?.options?.design,
+        editJson: self?.options?.editJson,
+        editComponent: this.hasEditTabs(component.type)
       });
     };
 
@@ -988,7 +996,13 @@ export default class WebformBuilder extends Component {
 
     const componentInDataGrid = parent.type === 'datagrid';
 
-    if (isNew && !this.options.noNewEdit && !info.noNewEdit && !(this.options.design && info.type === 'reviewpage')) {
+    if (
+      isNew
+      && !this.options.noNewEdit
+      && !info.noNewEdit
+      && this.hasEditTabs(info.type)
+      && !(this.options.design && info.type === 'reviewpage')
+    ) {
       this.editComponent(info, target, isNew, null, null, { inDataGrid: componentInDataGrid });
     }
 
@@ -1221,6 +1235,17 @@ export default class WebformBuilder extends Component {
           'fields.month.required',
           'fields.year.required',
         ]));
+        if (defaultValueComponent.component.components) {
+          if (!this.originalDefaultValue) {
+            this.originalDefaultValue = fastCloneDeep(defaultValueComponent.component);
+          }
+
+          eachComponent(defaultValueComponent.component.components, (comp => {
+            if (comp.validate?.required) {
+              comp.validate.required = false;
+            }
+          }));
+        }
         const parentComponent = defaultValueComponent.parent;
         let tabIndex = -1;
         let index = -1;
@@ -1330,6 +1355,9 @@ export default class WebformBuilder extends Component {
     if (index !== -1) {
       let submissionData = this.editForm.submission.data;
       submissionData = submissionData.componentJson || submissionData;
+      if (submissionData.components && this.originalDefaultValue) {
+        submissionData.components = this.originalDefaultValue.components;
+      }
       const fieldsToRemoveDoubleQuotes = ['label', 'tooltip'];
 
       this.replaceDoubleQuotes(submissionData, fieldsToRemoveDoubleQuotes);
@@ -1911,5 +1939,15 @@ export default class WebformBuilder extends Component {
       info.placeholder ||
       info.type
     );
+  }
+
+  hasEditTabs(type) {
+    // If the component type does not exist then it has no edit tabs
+    if(!Components.components[type === 'custom' ? 'unknown' : type]){
+      return false;
+    }
+    const editTabs = getComponent(Components.components[type === 'custom' ? 'unknown' : type].editForm().components, 'tabs', true).components;
+    const hiddenEditTabs = _.filter(_.get(this.options, `editForm.${type}`, []), 'ignore');
+    return _.intersectionBy(editTabs, hiddenEditTabs, 'key').length !== editTabs.length;
   }
 }

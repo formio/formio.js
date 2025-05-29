@@ -7,9 +7,10 @@ import formWithRichTextAreas from '../forms/formWithRichTextAreas';
 import textAreaJsonType from '../forms/textAreaJsonType';
 import Harness from '../harness';
 import { Formio } from '../../src/Formio';
-import { comp1, comp2, comp3, comp4 } from './fixtures/textarea';
+import { comp1, comp2, comp3, comp4, comp5 } from './fixtures/textarea';
 import TextAreaComponent from '../../src/components/textarea/TextArea';
 import { fastCloneDeep } from '@formio/core';
+import { getFormioUploadAdapterPlugin } from '../../src/providers/storage/uploadAdapter';
 window.ace = require('ace-builds');
 
 describe('TextArea Component', () => {
@@ -17,6 +18,18 @@ describe('TextArea Component', () => {
     return Harness.testCreate(TextAreaComponent, comp1).then((component) => {
       Harness.testElements(component, 'textarea', 1);
     });
+  });
+
+  it("Redraw in setValue should not be called if a component with multiple flag = true and renderMode = html", async function () {
+    const element = document.createElement("div");
+    const form = await Formio.createForm(element, comp5, {
+      readOnly: true,
+      renderMode: "html",
+    });
+    const component = form.getComponent("textArea");
+    const emit = sinon.spy(component, "redraw");
+    component.setValue(["Hello"]);
+    assert.equal(emit.callCount, 0);
   });
 
   it('setValue should be called only once', () => {
@@ -450,6 +463,23 @@ describe('TextArea Component', () => {
           }, 300);
         }).catch(done);
       });
+
+      it('File upload plugin should be constructor', (done) => {
+        try {
+          const fileUploadPlugin = getFormioUploadAdapterPlugin();
+          const plugin = new fileUploadPlugin({
+            plugins: {
+              get: () => ({
+                createUploadAdapter: () => {}
+              }),
+            }
+          });
+          assert.deepEqual(plugin, {});
+          done();
+        } catch (error) {
+          done(error)
+        }
+      });
     });
 
     it('Should clear value in the editor on Reset', (done) => {
@@ -552,7 +582,7 @@ describe('TextArea Component', () => {
 
     it('Should set array as value for textarea with ace editor with json data type', (done) => {
       const element = document.createElement('div');
-     
+
       Formio.createForm(element, textAreaJsonType).then(form => {
           const textArea = form.getComponent('textArea');
           textArea.setValue([1,2,3]);
@@ -562,5 +592,14 @@ describe('TextArea Component', () => {
           }, 300)
       }).catch(done);
     });
+
+    it('Should render textarea as a Well with special aria tags if the component is readOnly', () => {
+      const component = {...comp2, disabled: true}
+      return Harness.testCreate(TextAreaComponent, component).then((component) => {
+        const textAreaElement = component.element.querySelector('[ref="input"]');
+        assert.equal(textAreaElement.getAttribute('role'), 'textbox');
+        assert.equal(textAreaElement.getAttribute('aria-readonly'), 'true');
+      });
+    })
   });
 });

@@ -2,8 +2,15 @@ import _ from 'lodash';
 import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Form from '../../Form';
-import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes, isSelectResourceWithObjectValue, removeHTML } from '../../utils/utils';
-
+import {
+  getRandomComponentId,
+  boolValue,
+  isPromise,
+  componentValueTypes,
+  getComponentSavedTypes,
+  isSelectResourceWithObjectValue,
+  removeHTML
+} from '../../utils';
 import Choices from '../../utils/ChoicesWrapper';
 
 export default class SelectComponent extends ListComponent {
@@ -905,8 +912,8 @@ export default class SelectComponent extends ListComponent {
       removeItemButton: this.component.disabled ? false : _.get(this.component, 'removeItemButton', true),
       itemSelectText: '',
       classNames: {
-        containerOuter: 'choices form-group formio-choices',
-        containerInner: this.transform('class', 'form-control ui fluid selection dropdown')
+        containerOuter: ['choices', 'form-group', 'formio-choices'],
+        containerInner: this.transform('class', 'form-control ui fluid selection dropdown').split(' '),
       },
       addItemText: false,
       allowHTML: true,
@@ -938,6 +945,7 @@ export default class SelectComponent extends ListComponent {
       ),
       valueComparer: _.isEqual,
       resetScrollPosition: false,
+      duplicateItemsAllowed: false,
       ...customOptions,
     };
   }
@@ -1097,14 +1105,6 @@ export default class SelectComponent extends ListComponent {
       });
     }
 
-    if (this.choices && choicesOptions.placeholderValue && this.choices._isSelectOneElement) {
-      this.addPlaceholderItem(choicesOptions.placeholderValue);
-
-      this.addEventListener(input, 'removeItem', () => {
-        this.addPlaceholderItem(choicesOptions.placeholderValue);
-      });
-    }
-
     // Add value options.
     this.addValueOptions();
     this.setChoicesValue(this.dataValue);
@@ -1204,21 +1204,6 @@ export default class SelectComponent extends ListComponent {
     if (this.component.refreshOnBlur) {
       this.on('blur', (instance) => {
         this.checkRefreshOn([{ instance, value: instance.dataValue }], { fromBlur: true });
-      });
-    }
-  }
-
-  addPlaceholderItem(placeholderValue) {
-    const items = this.choices._store.activeItems;
-    if (!items.length) {
-      this.choices._addItem({
-        value: '',
-        label: placeholderValue,
-        choiceId: 0,
-        groupId: -1,
-        customProperties: null,
-        placeholder: true,
-        keyCode: null
       });
     }
   }
@@ -1763,7 +1748,7 @@ export default class SelectComponent extends ListComponent {
   asString(value, options = {}) {
     value = value ?? this.getValue();
 
-    if (options.modalPreview || this.inDataTable) {
+    if (options.modalPreview || this.inDataTable || options.email) {
       if (this.inDataTable) {
         value = this.undoValueTyping(value);
       }

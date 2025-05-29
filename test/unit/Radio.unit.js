@@ -343,9 +343,7 @@ describe('Radio Component', () => {
       }, 350);
     }).catch(done);
   });
-});
 
-describe('Radio Component', () => {
   it('should have red asterisk left hand side to the options labels if component is required and label is hidden', () => {
     return Harness.testCreate(RadioComponent, comp7).then(component => {
       const options = component.element.querySelectorAll('.form-check-label');

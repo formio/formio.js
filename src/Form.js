@@ -2,7 +2,7 @@ import Element from './Element';
 import { Formio } from './Formio';
 import Displays from './displays';
 import templates from './templates';
-import * as FormioUtils from './utils/utils';
+import FormioUtils from './utils';
 
 export default class Form extends Element {
   /**
@@ -58,7 +58,7 @@ export default class Form extends Element {
  * @property {number} [saveDraftThrottle] - The throttle for the save draft feature.
  * @property {boolean} [readOnly] - Set this form to readOnly.
  * @property {boolean} [noAlerts] - Disable the alerts dialog.
- * @property {{[key: string]: string}} [i18n] - The translation file for this rendering.
+ * @property {Record<string, Record<string, string>>} [i18n] - The translation file for this rendering.
  * @property {string} [template] - Custom logic for creation of elements.
  * @property {boolean} [noDefaults] - Exclude default values from the settings.
  * @property {any} [fileService] - The file service for this form.

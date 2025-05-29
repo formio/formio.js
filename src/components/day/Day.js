@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import Field from '../_classes/field/Field';
-import { boolValue, componentValueTypes, getComponentSavedTypes, getLocaleDateFormatInfo } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypes, getLocaleDateFormatInfo } from '../../utils';
 import { getDayFormat } from '@formio/core';
 
 export default class DayComponent extends Field {
@@ -59,7 +59,7 @@ export default class DayComponent extends Field {
   static oldEmptyValue = '00/00/0000';
 
   constructor(component, options, data) {
-    if (!options.inFormBuilder && !options.building) {
+    if (options && !options.inFormBuilder && !options.building) {
       if (component.maxDate && component.maxDate.indexOf('moment(') === -1) {
         component.maxDate = moment(component.maxDate, 'YYYY-MM-DD').toISOString();
       }

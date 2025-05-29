@@ -109,7 +109,7 @@
       </label>
       <div ref="element">
         <div class="input-group">
-          <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value="2018-08-03" id="dateTime-dateTime" aria-labelledby="l-dateTime-dateTime " aria-required="false"></input>
+          <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value="2018-08-03 UTC" id="dateTime-dateTime" aria-labelledby="l-dateTime-dateTime " aria-required="false"></input>
           <span aria-live="assertive" id="dateTime-liveRegion" class="visually-hidden" ref="liveRegion"></span>
           <div class="input-group-text" ref="suffix">
             <i ref="icon" class="fa fa-calendar bi bi-calendar" style=""></i>
@@ -253,10 +253,10 @@
               One
             </td>
             <td style="text-align: center;">
-              <input type="radio" name="data[survey][one]" value="a" id="survey-one-a" ref="input">
+              <input type="radio" name="data[survey][one][survey]" value="a" id="survey-one-a" ref="input">
             </td>
             <td style="text-align: center;">
-              <input type="radio" name="data[survey][one]" value="b" id="survey-one-b" ref="input">
+              <input type="radio" name="data[survey][one][survey]" value="b" id="survey-one-b" ref="input">
             </td>
           </tr>
           <tr>
@@ -264,10 +264,10 @@
               Two
             </td>
             <td style="text-align: center;">
-              <input type="radio" name="data[survey][two]" value="a" id="survey-two-a" ref="input">
+              <input type="radio" name="data[survey][two][survey]" value="a" id="survey-two-a" ref="input">
             </td>
             <td style="text-align: center;">
-              <input type="radio" name="data[survey][two]" value="b" id="survey-two-b" ref="input">
+              <input type="radio" name="data[survey][two][survey]" value="b" id="survey-two-b" ref="input">
             </td>
           </tr>
         </tbody>

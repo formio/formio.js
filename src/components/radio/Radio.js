@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import ListComponent from '../_classes/list/ListComponent';
 import { Formio } from '../../Formio';
-import { boolValue, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypes } from '../../utils';
 
 export default class RadioComponent extends ListComponent {
   static schema(...extend) {
@@ -426,7 +426,7 @@ export default class RadioComponent extends ListComponent {
       const value = this.dataValue;
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
-        const checked  = (input.type === 'checkbox') ? value[input.value] || input.checked : (input.value.toString() === value.toString());
+        const checked  = (value === undefined || value === null) ? false : (input.type === 'checkbox') ? value[input.value] || input.checked : (input.value.toString() === value.toString());
         if (checked) {
           //add class to container when selected
           this.addClass(wrapper, this.optionSelectedClass);
