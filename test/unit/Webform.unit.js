@@ -3661,6 +3661,30 @@ describe('Webform tests', function() {
         }, 300);
       }).catch((err) => done(err));
     });
+
+    it(`Should check conditionals after submitting form `, function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+
+      form.setForm(formsWithNewSimpleConditions.form9).then(() => {
+        const textField = form.getComponent('textField');
+        const fieldWithConditions = form.getComponent('textField1');
+        textField.setValue('hide');
+        setTimeout(() => {
+          assert.equal(fieldWithConditions.visible, false);
+          form.submit();
+
+            setTimeout(() => {
+              textField.setValue('show');
+              setTimeout(()=> {
+                assert.equal(fieldWithConditions.visible, true);
+                done();
+              }, 400)
+            }, 400)
+        }, 400);
+      })
+      .catch((err) => done(err));
+    });
   });
 
   describe('Calculate Value with allowed manual override', () => {
