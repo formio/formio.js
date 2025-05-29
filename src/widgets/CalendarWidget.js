@@ -316,9 +316,7 @@ export default class CalendarWidget extends InputWidget {
 
     // If the component is a textfield that does not have timezone information included in the string value then skip
     // the timezone offset
-    if(this.component.type === 'textfield' && !hasEncodedTimezone(value)){
-      this.settings.skipOffset = true;
-    }
+    this.settings.skipOffset = this.component.type === 'textfield' && !hasEncodedTimezone(value);
 
     if (value) {
       if (!saveAsText && this.settings.readOnly) {
