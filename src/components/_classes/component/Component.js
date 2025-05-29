@@ -3683,6 +3683,10 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
+    if (flags.noCheck) {
+      return true;
+    }
+
     // Some components (for legacy reasons) have calls to "checkData" in inappropriate places such
     // as setValue. Historically, this was bypassed by a series of cached states around the data model
     // which caused its own problems. We need to ensure that premium and custom components do not fall into
@@ -3698,10 +3702,6 @@ export default class Component extends Element {
     // Do not trigger refresh if change was triggered on blur event since components with Refresh on Blur have their own listeners
     if (!flags.fromBlur) {
       this.checkRefreshOn(flags.changes, flags);
-    }
-
-    if (flags.noCheck) {
-      return true;
     }
 
     this.checkComponentConditions(data, flags, row);
