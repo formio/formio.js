@@ -2741,12 +2741,14 @@ export default class Component extends Element {
       ckeditor: {
         image: {
           toolbar: [
+            'toggleImageCaption',
             'imageTextAlternative',
             '|',
-            'imageStyle:full',
-            'imageStyle:alignLeft',
-            'imageStyle:alignCenter',
-            'imageStyle:alignRight'
+            'imageStyle:inline',
+            'imageStyle:wrapText',
+            'imageStyle:breakText',
+            '|',
+            'resizeImage'
           ],
           styles: [
             'full',
@@ -2771,11 +2773,15 @@ export default class Component extends Element {
       settings.extraPlugins.push(getFormioUploadAdapterPlugin(this.fileService, this));
     }
 
+    Formio.requireLibrary(`ckeditor-css`, isIEBrowser ? 'CKEDITOR' : 'ClassicEditor', [
+      { type: 'styles', src: `${Formio.cdn.ckeditor}/ckeditor.css` }
+    ], true);
+
     return Formio.requireLibrary(
       'ckeditor',
       isIEBrowser ? 'CKEDITOR' : 'ClassicEditor',
       _.get(this.options, 'editors.ckeditor.src',
-      `${Formio.cdn.ckeditor}/ckeditor.js`
+      `${Formio.cdn.ckeditor}/ckeditor.umd.js`
     ), true)
       .then(() => {
         if (!element.parentNode) {

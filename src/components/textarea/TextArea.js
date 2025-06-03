@@ -212,7 +212,12 @@ export default class TextAreaComponent extends TextFieldComponent {
                   const editorHeight = (numRows * 31) + 14;
                   editor.ui.view.editable.editableElement.style.height = `${(editorHeight)}px`;
                 }
-                editor.isReadOnly = isReadOnly;
+                if (isReadOnly) {
+                  editor.enableReadOnlyMode(this.id);
+                }
+                else {
+                  editor.disableReadOnlyMode(this.id);
+                }
                 editor.data.set(value);
               }
 
