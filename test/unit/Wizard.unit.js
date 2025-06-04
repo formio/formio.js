@@ -44,6 +44,7 @@ import WizardWithCheckboxes from '../forms/wizardWithCheckboxes';
 import WizardWithRequiredFields from '../forms/wizardWithRequiredFields';
 import formWithNestedWizardAndRequiredFields from '../forms/formWithNestedWizardAndRequiredFields';
 import simpleWizardWithRequiredFields from '../forms/simpleWizardWithRequiredFields';
+import wizardWithLazyLoadSelect from '../forms/wizardWithLazyLoadSelect';
 import { wait } from '../util';
 
 // eslint-disable-next-line max-statements
@@ -1932,6 +1933,37 @@ it('Should show tooltip for wizard pages', function(done) {
       }, 100);
     })
       .catch((err) => done(err));
+  });
+  
+  it('Should display select submission data when lazy load is checked', async () => {
+    const formElement = document.createElement('div');
+    const wizardForm =  await Formio.createForm(formElement, wizardWithLazyLoadSelect, {readOnly: true});
+    wizardForm.setSubmission({metadata: {
+        selectData: {
+          select1: {data: {label: "two"}},
+          select2: {label: "Three"}
+        },
+      },
+      data: {
+        select1: 2,
+        select2: 3
+      },
+      state: 'submitted',
+    });
+    setTimeout(() => {
+      const select1 = wizardForm.getComponent('select1');
+      assert.equal(select1.getValue(), 2);
+      assert.equal(select1.element.querySelectorAll('[aria-selected="true"] span')[0].innerHTML, 'two');
+
+      Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][1]);
+
+      setTimeout(() => {
+        assert.equal(wizardForm.page, 1);
+        const select2 = wizardForm.getComponent('select2');
+        assert.equal(select2.getValue(), 3);
+        assert.equal(select2.element.querySelectorAll('[aria-selected="true"] span')[0].innerHTML, 'Three');
+      }, 500);
+    }, 500)
   });
 
   let wizardForm = null;
