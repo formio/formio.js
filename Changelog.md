@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.2.0-rc.7
+### Changed
+ - Updated @formio/core@2.5.0-rc.4
+ - FIO-10219: fixed wrong import
+ - FIO-10239: fix typo in Button component import
+
 ## 5.2.0-rc.6
 ### Changed
  - FIO-10104: reexports condition operators, lodash and moment
