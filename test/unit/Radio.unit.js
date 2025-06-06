@@ -16,9 +16,11 @@ import {
   comp9,
   comp10,
   comp11,
-  comp13
+  comp13,
+  comp14
 } from './fixtures/radio';
 import { fastCloneDeep } from '@formio/core';
+import { wait } from '../util';
 
 describe('Radio Component', () => {
   it('Should build a radio component', () => {
@@ -606,5 +608,23 @@ describe('Radio Component', () => {
         })
       })
       .catch(done);
+  });
+
+  it("Should display result for radio submission with form='html' and dataType='number'", async function () {
+    const element = document.createElement('div');
+    const form = await Formio.createForm(
+      element,
+      comp14,
+      {
+        readOnly: true,
+        renderMode: 'html'
+      }
+    );
+    const el = form.element.querySelector('[ref="value"]');
+    assert.equal(el.innerHTML.trim(), '');
+    await form.setSubmission({ data: { radio: 2, submit: true } });
+    await wait(200);
+    const elNext = form.element.querySelector('[ref="value"]');
+    assert.equal(elNext.innerHTML.trim(), 'B');
   });
 });
