@@ -1297,27 +1297,38 @@ export default class WebformBuilder extends Component {
     this.emit('updateComponent', component);
   }
 
-  findRepeatablePaths() {
-    const repeatablePaths = [];
+  findComponentsWithRepeatablePaths() {
+    const repeatablePaths = {};
     const keys = new Map();
     eachComponent(this.form.components, (comp, path, components, parent, paths) => {
+      const isRadioCheckbox = comp.type === 'checkbox' && comp.inputType === 'radio';
       if (keys.has(paths.dataPath)) {
-        repeatablePaths.push(paths.dataPath);
+        const onlyRadioCheckboxes= repeatablePaths[paths.dataPath]?.onlyRadioCheckboxes === false ? false : isRadioCheckbox;
+        repeatablePaths[paths.dataPath] = {
+          comps: [...(repeatablePaths[paths.dataPath]?.comps || []), keys.get(paths.dataPath), comp],
+          onlyRadioCheckboxes,
+        };
       }
       else {
-        keys.set(paths.dataPath, true);
+        keys.set(paths.dataPath, comp);
       }
     }, true);
-    return repeatablePaths;
+    const componentsWithRepeatablePaths = [];
+    Object.keys(repeatablePaths).forEach((path) => {
+      const { comps, onlyRadioCheckboxes } = repeatablePaths[path];
+      if (!onlyRadioCheckboxes) {
+        componentsWithRepeatablePaths.push(...comps);
+      }
+    });
+    return componentsWithRepeatablePaths;
   }
 
   highlightInvalidComponents() {
-    const repeatablePaths = this.findRepeatablePaths();
+    const repeatablePathsComps = this.findComponentsWithRepeatablePaths();
     let hasInvalidComponents = false;
 
     this.webform.everyComponent((comp) => {
-      const path = comp.path;
-      if (repeatablePaths.includes(path)) {
+      if (repeatablePathsComps.includes(comp.component)) {
         comp.setCustomValidity(this.t('apiKey', { key: comp.key }));
         hasInvalidComponents = true;
       }
