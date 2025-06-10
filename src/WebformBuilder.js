@@ -10,6 +10,7 @@ import {
   getStringFromComponentPath,
   eachComponent,
   getComponent,
+  componentInfo
 } from './utils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
@@ -1301,11 +1302,14 @@ export default class WebformBuilder extends Component {
     const repeatablePaths = [];
     const keys = new Map();
     eachComponent(this.form.components, (comp, path, components, parent, paths) => {
-      if (keys.has(paths.dataPath)) {
-        repeatablePaths.push(paths.dataPath);
-      }
-      else {
-        keys.set(paths.dataPath, true);
+      const isLayout = componentInfo(comp).layout;
+      if (!isLayout) {
+        if (keys.has(paths.dataPath)) {
+          repeatablePaths.push(paths.dataPath);
+        }
+        else {
+          keys.set(paths.dataPath, true);
+        }
       }
     }, true);
     return repeatablePaths;
@@ -1320,6 +1324,9 @@ export default class WebformBuilder extends Component {
       if (repeatablePaths.includes(path)) {
         comp.setCustomValidity(this.t('apiKey', { key: comp.key }));
         hasInvalidComponents = true;
+      }
+      else {
+        comp.setCustomValidity();
       }
     });
 
