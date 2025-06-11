@@ -48,7 +48,7 @@ import formWithDataGrid from '../forms/formWithDataGrid.js';
 import translationTestForm from '../forms/translationTestForm.js';
 import formWithDataGridWithCondColumn from '../forms/dataGridWithConditionalColumn.js';
 import { nestedFormInWizard } from '../fixtures/index.js';
-import { fastCloneDeep } from '../../src/utils/utils.js';
+import { fastCloneDeep } from '../../src/utils/index.js';
 import dataGridOnBlurValidation from '../forms/dataGridOnBlurValidation.js';
 import checkBlurFocusEventForm from '../forms/checkBlurFocusEventForm.js';
 import truncateMultipleSpaces from '../forms/truncateMultipleSpaces.js';
@@ -66,7 +66,7 @@ import formWithAllowCalculateOverride from '../forms/formWithAllowCalculateOverr
 import testClearOnHideInsideEditGrid from '../forms/clearOnHideInsideEditGrid.js';
 import formWithNestedDataGridInitEmpty from '../forms/nestedDataGridWithInitEmpty.js';
 import formWithEventLogicInHiddenComponent from '../forms/formWithEventLogicInHiddenComponent.js';
-import * as FormioUtils from '../../src/utils/utils.js';
+import FormioUtils from '../../src/utils/index.js';
 import htmlRenderMode from '../forms/htmlRenderMode.js';
 import optionalSanitize from '../forms/optionalSanitize.js';
 import formsWithNewSimpleConditions from '../forms/formsWithNewSimpleConditions.js';
@@ -148,7 +148,7 @@ describe('Webform tests', function() {
 
         maxDateCheckbox.setValue(true);
         minDateCheckbox.setValue(true);
-        
+
 
         setTimeout(() => {
           assert.equal(maxDateCheckbox.dataValue, true);
@@ -2812,22 +2812,22 @@ describe('Webform tests', function() {
         const filePromise = new Promise((resolve) => {
           setTimeout(() => resolve(), debounce);
         });
-        filePromise.then(() => comp.emit('fileUploadingEnd', filePromise));
-        comp.emit('fileUploadingStart', filePromise);
+        filePromise.then(() => comp.emit('fileUploadingEnd'));
+        comp.emit('fileUploadingStart');
       };
 
       simulateFileUploading(fileA, 1000);
       textField.setValue('12345');
       setTimeout(() => {
-        assert.equal(submitButton.filesUploading.length, 1);
+        assert.equal(submitButton.filesUploading, 1);
         assert.equal(submitButton.isDisabledOnInvalid, true, 'Should be disabled on invalid due to the invalid TextField\'s value');
         assert.equal(submitButton.disabled, true, 'Should be disabled');
         simulateFileUploading(fileB, 500);
         setTimeout(() => {
-          assert.equal(submitButton.filesUploading.length, 2);
+          assert.equal(submitButton.filesUploading, 2);
           assert.equal(submitButton.disabled, true, 'Should be disabled');
           setTimeout(() => {
-            assert.equal(submitButton.filesUploading.length, 0);
+            assert.equal(submitButton.filesUploading, 0);
             assert.equal(submitButton.disabled, true, 'Should be disabled since TextField is still invalid');
             textField.setValue('123');
             setTimeout(() => {
@@ -3663,6 +3663,30 @@ describe('Webform tests', function() {
           }, 300);
         }, 300);
       }).catch((err) => done(err));
+    });
+
+    it(`Should check conditionals after submitting form `, function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+
+      form.setForm(formsWithNewSimpleConditions.form9).then(() => {
+        const textField = form.getComponent('textField');
+        const fieldWithConditions = form.getComponent('textField1');
+        textField.setValue('hide');
+        setTimeout(() => {
+          assert.equal(fieldWithConditions.visible, false);
+          form.submit();
+
+            setTimeout(() => {
+              textField.setValue('show');
+              setTimeout(()=> {
+                assert.equal(fieldWithConditions.visible, true);
+                done();
+              }, 400)
+            }, 400)
+        }, 400);
+      })
+      .catch((err) => done(err));
     });
   });
 

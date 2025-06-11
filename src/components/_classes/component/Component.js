@@ -6,10 +6,10 @@ import isMobile from 'ismobilejs';
 import { processOne, processOneSync, validateProcessInfo } from '@formio/core/process';
 
 import { Formio } from '../../../Formio';
-import * as FormioUtils from '../../../utils/utils';
+import FormioUtils from '../../../utils';
 import {
   fastCloneDeep, boolValue, currentTimezone, getScriptPlugin, getContextualRowData
-} from '../../../utils/utils';
+} from '../../../utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
@@ -495,7 +495,6 @@ export default class Component extends Element {
 
   /**
    * Returns if the parent should conditionally clear.
-   * 
    * @returns {boolean} - If the parent should conditionally clear.
    */
   parentShouldConditionallyClear() {
@@ -816,8 +815,8 @@ export default class Component extends Element {
 
     // If we have a condition and it is not conditionally visible, the it should conditionally clear.
     if (
-      this.hasCondition() && 
-      !this.conditionallyVisible() && 
+      this.hasCondition() &&
+      !this.conditionallyVisible() &&
       (!this.rootPristine || this.shouldConditionallyClearOnPristine())
     ) {
       this._conditionallyClear = true;
@@ -3106,6 +3105,7 @@ export default class Component extends Element {
     }
     const isArray = Array.isArray(value);
     const valueInput = this.refs.fileLink || this.refs.input;
+    const isFilelink = !!this.refs.fileLink
     if (
       isArray &&
       Array.isArray(this.defaultValue) &&
@@ -3114,7 +3114,9 @@ export default class Component extends Element {
       (valueInput.length !== value.length) &&
       this.visible
     ) {
-      this.redraw();
+      if (isFilelink || valueInput.length) {
+        this.redraw();
+      }
     }
     if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
       this.redraw();
@@ -3681,6 +3683,10 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
+    if (flags.noCheck) {
+      return true;
+    }
+
     // Some components (for legacy reasons) have calls to "checkData" in inappropriate places such
     // as setValue. Historically, this was bypassed by a series of cached states around the data model
     // which caused its own problems. We need to ensure that premium and custom components do not fall into
@@ -3696,10 +3702,6 @@ export default class Component extends Element {
     // Do not trigger refresh if change was triggered on blur event since components with Refresh on Blur have their own listeners
     if (!flags.fromBlur) {
       this.checkRefreshOn(flags.changes, flags);
-    }
-
-    if (flags.noCheck) {
-      return true;
     }
 
     this.checkComponentConditions(data, flags, row);

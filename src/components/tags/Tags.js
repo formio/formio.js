@@ -1,4 +1,4 @@
-import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils';
 import Input from '../_classes/input/Input';
 import Choices from 'choices.js';
 

@@ -1,7 +1,7 @@
 /* global Quill */
 import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
-import { uniqueName, getBrowserInfo } from '../../utils/utils';
+import { uniqueName, getBrowserInfo } from '../../utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -66,8 +66,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     if ((this.options.readOnly || this.disabled) && !this.isHtmlRenderMode()) {
       const elementStyle = this.info.attr.style || '';
       const children = `
-        <div ${this._referenceAttributeName}="input" 
-          class="formio-editor-read-only-content" 
+        <div ${this._referenceAttributeName}="input"
+          class="formio-editor-read-only-content"
           ${elementStyle ? `style='${elementStyle}'` : ''}
           role="textbox"
           aria-multiline="true"

@@ -3,8 +3,15 @@ import Component from './components/_classes/component/Component';
 import tippy from 'tippy.js';
 import Components from './components/Components';
 import { Formio } from './Formio';
-import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
-import { eachComponent, getComponent } from './utils/formUtils';
+import {
+  fastCloneDeep,
+  bootstrapVersion,
+  getArrayFromComponentPath,
+  getStringFromComponentPath,
+  eachComponent,
+  getComponent,
+  componentInfo
+} from './utils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import autoScroll from 'dom-autoscroller';
@@ -1229,6 +1236,17 @@ export default class WebformBuilder extends Component {
           'fields.month.required',
           'fields.year.required',
         ]));
+        if (defaultValueComponent.component.components) {
+          if (!this.originalDefaultValue) {
+            this.originalDefaultValue = fastCloneDeep(defaultValueComponent.component);
+          }
+
+          eachComponent(defaultValueComponent.component.components, (comp => {
+            if (comp.validate?.required) {
+              comp.validate.required = false;
+            }
+          }));
+        }
         const parentComponent = defaultValueComponent.parent;
         let tabIndex = -1;
         let index = -1;
@@ -1284,11 +1302,14 @@ export default class WebformBuilder extends Component {
     const repeatablePaths = [];
     const keys = new Map();
     eachComponent(this.form.components, (comp, path, components, parent, paths) => {
-      if (keys.has(paths.dataPath)) {
-        repeatablePaths.push(paths.dataPath);
-      }
-      else {
-        keys.set(paths.dataPath, true);
+      const isLayout = componentInfo(comp).layout;
+      if (!isLayout) {
+        if (keys.has(paths.dataPath)) {
+          repeatablePaths.push(paths.dataPath);
+        }
+        else {
+          keys.set(paths.dataPath, true);
+        }
       }
     }, true);
     return repeatablePaths;
@@ -1303,6 +1324,9 @@ export default class WebformBuilder extends Component {
       if (repeatablePaths.includes(path)) {
         comp.setCustomValidity(this.t('apiKey', { key: comp.key }));
         hasInvalidComponents = true;
+      }
+      else {
+        comp.setCustomValidity();
       }
     });
 
@@ -1330,6 +1354,9 @@ export default class WebformBuilder extends Component {
     if (index !== -1) {
       let submissionData = this.editForm.submission.data;
       submissionData = submissionData.componentJson || submissionData;
+      if (submissionData.components && this.originalDefaultValue) {
+        submissionData.components = this.originalDefaultValue.components;
+      }
       const fieldsToRemoveDoubleQuotes = ['label', 'tooltip'];
 
       this.replaceDoubleQuotes(submissionData, fieldsToRemoveDoubleQuotes);

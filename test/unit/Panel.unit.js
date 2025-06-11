@@ -1,6 +1,6 @@
 import assert from 'power-assert';
 import Harness from '../harness';
-import { flattenComponents } from '../../src/utils/formUtils';
+import { flattenComponents } from '../../src/utils';
 import PanelComponent from '../../src/components/panel/Panel';
 import panelEditForm from '../../src/components/panel/Panel.form';
 import { Formio } from '../../src/Formio';
