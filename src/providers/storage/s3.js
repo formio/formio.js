@@ -1,7 +1,17 @@
 import XHR from './xhr';
 import { withRetries } from './util';
 
-const AbortController = window.AbortController || require('abortcontroller-polyfill/dist/cjs-ponyfill');
+const loadAbortControllerPolyfill = async() => {
+  if (typeof AbortController === 'undefined') {
+    await import('abortcontroller-polyfill/dist/polyfill-patch-fetch');
+  }
+};
+
+/**
+ * S3 File Services provider for file storage.
+ * @param {object} formio formio instance
+ * @returns {import('./typedefs').FileProvider} The FileProvider interface defined in index.js.
+ */
 function s3(formio) {
   return {
     async uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback, multipartOptions) {
@@ -11,6 +21,7 @@ function s3(formio) {
         if (response.signed) {
           if (multipartOptions && Array.isArray(response.signed)) {
             // patch abort callback
+            await loadAbortControllerPolyfill();
             const abortController = new AbortController();
             const abortSignal = abortController.signal;
             if (typeof abortCallback === 'function') {
@@ -85,7 +96,7 @@ function s3(formio) {
       const { changeMessage } = multipart;
       changeMessage('Completing AWS S3 multipart upload...');
       const token = formio.getToken();
-      const response = await fetch(`${formio.formUrl}/storage/s3/multipart/complete`, {
+      const response = await XHR.fetch(`${formio.formUrl}/storage/s3/multipart/complete`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -106,7 +117,7 @@ function s3(formio) {
     abortMultipartUpload(serverResponse) {
       const { uploadId, key } = serverResponse;
       const token = formio.getToken();
-      fetch(`${formio.formUrl}/storage/s3/multipart/abort`, {
+      XHR.fetch(`${formio.formUrl}/storage/s3/multipart/abort`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -123,7 +134,7 @@ function s3(formio) {
         const start = i * partSize;
         const end = (i + 1) * partSize;
         const blob = i < urls.length ? file.slice(start, end) : file.slice(start);
-        const promise = fetch(urls[i], {
+        const promise = XHR.fetch(urls[i], {
           method: 'PUT',
           headers,
           body: blob,

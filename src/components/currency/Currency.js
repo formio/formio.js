@@ -1,7 +1,7 @@
 import { createNumberMask } from '@formio/text-mask-addons';
 import { maskInput } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
-import { getCurrencyAffixes } from '../../utils/utils';
+import { getCurrencyAffixes } from '../../utils';
 import NumberComponent from '../number/Number';
 
 export default class CurrencyComponent extends NumberComponent {
@@ -34,8 +34,7 @@ export default class CurrencyComponent extends NumberComponent {
 
   /**
    * Creates the number mask for currency numbers.
-   *
-   * @return {*}
+   * @returns {*} - The result of the createNumberMask function
    */
   createNumberMask() {
     const decimalLimit = _.get(this.component, 'decimalLimit', 2);

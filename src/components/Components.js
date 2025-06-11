@@ -80,6 +80,9 @@ export default class Components {
     else {
       comp = new Component(component, options, data);
     }
+    if (comp.path) {
+      comp.componentsMap[comp.path] = comp;
+    }
     return comp;
   }
 }

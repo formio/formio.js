@@ -1,5 +1,5 @@
 import Field from '../_classes/field/Field';
-import { componentValueTypes, getComponentSavedTypes, uniqueName } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, uniqueName } from '../../utils';
 import download from 'downloadjs';
 import _ from 'lodash';
 import fileProcessor from '../../providers/processor/fileProcessor';
@@ -118,14 +118,20 @@ export default class FileComponent extends Field {
     if (this.component.privateDownload) {
       fileInfo.private = true;
     }
-    return this.fileService.downloadFile(fileInfo).then((result) => result.url);
+    // pass the component to the downloadFile method
+    return this.fileService.downloadFile(fileInfo, this.component).then((result) => result.url);
   }
 
   get emptyValue() {
     return [];
   }
 
-  getValueAsString(value) {
+  getValueAsString(value, options) {
+    if (options?.review && !this.component.uploadOnly) {
+      return _.map(value, (val, index) => {
+        return `<a href="${val.url || '#'}" target="_blank" data-path='${this.path}' data-fileindex='${index}'>${val.originalName}</a>`
+      }).join(', ');
+    }
     if (_.isArray(value)) {
       return _.map(value, 'originalName').join(', ');
     }
@@ -165,7 +171,9 @@ export default class FileComponent extends Field {
   }
 
   get autoSync() {
-    return _.get(this, 'component.autoSync', false);
+    // Disable autoSync for now
+    return false;
+    // return _.get(this, 'component.autoSync', false);
   }
 
   get columnsSize() {
@@ -232,7 +240,7 @@ export default class FileComponent extends Field {
 
         const { videoPlayer } = this.refs;
         if (!videoPlayer) {
-          console.warn('Video player not found in template.');
+          console.warn(this.t('videoPlayerNotFound'));
           this.cameraMode = false;
           this.redraw();
           return;
@@ -260,7 +268,7 @@ export default class FileComponent extends Field {
   takePicture() {
     const { videoPlayer } = this.refs;
     if (!videoPlayer) {
-      console.warn('Video player not found in template.');
+      console.warn(this.t('videoPlayerNotFound'));
       this.cameraMode = false;
       this.redraw();
       return;
@@ -714,7 +722,7 @@ export default class FileComponent extends Field {
       file,
       size: file.size,
       status: 'info',
-      message: this.t('Processing file. Please wait...'),
+      message: this.t('waitFileProcessing'),
       hash: '',
     };
   }
@@ -744,13 +752,12 @@ export default class FileComponent extends Field {
     const fileWithSameNameUploading = this.filesToSync.filesToUpload
       .some(fileToSync => fileToSync.file?.name === file.name);
 
-    const fileWithSameNameUploaded = this.dataValue
-      .some(fileStatus => fileStatus.originalName === file.name);
+    const fileWithSameNameUploaded = _.some(this.dataValue, fileStatus => fileStatus.originalName === file.name);
 
     return fileWithSameNameUploaded || fileWithSameNameUploading
       ? {
         status: 'error',
-        message: this.t(`File with the same name is already ${fileWithSameNameUploading ? 'being ' : ''}uploaded`),
+        message: this.t(fileWithSameNameUploading ? 'fileWithDuplicatedNameInProgress' : 'fileWithDuplicatedNameLoaded'),
       }
       : {};
   }
@@ -760,7 +767,7 @@ export default class FileComponent extends Field {
     if (this.component.filePattern && !this.validatePattern(file, this.component.filePattern)) {
       return {
         status: 'error',
-        message: this.t('File is the wrong type; it must be {{ pattern }}', {
+        message: this.t('wrongFileType', {
           pattern: this.component.filePattern,
         }),
       };
@@ -770,7 +777,7 @@ export default class FileComponent extends Field {
     if (this.component.fileMinSize && !this.validateMinSize(file, this.component.fileMinSize)) {
       return {
         status: 'error',
-        message: this.t('File is too small; it must be at least {{ size }}', {
+        message: this.t('fileTooSmall', {
           size: this.component.fileMinSize,
         }),
       };
@@ -780,7 +787,7 @@ export default class FileComponent extends Field {
     if (this.component.fileMaxSize && !this.validateMaxSize(file, this.component.fileMaxSize)) {
       return {
         status: 'error',
-        message: this.t('File is too big; it must be at most {{ size }}', {
+        message: this.t('fileTooBig', {
           size: this.component.fileMaxSize,
         }),
       };
@@ -794,7 +801,7 @@ export default class FileComponent extends Field {
     return !fileService
       ? {
         status: 'error',
-        message: this.t('File Service not provided.'),
+        message: this.t('noFileService'),
       }
       : {};
   }
@@ -851,7 +858,7 @@ export default class FileComponent extends Field {
         this.fileDropHidden = false;
         return {
           status: 'error',
-          message: this.t('File processing has been failed.'),
+          message: this.t('fileProcessingFailed'),
         };
       }
       finally {
@@ -892,7 +899,7 @@ export default class FileComponent extends Field {
     }
 
     if (this.autoSync) {
-      fileToSync.message = this.t('Ready to be uploaded into storage');
+      fileToSync.message = this.t('readyForUpload');
     }
 
     this.filesToSync.filesToUpload.push({
@@ -936,8 +943,8 @@ export default class FileComponent extends Field {
       ...fileInfo,
       status: 'info',
       message: this.autoSync
-        ? this.t('Ready to be removed from storage')
-        : this.t('Preparing file to remove'),
+        ? this.t('readyForRemovingFromStorage')
+        : this.t('preparingFileToRemove'),
     });
 
     const index = this.dataValue.findIndex(file => file.name === fileInfo.name);
@@ -983,7 +990,7 @@ export default class FileComponent extends Field {
 
         await this.deleteFile(fileToSync);
         fileToSync.status = 'success';
-        fileToSync.message = this.t('Succefully removed');
+        fileToSync.message = this.t('succefullyRemoved');
       }
       catch (response) {
         fileToSync.status = 'error';
@@ -1043,7 +1050,9 @@ export default class FileComponent extends Field {
       fileToSync.fileKey,
       fileToSync.groupPermissions,
       fileToSync.groupResourceId,
-      () => {},
+      () => {
+        this.emit('fileUploadingStart');
+      },
       // Abort upload callback
       (abort) => this.abortUploads.push({
         id: fileToSync.id,
@@ -1070,10 +1079,11 @@ export default class FileComponent extends Field {
 
         fileInfo = await this.uploadFile(fileToSync);
         fileToSync.status = 'success';
-        fileToSync.message = this.t('Succefully uploaded');
+        fileToSync.message = this.t('succefullyUploaded');
 
         fileInfo.originalName = fileToSync.originalName;
         fileInfo.hash = fileToSync.hash;
+        this.emit('fileUploadingEnd');
       }
       catch (response) {
         fileToSync.status = 'error';
@@ -1083,6 +1093,11 @@ export default class FileComponent extends Field {
           : response.type === 'abort'
             ? this.t('Request was aborted')
             : response.toString();
+        this.emit('fileUploadingEnd');
+        this.emit('fileUploadError', {
+          fileToSync,
+          response,
+        });
       }
       finally {
         delete fileToSync.progress;
@@ -1175,7 +1190,7 @@ export default class FileComponent extends Field {
 
       await this.syncFiles();
       return this.shouldSyncFiles
-        ? Promise.reject('Synchronization is failed')
+        ? Promise.reject(this.t('synchronizationFailed'))
         : Promise.resolve();
     }
     catch (error) {

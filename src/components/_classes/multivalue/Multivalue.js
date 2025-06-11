@@ -1,14 +1,49 @@
 import Field from '../field/Field';
 import _ from 'lodash';
+import { Utils } from '@formio/core';
 
 export default class Multivalue extends Field {
-  get dataValue() {
-    const parent = super.dataValue;
+  /**
+   * Normalize values coming into updateValue.
+   * @param {*} value - The value to normalize before setting.
+   * @param {object} flags - Flags to use when normalizing the value.
+   * @param {*} emptyValue - The empty value for the field.
+   * @returns {*} - The normalized value.
+   */
+  normalizeValue(value, flags = {}, emptyValue = this.emptyValue) {
+    const underlyingValueShouldBeArray = Utils.getModelType(this.component) === 'array' || this.component.storeas === 'array' || Array.isArray(emptyValue);
+    if (this.component.multiple) {
+      if (Array.isArray(value)) {
+        if (underlyingValueShouldBeArray) {
+          if (value.length === 0 || !Array.isArray(value[0])) {
+            return [value];
+          }
+        }
+        if (value.length === 0) {
+          return [emptyValue];
+        }
 
-    if (!parent && this.component.multiple) {
-      return [];
+        return super.normalizeValue(value, flags);
+      } else {
+        return super.normalizeValue(value == null ? [emptyValue] : [value], flags);
+      }
+    } else {
+      if (Array.isArray(value) && !underlyingValueShouldBeArray) {
+        if (Utils.getModelType(this.component) === 'any') {
+          return super.normalizeValue(value, flags);
+        }
+        if (this.component.storeas === 'string') {
+          return super.normalizeValue(value.join(this.delimiter || ''), flags);
+        }
+        return super.normalizeValue(value[0] || emptyValue, flags);
+      } else {
+        return super.normalizeValue(value, flags);
+      }
     }
-    return parent;
+  }
+
+  get dataValue() {
+    return this.normalizeValue(super.dataValue);
   }
 
   set dataValue(value) {
@@ -17,7 +52,6 @@ export default class Multivalue extends Field {
 
   get defaultValue() {
     let value = super.defaultValue;
-
     if (this.component.multiple) {
       if (_.isArray(value)) {
         value = !value.length ? [super.emptyValue] : value;
@@ -26,48 +60,45 @@ export default class Multivalue extends Field {
         value = [value];
       }
     }
-
     return value;
   }
 
   get addAnother() {
-    return this.t(this.component.addAnother || 'Add Another');
+    return this.t(this.component.addAnother || 'addAnother');
   }
 
-  useWrapper() {
-    return this.component.hasOwnProperty('multiple') && this.component.multiple;
-  }
-
+  /**
+   * @returns {Field} - The created field.
+   */
   render() {
-    // If single value field.
-    if (!this.useWrapper()) {
-      return super.render(
-        `<div ref="element">
-          ${this.renderElement(
-            this.component.type !== 'hidden' ? this.dataValue : ''
-          )}
-        </div>`
-      );
-    }
-
-    // Make sure dataValue is in the correct array format.
-    let dataValue = this.dataValue;
-    if (!Array.isArray(dataValue)) {
-      dataValue = dataValue ? [dataValue] : [];
-    }
-
-    // If multiple value field.
-    return super.render(this.renderTemplate('multiValueTable', {
-      rows: dataValue.map(this.renderRow.bind(this)).join(''),
-      disabled: this.disabled,
-      addAnother: this.addAnother,
-    }));
+    let dataValue = this.normalizeValue(this.dataValue);
+    return this.component.hasOwnProperty('multiple') && this.component.multiple
+      ? super.render(
+          this.renderTemplate('multiValueTable', {
+            rows: dataValue.map(this.renderRow.bind(this)).join(''),
+            disabled: this.disabled,
+            addAnother: this.addAnother,
+          })
+        )
+      : super.render(
+          `<div ${this._referenceAttributeName}="element">
+            ${this.renderElement(
+              this.component.type !== 'hidden' ? dataValue : ''
+            )}
+          </div>`
+        );
   }
 
   renderElement() {
     return '';
   }
 
+  /**
+   * Renders a single row for multi-value components.
+   * @param {any} value - The value associated with the row to render.
+   * @param {number} index - The index of the row in the multi-value list.
+   * @returns {any} Returns the HTML string representation of the row.
+   */
   renderRow(value, index) {
     return this.renderTemplate('multiValueRow', {
       index,
@@ -76,6 +107,10 @@ export default class Multivalue extends Field {
     });
   }
 
+  /**
+   * @param {HTMLElement} dom - The DOM element to which the component will attach.
+   * @returns {Promise} - Promise that resolves when all asynchronous tasks that have finished.
+   */
   attach(dom) {
     const superAttach = super.attach(dom);
     this.loadRefs(dom, {
@@ -115,6 +150,10 @@ export default class Multivalue extends Field {
     });
   }
 
+
+  /**
+   * Remove all event handlers.
+   */
   detach() {
     if (this.refs.input && this.refs.input.length) {
       this.refs.input.forEach((input) => {
@@ -138,9 +177,8 @@ export default class Multivalue extends Field {
 
   /**
    * Attach inputs to the element.
-   *
-   * @param element
-   * @param index
+   * @param {HTMLElement} element - The element to attach.
+   * @param {number} index - The index of the element to attach.
    */
   attachElement(element, index) {
     this.addEventListener(element, this.inputInfo.changeEvent, () => {
@@ -170,7 +208,7 @@ export default class Multivalue extends Field {
         this.saveCaretPosition(element, index);
       }
       catch (err) {
-        console.warn('An error occurred while trying to save caret position', err);
+        console.warn(this.t('caretPositionSavingError'), err);
       }
 
       // If a mask is present, delay the update to allow mask to update first.
@@ -215,10 +253,19 @@ export default class Multivalue extends Field {
     }
   }
 
+  /**
+   * Event handler for selecting a mask from a dropdown.
+   * @param {Event} event - Event triggered by changing the selected option in mask.
+   */
   onSelectMaskHandler(event) {
     this.updateMask(event.target.maskInput, this.getMaskPattern(event.target.value));
   }
 
+  /**
+   * Retrieves the mask pattern for a given mask name
+   * @param {string} maskName - The name of the mask to retrieve.
+   * @returns {any} The mask pattern associated with the given mask name.
+   */
   getMaskPattern(maskName) {
     if (!this.multiMasks) {
       this.multiMasks = {};
@@ -231,6 +278,11 @@ export default class Multivalue extends Field {
     return this.multiMasks[maskName];
   }
 
+  /**
+   * Attaches a selectable mask to an input field based on its configuration.
+   * @param {number} index - The index of the select or input in component array.
+   * @returns {boolean} - Returns true if the mask was successfully attached
+   */
   attachMultiMask(index) {
     if (!(this.isMultipleMasksField && this.component.inputMasks.length && this.refs.input.length)) {
       return false;
@@ -243,8 +295,19 @@ export default class Multivalue extends Field {
     return true;
   }
 
+  /**
+   * @param {any} input - The input element on which the mask is to be applied.
+   * @param {string} mask - The mask pattern to apply to the input element. Exit early and remove previous mask if no mask.
+   */
   updateMask(input, mask) {
     if (!mask) {
+      if (input.mask) {
+        input.mask.destroy();
+      }
+      if (!this.component.placeholder) {
+        input.removeAttribute('placeholder');
+      }
+      input.value = '';
       return;
     }
     this.setInputMask(input, mask, !this.component.placeholder);
@@ -253,6 +316,7 @@ export default class Multivalue extends Field {
 
   /**
    * Adds a new empty value to the data array.
+   * @param {any} value -A value to be added to the data array.
    */
   addNewValue(value) {
     if (value === undefined) {

@@ -2,17 +2,17 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter3';
 import { expect } from 'chai';
-import { I18n } from '../src/utils/i18n';
 import FormBuilder from '../src/FormBuilder';
 import AllComponents from '../src/components';
 import Components from '../src/components/Components';
-
+global.requestAnimationFrame = (cb) => cb();
+global.cancelAnimationFrame = () => {};
 Components.setComponents(AllComponents);
 
 if (process) {
   // Do not handle unhandled rejections.
-  process.on('unhandledRejection', () => {
-    console.warn('Unhandled rejection!');
+  process.on('unhandledRejection', (err) => {
+    console.warn('Unhandled rejection:', err);
   });
 }
 
@@ -137,7 +137,8 @@ const Harness = {
       events: new EventEmitter(),
     }, options));
     component.pristine = false;
-    return new Promise((resolve, reject) => {
+    component.componentsMap[component.key] = component;
+    return new Promise((resolve) => {
       // Need a parent element to redraw.
       const parent = document.createElement('div');
       const element = document.createElement('div');
@@ -300,8 +301,10 @@ const Harness = {
   testErrors(form, submission, errors, done) {
     form.on('error', (err) => {
       _.each(errors, (error, index) => {
-        error.component = form.getComponent(error.component).component;
-        assert.deepEqual(err[index].component, error.component);
+        if (error.component) {
+          error.component = form.getComponent(error.component.key).component;
+          assert.deepEqual(err[index].component, error.component);
+        }
         assert.equal(err[index].message, error.message);
       });
       form.off('error');
@@ -364,7 +367,10 @@ const Harness = {
     let testBad = true;
     component.on('componentChange', (change) => {
       const valid = component.checkValidity();
-      if (valid && !testBad) {
+      if (testBad && valid) {
+        return done(new Error('Validation should not pass.'));
+      }
+      if (!testBad && valid) {
         assert.equal(change.value, test.good.value);
         done();
       }
@@ -373,10 +379,12 @@ const Harness = {
       if (!testBad) {
         return done(new Error('Validation Error'));
       }
-      testBad = false;
       assert.equal(error.component.key, test.bad.field);
       assert.equal(error.message, test.bad.error);
-      component.setValue(test.good.value);
+      setTimeout(() => {
+        testBad = false;
+        component.setValue(test.good.value);
+      }, 1);
     });
 
     // Set the value.

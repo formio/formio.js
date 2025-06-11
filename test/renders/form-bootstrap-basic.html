@@ -37,7 +37,7 @@
     <div id="everything" class="mb-2 formio-form-group has-feedback formio-component formio-component-textfield formio-component-everything formio-component-multiple CustomCssClass required" ref="component">
       <label ref="label" class="col-form-label  field-required" for="everything-everything" id="l-everything-everything">
         Everything
-        <i ref="tooltip" tabindex="0" class="fa fa-question-sign bi bi-question-circle text-muted" data-tooltip="Tooltip"></i>
+        <i ref="tooltip" tabindex="0" class="fa fa-question-circle bi bi-question-circle text-muted" data-tooltip="Tooltip"></i>
       </label>
       <table class="table table-bordered">
         <tbody>
@@ -99,8 +99,10 @@
     </div>
     <div id="checkbox" class="mb-2 formio-form-group has-feedback formio-component formio-component-checkbox formio-component-checkbox " ref="component">
       <div class="form-check checkbox">
-        <input ref="input" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false">
-        <label class=" form-check-label"><span>Checkbox</span></label>
+        <input ref="input" id="checkbox-checkbox" aria-labelledby="l-checkbox-checkbox" name="data[checkbox]" type="checkbox" class="form-check-input" lang="en" value="0" aria-required="false">
+        <label class=" form-check-label" for="checkbox-checkbox" id="l-checkbox-checkbox">
+          <span>Checkbox</span>
+        </label>
       </div>
       <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
     </div>

@@ -1,12 +1,12 @@
 import _ from 'lodash';
-import Evaluator from '../../../../utils/Evaluator';
+import { Evaluator } from '../../../../utils/Evaluator';
 const EditFormUtils = {
   sortAndFilterComponents(components) {
     return _.filter(_.sortBy(components, 'weight'), (item) => !item.ignore);
   },
   unifyComponents(objValue, srcValue) {
     if (objValue.key && srcValue.key) {
-      if (objValue.skipMerge || srcValue.skipMerge) {
+      if ((objValue.skipMerge || srcValue.skipMerge) && !objValue.ignore) {
         return false;
       }
       if (objValue.key === srcValue.key) {
@@ -35,6 +35,9 @@ const EditFormUtils = {
     }
     return _.isEqual(objValue, srcValue);
   },
+  tokenVariableDescription() {
+    return '<tr><th>token</th><td>The decoded JWT token for the authenticated user.</td></tr>';
+  },
   logicVariablesTable(additional) {
     additional = additional || '';
     return {
@@ -53,7 +56,7 @@ const EditFormUtils = {
       '<tr><th>value</th><td>The current value of the component.</td></tr>' +
       '<tr><th>moment</th><td>The moment.js library for date manipulation.</td></tr>' +
       '<tr><th>_</th><td>An instance of <a href="https://lodash.com/docs/" target="_blank" rel="noopener noreferrer">Lodash</a>.</td></tr>' +
-      '<tr><th>utils</th><td>An instance of the <a href="http://formio.github.io/formio.js/docs/identifiers.html#utils" target="_blank" rel="noopener noreferrer">FormioUtils</a> object.</td></tr>' +
+      '<tr><th>utils</th><td>An instance of the <a href="https://help.form.io/developers/javascript-development/javascript-utilities" target="_blank" rel="noopener noreferrer">FormioUtils</a> object.</td></tr>' +
       '<tr><th>util</th><td>An alias for "utils".</td></tr>' +
       '</table><br/>'
       /* eslint-enable prefer-template */

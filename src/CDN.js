@@ -3,16 +3,21 @@
 // like Formio.cdn.ace === 'http://cdn.form.io/ace/1.4.12'.
 // For latest version use empty string
 class CDN {
-  constructor(baseUrl) {
-    this.baseUrl = baseUrl || 'https://cdn.form.io';
-    this.overrides = {};
+  static defaultCDN = 'https://cdn.form.io';
+  constructor(baseUrl, overrides = {}) {
+    this.baseUrl = baseUrl || CDN.defaultCDN;
+    this.overrides = overrides;
     this.libs = {
       'js': '',
       'ace': '1.4.12',
-      'bootstrap': '4.6.2',
+      'bootstrap': '5.3.3',
+      'bootstrap4': '4.6.2',
+      'bootstrap5': '5.3.3',
+      'bootswatch': '5.3.3',
+      'bootstrap-icons': '1.11.1',
       'ckeditor': '19.0.0',
-      'flatpickr': '4.6.8',
-      'flatpickr-formio': '4.6.13-formio.3',
+      'dragula': '3.7.3',
+      'flatpickr': '4.6.13',
       'font-awesome': '4.7.0',
       'grid': 'latest',
       'moment-timezone': 'latest',
@@ -59,12 +64,13 @@ class CDN {
   }
 
   buildUrl(cdnUrl, lib, version) {
-    let url;
-    if (version === 'latest' || version === '') {
-      url = `${cdnUrl}/${lib}`;
+    let url = cdnUrl;
+    if (lib) {
+      url += `/${lib}`;
     }
-    else {
-      url = `${cdnUrl}/${lib}/${version}`;
+    // Only attach the version if this is the hosted cdn.
+    if (cdnUrl.match(/cdn\.(test-)?form.io/) && version && version !== 'latest') {
+      url += `/${version}`;
     }
     return url;
   }
@@ -72,7 +78,13 @@ class CDN {
   updateUrls() {
     for (const lib in this.libs) {
       if (lib in this.overrides) {
-        this[lib] = this.buildUrl(this.overrides[lib], lib, this.libs[lib]);
+        if (typeof this.overrides[lib] === 'string') {
+          this[lib] = this.buildUrl(this.overrides[lib], lib, this.libs[lib]);
+        }
+        else {
+          const override = this.overrides[lib];
+          this[lib] = this.buildUrl(override.cdn, override.lib || '', override.version || '');
+        }
       }
       else {
         this[lib] = this.buildUrl(this.baseUrl, lib, this.libs[lib]);

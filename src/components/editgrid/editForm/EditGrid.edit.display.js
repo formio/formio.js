@@ -1,4 +1,4 @@
-import Evaluator from '../../../utils/Evaluator';
+import { Evaluator } from '../../../utils/Evaluator';
 
 export default [
   {
@@ -34,7 +34,7 @@ export default [
     weight: 1002,
     input: false,
     customConditional() {
-      return !Evaluator.noeval;
+      return !Evaluator.noeval || !Evaluator.protectedEval;
     },
   },
   {

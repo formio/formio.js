@@ -2,7 +2,7 @@ import { createNumberMask } from '@formio/text-mask-addons';
 import { conformToMask,maskInput } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
 import Input from '../_classes/input/Input';
-import { getNumberSeparators, getNumberDecimalLimit, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { getNumberSeparators, getNumberDecimalLimit, componentValueTypes, getComponentSavedTypes } from '../../utils/';
 
 export default class NumberComponent extends Input {
   static schema(...extend) {
@@ -51,22 +51,20 @@ export default class NumberComponent extends Input {
 
  constructor(...args) {
     super(...args);
-    this.validators = this.validators.concat(['min', 'max']);
 
     const separators = getNumberSeparators(this.options.language || navigator.language);
 
-    this.decimalSeparator = this.options.decimalSeparator = this.options.decimalSeparator
+    this.decimalSeparator = this.options.decimalSeparator = this.component.decimalSymbol || this.options.decimalSeparator
       || this.options.properties?.decimalSeparator
       || separators.decimalSeparator;
 
     if (this.component.delimiter) {
-      if (this.options.hasOwnProperty('thousandsSeparator')) {
-        console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
-      }
-
-      this.delimiter = this.options.properties?.thousandsSeparator || this.options.thousandsSeparator || separators.delimiter;
+      this.delimiter = this.component.thousandsSeparator || this.options.properties?.thousandsSeparator || this.options.thousandsSeparator || separators.delimiter;
     }
     else {
+      if (this.component.thousandsSeparator || this.options.properties?.thousandsSeparator || this.options.thousandsSeparator){
+        console.warn(this.t('noDelimiterSet'));
+      }
       this.delimiter = '';
     }
 
@@ -84,15 +82,14 @@ export default class NumberComponent extends Input {
 
   /**
    * Creates the number mask for normal numbers.
-   *
-   * @return {*}
+   * @returns {*} - The number mask.
    */
   createNumberMask() {
     return createNumberMask({
       prefix: '',
       suffix: '',
       requireDecimal: _.get(this.component, 'requireDecimal', false),
-      thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
+      thousandsSeparatorSymbol: this.delimiter || '',
       decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
       decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
       allowNegative: _.get(this.component, 'allowNegative', true),
@@ -106,6 +103,11 @@ export default class NumberComponent extends Input {
 
   get defaultValue() {
     let defaultValue = super.defaultValue;
+    if (typeof defaultValue === 'string'){
+      // Default value may be a string or have custom thousands separators or decimal symbols, so we need to call
+      // parseNumber on it
+      defaultValue = this.parseNumber(defaultValue);
+    }
     if (!defaultValue && this.component.defaultValue === 0) {
       defaultValue = this.component.defaultValue;
     }
@@ -120,6 +122,12 @@ export default class NumberComponent extends Input {
     return _.get(this.component, 'allowDecimal', !(this.component.validate && this.component.validate.integer));
   }
 
+  /**
+   * parses a numeric string by removing the delimiters and replacing the decimal separator back to '.' so that it can
+   * be processed by either parseInt or parseFloat
+   * @param {string} value the value to be parsed
+   * @returns {number} a parsed number
+   */
   parseNumber(value) {
     // Remove delimiters and convert decimal separator to dot.
     value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
@@ -171,14 +179,35 @@ export default class NumberComponent extends Input {
     return super.setValueAt(index, this.formatValue(this.parseValue(value)), flags);
   }
 
+  /**
+   * Converts a string to a floating point number, formats the number based on the parsed float function
+   * (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat) and then returns the
+   * formatted number back as a string
+   * Example Input: "123.456,22"
+   * Example Output: "123456,22"
+   * @param {string | number} input the numeric string to parse
+   * @returns {string | null} a parsed string
+   */
   parseValue(input) {
     if (typeof input === 'string') {
       input = input.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
     }
-    let value = parseFloat(input);
+    let value;
 
-    if (!_.isNaN(value)) {
-      value = String(value).replace('.', this.decimalSeparator);
+    if (!_.isNaN(input)) {
+      // Format scientific notation
+      if (/[0-9]+[eE]/.test(String(input))) {
+        // Convert to exponential notation will depend on the decimal limit set in the component
+        // Example: 1.23e-5 will be converted to 1.23e-5 if decimal limit is set to 2
+        // Example: 1.23e5 will be converted to 1.23e+5 if decimal limit is set to 2
+        // if decimal limit is 3, 1.23e5 will be converted to 1.230e+5
+        // if decimal limit is not set, 1.23e5 will be converted to 1.23000000000000000000e+5
+        value = parseFloat(input);
+        value = value.toExponential(this.decimalLimit);
+      } else {
+        value = parseFloat(input);
+        value = !_.isNaN(value) ? String(value).replace('.', this.decimalSeparator) : null;
+      }
     }
     else {
       value = null;

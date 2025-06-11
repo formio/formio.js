@@ -5,19 +5,16 @@ import Components from './components/Components';
 import Displays from './displays/Displays';
 import Templates from './templates/Templates';
 import Providers from './providers';
-import Rules from './validator/Rules';
-import Conjunctions from './validator/conjunctions';
-import Operators from './validator/operators';
-import QuickRules from './validator/quickRules';
-import Transformers from './validator/transformers';
-import ValueSources from './validator/valueSources';
 import Widgets from './widgets';
 import Form from './Form';
 import Utils from './utils';
-import Evaluator from './utils/Evaluator';
 import Licenses from './licenses';
+import EventEmitter from './EventEmitter';
+import Webform from './Webform';
+import { I18n } from './utils/i18n';
+import { Evaluator, registerEvaluator } from './utils';
 
-Formio.loadModules = (path = `${Formio.getApiUrl()  }/externalModules.js`, name = 'externalModules') => {
+Formio.loadModules = (path = `${Formio.getApiUrl()}/externalModules.js`, name = 'externalModules') => {
   Formio.requireLibrary(name, name, path, true)
     .then((modules) => {
       Formio.use(modules);
@@ -25,20 +22,15 @@ Formio.loadModules = (path = `${Formio.getApiUrl()  }/externalModules.js`, name 
 };
 
 // This is needed to maintain correct imports using the "dist" file.
+Formio.isRenderer = true;
 Formio.Components = Components;
 Formio.Templates = Templates;
 Formio.Utils = Utils;
 Formio.Form = Form;
 Formio.Displays = Displays;
 Formio.Providers = Providers;
-Formio.Rules = Rules;
 Formio.Widgets = Widgets;
 Formio.Evaluator = Evaluator;
-Formio.Conjunctions = Conjunctions;
-Formio.Operators = Operators;
-Formio.QuickRules = QuickRules;
-Formio.Transformers = Transformers;
-Formio.ValueSources = ValueSources;
 Formio.AllComponents = AllComponents;
 Formio.Licenses = Licenses;
 
@@ -49,11 +41,15 @@ Formio.Components.setComponents(AllComponents);
 
 /**
  * Register a module
- * @param {*} plugin
- * @returns
+ * @param {any} mod - The module object to register. This can also be a function which accepts Formio as an argument.
+ * @param {Function|null} [defaultFn] - The default function to call if the module does not have a known key.
+ * @param {any} options - Options for the module.
+ * @returns {void}
  */
 export function registerModule(mod, defaultFn = null, options = {}) {
-  // Sanity check.
+  if (typeof mod === 'function') {
+    return registerModule(mod(Formio), defaultFn, options);
+  }
   if (typeof mod !== 'object') {
     return;
   }
@@ -66,6 +62,10 @@ export function registerModule(mod, defaultFn = null, options = {}) {
       case 'templates':
         for (const framework of Object.keys(mod.templates)) {
           Formio.Templates.extendTemplate(framework, mod.templates[framework]);
+          Formio.Templates.defaultTemplates = _.defaults(
+            mod.templates[framework],
+            Formio.Templates.defaultTemplates
+          );
         }
         if (mod.templates[current]) {
           Formio.Templates.current = mod.templates[current];
@@ -90,26 +90,11 @@ export function registerModule(mod, defaultFn = null, options = {}) {
       case 'displays':
         Formio.Displays.addDisplays(mod.displays);
         break;
-      case 'rules':
-        Formio.Rules.addRules(mod.rules);
-        break;
       case 'evaluator':
-        Formio.Evaluator.registerEvaluator(mod.evaluator);
+        registerEvaluator(mod.evaluator);
         break;
-      case 'conjunctions':
-        Formio.Conjunctions.addConjunctions(mod.conjunctions);
-        break;
-      case 'operators':
-        Formio.Operators.addOperators(mod.operators);
-        break;
-      case 'quickRules':
-        Formio.QuickRules.addQuickRules(mod.quickRules);
-        break;
-      case 'transformers':
-        Formio.Transformers.addTransformers(mod.transformers);
-        break;
-      case 'valueSources':
-        Formio.ValueSources.addValueSources(mod.valueSources);
+      case 'translations':
+        I18n.setDefaultTranslations(mod.translations);
         break;
       case 'library':
         options.license
@@ -128,6 +113,10 @@ export function registerModule(mod, defaultFn = null, options = {}) {
   }
 }
 
+/**
+ * @param {Function|null} defaultFn - The default function to call if the module does not have a known key.
+ * @returns {void}
+ */
 export function useModule(defaultFn = null) {
   return (plugins, options = {}) => {
     plugins = _.isArray(plugins) ? plugins : [plugins];
@@ -150,6 +139,7 @@ export function useModule(defaultFn = null) {
  * Formio.plugins([plugin1, plugin2, etc], options);
  */
 Formio.use = useModule();
+export { Formio as FormioCore } from './Formio';
 
 // Export the components.
-export { Components, Displays, Providers, Rules, Widgets, Templates, Conjunctions, Operators, QuickRules, Transformers, ValueSources, Utils, Form, Formio, Licenses };
+export { Components, Displays, Providers, Widgets, Templates, Utils, Form, Formio, Licenses, EventEmitter, Webform };

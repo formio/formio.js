@@ -1,7 +1,7 @@
 import Input from '../_classes/input/Input';
 import { conformToMask } from '@formio/vanilla-text-mask';
 import Inputmask from 'inputmask';
-import * as FormioUtils from '../../utils/utils';
+import FormioUtils from '../../utils';
 import _ from 'lodash';
 
 export default class TextFieldComponent extends Input {
@@ -99,6 +99,9 @@ export default class TextFieldComponent extends Input {
         locale: this.component.widget.locale || this.options.language,
         saveAs: 'text'
       };
+      // update originalComponent to include widget settings after component initialization
+      // originalComponent is used to restore the component (and widget) after evaluating field logic
+      this.originalComponent = FormioUtils.fastCloneDeep(this.component);
     }
   }
 
@@ -110,11 +113,10 @@ export default class TextFieldComponent extends Input {
   }
 
   /**
-   * Returns the mask value object.
-   *
-   * @param value
-   * @param flags
-   * @return {*}
+   * Returns the mask value object (mutates value!).
+   * @param {any} [value] - The value to convert to a mask value.
+   * @param {any} [flags] - The flags to use when converting to a mask value.
+   * @returns {*} - The value as a mask value.
    */
   maskValue(value, flags = {}) {
     // Convert it into the correct format.
@@ -136,10 +138,9 @@ export default class TextFieldComponent extends Input {
 
   /**
    * Normalize the value set in the data object.
-   *
-   * @param value
-   * @param flags
-   * @return {*}
+   * @param {any} value - The value to normalize.
+   * @param {any} flags - The flags to use when normalizing the value.
+   * @returns {*} - Returns the normalized value.
    */
   normalizeValue(value, flags = {}) {
     if (!this.isMultipleMasksField) {
@@ -153,10 +154,10 @@ export default class TextFieldComponent extends Input {
 
   /**
    * Sets the value at this index.
-   *
-   * @param index
-   * @param value
-   * @param flags
+   * @param {number} index - The index to set the value at.
+   * @param {any} value - The value to set.
+   * @param {any} [flags] - The flags to use when setting the value.
+   * @returns {void}
    */
   setValueAt(index, value, flags = {}) {
     if (!this.isMultipleMasksField) {
@@ -168,6 +169,9 @@ export default class TextFieldComponent extends Input {
     const maskInput = this.refs.select ? this.refs.select[index]: null;
     const mask = this.getMaskPattern(value.maskName);
     if (textInput && maskInput && mask) {
+      // We need to set the maskInput (select dropdown) value before calling inputmask.setValue because, this
+      // function will trigger a "change" event, which was calling updateValue setting the mask type to an incorrect value.
+      maskInput.value = value.maskName;
       if (textInput.inputmask) {
         this.setInputMask(textInput, mask);
         textInput.inputmask.setValue(textValue);
@@ -176,7 +180,6 @@ export default class TextFieldComponent extends Input {
         const placeholderChar = this.placeholderChar;
         textInput.value = conformToMask(textValue, FormioUtils.getInputMask(mask), { placeholderChar }).conformedValue;
       }
-      maskInput.value = value.maskName;
     }
     else {
       return super.setValueAt(index, textValue, flags);
@@ -191,9 +194,8 @@ export default class TextFieldComponent extends Input {
 
   /**
    * Returns the value at this index.
-   *
-   * @param index
-   * @return {*}
+   * @param {number} index - The index to get the value from.
+   * @returns {*} - The value at the index.
    */
   getValueAt(index) {
     if (!this.isMultipleMasksField) {

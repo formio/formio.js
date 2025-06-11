@@ -1,6 +1,6 @@
-import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils';
 import Input from '../_classes/input/Input';
-import Choices from '@formio/choices.js';
+import Choices from 'choices.js';
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
@@ -134,19 +134,19 @@ export default class TagsComponent extends Input {
 
   normalizeValue(value) {
     if (this.component.storeas === 'string' && Array.isArray(value)) {
-      return value.join(this.delimiter);
+      return super.normalizeValue(value.join(this.delimiter));
     }
     else if (this.component.storeas === 'array' && typeof value === 'string') {
-      return value.split(this.delimiter).filter(result => result);
+      return super.normalizeValue(value.split(this.delimiter).filter(result => result));
     }
-    return value;
+    return super.normalizeValue(value);
   }
 
   setValue(value, flags = {}) {
     const changed = super.setValue(value, flags);
     if (this.choices) {
       let dataValue = this.dataValue;
-      this.choices.removeActiveItems();
+      this.choices.clearStore();
       if (dataValue) {
         if (typeof dataValue === 'string') {
           dataValue = dataValue.split(this.delimiter).filter(result => result);

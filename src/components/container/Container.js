@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypes, getFocusableElements } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, getFocusableElements } from '../../utils';
 
 import Component from '../_classes/component/Component';
 import Field from '../_classes/field/Field';
@@ -66,13 +66,8 @@ export default class ContainerComponent extends NestedDataComponent {
     row = row || this.data;
     components = components && _.isArray(components) ? components : this.getComponents();
 
-    return components.reduce((valid, comp) => {
-      return comp.checkData(data, flags, this.dataValue) && valid;
-    }, Component.prototype.checkData.call(this, data, flags, row));
-  }
-
-  checkChildComponentsValidity(data, dirty, row, silentCheck, isParentValid) {
-    return super.checkChildComponentsValidity(data, dirty, this.dataValue, silentCheck, isParentValid);
+    Component.prototype.checkData.call(this, data, flags, row);
+    components.forEach((comp) => comp.checkData(data, flags, this.dataValue));
   }
 
   focus() {

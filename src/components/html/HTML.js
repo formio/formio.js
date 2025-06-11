@@ -6,7 +6,7 @@ export default class HTMLComponent extends Component {
     return Component.schema({
       label: 'HTML',
       type: 'htmlelement',
-      tag: 'p',
+      tag: 'div',
       attrs: [],
       content: '',
       input: false,
@@ -45,13 +45,15 @@ export default class HTMLComponent extends Component {
     }
 
     const submission = _.get(this.root, 'submission', {});
-    const content = this.component.content ? this.interpolate(this.component.content, {
-      metadata: submission.metadata || {},
-      submission: submission,
-      data: this.rootValue,
-      row: this.data
+    const content = this.component.content ? this.interpolate(
+      this.sanitize(this.component.content, this.shouldSanitizeValue),
+      {
+        metadata: submission.metadata || {},
+        submission: submission,
+        data: this.rootValue,
+        row: this.data
     }) : '';
-    return this.sanitize(content, this.shouldSanitizeValue);
+    return content;
   }
 
   get singleTags() {
@@ -60,9 +62,21 @@ export default class HTMLComponent extends Component {
 
   checkRefreshOn(changed) {
     super.checkRefreshOn(changed);
-    if (!this.builderMode && this.component.refreshOnChange && this.element &&
-      !_.isUndefined(changed) && ((_.isBoolean(changed) && changed) || !_.isEmpty(changed)) &&
-      this.conditionallyVisible(this.data, this.row)) {
+    let visible;
+    if (this.hasCondition()) {
+      visible = !this.conditionallyHidden();
+    }
+    else {
+      visible = !this.component.hidden;
+    }
+    const shouldSetContent = !this.builderMode
+      && this.component.refreshOnChange
+      && this.element
+      && !_.isUndefined(changed)
+      && ((_.isBoolean(changed) && changed) || !_.isEmpty(changed))
+      && visible;
+
+    if (shouldSetContent) {
       this.setContent(this.element, this.renderContent());
     }
   }
@@ -99,8 +113,8 @@ export default class HTMLComponent extends Component {
   attach(element) {
     this.loadRefs(element, { html: 'single' });
     this.dataReady.then(() => {
-      if (this.element) {
-        this.setContent(this.elemet, this.content);
+      if (this.refs.html) {
+        this.setContent(this.refs.html, this.content);
       }
     });
     return super.attach(element);

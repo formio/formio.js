@@ -1,7 +1,7 @@
 /* global Quill */
 import TextFieldComponent from '../textfield/TextField';
 import _ from 'lodash';
-import { uniqueName, getBrowserInfo } from '../../utils/utils';
+import { uniqueName, getBrowserInfo } from '../../utils';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -65,7 +65,15 @@ export default class TextAreaComponent extends TextFieldComponent {
     info.content = value;
     if ((this.options.readOnly || this.disabled) && !this.isHtmlRenderMode()) {
       const elementStyle = this.info.attr.style || '';
-      const children = `<div ref="input" class="formio-editor-read-only-content" ${elementStyle ? `style='${elementStyle}'` : ''}></div>`;
+      const children = `
+        <div ${this._referenceAttributeName}="input"
+          class="formio-editor-read-only-content"
+          ${elementStyle ? `style='${elementStyle}'` : ''}
+          role="textbox"
+          aria-multiline="true"
+          aria-readonly="true"
+        >
+        </div>`;
 
       return this.renderTemplate('well', {
         children,
@@ -89,8 +97,8 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   /**
    * Updates the editor value.
-   *
-   * @param newValue
+   * @param {number} index - The index of the editor.
+   * @param {any} newValue - The new editor value.
    */
   updateEditorValue(index, newValue) {
     newValue = this.getConvertedValue(this.trimBlanks(newValue));
@@ -149,7 +157,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         case 'quill':
           // Normalize the configurations for quill.
           if (settings.hasOwnProperty('toolbarGroups') || settings.hasOwnProperty('toolbar')) {
-            console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
+            console.warn(this.t('needConfigurationForQuill'));
             settings = this.wysiwygDefault.quill;
           }
 
@@ -232,7 +240,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     const quillInstance = moduleInstance.quill;
 
     if (!files || !files.length) {
-      console.warn('No files selected');
+      console.warn(this.t('noFilesSelected'));
       return;
     }
 
@@ -269,7 +277,7 @@ export default class TextAreaComponent extends TextFieldComponent {
               })
           , Quill.sources.USER);
       }).catch(error => {
-      console.warn('Quill image upload failed');
+      console.warn(this.t('quillImageUploadFailed'));
       console.warn(error);
       quillInstance.enable(true);
     });
@@ -353,6 +361,31 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   get isJsonValue() {
     return this.component.as && this.component.as === 'json';
+  }
+
+  /**
+   * Normalize values coming into updateValue. For example, depending on the configuration, string value `"true"` will be normalized to boolean `true`.
+   * @param {*} value - The value to normalize
+   * @returns {*} - Returns the normalized value
+   */
+  normalizeValue(value) {
+    if (this.component.multiple && Array.isArray(value)) {
+      return value.map((singleValue) => this.normalizeSingleValue(singleValue));
+    }
+
+    return super.normalizeValue(this.normalizeSingleValue(value));
+  }
+
+  normalizeSingleValue(value) {
+    if (_.isNil(value)) {
+      return;
+    }
+
+    return this.isJsonValue ? value : String(value);
+  }
+
+  isSingleInputValue() {
+    return !this.component.multiple;
   }
 
   setConvertedValue(value, index) {
@@ -588,7 +621,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           }
           this.element.scrollIntoView();
         }).catch((err) => {
-          console.warn('An editor did not initialize properly when trying to focus:', err);
+          console.warn(this.t('editorFocusError'), err);
         });
         break;
       }
@@ -597,7 +630,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           this.editors[0].focus();
           this.element.scrollIntoView();
         }).catch((err) => {
-          console.warn('An editor did not initialize properly when trying to focus:', err);
+          console.warn(this.t('editorFocusError'), err);
         });
         break;
       }
@@ -605,7 +638,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         this.editorsReady[0]?.then(() => {
           this.editors[0].focus();
         }).catch((err) => {
-          console.warn('An editor did not initialize properly when trying to focus:', err);
+          console.warn(this.t('editorFocusError'), err);
         });
         break;
       }

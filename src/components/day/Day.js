@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import moment from 'moment';
 import Field from '../_classes/field/Field';
-import { boolValue, componentValueTypes, getComponentSavedTypes, getLocaleDateFormatInfo } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypes, getLocaleDateFormatInfo } from '../../utils';
+import { getDayFormat } from '@formio/core';
 
 export default class DayComponent extends Field {
   static schema(...extend) {
@@ -26,7 +27,8 @@ export default class DayComponent extends Field {
           required: false
         }
       },
-      dayFirst: false
+      dayFirst: false,
+      defaultValue: ''
     }, ...extend);
   }
 
@@ -53,13 +55,19 @@ export default class DayComponent extends Field {
     return getComponentSavedTypes(schema) || [componentValueTypes.string];
   }
 
+  // Empty value used before 9.3.x
+  static oldEmptyValue = '00/00/0000';
+
   constructor(component, options, data) {
-    if (component.maxDate && component.maxDate.indexOf('moment(') === -1) {
-      component.maxDate = moment(component.maxDate, 'YYYY-MM-DD').toISOString();
+    if (options && !options.inFormBuilder && !options.building) {
+      if (component.maxDate && component.maxDate.indexOf('moment(') === -1) {
+        component.maxDate = moment(component.maxDate, 'YYYY-MM-DD').toISOString();
+      }
+      if (component.minDate && component.minDate.indexOf('moment(') === -1) {
+        component.minDate = moment(component.minDate, 'YYYY-MM-DD').toISOString();
+      }
     }
-    if (component.minDate && component.minDate.indexOf('moment(') === -1) {
-      component.minDate = moment(component.minDate, 'YYYY-MM-DD').toISOString();
-    }
+
     super(component, options, data);
   }
 
@@ -69,11 +77,10 @@ export default class DayComponent extends Field {
 
   /**
    * The empty value for day component.
-   *
-   * @return {'00/00/0000'}
+   * @returns {''} - The empty value of the day component.
    */
   get emptyValue() {
-    return '00/00/0000';
+    return '';
   }
 
   get valueMask() {
@@ -120,6 +127,13 @@ export default class DayComponent extends Field {
     return info;
   }
 
+  isEmpty(value = this.dataValue) {
+    if (value === DayComponent.oldEmptyValue) {
+      return true
+    }
+    return super.isEmpty(value);
+  }
+
   inputDefinition(name) {
     let min, max;
     if (name === 'day') {
@@ -141,7 +155,7 @@ export default class DayComponent extends Field {
         id: `${this.component.key}-${name}`,
         class: `form-control ${this.transform('class', `formio-day-component-${name}`)}`,
         type: this.component.fields[name].type === 'select' ? 'select' : 'number',
-        placeholder: this.component.fields[name].placeholder,
+        placeholder: this.t(this.component.fields[name].placeholder),
         step: 1,
         min,
         max,
@@ -186,7 +200,7 @@ export default class DayComponent extends Field {
     this._months = [
       {
         value: '',
-        label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '')
+        label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('month') : '')
       },
       { value: 1, label: 'January' },
       { value: 2, label: 'February' },
@@ -234,7 +248,6 @@ export default class DayComponent extends Field {
 
   init() {
     super.init();
-    this.validators = this.validators.concat(['day', 'maxDate', 'minDate', 'minYear', 'maxYear']);
 
     const minYear = this.component.fields.year.minYear;
     const maxYear = this.component.fields.year.maxYear;
@@ -294,7 +307,7 @@ export default class DayComponent extends Field {
         this.saveCaretPosition(element, name);
       }
       catch (err) {
-        console.warn('An error occurred while trying to save caret position', err);
+        console.warn(this.t('caretPositionSavingError'), err);
       }
       this.updateValue(null, {
         modified: true,
@@ -323,7 +336,7 @@ export default class DayComponent extends Field {
         if (!this.component.fields.day.hide && maxDay) {
           this.refs.day.max = maxDay;
         }
-        if (maxDay && day > maxDay) {
+        if (maxDay && day > maxDay && this.refs.day) {
           this.refs.day.value = this.refs.day.max;
         }
         updateValueAndSaveFocus(this.refs.month, 'month')();
@@ -380,6 +393,11 @@ export default class DayComponent extends Field {
   }
 
   normalizeValue(value) {
+    // Adjust the value from old to new format
+    if (value === DayComponent.oldEmptyValue) {
+      value = '';
+    }
+
     if (!value || this.valueMask.test(value)) {
       return value;
     }
@@ -388,47 +406,72 @@ export default class DayComponent extends Field {
     const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const defaultValue = this.component.defaultValue ? this.component.defaultValue.split('/') : '';
 
-    const getNextPart = (shouldTake, defaultValue) =>
-      dateParts.push(shouldTake ? valueParts.shift() : defaultValue);
+    let defaultDay = '';
+    let defaultMonth = '';
+    let defaultYear = '';
+    if(defaultValue) {
+      const hasHiddenFields = defaultValue.length !==3;
+      defaultDay = hasHiddenFields ? this.getDayWithHiddenFields(defaultValue).day : defaultValue[DAY];
+      defaultMonth = hasHiddenFields ? this.getDayWithHiddenFields(defaultValue).month : defaultValue[MONTH];
+      defaultYear = hasHiddenFields ? this.getDayWithHiddenFields(defaultValue).year : defaultValue[YEAR];
+    }
+
+    if(this.options.building && defaultValue.length ===3) {
+      return this.component.defaultValue;
+    }
+
+    const getNextPart = (shouldTake, defaultValue) => {
+       // Only push the part if it's not an empty string
+      const part = shouldTake ? valueParts.shift() : defaultValue;
+      if (part !== '') {
+        dateParts.push(part);
+      }
+    }
 
     if (this.dayFirst) {
-      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '00');
+      getNextPart(this.showDay, defaultDay);
     }
 
-    getNextPart(this.showMonth, defaultValue ? defaultValue[MONTH] : '00');
+    getNextPart(this.showMonth, defaultMonth);
 
     if (!this.dayFirst) {
-      getNextPart(this.showDay, defaultValue ? defaultValue[DAY] : '00');
+      getNextPart(this.showDay, defaultDay);
     }
 
-    getNextPart(this.showYear, defaultValue ? defaultValue[YEAR] : '0000');
-
+    getNextPart(this.showYear, defaultYear);
     return dateParts.join('/');
   }
 
   /**
-   * Set the value at a specific index.
-   *
-   * @param index
-   * @param value
+   * Set the value at a specific index and updates the component's refs.
+   * @param {number} index - The index to set.
+   * @param {any} value - The value to set.
+   * @returns {null|void} - Returns null if the value is invalid, otherwise void.
    */
   setValueAt(index, value) {
     // temporary solution to avoid input reset
     // on invalid date.
-    if (!value || value === 'Invalid date') {
+    if (value === 'Invalid date') {
       return null;
     }
+    let day, month, year;
     const parts = value.split('/');
-    let day;
-    if (this.component.dayFirst) {
-      day = parts.shift();
-    }
-    const month = parts.shift();
-    if (!this.component.dayFirst) {
-      day = parts.shift();
-    }
-    const year = parts.shift();
 
+    if (parts.length !== 3) {
+      day = this.getDayWithHiddenFields(parts).day;
+      month = this.getDayWithHiddenFields(parts).month;
+      year = this.getDayWithHiddenFields(parts).year;
+    }
+    else {
+      if (this.component.dayFirst) {
+        day = parts.shift();
+      }
+      month = parts.shift();
+      if (!this.component.dayFirst) {
+        day = parts.shift();
+      }
+      year = parts.shift();
+    }
     if (this.refs.day && this.showDay) {
       this.refs.day.value = day === '00' ? '' : parseInt(day, 10);
     }
@@ -437,6 +480,30 @@ export default class DayComponent extends Field {
     }
     if (this.refs.year && this.showYear) {
       this.refs.year.value = year === '0000' ? '' : parseInt(year, 10);
+    }
+  }
+
+  getDayWithHiddenFields(parts) {
+    let [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+    if (!this.showDay) {
+      MONTH = MONTH === 0 ? 0 : MONTH - 1;
+      YEAR = YEAR - 1;
+      DAY = null;
+    }
+    if (!this.showMonth) {
+      if (!_.isNull(DAY)) {
+        DAY = DAY === 0 ? 0 : DAY - 1;
+      }
+      YEAR = YEAR - 1;
+      MONTH = null;
+    }
+    if (!this.showYear) {
+      YEAR = null;
+    }
+    return {
+      month: _.isNull(MONTH) ? '' : parts[MONTH],
+      day: _.isNull(DAY) ? '' : parts[DAY],
+      year: _.isNull(YEAR) ? '' : parts[YEAR],
     }
   }
 
@@ -470,34 +537,16 @@ export default class DayComponent extends Field {
 
   /**
    * Get the format for the value string.
-   * @returns {string}
+   * @returns {string} - the format for the value string.
    */
   get format() {
-    let format = '';
-    if (this.component.dayFirst && this.showDay) {
-      format += 'D/';
-    }
-    if (this.showMonth) {
-      format += 'M/';
-    }
-    if (!this.component.dayFirst && this.showDay) {
-      format += 'D/';
-    }
-    if (this.showYear) {
-      format += 'YYYY';
-      return format;
-    }
-    else {
-      // Trim off the "/" from the end of the format string.
-      return format.length ? format.substring(0, format.length - 1) : format;
-    }
+    return getDayFormat(this.component);
   }
 
   /**
    * Return the date for this component.
-   *
-   * @param value
-   * @return {*}
+   * @param {any} value - The value to convert to a date.
+   * @returns {null|string} - The date string.
    */
   getDate(value) {
     let defaults = [], day, month, year;
@@ -508,30 +557,43 @@ export default class DayComponent extends Field {
       defaults = defaultValue.split('/').map(x => parseInt(x, 10));
     }
 
+    const isModalEditClosed = this.component.modalEdit && !this.componentModal.isOpened;
     if (this.showDay && this.refs.day) {
-      day = parseInt(this.refs.day.value, 10);
+      day = (this.refs.day.value === '' && !isModalEditClosed) ? '' : parseInt(this.refs.day.value, 10);
     }
-    if (day === undefined || _.isNaN(day)) {
-      day = defaults[DAY] && !_.isNaN(defaults[DAY]) ? defaults[DAY] : 0;
+    if (day === undefined || _.isNaN(day) || value) {
+      day = (defaults.length !== 3)
+        ? this.getDayWithHiddenFields(defaults).day
+        : (defaults[DAY] && !_.isNaN(defaults[DAY]) ? defaults[DAY] : 0);
     }
 
     if (this.showMonth && this.refs.month) {
       // Months are 0 indexed.
-      month = parseInt(this.refs.month.value, 10);
+      month = (this.refs.month.value === '' && !isModalEditClosed) ? '' : parseInt(this.refs.month.value, 10);
     }
-    if (month === undefined || _.isNaN(month)) {
-      month = defaults[MONTH] && !_.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0;
+    if (month === undefined || _.isNaN(month) || value) {
+      month = (defaults.length !== 3)
+        ? this.getDayWithHiddenFields(defaults).month
+        : (defaults[MONTH] && !_.isNaN(defaults[MONTH]) ? defaults[MONTH] : 0);
     }
 
     if (this.showYear && this.refs.year) {
-      year = parseInt(this.refs.year.value);
+      year = (this.refs.year.value === '' && !isModalEditClosed) ? '' : parseInt(this.refs.year.value);
     }
-    if (year === undefined || _.isNaN(year)) {
-      year = defaults[YEAR] && !_.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0;
+    if (year === undefined || _.isNaN(year) || value) {
+      year = (defaults.length !== 3)
+        ? this.getDayWithHiddenFields(defaults).year
+        : (defaults[YEAR] && !_.isNaN(defaults[YEAR]) ? defaults[YEAR] : 0);
     }
 
     let result;
     if (!day && !month && !year) {
+      if (!isModalEditClosed) {
+        this.dataValue = this.emptyValue;
+        if (this.options.building) {
+          this.triggerChange();
+        }
+      }
       return null;
     }
 
@@ -551,8 +613,8 @@ export default class DayComponent extends Field {
   }
 
   /**
-   * Return the date object for this component.
-   * @returns {Date}
+   * Return the date string for this component.
+   * @returns {string|null} - The date string for this component.
    */
   get date() {
     return this.getDate();
@@ -560,8 +622,7 @@ export default class DayComponent extends Field {
 
   /**
    * Return the raw value.
-   *
-   * @returns {Date}
+   * @returns {string} - The raw value of the component.
    */
   get validationValue() {
     return this.dataValue;
@@ -574,9 +635,8 @@ export default class DayComponent extends Field {
 
   /**
    * Get the value at a specific index.
-   *
-   * @param index
-   * @returns {*}
+   * @param {number} index - The index to get the value from.
+   * @returns {*} - The value at index.
    */
   getValueAt(index) {
     const date = this.date || this.emptyValue;
@@ -592,11 +652,13 @@ export default class DayComponent extends Field {
 
   /**
    * Get the input value of the date.
-   *
-   * @param value
-   * @return {null}
+   * @param {any} value - The value to convert to a string.
+   * @returns {string|null} - The string value of the date.
    */
   getValueAsString(value) {
+    if (!value) {
+      return '';
+    }
     return this.getDate(value) || '';
   }
 
@@ -630,14 +692,27 @@ export default class DayComponent extends Field {
 
   isPartialDay(value) {
     if (!value) {
-      return false;
+      return true;
     }
     const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const values = value.split('/');
+    if(values.length < 3){
+      return true;
+    }
     return (values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000');
   }
 
   getValidationFormat() {
-    return this.dayFirst ? 'DD-MM-YYYY' : 'MM-DD-YYYY';
+    let validationFormat = this.dayFirst ? 'DD-MM-YYYY' : 'MM-DD-YYYY';
+    if (this.fields?.day?.hide) {
+      validationFormat = validationFormat.replace('DD-', '');
+    }
+    if (this.fields?.month?.hide) {
+      validationFormat = validationFormat.replace('MM-', '');
+    }
+    if ( this.fields?.year?.hide ) {
+      validationFormat = validationFormat.replace('-YYYY', '');
+    }
+    return validationFormat;
   }
 }

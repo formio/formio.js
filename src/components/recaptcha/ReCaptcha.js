@@ -14,18 +14,22 @@ export default class ReCaptchaComponent extends Component {
   }
 
   static get builderInfo() {
-    return {
-      title: 'reCAPTCHA',
-      group: 'premium',
-      icon: 'refresh',
-      documentation: '/userguide/form-building/premium-components#recaptcha',
-      weight: 40,
-      schema: ReCaptchaComponent.schema()
-    };
+    return {};
   }
 
   static savedValueTypes() {
     return [];
+  }
+
+  static get conditionOperatorsSettings() {
+    return {
+      ...super.conditionOperatorsSettings,
+      operators: ['isEmpty', 'isNotEmpty'],
+    };
+  }
+
+  static get serverConditionSettings() {
+    return ReCaptchaComponent.conditionOperatorsSettings;
   }
 
   render() {
@@ -50,7 +54,7 @@ export default class ReCaptchaComponent extends Component {
         this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);
       }
       else {
-        console.warn('There is no Site Key specified in settings in form JSON');
+        console.warn(this.t('noSiteKey'));
       }
     }
   }
@@ -66,7 +70,7 @@ export default class ReCaptchaComponent extends Component {
   async verify(actionName) {
     const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');
     if (!siteKey) {
-      console.warn('There is no Site Key specified in settings in form JSON');
+      console.warn(this.t('noSiteKey'));
       return;
     }
     if (!this.recaptchaApiReady) {
@@ -115,14 +119,14 @@ export default class ReCaptchaComponent extends Component {
     return Formio.makeStaticRequest(`${Formio.projectUrl}/recaptcha?recaptchaToken=${token}`);
   }
 
-  checkComponentValidity(data, dirty, row, options = {}) {
+  checkComponentValidity(data, dirty, row, options = {}, errors = []) {
     data = data || this.rootValue;
     row = row || this.data;
     const { async = false } = options;
 
     // Verification could be async only (which for now is only the case for server-side validation)
     if (!async) {
-      return super.checkComponentValidity(data, dirty, row, options);
+      return super.checkComponentValidity(data, dirty, row, options, errors);
     }
 
     const componentData = row[this.component.key];
