@@ -1109,6 +1109,7 @@ describe('DataGrid conditional logic', () => {
         }, 100);
       }, 100);
     }).catch((err) => done(err));
+  })
 })
 
 describe('Wizard Form with Grid with Nested Form validation', () => {
