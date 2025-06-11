@@ -226,7 +226,17 @@ function getConditionalPathsRecursive(conditionPaths, data) {
 
       const splittedConditionPath = conditionComponentPath.split('.');
 
-      const conditionalPaths = instance?.parent?.type === 'datagrid' || instance?.parent?.type === 'editgrid'  ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
+      const checkParentTypeInTree = (instance, componentType) => {
+        if (!instance?.parent) {
+          return false;
+        }
+
+        return instance?.parent.type === componentType || checkParentTypeInTree(instance.parent, componentType);
+      };
+
+      const conditionalPaths = checkParentTypeInTree(instance, 'datagrid') || checkParentTypeInTree(instance, 'editgrid')
+        ? []
+        : getConditionalPathsRecursive(splittedConditionPath, data);
 
       if (conditionalPaths.length > 0) {
         return conditionalPaths.map((path) => {
@@ -351,7 +361,7 @@ function getRow(component, row, instance, conditional) {
   }
   const dataParent = getDataParentComponent(instance);
   if (dataParent) {
-    const parentPath = dataParent.paths?.localDataPath;
+    const parentPath = dataParent.paths?.localPath;
     const isTriggerCondtionComponentPath = condition.when || !condition.conditions
       ? condition.when?.startsWith(dataParent.paths?.localPath)
       : _.some(condition.conditions, cond => cond.component.startsWith(dataParent.paths?.localPath));
