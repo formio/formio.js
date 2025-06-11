@@ -2,15 +2,16 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import Harness from '../harness';
 import WebformBuilder from '../../src/WebformBuilder';
+import BuilderUtils from '../../src/utils/builder';
 import Builders from '../../src/builders';
 import { Formio } from '../../src/Formio';
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase, uniqueApiKeysTranslation } from '../formtest';
-import sameApiKeysLayoutComps from '../forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../forms/testApiKeysUniquifying';
 import formBasedOnWizard from '../forms/formBasedOnWizard';
 import formWithFormController from '../forms/formWithFormController';
 import simpleWebform from '../forms/simpleWebform';
 import formWithNumericKeys from '../forms/formWithNumericKeys';
+import testUniqueApiKey from '../forms/testUniqueApiKey';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -87,10 +88,29 @@ describe('WebformBuilder tests', function() {
 
   it('Should not show unique API error when components with same keys are inside and outside of the Data component', (done) => {
     const builder = Harness.getBuilder();
-    builder.webform.setForm(uniqueApiKeys).then(() => {
+    builder.webform.setForm(testUniqueApiKey).then(() => {
+      const tabs = builder.webform.getComponent('tabs1');
+      const newTextField = {
+        "label": "Text Field",
+        "applyMaskOn": "change",
+        "tableView": true,
+        "validateWhenHidden": false,
+        "key": "textField",
+        "type": "textfield",
+        "input": true
+        }
+      BuilderUtils.uniquify(builder.findNamespaceRoot(tabs), newTextField);
+      assert.equal(newTextField.key, 'textField3');
+      done();
+    }).catch(done);
+  });
+
+  it('Should uniquify the key for the component inside layout component that inside container', (done) => {
+    const builder = Harness.getBuilder();
+    builder.webform.setForm(uniqueApiKeysTranslation).then(()=>{
       builder.highlightInvalidComponents();
       const component = builder.webform.getComponent(['textField']);
-      assert.equal(component.visibleErrors.length, 0);
+      assert.equal(component.visibleErrors.length, 1);
       done();
     }).catch(done);
   });
@@ -110,16 +130,6 @@ describe('WebformBuilder tests', function() {
     builder.setForm(resourceKeyCamelCase).then(() => {
       const component = builder.webform.getComponent('CalendarID');
       assert.equal(!!document.querySelector(`[name='data[${component.key}]']`), true);
-      done();
-    }).catch(done);
-  });
-
-  it('Should show unique API error when layout components have same keys', (done) => {
-    const builder = Harness.getBuilder();
-    builder.webform.setForm(sameApiKeysLayoutComps).then(() => {
-      builder.highlightInvalidComponents();
-      const component = builder.webform.getComponent(['tabs']);
-      assert.equal(component.visibleErrors.length, 1, 'Should show Unique API Key error');
       done();
     }).catch(done);
   });
