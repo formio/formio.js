@@ -1318,11 +1318,18 @@ export default class WebformBuilder extends Component {
   highlightInvalidComponents() {
     const repeatablePaths = this.findRepeatablePaths();
     let hasInvalidComponents = false;
+    // Matches anything expect letters and  '_' at the beginning of the key and anything except of letters, numbers,
+    // '-', '.' and '_' in the rest of the key
+    const badCharacters = /^[^A-Za-z_]+|[^A-Za-z0-9\-._]+/g;
 
     this.webform.everyComponent((comp) => {
       const path = comp.path;
       if (repeatablePaths.includes(path)) {
         comp.setCustomValidity(this.t('apiKey', { key: comp.key }));
+        hasInvalidComponents = true;
+      }
+      else if (comp.key.replace(badCharacters, '') === '') {
+        comp.setCustomValidity(this.t('apiKeyNotValid', { key: comp.key }));
         hasInvalidComponents = true;
       }
       else {

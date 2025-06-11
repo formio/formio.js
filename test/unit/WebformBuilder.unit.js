@@ -10,6 +10,7 @@ import testApiKeysUniquifying from '../forms/testApiKeysUniquifying';
 import formBasedOnWizard from '../forms/formBasedOnWizard';
 import formWithFormController from '../forms/formWithFormController';
 import simpleWebform from '../forms/simpleWebform';
+import formWithNumericKeys from '../forms/formWithNumericKeys';
 import testUniqueApiKey from '../forms/testUniqueApiKey';
 
 global.requestAnimationFrame = (cb) => cb();
@@ -387,6 +388,16 @@ describe('WebformBuilder tests', function() {
           done();
         }, 200);
       }, 200)
+    }).catch(done);
+  });
+
+  it('Should show API error when components have invalid API keys', (done) => {
+    const builder = Harness.getBuilder();
+    builder.webform.setForm(formWithNumericKeys).then(() => {
+      builder.highlightInvalidComponents();
+      const component = builder.webform.components[1];
+      assert.equal(component.refs.messageContainer.textContent.trim(), 'apiKeyNotValid');
+      done();
     }).catch(done);
   })
 
