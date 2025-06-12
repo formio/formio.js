@@ -737,7 +737,7 @@ export default class NestedComponent extends Field {
 
   validationProcessor({ scope, data, row, instance, paths }, flags) {
     const { dirty } = flags;
-    if (this.root.hasSubWizards && this.page !== this.root.page) {
+    if (this.root && this.root.hasSubWizards && this.page !== this.root.page) {
       instance = this.componentsMap?.hasOwnProperty(paths.dataPath)
         ? this.componentsMap[paths.dataPath]
         : this.getComponent(paths.dataPath);
