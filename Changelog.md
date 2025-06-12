@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.2.0-rc.9
+### Changed
+ - FIO-10253: Fixes an issue where duplicated API key error will be shown for Checkbox component with radio type
+
 ## 5.2.0-rc.8
 ### Changed
  - Updated @formio/core@2.5.0-rc.5
