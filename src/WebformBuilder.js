@@ -10,6 +10,7 @@ import {
   getStringFromComponentPath,
   eachComponent,
   getComponent,
+  componentInfo
 } from './utils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
@@ -1302,15 +1303,18 @@ export default class WebformBuilder extends Component {
     const keys = new Map();
     eachComponent(this.form.components, (comp, path, components, parent, paths) => {
       const isRadioCheckbox = comp.type === 'checkbox' && comp.inputType === 'radio';
-      if (keys.has(paths.dataPath)) {
-        const onlyRadioCheckboxes= repeatablePaths[paths.dataPath]?.onlyRadioCheckboxes === false ? false : isRadioCheckbox;
-        repeatablePaths[paths.dataPath] = {
-          comps: [...(repeatablePaths[paths.dataPath]?.comps || []), keys.get(paths.dataPath), comp],
-          onlyRadioCheckboxes,
-        };
-      }
-      else {
-        keys.set(paths.dataPath, comp);
+      const isLayout = componentInfo(comp).layout;
+      if (!isLayout) {
+        if (keys.has(paths.dataPath)) {
+          const onlyRadioCheckboxes= repeatablePaths[paths.dataPath]?.onlyRadioCheckboxes === false ? false : isRadioCheckbox;
+          repeatablePaths[paths.dataPath] = {
+            comps: [...(repeatablePaths[paths.dataPath]?.comps || []), keys.get(paths.dataPath), comp],
+            onlyRadioCheckboxes,
+          };
+        }
+        else {
+          keys.set(paths.dataPath, comp);
+        }
       }
     }, true);
     const componentsWithRepeatablePaths = [];
@@ -1326,11 +1330,21 @@ export default class WebformBuilder extends Component {
   highlightInvalidComponents() {
     const repeatablePathsComps = this.findComponentsWithRepeatablePaths();
     let hasInvalidComponents = false;
+    // Matches anything expect letters and  '_' at the beginning of the key and anything except of letters, numbers,
+    // '-', '.' and '_' in the rest of the key
+    const badCharacters = /^[^A-Za-z_]+|[^A-Za-z0-9\-._]+/g;
 
     this.webform.everyComponent((comp) => {
       if (repeatablePathsComps.includes(comp.component)) {
         comp.setCustomValidity(this.t('apiKey', { key: comp.key }));
         hasInvalidComponents = true;
+      }
+      else if (comp.key.replace(badCharacters, '') === '') {
+        comp.setCustomValidity(this.t('apiKeyNotValid', { key: comp.key }));
+        hasInvalidComponents = true;
+      }
+      else {
+        comp.setCustomValidity();
       }
     });
 
