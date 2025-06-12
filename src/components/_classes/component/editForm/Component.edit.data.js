@@ -77,6 +77,25 @@ export default [
         ]
       },
       {
+        name: 'hide',
+        trigger: {
+          type: 'javascript',
+          javascript: 'result = instance.root.options.editJson === false;'
+        },
+        actions: [
+          {
+            name: 'hide',
+            type: 'property',
+            property: {
+              label: 'Hidden',
+              value: 'hidden',
+              type: 'boolean'
+            },
+            state: true
+          }
+        ]
+      },
+      {
         name: 'disabledToolTip',
         trigger: {
           type: 'javascript',

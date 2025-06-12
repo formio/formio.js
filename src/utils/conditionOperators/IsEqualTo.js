@@ -1,6 +1,6 @@
 import ConditionOperator from './ConditionOperator';
 import _ from 'lodash';
-import { compareSelectResourceWithObjectTypeValues, isSelectResourceWithObjectValue } from '../utils';
+import { compareSelectResourceWithObjectTypeValues, isSelectResourceWithObjectValue } from '../';
 
 export default class IsEqualTo extends ConditionOperator {
     static get operatorKey() {

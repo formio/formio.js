@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import ComponentModal from '../_classes/componentModal/ComponentModal';
 import EventEmitter from 'eventemitter3';
-import {isMongoId, eachComponent, componentValueTypes} from '../../utils/utils';
+import {isMongoId, eachComponent, componentValueTypes} from '../../utils';
 import { Formio } from '../../Formio';
 import Form from '../../Form';
 
@@ -109,6 +109,10 @@ export default class FormComponent extends Component {
     return this.createSubForm();
   }
 
+  shouldConditionallyClearOnPristine() {
+    return !this.hasSetValue && super.shouldConditionallyClearOnPristine();
+  }
+
   get dataReady() {
     return this.subForm?.dataReady || this.subFormReady || Promise.resolve();
   }
@@ -124,6 +128,11 @@ export default class FormComponent extends Component {
 
   get emptyValue() {
     return { data: {} };
+  }
+
+  // In order for the subform values to set properly, we must always say that nested forms have a default value.
+  get hasDefaultValue() {
+    return true;
   }
 
   get ready() {
@@ -302,6 +311,10 @@ export default class FormComponent extends Component {
           this.createSubForm(true);
         }
 
+        if (!this.subFormReady) {
+          return Promise.resolve();
+        }
+
         return this.subFormReady.then(() => {
           this.empty(element);
           if (this.options.builder) {
@@ -318,12 +331,13 @@ export default class FormComponent extends Component {
             }
             this.subForm.attach(element);
             this.valueChanged = this.hasSetValue;
-
-            if (!this.valueChanged && this.dataValue.state !== 'submitted') {
-              this.setDefaultValue();
-            }
-            else {
-              this.restoreValue();
+            if (!this.shouldConditionallyClear()) {
+              if (!this.valueChanged && this.dataValue.state !== 'submitted') {
+                this.setDefaultValue();
+              }
+              else {
+                this.restoreValue();
+              }
             }
           }
           if (!this.builderMode && this.component.modalEdit) {
@@ -452,9 +466,10 @@ export default class FormComponent extends Component {
         const componentsMap = this.componentsMap;
         const formComponentsMap = this.subForm.componentsMap;
         _.assign(componentsMap, formComponentsMap);
-        this.component.components = this.subForm.components.map((comp) => comp.component);
+        this.component.components = this.subForm._form?.components;
+        this.component.display = this.subForm._form?.display;
         this.subForm.on('change', () => {
-          if (this.subForm) {
+          if (this.subForm && !this.shouldConditionallyClear()) {
             this.dataValue = this.subForm.getValue();
             this.triggerChange({
               noEmit: true
@@ -579,7 +594,7 @@ export default class FormComponent extends Component {
    * @returns {*|boolean} - TRUE if the subform should be submitted, FALSE if it should not.
    */
   get shouldSubmit() {
-    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && (!this.conditionallyHidden() || !this.component.clearOnHide);
+    return this.subFormReady && (!this.component.hasOwnProperty('reference') || this.component.reference) && !this.shouldConditionallyClear();
   }
 
   /**
@@ -745,21 +760,7 @@ export default class FormComponent extends Component {
   }
 
   isEmpty(value = this.dataValue) {
-    return value === null || _.isEqual(value, this.emptyValue) || (this.areAllComponentsEmpty(value?.data) && !value?._id);
-  }
-
-  areAllComponentsEmpty(data) {
-    let res = true;
-    if (this.subForm) {
-      this.subForm.everyComponent((comp) => {
-        const componentValue = _.get(data, comp.key);
-        res &= comp.isEmpty(componentValue);
-      });
-    }
-    else {
-      res = false;
-    }
-    return res;
+    return value === null || _.isEqual(value, this.emptyValue);
   }
 
   getValue() {
@@ -775,6 +776,14 @@ export default class FormComponent extends Component {
       errors = errors.concat(this.subForm.errors);
     }
     return errors;
+  }
+
+  conditionallyHidden() {
+    const conditionallyHidden = super.conditionallyHidden();
+    if (this.subForm) {
+      this.subForm._conditionallyHidden = conditionallyHidden;
+    }
+    return conditionallyHidden;
   }
 
   updateSubFormVisibility() {

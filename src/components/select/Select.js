@@ -2,8 +2,15 @@ import _ from 'lodash';
 import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
 import Form from '../../Form';
-import { getRandomComponentId, boolValue, isPromise, componentValueTypes, getComponentSavedTypes, isSelectResourceWithObjectValue, removeHTML } from '../../utils/utils';
-
+import {
+  getRandomComponentId,
+  boolValue,
+  isPromise,
+  componentValueTypes,
+  getComponentSavedTypes,
+  isSelectResourceWithObjectValue,
+  removeHTML
+} from '../../utils';
 import Choices from '../../utils/ChoicesWrapper';
 
 export default class SelectComponent extends ListComponent {
@@ -415,6 +422,21 @@ export default class SelectComponent extends ListComponent {
     this.serverCount = this.downloadedResources.length;
   }
 
+  shouldResetChoicesItems(items) {
+    if (this.choices._store.choices.length !== items.length) {
+      return true;
+    }
+
+    for (let item of items) {
+      const choicesItem = this.choices._store.choices.find((i) => i.label === item.label);
+      if (!choicesItem) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   /* eslint-disable max-statements */
   setItems(items, fromSearch) {
     this.selectItems = items;
@@ -514,7 +536,14 @@ export default class SelectComponent extends ListComponent {
     });
 
     if (this.choices) {
-      this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+      this.choices.setChoices(
+        this.selectOptions,
+        'value',
+        'label',
+        true,
+        true,
+        !fromSearch && this.shouldResetChoicesItems(this.selectOptions),
+      );
     }
     else if (this.loading) {
       // Re-attach select input.
@@ -1099,8 +1128,9 @@ export default class SelectComponent extends ListComponent {
     }
 
     // Add value options.
+    const value = this.undoValueTyping(this.dataValue);
     this.addValueOptions();
-    this.setChoicesValue(this.dataValue);
+    this.setChoicesValue(value);
 
     if (this.isSelectResource && this.refs.addResource) {
       this.addEventListener(this.refs.addResource, 'click', (event) => {
@@ -1541,6 +1571,9 @@ export default class SelectComponent extends ListComponent {
       this.lazyLoadInit = true;
       const searchProperty = this.component.searchField || this.component.valueProperty;
       this.triggerUpdate(_.get(value.data || value, searchProperty, value), true);
+      this.itemsLoaded.then(() => {
+        this.setChoicesValue(value, hasPreviousValue, flags);
+      });
       return changed;
     }
 
@@ -1741,7 +1774,7 @@ export default class SelectComponent extends ListComponent {
   asString(value, options = {}) {
     value = value ?? this.getValue();
 
-    if (options.modalPreview || this.inDataTable) {
+    if (options.modalPreview || this.inDataTable || options.email) {
       if (this.inDataTable) {
         value = this.undoValueTyping(value);
       }

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Field from '../_classes/field/Field';
-import { boolValue, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypes } from '../../utils';
 
 export default class SurveyComponent extends Field {
   static schema(...extend) {
@@ -142,7 +142,7 @@ export default class SurveyComponent extends Field {
   }
 
   getInputName(question) {
-    return `${this.options.name}[${question.value}]`;
+    return `${this.options.name}[${question.value}][${this.id}]`;
   }
 
   getValueAsString(value, options) {

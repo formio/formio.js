@@ -7,7 +7,7 @@ import { GoogleAddressProvider } from '../../providers/address/GoogleAddressProv
 import Field from '../_classes/field/Field';
 import NestedComponent from '../_classes/nested/NestedComponent';
 import ContainerComponent from '../container/Container';
-import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils';
 
 export const AddressComponentMode = {
   Autocomplete: 'autocomplete',
@@ -25,7 +25,6 @@ export default class AddressComponent extends ContainerComponent {
       key: 'address',
       switchToManualModeLabel: 'Can\'t find address? Switch to manual mode.',
       provider: '',
-      providerOptions: {},
       manualModeViewString: '',
       hideLabel: false,
       disableClearIcon: false,
@@ -128,13 +127,27 @@ export default class AddressComponent extends ContainerComponent {
     }
     Field.prototype.init.call(this);
 
-    if (!this.builderMode) {
-      if (this.component.provider) {
-        const {
-          provider,
-          providerOptions,
-        } = this.component;
+    // Added for backwards compatibility
+    if (this.component.providerOptions) {
+      const {params, url, queryProperty, responseProperty, displayValueProperty } = this.component.providerOptions;
+      const key = params?.key;
+      const autocompleteOptions = params?.autocompleteOptions;
 
+      delete this.component.providerOptions
+      this.component.url = url;
+      this.component.queryProperty = queryProperty;
+      this.component.responseProperty = responseProperty;
+      this.component.displayValueProperty = displayValueProperty;
+      this.component.apiKey = key;
+      this.component.autocompleteOptions = autocompleteOptions;
+    }
+
+    let provider = this.component.provider;
+    const providerOptions = this.providerOptions;
+    const map = this.component.map;
+
+    if (!this.builderMode) {
+      if (provider) {
         if (_.get(providerOptions, 'params.subscriptionKey')) {
           _.set(providerOptions, "params['subscription-key']", _.get(providerOptions, 'params.subscriptionKey'));
           _.unset(providerOptions, 'params.subscriptionKey');
@@ -142,16 +155,9 @@ export default class AddressComponent extends ContainerComponent {
 
         this.provider = this.initializeProvider(provider, providerOptions);
       }
-      else if (this.component.map) {
+      else if (map) {
         // Fallback to legacy version where Google Maps was the only provider.
-        this.component.provider = GoogleAddressProvider.name;
-        this.component.providerOptions = this.component.providerOptions || {};
-
-        const {
-          map,
-          provider,
-          providerOptions,
-        } = this.component;
+        provider = this.component.provider = GoogleAddressProvider.name;
 
         const {
           key,
@@ -320,6 +326,17 @@ export default class AddressComponent extends ContainerComponent {
       : null;
   }
 
+  get providerOptions() {
+    return {
+      params: {subscriptionKey: this.component.subscriptionKey, key: this.component.apiKey, ...this.component.params},
+      url: this.component.url,
+      queryProperty: this.component.queryProperty,
+      responseProperty: this.component.responseProperty,
+      displayValueProperty: this.component.displayValueProperty,
+      autocompleteOptions: this.component.autocompleteOptions
+    }
+  }
+
   get removeValueIcon() {
     return this.refs
       ? (this.refs[AddressComponent.removeValueIconRef] || null)
@@ -458,10 +475,8 @@ export default class AddressComponent extends ContainerComponent {
 
     if (!this.builderMode) {
       if (!this.provider && this.component.provider) {
-        const {
-          provider,
-          providerOptions,
-        } = this.component;
+        const provider = this.component.provider;
+        const providerOptions = this.providerOptions;
         this.provider = this.initializeProvider(provider, providerOptions);
       }
     }

@@ -32,17 +32,19 @@ import wizardWithPanel from '../forms/wizardWithPanel';
 import wizardWithWizard from '../forms/wizardWithWizard';
 import simpleTwoPagesWizard from '../forms/simpleTwoPagesWizard';
 import wizardWithNestedWizardInEditGrid from '../forms/wizardWithNestedWizardInEditGrid';
+import wizardWithNestedWizardsAdvConditional from '../forms/wizardWithNestedWizardsAdvConditional';
 import wizardNavigateOrSaveOnEnter from '../forms/wizardNavigateOrSaveOnEnter';
 import nestedConditionalWizard from '../forms/nestedConditionalWizard';
 import wizardWithPrefixComps from '../forms/wizardWithPrefixComps';
 import wizardPermission from '../forms/wizardPermission';
 import formWithFormController from '../forms/formWithFormController';
-import { fastCloneDeep } from '../../src/utils/utils';
+import { fastCloneDeep } from '../../src/utils';
 import formsWithAllowOverride from '../forms/formsWithAllowOverrideComps';
 import WizardWithCheckboxes from '../forms/wizardWithCheckboxes';
 import WizardWithRequiredFields from '../forms/wizardWithRequiredFields';
 import formWithNestedWizardAndRequiredFields from '../forms/formWithNestedWizardAndRequiredFields';
 import simpleWizardWithRequiredFields from '../forms/simpleWizardWithRequiredFields';
+import wizardWithLazyLoadSelect from '../forms/wizardWithLazyLoadSelect';
 import { wait } from '../util';
 
 // eslint-disable-next-line max-statements
@@ -563,7 +565,7 @@ describe('Wizard Form with Nested Form validation', () => {
           setTimeout(() => {
             checkPage(2);
             const errors = wizard.errors;
-            assert.equal(errors.length, 1, 'Must err before next page');
+            assert.equal(errors.length, 2, 'Must err before next page');
             assert.equal(errors[0].ruleName, 'required');
             assert.equal(errors[0].message, 'Text Field is required');
             done();
@@ -1165,7 +1167,7 @@ describe('Wizard Form with Nested Form validation', () => {
         assert(errors.length > 0, 'Must err before next page');
         assert.equal(errors[0].message, 'Required Component is required');
         done();
-      }, 200);
+      }, 300);
     })
     .catch((err) => done(err));
   });
@@ -1932,6 +1934,37 @@ it('Should show tooltip for wizard pages', function(done) {
     })
       .catch((err) => done(err));
   });
+  
+  it('Should display select submission data when lazy load is checked', async () => {
+    const formElement = document.createElement('div');
+    const wizardForm =  await Formio.createForm(formElement, wizardWithLazyLoadSelect, {readOnly: true});
+    wizardForm.setSubmission({metadata: {
+        selectData: {
+          select1: {data: {label: "two"}},
+          select2: {label: "Three"}
+        },
+      },
+      data: {
+        select1: 2,
+        select2: 3
+      },
+      state: 'submitted',
+    });
+    setTimeout(() => {
+      const select1 = wizardForm.getComponent('select1');
+      assert.equal(select1.getValue(), 2);
+      assert.equal(select1.element.querySelectorAll('[aria-selected="true"] span')[0].innerHTML, 'two');
+
+      Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][1]);
+
+      setTimeout(() => {
+        assert.equal(wizardForm.page, 1);
+        const select2 = wizardForm.getComponent('select2');
+        assert.equal(select2.getValue(), 3);
+        assert.equal(select2.element.querySelectorAll('[aria-selected="true"] span')[0].innerHTML, 'Three');
+      }, 500);
+    }, 500)
+  });
 
   let wizardForm = null;
   it('Should set components errors if they are after page was changed with navigation', (done) => {
@@ -2105,6 +2138,31 @@ it('Should show tooltip for wizard pages', function(done) {
       })
       .catch(done);
   });
+
+  it('Should set correct page index after hiding a conditionally hidden page in sibling nested wizard.', async () => {
+    const formElement = document.createElement('div');
+    wizardForm = new Wizard(formElement);
+    await wizardForm.setForm(wizardWithNestedWizardsAdvConditional);
+    // navigate forward 4 pages to B2
+    // A1 -> A2 -> A3 -> B1 -> B2
+    for (let i = 0; i < 4; i++) {
+      wizardForm.nextPage();
+      await wait(200);
+    }
+    const getPageTitles = () => wizardForm.pages.map(p => p.component.title);
+    assert.equal(wizardForm.page, 4);
+    assert.equal(wizardForm.currentPanel.title, 'B2');
+    assert(getPageTitles().includes('A2'));
+    const b2Input = wizardForm.element.querySelector('input[name="data[b2]"]');
+    const inputEvent = new Event('input');
+    b2Input.value = 'hide';
+    b2Input.dispatchEvent(inputEvent);
+    await wait(400);
+    assert(!getPageTitles().includes('A2'), 'A2 is hidden when B2 has a value of "hide"');
+    assert.equal(wizardForm.page, 3, 'A2 is removed from the pages array and the page number/index must be decremented to maintain B2 as the current page');
+    assert.equal(wizardForm.currentPanel.title, 'B2');
+  });
+
   // BUG - uncomment once fixed (ticket FIO-6043)
   // it('Should render all pages as a part of wizard pagination', (done) => {
   //   const formElement = document.createElement('div');

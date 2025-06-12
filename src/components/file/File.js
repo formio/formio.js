@@ -1,5 +1,5 @@
 import Field from '../_classes/field/Field';
-import { componentValueTypes, getComponentSavedTypes, uniqueName } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, uniqueName } from '../../utils';
 import download from 'downloadjs';
 import _ from 'lodash';
 import fileProcessor from '../../providers/processor/fileProcessor';
@@ -1050,7 +1050,9 @@ export default class FileComponent extends Field {
       fileToSync.fileKey,
       fileToSync.groupPermissions,
       fileToSync.groupResourceId,
-      () => {},
+      () => {
+        this.emit('fileUploadingStart');
+      },
       // Abort upload callback
       (abort) => this.abortUploads.push({
         id: fileToSync.id,
@@ -1081,6 +1083,7 @@ export default class FileComponent extends Field {
 
         fileInfo.originalName = fileToSync.originalName;
         fileInfo.hash = fileToSync.hash;
+        this.emit('fileUploadingEnd');
       }
       catch (response) {
         fileToSync.status = 'error';
@@ -1090,7 +1093,7 @@ export default class FileComponent extends Field {
           : response.type === 'abort'
             ? this.t('Request was aborted')
             : response.toString();
-
+        this.emit('fileUploadingEnd');
         this.emit('fileUploadError', {
           fileToSync,
           response,

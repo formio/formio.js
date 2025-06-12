@@ -33,6 +33,20 @@ describe('Edit Form Utils', function() {
       ]);
     });
 
+    it('should merge objects with "ignore" flag', () => {
+      const components = [
+        { key: 'a', label: 1, skipMerge: true },
+        { key: 'a', label: 2, ignore: true },
+        { key: 'b', one: 1, two: 2 },
+        { key: 'b', one: 1, ok: true }
+      ];
+
+      expect(_.unionWith(components, utils.unifyComponents)).to.deep.equal([
+        { key: 'a', label: 1, skipMerge: true, ignore: true },
+        { key: 'b', one: 1, two: 2, ok: true }
+      ]);
+    });
+
     it('should override with "override" flag', () => {
       const components = [
         { key: 'a', label: 1, ok: true },

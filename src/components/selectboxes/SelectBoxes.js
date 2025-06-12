@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypes, boolValue, getComponent } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, boolValue, getComponent } from '../../utils';
 import RadioComponent from '../radio/Radio';
 
 export default class SelectBoxesComponent extends RadioComponent {
@@ -74,6 +74,10 @@ export default class SelectBoxesComponent extends RadioComponent {
     info.attr.type = 'checkbox';
     info.attr.class = 'form-check-input';
     return info;
+  }
+
+  get hasDefaultValue() {
+    return true;
   }
 
   get emptyValue() {
@@ -171,6 +175,9 @@ export default class SelectBoxesComponent extends RadioComponent {
           delete value[key];
         }
       }
+    }
+    else if (_.isEmpty(this.loadedOptions) && !checkedValues.length) {
+      value = {};
     }
     return value;
   }

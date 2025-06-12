@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { eachComponent, uniqueKey } from './utils';
+import { eachComponent, uniqueKey } from './index';
 export default {
   /**
    * Appends a number to a component.key to keep it unique
