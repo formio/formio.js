@@ -24,12 +24,14 @@ export default class DateGeaterThan extends ConditionOperator {
             return false;
         }
 
-        let conditionTriggerComponent = null;
+        let conditionTriggerComponent = options.conditionTriggerComponent || null;
 
         if (instance && instance.root) {
             conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
         }
-
+        if (Array.isArray(conditionTriggerComponent)) {
+            return conditionTriggerComponent.some(component => this.execute({ ...options, conditionTriggerComponent: component }, functionName));
+        }
         if ( conditionTriggerComponent && conditionTriggerComponent.isPartialDay && conditionTriggerComponent.isPartialDay(value)) {
             return false;
         }

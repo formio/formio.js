@@ -11,7 +11,7 @@ export default class IsEqualTo extends ConditionOperator {
         return 'Is Equal To';
     }
 
-    execute({ value, comparedValue, instance, conditionComponentPath }) {
+    execute({ value, comparedValue, instance, conditionComponentPath, conditionTriggerComponent }) {
         if ((value || value === false) && comparedValue && typeof value !== typeof comparedValue && _.isString(comparedValue)) {
             try {
                 comparedValue = JSON.parse(comparedValue);
@@ -21,8 +21,10 @@ export default class IsEqualTo extends ConditionOperator {
         }
 
         if (instance && instance.root) {
-            const conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
-
+            conditionTriggerComponent = conditionTriggerComponent || instance.root.getComponent(conditionComponentPath);
+            if (Array.isArray(conditionTriggerComponent)) {
+                return conditionTriggerComponent.some(component => this.execute({ value, comparedValue, instance, conditionTriggerComponent: component }));
+            }
             if (
                 conditionTriggerComponent
                 && isSelectResourceWithObjectValue(conditionTriggerComponent.component)
