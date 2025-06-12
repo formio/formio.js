@@ -1,6 +1,6 @@
 import ConditionOperator from './ConditionOperator';
 import _ from 'lodash';
-import { compareSelectResourceWithObjectTypeValues, isSelectResourceWithObjectValue } from '../utils';
+import { compareSelectResourceWithObjectTypeValues, isSelectResourceWithObjectValue } from '../';
 
 export default class IsEqualTo extends ConditionOperator {
     static get operatorKey() {
@@ -11,7 +11,7 @@ export default class IsEqualTo extends ConditionOperator {
         return 'Is Equal To';
     }
 
-    execute({ value, comparedValue, instance, conditionComponentPath }) {
+    execute({ value, comparedValue, instance, path }) {
         if ((value || value === false) && comparedValue && typeof value !== typeof comparedValue && _.isString(comparedValue)) {
             try {
                 comparedValue = JSON.parse(comparedValue);
@@ -21,7 +21,7 @@ export default class IsEqualTo extends ConditionOperator {
         }
 
         if (instance?.root?.getComponent) {
-            const conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
+            const conditionTriggerComponent = instance.root.getComponent(path);
 
             if (
                 conditionTriggerComponent

@@ -2,7 +2,7 @@ import WebformBuilder from './WebformBuilder';
 import Webform from './Webform';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
-import { fastCloneDeep } from './utils/utils';
+import { fastCloneDeep } from './utils';
 
 export default class WizardBuilder extends WebformBuilder {
   constructor() {
@@ -260,7 +260,7 @@ export default class WizardBuilder extends WebformBuilder {
     const isSiblingAnAddPageButton = sibling?.classList.contains('wizard-add-page');
     // We still can paste before Add Page button
     if (!element.dragInfo || (sibling && !sibling.dragInfo && !isSiblingAnAddPageButton)) {
-      console.warn('There is no Drag Info available for either dragged or sibling element');
+      console.warn(this.t('noDragInfoError'));
       return;
     }
     const oldPosition = element.dragInfo.index;
@@ -303,10 +303,23 @@ export default class WizardBuilder extends WebformBuilder {
     if (component instanceof WizardBuilder) {
       return;
     }
+    if (!window.sessionStorage) {
+      return console.warn(this.t('sessionStorageSupportError'));
+    }
+    // If pasting after the Wizard's page, check if a full Wizard page was copied and pass it to addPage method
     if (this._form.components.find(comp => _.isEqual(component.component, comp))) {
-      this.addPage(component);
+      const data = window.sessionStorage.getItem('formio.clipboard');
+      if (data) {
+        const schema = JSON.parse(data);
+        // If the copied component is not a Wizard's page, do nothing since we can't paste outside the panel in Wizard
+        if (schema.type !== 'panel') {
+          return;
+        }
+        this.addPage(schema);
+      }
     }
     else {
+      // If we are not trying to paster after the current Wizard's page, just pass it to the WebformBuilder
       return super.pasteComponent(component);
     }
   }

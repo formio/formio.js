@@ -1,8 +1,8 @@
 'use strict';
 import _ from 'lodash';
 import Field from '../field/Field';
-import Components from '../../Components';
-import { getArrayFromComponentPath, getStringFromComponentPath, getRandomComponentId } from '../../../utils/utils';
+import Components from '../../Components';''
+import FormioUtils from '../../../utils';
 import { process as processAsync, processSync } from '@formio/core/process';
 
 /**
@@ -88,16 +88,22 @@ export default class NestedComponent extends Field {
     const isVisible = this.visible;
     const forceShow = this.shouldForceShow();
     const forceHide = this.shouldForceHide();
-    this.components.forEach(component => {
+    this.components.forEach((component) => {
       // Set the parent visibility first since we may have nested components within nested components
       // and they need to be able to determine their visibility based on the parent visibility.
       component.parentVisible = isVisible;
+      let visible;
+      if (component.hasCondition()) {
+        visible = !component.conditionallyHidden();
+      }
+      else {
+        visible = !component.component.hidden;
+      }
 
-      const conditionallyVisible = component.conditionallyVisible();
-      if (forceShow || conditionallyVisible) {
+      if (forceShow || visible) {
         component.visible = true;
       }
-      else if (forceHide || !isVisible || !conditionallyVisible) {
+      else if (forceHide || !isVisible || !visible ) {
         component.visible = false;
       }
       // If hiding a nested component, clear all errors below.
@@ -105,8 +111,8 @@ export default class NestedComponent extends Field {
         component.error = '';
       }
     });
+
     if (visibilityChanged) {
-      this.clearOnHide();
       this.redraw();
     }
   }
@@ -217,6 +223,10 @@ export default class NestedComponent extends Field {
    */
   set rowIndex(value) {
     this._rowIndex = value;
+    this.paths = FormioUtils.getComponentPaths(this.component, this.parent?.component, {
+      ...(this.parent?.paths || {}),
+      ...{ dataIndex: value }
+    });
     this.eachComponent((component) => {
       component.rowIndex = value;
     });
@@ -326,62 +336,36 @@ export default class NestedComponent extends Field {
   }
 
   /**
-   * Returns a component provided a key. This performs a deep search within the
-   * component tree.
+   * Returns a component provided a key. This performs a deep search within the component tree.
    * @param {string} path - The path to the component.
-   * @param {Function} [fn] - Called with the component once found.
-   * @param {string} [originalPath] - The original path to the component.
    * @returns {any} - The component that is located.
    */
-  getComponent(path, fn, originalPath) {
-    originalPath = originalPath || getStringFromComponentPath(path);
-    if (this.componentsMap.hasOwnProperty(originalPath)) {
-      if (fn) {
-        return fn(this.componentsMap[originalPath]);
-      }
-      else {
-        return this.componentsMap[originalPath];
-      }
-    }
-
-    path = getArrayFromComponentPath(path);
-    const pathStr = originalPath;
-    const newPath = _.clone(path);
-    let key = newPath.shift();
-    const remainingPath = newPath;
-    let comp = null;
-    let possibleComp = null;
-
-    if (_.isNumber(key)) {
-      key = remainingPath.shift();
-    }
-
-    if (!_.isString(key)) {
-      return comp;
-    }
-
-    this.everyComponent((component, components) => {
-      const matchPath = component.hasInput && component.path ? pathStr.includes(component.path) : true;
-      if (component.component.key === key) {
-        possibleComp = component;
-        if (matchPath) {
-          comp = component;
-          if (remainingPath.length > 0 && 'getComponent' in component) {
-            comp = component.getComponent(remainingPath, fn, originalPath);
-          }
-          else if (fn) {
-            fn(component, components);
-          }
-          return false;
-        }
-      }
+  getComponent(path) {
+    path = FormioUtils.getStringFromComponentPath(path);
+    const matches = {
+      path: undefined,
+      fullPath: undefined,
+      localPath: undefined,
+      fullLocalPath: undefined,
+      dataPath: undefined,
+      localDataPath: undefined,
+      key: undefined,
+    };
+    this.everyComponent((component) => {
+      // All searches are relative to this component so replace this path from the child paths.
+      FormioUtils.componentMatches(component.component, {
+        path: component.paths?.path?.replace(new RegExp(`^${this.paths?.path}\\.?`), ''),
+        fullPath: component.paths?.fullPath?.replace(new RegExp(`^${this.paths?.fullPath}\\.?`), ''),
+        localPath: component.paths?.localPath?.replace(new RegExp(`^${this.paths?.localPath}\\.?`), ''),
+        fullLocalPath: component.paths?.fullLocalPath?.replace(new RegExp(`^${this.paths?.fullLocalPath}\\.?`), ''),
+        dataPath: component.paths?.dataPath?.replace(new RegExp(`^${this.paths?.dataPath}\\.?`), ''),
+        localDataPath: component.paths?.localDataPath?.replace(new RegExp(`^${this.paths?.localDataPath}\\.?`), ''),
+      }, path, this.rowIndex, matches, (type, match) => {
+        match.instance = component;
+        return match;
+      });
     });
-
-    if (!comp) {
-      comp = possibleComp;
-    }
-
-    return comp;
+    return FormioUtils.getBestMatch(matches)?.instance;
   }
 
   /**
@@ -425,7 +409,7 @@ export default class NestedComponent extends Field {
     options.localRoot = this.localRoot;
     options.skipInit = true;
     if (!(options.display === 'pdf' && this.builderMode)) {
-      component.id = getRandomComponentId();
+      component.id = FormioUtils.getRandomComponentId();
     }
     const comp = Components.create(component, options, data, true);
     comp.init();
@@ -709,19 +693,7 @@ export default class NestedComponent extends Field {
 
   clearOnHide(show) {
     super.clearOnHide(show);
-    if (this.component.clearOnHide) {
-      if (this.allowData && !this.hasValue() && !(this.options.server && !this.visible)) {
-        this.dataValue = this.defaultValue;
-      }
-      if (this.hasValue()) {
-        this.restoreComponentsContext();
-      }
-    }
     this.getComponents().forEach(component => component.clearOnHide(show));
-  }
-
-  restoreComponentsContext() {
-    this.getComponents().forEach((component) => component.data = this.dataValue);
   }
 
   /**
@@ -743,7 +715,7 @@ export default class NestedComponent extends Field {
 
   calculateValue(data, flags, row) {
     // Do not iterate into children and calculateValues if this nested component is conditionally hidden.
-    if (!this.conditionallyVisible()) {
+    if (this.conditionallyHidden()) {
       return false;
     }
     return this.getComponents().reduce(
@@ -763,19 +735,15 @@ export default class NestedComponent extends Field {
     );
   }
 
-  validationProcessor({ scope, data, row, instance, component }, flags) {
+  validationProcessor({ scope, data, row, instance, paths }, flags) {
     const { dirty } = flags;
-    if (this.root.hasExtraPages && this.page !== this.root.page) {
-      instance = this.childComponentsMap?.hasOwnProperty(component.path)
-        ? this.childComponentsMap[component.path]
-        : this.getComponent(component.path);
+    if (this.root.hasSubWizards && this.page !== this.root.page) {
+      instance = this.componentsMap?.hasOwnProperty(paths.dataPath)
+        ? this.componentsMap[paths.dataPath]
+        : this.getComponent(paths.dataPath);
     }
     if (!instance) {
       return;
-    }
-
-    if(!instance.component.path) {
-      instance.component.path = component.path;
     }
 
     instance.checkComponentValidity(data, dirty, row, flags, scope.errors);
@@ -812,7 +780,10 @@ export default class NestedComponent extends Field {
       components,
       instances: this.componentsMap,
       data: data,
+      local: !!flags.local,
       scope: { errors: [] },
+      parent: this.component,
+      parentPaths: this.paths,
       processors: [
         {
           process: validationProcessorProcess,
@@ -944,7 +915,7 @@ export default class NestedComponent extends Field {
     else if (value && component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags);
     }
-    else if ((!this.rootPristine || component.visible) && component.shouldAddDefaultValue) {
+    else if ((!this.rootPristine || component.visible) && (flags.resetValue || component.shouldAddDefaultValue)) {
       flags.noValidate = !flags.dirty;
       flags.resetValue = true;
       return component.setValue(component.defaultValue, flags);
@@ -954,6 +925,13 @@ export default class NestedComponent extends Field {
   setValue(value, flags = {}) {
     if (!value) {
       return false;
+    }
+    // If the value is equal to the empty value, then this means we need to reset the values.
+    if (_.isEqual(value, this.emptyValue)) {
+      // TO-DO: For a future major release, we need to investigate removing the need for the
+      // "resetValue" flag. This seems like a hack that is no longer necessary and the renderer
+      // may behave more deterministically without it.
+      flags.resetValue = true;
     }
     return this.getComponents().reduce((changed, component) => {
       return this.setNestedValue(component, value, flags, changed) || changed;

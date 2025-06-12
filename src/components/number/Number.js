@@ -2,7 +2,7 @@ import { createNumberMask } from '@formio/text-mask-addons';
 import { conformToMask,maskInput } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
 import Input from '../_classes/input/Input';
-import { getNumberSeparators, getNumberDecimalLimit, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { getNumberSeparators, getNumberDecimalLimit, componentValueTypes, getComponentSavedTypes } from '../../utils/';
 
 export default class NumberComponent extends Input {
   static schema(...extend) {
@@ -63,7 +63,7 @@ export default class NumberComponent extends Input {
     }
     else {
       if (this.component.thousandsSeparator || this.options.properties?.thousandsSeparator || this.options.thousandsSeparator){
-        console.warn('In order for thousands separator to work properly, you must set the delimiter to true in the component json');
+        console.warn(this.t('noDelimiterSet'));
       }
       this.delimiter = '';
     }
@@ -192,14 +192,21 @@ export default class NumberComponent extends Input {
     if (typeof input === 'string') {
       input = input.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
     }
-    let value = parseFloat(input);
+    let value;
 
-    if (!_.isNaN(value)) {
+    if (!_.isNaN(input)) {
       // Format scientific notation
-      if (/e/i.test(String(value))) {
+      if (/[0-9]+[eE]/.test(String(input))) {
+        // Convert to exponential notation will depend on the decimal limit set in the component
+        // Example: 1.23e-5 will be converted to 1.23e-5 if decimal limit is set to 2
+        // Example: 1.23e5 will be converted to 1.23e+5 if decimal limit is set to 2
+        // if decimal limit is 3, 1.23e5 will be converted to 1.230e+5
+        // if decimal limit is not set, 1.23e5 will be converted to 1.23000000000000000000e+5
+        value = parseFloat(input);
         value = value.toExponential(this.decimalLimit);
       } else {
-        value = String(value).replace('.', this.decimalSeparator);
+        value = parseFloat(input);
+        value = !_.isNaN(value) ? String(value).replace('.', this.decimalSeparator) : null;
       }
     }
     else {

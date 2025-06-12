@@ -13,6 +13,7 @@ export default [
     type: 'textfield',
     input: true,
     key: 'switchToManualModeLabel',
+    defaultValue: 'Can\'t find address? Switch to manual mode.',
     label: 'Switch To Manual Mode Label',
     placeholder: 'Switch To Manual Mode Label',
     tooltip: 'The label for the checkbox used to switch to manual mode.',

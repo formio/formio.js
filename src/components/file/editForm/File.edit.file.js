@@ -116,6 +116,7 @@ export default [
     tooltip: 'Pass your custom xhr options(optional)',
     rows: 5,
     editor: 'ace',
+    as: 'json',
     input: true,
     weight: 15,
     placeholder: `{

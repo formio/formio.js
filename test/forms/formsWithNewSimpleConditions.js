@@ -1215,6 +1215,52 @@ const form8 = {
   ],
 };
 
+const form9 = {
+  "type": "form",
+  "title": "conditionally hidden component",
+  "display": "form",
+  "path": "conditionallyhiddencomponent",
+  "components": [
+    {
+      "label": "Text Field",
+      "applyMaskOn": "change",
+      "tableView": true,
+      "validateWhenHidden": false,
+      "key": "textField",
+      "type": "textfield",
+      "input": true
+    },
+    {
+      "label": "Text Field 1",
+      "applyMaskOn": "change",
+      "tableView": true,
+      "validateWhenHidden": false,
+      "key": "textField1",
+      "conditional": {
+        "show": false,
+        "conjunction": "all",
+        "conditions": [
+          {
+            "component": "textField",
+            "operator": "includes",
+            "value": "hide"
+          }
+        ]
+      },
+      "type": "textfield",
+      "input": true
+    },
+    {
+      "type": "button",
+      "label": "Submit",
+      "key": "submit",
+      "disableOnInvalid": true,
+      "input": true,
+      "tableView": false
+    }
+  ],
+};
+
 export default {
   form1,
   form2,
@@ -1223,5 +1269,6 @@ export default {
   form5,
   form6,
   form7,
-  form8
+  form8,
+  form9
 };

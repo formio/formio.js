@@ -1,6 +1,6 @@
 import moment from 'moment';
 import TextFieldComponent from '../textfield/TextField';
-import { getBrowserInfo } from '../../utils/utils';
+import { getBrowserInfo } from '../../utils';
 
 const defaultDataFormat = 'HH:mm:ss';
 

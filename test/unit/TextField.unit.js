@@ -11,9 +11,13 @@ import {
   comp4,
   comp5,
   comp6,
-  withDisplayAndInputMasks,
   comp7,
+  comp8,
+  withDisplayAndInputMasks,
+  requiredFieldLogicComp
 } from './fixtures/textfield';
+
+import { comp10 as formWithCalendarTextField } from './fixtures/datetime';
 
 describe('TextField Component', () => {
   it('Should create a new TextField', () => {
@@ -374,7 +378,7 @@ describe('TextField Component', () => {
             if (_.isEqual(value, lastValue)) {
               done();
             }
-          }, 300);
+          }, 500);
         }).catch(done);
       });
     };
@@ -1359,6 +1363,31 @@ describe('TextField Component', () => {
       }, 300);
     }).catch(done);
   });
+  // see https://formio.atlassian.net/browse/FIO-9217
+  it('Should allow the populating of a calendar widget–text field component with a custom default value that is a moment datetime', (done) => {
+    const form = _.cloneDeep(formWithCalendarTextField);
+    const textFieldComponent = form.components[1];
+    textFieldComponent.customDefaultValue = "value=moment('2024-11-13 15:00:00')";
+
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(renderedForm => {
+      const renderedTextFieldComponent = renderedForm.getComponent('textField');
+      setTimeout(() => {
+        const input = renderedTextFieldComponent.element.querySelector('.input');
+        assert.equal(input.value, '2024-11-13 03:00 PM');
+        done();
+      }, 200);
+    }).catch(done);
+  });
+
+  it('Should preserve the calendar widget settings after field logic is evaluated', async () => {
+    // see https://formio.atlassian.net/browse/FIO-9385
+    // emulate viewing a submission in the portal with { readOnly: true }
+    const form = await Formio.createForm(document.createElement('div'), requiredFieldLogicComp, { readOnly: true });
+    const textFieldComponent = form.getComponent('textField');
+     assert.equal(textFieldComponent.widget.settings.readOnly, true);
+  });
 
   it('Test Display mask', (done) => {
     const element = document.createElement('div');
@@ -1468,6 +1497,38 @@ describe('TextField Component', () => {
         done();
       }, 300);
     }).catch(done);
+  });
+
+  it('should not add timezone offset if it does not contain timezone offset information', () => {
+    return Formio.createForm(document.createElement('div'), comp8, {readOnly: true}).then((form) => {
+      return form.setSubmission({
+        data: {
+          textFieldCalendar: '2025-05-20T12:00:00'
+        },
+        metadata: {
+          timezone: "Europe/Berlin",
+        }
+      }).then(() => {
+        const textFieldComponent = form.getComponent('textFieldCalendar');
+        assert.equal(textFieldComponent.element.querySelector('.form-control.form-control.input').value, '2025-05-20 12:00');
+      });
+    });
+  });
+
+  it('should add timezone offset if it does contain timezone offset information', () => {
+    return Formio.createForm(document.createElement('div'), comp8, {readOnly: true}).then((form) => {
+      return form.setSubmission({
+        data: {
+          textFieldCalendar: '2025-05-20T12:00:00+02:00'
+        },
+        metadata: {
+          timezone: "Europe/Berlin",
+        }
+      }).then(() => {
+        const textFieldComponent = form.getComponent('textFieldCalendar');
+        assert.equal(textFieldComponent.element.querySelector('.form-control.form-control.input').value, '2025-05-20 12:00 GMT+2');
+      });
+    });
   });
 
   describe('TextFields with `multiple` attribute', () => {

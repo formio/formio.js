@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { fastCloneDeep } from '../../../utils/utils';
+import { fastCloneDeep } from '../../../utils';
 
 export default class ComponentModal {
   static render(component, data, topLevel) {
@@ -70,6 +70,7 @@ export default class ComponentModal {
       modalOverlay: 'single',
       modalContents: 'single',
       modalClose: 'single',
+      componentContent: 'single',
       openModalWrapper: 'single',
       openModal: 'single',
       modalSave: 'single',

@@ -1,10 +1,10 @@
-import EventEmitter from './EventEmitter';
-import { Formio } from './Formio';
-import * as FormioUtils from './utils/utils';
-import { I18n } from './utils/i18n';
 import _ from 'lodash';
 import moment from 'moment';
 import maskInput from '@formio/vanilla-text-mask';
+import EventEmitter from './EventEmitter';
+import { Formio } from './Formio';
+import { I18n } from './utils/i18n';
+import FormioUtils from './utils';
 
 /**
  * The root component for all elements within the Form.io renderer.
@@ -584,9 +584,9 @@ export default class Element {
     if (this.component.filter === string && !this.options.building) {
       const evalContext = this.evalContext(data);
       evalContext.data = _.mapValues(evalContext.data, (val) => _.isString(val) ? encodeURIComponent(val) : val);
-      return FormioUtils.interpolate(string, evalContext, options);
+      return FormioUtils.Evaluator.interpolate(string, evalContext, options);
     }
-    return FormioUtils.interpolate(string, this.evalContext(data), options);
+    return FormioUtils.Evaluator.interpolate(string, this.evalContext(data), options);
   }
 
   /**

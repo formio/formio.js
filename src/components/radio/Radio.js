@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import ListComponent from '../_classes/list/ListComponent';
 import { Formio } from '../../Formio';
-import { boolValue, componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { boolValue, componentValueTypes, getComponentSavedTypes } from '../../utils';
 
 export default class RadioComponent extends ListComponent {
   static schema(...extend) {
@@ -179,6 +179,13 @@ export default class RadioComponent extends ListComponent {
     });
   }
 
+  convertValues(values) {
+    if (this.options.renderMode === 'html' && this.type === 'radio') {
+      return values.map(x => ({ ...x, value: this.convertByDataType(x.value) }))
+    }
+    return values
+  }
+
   render() {
     if (!this.optionsLoaded) {
       return super.render(this.renderTemplate('loader'));
@@ -186,7 +193,7 @@ export default class RadioComponent extends ListComponent {
     return super.render(this.renderTemplate('radio', {
       input: this.inputInfo,
       inline: this.component.inline,
-      values: this.component.dataSrc === 'values' ? this.component.values : this.loadedOptions,
+      values: this.component.dataSrc === 'values' ? this.convertValues(this.component.values) : this.loadedOptions,
       value: this.dataValue,
       row: this.row,
     }));
@@ -365,12 +372,13 @@ export default class RadioComponent extends ListComponent {
     .then((response) => {
       this.loading = false;
       this.setItems(response);
-      this.optionsLoaded = true;
-      this.redraw();
     })
     .catch((err) => {
-      this.optionsLoaded = true;
       this.handleLoadingError(err);
+    })
+    .finally(() => {
+      this.optionsLoaded = true;
+      this.redraw();
     });
   }
 
@@ -397,10 +405,9 @@ export default class RadioComponent extends ListComponent {
       };
       listData.push(this.templateData[this.component.valueProperty ? valueAtProperty : i]);
 
-      if ((this.component.valueProperty || !this.isRadio) && (
-        _.isUndefined(valueAtProperty) ||
-        (!this.isRadio && _.isObject(valueAtProperty)) ||
-        (!this.isRadio && _.isBoolean(valueAtProperty))
+      const value = this.loadedOptions[i].value;
+      if (!this.isRadio && (
+        _.isObject(value) || _.isBoolean(value) || _.isUndefined(value)
       )) {
         this.loadedOptions[i].invalid = true;
       }
@@ -426,7 +433,7 @@ export default class RadioComponent extends ListComponent {
       const value = this.dataValue;
       this.refs.wrapper.forEach((wrapper, index) => {
         const input = this.refs.input[index];
-        const checked  = (input.type === 'checkbox') ? value[input.value] || input.checked : (input.value.toString() === value.toString());
+        const checked  = (value === undefined || value === null) ? false : (input.type === 'checkbox') ? value[input.value] || input.checked : (input.value.toString() === value.toString());
         if (checked) {
           //add class to container when selected
           this.addClass(wrapper, this.optionSelectedClass);
@@ -472,7 +479,7 @@ export default class RadioComponent extends ListComponent {
    * @param {*} value - The value to normalize
    * @returns {*} - Returns the normalized value
    */
-  normalizeValue(value) {
+  convertByDataType(value) {
     const dataType = this.component.dataType || 'auto';
     if (value === this.emptyValue) {
       return value;
@@ -480,7 +487,6 @@ export default class RadioComponent extends ListComponent {
 
     switch (dataType) {
       case 'auto':
-
         if (!isNaN(parseFloat(value)) && isFinite(value) && _.toString(value) === Number(value).toString()) {
           value = +value;
         }
@@ -507,15 +513,21 @@ export default class RadioComponent extends ListComponent {
         break;
       }
 
-    if (this.isSelectURL && this.templateData && this.templateData[value]) {
+      return value;
+  }
+
+  normalizeValue(value) {
+    const valueConverted = this.convertByDataType(value)
+
+    if (this.isSelectURL && this.templateData && this.templateData[valueConverted]) {
       const submission = this.root.submission;
       if (!submission.metadata.selectData) {
         submission.metadata.selectData = {};
       }
 
-      _.set(submission.metadata.selectData, this.path, this.templateData[value]);
+      _.set(submission.metadata.selectData, this.path, this.templateData[valueConverted]);
     }
 
-    return super.normalizeValue(value);
+    return super.normalizeValue(valueConverted);
   }
 }

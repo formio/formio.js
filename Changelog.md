@@ -4,114 +4,142 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.1.0-rc.1]
+## [Unreleased: 5.2.0-rc.1]
 ### Changed
  - FIO-8270: panel component closing on logic event trigger
  - FIO-8575: Added ability to reload google maps library with correct API key
- - FIO-8659: no modal edit in display tab
- - Removing fetch ponyfill since it is no longer needed
- - FIO-8652: DataGrid does not reorder
  - Fixing the submitOnEnter where it will show the loader for the submit
- - Fixing the formioReady promise to always resolve if you load it from the full source instead of the embed code
  - FIO-8126: Fixed select component emitting blur on click
  - FIO-8304: allow for multivalue masks to have blank input mask option
- - FIO-8570: fixed decimal symbol property on number component
- - 5.x - FIO-8426: changes required for eSignature
  - FIO-8596: added the editGridEditRow and editGridOpenModal events for editGrid
- - FIO-7733 remove form min height
- - FIO-8414 | FIO-8403 | FIO-8389: Fixes 5x validations and conditionals for array data components
- - FIO-8639 fixed error when adding address component
  - FIO-8461: Fixes checkbox with radio input type not present in submission on 5.x renderer
- - FIO-8645: day component required validation error not correct
- - FIO-8688 fixed 'global is not defined' error message
- - FIO-7478: fixed and isse where dataGrod reordering does not work in 5.x and fixed reordering with select component
- - FIO-8633 fixed icon name for Edit Grid
  - FIO-8457: set pristine flag when datagrid reorders rows
- - FIO-8716: fixed unsavedRows validation for Edit Grid
- - FIO-8647,8721: validation not triggered for each row after the first one in data and edit grid
- - FIO-8720: fixed errors occurring with valid time and number components
  - FIO-8719: fixed validation for nested wizard fields
  - FIO-8627: Fixed the email table generation for nested array components
- - FIO-5748: Fixed preview not working correctly after hiding/showing it
- - FIO-8759: fixed validation for the default value component
- - FIO-8765: fixed an issue where dataMap thows an error
- - FIO-8783: Fixed the issue when validation messages disappear after collapse and expand the panel
- - FIO-8072: Added conditional operators for select component with number data type
- - FIO-8752: coerced keyboard actions to a boolean value
  - FIO-8656: lazy load dragula
- - FIO-8570: fixed thousandSeparator problem and decimal symbol problem
- - FIO-8710: fixed incorrect Components import that causes errors when interacting with form components
  - FIO-8801: fixed submission metadata nullish
  - FIO-8809: fixed runtime error in setForm when passing string argument to Formio.builder
- - FIO-8684: Fixes cannot attach more than one component to the PDF form
  - FIO-8719: fixed validation for Data Grid component inside nested wizard
- - FIO-8621: added error event on file upload
- - FIO-8799 updated conditional tab for Time Component
  - FIO-6495: fixed an issue where revision ID of nested form does not transfer from stage to stage
- - FIO-8797: set empty day component value to the empty string
- - FIO-8729: fixed an issue where the rollback to default templates does not work correctly and unknown template message is shown
  - FIO-8668: fixed an issue where reportingUI form is available is the existing resources in builder
  - FIO-8714: Bugfix: allow paths for valueProperty
- - FIO-8795: fixed selected data after removing row
  - FIO-8771: Included File Component in Review Page Component
- - FIO-8789: Fixing issues where the wrong urls are used for CDN on remote env
  - FIO-7524: Added back aspect ratio option to Signature
- - FIO-8798: updated shape of the data of day component with hidden fields
- - FIO-8760: Fixes an issue where nested form is not getting all the options
- - FIO-8706: allow data interpolation for data source in components
- - FIO-8849: fixed an issue where value of the selctboxes/radio with URL data source are not available in simple conditons UI
- - FIO-8874: fixed conditional value field for time component
- - FIO-8931: Disable file synchronization feature
  - FIO-8458: removing row from data grid triggers save draft action
- - FIO-8912: consolidate normalization for multivalue components
- - FIO-8423: change default parent tag from p to div
  - FIO-8375: allow date time to have manual input
- - FIO-8912: fix normalization in submission
- - FIO-8912: updated to model types
- - FIO-8972: fixed display of select componet with custom dataSrc on Data Tab
- - FIO-8954: fixed previously selected option is displayed in metadata with data source = url
- - FIO-8986: fixed setting up of default value with hidden fields
- - FIO-8938: fixed label display for multiple select with dataSrc resource
- - FIO-8962: fixed screen shifting when validation errors pop up in an embedded Wizard form
- - FIO-8234/FIO-7195: Fixes an issue where value properties are shown instead of labels for Select component with Resource/URL data sources in read only mode and for modal preview
- - FIO-8986: fixed setting default value for day component with hidden day and month
- - FIO-8719: fixed error message display for nested wizard components
- - FIO-9086: time component with default value validation fix
- - FIO-9080 checkbox radio validation error
- - FIO-9147: fixed an issue where the simple conditionally visible component is not validated on change
- - FIO-9056: Fix enabling multiple values for address component
- - FIO-9059: fixed an issue where the value for textarea with json datatype is not normalized and set correctly
- - FIO-9075: fixed an issue where the form cannot be resubmitted if it has server errors
- - FIO-9097 fixed navigation through the errors list
  - FIO-8553: Replaced flatpickr-formio dependency with standard flatpickr
  - FIO-8569: Fix sdk link
- - FIO-8948-8950: fixed an issue where radio and select boxes with url type do not display in PDF download
- - FIO-9034 fixed creating extra submit button
- - FIO-8908: Fix error message appears when saving not fully filled conditionals tab
- - FIO-8951: Updated conditions for selectData and added logic to clear selectData
  - FIO-8556: Test coverage metrics
- - FIO-9010: tighten up multivalue normalization by covering 'any' type models
- - FIO-9010 fixed disappearance of components inside Columns after editing
- - FIO-8991: fixed an issue where select value (when it is array with numbers) does not display in submission grid
  - Fixed an issue where the 'root' may be the component that does not have a getComponent method
- - FIO-8920 fixed errors list for the form with nested wizard
- - FIO-8914: fixed an issue where errors list doesnot appear when submitting a PDF form
- - FIO-8990: fixed incorrect moment export
- - FIO-7778: validation link does not open modal
- - FIO-8900-8899: made only 2 operators available for address component in conditionals ui and fixed setting an empty value for address
- - FIO-8914: fixed an issue where select url does not work properly when url value has whitespaces at the end
- - FIO-8970 resolved failing test
- - FIO-8921: fixed an issue where newly created PDF-form cannot be saved in builder after adding some components in it
- - FIO-8866-8864: fixed simple conditions operators for recaptcha
- - FIO-9158: fixed an issue where Password component error message persists to displayed in Edit page
- - FIO-9126: fixed display of value for Day component with hidden fields
- - FIO-9158: fixed password component error in Edit page
- - FIO-9127 fixed saving empty values for Day component with hidden fields
- - FIO-9153-9154: fixed console errors when navigating tagpad validation errors
- - FIO-9127 fixed saving an empty value for day component after deleting values
- - FIO-9120: Fix issue with unchecking radio default value
- - FIO-7195/FIO-8234: Fixes an issue where Select renders value properties instead of labels in DataTable
- - FIO-7195: Fixes an issue where Radio/SelectBoxes will show values instead of labels on View tab and in DataTable
+ - FIO-9314: made select data property a hidden component and changed hidden component empty value to null
+ - FIO-8518: fixed adding checkbox with radio type to pdf design page
+ - FIO-9418: Fixed the edit grid errors to show the outer error wrapper if any fields in the edit grid are invalid
+ - FIO-9532: fixed an issue where select components shows values instead of labels in email
+ - FIO-9758: fixed an issue where interpolated content data is not displayed in PDF download
+ - FIO-8548: Update choices.js to 11 version
+ - FIO-9569: Fixes an issue where Wizard will paste a copy of the current page instead of the copied one
+ - FIO-8409: added serverOverride setting for components
+ - Added test for FIO-9020
+ - FIO-8208: Ensure that all file uploads alter the request options before sending the fetch requests
+ - FIO-9985 fixed appearing extra option with an empty key
+ - FIO-9847: time on textfield only changes when timezone included
+ - FIO-9937: Fixed edge cases for clearOnHide with nested forms + new test cases
+ - FIO-9884: Fixed file upload plugin for ckeditor
+ - FIO-9941 fixed errors list translations
+ - FIO-9848 Fixed readonly textarea for screen readers
+ - FIO-9854 fixed appearance of the custom component edit fields
+ - FIO-9510: Fixed the issue with multiple survey components
+ - FIO-9872 fixed opening modal edit window for custom component
+ - FIO-9851 fixed appearing configurable component options
+ - FIO-9855 removed deprecated settings
+ - FIO-9866: added fileUploadingEnd and fielUplaodingStart events back
+ - FIO-9842 removed extra options
+ - FIO-9846 removed encrypted option for EFB
+ - FIO-9837: cant approve valid api key
+ - FIO-9873: Fixed issues with how default values are set within components to ensure they are set properly at the right time in the lifecycle
+ - updated i18n typedef
+ - FIO-9020: Made executeFormController to be called once only for Webform instance
+ - FIO-9669: added token to the list of the available variables for advanced conditions
+ - FIO-9614: fixed an issue where min and max day builder setting changes its value after saving
+ - FIO-9207: Fix image preview for file component when using google drive
+ - FIO-9156 fixed the display of Captcha component for nested forms
+ - FIO-9592: Add emitting form display change event
+ - FIO-8372 fixed setting date after selecting and erasing entire date
+ - fix select styling
+ - FIO-7954: fixed translations
+ - update copy around save as reference
+ - FIO-9506: fixed the return type of the render function
+ - FIO-8727: created test for FIO-8727
+ - FIO-9170 Added a fix for default templates to include custom components
+ - FIO-8862: fixed unnecessary redrawings of the value component in conditional ui
+ - FIO-9339: fixed an issue where preview shows an error when editing component JSON
+ - FIO-9027 fixed display of the overridden values on download page
+ - 
+
+
+## 5.1.2-rc.1
+### Changed
+ - Updated @formio/core@2.4.1-rc.3
+ - Updated @formio/bootstrap@3.1.1-rc.1
+ - FIO-9217 Fix: allow moment.js datetime custom default values in calendar widget-text field components
+ - FIO-8677: Fixes an issue where its possible to draweon Signature on the View tab of PDF form
+ - FIO-9908: fixed an issue where condtion does not work properly if 'show' setting is a string
+ - FIO-8706: allow data interpolation for data source in components
+ - Fix Scientific notation allowing it by default
+ - FIO-9992: check for server when triggering the captcha
+ - FIO-9902-9878: fixed an issue where PDF is not loaded for the form with hidden/conditionally hidden select
+
+## 5.1.0
+### Changed
+ - Official Release
+ - Updated @formio/bootstrap@3.1.0
+ - Updated @formio/core@2.4.0
+ - FIO-9931: fixed an issue wehre min and max date settings are not saved in builder
+ - FIO-9921: fix issue with local paths not being propogated to edit grid
+ - FIO-9933: Fixed the default value for the Lazy Load option for Select dropdowns.
+ - FIO-9888: Fixed issue where the noDefaults flag would skip defaults even for calculations.
+ - FIO-9913: Fixed problems where conditionally hidden fields would reset when their parents are hidden but have clearOnHide set to false.
+ - FIO-9912: Fixed issue where the default value of the address component would clear and not reset.
+ - FIO-9889: added backwards compatibility checks for provider options
+ - FIO-9721 Added Submit button as available trigger option of captcha inside Wizard
+ - FIO-9838: fix rendering an unknown component on the builder causing error
+ - FIO-9830 fixed captcha trigger for wizard
+ - Fixing issues with the data map and unnecessary reset model functions
+ - FIO-9807: Refactor the conditionally hidden check to be performed at runtime.
+ - FIO-9766: Fixing issues with conditionally hidden fields and state being stored…
+ - FIO-9811 fixed drag and drop for custom component
+ - FIO-9815: fixed an issue where nested form inside wizard does not highlight validation errors
+ - FIO-9720 fixed typo
+ - FIO-9720 fixed triggering captcha for wizard
+ - FIO-9751 updated modal edit window for components with hidden tabs on builder mode
+ - FIO-9767: fixed an issue where the nested form data is not submitted when clearOnHide is disabled
+ - FIO-9640: Fix date components have wrong timezone in email
+ - FIO-9720 fixet trigger captcha component inside layout component
+ - FIO-9385 Preserve non-default widget settings after evaluating field logic
+ - FIO-9515 Fixed Edit grid conditional values not displayed in Edit sub…
+ - Revert choices back to 10.2.1
+ - FIO-9620: update copy on Form component editForm
+ - Updated @formio/choices.js@11.0.3-rc.1
+ - FIO-9548:fixed setting of form._data for  NestedDataComponent into forms with noDefaults option
+ - FIO-8724: Fixed firing change event for DataGrid component
+ - FIO-9511: fixed day min/max validation message
+ - FIO-9499 Component: Check if ref is instance of NodeList on detach
+ - FIO-9482 fixed setting Formio version
+ - FIO-9480: ensure parent references are stable before subform creation
+ - FIO-9527: Fixed address component with multiple values
+ - FIO-9517: nested forms with lazy load validation fix
+ - FIO-9552: Fixing the embed code to export the Formio construct
+ - FIO-9506: fixed the return type of the render function
+ - FIO-9159: change clearOnHide behavior to track conditionally hidden state rather than mere visibility
+ - 5.x - FIO-8426: changes required for eSignature
+ - Refactor the component path system to ensure we are always referencing the correct path.
+ - FIO-9312: fixed an issue where conditionals does not work well when there are several components with the same key/path
+
+## 5.0.0
+### Changed
+ - Official Release
+ - Updated @formio/bootstrap@3.0.0
+ - Updated @formio/core@2.3.0
 
 ### New Features
 
@@ -162,7 +190,7 @@ This is a **Breaking Change** so please see the section below for more informati
 The 5.x renderer incorporates our new Core validation engine found @ https://github.com/formio/core/tree/master/src/process. This process can be briefly described within the pull request notes @ https://github.com/formio/formio.js/pull/5317. This will also improve our Iso-morphic behavior for our renderer validation and significantly improve memory and processor consumption for server-side form validations. This feature does have a **Breaking Change** which is described below.
 
 #### Core SDK
-With the 5.x renderer, the Formio SDK is now part of our Core library found @ https://github.com/formio/core/tree/master/src/sdk.  It is now imported directly into the @formio/js library and is re-exported to support reverse compatability. Because of this, there should not be any code upgrade involved.
+With the 5.x renderer, the Formio SDK is now part of our Core library found @ https://github.com/formio/core/tree/master/src/sdk.  It is now imported directly into the @formio/js library and is re-exported to support reverse compatability. Because of this, there should not be any code upgrade involved. 
 
 For example, the following code still works.
 
@@ -203,7 +231,7 @@ With the 5.x version of the renderer/builder, there has been much effort into re
     - formio.form.min.js ~ 1.4mb => ~30% size reduction
     - formio.min.js (SDK) ~ 235k => ~50% size reduction
 
-#### New lazy-loading Embedding method.
+#### New lazy-loading Embedding method. 
 One of the more exciting new additions to the 5.x renderer is the new lazy-loading process for adding the renderer to your application. There is a new file that is included with the 5.x renderer called "formio.embed.js". This file is tiny coming in at ~10kb.  What this file does, however, is make it so that you can bundle a lazy-loading renderer within your application without increasing the build sizes of your application.
 
 To use the new lazy-loading features, you will need to change your imports from the following to the new embed source as the following illustrates.
@@ -275,7 +303,6 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 ```
 
 ### Breaking Changes
- - Sketchpad imageType is being removed. All image types are now treated the same. You no longer need the imageType property in your form json
  - Bootstrap 5 Default Template - With the 5.x version of the renderer, the default template is now **Bootstrap 5** and is found @ https://github.com/formio/bootstrap repo.
  - Bootstrap Icons - Now, instead of Font Awesome being the default icon set for our renderer, we are using Bootstrap Icons as the default icon set which is compatible with Bootstrap 5. Of course, you can always change out icon sets, but this is now the default.
  - This version implements a new validation system. Within this, there are some changes that you should be aware of.
@@ -299,7 +326,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
     ```js
     const isValid = form.getComponent('editgrid').validateRow().length === 0;
     ```
-
+ 
   - In the 5.x renderer, the errors array will always be populated if there are errors in the form. They may not be displayed depending on the "pristine" state of the rendered form, but the error is always populated if there are form errors.  This is different in 4.x where the error property would only contain and error if an error is VISIBLE on the form. This means that it is difficult to determine if a form has errors without executing the checkValidity() method with the dirty flag set to "true". You no longer need to do this in the 5.x renderer.
 
     **4.x Renderer**
@@ -328,9 +355,124 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
     console.log(textField.visibleErrors); // This is the equivalent of the 4.x renderer "errors" array.
     ```
 
-  - With the 5.x renderer, all templates are now stored within a separate repo, and are included as a dependency for this renderer.
+  - With the 5.x renderer, all templates are now stored within a separate repo, and are included as a dependency for this renderer. 
 
-### Fixed
+
+ - FIO-9361: Fix showing extra submit buttons
+ - FIO-9327: Fixed an issue where select boxes default values would become messed up during builder mode.
+ - FIO-9350 Wizard: Show form-level errors after failed submission on subsequent form interaction when current page has no errors
+ - FIO-8423: change default parent tag from p to div
+ - FIO-9347: Fixed select preview issue in form builder
+ - FIO-9329: update tooltip for validateWhenHidden
+ - FIO-9386: fixed an issue where configured logic prevents the component settings saving because of validation configured in logic
+ - FIO-9360: validate current page only on wizard change
+ - FIO-9329: validateWhenHidden respects both conditionally hidden and intentionally hidden
+ - FIO-9354: Fix custom translation not applied to error message
+ - FIO-9280 fixed validation for select boxes with valid values and when value property is not set
+ - FIO-9290: fixed an issue where infinite loader is shown when radio/selectboxes with url type is failed to load options
+ - FIO-9280 fixed value property validation
+ - FIO-9283: fixed an issue where select with resource dataSrc does not display values in readOnly mode
+ - FIO-9259 fixed errors list for parent wizard with nested wizard
+ - FIO-9176: updated instance.component.path
+ - FIO-9205: fixed labels in select filter feature
+ - FIO-9205: fixed an issue where Select Filter feature does not work
+ - FIO-9173: Allow Scientific Notations
+ - FIO-9247 fixed triggering custom validation inside Edit Grid
+ - FIO-9197: Fix Day component triggered required validation when loading form
+ - FIO-7195: Fixes an issue where Radio/SelectBoxes will show values instead of labels on View tab and in DataTable
+ - FIO-7778: validation link does not open modal
+ - FIO-9072: removed setting dirty flag to true on set submission and changed tests
+ - FIO-9189: moved some methods to core
+ - FIO-9228: fixed an issue where error messages are duplicated in error list for nested wizard
+ - FIO-9196: Fixed issue with getting default value instead of requested value in Day component
+ - FIO-9208: Changing the links to go to help.form.io instead of github page.
+ - FIO-8510: changes in nested forms trigger modified change in the parent
+ - FIO-9086: time component default value validation
+ - FIO-9186: added test for the issue reated to validation inside layout components insode editGrid
+ - FIO-9184: Fixed edit grid row validation for new row
+ - FIO-9144 Fix cursor jump in number component
+ - FIO-7195/FIO-8234: Fixes an issue where Select renders value properties instead of labels in DataTable
+ - FIO-9158: fixed password component error in Edit page
+ - FIO-9153: fixed an issue where tagpad components skip front-end validation before submission
+ - FIO-9127 fixed saving empty values for Day component with hidden fields
+ - FIO-8914: fixed an issue where select url does not work properly when url value has whitespaces at the end
+ - FIO-8990: fixed incorrect moment export
+ - FIO-9056: Fix enabling multiple values for address component
+ - FIO-9147: fixed an issue where the simple conditionally visible component is not validated on change
+ - FIO-9126 fixed display of value for Day component with hidden fields
+ - FIO-9120: Fix issue with unchecking radio default value
+ - FIO-9158: fixed an issue where Password component error message persists to displayed in Edit page
+ - FIO-9127 fixed saving an empty value for day component after deleting values
+ - FIO-9153-9154: fixed console errors when navigating tagpad validation errors
+ - FIO-8948-8950: fixed an issue where radio and select boxes with url type do not display in PDF download
+ - FIO-9080 checkbox radio validation error
+ - FIO-9148: Fixed duplicated revision versions
+ - FIO-9059: fixed an issue where the value for textarea with json datatype is not normalized and set correctly
+ - FIO-9075: fixed an issue where the form cannot be resubmitted if it has server errors
+ - FIO-8414 | FIO-8403 | FIO-8389: Fixes 5x validations and conditionals for array data components
+ - FIO-9097 fixed navigation through the errors list
+ - FIO-8719 fixed error message display for nested wizard components
+ - FIO-8962 Fixed screen shifting when validation errors pop up in an embedded Wizard form
+ - Bugfix: allow paths for valueProperty
+ - FIO-9010: tighten up multivalue normalization by covering 'any' type models
+ - FIO-8986 fixed setting default value for day ,component with hidden day and month
+ - FIO-9034 fixed creating extra submit button
+ - FIO-8234/FIO-7195: Fixes an issue where value properties are shown instead of labels for Select component with Resource/URL data sources in read only mode and for modal preview
+ - FIO-8991: fixed an issue where select  value (when it is array with numbers) does not display in submission grid
+ - FIO-8951: Updated conditions for selectData and added logic to clear selectData
+ - FIO-9010 fixed disappearance of components inside Columns after editing
+ - FIO-8938 fixed label display for multiple select with dataSrc resource
+ - FIO-8908: Fix error message appears when saving not fully filled conditionals tab
+ - FIO-8914: fixed an issue where errors list doesnot appear when submitting a PDF form
+ - FIO-8954 previously selected option is displayed in metadata with data source = url
+ - FIO-8920 fixed errors list for the form with nested wizard
+ - FIO-8986 fixed setting up of default value with hidden fields
+ - FIO-8912: fix normalization in submission
+ - Fixed an issue where the 'root' may be the component that does not have a getComponent method
+ - FIO-8972 fixed display of select componet with custom dataSrc on Data Tab
+ - FIO-8912 update to model types
+ - FIO-8072: Added conditional operators for select component with number data type
+ - FIO-8900-8899: made only 2 operators available for address component in conditionals ui and fixed setting an empty value for address
+ - FIO-8912: consolidate normalization for multivalue components
+ - FIO-8795 fixed selected data after removing row
+ - FIO-8874: fixed conditional value field for time component
+ - FIO-8849: fixed an issue where value of the selctboxes/radio with URL data source are not available in simple conditons UI
+ - FIO-8931: Disable file synchronization feature
+ - FIO-8866-8864: fixed simple conditions operators for recaptcha
+ - FIO-8921: fixed an issue where newly created PDF-form cannot be saved in builder after adding some components in it
+ - FIO-8798: updated shape of the data of day component with hidden fields
+ - FIO-8799 updated conditional tab for Time Component
+ - FIO-8797: set empty day component value to the empty string
+ - FIO-8760: Fixes an issue where nested form is not getting all the options
+ - FIO-8789: Fixing issues where the wrong urls are used for CDN on remote environments
+ - FIO-8729: fixed an issue where the rollback to default templates does not work correctly and unknown template message is shown
+ - FIO-8684: Fixes cannot attach more than one component to the PDF form
+ - Bugfix/submission metadata nullish
+ - FIO-8765: fixed an issue where dataMap thows an error
+ - FIO-8719 fixed validation for Data Grid component inside nested wizard
+ - FIO-8621: error event on file upload adding
+ - FIO-8783: Fixed the issue when validation messages disappear after collapse and expand the panel
+ - FIO-8759 fixed validation for the default value component
+ - FIO-8752: coerced keyboard actions to a boolean value
+ - FIO-8389: Fix conditional logic for Edit Grid
+ - FIO-8647,8721: validation not triggered for each row after the first one in data and edit grid
+ - FIO-8720: fixed errors occurring with valid time and number components
+ - FIO-8719 fixed validation for nested wizard fields
+ - FIO-5748 Fixed preview not working correctly after hiding/showing it
+ - FIO-8570: fixed decimal symbol property on number component
+ - FIO-8570: fixed thousandSeparator problem and decimal symbol problem
+ - FIO-7733 remove form min height
+ - FIO-8710: fixed incorrect Components import that causes errors when interacting with form components
+ - FIO-8716 fixed unsavedRows validation for Edit Grid
+ - FIO-7478: fixed and isse where dataGrod reordering does not work in 5.x and fixed reordering with select component
+ - FIO-8633 fixed icon name for Edit Grid
+ - FIO-8645: day component required validation error not correct
+ - FIO-8688 fixed 'global is not defined' error message
+ - FIO-8639 fixed error when adding address component
+ - FIO-8652: DataGrid does not reorder
+ - FIO-8659: no modal edit in display tab
+ - Removing fetch ponyfill since it is no longer needed.
+ - Fixing the formioReady promise to always resolve if you load it from the full source instead of the embed code.
  - FIO-7525: fixed an issue where new conditional logic based on select boxes does not work
  - Fix broken file exclusion patterns
  - FIO-7146: disable circleci jobs
@@ -412,9 +554,8 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-8496: added loading=async for Google Maps JavaScript API
  - FIO-8445: Fixed searchbar not focusing when navigating using up and down arrows
  - FIO-7936: showCounter messages not translating
-
-## 5.0.0-rc.37
-### Fixed
+ - FIO-7775: reset value event resets component values to their default values
+ - FIO-6710: added translation for day component placeholder
  - FIO-5967: fixed issue with incorrect string representation for object type
  - FIO-7110: when 'use original revision' is enabled for nested form, submission still displays in current form revision pdfs
  - Revert "FI0-5429: added a condition to remove the decimal separator when the decimal digits are set to 0"
@@ -468,44 +609,22 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-7548: fixed an issue where select dropdown does not overlap the datagrid and causes vertical scroll
  - FIO-7775: reset value event resets component values to their default values
  - FIO-6710: added translation for day component placeholder
-
-### Changed
  - Add capability for adding sanitize profiles through sanitizeConfig in options
-
-## 5.0.0-rc.26
-### Changed
  - More improvements to the embed capabilities.
-
-### Fixed
  - FIO-7074: Fixes an issue where setting submission to the Wizard from the form controller will not set values for all the pages
-
-## 5.0.0-rc.24
-### Changed
  - Removed unnecessary resize polyfill.
  - Improved embed library experience.
  - Fixed documentation to use new embed strategy.
-
-### Fixed
  - FIO-7128: Fixed issues with multiple select
  - FIO-7209: radio don't work without value property set when data source url
  - FIO-6970: Fixes an issue where SelectBoxes Only Available Items validation always fails
-
-## 5.0.0-rc.23
-### Fixed
  - FIO-6578: Fixes an issue with losing focus on Year field when Day component has advanced logic
-
-## 5.0.0-rc.20
-### Changed
  - Removed i18next and NativePromise in favor of a simple translation proxy.
  - Refactored the embed script so that it can be imported within an application using createForm.
-
-### Added
  - Added mobile image, video, and camera capture feature. https://github.com/formio/formio.js/pull/4398
  - Add submission as form creation option. https://github.com/formio/formio.js/pull/4580
  - FIO-6630: Expanded Actions Logic UI
  - FIO-6493: changes needed for reporting-ui
-
-### Fixed
  - fix issue: when submission.data doesn't exist, the submission.metadata is removed
  - Default value for Radio and Checkbox components to set correctly.  https://github.com/formio/formio.js/pull/4464
  - Edit Grid performance improvements. https://github.com/formio/formio.js/pull/4480
@@ -548,24 +667,14 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-4782: added encodeURIComponent for filter query
  - FIO-4856: Fixed an issue where onBlur validation does not work for Select, Tags and Day components
  - FIO-7110: fixed display of nested form with Use Original Revision on PDF download
-
-## 5.0.0-rc.6
-### Added
  - FIO-5748: added collapsible preview for Form Builder
-
-### Fixed
  - FIO-6950: fixed test
  - FIO-6669: fixed tooltips cutting off in the component settings modal
  - FIO-6156: fixed help link for Time component
-
-## 5.0.0-rc.5
-### Added
  - FIO-5986: added check for identical uploaded file
  - FIO-6453: added sanitization inside error message container
  - FIO-6345: Add rel=noopener to Links to Docs / External Links
  - FIO-5042: Logout feature for OIDC
-
-### Fixed
  - FIO-6616: fixed issue where the select templates were not getting set correctly in selectData
  - FIO-6533: fixed an issue where file upload hash causing delays in file uploads
  - FIO-6407: updated tests for Select Component
@@ -618,36 +727,13 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
  - FIO-5730: fixed template for Select on PDF download
  - FIO-5303: fixed Edit and Delete buttons in readOnly
  - Revert - FIO-4876: fixed the display of current submission for pdf download
-
-## 5.0.0-rc.4
-### Fixed
  - Version export to work with compilation as well as unit tests.
-
-## 5.0.0-rc.3
-### Fixed
  - Re-introduce the old types folder until we can resolve issues with Angular dependencies.
-
-## 5.0.0-rc.2
-### Breaking Change
- - Removed default Bootstrap 4 template and replaced with Bootstrap 5. If you need Bootstrap 4, you can use the following.
-
-npm install --save @formio/bootstrap
-
-import bootstrap4 from '@formio/bootstrap/bootstrap4';
-import { Formio } from 'formiojs';
-Formio.use(bootstrap4);
-
-## 5.0.0-rc.1
-### Breaking Change
  - Upgrade to Bootstrap 5
  - Replace SDK with @formio/core SDK.
  - Remove Semantic template and Bootstrap 3 template from build.  Use import @formio/bootstrap3 or @formio/semantic instead.
-
-### Added
  - FIO-4429: Add support for pdf auto conversion fields assignment
  - Added basic keyboard accessibility for formbuilder
-
-### Fixed
  - FIO-6512: cannot drag and drop components on to pdf first forms using mac
  - FIO-6468: fixed an issue where Custom validation on Day component is confusing Day and Year
  - Revert "Fio 6512 cannot drag and drop components on to pdf first forms using mac"

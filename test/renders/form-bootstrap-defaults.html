@@ -109,7 +109,7 @@
       </label>
       <div ref="element">
         <div class="input-group">
-          <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value="2018-08-03" id="dateTime-dateTime" aria-labelledby="l-dateTime-dateTime " aria-required="false"></input>
+          <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" value="2018-08-03 UTC" id="dateTime-dateTime" aria-labelledby="l-dateTime-dateTime " aria-required="false"></input>
           <span aria-live="assertive" id="dateTime-liveRegion" class="visually-hidden" ref="liveRegion"></span>
           <div class="input-group-text" ref="suffix">
             <i ref="icon" class="fa fa-calendar bi bi-calendar" style=""></i>
@@ -253,10 +253,10 @@
               One
             </td>
             <td style="text-align: center;">
-              <input type="radio" name="data[survey][one]" value="a" id="survey-one-a" ref="input">
+              <input type="radio" name="data[survey][one][survey]" value="a" id="survey-one-a" ref="input">
             </td>
             <td style="text-align: center;">
-              <input type="radio" name="data[survey][one]" value="b" id="survey-one-b" ref="input">
+              <input type="radio" name="data[survey][one][survey]" value="b" id="survey-one-b" ref="input">
             </td>
           </tr>
           <tr>
@@ -264,10 +264,10 @@
               Two
             </td>
             <td style="text-align: center;">
-              <input type="radio" name="data[survey][two]" value="a" id="survey-two-a" ref="input">
+              <input type="radio" name="data[survey][two][survey]" value="a" id="survey-two-a" ref="input">
             </td>
             <td style="text-align: center;">
-              <input type="radio" name="data[survey][two]" value="b" id="survey-two-b" ref="input">
+              <input type="radio" name="data[survey][two][survey]" value="b" id="survey-two-b" ref="input">
             </td>
           </tr>
         </tbody>
@@ -334,9 +334,9 @@
         <caption class="visually-hidden"></caption>
         <tbody>
           <tr ref="row-table">
-            <td ref="table-table-0">
+            <td scope="col" ref="table-table-0">
             </td>
-            <td ref="table-table-0">
+            <td scope="col" ref="table-table-0">
               <div id="textField4" class="mb-2 formio-form-group has-feedback formio-component formio-component-textfield formio-component-textField4 " ref="component">
                 <label ref="label" class="col-form-label " for="textField4-textField4" id="l-textField4-textField4">
                   Text Field
@@ -347,23 +347,23 @@
                 <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
               </div>
             </td>
-            <td ref="table-table-0">
+            <td scope="col" ref="table-table-0">
             </td>
           </tr>
           <tr ref="row-table">
-            <td ref="table-table-1">
+            <td scope="col" ref="table-table-1">
             </td>
-            <td ref="table-table-1">
+            <td scope="col" ref="table-table-1">
             </td>
-            <td ref="table-table-1">
+            <td scope="col" ref="table-table-1">
             </td>
           </tr>
           <tr ref="row-table">
-            <td ref="table-table-2">
+            <td scope="col" ref="table-table-2">
             </td>
-            <td ref="table-table-2">
+            <td scope="col" ref="table-table-2">
             </td>
-            <td ref="table-table-2">
+            <td scope="col" ref="table-table-2">
             </td>
           </tr>
         </tbody>
@@ -426,8 +426,8 @@
                 <div ref="messageContainer" class="formio-errors invalid-feedback"></div>
               </div>
             </td>
-            <td class="col-1">
-              <button type="button" class="btn btn-secondary formio-button-remove-row" ref="datagrid-dataGrid-removeRow" tabindex="0" aria-label="remove">
+            <td>
+              <button type="button" class="btn btn-secondary formio-button-remove-row" ref="datagrid-dataGrid-removeRow" tabindex="0" aria-label="Remove" style="display: block; margin: 0 auto">
                 <i class="fa fa-remove-circle bi bi-x-circle"></i>
               </button>
             </td>

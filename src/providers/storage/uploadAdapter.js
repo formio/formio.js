@@ -1,4 +1,4 @@
-import { uniqueName } from '../../utils/utils';
+import { uniqueName } from '../../utils';
 
 /**
  * UploadAdapter for CKEditor https://ckeditor.com/docs/ckeditor5/latest/framework/guides/deep-dive/upload-adapter.html
@@ -27,9 +27,9 @@ class FormioUploadAdapter {
           null
         ];
 
-        const uploadPromise = this.fileService.uploadFile(
+        this.fileService.uploadFile(
           ...uploadParams,
-          () => this.component.emit('fileUploadingStart', uploadPromise)
+          () => this.component.emit('fileUploadingStart')
         ).then((result) => {
           return this.fileService.downloadFile(result);
         }).then((result) => {
@@ -40,7 +40,7 @@ class FormioUploadAdapter {
           console.warn('An Error occured while uploading file', err);
           reject(err);
         }).finally(() => {
-          this.component.emit('fileUploadingEnd', uploadPromise);
+          this.component.emit('fileUploadingEnd');
         });
       }));
   }
@@ -55,9 +55,11 @@ class FormioUploadAdapter {
   }
 }
 
-const getFormioUploadAdapterPlugin = (fileService, component) => (editor) => {
-  editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-    return new FormioUploadAdapter(loader, fileService, component);
+const getFormioUploadAdapterPlugin = (fileService, component) => {
+  return function (editor) {
+    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+      return new FormioUploadAdapter(loader, fileService, component);
+    };
   };
 };
 

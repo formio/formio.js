@@ -1,7 +1,7 @@
 import SignaturePad from 'signature_pad';
 import Input from '../_classes/input/Input';
 import _ from 'lodash';
-import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils';
 
 export default class SignatureComponent extends Input {
   static schema(...extend) {
@@ -180,7 +180,9 @@ export default class SignatureComponent extends Input {
         this.setDataToSigaturePad();
       }
 
-      this.showCanvas(true);
+      if (!this.disabled) {
+        this.showCanvas(true);
+      }
     }
   }
 
@@ -199,7 +201,7 @@ export default class SignatureComponent extends Input {
     return this.renderModalPreview({
       previewText: this.dataValue ?
         `<img src=${this.dataValue} ${this._referenceAttributeName}='openModal' style="width: 100%;height: 100%;" />` :
-        this.t('Click to Sign')
+        this.t('clickToSign')
     });
   }
 
@@ -280,7 +282,7 @@ export default class SignatureComponent extends Input {
     if (_.isUndefined(value) && this.inDataTable) {
       return '';
     }
-    return value ? 'Yes' : 'No';
+    return this.t(value ? 'yes' : 'no');
   }
 
   focus() {

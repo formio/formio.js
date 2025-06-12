@@ -1,6 +1,6 @@
 import { Formio } from './Formio';
 import Webform from './Webform';
-import { fastCloneDeep, eachComponent } from './utils/utils';
+import { fastCloneDeep, eachComponent } from './utils';
 
 export default class PDF extends Webform {
   constructor(element, options) {

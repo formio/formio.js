@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
-import { componentValueTypes, eachComponent, getArrayFromComponentPath, getComponentSavedTypes } from '../../utils/utils';
+import { componentValueTypes, eachComponent, getArrayFromComponentPath, getComponentSavedTypes } from '../../utils';
 
 export default class ButtonComponent extends Field {
   static schema(...extend) {
@@ -38,7 +38,7 @@ export default class ButtonComponent extends Field {
 
   constructor(component, options, data) {
     super(component, options, data);
-    this.filesUploading = [];
+    this.filesUploading = 0;
   }
 
   get defaultSchema() {
@@ -162,17 +162,14 @@ export default class ButtonComponent extends Field {
         this.setContent(this.refs.buttonMessage, resultMessage);
       }, true);
 
-      this.on('fileUploadingStart', (filePromise) => {
-        this.filesUploading.push(filePromise);
+      this.on('fileUploadingStart', () => {
+        this.filesUploading++;
         this.disabled = true;
         this.setDisabled(this.refs.button, this.disabled);
       }, true);
 
-      this.on('fileUploadingEnd', (filePromise) => {
-        const index = this.filesUploading.indexOf(filePromise);
-        if (index !== -1) {
-          this.filesUploading.splice(index, 1);
-        }
+      this.on('fileUploadingEnd', () => {
+        this.filesUploading--;
         this.disabled = this.shouldDisabled ? true : false;
         this.setDisabled(this.refs.button, this.disabled);
       }, true);
@@ -278,7 +275,7 @@ export default class ButtonComponent extends Field {
   }
 
   get shouldDisabled() {
-    return super.shouldDisabled || !!this.filesUploading?.length || this.isDisabledOnInvalid;
+    return super.shouldDisabled || this.filesUploading > 0 || this.isDisabledOnInvalid;
   }
 
   attach(element) {
@@ -375,19 +372,19 @@ export default class ButtonComponent extends Field {
         break;
       case 'oauth':
         if (this.root === this) {
-          console.warn('You must add the OAuth button to a form for it to function properly');
+          console.warn(this.t('noOAuthBtn'));
           return;
         }
 
         // Display Alert if OAuth config is missing
         if (!this.oauthConfig) {
-          this.root.setAlert('danger', 'OAuth not configured. You must configure oauth for your project before it will work.');
+          this.root.setAlert('danger', this.t('noOAuthConfiguration'));
           break;
         }
 
         // Display Alert if oAuth has an error is missing
         if (this.oauthConfig.error) {
-          this.root.setAlert('danger', `The Following Error Has Occured ${this.oauthConfig.error}`);
+          this.root.setAlert('danger', `${this.t('oAuthErrorsTitle')} ${this.t(this.oauthConfig.error)}`);
           break;
         }
 
@@ -399,7 +396,7 @@ export default class ButtonComponent extends Field {
 
   openOauth(settings) {
     if (!this.root.formio) {
-      console.warn('You must attach a Form API url to your form in order to use OAuth buttons.');
+      console.warn(this.t('noOAuthFormUrl'));
       return;
     }
 
@@ -454,7 +451,7 @@ export default class ButtonComponent extends Field {
           }
           // TODO: check for error response here
           if (settings.state !== params.state) {
-            this.root.setAlert('danger', 'OAuth state does not match. Please try logging in again.');
+            this.root.setAlert('danger', this.t('oAuthStateError'));
             return;
           }
           // Depending on where the settings came from, submit to either the submission endpoint (old) or oauth endpoint (new).
@@ -490,7 +487,7 @@ export default class ButtonComponent extends Field {
       }
       catch (error) {
         if (error.name !== 'SecurityError' && (error.name !== 'Error' || error.message !== 'Permission denied')) {
-          this.root.setAlert('danger', error.message || error);
+          this.root.setAlert('danger', this.t(`${error.message || error}`));
         }
       }
       if (!popup || popup.closed || popup.closed === undefined) {

@@ -3,6 +3,7 @@ import assert from 'power-assert';
 import Harness from '../harness';
 import DayComponent from '../../src/components/day/Day';
 import PanelComponent from '../../src/components/panel/Panel';
+import Components from '../../src/components/Components'
 import {
   comp1,
   comp2,
@@ -20,6 +21,11 @@ describe('Day Component', () => {
       Harness.testElements(component, 'input[type="number"]', 2);
       Harness.testElements(component, 'select', 1);
     });
+  });
+
+  it('Should build a day component directly by Components class create method', () => {
+    const {component} = Components.create(comp1);
+    assert.deepEqual(comp1, component)
   });
 
   it('Should handle blank data correctly', (done) => {
@@ -190,9 +196,13 @@ describe('Day Component', () => {
     Harness.testCreate(DayComponent, comp3).then((component) => {
       component.setValue('01/02/2020');
       assert(!component.checkValidity(component.data, true), 'Component should not be valid');
+      assert.equal(component.errors?.length, 1);
+      assert.equal(component.errors[0]?.message, 'Date should not contain date before 1/3/2020');
 
       component.setValue('04/01/2021');
       assert(!component.checkValidity(component.data, true), 'Component should not be valid');
+      assert.equal(component.errors?.length, 1);
+      assert.equal(component.errors[0]?.message, 'Date should not contain date after 3/1/2021');
 
       component.setValue('03/01/2021');
       assert(component.checkValidity(component.data, true), 'Component should be valid');

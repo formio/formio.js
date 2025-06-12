@@ -1,7 +1,7 @@
 import Field from '../field/Field';
 import { Formio } from '../../../Formio';
 import _ from 'lodash';
-import { getItemTemplateKeys } from '../../../utils/utils';
+import { getItemTemplateKeys } from '../../../utils';
 
 export default class ListComponent extends Field {
   static schema(...extend) {
@@ -29,9 +29,9 @@ export default class ListComponent extends Field {
     // If the root submission has been set, and we are still not attached, then assume
     // that our data is ready.
     if (
-      this.root &&
+      (this.root &&
       this.root.submissionSet &&
-      !this.attached
+      !this.attached) || !this.visible
     ) {
       return Promise.resolve();
     }
@@ -156,13 +156,13 @@ export default class ListComponent extends Field {
       component: this.component,
       message: err.toString(),
     });
-    console.warn(`Unable to load resources for ${this.key}`);
+    console.warn(this.t('loadResourcesError', {componentKey: this.key}));
   }
 
   /* eslint-disable max-statements */
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
-      console.warn(`Select component ${this.key} does not have data configuration.`);
+      console.warn(this.t('noSelectDataConfiguration', {componentKey: this.key}));
       this.itemsLoadedResolve();
       return;
     }
@@ -198,7 +198,7 @@ export default class ListComponent extends Field {
             this.loadItems(resourceUrl, searchInput, this.requestHeaders);
           }
           catch (err) {
-            console.warn(`Unable to load resources for ${this.key}`);
+            console.warn(this.t('loadResourcesError', {componentKey: this.key}));
           }
         }
         else {
@@ -245,7 +245,7 @@ export default class ListComponent extends Field {
         }
 
         if (!window.indexedDB) {
-          window.alert("Your browser doesn't support current version of indexedDB");
+          window.alert(this.t('indexedDBSupportError'));
         }
 
         if (this.component.indexeddb && this.component.indexeddb.database && this.component.indexeddb.table) {

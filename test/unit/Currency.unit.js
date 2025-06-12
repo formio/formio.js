@@ -9,12 +9,6 @@ import {
 } from './fixtures/currency';
 
 describe('Currency Component', () => {
-  before(done => {
-    // Need to polyfill some Intl.locale support, since node doesn't include it in standard builds
-    require('../numberFormatPolyfill');
-
-    done();
-  });
 
   it('Should build a currency component', () => {
     return Harness.testCreate(CurrencyComponent, comp1).then((component) => {

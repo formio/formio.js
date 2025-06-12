@@ -16,9 +16,11 @@ import {
   comp9,
   comp10,
   comp11,
-  comp13
+  comp13,
+  comp14
 } from './fixtures/radio';
 import { fastCloneDeep } from '@formio/core';
+import { wait } from '../util';
 
 describe('Radio Component', () => {
   it('Should build a radio component', () => {
@@ -322,9 +324,28 @@ describe('Radio Component', () => {
       done();
     }).catch(done);
   });
-});
 
-describe('Radio Component', () => {
+  it('Should not show infinite loader for radio with URL data source if options loading failed', (done) => {
+    const form = _.cloneDeep(comp9);
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+
+    Formio.makeRequest = function() {
+      return new Promise((res, rej) => {
+        setTimeout(() => rej('loading error'), 200);
+      });
+    };
+    Formio.createForm(element, form).then(form => {
+      const radio = form.getComponent('radio');
+      assert.equal(!!radio.element.querySelector('.loader'), true, 'Should show loader.')
+      setTimeout(()=>{
+        assert.equal(!!radio.element.querySelector('.loader'), false, 'Should not show loader.')
+        Formio.makeRequest = originalMakeRequest;
+        done();
+      }, 350);
+    }).catch(done);
+  });
+
   it('should have red asterisk left hand side to the options labels if component is required and label is hidden', () => {
     return Harness.testCreate(RadioComponent, comp7).then(component => {
       const options = component.element.querySelectorAll('.form-check-label');
@@ -587,5 +608,23 @@ describe('Radio Component', () => {
         })
       })
       .catch(done);
+  });
+
+  it("Should display result for radio submission with form='html' and dataType='number'", async function () {
+    const element = document.createElement('div');
+    const form = await Formio.createForm(
+      element,
+      comp14,
+      {
+        readOnly: true,
+        renderMode: 'html'
+      }
+    );
+    const el = form.element.querySelector('[ref="value"]');
+    assert.equal(el.innerHTML.trim(), '');
+    await form.setSubmission({ data: { radio: 2, submit: true } });
+    await wait(200);
+    const elNext = form.element.querySelector('[ref="value"]');
+    assert.equal(elNext.innerHTML.trim(), 'B');
   });
 });

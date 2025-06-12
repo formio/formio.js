@@ -2,14 +2,16 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import Harness from '../harness';
 import WebformBuilder from '../../src/WebformBuilder';
+import BuilderUtils from '../../src/utils/builder';
 import Builders from '../../src/builders';
 import { Formio } from '../../src/Formio';
 import { uniqueApiKeys, uniqueApiKeysLayout, uniqueApiKeysSameLevel, columnsForm, resourceKeyCamelCase, uniqueApiKeysTranslation } from '../formtest';
-import sameApiKeysLayoutComps from '../forms/sameApiKeysLayoutComps';
 import testApiKeysUniquifying from '../forms/testApiKeysUniquifying';
 import formBasedOnWizard from '../forms/formBasedOnWizard';
 import formWithFormController from '../forms/formWithFormController';
 import simpleWebform from '../forms/simpleWebform';
+import formWithNumericKeys from '../forms/formWithNumericKeys';
+import testUniqueApiKey from '../forms/testUniqueApiKey';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -86,10 +88,29 @@ describe('WebformBuilder tests', function() {
 
   it('Should not show unique API error when components with same keys are inside and outside of the Data component', (done) => {
     const builder = Harness.getBuilder();
-    builder.webform.setForm(uniqueApiKeys).then(() => {
+    builder.webform.setForm(testUniqueApiKey).then(() => {
+      const tabs = builder.webform.getComponent('tabs1');
+      const newTextField = {
+        "label": "Text Field",
+        "applyMaskOn": "change",
+        "tableView": true,
+        "validateWhenHidden": false,
+        "key": "textField",
+        "type": "textfield",
+        "input": true
+        }
+      BuilderUtils.uniquify(builder.findNamespaceRoot(tabs), newTextField);
+      assert.equal(newTextField.key, 'textField3');
+      done();
+    }).catch(done);
+  });
+
+  it('Should uniquify the key for the component inside layout component that inside container', (done) => {
+    const builder = Harness.getBuilder();
+    builder.webform.setForm(uniqueApiKeysTranslation).then(()=>{
       builder.highlightInvalidComponents();
       const component = builder.webform.getComponent(['textField']);
-      assert.equal(component.visibleErrors.length, 0);
+      assert.equal(component.visibleErrors.length, 1);
       done();
     }).catch(done);
   });
@@ -109,16 +130,6 @@ describe('WebformBuilder tests', function() {
     builder.setForm(resourceKeyCamelCase).then(() => {
       const component = builder.webform.getComponent('CalendarID');
       assert.equal(!!document.querySelector(`[name='data[${component.key}]']`), true);
-      done();
-    }).catch(done);
-  });
-
-  it('Should show unique API error when layout components have same keys', (done) => {
-    const builder = Harness.getBuilder();
-    builder.webform.setForm(sameApiKeysLayoutComps).then(() => {
-      builder.highlightInvalidComponents();
-      const component = builder.webform.getComponent(['tabs']);
-      assert.equal(component.visibleErrors.length, 1, 'Should show Unique API Key error');
       done();
     }).catch(done);
   });
@@ -250,11 +261,14 @@ describe('WebformBuilder tests', function() {
 
   it('Should add submit button after switching from wizard form', (done) => {
     const builder = Harness.getBuilder();
+    builder.options.noAddSubmitButton = true;
+    builder.options.display = 'wizard';
     builder.setForm(formBasedOnWizard).then(() => {
       const components = builder.webform.components;
       const submit = components[components.length - 1];
-
       assert.equal(submit.key, 'submit');
+      builder.options.noAddSubmitButton = false;
+      builder.options.display = 'form';
       done();
     }).catch(done);
   });
@@ -266,6 +280,22 @@ describe('WebformBuilder tests', function() {
       const submit = components[1];
       assert.equal(components.length, 2);
       assert.equal(components[1].key, 'testSubmit');
+      done();
+    }).catch(done);
+  });
+
+  it('Should not add extra submit button if button action was changed', (done) => {
+    const builder = Harness.getBuilder();
+    builder.options.noAddSubmitButton = true;
+
+    const cloneForm = _.cloneDeep(simpleWebform);
+    cloneForm.components[1].action = 'reset'
+
+    builder.setForm(cloneForm).then(() => {
+      const components = builder.webform.components;
+      assert.equal(components.length, 2);
+      assert.equal(components[1].component.action, 'reset');
+      builder.options.noAddSubmitButton = false;
       done();
     }).catch(done);
   });
@@ -330,7 +360,7 @@ describe('WebformBuilder tests', function() {
         },
       ],
     }).then(() => {
-      const textField = builder.webform.getComponent(['dataGrid', 'textField'])[0];
+      const textField = builder.webform.getComponent('dataGrid[0].textField');
       textField.refs.removeComponent.dispatchEvent( new MouseEvent('click', {
         view: window,
         bubbles: true,
@@ -345,7 +375,7 @@ describe('WebformBuilder tests', function() {
     }).catch(done);
   });
 
-  it('Should not hilight error for default values', (done) => {
+  it('Should not highlight error for default values', (done) => {
     const builder = Harness.getBuilder();
     builder.setForm({}).then(() => {
       Harness.buildComponent('day');
@@ -359,7 +389,32 @@ describe('WebformBuilder tests', function() {
         }, 200);
       }, 200)
     }).catch(done);
+  });
+
+  it('Should show API error when components have invalid API keys', (done) => {
+    const builder = Harness.getBuilder();
+    builder.webform.setForm(formWithNumericKeys).then(() => {
+      builder.highlightInvalidComponents();
+      const component = builder.webform.components[1];
+      assert.equal(component.refs.messageContainer.textContent.trim(), 'apiKeyNotValid');
+      done();
+    }).catch(done);
   })
+
+  it('should be able to render form with unknown component without crashing', () => {
+    return Formio.builder(document.createElement('div'), {
+      components: [
+        {
+          type: 'abc123'
+        }
+      ]
+    })
+  });
+
+  it('should return false if hasEditTabs is passed a type that does not exist', () => {
+    const webformBuilder = new WebformBuilder({});
+    assert.equal(webformBuilder.hasEditTabs('abc123'), false);
+  });
 });
 
 describe('Select Component selectData property', () => {
@@ -595,6 +650,154 @@ describe('Select Component selectData property', () => {
             Harness.saveComponent();
             setTimeout(() => {
               done();
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
+  it('Should show correct default value for select component in form builder', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('select');
+
+      setTimeout(() => {
+        const dataSrc = builder.editForm.getComponent('dataSrc');
+        dataSrc.setValue('url');
+        const url = builder.editForm.getComponent(['data.url']);
+        const valueProperty = builder.editForm.getComponent('valueProperty');
+        url.setValue('htts//fakeurl.com');
+        valueProperty.setValue('value');
+
+        setTimeout(() => {
+          const defaultValue = builder.editForm.getComponent('defaultValue');
+          assert.equal(defaultValue.type, 'select');
+          defaultValue.setValue('value1');
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() => {
+            assert.deepEqual(builder.editForm.data.selectData, {
+              label: 'Label 1',
+            });
+            Harness.saveComponent();
+            setTimeout(() => {
+              assert.equal(
+                builder.webform.getComponent('select').element.querySelector('[aria-selected="true"] span').innerHTML,
+                'Label 1',
+              );
+
+              const click = new MouseEvent('click', {
+                view: window,
+                bubbles: true,
+                cancelable: true
+              });
+
+              builder.webform.getComponent('select').element
+                .querySelector('.component-settings-button-edit')
+                .dispatchEvent(click);
+
+              setTimeout(() => {
+                const defaultValue = builder.editForm.getComponent('defaultValue');
+                assert.equal(defaultValue.type, 'select');
+                defaultValue.setValue('value2');
+                defaultValue.updateItems(null, true);
+
+                setTimeout(() => {
+                  assert.deepEqual(builder.editForm.data.selectData, {
+                    label: 'Label 2',
+                  });
+                  Harness.saveComponent();
+                  setTimeout(() => {
+                    assert.equal(
+                      builder.webform.getComponent('select').element.querySelector('[aria-selected="true"] span').innerHTML,
+                      'Label 2',
+                    );
+                    done();
+                  }, 150);
+                }, 250);
+              }, 500);
+            }, 150);
+          }, 250);
+        }, 250);
+      }, 150);
+    }).catch(done);
+  });
+
+  it('Should show correct default value for multiple select component in form builder', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('select');
+
+      setTimeout(() => {
+        const multiple = builder.editForm.getComponent('multiple');
+        multiple.setValue(true);
+        const dataSrc = builder.editForm.getComponent('dataSrc');
+        dataSrc.setValue('url');
+        const url = builder.editForm.getComponent(['data.url']);
+        const valueProperty = builder.editForm.getComponent('valueProperty');
+        url.setValue('htts//fakeurl.com');
+        valueProperty.setValue('value');
+
+        setTimeout(() => {
+          const defaultValue = builder.editForm.getComponent('defaultValue');
+          assert.equal(defaultValue.type, 'select');
+          defaultValue.setValue(['value1', 'value3']);
+          defaultValue.updateItems(null, true);
+
+          setTimeout(() => {
+            assert.deepEqual(builder.editForm.data.selectData, {
+              value1: {
+                label: 'Label 1',
+              },
+              value3: {
+                label: 'Label 3',
+              },
+            });
+            Harness.saveComponent();
+            setTimeout(() => {
+              const elements = builder.webform.getComponent('select').element.querySelectorAll('.choices__list--multiple span');
+              assert.deepEqual(
+                Array.prototype.map.call(elements, (element) => element.innerHTML),
+                ['Label 1', 'Label 3'],
+              );
+
+              const click = new MouseEvent('click', {
+                view: window,
+                bubbles: true,
+                cancelable: true
+              });
+
+              builder.webform.getComponent('select').element
+                .querySelector('.component-settings-button-edit')
+                .dispatchEvent(click);
+
+              setTimeout(() => {
+                const defaultValue = builder.editForm.getComponent('defaultValue');
+                assert.equal(defaultValue.type, 'select');
+                defaultValue.setValue(['value2', 'value3']);
+                defaultValue.updateItems(null, true);
+
+                setTimeout(() => {
+                  assert.deepEqual(builder.editForm.data.selectData, {
+                    value2: {
+                      label: 'Label 2',
+                    },
+                    value3: {
+                      label: 'Label 3',
+                    },
+                  });
+                  Harness.saveComponent();
+                  setTimeout(() => {
+                    const elements = builder.webform.getComponent('select').element.querySelectorAll('.choices__list--multiple span');
+                    assert.deepEqual(
+                      Array.prototype.map.call(elements, (element) => element.innerHTML),
+                      ['Label 2', 'Label 3'],
+                    );
+                    done();
+                  }, 150);
+                }, 250);
+              }, 500);
             }, 150);
           }, 250);
         }, 250);
