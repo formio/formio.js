@@ -586,9 +586,9 @@ export default class Element {
     if (this.component.filter === string && !this.options.building) {
       const evalContext = this.evalContext(data);
       evalContext.data = _.mapValues(evalContext.data, (val) => _.isString(val) ? encodeURIComponent(val) : val);
-      return FormioUtils.interpolate(string, evalContext, options);
+      return FormioUtils.Evaluator.interpolate(string, evalContext, options);
     }
-    return FormioUtils.interpolate(string, this.evalContext(data), options);
+    return FormioUtils.Evaluator.interpolate(string, this.evalContext(data), options);
   }
 
   /**

@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import moment from 'moment';
 import { compareVersions } from 'compare-versions';
 import EventEmitter from './EventEmitter';
 import enTranslation from './translations/en';
@@ -13,8 +12,10 @@ import {
     getStringFromComponentPath,
     convertStringToHTMLElement,
     getArrayFromComponentPath,
-} from './utils/utils';
-import { eachComponent } from './utils/formUtils';
+    eachComponent
+} from './utils';
+
+import dayjs from "dayjs";
 
 // We need this here because dragula pulls in CustomEvent class that requires global to exist.
 if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
@@ -1509,7 +1510,7 @@ export default class Webform extends NestedDataComponent {
         submission.metadata = submission.metadata || {};
         _.defaults(submission.metadata, {
             timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
-            offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
+            offset: parseInt(_.get(this, '_submission.metadata.offset', dayjs().utcOffset()), 10),
             origin: document.location.origin,
             referrer: document.referrer,
             browserName: navigator.appName,

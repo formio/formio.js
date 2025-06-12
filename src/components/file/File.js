@@ -1,5 +1,5 @@
 import Field from '../_classes/field/Field';
-import { componentValueTypes, getComponentSavedTypes, uniqueName } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes, uniqueName } from '../../utils';
 import download from 'downloadjs';
 import _ from 'lodash';
 import fileProcessor from '../../providers/processor/fileProcessor';
@@ -1038,7 +1038,7 @@ export default class FileComponent extends Field {
   }
 
   async uploadFile(fileToSync) {
-    const filePromise = this.fileService.uploadFile(
+    return await this.fileService.uploadFile(
       fileToSync.storage,
       fileToSync.file,
       fileToSync.name,
@@ -1051,7 +1051,7 @@ export default class FileComponent extends Field {
       fileToSync.groupPermissions,
       fileToSync.groupResourceId,
       () => {
-        this.emit('fileUploadingStart', filePromise);
+        this.emit('fileUploadingStart');
       },
       // Abort upload callback
       (abort) => this.abortUploads.push({
@@ -1060,7 +1060,6 @@ export default class FileComponent extends Field {
       }),
       this.getMultipartOptions(fileToSync),
     );
-    return await filePromise;
   }
 
   async upload() {
@@ -1084,7 +1083,7 @@ export default class FileComponent extends Field {
 
         fileInfo.originalName = fileToSync.originalName;
         fileInfo.hash = fileToSync.hash;
-        this.emit('fileUploadingEnd', Promise.resolve(fileInfo));
+        this.emit('fileUploadingEnd');
       }
       catch (response) {
         fileToSync.status = 'error';
@@ -1094,7 +1093,7 @@ export default class FileComponent extends Field {
           : response.type === 'abort'
             ? this.t('Request was aborted')
             : response.toString();
-        this.emit('fileUploadingEnd', Promise.reject(response));
+        this.emit('fileUploadingEnd');
         this.emit('fileUploadError', {
           fileToSync,
           response,

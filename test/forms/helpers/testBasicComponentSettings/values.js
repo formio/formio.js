@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import settings from './settings';
-import { fastCloneDeep } from '../../../../src/utils/utils';
+import { fastCloneDeep } from '../../../../src/utils';
 import basicValues from './basicValues'
 
 const values = basicValues;

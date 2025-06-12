@@ -41,6 +41,7 @@ export default {
   reCaptchaTokenValidationError: 'ReCAPTCHA: Token validation error',
   reCaptchaTokenNotSpecifiedError: 'ReCAPTCHA: Token is not specified in submission',
   apiKey: 'API Key is not unique: {{key}}',
+  apiKeyNotValid: 'API Key is not valid: {{key}}',
   typeRemaining: '{{ remaining }} {{ type }} remaining.',
   typeCount: '{{ count }} {{ type }}',
   requiredDayEmpty: '{{ field }} is required',

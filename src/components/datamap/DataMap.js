@@ -3,7 +3,6 @@ import DataGridComponent from '../datagrid/DataGrid';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter3';
 import { componentValueTypes, getComponentSavedTypes, uniqueKey } from '../../utils/utils';
-
 export default class DataMapComponent extends DataGridComponent {
   static schema(...extend) {
     return Component.schema({
