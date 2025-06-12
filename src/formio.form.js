@@ -11,7 +11,7 @@ import Utils from './utils';
 import Licenses from './licenses';
 import EventEmitter from './EventEmitter';
 import Webform from './Webform';
-import { I18n } from './utils/i18n';
+import { I18n } from '@formio/core';
 import { Evaluator, registerEvaluator } from './utils';
 
 Formio.loadModules = (path = `${Formio.getApiUrl()}/externalModules.js`, name = 'externalModules') => {

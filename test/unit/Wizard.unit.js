@@ -568,6 +568,10 @@ describe('Wizard Form with Nested Form validation', () => {
             assert.equal(errors.length, 2, 'Must err before next page');
             assert.equal(errors[0].ruleName, 'required');
             assert.equal(errors[0].message, 'Text Field is required');
+            assert.equal(errors[0].formattedKeyOrPath, 'formNested.data.textField');
+            assert.equal(errors[1].ruleName, 'required');
+            assert.equal(errors[1].message, 'Text Field is required');
+            assert.equal(errors[1].formattedKeyOrPath, 'formNested.data.dataGrid[0].textField');
             done();
           }, 300)
         }, 300)
