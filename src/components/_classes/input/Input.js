@@ -185,7 +185,7 @@ export default class Input extends Multivalue {
     }
   }
 
-  updateValueAt(value, flags, index) {
+  updateValueAt(value, flags, index = 0) {
     flags = flags || {};
     if (_.get(this.component, 'showWordCount', false)) {
       if (this.refs.wordcount && this.refs.wordcount[index]) {
