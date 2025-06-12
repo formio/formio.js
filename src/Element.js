@@ -1,10 +1,10 @@
-import EventEmitter from './EventEmitter';
-import { Formio } from './Formio';
-import * as FormioUtils from './utils/utils';
-import { I18n } from '@formio/core';
 import _ from 'lodash';
 import moment from 'moment';
 import maskInput from '@formio/vanilla-text-mask';
+import EventEmitter from './EventEmitter';
+import { Formio } from './Formio';
+import FormioUtils from './utils';
+import { I18n } from '@formio/core';
 import enTranslation from './translations/en';
 
 /**
