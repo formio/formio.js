@@ -315,6 +315,76 @@ describe(&apos;Container Component&apos;, () =&gt; {
     assert(textField, &apos;TextField component found&apos;);
     assert.strictEqual(textField.path, &apos;editGrid[0].container.textField&apos;);
   });
+
+  describe(&apos;Container component calculations when noDefaults Form Renderer Option&apos;, () =&gt; {
+    const formTemplate = {
+      &apos;_id&apos;: &apos;67978d7ab71bdbf9f76c6bf7&apos;,
+      &apos;title&apos;: &apos;testNoDef&apos;,
+      &apos;name&apos;: &apos;testNoDef&apos;,
+      &apos;path&apos;: &apos;testnodef&apos;,
+      &apos;type&apos;: &apos;form&apos;,
+      &apos;display&apos;: &apos;form&apos;,
+      &apos;components&apos;: [
+        {
+          &apos;label&apos;: &apos;Container&apos;,
+          &apos;tableView&apos;: false,
+          &apos;key&apos;: &apos;container&apos;,
+          &apos;type&apos;: &apos;container&apos;,
+          &apos;input&apos;: true,
+          &apos;components&apos;: [
+            {
+              &apos;label&apos;: &apos;Text Field&apos;,
+              &apos;key&apos;: &apos;textField&apos;,
+              &apos;type&apos;: &apos;textfield&apos;,
+              &apos;input&apos;: true,
+            },
+            {
+              &apos;label&apos;: &apos;Text Field Calculation&apos;,
+              &apos;key&apos;: &apos;textFieldCalculation&apos;,
+              &apos;type&apos;: &apos;textfield&apos;,
+              &apos;input&apos;: true,
+              &apos;calculateValue&apos;: &apos;value = data.container.textField&apos;
+            }
+          ]
+        },
+        {
+          &apos;type&apos;: &apos;button&apos;,
+          &apos;label&apos;: &apos;Submit&apos;,
+          &apos;key&apos;: &apos;submit&apos;,
+          &apos;disableOnInvalid&apos;: true,
+          &apos;input&apos;: true
+        }
+      ]
+    };
+
+    it(&apos;Should set correct form data and make correct container component calculations when noDefaults Form Renderer Option is set&apos;, async() =&gt; {
+      const element = document.createElement(&apos;div&apos;);
+      const form = await Formio.createForm(element, formTemplate, { noDefaults: true });
+
+      const textField = form.getComponent(&apos;textField&apos;);
+      textField.setValue(&apos;test&apos;);
+      await new Promise((resolve) =&gt; setTimeout(resolve, 300));
+
+      assert.deepEqual(form._data.container, {
+          textField: &apos;test&apos;,
+          textFieldCalculation: &apos;test&apos;
+      });
+    });
+
+    it(&apos;Should set correct form data and make correct container component calculations when noDefaults Form Renderer Option is not set&apos;, async() =&gt; {
+      const element = document.createElement(&apos;div&apos;);
+      const form = await Formio.createForm(element, formTemplate);
+
+      const textField = form.getComponent(&apos;textField&apos;);
+      textField.setValue(&apos;test&apos;);
+      await new Promise((resolve) =&gt; setTimeout(resolve, 300));
+
+      assert.deepEqual(form._data.container, {
+          textField: &apos;test&apos;,
+          textFieldCalculation: &apos;test&apos;
+      });
+    });
+  });
 });
 </code></pre>
 

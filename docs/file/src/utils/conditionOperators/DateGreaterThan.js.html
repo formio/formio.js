@@ -217,6 +217,7 @@ export default class DateGeaterThan extends ConditionOperator {
 
         if (instance &amp;&amp; instance.root) {
             conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
+            conditionTriggerComponent = Array.isArray(conditionTriggerComponent) ? conditionTriggerComponent[0] : conditionTriggerComponent;
         }
 
         if ( conditionTriggerComponent &amp;&amp; conditionTriggerComponent.isPartialDay &amp;&amp; conditionTriggerComponent.isPartialDay(value)) {
