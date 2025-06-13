@@ -1,7 +1,7 @@
 import { createNumberMask } from '@formio/text-mask-addons';
 import { maskInput } from '@formio/vanilla-text-mask';
 import _ from 'lodash';
-import { getCurrencyAffixes } from '../../utils/utils';
+import { getCurrencyAffixes } from '../../utils';
 import NumberComponent from '../number/Number';
 
 export default class CurrencyComponent extends NumberComponent {

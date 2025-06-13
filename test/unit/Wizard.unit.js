@@ -38,12 +38,13 @@ import nestedConditionalWizard from '../forms/nestedConditionalWizard';
 import wizardWithPrefixComps from '../forms/wizardWithPrefixComps';
 import wizardPermission from '../forms/wizardPermission';
 import formWithFormController from '../forms/formWithFormController';
-import { fastCloneDeep } from '../../src/utils/utils';
+import { fastCloneDeep } from '../../src/utils';
 import formsWithAllowOverride from '../forms/formsWithAllowOverrideComps';
 import WizardWithCheckboxes from '../forms/wizardWithCheckboxes';
 import WizardWithRequiredFields from '../forms/wizardWithRequiredFields';
 import formWithNestedWizardAndRequiredFields from '../forms/formWithNestedWizardAndRequiredFields';
 import simpleWizardWithRequiredFields from '../forms/simpleWizardWithRequiredFields';
+import wizardWithLazyLoadSelect from '../forms/wizardWithLazyLoadSelect';
 import { wait } from '../util';
 
 // eslint-disable-next-line max-statements
@@ -564,9 +565,13 @@ describe('Wizard Form with Nested Form validation', () => {
           setTimeout(() => {
             checkPage(2);
             const errors = wizard.errors;
-            assert.equal(errors.length, 1, 'Must err before next page');
+            assert.equal(errors.length, 2, 'Must err before next page');
             assert.equal(errors[0].ruleName, 'required');
             assert.equal(errors[0].message, 'Text Field is required');
+            assert.equal(errors[0].formattedKeyOrPath, 'formNested.data.textField');
+            assert.equal(errors[1].ruleName, 'required');
+            assert.equal(errors[1].message, 'Text Field is required');
+            assert.equal(errors[1].formattedKeyOrPath, 'formNested.data.dataGrid[0].textField');
             done();
           }, 300)
         }, 300)
@@ -1166,7 +1171,7 @@ describe('Wizard Form with Nested Form validation', () => {
         assert(errors.length > 0, 'Must err before next page');
         assert.equal(errors[0].message, 'Required Component is required');
         done();
-      }, 200);
+      }, 300);
     })
     .catch((err) => done(err));
   });
@@ -1932,6 +1937,37 @@ it('Should show tooltip for wizard pages', function(done) {
       }, 100);
     })
       .catch((err) => done(err));
+  });
+  
+  it('Should display select submission data when lazy load is checked', async () => {
+    const formElement = document.createElement('div');
+    const wizardForm =  await Formio.createForm(formElement, wizardWithLazyLoadSelect, {readOnly: true});
+    wizardForm.setSubmission({metadata: {
+        selectData: {
+          select1: {data: {label: "two"}},
+          select2: {label: "Three"}
+        },
+      },
+      data: {
+        select1: 2,
+        select2: 3
+      },
+      state: 'submitted',
+    });
+    setTimeout(() => {
+      const select1 = wizardForm.getComponent('select1');
+      assert.equal(select1.getValue(), 2);
+      assert.equal(select1.element.querySelectorAll('[aria-selected="true"] span')[0].innerHTML, 'two');
+
+      Harness.clickElement(wizardForm, wizardForm.refs[`${wizardForm.wizardKey}-link`][1]);
+
+      setTimeout(() => {
+        assert.equal(wizardForm.page, 1);
+        const select2 = wizardForm.getComponent('select2');
+        assert.equal(select2.getValue(), 3);
+        assert.equal(select2.element.querySelectorAll('[aria-selected="true"] span')[0].innerHTML, 'Three');
+      }, 500);
+    }, 500)
   });
 
   let wizardForm = null;

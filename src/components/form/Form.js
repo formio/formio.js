@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import ComponentModal from '../_classes/componentModal/ComponentModal';
 import EventEmitter from 'eventemitter3';
-import {isMongoId, eachComponent, componentValueTypes} from '../../utils/utils';
+import {isMongoId, eachComponent, componentValueTypes} from '../../utils';
 import { Formio } from '../../Formio';
 import Form from '../../Form';
 

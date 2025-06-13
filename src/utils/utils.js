@@ -1,47 +1,20 @@
 /* global jQuery */
-
 import _ from 'lodash';
-import jsonLogic from 'json-logic-js';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
-import { lodashOperators } from './jsonlogic/operators';
 import dompurify from 'dompurify';
-import { getValue } from './formUtils';
-import { Evaluator } from './Evaluator';
-import ConditionOperators from './conditionOperators';
-import { convertShowToBoolean } from '@formio/core';
-
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
+import { jsonLogic, convertShowToBoolean } from '@formio/core';
+import { getValue } from './formUtils';
+import { Evaluator } from './Evaluator';
+import ConditionOperators from './conditionOperators';
+
 dayjs.extend(timezone);
 dayjs.extend(advancedFormat);
 dayjs.extend(utc);
-
-const interpolate = Evaluator.interpolate;
-
-export * from './formUtils';
-
-// Configure JsonLogic
-lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
-
-// Retrieve Any Date
-jsonLogic.add_operation('getDate', (date) => {
-  return moment(date).toISOString();
-});
-
-// Set Relative Minimum Date
-jsonLogic.add_operation('relativeMinDate', (relativeMinDate) => {
-  return moment().subtract(relativeMinDate, 'days').toISOString();
-});
-
-// Set Relative Maximum Date
-jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
-  return moment().add(relativeMaxDate, 'days').toISOString();
-});
-
-export { jsonLogic, ConditionOperators, moment };
 
 /**
  * Evaluate a method.
@@ -253,7 +226,17 @@ function getConditionalPathsRecursive(conditionPaths, data) {
 
       const splittedConditionPath = conditionComponentPath.split('.');
 
-      const conditionalPaths = instance?.parent?.type === 'datagrid' || instance?.parent?.type === 'editgrid'  ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
+      const checkParentTypeInTree = (instance, componentType) => {
+        if (!instance?.parent) {
+          return false;
+        }
+
+        return instance?.parent.type === componentType || checkParentTypeInTree(instance.parent, componentType);
+      };
+
+      const conditionalPaths = checkParentTypeInTree(instance, 'datagrid') || checkParentTypeInTree(instance, 'editgrid')
+        ? []
+        : getConditionalPathsRecursive(splittedConditionPath, data);
 
       if (conditionalPaths.length > 0) {
         return conditionalPaths.map((path) => {
@@ -378,7 +361,7 @@ function getRow(component, row, instance, conditional) {
   }
   const dataParent = getDataParentComponent(instance);
   if (dataParent) {
-    const parentPath = dataParent.paths?.localDataPath;
+    const parentPath = dataParent.paths?.localPath;
     const isTriggerCondtionComponentPath = condition.when || !condition.conditions
       ? condition.when?.startsWith(dataParent.paths?.localPath)
       : _.some(condition.conditions, cond => cond.component.startsWith(dataParent.paths?.localPath));
@@ -1439,12 +1422,10 @@ export function fastCloneDeep(obj) {
   return obj ? JSON.parse(JSON.stringify(obj)) : obj;
 }
 
-export { Evaluator, interpolate };
-
 /**
  * Returns if the component is an input component.
  * @param {import('@formio/core').Component} componentJson - The JSON of a component.
- * @returns {bool} - TRUE if the component is an input component; FALSE otherwise.
+ * @returns {boolean} - TRUE if the component is an input component; FALSE otherwise.
  */
 export function isInputComponent(componentJson) {
   if (componentJson.input === false || componentJson.input === true) {
@@ -1469,7 +1450,7 @@ export function isInputComponent(componentJson) {
 /**
  * Takes a component path, and returns a component path array.
  * @param {string} pathStr - The path string to convert to an array.
- * @returns {Arryay<number>} - The array of paths.
+ * @returns {Array<string>} - The array of paths.
  */
 export function getArrayFromComponentPath(pathStr) {
   if (!pathStr || !_.isString(pathStr)) {
@@ -1659,9 +1640,6 @@ export function getFocusableElements(element) {
     textarea:not([disabled]), button:not([disabled]), [href]`;
   return element.querySelectorAll(focusableSelector);
 }
-
-// Export lodash to save space with other libraries.
-export { _ };
 
 export const componentValueTypes = {
   number: 'number',

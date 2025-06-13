@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
-import { componentValueTypes, eachComponent, getArrayFromComponentPath, getComponentSavedTypes } from '../../utils/utils';
+import { componentValueTypes, eachComponent, getArrayFromComponentPath, getComponentSavedTypes } from '../../utils';
 
 export default class ButtonComponent extends Field {
   static schema(...extend) {

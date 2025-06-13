@@ -1,3 +1,5 @@
+import moment from 'moment';
+import _ from 'lodash';
 import { Formio } from '../Formio';
 import InputWidget from './InputWidget';
 import {
@@ -9,11 +11,9 @@ import {
   getBrowserInfo,
   getDateSetting,
   getLocaleDateFormatInfo,
-  dayjsDate,
   hasEncodedTimezone,
-} from '../utils/utils';
-import moment from 'moment';
-import _ from 'lodash';
+  dayjsDate
+} from '../utils';
 
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
@@ -316,9 +316,7 @@ export default class CalendarWidget extends InputWidget {
 
     // If the component is a textfield that does not have timezone information included in the string value then skip
     // the timezone offset
-    if(this.component.type === 'textfield' && !hasEncodedTimezone(value)){
-      this.settings.skipOffset = true;
-    }
+    this.settings.skipOffset = this.component.type === 'textfield' && !hasEncodedTimezone(value);
 
     if (value) {
       if (!saveAsText && this.settings.readOnly) {
@@ -336,7 +334,7 @@ export default class CalendarWidget extends InputWidget {
     }
   }
 
-  getValueAsString(value, format) {
+  getValueAsString(value, format = '') {
     const inputFormat = format || this.dateFormat;
     const valueFormat = this.calendar ? this.valueFormat : this.settings.dateFormat;
     if (this.settings.saveAs === 'text' && this.componentInstance.parent && !this.settings.readOnly) {

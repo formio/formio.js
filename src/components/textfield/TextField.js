@@ -1,7 +1,7 @@
 import Input from '../_classes/input/Input';
 import { conformToMask } from '@formio/vanilla-text-mask';
 import Inputmask from 'inputmask';
-import * as FormioUtils from '../../utils/utils';
+import FormioUtils from '../../utils';
 import _ from 'lodash';
 
 export default class TextFieldComponent extends Input {
@@ -130,7 +130,11 @@ export default class TextFieldComponent extends Input {
     // If no value is provided, then set the defaultValue.
     if (!value.value) {
       const defaultValue = flags.noDefault ? this.emptyValue : this.defaultValue;
-      value.value = Array.isArray(defaultValue) ? defaultValue[0] : defaultValue;
+      if (Array.isArray(defaultValue)) {
+        value.value = _.isObject(defaultValue[0]) ? defaultValue[0].value : defaultValue;
+      } else {
+        value.value = _.isObject(defaultValue) ? defaultValue.value : defaultValue;
+      }
     }
 
     return value;
