@@ -65,7 +65,7 @@ export default class Components {
       // eslint-disable-next-line new-cap
       comp = new Components.components['datagrid'](component, options, data);
     }
-    else if (component.tree) {
+    else if (component.tree || (component.input && Array.isArray(component.components))) {
       // eslint-disable-next-line new-cap
       comp = new Components.components['nesteddata'](component, options, data);
     }
