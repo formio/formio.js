@@ -892,8 +892,10 @@ export default class NestedComponent extends Field {
   }
 
   resetValue() {
-    super.resetValue();
+    // Reset values of child components first, then reset the parent one, otherwise it will restore the default
+    // value of parent component and clear it one by one while resetting child components
     this.getComponents().forEach((comp) => comp.resetValue());
+    super.resetValue();
     this.setPristine(true);
   }
 

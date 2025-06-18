@@ -293,7 +293,7 @@ export default class AddressComponent extends ContainerComponent {
       this.restoreComponentsContext();
     }
 
-    if (changed || !_.isEmpty(value) && flags.fromSubmission) {
+    if (changed || !_.isEmpty(value) && flags.fromSubmission || flags.resetValue) {
       this.redraw();
     }
 
