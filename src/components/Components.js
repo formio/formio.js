@@ -83,6 +83,12 @@ export default class Components {
     if (comp.path) {
       comp.componentsMap[comp.path] = comp;
     }
+    // Reset the componentMatches on the root element if any new component is created.
+    let parent = comp.parent;
+    while (parent) {
+      parent.componentMatches = {};
+      parent = parent.parent;
+    }
     return comp;
   }
 }

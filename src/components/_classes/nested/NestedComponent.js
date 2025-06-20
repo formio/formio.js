@@ -341,6 +341,13 @@ export default class NestedComponent extends Field {
    * @returns {any} - The component that is located.
    */
   getComponent(path) {
+    // If the component is found
+    if (!this.componentMatches) {
+      this.componentMatches = {};
+    }
+    if (this.componentMatches && this.componentMatches[path]) {
+      return this.componentMatches[path];
+    }
     path = FormioUtils.getStringFromComponentPath(path);
     const matches = {
       path: undefined,
@@ -365,7 +372,8 @@ export default class NestedComponent extends Field {
         return match;
       });
     });
-    return FormioUtils.getBestMatch(matches)?.instance;
+    this.componentMatches[path] = FormioUtils.getBestMatch(matches)?.instance;
+    return this.componentMatches[path];
   }
 
   /**
