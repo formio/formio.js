@@ -1,4 +1,3 @@
-/* global jQuery */
 import _ from 'lodash';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
@@ -1136,9 +1135,7 @@ export function bootstrapVersion(options) {
   if (options.bootstrap) {
     return options.bootstrap;
   }
-  if ((typeof jQuery === 'function') && (typeof jQuery().collapse === 'function')) {
-    return parseInt(jQuery.fn.collapse.Constructor.VERSION.split('.')[0], 10);
-  }
+
   if (window.bootstrap && window.bootstrap.Collapse) {
     return parseInt(window.bootstrap.Collapse.VERSION.split('.')[0], 10);
   }
