@@ -1277,7 +1277,7 @@ export default class Webform extends NestedDataComponent {
         // Mark any components as invalid if in a custom message.
         const componentErrors = {};
         errors.forEach((err) => {
-            const path = err.path || err.context?.path || err.component?.key;
+            const path = getStringFromComponentPath(err.path) || err.context?.path || err.component?.key;
             if (!componentErrors[path]) {
                 componentErrors[path] = [];
             }
