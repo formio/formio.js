@@ -94,6 +94,7 @@ import simpleController from '../forms/formWithSimpleController.js';
 import formWithHiddenComponents from '../forms/formWithHiddenComponents.js';
 import formWithShowAsString from '../forms/formWithShowAsString.js';
 import formWithMergeComponentSchemaAndCustomLogic from '../forms/formWithMergeComponentSchemaAndCustomLogic.js';
+import formWithServerValidation from '../forms/formWithServerValidation.js';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
@@ -104,6 +105,25 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should show and highlight server validation errors for components inside container and datagrid', function(done) {
+    Formio.createForm(document.createElement('div'), formWithServerValidation.form).then(form => {
+      form.setValue(formWithServerValidation.values);
+
+      setTimeout(() => {
+        form.onSubmissionError(formWithServerValidation.serverErrors);
+        setTimeout(() => {
+          const invalidTextFieldEl = form.element.querySelector('.formio-component-textFieldUnique');
+          const invalidTextFieldInsideDGEl = form.element.querySelector('.formio-component-textField');
+          assert.equal(invalidTextFieldEl.classList.contains('formio-error-wrapper'), true);
+          assert.equal(invalidTextFieldEl.classList.contains('has-message'), true);
+          assert.equal(invalidTextFieldInsideDGEl.classList.contains('formio-error-wrapper'), true);
+          assert.equal(invalidTextFieldInsideDGEl.classList.contains('has-message'), true);
+          done();
+        }, 200);
+      }, 100);
+    }).catch((err) => done(err));
+  });
 
   it('Should resolve dataReady promise when a form includes hidden/conditionally hidden components', function(done) {
     const formElement = document.createElement('div');
@@ -118,7 +138,6 @@ describe('Webform tests', function() {
       }, 300);
     }).catch((err) => done(err));
   });
-
 
   it('Should merge component schema when condition is executed and set/keep values ', function(done) {
     const formElement = document.createElement('div');
