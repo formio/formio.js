@@ -498,12 +498,16 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   updateComponentsRowIndex(components, rowIndex) {
     components.forEach((component, colIndex) => {
+      if (this.componentsMap[component.paths.dataPath]) {
+            delete this.componentsMap[component.paths.dataPath];
+        }
       if (component.options?.name) {
         const newName = `[${this.key}][${rowIndex}]`;
         component.options.name = component.options.name.replace(`[${this.key}][${component.rowIndex}]`, newName);
       }
       component.rowIndex = rowIndex;
       component.row = `${rowIndex}-${colIndex}`;
+      this.componentsMap[component.paths.dataPath] = component;
     });
   }
 
