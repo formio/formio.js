@@ -728,10 +728,13 @@ export default class Component extends Element {
     if (!component) {
       component = this.component;
     }
-    if (_.isArray(this.options[visibility])) {
-      return this.options[visibility].includes(component.key);
+    if (!this.path) {
+      return false;
     }
-    return this.options[visibility][component.key];
+    if (_.isArray(this.options[visibility])) {
+      return this.options[visibility].includes(this.path);
+    }
+    return this.options[visibility][this.path];
   }
 
   shouldForceHide(component) {
