@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.2.1-rc.1
+### Changed
+ - Updated @formio/bootstrap@3.1.2-rc.1
+ - Updated @formio/core@2.5.1-rc.2
+ - FIO-8771 Included File Component in Review Page Component
+ - FIO-9246 fixed saving draft for form with nested form and reference false
+ - FIO-9241: Correctly set current page after conditionally hiding page in sibling nested wizard
+ - FIO-9170 Added a fix for default templates to include custom components
+ - FIO-9339: fixed an issue where preview shows an error when editing component JSON
+ - FIO-9872 fixed opening modal edit window for custom component
+ - FIO-10214: fixed types
+ - FIO-10200: fix conditionals checking after form submitting
+ - FIO-10250: Prevents an error when dropping a component inside WizardB…
+ - FIO-10159: fixed an issue where value of the Custom component is not saved
+ - FIO-10111: fixed na issue where layout components are wrongly considered to have the same path and show the repeated key validation error
+ - FIO-9937 Fixed edge cases for clearOnHide with nested forms + new test cases
+ - FIO-8548: Update choices.js to 11 version
+
 ## 5.2.0
 ### Changed
  - Official Release
