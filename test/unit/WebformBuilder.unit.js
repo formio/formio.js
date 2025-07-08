@@ -12,6 +12,7 @@ import formWithFormController from '../forms/formWithFormController';
 import simpleWebform from '../forms/simpleWebform';
 import formWithNumericKeys from '../forms/formWithNumericKeys';
 import testUniqueApiKey from '../forms/testUniqueApiKey';
+import FormBuilder from '../../src/FormBuilder';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -25,6 +26,41 @@ describe('WebformBuilder tests', function() {
     const builder = Harness.getBuilder();
     assert(builder instanceof WebformBuilder, 'Builder must be an instance of FormioFormBuilder');
     done();
+  });
+
+  it("Should open only one default opened group at a time", async () => {
+    const builderOptions = {
+      some_group1: {
+        title: "Components group 1",
+        weight: 10,
+        default: true,
+        components: {
+          content: true,
+        }
+      },
+      some_group2: {
+        title: "Components group 2",
+        weight: 9,
+        default: true,
+        components: {
+          captcha: true
+        }
+      }
+    }
+    const builder = new FormBuilder(document.createElement('div'), { display: 'form', components: [] }, { builder: builderOptions });
+    await builder.ready;
+    const sidebarContainer = builder.element.querySelector('[ref="sidebar-groups"]');
+    const groupsCollapse = [...sidebarContainer.querySelectorAll('[ref="sidebar-group"]')];
+    // Should be opened only one group with default = true. As we get sort ascending (by weight field) the "Components group 2" will be visible
+    groupsCollapse.forEach(x => {
+      const id = x.getAttribute("id");
+      if (id.includes("some_group2")) {
+        assert.equal(x.classList.contains('show'), true);
+      }
+      else {
+        assert.equal(x.classList.contains('show'), false);
+      }
+    })
   });
 
   it("Should not show errors with default array values", (done) => {

@@ -82,7 +82,16 @@ export default class WebformBuilder extends Component {
     this.groupOrder = this.groupOrder
       .filter(group => group && !group.ignore)
       .sort((a, b) => a.weight - b.weight)
-      .map(group => group.key);
+
+    const defaultOpenedGroup = this.groupOrder.find(x => x.key !== 'basic' && x.default);
+    if (defaultOpenedGroup) {
+      this.groupOrder.forEach(x => {
+        if ('default' in x && x.key !== defaultOpenedGroup.key) {
+          x.default = false;
+        }
+      });
+    }
+    this.groupOrder = this.groupOrder.map(group => group.key);
 
     for (const type in Components.components) {
       const component = Components.components[type];
