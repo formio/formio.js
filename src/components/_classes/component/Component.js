@@ -1359,10 +1359,17 @@ export default class Component extends Element {
     if (this.hasInput && this.component.validate?.required && !this.isPDFReadOnlyMode) {
       modalLabel = { className: 'field-required' };
     }
+    let messages = '';
+    if (this.errors?.length) {
+      messages = this.errors.map((err) => {
+          return err.level === 'error' ? this.renderTemplate('message', { ...err }) : '';
+        }
+      ).join('');
+    }
 
     return this.renderModalPreview({
       previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('clickToSetValue'),
-      messages: '',
+      messages,
       labelInfo: modalLabel,
     });
   }
