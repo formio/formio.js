@@ -137,13 +137,16 @@ function url(formio) {
     deleteFile(fileInfo, options) {
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open('DELETE', fileInfo.url, true);
+        xhr.open("DELETE", fileInfo.url, true);
+        const token = formio.getToken();
+        if (token) {
+          xhr.setRequestHeader("x-jwt-token", token);
+        }
         xhr.onload = () => {
           if (xhr.status >= 200 && xhr.status < 300) {
-            resolve('File deleted');
-          }
-          else {
-            reject(xhr.response || 'Unable to delete file');
+            resolve("File deleted");
+          } else {
+            reject(xhr.response || "Unable to delete file");
           }
         };
         if (options) {
