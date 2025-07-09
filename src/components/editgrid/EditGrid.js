@@ -10,7 +10,7 @@ import {
   Evaluator,
   getArrayFromComponentPath,
   eachComponent
-} from '../../utils/utils';
+} from '../../utils';
 
 const EditRowState = {
   New: 'new',
@@ -1404,16 +1404,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       component.data = editRow.data;
       this.setNestedValue(component, editRow.data, flags);
     });
-  }
-
-  emptyRows() {
-    this.editRows.forEach((editRow, index) => this.destroyComponents(false, index));
-    this.editRows = [];
-  }
-
-  resetValue() {
-    super.resetValue();
-    this.emptyRows();
   }
 }
 

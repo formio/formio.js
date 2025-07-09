@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import Field from '../field/Field';
 import Components from '../../Components';''
-import { getComponentPaths, getRandomComponentId, componentMatches, getBestMatch, getStringFromComponentPath } from '../../../utils/utils';
+import FormioUtils from '../../../utils';
 import { process as processAsync, processSync } from '@formio/core/process';
 
 /**
@@ -223,7 +223,7 @@ export default class NestedComponent extends Field {
    */
   set rowIndex(value) {
     this._rowIndex = value;
-    this.paths = getComponentPaths(this.component, this.parent?.component, {
+    this.paths = FormioUtils.getComponentPaths(this.component, this.parent?.component, {
       ...(this.parent?.paths || {}),
       ...{ dataIndex: value }
     });
@@ -341,7 +341,14 @@ export default class NestedComponent extends Field {
    * @returns {any} - The component that is located.
    */
   getComponent(path) {
-    path = getStringFromComponentPath(path);
+    // If the component is found
+    if (!this.componentMatches) {
+      this.componentMatches = {};
+    }
+    if (this.componentMatches && this.componentMatches[path]) {
+      return this.componentMatches[path];
+    }
+    path = FormioUtils.getStringFromComponentPath(path);
     const matches = {
       path: undefined,
       fullPath: undefined,
@@ -353,7 +360,7 @@ export default class NestedComponent extends Field {
     };
     this.everyComponent((component) => {
       // All searches are relative to this component so replace this path from the child paths.
-      componentMatches(component.component, {
+      FormioUtils.componentMatches(component.component, {
         path: component.paths?.path?.replace(new RegExp(`^${this.paths?.path}\\.?`), ''),
         fullPath: component.paths?.fullPath?.replace(new RegExp(`^${this.paths?.fullPath}\\.?`), ''),
         localPath: component.paths?.localPath?.replace(new RegExp(`^${this.paths?.localPath}\\.?`), ''),
@@ -365,7 +372,8 @@ export default class NestedComponent extends Field {
         return match;
       });
     });
-    return getBestMatch(matches)?.instance;
+    this.componentMatches[path] = FormioUtils.getBestMatch(matches)?.instance;
+    return this.componentMatches[path];
   }
 
   /**
@@ -409,7 +417,7 @@ export default class NestedComponent extends Field {
     options.localRoot = this.localRoot;
     options.skipInit = true;
     if (!(options.display === 'pdf' && this.builderMode)) {
-      component.id = getRandomComponentId();
+      component.id = FormioUtils.getRandomComponentId();
     }
     const comp = Components.create(component, options, data, true);
     comp.init();
@@ -737,7 +745,7 @@ export default class NestedComponent extends Field {
 
   validationProcessor({ scope, data, row, instance, paths }, flags) {
     const { dirty } = flags;
-    if (this.root.hasExtraPages && this.page !== this.root.page) {
+    if (this.root && this.root.hasSubWizards && this.page !== this.root.page) {
       instance = this.componentsMap?.hasOwnProperty(paths.dataPath)
         ? this.componentsMap[paths.dataPath]
         : this.getComponent(paths.dataPath);
@@ -892,8 +900,10 @@ export default class NestedComponent extends Field {
   }
 
   resetValue() {
-    super.resetValue();
+    // Reset values of child components first, then reset the parent one, otherwise it will restore the default
+    // value of parent component and clear it one by one while resetting child components
     this.getComponents().forEach((comp) => comp.resetValue());
+    super.resetValue();
     this.setPristine(true);
   }
 
@@ -907,7 +917,7 @@ export default class NestedComponent extends Field {
       return false;
     }
     if (component.type === 'components') {
-      if (component.tree && component.hasValue(value)) {
+      if ((component.tree || component.hasInput) && component.hasValue(value)) {
         return component.setValue(_.get(value, component.key), flags);
       }
       return component.setValue(value, flags);

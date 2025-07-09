@@ -3,8 +3,15 @@ import Component from './components/_classes/component/Component';
 import tippy from 'tippy.js';
 import Components from './components/Components';
 import { Formio } from './Formio';
-import { fastCloneDeep, bootstrapVersion, getArrayFromComponentPath, getStringFromComponentPath } from './utils/utils';
-import { eachComponent, getComponent } from './utils/formUtils';
+import {
+  fastCloneDeep,
+  bootstrapVersion,
+  getArrayFromComponentPath,
+  getStringFromComponentPath,
+  eachComponent,
+  getComponent,
+  componentInfo
+} from './utils';
 import BuilderUtils from './utils/builder';
 import _ from 'lodash';
 import autoScroll from 'dom-autoscroller';
@@ -1291,29 +1298,53 @@ export default class WebformBuilder extends Component {
     this.emit('updateComponent', component);
   }
 
-  findRepeatablePaths() {
-    const repeatablePaths = [];
+  findComponentsWithRepeatablePaths() {
+    const repeatablePaths = {};
     const keys = new Map();
     eachComponent(this.form.components, (comp, path, components, parent, paths) => {
-      if (keys.has(paths.dataPath)) {
-        repeatablePaths.push(paths.dataPath);
-      }
-      else {
-        keys.set(paths.dataPath, true);
+      const isRadioCheckbox = comp.type === 'checkbox' && comp.inputType === 'radio';
+      const isLayout = componentInfo(comp).layout;
+      if (!isLayout) {
+        if (keys.has(paths.dataPath)) {
+          const onlyRadioCheckboxes= repeatablePaths[paths.dataPath]?.onlyRadioCheckboxes === false ? false : isRadioCheckbox;
+          repeatablePaths[paths.dataPath] = {
+            comps: [...(repeatablePaths[paths.dataPath]?.comps || []), keys.get(paths.dataPath), comp],
+            onlyRadioCheckboxes,
+          };
+        }
+        else {
+          keys.set(paths.dataPath, comp);
+        }
       }
     }, true);
-    return repeatablePaths;
+    const componentsWithRepeatablePaths = [];
+    Object.keys(repeatablePaths).forEach((path) => {
+      const { comps, onlyRadioCheckboxes } = repeatablePaths[path];
+      if (!onlyRadioCheckboxes) {
+        componentsWithRepeatablePaths.push(...comps);
+      }
+    });
+    return componentsWithRepeatablePaths;
   }
 
   highlightInvalidComponents() {
-    const repeatablePaths = this.findRepeatablePaths();
+    const repeatablePathsComps = this.findComponentsWithRepeatablePaths();
     let hasInvalidComponents = false;
+    // Matches anything expect letters and  '_' at the beginning of the key and anything except of letters, numbers,
+    // '-', '.' and '_' in the rest of the key
+    const badCharacters = /^[^A-Za-z_]+|[^A-Za-z0-9\-._]+/g;
 
     this.webform.everyComponent((comp) => {
-      const path = comp.path;
-      if (repeatablePaths.includes(path)) {
+      if (repeatablePathsComps.includes(comp.component)) {
         comp.setCustomValidity(this.t('apiKey', { key: comp.key }));
         hasInvalidComponents = true;
+      }
+      else if (comp.key.replace(badCharacters, '') === '') {
+        comp.setCustomValidity(this.t('apiKeyNotValid', { key: comp.key }));
+        hasInvalidComponents = true;
+      }
+      else {
+        comp.setCustomValidity();
       }
     });
 

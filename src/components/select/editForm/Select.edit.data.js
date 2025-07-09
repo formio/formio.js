@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { eachComponent } from '../../../utils/utils';
+import { eachComponent } from '../../../utils';
 
 const calculateSingleSelectData = (context, defaultValue) => {
   const { instance, data } = context;

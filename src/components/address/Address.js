@@ -7,7 +7,7 @@ import { GoogleAddressProvider } from '../../providers/address/GoogleAddressProv
 import Field from '../_classes/field/Field';
 import NestedComponent from '../_classes/nested/NestedComponent';
 import ContainerComponent from '../container/Container';
-import { componentValueTypes, getComponentSavedTypes } from '../../utils/utils';
+import { componentValueTypes, getComponentSavedTypes } from '../../utils';
 
 export const AddressComponentMode = {
   Autocomplete: 'autocomplete',
@@ -293,7 +293,7 @@ export default class AddressComponent extends ContainerComponent {
       this.restoreComponentsContext();
     }
 
-    if (changed || !_.isEmpty(value) && flags.fromSubmission) {
+    if (changed || !_.isEmpty(value) && flags.fromSubmission || flags.resetValue) {
       this.redraw();
     }
 

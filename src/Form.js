@@ -2,7 +2,7 @@ import Element from './Element';
 import { Formio } from './Formio';
 import Displays from './displays';
 import templates from './templates';
-import * as FormioUtils from './utils/utils';
+import FormioUtils from './utils';
 
 export default class Form extends Element {
   /**

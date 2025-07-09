@@ -1,10 +1,11 @@
-import EventEmitter from './EventEmitter';
-import { Formio } from './Formio';
-import * as FormioUtils from './utils/utils';
-import { I18n } from './utils/i18n';
 import _ from 'lodash';
 import moment from 'moment';
 import maskInput from '@formio/vanilla-text-mask';
+import EventEmitter from './EventEmitter';
+import { Formio } from './Formio';
+import FormioUtils from './utils';
+import { I18n } from '@formio/core';
+import enTranslation from './translations/en';
 
 /**
  * The root component for all elements within the Form.io renderer.
@@ -41,7 +42,7 @@ export default class Element {
     if (this.options?.language) {
       this.options.i18n.language = this.options.language;
     }
-    this.options.i18next = this.i18next = this.options.i18next || I18n.init(this.options.i18n);
+    this.options.i18next = this.i18next = this.options.i18next || I18n.init({ en: enTranslation, ...this.options.i18n });
 
     /**
      * An instance of the EventEmitter class to handle the emitting and registration of events.
@@ -435,11 +436,12 @@ export default class Element {
   /**
    * Translate a text using the i18n system.
    * @param {string|Array<string>} text - The i18n identifier.
+   * @param {any} data - contextual data object containing data, component, row, etc.
    * @param {...any} args - The arguments to pass to the i18n translation.
    * @returns {string} - The translated text.
    */
-  t(text, ...args) {
-    return this.i18next ? this.i18next.t(text, ...args): text;
+  t(text, data, ...args) {
+    return this.i18next ? this.i18next.t(text, data, ...args): text;
   }
 
   /**
@@ -584,9 +586,9 @@ export default class Element {
     if (this.component.filter === string && !this.options.building) {
       const evalContext = this.evalContext(data);
       evalContext.data = _.mapValues(evalContext.data, (val) => _.isString(val) ? encodeURIComponent(val) : val);
-      return FormioUtils.interpolate(string, evalContext, options);
+      return FormioUtils.Evaluator.interpolate(string, evalContext, options);
     }
-    return FormioUtils.interpolate(string, this.evalContext(data), options);
+    return FormioUtils.Evaluator.interpolate(string, this.evalContext(data), options);
   }
 
   /**

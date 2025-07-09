@@ -1,39 +1,19 @@
-/* global jQuery */
-
 import _ from 'lodash';
-import jsonLogic from 'json-logic-js';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
-import { lodashOperators } from './jsonlogic/operators';
 import dompurify from 'dompurify';
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+import { jsonLogic, convertShowToBoolean } from '@formio/core';
 import { getValue } from './formUtils';
 import { Evaluator } from './Evaluator';
 import ConditionOperators from './conditionOperators';
-import { convertShowToBoolean } from '@formio/core';
 
-const interpolate = Evaluator.interpolate;
-
-export * from './formUtils';
-
-// Configure JsonLogic
-lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
-
-// Retrieve Any Date
-jsonLogic.add_operation('getDate', (date) => {
-  return moment(date).toISOString();
-});
-
-// Set Relative Minimum Date
-jsonLogic.add_operation('relativeMinDate', (relativeMinDate) => {
-  return moment().subtract(relativeMinDate, 'days').toISOString();
-});
-
-// Set Relative Maximum Date
-jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
-  return moment().add(relativeMaxDate, 'days').toISOString();
-});
-
-export { jsonLogic, ConditionOperators, moment };
+dayjs.extend(timezone);
+dayjs.extend(advancedFormat);
+dayjs.extend(utc);
 
 /**
  * Evaluate a method.
@@ -245,7 +225,17 @@ function getConditionalPathsRecursive(conditionPaths, data) {
 
       const splittedConditionPath = conditionComponentPath.split('.');
 
-      const conditionalPaths = instance?.parent?.type === 'datagrid' || instance?.parent?.type === 'editgrid'  ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
+      const checkParentTypeInTree = (instance, componentType) => {
+        if (!instance?.parent) {
+          return false;
+        }
+
+        return instance?.parent.type === componentType || checkParentTypeInTree(instance.parent, componentType);
+      };
+
+      const conditionalPaths = checkParentTypeInTree(instance, 'datagrid') || checkParentTypeInTree(instance, 'editgrid')
+        ? []
+        : getConditionalPathsRecursive(splittedConditionPath, data);
 
       if (conditionalPaths.length > 0) {
         return conditionalPaths.map((path) => {
@@ -370,7 +360,7 @@ function getRow(component, row, instance, conditional) {
   }
   const dataParent = getDataParentComponent(instance);
   if (dataParent) {
-    const parentPath = dataParent.paths?.localDataPath;
+    const parentPath = dataParent.paths?.localPath;
     const isTriggerCondtionComponentPath = condition.when || !condition.conditions
       ? condition.when?.startsWith(dataParent.paths?.localPath)
       : _.some(condition.conditions, cond => cond.component.startsWith(dataParent.paths?.localPath));
@@ -568,7 +558,7 @@ export function guid() {
 /**
  * Return a translated date setting.
  * @param {string|Date} date - The date to translate.
- * @returns {(null|Date)} - The translated date.
+ * @returns {(null|dayjs.Dayjs)} - The translated date.
  */
 export function getDateSetting(date) {
   if (_.isNil(date) || _.isNaN(date) || date === '') {
@@ -591,13 +581,13 @@ export function getDateSetting(date) {
   try {
     const value = Evaluator.evaluator(`return ${date};`, 'moment')(moment);
     if (typeof value === 'string') {
-      dateSetting = moment(value);
+      dateSetting = dayjs(value);
     }
     else if (typeof value.toDate === 'function') {
-      dateSetting = moment(value.toDate().toUTCString());
+      dateSetting = dayjs(value.toDate().toUTCString());
     }
     else if (value instanceof Date) {
-      dateSetting = moment(value);
+      dateSetting = dayjs(value);
     }
   }
   catch (e) {
@@ -630,18 +620,18 @@ export function isValidDate(date) {
  * @returns {string} - The current timezone.
  */
 export function currentTimezone() {
-  if (moment.currentTimezone) {
-    return moment.currentTimezone;
+  if (dayjs.currentTimezone) {
+    return dayjs.currentTimezone;
   }
-  moment.currentTimezone = jtz.determine().name();
-  return moment.currentTimezone;
+  dayjs.currentTimezone = jtz.determine().name();
+  return dayjs.currentTimezone;
 }
 
 /**
  * Get an offset date provided a date object and timezone object.
  * @param {Date} date - The date to offset.
  * @param {string} timezone - The timezone to offset the date to.
- * @returns {Date} - The offset date.
+ * @returns {{date: Date, abbr: string}} - The offset date.
  */
 export function offsetDate(date, timezone) {
   if (timezone === 'UTC') {
@@ -650,7 +640,7 @@ export function offsetDate(date, timezone) {
       abbr: 'UTC'
     };
   }
-  const dateMoment = moment(date).tz(timezone);
+  const dateMoment = dayjs(date).tz(timezone);
   return {
     date: new Date(date.getTime() + ((dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000)),
     abbr: dateMoment.format('z')
@@ -658,127 +648,78 @@ export function offsetDate(date, timezone) {
 }
 
 /**
- * Returns if the zones are loaded.
- * @returns {boolean} - TRUE if the zones are loaded; FALSE otherwise.
- */
-export function zonesLoaded() {
-  return moment.zonesLoaded;
-}
-
-/**
- * Returns if we should load the zones.
+ * Returns if we should handle a timezone difference.
  * @param {string} timezone - The timezone to check if we should load the zones.
- * @returns {boolean} - TRUE if we should load the zones; FALSE otherwise.
+ * @returns {boolean} - TRUE if we should handle timezones; FALSE otherwise.
  */
-export function shouldLoadZones(timezone) {
-  if (timezone === currentTimezone() || timezone === 'UTC') {
-    return false;
-  }
-  return true;
+export function shouldHandleTimezone(timezone) {
+  return !(timezone === currentTimezone() || timezone === 'UTC');
 }
 
 /**
- * Externally load the timezone data.
- * @param {string} url - The URL to load the timezone data from.
- * @param {string} timezone - The timezone to load.
- * @returns {Promise<any> | *} - Resolves when the zones for this timezone are loaded.
- */
-export function loadZones(url, timezone) {
-  if (timezone && !shouldLoadZones(timezone)) {
-    // Return non-resolving promise.
-    return new Promise(_.noop);
-  }
-
-  if (moment.zonesPromise) {
-    return moment.zonesPromise;
-  }
-  return moment.zonesPromise = fetch(url)
-  .then(resp => resp.json().then(zones => {
-    moment.tz.load(zones);
-    moment.zonesLoaded = true;
-
-    // Trigger a global event that the timezones have finished loading.
-    if (document && document.createEvent && document.body && document.body.dispatchEvent) {
-      var event = document.createEvent('Event');
-      event.initEvent('zonesLoaded', true, true);
-      document.body.dispatchEvent(event);
-    }
-  }));
-}
-
-/**
- * Get the moment date object for translating dates with timezones.
- * @param {string|Date} value - The value to convert into a moment date.
+ * Get the Dayjs date object for translating dates with timezones.
+ * @param {string|Date} value - The value to convert into a dayjs date.
  * @param {string} format - The format to convert the date to.
  * @param {string} timezone - The timezone to convert the date to.
  * @param {object} options - The options object
- * @returns {Date} - The moment date object.
+ * @returns {dayjs.Dayjs} - The dayjs date object.
  */
-export function momentDate(value, format, timezone, options) {
-  const momentDate = moment(value);
+export function dayjsDate(value, format, timezone, options) {
+  const dayjsDate = dayjs(value);
   if (!timezone) {
-    return momentDate;
+    return dayjsDate;
   }
   if (timezone === 'UTC') {
     timezone = 'Etc/UTC';
   }
-  if ((timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) && (moment.zonesLoaded || options?.email)) {
-    return momentDate.tz(timezone);
+  if ((timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) && (shouldHandleTimezone(timezone) || options?.email)) {
+    return dayjsDate.tz(timezone);
   }
-  return momentDate;
+  return dayjsDate;
 }
 
 /**
  * Format a date provided a value, format, and timezone object.
- * @param {string} timezonesUrl - The URL to load the timezone data from.
  * @param {string|Date} value - The value to format.
  * @param {string} format - The format to format the date to.
  * @param {string} timezone - The timezone to format the date to.
  * @param {string} flatPickrInputFormat - The format to use for flatpickr input.
  * @returns {string} - The formatted date.
  */
-export function formatDate(timezonesUrl, value, format, timezone, flatPickrInputFormat) {
-  const momentDate = moment(value, flatPickrInputFormat || undefined);
+export function formatDate(value, format, timezone, flatPickrInputFormat) {
+  const dayjsDate = dayjs(value, flatPickrInputFormat || undefined);
   if (timezone === currentTimezone()) {
     // See if our format contains a "z" timezone character.
     if (format.match(/\s(z$|z\s)/)) {
-      loadZones(timezonesUrl);
-      if (moment.zonesLoaded) {
-        return momentDate.tz(timezone).format(convertFormatToMoment(format));
+      if (shouldHandleTimezone(timezone)) {
+        return dayjsDate.tz(timezone).format(convertFormatToDayjs(format));
       }
       else {
-        return momentDate.format(convertFormatToMoment(format.replace(/\s(z$|z\s)/, '')));
+        return dayjsDate.format(convertFormatToDayjs(format.replace(/\s(z$|z\s)/, '')));
       }
     }
-
     // Return the standard format.
-    return momentDate.format(convertFormatToMoment(format));
+    return dayjsDate.format(convertFormatToDayjs(format));
   }
   if (timezone === 'UTC') {
-    const offset = offsetDate(momentDate.toDate(), 'UTC');
-    return `${moment(offset.date).format(convertFormatToMoment(format))} UTC`;
+    const offset = offsetDate(dayjsDate.toDate(), 'UTC');
+    return `${dayjs(offset.date).format(convertFormatToDayjs(format))} UTC`;
   }
-
-  // Load the zones since we need timezone information.
-  loadZones(timezonesUrl);
-  if (moment.zonesLoaded && timezone) {
-    return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
+  if (shouldHandleTimezone(timezone)) {
+    return dayjsDate.tz(timezone).format(`${convertFormatToDayjs(format)} z`);
   }
-  else {
-    return momentDate.format(convertFormatToMoment(format));
-  }
+  return dayjsDate.format(convertFormatToDayjs(format));
 }
 
 /**
  * Pass a format function to format within a timezone.
- * @param {string} timezonesUrl - The URL to load the timezone data from.
  * @param {Function} formatFn - The format function to use.
  * @param {Date|string} date - The date to format.
  * @param {string} format - The format to format the date to.
  * @param {string} timezone - The timezone to format the date to.
  * @returns {string} - The formatted date.
  */
-export function formatOffset(timezonesUrl, formatFn, date, format, timezone) {
+export function formatOffset(formatFn, date, format, timezone) {
   if (timezone === currentTimezone()) {
     return formatFn(date, format);
   }
@@ -786,9 +727,7 @@ export function formatOffset(timezonesUrl, formatFn, date, format, timezone) {
     return `${formatFn(offsetDate(date, 'UTC').date, format)} UTC`;
   }
 
-  // Load the zones since we need timezone information.
-  loadZones(timezonesUrl);
-  if (moment.zonesLoaded) {
+  if (shouldHandleTimezone(timezone)) {
     const offset = offsetDate(date, timezone);
     return `${formatFn(offset.date, format)} ${offset.abbr}`;
   }
@@ -856,7 +795,7 @@ export function convertFormatToFlatpickr(format) {
  * @param {string} format - The format to convert.
  * @returns {string} - The converted format.
  */
-export function convertFormatToMoment(format) {
+export function convertFormatToDayjs(format) {
   return format
   // Year conversion.
     .replace(/y/g, 'Y')
@@ -1196,9 +1135,7 @@ export function bootstrapVersion(options) {
   if (options.bootstrap) {
     return options.bootstrap;
   }
-  if ((typeof jQuery === 'function') && (typeof jQuery().collapse === 'function')) {
-    return parseInt(jQuery.fn.collapse.Constructor.VERSION.split('.')[0], 10);
-  }
+
   if (window.bootstrap && window.bootstrap.Collapse) {
     return parseInt(window.bootstrap.Collapse.VERSION.split('.')[0], 10);
   }
@@ -1482,12 +1419,10 @@ export function fastCloneDeep(obj) {
   return obj ? JSON.parse(JSON.stringify(obj)) : obj;
 }
 
-export { Evaluator, interpolate };
-
 /**
  * Returns if the component is an input component.
  * @param {import('@formio/core').Component} componentJson - The JSON of a component.
- * @returns {bool} - TRUE if the component is an input component; FALSE otherwise.
+ * @returns {boolean} - TRUE if the component is an input component; FALSE otherwise.
  */
 export function isInputComponent(componentJson) {
   if (componentJson.input === false || componentJson.input === true) {
@@ -1512,7 +1447,7 @@ export function isInputComponent(componentJson) {
 /**
  * Takes a component path, and returns a component path array.
  * @param {string} pathStr - The path string to convert to an array.
- * @returns {Arryay<number>} - The array of paths.
+ * @returns {Array<string>} - The array of paths.
  */
 export function getArrayFromComponentPath(pathStr) {
   if (!pathStr || !_.isString(pathStr)) {
@@ -1702,9 +1637,6 @@ export function getFocusableElements(element) {
     textarea:not([disabled]), button:not([disabled]), [href]`;
   return element.querySelectorAll(focusableSelector);
 }
-
-// Export lodash to save space with other libraries.
-export { _ };
 
 export const componentValueTypes = {
   number: 'number',

@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import Harness from '../harness';
 import DataGridComponent from '../../src/components/datagrid/DataGrid';
 import { Formio } from '../../src/Formio';
-import { fastCloneDeep } from '../../src/utils/utils';
+import { fastCloneDeep } from '../../src/utils';
 import dragula from 'dragula'
 import {
   comp1,
@@ -19,6 +19,7 @@ import {
   comp9,
   comp10,
   comp11,
+  comp12,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
@@ -613,6 +614,31 @@ describe('DataGrid Component', () => {
       dataGrid.removeRow(0);
     }).catch((err) => done(err));
   });
+
+  it('Should update indexes in componentsMap when removing dataGrid row', () => {
+    return Harness.testCreate(DataGridComponent, {
+      label: 'Datagrid',
+      key: 'dataGrid',
+      type: 'datagrid',
+      input: true,
+      defaultValue: [{ }],
+      components: [
+        {
+          label: 'Number',
+          key: 'number',
+          type: 'number',
+          input: true
+        },
+      ],
+    }).then((component) => {
+      component.addRow();
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[0].number'), true);
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[1].number'), true);
+      component.removeRow(0);
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[0].number'), true);
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[1].number'), false);
+    });
+  });
 });
 
 describe('DataGrid Panels', () => {
@@ -823,10 +849,10 @@ describe('DataGrid calculated values', () => {
                   }]
                 );
                 done();
-              }, 300);
-            }, 300);
-          }, 300);
-        }, 300);
+              }, 400);
+            }, 400);
+          }, 400);
+        }, 400);
       })
       .catch(done);
   });
@@ -1081,6 +1107,32 @@ describe('SaveDraft functionality', () => {
           }, 300);
         }, 300);
       }, 200);
+    }).catch((err) => done(err));
+  })
+});
+
+describe('DataGrid conditional logic', () => {
+  it('Should show and hide components based on conditional logic inside container', (done) => {
+    Formio.createForm(document.createElement('div'), _.cloneDeep(comp12)).then((form) => {
+      const dataGrid = form.getComponent('dataGrid');
+      dataGrid.refs['datagrid-dataGrid-addRow'][0].click();
+      setTimeout(() => {
+        dataGrid.refs['datagrid-dataGrid-addRow'][0].click();
+        setTimeout(() => {
+          assert.equal(dataGrid.rows.length, 3);
+          const checkbox = form.getComponent('dataGrid[1].container.checkbox');
+          const textfield = form.getComponent('dataGrid[1].container.textField');
+          assert.equal(checkbox.visible, true);
+          assert.equal(textfield.visible, false);
+          checkbox.refs.input[0].click();
+          setTimeout(() => {
+            assert.equal(textfield.visible, true);
+            assert.equal(form.getComponent('dataGrid[0].container.textField').visible, false);
+            assert.equal(form.getComponent('dataGrid[2].container.textField').visible, false);
+            done();
+          }, 400);
+        }, 100);
+      }, 100);
     }).catch((err) => done(err));
   })
 })

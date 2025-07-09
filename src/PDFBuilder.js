@@ -2,8 +2,7 @@ import _ from 'lodash';
 import { Formio } from './Formio';
 
 import WebformBuilder from './WebformBuilder';
-import { fastCloneDeep, getElementRect , getBrowserInfo } from './utils/utils';
-import { eachComponent } from './utils/formUtils';
+import { fastCloneDeep, getElementRect , getBrowserInfo, eachComponent } from './utils';
 import BuilderUtils from './utils/builder';
 import PDF from './PDF';
 
@@ -499,25 +498,25 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   highlightInvalidComponents() {
-    const repeatablePaths = this.findRepeatablePaths();
+    const repeatablePathsComps = this.findComponentsWithRepeatablePaths();
 
     // update elements which path was duplicated if any pathes have been changed
-    if (!_.isEqual(this.repeatablePaths, repeatablePaths)) {
-      eachComponent(this.webform.getComponents(), (comp, path) => {
-        if (this.repeatablePaths.includes(path)) {
+    if (!_.isEqual(this.repeatablePathsComps, repeatablePathsComps)) {
+      eachComponent(this.webform.getComponents(), (comp) => {
+        if (this.repeatablePathsComps.includes(comp.component)) {
           this.webform.postMessage({ name: 'updateElement', data: comp.component });
         }
       });
 
-      this.repeatablePaths = repeatablePaths;
+      this.repeatablePathsComps = repeatablePathsComps;
     }
 
-    if (!repeatablePaths.length) {
+    if (!repeatablePathsComps.length) {
       return;
     }
 
-    eachComponent(this.webform.getComponents(), (comp, path) => {
-      if (this.repeatablePaths.includes(path)) {
+    eachComponent(this.webform.getComponents(), (comp) => {
+      if (this.repeatablePathsComps.includes(comp)) {
         this.webform.postMessage({
           name: 'showBuilderErrors',
           data: {

@@ -7,10 +7,11 @@ import formWithRichTextAreas from '../forms/formWithRichTextAreas';
 import textAreaJsonType from '../forms/textAreaJsonType';
 import Harness from '../harness';
 import { Formio } from '../../src/Formio';
-import { comp1, comp2, comp3, comp4 } from './fixtures/textarea';
+import { comp1, comp2, comp3, comp4, comp5 } from './fixtures/textarea';
 import TextAreaComponent from '../../src/components/textarea/TextArea';
 import { fastCloneDeep } from '@formio/core';
 import { getFormioUploadAdapterPlugin } from '../../src/providers/storage/uploadAdapter';
+import FormBuilder from '../../src/FormBuilder';
 window.ace = require('ace-builds');
 
 describe('TextArea Component', () => {
@@ -18,6 +19,18 @@ describe('TextArea Component', () => {
     return Harness.testCreate(TextAreaComponent, comp1).then((component) => {
       Harness.testElements(component, 'textarea', 1);
     });
+  });
+
+  it("Redraw in setValue should not be called if a component with multiple flag = true and renderMode = html", async function () {
+    const element = document.createElement("div");
+    const form = await Formio.createForm(element, comp5, {
+      readOnly: true,
+      renderMode: "html",
+    });
+    const component = form.getComponent("textArea");
+    const emit = sinon.spy(component, "redraw");
+    component.setValue(["Hello"]);
+    assert.equal(emit.callCount, 0);
   });
 
   it('setValue should be called only once', () => {
@@ -299,6 +312,45 @@ describe('TextArea Component', () => {
     }).catch(done);
   });
 
+  it('Should show the amount characters and words when we toggle preview button', (done) => {
+    const comp = _.cloneDeep(comp3);
+    comp.components[0].showWordCount = true;
+    comp.components[0].showCharCount = true;
+    comp.components[0].defaultValue = 'My value'
+
+    const builder = new FormBuilder(document.createElement('div'), comp).instance;
+    const textArea = builder.webform.components[0];
+    const editComponentRef = textArea.refs.editComponent;
+    const clickEvent = new Event('click');
+    editComponentRef.dispatchEvent(clickEvent);
+
+    setTimeout(() => {
+      const previewButton = builder.componentEdit.querySelector('[ref="previewButton"]');
+      const preview = builder.componentEdit.querySelector('.component-preview');
+      const charCount = preview.querySelector('[ref="charcount"]');
+      const wordCount = preview.querySelector('[ref="wordcount"]');
+      assert.equal(charCount.textContent, '8 characters');
+      assert.equal(wordCount.textContent, '2 words');
+      previewButton.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        const previewButton = builder.componentEdit.querySelector('[ref="previewButton"]');
+        const preview = builder.componentEdit.querySelector('.component-preview');
+        assert.equal(preview, null);
+        previewButton.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          const preview = builder.componentEdit.querySelector('.component-preview');
+          const charCount = preview.querySelector('[ref="charcount"]');
+          const wordCount = preview.querySelector('[ref="wordcount"]');
+          assert.equal(charCount.textContent, '8 characters');
+          assert.equal(wordCount.textContent, '2 words');
+          done();
+        }, 600);
+      }, 500);
+    }, 500);
+  });
+
   it('Should correctly count characters if character counter is enabled', (done) => {
     const form = _.cloneDeep(comp3);
     form.components[0].showCharCount = true;
@@ -570,7 +622,7 @@ describe('TextArea Component', () => {
 
     it('Should set array as value for textarea with ace editor with json data type', (done) => {
       const element = document.createElement('div');
-     
+
       Formio.createForm(element, textAreaJsonType).then(form => {
           const textArea = form.getComponent('textArea');
           textArea.setValue([1,2,3]);

@@ -2,6 +2,8 @@ import assert from 'power-assert';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import _ from 'lodash';
+import resetActionDefaultValueBasicComponents from '../forms/resetActionDefaultValueBasicComponents';
+import resetActionDefaultValuesDataComponentsForm from '../forms/resetActionDefaultValuesDataComponentsForm';
 import Harness from '../harness.js';
 import FormTests from '../forms/index.js';
 import Webform from '../../src/Webform.js';
@@ -48,7 +50,7 @@ import formWithDataGrid from '../forms/formWithDataGrid.js';
 import translationTestForm from '../forms/translationTestForm.js';
 import formWithDataGridWithCondColumn from '../forms/dataGridWithConditionalColumn.js';
 import { nestedFormInWizard } from '../fixtures/index.js';
-import { fastCloneDeep } from '../../src/utils/utils.js';
+import { fastCloneDeep } from '../../src/utils/index.js';
 import dataGridOnBlurValidation from '../forms/dataGridOnBlurValidation.js';
 import checkBlurFocusEventForm from '../forms/checkBlurFocusEventForm.js';
 import truncateMultipleSpaces from '../forms/truncateMultipleSpaces.js';
@@ -66,7 +68,7 @@ import formWithAllowCalculateOverride from '../forms/formWithAllowCalculateOverr
 import testClearOnHideInsideEditGrid from '../forms/clearOnHideInsideEditGrid.js';
 import formWithNestedDataGridInitEmpty from '../forms/nestedDataGridWithInitEmpty.js';
 import formWithEventLogicInHiddenComponent from '../forms/formWithEventLogicInHiddenComponent.js';
-import * as FormioUtils from '../../src/utils/utils.js';
+import FormioUtils from '../../src/utils/index.js';
 import htmlRenderMode from '../forms/htmlRenderMode.js';
 import optionalSanitize from '../forms/optionalSanitize.js';
 import formsWithNewSimpleConditions from '../forms/formsWithNewSimpleConditions.js';
@@ -93,6 +95,7 @@ import formWithHiddenComponents from '../forms/formWithHiddenComponents.js';
 import formWithShowAsString from '../forms/formWithShowAsString.js';
 import formWithMergeComponentSchemaAndCustomLogic from '../forms/formWithMergeComponentSchemaAndCustomLogic.js';
 import clearOnHideInsideLayoutComponent from '../forms/clearOnHideInsideLayoutComponent.js';
+import formWithServerValidation from '../forms/formWithServerValidation.js';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
@@ -103,6 +106,25 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+
+  it('Should show and highlight server validation errors for components inside container and datagrid', function(done) {
+    Formio.createForm(document.createElement('div'), formWithServerValidation.form).then(form => {
+      form.setValue(formWithServerValidation.values);
+
+      setTimeout(() => {
+        form.onSubmissionError(formWithServerValidation.serverErrors);
+        setTimeout(() => {
+          const invalidTextFieldEl = form.element.querySelector('.formio-component-textFieldUnique');
+          const invalidTextFieldInsideDGEl = form.element.querySelector('.formio-component-textField');
+          assert.equal(invalidTextFieldEl.classList.contains('formio-error-wrapper'), true);
+          assert.equal(invalidTextFieldEl.classList.contains('has-message'), true);
+          assert.equal(invalidTextFieldInsideDGEl.classList.contains('formio-error-wrapper'), true);
+          assert.equal(invalidTextFieldInsideDGEl.classList.contains('has-message'), true);
+          done();
+        }, 200);
+      }, 100);
+    }).catch((err) => done(err));
+  });
 
   it('Should resolve dataReady promise when a form includes hidden/conditionally hidden components', function(done) {
     const formElement = document.createElement('div');
@@ -117,7 +139,6 @@ describe('Webform tests', function() {
       }, 300);
     }).catch((err) => done(err));
   });
-
 
   it('Should merge component schema when condition is executed and set/keep values ', function(done) {
     const formElement = document.createElement('div');
@@ -149,7 +170,7 @@ describe('Webform tests', function() {
 
         maxDateCheckbox.setValue(true);
         minDateCheckbox.setValue(true);
-        
+
 
         setTimeout(() => {
           assert.equal(maxDateCheckbox.dataValue, true);
@@ -3078,6 +3099,8 @@ describe('Webform tests', function() {
   });
 
   describe('Reset values', () => {
+    let formElement = document.createElement('div');
+
     it('Should reset all values correctly.', () => {
       formElement.innerHTML = '';
       const form = new Webform(formElement, { language: 'en' });
@@ -3176,6 +3199,162 @@ describe('Webform tests', function() {
           });
         });
       });
+    });
+
+    it('Should reset all default values correctly (Data components).', (done) => {
+      formElement.innerHTML = '';
+      Formio.createForm(formElement, resetActionDefaultValuesDataComponentsForm).then((form) => {
+        const nonDefaultValue = {
+          hidden: '500',
+          container: {
+            textField: 'Test',
+            number: 1,
+            currency: 1,
+          },
+          dataGrid: [
+            {
+              textField1: 'Test',
+              number1: 1,
+              currency2: 1,
+            },
+            {
+              textField1: 'Test',
+              number1: 1,
+              currency2: 1,
+            },
+            {
+              textField1: 'Test',
+              number1: 1,
+              currency2: 1,
+            },
+            {
+              textField1: 'Test',
+              number1: 1,
+              currency2: 1,
+            },
+          ],
+          editGrid: [
+            {
+              textField2: 'Test',
+              number2: 1,
+              currency1: 1,
+            },
+            {
+              textField2: 'Test',
+              number2: 1,
+              currency1: 1,
+            },
+            {
+              textField2: 'Test',
+              number2: 1,
+              currency1: 1,
+            },
+          ],
+          reset: false,
+          resetCustom: false,
+          submit: true,
+        };
+        const defaultValue = {
+          hidden: '500',
+          container: {
+            textField: 'Officia consequuntur',
+            number: 1000,
+            currency: 1001,
+          },
+          dataGrid: [
+            {
+              textField1: 'Eaque esse est dele',
+              number1: 796,
+              currency2: 0,
+            },
+            {
+              textField1: 'Default Value ',
+              number1: 100,
+              currency2: 200,
+            },
+            {
+              textField1: 'Default Value ',
+              number1: 100,
+              currency2: 200,
+            },
+          ],
+          editGrid: [
+            {
+              textField2: 'Default Value ',
+              number2: 100,
+              currency1: 200,
+            },
+            {
+              textField2: 'Default Value ',
+              number2: 100,
+              currency1: 200,
+            },
+          ],
+          reset: false,
+          resetCustom: false,
+          submit: false,
+        };
+        form.setSubmission({ data: { ...nonDefaultValue } }).then(() => {
+          expect(form.submission).to.deep.equal({ data: nonDefaultValue });
+          form.resetValue();
+
+          setTimeout(() => {
+            expect(form.submission).to.deep.equal({ data: defaultValue });
+            done();
+          }, 200);
+        });
+      }).catch(done);
+    });
+
+    it('Should reset all default values correctly (Basic components).', (done) => {
+      formElement.innerHTML = '';
+      Formio.createForm(formElement, resetActionDefaultValueBasicComponents).then((form) => {
+        const nonDefaultValue = {
+          textFieldPopulate: '1',
+          numberPopulate: 20,
+          textField: 'new',
+          textArea: 'new1',
+          number: 55,
+          checkbox: false,
+          selectBoxes: {
+            '1': true,
+            '2': true,
+            '3': false,
+          },
+          select: 2,
+          radio: 1,
+          reset: false,
+          resetCustom: false,
+          submit: true,
+        };
+        const defaultValue = {
+          textFieldPopulate: '12345',
+          numberPopulate: 25,
+          textField: '12345new',
+          textArea: '12345new1',
+          number: 50,
+          checkbox: true,
+          selectBoxes: {
+            '1': true,
+            '2': false,
+            '3': true,
+          },
+          select: 1,
+          radio: 2,
+          submit: false,
+          reset: false,
+          resetCustom: false,
+      };
+        return form.setSubmission({ data: { ...nonDefaultValue } }).then(() => {
+          expect(form.submission.data).to.deep.equal(nonDefaultValue);
+          form.resetValue();
+
+          setTimeout(() => {
+            expect(form.submission.data).to.deep.equal(defaultValue);
+            done();
+          }, 200);
+        });
+      }).catch(done);
     });
   });
 
@@ -3733,6 +3912,30 @@ describe('Webform tests', function() {
           }, 300);
         }, 300);
       }).catch((err) => done(err));
+    });
+
+    it(`Should check conditionals after submitting form `, function(done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+
+      form.setForm(formsWithNewSimpleConditions.form9).then(() => {
+        const textField = form.getComponent('textField');
+        const fieldWithConditions = form.getComponent('textField1');
+        textField.setValue('hide');
+        setTimeout(() => {
+          assert.equal(fieldWithConditions.visible, false);
+          form.submit();
+
+            setTimeout(() => {
+              textField.setValue('show');
+              setTimeout(()=> {
+                assert.equal(fieldWithConditions.visible, true);
+                done();
+              }, 400)
+            }, 400)
+        }, 400);
+      })
+      .catch((err) => done(err));
     });
   });
 

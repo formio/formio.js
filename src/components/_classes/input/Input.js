@@ -1,5 +1,5 @@
 import Multivalue from '../multivalue/Multivalue';
-import { convertStringToHTMLElement } from '../../../utils/utils';
+import { convertStringToHTMLElement } from '../../../utils';
 import Widgets from '../../../widgets';
 import _ from 'lodash';
 
@@ -135,7 +135,7 @@ export default class Input extends Multivalue {
     }
     const info = this.inputInfo;
     info.attr = info.attr || {};
-    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value)))
+    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(this.isMultipleMasksField ? value.value : value)))
       .replace(/"/g, '&quot;');
 
     const valueMask = this.component.inputMask;
@@ -185,7 +185,7 @@ export default class Input extends Multivalue {
     }
   }
 
-  updateValueAt(value, flags, index) {
+  updateValueAt(value, flags, index = 0) {
     flags = flags || {};
     if (_.get(this.component, 'showWordCount', false)) {
       if (this.refs.wordcount && this.refs.wordcount[index]) {

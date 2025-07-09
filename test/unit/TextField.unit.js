@@ -11,9 +11,10 @@ import {
   comp4,
   comp5,
   comp6,
-  withDisplayAndInputMasks,
   comp7,
-  requiredFieldLogicComp,
+  comp8,
+  withDisplayAndInputMasks,
+  requiredFieldLogicComp
 } from './fixtures/textfield';
 
 import { comp10 as formWithCalendarTextField } from './fixtures/datetime';
@@ -1496,6 +1497,38 @@ describe('TextField Component', () => {
         done();
       }, 300);
     }).catch(done);
+  });
+
+  it('should not add timezone offset if it does not contain timezone offset information', () => {
+    return Formio.createForm(document.createElement('div'), comp8, {readOnly: true}).then((form) => {
+      return form.setSubmission({
+        data: {
+          textFieldCalendar: '2025-05-20T12:00:00'
+        },
+        metadata: {
+          timezone: "Europe/Berlin",
+        }
+      }).then(() => {
+        const textFieldComponent = form.getComponent('textFieldCalendar');
+        assert.equal(textFieldComponent.element.querySelector('.form-control.form-control.input').value, '2025-05-20 12:00');
+      });
+    });
+  });
+
+  it('should add timezone offset if it does contain timezone offset information', () => {
+    return Formio.createForm(document.createElement('div'), comp8, {readOnly: true}).then((form) => {
+      return form.setSubmission({
+        data: {
+          textFieldCalendar: '2025-05-20T12:00:00+02:00'
+        },
+        metadata: {
+          timezone: "Europe/Berlin",
+        }
+      }).then(() => {
+        const textFieldComponent = form.getComponent('textFieldCalendar');
+        assert.equal(textFieldComponent.element.querySelector('.form-control.form-control.input').value, '2025-05-20 12:00 GMT+2');
+      });
+    });
   });
 
   describe('TextFields with `multiple` attribute', () => {

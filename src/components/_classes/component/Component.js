@@ -6,10 +6,10 @@ import isMobile from 'ismobilejs';
 import { processOne, processOneSync, validateProcessInfo } from '@formio/core/process';
 
 import { Formio } from '../../../Formio';
-import * as FormioUtils from '../../../utils/utils';
+import FormioUtils from '../../../utils';
 import {
   fastCloneDeep, boolValue, currentTimezone, getScriptPlugin, getContextualRowData
-} from '../../../utils/utils';
+} from '../../../utils';
 import Element from '../../../Element';
 import ComponentModal from '../componentModal/ComponentModal';
 import Widgets from '../../../widgets';
@@ -495,7 +495,6 @@ export default class Component extends Element {
 
   /**
    * Returns if the parent should conditionally clear.
-   * 
    * @returns {boolean} - If the parent should conditionally clear.
    */
   parentShouldConditionallyClear() {
@@ -816,8 +815,8 @@ export default class Component extends Element {
 
     // If we have a condition and it is not conditionally visible, the it should conditionally clear.
     if (
-      this.hasCondition() && 
-      !this.conditionallyVisible() && 
+      this.hasCondition() &&
+      !this.conditionallyVisible() &&
       (!this.rootPristine || this.shouldConditionallyClearOnPristine())
     ) {
       this._conditionallyClear = true;
@@ -1360,10 +1359,17 @@ export default class Component extends Element {
     if (this.hasInput && this.component.validate?.required && !this.isPDFReadOnlyMode) {
       modalLabel = { className: 'field-required' };
     }
+    let messages = '';
+    if (this.errors?.length) {
+      messages = this.errors.map((err) => {
+          return err.level === 'error' ? this.renderTemplate('message', { ...err }) : '';
+        }
+      ).join('');
+    }
 
     return this.renderModalPreview({
       previewText: this.getValueAsString(dataValue, { modalPreview: true }) || this.t('clickToSetValue'),
-      messages: '',
+      messages,
       labelInfo: modalLabel,
     });
   }
@@ -2742,12 +2748,14 @@ export default class Component extends Element {
       ckeditor: {
         image: {
           toolbar: [
+            'toggleImageCaption',
             'imageTextAlternative',
             '|',
-            'imageStyle:full',
-            'imageStyle:alignLeft',
-            'imageStyle:alignCenter',
-            'imageStyle:alignRight'
+            'imageStyle:inline',
+            'imageStyle:wrapText',
+            'imageStyle:breakText',
+            '|',
+            'resizeImage'
           ],
           styles: [
             'full',
@@ -2772,11 +2780,15 @@ export default class Component extends Element {
       settings.extraPlugins.push(getFormioUploadAdapterPlugin(this.fileService, this));
     }
 
+    Formio.requireLibrary(`ckeditor-css`, isIEBrowser ? 'CKEDITOR' : 'ClassicEditor', [
+      { type: 'styles', src: `${Formio.cdn.ckeditor}/ckeditor.css` }
+    ], true);
+
     return Formio.requireLibrary(
       'ckeditor',
       isIEBrowser ? 'CKEDITOR' : 'ClassicEditor',
       _.get(this.options, 'editors.ckeditor.src',
-      `${Formio.cdn.ckeditor}/ckeditor.js`
+      `${Formio.cdn.ckeditor}/ckeditor.umd.js`
     ), true)
       .then(() => {
         if (!element.parentNode) {
@@ -3119,6 +3131,7 @@ export default class Component extends Element {
     }
     const isArray = Array.isArray(value);
     const valueInput = this.refs.fileLink || this.refs.input;
+    const isFilelink = !!this.refs.fileLink
     if (
       isArray &&
       Array.isArray(this.defaultValue) &&
@@ -3127,7 +3140,9 @@ export default class Component extends Element {
       (valueInput.length !== value.length) &&
       this.visible
     ) {
-      this.redraw();
+      if (isFilelink || valueInput.length) {
+        this.redraw();
+      }
     }
     if (this.isHtmlRenderMode() && flags && flags.fromSubmission && changed) {
       this.redraw();
@@ -3138,6 +3153,13 @@ export default class Component extends Element {
         this.setValueAt(i, isArray && !this.isSingleInputValue() ? value[i] : value, flags);
       }
     }
+
+    // Also reset value of the modal component, otherwise it will keep the old value locally and the preview
+    // element won't refresh
+    if (this.componentModal && flags && flags.resetValue) {
+      this.componentModal.setValue(value);
+    }
+
     return changed;
   }
 
@@ -3694,6 +3716,10 @@ export default class Component extends Element {
     flags = flags || {};
     row = row || this.data;
 
+    if (flags.noCheck) {
+      return true;
+    }
+
     // Some components (for legacy reasons) have calls to "checkData" in inappropriate places such
     // as setValue. Historically, this was bypassed by a series of cached states around the data model
     // which caused its own problems. We need to ensure that premium and custom components do not fall into
@@ -3709,10 +3735,6 @@ export default class Component extends Element {
     // Do not trigger refresh if change was triggered on blur event since components with Refresh on Blur have their own listeners
     if (!flags.fromBlur) {
       this.checkRefreshOn(flags.changes, flags);
-    }
-
-    if (flags.noCheck) {
-      return true;
     }
 
     this.checkComponentConditions(data, flags, row);

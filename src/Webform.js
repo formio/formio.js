@@ -1,8 +1,7 @@
 import _ from 'lodash';
-import moment from 'moment';
 import { compareVersions } from 'compare-versions';
 import EventEmitter from './EventEmitter';
-import i18nDefaults from './i18n';
+import enTranslation from './translations/en';
 import { Formio } from './Formio';
 import Components from './components/Components';
 import NestedDataComponent from './components/_classes/nesteddata/NestedDataComponent';
@@ -13,8 +12,10 @@ import {
     getStringFromComponentPath,
     convertStringToHTMLElement,
     getArrayFromComponentPath,
-} from './utils/utils';
-import { eachComponent } from './utils/formUtils';
+    eachComponent
+} from './utils';
+
+import dayjs from "dayjs";
 
 // We need this here because dragula pulls in CustomEvent class that requires global to exist.
 if (typeof window !== 'undefined' && typeof window.global === 'undefined') {
@@ -114,7 +115,7 @@ function getOptions(options) {
  * @property {number} [saveDraftThrottle] - The throttle for the save draft feature.
  * @property {boolean} [readOnly] - Set this form to readOnly.
  * @property {boolean} [noAlerts] - Disable the alerts dialog.
- * @property {{[key: string]: string}} [i18n] - The translation file for this rendering.
+ * @property {{[key: string]: string}} [enTranslation] - The translation file for this rendering.
  * @property {string} [template] - Custom logic for creation of elements.
  * @property {boolean} [noDefaults] - Exclude default values from the settings.
  * @property {any} [fileService] - The file service for this form.
@@ -395,7 +396,7 @@ export default class Webform extends NestedDataComponent {
      */
     addLanguage(code, lang, active = false) {
         if (this.i18next) {
-            var translations = _.assign(fastCloneDeep(i18nDefaults.resources.en.translation), lang);
+            var translations = _.assign(fastCloneDeep(enTranslation), lang);
             this.i18next.addResourceBundle(code, 'translation', translations, true, true);
             if (active) {
                 this.language = code;
@@ -1282,7 +1283,7 @@ export default class Webform extends NestedDataComponent {
         // Mark any components as invalid if in a custom message.
         const componentErrors = {};
         errors.forEach((err) => {
-            const path = err.path || err.context?.path || err.component?.key;
+            const path = getStringFromComponentPath(err.path) || err.context?.path || err.component?.key;
             if (!componentErrors[path]) {
                 componentErrors[path] = [];
             }
@@ -1509,13 +1510,14 @@ export default class Webform extends NestedDataComponent {
         submission.metadata = submission.metadata || {};
         _.defaults(submission.metadata, {
             timezone: _.get(this, '_submission.metadata.timezone', currentTimezone()),
-            offset: parseInt(_.get(this, '_submission.metadata.offset', moment().utcOffset()), 10),
+            offset: parseInt(_.get(this, '_submission.metadata.offset', dayjs().utcOffset()), 10),
             origin: document.location.origin,
             referrer: document.referrer,
             browserName: navigator.appName,
             userAgent: navigator.userAgent,
             pathName: window.location.pathname,
             onLine: navigator.onLine,
+            language: this.language,
         });
     }
 

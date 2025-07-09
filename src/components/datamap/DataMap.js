@@ -3,7 +3,6 @@ import DataGridComponent from '../datagrid/DataGrid';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter3';
 import { componentValueTypes, getComponentSavedTypes, uniqueKey } from '../../utils/utils';
-
 export default class DataMapComponent extends DataGridComponent {
   static schema(...extend) {
     return Component.schema({
@@ -259,6 +258,9 @@ export default class DataMapComponent extends DataGridComponent {
     options.name += `[${rowIndex}]`;
     options.row = `${rowIndex}`;
     options.rowIndex = rowIndex;
+        options.onChange = (flags, changed, modified) => {
+        this.triggerChange({ modified });
+    }
 
     const components = {};
     components['__key'] = this.createComponent(this.keySchema, options, { __key: this.builderMode ? this.defaultRowKey : key });
@@ -277,7 +279,9 @@ export default class DataMapComponent extends DataGridComponent {
 
     const componentOptions = this.options;
     componentOptions.row = options.row;
-    components[this.valueKey] = this.createComponent(valueComponent, componentOptions, this.dataValue);
+    const componentOptionsCloned = _.clone(componentOptions);
+    componentOptionsCloned.onChange = options.onChange;
+    components[this.valueKey] = this.createComponent(valueComponent, componentOptionsCloned, this.dataValue);
     return components;
   }
 
@@ -305,7 +309,7 @@ export default class DataMapComponent extends DataGridComponent {
     const index = this.rows.length;
     this.rows[index] = this.createRowComponents(this.dataValue, index);
     this.redraw();
-    this.triggerChange();
+    this.triggerChange({modified:true});
   }
 
   removeRow(index) {
