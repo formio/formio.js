@@ -502,12 +502,13 @@ export default class PDFBuilder extends WebformBuilder {
 
     // update elements which path was duplicated if any pathes have been changed
     if (!_.isEqual(this.repeatablePathsComps, repeatablePathsComps)) {
-      eachComponent(this.webform.getComponents(), (comp) => {
-        if (this.repeatablePathsComps.includes(comp.component)) {
-          this.webform.postMessage({ name: 'updateElement', data: comp.component });
-        }
-      });
-
+      if (!_.isEmpty(this.repeatablePathsComps)) {
+        eachComponent(this.webform.getComponents(), (comp) => {
+          if (this.repeatablePathsComps.includes(comp.component)) {
+            this.webform.postMessage({ name: 'updateElement', data: comp.component });
+          }
+        });
+      }
       this.repeatablePathsComps = repeatablePathsComps;
     }
 
@@ -516,7 +517,7 @@ export default class PDFBuilder extends WebformBuilder {
     }
 
     eachComponent(this.webform.getComponents(), (comp) => {
-      if (this.repeatablePathsComps.includes(comp)) {
+      if (this.repeatablePathsComps.includes(comp.component)) {
         this.webform.postMessage({
           name: 'showBuilderErrors',
           data: {
