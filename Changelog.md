@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.2.1-rc.3
+### Changed
+ - FIO-10356-10363: fixed PDF builder issues related to unique key validation and edit modal opening
+
 ## 5.2.1-rc.2
 ### Changed
  - Updated @formio/core@2.5.1-rc.3
