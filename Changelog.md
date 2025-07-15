@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.3-rc.1
+### Changed
+ - Updated @formio/core@2.3.4-rc.1
+ - FIO-9866: added  fileUploadingEnd and fielUplaodingStart events back
+ - FIO-9517: nested forms with lazy load validation fix
+
 ## 5.0.2
 ### Changed
  - Official Release
