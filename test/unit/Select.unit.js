@@ -352,8 +352,8 @@ describe('Select Component', () => {
     const value = 'b';
     select.setValue(value);
 
-    // timeout(0) need to complete triggerChange
-    await Promise.all([select.itemsLoaded, timeout(0)]);
+    // timeout(50) need to complete triggerChange
+    await Promise.all([select.itemsLoaded, timeout(50)]);
     assert.equal(select.dataValue, value);
     assert.equal(select.getValue(), value);
 
