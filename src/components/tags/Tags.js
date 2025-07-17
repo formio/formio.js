@@ -181,6 +181,14 @@ export default class TagsComponent extends Input {
     }
   }
 
+  getValue() {
+    if (this.choices) {
+      const value = this.choices.getValue(true);
+      return value.join(`${this.delimiter}`)
+    }
+    return super.getValue()
+  }
+
   getValueAsString(value) {
     if (!value) {
       return '';

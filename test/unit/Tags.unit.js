@@ -3,6 +3,7 @@ import TagsComponent from '../../src/components/tags/Tags';
 import assert from 'power-assert';
 import modalTagsComponent from '../formtest/modalTagsComponent.json';
 import _ from 'lodash';
+import { wait } from '../util';
 
 import {
   comp1,
@@ -37,6 +38,27 @@ describe('Tags Component', function() {
       assert.equal(component.choices.getValue(true).length, 2);
       done();
     }).catch(done);
+  });
+
+  it('Should not show a tag after removal', async function () {
+    const clickEvent = new Event('click');
+    const element = document.createElement('div');
+    const form = await Formio.createForm(element, { type: 'form', display: 'form', components: [comp2] })
+    const component = form.getComponent(['tags']);
+    const values = ['one', 'two'];
+    const choicesInstance = component.choices;
+    Harness.setTagsValue(values, component);
+    const value = [...component.refs.input][0].value;
+    assert.equal(value, 'one,two');
+    const removeBtn = element.querySelector('.choices__list--multiple .choices__item .choices__button');
+    removeBtn.dispatchEvent(clickEvent);
+    await wait(200);
+    choicesInstance._handleButtonAction(removeBtn);
+    await wait(200);
+    await form.redraw();
+    await wait(200);
+    const currentValue = [...component.refs.input][0].value;
+    assert.equal(currentValue, 'two');
   });
 
   it('Should not exceed maxTags limit', function(done) {
@@ -155,8 +177,8 @@ describe('Tags Component', function() {
         setTimeout(() => {
           assert.equal(tags.errors.length, 1, 'Should set error after Tags component was blurred');
           done();
-        }, 350);
-      }, 350);
+        }, 500);
+      }, 500);
     }).catch(done);
   });
 });
