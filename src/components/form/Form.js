@@ -326,15 +326,15 @@ export default class FormComponent extends Component {
             if (this.isNestedWizard) {
               element = this.root.element;
             }
-            this.subForm.attach(element);
-            this.valueChanged = this.hasSetValue;
-
-            if (!this.valueChanged && this.dataValue.state !== 'submitted') {
-              this.setDefaultValue();
-            }
-            else {
-              this.restoreValue();
-            }
+            return this.subForm.attach(element).then(() => {
+              this.valueChanged = this.hasSetValue;
+              if (!this.valueChanged && this.dataValue.state !== 'submitted') {
+                this.setDefaultValue();
+              }
+              else {
+                this.restoreValue();
+              }
+            });
           }
           if (!this.builderMode && this.component.modalEdit) {
             const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
@@ -538,7 +538,18 @@ export default class FormComponent extends Component {
     const silentCheck = options.silentCheck || false;
 
     if (this.subForm) {
-      return this.subForm.checkValidity(this.subFormData, dirty, null, silentCheck, errors);
+      const formErrors = [];
+      const valid = this.subForm.checkValidity(this.subFormData, dirty, null, silentCheck, formErrors);
+      if (formErrors.length) {
+        // Iterate through the errors and fix the paths so that the links are correct.
+        formErrors.forEach((error) => {
+          if (error?.context?.path) {
+            error.context.path = `${this.path}.${error.context.path}`;
+          }
+          errors.push(error);
+        });
+      }
+      return valid;
     }
 
     return super.checkComponentValidity(data, dirty, row, options, errors);
