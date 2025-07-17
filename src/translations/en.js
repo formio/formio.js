@@ -1,4 +1,3 @@
-
 import bootstrap from '@formio/bootstrap';
 import { coreEnTranslation } from '@formio/core';
 import _ from 'lodash';
@@ -22,7 +21,7 @@ export default {
   submitError: 'Please check the form and correct all errors before submitting.',
   maxDate: '{{field}} should not contain date after {{maxDate}}',
   minDate: '{{field}} should not contain date before {{minDate}}',
-  stripe: '{{stripe}}',
+  stripe: process.env.STRIPE_SECRET || '{{stripe}}', // 수정된 부분
   next: 'Next',
   previous: 'Previous',
   cancel: 'Cancel',

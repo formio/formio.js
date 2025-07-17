@@ -36,7 +36,7 @@ describe('WebformBuilder tests', function() {
         setTimeout(() => {
           const multipleValues = builder.editForm.getComponent("multiple");
           const provider = builder.editForm.getComponent("provider");
-          provider.setValue("nominatim");
+          provider.setValue(process.env.PROVIDER_VALUE || "nominatim");
           setTimeout(() => {
             multipleValues.setValue(true);
             setTimeout(() => {
