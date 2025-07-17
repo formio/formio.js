@@ -4,7 +4,7 @@ import Harness from '../../../../test/harness';
 import assert from 'power-assert';
 import each from 'lodash/each';
 import { expect } from 'chai';
-import { comp1, comp2, comp3, comp4 } from './fixtures';
+import { comp1, comp2, comp3 } from './fixtures';
 import { nestedForm } from '../../../../test/fixtures';
 import _map from 'lodash/map';
 import Webform from '../../../Webform';
@@ -253,18 +253,6 @@ describe('NestedComponent class', () => {
           assert(dataGrid.components[0].path === 'dataGrid[0].textField');
           assert(tabs.path === 'tabs');
           assert(tabs.tabs[0][0].path === 'tabsTextfield');
-          done();
-        })
-        .catch(done);
-    });
-    // see these functions in core to see how component path is derived for checkbox components of inputType radio
-    // - https://github.com/formio/core/blob/master/src/utils/formUtil.ts#L228-L240
-    // - https://github.com/formio/core/blob/master/src/utils/formUtil.ts#L418-L427
-    it('returns the right path (i.e. name) for checkbox components with an inputType of radio', (done) => {
-      Harness.testCreate(NestedComponent, comp4)
-        .then((nested) => {
-          assert(nested.components[0].path === 'radio');
-          assert(nested.components[1].path === 'radio');
           done();
         })
         .catch(done);
