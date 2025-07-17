@@ -325,6 +325,17 @@ export default class FormComponent extends Component {
           }
 
           this.setContent(element, this.render());
+          const postAttach = () => {
+            if (!this.builderMode && this.component.modalEdit) {
+              const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
+              const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
+              this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue, this._referenceAttributeName);
+              this.subForm.element = this.componentModal.refs.componentContent || this.subForm.element;
+              this.setOpenModalElement();
+            }
+            this.calculateValue();
+          };
+
           if (this.subForm) {
             if (this.isNestedWizard) {
               element = this.root.element;
@@ -339,17 +350,10 @@ export default class FormComponent extends Component {
                   this.restoreValue();
                 }
               }
+              postAttach();
             });
           }
-          if (!this.builderMode && this.component.modalEdit) {
-            const modalShouldBeOpened = this.componentModal ? this.componentModal.isOpened : false;
-            const currentValue = modalShouldBeOpened ? this.componentModal.currentValue : this.dataValue;
-            this.componentModal = new ComponentModal(this, element, modalShouldBeOpened, currentValue, this._referenceAttributeName);
-            this.subForm.element = this.componentModal.refs.componentContent || this.subForm.element;
-            this.setOpenModalElement();
-          }
-
-          this.calculateValue();
+          postAttach();
         });
       });
   }

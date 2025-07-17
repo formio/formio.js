@@ -591,8 +591,7 @@ export default class NestedComponent extends Field {
 
     element = this.hook('attachComponents', element, components, container, this);
     if (!element) {
-      // Return a non-resolving promise.
-      return (new Promise(() => {}));
+      return Promise.resolve();
     }
 
     let index = 0;
