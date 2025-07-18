@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.0.3-rc.2]
+## 5.0.3-rc.2
 ### Changed
+ - FIO-10028: fixed an issue where file component blocks to submit
  - FIO-10425: Fixed issues where fields with errors in nested forms with in wizards are not properly highlighting when you click the error link
 
 ## 5.0.3-rc.1
