@@ -802,10 +802,10 @@ describe('Webform tests', function() {
       const blurEvent = new Event('blur');
 
       const selectChoices = form.getComponent('selectChoices');
-      selectChoices.focusableElement.dispatchEvent(focusEvent);
+      selectChoices.choices.input.element.dispatchEvent(focusEvent);
 
       setTimeout(() => {
-        selectChoices.focusableElement.dispatchEvent(blurEvent);
+        selectChoices.choices.input.element.dispatchEvent(blurEvent);
 
         const selectHtml = form.getComponent('selectHtml');
         selectHtml.refs.selectContainer.dispatchEvent(focusEvent);
