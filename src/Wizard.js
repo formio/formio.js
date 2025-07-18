@@ -688,14 +688,13 @@ export default class Wizard extends Webform {
       if (!this._seenPages.includes(parentNum)) {
         this._seenPages = this._seenPages.concat(parentNum);
       }
-      this.redraw().then(() => {
+      return this.redraw().then(() => {
         this.checkData(this.submission.data);
         const errors = this.submitted ? this.validate(this.localData, { dirty: true }) : this.validateCurrentPage();
         if (this.alert) {
           this.showErrors(errors, true, true);
         }
       });
-      return Promise.resolve();
     }
     else if (!this.pages.length) {
       this.redraw();
@@ -1087,10 +1086,7 @@ export default class Wizard extends Webform {
       if (pageIndex >= 0) {
         const page = this.pages[pageIndex];
         if (page && page !== this.currentPage) {
-          return this.setPage(pageIndex).then(() => {
-            this.showErrors(this.validate(this.localData, { dirty: true }));
-            super.focusOnComponent(key);
-          });
+          return this.setPage(pageIndex).then(() => super.focusOnComponent(key));
         }
       }
     }
