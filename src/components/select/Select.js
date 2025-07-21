@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import { Formio } from '../../Formio';
 import ListComponent from '../_classes/list/ListComponent';
-import Input from '../_classes/input/Input';
 import Form from '../../Form';
 import {
   getRandomComponentId,
@@ -1049,7 +1048,7 @@ export default class SelectComponent extends ListComponent {
         this.addEventListener(this.choices.containerOuter.element, 'focus', () => this.focusableElement.focus());
       }
 
-      Input.prototype.addFocusBlurEvents.call(this, this.focusableElement);
+      this.addFocusBlurEvents(this.choices.input.element);
 
       if (this.itemsFromUrl && !this.component.noRefreshOnScroll) {
         this.scrollList = this.choices.choiceList.element;
