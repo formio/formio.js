@@ -388,6 +388,10 @@ export default class Webform extends NestedDataComponent {
         return this.options.shadowRoot;
     }
 
+    get componentsMap() {
+        return this.childComponentsMap || {};
+    }
+
     /**
      * Add a language for translations
      * @param {string} code - The language code for the language being added.
