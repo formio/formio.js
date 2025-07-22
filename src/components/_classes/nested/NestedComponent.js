@@ -619,6 +619,9 @@ export default class NestedComponent extends Field {
     if (this.componentsMap[component.path]) {
       delete this.componentsMap[component.path];
     }
+    if (this.root?.componentsMap[component.path]) {
+      delete this.root?.componentsMap[component.path];
+    }
   }
 
   /**
