@@ -977,8 +977,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
             },
             form: 'nestedFormId',
             owner: 'nestedFormOwnerId',
-            project: 'nestedFormProjectId',
-            metadata: {}
+            project: 'nestedFormProjectId'
           },
         },
         'Form data is incorrect'
@@ -1033,8 +1032,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
               nestedFirstName: '',
               nestedLastName: '',
               nestedContainer: { nestedContainerField: '' },
-            },
-            metadata: {}
+            }
           },
         },
         'Initial form data is incorrect'
@@ -1111,8 +1109,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
               nestedFirstName: '',
               nestedLastName: '',
               nestedContainer: { nestedContainerField: '' },
-            },
-            metadata: {}
+            }
           },
         },
         'Initial form data is incorrect'
@@ -1182,8 +1179,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
               nestedFirstName: '',
               nestedLastName: '',
               nestedContainer: { nestedContainerField: '' },
-            },
-            metadata: {}
+            }
           }
         },
         'Initial form data is incorrect'
