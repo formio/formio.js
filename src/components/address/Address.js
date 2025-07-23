@@ -682,11 +682,11 @@ export default class AddressComponent extends ContainerComponent {
 
     if (valueInManualMode) {
       if (this.component.manualModeViewString) {
-        return this.interpolate(this.component.manualModeViewString, {
+        return this.evaluate(this.component.manualModeViewString, {
           address,
-          data: this.data,
+          data: value,
           component: this.component,
-        });
+        }, 'value');
       }
 
       return this.getComponents()

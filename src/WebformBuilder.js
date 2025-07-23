@@ -82,7 +82,16 @@ export default class WebformBuilder extends Component {
     this.groupOrder = this.groupOrder
       .filter(group => group && !group.ignore)
       .sort((a, b) => a.weight - b.weight)
-      .map(group => group.key);
+
+    const defaultOpenedGroup = this.groupOrder.find(x => x.key !== 'basic' && x.default);
+    if (defaultOpenedGroup) {
+      this.groupOrder.forEach(x => {
+        if ('default' in x && x.key !== defaultOpenedGroup.key) {
+          x.default = false;
+        }
+      });
+    }
+    this.groupOrder = this.groupOrder.map(group => group.key);
 
     for (const type in Components.components) {
       const component = Components.components[type];
@@ -1267,7 +1276,7 @@ export default class WebformBuilder extends Component {
           const newComp = parentComponent.addComponent(defaultValueComponent.component, defaultValueComponent.data, sibling);
           _.pull(newComp.validators, 'required');
           parentComponent.tabs[tabIndex].splice(index, 1, newComp);
-          newComp.checkValidity = () => true;
+          newComp.processOwnValidation = true;
           newComp.build(defaultValueComponent.element);
           if (this.preview && !this.preview.defaultChanged) {
             const defaultValue = _.get(this.preview._data, this.editForm._data.key);
