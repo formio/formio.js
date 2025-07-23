@@ -11,6 +11,9 @@ import formBasedOnWizard from '../forms/formBasedOnWizard';
 import formWithFormController from '../forms/formWithFormController';
 import simpleWebform from '../forms/simpleWebform';
 import testUniqueApiKey from '../forms/testUniqueApiKey';
+import FormBuilder from '../../src/FormBuilder';
+import { wait } from '../util.js';
+import * as datagridWithNestedForm from '../forms/datagridWithNestedForm.js';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -24,6 +27,41 @@ describe('WebformBuilder tests', function() {
     const builder = Harness.getBuilder();
     assert(builder instanceof WebformBuilder, 'Builder must be an instance of FormioFormBuilder');
     done();
+  });
+
+  it("Should open only one default opened group at a time", async () => {
+    const builderOptions = {
+      some_group1: {
+        title: "Components group 1",
+        weight: 10,
+        default: true,
+        components: {
+          content: true,
+        }
+      },
+      some_group2: {
+        title: "Components group 2",
+        weight: 9,
+        default: true,
+        components: {
+          captcha: true
+        }
+      }
+    }
+    const builder = new FormBuilder(document.createElement('div'), { display: 'form', components: [] }, { builder: builderOptions });
+    await builder.ready;
+    const sidebarContainer = builder.element.querySelector('[ref="sidebar-groups"]');
+    const groupsCollapse = [...sidebarContainer.querySelectorAll('[ref="sidebar-group"]')];
+    // Should be opened only one group with default = true. As we get sort ascending (by weight field) the "Components group 2" will be visible
+    groupsCollapse.forEach(x => {
+      const id = x.getAttribute("id");
+      if (id.includes("some_group2")) {
+        assert.equal(x.classList.contains('show'), true);
+      }
+      else {
+        assert.equal(x.classList.contains('show'), false);
+      }
+    })
   });
 
   it("Should not show errors with default array values", (done) => {
@@ -797,5 +835,30 @@ describe('Select Component selectData property', () => {
   after((done) => {
     Formio.makeRequest = originalMakeRequest;
     Harness.builderAfter(done);
+  });
+});
+
+describe('WebformBuilder with nested forms', function () {
+  const originalMakeRequest = Formio.makeRequest;
+  before((done) => {
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get' && (url).includes('/687a3d82319f0b6faeb35735')) {
+        return Promise.resolve(datagridWithNestedForm.nestedForm);
+      };
+      return originalMakeRequest(formio, type, url, method, data);
+    }
+    done();
+  })
+  it('Should not validate a nested form inside of dataGrid in edit mode', async () => {
+    const comp = _.cloneDeep(datagridWithNestedForm.myForm);
+    const builder = Harness.getBuilder();
+    await builder.webform.setForm(comp);
+    const grid = builder.webform.components[0];
+    const editComponentRef = grid.refs.editComponent;
+    const clickEvent = new Event('click');
+    editComponentRef.dispatchEvent(clickEvent);
+    await wait(600);
+    const errors = builder.editForm.validate(builder.editForm.data, { dirty: true });
+    assert.strictEqual(errors.length, 0);
   });
 });
