@@ -374,6 +374,12 @@ export default class Webform extends NestedDataComponent {
         return this.options.shadowRoot;
     }
 
+
+    // Webforms have no default value setting, so this should be always false
+    // I does not affect setting default value to nested forms
+    get shouldAddDefaultValue() {
+      return false;
+    }  
     get componentsMap() {
         return this.childComponentsMap || {};
     }

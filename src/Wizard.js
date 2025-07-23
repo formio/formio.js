@@ -940,6 +940,11 @@ export default class Wizard extends Webform {
   }
 
   setValue(submission, flags = {}, ignoreEstablishment) {
+    if (!submission || !submission.data) {
+      submission = {
+        data: {},
+      };
+    }
     const changed = this.getPages({ all: true }).reduce((changed, page) => {
       return this.setNestedValue(page, submission.data, flags, changed) || changed;
     }, false);
@@ -1023,7 +1028,7 @@ export default class Wizard extends Webform {
     const newPanels = this.pages;
     const currentNextPage = this.currentNextPage;
     const panelsUpdated = !_.isEqual(newPanels, currentPanels);
-    
+
     if (this.currentPanel?.id && this.pages.length && (!this.hasSubWizards || (this.hasSubWizards && panelsUpdated))) {
       const newIndex = this.pages.findIndex(page => page.id === this.currentPanel.id);
       if (newIndex !== -1) this.setPage(newIndex);
