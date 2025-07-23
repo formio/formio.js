@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.3-rc.3
+### Changed
+ - Updated @formio/bootstrap@3.0.2-rc.2
+
 ## 5.0.3-rc.2
 ### Changed
  - FIO-10028: fixed an issue where file component blocks to submit
