@@ -4,6 +4,7 @@ import download from 'downloadjs';
 import _ from 'lodash';
 import fileProcessor from '../../providers/processor/fileProcessor';
 import BMF from 'browser-md5-file';
+import crypto from 'crypto'; // 추가된 부분
 
 let Camera;
 let webViewCamera = 'undefined' !== typeof window ? navigator.camera : Camera;
@@ -732,19 +733,10 @@ export default class FileComponent extends Field {
       return '';
     }
 
-    const bmf = new BMF();
-    const hash = await new Promise((resolve, reject) => {
-      this.emit('fileUploadingStart');
-      bmf.md5(file, (err, md5)=>{
-        if (err) {
-          return reject(err);
-        }
-        return resolve(md5);
-      });
-    });
-    this.emit('fileUploadingEnd');
-
-    return hash;
+    const hash = crypto.createHash('sha256'); // 수정된 부분
+    const fileBuffer = await file.arrayBuffer();
+    hash.update(new Uint8Array(fileBuffer));
+    return hash.digest('hex');
   }
 
   validateFileName(file) {

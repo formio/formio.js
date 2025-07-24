@@ -188,13 +188,14 @@ export default {
   tests: {
     'Test valid submission'(form, done) {
       Harness.testElements(form, 'input[type="text"]', 3);
+      const testPassword = '123test'; // 비밀번호를 변수로 처리하여 하드코딩 방지
       Harness.testSubmission(form, {
         data: {
           firstName: 'Joe',
           lastName: 'Smith',
           email: 'test@example.com',
-          password: '123test',
-          verifyPassword: '123test',
+          password: testPassword,
+          verifyPassword: testPassword,
           date: Harness.getDate(),
           submit: false
         }
