@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.2.1-rc.7
+### Changed
+ - Updated @formio/bootstrap@3.1.2-rc.3
+ - FIO-10405 error validation in nested form in edit mode
+ - FIO-10391: Fixes a run-time error when Wizard page has a logic
+
 ## 5.2.1-rc.6
 ### Changed
  - Updated @formio/bootstrap@3.1.2-rc.2
