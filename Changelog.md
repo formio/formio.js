@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.3-rc.5
+### Changed
+ - Updated @formio/bootstrap@3.0.2-rc.4
+ - FIO-10460: Fix wizard current page validation
+ - Fixed an issue where the Select component value would get reset to '' instead of the emptyValue when choices is used
+
 ## 5.0.3-rc.4
 ### Changed
  - Updated @formio/bootstrap@3.0.2-rc.3
