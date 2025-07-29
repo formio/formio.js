@@ -16,7 +16,9 @@ import {
   comp9,
   comp10,
   comp11,
-  comp13
+  comp13,
+  comp14,
+  comp15
 } from './fixtures/radio';
 import { fastCloneDeep } from '@formio/core';
 
@@ -606,5 +608,15 @@ describe('Radio Component', () => {
         })
       })
       .catch(done);
+  });
+
+  it("Should submit a Radio in an EditGrid with default values.", async function () {
+    const element = document.createElement('div');
+    const form = await Formio.createForm(
+      element,
+      comp15
+    );
+    const submission = await form.submit();
+    assert.equal(submission.data.editGrid[0].radio, 'one');
   });
 });

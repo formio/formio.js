@@ -165,7 +165,7 @@ export default class RadioComponent extends ListComponent {
     this.optionsLoaded = !this.component.dataSrc || this.component.dataSrc === 'values';
     this.loadedOptions = [];
 
-    if (!this.visible) {
+    if (!this.visible || this.optionsLoaded) {
       this.itemsLoadedResolve();
     }
 
