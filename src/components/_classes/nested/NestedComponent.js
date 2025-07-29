@@ -934,9 +934,6 @@ export default class NestedComponent extends Field {
   }
 
   setValue(value, flags = {}) {
-    if (!value) {
-      return false;
-    }
     // If the value is equal to the empty value, then this means we need to reset the values.
     if (_.isEqual(value, this.emptyValue)) {
       // TO-DO: For a future major release, we need to investigate removing the need for the
