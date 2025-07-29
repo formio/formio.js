@@ -9,6 +9,7 @@ import {
   comp3,
   comp4,
   comp5,
+  comp6,
 } from './fixtures/address';
 
 describe('Address Component', () => {
@@ -177,6 +178,24 @@ describe('Address Component', () => {
         }, 200);
       }, 200);
     }).catch(done);
+  });
+
+  it('Should correctly display address value with manual mode view string', () => {
+    return Harness.testCreate(AddressComponent, comp6).then((component) => {
+      const value = component.getValueAsString({
+        "address": {
+          "address1": "address 1",
+          "address2": "address 2",
+          "city": "city",
+          "state": "state",
+          "country": "country",
+          "zip": "12345"
+        },
+        "mode": "manual"
+      });
+    
+      assert.equal(value, 'address 1');
+    });
   });
 
   it('Should correctly display component that has a conditional based on the Address component', (done) => {

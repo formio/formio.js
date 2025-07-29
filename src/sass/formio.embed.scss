@@ -2,7 +2,7 @@
     position: relative;
     min-height: 100px;
 }
-  
+
 .loader-wrapper {
     z-index: 1000;
     position:absolute;
@@ -42,4 +42,10 @@
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+select.form-control {
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+    appearance: auto;
 }

@@ -591,8 +591,7 @@ export default class NestedComponent extends Field {
 
     element = this.hook('attachComponents', element, components, container, this);
     if (!element) {
-      // Return a non-resolving promise.
-      return (new Promise(() => {}));
+      return Promise.resolve();
     }
 
     let index = 0;
@@ -618,6 +617,9 @@ export default class NestedComponent extends Field {
     _.remove(components, { id: component.id });
     if (this.componentsMap[component.path]) {
       delete this.componentsMap[component.path];
+    }
+    if (this.root?.componentsMap[component.path]) {
+      delete this.root?.componentsMap[component.path];
     }
   }
 

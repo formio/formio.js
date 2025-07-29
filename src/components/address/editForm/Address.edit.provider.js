@@ -144,7 +144,7 @@ export default [
     key: 'manualModeViewString',
     label: 'Manual Mode View String',
     placeholder: 'Enter Manual Mode View String',
-    description: '"address" variable references component value, "data" - submission data and "component" - address component schema.',
+    description: '"data.address" references component value and "component" - address component schema.',
     weight: 60,
     rows: 5,
     editor: 'ace',

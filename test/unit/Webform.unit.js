@@ -95,6 +95,8 @@ import formWithHiddenComponents from '../forms/formWithHiddenComponents.js';
 import formWithShowAsString from '../forms/formWithShowAsString.js';
 import formWithMergeComponentSchemaAndCustomLogic from '../forms/formWithMergeComponentSchemaAndCustomLogic.js';
 import formWithServerValidation from '../forms/formWithServerValidation.js';
+import formWithNumbers from '../forms/formWithNumbers.js';
+import { wait } from '../util.js';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
@@ -105,6 +107,22 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+
+   it('Should show form validation errors if we insert invalid underscore data into a number component', async () => {
+    const form = await Formio.createForm(document.createElement('div'), formWithNumbers);
+    const numberDatagrid = form.getComponent('dataGrid.number');
+    const number = form.getComponent('number');
+    const validate = form.getComponent('validate');
+    numberDatagrid.refs.input[0].value = 'abc_123';
+    number.refs.input[0].value = 'abc_123';
+
+    number.updateComponentValue(null, { modified: true });
+    numberDatagrid.updateComponentValue(null, { modified: true });
+    assert.strictEqual(form.visibleErrors.length, 0)
+    validate.emit('checkValidity', validate.data);
+    await wait(300);
+    assert.strictEqual(form.visibleErrors.length, 2)
+  });
 
   it('Should show and highlight server validation errors for components inside container and datagrid', function(done) {
     Formio.createForm(document.createElement('div'), formWithServerValidation.form).then(form => {

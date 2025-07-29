@@ -13,6 +13,8 @@ import simpleWebform from '../forms/simpleWebform';
 import formWithNumericKeys from '../forms/formWithNumericKeys';
 import testUniqueApiKey from '../forms/testUniqueApiKey';
 import FormBuilder from '../../src/FormBuilder';
+import { wait } from '../util.js';
+import * as datagridWithNestedForm from '../forms/datagridWithNestedForm.js';
 
 global.requestAnimationFrame = (cb) => cb();
 global.cancelAnimationFrame = () => {};
@@ -844,5 +846,30 @@ describe('Select Component selectData property', () => {
   after((done) => {
     Formio.makeRequest = originalMakeRequest;
     Harness.builderAfter(done);
+  });
+});
+
+describe('WebformBuilder with nested forms', function () {
+  const originalMakeRequest = Formio.makeRequest;
+  before((done) => {
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get' && (url).includes('/687a3d82319f0b6faeb35735')) {
+        return Promise.resolve(datagridWithNestedForm.nestedForm);
+      };
+      return originalMakeRequest(formio, type, url, method, data);
+    }
+    done();
+  })
+  it('Should not validate a nested form inside of dataGrid in edit mode', async () => {
+    const comp = _.cloneDeep(datagridWithNestedForm.myForm);
+    const builder = Harness.getBuilder();
+    await builder.webform.setForm(comp);
+    const grid = builder.webform.components[0];
+    const editComponentRef = grid.refs.editComponent;
+    const clickEvent = new Event('click');
+    editComponentRef.dispatchEvent(clickEvent);
+    await wait(600);
+    const errors = builder.editForm.validate(builder.editForm.data, { dirty: true });
+    assert.strictEqual(errors.length, 0);
   });
 });

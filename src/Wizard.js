@@ -687,7 +687,7 @@ export default class Wizard extends Webform {
       if (!this._seenPages.includes(parentNum)) {
         this._seenPages = this._seenPages.concat(parentNum);
       }
-      this.redraw().then(() => {
+      return this.redraw().then(() => {
         this.checkData(this.submission.data);
         this.triggerCaptcha(this.currentPage.components);
         const errors = this.submitted ? this.validate(this.localData, { dirty: true }) : this.validateCurrentPage();
@@ -695,7 +695,6 @@ export default class Wizard extends Webform {
           this.showErrors(errors, true, true);
         }
       });
-      return Promise.resolve();
     }
     else if (!this.pages.length) {
       this.redraw();
@@ -940,6 +939,11 @@ export default class Wizard extends Webform {
   }
 
   setValue(submission, flags = {}, ignoreEstablishment) {
+    if (!submission || !submission.data) {
+      submission = {
+        data: {},
+      };
+    }
     const changed = this.getPages({ all: true }).reduce((changed, page) => {
       return this.setNestedValue(page, submission.data, flags, changed) || changed;
     }, false);
@@ -1023,7 +1027,7 @@ export default class Wizard extends Webform {
     const newPanels = this.pages;
     const currentNextPage = this.currentNextPage;
     const panelsUpdated = !_.isEqual(newPanels, currentPanels);
-    
+
     if (this.currentPanel?.id && this.pages.length && (!this.hasSubWizards || (this.hasSubWizards && panelsUpdated))) {
       const newIndex = this.pages.findIndex(page => page.id === this.currentPanel.id);
       if (newIndex !== -1) this.setPage(newIndex);
@@ -1078,10 +1082,7 @@ export default class Wizard extends Webform {
       if (pageIndex >= 0) {
         const page = this.pages[pageIndex];
         if (page && page !== this.currentPage) {
-          return this.setPage(pageIndex).then(() => {
-            this.showErrors(this.validate(this.localData, { dirty: true }));
-            super.focusOnComponent(key);
-          });
+          return this.setPage(pageIndex).then(() => super.focusOnComponent(key));
         }
       }
     }

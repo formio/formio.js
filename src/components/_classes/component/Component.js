@@ -2958,7 +2958,7 @@ export default class Component extends Element {
     if ((value !== null) && (value !== undefined)) {
       value = this.hook('setDataValue', value, this.key, this._data);
     }
-    if ((value === null) || (value === undefined)) {
+    if ((value === null) || (value === undefined) || _.isNaN(value)) {
       this.unset();
       return;
     }
