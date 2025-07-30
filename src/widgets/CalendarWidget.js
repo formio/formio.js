@@ -150,7 +150,14 @@ export default class CalendarWidget extends InputWidget {
                   `flatpickr-${locale}`,
                   `flatpickr.l10ns.${locale}`,
                   `${Formio.cdn['flatpickr']}/l10n/${locale}.js`,
-                  true).then(() => this.initFlatpickr(Flatpickr));
+                  true)
+                  .catch(() => {
+                    // fallback to en if locale fails to load
+                    this.settings.locale = 'en';
+                  })
+                  .finally(() => {
+                    this.initFlatpickr(Flatpickr);
+                  })
               }
               else {
                 this.initFlatpickr(Flatpickr);
@@ -284,7 +291,9 @@ export default class CalendarWidget extends InputWidget {
     if (!this.calendar) {
       return super.getValue();
     }
-
+    if(this.settings.isManuallyOverriddenValue){
+      return this.settings.manualInputValue;
+    }
     // Get the selected dates from the calendar widget.
     const dates = this.calendar.selectedDates;
     if (!dates || !dates.length) {
