@@ -19,5 +19,15 @@ import withAllowCalculateOverride from './comp-with-allow-calculate-override';
 import twoWithAllowCalculatedOverride from './two-comp-with-allow-calculate-override';
 import withCheckboxes from './comp-with-checkboxes';
 import withReorder from './comp-with-reorder';
-import wizardWithDataGridWithNestedForm from './wizardWithDataGridWithNestedForm'
-export { comp1, comp2, comp3, comp4, comp5, comp6, comp7, comp8, comp9, comp10, comp11, withCollapsibleRowGroups, withConditionalFieldsAndValidations, withDefValue, withLogic, withRowGroupsAndDefValue, modalWithRequiredFields, withAllowCalculateOverride, twoWithAllowCalculatedOverride, withCheckboxes, withReorder, wizardWithDataGridWithNestedForm };
+import wizardWithDataGridWithNestedForm from './wizardWithDataGridWithNestedForm';
+import dataGridWithNestedFormWithNestedForm from './dataGridWithNestedFormWithNestedForm';
+import dataGridChildForm from './fd61237Child';
+import dataGridGrandChildForm from './fd61237GrandChild';
+
+export {
+  comp1, comp2, comp3, comp4, comp5, comp6, comp7, comp8, comp9, comp10, comp11, comp12, withCollapsibleRowGroups,
+  withConditionalFieldsAndValidations, withDefValue, withLogic, withRowGroupsAndDefValue, modalWithRequiredFields,
+  withAllowCalculateOverride, twoWithAllowCalculatedOverride, withCheckboxes, withReorder,
+  wizardWithDataGridWithNestedForm, dataGridWithNestedFormWithNestedForm, dataGridChildForm, dataGridGrandChildForm
+};
+

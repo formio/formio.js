@@ -567,7 +567,13 @@ export default class DataGridComponent extends NestedArrayComponent {
           const formComp = getComponent(this.component.components, changed.component.key)
           _.set(formComp, 'components', changed.component.components);
         }
-        this.triggerChange({ modified });
+        // If we're in a nested form we need to ensure our changes are triggered upstream
+        if (changed.instance.root?.id && (this.root?.id !== changed.instance.root.id)) {
+          changed.instance.root.triggerChange(flags, changed, modified);
+        }
+        else {
+          this.triggerChange({ modified });
+        }
       }
 
       let columnComponent;
