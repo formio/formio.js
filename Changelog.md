@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.2.1-rc.9
+### Changed
+ - Updated @formio/core@2.5.1-rc.8
+ - FIO-10445: Fixes an issue where value of componets with omitValueWhenHidden inside conditionally hidden layout component is not getting cleared
+ - FIO-10443: Fixed issue where a Radio button component within an EditGrid would not signal that the options are loaded causing the form to not submit
+ - FIO-10396:  Fixes an issue where data of conditionally shown nested form inside nested form inside DataGrid is not passed to the root form
+
 ## 5.2.1-rc.8
 ### Changed
  - Updated @formio/core@2.5.1-rc.7
