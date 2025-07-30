@@ -254,7 +254,8 @@ export default class PDF extends Webform {
 
     this.iframeReady.then(() => {
       if (this.iframeElement && this.iframeElement.contentWindow && !(message.name === 'form' && this.iframeFormSetUp)) {
-        this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
+        const targetOrigin = new URL(this.iframeElement.src).origin;
+        this.iframeElement.contentWindow.postMessage(JSON.stringify(message), targetOrigin);
         this.iframeFormSetUp = message.name === 'form';
       }
     });
@@ -331,7 +332,10 @@ if (typeof window !== 'undefined') {
       eventData.formId &&
       Formio.forms.hasOwnProperty(eventData.formId)
     ) {
-      Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
+      const expectedOrigin = new URL(Formio.forms[eventData.formId].iframeElement.src).origin;
+      if (event.origin === expectedOrigin) {
+        Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
+      }
     }
   });
 }
