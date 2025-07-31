@@ -1034,6 +1034,7 @@ describe('Wizard Form with Grid with Nested Form validation', () => {
                               data: {
                                 textField: 'Test',
                               },
+                              metadata: {},
                             },
                           },
                           metadata: {
