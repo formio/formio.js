@@ -74,5 +74,8 @@ export function interpolate(...args) {
  * @returns {void}
  */
 export function registerEvaluator(override) {
+    if(override.noeval){
+      Evaluator.noeval = override.noeval
+    }
     Evaluator = override;
 }
