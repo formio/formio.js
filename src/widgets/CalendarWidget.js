@@ -291,9 +291,6 @@ export default class CalendarWidget extends InputWidget {
     if (!this.calendar) {
       return super.getValue();
     }
-    if(this.settings.isManuallyOverriddenValue){
-      return this.settings.manualInputValue;
-    }
     // Get the selected dates from the calendar widget.
     const dates = this.calendar.selectedDates;
     if (!dates || !dates.length) {
