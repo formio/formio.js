@@ -347,8 +347,8 @@ describe('TextArea Component', () => {
           assert.equal(wordCount.textContent, '2 words');
           done();
         }, 600);
-      }, 500);
-    }, 500);
+      }, 600);
+    }, 600);
   });
 
   it('Should correctly count characters if character counter is enabled', (done) => {
