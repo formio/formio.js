@@ -29,7 +29,8 @@ import {
   withAllowCalculateOverride,
   twoWithAllowCalculatedOverride, withCheckboxes,
   withReorder,
-  wizardWithDataGridWithNestedForm
+  wizardWithDataGridWithNestedForm,
+  dataGridWithNestedFormWithNestedForm, dataGridChildForm, dataGridGrandChildForm,
 } from './fixtures/datagrid';
 
 describe('DataGrid Component', () => {
@@ -1173,6 +1174,12 @@ describe('Wizard Form with Grid with Nested Form validation', () => {
       if (type === 'form' && method === 'get' && url.includes('6800c965a969b07fbd8d7077')) {
         return Promise.resolve(_.cloneDeep(nestedForm));
       }
+      if (type === 'form' && method === 'get' && url.includes('child')) {
+        return Promise.resolve(_.cloneDeep(dataGridChildForm));
+      }
+      if (type === 'form' && method === 'get' && url.includes('grandChild')) {
+        return Promise.resolve(_.cloneDeep(dataGridGrandChildForm));
+      }
       return Promise.resolve();
     };
   });
@@ -1196,5 +1203,59 @@ describe('Wizard Form with Grid with Nested Form validation', () => {
         done()
       }, 300);
     }).catch(done);
+  });
+
+  it('Should validate DataGrid with nested form inside Nested Wizard before going to the next page', function (done) {
+    Formio.createForm(document.createElement('div'), dataGridWithNestedFormWithNestedForm)
+          .then((form) => {
+            const selectToShowChildForm = form.getComponent(['dataGrid', 0, 'select']);
+            selectToShowChildForm.setValue('show', { modified: true });
+            setTimeout(() => {
+              const selectToShowGrandChildForm = form.getComponent(['dataGrid', 0, 'form', 'data', 'selectnested']);
+              selectToShowGrandChildForm.setValue('dog', { modified: true });
+              setTimeout(() => {
+                const grandChildTextField = form.getComponent(['dataGrid', 0, 'form', 'data', 'form', 'data', 'textField']);
+                grandChildTextField.setValue('Test', { modified: true });
+                setTimeout(() => {
+                  assert.equal(grandChildTextField.dataValue, 'Test', 'Should set the value properly');
+                  const submissionData = {
+                    dataGrid: [
+                      {
+                        select: 'show',
+                        form: {
+                          data: {
+                            selectnested: 'dog',
+                            form: {
+                              data: {
+                                textField: 'Test',
+                              },
+                            },
+                          },
+                          metadata: {
+                            selectData: {
+                              dataGrid: [
+                                {
+                                  form: {
+                                    data: {
+                                      selectnested: {
+                                        label: 'dog',
+                                      },
+                                    },
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        },
+                      },
+                    ],
+                    submit: false,
+                  };
+                  assert.deepEqual(form.submission.data,  submissionData, 'Should set all the nested values to submission object properly');
+                  done();
+                }, 500);
+              }, 500);
+            }, 500);
+          }).catch(done);
   });
 });
