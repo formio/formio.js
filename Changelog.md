@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.2.1-rc.11]
+## 5.2.1-rc.11
  - Revert FIO-10445: Fixes an issue where value of componets with omitValueWhenHidden inside conditionally hidden layout component is not getting cleared
 
 ## 5.2.1-rc.10
