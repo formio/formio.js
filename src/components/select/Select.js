@@ -1371,7 +1371,7 @@ export default class SelectComponent extends ListComponent {
     }
     // Choices will return undefined if nothing is selected. We really want '' to be empty.
     if (value === undefined || value === null) {
-      value = '';
+      value = this.emptyValue;
     }
     return value;
   }
