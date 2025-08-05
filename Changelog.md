@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.2.1-rc.12
+### Changed
+ - FIO-9780 Fixed inability to save component settings if nested components are required
+ - Fixed an issue where the Select component value would get reset to '' instead of the emptyValue when choices is used.
+
 ## 5.2.1-rc.11
  - Revert FIO-10445: Fixes an issue where value of componets with omitValueWhenHidden inside conditionally hidden layout component is not getting cleared
 
