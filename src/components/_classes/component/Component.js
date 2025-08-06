@@ -2994,6 +2994,19 @@ export default class Component extends Element {
       noUpdateEvent: true,
       noDefault: true
     });
+
+    if (FormioUtils.isLayoutComponent(this.component) && this.component.clearOnHide === true && !this.hasValue()) {
+      FormioUtils.eachComponent(this.components, (component) => {
+        if (component.component.clearOnHide !== false) {
+          component.setValue(null, {
+            noUpdateEvent: true,
+            noDefault: true
+          });
+          component.unset();
+        }
+      });
+    }
+
     this.unset();
   }
 
