@@ -1,6 +1,6 @@
 import * as utils from './utils';
 import * as formUtils from './formUtils';
-import { Evaluator, registerEvaluator, interpolate } from './Evaluator';
+import { Evaluator, registerEvaluator, interpolate, DefaultEvaluator } from './Evaluator';
 import ConditionOperators from './conditionOperators';
 import _ from 'lodash';
 import moment from 'moment';
@@ -8,6 +8,7 @@ import moment from 'moment';
 const FormioUtils = {
   ...utils,
   ...formUtils,
+  DefaultEvaluator,
   Evaluator,
   interpolate,
   ConditionOperators,

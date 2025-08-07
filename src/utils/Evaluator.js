@@ -55,7 +55,38 @@ export class DefaultEvaluator extends CoreEvaluator {
   }
 }
 
-export let Evaluator = new DefaultEvaluator();
+let currentEvaluator = new DefaultEvaluator();
+
+/**
+ *Create evaluator object that forwards calls to current evaluator
+ * to provide access to actual Evaluator instance via formioUtils
+ */
+function createEvaluatorObject() {
+  return {
+    get cache() { return currentEvaluator.cache; },
+    set cache(value) { currentEvaluator.cache = value; },
+
+    get noeval() { return currentEvaluator.noeval; },
+    set noeval(value) { currentEvaluator.noeval = value; },
+
+    get protectedEval() { return currentEvaluator.protectedEval; },
+    set protectedEval(value) { currentEvaluator.protectedEval = value; },
+
+    get templateSettings() { return currentEvaluator.templateSettings; },
+    set templateSettings(value) { currentEvaluator.templateSettings = value; },
+
+    evaluator: (...args) => currentEvaluator.evaluator ? currentEvaluator.evaluator(...args) : undefined,
+    interpolate: (...args) => currentEvaluator.interpolate ? currentEvaluator.interpolate(...args) : undefined,
+    evaluate: (...args) => currentEvaluator.evaluate ? currentEvaluator.evaluate(...args) : undefined,
+    template: (...args) => currentEvaluator.template ? currentEvaluator.template(...args) : undefined,
+  };
+}
+
+// for compatibility with @formio/protected-eval
+/**
+ * @type {DefaultEvaluator}
+ */
+export const Evaluator = createEvaluatorObject();
 
 // preserve the standalone interpolate function for backwards compatibility
 /**
@@ -65,7 +96,7 @@ export let Evaluator = new DefaultEvaluator();
  * @returns {any} the interpolation result.
  */
 export function interpolate(...args) {
-  return Evaluator.interpolate(...args);
+  return currentEvaluator.interpolate(...args);
 }
 
 /**
@@ -74,5 +105,7 @@ export function interpolate(...args) {
  * @returns {void}
  */
 export function registerEvaluator(override) {
-    Evaluator = override;
+  currentEvaluator = override ;
+  // Update the Evaluator object methods to point to new evaluator
+  Object.assign(Evaluator, createEvaluatorObject());
 }
