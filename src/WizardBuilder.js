@@ -206,6 +206,11 @@ export default class WizardBuilder extends WebformBuilder {
     super.detach();
   }
 
+  destroy(all = false) {
+    this.off('saveComponent');
+    super.destroy(all);
+  }
+
   rebuild() {
     const page = this.currentPage;
     this.webform.setForm({
