@@ -1385,6 +1385,7 @@ export default class WebformBuilder extends Component {
       submissionData = submissionData.componentJson || submissionData;
       if (submissionData.components && this.originalDefaultValue) {
         submissionData.components = this.originalDefaultValue.components;
+        this.originalDefaultValue = null;
       }
       const fieldsToRemoveDoubleQuotes = ['label', 'tooltip'];
 
