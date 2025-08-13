@@ -442,6 +442,36 @@ describe('WebformBuilder tests', function() {
     const webformBuilder = new WebformBuilder({});
     assert.equal(webformBuilder.hasEditTabs('abc123'), false);
   });
+
+  it('Should not duplicate nested components of the DataGrid for new Data components', (done) => {
+    const builder = Harness.getBuilder();
+    builder.setForm({}).then(() => {
+      Harness.buildComponent('datagrid');
+      setTimeout(() => {
+        Harness.saveComponent();
+        setTimeout(() => {
+          const dataGrid = builder.webform.element.querySelector('[ref="dataGrid-container"]');
+          Harness.buildComponent('textfield', dataGrid);
+          setTimeout(() => {
+            Harness.saveComponent();
+            setTimeout(() => {
+              Harness.buildComponent('datagrid');
+              setTimeout(()=> {
+                Harness.saveComponent();
+                setTimeout(()=> {
+                  const dataGridWithNestedComp = builder.webform.getComponent('dataGrid');
+                  assert.equal(dataGridWithNestedComp.components.length, 1);
+                  const dataGridEmpty = builder.webform.getComponent('dataGrid1');
+                  assert.equal(dataGridEmpty.components.length, 0);
+                  done();
+                }, 150);
+              }, 150);
+            }, 150);
+          }, 150);
+        }, 150);
+      }, 150);
+    })
+  })
 });
 
 describe('Select Component selectData property', () => {
