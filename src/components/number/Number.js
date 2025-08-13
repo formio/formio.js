@@ -103,10 +103,14 @@ export default class NumberComponent extends Input {
 
   get defaultValue() {
     let defaultValue = super.defaultValue;
-    if (typeof defaultValue === 'string'){
+    if (typeof defaultValue === 'string' && defaultValue) {
       // Default value may be a string or have custom thousands separators or decimal symbols, so we need to call
       // parseNumber on it
       defaultValue = this.parseNumber(defaultValue);
+
+      if (_.isNaN(defaultValue)) {
+        defaultValue = null;
+      }
     }
     if (!defaultValue && this.component.defaultValue === 0) {
       defaultValue = this.component.defaultValue;
