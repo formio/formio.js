@@ -94,6 +94,7 @@ import simpleController from '../forms/formWithSimpleController.js';
 import formWithHiddenComponents from '../forms/formWithHiddenComponents.js';
 import formWithShowAsString from '../forms/formWithShowAsString.js';
 import formWithMergeComponentSchemaAndCustomLogic from '../forms/formWithMergeComponentSchemaAndCustomLogic.js';
+import clearOnHideInsideLayoutComponent from '../forms/clearOnHideInsideLayoutComponent.js';
 import formWithServerValidation from '../forms/formWithServerValidation.js';
 import formWithNumbers from '../forms/formWithNumbers.js';
 import { wait } from '../util.js';
@@ -2429,6 +2430,75 @@ describe('Webform tests', function() {
         assert.deepEqual(form.data, visibleData.data);
         Harness.setInputValue(form, 'data[visible]', 'no');
 
+        setTimeout(() => {
+          assert.deepEqual(form.data, hiddenData.data);
+          done();
+        }, 250);
+      }, 250);
+    });
+  });
+
+  
+  it('Should not delete value of component inside parent conditionally hidden layout component by default', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form.setForm(clearOnHideInsideLayoutComponent).then(() => {
+      const visibleData = {
+        data: {
+          checkbox: true,
+          textFieldInPanel: 'some text in panel',
+          textFieldInFieldset: 'some text in fieldset',
+          submit: false
+        }
+      };
+
+      const textFieldInPanel = form.getComponent('textFieldInPanel');
+      textFieldInPanel.setValue('some text in panel');
+      const textFieldInFieldset = form.getComponent('textFieldInFieldset');
+      textFieldInFieldset.setValue('some text in fieldset');
+      setTimeout(() => {
+        assert.deepEqual(form.data, visibleData.data);
+        const checkbox = form.getComponent('checkbox');
+        checkbox.setValue(false);
+        setTimeout(() => {
+          assert.equal(form.data.textFieldInPanel, 'some text in panel');
+          assert.equal(form.data.textFieldInFieldset, 'some text in fieldset');
+          done();
+        }, 250);
+      }, 250);
+    });
+  });
+
+  it('Should delete value of component inside parent conditionally hidden layout component if clearOnHide is set to true', function(done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    const testForm = fastCloneDeep(clearOnHideInsideLayoutComponent);
+    _.set(testForm, 'components[1].clearOnHide', true);
+    _.set(testForm, 'components[2].clearOnHide', true)
+    form.setForm(testForm).then(() => {
+      const visibleData = {
+        data: {
+          checkbox: true,
+          textFieldInPanel: 'some text in panel',
+          textFieldInFieldset: 'some text in fieldset',
+          submit: false
+        }
+      };
+
+      const hiddenData = {
+        data: {
+          checkbox: false,
+          submit: false
+        }
+      };
+      const textFieldInPanel = form.getComponent('textFieldInPanel');
+      textFieldInPanel.setValue('some text in panel');
+      const textFieldInFieldset = form.getComponent('textFieldInFieldset');
+      textFieldInFieldset.setValue('some text in fieldset');
+      setTimeout(() => {
+        assert.deepEqual(form.data, visibleData.data);
+        const checkbox = form.getComponent('checkbox');
+        checkbox.setValue(false);
         setTimeout(() => {
           assert.deepEqual(form.data, hiddenData.data);
           done();
