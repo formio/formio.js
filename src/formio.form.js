@@ -11,7 +11,7 @@ import Utils from './utils';
 import Licenses from './licenses';
 import EventEmitter from './EventEmitter';
 import Webform from './Webform';
-import { Evaluator, registerEvaluator } from './utils';
+import { Evaluator, registerEvaluator, DefaultEvaluator } from './utils';
 
 Formio.loadModules = (path = `${Formio.getApiUrl()}/externalModules.js`, name = 'externalModules') => {
   Formio.requireLibrary(name, name, path, true)
@@ -138,4 +138,4 @@ Formio.use = useModule();
 export { Formio as FormioCore } from './Formio';
 
 // Export the components.
-export { Components, Displays, Providers, Widgets, Templates, Utils, Form, Formio, Licenses, EventEmitter, Webform };
+export { Components, Displays, Providers, Widgets, Templates, Utils, Form, Formio, Licenses, EventEmitter, Webform, DefaultEvaluator };

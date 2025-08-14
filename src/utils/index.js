@@ -1,6 +1,6 @@
 import * as utils from './utils';
 import * as formUtils from './formUtils';
-import { Evaluator, registerEvaluator, interpolate } from './Evaluator';
+import { Evaluator, registerEvaluator, interpolate, DefaultEvaluator } from './Evaluator';
 import ConditionOperators from './conditionOperators';
 import _ from 'lodash';
 import moment from 'moment';
@@ -19,7 +19,7 @@ if (typeof global === 'object') {
 }
 
 export { FormioUtils as Utils };
-export { Evaluator, registerEvaluator };
+export { Evaluator, registerEvaluator, DefaultEvaluator };
 export * from './utils';
 export * from './formUtils';
 
