@@ -4,12 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 5.2.1-rc.13]
+## 5.2.1-rc.13
+### Changed
+ - syncing commit from monorepo. PR: 373, Title: FIO-10360: Fix Data table
  - FIO-9942: interpolate fix
  - FIO-10369: fixed an issue where validation does not work well for components inside conditional nested form
  - FIO-10525 fixed issue with duplicated nested components for new data coimponents
  - FIO-10425: Fixed issues where fields with errors in nested forms with in wizards are not properly highlighting when you click the error link
-   
+
 ## 5.2.1-rc.12
 ### Changed
  - FIO-9780 Fixed inability to save component settings if nested components are required
