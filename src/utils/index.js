@@ -8,7 +8,6 @@ import moment from 'moment';
 const FormioUtils = {
   ...utils,
   ...formUtils,
-  DefaultEvaluator,
   Evaluator,
   interpolate,
   ConditionOperators,
@@ -20,7 +19,7 @@ if (typeof global === 'object') {
 }
 
 export { FormioUtils as Utils };
-export { Evaluator, registerEvaluator };
+export { Evaluator, DefaultEvaluator, registerEvaluator };
 export * from './utils';
 export * from './formUtils';
 
