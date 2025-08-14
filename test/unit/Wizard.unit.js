@@ -46,10 +46,12 @@ import WizardWithCheckboxes from '../forms/wizardWithCheckboxes';
 import WizardWithRequiredFields from '../forms/wizardWithRequiredFields';
 import formWithNestedWizardAndRequiredFields from '../forms/formWithNestedWizardAndRequiredFields';
 import simpleWizardWithRequiredFields from '../forms/simpleWizardWithRequiredFields';
+import testRequiredFieldsInNestedWizard from '../forms/testRequiredFieldsInNestedWizard';
 import { wait } from '../util';
 
 // eslint-disable-next-line max-statements
 describe('Wizard tests', () => {
+  window.scrollTo = () => {};
   // helpers
   const clickWizardBtn = (wizard, pathPart, clickError) => {
     const btn = _.get(wizard.refs, clickError ? pathPart : `${wizard.wizardKey}-${pathPart}`);
@@ -196,6 +198,84 @@ describe('Wizard Form with Nested Form validation', () => {
       }
   });
 });
+
+  it('Should show validation error on next button click for required components inside nested form that is inside nested wizard', function (done) {
+    const formElement = document.createElement('div');
+    const nestedWizard = _.cloneDeep(testRequiredFieldsInNestedWizard.nestedWizard);
+    const parentWizard = _.cloneDeep(testRequiredFieldsInNestedWizard.parentWizard);
+    const nestedForm = _.cloneDeep(testRequiredFieldsInNestedWizard.nestedForm);
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.setUser({
+      _id: '123',
+    });
+
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get') {
+        if (url.endsWith('testwizard')) {
+          return Promise.resolve(parentWizard);
+        } else if (url.includes('6895e4628d9bfeaf8fe1a96e')) {
+          return Promise.resolve(nestedWizard);
+        } else if (url.includes('6895e4628d9bfeaf8fe1a95f')) {
+          return Promise.resolve(nestedForm);
+        } else {
+          return Promise.resolve();
+        }
+      }
+    };
+    Formio.createForm(formElement, 'http://localhost:3000/zarbzxibjafpcjb/testwizard')
+      .then((wizard) => {
+        setTimeout(() => {
+          clickWizardBtn(wizard, 'next');
+
+          setTimeout(() => {
+            assert.equal(wizard.page, 1);
+            const radio = wizard.getComponent('formAOrB');
+            radio.setValue('a');
+            radio.triggerChange();
+
+            setTimeout(() => {
+              const formA = wizard.getComponent('formA');
+              assert.equal(wizard.page, 1);
+              assert.equal(formA.visible, true);
+
+              clickWizardBtn(wizard, 'next');
+
+              setTimeout(() => {
+                assert.equal(wizard.page, 1);
+                assert.equal(formA.visible, true);
+                assert.equal(wizard.errors.length, 1);
+                radio.setValue('');
+                radio.triggerChange();
+
+                setTimeout(() => {
+                  assert.equal(wizard.page, 1);
+                  assert.equal(formA.visible, false);
+                  assert.equal(wizard.errors.length, 0);
+                  radio.setValue('a');
+                  radio.triggerChange();
+
+                  setTimeout(() => {
+                    assert.equal(wizard.page, 1);
+                    assert.equal(formA.visible, true);
+                    clickWizardBtn(wizard, 'next');
+
+                    setTimeout(() => {
+                      assert.equal(wizard.page, 1);
+                      assert.equal(formA.visible, true);
+                      assert.equal(wizard.errors.length, 1);
+                      Formio.makeRequest = originalMakeRequest;
+                      Formio.setUser();
+                      done();
+                    }, 300);
+                  }, 300);
+                }, 300);
+              }, 300);
+            }, 300);
+          }, 300);
+        }, 300);
+      })
+      .catch((err) => done(err));
+  });
 
   it('Should recalculate values for components with "allow override" after wizard is canceled', function(done) {
     const formElement = document.createElement('div');

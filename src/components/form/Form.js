@@ -351,6 +351,7 @@ export default class FormComponent extends Component {
                 }
               }
               postAttach();
+              this.setComponentsMap();
             });
           }
           postAttach();
@@ -441,6 +442,14 @@ export default class FormComponent extends Component {
     }
   }
 
+  setComponentsMap() {
+    if (!this.subForm) {
+      return;
+    }
+    const componentsMap = this.componentsMap;
+    const formComponentsMap = this.subForm.componentsMap;
+    _.assign(componentsMap, formComponentsMap);
+  }
   /**
    * Create a subform instance.
    * @param {boolean} [fromAttach] - This function is being called from an `attach` method.
@@ -468,9 +477,6 @@ export default class FormComponent extends Component {
         this.subForm = instance;
         this.subForm.currentForm = this;
         this.subForm.parentVisible = this.visible;
-        const componentsMap = this.componentsMap;
-        const formComponentsMap = this.subForm.componentsMap;
-        _.assign(componentsMap, formComponentsMap);
         this.component.components = this.subForm._form?.components;
         this.component.display = this.subForm._form?.display;
         this.subForm.on('change', () => {
