@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.2.1-rc.14
+### Changed
+ - FIO-10552: revert change to pagination styling
+ - FIO-10550: fixed an issue where front validation doesnot work for nested form components inside nested wizard
+
 ## 5.2.1-rc.13
 ### Changed
  - syncing commit from monorepo. PR: 373, Title: FIO-10360: Fix Data table
