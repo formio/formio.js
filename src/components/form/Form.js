@@ -477,6 +477,7 @@ export default class FormComponent extends Component {
         this.subForm = instance;
         this.subForm.currentForm = this;
         this.subForm.parentVisible = this.visible;
+        this.setComponentsMap();
         this.component.components = this.subForm._form?.components;
         this.component.display = this.subForm._form?.display;
         this.subForm.on('change', () => {
