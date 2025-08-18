@@ -47,6 +47,7 @@ import WizardWithRequiredFields from '../forms/wizardWithRequiredFields';
 import formWithNestedWizardAndRequiredFields from '../forms/formWithNestedWizardAndRequiredFields';
 import simpleWizardWithRequiredFields from '../forms/simpleWizardWithRequiredFields';
 import testRequiredFieldsInNestedWizard from '../forms/testRequiredFieldsInNestedWizard';
+import testWizardWithNestedForm from '../forms/testWizardWithNestedForm';
 import { wait } from '../util';
 
 // eslint-disable-next-line max-statements
@@ -198,6 +199,52 @@ describe('Wizard Form with Nested Form validation', () => {
       }
   });
 });
+
+  it('Should show validation error for required components inside nested form on submit when the page with nested from is not visited', function (done) {
+    const formElement = document.createElement('div');
+  
+    const parentWizard = _.cloneDeep(testWizardWithNestedForm.wizard);
+    const topNestedForm = _.cloneDeep(testWizardWithNestedForm.nestedFormTop);
+    const childNestedForm = _.cloneDeep(testWizardWithNestedForm.nestedFormChild);
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.setUser({
+      _id: '123',
+    });
+
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get') {
+        if (url.endsWith('testwizard')) {
+          return Promise.resolve(parentWizard);
+        } else if (url.includes('689f3451fe27f634ffeba379')) {
+          return Promise.resolve(topNestedForm);
+        } else if (url.includes('689f3451fe27f634ffeba372')) {
+          return Promise.resolve(childNestedForm);
+        } else {
+          return Promise.resolve();
+        }
+      }
+    };
+    Formio.createForm(formElement, 'http://localhost:3000/zarbzxibjafpcjb/testwizard')
+      .then((wizard) => {
+        setTimeout(() => {
+          clickWizardBtn(wizard, 'link[2]');
+
+          setTimeout(() => {
+            assert.equal(wizard.page, 2);
+            clickWizardBtn(wizard, 'submit');
+
+            setTimeout(() => {
+              assert.equal(wizard.errors.length, 1);
+              assert.equal(wizard.errors[0].message, "Text Field is required");
+              Formio.makeRequest = originalMakeRequest;
+              Formio.setUser();
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      })
+      .catch((err) => done(err));
+  });
 
   it('Should show validation error on next button click for required components inside nested form that is inside nested wizard', function (done) {
     const formElement = document.createElement('div');
