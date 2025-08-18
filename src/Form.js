@@ -51,9 +51,9 @@ export default class Form extends Element {
  * @property {boolean} [showCancel] - Show the cancel button in wizard forms.
  * @property {boolean} [showSubmit] - Show the submit button in wizard forms.
  */
- 
+
 /**
- * @typedef {{ [componentType: string]: { [refName: string]: string[] }}} CustomStyles
+ * @typedef {{ [componentType: string]: { [refName: string]: { override?: boolean; classes: string[] } }}} CustomStyles
  */
 
 /**
@@ -523,5 +523,5 @@ Formio.Form = Form;
  * @exports
  * @typedef {FormOptions} FormOptions
  */
- 
+
 export { };
