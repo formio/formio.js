@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
 import dompurify from 'dompurify';
 import dayjs from "dayjs";
@@ -572,14 +571,14 @@ export function getDateSetting(date) {
     return date.isValid() ? date.toDate() : null;
   }
 
-  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date) : null;
+  let dateSetting = ((typeof date !== 'string') || (date.indexOf('dayjs(') === -1)) ? dayjs(date) : null;
   if (dateSetting && dateSetting.isValid()) {
     return dateSetting.toDate();
   }
 
   dateSetting = null;
   try {
-    const value = Evaluator.evaluator(`return ${date};`, 'moment')(moment);
+    const value = Evaluator.evaluator(`return ${date};`, 'dayjs')(dayjs);
     if (typeof value === 'string') {
       dateSetting = dayjs(value);
     }
@@ -645,6 +644,15 @@ export function offsetDate(date, timezone) {
     date: new Date(date.getTime() + ((dateMoment.utcOffset() + date.getTimezoneOffset()) * 60000)),
     abbr: dateMoment.format('z')
   };
+}
+
+/**
+ * Returns if the zones are loaded.
+ * (This is legacy. The only reason why we need to keep this is to not break customers who may be using zonesLoaded)
+ * @returns {boolean} - TRUE if the zones are loaded; FALSE otherwise.
+ */
+export function zonesLoaded() {
+  return true
 }
 
 /**
