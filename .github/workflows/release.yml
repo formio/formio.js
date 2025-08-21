@@ -32,7 +32,7 @@ jobs:
         run: gem install jekyll
 
       - name: Restore node modules from cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
@@ -41,8 +41,8 @@ jobs:
 
       - name: Install awscli
         run: |
-          sudo apt-get update
-          sudo apt install -y awscli
+          sudo snap install aws-cli --classic
+          aws --version
 
       - name: Release
         uses: borales/actions-yarn@v4
