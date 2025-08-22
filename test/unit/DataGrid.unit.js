@@ -1013,7 +1013,6 @@ describe('Wizard Form with Grid with Nested Form validation', () => {
   it('Should validate DataGrid with nested form inside Nested Wizard before going to the next page', function (done) {
     Formio.createForm(document.createElement('div'), dataGridWithNestedFormWithNestedForm)
           .then((form) => {
-            console.log(123);
             const selectToShowChildForm = form.getComponent(['dataGrid', 0, 'select']);
             selectToShowChildForm.setValue('show', { modified: true });
             setTimeout(() => {
@@ -1035,7 +1034,6 @@ describe('Wizard Form with Grid with Nested Form validation', () => {
                               data: {
                                 textField: 'Test',
                               },
-                              metadata: {},
                             },
                           },
                           metadata: {
