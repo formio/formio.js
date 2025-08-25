@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased: 5.2.1-rc.16]
+### Changed
+ - FIO-10570: fixed failing test
+
 ## 5.2.1-rc.15
 ### Changed
  - Updated @formio/core@2.5.1-rc.9
