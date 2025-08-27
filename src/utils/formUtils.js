@@ -47,6 +47,16 @@ const {
   getItemTemplateKeys
 } = Utils;
 
+/**
+ * Checks if the component is expected to have data in submission object.
+ * @param {import('@formio/core').Component} component - The component to check.
+ * @returns {boolean} - TRUE if the component is a data component.
+ */
+function isDataComponent(component) {
+  const modelType = getModelType(component);
+  return modelType !== 'none' && modelType !== 'content';
+}
+
 export {
   flattenComponents,
   guid,
@@ -92,5 +102,6 @@ export {
   isComponentDataEmpty,
   isSelectResourceWithObjectValue,
   compareSelectResourceWithObjectTypeValues,
-  getItemTemplateKeys
+  getItemTemplateKeys,
+  isDataComponent
 };

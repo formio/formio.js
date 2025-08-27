@@ -2,6 +2,7 @@ import Component from './_classes/component/Component';
 import EditFormUtils from './_classes/component/editForm/utils';
 import BaseEditForm from './_classes/component/Component.form';
 import _ from 'lodash';
+import { isDataComponent } from '../utils';
 export default class Components {
   static _editFormUtils = EditFormUtils;
 
@@ -80,7 +81,8 @@ export default class Components {
     else {
       comp = new Component(component, options, data);
     }
-    if (comp.path) {
+
+    if (comp.path && isDataComponent(comp.component)) {
       comp.componentsMap[comp.path] = comp;
     }
     // Reset the componentMatches on the root element if any new component is created.
