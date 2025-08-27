@@ -97,6 +97,7 @@ import formWithMergeComponentSchemaAndCustomLogic from '../forms/formWithMergeCo
 import formWithServerValidation from '../forms/formWithServerValidation.js';
 import formWithNumbers from '../forms/formWithNumbers.js';
 import { wait } from '../util.js';
+import testCustomValidationForContainerWithNestedLayoutComp from '../forms/testCustomValidationForContainerWithNestedLayoutComp.js';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
@@ -108,7 +109,20 @@ if (_.has(Formio, 'Components.setComponents')) {
 describe('Webform tests', function() {
   this.retries(3);
 
-   it('Should show form validation errors if we insert invalid underscore data into a number component', async () => {
+  it('Should show validation errors on submit for container with layout components inside', (done) => {
+    Formio.createForm(document.createElement('div'), testCustomValidationForContainerWithNestedLayoutComp).then(form => {
+      assert.equal(!!form.visibleErrors.length, false);
+      form.submit();
+      setTimeout(() => {
+        assert.equal(form.errors.length, 1);
+        assert.equal(form.errors[0].message, 'One of either phone or email must be provided.');
+        assert.equal(!!form.visibleErrors.length, true);
+        done();
+      }, 400);
+    }).catch((err) => done(err));
+  });
+
+  it('Should show form validation errors if we insert invalid underscore data into a number component', async () => {
     const form = await Formio.createForm(document.createElement('div'), formWithNumbers);
     const numberDatagrid = form.getComponent('dataGrid.number');
     const number = form.getComponent('number');
