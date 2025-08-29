@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.2.1
+### Changed
+ - Official Release
+ - Updated @formio/bootstrap@3.1.2
+ - Updated @formio/core@2.5.1
+
 ## 5.2.1-rc.17
 ### Changed
  - FIO-10376: Fixes an issue where WizardBuiler is not fully destroyed and keeps listening to saveComponent event leadign to unexpected behaviour
