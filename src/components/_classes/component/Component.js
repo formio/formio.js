@@ -511,6 +511,18 @@ export default class Component extends Element {
     return false;
   }
 
+  
+  hasCondionallyHiddenLayoutParent() {
+    let currentParent = this.parent;
+    while (currentParent) {
+      if (currentParent._conditionallyHidden && FormioUtils.isLayoutComponent(currentParent) && currentParent.component.clearOnHide === true) {
+        return true;
+      }
+      currentParent = currentParent.parent;
+    }
+    return false
+  }
+
   parentConditionallyHidden() {
     let currentParent = this.parent;
     while (currentParent) {
@@ -822,7 +834,7 @@ export default class Component extends Element {
       this._conditionallyClear = true;
       return this._conditionallyClear;
     }
-    this._conditionallyClear = this.hasSetValue ? false : this.parentShouldConditionallyClear();
+    this._conditionallyClear = this.hasSetValue ? this.hasCondionallyHiddenLayoutParent() : this.parentShouldConditionallyClear();
     return this._conditionallyClear;
   }
 
@@ -2994,19 +3006,6 @@ export default class Component extends Element {
       noUpdateEvent: true,
       noDefault: true
     });
-
-    if (FormioUtils.isLayoutComponent(this.component) && this.component.clearOnHide === true && !this.hasValue()) {
-      FormioUtils.eachComponent(this.components, (component) => {
-        if (component.component.clearOnHide !== false) {
-          component.setValue(null, {
-            noUpdateEvent: true,
-            noDefault: true
-          });
-          component.unset();
-        }
-      });
-    }
-
     this.unset();
   }
 
