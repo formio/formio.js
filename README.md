@@ -7,6 +7,9 @@ This library is a plain JavaScript form renderer and SDK for Form.io. This allow
  - Nested components, layouts, Date/Time, Select, Input Masks, and many more included features
  - Full JavaScript API SDK library on top of Form.io
 
+> [!IMPORTANT]
+> As of 2 September 2025, the master branch will be renamed master_old and the default branch will be called main. main will be based on the 5.2.x branch, which is the latest stable release. See [here](https://github.com/formio/formio.js/issues/6233) for more details about this change.
+
 ## Important Updates
 
 ### Namespace Change
