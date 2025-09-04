@@ -43,6 +43,7 @@ Formio.Transformers = Transformers;
 Formio.ValueSources = ValueSources;
 Formio.AllComponents = AllComponents;
 Formio.Licenses = Licenses;
+Formio.DefaultEvaluator = DefaultEvaluator;
 
 // This is strange, but is needed for "premium" components to import correctly.
 Formio.Formio = Formio;
