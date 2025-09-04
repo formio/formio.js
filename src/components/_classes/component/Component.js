@@ -2803,6 +2803,19 @@ export default class Component extends Element {
           return Promise.resolve(editor);
         }
         else {
+          // Due to an issue with ckeditor not loading styles in the shadowdom (https://github.com/ckeditor/ckeditor5/issues/15824), we need to copy cke-styles to the shadowdom
+          let current = element;
+          while (current) {
+            if (current instanceof ShadowRoot) {
+              const ckeStyles = document.querySelector('style[data-cke="true"]');
+              const clone = document.createElement('style');
+              clone.setAttribute('data-cke', 'true');
+              clone.textContent = ckeStyles.textContent;
+              current.prepend(clone);
+              break;
+            };
+            current = current.parentNode || current.host;
+          }
           return ClassicEditor.create(element, settings).then(editor => {
             editor.model.document.on('change', () => onChange(editor.data.get()));
             return editor;
@@ -2891,6 +2904,7 @@ export default class Component extends Element {
         editor.setOptions(settings);
         editor.getSession().setMode(settings.mode);
         editor.on('change', () => onChange(editor.getValue()));
+        editor.renderer.attachToShadowRoot();
         if (settings.isUseWorkerDisabled) {
           editor.session.setUseWorker(false);
         }
