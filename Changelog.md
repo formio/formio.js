@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased: 4.21.7-patch.1]
+## 4.21.7-patch.1
 ### Changed
  - FIO-10631: Emails would not send when survey component is required
 
