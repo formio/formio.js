@@ -137,6 +137,9 @@ export default class SurveyComponent extends Field {
     if (!boolValue(setting)) {
       return true;
     }
+    if (!value) {
+      return false;
+    }
     return this.component.questions.reduce((result, question) =>
       result && Boolean(value[question.value]), true);
   }
