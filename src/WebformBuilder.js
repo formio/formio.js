@@ -615,8 +615,8 @@ export default class WebformBuilder extends Component {
           return elem;
         };
 
-        const hideShow = (group, show) => {
-          if (show) {
+        const hideShow = (group, forceShow, toggle = false) => {
+          if (forceShow || (toggle && !Array.from(group.classList).includes('show'))) {
             group.classList.add(['show']);
             group.style.display = 'inherit';
           }
@@ -640,7 +640,9 @@ export default class WebformBuilder extends Component {
               const openByDefault = getAttribute(group, 'default') === 'true';
               const groupId = group.getAttribute('id').slice('group-'.length);
               const groupParent = getAttribute(group, 'parent').slice('#builder-sidebar-'.length);
-              hideShow(group, ((openByDefault && groupParent === clickedId) || groupId === clickedParentId || groupIndex === index));
+              if (((openByDefault && groupParent === clickedId) || groupId === clickedParentId || groupIndex === index)) {
+                hideShow(group, false, true);
+              }
             });
           }, true);
         });
