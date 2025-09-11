@@ -59,11 +59,13 @@ export default class DayComponent extends Field {
   static oldEmptyValue = '00/00/0000';
 
   constructor(component, options, data) {
-    if (component.maxDate && component.maxDate.indexOf('moment(') === -1) {
-      component.maxDate = moment(component.maxDate, 'YYYY-MM-DD').toISOString();
-    }
-    if (component.minDate && component.minDate.indexOf('moment(') === -1) {
-      component.minDate = moment(component.minDate, 'YYYY-MM-DD').toISOString();
+    if (!options.inFormBuilder && !options.building) {
+      if (component.maxDate && component.maxDate.indexOf('moment(') === -1) {
+        component.maxDate = moment(component.maxDate, 'YYYY-MM-DD').toISOString();
+      }
+      if (component.minDate && component.minDate.indexOf('moment(') === -1) {
+        component.minDate = moment(component.minDate, 'YYYY-MM-DD').toISOString();
+      }
     }
     super(component, options, data);
   }
