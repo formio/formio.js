@@ -47,6 +47,7 @@ import simpleWizardWithRequiredFields from '../forms/simpleWizardWithRequiredFie
 import wizardWithLazyLoadSelect from '../forms/wizardWithLazyLoadSelect';
 import testRequiredFieldsInNestedWizard from '../forms/testRequiredFieldsInNestedWizard';
 import testWizardWithNestedForm from '../forms/testWizardWithNestedForm';
+import wizardWithBlurValidation from '../forms/wizardWithBlurValidation';
 import { wait } from '../util';
 
 // eslint-disable-next-line max-statements
@@ -198,6 +199,37 @@ describe('Wizard Form with Nested Form validation', () => {
       }
   });
 });
+
+  it('Should validate components on blur', function (done) {
+    const formElement = document.createElement('div');
+  
+    Formio.createForm(formElement, wizardWithBlurValidation)
+      .then((wizard) => {
+        setTimeout(() => {
+          const textField = wizard.getComponent('textField');
+          const tfInput = textField.refs.input[0];
+          const inputEvent = new Event('input');
+          const blurEvent = new Event('blur');
+          tfInput.value = 't';
+          tfInput.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(wizard.errors.length, 0);
+            assert.equal(textField.errors.length, 0);
+            tfInput.dispatchEvent(blurEvent);
+
+            setTimeout(() => {
+              assert.equal(wizard.errors.length, 1);
+              assert.equal(textField.errors.length, 1);
+              assert.equal(textField.element.classList.contains('has-error'), true);
+              assert.equal(textField.refs.messageContainer.textContent.includes('Text Field must have at least 4 characters'), true);
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      })
+      .catch((err) => done(err));
+  });
 
   it('Should show validation error for required components inside nested form on submit when the page with nested from is not visited', function (done) {
     const formElement = document.createElement('div');
