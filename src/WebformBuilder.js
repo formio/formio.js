@@ -641,7 +641,7 @@ export default class WebformBuilder extends Component {
               const groupId = group.getAttribute('id').slice('group-'.length);
               const groupParent = getAttribute(group, 'parent').slice('#builder-sidebar-'.length);
               if (((openByDefault && groupParent === clickedId) || groupId === clickedParentId || groupIndex === index)) {
-                hideShow(group, ((openByDefault && groupParent === clickedId) || groupId === clickedParentId || groupIndex === index));
+                hideShow(group, false, true);
               }
             });
           }, true);
