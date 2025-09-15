@@ -114,7 +114,7 @@ export default class FormComponent extends Component {
   }
 
   get dataReady() {
-    return this.subFormReady || Promise.resolve();
+    return this.subFormReady?.dataReady || this.subFormReady || Promise.resolve();
   }
 
   get defaultValue() {
@@ -766,6 +766,9 @@ export default class FormComponent extends Component {
    */
   onSetSubFormValue(submission, flags) {
     this.subForm.setValue(submission, flags);
+    if (flags?.fromSubmission) {
+      this.subForm.submissionReadyResolve(submission);
+    }
   }
 
   isEmpty(value = this.dataValue) {

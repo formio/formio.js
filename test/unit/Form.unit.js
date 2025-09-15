@@ -3,7 +3,7 @@ import { fastCloneDeep } from '../../src/utils';
 import Harness from '../harness.js';
 import FormComponent from '../../src/components/form/Form';
 import { expect } from 'chai';
-import assert from 'power-assert';
+import assert, { equal } from 'power-assert';
 
 import {
   comp1,
@@ -21,7 +21,7 @@ import { Formio } from '../../src/formio.form.js';
 import { formComponentWithConditionalRenderingForm } from '../formtest/index.js';
 import * as nestedFormWithDisabledClearOnHide from '../forms/nestedFormWithDisabledClearOnHide.js';
 import multiLevelNestedForms from '../forms/multiLevelNestedForms.js';
-import download from 'downloadjs';
+import * as nestedFormWithContentComponent from '../forms/nestedFormWithContentComp.js';
 
 describe('Form Component', () => {
   it('Should build a form component', () => {
@@ -632,6 +632,51 @@ describe('Disabled clearOnHide functionality for Nested Form', () => {
         assert.deepEqual(mainFormSubmission.data?.form?.data, { textField: 'test', textArea: '' });
         done();
       });
+    }).catch((err) => done(err));
+  });
+});
+
+describe('Test Nested Form value setting', () => {
+  const originalMakeRequest = Formio.makeRequest;
+  before((done) => {
+    Formio.setUser({
+      _id: '123'
+    });
+
+    Formio.makeRequest = (formio, type, url, method, data) => {
+      if (type === 'form' && method === 'get' && (url).includes('/datareadytest')) {
+        const mainForm = fastCloneDeep(nestedFormWIthContentComponent.parentForm);
+        return Promise.resolve(mainForm);
+      };
+
+      if (type === 'form' && method === 'get' && (url).includes('/67c19d4a0b924378e690a993')) {
+        return Promise.resolve(nestedFormWIthContentComponent.childForm);
+      };
+    };
+    done();
+  });
+
+  after((done) => {
+    Formio.makeRequest = originalMakeRequest;
+    Formio.setUser();
+    done();
+  });
+
+  it('The nested form submission should be set and correctly displayed once dataReady promise is resolved', (done) => {
+    const formElement = document.createElement('div');
+    Formio.createForm(
+      formElement,
+      'http://localhost:3000/ryyclyrmbzvuqog/datareadytest',
+      { readOnly: true }
+    ).then((instance) => {
+      instance.setSubmission(nestedFormWithContentComponent.submission).then(function () {
+        instance.dataReady.then(function () {
+          const contentText = instance.element.querySelector('.formio-component-content').textContent;
+          assert.equal(contentText.includes('foo'), true);
+          assert.equal(contentText.includes('hey'), true);
+          done();
+        })
+      })
     }).catch((err) => done(err));
   });
 });
