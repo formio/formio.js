@@ -238,7 +238,8 @@ export default class WebformBuilder extends Component {
       params: {
         type: 'resource',
         limit: 1000000,
-        select: '_id,title,name,components'
+        select: '_id,title,name,components',
+        'tags__ne': 'noBuilderResource'
       }
     };
     if (this.options && this.options.resourceTag) {
@@ -263,7 +264,7 @@ export default class WebformBuilder extends Component {
         }
       }
     }).catch((err) => {
-      console.warn(`Could not load project settings: ${err.message || err}`);
+      console.warn(`${this.t('loadingProjectSettingsError')}: ${err.message || err}`);
     });
 
     if (!formio.noProject && !isResourcesDisabled && formio.formsUrl) {
@@ -392,14 +393,14 @@ export default class WebformBuilder extends Component {
     });
 
     if (component.refs.copyComponent) {
-      this.attachTooltip(component.refs.copyComponent, this.t('Copy'));
+      this.attachTooltip(component.refs.copyComponent, this.t('copy'));
 
       component.addEventListener(component.refs.copyComponent, 'click', () =>
         this.copyComponent(component));
     }
 
     if (component.refs.pasteComponent) {
-      const pasteToolTip = this.attachTooltip(component.refs.pasteComponent, this.t('Paste below'));
+      const pasteToolTip = this.attachTooltip(component.refs.pasteComponent, this.t('pasteBelow'));
 
       component.addEventListener(component.refs.pasteComponent, 'click', () => {
         pasteToolTip.hide();
@@ -408,7 +409,7 @@ export default class WebformBuilder extends Component {
     }
 
     if (component.refs.moveComponent) {
-      this.attachTooltip(component.refs.moveComponent, this.t('Move'));
+      this.attachTooltip(component.refs.moveComponent, this.t('move'));
       if (this.keyboardActionsEnabled) {
         component.addEventListener(component.refs.moveComponent, 'click', () => {
           this.moveComponent(component);
@@ -419,21 +420,21 @@ export default class WebformBuilder extends Component {
     const parent = this.getParentElement(element);
 
     if (component.refs.editComponent) {
-      this.attachTooltip(component.refs.editComponent, this.t('Edit'));
+      this.attachTooltip(component.refs.editComponent, this.t('edit'));
 
       component.addEventListener(component.refs.editComponent, 'click', () =>
         this.editComponent(component.schema, parent, false, false, component.component, { inDataGrid: component.isInDataGrid }));
     }
 
     if (component.refs.editJson) {
-      this.attachTooltip(component.refs.editJson, this.t('Edit JSON'));
+      this.attachTooltip(component.refs.editJson, this.t('editJson'));
 
       component.addEventListener(component.refs.editJson, 'click', () =>
         this.editComponent(component.schema, parent, false, true, component.component));
     }
 
     if (component.refs.removeComponent) {
-      this.attachTooltip(component.refs.removeComponent, this.t('Remove'));
+      this.attachTooltip(component.refs.removeComponent, this.t('remove'));
 
       component.addEventListener(component.refs.removeComponent, 'click', () =>
         this.removeComponent(component.schema, parent, component.component, component));
@@ -952,32 +953,20 @@ export default class WebformBuilder extends Component {
     const compKey = (group === 'resource') ? `component-${key}` : key;
     const draggableComponent = this.groups[group]?.components[compKey] || {};
 
-    if (draggableComponent.disableSiblings) {
+    if (draggableComponent.disableSiblings || draggableComponent.uniqueComponent) {
       let isCompAlreadyExists = false;
       eachComponent(this.webform.components, (component) => {
-        if (component.type === draggableComponent.schema.type) {
+        if (
+          (draggableComponent.disableSiblings && component.type === draggableComponent.schema.type) ||
+          (draggableComponent.uniqueComponent && component.component.key === draggableComponent.schema.key)
+        ) {
           isCompAlreadyExists = true;
           return;
         }
       }, true);
       if (isCompAlreadyExists) {
         this.webform.redraw();
-        this.webform.setAlert('danger', `You cannot add more than one ${draggableComponent.key} component to one page.`);
-        return;
-      }
-    }
-
-    if (draggableComponent.uniqueComponent) {
-      let isCompAlreadyExists = false;
-      eachComponent(this.webform.components, (component) => {
-        if (component.key === draggableComponent.schema.key) {
-          isCompAlreadyExists = true;
-          return;
-        }
-      }, true);
-      if (isCompAlreadyExists) {
-        this.webform.redraw();
-        this.webform.setAlert('danger', `You cannot add more than one ${draggableComponent.title} component to one page.`);
+        this.webform.setAlert('danger', this.t('builderUniqueError', { componentKeyOrTitle: _.get(draggableComponent, draggableComponent.uniqueComponent ? 'title' : 'key') }));
         return;
       }
     }
@@ -1352,10 +1341,17 @@ export default class WebformBuilder extends Component {
   highlightInvalidComponents() {
     const repeatablePathsComps = this.findComponentsWithRepeatablePaths();
     let hasInvalidComponents = false;
+    // Matches anything expect letters and  '_' at the beginning of the key and anything except of letters, numbers,
+    // '-', '.' and '_' in the rest of the key
+    const badCharacters = /^[^A-Za-z_]+|[^A-Za-z0-9\-._]+/g;
 
     this.webform.everyComponent((comp) => {
       if (repeatablePathsComps.includes(comp.component)) {
         comp.setCustomValidity(this.t('apiKey', { key: comp.key }));
+        hasInvalidComponents = true;
+      }
+      else if (comp.key.replace(badCharacters, '') === '') {
+        comp.setCustomValidity(this.t('apiKeyNotValid', { key: comp.key }));
         hasInvalidComponents = true;
       }
       else {
@@ -1375,7 +1371,6 @@ export default class WebformBuilder extends Component {
    * @returns {boolean} - If the component was saved.
    */
   saveComponent(component, parent, isNew, original) {
-    this.editForm.detach();
     const parentContainer = parent ? parent.formioContainer : this.container;
     const parentComponent = parent ? parent.formioComponent : this;
     this.dialog.close();
@@ -1389,7 +1384,6 @@ export default class WebformBuilder extends Component {
       submissionData = submissionData.componentJson || submissionData;
       if (submissionData.components && this.originalDefaultValue) {
         submissionData.components = this.originalDefaultValue.components;
-        this.originalDefaultValue = null;
       }
       const fieldsToRemoveDoubleQuotes = ['label', 'tooltip'];
 
@@ -1441,6 +1435,7 @@ export default class WebformBuilder extends Component {
       });
     }
 
+    this.editForm.detach();
     this.highlightInvalidComponents();
     return Promise.resolve();
   }
@@ -1857,7 +1852,7 @@ export default class WebformBuilder extends Component {
    */
   copyComponent(component) {
     if (!window.sessionStorage) {
-      return console.warn('Session storage is not supported in this browser.');
+      return console.warn(this.t('sessionStorageSupportError'));
     }
     this.addClass(this.refs.form, 'builder-paste-mode');
     window.sessionStorage.setItem('formio.clipboard', JSON.stringify(component.schema));
@@ -1870,7 +1865,7 @@ export default class WebformBuilder extends Component {
    */
   pasteComponent(component) {
     if (!window.sessionStorage) {
-      return console.warn('Session storage is not supported in this browser.');
+      return console.warn(this.t('sessionStorageSupportError'));
     }
     this.removeClass(this.refs.form, 'builder-paste-mode');
     if (window.sessionStorage) {
