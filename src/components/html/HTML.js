@@ -62,19 +62,15 @@ export default class HTMLComponent extends Component {
 
   checkRefreshOn(changed) {
     super.checkRefreshOn(changed);
-    let visible;
-    if (this.hasCondition()) {
-      visible = !this.conditionallyHidden();
-    }
-    else {
-      visible = !this.component.hidden;
-    }
+    const isVisible = () => {
+      return this.hasCondition() ? !this.conditionallyHidden() : !this.component.hidden;
+    };
     const shouldSetContent = !this.builderMode
       && this.component.refreshOnChange
       && this.element
       && !_.isUndefined(changed)
       && ((_.isBoolean(changed) && changed) || !_.isEmpty(changed))
-      && visible;
+      && isVisible();
 
     if (shouldSetContent) {
       this.setContent(this.element, this.renderContent());
