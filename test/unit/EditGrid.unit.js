@@ -25,7 +25,8 @@ import {
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
   compWithCustomDefaultValue,
-  formsWithEditGridAndConditions
+  formsWithEditGridAndConditions,
+  compTestEvents
 } from './fixtures/editgrid';
 
 import ModalEditGrid from '../forms/modalEditGrid';
@@ -33,6 +34,7 @@ import EditGridOpenWhenEmpty from '../forms/editGridOpenWhenEmpty';
 import Webform from '../../src/Webform';
 import { displayAsModalEditGrid } from '../formtest';
 import { Formio } from '../../src/Formio';
+import { fastCloneDeep } from '@formio/core';
 
 describe('EditGrid Component', () => {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', (done) => {
@@ -1693,5 +1695,114 @@ describe('EditGrid Open when Empty', () => {
           }, 450);
       }, 100);
     }).catch(done);
+  });
+});
+
+describe('EditGrid Fired Events', () => {
+  const eventParams = ['row', 'component', 'instance']
+  it('Should fire editGridEditRow event on the row edit button click', (done) => {
+    const formElement = document.createElement('div');
+    let eventsCount = 0;
+    Formio.createForm(formElement, compTestEvents)
+      .then((form) => {
+        form.on('editGridEditRow', (eventArgs) => {
+          _.each(eventParams, (param) => {
+            assert.equal(!!eventArgs[param], true);
+          });
+          eventsCount = eventsCount + 1;
+        });
+
+        form.setSubmission({  
+          data: {
+          editGrid: [
+              {
+                  textField: 'test1'
+              },
+              {
+                  textField: 'test2'
+              }
+          ],
+        }})
+        .then(() => {
+          const editBtn = form.element.querySelector('.editRow');
+          const clickEvent = new Event('click');
+          editBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(eventsCount, 1);
+            done();
+
+          }, 350);
+        });
+      })
+      .catch(done);
+  });
+
+  it('Should fire editGridOpenModal event on the row edit button click when modal is enabled', (done) => {
+    const formElement = document.createElement('div');
+    let eventsCount = 0;
+    const testForm = fastCloneDeep(compTestEvents);
+    testForm.components[0].modal = true;
+
+    Formio.createForm(formElement, testForm)
+      .then((form) => {
+        form.on('editGridOpenModal', (eventArgs) => {
+          _.each(eventParams, (param) => {
+            assert.equal(!!eventArgs[param], true);
+          });
+          eventsCount = eventsCount + 1;
+        });
+
+        form.setSubmission({  
+          data: {
+          editGrid: [
+              {
+                  textField: 'test1'
+              },
+              {
+                  textField: 'test2'
+              }
+          ],
+        }})
+        .then(() => {
+          const editBtn = form.element.querySelector('.editRow');
+          const clickEvent = new Event('click');
+          editBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(eventsCount, 1);
+            done();
+          }, 350);
+        })
+      })
+      .catch(done);
+  });
+
+  it('Should fire editGridOpenModal event when adding new row and modal is enabled', (done) => {
+    const formElement = document.createElement('div');
+    let eventsCount = 0;
+    const testForm = fastCloneDeep(compTestEvents);
+    testForm.components[0].modal = true;
+
+    Formio.createForm(formElement, testForm)
+      .then((form) => {
+        form.on('editGridOpenModal', (eventArgs) => {
+          _.each(eventParams, (param) => {
+            assert.equal(!!eventArgs[param], true);
+          });
+          eventsCount = eventsCount + 1;
+        });
+
+        const editGrid = form.getComponent('editGrid');
+          const addBtn = editGrid.refs['editgrid-editGrid-addRow'][0];
+          const clickEvent = new Event('click');
+          addBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(eventsCount, 1);
+            done();
+          }, 350);
+      })
+      .catch(done);
   });
 });
