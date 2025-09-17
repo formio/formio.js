@@ -195,7 +195,14 @@ export default class CalendarWidget extends InputWidget {
                   `flatpickr-${locale}`,
                   `flatpickr-${locale}`,
                   `${Formio.cdn['flatpickr-formio']}/l10n/flatpickr-${locale}.js`,
-                  true).then(() => this.initFlatpickr(Flatpickr));
+                  true)
+                  .catch(() => {
+                    // fallback to en if locale fails to load
+                    this.settings.locale = 'en';
+                  })
+                  .finally(() => {
+                    this.initFlatpickr(Flatpickr);
+                  })
               }
               else {
                 this.initFlatpickr(Flatpickr);
@@ -499,11 +506,12 @@ export default class CalendarWidget extends InputWidget {
 
     // If other fields are used to calculate disabled dates, we need to redraw calendar to refresh disabled dates
     if (this.settings.disableFunction && this.componentInstance && this.componentInstance.root) {
-      this.componentInstance.root.on('change', (e) => {
+      this.changeHandler = (e) => {
         if (e.changed && this.calendar) {
           this.calendar.redraw();
         }
-      });
+      };
+      this.componentInstance.root.on('change', this.changeHandler);
     }
 
     // Restore the calendar value from the component value.
@@ -554,6 +562,10 @@ export default class CalendarWidget extends InputWidget {
   destroy(all = false) {
     if (this.calendar) {
       this.calendar.destroy();
+    }
+    if (this.changeHandler) {
+      this.componentInstance.root.off('change', this.changeHandler);
+      this.changeHandler = null;
     }
     super.destroy(all);
   }

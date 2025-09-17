@@ -5,6 +5,7 @@ import { Formio } from '../../src/Formio.js';
 import _ from 'lodash';
 import 'flatpickr';
 import moment from 'moment-timezone';
+import sinon from 'sinon';
 import Form from '../../src/Form.js'
 import {
   comp1,
@@ -754,6 +755,69 @@ describe('DateTime Component', () => {
     const dateTimeComponent = form.getComponent('dateTime');
     assert.equal(dateTimeComponent.widget.settings.readOnly, true);
   });
+  
+  it('Should attach changeHandler when disableFunction is present', (done) => {
+      const form = _.cloneDeep(comp3);
+      const element = document.createElement('div');
+      form.components[0].datePicker.disableFunction = 'date.getDay() === 2';
+  
+      Formio.createForm(element, form).then(form => {
+        const dateTime = form.getComponent('dateTime');
+  
+        setTimeout(() => {
+          const widget = dateTime.element.querySelector('.flatpickr-input').widget;
+          assert.equal(typeof widget.changeHandler, 'function', 'changeHandler should be a function');
+  
+          document.innerHTML = '';
+          done();
+        }, 300);
+      }).catch(done);
+    });
+  
+    it('Should not attach changeHandler when disableFunction is not present', (done) => {
+      const form = _.cloneDeep(comp3);
+      const element = document.createElement('div');
+  
+      Formio.createForm(element, form).then(form => {
+        const dateTime = form.getComponent('dateTime');
+  
+        setTimeout(() => {
+          const widget = dateTime.element.querySelector('.flatpickr-input').widget;
+          assert.equal(widget.changeHandler, undefined, 'changeHandler should not be attached when disableFunction is not set');
+  
+          document.innerHTML = '';
+          done();
+        }, 300);
+      }).catch(done);
+    });
+  
+    it('Should remove changeHandler on component destroy', (done) => {
+      const form = _.cloneDeep(comp3);
+      const element = document.createElement('div');
+      form.components[0].datePicker.disableFunction = 'date.getDay() === 2';
+  
+      Formio.createForm(element, form).then(form => {
+        const dateTime = form.getComponent('dateTime');
+  
+        setTimeout(() => {
+          const widget = dateTime.element.querySelector('.flatpickr-input').widget;
+  
+          assert.notEqual(widget.changeHandler, undefined, 'ChangeHandler should be attached');
+  
+          const originalHandler = widget.changeHandler;
+          const rootOffSpy = sinon.spy(widget.componentInstance.root, 'off');
+  
+          widget.destroy();
+  
+          assert.equal(rootOffSpy.calledWith('change', originalHandler), true, 'Form should be called with original changeHandler');
+          assert.equal(widget.changeHandler, null, 'ChangeHandler should be null after destroy');
+  
+          rootOffSpy.restore();
+          document.innerHTML = '';
+          done();
+        }, 300);
+      }).catch(done);
+    });
 
   // it('Should provide correct date in selected timezone after submission', (done) => {
   //   const form = _.cloneDeep(comp9);
