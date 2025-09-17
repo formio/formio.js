@@ -819,6 +819,23 @@ describe('DateTime Component', () => {
       }).catch(done);
     });
 
+  it('should transfer attributes to the actual Flatpickr input', (done) => {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      const input = dateTime.element.querySelector('.input');
+
+      assert.notEqual(input.getAttribute('aria-labelledby'), null);
+      assert.notEqual(input.getAttribute('aria-required'), null);
+      assert.notEqual(input.getAttribute('id'), null);
+
+      document.innerHTML = '';
+      done();
+    }).catch(done);
+  });
+
   // it('Should provide correct date in selected timezone after submission', (done) => {
   //   const form = _.cloneDeep(comp9);
   //   const element = document.createElement('div');

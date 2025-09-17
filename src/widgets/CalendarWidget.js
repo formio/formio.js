@@ -446,6 +446,18 @@ export default class CalendarWidget extends InputWidget {
         this.settings.wasDefaultValueChanged = false;
       }
     });
+    
+    // Move input attributes to altInput.
+    const labelledbyIds = this.calendar.input.getAttribute('aria-labelledby');
+    const isRequired = this.calendar.input.getAttribute('aria-required');
+
+    this.calendar.altInput.id = this._input.id;
+    this.calendar.altInput.setAttribute('aria-labelledby', labelledbyIds);
+    this.calendar.altInput.setAttribute('aria-required', isRequired);
+
+    this._input.removeAttribute('id');
+    this._input.removeAttribute('aria-labelledby');
+    this._input.removeAttribute('aria-required');
 
     const excludedFromMaskFormats = ['MMMM'];
 
