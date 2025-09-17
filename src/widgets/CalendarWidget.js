@@ -291,6 +291,9 @@ export default class CalendarWidget extends InputWidget {
     if (!this.calendar) {
       return super.getValue();
     }
+    if(this.settings.isManuallyOverriddenValue){
+      return this.settings.manualInputValue;
+    }
     // Get the selected dates from the calendar widget.
     const dates = this.calendar.selectedDates;
     if (!dates || !dates.length) {
@@ -411,6 +414,19 @@ export default class CalendarWidget extends InputWidget {
         this.calendar.updateValue(false);
       });
     }
+
+    // Move input attributes to altInput.
+    const labelledbyIds = this.calendar.input.getAttribute('aria-labelledby');
+    const isRequired = this.calendar.input.getAttribute('aria-required');
+
+    this.calendar.altInput.id = this._input.id;
+    this.calendar.altInput.setAttribute('aria-labelledby', labelledbyIds);
+    this.calendar.altInput.setAttribute('aria-required', isRequired);
+
+    this._input.removeAttribute('id');
+    this._input.removeAttribute('aria-labelledby');
+    this._input.removeAttribute('aria-required');
+
     const excludedFromMaskFormats = ['MMMM'];
 
     if (!this.settings.readOnly && !_.some(excludedFromMaskFormats, format => _.includes(this.settings.format, format))) {

@@ -94,15 +94,14 @@ describe('DateTime Component', () => {
       const inputEvent = new Event('input');
 
       const value = '2021-04-13 07:00 PM';
-      const expectedValueStart = '2021-04-13T19:00:00';
       const input = dateTime.element.querySelector('.input');
       input.value = value;
       input.dispatchEvent(inputEvent);
       setTimeout(() => {
         input.dispatchEvent(blurEvent);
         setTimeout(() => {
-          assert.equal(dateTime.getValue().startsWith(expectedValueStart), true);
-          assert.equal(dateTime.dataValue.startsWith(expectedValueStart), true);
+          assert.equal(dateTime.getValue().startsWith(value), true);
+          assert.equal(dateTime.dataValue.startsWith(value), true);
 
           document.innerHTML = '';
           done();
@@ -604,12 +603,11 @@ describe('DateTime Component', () => {
         const calendar = dateTime.element.querySelector('.flatpickr-input').widget.calendar;
         calendar._input.value = '07:00 PM';
         calendar._input.dispatchEvent(inputEvent);
-        const expectedValue = 'T19:00:00';
         setTimeout(() => {
           calendar._input.dispatchEvent(blurEvent);
 
           setTimeout(() => {
-            assert.equal(dateTime.dataValue.includes(expectedValue), true);
+            assert.equal(dateTime.dataValue.includes('07:00 PM'), true);
 
             document.innerHTML = '';
             done();
@@ -835,6 +833,23 @@ describe('DateTime Component', () => {
     const form = await Formio.createForm(document.createElement('div'), requiredFieldLogicComp, { readOnly: true });
     const dateTimeComponent = form.getComponent('dateTime');
     assert.equal(dateTimeComponent.widget.settings.readOnly, true);
+  });
+
+  it('should transfer attributes to the actual Flatpickr input', (done) => {
+    const form = _.cloneDeep(comp3);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      const dateTime = form.getComponent('dateTime');
+      const input = dateTime.element.querySelector('.input');
+
+      assert.notEqual(input.getAttribute('aria-labelledby'), null);
+      assert.notEqual(input.getAttribute('aria-required'), null);
+      assert.notEqual(input.getAttribute('id'), null);
+
+      document.innerHTML = '';
+      done();
+    }).catch(done);
   });
 
   // it('Should provide correct date in selected timezone after submission', (done) => {
