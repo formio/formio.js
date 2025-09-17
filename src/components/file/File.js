@@ -118,7 +118,8 @@ export default class FileComponent extends Field {
     if (this.component.privateDownload) {
       fileInfo.private = true;
     }
-    return this.fileService.downloadFile(fileInfo).then((result) => result.url);
+    // pass the component to the downloadFile method
+    return this.fileService.downloadFile(fileInfo, this.component).then((result) => result.url);
   }
 
   get emptyValue() {
