@@ -394,4 +394,18 @@ describe('File Component', () => {
           }, 300);
         });
   });
+
+  it('Should set pristine flag to false after file upload', (done) => {
+      Formio.createForm(document.createElement('div'), testFileUpload.form)
+        .then((form) => {
+          assert.equal(form.pristine, true);
+          const fileComponent = form.getComponent('file');
+          fileComponent.handleFilesToUpload(testFileUpload.files);
+
+          setTimeout(() => {
+            assert.equal(form.pristine, false);
+            done();
+          }, 300);
+        });
+  });
 });

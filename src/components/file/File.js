@@ -118,7 +118,8 @@ export default class FileComponent extends Field {
     if (this.component.privateDownload) {
       fileInfo.private = true;
     }
-    return this.fileService.downloadFile(fileInfo).then((result) => result.url);
+    // pass the component to the downloadFile method
+    return this.fileService.downloadFile(fileInfo, this.component).then((result) => result.url);
   }
 
   get emptyValue() {
@@ -1131,7 +1132,9 @@ export default class FileComponent extends Field {
         .filter(file => file.fileToSync?.status === 'success')
         .map(file => file.fileInfo);
       this.dataValue.push(...data);
-      this.triggerChange();
+      this.triggerChange({
+        modified: true
+      });
       return Promise.resolve();
     }
     catch (err) {
