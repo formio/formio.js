@@ -2116,13 +2116,12 @@ describe('Webform tests', function() {
     assert.equal(form.language, 'es');
   });
 
-  it('Should translate form errors in alerts', () => {
+  it('Should translate form errors in alerts without alertMessage', () => {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, {
       language: 'es',
       i18n: {
         es: {
-          alertMessage: '{{message}}',
           required: '{{field}} es obligatorio'
         }
       }
