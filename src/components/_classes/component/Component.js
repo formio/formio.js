@@ -2044,7 +2044,7 @@ export default class Component extends Element {
     const iconset = this.options.iconset || Templates.current.defaultIconset || 'fa';
     return Templates.current.hasOwnProperty('iconClass')
       ? Templates.current.iconClass(iconset, name, spinning)
-      : this.options.iconset === 'fa' ? Templates.defaultTemplates.iconClass(iconset, name, spinning) : name;
+      : ['fa', 'bi'].includes(this.options.iconset) ? Templates.defaultTemplates.iconClass(iconset, name, spinning) : name;
   }
 
   /**
