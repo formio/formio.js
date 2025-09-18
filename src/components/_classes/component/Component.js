@@ -491,7 +491,7 @@ export default class Component extends Element {
 
   /**
    * Returns if the parent should conditionally clear.
-   * 
+   *
    * @returns {boolean} - If the parent should conditionally clear.
    */
   parentShouldConditionallyClear() {
@@ -809,8 +809,8 @@ export default class Component extends Element {
 
     // If we have a condition and it is not conditionally visible, the it should conditionally clear.
     if (
-      this.hasCondition() && 
-      !this.conditionallyVisible() && 
+      this.hasCondition() &&
+      !this.conditionallyVisible() &&
       (!this.rootPristine || this.shouldConditionallyClearOnPristine())
     ) {
       this._conditionallyClear = true;
@@ -4056,6 +4056,10 @@ export default class Component extends Element {
 
               // Change states which won't be recalculated during redrawing
               if (this.visible !== visible) {
+                // If the logic is triggered by an event and the action sets the hidden state then the original
+                // component definition must be changed so that the components hidden state does not get flipped back by
+                // the fieldLogic function
+                this.originalComponent.hidden = !visible;
                 this.visible = visible;
               }
               if (this.disabled !== disabled) {
