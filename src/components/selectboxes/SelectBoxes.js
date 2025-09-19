@@ -192,6 +192,12 @@ export default class SelectBoxesComponent extends RadioComponent {
   }
 
   checkComponentValidity(data, dirty, rowData, options) {
+    // check if we need to skip validation before calling isValid
+    if (this.shouldSkipValidation(data, dirty, rowData)) {
+      this.setCustomValidity('');
+      return true;
+    }
+
     const minCount = this.component.validate.minSelectedCount;
     const maxCount = this.component.validate.maxSelectedCount;
     const isValid = this.isValid(data, dirty);
