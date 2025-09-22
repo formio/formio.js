@@ -10,6 +10,7 @@ import { Formio } from '../../src/Formio';
 import { comp1, comp2, comp3, comp4, comp5 } from './fixtures/textarea';
 import TextAreaComponent from '../../src/components/textarea/TextArea';
 import { fastCloneDeep } from '@formio/core';
+import { getFormioUploadAdapterPlugin } from '../../src/providers/storage/uploadAdapter';
 window.ace = require('ace-builds');
 
 describe('TextArea Component', () => {
@@ -461,6 +462,23 @@ describe('TextArea Component', () => {
             done();
           }, 300);
         }).catch(done);
+      });
+
+      it('File upload plugin should be constructor', (done) => {
+        try {
+          const fileUploadPlugin = getFormioUploadAdapterPlugin();
+          const plugin = new fileUploadPlugin({
+            plugins: {
+              get: () => ({
+                createUploadAdapter: () => {}
+              }),
+            }
+          });
+          assert.deepEqual(plugin, {});
+          done();
+        } catch (error) {
+          done(error)
+        }
       });
     });
 
