@@ -8,6 +8,7 @@ import SelectComponent from '../../src/components/select/Select';
 import { expect } from 'chai';
 import { Formio } from '../../src/Formio';
 import _ from 'lodash';
+import { wait } from '../util';
 
 import {
   comp1,
@@ -38,7 +39,8 @@ import {
   comp25,
   comp26,
   comp27,
-  comp28
+  comp28,
+  comp29
 } from './fixtures/select';
 
 global.requestAnimationFrame = cb => cb();
@@ -225,6 +227,21 @@ describe('Select Component', () => {
     component.setChoicesValue(['Cheers', 'Cyberdyne Systems', 'Massive Dynamic'], 2);
     const choices = component.element.querySelector('.choices__list--multiple').children;
     assert.equal(choices.length, 3);
+  });
+
+   it('Select component inside a conditional container should display the label instead of the value', async () => {
+    const element = document.createElement('div');
+    const {formShema, submission} = comp29;
+    const form = await Formio.createForm(element, formShema, { readOnly: true, renderMode: "html" });
+    const select = form.getComponent('brokenSelect');
+    form.setSubmission(submission);
+
+    await form.submissionReady;
+    await select.itemsLoaded;
+    await wait(300);
+    const selectedItems = [...select.element.querySelectorAll('[ref="value"] span')];
+    assert.equal(selectedItems[0].innerHTML, 'First');
+    assert.equal(selectedItems[1].innerHTML, 'Second');
   });
 
   it('Should not show selected values in dropdown when searching', async () => {

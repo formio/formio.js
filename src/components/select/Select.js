@@ -439,6 +439,11 @@ export default class SelectComponent extends ListComponent {
 
   /* eslint-disable max-statements */
   setItems(items, fromSearch) {
+    if (this.visible && this.isHtmlRenderMode() && !_.isEqual(items, this.selectItems)) {
+      this.itemsLoaded.then(() => {
+        this.redraw();
+      })
+    }
     this.selectItems = items;
     // If the items is a string, then parse as JSON.
     if (typeof items == 'string') {
