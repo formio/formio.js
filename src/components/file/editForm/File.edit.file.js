@@ -148,8 +148,7 @@ export default [
         }, 'url']
       }
     }
-  },
-  {
+  }, {
     type: 'textfield',
     input: true,
     key: 'dir',
@@ -157,29 +156,83 @@ export default [
     placeholder: '(optional) Enter a directory for the files',
     tooltip: 'This will place all the files uploaded in this field in the directory',
     weight: 20,
-    conditional: {
-      json: {
-        '!==': [{
-          var: 'data.storage'
-        }, 'googledrive']
-      }
-    }
-  },
-  {
-    type: 'textfield',
-    input: true,
-    key: 'dir',
-    label: 'Folder ID',
-    placeholder: '(optional) Enter an ID of the folder for the files',
-    tooltip: 'This will place all the files uploaded in this field in the folder',
-    weight: 20,
-    conditional: {
-      json: {
-        '===': [{
-          var: 'data.storage'
-        }, 'googledrive']
-      }
-    }
+    logic: [
+      {
+        name: 'Change To File ID',
+        trigger: {
+          type: 'simple',
+          simple: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'storage',
+                operator: 'isEqual',
+                value: 'googledrive',
+              },
+            ],
+          },
+        },
+        actions: [
+          {
+            name: 'Change placeholder',
+            type: 'property',
+            property: {
+              label: 'Placeholder',
+              value: 'placeholder',
+              type: 'string',
+            },
+            text: '(optional) Enter an ID of the folder for the files',
+          }, {
+            name: 'Change label',
+            type: 'property',
+            property: {
+              label: 'Label',
+              value: 'label',
+              type: 'string',
+            },
+            text: 'Folder ID',
+          },
+        ],
+      }, {
+        name: 'Change to Directory',
+        trigger: {
+          type: 'simple',
+          simple: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'storage',
+                operator: 'isNotEqual',
+                value: 'googledrive',
+              },
+            ],
+          },
+        },
+        actions: [
+          {
+            name: 'Change placeholder',
+            type: 'property',
+            property: {
+              label: 'Placeholder',
+              value: 'placeholder',
+              type: 'string',
+            },
+            text: '(optional) Enter a directory for the files',
+          }, {
+            name: 'Change label',
+            type: 'property',
+            property: {
+              label: 'Label',
+              value: 'label',
+              type: 'string',
+            },
+            text: 'Directory',
+          },
+        ],
+      },
+    ],
   },
   {
     type: 'textfield',
