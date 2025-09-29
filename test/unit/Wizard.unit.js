@@ -49,6 +49,7 @@ import simpleWizardWithRequiredFields from '../forms/simpleWizardWithRequiredFie
 import testRequiredFieldsInNestedWizard from '../forms/testRequiredFieldsInNestedWizard';
 import testWizardWithNestedForm from '../forms/testWizardWithNestedForm';
 import wizardWithLazyLoadSelect from '../forms/wizardWithLazyLoadSelect';
+import wizardWithBlurValidation from '../forms/wizardWithBlurValidation';
 import { wait } from '../util';
 
 // eslint-disable-next-line max-statements
@@ -61,149 +62,176 @@ describe('Wizard tests', () => {
     btn.dispatchEvent(clickEvent);
   };
 
+  const parentForm = {
+    "_id": "677d3efea934773d422a05fa",
+    "title": "Wizard parent",
+    "name": "fdAsWizardParent",
+    "path": "fdaswizardparent",
+    "type": "form",
+    "display": "wizard",
+    "components": [
+      {
+        "title": "Page 1",
+        "key": "page1",
+        "type": "panel",
+        "components": []
+      },
+      {
+        "title": "Page 2",
+        "key": "page2",
+        "type": "panel",
+        "components": [
+          {
+            "label": "Form",
+            "key": "form",
+            "type": "form",
+            "form": "677d3efea934773d422a05f3",
+            "lazyLoad": true
+          }
+        ]
+      },
+      {
+        "title": "Page 3",
+        "key": "page3",
+        "type": "panel",
+        "components": []
+      }
+    ]
+  };
 
+  const childFormOwner = {
+    "_id": "677d3efea934773d422a05f3",
+    "title": "Wizard Child Owner",
+    "name": "fdaWizardChildOwner",
+    "path": "fdawizardchildOwner",
+    "type": "form",
+    "components": [
+      {
+        "label": "Form",
+        "key": "form",
+        "type": "form",
+        "form": "677d3efea934773d422a05ec",
+        "lazyLoad": true
+      },
+      {
+        "label": "Submit",
+        "key": "submit",
+        "type": "button"
+      }
+    ]
+  };
 
-const parentForm = {
-  "_id": "677d3efea934773d422a05fa",
-  "title": "Wizard parent",
-  "name": "fdAsWizardParent",
-  "path": "fdaswizardparent",
-  "type": "form",
-  "display": "wizard",
-  "components": [
-    {
-      "title": "Page 1",
-      "key": "page1",
-      "type": "panel",
-      "components": []
-    },
-    {
-      "title": "Page 2",
-      "key": "page2",
-      "type": "panel",
-      "components": [
-        {
-          "label": "Form",
-          "key": "form",
-          "type": "form",
-          "form": "677d3efea934773d422a05f3",
-          "lazyLoad": true
+  const childForm = {
+    "_id": "677d3efea934773d422a05ec",
+    "title": "Wizard Child",
+    "name": "WizardChild",
+    "path": "wizardchild",
+    "type": "form",
+    "components": [
+      {
+        "label": "Text Field",
+        "key": "textField",
+        "type": "textfield",
+        "validate": {
+          "required": true
         }
-      ]
-    },
-    {
-      "title": "Page 3",
-      "key": "page3",
-      "type": "panel",
-      "components": []
-    }
-  ]
-};
-
-const childFormOwner = {
-  "_id": "677d3efea934773d422a05f3",
-  "title": "Wizard Child Owner",
-  "name": "fdaWizardChildOwner",
-  "path": "fdawizardchildOwner",
-  "type": "form",
-  "components": [
-    {
-      "label": "Form",
-      "key": "form",
-      "type": "form",
-      "form": "677d3efea934773d422a05ec",
-      "lazyLoad": true
-    },
-    {
-      "label": "Submit",
-      "key": "submit",
-      "type": "button"
-    }
-  ]
-};
-
-
-
-const childForm = {
-  "_id": "677d3efea934773d422a05ec",
-  "title": "Wizard Child",
-  "name": "WizardChild",
-  "path": "wizardchild",
-  "type": "form",
-  "components": [
-    {
-      "label": "Text Field",
-      "key": "textField",
-      "type": "textfield",
-      "validate": {
-        "required": true
+      },
+      {
+        "label": "Submit",
+        "key": "submit",
+        "type": "button"
       }
-    },
-    {
-      "label": "Submit",
-      "key": "submit",
-      "type": "button"
-    }
-  ]
-};
+    ]
+  };
 
-describe('Wizard Form with Nested Form validation', () => {
-  const originalMakeRequest = Formio.makeRequest;
-  let postRequestCount = 0;
+  describe('Wizard Form with Nested Form validation', () => {
+    const originalMakeRequest = Formio.makeRequest;
+    let postRequestCount = 0;
 
-  before(() => {
-    // Mock Formio.makeRequest to count POST requests and serve mock forms
-    Formio.makeRequest = (formio, type, url, method, data) => {
-      if (type === 'form' && method === 'get') {
-        if (url.includes('parentForm')) {
-          return Promise.resolve(_.cloneDeep(parentForm));
-        } else if (url.includes('677d3efea934773d422a05ec')) {
-          return Promise.resolve(_.cloneDeep(childForm));
-        } else if (url.includes('677d3efea934773d422a05f3')) {
-          return Promise.resolve(_.cloneDeep(childFormOwner));
+    before(() => {
+      // Mock Formio.makeRequest to count POST requests and serve mock forms
+      Formio.makeRequest = (formio, type, url, method, data) => {
+        if (type === 'form' && method === 'get') {
+          if (url.includes('parentForm')) {
+            return Promise.resolve(_.cloneDeep(parentForm));
+          } else if (url.includes('677d3efea934773d422a05ec')) {
+            return Promise.resolve(_.cloneDeep(childForm));
+          } else if (url.includes('677d3efea934773d422a05f3')) {
+            return Promise.resolve(_.cloneDeep(childFormOwner));
+          }
         }
-      }
-      if (type === 'submission' && ['put', 'post'].includes(method)) {
-        postRequestCount++;
-      }
-      return Promise.resolve();
-    };
+        if (type === 'submission' && ['put', 'post'].includes(method)) {
+          postRequestCount++;
+        }
+        return Promise.resolve();
+      };
+    });
+
+    after(() => {
+      // Restore the original makeRequest
+      Formio.makeRequest = originalMakeRequest;
+    });
+
+    it('Should validate wizard with nested forms with lazy load on without POST request (on client side)', async () => {
+      const formElement = document.createElement('div');
+      const wizard = await Formio.createForm(formElement, 'http://localhost:3000/idwqwhclwioyqbw/parentForm')
+        // Navigate directly to the last page, don't open page with nested form to avoid loading before submission process
+        wizard.setPage(2);
+        await(300);
+
+        // Assert we are on last
+        assert.equal(wizard.page, 2, 'Should navigate to last');
+
+        // Try to submit the form with empty data
+        try {
+          wizard.submit();
+        }
+        catch(err) {
+          // Assert validation error
+          assert(err, 'Should trigger validation error');
+          assert.equal(err.length, 1);
+          assert.equal(err[0].ruleName, 'required');
+
+          // Assert no POST requests were made
+          assert.equal(postRequestCount, 0, 'No submission POST requests should be made');
+        }
+    });
   });
 
-  after(() => {
-    // Restore the original makeRequest
-    Formio.makeRequest = originalMakeRequest;
-  });
-
-  it('Should validate wizard with nested forms with lazy load on without POST request (on client side)', async () => {
+  it('Should validate components on blur', function (done) {
     const formElement = document.createElement('div');
-    const wizard = await Formio.createForm(formElement, 'http://localhost:3000/idwqwhclwioyqbw/parentForm')
-      // Navigate directly to the last page, don't open page with nested form to avoid loading before submission process
-      wizard.setPage(2);
-      await(300);
 
-      // Assert we are on last
-      assert.equal(wizard.page, 2, 'Should navigate to last');
+    Formio.createForm(formElement, wizardWithBlurValidation)
+      .then((wizard) => {
+        setTimeout(() => {
+          const textField = wizard.getComponent('textField');
+          const tfInput = textField.refs.input[0];
+          const inputEvent = new Event('input');
+          const blurEvent = new Event('blur');
+          tfInput.value = 't';
+          tfInput.dispatchEvent(inputEvent);
 
-      // Try to submit the form with empty data
-      try {
-        wizard.submit();
-      }
-      catch(err) {
-        // Assert validation error
-        assert(err, 'Should trigger validation error');
-        assert.equal(err.length, 1);
-        assert.equal(err[0].ruleName, 'required');
+          setTimeout(() => {
+            assert.equal(wizard.errors.length, 0);
+            assert.equal(textField.errors.length, 0);
+            tfInput.dispatchEvent(blurEvent);
 
-        // Assert no POST requests were made
-        assert.equal(postRequestCount, 0, 'No submission POST requests should be made');
-      }
+            setTimeout(() => {
+              assert.equal(wizard.errors.length, 1);
+              assert.equal(textField.errors.length, 1);
+              assert.equal(textField.element.classList.contains('has-error'), true);
+              assert.equal(textField.refs.messageContainer.textContent.includes('Text Field must have at least 4 characters'), true);
+              done();
+            }, 300);
+          }, 300);
+        }, 300);
+      })
+      .catch((err) => done(err));
   });
-});
 
   it('Should show validation error for required components inside nested form on submit when the page with nested from is not visited', function (done) {
     const formElement = document.createElement('div');
-  
+
     const parentWizard = _.cloneDeep(testWizardWithNestedForm.wizard);
     const topNestedForm = _.cloneDeep(testWizardWithNestedForm.nestedFormTop);
     const childNestedForm = _.cloneDeep(testWizardWithNestedForm.nestedFormChild);
