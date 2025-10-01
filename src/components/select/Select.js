@@ -996,9 +996,13 @@ export default class SelectComponent extends ListComponent {
     if (!input) {
       return;
     }
-    this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue(null, {
-      modified: true
-    }));
+
+    if (this.component.widget !== "html5") {
+      this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue(null, {
+        modified: true
+      }));
+    }
+
     this.attachRefreshOnBlur();
 
     if (this.component.widget === 'html5') {
@@ -1021,6 +1025,16 @@ export default class SelectComponent extends ListComponent {
         if (['Backspace', 'Delete'].includes(key)) {
           this.setValue(this.emptyValue);
         }
+      });
+
+      this.addEventListener(input, 'change', (event) => {
+        let value = event.target.value;
+
+        if (this.component.multiple) {
+          value = Array.from(event.target.selectedOptions).map(opt => opt.value);
+        }
+
+        this.setValue(value, { modified: true });
       });
 
       return;
@@ -1513,6 +1527,11 @@ export default class SelectComponent extends ListComponent {
   }
 
   updateValue(value, flags) {
+    if (this.component.widget === 'html5' && this.component.multiple) {
+      if (!Array.isArray(value)) {
+        value = value != null && value !== '' ? [value] : [];
+      }
+    }
     const changed = super.updateValue(value, flags);
     if (changed || !this.selectMetadata || flags.resetValue) {
       if (this.component.multiple && Array.isArray(this.dataValue)) {
@@ -1545,6 +1564,12 @@ export default class SelectComponent extends ListComponent {
   }
 
   setValue(value, flags = {}) {
+    if (this.component.widget === 'html5' && this.component.multiple) {
+        if (!Array.isArray(value)) {
+            value = value != null && value !== '' ? [value] : [];
+        }
+    }
+
     const previousValue = this.dataValue;
     const changed = this.updateValue(value, flags);
     if (this.component.widget === 'html5' && (_.isEqual(value, previousValue) || _.isEqual(previousValue, {}) && _.isEqual(flags, {})) && !flags.fromSubmission ) {
