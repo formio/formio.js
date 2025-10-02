@@ -18,6 +18,7 @@ export default class FormComponent extends Component {
       form: '',
       path: '',
       tableView: true,
+      validateWhenHidden: false,
     }, ...extend);
   }
 
@@ -550,6 +551,9 @@ export default class FormComponent extends Component {
           this.formObj = formObj;
           if (this.options.pdf && this.component.useOriginalRevision) {
             this.formObj.display = 'form';
+          }
+          if (this.component.validateWhenHidden) {
+            this.formObj.validateWhenHidden = true;
           }
           this.subFormLoading = false;
           return formObj;

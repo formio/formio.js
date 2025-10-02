@@ -424,7 +424,8 @@ describe("Validate When Hidden behavior", function () {
       assert.equal(errors.length, 0);
     });
 
-    it('Should validate components that are children of an intentionally hidden container component if those components have the `validateWhenHidden` property', async function () {
+    it('Should not validate components that are children of an intentionally hidden container component if those' +
+      ' components have the `validateWhenHidden` property, but the container does not', async function () {
       const formWithIntentionallyHiddenContainer = {
         components: [
           {
@@ -432,6 +433,39 @@ describe("Validate When Hidden behavior", function () {
             key: 'container',
             hidden: true,
             clearOnHide: false,
+            components: [
+              {
+                type: 'textfield',
+                key: 'foo',
+                label: 'Foo',
+                validateWhenHidden: true,
+                validate: {
+                  required: true
+                }
+              }
+            ]
+          }
+        ]
+      };
+      const form = await Formio.createForm(
+        document.createElement('div'),
+        formWithIntentionallyHiddenContainer
+      );
+      assert.equal(form.getComponent('foo').visible, false, 'The textfield should be hidden');
+      const errors = form.validate();
+      assert.equal(errors.length, 0);
+    });
+
+    it('Should validate components that are children of an intentionally hidden container component if those' +
+      ' components and the container have the `validateWhenHidden` property', async function () {
+      const formWithIntentionallyHiddenContainer = {
+        components: [
+          {
+            type: 'container',
+            key: 'container',
+            hidden: true,
+            clearOnHide: false,
+            validateWhenHidden: true,
             components: [
               {
                 type: 'textfield',
@@ -491,7 +525,9 @@ describe("Validate When Hidden behavior", function () {
       assert.equal(errors.length, 0);
     });
 
-    it('Should validate components that are children of a conditionally hidden container component if those components include the `validateWhenHidden` parameter (NOTE THAT CLEAR ON HIDE MUST BE FALSE)', async function () {
+    it('Should not validate components that are children of a conditionally hidden container component if those' +
+      ' components include the `validateWhenHidden` parameter, but the container does not (NOTE THAT CLEAR ON HIDE' +
+      ' MUST BE FALSE)', async function () {
       const formWithConditionallyHiddenContainer = {
         components: [
           {
@@ -504,6 +540,47 @@ describe("Validate When Hidden behavior", function () {
             type: 'container',
             key: 'container',
             clearOnHide: false,
+            conditional: {
+              json: {
+                var: 'data.checkbox'
+              }
+            },
+            components: [
+              {
+                type: 'textfield',
+                key: 'foo',
+                label: 'Foo',
+                validateWhenHidden: true,
+                validate: {
+                  required: true
+                }
+              }
+            ]
+          }
+        ]
+      };
+      const form = await Formio.createForm(document.createElement('div'), formWithConditionallyHiddenContainer);
+      assert.equal(form.getComponent('foo').visible, false, 'The textfield should be hidden');
+      const errors = form.validate();
+      assert.equal(errors.length, 0);
+    });
+
+    it('Should validate components that are children of a conditionally hidden container component if those' +
+      ' components and the container include the `validateWhenHidden` parameter (NOTE THAT CLEAR ON HIDE' +
+      ' MUST BE FALSE)', async function () {
+      const formWithConditionallyHiddenContainer = {
+        components: [
+          {
+            type: 'checkbox',
+            key: 'checkbox',
+            label: 'Checkbox',
+            input: true
+          },
+          {
+            type: 'container',
+            key: 'container',
+            clearOnHide: false,
+            validateWhenHidden: true,
             conditional: {
               json: {
                 var: 'data.checkbox'
