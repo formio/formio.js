@@ -582,6 +582,31 @@ describe('DataGrid Component', () => {
       dataGrid.removeRow(0);
     }).catch((err) => done(err));
   });
+
+  it('Should update indexes in componentsMap when removing dataGrid row', () => {
+    return Harness.testCreate(DataGridComponent, {
+      label: 'Datagrid',
+      key: 'dataGrid',
+      type: 'datagrid',
+      input: true,
+      defaultValue: [{ }],
+      components: [
+        {
+          label: 'Number',
+          key: 'number',
+          type: 'number',
+          input: true
+        },
+      ],
+    }).then((component) => {
+      component.addRow();
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[0].number'), true);
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[1].number'), true);
+      component.removeRow(0);
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[0].number'), true);
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[1].number'), false);
+    });
+  });
 });
 
 describe('DataGrid Panels', () => {
