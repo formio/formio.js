@@ -572,7 +572,7 @@ export function getDateSetting(date) {
 
   dateSetting = null;
   try {
-    const value = Evaluator.evaluator(`return ${date};`, 'moment')(moment);
+    const value = evaluate(`value=${date};`, { moment }, 'value');
     if (typeof value === 'string') {
       dateSetting = moment(value);
     }
