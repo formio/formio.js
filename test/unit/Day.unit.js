@@ -3,6 +3,7 @@ import assert from 'power-assert';
 
 import Harness from '../harness';
 import DayComponent from '../../src/components/day/Day';
+import Components from '../../src/components/Components';
 
 import {
   comp1,
@@ -22,6 +23,11 @@ describe('Day Component', () => {
       Harness.testElements(component, 'input[type="number"]', 2);
       Harness.testElements(component, 'select', 1);
     });
+  });
+
+  it('Should build a day component directly by Components class create method', () => {
+    const {component} = Components.create(comp1);
+    assert.deepEqual(comp1, component)
   });
 
   it('Should handle blank data correctly', (done) => {
