@@ -1256,6 +1256,14 @@ export default class Webform extends NestedDataComponent {
     }
 
     /**
+     * @returns {boolean} - Whether or not the draft submission is being edited
+     */
+    isDraftEdit() {
+        return this.submitted && this.submission?.state === 'draft';
+    }
+
+
+    /**
      * Show the errors of this form within the alert dialog.
      * @param {object} error - An optional additional error to display along with the component errors.
      * @returns {*}
@@ -1273,7 +1281,10 @@ export default class Webform extends NestedDataComponent {
             errors = [errors];
         }
 
-        if (Array.isArray(this.errors)) {
+        if (Array.isArray(this.errors) 
+            // do not show components validation errors in alert for draft submission 
+            && !this.isDraftEdit()
+        ) {
             errors = _.union(errors, this.errors);
         }
 
@@ -1461,7 +1472,14 @@ export default class Webform extends NestedDataComponent {
                 this.serverErrors || [],
                 (err) => !err.component && !err.path
             );
-            this.showErrors(nonComponentServerErrors.length ? nonComponentServerErrors : errors);
+            if (this.isDraftEdit()) {
+                if (nonComponentServerErrors.length) {
+                    this.showErrors(nonComponentServerErrors);
+                }
+            }
+            else {
+                this.showErrors((nonComponentServerErrors.length) ? nonComponentServerErrors : errors);
+            }
         }
 
         // See if we need to save the draft of the form.

@@ -92,6 +92,7 @@ import formWithHiddenComponents from '../forms/formWithHiddenComponents.js';
 import formWithShowAsString from '../forms/formWithShowAsString.js';
 import formWithMergeComponentSchemaAndCustomLogic from '../forms/formWithMergeComponentSchemaAndCustomLogic.js';
 import formWithServerValidation from '../forms/formWithServerValidation.js';
+import formWithDraftState from '../forms/formWithDraftState.js';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
@@ -102,6 +103,48 @@ if (_.has(Formio, 'Components.setComponents')) {
 /* eslint-disable max-statements  */
 describe('Webform tests', function() {
   this.retries(3);
+  
+  it('Should not show validation alert after saving the form in draft state', (done) => {
+    const element = document.createElement('div');
+    const form = fastCloneDeep(formWithDraftState);
+
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function() {
+      return new Promise((res, rej) => {
+        res({
+    form: '68ca8ce2a183958d040c2cb8',
+    data: {
+      textField: '',
+      saveInState: true,
+      submit: false,
+    },
+    _id: '68d124934f683b0a7a055127',
+    state: 'draft',
+    created: '2025-09-22T10:27:31.032Z',
+    modified: '2025-09-22T10:27:31.033Z',
+  })
+      });
+    };
+
+    Formio.createForm(element, form)
+      .then(instance => {
+        instance.formio = new Formio('http://localhost:3000/test');
+        assert.equal(instance.visibleErrors.length, 0);
+        const clickEvent = new Event('click');
+        const submitBtn = instance.element.querySelector('[name="data[saveInState]"]');
+        submitBtn.dispatchEvent(clickEvent);
+
+        setTimeout(() => {
+          assert.equal(instance.submitted, true);
+          assert.equal(instance.submission.state, 'draft');
+          assert.equal(instance.visibleErrors.length, 0);
+          assert.equal(instance.alert.textContent.trim(), 'Submission Complete');
+          Formio.makeRequest = originalMakeRequest;
+          done();
+        }, 600);
+      })
+      .catch(done);
+  });
 
   it('Should show and highlight server validation errors for components inside container and datagrid', function(done) {
     Formio.createForm(document.createElement('div'), formWithServerValidation.form).then(form => {
