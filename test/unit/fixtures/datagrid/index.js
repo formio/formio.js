@@ -9,6 +9,7 @@ import comp8 from './comp8';
 import comp9 from './comp9';
 import comp10 from './comp10';
 import comp11 from './comp11';
+import comp12 from './comp12';
 import withDefValue from './comp-with-def-value';
 import withRowGroupsAndDefValue from './comp-row-groups-with-def-value';
 import modalWithRequiredFields from './comp-modal-with-required-fields';
