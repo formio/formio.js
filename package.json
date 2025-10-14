@@ -50,7 +50,7 @@
     "build-app:jekyll": "jekyll build --config _config.yml,_config.app.yml",
     "gh-pages": "rm -rf _site && npm run build && jekyll build --config _config.yml && cd _site && git init && git remote add origin git@github.com:formio/formio.js.git && git checkout -b gh-pages && git add . && git commit -m \"Deploy to GitHub Pages\" && git push origin gh-pages --force && cd ..",
     "deploy-s3": "$(node -e 'process.stdout.write(`aws s3 cp _site s3://formiojs.test-form.io/` + require(`./package.json`).version + `/ --recursive`)')",
-    "invalidate": "VERSION=$(npm run version);aws cloudfront create-invalidation --distribution-id E1MXNA5A4ZKRMZ --paths \"/$VERSION/*\"",
+    "invalidate": "VERSION=$(npm version);aws cloudfront create-invalidation --distribution-id E1MXNA5A4ZKRMZ --paths \"/$VERSION/*\"",
     "release": "npm run build-app && npm run deploy-s3",
     "tag": "VERSION=$(npm version);git add -A; git commit -m \"Build $Version\";git push origin master;git tag v$VERSION;git push origin --tags;",
     "dopublish": "npm run build && npm run tag && npm publish",
