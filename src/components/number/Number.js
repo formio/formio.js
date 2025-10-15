@@ -107,7 +107,7 @@ export default class NumberComponent extends Input {
       // Default value may be a string or have custom thousands separators or decimal symbols, so we need to call
       // parseNumber on it
       defaultValue = this.parseNumber(defaultValue);
-      
+
       // If default value does not contain valid value that could be parsed to number, set it to null to prevent errors
       if (_.isNaN(defaultValue)) {
         defaultValue = null;
