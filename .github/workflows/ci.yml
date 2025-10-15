@@ -14,38 +14,20 @@ jobs:
       - run: echo "Triggered by ${{ github.event_name }} event."
 
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          cache-dependency-path: package-lock.json
 
-      - name: Cache node modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-
-      - name: Installing dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: install --frozen-lockfile
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Lint
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: lint
-
-      - name: dependencies
-        run: |
-          echo "Installing dependencies"
-          yarn list --depth=0
+        run: npm run lint
 
   ##################################################################
   ## Build
@@ -55,20 +37,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Restore node modules from cache
-        uses: actions/cache@v3
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Build
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build
+        run: npm run build
 
   ##################################################################
   ## Test
@@ -78,27 +60,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Restore node modules from cache
-        uses: actions/cache@v3
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Test
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: test
+        run: npm test
 
   test-target:
     needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -107,7 +89,6 @@ jobs:
           git config --global user.email "pkgbot@form.io"
           git config --global user.name "pkgbot"
           git fetch origin ${{ github.event.pull_request.base.ref }}:${{ github.event.pull_request.base.ref }}
-          git merge ${{ github.event.pull_request.base.ref }} --no-commit --no-ff
           if ! git merge --no-commit --no-ff ${{ github.event.pull_request.base.ref }}; then
             echo "Merge conflicts detected."
             git merge --abort
@@ -117,23 +98,17 @@ jobs:
           fi
 
       - name: Set up Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          cache-dependency-path: package-lock.json
 
-      - name: Restore node modules from cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Test
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: test
+        run: npm test
 
   ##################################################################
   ## Publish
@@ -144,7 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configure Git user
         run: |
@@ -156,50 +131,37 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
 
       - name: Set up Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          cache-dependency-path: package-lock.json
           registry-url: 'https://registry.npmjs.org/'
 
-      - name: Restore node modules from cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Build
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build
+        run: npm run build
 
       - name: Prepare version for publish
         id: prep
         run: |
-          # Extract the pull request number and the short SHA of the commit
-          PR_NUMBER=$(echo ${{ github.event.number }})
+          PR_NUMBER=${{ github.event.number }}
           COMMIT_SHORT_SHA=$(echo "${{ github.event.pull_request.head.sha }}" | cut -c1-7)
-
-          # Extract the current version from package.json
           CURRENT_VERSION=$(node -p "require('./package.json').version")
-
-          # If the current version includes '-rc.', remove it and everything after
-          # This step ensures that we start with a base version like '3.0.0' even if it was a release candidate
           BASE_VERSION=$(echo "$CURRENT_VERSION" | cut -d'-' -f1)
-
-          # Construct the new version string
           NEW_VERSION="${BASE_VERSION}-dev.${PR_NUMBER}.${COMMIT_SHORT_SHA}"
-
-          # Output the new version for use in subsequent GitHub Actions steps
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       - name: Echo version to Publish
         run: |
           echo "Version to publish: $NEW_VERSION"
 
-      - name: Publish to npm
+      - name: Publish to npm (tag dev)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npm version $NEW_VERSION
-          yarn publish --tag dev
+          npm version "$NEW_VERSION" --no-git-tag-version
+          # add --access public if this is a public package
+          npm publish --tag dev
