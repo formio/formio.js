@@ -58,7 +58,8 @@
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "mocha 'test/unit/*.unit.js'",
     "test:updateRenders": "npm run lib && TZ=UTC node --require jsdom-global/register test/updateRenders.js",
-    "test:e2e": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --verbose --single-run"
+    "test:e2e": "NODE_OPTIONS=\"--max-old-space-size=4096\" karma start --verbose --single-run",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
