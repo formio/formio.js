@@ -303,23 +303,10 @@ export default class WizardBuilder extends WebformBuilder {
     if (component instanceof WizardBuilder) {
       return;
     }
-    if (!window.sessionStorage) {
-      return console.warn(this.t('sessionStorageSupportError'));
-    }
-    // If pasting after the Wizard's page, check if a full Wizard page was copied and pass it to addPage method
     if (this._form.components.find(comp => _.isEqual(component.component, comp))) {
-      const data = window.sessionStorage.getItem('formio.clipboard');
-      if (data) {
-        const schema = JSON.parse(data);
-        // If the copied component is not a Wizard's page, do nothing since we can't paste outside the panel in Wizard
-        if (schema.type !== 'panel') {
-          return;
-        }
-        this.addPage(schema);
-      }
+      this.addPage(component);
     }
     else {
-      // If we are not trying to paster after the current Wizard's page, just pass it to the WebformBuilder
       return super.pasteComponent(component);
     }
   }

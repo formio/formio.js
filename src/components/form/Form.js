@@ -114,7 +114,7 @@ export default class FormComponent extends Component {
   }
 
   get dataReady() {
-    return this.subFormReady?.dataReady || this.subFormReady || Promise.resolve();
+    return this.subForm?.dataReady || this.subFormReady || Promise.resolve();
   }
 
   get defaultValue() {
