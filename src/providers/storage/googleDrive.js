@@ -60,10 +60,11 @@ function googledrive(formio) {
         xhr.send(fd);
       }));
     },
-    downloadFile(file) {
+    downloadFile(file, component) {
       const token = formio.getToken();
+      // Constructed the url with the fileId, fileName, displayImage, imageSize if applicable
       file.url =
-        `${formio.formUrl}/storage/gdrive?fileId=${file.id}&fileName=${file.originalName}${token ? `&x-jwt-token=${token}` : ''}`;
+        `${formio.formUrl}/storage/gdrive?fileId=${file.id}&fileName=${file.originalName}${token ? `&x-jwt-token=${token}` : ''}${component.image ? '&displayImage=true' : ''}${component.imageSize ? `&imageSize=${component.imageSize}` : ''}`;
       return Promise.resolve(file);
     },
     deleteFile: function deleteFile(fileInfo) {
