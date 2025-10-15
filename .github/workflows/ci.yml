@@ -1,4 +1,4 @@
-name: Build, Test, Publish
+name: Build + Test
 
 on:
   pull_request:
@@ -109,59 +109,3 @@ jobs:
 
       - name: Test
         run: npm test
-
-  ##################################################################
-  ## Publish
-  ##################################################################
-  publish:
-    needs: [setup, test-current, test-target]
-    if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-        uses: actions/checkout@v4
-
-      - name: Configure Git user
-        run: |
-          git config --global user.email "pkgbot@form.io"
-          git config --global user.name "pkgbot"
-
-      - name: Add npm token to .npmrc
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
-
-      - name: Set up Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-          registry-url: 'https://registry.npmjs.org/'
-
-      - name: Install dependencies
-        run: npm ci --no-audit --no-fund
-
-      - name: Build
-        run: npm run build
-
-      - name: Prepare version for publish
-        id: prep
-        run: |
-          PR_NUMBER=${{ github.event.number }}
-          COMMIT_SHORT_SHA=$(echo "${{ github.event.pull_request.head.sha }}" | cut -c1-7)
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          BASE_VERSION=$(echo "$CURRENT_VERSION" | cut -d'-' -f1)
-          NEW_VERSION="${BASE_VERSION}-dev.${PR_NUMBER}.${COMMIT_SHORT_SHA}"
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-
-      - name: Echo version to Publish
-        run: |
-          echo "Version to publish: $NEW_VERSION"
-
-      - name: Publish to npm (tag dev)
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          npm version "$NEW_VERSION" --no-git-tag-version
-          # add --access public if this is a public package
-          npm publish --tag dev
