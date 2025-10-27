@@ -12,7 +12,8 @@ import {
   momentDate,
   zonesLoaded,
   shouldLoadZones,
-  loadZones
+  loadZones,
+  hasEncodedTimezone,
 } from '../utils';
 import moment from 'moment';
 import _ from 'lodash';
@@ -360,6 +361,10 @@ export default class CalendarWidget extends InputWidget {
       return super.setValue(value);
     }
 
+    // If the component is a textfield that does not have timezone information included in the string value then skip
+    // the timezone offset
+    this.settings.skipOffset = this.component.type === 'textfield' && !hasEncodedTimezone(value);
+
     const zonesLoading = this.loadZones();
     if (value) {
       if (!saveAsText && this.settings.readOnly && !zonesLoading) {
@@ -431,7 +436,7 @@ export default class CalendarWidget extends InputWidget {
         this.settings.currentValue = event.target.value;
       }
     });
-    
+
     // Move input attributes to altInput.
     const labelledbyIds = this.calendar.input.getAttribute('aria-labelledby');
     const isRequired = this.calendar.input.getAttribute('aria-required');
@@ -541,7 +546,7 @@ export default class CalendarWidget extends InputWidget {
     return (date, format) => {
       // Only format this if this is the altFormat and the form is readOnly.
       if (this.settings.readOnly && (format === this.settings.altFormat)) {
-        if (!this.settings.enableTime || this.loadZones()) {
+        if (!this.settings.enableTime || this.loadZones() || this.settings.skipOffset) {
           return Flatpickr.formatDate(date, format);
         }
 

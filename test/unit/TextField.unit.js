@@ -3,6 +3,8 @@ import _ from 'lodash';
 import Harness from '../harness';
 import TextFieldComponent from '../../src/components/textfield/TextField';
 import { Formio } from '../../src/Formio';
+import moment from 'moment';
+import momentTimezones from '../momentTizezones.json';
 import 'flatpickr';
 
 import {
@@ -13,7 +15,8 @@ import {
   comp6,
   withDisplayAndInputMasks,
   comp7,
-  requiredFieldLogicComp
+  requiredFieldLogicComp,
+  comp8,
 } from './fixtures/textfield';
 
 import { comp10 as formWithCalendarTextField } from './fixtures/datetime';
@@ -1498,6 +1501,40 @@ describe('TextField Component', () => {
         done();
       }, 300);
     }).catch(done);
+  });
+
+  it('should not add timezone offset if it does not contain timezone offset information', () => {
+    return Formio.createForm(document.createElement('div'), comp8, {readOnly: true}).then((form) => {
+      return form.setSubmission({
+        data: {
+          textFieldCalendar: '2025-05-20T12:00:00'
+        },
+        metadata: {
+          timezone: "Europe/Berlin",
+        }
+      }).then(() => {
+        const textFieldComponent = form.getComponent('textFieldCalendar');
+        assert.equal(textFieldComponent.element.querySelector('.form-control.form-control.input').value, '2025-05-20 12:00');
+      });
+    });
+  });
+
+  it('should add timezone offset if it does contain timezone offset information', () => {
+    return Formio.createForm(document.createElement('div'), comp8, {readOnly: true}).then((form) => {
+      moment.tz.load(momentTimezones);
+      moment.zonesLoaded = true;
+      return form.setSubmission({
+        data: {
+          textFieldCalendar: '2025-05-20T12:00:00+02:00'
+        },
+        metadata: {
+          timezone: "Europe/Berlin",
+        }
+      }).then(() => {
+        const textFieldComponent = form.getComponent('textFieldCalendar');
+        assert.equal(textFieldComponent.element.querySelector('.form-control.form-control.input').value, '2025-05-20 12:00 CEST');
+      });
+    });
   });
 
   describe('TextFields with `multiple` attribute', () => {

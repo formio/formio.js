@@ -1728,3 +1728,18 @@ export const interpolateErrors = (component, errors, interpolateFn) => {
     return { ...error, message: unescapeHTML(interpolateFn(toInterpolate, context)), context: { ...context } };
   });
 };
+
+/**
+ * Checks if a string has timezone information encoded in it
+ * Example: 2024-01-01T00:00:00Z -> true
+ * Example: 2024-01-01T00:00:00+03:00 -> true
+ * Example: 2011-05-03T00:00:00 -> false
+ * @param {string} value the string value to check
+ * @returns {boolean} if value has encoded timezone
+ */
+export function hasEncodedTimezone(value){
+  if (typeof value !== 'string'){
+    return false;
+  }
+  return (value.substring(value.length - 1) === 'z' || value.substring(value.length - 1) === 'Z' || value.match(/[+|-][0-9]{2}:[0-9]{2}$/));
+}
