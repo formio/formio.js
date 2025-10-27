@@ -468,41 +468,6 @@ describe('DateTime Component', () => {
     }).catch(done);
   });
 
-  it('Should not allow inputting the date if it is out of min/max date range', (done) => {
-    const form = _.cloneDeep(comp3);
-    const element = document.createElement('div');
-    form.components[0].datePicker.minDate = '2021-04-04T12:00:00';
-    form.components[0].datePicker.maxDate = '2021-04-18T12:00:00';
-
-    Formio.createForm(element, form).then(form => {
-      const dateTime = form.getComponent('dateTime');
-      const input = dateTime.element.querySelector('.input');
-
-      const blurEvent = new Event('blur');
-      input.value = '2020-04-03';
-      input.dispatchEvent(blurEvent);
-
-      setTimeout(() => {
-        const input = dateTime.element.querySelector('.input');
-        assert.equal(input.value, '');
-        assert.equal(dateTime.dataValue, '');
-
-        const blurEvent = new Event('blur');
-        input.value = '2022-04-13';
-        input.dispatchEvent(blurEvent);
-
-        setTimeout(() => {
-          const input = dateTime.element.querySelector('.input');
-          assert.equal(input.value, '');
-          assert.equal(dateTime.dataValue, '');
-
-          document.innerHTML = '';
-          done();
-        }, 300);
-      }, 300);
-    }).catch(done);
-  });
-
   it('Should set hour and minutes step', (done) => {
     const form = _.cloneDeep(comp3);
     const element = document.createElement('div');
@@ -536,24 +501,6 @@ describe('DateTime Component', () => {
         const input = dateTime.element.querySelector('.input');
         assert.equal(input.value, '2020-04-03 22:11');
         assert.equal(dateTime.dataValue.startsWith('2020-04-03T22:11:00'), true);
-
-        document.innerHTML = '';
-        done();
-      }, 300);
-    }).catch(done);
-  });
-
-  it('Should not set value if it does not meet minDate validation', (done) => {
-    const form = _.cloneDeep(comp5);
-    const element = document.createElement('div');
-
-    Formio.createForm(element, form).then(form => {
-      const dateTime = form.getComponent('dateTime');
-      dateTime.setValue('2021-05-01T09:00:00');
-
-      setTimeout(() => {
-        const input = dateTime.element.querySelector('.input');
-        assert.equal(input.value, '');
 
         document.innerHTML = '';
         done();
@@ -798,63 +745,63 @@ describe('DateTime Component', () => {
     const dateTimeComponent = form.getComponent('dateTime');
     assert.equal(dateTimeComponent.widget.settings.readOnly, true);
   });
-  
+
   it('Should attach changeHandler when disableFunction is present', (done) => {
       const form = _.cloneDeep(comp3);
       const element = document.createElement('div');
       form.components[0].datePicker.disableFunction = 'date.getDay() === 2';
-  
+
       Formio.createForm(element, form).then(form => {
         const dateTime = form.getComponent('dateTime');
-  
+
         setTimeout(() => {
           const widget = dateTime.element.querySelector('.flatpickr-input').widget;
           assert.equal(typeof widget.changeHandler, 'function', 'changeHandler should be a function');
-  
+
           document.innerHTML = '';
           done();
         }, 300);
       }).catch(done);
     });
-  
+
     it('Should not attach changeHandler when disableFunction is not present', (done) => {
       const form = _.cloneDeep(comp3);
       const element = document.createElement('div');
-  
+
       Formio.createForm(element, form).then(form => {
         const dateTime = form.getComponent('dateTime');
-  
+
         setTimeout(() => {
           const widget = dateTime.element.querySelector('.flatpickr-input').widget;
           assert.equal(widget.changeHandler, undefined, 'changeHandler should not be attached when disableFunction is not set');
-  
+
           document.innerHTML = '';
           done();
         }, 300);
       }).catch(done);
     });
-  
+
     it('Should remove changeHandler on component destroy', (done) => {
       const form = _.cloneDeep(comp3);
       const element = document.createElement('div');
       form.components[0].datePicker.disableFunction = 'date.getDay() === 2';
-  
+
       Formio.createForm(element, form).then(form => {
         const dateTime = form.getComponent('dateTime');
-  
+
         setTimeout(() => {
           const widget = dateTime.element.querySelector('.flatpickr-input').widget;
-  
+
           assert.notEqual(widget.changeHandler, undefined, 'ChangeHandler should be attached');
-  
+
           const originalHandler = widget.changeHandler;
           const rootOffSpy = sinon.spy(widget.componentInstance.root, 'off');
-  
+
           widget.destroy();
-  
+
           assert.equal(rootOffSpy.calledWith('change', originalHandler), true, 'Form should be called with original changeHandler');
           assert.equal(widget.changeHandler, null, 'ChangeHandler should be null after destroy');
-  
+
           rootOffSpy.restore();
           document.innerHTML = '';
           done();
@@ -876,6 +823,95 @@ describe('DateTime Component', () => {
 
       document.innerHTML = '';
       done();
+    }).catch(done);
+  });
+
+  it('Should allow to input date outside min/max dates range, but show validation message', (done) => {
+    const form = _.cloneDeep(comp14);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      form.setPristine(false);
+      const dateTime = form.getComponent('dateTime');
+      const dateTime1 = form.getComponent('dateTime1');
+      const blurEvent = new Event('blur');
+
+      const value = '9999-11-12';
+      const value1 = '2025-09-30 09:00 AM';
+      const expectedValue = '9999-11-12';
+      const expectedValue1 = '2025-09-30T09:00:00';
+      const input = dateTime.element.querySelector('.input');
+      const input1 = dateTime1.element.querySelector('.input');
+      input.value = value;
+      input1.value = value1;
+      input.dispatchEvent(blurEvent);
+      input1.dispatchEvent(blurEvent);
+
+      setTimeout(() => {
+        assert.equal(input.value, value);
+        assert.equal(input1.value, value1);
+        assert.equal(dateTime1.dataValue.startsWith(expectedValue1), true);
+        assert.equal(dateTime.dataValue.startsWith(expectedValue), true);
+        assert.equal(dateTime.errors.length, 1);
+        assert.equal(dateTime1.errors.length, 1);
+
+        document.innerHTML = '';
+        done();
+      }, 300);
+    }).catch(done);
+  });
+
+  it('Should not trigger validation for min/max dates entered manually', (done) => {
+    const form = _.cloneDeep(comp14);
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form).then(form => {
+      form.setPristine(false);
+      const dateTime = form.getComponent('dateTime');
+      const dateTime1 = form.getComponent('dateTime1');
+      const blurEvent = new Event('blur');
+
+      const value = '2025-07-01';
+      const value1 = '2025-10-01 12:00 PM';
+      const expectedValue = '2025-07-01';
+      const expectedValue1 = '2025-10-01T12:00:00';
+      const input = dateTime.element.querySelector('.input');
+      const input1 = dateTime1.element.querySelector('.input');
+      input.value = value;
+      input1.value = value1;
+      input.dispatchEvent(blurEvent);
+      input1.dispatchEvent(blurEvent);
+
+      setTimeout(() => {
+        assert.equal(input.value, value);
+        assert.equal(input1.value, value1);
+        assert.equal(dateTime1.dataValue.startsWith(expectedValue1), true);
+        assert.equal(dateTime.dataValue.startsWith(expectedValue), true);
+        assert.equal(dateTime.errors.length, 0);
+        assert.equal(dateTime1.errors.length, 0);
+
+        const maxValue = '2025-07-31';
+        const maxValue1 = '2025-10-31 12:00 PM';
+        const expectedMaxValue = '2025-07-31';
+        const expectedMaxValue1 = '2025-10-31T12:00:00';
+        input.value = maxValue;
+        input1.value = maxValue1;
+        input.dispatchEvent(blurEvent);
+        input1.dispatchEvent(blurEvent);
+
+        setTimeout(() => {
+          console.log(dateTime1.dataValue, dateTime1.getValue());
+          console.log(dateTime.dataValue, dateTime.getValue());
+          assert.equal(input.value, maxValue);
+          assert.equal(input1.value, maxValue1);
+          assert.equal(dateTime1.dataValue.startsWith(expectedMaxValue1), true);
+          assert.equal(dateTime.dataValue.startsWith(expectedMaxValue), true);
+          assert.equal(dateTime.errors.length, 0);
+          assert.equal(dateTime1.errors.length, 0);
+          document.innerHTML = '';
+          done();
+        }, 300);
+      }, 300);
     }).catch(done);
   });
 

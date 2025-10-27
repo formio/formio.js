@@ -111,6 +111,10 @@ export default class CalendarWidget extends InputWidget {
 
     this.settings.minDate = isReadOnly ? null : getDateSetting(this.settings.minDate);
     this.settings.maxDate = isReadOnly ? null : getDateSetting(this.settings.maxDate);
+
+    if (this.settings.maxDate || this.settings.minDate) {
+      this.settings.allowInvalidPreload = true;
+    }
     this.settings.disable = this.disabledDates;
     this.settings.disableWeekends ? this.settings.disable.push(this.disableWeekends) : '';
     this.settings.disableWeekdays ? this.settings.disable.push(this.disableWeekdays) : '';
