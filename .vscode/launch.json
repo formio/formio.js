@@ -10,13 +10,8 @@
         "name": "Mocha Tests",
         "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
         "args": [
-          "-b",
-          "-t",
-          "0",
-          "--colors",
-          "${workspaceFolder}/test/**/*.unit.js",
-          "-t",
-          "30000"
+          "--config",
+          "${workspaceFolder}/.mocharc.json"
         ],
         "internalConsoleOptions": "openOnSessionStart",
         "skipFiles": [
@@ -43,7 +38,7 @@
         "type": "node",
         "request": "launch",
         "name": "Mocha: current file",
-        "program": "${workspaceFolder}/node_modules/.bin/mocha",
+        "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
         "args": ["-b", "-t", "0", "'${file}'"],
         "console": "integratedTerminal",
       },

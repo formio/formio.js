@@ -2,13 +2,7 @@ import _ from 'lodash';
 
 import Webform from './Webform';
 import { Formio } from './Formio';
-import {
-  fastCloneDeep,
-  checkCondition,
-  firstNonNil,
-  uniqueKey,
-  eachComponent,
-} from './utils';
+import { fastCloneDeep, checkCondition, firstNonNil, uniqueKey, eachComponent } from './utils';
 
 export default class Wizard extends Webform {
   /**
@@ -22,10 +16,10 @@ export default class Wizard extends Webform {
   constructor(elementOrOptions = undefined, _options = undefined) {
     let element, options;
     if (elementOrOptions instanceof HTMLElement || _options) {
-        element = elementOrOptions;
-        options = _options || {};
+      element = elementOrOptions;
+      options = _options || {};
     } else {
-        options = elementOrOptions || {};
+      options = elementOrOptions || {};
     }
 
     options.display = 'wizard';
@@ -38,7 +32,9 @@ export default class Wizard extends Webform {
     this.page = 0;
     this.currentPanel = null;
     this.currentNextPage = 0;
-    this._seenPages = [0];
+    this._seenPages = [
+      0,
+    ];
     this.subWizards = [];
     this.allPages = [];
     this.lastPromise = Promise.resolve();
@@ -60,8 +56,9 @@ export default class Wizard extends Webform {
   getPages(args = {}) {
     const { all = false } = args;
     const pages = this.hasSubWizards ? this.components : this.pages;
-    const filteredPages = pages
-      .filter(all ? _.identity : (p, index) => this._seenPages.includes(index));
+    const filteredPages = pages.filter(
+      all ? _.identity : (p, index) => this._seenPages.includes(index),
+    );
 
     return filteredPages;
   }
@@ -92,9 +89,7 @@ export default class Wizard extends Webform {
   }
 
   getComponents() {
-    return this.submitting
-      ? this.getPages({ all: this.isLastPage() })
-      : super.getComponents();
+    return this.submitting ? this.getPages({ all: this.isLastPage() }) : super.getComponents();
   }
 
   resetValue() {
@@ -108,11 +103,11 @@ export default class Wizard extends Webform {
       showPrevious: true,
       showNext: true,
       showSubmit: true,
-      showCancel: !this.options.readOnly
+      showCancel: !this.options.readOnly,
     });
 
     this.options.breadcrumbSettings = _.defaults(this.options.breadcrumbSettings, {
-      clickable: true
+      clickable: true,
     });
     this.options.allowPrevious = this.options.allowPrevious || false;
 
@@ -125,7 +120,9 @@ export default class Wizard extends Webform {
     }
 
     this.on('subWizardsUpdated', (subForm) => {
-      const subWizard = this.subWizards.find(subWizard => subForm?.id && subWizard.subForm?.id === subForm?.id);
+      const subWizard = this.subWizards.find(
+        (subWizard) => subForm?.id && subWizard.subForm?.id === subForm?.id,
+      );
 
       if (this.subWizards.length && subWizard) {
         subWizard.subForm.setValue(subForm._submission, {}, true);
@@ -152,10 +149,10 @@ export default class Wizard extends Webform {
   get buttons() {
     const buttons = {};
     [
-      { name: 'cancel',    method: 'cancel' },
-      { name: 'previous',  method: 'prevPage' },
-      { name: 'next',      method: 'nextPage' },
-      { name: 'submit',    method: 'submit' }
+      { name: 'cancel', method: 'cancel' },
+      { name: 'previous', method: 'prevPage' },
+      { name: 'next', method: 'nextPage' },
+      { name: 'submit', method: 'submit' },
     ].forEach((button) => {
       if (this.hasButton(button.name)) {
         buttons[button.name] = button;
@@ -169,9 +166,11 @@ export default class Wizard extends Webform {
       'cancel',
       'previous',
       'next',
-      'submit'
+      'submit',
     ];
-    return this.options.properties?.wizardButtonOrder?.toLowerCase().split(', ') ?? defaultButtonOrder;
+    return (
+      this.options.properties?.wizardButtonOrder?.toLowerCase().split(', ') ?? defaultButtonOrder
+    );
   }
 
   get renderContext() {
@@ -180,7 +179,9 @@ export default class Wizard extends Webform {
       wizardKey: this.wizardKey,
       isBreadcrumbClickable: this.isBreadcrumbClickable(),
       isSubForm: !!this.parent && !this.root?.component?.type === 'wizard',
-      panels: this.allPages.length ? this.allPages.map(page => page.component) : this.pages.map(page => page.component),
+      panels: this.allPages.length
+        ? this.allPages.map((page) => page.component)
+        : this.pages.map((page) => page.component),
       buttons: this.buttons,
       currentPage: this.page,
       buttonOrder: this.buttonOrder,
@@ -192,8 +193,12 @@ export default class Wizard extends Webform {
 
     if (currentPanel && currentPanel.buttonSettings) {
       Object.keys(currentPanel.buttonSettings).forEach(() => {
-        Object.keys(ctx.buttons).forEach(key => {
-          if (typeof currentPanel.buttonSettings[key] !== 'undefined' && !currentPanel.buttonSettings[key] || ctx.isSubForm) {
+        Object.keys(ctx.buttons).forEach((key) => {
+          if (
+            (typeof currentPanel.buttonSettings[key] !== 'undefined' &&
+              !currentPanel.buttonSettings[key]) ||
+            ctx.isSubForm
+          ) {
             ctx.buttons[key] = null;
           }
         });
@@ -204,7 +209,8 @@ export default class Wizard extends Webform {
   }
 
   prepareHeaderSettings(ctx, headerType) {
-    const shouldHideBreadcrumbs = this.currentPanel?.breadcrumb === 'none' ||
+    const shouldHideBreadcrumbs =
+      this.currentPanel?.breadcrumb === 'none' ||
       _.get(this.form, 'settings.wizardBreadcrumbsType', '') === 'none';
     if (shouldHideBreadcrumbs || ctx.isSubForm) {
       return null;
@@ -216,7 +222,7 @@ export default class Wizard extends Webform {
     const ctx = this.renderContext;
 
     if (this.component.id) {
-      ctx.panels.forEach(panel => {
+      ctx.panels.forEach((panel) => {
         if (panel.id === this.component.id) {
           this.currentPanel = panel;
           ctx.wizardPageTooltip = this.getFormattedTooltip(panel.tooltip);
@@ -227,22 +233,26 @@ export default class Wizard extends Webform {
     const wizardNav = this.prepareNavigationSettings(ctx);
 
     const wizardHeaderType = `wizardHeader${_.get(this.form, 'settings.wizardHeaderType', '')}`;
-    const wizardHeaderLocation =  _.get(this.form, 'settings.wizardHeaderLocation', 'left');
+    const wizardHeaderLocation = _.get(this.form, 'settings.wizardHeaderLocation', 'left');
     const wizardHeader = this.prepareHeaderSettings(ctx, wizardHeaderType);
 
-    return this.renderTemplate('wizard', {
-      ...ctx,
-      className: super.getClassName(),
-      wizardHeader,
-      wizardHeaderType,
-      wizardHeaderLocation,
-      wizardNav,
-      components: this.renderComponents([
-        ...this.prefixComps,
-        ...this.currentPage.components,
-        ...this.suffixComps
-      ]),
-    }, this.builderMode ? 'builder' : 'form');
+    return this.renderTemplate(
+      'wizard',
+      {
+        ...ctx,
+        className: super.getClassName(),
+        wizardHeader,
+        wizardHeaderType,
+        wizardHeaderLocation,
+        wizardNav,
+        components: this.renderComponents([
+          ...this.prefixComps,
+          ...this.currentPage.components,
+          ...this.suffixComps,
+        ]),
+      },
+      this.builderMode ? 'builder' : 'form',
+    );
   }
 
   redrawNavigation() {
@@ -268,11 +278,14 @@ export default class Wizard extends Webform {
       let headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
       if (headerElement) {
         this.detachHeader();
-        headerElement.outerHTML = this.renderTemplate(`wizardHeader${_.get(this.form, 'settings.wizardHeaderType', '')}`, this.renderContext);
+        headerElement.outerHTML = this.renderTemplate(
+          `wizardHeader${_.get(this.form, 'settings.wizardHeaderType', '')}`,
+          this.renderContext,
+        );
         headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
         this.loadRefs(headerElement, {
           [`${this.wizardKey}-link`]: 'multiple',
-          [`${this.wizardKey}-tooltip`]: 'multiple'
+          [`${this.wizardKey}-tooltip`]: 'multiple',
         });
         this.attachHeader();
       }
@@ -296,7 +309,7 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-next`]: 'single',
       [`${this.wizardKey}-submit`]: 'single',
       [`${this.wizardKey}-link`]: 'multiple',
-      [`${this.wizardKey}-tooltip`]: 'multiple'
+      [`${this.wizardKey}-tooltip`]: 'multiple',
     });
     if ((this.options.readOnly || this.editMode) && !this.enabledIndex) {
       this.enabledIndex = this.pages?.length - 1;
@@ -327,15 +340,14 @@ export default class Wizard extends Webform {
 
     if ('scrollIntoView' in pageTop) {
       pageTop.scrollIntoView(true);
-    }
-    else {
+    } else {
       this.scrollIntoView(pageTop);
     }
   }
 
   isBreadcrumbClickable() {
     let currentPage = null;
-    this.pages.map(page => {
+    this.pages.map((page) => {
       if (_.isEqual(this.currentPage.component, page.component)) {
         currentPage = page;
       }
@@ -354,7 +366,7 @@ export default class Wizard extends Webform {
 
   isAllowPrevious() {
     let currentPage = null;
-    this.pages.map(page => {
+    this.pages.map((page) => {
       if (_.isEqual(this.currentPage.component, page.component)) {
         currentPage = page;
       }
@@ -408,17 +420,18 @@ export default class Wizard extends Webform {
         this.setLoading(buttonElement, true);
 
         // Call the button method, then re-enable the button.
-        this[button.method]().then(() => {
-          buttonElement.removeAttribute('disabled');
-          this.setLoading(buttonElement, false);
-        }).catch(() => {
-          buttonElement.removeAttribute('disabled');
-          this.setLoading(buttonElement, false);
-        });
+        this[button.method]()
+          .then(() => {
+            buttonElement.removeAttribute('disabled');
+            this.setLoading(buttonElement, false);
+          })
+          .catch(() => {
+            buttonElement.removeAttribute('disabled');
+            this.setLoading(buttonElement, false);
+          });
       });
     });
   }
-
 
   /**
    * Emits an event indicating that a wizard page has been selected.
@@ -477,30 +490,50 @@ export default class Wizard extends Webform {
     // Get all components including all nested components and line up in the correct order
     const getAllComponents = (nestedComp, compsArr, pushAllowed = true) => {
       const nestedPages = [];
-      const dataArrayComponents = ['datagrid', 'editgrid', 'dynamicWizard'];
-      const currentComponents = nestedComp?.subForm ? this.getSortedComponents(nestedComp.subForm) : nestedComp?.components || [];
-      const visibleComponents = currentComponents.filter(comp => comp._visible);
-      const filteredComponents = visibleComponents.filter(comp => !dataArrayComponents.includes(comp.component.type) && (comp.type !== 'form' || comp.isNestedWizard));
-      const additionalComponents = currentComponents.filter(comp => comp.subForm?._form.display !== 'wizard');
+      const dataArrayComponents = [
+        'datagrid',
+        'editgrid',
+        'dynamicWizard',
+      ];
+      const currentComponents = nestedComp?.subForm
+        ? this.getSortedComponents(nestedComp.subForm)
+        : nestedComp?.components || [];
+      const visibleComponents = currentComponents.filter((comp) => comp._visible);
+      const filteredComponents = visibleComponents.filter(
+        (comp) =>
+          !dataArrayComponents.includes(comp.component.type) &&
+          (comp.type !== 'form' || comp.isNestedWizard),
+      );
+      const additionalComponents = currentComponents.filter(
+        (comp) => comp.subForm?._form.display !== 'wizard',
+      );
       let hasNested = false;
 
-      eachComponent(filteredComponents, (comp) => {
-        if (comp && comp.component) {
-          if (comp.component.type === 'panel' && comp?.parent.wizard && !getAllComponents(comp, compsArr, false)) {
-            if (pushAllowed) {
-              this.setRootPanelId(comp);
-              nestedPages.push(comp);
+      eachComponent(
+        filteredComponents,
+        (comp) => {
+          if (comp && comp.component) {
+            if (
+              comp.component.type === 'panel' &&
+              comp?.parent.wizard &&
+              !getAllComponents(comp, compsArr, false)
+            ) {
+              if (pushAllowed) {
+                this.setRootPanelId(comp);
+                nestedPages.push(comp);
+              }
+              hasNested = true;
             }
-            hasNested = true;
-          }
-          if (comp.isNestedWizard && comp.subForm) {
-            const hasNestedForm = getAllComponents(comp, nestedPages, pushAllowed);
-            if (!hasNested) {
-              hasNested = hasNestedForm;
+            if (comp.isNestedWizard && comp.subForm) {
+              const hasNestedForm = getAllComponents(comp, nestedPages, pushAllowed);
+              if (!hasNested) {
+                hasNested = hasNestedForm;
+              }
             }
           }
-        }
-      }, true);
+        },
+        true,
+      );
 
       if (nestedComp.component.type === 'panel') {
         if (!hasNested && pushAllowed) {
@@ -539,12 +572,13 @@ export default class Wizard extends Webform {
     this.allPages = allComponents;
   }
 
-  getSortedComponents({ components, originalComponents }) { // sorts components if they were shuffled after the conditional logic
+  getSortedComponents({ components, originalComponents }) {
+    // sorts components if they were shuffled after the conditional logic
     const currentComponents = [];
     const currentPages = [];
 
     if (components && components.length) {
-      components.map(page => {
+      components.map((page) => {
         if (page.component.type === 'panel') {
           currentPages[page.component.key || page.component.title] = page;
         }
@@ -583,11 +617,11 @@ export default class Wizard extends Webform {
     const visible = [];
     const currentPages = {};
     const pageOptions = {
-      ...(_.clone(this.options)),
+      ..._.clone(this.options),
       ...(this.parent ? { root: this } : {}),
     };
     if (this.components && this.components.length) {
-      this.components.forEach(page => {
+      this.components.forEach((page) => {
         if (page.component.type === 'panel') {
           currentPages[page.component.key || page.component.title] = page;
         }
@@ -610,8 +644,7 @@ export default class Wizard extends Webform {
 
           if (forceShow) {
             isVisible = true;
-          }
-          else if (forceHide) {
+          } else if (forceHide) {
             isVisible = false;
           }
 
@@ -627,15 +660,13 @@ export default class Wizard extends Webform {
             page.visible = isVisible;
             this.pages.push(page);
             page.eachComponent((component) => {
-              component.page = (this.pages.length - 1);
+              component.page = this.pages.length - 1;
             });
           }
-        }
-        else if (item.type !== 'button') {
+        } else if (item.type !== 'button') {
           if (!this.pages.length) {
             this.prefixComps.push(this.createComponent(item, pageOptions));
-          }
-          else {
+          } else {
             this.suffixComps.push(this.createComponent(item, pageOptions));
           }
         }
@@ -679,7 +710,7 @@ export default class Wizard extends Webform {
         const pageFromPages = this.pages[num];
         const pageFromComponents = this.components[num];
         if (!pageFromComponents || pageFromPages?.id !== pageFromComponents.id) {
-          parentNum = this.components.findIndex(comp => {
+          parentNum = this.components.findIndex((comp) => {
             return comp.id === this.pages?.[parentNum]?.rootPanelId;
           });
         }
@@ -690,13 +721,14 @@ export default class Wizard extends Webform {
       return this.redraw().then(() => {
         this.checkData(this.submission.data);
         this.triggerCaptcha(this.currentPage.components);
-        const errors = this.submitted ? this.validate(this.localData, { dirty: true }) : this.validateCurrentPage();
+        const errors = this.submitted
+          ? this.validate(this.localData, { dirty: true })
+          : this.validateCurrentPage();
         if (this.alert) {
           this.showErrors(errors, true, true);
         }
       });
-    }
-    else if (!this.pages.length) {
+    } else if (!this.pages.length) {
       this.redraw();
       return Promise.resolve();
     }
@@ -715,7 +747,9 @@ export default class Wizard extends Webform {
   }
 
   get currentPage() {
-    return (this.pages && (this.pages.length >= this.page)) ? this.pages[this.page] : { components: [] };
+    return this.pages && this.pages.length >= this.page
+      ? this.pages[this.page]
+      : { components: [] };
   }
 
   getNextPage() {
@@ -724,14 +758,18 @@ export default class Wizard extends Webform {
       const form = this.pages[this.page].component;
       // Check conditional nextPage
       if (form) {
-        const page = this.pages.length > (this.page + 1) && !this.showAllErrors ? this.page + 1 : -1;
+        const page = this.pages.length > this.page + 1 && !this.showAllErrors ? this.page + 1 : -1;
         if (form.nextPage) {
-          const next = this.evaluate(form.nextPage, {
-            next: page,
-            data,
-            page,
-            form
-          }, 'next');
+          const next = this.evaluate(
+            form.nextPage,
+            {
+              next: page,
+              data,
+              page,
+              form,
+            },
+            'next',
+          );
           if (next === null) {
             this.currentNextPage = null;
             return null;
@@ -762,13 +800,15 @@ export default class Wizard extends Webform {
   }
 
   beforeSubmit() {
-    const pages = this.getPages({all: true});
+    const pages = this.getPages({ all: true });
 
-    return Promise.all(pages.map((page) => {
-      this.triggerButtonCaptcha(page);
-      page.options.beforeSubmit = true;
-      return page.beforeSubmit();
-    }));
+    return Promise.all(
+      pages.map((page) => {
+        this.triggerButtonCaptcha(page);
+        page.options.beforeSubmit = true;
+        return page.beforeSubmit();
+      }),
+    );
   }
 
   beforePage(next) {
@@ -782,8 +822,7 @@ export default class Wizard extends Webform {
         const form = this.currentPage;
         if (form) {
           form.beforePage(next).then(resolve).catch(reject);
-        }
-        else {
+        } else {
           resolve();
         }
       });
@@ -806,7 +845,9 @@ export default class Wizard extends Webform {
 
     // Validate the form before going to the next page
     const currentPageErrors = this.validateCurrentPage({ dirty: true });
-    const errors = this.submitted ? this.validate(this.localData, { dirty: true }) : currentPageErrors;
+    const errors = this.submitted
+      ? this.validate(this.localData, { dirty: true })
+      : currentPageErrors;
     // allow going to the next page if the current page is valid, even if there are form level errors
     if (currentPageErrors.length === 0) {
       this.checkData(this.submission.data);
@@ -820,8 +861,7 @@ export default class Wizard extends Webform {
           this.emitNextPage();
         });
       });
-    }
-    else {
+    } else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
       this.scrollIntoView(this.element, true);
       return Promise.reject(this.showErrors(errors, true));
@@ -834,7 +874,11 @@ export default class Wizard extends Webform {
     if (this.currentPage?.parent) {
       return this.currentPage?.parent.validateComponents(components, this.root.data, flags);
     }
-    return this.currentPage?.validateComponents(components, this.root ? this.root.data : this.data, flags);
+    return this.currentPage?.validateComponents(
+      components,
+      this.root ? this.root.data : this.data,
+      flags,
+    );
   }
 
   emitPrevPage() {
@@ -888,16 +932,15 @@ export default class Wizard extends Webform {
     this.originalComponents = [];
     this.component.components.map((item) => {
       if (item.type === 'panel') {
-        item.key = uniqueKey(pageKeys, (item.key || 'panel'));
+        item.key = uniqueKey(pageKeys, item.key || 'panel');
         pageKeys[item.key] = true;
 
         if (this.wizard.full) {
           this.options.show = this.options.show || {};
           this.options.show[item.key] = true;
-        }
-        else if (
-          Object.prototype.hasOwnProperty.call(this.wizard, 'full')
-          && !_.isEqual(this.originalOptions.show, this.options.show)
+        } else if (
+          Object.prototype.hasOwnProperty.call(this.wizard, 'full') &&
+          !_.isEqual(this.originalOptions.show, this.options.show)
         ) {
           this.options.show = { ...(this.originalOptions.show || {}) };
         }
@@ -911,9 +954,11 @@ export default class Wizard extends Webform {
         title: 'Page 1',
         label: 'Page 1',
         key: 'page1',
-        components: this.component.components
+        components: this.component.components,
       };
-      this.component.components = [newPage];
+      this.component.components = [
+        newPage,
+      ];
       this.originalComponents.push(_.clone(newPage));
     }
   }
@@ -927,7 +972,8 @@ export default class Wizard extends Webform {
   }
 
   onSetForm(clonedForm, initialForm) {
-    this.component.components = (this.parent ? initialForm.components : clonedForm.components) || [];
+    this.component.components =
+      (this.parent ? initialForm.components : clonedForm.components) || [];
     this.setComponentSchema();
   }
 
@@ -967,10 +1013,13 @@ export default class Wizard extends Webform {
   }
 
   isClickable(page, index) {
-    return this.page !== index && firstNonNil([
-      _.get(page, 'breadcrumbClickable'),
-      this.options.breadcrumbSettings.clickable
-    ]);
+    return (
+      this.page !== index &&
+      firstNonNil([
+        _.get(page, 'breadcrumbClickable'),
+        this.options.breadcrumbSettings.clickable,
+      ])
+    );
   }
 
   hasButton(name, nextPage = this.getNextPage()) {
@@ -979,18 +1028,22 @@ export default class Wizard extends Webform {
       previous = this.options.buttonSettings.showPrevious,
       cancel = this.options.buttonSettings.showCancel,
       submit = this.options.buttonSettings.showSubmit,
-      next = this.options.buttonSettings.showNext
+      next = this.options.buttonSettings.showNext,
     } = _.get(this.currentPage, 'component.buttonSettings', {});
 
     switch (name) {
       case 'previous':
-        return previous && (this.getPreviousPage() > -1);
+        return previous && this.getPreviousPage() > -1;
       case 'next':
-        return next && (nextPage !== null) && (nextPage !== -1);
+        return next && nextPage !== null && nextPage !== -1;
       case 'cancel':
         return cancel && !this.options.readOnly;
       case 'submit':
-        return submit && !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
+        return (
+          submit &&
+          !this.options.readOnly &&
+          (nextPage === null || this.page === this.pages.length - 1)
+        );
       default:
         return true;
     }
@@ -1000,14 +1053,9 @@ export default class Wizard extends Webform {
     if (page.key) {
       // Some panels have the same key....
       return `${page.key}-${page.title}`;
-    }
-    else if (
-      page.components &&
-      page.components.length > 0
-    ) {
+    } else if (page.components && page.components.length > 0) {
       return this.pageId(page.components[0]);
-    }
-    else {
+    } else {
       return page.title;
     }
   }
@@ -1032,8 +1080,12 @@ export default class Wizard extends Webform {
     const currentNextPage = this.currentNextPage;
     const panelsUpdated = !_.isEqual(newPanels, currentPanels);
 
-    if (this.currentPanel?.id && this.pages.length && (!this.hasSubWizards || (this.hasSubWizards && panelsUpdated))) {
-      const newIndex = this.pages.findIndex(page => page.id === this.currentPanel.id);
+    if (
+      this.currentPanel?.id &&
+      this.pages.length &&
+      (!this.hasSubWizards || (this.hasSubWizards && panelsUpdated))
+    ) {
+      const newIndex = this.pages.findIndex((page) => page.id === this.currentPanel.id);
       if (newIndex !== -1) this.setPage(newIndex);
     }
     if (panelsUpdated || (flags && flags.fromSubmission)) {
@@ -1061,13 +1113,12 @@ export default class Wizard extends Webform {
       return true;
     }
 
-    const components = !currentPageOnly || this.isLastPage()
-      ? this.getComponents()
-      : this.currentPage.components;
+    const components =
+      !currentPageOnly || this.isLastPage() ? this.getComponents() : this.currentPage.components;
 
     return components.reduce(
       (check, comp) => comp.checkValidity(data, dirty, row, currentPageOnly, childErrors) && check,
-      true
+      true,
     );
   }
 
@@ -1082,7 +1133,7 @@ export default class Wizard extends Webform {
       while (!(topPanel.parent instanceof Wizard)) {
         topPanel = topPanel.parent;
       }
-      const pageIndex = this.pages.findIndex(page => page.id === topPanel.id);
+      const pageIndex = this.pages.findIndex((page) => page.id === topPanel.id);
       if (pageIndex >= 0) {
         const page = this.pages[pageIndex];
         if (page && page !== this.currentPage) {
@@ -1100,12 +1151,14 @@ export default class Wizard extends Webform {
 
     let captchaComponent;
 
-    page.eachComponent((component)=> {
-      if (/^(re)?captcha$/.test(component.component.type) &&
+    page.eachComponent((component) => {
+      if (
+        /^(re)?captcha$/.test(component.component.type) &&
         component.component.eventType === 'buttonClick' &&
-        component.component.buttonKey === 'submit') {
-          captchaComponent = component;
-        }
+        component.component.buttonKey === 'submit'
+      ) {
+        captchaComponent = component;
+      }
     });
 
     if (captchaComponent) {

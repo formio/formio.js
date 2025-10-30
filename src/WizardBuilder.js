@@ -10,8 +10,7 @@ export default class WizardBuilder extends WebformBuilder {
     if (arguments[0] instanceof HTMLElement || arguments[1]) {
       element = arguments[0];
       options = arguments[1];
-    }
-    else {
+    } else {
       options = arguments[0];
     }
     // Reset skipInit in case PDFBuilder has set it.
@@ -32,10 +31,10 @@ export default class WizardBuilder extends WebformBuilder {
     for (const group in this.groups) {
       if (this.groups[group] && this.groups[group].components) {
         this.groups[group].componentOrder = Object.keys(this.groups[group].components)
-          .map(key => this.groups[group].components[key])
-          .filter(component => component && !component.ignore)
+          .map((key) => this.groups[group].components[key])
+          .filter((component) => component && !component.ignore)
           .sort((a, b) => a.weight - b.weight)
-          .map(component => component.key);
+          .map((component) => component.key);
       }
     }
 
@@ -43,8 +42,7 @@ export default class WizardBuilder extends WebformBuilder {
     this.options.hooks.renderComponents = (html, { components, self }) => {
       if (self.type === 'form' && !self.root) {
         return html;
-      }
-      else {
+      } else {
         return originalRenderComponentsHook(html, { components, self });
       }
     };
@@ -59,25 +57,29 @@ export default class WizardBuilder extends WebformBuilder {
     };
 
     // Wizard pages don't replace themselves in the right array. Do that here.
-    this.on('saveComponent', (component, originalComponent) => {
-      const webformComponents = this.webform.components.map(({ component }) => component);
-      if (this._form.components.includes(originalComponent)) {
-        this._form.components[this._form.components.indexOf(originalComponent)] = component;
-        this.rebuild();
-      }
-      else if (webformComponents.includes(originalComponent)) {
-        this._form.components.push(component);
-        this.rebuild();
-      }
-      else {
-        // Fallback to look for panel based on key.
-        const formComponentIndex = this._form.components.findIndex((comp) => originalComponent.key === comp.key);
-        if (formComponentIndex !== -1) {
-          this._form.components[formComponentIndex] = component;
+    this.on(
+      'saveComponent',
+      (component, originalComponent) => {
+        const webformComponents = this.webform.components.map(({ component }) => component);
+        if (this._form.components.includes(originalComponent)) {
+          this._form.components[this._form.components.indexOf(originalComponent)] = component;
           this.rebuild();
+        } else if (webformComponents.includes(originalComponent)) {
+          this._form.components.push(component);
+          this.rebuild();
+        } else {
+          // Fallback to look for panel based on key.
+          const formComponentIndex = this._form.components.findIndex(
+            (comp) => originalComponent.key === comp.key,
+          );
+          if (formComponentIndex !== -1) {
+            this._form.components[formComponentIndex] = component;
+            this.rebuild();
+          }
         }
-      }
-    }, true);
+      },
+      true,
+    );
   }
 
   removeComponent(component, parent, original) {
@@ -94,7 +96,9 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   allowDrop(element) {
-    return (this.webform && this.webform.refs && this.webform.refs.webform === element) ? false : true;
+    return this.webform && this.webform.refs && this.webform.refs.webform === element
+      ? false
+      : true;
   }
 
   get pages() {
@@ -103,7 +107,7 @@ export default class WizardBuilder extends WebformBuilder {
 
   get currentPage() {
     const pages = this.pages;
-    return (pages && (pages.length >= this.page)) ? pages[this.page] : null;
+    return pages && pages.length >= this.page ? pages[this.page] : null;
   }
 
   setForm(value) {
@@ -114,11 +118,13 @@ export default class WizardBuilder extends WebformBuilder {
 
     if (this.pages.length === 0) {
       const components = this._form.components.filter((component) => component.type !== 'button');
-      this._form.components = [this.getPageConfig(1, components)];
-    }
-    else {
-      const components = this._form.components
-        .filter((component) => component.type !== 'button' || component.action !== 'submit');
+      this._form.components = [
+        this.getPageConfig(1, components),
+      ];
+    } else {
+      const components = this._form.components.filter(
+        (component) => component.type !== 'button' || component.action !== 'submit',
+      );
       this._form.components = components;
     }
     this.rebuild();
@@ -145,17 +151,21 @@ export default class WizardBuilder extends WebformBuilder {
         scrollEnabled: this.sideBarScroll,
         groupOrder: this.groupOrder,
         groupId: `builder-sidebar-${this.id}`,
-        groups: this.groupOrder.map((groupKey) => this.renderTemplate('builderSidebarGroup', {
-          group: this.groups[groupKey],
-          groupKey,
-          groupId: `builder-sidebar-${this.id}`,
-          subgroups: this.groups[groupKey].subgroups.map((group) => this.renderTemplate('builderSidebarGroup', {
-            group,
-            groupKey: group.key,
-            groupId: `group-container-${groupKey}`,
-            subgroups: []
-          })),
-        })),
+        groups: this.groupOrder.map((groupKey) =>
+          this.renderTemplate('builderSidebarGroup', {
+            group: this.groups[groupKey],
+            groupKey,
+            groupId: `builder-sidebar-${this.id}`,
+            subgroups: this.groups[groupKey].subgroups.map((group) =>
+              this.renderTemplate('builderSidebarGroup', {
+                group,
+                groupKey: group.key,
+                groupId: `group-container-${groupKey}`,
+                subgroups: [],
+              }),
+            ),
+          }),
+        ),
       }),
       pages: this.pages,
       form: this.webform.render(),
@@ -173,14 +183,18 @@ export default class WizardBuilder extends WebformBuilder {
     });
 
     if (this.dragulaLib) {
-      this.navigationDragula = this.dragulaLib([this.element.querySelector('.wizard-pages')], {
-        moves: (el) => (!el.classList.contains('wizard-add-page')),
-        accepts: (el, target, source, sibling) => (sibling ? true : false),
-      })
-        .on('drop', this.onReorder.bind(this));
+      this.navigationDragula = this.dragulaLib(
+        [
+          this.element.querySelector('.wizard-pages'),
+        ],
+        {
+          moves: (el) => !el.classList.contains('wizard-add-page'),
+          accepts: (el, target, source, sibling) => (sibling ? true : false),
+        },
+      ).on('drop', this.onReorder.bind(this));
     }
 
-    this.refs.addPage.forEach(link => {
+    this.refs.addPage.forEach((link) => {
       this.addEventListener(link, 'click', (event) => {
         event.preventDefault();
         this.addPage();
@@ -208,17 +222,25 @@ export default class WizardBuilder extends WebformBuilder {
 
   rebuild() {
     const page = this.currentPage;
-    this.webform.setForm({
-      display: 'form',
-      type: 'form',
-      components: page ? [page] : [],
-      controller: this._form?.controller || ''
-    }, { keepAsReference: true });
+    this.webform.setForm(
+      {
+        display: 'form',
+        type: 'form',
+        components: page
+          ? [
+              page,
+            ]
+          : [],
+        controller: this._form?.controller || '',
+      },
+      { keepAsReference: true },
+    );
     return this.redraw();
   }
 
   addPage(page) {
-    const newPage = page && page.schema ? fastCloneDeep(page.schema) : this.getPageConfig(this.pages.length + 1);
+    const newPage =
+      page && page.schema ? fastCloneDeep(page.schema) : this.getPageConfig(this.pages.length + 1);
 
     BuilderUtils.uniquify(this._form.components, newPage);
     this._form.components.push(newPage);
@@ -228,9 +250,9 @@ export default class WizardBuilder extends WebformBuilder {
       newPage,
       this._form,
       'components',
-      (this._form.components.length - 1),
+      this._form.components.length - 1,
       true,
-      newPage
+      newPage,
     );
 
     this.emit('change', this._form);
@@ -246,12 +268,10 @@ export default class WizardBuilder extends WebformBuilder {
       if (pageIndex === 0) {
         this._form.components.push(this.getPageConfig(1));
         return this.rebuild();
-      }
-      else {
+      } else {
         return this.setPage(pageIndex - 1);
       }
-    }
-    else {
+    } else {
       return this.rebuild();
     }
   }
@@ -265,7 +285,7 @@ export default class WizardBuilder extends WebformBuilder {
     }
     const oldPosition = element.dragInfo.index;
     //should drop at next sibling position; no next sibling means drop to last position
-    const newPosition = (sibling && sibling.dragInfo ? sibling.dragInfo.index : this.pages.length);
+    const newPosition = sibling && sibling.dragInfo ? sibling.dragInfo.index : this.pages.length;
     const movedBelow = newPosition > oldPosition;
     const formComponents = fastCloneDeep(this._form.components);
     const draggedRowData = this._form.components[oldPosition];
@@ -277,7 +297,7 @@ export default class WizardBuilder extends WebformBuilder {
     this._form.components = fastCloneDeep(formComponents);
 
     return this.rebuild().then(() => {
-        this.emit('change', this._form);
+      this.emit('change', this._form);
     });
   }
 
@@ -303,10 +323,9 @@ export default class WizardBuilder extends WebformBuilder {
     if (component instanceof WizardBuilder) {
       return;
     }
-    if (this._form.components.find(comp => _.isEqual(component.component, comp))) {
+    if (this._form.components.find((comp) => _.isEqual(component.component, comp))) {
       this.addPage(component);
-    }
-    else {
+    } else {
       return super.pasteComponent(component);
     }
   }
