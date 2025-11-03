@@ -3792,7 +3792,7 @@ export default class Component extends Element {
    * @returns {boolean} - TRUE if the component is valid.
    */
   checkComponentValidity(data = null, dirty = false, row = null, flags = {}, allErrors = []) {
-    data = data || this.rootValue;
+    data = this.rootValue;
     row = row || this.data;
     flags.dirty = dirty || false;
     if (flags.async) {
