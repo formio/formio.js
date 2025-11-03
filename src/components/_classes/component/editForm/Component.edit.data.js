@@ -1,5 +1,5 @@
 import EditFormUtils from './utils';
-/* eslint-disable max-len */
+
 export default [
   {
     weight: 0,
@@ -7,7 +7,7 @@ export default [
     label: 'Multiple Values',
     tooltip: 'Allows multiple values to be entered for this field.',
     key: 'multiple',
-    input: true
+    input: true,
   },
   {
     type: 'textfield',
@@ -15,8 +15,9 @@ export default [
     key: 'defaultValue',
     weight: 5,
     placeholder: 'Default Value',
-    tooltip: 'The Default Value will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
-    input: true
+    tooltip:
+      'The Default Value will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
+    input: true,
   },
   {
     weight: 30,
@@ -31,7 +32,7 @@ export default [
       { label: 'None', value: false },
       { label: 'Server', value: true },
       { label: 'Client', value: 'client-only' },
-    ]
+    ],
   },
   {
     weight: 150,
@@ -39,7 +40,7 @@ export default [
     label: 'Protected',
     tooltip: 'A protected field will not be returned when queried via API.',
     key: 'protected',
-    input: true
+    input: true,
   },
   {
     type: 'checkbox',
@@ -47,13 +48,15 @@ export default [
     weight: 200,
     key: 'dbIndex',
     label: 'Database Index',
-    tooltip: 'Set this field as an index within the database. Increases performance for submission queries.'
+    tooltip:
+      'Set this field as an index within the database. Increases performance for submission queries.',
   },
   {
     weight: 400,
     type: 'checkbox',
     label: 'Encrypted',
-    tooltip: 'Encrypt this field on the server. This is two way encryption which is not suitable for passwords.',
+    tooltip:
+      'Encrypt this field on the server. This is two way encryption which is not suitable for passwords.',
     key: 'encrypted',
     input: true,
     logic: [
@@ -61,7 +64,7 @@ export default [
         name: 'disabled',
         trigger: {
           type: 'javascript',
-          javascript: 'result = !instance.root.options.sac;'
+          javascript: 'result = !instance.root.options.sac;',
         },
         actions: [
           {
@@ -70,17 +73,17 @@ export default [
             property: {
               label: 'Disabled',
               value: 'disabled',
-              type: 'boolean'
+              type: 'boolean',
             },
-            state: true
-          }
-        ]
+            state: true,
+          },
+        ],
       },
       {
         name: 'disabledToolTip',
         trigger: {
           type: 'javascript',
-          javascript: 'result = !instance.root.options.sac;'
+          javascript: 'result = !instance.root.options.sac;',
         },
         actions: [
           {
@@ -89,13 +92,13 @@ export default [
             property: {
               label: 'Tooltip',
               value: 'tooltip',
-              type: 'string'
+              type: 'string',
             },
-            text: 'Only available with Security Module. Contact sales@form.io for more information.'
-          }
-        ]
-      }
-    ]
+            text: 'Only available with Security Module. Contact sales@form.io for more information.',
+          },
+        ],
+      },
+    ],
   },
   {
     type: 'select',
@@ -103,26 +106,34 @@ export default [
     key: 'redrawOn',
     label: 'Redraw On',
     weight: 600,
-    tooltip: 'Redraw this component if another component changes. This is useful if interpolating parts of the component like the label.',
+    tooltip:
+      'Redraw this component if another component changes. This is useful if interpolating parts of the component like the label.',
     dataSrc: 'custom',
     valueProperty: 'value',
     data: {
       custom(context) {
         var values = [];
         values.push({ label: 'Any Change', value: 'data' });
-        context.utils.eachComponent(context.instance.options.editForm.components, function(component, path) {
-          if (component.key !== context.data.key) {
-            values.push({
-              label: component.label || component.key,
-              value: path
-            });
-          }
-        });
+        context.utils.eachComponent(
+          context.instance.options.editForm.components,
+          function (component, path) {
+            if (component.key !== context.data.key) {
+              values.push({
+                label: component.label || component.key,
+                value: path,
+              });
+            }
+          },
+        );
         return values;
-      }
+      },
     },
     conditional: {
-      json: { '!' : [{ var: 'data.dataSrc' }] },
+      json: {
+        '!': [
+          { var: 'data.dataSrc' },
+        ],
+      },
     },
   },
   {
@@ -132,16 +143,24 @@ export default [
     key: 'clearOnHide',
     defaultValue: true,
     tooltip: 'When a field is conditionally hidden, omit the value from the submission data.',
-    input: true
+    input: true,
   },
-  EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 'customDefaultValue', 1000,
+  EditFormUtils.javaScriptValue(
+    'Custom Default Value',
+    'customDefaultValue',
+    'customDefaultValue',
+    1000,
     '<p><h4>Example:</h4><pre>value = data.firstName + " " + data.lastName;</pre></p>',
-    '<p><h4>Example:</h4><pre>{"cat": [{"var": "data.firstName"}, " ", {"var": "data.lastName"}]}</pre>'
+    '<p><h4>Example:</h4><pre>{"cat": [{"var": "data.firstName"}, " ", {"var": "data.lastName"}]}</pre>',
   ),
-  EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 'calculateValue', 1100,
+  EditFormUtils.javaScriptValue(
+    'Calculated Value',
+    'calculateValue',
+    'calculateValue',
+    1100,
     '<p><h4>Example:</h4><pre>value = data.a + data.b + data.c;</pre></p>',
     '<p><h4>Example:</h4><pre>{"+": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a href="https://help.form.io/userguide/form-building/logic-and-conditions#calculated-values" target="_blank" rel="noopener noreferrer">Click here for an example</a></p>',
-'<tr><th>token</th><td>The decoded JWT token for the authenticated user.</td></tr>'
+    '<tr><th>token</th><td>The decoded JWT token for the authenticated user.</td></tr>',
   ),
   {
     type: 'checkbox',
@@ -149,7 +168,8 @@ export default [
     weight: 1100,
     key: 'calculateServer',
     label: 'Calculate Value on server',
-    tooltip: 'Checking this will run the calculation on the server. This is useful if you wish to override the values submitted with the calculations performed on the server.'
+    tooltip:
+      'Checking this will run the calculation on the server. This is useful if you wish to override the values submitted with the calculations performed on the server.',
   },
   {
     type: 'checkbox',
@@ -157,7 +177,18 @@ export default [
     weight: 1200,
     key: 'allowCalculateOverride',
     label: 'Allow Manual Override of Calculated Value',
-    tooltip: 'When checked, this will allow the user to manually override the calculated value.'
+    tooltip: 'When checked, this will allow the user to manually override the calculated value.',
   },
+  {
+    type: 'textarea',
+    as: 'json',
+    editor: 'ace',
+    weight: 1400,
+    input: true,
+    key: 'serverOverride',
+    label: 'Server Override',
+    tooltip: 'A JSON object containing the component settings that should be overriden when the form submission is processed on the server side.',
+    defaultValue: {},
+    description: '<b>Example</b>: { "clearOnHide": true }',
+  }
 ];
-/* eslint-enable max-len */

@@ -195,6 +195,7 @@ export default class Component extends Element {
         properties: {},
         allowMultipleMasks: false,
         addons: [],
+        serverOverride: {},
       },
       ...sources,
     );
