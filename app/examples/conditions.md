@@ -4,6 +4,7 @@ layout: vtabs
 section: examples
 weight: 200
 ---
+
 You can use [JSON Logic](http://jsonlogic.com) to create complex conditionals and validation criteria.
 
 <div class="row">
@@ -350,4 +351,3 @@ Formio.createForm(document.getElementById('formio'), {
   </div>
   </div>
 </div>
-

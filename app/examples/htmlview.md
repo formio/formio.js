@@ -4,21 +4,29 @@ layout: vtabs
 section: examples
 weight: 12
 ---
+
 Not only can you view a submission as a disabled filled out webform, but you can also provide the **renderMode** option, to view
 the submission as a HTML view.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css" />
 <script src="https://cdn.form.io/js/formio.embed.js"></script>
 <div id="formio"></div>
 ```
 
 ```js
-Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/wizard/submission/5a542c9e2a40bf0001e0f8a9', {
-  readOnly: true,
-  renderMode: 'html'
-});
+Formio.createForm(
+  document.getElementById('formio'),
+  'https://examples.form.io/wizard/submission/5a542c9e2a40bf0001e0f8a9',
+  {
+    readOnly: true,
+    renderMode: 'html',
+  },
+);
 ```
 
 <h3>Result</h3>
@@ -37,13 +45,13 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/w
 
 ```js
 var formio = new Formio('https://examples.form.io/wizard/submission/5a542c9e2a40bf0001e0f8a9');
-formio.loadForm().then(function(form) {
+formio.loadForm().then(function (form) {
   form.display = 'form';
   Formio.createForm(document.getElementById('formio-full'), form, {
     readOnly: true,
-    renderMode: 'html'
-  }).then(function(instance) {
-    formio.loadSubmission().then(function(submission) {
+    renderMode: 'html',
+  }).then(function (instance) {
+    formio.loadSubmission().then(function (submission) {
       instance.submission = submission;
     });
   });
