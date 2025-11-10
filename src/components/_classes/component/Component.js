@@ -4303,7 +4303,7 @@ export default class Component extends Element {
       lang: this.options.language,
     };
 
-    if (this.component.placeholder) {
+    if (this.component.placeholder && !this.options?.readOnly) {
       attributes.placeholder = this.t(this.component.placeholder, { _userInput: true });
     }
 
