@@ -93,6 +93,7 @@ import formWithMergeComponentSchemaAndCustomLogic from '../forms/formWithMergeCo
 import formWithServerValidation from '../forms/formWithServerValidation';
 import formWithDraftState from '../forms/formWithDraftState';
 import Conditions from '../forms/conditions';
+import formWithHiddenSubform from '../forms/formWithHiddenSubform';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
@@ -102,6 +103,56 @@ if (_.has(Formio, 'Components.setComponents')) {
 
 describe('Webform tests', function () {
   this.retries(3);
+    it('Should not submit subform if it is hidden and clearOnHide is enabled', function (done) {
+    const element = document.createElement('div');
+    const form = fastCloneDeep(formWithHiddenSubform);
+
+    const originalMakeRequest = Formio.makeRequest;
+    let submissionRequestCount = 0;
+    Formio.makeRequest = function (a, b, c, d, e) {
+      if (b === 'submission' && d === 'post') {
+        ++submissionRequestCount;
+      }
+      return Promise.resolve(e);
+    };
+
+    Formio.createForm(element, form)
+      .then((instance) => {
+        instance.formio = new Formio('http://localhost:3000/test');
+        instance.submit().then(() => {
+          assert.equal(submissionRequestCount, 1);
+        });
+        Formio.makeRequest = originalMakeRequest;
+        done();
+      })
+      .catch(done);
+  });
+
+  it('Should submit subform if it is hidden and clearOnHide is not enabled', function (done) {
+    const element = document.createElement('div');
+    const form = fastCloneDeep(formWithHiddenSubform);
+    form.components[1].clearOnHide = false;
+
+    const originalMakeRequest = Formio.makeRequest;
+    let submissionRequestCount = 0;
+    Formio.makeRequest = function (a, b, c, d, e) {
+      if (b === 'submission' && d === 'post') {
+        ++submissionRequestCount;
+      }
+      return Promise.resolve(e);
+    };
+
+    Formio.createForm(element, form)
+      .then((instance) => {
+        instance.formio = new Formio('http://localhost:3000/test');
+        instance.submit().then(() => {
+          assert.equal(submissionRequestCount, 2);
+        });
+        Formio.makeRequest = originalMakeRequest;
+        done();
+      })
+      .catch(done);
+  });
 
   it('Should not show validation alert after saving the form in draft state', function (done) {
     const element = document.createElement('div');
