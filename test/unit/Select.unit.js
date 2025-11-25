@@ -39,6 +39,7 @@ import {
   comp28,
   comp29,
   comp30,
+  comp31,
 } from './fixtures/select/index';
 
 globalThis.requestAnimationFrame = (cb) => cb();
@@ -1475,6 +1476,80 @@ describe('Select Component', function () {
     });
 
     assert.equal(select.dataValue, value);
+  });
+
+  it('Should update select component submission value when corresponding resource submission is edited', async () => {
+    const restoreDebounce = mockDebounce(0);
+    let requestCount = 0;
+    const restoreMakeRequest = mockMakeRequest((formio, type, url) => new Promise((resolve) => {
+      requestCount++;
+
+      let values = [{ 
+        _id: '68de72fde765715fe4ebcbf6',
+        data: { textField: 'test 1' } 
+      }];
+      
+      if (requestCount > 1) {
+        values = [{ 
+          _id: '68de72fde765715fe4ebcbf6',
+          data: { textField: 'test 1 updated' } 
+        }];
+      }
+      
+      resolve(values);
+    }));
+
+    const element = document.createElement('div');
+    const form = await Formio.createForm(element, _.cloneDeep(comp31));
+    const select = form.getComponent('selectResource');
+    form.setSubmission({
+      metadata: {
+        selectData: {
+          selectResource: {
+            data: {
+              textField: "test 1",
+            },
+          },
+        },
+      },
+      data: {
+        selectResource: {
+            _id: "68de72fde765715fe4ebcbf6",
+            form: "68de72f4e765715fe4ebcafb",
+            data: {
+                textField: "test 1",
+                submit: true
+            },
+        },
+        submit: true,
+      },
+      state: 'submitted',
+    });
+
+    await form.submissionReady;
+    await select.itemsLoaded;
+    let previewSelect = select.element.querySelector('[aria-selected="true"] span');
+    assert.equal(previewSelect.innerHTML, 'test 1');
+    
+    // Update template data to reflect the resource changes
+    select.templateData = {
+      '68de72fde765715fe4ebcbf6': {
+        data: {
+          textField: "test 1 updated"
+        }
+      }
+    };
+    select.refresh(null, { instance: select });
+    await select.itemsLoaded;
+    
+    previewSelect = select.element.querySelector('[aria-selected="true"] span');
+    assert.equal(previewSelect.innerHTML, 'test 1 updated');
+        
+    const itemTemplateResult = select.itemTemplate(select.dataValue, select.dataValue);
+    assert.equal(itemTemplateResult, '<span>test 1 updated</span>', 'itemTemplate should return the updated value from template data');
+    
+    restoreDebounce();
+    restoreMakeRequest();
   });
 
   describe('Select Component with Entire Object Value Property', function () {

@@ -295,9 +295,15 @@ export default class SelectComponent extends ListComponent {
   }
 
   selectValueAndLabel(data) {
-    const value = this.getOptionValue(
-      this.isEntireObjectDisplay() && !this.itemValue(data) ? data : this.itemValue(data),
-    );
+    let value;
+    // If the select is a resource reference, use the actual object value
+    if (this.component.reference && this.isSelectResource) {
+      value = this.getOptionValue(data);
+    } else {
+      value = this.getOptionValue(
+        this.isEntireObjectDisplay() && !this.itemValue(data) ? data : this.itemValue(data),
+      );
+    }
     return {
       value,
       label: this.itemTemplate(
@@ -343,6 +349,10 @@ export default class SelectComponent extends ListComponent {
           }
         } else {
           data = selectData;
+        }
+        // use template data for reference fields to make sure the data is updated
+        if (this.component.reference && this.templateData[templateValue]) {
+          data = this.templateData[templateValue];
         }
       }
     }

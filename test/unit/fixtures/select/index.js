@@ -28,6 +28,7 @@ import comp27 from './comp27';
 import comp28 from './comp28';
 import comp29 from './comp29';
 import comp30 from './comp30';
+import comp31 from './comp31';
 export {
   comp1,
   comp2,
@@ -58,4 +59,5 @@ export {
   comp28,
   comp29,
   comp30,
+  comp31,
 };
