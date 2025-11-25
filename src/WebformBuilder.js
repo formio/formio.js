@@ -393,7 +393,7 @@ export default class WebformBuilder extends Component {
       this.groups.resource.subgroups.push(subgroup);
     });
 
-    this.triggerRedraw();
+    this.triggerRedraw?.();
   }
 
   attachTooltip(component, title) {
@@ -842,7 +842,7 @@ export default class WebformBuilder extends Component {
     this.updateDragAndDrop();
 
     if (searchValue === '') {
-      this.triggerRedraw();
+      this.triggerRedraw?.();
     }
   }
 
@@ -2150,7 +2150,7 @@ export default class WebformBuilder extends Component {
     if (!this.groups[name]) {
       this.groups[name] = group;
       this.groupOrder.push(name);
-      this.triggerRedraw();
+      this.triggerRedraw?.();
     } else {
       this.updateBuilderGroup(name, group);
     }
@@ -2159,7 +2159,7 @@ export default class WebformBuilder extends Component {
   updateBuilderGroup(name, group) {
     if (this.groups[name]) {
       this.groups[name] = group;
-      this.triggerRedraw();
+      this.triggerRedraw?.();
     }
   }
 

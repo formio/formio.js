@@ -358,7 +358,7 @@ export default class FormComponent extends Component {
 
         if (this.subForm) {
           if (this.isNestedWizard) {
-            element = this.root.element;
+            element = this.root?.element;
           }
           return this.subForm.attach(element).then(() => {
             this.valueChanged = this.hasSetValue;
@@ -509,7 +509,7 @@ export default class FormComponent extends Component {
             this.subForm.on('change', () => {
               if (this.subForm && !this.shouldConditionallyClear()) {
                 this.dataValue = this.subForm.getValue();
-                this.triggerChange({
+                this.triggerChange?.({
                   noEmit: true,
                 });
               }
@@ -650,7 +650,8 @@ export default class FormComponent extends Component {
     return (
       this.subFormReady &&
       (!this.component.hasOwnProperty('reference') || this.component.reference) &&
-      !this.shouldConditionallyClear() && !(this.component.hidden && this.component.clearOnHide)
+      !this.shouldConditionallyClear() &&
+      !(this.component.hidden && this.component.clearOnHide)
     );
   }
 
@@ -883,7 +884,7 @@ export default class FormComponent extends Component {
       isNestedWizard ? this.rebuild() : this.redraw();
     }
     if (!value && isNestedWizard) {
-      this.root.redraw();
+      this.root?.redraw();
     }
   }
 

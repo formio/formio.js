@@ -143,7 +143,7 @@ export default class Element {
 
     const type = `${this.options.namespace}.${event}`;
 
-    this.events.listeners(type).forEach((listener) => {
+    this.events?.listeners(type).forEach((listener) => {
       // Ensure the listener is for this element
       if (!listener || listener.id !== this.id) {
         return;
@@ -154,7 +154,7 @@ export default class Element {
         return;
       }
 
-      this.events.off(type, listener);
+      this.events?.off(type, listener);
     });
   }
 
@@ -419,7 +419,7 @@ export default class Element {
           inputElement: input,
           mask,
           placeholderChar: this.placeholderChar,
-          shadowRoot: this.root ? this.root.shadowRoot : null,
+          shadowRoot: this.root ? this.root?.shadowRoot : null,
         });
       } catch (e) {
         // Don't pass error up, to prevent form rejection.

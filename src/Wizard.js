@@ -872,7 +872,7 @@ export default class Wizard extends Webform {
     const components = this.currentPage?.components.map((component) => component.component);
     // Accessing the parent ensures the right instance (whether it's the parent Wizard or a nested Wizard) performs its validation
     if (this.currentPage?.parent) {
-      return this.currentPage?.parent.validateComponents(components, this.root.data, flags);
+      return this.currentPage?.parent.validateComponents(components, this.root?.data, flags);
     }
     return this.currentPage?.validateComponents(
       components,

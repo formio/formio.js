@@ -1596,7 +1596,7 @@ export default class Component extends Element {
     const isFocused = this.root?.focusedComponent?.path === this.path;
     if (isFocused) {
       this.loadRefs(this.element, { input: 'multiple' });
-      this.focus(this.root.currentSelection?.index);
+      this.focus(this.root?.currentSelection?.index);
       this.restoreCaretPosition();
     }
   }
@@ -1617,7 +1617,7 @@ export default class Component extends Element {
       shortcut = this.component.shortcut;
     }
 
-    this.root.addShortcut(element, shortcut);
+    this.root?.addShortcut(element, shortcut);
   }
 
   /**
@@ -1636,7 +1636,7 @@ export default class Component extends Element {
       shortcut = this.component.shortcut;
     }
 
-    this.root.removeShortcut(element, shortcut);
+    this.root?.removeShortcut(element, shortcut);
   }
 
   /**
@@ -1736,7 +1736,7 @@ export default class Component extends Element {
       if (this.component.clearOnRefresh) {
         this.setValue(null);
       }
-      this.triggerRedraw();
+      this.triggerRedraw?.();
     }
   }
 
@@ -3133,7 +3133,7 @@ export default class Component extends Element {
       if (_.isArray(dataValue) && dataValue.hasOwnProperty(index)) {
         dataValue.splice(index, 1);
         this.dataValue = dataValue;
-        this.triggerChange(flags);
+        this.triggerChange?.(flags);
       }
     }
   }
@@ -3454,7 +3454,7 @@ export default class Component extends Element {
         // Reset the errors when a submission has been made and allow it to revalidate.
         this._errors = [];
       }
-      this.triggerChange(flags);
+      this.triggerChange?.(flags);
       return true;
     }
     return false;
@@ -3583,7 +3583,7 @@ export default class Component extends Element {
     this.calculatedValue = fastCloneDeep(calculatedValue);
 
     if (changed) {
-      if (!flags.noPristineChangeOnModified && this.root.initialized) {
+      if (!flags.noPristineChangeOnModified && this.root?.initialized) {
         this.pristine = false;
       }
 
@@ -3968,7 +3968,7 @@ export default class Component extends Element {
 
   addFocusBlurEvents(element) {
     this.addEventListener(element, 'focus', () => {
-      if (this.root.focusedComponent !== this) {
+      if (this.root && this.root.focusedComponent !== this) {
         if (this.root.pendingBlur) {
           this.root.pendingBlur();
         }
@@ -3976,28 +3976,30 @@ export default class Component extends Element {
         this.root.focusedComponent = this;
 
         this.emit('focus', this);
-      } else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+      } else if (this.root && this.root.focusedComponent === this && this.root.pendingBlur) {
         this.root.pendingBlur.cancel();
         this.root.pendingBlur = null;
       }
     });
     this.addEventListener(element, 'blur', () => {
-      this.root.pendingBlur = FormioUtils.delay(() => {
-        this.emit('blur', this);
-        if (this.component.validateOn === 'blur') {
-          this.root.triggerChange(
-            { fromBlur: true },
-            {
-              instance: this,
-              component: this.component,
-              value: this.dataValue,
-              flags: { fromBlur: true },
-            },
-          );
-        }
-        this.root.focusedComponent = null;
-        this.root.pendingBlur = null;
-      });
+      if (this.root) {
+        this.root.pendingBlur = FormioUtils.delay(() => {
+          this.emit('blur', this);
+          if (this.component.validateOn === 'blur') {
+            this.root.triggerChange?.(
+              { fromBlur: true },
+              {
+                instance: this,
+                component: this.component,
+                value: this.dataValue,
+                flags: { fromBlur: true },
+              },
+            );
+          }
+          this.root.focusedComponent = null;
+          this.root.pendingBlur = null;
+        });
+      }
     });
   }
 
@@ -4076,7 +4078,7 @@ export default class Component extends Element {
    * @returns {boolean|*} - TRUE if the value is hidden.
    */
   isValueHidden() {
-    if (this.component.protected && this.root.editing) {
+    if (this.component.protected && this.root?.editing) {
       return false;
     }
     if (!this.root || !this.root.hasOwnProperty('editing')) {
