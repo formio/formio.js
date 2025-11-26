@@ -1945,15 +1945,30 @@ export default class Component extends Element {
       dialogClose: 'single',
     });
 
+    // Check if an element is inside shadow dom
+    const isInShadowDOM = typeof ShadowRoot !== 'undefined' && this.element.getRootNode() instanceof ShadowRoot;
+    // if we render shadow dom inside <iframe>'s we need to get the body from the current iframe,
+    // not the general body. This is necessary to hide and show the scroll bar correctly.
+    const body = isInShadowDOM? this.element.getRootNode().host.ownerDocument.body: document.body;
+    const rootEl = isInShadowDOM? this.element.closest('.formio-form-wrapper'): document.body;
+
+    const checkModal = (method) => {
+      if (isInShadowDOM) {
+        body.style.overflow = method === 'add' ? 'hidden' : '';
+        return;
+      }
+      body.classList[method]('modal-open');
+    }
+
     dialog.refs.dialogContents.appendChild(element);
-    document.body.appendChild(dialog);
-    document.body.classList.add('modal-open');
+    rootEl.appendChild(dialog);
+    checkModal('add');
 
     dialog.close = () => {
-      document.body.classList.remove('modal-open');
+      checkModal('remove');
       dialog.dispatchEvent(new CustomEvent('close'));
     };
-    this.addEventListener(dialog, 'close', () => this.removeChildFrom(dialog, document.body));
+    this.addEventListener(dialog, 'close', () => this.removeChildFrom(dialog, rootEl));
 
     const close = (event) => {
       event.preventDefault();
