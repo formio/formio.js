@@ -264,7 +264,7 @@ export default class Webform extends NestedDataComponent {
       if (err) {
         return;
       }
-      this.rebuild();
+      this.redraw();
       this.emit('languageChanged');
     });
   }
