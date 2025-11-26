@@ -506,6 +506,21 @@ export default class AddressComponent extends ContainerComponent {
       [AddressComponent.searchInputRef]: 'multiple',
     });
 
+    // We define a container for rendering autocomplete.
+    // If isInShadowDOM=true then we render it in shadow dom otherwise in the document body.
+    const isInShadowDOM = typeof ShadowRoot !== 'undefined' && this.element.getRootNode() instanceof ShadowRoot;
+    let container;
+    if (isInShadowDOM) {
+      const shadowRoot = this.element.getRootNode();
+      container = document.createElement('div');
+      const target = shadowRoot.querySelector('.formio-form-wrapper');
+      target.appendChild(container);
+    } 
+    else {
+      container = document.createElement('div');
+      document.body.appendChild(container);
+    }
+
     this.searchInput.forEach((element, index) => {
       if (!this.builderMode && element && this.provider) {
         if (this.component.provider === 'google') {
@@ -513,6 +528,7 @@ export default class AddressComponent extends ContainerComponent {
         } else {
           autocompleter({
             input: element,
+            container,
             debounceWaitMs: 300,
             fetch: (text, update) => {
               const query = text;
