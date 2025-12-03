@@ -3052,7 +3052,7 @@ export default class Component extends Element {
   }
 
   get shouldSanitizeValue() {
-    // Sanitize value if sanitizing for thw whole content is turned off
+    // Sanitize value if sanitizing for the whole content is turned off
     return this.options?.sanitize !== false;
   }
 
@@ -3148,7 +3148,6 @@ export default class Component extends Element {
       return;
     }
     _.set(this._data, this.key, value);
-    return;
   }
 
   /**
