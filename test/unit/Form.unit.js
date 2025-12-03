@@ -645,12 +645,12 @@ describe('Test Nested Form value setting', () => {
 
     Formio.makeRequest = (formio, type, url, method, data) => {
       if (type === 'form' && method === 'get' && (url).includes('/datareadytest')) {
-        const mainForm = fastCloneDeep(nestedFormWIthContentComponent.parentForm);
+        const mainForm = fastCloneDeep(nestedFormWithContentComponent.parentForm);
         return Promise.resolve(mainForm);
       };
 
       if (type === 'form' && method === 'get' && (url).includes('/67c19d4a0b924378e690a993')) {
-        return Promise.resolve(nestedFormWIthContentComponent.childForm);
+        return Promise.resolve(nestedFormWithContentComponent.childForm);
       };
     };
     done();
