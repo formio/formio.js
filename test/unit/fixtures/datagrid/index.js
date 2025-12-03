@@ -10,6 +10,7 @@ import comp9 from './comp9';
 import comp10 from './comp10';
 import comp11 from './comp11';
 import comp12 from './comp12';
+import comp13 from './comp13';
 import withDefValue from './comp-with-def-value';
 import withRowGroupsAndDefValue from './comp-row-groups-with-def-value';
 import modalWithRequiredFields from './comp-modal-with-required-fields';
@@ -26,9 +27,31 @@ import dataGridChildForm from './fd61237Child';
 import dataGridGrandChildForm from './fd61237GrandChild';
 
 export {
-  comp1, comp2, comp3, comp4, comp5, comp6, comp7, comp8, comp9, comp10, comp11, comp12, withCollapsibleRowGroups,
-  withConditionalFieldsAndValidations, withDefValue, withLogic, withRowGroupsAndDefValue, modalWithRequiredFields,
-  withAllowCalculateOverride, twoWithAllowCalculatedOverride, withCheckboxes, withReorder,
-  wizardWithDataGridWithNestedForm, dataGridWithNestedFormWithNestedForm, dataGridChildForm, dataGridGrandChildForm
+  comp1,
+  comp2,
+  comp3,
+  comp4,
+  comp5,
+  comp6,
+  comp7,
+  comp8,
+  comp9,
+  comp10,
+  comp11,
+  comp12,
+  comp13,
+  withCollapsibleRowGroups,
+  withConditionalFieldsAndValidations,
+  withDefValue,
+  withLogic,
+  withRowGroupsAndDefValue,
+  modalWithRequiredFields,
+  withAllowCalculateOverride,
+  twoWithAllowCalculatedOverride,
+  withCheckboxes,
+  withReorder,
+  wizardWithDataGridWithNestedForm,
+  dataGridWithNestedFormWithNestedForm,
+  dataGridChildForm,
+  dataGridGrandChildForm,
 };
-

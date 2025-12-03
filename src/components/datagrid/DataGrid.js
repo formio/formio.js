@@ -640,7 +640,7 @@ export default class DataGridComponent extends NestedArrayComponent {
         if (changed.instance.root?.id && this.root?.id !== changed.instance.root.id) {
           changed.instance.root.triggerChange?.(flags, changed, modified);
         } else {
-          this.triggerChange?.({ modified });
+          this.triggerRootChange(flags, changed, modified);
         }
       };
 
