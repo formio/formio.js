@@ -48,7 +48,7 @@ export default class FormBuilder extends Form {
       return new Builders.builders[display](this.element, this.options);
     }
     else {
-      // eslint-disable-next-line new-cap
+       
       return new Builders.builders['webform'](this.element, this.options);
     }
   }

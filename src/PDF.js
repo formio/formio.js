@@ -13,13 +13,25 @@ export default class PDF extends Webform {
     super.init();
 
     // Handle an iframe submission.
-    this.on('iframe-submission', (submission) => this.setValue(submission, {
-      fromIframe: true
-    }), true);
+    this.on(
+      'iframe-submission',
+      (submission) =>
+        this.setValue(submission, {
+          fromIframe: true,
+          noDefault: true
+        }),
+      true,
+    );
 
-    this.on('iframe-change', (submission) => this.setValue(submission, {
-      fromIframe: true
-    }), true);
+    this.on(
+      'iframe-change',
+      (submission) =>
+        this.setValue(submission, {
+          fromIframe: true,
+          noDefault: true
+        }),
+      true,
+    );
 
     this.on('iframe-getIframePositions', (query) => {
       const iframe = document.getElementById(`iframe-${query.formId}`);
@@ -30,10 +42,10 @@ export default class PDF extends Webform {
           data: {
             formId: query.formId,
             iframe: {
-              top: iframeBoundingClientRect.top
+              top: iframeBoundingClientRect.top,
             },
-            scrollY: window.scrollY || window.pageYOffset
-          }
+            scrollY: window.scrollY || window.pageYOffset,
+          },
         });
       }
     });
@@ -52,13 +64,13 @@ export default class PDF extends Webform {
       label: 'Submit',
       key: 'submit',
       ref: 'button',
-      hidden: this.isSubmitButtonHidden()
+      hidden: this.isSubmitButtonHidden(),
     });
 
     return this.renderTemplate('pdf', {
       submitButton: this.submitButton.render(),
       classes: 'formio-form-pdf',
-      children: this.renderComponents()
+      children: this.renderComponents(),
     });
   }
 
@@ -101,7 +113,7 @@ export default class PDF extends Webform {
         buttonMessage: 'single',
         zoomIn: 'single',
         zoomOut: 'single',
-        iframeContainer: 'single'
+        iframeContainer: 'single',
       });
       this.submitButton.refs = { ...this.refs };
       this.submitButton.attachButton();
@@ -117,7 +129,7 @@ export default class PDF extends Webform {
         src: this.getSrc(),
         id: `iframe-${this.id}`,
         seamless: true,
-        class: 'formio-iframe'
+        class: 'formio-iframe',
       });
 
       this.iframeElement.formioContainer = this.component.components;
@@ -133,7 +145,7 @@ export default class PDF extends Webform {
       this.postMessage({ name: 'form', data: this.form });
 
       // Hide the submit button if the associated component is hidden
-      const submitButton = this.components.find(c => c.element === this.refs.button);
+      const submitButton = this.components.find((c) => c.element === this.refs.button);
       if (submitButton) {
         this.refs.button.classList.toggle('hidden', !submitButton.visible);
       }
@@ -187,7 +199,9 @@ export default class PDF extends Webform {
     }
 
     let iframeSrc = `${this._form.settings.pdf.src}.html`;
-    const params = [`id=${this.id}`];
+    const params = [
+      `id=${this.id}`,
+    ];
 
     if (this.options.showCheckboxBackground || this._form.settings.showCheckboxBackground) {
       params.push('checkboxbackground=1');
@@ -253,7 +267,11 @@ export default class PDF extends Webform {
     }
 
     this.iframeReady.then(() => {
-      if (this.iframeElement && this.iframeElement.contentWindow && !(message.name === 'form' && this.iframeFormSetUp)) {
+      if (
+        this.iframeElement &&
+        this.iframeElement.contentWindow &&
+        !(message.name === 'form' && this.iframeFormSetUp)
+      ) {
         this.iframeElement.contentWindow.postMessage(JSON.stringify(message), '*');
         this.iframeFormSetUp = message.name === 'form';
       }
@@ -299,10 +317,7 @@ export default class PDF extends Webform {
   isSubmitButtonHidden() {
     let hidden = false;
     eachComponent(this.component.components, (component) => {
-      if (
-        (component.type === 'button') &&
-        ((component.action === 'submit') || !component.action)
-      ) {
+      if (component.type === 'button' && (component.action === 'submit' || !component.action)) {
         hidden = component.hidden || false;
       }
     });
@@ -319,8 +334,7 @@ if (typeof window !== 'undefined') {
     let eventData = null;
     try {
       eventData = JSON.parse(event.data);
-    }
-    catch (err) {
+    } catch (ignoreErr) {
       eventData = null;
     }
 

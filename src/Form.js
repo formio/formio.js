@@ -4,11 +4,10 @@ import Displays from './displays';
 import templates from './templates';
 import FormioUtils from './utils';
 
-export default class Form extends Element {
-  /**
-   * Represents a JSON value.
-   * @typedef {(string | number | boolean | null | JSONArray | JSONObject)} JSON
-   */
+/**
+ * Represents a JSON value.
+ * @typedef {(string | number | boolean | null | JSONArray | JSONObject)} JSON
+ */
 
 /**
  * Represents a JSON array.
@@ -93,8 +92,14 @@ export default class Form extends Element {
  * @property {string[]} [wizardButtonOrder] - The order of the buttons (for Wizard forms).
  * @property {boolean} [showCheckboxBackground] - Show the checkbox background.
  * @property {number} [zoom] - The zoom for PDF forms.
+ * @property {boolean} [building] - Whether the form is in builder mode.
+ * @property {boolean} [inputsOnly] - Whether to render inputs only (for PDF forms).
  */
-
+/**
+ * Form class for rendering webforms, pdfs, and wizards.
+ * @property {FormOptions} options - The options for this Form instance.
+ */
+export default class Form extends Element {
   /**
    * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
    * @param {object} elementOrForm - The DOM element you wish to render this form within, or the form definition.
@@ -105,20 +110,13 @@ export default class Form extends Element {
    * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
    * form.build();
    */
-
-  /**
-   * @type {FormOptions} - the options for this Form.
-   */
-  options;
-
   constructor(elementOrForm, formOrOptions, options = {}) {
     let element, form, formOptions;
     if (elementOrForm instanceof HTMLElement) {
       element = elementOrForm;
       form = formOrOptions;
       formOptions = options;
-    }
-    else {
+    } else {
       element = null;
       form = elementOrForm;
       formOptions = formOrOptions || {};
@@ -144,8 +142,7 @@ export default class Form extends Element {
         delete this.element.component;
       }
       this.element = element;
-    }
-    else {
+    } else {
       this.element = null;
     }
     this.options = formOptions;
@@ -165,7 +162,7 @@ export default class Form extends Element {
         element.setAttribute(attr, attrs[attr]);
       }
     }
-    (children || []).forEach(child => {
+    (children || []).forEach((child) => {
       element.appendChild(this.createElement(child.tag, child.attrs, child.children));
     });
     return element;
@@ -179,23 +176,30 @@ export default class Form extends Element {
       if (this.loader) {
         return;
       }
-      this.loader = this.createElement('div', {
-        'class': 'formio-loader'
-      }, [{
-        tag: 'div',
-        attrs: {
-          class: 'loader-wrapper'
+      this.loader = this.createElement(
+        'div',
+        {
+          class: 'formio-loader',
         },
-        children: [{
-          tag: 'div',
-          attrs: {
-            class: 'loader text-center'
-          }
-        }]
-      }]);
+        [
+          {
+            tag: 'div',
+            attrs: {
+              class: 'loader-wrapper',
+            },
+            children: [
+              {
+                tag: 'div',
+                attrs: {
+                  class: 'loader text-center',
+                },
+              },
+            ],
+          },
+        ],
+      );
       this.element.appendChild(this.loader);
-    }
-    else if (this.loader) {
+    } else if (this.loader) {
       if (this.element.contains(this.loader)) {
         this.element.removeChild(this.loader);
       }
@@ -215,9 +219,7 @@ export default class Form extends Element {
     this.display = display;
     if (Displays.displays[display]) {
       return new Displays.displays[display](this.element, this.options);
-    }
-    else {
-      // eslint-disable-next-line new-cap
+    } else {
       return new Displays.displays['webform'](this.element, this.options);
     }
   }
@@ -235,21 +237,21 @@ export default class Form extends Element {
     return {
       components: [
         {
-          'label': 'HTML',
-          'tag': 'div',
-          'className': 'error error-message alert alert-danger ui red message',
-          'attrs': [
+          label: 'HTML',
+          tag: 'div',
+          className: 'error error-message alert alert-danger ui red message',
+          attrs: [
             {
-              'attr': 'role',
-              'value': 'alert'
-            }
+              attr: 'role',
+              value: 'alert',
+            },
           ],
-          'key': 'errorMessage',
-          'type': 'htmlelement',
-          'input': false,
-          'content': typeof err === 'string' ? err : err.message,
-        }
-      ]
+          key: 'errorMessage',
+          type: 'htmlelement',
+          input: false,
+          content: typeof err === 'string' ? err : err.message,
+        },
+      ],
     };
   }
 
@@ -269,7 +271,7 @@ export default class Form extends Element {
     const projectUrl = url.substring(0, index - 1);
     const urlParts = Formio.getUrlParts(projectUrl);
     // project url doesn't include subdirectories path
-    if (!urlParts || urlParts.filter(part => !!part).length < 4) {
+    if (!urlParts || urlParts.filter((part) => !!part).length < 4) {
       return options;
     }
     const baseUrl = `${urlParts[1]}${urlParts[2]}`;
@@ -286,7 +288,7 @@ export default class Form extends Element {
 
   /**
    * Sets the form to the JSON schema of a form.
-   * @param {import('@formio/core').Form} formParam - The form JSON to set this form to.
+   * @param {import('@formio/core').Form | string} formParam - The form JSON to set this form to.
    * @returns {Promise<Webform|Wizard|PDF>} - The webform instance that was created.
    */
   setForm(formParam) {
@@ -301,33 +303,42 @@ export default class Form extends Element {
           error = err;
         })
         .then((submission) => {
-          return formio.loadForm()
-          // If the form returned an error, show it instead of the form.
-            .catch(err => {
-              error = err;
-            })
-            .then((form) => {
-              // If the submission returned an error, show it instead of the form.
-              if (error) {
-                form = this.errorForm(error);
-              }
-              this.loading = false;
-              this.instance = this.instance || this.create(form.display);
-              const options = this.getFormInitOptions(formParam, form);
-              this.instance.setUrl(formParam, options);
-              this.instance.nosubmit = false;
-              this._form = this.instance.form = form;
-              if (submission) {
-                this.instance.submission = submission;
-              }
-              if (error) {
-                throw error;
-              }
-              return this.instance;
-            });
+          return (
+            formio
+              .loadForm()
+              // If the form returned an error, show it instead of the form.
+              .catch((err) => {
+                error = err;
+              })
+              .then((form) => {
+                // If the submission returned an error, show it instead of the form.
+                if (error) {
+                  form = this.errorForm(error);
+                }
+                this.loading = false;
+                this.instance = this.instance || this.create(form.display);
+
+                // If we're in builder mode, instance.setUrl is not a function, so just manually set the URL.
+                if (this.instance.setUrl) {
+                  const options = this.getFormInitOptions(formParam, form);
+                  this.instance.setUrl(formParam, options);
+                } else {
+                  this.instance.url = formParam;
+                }
+
+                this.instance.nosubmit = false;
+                this._form = this.instance.form = form;
+                if (submission) {
+                  this.instance.submission = submission;
+                }
+                if (error) {
+                  throw error;
+                }
+                return this.instance;
+              })
+          );
         });
-    }
-    else {
+    } else {
       this.instance = this.instance || this.create(formParam.display);
       this._form = this.instance.form = formParam;
       result = this.instance.ready;
@@ -364,14 +375,16 @@ export default class Form extends Element {
    * @returns {Promise<Webform|Wizard|PDF>} - The form instance that was created after changing the display.
    */
   setDisplay(display) {
-    if ((this.display === display) && this.instance) {
+    if (this.display === display && this.instance) {
       return Promise.resolve(this.instance);
     }
 
     this.form.display = display;
     this.instance.destroy();
     this.instance = this.create(display);
-    return this.setForm(this.form);
+    return this.setForm(this.form).then(() => {
+      this.instance.emit('setDisplay', this.form.display);
+    });
   }
 
   empty() {
@@ -440,14 +453,15 @@ export default class Form extends Element {
     }
 
     // Add temporary loader.
-    const template = (this.options && this.options.template) ? this.options.template : 'bootstrap';
+    const template = this.options && this.options.template ? this.options.template : 'bootstrap';
     const loader = templates[template].loader || templates.bootstrap.loader;
     this.setContent(this.element, loader.form);
 
-    return this.render().then(html => {
-      this.setContent(this.element, html);
-      return this.attach(this.element).then(() => this.instance);
-    })
+    return this.render()
+      .then((html) => {
+        this.setContent(this.element, html);
+        return this.attach(this.element).then(() => this.instance);
+      })
       .then((param) => {
         this.emit('build', param);
         return param;
@@ -458,11 +472,10 @@ export default class Form extends Element {
     if (!this.instance) {
       return Promise.reject('Form not ready. Use form.ready promise');
     }
-    return Promise.resolve(this.instance.render())
-      .then((param) => {
-        this.emit('render', param);
-        return param;
-      });
+    return Promise.resolve(this.instance.render()).then((param) => {
+      this.emit('render', param);
+      return param;
+    });
   }
 
   attach(element) {
@@ -473,11 +486,10 @@ export default class Form extends Element {
       delete this.element.component;
     }
     this.element = element;
-    return this.instance.attach(this.element)
-      .then((param) => {
-        this.emit('attach', param);
-        return param;
-      });
+    return this.instance.attach(this.element).then((param) => {
+      this.emit('attach', param);
+      return param;
+    });
   }
 
   teardown() {
@@ -501,10 +513,12 @@ Formio.embedForm = (embed) => Form.embed(embed);
  * Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
  */
 Formio.createForm = (elementOrForm, formOrOptions, options) => {
-  return (new Form(elementOrForm, formOrOptions, options)).ready;
+  return new Form(elementOrForm, formOrOptions, options).ready;
 };
 
 Formio.Form = Form;
 
+// Export a dummy for TypeScript type resolution
+const FormOptions = undefined;
 
-export {  };
+export { FormOptions };

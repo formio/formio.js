@@ -6,11 +6,14 @@ import _debounce from 'lodash/debounce';
 
 export default class ReCaptchaComponent extends Component {
   static schema(...extend) {
-    return Component.schema({
-      type: 'recaptcha',
-      key: 'recaptcha',
-      label: 'reCAPTCHA'
-    }, ...extend);
+    return Component.schema(
+      {
+        type: 'recaptcha',
+        key: 'recaptcha',
+        label: 'reCAPTCHA',
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -24,7 +27,10 @@ export default class ReCaptchaComponent extends Component {
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
-      operators: ['isEmpty', 'isNotEmpty'],
+      operators: [
+        'isEmpty',
+        'isNotEmpty',
+      ],
     };
   }
 
@@ -36,8 +42,7 @@ export default class ReCaptchaComponent extends Component {
     this.recaptchaResult = null;
     if (this.builderMode) {
       return super.render('reCAPTCHA');
-    }
-    else {
+    } else {
       return super.render('', true);
     }
   }
@@ -46,14 +51,17 @@ export default class ReCaptchaComponent extends Component {
     if (this.builderMode) {
       // We need to see it in builder mode.
       this.append(this.text(this.name));
-    }
-    else {
-      const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');
+    } else {
+      const siteKey = _get(this.root?.form, 'settings.recaptcha.siteKey');
       if (siteKey) {
         const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
-        this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);
-      }
-      else {
+        this.recaptchaApiReady = Formio.requireLibrary(
+          'googleRecaptcha',
+          'grecaptcha',
+          recaptchaApiScriptUrl,
+          true,
+        );
+      } else {
         console.warn('There is no Site Key specified in settings in form JSON');
       }
     }
@@ -68,49 +76,53 @@ export default class ReCaptchaComponent extends Component {
   }
 
   async verify(actionName) {
-    const siteKey = _get(this.root.form, 'settings.recaptcha.siteKey');
+    const siteKey = _get(this.root?.form, 'settings.recaptcha.siteKey');
     if (!siteKey) {
       console.warn('There is no Site Key specified in settings in form JSON');
       return;
     }
     if (!this.recaptchaApiReady) {
-      const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${_get(this.root.form, 'settings.recaptcha.siteKey')}`;
-      this.recaptchaApiReady = Formio.requireLibrary('googleRecaptcha', 'grecaptcha', recaptchaApiScriptUrl, true);
+      const recaptchaApiScriptUrl = `https://www.google.com/recaptcha/api.js?render=${_get(this.root?.form, 'settings.recaptcha.siteKey')}`;
+      this.recaptchaApiReady = Formio.requireLibrary(
+        'googleRecaptcha',
+        'grecaptcha',
+        recaptchaApiScriptUrl,
+        true,
+      );
     }
     try {
       await this.recaptchaApiReady;
       this.recaptchaVerifiedPromise = new Promise((resolve, reject) => {
         if (!this.isLoading) {
-          this.isLoading= true;
-          grecaptcha.ready(_debounce(async() => {
-            try {
-              const token = await grecaptcha.execute(siteKey, { action: actionName });
-              const verificationResult = await this.sendVerificationRequest(token);
-              this.recaptchaResult = {
-                ...verificationResult,
-                token,
-              };
-              this.updateValue(this.recaptchaResult);
-              this.isLoading = false;
-              return resolve(verificationResult);
-            }
-            catch (err) {
-              this.isLoading = false;
-              reject(err);
-            }
-          }, 1000));
+          this.isLoading = true;
+          grecaptcha.ready(
+            _debounce(async () => {
+              try {
+                const token = await grecaptcha.execute(siteKey, { action: actionName });
+                const verificationResult = await this.sendVerificationRequest(token);
+                this.recaptchaResult = {
+                  ...verificationResult,
+                  token,
+                };
+                this.updateValue(this.recaptchaResult);
+                this.isLoading = false;
+                return resolve(verificationResult);
+              } catch (err) {
+                this.isLoading = false;
+                reject(err);
+              }
+            }, 1000),
+          );
         }
       });
-    }
-    catch (err) {
+    } catch (ignoreErr) {
       this.loading = false;
     }
   }
 
   beforeSubmit() {
     if (this.recaptchaVerifiedPromise) {
-      return this.recaptchaVerifiedPromise
-        .then(() => super.beforeSubmit());
+      return this.recaptchaVerifiedPromise.then(() => super.beforeSubmit());
     }
     return super.beforeSubmit();
   }

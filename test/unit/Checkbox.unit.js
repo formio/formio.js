@@ -115,4 +115,60 @@ describe('Checkbox Component', () => {
       }, 300);
     }).catch((err) => done(err));
   });
+  
+  it('Should be able to submit default checkbox data with the radio input type', (done) => {
+    const form = {
+      name: 'ckeckbox',
+      path: 'ckeckbox',
+      type: 'form',
+      display: 'form',
+  
+      components: [
+        {
+          label: 'Checkbox',
+          inputType: 'radio',
+          tableView: false,
+          defaultValue: false,
+          key: 'checkbox',
+          type: 'checkbox',
+          name: 'some name',
+          value: 'ok',
+          input: true,
+          'some name': false
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false
+        }
+      ],
+    };
+    const element = document.createElement('div');
+    const inputName = form.components[0].name;
+
+    Formio.createForm(element, form).then(form => {
+      const submit = form.getComponent('submit');
+      const clickEvent = new Event('click');
+      const submitBtn = submit.refs.button;
+      submitBtn.dispatchEvent(clickEvent);
+
+      setTimeout(() => {
+        assert.equal(form.submission.data[inputName], '');
+        const radioCheckBox = form.getComponent('checkbox');
+        const radio = Harness.testElements(radioCheckBox, 'input[type="radio"]', 1)[0];
+        Harness.clickElement(radioCheckBox, radio);
+        setTimeout(() => {
+          assert.equal(form.submission.data[inputName], 'ok');
+          Harness.clickElement(radioCheckBox, radio);
+          setTimeout(() => {
+            assert.equal(form.submission.data[inputName], '');
+            done();
+          }, 200);
+        }, 200);
+      }, 200);
+    }).catch((err) => done(err));
+  });
 });

@@ -218,7 +218,17 @@ function getConditionalPathsRecursive(conditionPaths, data) {
 
       const splittedConditionPath = conditionComponentPath.split('.');
 
-      const conditionalPaths = instance?.parent?.type === 'datagrid' || instance?.parent?.type === 'editgrid'  ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
+      const checkParentTypeInTree = (instance, componentType) => {
+        if (!instance?.parent) {
+          return false;
+        }
+
+        return instance?.parent.type === componentType || checkParentTypeInTree(instance.parent, componentType);
+      };
+
+      const conditionalPaths = checkParentTypeInTree(instance, 'datagrid') || checkParentTypeInTree(instance, 'editgrid')
+        ? []
+        : getConditionalPathsRecursive(splittedConditionPath, data);
 
       if (conditionalPaths.length > 0) {
         return conditionalPaths.map((path) => {
@@ -343,7 +353,7 @@ function getRow(component, row, instance, conditional) {
   }
   const dataParent = getDataParentComponent(instance);
   if (dataParent) {
-    const parentPath = dataParent.paths?.localDataPath;
+    const parentPath = dataParent.paths?.localPath;
     const isTriggerCondtionComponentPath = condition.when || !condition.conditions
       ? condition.when?.startsWith(dataParent.paths?.localPath)
       : _.some(condition.conditions, cond => cond.component.startsWith(dataParent.paths?.localPath));
@@ -562,7 +572,7 @@ export function getDateSetting(date) {
 
   dateSetting = null;
   try {
-    const value = Evaluator.evaluator(`return ${date};`, 'moment')(moment);
+    const value = evaluate(`value=${date};`, { moment }, 'value');
     if (typeof value === 'string') {
       dateSetting = moment(value);
     }
@@ -1718,3 +1728,18 @@ export const interpolateErrors = (component, errors, interpolateFn) => {
     return { ...error, message: unescapeHTML(interpolateFn(toInterpolate, context)), context: { ...context } };
   });
 };
+
+/**
+ * Checks if a string has timezone information encoded in it
+ * Example: 2024-01-01T00:00:00Z -> true
+ * Example: 2024-01-01T00:00:00+03:00 -> true
+ * Example: 2011-05-03T00:00:00 -> false
+ * @param {string} value the string value to check
+ * @returns {boolean} if value has encoded timezone
+ */
+export function hasEncodedTimezone(value){
+  if (typeof value !== 'string'){
+    return false;
+  }
+  return (value.substring(value.length - 1) === 'z' || value.substring(value.length - 1) === 'Z' || value.match(/[+|-][0-9]{2}:[0-9]{2}$/));
+}

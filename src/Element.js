@@ -8,21 +8,25 @@ import FormioUtils from './utils';
 
 /**
  * The root component for all elements within the Form.io renderer.
+ * @property {object} options - The options for this component. Subclasses should override this type with more specific options.
  */
 export default class Element {
   constructor(options) {
     /**
      * The options for this component.
-     * @type {{}}
+     * @type {object}
      */
-    this.options = Object.assign({
-      language: 'en',
-      highlightErrors: true,
-      componentErrorClass: 'formio-error-wrapper',
-      componentWarningClass: 'formio-warning-wrapper',
-      row: '',
-      namespace: 'formio'
-    }, options || {});
+    this.options = Object.assign(
+      {
+        language: 'en',
+        highlightErrors: true,
+        componentErrorClass: 'formio-error-wrapper',
+        componentWarningClass: 'formio-warning-wrapper',
+        row: '',
+        namespace: 'formio',
+      },
+      options || {},
+    );
 
     /**
      * The ID of this component. This value is auto-generated when the component is created, but
@@ -47,14 +51,15 @@ export default class Element {
      * An instance of the EventEmitter class to handle the emitting and registration of events.
      * @type {EventEmitter}
      */
-    this.events = (options && options.events) ? options.events : new EventEmitter();
+    this.events = options && options.events ? options.events : new EventEmitter();
 
     this.defaultMask = null;
     /**
      * Conditional to show or hide helplinks in editForm
      * @type {*|boolean}
      */
-    this.helplinks = (this.options.helplinks === 'false') ? false : (this.options.helplinks || 'https://help.form.io');
+    this.helplinks =
+      this.options.helplinks === 'false' ? false : this.options.helplinks || 'https://help.form.io';
   }
 
   /**
@@ -138,7 +143,7 @@ export default class Element {
 
     const type = `${this.options.namespace}.${event}`;
 
-    this.events.listeners(type).forEach((listener) => {
+    this.events?.listeners(type).forEach((listener) => {
       // Ensure the listener is for this element
       if (!listener || listener.id !== this.id) {
         return;
@@ -149,7 +154,7 @@ export default class Element {
         return;
       }
 
-      this.events.off(type, listener);
+      this.events?.off(type, listener);
     });
   }
 
@@ -203,8 +208,7 @@ export default class Element {
     }
     if ('addEventListener' in obj) {
       obj.addEventListener(type, func, !!capture);
-    }
-    else if ('attachEvent' in obj) {
+    } else if ('attachEvent' in obj) {
       obj.attachEvent(`on${type}`, func);
     }
 
@@ -226,10 +230,10 @@ export default class Element {
 
     this.eventHandlers.forEach((handler, index) => {
       if (
-        (handler.id === this.id)
-        && obj.removeEventListener
-        && (handler.type === type)
-        && (!func || handler.func === func)
+        handler.id === this.id &&
+        obj.removeEventListener &&
+        handler.type === type &&
+        (!func || handler.func === func)
       ) {
         obj.removeEventListener(type, handler.func);
         indexes.push(index);
@@ -243,8 +247,13 @@ export default class Element {
   }
 
   removeEventListeners() {
-    this.eventHandlers.forEach(handler => {
-      if ((this.id === handler.id) && handler.type && handler.obj && handler.obj.removeEventListener) {
+    this.eventHandlers.forEach((handler) => {
+      if (
+        this.id === handler.id &&
+        handler.type &&
+        handler.obj &&
+        handler.obj.removeEventListener
+      ) {
         handler.obj.removeEventListener(handler.type, handler.func);
       }
     });
@@ -255,7 +264,7 @@ export default class Element {
     if (this.events) {
       _.each(this.events._events, (events, type) => {
         _.each(events, (listener) => {
-          if (listener && (this.id === listener.id) && (includeExternal || listener.internal)) {
+          if (listener && this.id === listener.id && (includeExternal || listener.internal)) {
             this.events.off(type, listener);
           }
         });
@@ -302,13 +311,11 @@ export default class Element {
       if (container.firstChild) {
         try {
           container.insertBefore(element, container.firstChild);
-        }
-        catch (err) {
+        } catch (err) {
           console.warn(err);
           container.appendChild(element);
         }
-      }
-      else {
+      } else {
         container.appendChild(element);
       }
     }
@@ -326,8 +333,7 @@ export default class Element {
     if (container && container.contains(element)) {
       try {
         container.removeChild(element);
-      }
-      catch (err) {
+      } catch (err) {
         console.warn(err);
       }
     }
@@ -366,11 +372,9 @@ export default class Element {
   appendChild(element, child) {
     if (Array.isArray(child)) {
       child.forEach((oneChild) => this.appendChild(element, oneChild));
-    }
-    else if (child instanceof HTMLElement || child instanceof Text) {
+    } else if (child instanceof HTMLElement || child instanceof Text) {
       element.appendChild(child);
-    }
-    else if (child) {
+    } else if (child) {
       element.appendChild(this.text(child.toString()));
     }
 
@@ -383,7 +387,7 @@ export default class Element {
    * @returns {string} - The placeholder that will exist within the input as they type.
    */
   maskPlaceholder(mask) {
-    return mask.map((char) => (char instanceof RegExp) ? this.placeholderChar : char).join('');
+    return mask.map((char) => (char instanceof RegExp ? this.placeholderChar : char)).join('');
   }
 
   /**
@@ -415,10 +419,9 @@ export default class Element {
           inputElement: input,
           mask,
           placeholderChar: this.placeholderChar,
-          shadowRoot: this.root ? this.root.shadowRoot : null
+          shadowRoot: this.root ? this.root?.shadowRoot : null,
         });
-      }
-      catch (e) {
+      } catch (e) {
         // Don't pass error up, to prevent form rejection.
         // Internal bug of vanilla-text-mask on iOS (`selectionEnd`);
         console.warn(e);
@@ -439,7 +442,7 @@ export default class Element {
    * @returns {string} - The translated text.
    */
   t(text, ...args) {
-    return this.i18next ? this.i18next.t(text, ...args): text;
+    return this.i18next ? this.i18next.t(text, ...args) : text;
   }
 
   /**
@@ -465,8 +468,7 @@ export default class Element {
         if (key.indexOf('on') === 0) {
           // If this is an event, add a listener.
           this.addEventListener(element, key.substr(2).toLowerCase(), value);
-        }
-        else {
+        } else {
           // Otherwise it is just an attribute.
           element.setAttribute(key, value);
         }
@@ -488,7 +490,7 @@ export default class Element {
     }
     // Allow templates to intercept.
     className = ` ${className} `;
-    return ((` ${element.className} `).replace(/[\n\t\r]/g, ' ').indexOf(className) > -1);
+    return ` ${element.className} `.replace(/[\n\t\r]/g, ' ').indexOf(className) > -1;
   }
 
   /**
@@ -548,24 +550,29 @@ export default class Element {
    * @returns {*} - The evaluation context.
    */
   evalContext(additional) {
-    return Object.assign({
-      _,
-      utils: FormioUtils,
-      util: FormioUtils,
-      user: Formio.getUser(),
-      moment,
-      instance: this,
-      self: this,
-      token: Formio.getToken({
-        decode: true
-      }),
-      options: this.options,
-      config: this.root && this.root.form && this.root.form.config
-        ? this.root.form.config
-        : this.options?.formConfig
-          ? this.options.formConfig
-          : {},
-    }, additional, _.get(this.root, 'options.evalContext', {}));
+    return Object.assign(
+      {
+        _,
+        utils: FormioUtils,
+        util: FormioUtils,
+        user: Formio.getUser(),
+        moment,
+        instance: this,
+        self: this,
+        token: Formio.getToken({
+          decode: true,
+        }),
+        options: this.options,
+        config:
+          this.root && this.root.form && this.root.form.config
+            ? this.root.form.config
+            : this.options?.formConfig
+              ? this.options.formConfig
+              : {},
+      },
+      additional,
+      _.get(this.root, 'options.evalContext', {}),
+    );
   }
 
   /**
@@ -576,14 +583,19 @@ export default class Element {
    * @returns {XML|string|*|void} - The interpolated string.
    */
   interpolate(string, data, options = {}) {
-    if (typeof string !== 'function' && (this.component.content || this.component.html)
-      && !FormioUtils.Evaluator.templateSettings.interpolate.test(string)) {
+    if (
+      typeof string !== 'function' &&
+      (this.component.content || this.component.html) &&
+      !FormioUtils.Evaluator.templateSettings.interpolate.test(string)
+    ) {
       string = FormioUtils.translateHTMLTemplate(String(string), (value) => this.t(value));
     }
 
     if (this.component.filter === string && !this.options.building) {
       const evalContext = this.evalContext(data);
-      evalContext.data = _.mapValues(evalContext.data, (val) => _.isString(val) ? encodeURIComponent(val) : val);
+      evalContext.data = _.mapValues(evalContext.data, (val) =>
+        _.isString(val) ? encodeURIComponent(val) : val,
+      );
       return FormioUtils.interpolate(string, evalContext, options);
     }
     return FormioUtils.interpolate(string, this.evalContext(data), options);
@@ -608,20 +620,17 @@ export default class Element {
    */
   hook() {
     const name = arguments[0];
-    if (
-      this.options &&
-      this.options.hooks &&
-      this.options.hooks[name]
-    ) {
+    if (this.options && this.options.hooks && this.options.hooks[name]) {
       return this.options.hooks[name].apply(this, Array.prototype.slice.call(arguments, 1));
-    }
-    else {
+    } else {
       // If this is an async hook instead of a sync.
-      const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
+      const fn =
+        typeof arguments[arguments.length - 1] === 'function'
+          ? arguments[arguments.length - 1]
+          : null;
       if (fn) {
         return fn(null, arguments[1]);
-      }
-      else {
+      } else {
         return arguments[1];
       }
     }

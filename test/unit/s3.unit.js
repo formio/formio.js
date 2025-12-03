@@ -40,6 +40,11 @@ describe('S3 Provider', () => {
           .post('https://fakeproject.form.io/fakeform/storage/s3/multipart/complete', 200)
           .post('https://fakeproject.form.io/fakeform/storage/s3/multipart/abort', 200);
       });
+
+      after('Restore fetch', () => {
+        fetchMock.restore();
+      });
+      
       it('Given an array of signed urls it should upload a file to S3 using multipart upload', (done) => {
         const mockFormio = {
           formUrl: 'https://fakeproject.form.io/fakeform',

@@ -4,6 +4,7 @@ import Harness from '../harness';
 import TextFieldComponent from '../../src/components/textfield/TextField';
 import { Formio } from '../../src/Formio';
 import 'flatpickr';
+import { wait } from '../util';
 
 import {
   comp1,
@@ -13,61 +14,97 @@ import {
   comp6,
   withDisplayAndInputMasks,
   comp7,
-  requiredFieldLogicComp
-} from './fixtures/textfield';
+  requiredFieldLogicComp,
+  comp8,
+} from './fixtures/textfield/index';
 
-import { comp10 as formWithCalendarTextField } from './fixtures/datetime';
+import { comp10 as formWithCalendarTextField } from './fixtures/datetime/index';
 
-describe('TextField Component', () => {
-  it('Should create a new TextField', () => {
+describe('TextField Component', function () {
+  it('Should create a new TextField', function () {
     const textField = new TextFieldComponent({
       label: 'First Name',
       key: 'firstName',
       input: true,
-      type: 'textfield'
+      type: 'textfield',
     });
 
     assert.equal(textField.component.key, 'firstName');
   });
 
-  it('Should build a TextField component', () => {
+  it('Should build a TextField component', function () {
     return Harness.testCreate(TextFieldComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
     });
   });
 
-  it('Should disable multiple mask selector if component is disabled', (done) => {
+  it('Should disable multiple mask selector if component is disabled', function (done) {
     Harness.testCreate(TextFieldComponent, comp4).then((component) => {
       Harness.testElements(component, '[disabled]', 2);
       done();
     });
   });
 
-  it('Should check mask and value in the textfield component in the email template', (done) => {
-    const formJson =  {
-      components: [{
+  it('Should not display placeholder in readOnly mode', function (done) {
+    Harness.testCreate(TextFieldComponent, {
+      label: 'First Name',
+      key: 'firstName',
+      input: true,
+      type: 'textfield',
+      placeholder: 'Enter your name'
+    }, { readOnly: true }).then((component) => {
+      console.log(1111)
+      const input = Harness.testElement(component, 'input[type="text"]');
+      assert.equal(!!input.attributes.placeholder, false);
+
+      done();
+    });
+  });
+
+  it('Should display placeholder if readOnly mode is not enabled', function (done) {
+    Harness.testCreate(TextFieldComponent, {
+      label: 'First Name',
+      key: 'firstName',
+      input: true,
+      type: 'textfield',
+      placeholder: 'Enter your name'
+    }).then((component) => {
+      const input = Harness.testElement(component, 'input[type="text"]');
+      assert.equal(input.attributes?.placeholder?.textContent, 'Enter your name');
+
+      done();
+    });
+  });
+
+  it('Should check mask and value in the textfield component in the email template', function (done) {
+    const formJson = {
+      components: [
+        {
           label: 'Text Field',
           tableView: true,
           allowMultipleMasks: true,
-          inputMasks: [{
-            label: 'mask1',
-            mask: 'mask1'
-          }],
+          inputMasks: [
+            {
+              label: 'mask1',
+              mask: 'mask1',
+            },
+          ],
           key: 'textField',
           type: 'textfield',
-          input: true
-       }]
+          input: true,
+        },
+      ],
     };
     const element = document.createElement('div');
     Formio.createForm(element, formJson)
-      .then(form => {
+      .then((form) => {
         form.setSubmission({
           data: {
             textField: {
-                value: 'mask1',
-                maskName: 'mask2'
-            }
-        },
+              value: 'mask1',
+              maskName: 'mask2',
+            },
+          },
         });
 
         const textField = form.getComponent('textField');
@@ -77,35 +114,58 @@ describe('TextField Component', () => {
           assert.equal(textField.dataValue.maskName, 'mask2', 'Should check maskName');
           const toString = textField.getValueAsString(textField.dataValue, { email: true });
           assert.ok(toString.includes('table'), 'Email template should render html table');
-          assert.ok(toString.includes(textField.dataValue.maskName), 'Email template should have Text Field mackName');
-          assert.ok(toString.includes(textField.dataValue.value), 'Email template should have Text Field value');
+          assert.ok(
+            toString.includes(textField.dataValue.maskName),
+            'Email template should have Text Field mackName',
+          );
+          assert.ok(
+            toString.includes(textField.dataValue.value),
+            'Email template should have Text Field value',
+          );
           done();
         }, 300);
       })
       .catch(done);
   });
 
-  it('Should provide required validation', () => {
-    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
-      validate: { required: true }
-    })).then((component) => {
-      return Harness.testInvalid(component, '', 'firstName', 'First Name is required').then(() => component);
-    }).then((component) => {
-      return Harness.testValid(component, 'te').then(() => component);
-    });
+  it('Should provide required validation', function () {
+    return Harness.testCreate(
+      TextFieldComponent,
+      _.merge({}, comp2, {
+        validate: { required: true },
+      }),
+    )
+      .then((component) => {
+        return Harness.testInvalid(component, '', 'firstName', 'First Name is required').then(
+          () => component,
+        );
+      })
+      .then((component) => {
+        return Harness.testValid(component, 'te').then(() => component);
+      });
   });
 
-  it('Should provide minWords validation', () => {
-    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
-      validate: { minWords: 2 }
-    })).then((component) => {
-      return Harness.testInvalid(component, 'test', 'firstName', 'First Name must have at least 2 words.').then(() => component);
-    }).then((component) => {
-      return Harness.testValid(component, 'te st').then(() => component);
-    });
+  it('Should provide minWords validation', function () {
+    return Harness.testCreate(
+      TextFieldComponent,
+      _.merge({}, comp2, {
+        validate: { minWords: 2 },
+      }),
+    )
+      .then((component) => {
+        return Harness.testInvalid(
+          component,
+          'test',
+          'firstName',
+          'First Name must have at least 2 words.',
+        ).then(() => component);
+      })
+      .then((component) => {
+        return Harness.testValid(component, 'te st').then(() => component);
+      });
   });
 
-  it('Should correctly calculate remaining words', (done) => {
+  it('Should correctly calculate remaining words', function (done) {
     Harness.testCreate(TextFieldComponent, comp5).then((component) => {
       const inputEvent = new Event('input', { bubbles: true, cancelable: true });
       const element = component.refs.input[0];
@@ -113,19 +173,19 @@ describe('TextField Component', () => {
       element.value = 'paper format A4';
       element.dispatchEvent(inputEvent);
 
-      setTimeout(()=>{
+      setTimeout(() => {
         assert.equal(component.refs.wordcount[0].textContent, '2 words remaining.');
 
         element.value = 'Hey, guys! We are here!!';
         element.dispatchEvent(inputEvent);
 
-        setTimeout(()=>{
+        setTimeout(() => {
           assert.equal(component.refs.wordcount[0].textContent, '0 words remaining.');
 
           element.value = ' Some   test   text  111 ';
           element.dispatchEvent(inputEvent);
 
-          setTimeout(()=>{
+          setTimeout(() => {
             assert.equal(component.refs.wordcount[0].textContent, '1 words remaining.');
 
             done();
@@ -135,192 +195,261 @@ describe('TextField Component', () => {
     });
   });
 
-  it('Should provide maxWords validation', () => {
-    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
-      validate: { maxWords: 2 }
-    })).then((component) => {
-      return Harness.testInvalid(component, 'test test test', 'firstName', 'First Name must have no more than 2 words.').then(() => component);
-    }).then((component) => {
-      return Harness.testValid(component, 'te st').then(() => component);
-    });
+  it('Should provide maxWords validation', function () {
+    return Harness.testCreate(
+      TextFieldComponent,
+      _.merge({}, comp2, {
+        validate: { maxWords: 2 },
+      }),
+    )
+      .then((component) => {
+        return Harness.testInvalid(
+          component,
+          'test test test',
+          'firstName',
+          'First Name must have no more than 2 words.',
+        ).then(() => component);
+      })
+      .then((component) => {
+        return Harness.testValid(component, 'te st').then(() => component);
+      });
   });
 
-  it('Should provide minLength validation', () => {
-    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
-      validate: { minLength: 2 }
-    })).then((component) => {
-      return Harness.testInvalid(component, 't', 'firstName', 'First Name must have at least 2 characters.').then(() => component);
-    }).then((component) => {
-      return Harness.testValid(component, 'te').then(() => component);
-    });
+  it('Should provide minLength validation', function () {
+    return Harness.testCreate(
+      TextFieldComponent,
+      _.merge({}, comp2, {
+        validate: { minLength: 2 },
+      }),
+    )
+      .then((component) => {
+        return Harness.testInvalid(
+          component,
+          't',
+          'firstName',
+          'First Name must have at least 2 characters.',
+        ).then(() => component);
+      })
+      .then((component) => {
+        return Harness.testValid(component, 'te').then(() => component);
+      });
   });
 
-  it('Should provide maxLength validation', () => {
-    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
-      validate: { maxLength: 5 }
-    })).then(component => {
-      return Harness.testInvalid(component, 'testte', 'firstName', 'First Name must have no more than 5 characters.').then(() => component);
-    }).then((component) => {
-      return Harness.testValid(component, 'te').then(() => component);
-    });
+  it('Should provide maxLength validation', function () {
+    return Harness.testCreate(
+      TextFieldComponent,
+      _.merge({}, comp2, {
+        validate: { maxLength: 5 },
+      }),
+    )
+      .then((component) => {
+        return Harness.testInvalid(
+          component,
+          'testte',
+          'firstName',
+          'First Name must have no more than 5 characters.',
+        ).then(() => component);
+      })
+      .then((component) => {
+        return Harness.testValid(component, 'te').then(() => component);
+      });
   });
 
-  it('Should provide custom validation', () => {
-    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
-      validate: {
-        custom: 'valid = (input !== "Joe") ? true : "You cannot be Joe"'
-      }
-    })).then((component) => {
-      return Harness.testInvalid(component, 'Joe', 'firstName', 'You cannot be Joe').then(() => component);
-    }).then((component) => {
-      return Harness.testValid(component, 'Tom').then(() => component);
-    });
+  it('Should provide custom validation', function () {
+    return Harness.testCreate(
+      TextFieldComponent,
+      _.merge({}, comp2, {
+        validate: {
+          custom: 'valid = (input !== "Joe") ? true : "You cannot be Joe"',
+        },
+      }),
+    )
+      .then((component) => {
+        return Harness.testInvalid(component, 'Joe', 'firstName', 'You cannot be Joe').then(
+          () => component,
+        );
+      })
+      .then((component) => {
+        return Harness.testValid(component, 'Tom').then(() => component);
+      });
   });
 
-  it('Should provide one custom error message', (done) => {
-    const formJson =  {
-      components: [{
+  it('Should provide one custom error message', function (done) {
+    const formJson = {
+      components: [
+        {
           label: 'Text Field',
           tableView: true,
           validate: {
             pattern: '^[0-9]*$]',
             customMessage: 'Custom Error Message',
-            minWords: 10
+            minWords: 10,
           },
           key: 'textField',
           type: 'textfield',
-          input: true
-       },
+          input: true,
+        },
         {
           type: 'button',
-          key: 'submit'
-        }]
+          key: 'submit',
+        },
+      ],
     };
     const element = document.createElement('div');
     Formio.createForm(element, formJson)
-      .then(form => {
+      .then((form) => {
         form.submission = {
           data: {
-            textField: 'textField'
-          }
+            textField: 'textField',
+          },
         };
         const textField = form.getComponent('textField');
         const sumbitButton = form.getComponent('submit');
         sumbitButton.refs.button.click();
         setTimeout(() => {
           assert.equal(textField.refs.messageContainer.children.length, 1);
-          assert.equal(textField.refs.messageContainer.children[0].innerHTML, 'Custom Error Message');
+          assert.equal(
+            textField.refs.messageContainer.children[0].innerHTML,
+            'Custom Error Message',
+          );
           done();
         }, 300);
       })
       .catch(done);
   });
 
-  it('Should provide json validation', () => {
-    return Harness.testCreate(TextFieldComponent, _.merge({}, comp2, {
-      validate: {
-        json: {
-          'if': [
-            {
-              '===': [
-                { var: 'data.firstName' },
-                'Joe'
-              ]
-            },
-            true,
-            'You must be Joe'
-          ]
-        }
-      }
-    })).then((component) => {
-      return Harness.testInvalid(component, 'Tom', 'firstName', 'You must be Joe').then(() => component);
-    }).then((component) => {
-      return Harness.testValid(component, 'Joe').then(() => component);
-    });
+  it('Should provide json validation', function () {
+    return Harness.testCreate(
+      TextFieldComponent,
+      _.merge({}, comp2, {
+        validate: {
+          json: {
+            if: [
+              {
+                '===': [
+                  { var: 'data.firstName' },
+                  'Joe',
+                ],
+              },
+              true,
+              'You must be Joe',
+            ],
+          },
+        },
+      }),
+    )
+      .then((component) => {
+        return Harness.testInvalid(component, 'Tom', 'firstName', 'You must be Joe').then(
+          () => component,
+        );
+      })
+      .then((component) => {
+        return Harness.testValid(component, 'Joe').then(() => component);
+      });
   });
 
-  it('Should provide number input mask only after blur event if applyMaskOn setting on blur', (done) => {
+  it('Should provide number input mask only after blur event if applyMaskOn setting on blur', function (done) {
     const form = _.cloneDeep(comp7);
     const element = document.createElement('div');
     form.components[0].inputMask = '99-99';
     const value = 999;
 
-    Formio.createForm(element, form).then(form => {
-      const component = form.getComponent('textField');
-      const changed = component.setValue(value);
+    Formio.createForm(element, form)
+      .then((form) => {
+        const component = form.getComponent('textField');
+        const changed = component.setValue(value);
 
-      if (value) {
-        assert.equal(changed, true, 'Should set value');
-        assert.equal(component.getValue(), value);
-      }
-
-      setTimeout(() => {
-        const textFieldInput = component.element.querySelector('.form-control');
-        const event = new Event('blur');
-        textFieldInput.dispatchEvent(event);
-
-        setTimeout(() => {
-          assert.equal(component.getValue(), '99-9_');
-          done();
-        }, 200);
-      }, 200);
-    }).catch(done);
-  });
-
-  it('Should provide validation of number input mask only after blur event if applyMaskOn setting on blur', (done) => {
-    const form = _.cloneDeep(comp7);
-    const element = document.createElement('div');
-    form.components[0].inputMask = '99-99';
-    let value = 999;
-
-    Formio.createForm(element, form).then(form => {
-      const component = form.getComponent('textField');
-      const error = 'Text Field does not match the mask.';
-      const textFieldInput = component.element.querySelector('.form-control');
-      textFieldInput.value = value;
-      const event = new Event('change');
-      textFieldInput.dispatchEvent(event);
-      setTimeout(() => {
         if (value) {
-          assert.equal(component.getValue(), value, 'Should set value');
+          assert.equal(changed, true, 'Should set value');
+          assert.equal(component.getValue(), value);
         }
 
         setTimeout(() => {
-          assert.equal(component.errors.length, 0, 'Should not contain error');
-
           const textFieldInput = component.element.querySelector('.form-control');
           const event = new Event('blur');
           textFieldInput.dispatchEvent(event);
 
           setTimeout(() => {
-            assert.equal(component.errors.length, 1, 'Should contain error');
-            assert.equal(component.errors[0].message, error, 'Should contain error message');
-            assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
-            assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+            assert.equal(component.getValue(), '99-9_');
+            done();
+          }, 200);
+        }, 200);
+      })
+      .catch(done);
+  });
 
-            value = 9999;
-            component.setValue(value);
+  it('Should provide validation of number input mask only after blur event if applyMaskOn setting on blur', function (done) {
+    const form = _.cloneDeep(comp7);
+    const element = document.createElement('div');
+    form.components[0].inputMask = '99-99';
+    let value = 999;
+
+    Formio.createForm(element, form)
+      .then((form) => {
+        const component = form.getComponent('textField');
+        const error = 'Text Field does not match the mask.';
+        const textFieldInput = component.element.querySelector('.form-control');
+        textFieldInput.value = value;
+        const event = new Event('change');
+        textFieldInput.dispatchEvent(event);
+        setTimeout(() => {
+          if (value) {
+            assert.equal(component.getValue(), value, 'Should set value');
+          }
+
+          setTimeout(() => {
+            assert.equal(component.errors.length, 0, 'Should not contain error');
+
+            const textFieldInput = component.element.querySelector('.form-control');
+            const event = new Event('blur');
+            textFieldInput.dispatchEvent(event);
 
             setTimeout(() => {
               assert.equal(component.errors.length, 1, 'Should contain error');
               assert.equal(component.errors[0].message, error, 'Should contain error message');
-              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
-              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+              assert.equal(
+                component.element.classList.contains('has-error'),
+                true,
+                'Should contain error class',
+              );
+              assert.equal(
+                component.refs.messageContainer.textContent.trim(),
+                error,
+                'Should show error',
+              );
 
-              textFieldInput.dispatchEvent(event);
+              value = 9999;
+              component.setValue(value);
 
               setTimeout(() => {
-                assert.equal(component.errors.length, 0, 'Should not contain error');
-                done();
+                assert.equal(component.errors.length, 1, 'Should contain error');
+                assert.equal(component.errors[0].message, error, 'Should contain error message');
+                assert.equal(
+                  component.element.classList.contains('has-error'),
+                  true,
+                  'Should contain error class',
+                );
+                assert.equal(
+                  component.refs.messageContainer.textContent.trim(),
+                  error,
+                  'Should show error',
+                );
+
+                textFieldInput.dispatchEvent(event);
+
+                setTimeout(() => {
+                  assert.equal(component.errors.length, 0, 'Should not contain error');
+                  done();
+                }, 300);
               }, 300);
             }, 300);
           }, 300);
         }, 300);
-      }, 300);
-    }).catch(done);
+      })
+      .catch(done);
   });
 
-  it('Should provide validation of number input mask after setting value', (done) => {
+  it('Should provide validation of number input mask after setting value', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '99/99-99.99:99,99';
 
@@ -352,41 +481,50 @@ describe('TextField Component', () => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('textField');
-          const changed = component.setValue(value);
-          const error = 'Text Field does not match the mask.';
+            const component = form.getComponent('textField');
+            const changed = component.setValue(value);
+            const error = 'Text Field does not match the mask.';
 
-          if (value) {
-            assert.equal(changed, true, 'Should set value');
-          }
-
-          setTimeout(() => {
-            if (valid) {
-              assert.equal(component.errors.length, 0, 'Should not contain error');
-            }
-            else {
-              assert.equal(component.errors.length, 1, 'Should contain error');
-              assert.equal(component.errors[0].message, error, 'Should contain error message');
-              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
-              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+            if (value) {
+              assert.equal(changed, true, 'Should set value');
             }
 
-            if (_.isEqual(value, lastValue)) {
-              done();
-            }
-          }, 500);
-        }).catch(done);
+            setTimeout(() => {
+              if (valid) {
+                assert.equal(component.errors.length, 0, 'Should not contain error');
+              } else {
+                assert.equal(component.errors.length, 1, 'Should contain error');
+                assert.equal(component.errors[0].message, error, 'Should contain error message');
+                assert.equal(
+                  component.element.classList.contains('has-error'),
+                  true,
+                  'Should contain error class',
+                );
+                assert.equal(
+                  component.refs.messageContainer.textContent.trim(),
+                  error,
+                  'Should show error',
+                );
+              }
+
+              if (_.isEqual(value, lastValue)) {
+                done();
+              }
+            }, 500);
+          })
+          .catch(done);
       });
     };
 
     testValidity(validValues, true);
-    testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
+    testValidity(invalidValues, false, invalidValues[invalidValues.length - 1]);
   });
 
-  it('Should allow inputing only numbers and format input according to input mask', (done) => {
+  it('Should allow inputing only numbers and format input according to input mask', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '99/99-99.99:99,99';
 
@@ -412,31 +550,37 @@ describe('TextField Component', () => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('textField');
-          const input = component.refs.input[0];
-          const inputEvent = new Event('input');
-          input.value = value;
-          input.dispatchEvent(inputEvent);
+            const component = form.getComponent('textField');
+            const input = component.refs.input[0];
+            const inputEvent = new Event('input');
+            input.value = value;
+            input.dispatchEvent(inputEvent);
 
-          setTimeout(() => {
-            assert.equal(component.errors.length, 0, 'Should not contain error');
-            assert.equal(component.getValue(), '99/99-99.99:99,99', 'Should set and format value');
+            setTimeout(() => {
+              assert.equal(component.errors.length, 0, 'Should not contain error');
+              assert.equal(
+                component.getValue(),
+                '99/99-99.99:99,99',
+                'Should set and format value',
+              );
 
-            if (_.isEqual(value, lastValue)) {
-              done();
-            }
-          }, 300);
-        }).catch(done);
+              if (_.isEqual(value, lastValue)) {
+                done();
+              }
+            }, 300);
+          })
+          .catch(done);
       });
     };
 
-    testFormatting(values, values[values.length-1]);
+    testFormatting(values, values[values.length - 1]);
   });
 
-  it('Should allow dynamic syntax for input mask', (done) => {
+  it('Should allow dynamic syntax for input mask', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = 'aa-9{1,3}/9[99]';
 
@@ -445,7 +589,7 @@ describe('TextField Component', () => {
       'bB-77/555',
       'bc-789/8',
       'De-7/8',
-      'tr-81/888'
+      'tr-81/888',
     ];
 
     const invalidValues = [
@@ -453,48 +597,57 @@ describe('TextField Component', () => {
       '12-hh/789',
       'dd-/893',
       'he-538/',
-      'e1-77/790'
+      'e1-77/790',
     ];
 
     const testValidity = (values, valid, lastValue) => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('textField');
-          const changed = component.setValue(value);
-          const error = 'Text Field does not match the mask.';
+            const component = form.getComponent('textField');
+            const changed = component.setValue(value);
+            const error = 'Text Field does not match the mask.';
 
-          if (value) {
-            assert.equal(changed, true, 'Should set value');
-          }
-
-          setTimeout(() => {
-            if (valid) {
-              assert.equal(component.errors.length, 0, 'Should not contain error');
-            }
-            else {
-              assert.equal(component.errors.length, 1, 'Should contain error');
-              assert.equal(component.errors[0].message, error, 'Should contain error message');
-              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
-              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+            if (value) {
+              assert.equal(changed, true, 'Should set value');
             }
 
-            if (_.isEqual(value, lastValue)) {
-              done();
-            }
-          }, 300);
-        }).catch(done);
+            setTimeout(() => {
+              if (valid) {
+                assert.equal(component.errors.length, 0, 'Should not contain error');
+              } else {
+                assert.equal(component.errors.length, 1, 'Should contain error');
+                assert.equal(component.errors[0].message, error, 'Should contain error message');
+                assert.equal(
+                  component.element.classList.contains('has-error'),
+                  true,
+                  'Should contain error class',
+                );
+                assert.equal(
+                  component.refs.messageContainer.textContent.trim(),
+                  error,
+                  'Should show error',
+                );
+              }
+
+              if (_.isEqual(value, lastValue)) {
+                done();
+              }
+            }, 300);
+          })
+          .catch(done);
       });
     };
 
     testValidity(validValues, true);
-    testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
+    testValidity(invalidValues, false, invalidValues[invalidValues.length - 1]);
   });
 
-  it('Should provide validation for alphabetic input mask after setting value', (done) => {
+  it('Should provide validation for alphabetic input mask after setting value', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = 'a/A/a-a:a.a,aa';
 
@@ -514,90 +667,105 @@ describe('TextField Component', () => {
       'b/v/Rr-y:d$.d,a',
       '3/3/#r-y:d.d,as',
       '3/3/6-6&&:d...d,as',
-      '5/5/5ee-55.5,5'
+      '5/5/5ee-55.5,5',
     ];
 
     const testValidity = (values, valid, lastValue) => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('textField');
-          const changed = component.setValue(value);
-          const error = 'Text Field does not match the mask.';
+            const component = form.getComponent('textField');
+            const changed = component.setValue(value);
+            const error = 'Text Field does not match the mask.';
 
-          if (value) {
-            assert.equal(changed, true, 'Should set value');
-          }
-
-          setTimeout(() => {
-            if (valid) {
-              assert.equal(component.errors.length, 0, 'Should not contain error');
-            }
-            else {
-              assert.equal(component.errors.length, 1, 'Should contain error');
-              assert.equal(component.errors[0].message, error, 'Should contain error message');
-              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
-              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+            if (value) {
+              assert.equal(changed, true, 'Should set value');
             }
 
-            if (_.isEqual(value, lastValue)) {
-              done();
-            }
-          }, 300);
-        }).catch(done);
+            setTimeout(() => {
+              if (valid) {
+                assert.equal(component.errors.length, 0, 'Should not contain error');
+              } else {
+                assert.equal(component.errors.length, 1, 'Should contain error');
+                assert.equal(component.errors[0].message, error, 'Should contain error message');
+                assert.equal(
+                  component.element.classList.contains('has-error'),
+                  true,
+                  'Should contain error class',
+                );
+                assert.equal(
+                  component.refs.messageContainer.textContent.trim(),
+                  error,
+                  'Should show error',
+                );
+              }
+
+              if (_.isEqual(value, lastValue)) {
+                done();
+              }
+            }, 300);
+          })
+          .catch(done);
       });
     };
 
     testValidity(validValues, true);
-    testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
+    testValidity(invalidValues, false, invalidValues[invalidValues.length - 1]);
   });
 
-  it('Should allow inputing only letters and format input according to input mask', (done) => {
+  it('Should allow inputing only letters and format input according to input mask', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = 'a/a/a-a:a.a,aa';
 
     const values = [
-        'ssssSSSSSSS/sss-ss.s,ss',
-        'ss/sSss-sSSs.s,ss',
-        'ssSssssssSSSssssss',
-        's/sS/sss-s5555:sss.--s,s',
-        '3/s3/Ss-s:ss.s,ssSsss',
-        'ssSs3/3s/s6-s6:s...s,s',
-        's5/5sSS/5s-5:sS---5.s5,s5sss'
+      'ssssSSSSSSS/sss-ss.s,ss',
+      'ss/sSss-sSSs.s,ss',
+      'ssSssssssSSSssssss',
+      's/sS/sss-s5555:sss.--s,s',
+      '3/s3/Ss-s:ss.s,ssSsss',
+      'ssSs3/3s/s6-s6:s...s,s',
+      's5/5sSS/5s-5:sS---5.s5,s5sss',
     ];
 
     const testFormatting = (values, lastValue) => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('textField');
-          const input = component.refs.input[0];
-          const inputEvent = new Event('input');
-          input.value = value;
-          input.dispatchEvent(inputEvent);
+            const component = form.getComponent('textField');
+            const input = component.refs.input[0];
+            const inputEvent = new Event('input');
+            input.value = value;
+            input.dispatchEvent(inputEvent);
 
-          setTimeout(() => {
-            assert.equal(component.errors.length, 0, 'Should not contain error');
-            assert.equal(component.getValue().toLowerCase(), 's/s/s-s:s.s,ss', 'Should set and format value');
+            setTimeout(() => {
+              assert.equal(component.errors.length, 0, 'Should not contain error');
+              assert.equal(
+                component.getValue().toLowerCase(),
+                's/s/s-s:s.s,ss',
+                'Should set and format value',
+              );
 
-            if (_.isEqual(value, lastValue)) {
-              done();
-            }
-          }, 300);
-        }).catch(done);
+              if (_.isEqual(value, lastValue)) {
+                done();
+              }
+            }, 300);
+          })
+          .catch(done);
       });
     };
 
-    testFormatting(values, values[values.length-1]);
+    testFormatting(values, values[values.length - 1]);
   });
 
-  it('Should provide validation for alphanumeric input mask after setting value', (done) => {
+  it('Should provide validation for alphanumeric input mask after setting value', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '**/***.*-*,**';
 
@@ -623,83 +791,94 @@ describe('TextField Component', () => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('textField');
-          const changed = component.setValue(value);
-          const error = 'Text Field does not match the mask.';
+            const component = form.getComponent('textField');
+            const changed = component.setValue(value);
+            const error = 'Text Field does not match the mask.';
 
-          if (value) {
-            assert.equal(changed, true, 'Should set value');
-          }
-
-          setTimeout(() => {
-            if (valid) {
-              assert.equal(component.errors.length, 0, 'Should not contain error');
-            }
-            else {
-              assert.equal(component.errors.length, 1, 'Should contain error');
-              assert.equal(component.errors[0].message, error, 'Should contain error message');
-              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
-              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+            if (value) {
+              assert.equal(changed, true, 'Should set value');
             }
 
-            if (_.isEqual(value, lastValue)) {
-              done();
-            }
-          }, 300);
-        }).catch(done);
+            setTimeout(() => {
+              if (valid) {
+                assert.equal(component.errors.length, 0, 'Should not contain error');
+              } else {
+                assert.equal(component.errors.length, 1, 'Should contain error');
+                assert.equal(component.errors[0].message, error, 'Should contain error message');
+                assert.equal(
+                  component.element.classList.contains('has-error'),
+                  true,
+                  'Should contain error class',
+                );
+                assert.equal(
+                  component.refs.messageContainer.textContent.trim(),
+                  error,
+                  'Should show error',
+                );
+              }
+
+              if (_.isEqual(value, lastValue)) {
+                done();
+              }
+            }, 300);
+          })
+          .catch(done);
       });
     };
 
     testValidity(validValues, true);
-    testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
+    testValidity(invalidValues, false, invalidValues[invalidValues.length - 1]);
   });
 
-  it('Should allow inputing only letters and digits and format input according to input mask', (done) => {
+  it('Should allow inputing only letters and digits and format input according to input mask', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '**/***.*-*,**';
 
     const values = [
-      { value:'ssssSSSSSSS/sss-ss.s,ss', expected: 'ss/ssS.S-S,SS' },
-      { value:'ss/sSss-sSSs.s,ss', expected: 'ss/sSs.s-s,SS' },
-      { value:'ssS666ssssssSSSssssss', expected: 'ss/S66.6-s,ss' },
-      { value:'s/sS/sss-s5555:sss.--s,s', expected: 'ss/Sss.s-s,55' },
-      { value:'3/s3/Ss-s:ss.s,ssSsss', expected: '3s/3Ss.s-s,ss' },
-      { value:'ssSs3/3s/s6-s6:s...s,s', expected: 'ss/Ss3.3-s,s6' },
-      { value:'s5/5sSS/5s-5:sS---5.s5,s5sss', expected: 's5/5sS.S-5,s5' },
+      { value: 'ssssSSSSSSS/sss-ss.s,ss', expected: 'ss/ssS.S-S,SS' },
+      { value: 'ss/sSss-sSSs.s,ss', expected: 'ss/sSs.s-s,SS' },
+      { value: 'ssS666ssssssSSSssssss', expected: 'ss/S66.6-s,ss' },
+      { value: 's/sS/sss-s5555:sss.--s,s', expected: 'ss/Sss.s-s,55' },
+      { value: '3/s3/Ss-s:ss.s,ssSsss', expected: '3s/3Ss.s-s,ss' },
+      { value: 'ssSs3/3s/s6-s6:s...s,s', expected: 'ss/Ss3.3-s,s6' },
+      { value: 's5/5sSS/5s-5:sS---5.s5,s5sss', expected: 's5/5sS.S-5,s5' },
     ];
 
     const testFormatting = (values, lastValue) => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('textField');
-          const input = component.refs.input[0];
-          const inputEvent = new Event('input');
-          input.value = value.value;
-          input.dispatchEvent(inputEvent);
+            const component = form.getComponent('textField');
+            const input = component.refs.input[0];
+            const inputEvent = new Event('input');
+            input.value = value.value;
+            input.dispatchEvent(inputEvent);
 
-          setTimeout(() => {
-            assert.equal(component.errors.length, 0, 'Should not contain error');
-            assert.equal(component.getValue(), value.expected, 'Should set and format value');
+            setTimeout(() => {
+              assert.equal(component.errors.length, 0, 'Should not contain error');
+              assert.equal(component.getValue(), value.expected, 'Should set and format value');
 
-            if (_.isEqual(value.value, lastValue)) {
-              done();
-            }
-          }, 300);
-        }).catch(done);
+              if (_.isEqual(value.value, lastValue)) {
+                done();
+              }
+            }, 300);
+          })
+          .catch(done);
       });
     };
 
-    testFormatting(values, values[values.length-1].value);
+    testFormatting(values, values[values.length - 1].value);
   });
 
-  it('Should provide validation for mixed input mask after setting value', (done) => {
+  it('Should provide validation for mixed input mask after setting value', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '**/99-aa';
 
@@ -719,100 +898,138 @@ describe('TextField Component', () => {
       'te/E6-p',
       'gdfgdfgdf',
       '43543',
-      'W'
+      'W',
     ];
 
     const testValidity = (values, valid, lastValue) => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('textField');
-          const changed = component.setValue(value);
-          const error = 'Text Field does not match the mask.';
+            const component = form.getComponent('textField');
+            const changed = component.setValue(value);
+            const error = 'Text Field does not match the mask.';
 
-          if (value) {
-            assert.equal(changed, true, 'Should set value');
-          }
-
-          setTimeout(() => {
-            if (valid) {
-              assert.equal(component.errors.length, 0, 'Should not contain error');
-            }
-            else {
-              assert.equal(component.errors.length, 1, 'Should contain error');
-              assert.equal(component.errors[0].message, error, 'Should contain error message');
-              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
-              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+            if (value) {
+              assert.equal(changed, true, 'Should set value');
             }
 
-            if (_.isEqual(value, lastValue)) {
-              done();
-            }
-          }, 300);
-        }).catch(done);
+            setTimeout(() => {
+              if (valid) {
+                assert.equal(component.errors.length, 0, 'Should not contain error');
+              } else {
+                assert.equal(component.errors.length, 1, 'Should contain error');
+                assert.equal(component.errors[0].message, error, 'Should contain error message');
+                assert.equal(
+                  component.element.classList.contains('has-error'),
+                  true,
+                  'Should contain error class',
+                );
+                assert.equal(
+                  component.refs.messageContainer.textContent.trim(),
+                  error,
+                  'Should show error',
+                );
+              }
+
+              if (_.isEqual(value, lastValue)) {
+                done();
+              }
+            }, 300);
+          })
+          .catch(done);
       });
     };
 
     testValidity(validValues, true);
-    testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
+    testValidity(invalidValues, false, invalidValues[invalidValues.length - 1]);
   });
 
-  it('Should allow inputing only letters and digits and format input according to mixed input mask', (done) => {
+  it('Should allow inputing only letters and digits and format input according to mixed input mask', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '**/99-aa';
 
     const values = [
-      { value:'S67gf-+f34cfd', expected: 'S6/73-cf' },
-      { value:'56DDDfdsf23,DDdsf', expected: '56/23-DD' },
-      { value:'--fs344d.g234df', expected: 'fs/34-dg' },
-      { value:'000000000g234df', expected: '00/00-gd' },
+      { value: 'S67gf-+f34cfd', expected: 'S6/73-cf' },
+      { value: '56DDDfdsf23,DDdsf', expected: '56/23-DD' },
+      { value: '--fs344d.g234df', expected: 'fs/34-dg' },
+      { value: '000000000g234df', expected: '00/00-gd' },
     ];
 
     const testFormatting = (values, lastValue) => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('textField');
-          const input = component.refs.input[0];
-          const inputEvent = new Event('input');
-          input.value = value.value;
-          input.dispatchEvent(inputEvent);
+            const component = form.getComponent('textField');
+            const input = component.refs.input[0];
+            const inputEvent = new Event('input');
+            input.value = value.value;
+            input.dispatchEvent(inputEvent);
 
-          setTimeout(() => {
-            assert.equal(component.errors.length, 0, 'Should not contain error');
-            assert.equal(component.getValue(), value.expected, 'Should set and format value');
+            setTimeout(() => {
+              assert.equal(component.errors.length, 0, 'Should not contain error');
+              assert.equal(component.getValue(), value.expected, 'Should set and format value');
 
-            if (_.isEqual(value.value, lastValue)) {
-              done();
-            }
-          }, 300);
-        }).catch(done);
+              if (_.isEqual(value.value, lastValue)) {
+                done();
+              }
+            }, 300);
+          })
+          .catch(done);
       });
     };
 
-    testFormatting(values, values[values.length-1].value);
+    testFormatting(values, values[values.length - 1].value);
   });
 
-  it('Should allow multiple masks', async () => {
+  it('Should allow multiple masks', async function () {
     const form = _.cloneDeep(comp6);
     const tf = form.components[0];
     tf.allowMultipleMasks = true;
     tf.inputMasks = [
       { label: 'number', mask: '99-99' },
       { label: 'letter', mask: 'aa.aa' },
-      { label: 'any', mask: '**/**' }
+      { label: 'any', mask: '**/**' },
     ];
 
     const masks = [
-      { index: 0, mask: 'number', valueValid:['33-33'], valueInvalid: ['Bd'] },
-      { index: 1, mask: 'letter', valueValid:['rr.dd'], valueInvalid: ['Nr-22'] },
-      { index: 2, mask: 'any', valueValid:['Dv/33'], valueInvalid: ['4/4'] },
+      {
+        index: 0,
+        mask: 'number',
+        valueValid: [
+          '33-33',
+        ],
+        valueInvalid: [
+          'Bd',
+        ],
+      },
+      {
+        index: 1,
+        mask: 'letter',
+        valueValid: [
+          'rr.dd',
+        ],
+        valueInvalid: [
+          'Nr-22',
+        ],
+      },
+      {
+        index: 2,
+        mask: 'any',
+        valueValid: [
+          'Dv/33',
+        ],
+        valueInvalid: [
+          '4/4',
+        ],
+      },
     ];
 
     const testMask = async (mask, valid) => {
@@ -830,16 +1047,27 @@ describe('TextField Component', () => {
         }
         await new Promise((resolve) => {
           setTimeout(() => {
-            assert.equal(component.refs.select[0].options[mask.index].selected, true, 'Should select correct mask');
+            assert.equal(
+              component.refs.select[0].options[mask.index].selected,
+              true,
+              'Should select correct mask',
+            );
             assert.equal(component.getValue().maskName, mask.mask, 'Should apply correct mask');
             if (valid) {
               assert.equal(component.errors.length, 0, 'Should not contain error');
-            }
-            else {
+            } else {
               assert.equal(component.errors.length, 1, 'Should contain error');
               assert.equal(component.errors[0].message, error, 'Should contain error message');
-              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
-              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+              assert.equal(
+                component.element.classList.contains('has-error'),
+                true,
+                'Should contain error class',
+              );
+              assert.equal(
+                component.refs.messageContainer.textContent.trim(),
+                error,
+                'Should show error',
+              );
             }
             resolve();
           }, 300);
@@ -854,7 +1082,7 @@ describe('TextField Component', () => {
     }
   });
 
-  it('Should provide validation of number input mask with low dash and placeholder char after setting value', (done) => {
+  it('Should provide validation of number input mask with low dash and placeholder char after setting value', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '99_99/99';
     form.components[0].inputMaskPlaceholderChar = '.';
@@ -874,206 +1102,251 @@ describe('TextField Component', () => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('textField');
-          const input = component.refs.input[0];
+            const component = form.getComponent('textField');
+            const input = component.refs.input[0];
 
-          assert.equal(input.inputmask.undoValue, '.._../..', 'Should set placeholder using the char setting');
+            assert.equal(
+              input.inputmask.undoValue,
+              '.._../..',
+              'Should set placeholder using the char setting',
+            );
 
-          const changed = component.setValue(value);
-          const error = 'Text Field does not match the mask.';
+            const changed = component.setValue(value);
+            const error = 'Text Field does not match the mask.';
 
-          if (value) {
-            assert.equal(changed, true, 'Should set value');
-          }
-
-          setTimeout(() => {
-            if (valid) {
-              assert.equal(component.errors.length, 0, 'Should not contain error');
-            }
-            else {
-              assert.equal(component.errors.length, 1, 'Should contain error');
-              assert.equal(component.errors[0].message, error, 'Should contain error message');
-              assert.equal(component.element.classList.contains('has-error'), true, 'Should contain error class');
-              assert.equal(component.refs.messageContainer.textContent.trim(), error, 'Should show error');
+            if (value) {
+              assert.equal(changed, true, 'Should set value');
             }
 
-            if (_.isEqual(value, lastValue)) {
-              done();
-            }
-          }, 300);
-        }).catch(done);
+            setTimeout(() => {
+              if (valid) {
+                assert.equal(component.errors.length, 0, 'Should not contain error');
+              } else {
+                assert.equal(component.errors.length, 1, 'Should contain error');
+                assert.equal(component.errors[0].message, error, 'Should contain error message');
+                assert.equal(
+                  component.element.classList.contains('has-error'),
+                  true,
+                  'Should contain error class',
+                );
+                assert.equal(
+                  component.refs.messageContainer.textContent.trim(),
+                  error,
+                  'Should show error',
+                );
+              }
+
+              if (_.isEqual(value, lastValue)) {
+                done();
+              }
+            }, 300);
+          })
+          .catch(done);
       });
     };
 
     testValidity(validValues, true);
-    testValidity(invalidValues, false, invalidValues[invalidValues.length-1]);
+    testValidity(invalidValues, false, invalidValues[invalidValues.length - 1]);
   });
 
-  it('Should format input according to input mask with low dash when placeholder char is set', (done) => {
+  it('Should format input according to input mask with low dash when placeholder char is set', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '99_99/99';
     form.components[0].inputMaskPlaceholderChar = '.';
 
     const values = [
-      { value:'4444444', expected: '44_44/44' },
+      { value: '4444444', expected: '44_44/44' },
     ];
 
     const testFormatting = (values, lastValue) => {
       _.each(values, (value) => {
         const element = document.createElement('div');
 
-        Formio.createForm(element, form).then(form => {
-          form.setPristine(false);
+        Formio.createForm(element, form)
+          .then((form) => {
+            form.setPristine(false);
 
-          const component = form.getComponent('textField');
-          const input = component.refs.input[0];
-          const inputEvent = new Event('input');
-          input.value = value.value;
-          input.dispatchEvent(inputEvent);
+            const component = form.getComponent('textField');
+            const input = component.refs.input[0];
+            const inputEvent = new Event('input');
+            input.value = value.value;
+            input.dispatchEvent(inputEvent);
 
-          setTimeout(() => {
-            assert.equal(component.errors.length, 0, 'Should not contain error');
-            assert.equal(component.getValue(), value.expected, 'Should set and format value');
+            setTimeout(() => {
+              assert.equal(component.errors.length, 0, 'Should not contain error');
+              assert.equal(component.getValue(), value.expected, 'Should set and format value');
 
-            if (_.isEqual(value.value, lastValue)) {
-              done();
-            }
-          }, 300);
-        }).catch(done);
+              if (_.isEqual(value.value, lastValue)) {
+                done();
+              }
+            }, 300);
+          })
+          .catch(done);
       });
     };
 
-    testFormatting(values, values[values.length-1].value);
+    testFormatting(values, values[values.length - 1].value);
   });
 
-  it('Should correctly count characters if character counter is enabled', (done) => {
+  it('Should correctly count characters if character counter is enabled', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].showCharCount = true;
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const component = form.getComponent('textField');
-      const inputValue = (value) => {
-        const input = component.refs.input[0];
-        const inputEvent = new Event('input');
-        input.value = value;
-        input.dispatchEvent(inputEvent);
-      };
+    Formio.createForm(element, form)
+      .then((form) => {
+        const component = form.getComponent('textField');
+        const inputValue = (value) => {
+          const input = component.refs.input[0];
+          const inputEvent = new Event('input');
+          input.value = value;
+          input.dispatchEvent(inputEvent);
+        };
 
-      const checkValue = (value) => {
-        assert.equal(component.dataValue, value, 'Should set value');
-        assert.equal(parseInt(component.refs.charcount[0].textContent), value.length, 'Should show correct chars number');
-        assert.equal(component.refs.charcount[0].textContent, `${value.length} characters`, 'Should show correct message');
-      };
+        const checkValue = (value) => {
+          assert.equal(component.dataValue, value, 'Should set value');
+          assert.equal(
+            parseInt(component.refs.charcount[0].textContent),
+            value.length,
+            'Should show correct chars number',
+          );
+          assert.equal(
+            component.refs.charcount[0].textContent,
+            `${value.length} characters`,
+            'Should show correct message',
+          );
+        };
 
-      let value = 'test Value (@#!-"]) _ 23.,5}/*&&';
-      inputValue(value);
-      setTimeout(() => {
-        checkValue(value);
-        value = '';
+        let value = 'test Value (@#!-"]) _ 23.,5}/*&&';
         inputValue(value);
-
         setTimeout(() => {
           checkValue(value);
-          value = '  ';
+          value = '';
           inputValue(value);
 
           setTimeout(() => {
             checkValue(value);
+            value = '  ';
+            inputValue(value);
 
-            done();
+            setTimeout(() => {
+              checkValue(value);
+
+              done();
+            }, 200);
           }, 200);
         }, 200);
-      }, 200);
-    }).catch(done);
+      })
+      .catch(done);
   });
 
-  it('Should format value to uppercase', (done) => {
+  it('Should format value to uppercase', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].case = 'uppercase';
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const component = form.getComponent('textField');
-      const inputValue = (value) => {
-        const input = component.refs.input[0];
-        const inputEvent = new Event('input');
-        input.value = value;
-        input.dispatchEvent(inputEvent);
-      };
+    Formio.createForm(element, form)
+      .then((form) => {
+        const component = form.getComponent('textField');
+        const inputValue = (value) => {
+          const input = component.refs.input[0];
+          const inputEvent = new Event('input');
+          input.value = value;
+          input.dispatchEvent(inputEvent);
+        };
 
-      const checkValue = (value) => {
-        assert.equal(component.dataValue, value.toUpperCase(), 'Should format value to uppercase');
-        assert.equal(component.getValue(), value.toUpperCase(), 'Should format value to uppercase');
-      };
+        const checkValue = (value) => {
+          assert.equal(
+            component.dataValue,
+            value.toUpperCase(),
+            'Should format value to uppercase',
+          );
+          assert.equal(
+            component.getValue(),
+            value.toUpperCase(),
+            'Should format value to uppercase',
+          );
+        };
 
-      let value = 'SoMe Value';
-      inputValue(value);
-      setTimeout(() => {
-        checkValue(value);
-        value = 'test 1 value 1';
+        let value = 'SoMe Value';
         inputValue(value);
-
         setTimeout(() => {
           checkValue(value);
-          value = '';
+          value = 'test 1 value 1';
           inputValue(value);
 
           setTimeout(() => {
             checkValue(value);
+            value = '';
+            inputValue(value);
 
-            done();
+            setTimeout(() => {
+              checkValue(value);
+
+              done();
+            }, 100);
           }, 100);
         }, 100);
-      }, 100);
-    }).catch(done);
+      })
+      .catch(done);
   });
 
-  it('Should format value to lowercase', (done) => {
+  it('Should format value to lowercase', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].case = 'lowercase';
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const component = form.getComponent('textField');
-      const inputValue = (value) => {
-        const input = component.refs.input[0];
-        const inputEvent = new Event('input');
-        input.value = value;
-        input.dispatchEvent(inputEvent);
-      };
+    Formio.createForm(element, form)
+      .then((form) => {
+        const component = form.getComponent('textField');
+        const inputValue = (value) => {
+          const input = component.refs.input[0];
+          const inputEvent = new Event('input');
+          input.value = value;
+          input.dispatchEvent(inputEvent);
+        };
 
-      const checkValue = (value) => {
-        assert.equal(component.dataValue, value.toLowerCase(), 'Should format value to lowercase (1)');
-        assert.equal(component.getValue(), value.toLowerCase(), 'Should format value to lowercase (2)');
-      };
+        const checkValue = (value) => {
+          assert.equal(
+            component.dataValue,
+            value.toLowerCase(),
+            'Should format value to lowercase (1)',
+          );
+          assert.equal(
+            component.getValue(),
+            value.toLowerCase(),
+            'Should format value to lowercase (2)',
+          );
+        };
 
-      let value = 'SoMe Value';
-      inputValue(value);
-      setTimeout(() => {
-        checkValue(value);
-        value = 'TEST 1 VALUE (1)';
+        let value = 'SoMe Value';
         inputValue(value);
-
         setTimeout(() => {
           checkValue(value);
-          value = '';
+          value = 'TEST 1 VALUE (1)';
           inputValue(value);
 
           setTimeout(() => {
             checkValue(value);
+            value = '';
+            inputValue(value);
 
-            done();
+            setTimeout(() => {
+              checkValue(value);
+
+              done();
+            }, 100);
           }, 100);
         }, 100);
-      }, 100);
-    }).catch(done);
+      })
+      .catch(done);
   });
 
-  it('Should render and open/close calendar on click', (done) => {
+  it('Should render and open/close calendar on click', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].widget = {
       allowInput: true,
@@ -1088,34 +1361,112 @@ describe('TextField Component', () => {
       mode: 'single',
       noCalendar: false,
       saveAs: 'date',
-      'time_24hr': false,
+      time_24hr: false,
       type: 'calendar',
       useLocaleSettings: false,
     };
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const component = form.getComponent('textField');
-      const clickElem = (path) => {
-        const elem = _.get(component, path);
-        const clickEvent = new Event('click');
-        elem.dispatchEvent(clickEvent);
-      };
-      const checkCalendarState = (open) => {
-        const calendar = document.querySelector('.flatpickr-calendar');
-        assert.equal(calendar.classList.contains('open'), open, `${open ? 'Should open calendar' : 'Should close calendar'}`);
-      };
+    Formio.createForm(element, form)
+      .then((form) => {
+        const component = form.getComponent('textField');
+        const clickElem = (path) => {
+          const elem = _.get(component, path);
+          const clickEvent = new Event('click');
+          elem.dispatchEvent(clickEvent);
+        };
+        const checkCalendarState = (open) => {
+          const calendar = document.querySelector('.flatpickr-calendar');
+          assert.equal(
+            calendar.classList.contains('open'),
+            open,
+            `${open ? 'Should open calendar' : 'Should close calendar'}`,
+          );
+        };
 
-      assert.equal(component.widget.settings.type, 'calendar', 'Should create calendar widget');
-      clickElem('refs.suffix[0]');
-
-       setTimeout(() => {
-        checkCalendarState(true);
+        assert.equal(component.widget.settings.type, 'calendar', 'Should create calendar widget');
         clickElem('refs.suffix[0]');
 
         setTimeout(() => {
+          checkCalendarState(true);
+          clickElem('refs.suffix[0]');
+
+          setTimeout(() => {
+            checkCalendarState(false);
+            clickElem('element.children[1].children[0].children[1]');
+
+            setTimeout(() => {
+              checkCalendarState(true);
+              clickElem('refs.suffix[0]');
+
+              setTimeout(() => {
+                checkCalendarState(false);
+                document.body.innerHTML = '';
+                done();
+              }, 300);
+            }, 300);
+          }, 300);
+        }, 300);
+      })
+      .catch(done);
+  });
+
+  it('Should set value into calendar', function (done) {
+    const form = _.cloneDeep(comp6);
+    form.components[0].widget = {
+      allowInput: true,
+      altInput: true,
+      clickOpens: true,
+      dateFormat: 'dd-MM-yyyy',
+      enableDate: true,
+      enableTime: true,
+      format: 'dd-MM-yyyy',
+      hourIncrement: 1,
+      minuteIncrement: 5,
+      mode: 'single',
+      noCalendar: false,
+      saveAs: 'date',
+      time_24hr: false,
+      type: 'calendar',
+      useLocaleSettings: false,
+    };
+    const element = document.createElement('div');
+
+    Formio.createForm(element, form)
+      .then((form) => {
+        const component = form.getComponent('textField');
+        const clickElem = (path) => {
+          const elem = _.get(component, path);
+          const clickEvent = new Event('click');
+          elem.dispatchEvent(clickEvent);
+        };
+        const checkCalendarState = (open, selectedDay) => {
+          const calendar = document.querySelector('.flatpickr-calendar');
+          assert.equal(
+            calendar.classList.contains('open'),
+            open,
+            `${open ? 'Should open calendar' : 'Should close calendar'}`,
+          );
+          if (selectedDay) {
+            const day = calendar.querySelector('.flatpickr-day.selected').textContent;
+            assert.equal(day, selectedDay, 'Should select correct day');
+          }
+        };
+
+        const date = '16-03-2031';
+
+        component.setValue(date);
+
+        setTimeout(() => {
           checkCalendarState(false);
-          clickElem('element.children[1].children[0].children[1]');
+          const widget = component.element.querySelector('.flatpickr-input').widget;
+
+          assert.equal(component.getValue(), date, 'Should set text field value');
+          assert.equal(widget.calendar.input.value, date, 'Should set flatpickr value');
+          assert.equal(widget.calendar.currentMonth, 2, 'Should set correct month');
+          assert.equal(widget.calendar.currentYear, 2031, 'Should set correct year');
+
+          clickElem('refs.suffix[0]');
 
           setTimeout(() => {
             checkCalendarState(true);
@@ -1128,11 +1479,11 @@ describe('TextField Component', () => {
             }, 300);
           }, 300);
         }, 300);
-      }, 300);
-    }).catch(done);
+      })
+      .catch(done);
   });
 
-  it('Should set value into calendar', (done) => {
+  it('Should allow manual input and set value on blur if calendar widget is enabled with allowed input', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].widget = {
       allowInput: true,
@@ -1147,139 +1498,79 @@ describe('TextField Component', () => {
       mode: 'single',
       noCalendar: false,
       saveAs: 'date',
-     'time_24hr': false,
+      time_24hr: false,
       type: 'calendar',
       useLocaleSettings: false,
     };
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const component = form.getComponent('textField');
-      const clickElem = (path) => {
-        const elem = _.get(component, path);
-        const clickEvent = new Event('click');
-        elem.dispatchEvent(clickEvent);
-      };
-      const checkCalendarState = (open, selectedDay) => {
-        const calendar = document.querySelector('.flatpickr-calendar');
-        assert.equal(calendar.classList.contains('open'), open, `${open ? 'Should open calendar' : 'Should close calendar'}`);
-        if (selectedDay) {
-          const day = calendar.querySelector('.flatpickr-day.selected').textContent;
-          assert.equal(day, selectedDay, 'Should select correct day');
-        }
-      };
+    Formio.createForm(element, form)
+      .then((form) => {
+        const component = form.getComponent('textField');
+        const clickElem = (path, element) => {
+          const elem = element || _.get(component, path);
+          const clickEvent = new Event('click');
+          elem.dispatchEvent(clickEvent);
+        };
+        const checkCalendarState = (open, selectedDay) => {
+          const calendar = document.querySelector('.flatpickr-calendar');
+          assert.equal(
+            calendar.classList.contains('open'),
+            open,
+            `${open ? 'Should open calendar' : 'Should close calendar'}`,
+          );
+          if (selectedDay) {
+            const day = calendar.querySelector('.flatpickr-day.selected').textContent;
+            assert.equal(day, selectedDay, 'Should select correct day');
+          }
+        };
 
-      const date = '16-03-2031';
+        const triggerDateInputEvent = (eventName, value) => {
+          const dateInput = component.element.querySelector('.form-control.input');
+          const event = new Event(eventName);
+          if (eventName === 'input') {
+            dateInput.value = value;
+          }
+          dateInput.dispatchEvent(event);
+        };
 
-      component.setValue(date);
-
-       setTimeout(() => {
-        checkCalendarState(false);
-        const widget = component.element.querySelector('.flatpickr-input').widget;
-
-        assert.equal(component.getValue(), date, 'Should set text field value');
-        assert.equal(widget.calendar.input.value, date, 'Should set flatpickr value');
-        assert.equal(widget.calendar.currentMonth, 2, 'Should set correct month');
-        assert.equal(widget.calendar.currentYear, 2031, 'Should set correct year');
-
-        clickElem('refs.suffix[0]');
-
-        setTimeout(() => {
-          checkCalendarState(true);
-          clickElem('refs.suffix[0]');
-
-          setTimeout(() => {
-            checkCalendarState(false);
-            document.body.innerHTML = '';
-            done();
-          }, 300);
-        }, 300);
-      }, 300);
-    }).catch(done);
-  });
-
-  it('Should allow manual input and set value on blur if calendar widget is enabled with allowed input', (done) => {
-    const form = _.cloneDeep(comp6);
-    form.components[0].widget = {
-      allowInput: true,
-      altInput: true,
-      clickOpens: true,
-      dateFormat: 'dd-MM-yyyy',
-      enableDate: true,
-      enableTime: true,
-      format: 'dd-MM-yyyy',
-      hourIncrement: 1,
-      minuteIncrement: 5,
-      mode: 'single',
-      noCalendar: false,
-      saveAs: 'date',
-     'time_24hr': false,
-      type: 'calendar',
-      useLocaleSettings: false,
-    };
-    const element = document.createElement('div');
-
-    Formio.createForm(element, form).then(form => {
-      const component = form.getComponent('textField');
-      const clickElem = (path, element) => {
-        const elem = element || _.get(component, path);
-        const clickEvent = new Event('click');
-        elem.dispatchEvent(clickEvent);
-      };
-      const checkCalendarState = (open, selectedDay) => {
-        const calendar = document.querySelector('.flatpickr-calendar');
-        assert.equal(calendar.classList.contains('open'), open, `${open ? 'Should open calendar' : 'Should close calendar'}`);
-        if (selectedDay) {
-          const day = calendar.querySelector('.flatpickr-day.selected').textContent;
-          assert.equal(day, selectedDay, 'Should select correct day');
-        }
-      };
-
-      const triggerDateInputEvent = (eventName, value) => {
-        const dateInput = component.element.querySelector('.form-control.input');
-        const event = new Event(eventName);
-        if (eventName === 'input') {
-          dateInput.value = value;
-        }
-        dateInput.dispatchEvent(event);
-      };
-
-      triggerDateInputEvent('focus');
-
-       setTimeout(() => {
-        const date = '21-01-2001';
-        checkCalendarState(true);
-        triggerDateInputEvent('input', date);
+        triggerDateInputEvent('focus');
 
         setTimeout(() => {
+          const date = '21-01-2001';
           checkCalendarState(true);
-          triggerDateInputEvent('blur');
+          triggerDateInputEvent('input', date);
 
           setTimeout(() => {
-            checkCalendarState(true, 21);
-
-            assert.equal(component.getValue(), date, 'Should set text field value');
-            const widget = component.element.querySelector('.flatpickr-input').widget;
-            assert.equal(widget.calendar.input.value, date, 'Should set flatpickr value');
-            assert.equal(widget.calendar.currentMonth, 0, 'Should set correct month');
-            assert.equal(widget.calendar.currentYear, 2001, 'Should set correct year');
-
-            clickElem('refs.suffix[0]');
+            checkCalendarState(true);
+            triggerDateInputEvent('blur');
 
             setTimeout(() => {
-              checkCalendarState(false);
-              assert.equal(component.getValue(), date, 'Should save text field value');
+              checkCalendarState(true, 21);
 
-              document.body.innerHTML = '';
-              done();
+              assert.equal(component.getValue(), date, 'Should set text field value');
+              const widget = component.element.querySelector('.flatpickr-input').widget;
+              assert.equal(widget.calendar.input.value, date, 'Should set flatpickr value');
+              assert.equal(widget.calendar.currentMonth, 0, 'Should set correct month');
+              assert.equal(widget.calendar.currentYear, 2001, 'Should set correct year');
+
+              clickElem('refs.suffix[0]');
+
+              setTimeout(() => {
+                checkCalendarState(false);
+                assert.equal(component.getValue(), date, 'Should save text field value');
+
+                document.body.innerHTML = '';
+                done();
+              }, 300);
             }, 300);
           }, 300);
         }, 300);
-      }, 300);
-    }).catch(done);
+      })
+      .catch(done);
   });
 
-  it('Should allow removing date value if calendar widget is enabled with allowed input', (done) => {
+  it('Should allow removing date value if calendar widget is enabled with allowed input', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].widget = {
       allowInput: true,
@@ -1294,214 +1585,281 @@ describe('TextField Component', () => {
       mode: 'single',
       noCalendar: false,
       saveAs: 'date',
-     'time_24hr': false,
+      time_24hr: false,
       type: 'calendar',
       useLocaleSettings: false,
     };
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(form => {
-      const component = form.getComponent('textField');
-      const clickElem = (path, element) => {
-        const elem = element || _.get(component, path);
-        const clickEvent = new Event('click');
-        elem.dispatchEvent(clickEvent);
-      };
+    Formio.createForm(element, form)
+      .then((form) => {
+        const component = form.getComponent('textField');
+        const clickElem = (path, element) => {
+          const elem = element || _.get(component, path);
+          const clickEvent = new Event('click');
+          elem.dispatchEvent(clickEvent);
+        };
 
-      const checkCalendarState = (open, selectedDay, noSelectedDay) => {
-        const calendar = document.querySelector('.flatpickr-calendar');
-        assert.equal(calendar.classList.contains('open'), open, `${open ? 'Should open calendar' : 'Should close calendar'}`);
-        if (selectedDay) {
-          const day = calendar.querySelector('.flatpickr-day.selected').textContent;
-          assert.equal(day, selectedDay, 'Should select correct day');
-        }
-        if (noSelectedDay) {
-          const day = calendar.querySelector('.flatpickr-day.selected');
-          assert.equal(!!day, false, 'Should not contain selected day');
-        }
-      };
+        const checkCalendarState = (open, selectedDay, noSelectedDay) => {
+          const calendar = document.querySelector('.flatpickr-calendar');
+          assert.equal(
+            calendar.classList.contains('open'),
+            open,
+            `${open ? 'Should open calendar' : 'Should close calendar'}`,
+          );
+          if (selectedDay) {
+            const day = calendar.querySelector('.flatpickr-day.selected').textContent;
+            assert.equal(day, selectedDay, 'Should select correct day');
+          }
+          if (noSelectedDay) {
+            const day = calendar.querySelector('.flatpickr-day.selected');
+            assert.equal(!!day, false, 'Should not contain selected day');
+          }
+        };
 
-      const triggerDateInputEvent = (eventName, value) => {
-        const dateInput = component.element.querySelector('.form-control.input');
-        const event = new Event(eventName);
-        if (eventName === 'input') {
-          dateInput.value = value;
-        }
-        dateInput.dispatchEvent(event);
-      };
+        const triggerDateInputEvent = (eventName, value) => {
+          const dateInput = component.element.querySelector('.form-control.input');
+          const event = new Event(eventName);
+          if (eventName === 'input') {
+            dateInput.value = value;
+          }
+          dateInput.dispatchEvent(event);
+        };
 
-      let date = '12-03-2009';
-      component.setValue(date);
-      triggerDateInputEvent('focus');
-
-       setTimeout(() => {
-        assert.equal(component.getValue(), date, 'Should set text field value');
-        date = '';
-        checkCalendarState(true);
-        triggerDateInputEvent('input', date);
+        let date = '12-03-2009';
+        component.setValue(date);
+        triggerDateInputEvent('focus');
 
         setTimeout(() => {
+          assert.equal(component.getValue(), date, 'Should set text field value');
+          date = '';
           checkCalendarState(true);
-          triggerDateInputEvent('blur');
+          triggerDateInputEvent('input', date);
 
           setTimeout(() => {
-            checkCalendarState(true, '', true);
-
-            assert.equal(component.getValue(), date, 'Should set text field value');
-            const widget = component.element.querySelector('.flatpickr-input').widget;
-            assert.equal(widget.calendar.input.value, date, 'Should set flatpickr value');
-
-            clickElem('refs.suffix[0]');
+            checkCalendarState(true);
+            triggerDateInputEvent('blur');
 
             setTimeout(() => {
-              checkCalendarState(false);
-              assert.equal(component.getValue(), date, 'Should save text field value');
-              document.body.innerHTML = '';
-              done();
+              checkCalendarState(true, '', true);
+
+              assert.equal(component.getValue(), date, 'Should set text field value');
+              const widget = component.element.querySelector('.flatpickr-input').widget;
+              assert.equal(widget.calendar.input.value, date, 'Should set flatpickr value');
+
+              clickElem('refs.suffix[0]');
+
+              setTimeout(() => {
+                checkCalendarState(false);
+                assert.equal(component.getValue(), date, 'Should save text field value');
+                document.body.innerHTML = '';
+                done();
+              }, 300);
             }, 300);
           }, 300);
         }, 300);
-      }, 300);
-    }).catch(done);
+      })
+      .catch(done);
   });
   // see https://formio.atlassian.net/browse/FIO-9217
-  it('Should allow the populating of a calendar widget–text field component with a custom default value that is a moment datetime', (done) => {
+  it('Should allow the populating of a calendar widget–text field component with a custom default value that is a moment datetime', function (done) {
     const form = _.cloneDeep(formWithCalendarTextField);
     const textFieldComponent = form.components[1];
     textFieldComponent.customDefaultValue = "value=moment('2024-11-13 15:00:00')";
 
     const element = document.createElement('div');
 
-    Formio.createForm(element, form).then(renderedForm => {
-      const renderedTextFieldComponent = renderedForm.getComponent('textField');
-      setTimeout(() => {
-        const input = renderedTextFieldComponent.element.querySelector('.input');
-        assert.equal(input.value, '2024-11-13 03:00 PM');
-        done();
-      }, 200);
-    }).catch(done);
+    Formio.createForm(element, form)
+      .then((renderedForm) => {
+        const renderedTextFieldComponent = renderedForm.getComponent('textField');
+        setTimeout(() => {
+          const input = renderedTextFieldComponent.element.querySelector('.input');
+          assert.equal(input.value, '2024-11-13 03:00 PM');
+          done();
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should preserve the calendar widget settings after field logic is evaluated', async () => {
+  it('Should preserve the calendar widget settings after field logic is evaluated', async function () {
     // see https://formio.atlassian.net/browse/FIO-9385
     // emulate viewing a submission in the portal with { readOnly: true }
-    const form = await Formio.createForm(document.createElement('div'), requiredFieldLogicComp, { readOnly: true });
+    const form = await Formio.createForm(document.createElement('div'), requiredFieldLogicComp, {
+      readOnly: true,
+    });
     const textFieldComponent = form.getComponent('textField');
-     assert.equal(textFieldComponent.widget.settings.readOnly, true);
+    assert.equal(textFieldComponent.widget.settings.readOnly, true);
   });
 
-  it('Test Display mask', (done) => {
+  it('Test Display mask', function (done) {
     const element = document.createElement('div');
 
-    Formio.createForm(element, withDisplayAndInputMasks).then(form => {
-      const textField = form.getComponent(['textField']);
-      const textFieldDisplayMask = form.getComponent(['textFieldDisplayMask']);
-      const textFieldDisplayAndInputMasks = form.getComponent(['textFieldDisplayAndInputMasks']);
-      const textFieldDisplayAndInputMasksReverse = form.getComponent(['textFieldDisplayAndInputMasksReverse']);
+    Formio.createForm(element, withDisplayAndInputMasks)
+      .then((form) => {
+        const textField = form.getComponent([
+          'textField',
+        ]);
+        const textFieldDisplayMask = form.getComponent([
+          'textFieldDisplayMask',
+        ]);
+        const textFieldDisplayAndInputMasks = form.getComponent([
+          'textFieldDisplayAndInputMasks',
+        ]);
+        const textFieldDisplayAndInputMasksReverse = form.getComponent([
+          'textFieldDisplayAndInputMasksReverse',
+        ]);
 
-      Harness.dispatchEvent(
-        'input',
-        form.element,
-        '[name="data[textField]"',
-        (input) => input.value = '123123',
-      );
-      Harness.dispatchEvent(
-        'input',
-        form.element,
-        '[name="data[textFieldDisplayMask]"',
-        (input) => input.value = '123123',
-      );
-      Harness.dispatchEvent(
-        'input',
-        form.element,
-        '[name="data[textFieldDisplayAndInputMasks]"',
-        (input) => input.value = '123123',
-      );
-      Harness.dispatchEvent(
-        'input',
-        form.element,
-        '[name="data[textFieldDisplayAndInputMasksReverse]"',
-        (input) => input.value = '123123',
-      );
+        Harness.dispatchEvent(
+          'input',
+          form.element,
+          '[name="data[textField]"',
+          (input) => (input.value = '123123'),
+        );
+        Harness.dispatchEvent(
+          'input',
+          form.element,
+          '[name="data[textFieldDisplayMask]"',
+          (input) => (input.value = '123123'),
+        );
+        Harness.dispatchEvent(
+          'input',
+          form.element,
+          '[name="data[textFieldDisplayAndInputMasks]"',
+          (input) => (input.value = '123123'),
+        );
+        Harness.dispatchEvent(
+          'input',
+          form.element,
+          '[name="data[textFieldDisplayAndInputMasksReverse]"',
+          (input) => (input.value = '123123'),
+        );
 
-      setTimeout(() => {
-        Harness.getInputValue(textField, 'data[textField]', '123-123');
-        Harness.getInputValue(textFieldDisplayMask, 'data[textFieldDisplayMask]', '123-123');
-        Harness.getInputValue(textFieldDisplayAndInputMasks, 'data[textFieldDisplayAndInputMasks]', '+1(23)-123');
-        Harness.getInputValue(textFieldDisplayAndInputMasksReverse, 'data[textFieldDisplayAndInputMasksReverse]', '123-123');
+        setTimeout(() => {
+          Harness.getInputValue(textField, 'data[textField]', '123-123');
+          Harness.getInputValue(textFieldDisplayMask, 'data[textFieldDisplayMask]', '123-123');
+          Harness.getInputValue(
+            textFieldDisplayAndInputMasks,
+            'data[textFieldDisplayAndInputMasks]',
+            '+1(23)-123',
+          );
+          Harness.getInputValue(
+            textFieldDisplayAndInputMasksReverse,
+            'data[textFieldDisplayAndInputMasksReverse]',
+            '123-123',
+          );
 
-        assert.equal(
-          textField.dataValue,
-          '123-123',
-          'If only Input mask is set, it should affect both value and view',
-        );
-        assert.equal(
-          textFieldDisplayMask.dataValue,
-          '123123',
-          'If only Display mask is set, it should affect only view',
-        );
-        assert.equal(
-          textFieldDisplayAndInputMasks.dataValue,
-          '123-123',
-          'If both Input and Display masks are set, the Input mask should be applied to value',
-        );
-        assert.equal(
-          textFieldDisplayAndInputMasksReverse.dataValue,
-          '+1(23)-123',
-          'If both Input and Display masks are set, the Input mask should be applied to value',
-        );
-        done();
-      }, 200);
-    }).catch(done);
+          assert.equal(
+            textField.dataValue,
+            '123-123',
+            'If only Input mask is set, it should affect both value and view',
+          );
+          assert.equal(
+            textFieldDisplayMask.dataValue,
+            '123123',
+            'If only Display mask is set, it should affect only view',
+          );
+          assert.equal(
+            textFieldDisplayAndInputMasks.dataValue,
+            '123-123',
+            'If both Input and Display masks are set, the Input mask should be applied to value',
+          );
+          assert.equal(
+            textFieldDisplayAndInputMasksReverse.dataValue,
+            '+1(23)-123',
+            'If both Input and Display masks are set, the Input mask should be applied to value',
+          );
+          done();
+        }, 200);
+      })
+      .catch(done);
   });
 
-  it('Should render HTML', (done) => {
+  it('Should render HTML', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputFormat = 'html';
     const element = document.createElement('div');
 
     Formio.createForm(element, form, {
-      readOnly: true
-    }).then(form => {
-      form.setSubmission({
-        data: {
-          textField: '<b>HTML!</b>'
-        }
-      });
-      setTimeout(() => {
-        const textField = form.getComponent('textField');
-        textField.loadRefs(element, {
-          value: 'multiple'
+      readOnly: true,
+    })
+      .then((form) => {
+        form.setSubmission({
+          data: {
+            textField: '<b>HTML!</b>',
+          },
         });
-        assert.equal(textField.refs.value[0].innerHTML, '<b>HTML!</b>');
-        done();
-      }, 300);
-    }).catch(done);
+        setTimeout(() => {
+          const textField = form.getComponent('textField');
+          textField.loadRefs(element, {
+            value: 'multiple',
+          });
+          assert.equal(textField.refs.value[0].innerHTML, '<b>HTML!</b>');
+          done();
+        }, 300);
+      })
+      .catch(done);
   });
 
-  it('Should render plain text', (done) => {
+  it('Should render plain text', function (done) {
     const form = _.cloneDeep(comp6);
     form.components[0].inputFormat = 'plain';
     const element = document.createElement('div');
 
     Formio.createForm(element, form, {
-      readOnly: true
-    }).then(form => {
-      form.setSubmission({
-        data: {
-          textField: '<b>Plain!</b>'
-        }
-      });
-      setTimeout(() => {
-        const textField = form.getComponent('textField');
-        assert.equal(textField.refs.input[0].value, '<b>Plain!</b>');
-        done();
-      }, 300);
-    }).catch(done);
+      readOnly: true,
+    })
+      .then((form) => {
+        form.setSubmission({
+          data: {
+            textField: '<b>Plain!</b>',
+          },
+        });
+        setTimeout(() => {
+          const textField = form.getComponent('textField');
+          assert.equal(textField.refs.input[0].value, '<b>Plain!</b>');
+          done();
+        }, 300);
+      })
+      .catch(done);
   });
 
-  describe('TextFields with `multiple` attribute', () => {
-    it('Should normalize the dataValue to an array when a field is marked as multiple', (done) => {
+  it('should not add timezone offset if it does not contain timezone offset information', async function () {
+    const form = await Formio.createForm(document.createElement('div'), comp8, { readOnly: true });
+    await form.setSubmission({
+      data: {
+        textFieldCalendar: '2025-05-20T12:00:00',
+      },
+      metadata: {
+        timezone: 'Europe/Berlin',
+      },
+    });
+    const textFieldComponent = form.getComponent('textFieldCalendar');
+    assert.equal(
+      textFieldComponent.element.querySelector('.form-control.form-control.input').value,
+      '2025-05-20 12:00',
+    );
+  });
+
+  it('should add timezone offset if it does contain timezone offset information', async function () {
+    const form = await Formio.createForm(document.createElement('div'), comp8, { readOnly: true });
+    await form.setSubmission({
+      data: {
+        textFieldCalendar: '2025-05-20T12:00:00+02:00',
+      },
+      metadata: {
+        timezone: 'Europe/Berlin',
+      },
+    });
+    await wait(1000);
+    const textFieldComponent = form.getComponent('textFieldCalendar');
+    assert.equal(
+      textFieldComponent.element.querySelector('.form-control.form-control.input').value,
+      '2025-05-20 12:00 CEST',
+    );
+  });
+
+  describe('TextFields with `multiple` attribute', function () {
+    it('Should normalize the dataValue to an array when a field is marked as multiple', function (done) {
       const element = document.createElement('div');
 
       Formio.createForm(element, {
@@ -1514,19 +1872,25 @@ describe('TextField Component', () => {
             key: 'textField',
             type: 'textfield',
             input: true,
-            multiple: true
-          }
-        ]
-      }).then((form) => {
-        const textField = form.getComponent('textField');
-        textField.setValue('hello, world');
-        assert.deepEqual(textField.dataValue, ['hello, world']);
-        assert.deepEqual(form.data.textField, ['hello, world']);
-        done();
-      }).catch(done);
+            multiple: true,
+          },
+        ],
+      })
+        .then((form) => {
+          const textField = form.getComponent('textField');
+          textField.setValue('hello, world');
+          assert.deepEqual(textField.dataValue, [
+            'hello, world',
+          ]);
+          assert.deepEqual(form.data.textField, [
+            'hello, world',
+          ]);
+          done();
+        })
+        .catch(done);
     });
 
-    it('Should normalize the dataValue to a string when a field is not marked as multiple', (done) => {
+    it('Should normalize the dataValue to a string when a field is not marked as multiple', function (done) {
       const element = document.createElement('div');
 
       Formio.createForm(element, {
@@ -1538,16 +1902,20 @@ describe('TextField Component', () => {
             validateWhenHidden: false,
             key: 'textField',
             type: 'textfield',
-            input: true
-          }
-        ]
-      }).then((form) => {
-        const textField = form.getComponent('textField');
-        textField.setValue(['hello, world']);
-        assert.deepEqual(textField.dataValue, 'hello, world');
-        assert.deepEqual(form.data.textField, 'hello, world');
-        done();
-      }).catch(done);
-    })
+            input: true,
+          },
+        ],
+      })
+        .then((form) => {
+          const textField = form.getComponent('textField');
+          textField.setValue([
+            'hello, world',
+          ]);
+          assert.deepEqual(textField.dataValue, 'hello, world');
+          assert.deepEqual(form.data.textField, 'hello, world');
+          done();
+        })
+        .catch(done);
+    });
   });
 });
