@@ -739,6 +739,8 @@ export default class Webform extends NestedDataComponent {
               ...resolveFlags,
             };
           }
+          this._submission = {};
+          this._data = {};
           this.onSetSubmission(submission, flags);
           return this.submissionReadyResolve(submission);
         },
@@ -1279,6 +1281,7 @@ export default class Webform extends NestedDataComponent {
     this.setPristine(true);
     // We want to return the submitted submission and setValue will mutate the submission so cloneDeep it here.
     this.setValue(fastCloneDeep(submission), {
+      noDefault: true,
       noValidate: true,
       noCheck: true,
     });

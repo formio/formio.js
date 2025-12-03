@@ -105,6 +105,76 @@ if (_.has(Formio, 'Components.setComponents')) {
 describe('Webform tests', function () {
   this.retries(3);
 
+  it('Should not set default values if value is not provided in data object and noDefault flag is passed', function (done) {
+    const element = document.createElement('div');
+    const form = {
+      components: [
+        {
+          label: 'Number',
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          defaultValue: 4,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          validateWhenHidden: false,
+          key: 'number',
+          type: 'number',
+          input: true,
+        },
+        {
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textField',
+          type: 'textfield',
+          input: true,
+          defaultValue: 'test',
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function (a, b, c, d, e) {
+      return Promise.resolve(e);
+    };
+
+    Formio.createForm(element, form)
+      .then((instance) => {
+        const numberComp = instance.getComponent('number');
+        assert.equal(numberComp.dataValue, 4);
+        const inputEvent = new Event('input');
+        const numberInput = numberComp.refs.input[0];
+        numberInput.value = '';
+        numberInput.dispatchEvent(inputEvent);
+        instance.formio = new Formio('http://localhost:3000/test');
+        setTimeout(() => {
+          assert.equal(!!numberComp.dataValue, false);
+
+          instance.submit().then(() => {
+            setTimeout(() => {
+              assert.deepEqual(instance.data, { textField: 'test', submit: false });
+              assert.equal(!!numberComp.dataValue, false);
+              Formio.makeRequest = originalMakeRequest;
+              done();
+            });
+          }, 100);
+        }, 200);
+      })
+      .catch(done);
+  });
+
   it('Should not submit subform if it is hidden and clearOnHide is enabled', function (done) {
     const element = document.createElement('div');
     const form = fastCloneDeep(formWithHiddenSubform);
@@ -6939,6 +7009,49 @@ describe('Webform tests', function () {
         done();
       })
       .catch(done);
+  });
+
+  it('Should handle multiple set submissions correctly and should not modify submissionOne or submissionTwo', function () {
+    const formJson = {
+      components: [
+        {
+          label: "Text Field",
+          applyMaskOn: "change",
+          tableView: true,
+          validateWhenHidden: false,
+          key: "textField",
+          type: "textfield",
+          input: true,
+        },
+      ],
+    };
+    const submissionOne = {
+      data: {
+        textField: "submission 1",
+      },
+    }
+    const submissionTwo = {
+      data: {
+        textField: "submission 2",
+      },
+    }
+    return Formio.createForm(document.createElement('div'), formJson).then(async (form) => {
+      await form.setSubmission(submissionOne);
+      await form.setSubmission(submissionTwo);
+      await form.setSubmission(submissionOne);
+
+      assert.deepEqual(form.data, {textField: 'submission 1'});
+      assert.deepEqual(submissionOne, {
+        data: {
+          textField: "submission 1",
+        },
+      });
+      assert.deepEqual(submissionTwo, {
+        data: {
+          textField: "submission 2",
+        },
+      })
+    });
   });
 
   /* eslint-disable mocha/no-setup-in-describe */
