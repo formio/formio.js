@@ -740,9 +740,20 @@ export default class SelectComponent extends ListComponent {
           ? JSON.stringify(search)
           : search;
 
-      query[this.component.searchField] = this.component.searchField.endsWith('__regex')
-        ? _.escapeRegExp(searchValue)
-        : searchValue;
+      let searchFieldName = this.component.searchField;
+      if (searchFieldName.endsWith('__regex')) {
+        const isNumeric = !isNaN(searchValue) && !isNaN(parseFloat(searchValue)) && isFinite(searchValue);
+        if (isNumeric) {
+          // Convert __regex to __eq for numeric searches
+          searchFieldName = searchFieldName.replace(/__regex$/, '__eq');
+          query[searchFieldName] = searchValue;
+        } else {
+          // Use regex for non-numeric searches
+          query[searchFieldName] = _.escapeRegExp(searchValue);
+        }
+      } else {
+        query[searchFieldName] = searchValue;
+      }
     }
 
     // If they wish to return only some fields.
@@ -1929,7 +1940,7 @@ export default class SelectComponent extends ListComponent {
   asString(value, options = {}) {
     value = value ?? this.getValue();
 
-    if (options.modalPreview || this.inDataTable) {
+    if (options.modalPreview || (this.inDataTable && this.component.dataSrc !== 'values')) {
       if (this.inDataTable) {
         value = this.undoValueTyping(value);
       }
