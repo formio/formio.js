@@ -11,5 +11,22 @@ import comp11 from './comp11';
 import comp12 from './comp12';
 import comp13 from './comp13';
 import comp14 from './comp14';
+import comp15 from './comp15';
 import requiredFieldLogicComp from './requiredFieldLogicComp';
-export { comp1, comp2, comp3, comp5, comp6, comp7, comp8, comp9, comp10, comp11, comp12, comp13, comp14, requiredFieldLogicComp };
+export {
+  comp1,
+  comp2,
+  comp3,
+  comp5,
+  comp6,
+  comp7,
+  comp8,
+  comp9,
+  comp10,
+  comp11,
+  comp12,
+  comp13,
+  comp14,
+  comp15,
+  requiredFieldLogicComp,
+};
