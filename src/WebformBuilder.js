@@ -1160,6 +1160,8 @@ export default class WebformBuilder extends Component {
     }
 
     return rebuild.then(() => {
+      // Get the updated `toIndex` after the component has been inserted/rebuilt
+      const toIndex = _.findIndex(target.formioContainer, { key: info.key });
       this.emit(
         'addComponent',
         info,
@@ -1168,6 +1170,20 @@ export default class WebformBuilder extends Component {
         index,
         isNew && !this.options.noNewEdit && !info.noNewEdit,
       );
+      // If this is not a new component — it means it was moved
+      if (!isNew) {
+        const payload = {
+          component: info,
+          parent,
+          path,
+          fromIndex: index,
+          toIndex,
+          timestamp: new Date()
+        };
+        // New event that allows explicit tracking of reordering
+        this.emit('moveComponent', payload);
+      }
+    
       if (!isNew || this.options.noNewEdit || info.noNewEdit) {
         this.emit('change', this.form);
       }
