@@ -2,6 +2,7 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import Harness from '../harness';
 import TextFieldComponent from '../../src/components/textfield/TextField';
+import TextFieldEditDisplay from '../../src/components/textfield/editForm/TextField.edit.display';
 import { Formio } from '../../src/Formio';
 import 'flatpickr';
 import { wait } from '../util';
@@ -1689,6 +1690,42 @@ describe('TextField Component', function () {
     });
     const textFieldComponent = form.getComponent('textField');
     assert.equal(textFieldComponent.widget.settings.readOnly, true);
+  });
+
+  it('Should preserve widget type when typing invalid JSON in widget settings', function () {
+    const widgetTypeComponent = TextFieldEditDisplay.find((comp) => comp.key === 'widget.type');
+    const widgetSettingsComponent = TextFieldEditDisplay.find((comp) => comp.key === 'widget');
+
+    const context = {
+      data: {
+        'widget.type': 'calendar',
+        widget: {
+          type: 'calendar',
+          dateFormat: 'dd-MM-yyyy',
+        },
+      },
+      instance: {
+        _currentForm: {
+          options: {
+            editComponent: {
+              widget: {
+                type: 'calendar',
+                dateFormat: 'dd-MM-yyyy',
+              },
+            },
+          },
+        },
+      },
+    };
+
+    // User types a few characters - widget becomes invalid JSON string
+    context.data.widget = '{"dateFormat": "inval';
+
+    const widgetType = widgetTypeComponent.calculateValue(context);
+    assert.equal(widgetType, 'calendar', 'Widget type should remain calendar when typing invalid JSON');
+
+    widgetSettingsComponent.onChange(context);
+    assert.equal(context.data['widget.type'], 'calendar', 'Widget type should be preserved in data');
   });
 
   it('Test Display mask', function (done) {
