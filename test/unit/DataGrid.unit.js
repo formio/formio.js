@@ -5,6 +5,7 @@ import sinon from 'sinon';
 import Harness from '../harness';
 import DataGridComponent from '../../src/components/datagrid/DataGrid';
 import { Formio } from '../../src/Formio';
+import { wait } from '../util';
 import {
   comp1,
   comp2,
@@ -19,6 +20,7 @@ import {
   comp11,
   comp12,
   comp13,
+  comp14,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
@@ -163,21 +165,30 @@ describe('DataGrid Component', function () {
       .catch(done);
   });
 
-  it('Should get and set values within the grid.', function () {
-    return Harness.testCreate(DataGridComponent, comp1).then((component) => {
-      Harness.testSetGet(component, [
-        {
-          make: 'Jeep',
-          model: 'Wrangler',
-          year: 1997,
-        },
-        {
-          make: 'Chevy',
-          model: 'Tahoe',
-          year: 2014,
-        },
-      ]);
-    });
+  it('Should not display custom validation error when adding a row', async () => {
+    const form = await Formio.createForm(document.createElement('div'), comp14)
+    const datagrid = form.getComponent('dataGrid');
+    datagrid.addRow();
+    await wait(300);
+    const dataGrid = form.element.querySelector('.formio-component-datagrid');
+    const errorContainer = dataGrid.querySelector(':scope > [ref="messageContainer"]');
+    assert.equal(errorContainer.textContent, "");
+  })
+
+  it('Should get and set values within the grid.', async function () {
+    const component = await Harness.testCreate(DataGridComponent, comp1);
+    Harness.testSetGet(component, [
+      {
+        make: 'Jeep',
+        model: 'Wrangler',
+        year: 1997,
+      },
+      {
+        make: 'Chevy',
+        model: 'Tahoe',
+        year: 2014,
+      },
+    ]);
   });
 
   it('Should be able to add another row.', function () {

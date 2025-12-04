@@ -11,6 +11,7 @@ import comp10 from './comp10';
 import comp11 from './comp11';
 import comp12 from './comp12';
 import comp13 from './comp13';
+import comp14 from './comp14';
 import withDefValue from './comp-with-def-value';
 import withRowGroupsAndDefValue from './comp-row-groups-with-def-value';
 import modalWithRequiredFields from './comp-modal-with-required-fields';
@@ -40,6 +41,7 @@ export {
   comp11,
   comp12,
   comp13,
+  comp14,
   withCollapsibleRowGroups,
   withConditionalFieldsAndValidations,
   withDefValue,
