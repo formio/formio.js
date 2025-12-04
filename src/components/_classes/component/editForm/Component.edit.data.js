@@ -59,6 +59,7 @@ export default [
       'Encrypt this field on the server. This is two way encryption which is not suitable for passwords.',
     key: 'encrypted',
     input: true,
+    customConditional: 'show = data.encrypted;',
     logic: [
       {
         name: 'disabled',
