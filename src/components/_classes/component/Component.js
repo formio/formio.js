@@ -2694,7 +2694,7 @@ export default class Component extends Element {
   setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {
     this.clearErrorClasses();
     elements.forEach((element) => {
-      this.setElementInvalid(this.performInputMapping(element), false);
+      this.setElementInvalid(this.performInputMapping(element), hasErrors);
     });
     this.setInputWidgetErrorClasses(elements, hasErrors);
     // do not set error classes for hidden components
@@ -2732,6 +2732,9 @@ export default class Component extends Element {
       this.addClass(element, 'is-invalid');
     } else {
       this.removeClass(element, 'is-invalid');
+    }
+    if (this.type === 'radio' && !invalid) {
+      return;
     }
     element.setAttribute('aria-invalid', invalid ? 'true' : 'false');
   }
