@@ -1098,13 +1098,15 @@ export default class SelectComponent extends ListComponent {
     }
     this.addEventListener(input, this.inputInfo.changeEvent, (event) => {
       let value = null;
+      
       if (this.component.widget === "html5") {
-        value = event.target.value;
-
         if (this.component.multiple) {
           value = Array.from(event.target.selectedOptions).map(opt => opt.value);
+        } else {
+          value = event.target.value;
         }
       }
+      
       this.updateValue(value, {
         modified: true
       })
@@ -1136,6 +1138,16 @@ export default class SelectComponent extends ListComponent {
         ) {
           this.setValue(this.emptyValue);
         }
+      });
+
+      this.addEventListener(input, 'change', (event) => {
+        let value = event.target.value;
+
+        if (this.component.multiple) {
+          value = Array.from(event.target.selectedOptions).map(opt => opt.value);
+        }
+
+        this.setValue(value, { modified: true });
       });
 
       return;
@@ -1657,6 +1669,11 @@ export default class SelectComponent extends ListComponent {
   }
 
   updateValue(value, flags) {
+    if (this.component.widget === 'html5' && this.component.multiple) {
+      if (!Array.isArray(value)) {
+        value = value != null && value !== '' ? [value] : [];
+      }
+    }
     const changed = super.updateValue(value, flags);
     if (changed || !this.selectMetadata || flags.resetValue) {
       if (this.component.multiple && Array.isArray(this.dataValue)) {
@@ -1687,6 +1704,12 @@ export default class SelectComponent extends ListComponent {
   }
 
   setValue(value, flags = {}) {
+    if (this.component.widget === 'html5' && this.component.multiple) {
+        if (!Array.isArray(value)) {
+            value = value != null && value !== '' ? [value] : [];
+        }
+    }
+
     const previousValue = this.dataValue;
     const changed = this.updateValue(value, flags);
     if (

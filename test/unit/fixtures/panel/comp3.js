@@ -18,7 +18,6 @@ export default {
       "components": [
         {
           "collapsible": false,
-          "hideLabel": true,
           "dataGridLabel": true,
           "key": "panel",
           "type": "panel",

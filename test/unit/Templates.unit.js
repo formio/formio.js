@@ -25,6 +25,8 @@ const fixComponent = (instance, index = 0) => {
   }
 };
 
+const normalizeLineEndings = (str) => str.replace(/\r\n/g, '\n');
+
 describe('Rendering Tests', () => {
   Object.keys(templates).forEach(framework => {
     describe(`Framework ${framework}`, () => {
@@ -33,7 +35,9 @@ describe('Rendering Tests', () => {
           it(`Form renders ${form}`, () => {
             return new Form(forms[form], { template: framework }).ready.then(instance => {
               fixComponent(instance);
-              assert.equal(renders[`form-${framework}-${form}`], pretty(instance.render(), { ocd: true }));
+              const expected = normalizeLineEndings(renders[`form-${framework}-${form}`]);
+              const actual = normalizeLineEndings(pretty(instance.render(), { ocd: true }));
+              assert.equal(expected, actual);
             });
           });
         });
@@ -45,7 +49,9 @@ describe('Rendering Tests', () => {
             it(`Renders ${component} for ${framework}`, (done) => {
               const instance = new AllComponents[component]({}, { template: framework });
               fixComponent(instance);
-              assert.equal(renders[`component-${framework}-${component}`], pretty(instance.render(), { ocd: true }));
+              const expected = normalizeLineEndings(renders[`component-${framework}-${component}`]);
+              const actual = normalizeLineEndings(pretty(instance.render(), { ocd: true }));
+              assert.equal(expected, actual);
               done();
             });
             it(`Renders ${component} for ${framework} as required`, (done) => {
@@ -57,7 +63,9 @@ describe('Rendering Tests', () => {
                 template: framework,
               });
               fixComponent(instance);
-              assert.equal(renders[`component-${framework}-${component}-required`], pretty(instance.render(), { ocd: true }));
+              const expected = normalizeLineEndings(renders[`component-${framework}-${component}-required`]);
+              const actual = normalizeLineEndings(pretty(instance.render(), { ocd: true }));
+              assert.equal(expected, actual);
               done();
             });
             it(`Renders ${component} for ${framework} as multiple`, (done) => {
@@ -67,7 +75,9 @@ describe('Rendering Tests', () => {
                 template: framework,
               });
               fixComponent(instance);
-              assert.equal(pretty(renders[`component-${framework}-${component}-multiple`]), pretty(instance.render(), { ocd: true }));
+              const expected = normalizeLineEndings(pretty(renders[`component-${framework}-${component}-multiple`]));
+              const actual = normalizeLineEndings(pretty(instance.render(), { ocd: true }));
+              assert.equal(expected, actual);
               done();
             });
 
@@ -85,7 +95,9 @@ describe('Rendering Tests', () => {
                   });
                   instance.dataValue = value;
                   fixComponent(instance);
-                  assert.equal(renders[`component-${framework}-${component}-html-value${index}`], pretty(instance.render(), { ocd: true }));
+                  const expected = normalizeLineEndings(renders[`component-${framework}-${component}-html-value${index}`]);
+                  const actual = normalizeLineEndings(pretty(instance.render(), { ocd: true }));
+                  assert.equal(expected, actual);
                   done();
                 });
                 it(`Renders ${component} for ${framework} value ${index} as string`, (done) => {
@@ -95,13 +107,13 @@ describe('Rendering Tests', () => {
                     renderMode: 'html',
                   });
                   fixComponent(instance);
-                  const file = renders[`component-${framework}-${component}-string-value${index}`];
-                  const val = instance.getValueAsString(value);
+                  const file = normalizeLineEndings(renders[`component-${framework}-${component}-string-value${index}`]);
+                  const val = normalizeLineEndings(pretty(instance.getValueAsString(value), { ocd: true }));
 
                   if (val !== file) {
                     console.log('er');
                   }
-                  assert.equal(renders[`component-${framework}-${component}-string-value${index}`], pretty(instance.getValueAsString(value), { ocd: true }));
+                  assert.equal(file, val);
                   done();
                 });
               });
