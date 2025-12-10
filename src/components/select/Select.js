@@ -1096,16 +1096,8 @@ export default class SelectComponent extends ListComponent {
     if (!input) {
       return;
     }
-    this.addEventListener(input, this.inputInfo.changeEvent, (event) => {
-      let value = null;
-      if (this.component.widget === "html5") {
-        value = event.target.value;
-
-        if (this.component.multiple) {
-          value = Array.from(event.target.selectedOptions).map(opt => opt.value);
-        }
-      }
-      this.updateValue(value, {
+    this.addEventListener(input, this.inputInfo.changeEvent, () => {
+      this.updateValue(null, {
         modified: true
       })
     });
@@ -1492,17 +1484,22 @@ export default class SelectComponent extends ListComponent {
         value = this.emptyValue;
       }
     } else if (this.refs.selectContainer) {
-      value = this.refs.selectContainer.value;
-
-      if (this.valueProperty === '' || this.isEntireObjectDisplay()) {
+      value = this.component.multiple ? value : this.refs.selectContainer.value;
+      if (this.valueProperty === '' || this.isEntireObjectDisplay() || this.component.multiple) {
         if (value === '') {
           return {};
         }
 
-        const option =
-          this.selectOptions[value] || this.selectOptions.find((option) => option.id === value);
-        if (option && _.isObject(option.value)) {
-          value = option.value;
+        if (!this.component.multiple) {
+          const option =
+            this.selectOptions[value] || this.selectOptions.find((option) => option.id === value);
+
+          if (option && _.isObject(option.value)) {
+            value = option.value;
+          }
+        } else {
+          const options = this.selectOptions.filter((option) => option.element.selected);
+          value = options.map((option) => option.value);
         }
       }
     } else {

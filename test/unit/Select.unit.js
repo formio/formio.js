@@ -40,6 +40,7 @@ import {
   comp29,
   comp30,
   comp31,
+  comp32
 } from './fixtures/select/index';
 
 globalThis.requestAnimationFrame = (cb) => cb();
@@ -1670,6 +1671,21 @@ describe('Select Component', function () {
       assert.equal(options.length, 2);
     });
 
+    it('Should populate value for HTML5 single Select on change event', async function () {
+      const element = document.createElement('div');
+      const form = await Formio.createForm(element, _.cloneDeep(comp32));
+      const select = form.getComponent('select');
+
+      await timeout(200);
+      const selectElement = select.refs.selectContainer;
+      const optionOne = selectElement.options[1];
+      optionOne.selected = true;
+
+      const changeEvent = new Event(select.inputInfo.changeEvent || 'change', { bubbles: true });
+      selectElement.dispatchEvent(changeEvent);
+      assert.deepEqual(select.dataValue, { value: 'Apple', label: 'A' });
+    });
+
     it('Should get string representation of value for Resource DataSrc Type and Entire Object Value Property', async function () {
       const component = await Harness.testCreate(SelectComponent, comp15.components[0]);
       const entireObject = {
@@ -1785,6 +1801,55 @@ describe('Select Component', function () {
 
       const previewSelect = select.element.querySelector('[aria-selected="true"] span');
       assert.equal(previewSelect.innerHTML, 'test1');
+    });
+
+    it('Should convert __regex to __eq for numeric search values when valueProperty points to number field', async function () {
+      const capturedUrls = [];
+      const restoreMakeRequest = mockMakeRequest(
+        (formio, type, url) => {
+          capturedUrls.push(url);
+          return new Promise((resolve) => {
+            resolve([
+              { id: 4, name: 'Item 4' },
+              { id: 5, name: 'Item 5' },
+            ]);
+          });
+        },
+      );
+
+      const restoreDebounce = mockDebounce(0);
+
+      const componentSchema = {
+        label: 'Select',
+        tableView: true,
+        dataSrc: 'url',
+        data: {
+          url: 'https://example.com/api/items',
+        },
+        valueProperty: 'data.id',
+        template: '<span>{{ item.data.id }}</span>',
+        searchField: 'data.id__regex',
+        key: 'select',
+        type: 'select',
+        input: true,
+        lazyLoad: true,
+      };
+
+      const component = await Harness.testCreate(SelectComponent, componentSchema);
+      
+      component.loadItems('https://example.com/api/items', '4', {}, {}, 'GET', null);
+      await timeout(50);
+      let lastUrl = capturedUrls[capturedUrls.length - 1];
+      assert.ok(lastUrl.includes('data.id__eq=4'), 'Should use __eq for numeric search value');
+      assert.ok(!lastUrl.includes('data.id__regex'), 'Should not use __regex for numeric search value');
+
+      component.loadItems('https://example.com/api/items', 'abc', {}, {}, 'GET', null);
+      await timeout(50);
+      lastUrl = capturedUrls[capturedUrls.length - 1];
+      assert.ok(lastUrl.includes('data.id__regex'), 'Should use __regex for non-numeric search value');
+
+      restoreDebounce();
+      restoreMakeRequest();
     });
   });
 });
