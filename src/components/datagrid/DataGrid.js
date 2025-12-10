@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
-import { fastCloneDeep, getFocusableElements, getComponent } from '../../utils';
+import { fastCloneDeep, getFocusableElements, getComponent, eachComponent } from '../../utils';
 import dragula from 'dragula';
 
 export default class DataGridComponent extends NestedArrayComponent {
@@ -126,6 +126,18 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     for (let dIndex = defaultValue.length; dIndex < this.minLength; dIndex++) {
       defaultValue.push({});
+    }
+
+    if (this.component.customDefaultValue) {
+      return defaultValue;
+    }
+
+    if (defaultValue.length === 1 && this.columns) {
+      eachComponent(this.components, (comp, path) => {
+        if (comp.component?.input && comp.defaultValue) {
+          _.set(defaultValue[0], path, comp.defaultValue)
+        }
+      });
     }
 
     return defaultValue;

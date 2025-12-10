@@ -752,6 +752,62 @@ describe('DataGrid Component', function () {
     });
   });
 
+  it('Should include default values of the nested components for the first row in submission payload', function (done) {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [
+        {
+          label: 'Datagrid containing hidden fields',
+          reorder: false,
+          addAnotherPosition: 'bottom',
+          layoutFixed: false,
+          enableRowGroups: false,
+          initEmpty: false,
+          tableView: false,
+          defaultValue: [
+            {}
+          ],
+          validateWhenHidden: false,
+          key: 'datagrid',
+          type: 'datagrid',
+          input: true,
+          components: [
+            {
+              label: 'Hidden textfield that must not lose its value',
+              applyMaskOn: 'change',
+              hidden: true,
+              disabled: true,
+              tableView: true,
+              defaultValue: 'Hidden value that should be available',
+              clearOnHide: false,
+              validateWhenHidden: false,
+              key: 'hidden_textfield_in_datagrid',
+              type: 'textfield',
+              input: true
+            },
+            {
+              label: 'Visible Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              defaultValue: 'Visible value',
+              validateWhenHidden: false,
+              key: 'visible_text_field',
+              type: 'textfield',
+              input: true
+            }
+          ]
+        }
+      ],
+    })
+      .then((form) => {
+        assert.equal(form.data.datagrid[0].hidden_textfield_in_datagrid, 'Hidden value that should be available');
+        assert.equal(form.data.datagrid[0].visible_text_field, 'Visible value');
+        done();
+      })
+      .catch((err) => done(err));
+  });
+
   it('Should allow to Clear Value On Refresh Options for the Select component in Data Grid', (done) => {
     Formio.createForm(document.createElement('div'), comp13)
     .then(async (form) => {
