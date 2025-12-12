@@ -12,7 +12,7 @@ export default {
   required: '{{field}} is required',
   unique: '{{field}} must be unique',
   array: '{{field}} must be an array',
-  array_nonempty: '{{field}} must be a non-empty array', // eslint-disable-line camelcase
+  array_nonempty: '{{field}} must be a non-empty array',
   nonarray: '{{field}} must not be an array',
   select: '{{field}} contains an invalid selection',
   pattern: '{{field}} does not match the pattern {{pattern}}',
@@ -28,11 +28,11 @@ export default {
   minYear: '{{field}} should not contain year less than {{minYear}}',
   minSelectedCount: 'You must select at least {{minCount}} items',
   maxSelectedCount: 'You may only select up to {{maxCount}} items',
-  invalid_email: '{{field}} must be a valid email.', // eslint-disable-line camelcase
-  invalid_url: '{{field}} must be a valid url.', // eslint-disable-line camelcase
-  invalid_regex: '{{field}} does not match the pattern {{regex}}.', // eslint-disable-line camelcase
-  invalid_date: '{{field}} is not a valid date.', // eslint-disable-line camelcase
-  invalid_day: '{{field}} is not a valid day.', // eslint-disable-line camelcase
+  invalid_email: '{{field}} must be a valid email.',
+  invalid_url: '{{field}} must be a valid url.',
+  invalid_regex: '{{field}} does not match the pattern {{regex}}.',
+  invalid_date: '{{field}} is not a valid date.',
+  invalid_day: '{{field}} is not a valid day.',
   invalidValueProperty: 'Invalid Value Property',
   mask: '{{field}} does not match the mask.',
   valueIsNotAvailable: '{{ field }} is an invalid value.',
@@ -64,9 +64,9 @@ export default {
   restoreDraftError: 'Unable to restore draft.',
   time: 'Invalid time',
   cancelButtonAriaLabel: 'Cancel button. Click to reset the form',
-  previousButtonAriaLabel:'Previous button. Click to go back to the previous tab',
-  nextButtonAriaLabel:'Next button. Click to go to the next tab',
-  submitButtonAriaLabel:'Submit Form button. Click to submit the form',
+  previousButtonAriaLabel: 'Previous button. Click to go back to the previous tab',
+  nextButtonAriaLabel: 'Next button. Click to go to the next tab',
+  submitButtonAriaLabel: 'Submit Form button. Click to submit the form',
   reCaptchaTokenValidationError: 'ReCAPTCHA: Token validation error',
   reCaptchaTokenNotSpecifiedError: 'ReCAPTCHA: Token is not specified in submission',
   apiKey: 'API Key is not unique: {{key}}',
@@ -75,5 +75,7 @@ export default {
   requiredDayField: '{{ field }} is required',
   requiredDayEmpty: '{{ field }} is required',
   requiredMonthField: '{{ field }} is required',
-  requiredYearField: '{{ field }} is required'
-};
+  requiredYearField: '{{ field }} is required',
+  fileTooSmall: 'File is too small; it must be at least {{ size }}',
+  fileTooBig: 'File is too big; it must be at most {{ size }}'
+}

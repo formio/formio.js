@@ -825,23 +825,43 @@ export default class FileComponent extends Field {
     }
 
     // Check file minimum size
-    if (this.component.fileMinSize && !this.validateMinSize(file, this.component.fileMinSize)) {
-      return {
-        status: 'error',
-        message: this.t('File is too small; it must be at least {{ size }}', {
-          size: this.component.fileMinSize,
-        }),
-      };
+    if (this.component.fileMinSize) {
+      const interpolatedMinSize = this.interpolate(this.component.fileMinSize, this.evalContext());
+      // This case is when the user entered fileMinSize expression, but did not enter or made a typo when
+      // setting the fileMinSize variable in the config of the project
+      if (!interpolatedMinSize) {
+        return {
+          status: 'error',
+          message: 'Please, check the entered parameters',
+        };
+      }
+      if (!this.validateMinSize(file, interpolatedMinSize)) {
+        return {
+          status: 'error',
+          message: this.t('fileTooSmall', {
+            size: interpolatedMinSize,
+          }),
+        };
+      }
     }
 
     // Check file maximum size
-    if (this.component.fileMaxSize && !this.validateMaxSize(file, this.component.fileMaxSize)) {
-      return {
-        status: 'error',
-        message: this.t('File is too big; it must be at most {{ size }}', {
-          size: this.component.fileMaxSize,
-        }),
-      };
+    if (this.component.fileMaxSize) {
+      const interpolatedMaxSize = this.interpolate(this.component.fileMaxSize, this.evalContext())
+      if (!interpolatedMaxSize) {
+        return {
+          status: 'error',
+          message: 'Please, check the entered parameters',
+        };
+      }
+      if (!this.validateMaxSize(file, interpolatedMaxSize)) {
+        return {
+          status: 'error',
+          message: this.t('fileTooBig', {
+            size: interpolatedMaxSize,
+          }),
+        }
+      }
     }
 
     return {};
