@@ -419,7 +419,7 @@ export default class Element {
           inputElement: input,
           mask,
           placeholderChar: this.placeholderChar,
-          shadowRoot: this.root ? this.root?.shadowRoot : null,
+          shadowRoot: this.root?.shadowRoot || this.settings?.shadowRoot,
         });
       } catch (e) {
         // Don't pass error up, to prevent form rejection.
