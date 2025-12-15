@@ -123,6 +123,8 @@ export default class FileComponent extends Field {
     };
     this.isSyncing = false;
     this.abortUploads = [];
+    this.pendingfiles = [];
+    this.resolvedFiles = [];
   }
 
   get dataReady() {
@@ -1174,7 +1176,24 @@ export default class FileComponent extends Field {
             };
           }
 
-          fileInfo = await this.uploadFile(fileToSync);
+          if(fileToSync.status === "success") {
+            const uploadedFile = this.resolvedFiles.find(x=> x.fileToSync.originalName === fileToSync.originalName) 
+             return {
+              fileToSync: uploadedFile.fileToSync,
+              fileInfo: uploadedFile.fileInfo,
+            };
+          }
+
+          const pendingFile = this.pendingfiles.find(x => x.name === fileToSync.name);
+          if (pendingFile) {
+            fileInfo = await pendingFile.fileInfoProm;
+          }
+          else {
+            const promInfo = this.uploadFile(fileToSync);
+            this.pendingfiles.push({ name: fileToSync.name, fileInfoProm: promInfo });
+            fileInfo = await promInfo;
+          }
+          this.pendingfiles = this.pendingfiles.filter(x => x.name !== fileToSync.name);
           fileToSync.status = 'success';
           fileToSync.message = this.t('Succefully uploaded');
 
@@ -1198,6 +1217,10 @@ export default class FileComponent extends Field {
         } finally {
           delete fileToSync.progress;
           this.redraw();
+          const fileExists = this.resolvedFiles.find(x=> x.fileInfo.originalName ===  fileToSync.originalName);
+          if (!fileExists) {
+            this.resolvedFiles.push({ fileToSync, fileInfo })
+          }
         }
 
         return {
@@ -1220,6 +1243,9 @@ export default class FileComponent extends Field {
         this.delete(),
         this.upload(),
       ]);
+      if (filesToUpload.length !== this.filesToSync?.filesToUpload?.length) {
+        return;
+      }
       this.filesToSync.filesToDelete = filesToDelete
         .filter((file) => file.fileToSync?.status === 'error')
         .map((file) => file.fileToSync);
