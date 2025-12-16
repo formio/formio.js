@@ -5,6 +5,7 @@ import SelectComponent from '../../src/components/select/Select';
 import { expect } from 'chai';
 import { Formio } from '../../src/Formio';
 import _ from 'lodash';
+import Webform from '../../src/Webform';
 import { wait } from '../util';
 
 import {
@@ -40,7 +41,8 @@ import {
   comp29,
   comp30,
   comp31,
-  comp32
+  comp32,
+  comp33
 } from './fixtures/select/index';
 
 globalThis.requestAnimationFrame = (cb) => cb();
@@ -90,7 +92,24 @@ describe('Select Component', function () {
     assert.equal(typeof component.dataValue, 'object');
   });
 
-  it('Should return string value for different value types', async function () {
+  it('Should not displaying default values for the select component on the edit submission page', async () => {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, { readOnly: false });
+    await form.setForm(comp33)
+    form.onSetSubmission({ data: { select: "" , select1: "" } }, { fromSubmission: true })
+    await wait(200);
+   
+    const selectHtml5Options = [...form.element.querySelector('[name="data[select1]"]')];
+    const selectedHtml5 = selectHtml5Options.find(x => x.selected);
+    
+    const selectChoicesJs = form.element.querySelector('[name="data[select]"]');
+    const selectChoicesJsInner = selectChoicesJs.parentElement.querySelector('.choices__list.choices__list--single');
+
+    assert.equal(selectChoicesJsInner.innerHTML, '', "should not contain inner options here");
+    assert.equal(selectedHtml5.value, '', "should be empty");
+  });
+
+   it('Should return string value for different value types', async function () {
     const component = await Harness.testCreate(SelectComponent, comp4);
     const stringValue = component.asString(true);
     const stringValue1 = component.asString(11);

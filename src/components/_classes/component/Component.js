@@ -3208,7 +3208,7 @@ export default class Component extends Element {
     );
   }
 
-  /**
+   /**
    * Determine if we should add a default value for this component.
    * @returns {boolean} - TRUE if a default value should be set
    */
