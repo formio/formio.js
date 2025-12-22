@@ -633,7 +633,7 @@ export default class SelectComponent extends ListComponent {
           noUpdateEvent: true,
         });
       }
-      else if (this.shouldAddDefaultValue && !this.options.readOnly && !this.root.submissionSet) {
+      else if (this.shouldAddDefaultValue && !this.options.readOnly && this.root && !this.root.submissionSet) {
         // If a default value is provided then select it.
         const defaultValue = this.defaultValue;
         if (!this.isEmpty(defaultValue)) {
