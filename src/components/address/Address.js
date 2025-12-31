@@ -508,7 +508,7 @@ export default class AddressComponent extends ContainerComponent {
 
     // We define a container for rendering autocomplete.
     // If isInShadowDOM=true then we render it in shadow dom otherwise in the document body.
-    const isInShadowDOM = typeof ShadowRoot !== 'undefined' && this.element.getRootNode() instanceof ShadowRoot;
+    const isInShadowDOM = typeof ShadowRoot !== 'undefined' && this.element?.getRootNode() instanceof ShadowRoot;
     let container;
     if (isInShadowDOM) {
       const shadowRoot = this.element.getRootNode();

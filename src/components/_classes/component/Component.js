@@ -1946,7 +1946,7 @@ export default class Component extends Element {
     });
 
     // Check if an element is inside shadow dom
-    const isInShadowDOM = typeof ShadowRoot !== 'undefined' && this.element.getRootNode() instanceof ShadowRoot;
+    const isInShadowDOM = typeof ShadowRoot !== 'undefined' && this.element?.getRootNode() instanceof ShadowRoot;
     // if we render shadow dom inside <iframe>'s we need to get the body from the current iframe,
     // not the general body. This is necessary to hide and show the scroll bar correctly.
     const body = isInShadowDOM? this.element.getRootNode().host.ownerDocument.body: document.body;
