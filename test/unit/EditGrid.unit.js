@@ -38,9 +38,7 @@ import { fastCloneDeep } from '@formio/core';
 describe('EditGrid Component', function () {
   it('Should set correct values in dataMap inside editGrid and allow aditing them', function (done) {
     Harness.testCreate(EditGridComponent, comp4).then((component) => {
-      component.setValue([
-        { dataMap: { key111: '111' } },
-      ]);
+      component.setValue([{ dataMap: { key111: '111' } }]);
 
       setTimeout(() => {
         const clickEvent = new Event('click');
@@ -68,13 +66,9 @@ describe('EditGrid Component', function () {
     Harness.testCreate(EditGridComponent, comp5).then((component) => {
       assert.equal(component.components.length, 0);
 
-      component.setValue(
-        [
-          { textField: 'textField1' },
-          { textField: 'textField2' },
-        ],
-        { resetValue: true },
-      );
+      component.setValue([{ textField: 'textField1' }, { textField: 'textField2' }], {
+        resetValue: true,
+      });
 
       setTimeout(() => {
         assert.equal(component.components.length, 2);
@@ -85,10 +79,7 @@ describe('EditGrid Component', function () {
 
   it('Should display saved values if there are more then 1 nested components', function (done) {
     Harness.testCreate(EditGridComponent, comp3).then((component) => {
-      component.setValue([
-        { container: { number: 55555 } },
-        { container: { number: 666666 } },
-      ]);
+      component.setValue([{ container: { number: 55555 } }, { container: { number: 666666 } }]);
 
       setTimeout(() => {
         const firstValue = component.element
@@ -182,8 +173,8 @@ describe('EditGrid Component', function () {
     });
   });
 
-  it('Should save a new row when save is clicked', function () {
-    return Harness.testCreate(EditGridComponent, comp1).then((component) => {
+  it('Should save a new row when save is clicked', function (done) {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       component.pristine = false;
       Harness.testSetGet(component, [
         {
@@ -198,24 +189,30 @@ describe('EditGrid Component', function () {
       Harness.testElements(component, 'li.list-group-item', 3);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
       Harness.clickElement(component, component.refs[`${component.editgridKey}-addRow`][0]);
-      Harness.testElements(component, 'li.list-group-item', 4);
-      Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
-      Harness.setInputValue(component, 'data[editgrid][2][field1]', 'good');
-      Harness.setInputValue(component, 'data[editgrid][2][field2]', 'baz');
-      Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
-      Harness.testElements(component, 'li.list-group-item', 4);
-      Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '3');
-      Harness.testInnerHtml(
-        component,
-        'li.list-group-item:nth-child(4) div.row div:nth-child(1)',
-        'good',
-      );
-      Harness.testInnerHtml(
-        component,
-        'li.list-group-item:nth-child(4) div.row div:nth-child(2)',
-        'baz',
-      );
-      assert(component.checkValidity(), 'Item should be valid');
+      setTimeout(() => {
+        Harness.testElements(component, 'li.list-group-item', 4);
+        Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
+        Harness.setInputValue(component, 'data[editgrid][2][field1]', 'good');
+        Harness.setInputValue(component, 'data[editgrid][2][field2]', 'baz');
+        Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
+
+        setTimeout(() => {
+          Harness.testElements(component, 'li.list-group-item', 4);
+          Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '3');
+          Harness.testInnerHtml(
+            component,
+            'li.list-group-item:nth-child(4) div.row div:nth-child(1)',
+            'good',
+          );
+          Harness.testInnerHtml(
+            component,
+            'li.list-group-item:nth-child(4) div.row div:nth-child(2)',
+            'baz',
+          );
+          assert(component.checkValidity(), 'Item should be valid');
+          done();
+        }, 50);
+      }, 50);
     });
   });
 
@@ -310,8 +307,8 @@ describe('EditGrid Component', function () {
     });
   });
 
-  it('Should save a row when save is clicked', function () {
-    return Harness.testCreate(EditGridComponent, comp1).then((component) => {
+  it('Should save a row when save is clicked', function (done) {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
           field1: 'good',
@@ -323,22 +320,29 @@ describe('EditGrid Component', function () {
         },
       ]);
       Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.editRow');
-      Harness.setInputValue(component, 'data[editgrid][1][field2]', 'baz');
-      Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
-      Harness.testElements(component, 'li.list-group-item', 3);
-      Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
-      Harness.testInnerHtml(
-        component,
-        'li.list-group-item:nth-child(3) div.row div:nth-child(1)',
-        'good',
-      );
-      Harness.testInnerHtml(
-        component,
-        'li.list-group-item:nth-child(3) div.row div:nth-child(2)',
-        'baz',
-      );
-      assert(component.checkValidity(null, true), 'Item should be valid');
-    });
+      setTimeout(() => {
+        Harness.setInputValue(component, 'data[editgrid][1][field2]', 'baz');
+        setTimeout(() => {
+          Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
+          setTimeout(() => {
+            Harness.testElements(component, 'li.list-group-item', 3);
+            Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '2');
+            Harness.testInnerHtml(
+              component,
+              'li.list-group-item:nth-child(3) div.row div:nth-child(1)',
+              'good',
+            );
+            Harness.testInnerHtml(
+              component,
+              'li.list-group-item:nth-child(3) div.row div:nth-child(2)',
+              'baz',
+            );
+            assert(component.checkValidity(null, true), 'Item should be valid');
+            done();
+          }, 100);
+        }, 100);
+      }, 100);
+    }, 100);
   });
 
   it('Should cancel edit row when cancel is clicked', function () {
@@ -403,37 +407,58 @@ describe('EditGrid Component', function () {
     });
   });
 
-  it('Should not allow saving when errors exist', function () {
-    return Harness.testCreate(EditGridComponent, comp1).then((component) => {
+  it('Should not allow saving when errors exist', function (done) {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.clickElement(component, 'button.btn-primary');
-      Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
-      Harness.getInputValue(component, 'data[editgrid][0][field1]', '');
-      Harness.getInputValue(component, 'data[editgrid][0][field2]', '');
-      assert(!component.checkValidity(null, true), 'Item should not be valid');
-      Harness.setInputValue(component, 'data[editgrid][0][field2]', 'baz');
-      Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
-      Harness.getInputValue(component, 'data[editgrid][0][field1]', '');
-      Harness.getInputValue(component, 'data[editgrid][0][field2]', 'baz');
-      assert(!component.checkValidity(null, true), 'Item should not be valid');
-      Harness.setInputValue(component, 'data[editgrid][0][field1]', 'bad');
-      Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
-      Harness.getInputValue(component, 'data[editgrid][0][field1]', 'bad');
-      Harness.getInputValue(component, 'data[editgrid][0][field2]', 'baz');
-      assert(!component.checkValidity(null, true), 'Item should not be valid');
-      Harness.setInputValue(component, 'data[editgrid][0][field1]', 'good');
-      Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
-      assert(component.checkValidity(null, true), 'Item should be valid');
-      Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '1');
-      Harness.testInnerHtml(
-        component,
-        'li.list-group-item:nth-child(2) div.row div:nth-child(1)',
-        'good',
-      );
-      Harness.testInnerHtml(
-        component,
-        'li.list-group-item:nth-child(2) div.row div:nth-child(2)',
-        'baz',
-      );
+      setTimeout(() => {
+        Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
+        setTimeout(() => {
+          Harness.getInputValue(component, 'data[editgrid][0][field1]', '');
+          Harness.getInputValue(component, 'data[editgrid][0][field2]', '');
+          assert(!component.checkValidity(null, true), 'Item should not be valid');
+          Harness.setInputValue(component, 'data[editgrid][0][field2]', 'baz');
+          setTimeout(() => {
+            Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
+            setTimeout(() => {
+              Harness.getInputValue(component, 'data[editgrid][0][field1]', '');
+              Harness.getInputValue(component, 'data[editgrid][0][field2]', 'baz');
+              assert(!component.checkValidity(null, true), 'Item should not be valid');
+              Harness.setInputValue(component, 'data[editgrid][0][field1]', 'bad');
+              setTimeout(() => {
+                Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
+                setTimeout(() => {
+                  Harness.getInputValue(component, 'data[editgrid][0][field1]', 'bad');
+                  Harness.getInputValue(component, 'data[editgrid][0][field2]', 'baz');
+                  assert(!component.checkValidity(null, true), 'Item should not be valid');
+                  Harness.setInputValue(component, 'data[editgrid][0][field1]', 'good');
+                  setTimeout(() => {
+                    Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
+                    setTimeout(() => {
+                      assert(component.checkValidity(null, true), 'Item should be valid');
+                      Harness.testInnerHtml(
+                        component,
+                        'li.list-group-header div.row div:nth-child(3)',
+                        '1',
+                      );
+                      Harness.testInnerHtml(
+                        component,
+                        'li.list-group-item:nth-child(2) div.row div:nth-child(1)',
+                        'good',
+                      );
+                      Harness.testInnerHtml(
+                        component,
+                        'li.list-group-item:nth-child(2) div.row div:nth-child(2)',
+                        'baz',
+                      );
+                      done();
+                    }, 50);
+                  }, 50);
+                }, 50);
+              }, 50);
+            }, 50);
+          }, 50);
+        }, 50);
+      }, 50);
     });
   });
 
@@ -624,9 +649,7 @@ describe('EditGrid Component', function () {
         .setForm(comp6)
         .then(() => {
           const component = form.components[0];
-          component.setValue([
-            { textField: 'v1' },
-          ]);
+          component.setValue([{ textField: 'v1' }]);
           setTimeout(() => {
             component.editRow(0);
             const dialog = document.querySelector('[ref="dialogContents"]');
@@ -693,9 +716,7 @@ describe('EditGrid Component', function () {
         .then((component) => {
           component.addRow();
           Harness.clickElement(component, '[ref="editgrid-editGrid1-saveRow"]');
-          assert.deepEqual(component.dataValue, [
-            { textField: '' },
-          ]);
+          assert.deepEqual(component.dataValue, [{ textField: '' }]);
           const isInvalid = !component.checkValidity(null, true);
           assert(isInvalid, 'Item should not be valid');
           assert(
@@ -723,13 +744,7 @@ describe('EditGrid Component', function () {
 
             setTimeout(() => {
               editGrid.editRow(0).then(() => {
-                const textField = form.getComponent([
-                  'editGrid',
-                  0,
-                  'form',
-                  'data',
-                  'textField',
-                ]);
+                const textField = form.getComponent(['editGrid', 0, 'form', 'data', 'textField']);
 
                 assert(textField);
                 textField.setValue('someValue');
@@ -996,15 +1011,11 @@ describe('EditGrid Component', function () {
     form
       .setForm({
         display: 'form',
-        components: [
-          comp7,
-        ],
+        components: [comp7],
         type: 'form',
       })
       .then(() => {
-        const component = form.getComponent([
-          'editGrid',
-        ]);
+        const component = form.getComponent(['editGrid']);
         component.addRow();
         setTimeout(() => {
           Harness.getInputValue(component, 'data[editGrid][0][checkbox]', true, 'checked');
@@ -1022,9 +1033,7 @@ describe('EditGrid Component', function () {
     form
       .setForm({
         display: 'form',
-        components: [
-          comp7,
-        ],
+        components: [comp7],
         type: 'form',
       })
       .then(() => {
@@ -1040,9 +1049,7 @@ describe('EditGrid Component', function () {
           },
         };
         setTimeout(() => {
-          const editGrid = form.getComponent([
-            'editGrid',
-          ]);
+          const editGrid = form.getComponent(['editGrid']);
           editGrid.editRow(0).then(() => {
             Harness.dispatchEvent(
               'click',
@@ -1072,26 +1079,14 @@ describe('EditGrid Component', function () {
     form
       .setForm({
         display: 'form',
-        components: [
-          comp8,
-        ],
+        components: [comp8],
         type: 'form',
       })
       .then(() => {
-        const editGrid = form.getComponent([
-          'editGrid1',
-        ]);
+        const editGrid = form.getComponent(['editGrid1']);
         editGrid.addRow();
-        const makeSelect = form.getComponent([
-          'editGrid1',
-          0,
-          'make',
-        ]);
-        const modelSelect = form.getComponent([
-          'editGrid1',
-          0,
-          'model',
-        ]);
+        const makeSelect = form.getComponent(['editGrid1', 0, 'make']);
+        const modelSelect = form.getComponent(['editGrid1', 0, 'model']);
         makeSelect.setValue('ford');
         setTimeout(() => {
           modelSelect.setValue('Focus');
@@ -1636,9 +1631,7 @@ describe('EditGrid Component', function () {
           btn.refs.button.dispatchEvent(clickEvent);
           setTimeout(() => {
             const conditionalEditGrid = editGrid1.getComponent('editGrid');
-            assert.deepEqual(conditionalEditGrid.dataValue, [
-              { textField: 'testyyyy' },
-            ]);
+            assert.deepEqual(conditionalEditGrid.dataValue, [{ textField: 'testyyyy' }]);
             assert.equal(conditionalEditGrid.editRows.length, 1);
             done();
           }, 500);
@@ -1666,9 +1659,7 @@ describe('EditGrid Component', function () {
             quantitativeInformation: {
               cva: 'yes',
               sameRiskCategories: false,
-              impactsPerEntity: [
-                { number: 123 },
-              ],
+              impactsPerEntity: [{ number: 123 }],
               sameImpactAcrossEntities: false,
             },
           },
@@ -1697,9 +1688,7 @@ describe('EditGrid Component', function () {
     Formio.createForm(element, formsWithEditGridAndConditions.form4, { server: true })
       .then((form) => {
         const editGrid = form.getComponent('editGrid');
-        assert.deepEqual(editGrid.dataValue, [
-          { textArea: 'test' },
-        ]);
+        assert.deepEqual(editGrid.dataValue, [{ textArea: 'test' }]);
         assert.deepEqual(editGrid.editRows.length, 1);
         done();
       })
@@ -1718,10 +1707,7 @@ describe('EditGrid Component', function () {
             ],
             deSpecific: {
               criticalPartsToBeOutsourcedSuboutsourcer: 'yes',
-              suboutsourcers: [
-                { nameSuboutsourcer: 'test' },
-                { nameSuboutsourcer: 'test 1' },
-              ],
+              suboutsourcers: [{ nameSuboutsourcer: 'test' }, { nameSuboutsourcer: 'test 1' }],
             },
           },
         };
@@ -1880,36 +1866,32 @@ describe('EditGrid Component', function () {
       .catch(done);
   });
 
-  
   it('Should save valid rows with nested multiple values components', function (done) {
     const form = _.cloneDeep(comp21);
     const element = document.createElement('div');
-    Formio.createForm(element, form)
-      .then((form) => {
-        const editGrid = form.getComponent('editGrid');
-        editGrid.addRow();
-        const textField = editGrid.getComponent('textField');
-        const inputEvent = new Event('input');
-        const textFieldInput = textField.refs.input[0];
-        textFieldInput.value = 'test';
-        textFieldInput.dispatchEvent(inputEvent);
-        setTimeout(()=> {
-          assert.deepEqual(editGrid.editRows[0].data, { textField: ['test'] });
-          assert.deepEqual(form.data.editGrid, []);
-          assert(editGrid.checkValidity(), 'Item should be valid');
-          editGrid.saveRow(0);
-          setTimeout(() => {
-            assert.deepEqual(
-              form.data.editGrid,
-              [
-                { textField: ['test'] },
-              ],
-              'Value should be saved correctly',
-            );
-            done();
-          }, 200);
+    Formio.createForm(element, form).then((form) => {
+      const editGrid = form.getComponent('editGrid');
+      editGrid.addRow();
+      const textField = editGrid.getComponent('textField');
+      const inputEvent = new Event('input');
+      const textFieldInput = textField.refs.input[0];
+      textFieldInput.value = 'test';
+      textFieldInput.dispatchEvent(inputEvent);
+      setTimeout(() => {
+        assert.deepEqual(editGrid.editRows[0].data, { textField: ['test'] });
+        assert.deepEqual(form.data.editGrid, []);
+        assert(editGrid.checkValidity(), 'Item should be valid');
+        editGrid.saveRow(0);
+        setTimeout(() => {
+          assert.deepEqual(
+            form.data.editGrid,
+            [{ textField: ['test'] }],
+            'Value should be saved correctly',
+          );
+          done();
         }, 200);
-      })
+      }, 200);
+    });
   });
 
   describe('EditGrid Open when Empty', function () {
@@ -1917,15 +1899,11 @@ describe('EditGrid Component', function () {
       const formElement = document.createElement('div');
       Formio.createForm(formElement, withOpenWhenEmptyAndConditions)
         .then((form) => {
-          const radio = form.getComponent([
-            'radio',
-          ]);
+          const radio = form.getComponent(['radio']);
           radio.setValue('show');
 
           setTimeout(() => {
-            const editGrid = form.getComponent([
-              'editGrid',
-            ]);
+            const editGrid = form.getComponent(['editGrid']);
             assert.equal(editGrid.visible, true, 'Should be visible');
             assert.equal(editGrid.editRows.length, 1, 'Should have 1 row');
             const textField = editGrid.editRows[0].components[0];
@@ -1943,9 +1921,7 @@ describe('EditGrid Component', function () {
               setTimeout(() => {
                 assert.deepEqual(
                   form.data.editGrid,
-                  [
-                    { textField: 'Value', select1: '' },
-                  ],
+                  [{ textField: 'Value', select1: '' }],
                   'Value should be saved correctly',
                 );
                 radio.setValue('hide');
@@ -1974,9 +1950,7 @@ describe('EditGrid Component', function () {
         .then((form) => {
           form.data = {};
           setTimeout(() => {
-            const editGrid = form.getComponent([
-              'editGrid',
-            ]);
+            const editGrid = form.getComponent(['editGrid']);
             assert.equal(editGrid.editRows.length, 1);
             assert.equal(editGrid.editRows[0].state, 'new');
             done();
@@ -1989,9 +1963,7 @@ describe('EditGrid Component', function () {
       const formElement = document.createElement('div');
       Formio.createForm(formElement, compOpenWhenEmpty)
         .then((form) => {
-          const editGrid = form.getComponent([
-            'editGrid',
-          ]);
+          const editGrid = form.getComponent(['editGrid']);
           assert.equal(editGrid.editRows.length, 1, 'Should have 1 row on create');
           const textField = editGrid.editRows[0].components[0];
           Harness.dispatchEvent(
@@ -2051,20 +2023,14 @@ describe('EditGrid Component', function () {
       const formElement = document.createElement('div');
       Formio.createForm(formElement, compWithCustomDefaultValue)
         .then((form) => {
-          const editGrid = form.getComponent([
-            'selectedFunds2',
-          ]);
+          const editGrid = form.getComponent(['selectedFunds2']);
           editGrid.removeRow(2, true);
           setTimeout(() => {
             assert.equal(editGrid.editRows.length, 4, 'Should remove a row');
             editGrid.editRow(2);
 
             setTimeout(() => {
-              const currency = form.getComponent([
-                'selectedFunds2',
-                2,
-                'allocationAmount2',
-              ]);
+              const currency = form.getComponent(['selectedFunds2', 2, 'allocationAmount2']);
               currency.focus();
               currency.setValue(250);
               editGrid.redraw();
@@ -2141,11 +2107,7 @@ describe('EditGrid Component', function () {
   });
 
   describe('EditGrid Fired Events', function () {
-    const eventParams = [
-      'row',
-      'component',
-      'instance',
-    ];
+    const eventParams = ['row', 'component', 'instance'];
 
     it('Should fire editGridEditRow event on the row edit button click', function (done) {
       const formElement = document.createElement('div');

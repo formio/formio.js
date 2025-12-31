@@ -60,12 +60,11 @@ export default class NestedComponent extends Field {
    * @param {boolean} value - The collapsed state.
    * @returns {void}
    */
-  collapse(value) {
-    const promise = this.redraw();
+  async collapse(value) {
+    await this.redraw();
     if (!value) {
       this.checkValidity(this.data, !this.pristine);
     }
-    return promise;
   }
 
   /**
@@ -553,8 +552,8 @@ export default class NestedComponent extends Field {
     });
   }
 
-  attach(element) {
-    const superPromise = super.attach(element);
+  async attach(element) {
+    await super.attach(element);
 
     this.loadRefs(element, {
       header: 'single',
@@ -584,10 +583,7 @@ export default class NestedComponent extends Field {
       });
     }
 
-    return Promise.all([
-      superPromise,
-      childPromise,
-    ]);
+    return await childPromise;
   }
 
   /**

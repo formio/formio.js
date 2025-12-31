@@ -95,6 +95,7 @@ import formWithServerValidation from '../forms/formWithServerValidation';
 import formWithDraftState from '../forms/formWithDraftState';
 import Conditions from '../forms/conditions';
 import formWithHiddenSubform from '../forms/formWithHiddenSubform';
+import Component from '../../src/components/_classes/component/Component.js';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
@@ -104,6 +105,113 @@ if (_.has(Formio, 'Components.setComponents')) {
 
 describe('Webform tests', function () {
   this.retries(3);
+
+  it('Should allow to add new row to editGrid inside conditional container it takes more time for attach promise to resolve', function (done) {
+    const element = document.createElement('div');
+    const form = {
+      components: [
+        {
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textField',
+          type: 'textfield',
+          input: true,
+          'widget.type': 'input',
+        },
+        {
+          label: 'Container',
+          tableView: false,
+          validateWhenHidden: false,
+          key: 'container',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'textField',
+                operator: 'isEqual',
+                value: 'show',
+              },
+            ],
+          },
+          type: 'container',
+          input: true,
+          components: [
+            {
+              label: 'Edit Grid',
+              displayAsTable: false,
+              tableView: false,
+              validateWhenHidden: false,
+              rowDrafts: false,
+              key: 'editGrid1',
+              type: 'editgrid',
+              input: true,
+              components: [
+                {
+                  label: 'Number',
+                  applyMaskOn: 'change',
+                  mask: false,
+                  tableView: true,
+                  delimiter: false,
+                  requireDecimal: false,
+                  inputFormat: 'plain',
+                  truncateMultipleSpaces: false,
+                  validateWhenHidden: false,
+                  key: 'number',
+                  type: 'number',
+                  input: true,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Submit',
+          tableView: false,
+          key: 'submit',
+          type: 'button',
+          input: true,
+          saveOnEnter: false,
+        },
+      ],
+    };
+
+    const originalAttach = Component.prototype.attach;
+    Component.prototype.attach = async function (el) {
+      await new Promise((res) => {
+        setTimeout(() => res(), 200);
+      });
+      return originalAttach.call(this, el);
+    };
+
+    Formio.createForm(element, form)
+      .then((instance) => {
+        const tfComp = instance.getComponent('textField');
+        const egComp = instance.getComponent('editGrid1');
+        assert.equal(egComp.visible, false);
+        const inputEvent = new Event('input');
+        const tfInput = tfComp.refs.input[0];
+        tfInput.value = 'show';
+        tfInput.dispatchEvent(inputEvent);
+        setTimeout(() => {
+          assert.equal(egComp.visible, true);
+          assert.equal(egComp.editRows.length, 0);
+          const clickEvent = new Event('click');
+          const egAddBtn = egComp.refs['editgrid-editGrid1-addRow'][0];
+          egAddBtn.dispatchEvent(clickEvent);
+
+          setTimeout(() => {
+            assert.equal(egComp.visible, true);
+            assert.equal(egComp.editRows.length, 1);
+            Component.prototype.attach = originalAttach;
+            done();
+          }, 400);
+        }, 500);
+      })
+      .catch(done);
+  });
 
   it('Should not set default values if value is not provided in data object and noDefault flag is passed', function (done) {
     const element = document.createElement('div');
