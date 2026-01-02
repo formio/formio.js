@@ -94,6 +94,7 @@ import clearOnHideInsideLayoutComponent from '../forms/clearOnHideInsideLayoutCo
 import formWithServerValidation from '../forms/formWithServerValidation';
 import formWithDraftState from '../forms/formWithDraftState';
 import Conditions from '../forms/conditions';
+import simpleWebform from '../forms/simpleWebform';
 import formWithHiddenSubform from '../forms/formWithHiddenSubform';
 import Component from '../../src/components/_classes/component/Component.js';
 
@@ -106,6 +107,23 @@ if (_.has(Formio, 'Components.setComponents')) {
 describe('Webform tests', function () {
   this.retries(3);
 
+  before(function (done) {
+    // Polyfill window.matchMedia if it doesn't exist
+    if (typeof window !== 'undefined' && !window.matchMedia) {
+      window.matchMedia = (query) => ({
+        matches: false, // Default to false, adjust as needed for specific tests
+        media: query,
+        onchange: null,
+        addListener: () => { }, // Deprecated, but good for compatibility
+        removeListener: () => { }, // Deprecated
+        addEventListener: () => { },
+        removeEventListener: () => { },
+        dispatchEvent: () => true,
+      });
+    }
+    done();
+  });
+  
   it('Should allow to add new row to editGrid inside conditional container it takes more time for attach promise to resolve', function (done) {
     const element = document.createElement('div');
     const form = {
@@ -7119,6 +7137,47 @@ describe('Webform tests', function () {
       .catch(done);
   });
 
+  it('Should translate components using translationsUrl passed as an option', function (done) {
+    const makeStaticRequest = Formio.makeStaticRequest;
+    Formio.makeStaticRequest = function (url, method, ...args) {
+      if (url === 'https://example.com/en.json') {
+        return new Promise((resolve) => {
+          resolve({
+            en: {
+              'This Is A Banana': 'This Is A Banana Translated',
+            },
+          });
+        });
+      }
+      return makeStaticRequest(url, method, ...args);
+    };
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, {
+      language: 'en',
+      i18n: { translationsUrl: 'https://example.com/en.json' },
+    });
+    const formSchema = _.cloneDeep(simpleWebform);
+    formSchema.components[0].label = 'This Is A Banana';
+    form
+      .setForm(formSchema)
+      .then(() => {
+        setTimeout(() => {
+          const textfield = form.getComponent([
+            'textField',
+          ]);
+          const label = textfield.element.querySelector('[ref="label"]');
+          assert.equal(
+            label.innerHTML?.trim(),
+            'This Is A Banana Translated',
+            'Should be translated',
+          );
+          Formio.makeStaticRequest = makeStaticRequest;
+          done();
+        }, 150);
+      })
+      .catch(done);
+  });
+
   it('Should handle multiple set submissions correctly and should not modify submissionOne or submissionTwo', function () {
     const formJson = {
       components: [
@@ -7168,6 +7227,7 @@ describe('Webform tests', function () {
     const useDoneInsteadOfPromise = formTest.useDone;
 
     if (useDoneInsteadOfPromise) {
+
       describe(formTest.title || '', function () {
         for (const title in formTest.tests) {
           const formTestTest = formTest.tests[title];
@@ -7198,6 +7258,7 @@ describe('Webform tests', function () {
         }
       });
     } else {
+
       describe(formTest.title || '', function () {
         for (const title in formTest.tests) {
           const formTestTest = formTest.tests[title];

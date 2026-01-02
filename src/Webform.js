@@ -605,6 +605,9 @@ export default class Webform extends NestedDataComponent {
     if (form && form.properties) {
       this.options.properties = form.properties;
     }
+
+    let translationsLoaded = Promise.resolve();
+
     // Use the sanitize config from the form settings or the global sanitize config if it is not provided in the options
     if (!this.options.sanitizeConfig && !this.builderMode) {
       this.options.sanitizeConfig =
@@ -644,19 +647,21 @@ export default class Webform extends NestedDataComponent {
 
     this.initialized = false;
     const rebuild = this.rebuild() || Promise.resolve();
-    return rebuild.then(() => {
-      this.emit('formLoad', form);
-      if (!this.options.server) {
-        this.triggerCaptcha();
-      }
-      // Make sure to trigger onChange after a render event occurs to speed up form rendering.
-      setTimeout(() => {
-        this.onChange(flags);
-        this.formReadyResolve();
-      }, 0);
+    return this.loadTranslations()
+      .then(() => rebuild)
+      .then(() => {
+        this.emit('formLoad', form);
+        if (!this.options.server) {
+          this.triggerCaptcha();
+        }
+        // Make sure to trigger onChange after a render event occurs to speed up form rendering.
+        setTimeout(() => {
+          this.onChange(flags);
+          this.formReadyResolve();
+        }, 0);
 
-      return this.formReady;
-    });
+        return this.formReady;
+      });
   }
 
   /**
@@ -1714,6 +1719,51 @@ export default class Webform extends NestedDataComponent {
       }
       captchaComponent[0].verify(`${this.form.name ? this.form.name : 'form'}Load`);
     }
+  }
+
+  loadTranslations() {
+    // We only need a resolve since if translations cannot load, we still want to proceed and render the for
+    let translationsLoadResolve;
+    const promise = new Promise((resolve) => {
+      translationsLoadResolve = resolve;
+    });
+
+    const translationsUrl =
+      typeof this.options.i18n?.translationsUrl === 'string'
+        ? this.options.i18n.translationsUrl
+        : null;
+    if (translationsUrl) {
+      const url = this.sanitize(this.interpolate(translationsUrl, {}), this.shouldSanitizeValue);
+      Formio.makeStaticRequest(url, 'GET')
+        .then((response) => {
+          let languages = response;
+          try {
+            if (typeof languages == 'string') {
+              languages = JSON.parse(languages);
+            }
+            this.i18next.setLanguages(languages);
+            this.i18next.changeLanguage(this.i18next.originalLanguage, (err) => {
+              if (err) {
+                return;
+              }
+              this.emit('languageChanged');
+            });
+            this.redraw();
+            translationsLoadResolve();
+          } catch (err) {
+            console.warn(err.message);
+            translationsLoadResolve();
+          }
+        })
+        .catch((err) => {
+          console.warn(err);
+          translationsLoadResolve();
+        });
+    } else {
+      translationsLoadResolve();
+    }
+
+    return promise;
   }
 
   set nosubmit(value) {
