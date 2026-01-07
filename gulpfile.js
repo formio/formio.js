@@ -24,24 +24,36 @@ gulp.task('builder-fonts', function builderFonts() {
 });
 
 gulp.task('version', () => {
-  return gulp.src(['./lib/**/Formio.js', './lib/**/Embed.js'])
+  return gulp
+    .src(['./lib/**/Formio.js', './lib/**/Embed.js'])
     .pipe(replace('FORMIO_VERSION', packageJson.version))
     .pipe(gulp.dest('lib'));
-})
+});
 
 // Generate styles
 const compileStyles = (styles, file) => {
   const sassFilter = filter('**/*.scss', { restore: true });
-  return gulp.src(styles)
+  return gulp
+    .src(styles)
     .pipe(sassFilter)
     .pipe(sass().on('error', sass.logError))
     .pipe(sassFilter.restore)
     .pipe(concat(`${file}.css`))
     .pipe(replace(/\.\.\/\.\.\/icons\/\/?/g, 'icons/'))
-     
-    .pipe(replace('icons/cross.svg', `'data:image/svg+xml;charset=utf8,%3Csvg width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23FFF" fill-rule="evenodd"%3E%3Cpath d="M2.592.044l18.364 18.364-2.548 2.548L.044 2.592z"/%3E%3Cpath d="M0 18.364L18.364 0l2.548 2.548L2.548 20.912z"/%3E%3C/g%3E%3C/svg%3E'`))
-    .pipe(replace('icons/cross-inverse.svg', `'data:image/svg+xml;charset=utf8,%3Csvg width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23000" fill-rule="evenodd"%3E%3Cpath d="M2.592.044l18.364 18.364-2.548 2.548L.044 2.592z"/%3E%3Cpath d="M0 18.364L18.364 0l2.548 2.548L2.548 20.912z"/%3E%3C/g%3E%3C/svg%3E'`))
-     
+
+    .pipe(
+      replace(
+        'icons/cross.svg',
+        `'data:image/svg+xml;charset=utf8,%3Csvg width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23FFF" fill-rule="evenodd"%3E%3Cpath d="M2.592.044l18.364 18.364-2.548 2.548L.044 2.592z"/%3E%3Cpath d="M0 18.364L18.364 0l2.548 2.548L2.548 20.912z"/%3E%3C/g%3E%3C/svg%3E'`,
+      ),
+    )
+    .pipe(
+      replace(
+        'icons/cross-inverse.svg',
+        `'data:image/svg+xml;charset=utf8,%3Csvg width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23000" fill-rule="evenodd"%3E%3Cpath d="M2.592.044l18.364 18.364-2.548 2.548L.044 2.592z"/%3E%3Cpath d="M0 18.364L18.364 0l2.548 2.548L2.548 20.912z"/%3E%3C/g%3E%3C/svg%3E'`,
+      ),
+    )
+
     .pipe(replace(/\.\.\/fonts\/\/?/g, 'fonts/'))
     .pipe(gulp.dest('dist'))
     .pipe(rename(`${file}.min.css`))
@@ -49,65 +61,78 @@ const compileStyles = (styles, file) => {
     .pipe(gulp.dest('dist'));
 };
 gulp.task('styles-embed', function embedStyles() {
-  return compileStyles([
-    './src/sass/formio.embed.scss'
-  ], 'formio.embed');
+  return compileStyles(['./src/sass/formio.embed.scss'], 'formio.embed');
 });
 gulp.task('styles-form', function formStyles() {
-  return compileStyles([
-    './node_modules/choices.js/public/assets/styles/choices.css',
-    './node_modules/tippy.js/dist/tippy.css',
-    './node_modules/dialog-polyfill/dialog-polyfill.css',
-    './src/sass/formio.form.scss'
-  ], 'formio.form');
+  return compileStyles(
+    [
+      './node_modules/choices.js/public/assets/styles/choices.css',
+      './node_modules/tippy.js/dist/tippy.css',
+      './node_modules/dialog-polyfill/dialog-polyfill.css',
+      './src/sass/formio.form.scss',
+    ],
+    'formio.form',
+  );
 });
 gulp.task('styles-builder', function builderStyles() {
-  return compileStyles([
-    './node_modules/choices.js/public/assets/styles/choices.css',
-    './node_modules/tippy.js/dist/tippy.css',
-    './node_modules/dialog-polyfill/dialog-polyfill.css',
-    './node_modules/dragula/dist/dragula.css',
-    './src/sass/formio.form.scss',
-    './src/sass/formio.form.builder.scss'
-  ], 'formio.builder');
+  return compileStyles(
+    [
+      './node_modules/choices.js/public/assets/styles/choices.css',
+      './node_modules/tippy.js/dist/tippy.css',
+      './node_modules/dialog-polyfill/dialog-polyfill.css',
+      './node_modules/dragula/dist/dragula.css',
+      './src/sass/formio.form.scss',
+      './src/sass/formio.form.builder.scss',
+    ],
+    'formio.builder',
+  );
 });
-gulp.task('styles-full', gulp.series('builder-fonts', function fullStyles() {
-  return compileStyles([
-    './node_modules/choices.js/public/assets/styles/choices.css',
-    './node_modules/tippy.js/dist/tippy.css',
-    './node_modules/dialog-polyfill/dialog-polyfill.css',
-    './node_modules/dragula/dist/dragula.css',
-    './node_modules/bootstrap-icons/font/bootstrap-icons.css',
-    './src/sass/formio.form.scss',
-    './src/sass/formio.form.builder.scss'
-  ], 'formio.full');
-}));
+gulp.task(
+  'styles-full',
+  gulp.series('builder-fonts', function fullStyles() {
+    return compileStyles(
+      [
+        './node_modules/choices.js/public/assets/styles/choices.css',
+        './node_modules/tippy.js/dist/tippy.css',
+        './node_modules/dialog-polyfill/dialog-polyfill.css',
+        './node_modules/dragula/dist/dragula.css',
+        './node_modules/bootstrap-icons/font/bootstrap-icons.css',
+        './src/sass/formio.form.scss',
+        './src/sass/formio.form.builder.scss',
+      ],
+      'formio.full',
+    );
+  }),
+);
 
-gulp.task('clean:embed-css', () => gulp.src('./dist/formio.embed.css', { read: false, allowEmpty: true }).pipe(clean()));
-gulp.task('embed-css', () => gulp.src('./dist/formio.embed.min.css').pipe(rename('formio.embed.css')).pipe(gulp.dest('./dist')));
-gulp.task('clean:embed-js', () => gulp.src('./dist/formio.embed.js', { read: false, allowEmpty: true }).pipe(clean()));
-gulp.task('embed-js', () => gulp.src('./dist/formio.embed.min.js').pipe(rename('formio.embed.js')).pipe(gulp.dest('./dist')));
+gulp.task('clean:embed-css', () =>
+  gulp.src('./dist/formio.embed.css', { read: false, allowEmpty: true }).pipe(clean()),
+);
+gulp.task('embed-css', () =>
+  gulp
+    .src('./dist/formio.embed.min.css')
+    .pipe(rename('formio.embed.css'))
+    .pipe(gulp.dest('./dist')),
+);
+gulp.task('clean:embed-js', () =>
+  gulp.src('./dist/formio.embed.js', { read: false, allowEmpty: true }).pipe(clean()),
+);
+gulp.task('embed-js', () =>
+  gulp.src('./dist/formio.embed.min.js').pipe(rename('formio.embed.js')).pipe(gulp.dest('./dist')),
+);
 
 // Copy over the moment-timezones to the resource folder.
-gulp.task('timezones', () => gulp.src('./node_modules/moment-timezone/data/packed/latest.json').pipe(gulp.dest('./resources')));
+gulp.task('timezones', () =>
+  gulp.src('./node_modules/moment-timezone/data/packed/latest.json').pipe(gulp.dest('./resources')),
+);
 
 // Create a new build.
-gulp.task('build', gulp.series(
-  gulp.parallel(
-    'timezones'
+gulp.task(
+  'build',
+  gulp.series(
+    gulp.parallel('timezones'),
+    gulp.parallel('styles-embed', 'styles-form', 'styles-builder', 'styles-full'),
+    gulp.parallel('clean:embed-css', 'clean:embed-js'),
+    gulp.parallel('embed-css', 'embed-js'),
   ),
-  gulp.parallel(
-    'styles-embed',
-    'styles-form',
-    'styles-builder',
-    'styles-full'
-  ),
-  gulp.parallel(
-    'clean:embed-css',
-    'clean:embed-js'
-  ),
-  gulp.parallel(
-    'embed-css',
-    'embed-js'
-  )
-));
+);
