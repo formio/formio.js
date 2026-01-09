@@ -5,7 +5,7 @@ import { editgrid as templates } from '@formio/bootstrap/components';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import Alert from '../alert/Alert';
-import { fastCloneDeep, Evaluator, getArrayFromComponentPath, eachComponent } from '../../utils';
+import { fastCloneDeep, Evaluator, getArrayFromComponentPath, eachComponent, screenReaderSpeech } from '../../utils';
 
 const EditRowState = {
   New: 'new',
@@ -977,6 +977,8 @@ export default class EditGridComponent extends NestedArrayComponent {
       }
     }
 
+    screenReaderSpeech('Row has been saved');
+
     if (this.saveEditMode) {
       const dataValue = this.dataValue;
       if (this.root?.focusedComponent?.component.typeChangeEnabled) {
@@ -1083,6 +1085,9 @@ export default class EditGridComponent extends NestedArrayComponent {
     this.emit('editGridDeleteRow', {
       index: rowIndex,
     });
+
+    screenReaderSpeech('Row has been deleted');
+
     this.editRows.splice(rowIndex, 1);
     this.openWhenEmpty();
     this.updateRowsComponents(rowIndex);

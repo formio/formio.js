@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
-import { fastCloneDeep, getFocusableElements, getComponent, eachComponent } from '../../utils';
+import { fastCloneDeep, getFocusableElements, getComponent, eachComponent, screenReaderSpeech } from '../../utils';
 import dragula from 'dragula';
 
 export default class DataGridComponent extends NestedArrayComponent {
@@ -546,6 +546,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       component: this.component,
       row,
     });
+    screenReaderSpeech('Row has been added');
     this.checkConditions();
     this.triggerChange?.({ modified: true, noPristineChangeOnModified: true });
     this.redraw().then(() => {
@@ -582,6 +583,9 @@ export default class DataGridComponent extends NestedArrayComponent {
     const flags = { isReordered: !makeEmpty, resetValue: makeEmpty };
     this.splice(index, flags);
     this.emit('dataGridDeleteRow', { index });
+    if (this.rows.length > 1) {
+      screenReaderSpeech('Row has been deleted');
+    }
     const [
       row,
     ] = this.rows.splice(index, 1);
