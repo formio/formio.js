@@ -1,9 +1,14 @@
 <div id="dataGrid" class="mb-2 formio-form-group has-feedback formio-component formio-component-datagrid formio-component-dataGrid  required" ref="component">
   <label ref="label" class="col-form-label  field-required" for="dataGrid-dataGrid" id="l-dataGrid-dataGrid">
     Data Grid
+    <span class="required-star" aria-hidden="true">*</span>
+    <span class="visually-hidden">required field</span>
   </label>
   <table class="table datagrid-table table-bordered
     ">
+    <colgroup>
+      <col class="extra-remove-col">
+    </colgroup>
     <tbody ref="datagrid-dataGrid-tbody" data-key="datagrid-dataGrid">
       <tr ref="datagrid-dataGrid-row">
         <td>
