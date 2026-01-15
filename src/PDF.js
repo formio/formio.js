@@ -345,7 +345,15 @@ if (typeof window !== 'undefined') {
       eventData.formId &&
       Formio.forms.hasOwnProperty(eventData.formId)
     ) {
-      Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
+      if (eventData.compPath) {
+        const comp = Formio.forms[eventData.formId].getComponent(eventData.compPath);
+        if (comp) {
+          comp.emit(eventData.name, eventData.data);
+        }
+      }
+      else {
+        Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
+      }
     }
   });
 }
