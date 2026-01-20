@@ -29,26 +29,28 @@ export default class FormBuilder extends Form {
   /**
    * Creates a new form builder.
    * @param {HTMLElement} element - The HTML element to place the form builder.
-   * @param {string | object} form - The form to pass to the builder
+   * @param {string | object | undefined} form - The form to pass to the builder
    * @param {FormBuilderOptions} options - The options to create this builder.
    * @returns {FormBuilder} - The form builder instance.
    */
   constructor(element, form, options) {
     form = form || {};
     options = options || {};
-    super(element, form, Object.assign(
-      options,
-      FormBuilder.options,
-      ((Formio.options && Formio.options.builder) ? Formio.options.builder : {})
-    ));
+    super(
+      element,
+      form,
+      Object.assign(
+        options,
+        FormBuilder.options,
+        Formio.options && Formio.options.builder ? Formio.options.builder : {},
+      ),
+    );
   }
 
   create(display) {
     if (Builders.builders[display]) {
       return new Builders.builders[display](this.element, this.options);
-    }
-    else {
-       
+    } else {
       return new Builders.builders['webform'](this.element, this.options);
     }
   }
@@ -62,7 +64,7 @@ export default class FormBuilder extends Form {
  * @returns {Promise} - When the form is instance is ready.
  */
 Formio.builder = (element, form, options) => {
-  return (new FormBuilder(element, form, options)).ready;
+  return new FormBuilder(element, form, options).ready;
 };
 
 Formio.FormBuilder = FormBuilder;
