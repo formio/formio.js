@@ -21,7 +21,7 @@ export default {
           "label": "Data Grid with custom validation & default value - will show the validation errors when pristine - because the custom JS validation is triggered",
           "reorder": false,
           "validate": {
-            "custom": "debugger;\nvalid  = !_.some(input, (item) => !!item.text) ? \"At least one text field in the data grid rows has to be filled in\" : true;"
+            "custom": "valid  = !_.some(input, (item) => !!item.text) ? \"At least one text field in the data grid rows has to be filled in\" : true;"
           },
           "initEmpty": false,
           "tableView": false,

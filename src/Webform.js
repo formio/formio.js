@@ -606,8 +606,6 @@ export default class Webform extends NestedDataComponent {
       this.options.properties = form.properties;
     }
 
-    let translationsLoaded = Promise.resolve();
-
     // Use the sanitize config from the form settings or the global sanitize config if it is not provided in the options
     if (!this.options.sanitizeConfig && !this.builderMode) {
       this.options.sanitizeConfig =

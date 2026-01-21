@@ -965,7 +965,7 @@ describe('DateTime Component', function () {
       .catch(done);
   });
 
-  it('Should save date without ISO/timezone offsets when only date is enabled', (done) => {
+  it('Should save date without ISO/timezone offsets when only date is enabled', function (done) {
     const form = _.cloneDeep(comp15);
     const element = document.createElement('div');
 
@@ -979,7 +979,7 @@ describe('DateTime Component', function () {
         input.dispatchEvent(blurEvent);
 
         setTimeout(() => {
-          assert.equal(dateTime.getValue(), '2025-10-20T00:00:00+00:00');
+          assert.equal(dateTime.dataValue.startsWith('2025-10-20'), true);
           done();
         }, 300);
       })

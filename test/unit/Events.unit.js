@@ -13,7 +13,7 @@ if (_.has(Formio, 'Components.setComponents')) {
 describe('Webform tests', function () {
   this.retries(3);
 
-  before(function (done) {
+  before(function () {
     // Polyfill window.matchMedia if it doesn't exist
     if (typeof window !== 'undefined' && !window.matchMedia) {
       window.matchMedia = (query) => ({
@@ -27,7 +27,29 @@ describe('Webform tests', function () {
         dispatchEvent: () => true,
       });
     }
-    done();
+  });
+
+  after(async function () {
+    // Since form translations are (a) on the Formio global (?!) and (b) not accessible (?!!) we need "reset" i18n
+    const formJson = fastCloneDeep(testFormEvents.form);
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function () {
+      return Promise.resolve(formJson);
+    };
+    const form = await Formio.createForm(
+      document.createElement('div'),
+      'http://localhost:3000/test',
+      {
+        i18n: {
+          language: 'en',
+          en: {}
+        },
+      },
+    );
+    delete form.i18next.languages.fr;
+    delete form.i18next.languages.sp;
+    delete form.i18next.languages.en['Text Field'];
+    Formio.makeRequest = originalMakeRequest;
   });
 
   it('Should fire "initialized" event', function (done) {
@@ -428,7 +450,7 @@ describe('Webform tests', function () {
     const element = document.createElement('div');
     const form = fastCloneDeep(testFormEvents.form);
     const originalMakeRequest = Formio.makeRequest;
-    Formio.makeRequest = function (formio, type, url, method, data) {
+    Formio.makeRequest = function (formio, type, url, method) {
       if (type === 'form' && method === 'get') {
         return Promise.resolve(form);
       }
@@ -478,7 +500,7 @@ describe('Webform tests', function () {
     const element = document.createElement('div');
     const form = fastCloneDeep(testFormEvents.form);
     const originalMakeRequest = Formio.makeRequest;
-    Formio.makeRequest = function (formio, type, url, method, data) {
+    Formio.makeRequest = function (formio, type, url, method) {
       if (type === 'form' && method === 'get') {
         return Promise.resolve(form);
       }
@@ -524,7 +546,7 @@ describe('Webform tests', function () {
     const element = document.createElement('div');
     const form = fastCloneDeep(testFormEvents.form);
     const originalMakeRequest = Formio.makeRequest;
-    Formio.makeRequest = function (formio, type, url, method, data) {
+    Formio.makeRequest = function (formio, type, url, method) {
       if (type === 'form' && method === 'get') {
         return Promise.resolve(form);
       }
@@ -629,7 +651,7 @@ describe('Webform tests', function () {
     Formio.setUser({
       test: 123,
     });
-    Formio.makeRequest = function (formio, type, url, method, data) {
+    Formio.makeRequest = function (formio, type, url, method) {
       if (type === 'form' && method === 'get') {
         return Promise.resolve(form);
       }
@@ -670,7 +692,7 @@ describe('Webform tests', function () {
     Formio.setUser({
       test: 123,
     });
-    Formio.makeRequest = function (formio, type, url, method, data) {
+    Formio.makeRequest = function (formio, type, url, method) {
       if (type === 'form' && method === 'get') {
         return Promise.resolve(form);
       }
