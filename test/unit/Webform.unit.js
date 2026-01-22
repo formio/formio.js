@@ -196,14 +196,6 @@ describe('Webform tests', function () {
       ],
     };
 
-    const originalAttach = Component.prototype.attach;
-    Component.prototype.attach = async function (el) {
-      await new Promise((res) => {
-        setTimeout(() => res(), 200);
-      });
-      return originalAttach.call(this, el);
-    };
-
     Formio.createForm(element, form)
       .then((instance) => {
         const tfComp = instance.getComponent('textField');
@@ -223,7 +215,6 @@ describe('Webform tests', function () {
           setTimeout(() => {
             assert.equal(egComp.visible, true);
             assert.equal(egComp.editRows.length, 1);
-            Component.prototype.attach = originalAttach;
             done();
           }, 400);
         }, 500);
