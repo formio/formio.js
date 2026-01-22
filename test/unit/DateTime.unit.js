@@ -20,7 +20,6 @@ import {
   comp12,
   comp13,
   comp14,
-  comp15,
   requiredFieldLogicComp,
 } from './fixtures/datetime';
 
@@ -959,27 +958,6 @@ describe('DateTime Component', function () {
           assert.equal(dateTime1.errors.length, 1);
 
           document.innerHTML = '';
-          done();
-        }, 300);
-      })
-      .catch(done);
-  });
-
-  it('Should save date without ISO/timezone offsets when only date is enabled', function (done) {
-    const form = _.cloneDeep(comp15);
-    const element = document.createElement('div');
-
-    Formio.createForm(element, form, { readOnly: true })
-      .then((form) => {
-        const dateTime = form.getComponent('dateTime');
-        const blurEvent = new Event('blur');
-
-        const input = dateTime.element.querySelector('.input');
-        input.value = '2025-10-20';
-        input.dispatchEvent(blurEvent);
-
-        setTimeout(() => {
-          assert.equal(dateTime.dataValue.startsWith('2025-10-20'), true);
           done();
         }, 300);
       })

@@ -18,7 +18,6 @@ import {
 import moment from 'moment';
 import _ from 'lodash';
 
-const DATE_ONLY_MOMENT_FORMAT = 'YYYY-MM-DD';
 const DEFAULT_FORMAT = 'yyyy-MM-dd hh:mm a';
 const ISO_8601_FORMAT = 'yyyy-MM-ddTHH:mm:ssZ';
 
@@ -345,11 +344,6 @@ export default class CalendarWidget extends InputWidget {
    * @returns {string} - Returns the formatted date string.
    */
   getDateValue(date, format, useTimezone) {
-    if (useTimezone && !this.settings.enableTime) {
-      const dateOnly = moment(date).format(DATE_ONLY_MOMENT_FORMAT);
-
-      return moment.utc(dateOnly).format(convertFormatToMoment(format));
-    }
     if (useTimezone) {
       return momentDate(date, this.valueFormat, this.timezone).format(
         convertFormatToMoment(format),
@@ -412,11 +406,7 @@ export default class CalendarWidget extends InputWidget {
     const zonesLoading = this.loadZones();
     if (value) {
       if (!saveAsText && this.settings.readOnly && !zonesLoading) {
-        if (!this.settings.enableTime) {
-          this.calendar.setDate(momentDate(value, this.valueFormat).format(), false);
-        } else {
-          this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).format(), false);
-        }
+        this.calendar.setDate(momentDate(value, this.valueFormat, this.timezone).format(), false);
       } else if (this.isValueISO8601(value)) {
         this.calendar.setDate(value, false);
       } else {
