@@ -10,7 +10,7 @@ if (_.has(Formio, 'Components.setComponents')) {
   Formio.Components.setComponents(AllComponents);
 }
 
-describe('Webform tests', function () {
+describe('Events tests', function () {
   this.retries(3);
 
   before(function () {
