@@ -96,7 +96,7 @@ import formWithDraftState from '../forms/formWithDraftState';
 import Conditions from '../forms/conditions';
 import simpleWebform from '../forms/simpleWebform';
 import formWithHiddenSubform from '../forms/formWithHiddenSubform';
-import Component from '../../src/components/_classes/component/Component.js';
+import testLogicForDay from '../forms/testLogicForDay.js';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
@@ -124,6 +124,42 @@ describe('Webform tests', function () {
     done();
   });
   
+  it('Should change year options for day component when merge component schema action is executed', function (done) {
+    const element = document.createElement('div');
+    Formio.createForm(element, fastCloneDeep(testLogicForDay))
+      .then((instance) => {
+        const envComp = instance.getComponent('env');
+        const dayComp = instance.getComponent('expiryDate');
+
+        assert.equal(dayComp.years.length, 6);
+        assert.equal(dayComp.years[1].value, 2025);
+        assert.equal(dayComp.years[5].value, 2029);
+
+        const inputEvent = new Event('input');
+        let envInput = envComp.refs.input[0];
+        envInput.value = 'test';
+        envInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(dayComp.years.length, 7);
+          assert.equal(dayComp.years[1].value, 2026);
+          assert.equal(dayComp.years[6].value, 2031);
+
+          envInput = envComp.refs.input[0];
+          envInput.value = '';
+          envInput.dispatchEvent(inputEvent);
+
+          setTimeout(() => {
+            assert.equal(dayComp.years.length, 6);
+            assert.equal(dayComp.years[1].value, 2025);
+            assert.equal(dayComp.years[5].value, 2029);
+            done();
+          }, 500);
+        }, 500);
+      })
+      .catch(done);
+  });
+
   it('Should allow to add new row to editGrid inside conditional container it takes more time for attach promise to resolve', function (done) {
     const element = document.createElement('div');
     const form = {

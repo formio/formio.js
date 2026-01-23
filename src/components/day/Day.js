@@ -198,26 +198,20 @@ export default class DayComponent extends Field {
   }
 
   get days() {
-    if (this._days) {
-      return this._days;
-    }
-    this._days = [
+    const days = [
       { value: '', label: _.get(this.component, 'fields.day.placeholder', '') },
     ];
     for (let x = 1; x <= 31; x++) {
-      this._days.push({
+      days.push({
         value: x,
         label: x.toString(),
       });
     }
-    return this._days;
+    return days;
   }
 
   get months() {
-    if (this._months) {
-      return this._months;
-    }
-    this._months = [
+    const months = [
       {
         value: '',
         label:
@@ -237,25 +231,22 @@ export default class DayComponent extends Field {
       { value: 11, label: 'November' },
       { value: 12, label: 'December' },
     ];
-    return this._months;
+    return months;
   }
 
   get years() {
-    if (this._years) {
-      return this._years;
-    }
-    this._years = [
+    const years = [
       { value: '', label: _.get(this.component, 'fields.year.placeholder', '') },
     ];
     const minYears = _.get(this.component, 'fields.year.minYear', 1900) || 1900;
     const maxYears = _.get(this.component, 'fields.year.maxYear', 2030) || 2030;
     for (let x = minYears; x <= maxYears; x++) {
-      this._years.push({
+      years.push({
         value: x,
         label: x.toString(),
       });
     }
-    return this._years;
+    return years;
   }
 
   setErrorClasses(elements, dirty, hasError) {
