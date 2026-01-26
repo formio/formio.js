@@ -140,16 +140,15 @@ export default class DataMapComponent extends DataGridComponent {
 
   get iteratableRows() {
     return this.rows.map((row) => {
-      return Object.keys(row).map((key) => ({
-        components: row[key],
-        data: row[key].dataValue,
-      }));
+      return {
+        components: row,
+        data: _.mapValues(row, (comp) => comp.dataValue)
+      }
     });
   }
 
   componentContext(component) {
-    return this.iteratableRows[component.row].find((comp) => comp.components.key === component.key)
-      .data;
+    return this.iteratableRows[component.row].data[component.key];
   }
 
   hasHeader() {
