@@ -157,7 +157,7 @@ function getConditionalPathsRecursive(conditionPaths, data) {
       }
 
       const hasInnerDataArray = currentData.find((x) =>
-        Array.isArray(x[conditionPaths[currentLocalIndex]]),
+        x && conditionPaths && Array.isArray(x[conditionPaths[currentLocalIndex]]),
       );
 
       if (hasInnerDataArray) {
