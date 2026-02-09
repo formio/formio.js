@@ -314,6 +314,8 @@ export default class AddressComponent extends ContainerComponent {
     }
 
     if (changed || (!_.isEmpty(value) && flags.fromSubmission)) {
+      // Recheck conditions on child components before redraw so their visibility is updated
+      this.getComponents().forEach((comp) => comp.checkConditions(this.root?.data));
       this.redraw();
     }
 
