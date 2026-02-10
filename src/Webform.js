@@ -1293,6 +1293,38 @@ export default class Webform extends NestedDataComponent {
     if (this.draftEnabled && this.triggerSaveDraft?.cancel) {
       this.triggerSaveDraft.cancel();
     }
+    
+    if (typeof document !== 'undefined' && document.body) {
+      const announcementMessage = this.t ? this.t('complete') : 'Form submission complete';
+      
+      // Get or create ARIA live region for announcements
+      let liveRegion = document.getElementById('formio-announcements');
+      if (!liveRegion) {
+        liveRegion = document.createElement('div');
+        liveRegion.id = 'formio-announcements';
+        liveRegion.setAttribute('role', 'status');
+        liveRegion.setAttribute('aria-live', 'polite');
+        liveRegion.setAttribute('aria-atomic', 'true');
+        liveRegion.style.cssText = 'position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);';
+        document.body.appendChild(liveRegion);
+      }
+      
+      // Announce the submission completion using VPAT clear-and-reset technique
+      liveRegion.textContent = '';
+      liveRegion.setAttribute('aria-live', 'off');
+      
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          liveRegion.setAttribute('aria-live', 'polite');
+          liveRegion.textContent = announcementMessage;
+          
+          setTimeout(() => {
+            liveRegion.textContent = '';
+          }, 1000);
+        }, 100);
+      });
+    }
+    
     this.emit('submit', submission, saved);
     if (saved) {
       this.emit('submitDone', submission);

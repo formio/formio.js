@@ -164,6 +164,38 @@ export class Formio {
     if (successMessage && successMessage.toLowerCase() !== 'false' && instance.element) {
       instance.element.innerHTML = `<div class="alert-success" role="alert">${successMessage}</div>`;
     }
+    const announcementMessage = successMessage && successMessage.toLowerCase() !== 'false' 
+      ? successMessage 
+      : 'Form submission complete';
+    
+    let liveRegion = document.getElementById('formio-announcements');
+    if (!liveRegion) {
+      liveRegion = Formio.createElement('div', {
+        id: 'formio-announcements',
+        'role': 'status',
+        'aria-live': 'polite',
+        'aria-atomic': 'true',
+        style: 'position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);'
+      });
+      document.body.appendChild(liveRegion);
+    }
+    
+    // Announce the submission completion using VPAT clear-and-reset technique
+    liveRegion.textContent = '';
+    liveRegion.setAttribute('aria-live', 'off');
+    
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        liveRegion.setAttribute('aria-live', 'polite');
+        liveRegion.textContent = announcementMessage;
+        
+        setTimeout(() => {
+          if (liveRegion) {
+            liveRegion.textContent = '';
+          }
+        }, 1000);
+      }, 100);
+    });
     let returnUrl = Formio.config.redirect;
 
     // Allow form based configuration for return url.
