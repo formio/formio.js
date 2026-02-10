@@ -4030,27 +4030,33 @@ export default class Component extends Element {
       }
     });
     this.addEventListener(element, 'blur', () => {
-      if (this.root) {
-        this.root.pendingBlur = FormioUtils.delay(() => {
-          this.emit('blur', this);
-          if (this.component.validateOn === 'blur') {
-            this.root.triggerChange?.(
-              { fromBlur: true },
-              {
-                instance: this,
-                component: this.component,
-                value: this.dataValue,
-                flags: { fromBlur: true },
-              },
-            );
-          }
-          this.root.focusedComponent = null;
-          this.root.pendingBlur = null;
-        });
+      const root = this.root;
+      if (!root) {
+        return;
       }
+      root.pendingBlur = FormioUtils.delay(() => {
+        if (!root) {
+          return;
+        }
+
+        this.emit('blur', this);
+
+        if (this.component.validateOn === 'blur') {
+          root.triggerChange?.(
+            { fromBlur: true },
+            {
+              instance: this,
+              component: this.component,
+              value: this.dataValue,
+              flags: { fromBlur: true },
+            },
+          );
+        }
+        root.focusedComponent = null;
+        root.pendingBlur = null;
+      });
     });
   }
-
   setCustomValidity(messages, dirty, external) {
     const inputRefs = this.isInputComponent ? this.refs.input || [] : null;
 
