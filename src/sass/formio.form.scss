@@ -10,6 +10,13 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   content: none !important;
 }
 
+.col-md-0 {
+  flex: 0 0 0 !important;
+  max-width: 0 !important;
+  width: 0 !important;
+  padding: 0 !important;
+}
+
 .required-star {
   color: #eb0000;
 }
