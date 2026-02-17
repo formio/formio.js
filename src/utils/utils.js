@@ -1867,6 +1867,158 @@ export function hasEncodedTimezone(value) {
     value.match(/[+|-][0-9]{2}:[0-9]{2}$/)
   );
 }
+// Types for min max validation if value = string
+const TYPES = new Map([["char", "Length"], ["word", "Words"]]);
+
+// The number from which the remaining character(words) count message starts being read
+const REMAIN_COUNT = new Map([["char", 10], ["word", 5]]);
+
+function getWordOrCharacterLabel(isWordType, count) {
+  const base = isWordType ? "word" : "character";
+  return Math.abs(count) === 1 ? base : `${base}s`;
+}
+/**
+ * The function calculates the message values depending on the type and the current component settings.
+ * @param {component} component - The component instance
+ * @param {type} type - The type of validation max and min
+ * @param {value} value - The current component value
+ * @param {forFocus} forFocus - Whether the component is focused or not
+ * @returns {string} - The messsage string
+ */
+function getScreenReaderMessage(component, type, value, forFocus = false) {
+  const isWordType = type === "word";
+  const maxKey =
+    typeof value === "string" && (type === "char" || isWordType)
+      ? `validate.max${TYPES.get(type)}`
+      : "validate.max";
+  const minKey =
+    typeof value === "string" && (type === "char" || isWordType)
+      ? `validate.min${TYPES.get(type)}`
+      : "validate.min";
+
+  const max = _.parseInt(_.get(component.component, maxKey), 10);
+  const min = _.parseInt(_.get(component.component, minKey), 10);
+
+  let message = "";
+
+  if (typeof value === "string") {
+    const currentLength = isWordType ? component.getWordCount(value) : value.length;
+
+    if (!isNaN(max)) {
+      const remains = max - currentLength;
+
+      if (!forFocus) {
+        const threshold = REMAIN_COUNT.get(type) || max;
+        if (remains > 0 && remains < threshold) {
+          message += `${remains} ${getWordOrCharacterLabel(isWordType, remains)} remaining. `;
+        } else if (remains < 0) {
+          const removeCount = Math.abs(remains);
+          message += `${removeCount} ${getWordOrCharacterLabel(isWordType, removeCount)} should be removed. `;
+        } else if (remains === 0) {
+          message += `No ${getWordOrCharacterLabel(isWordType, 0)} remaining.`;
+        }
+      } else {
+        message += `Maximum ${max} ${getWordOrCharacterLabel(isWordType, max)}. `;
+      }
+    }
+
+    if (!isNaN(min)) {
+      if (!forFocus) {
+        const remains = min - currentLength;
+        if (remains > 0) {
+          message += `${remains} ${getWordOrCharacterLabel(isWordType, remains)} should be added.`;
+        }
+        if (remains === 0) {
+          message += ``;
+        }
+      } else {
+        message += `Minimum ${min} ${getWordOrCharacterLabel(isWordType, min)}. `;
+      }
+    }
+  } else if (typeof value === "number" || value === null) {
+    if (!forFocus) {
+      if (!isNaN(max) && value > max) {
+        message += `Number cannot be greater than ${max}. `;
+      }
+      if (!isNaN(min) && value < min) {
+        message += `Number cannot be less than ${min}.`;
+      }
+    } else {
+      if (!isNaN(min)) message += `Minimum value ${min}. `;
+      if (!isNaN(max)) message += `Maximum value ${max}. `;
+    }
+  }
+  return message.trim();
+}
+
+/**
+ * The function for announcing messages via a screen reader
+ * @param {component} component - The component instance
+ * @param {value} value - The current component value
+ * @param {index} index - The component index
+ * @param {forFocus} forFocus - Whether the component is focused or not
+ * @returns {undefined}
+ */
+export function announceScreenReaderMessage(component, value, index = 0, forFocus = false) {
+  if (typeof value !== "string" && typeof value !== "number" && value !== null) {
+    return;
+  }
+  // The ref for announcing messages
+  const messageSpan = "announceMessage";
+  if (!component.refs[messageSpan]) return;
+  const el = component.refs[messageSpan][index];
+  if (!el) return;
+
+  if (forFocus && el._focusAnnounced) {
+    return;
+  }
+  // Define types for validation
+  const typesToCheck = [];
+  if (typeof value === "string") typesToCheck.push("char", "word");
+  if (typeof value === "number" || value === null) typesToCheck.push("number");
+
+  // Construct the combined message
+  const combinedMessage = typesToCheck
+    .map(type => getScreenReaderMessage(component, type, value, forFocus))
+    .filter(msg => msg)
+    .join(" ")
+    .trim();
+
+  if (!combinedMessage && !el.textContent) {
+    return;
+  }
+
+  if (forFocus) {
+    el._focusAnnounced = true;
+    // This timeout is needed to allow the screen reader to first announce the focused attributes, and only then our message.
+    // Otherwise, our message may be ignored.
+    setTimeout(() => {
+      el.textContent = "";
+      requestAnimationFrame(() => {
+        el.textContent = combinedMessage;
+      });
+    }, 150);
+    return;
+  }
+  if (!el._announceSeq) {
+    el._announceSeq = 0;
+  }
+  const seq = ++el._announceSeq;
+
+  clearTimeout(el._announceTimer);
+  el._announceTimer = setTimeout(() => {
+  // if a newer input has arrived during this time — do not read it
+    if (seq !== el._announceSeq) {
+      return;
+    }
+    el.textContent = "";
+    requestAnimationFrame(() => {
+      if (seq === el._announceSeq) {
+        el.textContent = combinedMessage;
+      }
+    });
+  }, 250);
+}
 
 /**
  * Outputs text to screen reader
