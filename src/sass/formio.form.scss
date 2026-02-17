@@ -90,6 +90,10 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   padding-right: 10px;
 }
 
+textarea.form-control {
+  height: auto;
+}
+
 .has-feedback .form-control[type='hidden'] {
   padding-right: 0px;
 }
