@@ -103,7 +103,7 @@ export default [
         }
       }
     },
-    customDefaultValue: (value, component, row, data, instance) => {
+    customDefaultValue: ({value, data, instance}) => {
       if (!data.widget) {
         const originalWidget = getOriginalWidget(instance);
         const widgetType = data['widget.type'] || originalWidget?.type;
