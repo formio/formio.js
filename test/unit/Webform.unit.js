@@ -97,6 +97,7 @@ import Conditions from '../forms/conditions';
 import simpleWebform from '../forms/simpleWebform';
 import formWithHiddenSubform from '../forms/formWithHiddenSubform';
 import testLogicForDay from '../forms/testLogicForDay.js';
+import formWithPlaceholders from '../forms/formWithPlaceholders.js';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
@@ -124,6 +125,21 @@ describe('Webform tests', function () {
     done();
   });
   
+  it('Should not show placeholders in readOnly mode', function (done) {
+    const element = document.createElement('div');
+    Formio.createForm(element, fastCloneDeep(formWithPlaceholders), { readOnly: true})
+      .then((instance) => {
+        setTimeout(() => {
+          const selectChoicesPlaceholder = instance.element.querySelector('.choices__placeholder');
+          const otherCompPlaceholders = instance.element.querySelectorAll('[placeholder="test placeholder"]');
+          assert.equal(!!selectChoicesPlaceholder, false);
+          assert.equal(otherCompPlaceholders.length, 0)
+          done(); 
+        }, 100)
+      })
+      .catch(done);
+  });
+
   it('Should change year options for day component when merge component schema action is executed', function (done) {
     const element = document.createElement('div');
     Formio.createForm(element, fastCloneDeep(testLogicForDay))

@@ -4,14 +4,17 @@ import Choices from 'choices.js';
 
 export default class TagsComponent extends Input {
   static schema(...extend) {
-    return Input.schema({
-      type: 'tags',
-      label: 'Tags',
-      key: 'tags',
-      delimeter: ',',
-      storeas: 'string',
-      maxTags: 0
-    }, ...extend);
+    return Input.schema(
+      {
+        type: 'tags',
+        label: 'Tags',
+        key: 'tags',
+        delimeter: ',',
+        storeas: 'string',
+        maxTags: 0,
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -21,7 +24,7 @@ export default class TagsComponent extends Input {
       group: 'advanced',
       documentation: '/userguide/form-building/advanced-components#tags',
       weight: 30,
-      schema: TagsComponent.schema()
+      schema: TagsComponent.schema(),
     };
   }
 
@@ -32,14 +35,22 @@ export default class TagsComponent extends Input {
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
-      operators: [...super.conditionOperatorsSettings.operators, 'includes', 'notIncludes'],
+      operators: [
+        ...super.conditionOperatorsSettings.operators,
+        'includes',
+        'notIncludes',
+      ],
     };
   }
 
   static savedValueTypes(schema) {
     schema = schema || {};
 
-    return  getComponentSavedTypes(schema) ||[componentValueTypes[schema.storeas] || componentValueTypes.string];
+    return (
+      getComponentSavedTypes(schema) || [
+        componentValueTypes[schema.storeas] || componentValueTypes.string,
+      ]
+    );
   }
 
   init() {
@@ -47,7 +58,7 @@ export default class TagsComponent extends Input {
   }
 
   get emptyValue() {
-    return (this.component.storeas === 'string') ? '' : [];
+    return this.component.storeas === 'string' ? '' : [];
   }
 
   get defaultSchema() {
@@ -82,7 +93,7 @@ export default class TagsComponent extends Input {
       return;
     }
 
-    const hasPlaceholder = !!this.component.placeholder;
+    const hasPlaceholder = !!this.component.placeholder && !this.options?.readOnly;
 
     this.choices = new Choices(element, {
       delimiter: this.delimiter,
@@ -93,7 +104,9 @@ export default class TagsComponent extends Input {
       duplicateItemsAllowed: false,
       shadowRoot: this.root ? this.root.shadowRoot : null,
       placeholder: hasPlaceholder,
-      placeholderValue: hasPlaceholder ? this.t(this.component.placeholder, { _userInput: true }) : null,
+      placeholderValue: hasPlaceholder
+        ? this.t(this.component.placeholder, { _userInput: true })
+        : null,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
     this.addEventListener(this.choices.input.element, 'blur', () => {
@@ -102,22 +115,24 @@ export default class TagsComponent extends Input {
       const value = this.choices.input.value;
       const maxTagsNumber = this.component.maxTags;
       const valuesCount = this.choices.getValue(true).length;
-      const isRepeatedValue = this.choices.getValue(true).some(existingValue => existingValue.trim() === value.trim());
+      const isRepeatedValue = this.choices
+        .getValue(true)
+        .some((existingValue) => existingValue.trim() === value.trim());
 
       if (value) {
         if (maxTagsNumber && valuesCount === maxTagsNumber) {
           this.choices.addItems = false;
           this.choices.clearInput();
-        }
-        else if (isRepeatedValue) {
+        } else if (isRepeatedValue) {
           this.choices.clearInput();
-        }
-        else {
-          this.choices.setValue([value]);
+        } else {
+          this.choices.setValue([
+            value,
+          ]);
           this.choices.clearInput();
           this.choices.hideDropdown(true);
           this.updateValue(null, {
-            modified: true
+            modified: true,
           });
         }
       }
@@ -135,9 +150,8 @@ export default class TagsComponent extends Input {
   normalizeValue(value) {
     if (this.component.storeas === 'string' && Array.isArray(value)) {
       return super.normalizeValue(value.join(this.delimiter));
-    }
-    else if (this.component.storeas === 'array' && typeof value === 'string') {
-      return super.normalizeValue(value.split(this.delimiter).filter(result => result));
+    } else if (this.component.storeas === 'array' && typeof value === 'string') {
+      return super.normalizeValue(value.split(this.delimiter).filter((result) => result));
     }
     return super.normalizeValue(value);
   }
@@ -149,9 +163,13 @@ export default class TagsComponent extends Input {
       this.choices.clearStore();
       if (dataValue) {
         if (typeof dataValue === 'string') {
-          dataValue = dataValue.split(this.delimiter).filter(result => result);
+          dataValue = dataValue.split(this.delimiter).filter((result) => result);
         }
-        const value = Array.isArray(dataValue) ? dataValue : [dataValue];
+        const value = Array.isArray(dataValue)
+          ? dataValue
+          : [
+              dataValue,
+            ];
         this.choices.setValue(value.map((val) => this.sanitize(val, this.shouldSanitizeValue)));
       }
     }
@@ -165,8 +183,7 @@ export default class TagsComponent extends Input {
     }
     if (disabled) {
       this.choices.disable();
-    }
-    else {
+    } else {
       this.choices.enable();
     }
   }
@@ -184,9 +201,9 @@ export default class TagsComponent extends Input {
   getValue() {
     if (this.choices) {
       const value = this.choices.getValue(true);
-      return value.join(`${this.delimiter}`)
+      return value.join(`${this.delimiter}`);
     }
-    return super.getValue()
+    return super.getValue();
   }
 
   getValueAsString(value) {

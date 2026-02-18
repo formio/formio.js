@@ -386,7 +386,7 @@ export default class AddressComponent extends ContainerComponent {
       tabindex: this.component.tabindex || 0,
     };
 
-    if (this.component.placeholder) {
+    if (this.component.placeholder && !this.options?.readOnly) {
       ((attr.placeholder = this.t(this.component.placeholder)), { _userInput: true });
     }
 

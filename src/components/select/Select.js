@@ -930,7 +930,7 @@ export default class SelectComponent extends ListComponent {
   }
 
   addPlaceholder() {
-    if (!this.component.placeholder) {
+    if (!this.component.placeholder || this.options?.readOnly) {
       return;
     }
 
@@ -1015,7 +1015,8 @@ export default class SelectComponent extends ListComponent {
     const useSearch = this.component.hasOwnProperty('searchEnabled')
       ? this.component.searchEnabled
       : true;
-    const placeholderValue = this.t(this.component.placeholder, { _userInput: true });
+    const hasPlaceholder = !!this.component.placeholder && !this.options?.readOnly;
+    const placeholderValue = hasPlaceholder ? this.t(this.component.placeholder, { _userInput: true }) : null;
     let customOptions = this.component.customOptions || {};
     if (typeof customOptions == 'string') {
       try {
@@ -1048,7 +1049,7 @@ export default class SelectComponent extends ListComponent {
       },
       addItemText: false,
       allowHTML: true,
-      placeholder: !!this.component.placeholder,
+      placeholder: hasPlaceholder,
       placeholderValue: placeholderValue,
       noResultsText: this.t('No results found'),
       noChoicesText: this.t('No choices to choose from'),
