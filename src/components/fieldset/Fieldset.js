@@ -45,6 +45,14 @@ export default class FieldsetComponent extends NestedComponent {
     return 'fieldset';
   }
 
+  attach(element) {
+    return super.attach(element).then(() => {
+      if (this.component.legend && this.refs.header) {
+        this.refs.header.setAttribute('id', `l-${this.id}-legend`);
+      }
+    });
+  }
+
   constructor(...args) {
     super(...args);
     this.noField = true;

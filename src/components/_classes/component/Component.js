@@ -617,6 +617,18 @@ export default class Component extends Element {
     return label;
   }
 
+  getFieldsetLegendIds() {
+    const legendIds = [];
+    let currentParent = this.parent;
+    while (currentParent) {
+      if (currentParent.component?.type === 'fieldset' && currentParent.component?.legend) {
+        legendIds.push(`l-${currentParent.id}-legend`);
+      }
+      currentParent = currentParent.parent;
+    }
+    return legendIds.reverse().join(' ');
+  }
+
   init() {
     this.disabled = this.shouldDisabled;
     this._visible = this.hasCondition() ? !this.conditionallyHidden() : !this.component.hidden;
