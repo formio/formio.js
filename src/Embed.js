@@ -379,6 +379,28 @@ export class Formio {
     });
     const id = Formio.config.id || `formio-${Math.random().toString(36).substring(7)}`;
 
+    const hasQuillComponent = (components = []) => {
+      if (!Array.isArray(components)) {
+        return false;
+      }
+      return components.some((component) => {
+        if (!component || typeof component !== 'object') {
+          return false;
+        }
+        const isQuillTextarea =
+          component.type === 'textarea' &&
+          component.wysiwyg === true &&
+          component.editor === 'quill';
+        return (
+          isQuillTextarea ||
+          hasQuillComponent(component.components) ||
+          hasQuillComponent(component.columns?.flatMap((column) => column.components || [])) ||
+          hasQuillComponent(component.rows?.flatMap((row) => row.flatMap((cell) => cell.components || [])))
+        );
+      });
+    };
+    const disableShadowForQuill = hasQuillComponent(Formio.config.form?.components);
+
     // Create a new wrapper and add the element inside of a new wrapper.
     let wrapper = Formio.createElement('div', {
       id: `${id}-wrapper`,
@@ -389,6 +411,7 @@ export class Formio {
     const useShadowDom =
       Formio.config.includeLibs &&
       !Formio.config.noshadow &&
+      !disableShadowForQuill &&
       typeof wrapper.attachShadow === 'function';
     if (useShadowDom) {
       wrapper = wrapper.attachShadow({
