@@ -334,10 +334,9 @@ export default class SelectComponent extends ListComponent {
     const shouldUseSelectData =
       (this.component.multiple && _.isArray(this.dataValue)
         ? this.dataValue.find((val) => this.normalizeSingleValue(value) === val)
-        : this.dataValue === this.normalizeSingleValue(value)) || this.inDataTable;
-
+        : this.dataValue === this.normalizeSingleValue(value)) || (this.inDataTable && !this.element);
     if (shouldUseSelectData) {
-      const selectData = this.selectData;
+      const selectData = (this.inDataTable && !this.element) ? this.component.selectData : this.selectData;
       if (selectData) {
         const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
         if (!this.templateData || !this.templateData[templateValue]) {
@@ -1603,7 +1602,10 @@ export default class SelectComponent extends ListComponent {
   }
 
   setMetadata(value, flags = {}) {
-    if (_.isNil(value)) {
+    if (
+      _.isNil(value) ||
+      (this.inDataTable && this.component.dataSrc === 'values')
+    ) {
       return;
     }
     const valueIsObject = _.isObject(value);
@@ -1613,7 +1615,7 @@ export default class SelectComponent extends ListComponent {
     }
     // Check to see if we need to save off the template data into our metadata.
     const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
-    const shouldSaveData = (!valueIsObject || this.component.reference) && !this.inDataTable;
+    const shouldSaveData = (!valueIsObject || this.component.reference) && !(this.inDataTable && this.row === '');
     if (
       !_.isNil(templateValue) &&
       shouldSaveData &&
@@ -1939,7 +1941,10 @@ export default class SelectComponent extends ListComponent {
   asString(value, options = {}) {
     value = value ?? this.getValue();
 
-    if (options.modalPreview || (this.inDataTable && this.component.dataSrc !== 'values')) {
+    if (
+      options.modalPreview ||
+      ((this.inDataTable || this.inEditGrid) && !['values', 'custom'].includes(this.component.dataSrc))
+    ) {
       if (this.inDataTable) {
         value = this.undoValueTyping(value);
       }
