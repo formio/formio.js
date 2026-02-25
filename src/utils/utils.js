@@ -1885,7 +1885,7 @@ function getWordOrCharacterLabel(isWordType, count) {
  * @param {forFocus} forFocus - Whether the component is focused or not
  * @returns {string} - The messsage string
  */
-function getScreenReaderMessage(component, type, value, forFocus = false) {
+function getScreenReaderMessage(component, type, value) {
   const isWordType = type === "word";
   const maxKey =
     typeof value === "string" && (type === "char" || isWordType)
@@ -1907,7 +1907,7 @@ function getScreenReaderMessage(component, type, value, forFocus = false) {
     if (!isNaN(max)) {
       const remains = max - currentLength;
 
-      if (!forFocus) {
+      if (value) {
         const threshold = REMAIN_COUNT.get(type) || max;
         if (remains > 0 && remains < threshold) {
           message += `${remains} ${getWordOrCharacterLabel(isWordType, remains)} remaining. `;
@@ -1923,7 +1923,7 @@ function getScreenReaderMessage(component, type, value, forFocus = false) {
     }
 
     if (!isNaN(min)) {
-      if (!forFocus) {
+      if (value) {
         const remains = min - currentLength;
         if (remains > 0) {
           message += `${remains} ${getWordOrCharacterLabel(isWordType, remains)} should be added.`;
@@ -1936,7 +1936,7 @@ function getScreenReaderMessage(component, type, value, forFocus = false) {
       }
     }
   } else if (typeof value === "number" || value === null) {
-    if (!forFocus) {
+    if (value != null && value !== "") {
       if (!isNaN(max) && value > max) {
         message += `Number cannot be greater than ${max}. `;
       }
@@ -1969,9 +1969,6 @@ export function announceScreenReaderMessage(component, value, index = 0, forFocu
   const el = component.refs[messageSpan][index];
   if (!el) return;
 
-  if (forFocus && el._focusAnnounced) {
-    return;
-  }
   // Define types for validation
   const typesToCheck = [];
   if (typeof value === "string") typesToCheck.push("char", "word");
@@ -1979,19 +1976,12 @@ export function announceScreenReaderMessage(component, value, index = 0, forFocu
 
   // Construct the combined message
   const combinedMessage = typesToCheck
-    .map(type => getScreenReaderMessage(component, type, value, forFocus))
+    .map(type => getScreenReaderMessage(component, type, value))
     .filter(msg => msg)
     .join(" ")
     .trim();
 
-  if (!combinedMessage && !el.textContent) {
-    return;
-  }
-
   if (forFocus) {
-    el._focusAnnounced = true;
-    // This timeout is needed to allow the screen reader to first announce the focused attributes, and only then our message.
-    // Otherwise, our message may be ignored.
     setTimeout(() => {
       el.textContent = "";
       requestAnimationFrame(() => {
@@ -2000,24 +1990,14 @@ export function announceScreenReaderMessage(component, value, index = 0, forFocu
     }, 150);
     return;
   }
-  if (!el._announceSeq) {
-    el._announceSeq = 0;
-  }
-  const seq = ++el._announceSeq;
 
   clearTimeout(el._announceTimer);
   el._announceTimer = setTimeout(() => {
-  // if a newer input has arrived during this time — do not read it
-    if (seq !== el._announceSeq) {
-      return;
-    }
     el.textContent = "";
     requestAnimationFrame(() => {
-      if (seq === el._announceSeq) {
         el.textContent = combinedMessage;
-      }
     });
-  }, 250);
+  }, 500);
 }
 
 /**

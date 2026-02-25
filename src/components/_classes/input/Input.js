@@ -313,6 +313,13 @@ export default class Input extends Multivalue {
       announceScreenReaderMessage(comp, comp.dataValue, 0, true);
     });
 
+    this.on('blur', (comp) => {
+      const el = comp.refs?.["announceMessage"]?.[0];
+      if (el) {
+        el.textContent = ""
+      }
+    });
+
     return promise;
   }
 
