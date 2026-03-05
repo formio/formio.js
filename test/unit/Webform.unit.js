@@ -98,6 +98,7 @@ import simpleWebform from '../forms/simpleWebform';
 import formWithHiddenSubform from '../forms/formWithHiddenSubform';
 import testLogicForDay from '../forms/testLogicForDay.js';
 import formWithPlaceholders from '../forms/formWithPlaceholders.js';
+import formWithComments from '../forms/formWithComments.js';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
@@ -123,6 +124,39 @@ describe('Webform tests', function () {
       });
     }
     done();
+  });
+
+  it('Should correctly execute custom logic containing a comment', function (done) {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, fastCloneDeep(formWithComments))
+      .then((instance) => {
+        const number = instance.getComponent('number');
+        const textField = instance.getComponent('textField');
+        const textFieldCond = instance.getComponent('textField2');
+
+        assert.equal(textField.visibleErrors.length, 0);
+        assert.equal(textFieldCond.visible, false);
+
+        const inputEvent = new Event('input');
+        const numberInput = number.refs.input[0];
+        const textFieldInput = textField.refs.input[0];
+        numberInput.value = 1;
+        textFieldInput.value = 'test';
+
+        numberInput.dispatchEvent(inputEvent);
+        textFieldInput.dispatchEvent(inputEvent);
+
+        setTimeout(() => {
+          assert.equal(textFieldCond.visible, true);
+          assert.equal(textFieldCond.dataValue, 'test');
+          assert.equal(textField.errors.length, 1);
+          assert.equal(textField.visibleErrors.length, 1);
+
+          done(); 
+        }, 300)
+      })
+      .catch(done);
   });
   
   it('Should not show placeholders in readOnly mode', function (done) {

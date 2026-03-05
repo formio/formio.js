@@ -332,7 +332,11 @@ export function checkCustomConditional(
   instance,
 ) {
   if (typeof custom === 'string') {
-    custom = `var ${variable} = true; ${custom}; return ${variable};`;
+    custom = `
+      var ${variable} = true; 
+      ${custom}; 
+      return ${variable};
+    `;
   }
   const value =
     instance && instance.evaluate
