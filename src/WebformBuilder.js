@@ -1332,6 +1332,15 @@ export default class WebformBuilder extends Component {
       _.get(this.webform, 'form.globalSettings.sanitizeConfig');
     // Update the preview.
     if (this.preview) {
+      if (changed?.instance?.key === 'allowMultipleMasks' && changed?.value === false) {
+        const changedComp = this.preview?.getComponent(component.key);
+        if (changedComp) {
+          const emptyValue = changedComp.emptyValue;
+          changedComp.dataValue = emptyValue;
+          component.defaultValue = emptyValue;
+        }
+      }
+      
       this.preview.form = {
         components: [
           _.omit({ ...component }, [
