@@ -71,7 +71,7 @@ export default class SignatureComponent extends Input {
 
     if (
       this.component.keepOverlayRatio &&
-      this.options?.display === 'pdf' &&
+      this.options.pdf &&
       this.component.overlay?.width &&
       this.component.overlay?.height
     ) {
