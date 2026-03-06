@@ -816,6 +816,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
   console.log(textField.errors); // This will be populated with the errors of the textfield even if they are not displayed on the form.
   ```
 
+- Strict "number" validations: Before 5.x, it was possible to force the value of a Number component within the POST request made to the server where the value of a number component is a "string" number. This is now considered an error condition within 5.x and it will result in an error. It should be noted that the renderer does "coerse" the value into a number if it can be, so this would only be aparent if you are sending an API call with a string value for the number, or if you are forcing the value with a calculated value.
 - If you wish to show the "visibleErrors", then there is a new property on each component called "visibleComponents".
 
   **4.x Renderer**
