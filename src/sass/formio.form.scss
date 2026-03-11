@@ -47,7 +47,7 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 }
 
 .form-control {
-  height: calc(1.4em + 0.75rem + 2px);
+  min-height: calc(1.4em + 0.75rem + 2px);
 }
 
 .formio-disabled-input .form-control.flatpickr-input {
