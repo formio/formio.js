@@ -174,7 +174,7 @@ export default class Component extends Element {
         },
 
         /**
-         * The simple conditional settings for a component.
+         * the simple conditional settings for a component.
          */
         conditional: {
           show: null,
