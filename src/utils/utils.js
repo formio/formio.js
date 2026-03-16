@@ -167,7 +167,7 @@ function getConditionalPathsRecursive(conditionPaths, data) {
         });
       } else {
         currentData.forEach((x, index) => {
-          if (!_.isNil(x[conditionPaths[currentLocalIndex]])) {
+          if (x && conditionPaths && !_.isNil(x[conditionPaths[currentLocalIndex]])) {
             const compDataPath = `${currentPath}[${index}].${conditionPaths[currentLocalIndex]}`;
             conditionalPathsArray.push(compDataPath);
           }
