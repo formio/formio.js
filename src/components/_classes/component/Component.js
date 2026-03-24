@@ -3613,7 +3613,11 @@ export default class Component extends Element {
       const calculationChanged = !_.isEqual(previousCalculatedValue, newCalculatedValue);
       const previousChanged = !_.isEqual(normalizedDataValue, previousCalculatedValue);
 
-      if (calculationChanged && previousChanged && !firstPass) {
+      // Do not treat empty dataValue as a manual override.
+      // When dataValue is empty, previousChanged may be true simply because
+      // we're comparing "" with null (set during firstPass reset), not because
+      // the user manually overrode the calculated value.
+      if (calculationChanged && previousChanged && !firstPass && !this.isEmpty(dataValue)) {
         return false;
       }
 
@@ -3627,8 +3631,11 @@ export default class Component extends Element {
         return false;
       }
 
-      if (fromSubmission) {
-        // If we set value from submission and it differs from calculated one, set the calculated value to prevent overriding dataValue in the next pass
+      // When fromSubmission and dataValue is empty, the empty value
+      // is not a manual override — allow the calculation to proceed.
+      if (fromSubmission && !this.isEmpty(dataValue)) {
+        // If we set value from submission and it differs from calculated one,
+        // set the calculated value to prevent overriding dataValue in the next pass
         this.calculatedValue = fastCloneDeep(calculatedValue);
         return false;
       }
