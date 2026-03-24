@@ -62,6 +62,7 @@ import formWithSelectBoxes from '../forms/formWithSelectBoxes';
 import formWithDayComp from '../forms/formWithDayComp';
 import formWithCalcValue from '../forms/formWithCalcValue';
 import formWithAllowCalculateOverride from '../forms/formWithAllowCalculateOverride';
+import formWithAllowCalculateOverrideAndSubmission from '../forms/formWithAllowCalculateOverrideAndSubmission';
 import testClearOnHideInsideEditGrid from '../forms/clearOnHideInsideEditGrid';
 import formWithNestedDataGridInitEmpty from '../forms/nestedDataGridWithInitEmpty';
 import formWithEventLogicInHiddenComponent from '../forms/formWithEventLogicInHiddenComponent';
@@ -2602,6 +2603,42 @@ describe('Webform tests', function () {
               done();
             }, 500);
           }, 500);
+        }, 500);
+      })
+      .catch(done);
+  });
+
+  it('Should display calculated value when allowCalculateOverride is true and submission has empty calculated field', function (done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form
+      .setForm(formWithAllowCalculateOverrideAndSubmission)
+      .then(() => {
+        form.submission = { data: { price: 10, quantity: 5, total: '' } };
+
+        setTimeout(() => {
+          const totalComp = form.getComponent('total');
+          assert.equal(totalComp.dataValue, 50, 'Calculated value should be applied when submission value is empty');
+          done();
+        }, 500);
+      })
+      .catch(done);
+  });
+
+  it('Should preserve manually overridden value from submission when allowCalculateOverride is true', function (done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+
+    form
+      .setForm(formWithAllowCalculateOverrideAndSubmission)
+      .then(() => {
+        form.submission = { data: { price: 10, quantity: 5, total: '999' } };
+
+        setTimeout(() => {
+          const totalComp = form.getComponent('total');
+          assert.equal(totalComp.dataValue, '999', 'Manually overridden value from submission should be preserved');
+          done();
         }, 500);
       })
       .catch(done);
