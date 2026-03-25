@@ -1602,10 +1602,7 @@ export default class SelectComponent extends ListComponent {
   }
 
   setMetadata(value, flags = {}) {
-    if (
-      _.isNil(value) ||
-      (this.inDataTable && this.component.dataSrc === 'values')
-    ) {
+    if (_.isNil(value)) {
       return;
     }
     const valueIsObject = _.isObject(value);
