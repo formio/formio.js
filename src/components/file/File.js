@@ -1222,7 +1222,7 @@ export default class FileComponent extends Field {
           delete fileToSync.progress;
           this.redraw();
           const fileExists = this.resolvedFiles.find(x=> x.fileInfo.originalName ===  fileToSync.originalName);
-          if (!fileExists) {
+          if (!fileExists && fileToSync.status !== 'error') {
             this.resolvedFiles.push({ fileToSync, fileInfo })
           }
         }
