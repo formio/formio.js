@@ -1212,6 +1212,52 @@ describe('Select Component', function () {
     });
   });
 
+    it('Should unset metadata.selectData for Select component after the value was unset', async function () {
+    const testItems = [
+      { data: { textField: 'John' } },
+      { data: { textField: 'Mary' } },
+      { data: { textField: 'Sally' } },
+    ];
+    const restoreMakeRequest = mockMakeRequest(
+      () =>
+        new Promise((resolve) => {
+          resolve(testItems);
+        }),
+    );
+
+    const element = document.createElement('div');
+    const form = await Formio.createForm(element, _.cloneDeep(comp17));
+    const select = form.getComponent('select');
+
+    const value = 'John';
+    select.setValue(value);
+
+    await select.itemsLoaded;
+    assert.equal(select.dataValue, value);
+
+    const emptyValue = '';
+    select.setValue(emptyValue);
+    await select.itemsLoaded;
+    assert.equal(select.dataValue, emptyValue);
+
+    const submit = form.getComponent('submit');
+    const clickEvent = new Event('click');
+    const submitBtn = submit.refs.button;
+    submitBtn.dispatchEvent(clickEvent);
+
+    await new Promise((resolve, reject) => {
+      form.on('submit', () => resolve());
+      form.on('submitError', () => reject('Should submit the form.'));
+    });
+
+    assert.equal(
+      _.isEmpty(form.submission.metadata.selectData),
+      true,
+    );
+
+    restoreMakeRequest();
+  });
+
   it('Should set correct label from metadata for multiple Select with default value', async function () {
     const element = document.createElement('div');
     const form = await Formio.createForm(element, _.cloneDeep(comp23));

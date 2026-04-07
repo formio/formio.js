@@ -1644,6 +1644,11 @@ export default class SelectComponent extends ListComponent {
       }
 
       _.set(submission.metadata.selectData, this.path, templateData);
+    } else if (
+      !this.templateData[templateValue] &&
+      this.isEmpty(value)
+    ) {
+      _.unset(this.root.submission, `metadata.selectData.${this.path}`);
     }
     if (flags.resetValue && this.root?.submission && !this.options.readOnly) {
       const submission = this.root.submission;
