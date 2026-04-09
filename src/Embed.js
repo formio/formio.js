@@ -420,7 +420,7 @@ export class Formio {
       options.shadowRoot = wrapper;
       // Due to an issue with quill not loading styles in the shadowdom, we need to add quill styles and js to the shadowdom
       const quill = {
-        js: `${Formio.cdn.quill}/quill.min.js`,
+        js: `${Formio.cdn.quill}/quill.js`,
         css: `${Formio.cdn.quill}/quill.snow.css`
       }
       await Formio.addLibrary(wrapper, quill, 'quill');

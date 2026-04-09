@@ -3035,7 +3035,7 @@ export default class Component extends Element {
     return Formio.requireLibrary(
       'quill',
       'Quill',
-      _.get(this.options, 'editors.quill.src', `${Formio.cdn.quill}/quill.min.js`),
+      _.get(this.options, 'editors.quill.src', `${Formio.cdn.quill}/quill.js`),
       true,
     ).then(() => {
       return Formio.requireLibrary(
