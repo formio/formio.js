@@ -461,6 +461,7 @@ export default class WebformBuilder extends Component {
       component.addEventListener(component.refs.editComponent, 'click', () =>
         this.editComponent(component.schema, parent, false, false, component.component, {
           inDataGrid: component.isInDataGrid,
+          editComponentPath: component.path,
         }),
       );
     }
@@ -469,7 +470,9 @@ export default class WebformBuilder extends Component {
       this.attachTooltip(component.refs.editJson, this.t('Edit JSON'));
 
       component.addEventListener(component.refs.editJson, 'click', () =>
-        this.editComponent(component.schema, parent, false, true, component.component),
+        this.editComponent(component.schema, parent, false, true, component.component, {
+          editComponentPath: component.path,
+        }),
       );
     }
 
@@ -1739,6 +1742,7 @@ export default class WebformBuilder extends Component {
     // Pass along the form being edited.
     editFormOptions.editForm = this.form;
     editFormOptions.editComponent = component;
+    editFormOptions.editComponentPath = flags.editComponentPath;
     editFormOptions.flags = flags;
 
     this.hook('editComponentParentInstance', editFormOptions, parent);

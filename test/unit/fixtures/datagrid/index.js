@@ -26,6 +26,7 @@ import wizardWithDataGridWithNestedForm from './wizardWithDataGridWithNestedForm
 import dataGridWithNestedFormWithNestedForm from './dataGridWithNestedFormWithNestedForm';
 import dataGridChildForm from './fd61237Child';
 import dataGridGrandChildForm from './fd61237GrandChild';
+import withIsEmptyConditional from './comp-with-isEmpty-conditional';
 
 export {
   comp1,
@@ -56,4 +57,5 @@ export {
   dataGridWithNestedFormWithNestedForm,
   dataGridChildForm,
   dataGridGrandChildForm,
+  withIsEmptyConditional,
 };

@@ -35,6 +35,7 @@ import {
   dataGridWithNestedFormWithNestedForm,
   dataGridChildForm,
   dataGridGrandChildForm,
+  withIsEmptyConditional,
 } from './fixtures/datagrid/index';
 
 describe('DataGrid Component', function () {
@@ -1416,6 +1417,42 @@ describe('DataGrid Component', function () {
           }, 100);
         })
         .catch((err) => done(err));
+    });
+
+    it('Should evaluate isEmpty conditional per-row with multiple rows', async function () {
+      const form = await Formio.createForm(document.createElement('div'), _.cloneDeep(withIsEmptyConditional));
+      const dataGrid = form.getComponent('dataGrid');
+
+      // Add a second row
+      dataGrid.addRow();
+      await wait(300);
+
+      // Both rows have empty textFields, so both Numbers should be visible (isEmpty = true)
+      assert.equal(form.getComponent('dataGrid[0].number').visible, true, 'Row 0 number should be visible when textField is empty');
+      assert.equal(form.getComponent('dataGrid[1].number').visible, true, 'Row 1 number should be visible when textField is empty');
+
+      // Type into row 0's textField — only row 0's Number should hide
+      const textField0 = form.getComponent('dataGrid[0].textField');
+      textField0.setValue('hello');
+      await wait(300);
+
+      assert.equal(form.getComponent('dataGrid[0].number').visible, false, 'Row 0 number should be hidden when textField is not empty');
+      assert.equal(form.getComponent('dataGrid[1].number').visible, true, 'Row 1 number should still be visible when its textField is empty');
+
+      // Type into row 1's textField — now both Numbers should be hidden
+      const textField1 = form.getComponent('dataGrid[1].textField');
+      textField1.setValue('world');
+      await wait(300);
+
+      assert.equal(form.getComponent('dataGrid[0].number').visible, false, 'Row 0 number should remain hidden');
+      assert.equal(form.getComponent('dataGrid[1].number').visible, false, 'Row 1 number should be hidden when textField is not empty');
+
+      // Clear row 1's textField — row 1's Number should show again
+      textField1.setValue('');
+      await wait(300);
+
+      assert.equal(form.getComponent('dataGrid[0].number').visible, false, 'Row 0 number should remain hidden');
+      assert.equal(form.getComponent('dataGrid[1].number').visible, true, 'Row 1 number should be visible again when textField is cleared');
     });
   });
 });

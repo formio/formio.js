@@ -257,6 +257,21 @@ export function checkSimpleConditional(component, condition, row, data, instance
         });
       } else {
         const value = getComponentActualValue(conditionComponentPath, data, row);
+
+        // When inside a DataGrid/EditGrid, construct a row-indexed path so that
+        // operators like isEmpty can look up the correct row's component instance.
+        let operatorPath = conditionComponentPath;
+        const dataParent = getDataParentComponent(instance);
+        if (dataParent && !_.isNil(instance?.rowIndex)) {
+          const parentPath = dataParent.paths?.localPath;
+          if (parentPath && conditionComponentPath.startsWith(`${parentPath}.`)) {
+            operatorPath = conditionComponentPath.replace(
+              `${parentPath}.`,
+              `${parentPath}[${instance.rowIndex}].`,
+            );
+          }
+        }
+
         const СonditionOperator = ConditionOperators[operator];
         return СonditionOperator
           ? new СonditionOperator().getResult({
@@ -264,7 +279,7 @@ export function checkSimpleConditional(component, condition, row, data, instance
               comparedValue,
               instance,
               component,
-              path: conditionComponentPath,
+              path: operatorPath,
             })
           : true;
       }
