@@ -344,6 +344,15 @@ td > .formio-form-group {
   text-overflow: ellipsis;
 }
 
+/* Force remove (X) button visibility for single-select items with object values (custom dataSrc, no valueProperty). */
+.choices[data-type*='select-one']
+  .choices__list--single
+  .choices__item[data-deletable]:not([data-placeholder])
+  .choices__button {
+  display: block;
+  visibility: visible;
+}
+
 .choices__input {
   padding: 2px;
 }
