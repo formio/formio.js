@@ -1694,11 +1694,9 @@ describe('TextField Component', function () {
 
   it('Should preserve widget type when typing invalid JSON in widget settings', function () {
     const widgetTypeComponent = TextFieldEditDisplay.find((comp) => comp.key === 'widget.type');
-    const widgetSettingsComponent = TextFieldEditDisplay.find((comp) => comp.key === 'widget');
 
     const context = {
       data: {
-        'widget.type': 'calendar',
         widget: {
           type: 'calendar',
           dateFormat: 'dd-MM-yyyy',
@@ -1718,14 +1716,90 @@ describe('TextField Component', function () {
       },
     };
 
+    // Initial calculateValue caches the type from the widget object
+    let widgetType = widgetTypeComponent.calculateValue(context);
+    assert.equal(widgetType, 'calendar', 'Widget type should be calendar initially');
+
     // User types a few characters - widget becomes invalid JSON string
     context.data.widget = '{"dateFormat": "inval';
 
-    const widgetType = widgetTypeComponent.calculateValue(context);
+    widgetType = widgetTypeComponent.calculateValue(context);
     assert.equal(widgetType, 'calendar', 'Widget type should remain calendar when typing invalid JSON');
 
-    widgetSettingsComponent.onChange(context);
-    assert.equal(context.data['widget.type'], 'calendar', 'Widget type should be preserved in data');
+    // After the user finishes editing and widget is restored, it should still work
+    context.data.widget = { type: 'calendar', dateFormat: 'yyyy-MM-dd' };
+    widgetType = widgetTypeComponent.calculateValue(context);
+    assert.equal(widgetType, 'calendar', 'Widget type should remain calendar after widget is restored');
+  });
+
+  it('Should not create a flat "widget.type" key on the component data', function () {
+    const widgetTypeComponent = TextFieldEditDisplay.find((comp) => comp.key === 'widget.type');
+
+    // Simulate a new text field component with default Input widget
+    const context = {
+      data: {
+        type: 'textfield',
+        widget: {
+          type: 'input',
+        },
+      },
+      instance: {
+        _currentForm: {
+          options: {
+            editComponent: {
+              widget: {
+                type: 'input',
+              },
+            },
+          },
+        },
+      },
+    };
+
+    widgetTypeComponent.calculateValue(context);
+
+    assert.equal(
+      context.data.hasOwnProperty('widget.type'),
+      false,
+      'Should not have a flat "widget.type" key — it pollutes the saved component JSON'
+    );
+
+    assert.equal(context.data.widget.type, 'input', 'widget.type should be accessible via the nested object');
+  });
+
+  it('Should not create a flat "widget.type" key when widget is Calendar Picker', function () {
+    const widgetTypeComponent = TextFieldEditDisplay.find((comp) => comp.key === 'widget.type');
+
+    const context = {
+      data: {
+        type: 'textfield',
+        widget: {
+          type: 'calendar',
+          dateFormat: 'dd-MM-yyyy',
+        },
+      },
+      instance: {
+        _currentForm: {
+          options: {
+            editComponent: {
+              widget: {
+                type: 'calendar',
+                dateFormat: 'dd-MM-yyyy',
+              },
+            },
+          },
+        },
+      },
+    };
+
+    widgetTypeComponent.calculateValue(context);
+
+    assert.equal(
+      context.data.hasOwnProperty('widget.type'),
+      false,
+      'Should not have a flat "widget.type" key for calendar widget'
+    );
+    assert.equal(context.data.widget.type, 'calendar', 'widget.type should remain calendar via nested object');
   });
 
   it('Test Display mask', function (done) {
