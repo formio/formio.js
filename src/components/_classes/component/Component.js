@@ -1402,6 +1402,20 @@ export default class Component extends Element {
   }
 
   /**
+   * Announces a message to screen readers via the component's live region.
+   * @param {string} message - The message to announce.
+   */
+  announce(message) {
+    const liveRegion = this.refs.liveRegion;
+    if (liveRegion) {
+      liveRegion.textContent = '';
+      setTimeout(() => {
+        liveRegion.textContent = message;
+      }, 50);
+    }
+  }
+
+  /**
    * Opens the modal element.
    * @param {string} template - The template to use for the modal dialog.
    */
@@ -1576,6 +1590,7 @@ export default class Component extends Element {
     this.loadRefs(element, {
       messageContainer: 'single',
       tooltip: 'multiple',
+      liveRegion: 'single',
     });
 
     this.attachTooltips(this.refs.tooltip);
