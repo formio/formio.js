@@ -247,7 +247,7 @@ export default class Wizard extends Webform {
         wizardNav,
         components: this.renderComponents([
           ...this.prefixComps,
-          ...this.currentPage.components,
+          ...this.currentPage?.components || [],
           ...this.suffixComps,
         ]),
       },
@@ -318,7 +318,7 @@ export default class Wizard extends Webform {
     this.hook('attachWebform', element, this);
     const promises = this.attachComponents(this.refs[this.wizardKey], [
       ...this.prefixComps,
-      ...this.currentPage.components,
+      ...this.currentPage?.components || [],
       ...this.suffixComps,
     ]);
     this.attachNav();
@@ -348,7 +348,7 @@ export default class Wizard extends Webform {
   isBreadcrumbClickable() {
     let currentPage = null;
     this.pages.map((page) => {
-      if (_.isEqual(this.currentPage.component, page.component)) {
+      if (_.isEqual(this.currentPage?.component, page.component)) {
         currentPage = page;
       }
     });
@@ -367,12 +367,12 @@ export default class Wizard extends Webform {
   isAllowPrevious() {
     let currentPage = null;
     this.pages.map((page) => {
-      if (_.isEqual(this.currentPage.component, page.component)) {
+      if (_.isEqual(this.currentPage?.component, page.component)) {
         currentPage = page;
       }
     });
 
-    return _.get(currentPage.component, 'allowPrevious', this.options.allowPrevious);
+    return _.get(currentPage?.component, 'allowPrevious', this.options.allowPrevious);
   }
 
   /**
@@ -639,7 +639,7 @@ export default class Wizard extends Webform {
           const forceHide = this.shouldForceHide(item);
 
           let isVisible = !page
-            ? checkCondition(item, data, data, this.component, this) && !item.hidden
+            ? (checkCondition(item, data, data, this.component, this) && !item.hidden)
             : page.visible;
 
           if (forceShow) {
@@ -720,7 +720,7 @@ export default class Wizard extends Webform {
       }
       return this.redraw().then(() => {
         this.checkData(this.submission.data);
-        this.triggerCaptcha(this.currentPage.components);
+        this.triggerCaptcha(this.currentPage?.components);
         const errors = this.submitted
           ? this.validate(this.localData, { dirty: true })
           : this.validateCurrentPage();
@@ -984,8 +984,7 @@ export default class Wizard extends Webform {
   }
 
   onSetForm(clonedForm, initialForm) {
-    this.component.components =
-      (this.parent ? initialForm.components : clonedForm.components) || [];
+    this.component.components = (this.parent ? initialForm.components : clonedForm.components) || [];
     this.setComponentSchema();
   }
 
@@ -1126,7 +1125,7 @@ export default class Wizard extends Webform {
     }
 
     const components =
-      !currentPageOnly || this.isLastPage() ? this.getComponents() : this.currentPage.components;
+      !currentPageOnly || this.isLastPage() ? this.getComponents() : this.currentPage?.components;
 
     return components.reduce(
       (check, comp) => comp.checkValidity(data, dirty, row, currentPageOnly, childErrors) && check,

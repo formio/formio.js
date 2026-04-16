@@ -466,13 +466,23 @@ export default class FormComponent extends Component {
     }
   }
 
+  updateTopLevelComponentsMap() {
+    let prevRootId = null;
+    let currentRoot = this.root;
+    const subFormComponentMap = this.subForm.componentsMap;
+    // update components map for all top forms
+    while (currentRoot && prevRootId !== currentRoot.id) {
+      _.assign(currentRoot.componentsMap, subFormComponentMap);
+      prevRootId = currentRoot.id;
+      currentRoot = currentRoot.root;
+    }
+  }
+
   setComponentsMap() {
     if (!this.subForm) {
       return;
     }
-    const componentsMap = this.componentsMap;
-    const formComponentsMap = this.subForm.componentsMap;
-    _.assign(componentsMap, formComponentsMap);
+    this.updateTopLevelComponentsMap();
   }
   /**
    * Create a subform instance.
@@ -504,7 +514,7 @@ export default class FormComponent extends Component {
             this.subForm.currentForm = this;
             this.subForm.parentVisible = this.visible;
             this.setComponentsMap();
-            this.component.components = this.subForm._form?.components;
+            this.component.components = this.subForm.components.map((comp) => comp.component);
             this.component.display = this.subForm._form?.display;
             this.subForm.on('change', () => {
               if (this.subForm && !this.shouldConditionallyClear()) {
@@ -881,7 +891,9 @@ export default class FormComponent extends Component {
       }
       this.updateSubFormVisibility();
       this.clearOnHide();
-      isNestedWizard ? this.rebuild() : this.redraw();
+      if (!isNestedWizard) {
+        this.redraw();
+      }
     }
     if (!value && isNestedWizard) {
       this.root?.redraw();

@@ -648,8 +648,9 @@ export default class DataGridComponent extends NestedArrayComponent {
       options.row = `${rowIndex}-${colIndex}`;
       options.rowIndex = rowIndex;
       options.onChange = (flags, changed, modified) => {
-        if (changed.component.type === 'form') {
-          const formComp = getComponent(this.component.components, changed.component.key);
+        const changedComponent = changed.component;
+        if (changedComponent?.type === 'form' && changedComponent?.key) {
+          const formComp = getComponent(this.component.components, changedComponent.key);
           _.set(formComp, 'components', changed.component.components);
         }
         // If we're in a nested form we need to ensure our changes are triggered upstream
