@@ -6,18 +6,19 @@ import Displays from './displays/Displays';
 import Templates from './templates/Templates';
 import Providers from './providers';
 import Widgets from './widgets';
-import Form from './Form';
-import Utils from './utils';
+import Form, { FormOptions } from './Form';
+import Utils, { DefaultEvaluator, Evaluator, registerEvaluator } from './utils';
 import Licenses from './licenses';
 import EventEmitter from './EventEmitter';
 import Webform from './Webform';
-import { Evaluator, registerEvaluator, DefaultEvaluator } from './utils';
 
-Formio.loadModules = (path = `${Formio.getApiUrl()}/externalModules.js`, name = 'externalModules') => {
-  Formio.requireLibrary(name, name, path, true)
-    .then((modules) => {
-      Formio.use(modules);
-    });
+Formio.loadModules = (
+  path = `${Formio.getApiUrl()}/externalModules.js`,
+  name = 'externalModules'
+) => {
+  Formio.requireLibrary(name, name, path, true).then((modules) => {
+    Formio.use(modules);
+  });
 };
 
 // This is needed to maintain correct imports using the "dist" file.
@@ -100,12 +101,9 @@ export function registerModule(mod, defaultFn = null, options = {}) {
         break;
       default:
         if (defaultFn) {
-          if (!defaultFn(key, mod)) {
-            console.warn('Unknown module option', key);
-          }
+          defaultFn(key, mod);
           break;
         }
-        console.log('Unknown module option', key);
     }
   }
 }
@@ -116,13 +114,16 @@ export function registerModule(mod, defaultFn = null, options = {}) {
  */
 export function useModule(defaultFn = null) {
   return (plugins, options = {}) => {
-    plugins = _.isArray(plugins) ? plugins : [plugins];
+    plugins = _.isArray(plugins)
+      ? plugins
+      : [
+        plugins
+      ];
 
     plugins.forEach((plugin) => {
       if (Array.isArray(plugin)) {
-        plugin.forEach(p => registerModule(p, defaultFn, options));
-      }
-      else {
+        plugin.forEach((p) => registerModule(p, defaultFn, options));
+      } else {
         registerModule(plugin, defaultFn, options);
       }
     });
@@ -139,4 +140,18 @@ Formio.use = useModule();
 export { Formio as FormioCore } from './Formio';
 
 // Export the components.
-export { Components, Displays, Providers, Widgets, Templates, Utils, Form, Formio, Licenses, EventEmitter, Webform, DefaultEvaluator };
+export {
+  Components,
+  Displays,
+  Providers,
+  Widgets,
+  Templates,
+  Utils,
+  Form,
+  Formio,
+  Licenses,
+  EventEmitter,
+  Webform,
+  DefaultEvaluator,
+  FormOptions
+};
