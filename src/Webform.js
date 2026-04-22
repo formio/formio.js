@@ -1075,16 +1075,7 @@ export default class Webform extends NestedDataComponent {
    */
   setAlert(type, message, options) {
     if (!type && this.submitted) {
-      if (this.alert) {
-        if (this.refs.errorRef && this.refs.errorRef.length) {
-          this.refs.errorRef.forEach((el) => {
-            this.removeEventListener(el, 'click');
-            this.removeEventListener(el, 'keypress');
-          });
-        }
-        this.removeChild(this.alert);
-        this.alert = null;
-      }
+      this.clearAlert();
       return;
     }
     if (this.options.noAlerts) {
@@ -1093,43 +1084,111 @@ export default class Webform extends NestedDataComponent {
       }
       return;
     }
+    if (!message) {
+      try {
+        this.clearAlert();
+      } catch (ignoreErr) {
+        // ignore
+      }
+      return;
+    }
+
+    const attrs = {
+      class: (options && options.classes) || `alert alert-${type}`,
+      id: `error-list-${this.id}`,
+    };
+
+    const templateOptions = {
+      message: message instanceof HTMLElement ? message.outerHTML : message,
+      attrs: attrs,
+      type,
+    };
+
+    // Only reuse the alert node when it is still attached under this form's element.
+    // Something outside setAlert (e.g. redraw() replacing element.outerHTML) may have
+    // orphaned it, in which case we need a full rebuild to re-insert it.
+    const alertAttached = !!(
+      this.alert &&
+      this.element &&
+      this.element.contains(this.alert)
+    );
+
+    // Nothing to do if the same alert is already rendered — avoid DOM churn.
+    if (
+      alertAttached &&
+      this._lastAlertClass === attrs.class &&
+      this._lastAlertMessage === templateOptions.message
+    ) {
+      return;
+    }
+
+    const rendered = this.renderTemplate('alert', templateOptions);
+
+    // Update the existing alert in place when the outer class/type is unchanged.
+    // Replacing innerHTML preserves the alert node, so there is no reflow / layout
+    // shift above the form when the error list changes on every keystroke.
+    if (alertAttached && this._lastAlertClass === attrs.class) {
+      try {
+        this.detachAlertRefs();
+        const newAlert = convertStringToHTMLElement(rendered, `#${attrs.id}`);
+        if (newAlert) {
+          this.alert.innerHTML = newAlert.innerHTML;
+          this._lastAlertMessage = templateOptions.message;
+          this.attachAlertRefs();
+          return;
+        }
+      } catch (ignoreErr) {
+        // Fall through to a full rebuild below.
+      }
+    }
+
+    // Full rebuild: first alert on this form, or the alert class has changed
+    // (e.g. danger → success after a successful resubmit).
     if (this.alert) {
       try {
-        if (this.refs.errorRef && this.refs.errorRef.length) {
-          this.refs.errorRef.forEach((el) => {
-            this.removeEventListener(el, 'click');
-            this.removeEventListener(el, 'keypress');
-          });
-        }
+        this.detachAlertRefs();
         this.removeChild(this.alert);
         this.alert = null;
       } catch (ignoreErr) {
         // ignore
       }
     }
-    if (message) {
-      const attrs = {
-        class: (options && options.classes) || `alert alert-${type}`,
-        id: `error-list-${this.id}`,
-      };
 
-      const templateOptions = {
-        message: message instanceof HTMLElement ? message.outerHTML : message,
-        attrs: attrs,
-        type,
-      };
+    this.alert = convertStringToHTMLElement(rendered, `#${attrs.id}`);
 
-      this.alert = convertStringToHTMLElement(
-        this.renderTemplate('alert', templateOptions),
-        `#${attrs.id}`,
-      );
-    }
     if (!this.alert) {
       return;
     }
 
-    this.loadRefs(this.alert, { errorRef: 'multiple' });
+    this._lastAlertClass = attrs.class;
+    this._lastAlertMessage = templateOptions.message;
 
+    this.attachAlertRefs();
+    this.prepend(this.alert);
+  }
+
+  clearAlert() {
+    if (!this.alert) {
+      return;
+    }
+    this.detachAlertRefs();
+    this.removeChild(this.alert);
+    this.alert = null;
+    this._lastAlertClass = null;
+    this._lastAlertMessage = null;
+  }
+
+  detachAlertRefs() {
+    if (this.refs.errorRef && this.refs.errorRef.length) {
+      this.refs.errorRef.forEach((el) => {
+        this.removeEventListener(el, 'click');
+        this.removeEventListener(el, 'keydown');
+      });
+    }
+  }
+
+  attachAlertRefs() {
+    this.loadRefs(this.alert, { errorRef: 'multiple' });
     if (this.refs.errorRef && this.refs.errorRef.length) {
       this.refs.errorRef.forEach((el) => {
         this.addEventListener(el, 'click', (e) => {
@@ -1145,7 +1204,6 @@ export default class Webform extends NestedDataComponent {
         });
       });
     }
-    this.prepend(this.alert);
   }
 
   /**

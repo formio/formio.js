@@ -7298,6 +7298,147 @@ describe('Webform tests', function () {
     });
   });
 
+  describe('setAlert DOM stability', function () {
+    const simpleAlertForm = {
+      display: 'form',
+      components: [
+        {
+          type: 'textfield',
+          key: 'textField',
+          input: true,
+          label: 'Text Field',
+          validate: { required: true },
+        },
+        {
+          type: 'button',
+          action: 'submit',
+          key: 'submit',
+          label: 'Submit',
+          input: true,
+        },
+      ],
+    };
+
+    const createForm = () => {
+      const element = document.createElement('div');
+      const form = new Webform(element);
+      return form.setForm(fastCloneDeep(simpleAlertForm)).then(() => form);
+    };
+
+    it('Should create and prepend the alert node on the first call', function () {
+      return createForm().then((form) => {
+        assert.equal(form.alert, null, 'No alert before setAlert');
+        form.setAlert('danger', '<p>First error</p>');
+        assert.ok(form.alert, 'Alert element created');
+        assert.ok(
+          form.element.contains(form.alert),
+          'Alert is attached under the form element',
+        );
+        assert.equal(form.alert.classList.contains('alert-danger'), true);
+        assert.ok(
+          form.alert.innerHTML.indexOf('First error') !== -1,
+          'Alert contains the rendered message',
+        );
+      });
+    });
+
+    it('Should be a no-op when the same class and message are set again', function () {
+      return createForm().then((form) => {
+        form.setAlert('danger', '<p>Same</p>');
+        const firstNode = form.alert;
+        const firstHtml = firstNode.innerHTML;
+        form.setAlert('danger', '<p>Same</p>');
+        assert.strictEqual(
+          form.alert,
+          firstNode,
+          'Alert node identity is preserved on no-op',
+        );
+        assert.equal(
+          form.alert.innerHTML,
+          firstHtml,
+          'Alert innerHTML is untouched on no-op',
+        );
+      });
+    });
+
+    it('Should update innerHTML in place when class is unchanged and message changes', function () {
+      return createForm().then((form) => {
+        form.setAlert('danger', '<p>First</p>');
+        const firstNode = form.alert;
+        form.setAlert('danger', '<p>Second</p>');
+        assert.strictEqual(
+          form.alert,
+          firstNode,
+          'Alert node identity is preserved across in-place update',
+        );
+        assert.ok(
+          form.alert.innerHTML.indexOf('Second') !== -1,
+          'Alert reflects the new message',
+        );
+        assert.equal(
+          form.alert.innerHTML.indexOf('First'),
+          -1,
+          'Alert no longer contains the old message',
+        );
+        assert.ok(
+          form.element.contains(form.alert),
+          'Alert stays attached after in-place update',
+        );
+      });
+    });
+
+    it('Should rebuild the alert when the type (class) changes', function () {
+      return createForm().then((form) => {
+        form.setAlert('danger', '<p>Error</p>');
+        const firstNode = form.alert;
+        form.setAlert('success', '<p>Done</p>');
+        assert.notStrictEqual(
+          form.alert,
+          firstNode,
+          'Alert node is replaced when type changes',
+        );
+        assert.equal(form.alert.classList.contains('alert-success'), true);
+        assert.equal(
+          form.element.contains(firstNode),
+          false,
+          'Old alert is detached',
+        );
+      });
+    });
+
+    it('Should clear the alert when called with an empty message', function () {
+      return createForm().then((form) => {
+        form.setAlert('danger', '<p>Error</p>');
+        assert.ok(form.alert, 'Alert is present before clear');
+        form.setAlert('danger', '');
+        assert.equal(form.alert, null, 'Alert is cleared when message is empty');
+      });
+    });
+
+    it('Should recover and rebuild the alert if it was orphaned (e.g. by redraw)', function () {
+      return createForm().then((form) => {
+        form.setAlert('danger', '<p>Error</p>');
+        const originalNode = form.alert;
+
+        // Simulate what Component.redraw() does: element.outerHTML = render(),
+        // which detaches all children including the alert we just prepended.
+        originalNode.remove();
+        assert.equal(
+          form.element.contains(originalNode),
+          false,
+          'Pre-condition: alert was detached',
+        );
+
+        form.setAlert('danger', '<p>Error</p>');
+        assert.ok(form.alert, 'setAlert produced a new alert');
+        assert.ok(
+          form.element.contains(form.alert),
+          'New alert is attached under the form element',
+        );
+      });
+    });
+  });
+
   /* eslint-disable mocha/no-setup-in-describe */
   /* eslint-disable mocha/consistent-spacing-between-blocks */
   for (const formTest of FormTests) {
