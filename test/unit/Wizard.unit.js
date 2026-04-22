@@ -53,6 +53,7 @@ import wizardWithBlurValidation from '../forms/wizardWithBlurValidation';
 import { wait } from '../util';
 import formWithDataGridAndDeeplyNestedForms from '../forms/formWithDataGridAndDeeplyNestedForms.js';
 import wizardWithDeeplyNestedWizards from '../forms/wizardWithDeeplyNestedWizards.js';
+import dataGridInNestedWizardLogic from '../forms/dataGridInNestedWizardLogic.js';
 
 describe('Wizard tests', function () {
   // helpers
@@ -275,6 +276,56 @@ describe('Wizard tests', function () {
       })
       .catch((err) => done(err));
   })
+
+  it('FIO-11517: highlights logic-driven required field in DataGrid row inside a nested wizard after add-row post-submit', function (done) {
+    const formElement = document.createElement('div');
+    const forms = _.cloneDeep(dataGridInNestedWizardLogic);
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.setUser({ _id: '123' });
+    Formio.makeRequest = (formio, type, url, method) => {
+      if (type === 'form' && method === 'get') {
+        if (url.endsWith('outer')) return Promise.resolve(forms.mainForm);
+        if (url.includes('bbbbbbbbbbbbbbbbbbbbbbbb')) return Promise.resolve(forms['bbbbbbbbbbbbbbbbbbbbbbbb']);
+        return Promise.resolve();
+      }
+    };
+    Formio.createForm(formElement, 'http://localhost:3000/proj/outer')
+      .then((wizard) => {
+        setTimeout(() => {
+          wizard.submitted = true;
+          const dg = wizard.getComponent('certsDG');
+          const addBtn = dg?.element?.querySelector('[ref="datagrid-certsDG-addRow"]');
+          addBtn?.dispatchEvent(new Event('click'));
+          setTimeout(() => {
+            let sel = null;
+            wizard.everyComponent((c) => {
+              if (c.component.key === 'nameResponsibleOfficial') sel = c;
+            });
+            const liveEl = wizard.element.querySelector('.formio-component-nameResponsibleOfficial');
+            Formio.makeRequest = originalMakeRequest;
+            Formio.setUser();
+            try {
+              assert(sel, 'select instance should exist in new row');
+              assert.equal(sel.component.validate?.required, true, 'logic should set required=true on new row');
+              assert(liveEl, 'select element should be in the DOM');
+              assert.equal(
+                liveEl.classList.contains('formio-error-wrapper'),
+                true,
+                'logic-required field in new row should carry formio-error-wrapper after add-row while submitted=true',
+              );
+              done();
+            } catch (err) {
+              done(err);
+            }
+          }, 600);
+        }, 400);
+      })
+      .catch((err) => {
+        Formio.makeRequest = originalMakeRequest;
+        Formio.setUser();
+        done(err);
+      });
+  });
 
   it('Should allow to add new row to dataGrid with deeply nested forms and fire validation on next btn for required components in nested form', function (done) {
     const element = document.createElement('div');
