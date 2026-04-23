@@ -7439,6 +7439,233 @@ describe('Webform tests', function () {
     });
   });
 
+  describe('showErrors with nested forms', function () {
+    const simpleForm = {
+      display: 'form',
+      components: [
+        {
+          type: 'textfield',
+          key: 'textField',
+          input: true,
+          label: 'Text Field',
+          validate: { required: true },
+        },
+      ],
+    };
+
+    const makeRoot = () => {
+      const element = document.createElement('div');
+      const form = new Webform(element);
+      return form.setForm(fastCloneDeep(simpleForm)).then(() => form);
+    };
+
+    const makeSubform = (root) => {
+      const element = document.createElement('div');
+      const subform = new Webform(element);
+      return subform.setForm(fastCloneDeep(simpleForm)).then(() => {
+        subform.root = root;
+        return subform;
+      });
+    };
+
+    it('Should not paint the alert from a subform when the root has been submitted', function () {
+      return makeRoot().then((root) =>
+        makeSubform(root).then((subform) => {
+          root.submitted = true;
+          subform.submitted = true;
+          const spy = sinon.spy(root, 'setAlert');
+
+          subform.showErrors([{ message: 'Text Field is required', component: { key: 'textField', label: 'Text Field' } }]);
+
+          const dangerCalls = spy.getCalls().filter((c) => c.args[0] === 'danger');
+          assert.equal(
+            dangerCalls.length,
+            0,
+            'Subform should defer to the root; the root paints on its own onChange',
+          );
+          spy.restore();
+        }),
+      );
+    });
+
+    it('Should still paint the alert from a subform when the root has not been submitted', function () {
+      return makeRoot().then((root) =>
+        makeSubform(root).then((subform) => {
+          root.submitted = false;
+          subform.submitted = true;
+          const spy = sinon.spy(root, 'setAlert');
+
+          subform.showErrors([{ message: 'Text Field is required', component: { key: 'textField', label: 'Text Field' } }]);
+
+          const dangerCalls = spy.getCalls().filter((c) => c.args[0] === 'danger');
+          assert.equal(
+            dangerCalls.length,
+            1,
+            'Subform must paint when the root will not (e.g. submitSubForm rejected before executeSubmit ran)',
+          );
+          spy.restore();
+        }),
+      );
+    });
+
+    it('Should paint the alert from the root regardless of submitted state', function () {
+      return makeRoot().then((root) => {
+        root.submitted = true;
+        const spy = sinon.spy(root, 'setAlert');
+
+        root.showErrors([{ message: 'Text Field is required', component: { key: 'textField', label: 'Text Field' } }]);
+
+        const dangerCalls = spy.getCalls().filter((c) => c.args[0] === 'danger');
+        assert.equal(dangerCalls.length, 1, 'Root always paints');
+        spy.restore();
+      });
+    });
+  });
+
+  describe('setErrorClasses idempotency', function () {
+    const requiredTextForm = {
+      display: 'form',
+      components: [
+        {
+          type: 'textfield',
+          key: 'textField',
+          input: true,
+          label: 'Text Field',
+          validate: { required: true },
+        },
+      ],
+    };
+
+    const createForm = () => {
+      const element = document.createElement('div');
+      const form = new Webform(element, { highlightErrors: true });
+      return form.setForm(fastCloneDeep(requiredTextForm)).then(() => form);
+    };
+
+    it('Should not churn wrapper classes when setCustomValidity is called repeatedly with the same errors', function () {
+      return createForm().then((form) => {
+        const textField = form.getComponent('textField');
+        const errorMessage = {
+          level: 'error',
+          message: 'Text Field is required',
+          component: textField.component,
+        };
+
+        textField.setCustomValidity([errorMessage], true);
+        assert.equal(
+          textField.element.classList.contains('formio-error-wrapper'),
+          true,
+          'Wrapper class applied after first setCustomValidity',
+        );
+
+        const addSpy = sinon.spy(textField, 'addClass');
+        const removeSpy = sinon.spy(textField, 'removeClass');
+
+        textField.setCustomValidity([errorMessage], true);
+
+        const wrapperChurn = addSpy.getCalls()
+          .concat(removeSpy.getCalls())
+          .filter((c) => c.args[1] === 'formio-error-wrapper');
+        assert.equal(
+          wrapperChurn.length,
+          0,
+          'Wrapper class should not be removed or re-added when the error state is unchanged',
+        );
+        assert.equal(
+          textField.element.classList.contains('formio-error-wrapper'),
+          true,
+          'Wrapper class still present after idempotent call',
+        );
+
+        addSpy.restore();
+        removeSpy.restore();
+      });
+    });
+
+    it('Should remove the wrapper class when the component transitions from invalid to valid', function () {
+      return createForm().then((form) => {
+        const textField = form.getComponent('textField');
+        const errorMessage = {
+          level: 'error',
+          message: 'Text Field is required',
+          component: textField.component,
+        };
+
+        textField.setCustomValidity([errorMessage], true);
+        assert.equal(
+          textField.element.classList.contains('formio-error-wrapper'),
+          true,
+          'Wrapper class applied while invalid',
+        );
+
+        textField.setCustomValidity([], true);
+        assert.equal(
+          textField.element.classList.contains('formio-error-wrapper'),
+          false,
+          'Wrapper class removed once errors clear',
+        );
+      });
+    });
+
+    // Load-bearing regression for the full fix chain (Webform.onChange dirty
+    // propagation + idempotent toggleClass + root-only alert painting + in-place
+    // setAlert). A post-submit keystroke on a still-invalid component used to
+    // flip formio-error-wrapper ↔ has-error because the component's own
+    // validation path saw dirty=false while Webform.showErrors re-applied
+    // setCustomValidity with dirty=true. With the dirty flag now carrying
+    // through as this.submitted, both callers agree and toggleClass short-
+    // circuits, so nothing mutates.
+    it('Should not churn the wrapper class across a post-submit keystroke on a still-invalid component', function () {
+      return createForm().then((form) => {
+        const textField = form.getComponent('textField');
+
+        form.submitted = true;
+        form.validate({ textField: '' }, { dirty: true, process: 'submit' });
+        assert.equal(
+          textField.element.classList.contains('formio-error-wrapper'),
+          true,
+          'Precondition: wrapper class is set after the submit-time validation',
+        );
+
+        const addSpy = sinon.spy(textField, 'addClass');
+        const removeSpy = sinon.spy(textField, 'removeClass');
+        const setAlertSpy = sinon.spy(form, 'setAlert');
+
+        // Simulate a keystroke — Webform.onChange re-validates without an
+        // explicit dirty flag and both validation paths fire.
+        form.onChange({ noEmit: true }, null, true);
+
+        const wrapperChurn = [...addSpy.getCalls(), ...removeSpy.getCalls()]
+          .filter((c) => c.args[1] === 'formio-error-wrapper');
+        assert.equal(
+          wrapperChurn.length,
+          0,
+          'Post-submit keystrokes must not toggle formio-error-wrapper on an unchanged-state component',
+        );
+        assert.equal(
+          textField.element.classList.contains('formio-error-wrapper'),
+          true,
+          'Wrapper class remains present',
+        );
+
+        // Alert should also noop via PR #752's class+message guard, since the
+        // error list hasn't changed.
+        const dangerPaints = setAlertSpy.getCalls().filter((c) => c.args[0] === 'danger');
+        const alertNode = form.alert;
+        const alertHtml = alertNode?.innerHTML;
+        assert.ok(alertNode, 'Alert is still present');
+        dangerPaints.forEach(() => {
+          assert.strictEqual(form.alert, alertNode, 'Alert node identity preserved');
+          assert.equal(form.alert.innerHTML, alertHtml, 'Alert contents unchanged');
+        });
+
+        addSpy.restore();
+        removeSpy.restore();
+        setAlertSpy.restore();
+      });
+    });
+  });
+
   /* eslint-disable mocha/no-setup-in-describe */
   /* eslint-disable mocha/consistent-spacing-between-blocks */
   for (const formTest of FormTests) {

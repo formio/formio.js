@@ -1322,7 +1322,10 @@ export default class Webform extends NestedDataComponent {
     }
 
     const errorsList = this.renderTemplate('errorsList', { errors: displayedErrors });
-    this.root?.setAlert('danger', errorsList);
+    // Only paint the alert from a subform when the root won't double paint it to avoid a painful flicker
+    if (this === this.root || !this.root?.submitted) {
+      this.root?.setAlert('danger', errorsList);
+    }
     if (triggerEvent) {
       this.emit('error', errors);
     }
@@ -1464,6 +1467,7 @@ export default class Webform extends NestedDataComponent {
           ...flags,
           noValidate: false,
           process: 'change',
+          dirty: flags.dirty ?? this.submitted,
         })
       : [];
     value.isValid = (errors || []).filter((err) => !err.fromServer).length === 0;

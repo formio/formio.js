@@ -533,6 +533,29 @@ export default class Element {
   }
 
   /**
+   * Idempotently add or remove a class on a DOM element based on a boolean.
+   * Skips the mutation when the element is already in the desired state, so
+   * callers can safely invoke it on every change without triggering redundant
+   * CSS transitions or attribute writes.
+   * @param {HTMLElement} element - The DOM element to toggle the class on.
+   * @param {string} className - The class name to add or remove.
+   * @param {boolean} want - TRUE to ensure the class is present, FALSE to ensure it is absent.
+   * @returns {this} - The instance of the element.
+   */
+  toggleClass(element, className, want) {
+    if (!element || !className || !(element instanceof HTMLElement)) {
+      return this;
+    }
+    const has = !!element.classList?.contains(className);
+    if (want && !has) {
+      this.addClass(element, className);
+    } else if (!want && has) {
+      this.removeClass(element, className);
+    }
+    return this;
+  }
+
+  /**
    * Empty's an HTML DOM element.
    * @param {HTMLElement} element - The element you wish to empty.
    */

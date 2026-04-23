@@ -2736,30 +2736,24 @@ export default class Component extends Element {
    * @returns {void}
    */
   setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {
-    this.clearErrorClasses();
-    elements.forEach((element) => {
-      this.setElementInvalid(this.performInputMapping(element), hasErrors);
+    elements.forEach((el) => {
+      this.setElementInvalid(this.performInputMapping(el), hasErrors);
     });
     this.setInputWidgetErrorClasses(elements, hasErrors);
     // do not set error classes for hidden components
     if (!this.visible) {
+      this.clearErrorClasses(element);
       return;
     }
 
-    if (hasErrors) {
-      // Add error classes
-      elements.forEach((input) => {
-        this.setElementInvalid(this.performInputMapping(input), true);
-      });
-
-      if (dirty && this.options.highlightErrors) {
-        this.addClass(element, this.options.componentErrorClass);
-      } else {
-        this.addClass(element, 'has-error');
-      }
-    }
-    if (hasMessages) {
-      this.addClass(element, 'has-message');
+    const wantHighlight = hasErrors && !!dirty && !!this.options.highlightErrors;
+    const wantHasError = hasErrors && !wantHighlight;
+    this.toggleClass(element, this.options.componentErrorClass, wantHighlight);
+    this.toggleClass(element, 'has-error', wantHasError);
+    this.toggleClass(element, 'has-message', hasMessages);
+    // Preserve previous clearErrorClasses() behavior: drop the 'alert alert-danger' pair if left over.
+    if (element?.classList?.contains('alert-danger')) {
+      this.removeClass(element, 'alert alert-danger');
     }
   }
 
