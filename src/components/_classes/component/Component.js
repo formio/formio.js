@@ -3861,7 +3861,7 @@ export default class Component extends Element {
     if (flags.silentCheck) {
       return [];
     }
-    let isDirty = flags.dirty === false ? false : this.dirty || flags.dirty;
+    let isDirty = flags.dirty || this.dirty;
     if (this.options.alwaysDirty) {
       isDirty = true;
     }

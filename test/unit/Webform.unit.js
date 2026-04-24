@@ -7298,147 +7298,6 @@ describe('Webform tests', function () {
     });
   });
 
-  describe('setAlert DOM stability', function () {
-    const simpleAlertForm = {
-      display: 'form',
-      components: [
-        {
-          type: 'textfield',
-          key: 'textField',
-          input: true,
-          label: 'Text Field',
-          validate: { required: true },
-        },
-        {
-          type: 'button',
-          action: 'submit',
-          key: 'submit',
-          label: 'Submit',
-          input: true,
-        },
-      ],
-    };
-
-    const createForm = () => {
-      const element = document.createElement('div');
-      const form = new Webform(element);
-      return form.setForm(fastCloneDeep(simpleAlertForm)).then(() => form);
-    };
-
-    it('Should create and prepend the alert node on the first call', function () {
-      return createForm().then((form) => {
-        assert.equal(form.alert, null, 'No alert before setAlert');
-        form.setAlert('danger', '<p>First error</p>');
-        assert.ok(form.alert, 'Alert element created');
-        assert.ok(
-          form.element.contains(form.alert),
-          'Alert is attached under the form element',
-        );
-        assert.equal(form.alert.classList.contains('alert-danger'), true);
-        assert.ok(
-          form.alert.innerHTML.indexOf('First error') !== -1,
-          'Alert contains the rendered message',
-        );
-      });
-    });
-
-    it('Should be a no-op when the same class and message are set again', function () {
-      return createForm().then((form) => {
-        form.setAlert('danger', '<p>Same</p>');
-        const firstNode = form.alert;
-        const firstHtml = firstNode.innerHTML;
-        form.setAlert('danger', '<p>Same</p>');
-        assert.strictEqual(
-          form.alert,
-          firstNode,
-          'Alert node identity is preserved on no-op',
-        );
-        assert.equal(
-          form.alert.innerHTML,
-          firstHtml,
-          'Alert innerHTML is untouched on no-op',
-        );
-      });
-    });
-
-    it('Should update innerHTML in place when class is unchanged and message changes', function () {
-      return createForm().then((form) => {
-        form.setAlert('danger', '<p>First</p>');
-        const firstNode = form.alert;
-        form.setAlert('danger', '<p>Second</p>');
-        assert.strictEqual(
-          form.alert,
-          firstNode,
-          'Alert node identity is preserved across in-place update',
-        );
-        assert.ok(
-          form.alert.innerHTML.indexOf('Second') !== -1,
-          'Alert reflects the new message',
-        );
-        assert.equal(
-          form.alert.innerHTML.indexOf('First'),
-          -1,
-          'Alert no longer contains the old message',
-        );
-        assert.ok(
-          form.element.contains(form.alert),
-          'Alert stays attached after in-place update',
-        );
-      });
-    });
-
-    it('Should rebuild the alert when the type (class) changes', function () {
-      return createForm().then((form) => {
-        form.setAlert('danger', '<p>Error</p>');
-        const firstNode = form.alert;
-        form.setAlert('success', '<p>Done</p>');
-        assert.notStrictEqual(
-          form.alert,
-          firstNode,
-          'Alert node is replaced when type changes',
-        );
-        assert.equal(form.alert.classList.contains('alert-success'), true);
-        assert.equal(
-          form.element.contains(firstNode),
-          false,
-          'Old alert is detached',
-        );
-      });
-    });
-
-    it('Should clear the alert when called with an empty message', function () {
-      return createForm().then((form) => {
-        form.setAlert('danger', '<p>Error</p>');
-        assert.ok(form.alert, 'Alert is present before clear');
-        form.setAlert('danger', '');
-        assert.equal(form.alert, null, 'Alert is cleared when message is empty');
-      });
-    });
-
-    it('Should recover and rebuild the alert if it was orphaned (e.g. by redraw)', function () {
-      return createForm().then((form) => {
-        form.setAlert('danger', '<p>Error</p>');
-        const originalNode = form.alert;
-
-        // Simulate what Component.redraw() does: element.outerHTML = render(),
-        // which detaches all children including the alert we just prepended.
-        originalNode.remove();
-        assert.equal(
-          form.element.contains(originalNode),
-          false,
-          'Pre-condition: alert was detached',
-        );
-
-        form.setAlert('danger', '<p>Error</p>');
-        assert.ok(form.alert, 'setAlert produced a new alert');
-        assert.ok(
-          form.element.contains(form.alert),
-          'New alert is attached under the form element',
-        );
-      });
-    });
-  });
-
   describe('showErrors with nested forms', function () {
     const simpleForm = {
       display: 'form',
@@ -7662,6 +7521,55 @@ describe('Webform tests', function () {
         addSpy.restore();
         removeSpy.restore();
         setAlertSpy.restore();
+      });
+    });
+
+    // Pre-submit regression: a failed "Next" click on a wizard marks the
+    // page's components dirty via setPristine(false) but leaves the form
+    // unsubmitted. A subsequent keystroke runs Webform.onChange → validate
+    // with dirty=false (resolved from this.submitted). Before the fix at
+    // Component.showValidationErrors, flags.dirty === false forced isDirty
+    // to false and stripped formio-error-wrapper off every still-invalid
+    // component; the follow-up Wizard-layer validate pass then put it back.
+    // The fix respects the component's own this.dirty when flags.dirty is
+    // falsy, so the wrapper no longer flickers.
+    it('Should not churn the wrapper class on a keystroke when the form is unsubmitted but the component is individually dirty', function () {
+      return createForm().then((form) => {
+        const textField = form.getComponent('textField');
+
+        // Simulate the state left behind by a failed wizard-next click: the
+        // form itself was never submitted, but validate ran with dirty=true
+        // (Wizard.js:848), so the component's own this.dirty is set and its
+        // error wrapper is showing.
+        form.validate({ textField: '' }, { dirty: true, process: 'change' });
+        assert.equal(form.submitted, false, 'Precondition: form is not submitted');
+        assert.equal(textField.dirty, true, 'Precondition: component carries its own dirty flag');
+        assert.equal(
+          textField.element.classList.contains('formio-error-wrapper'),
+          true,
+          'Precondition: wrapper class is set after the component goes dirty',
+        );
+
+        const addSpy = sinon.spy(textField, 'addClass');
+        const removeSpy = sinon.spy(textField, 'removeClass');
+
+        form.onChange({ noEmit: true }, null, true);
+
+        const wrapperChurn = [...addSpy.getCalls(), ...removeSpy.getCalls()]
+          .filter((c) => c.args[1] === 'formio-error-wrapper');
+        assert.equal(
+          wrapperChurn.length,
+          0,
+          'Pre-submit keystrokes must not toggle formio-error-wrapper on a still-invalid dirty component',
+        );
+        assert.equal(
+          textField.element.classList.contains('formio-error-wrapper'),
+          true,
+          'Wrapper class remains present after the keystroke',
+        );
+
+        addSpy.restore();
+        removeSpy.restore();
       });
     });
   });

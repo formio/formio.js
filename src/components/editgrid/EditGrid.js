@@ -1020,7 +1020,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     if (this.component.rowDrafts) {
       editRow.components.forEach((comp) => comp.setPristine(this.pristine));
     }
-    this.checkValidity(null, true);
+    this.checkValidity(null, !this.component.rowDrafts || this.root?.submitted);
     this.redraw();
 
     if (editRow.alerts) {
