@@ -21,6 +21,7 @@ import {
   comp12,
   comp13,
   comp14,
+  comp15,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
@@ -834,6 +835,34 @@ describe('DataGrid Component', function () {
 
       assert.equal(select.getValue(), '');
       assert.deepEqual(dataGrid.getValue(), [{ select: '', number: 5 }]);
+
+      done();      
+    });
+  });
+
+  it('Should allow to Clear Value On Refresh Options for the Select component based on Data Grid', (done) => {
+    Formio.createForm(document.createElement('div'), comp15)
+    .then(async (form) => {
+      const timeout = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+      const dataGrid = form.getComponent('dataGrid');
+      const textField = form.getComponent(['dataGrid', 0, 'textField']);
+      const select = form.getComponent(['selectClearValueOnDataGridChange']);
+      await select.itemsLoaded;
+      select.setValue('b');
+
+      // timeout(50) need to complete triggerChange
+      await Promise.all([select.itemsLoaded, timeout(50)]);
+
+      assert.equal(select.getValue(), 'b');
+      assert.deepEqual(dataGrid.getValue(), [{ textField: '' }]);
+      const textFieldInput = textField.refs.input[0];
+      const inputEvent = new Event('input');
+      textFieldInput.value = 'test';
+      textFieldInput.dispatchEvent(inputEvent);
+
+      await timeout(500);
+      assert.equal(select.getValue(), '');
+      assert.deepEqual(dataGrid.getValue(), [{ textField: 'test' }]);
 
       done();      
     });
