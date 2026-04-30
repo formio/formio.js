@@ -1951,7 +1951,7 @@ export default class SelectComponent extends ListComponent {
         value = this.undoValueTyping(value);
       }
       const templateValue =
-        this.isEntireObjectDisplay() && !_.isObject(value.data) ? { data: value } : value;
+        !_.isEmpty(value) && this.isEntireObjectDisplay() && !_.isObject(value.data) ? { data: value } : value;
       const template = this.itemTemplate(templateValue, value, options);
       return template;
     }

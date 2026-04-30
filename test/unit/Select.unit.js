@@ -138,6 +138,32 @@ describe('Select Component', function () {
     assert.equal(component.getView('red', { csv: true }), 'Red');
   });
 
+  it('Should return empty string (not "undefined") for blank Entire Object Select with Resource DataSrc inside DataTable', async function () {
+    const restoreMakeRequest = mockMakeRequest(() => Promise.resolve([]));
+    const component = await Harness.testCreate(SelectComponent, {
+      type: 'select',
+      key: 'selectResource',
+      label: 'Select Resource',
+      input: true,
+      widget: 'html5',
+      dataSrc: 'resource',
+      data: { resource: 'someResourceId', project: 'someProjectId' },
+      dataType: 'object',
+      valueProperty: 'data',
+      template: '<span>{{ item.data.firstName }} {{ item.data.lastName }}</span>',
+    });
+    component.inDataTable = true;
+
+    for (const v of ['', {}]) {
+      const rendered = component.asString(v);
+      assert.ok(
+        typeof rendered === 'string' && !rendered.includes('undefined'),
+        `blank value ${JSON.stringify(v)} should not render "undefined", got: ${JSON.stringify(rendered)}`,
+      );
+    }
+    restoreMakeRequest();
+  });
+
   it('Should correctly determine storage type when dataType is auto', async function () {
     const component = await Harness.testCreate(SelectComponent, comp4);
     const value = component.normalizeSingleValue('true');
