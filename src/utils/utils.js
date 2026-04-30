@@ -2003,9 +2003,9 @@ export function announceScreenReaderMessage(component, value, index = 0, forFocu
   if (forFocus) {
     setTimeout(() => {
       el.textContent = "";
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         el.textContent = combinedMessage;
-      });
+      }, 50);
     }, 150);
     return;
   }
@@ -2013,9 +2013,9 @@ export function announceScreenReaderMessage(component, value, index = 0, forFocu
   clearTimeout(el._announceTimer);
   el._announceTimer = setTimeout(() => {
     el.textContent = "";
-    requestAnimationFrame(() => {
+    setTimeout(() => {
         el.textContent = combinedMessage;
-    });
+    }, 50);
   }, 500);
 }
 
