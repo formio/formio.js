@@ -754,6 +754,58 @@ describe('DataGrid Component', function () {
     });
   });
 
+  it('Should re-key descendant componentsMap entries when removing a row in a nested DataGrid', function () {
+    return Harness.testCreate(DataGridComponent, {
+      label: 'Datagrid',
+      key: 'dataGrid',
+      type: 'datagrid',
+      input: true,
+      defaultValue: [
+        {},
+      ],
+      components: [
+        {
+          label: 'Columns',
+          key: 'columns',
+          type: 'columns',
+          input: false,
+          columns: [
+            {
+              size: 'md',
+              width: 12,
+              components: [
+                {
+                  label: 'Leaf',
+                  key: 'leaf',
+                  type: 'textfield',
+                  input: true,
+                  validate: { required: true },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    }).then((component) => {
+      component.addRow();
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[0].leaf'), true);
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[1].leaf'), true);
+      component.removeRow(0);
+      assert.equal(
+        component.componentsMap.hasOwnProperty('dataGrid[0].leaf'),
+        true,
+        'surviving row leaf should be re-keyed at index 0',
+      );
+      assert.equal(
+        component.componentsMap.hasOwnProperty('dataGrid[1].leaf'),
+        false,
+        'old index-1 leaf key should be cleared',
+      );
+      // The surviving leaf instance must be the one that's now under [0].
+      assert.equal(component.componentsMap['dataGrid[0].leaf'].paths.dataPath, 'dataGrid[0].leaf');
+    });
+  });
+
   it('Should include default values of the nested components for the first row in submission payload', function (done) {
     Formio.createForm(document.createElement('div'), {
       type: 'form',

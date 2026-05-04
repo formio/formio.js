@@ -556,9 +556,18 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   updateComponentsRowIndex(components, rowIndex) {
     components.forEach((component, colIndex) => {
-      if (this.componentsMap[component.paths.dataPath]) {
-        delete this.componentsMap[component.paths.dataPath];
+      // The rowIndex setter cascades into descendants and regenerates their
+      // paths, but does not re-key them in componentsMap. Collect the slot
+      // and every descendant up front so we can re-key them after paths
+      // regenerate. Required for nested-form / sub-wizard scenarios where
+      // the outer wizard validates against its own componentsMap copy.
+      const entries = [{ instance: component, oldPath: component.paths.dataPath }];
+      if (typeof component.everyComponent === 'function') {
+        component.everyComponent((descendant) => {
+          entries.push({ instance: descendant, oldPath: descendant.paths.dataPath });
+        });
       }
+
       if (component.options?.name) {
         const newName = `[${this.key}][${rowIndex}]`;
         component.options.name = component.options.name.replace(
@@ -568,7 +577,15 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
       component.rowIndex = rowIndex;
       component.row = `${rowIndex}-${colIndex}`;
-      this.componentsMap[component.paths.dataPath] = component;
+
+      entries.forEach(({ instance, oldPath }) => {
+        instance.eachRootChildComponentsMap((map) => {
+          if (map[oldPath] === instance) {
+            delete map[oldPath];
+          }
+          map[instance.paths.dataPath] = instance;
+        });
+      });
     });
   }
 

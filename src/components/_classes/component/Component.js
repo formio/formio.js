@@ -511,6 +511,25 @@ export default class Component extends Element {
   }
 
   /**
+   * Walks this component's root chain, invoking `fn` with each ancestor root's
+   * `childComponentsMap`. Component registration is propagated up the wizard /
+   * nested-form chain at create time, so any code that mutates a registration
+   * (creation, removal, path-driven re-key) must update every map in the chain.
+   * @param {(map: object) => void} fn - Called once per root that exposes a `childComponentsMap`.
+   */
+  eachRootChildComponentsMap(fn) {
+    let currentRoot = this.root;
+    let prevRootId = null;
+    while (currentRoot && currentRoot.id !== prevRootId) {
+      if (currentRoot.childComponentsMap) {
+        fn(currentRoot.childComponentsMap);
+      }
+      prevRootId = currentRoot.id;
+      currentRoot = currentRoot.root;
+    }
+  }
+
+  /**
    * Returns if the parent should conditionally clear.
    *
    * @returns {boolean} - If the parent should conditionally clear.

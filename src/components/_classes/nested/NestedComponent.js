@@ -636,15 +636,11 @@ export default class NestedComponent extends Field {
     components = components || this.components;
     component.destroy(all);
     _.remove(components, { id: component.id });
-    let currentRoot = component.root;
-    let prevRootId = null;
-    while (currentRoot && currentRoot.id !== prevRootId) {
-      if (currentRoot.childComponentsMap?.[component.path]) {
-        delete currentRoot.childComponentsMap[component.path];
+    component.eachRootChildComponentsMap((map) => {
+      if (map[component.path]) {
+        delete map[component.path];
       }
-      prevRootId = currentRoot.id;
-      currentRoot = currentRoot.root;
-    }
+    });
   }
 
   /**
