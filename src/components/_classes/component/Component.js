@@ -3122,6 +3122,10 @@ export default class Component extends Element {
               shadowSelection.addRange(range);
             }
           };
+
+          document.addEventListener('selectionchange', () => {
+            sel.update();
+          });
         }
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ */
