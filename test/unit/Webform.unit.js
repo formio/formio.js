@@ -5606,6 +5606,39 @@ describe('Webform tests', function () {
         })
         .catch(done);
     });
+
+    it('Should not recalculate checkbox with allowCalculateOverride when display is pdf (saved submission)', function (done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { readOnly: true, display: 'pdf' });
+      const formJson = {
+        components: [
+          {
+            type: 'checkbox',
+            key: 'chk',
+            label: 'Check',
+            input: true,
+            calculateValue: 'value = true;',
+            allowCalculateOverride: true,
+          },
+        ],
+      };
+      form
+        .setForm(formJson)
+        .then(() =>
+          form.setSubmission({
+            _id: '507f1f77bcf86cd799439011',
+            data: { chk: false },
+          }),
+        )
+        .then(() => {
+          setTimeout(() => {
+            const chk = form.getComponent('chk');
+            assert.equal(chk.dataValue, false, 'Unchecked submission must stay false in pdf display');
+            done();
+          }, 400);
+        })
+        .catch(done);
+    });
   });
 
   it('Should set different ids for components inside different Table rows', function (done) {
