@@ -635,7 +635,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         isVisibleInRow: (component) => this.isComponentVisibleInRow(component, flattenedComponents),
         getView: (component, data) => {
           const instance = flattenedComponents[component.key];
-          const view = instance ? instance.getView(data || instance.dataValue) : '';
+          const view = instance ? instance.getView(instance.dataValue) : '';
 
           // If there is an html tag in view, don't allow it to be injected in template
           const htmlTagRegExp = new RegExp('<(.*?)>');
@@ -1129,9 +1129,19 @@ export default class EditGridComponent extends NestedArrayComponent {
 
       const column = _.clone(col);
       const options = _.clone(this.options);
+      const rootSubmissionTz = _.get(this.root, 'options.submissionTimezone');
+      if (rootSubmissionTz && !options.submissionTimezone) {
+        options.submissionTimezone = rootSubmissionTz;
+      }
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
       options.rowIndex = rowIndex;
+      if (this.submissionTimezone) {
+        options.submissionTimezone = this.submissionTimezone;
+        if (column.type === 'datetime') {
+          column.widget = { ...column.widget, submissionTimezone: this.submissionTimezone };
+        }
+      }
       options.onChange = (flags = {}, changed, modified) => {
         if (changed.instance.root?.id && this.root?.id !== changed.instance.root.id) {
           changed.instance.root?.triggerChange?.(flags, changed, modified);
@@ -1172,6 +1182,10 @@ export default class EditGridComponent extends NestedArrayComponent {
         null,
         recreatePartially && currentRowComponents ? currentRowComponents[colIndex] : null,
       );
+      if (comp?.type === 'datetime' && this.submissionTimezone) {
+        comp.component.widget = { ...comp.component.widget, submissionTimezone: this.submissionTimezone };
+        comp.options.submissionTimezone = this.submissionTimezone;
+      }
       comp.rowIndex = rowIndex;
       comp.inEditGrid = true;
       return comp;

@@ -781,7 +781,11 @@ export function momentDate(value, format, timezone, options) {
   }
   if (
     (timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) &&
-    (moment.zonesLoaded || options?.email)
+    (moment.zonesLoaded ||
+      options?.email ||
+      options?.pdf ||
+      options?.readOnly ||
+      options?.server)
   ) {
     return momentDate.tz(timezone);
   }

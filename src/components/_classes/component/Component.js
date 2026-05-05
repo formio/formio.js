@@ -1355,9 +1355,14 @@ export default class Component extends Element {
    * @returns {string} - The submission timezone.
    */
   get submissionTimezone() {
-    this.options.submissionTimezone =
-      this.options.submissionTimezone || _.get(this.root, 'options.submissionTimezone');
-    return this.options.submissionTimezone;
+    if (!this.options.submissionTimezone) {
+      this.options.submissionTimezone = _.get(this.root, 'options.submissionTimezone');
+    }
+    return (
+      this.options.submissionTimezone ||
+      _.get(this.root, '_submission.metadata.timezone') ||
+      _.get(this.component, 'widget.submissionTimezone')
+    );
   }
 
   /**
@@ -1374,22 +1379,46 @@ export default class Component extends Element {
    * @returns {string} - The current timezone.
    */
   getTimezone(settings) {
+    settings = settings || {};
     if (settings.timezone) {
       return settings.timezone;
     }
     if (settings.displayInTimezone === 'utc') {
       return 'UTC';
     }
+
     const submissionTimezone = this.submissionTimezone;
+
     if (
+      this.inEditGrid &&
       submissionTimezone &&
-      (settings.displayInTimezone === 'submission' ||
-        ((this.options.pdf || this.options.server) && settings.displayInTimezone === 'viewer'))
+      settings.displayInTimezone !== 'utc' &&
+      !settings.timezone
     ) {
       return submissionTimezone;
     }
 
-    // Return current timezone if none are provided.
+    const mode =
+      settings.displayInTimezone === '' || settings.displayInTimezone == null
+        ? 'viewer'
+        : settings.displayInTimezone;
+
+    if ((this.options.pdf || this.options.readOnly) && submissionTimezone) {
+      return submissionTimezone;
+    }
+
+    const staticSnapshot =
+      this.options.server ||
+      this.options.renderMode === 'html' ||
+      !!this.options.viewAsHtml;
+
+    if (
+      submissionTimezone &&
+      (mode === 'submission' || (staticSnapshot && (mode === 'viewer' || mode === 'location')))
+    ) {
+      return submissionTimezone;
+    }
+
     return currentTimezone();
   }
 
