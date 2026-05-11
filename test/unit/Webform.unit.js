@@ -4996,6 +4996,43 @@ describe('Webform tests', function () {
         .catch(done);
     });
 
+    it('Should record the active language code in submission metadata.', function (done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'es' });
+      form
+        .setForm(calculateValueWithSubmissionMetadata)
+        .then(() => {
+          form.getComponent('textField').setValue('test value');
+          form.submit(false, {});
+
+          setTimeout(() => {
+            expect(form.submission.metadata).to.exist;
+            expect(form.submission.metadata.language).to.equal('es');
+            done();
+          }, 250);
+        })
+        .catch(done);
+    });
+
+    it('Should reflect runtime language changes in submission metadata.', function (done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement, { language: 'en' });
+      form
+        .setForm(calculateValueWithSubmissionMetadata)
+        .then(() => {
+          form.language = 'fr';
+          form.getComponent('textField').setValue('test value');
+          form.submit(false, {});
+
+          setTimeout(() => {
+            expect(form.submission.metadata).to.exist;
+            expect(form.submission.metadata.language).to.equal('fr');
+            done();
+          }, 250);
+        })
+        .catch(done);
+    });
+
     it('Should allow to change value.', function (done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en' });
