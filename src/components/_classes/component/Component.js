@@ -1389,21 +1389,12 @@ export default class Component extends Element {
 
     const submissionTimezone = this.submissionTimezone;
 
-    if (
-      this.inEditGrid &&
-      submissionTimezone &&
-      settings.displayInTimezone !== 'utc' &&
-      !settings.timezone
-    ) {
-      return submissionTimezone;
-    }
-
     const mode =
       settings.displayInTimezone === '' || settings.displayInTimezone == null
         ? 'viewer'
         : settings.displayInTimezone;
 
-    if ((this.options.pdf || this.options.readOnly) && submissionTimezone) {
+    if (this.options.pdf && submissionTimezone) {
       return submissionTimezone;
     }
 

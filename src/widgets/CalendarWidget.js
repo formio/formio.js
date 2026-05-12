@@ -11,7 +11,6 @@ import {
   getLocaleDateFormatInfo,
   momentDate,
   zonesLoaded,
-  shouldLoadZones,
   loadZones,
   hasEncodedTimezone,
 } from '../utils';
@@ -76,7 +75,7 @@ export default class CalendarWidget extends InputWidget {
       return true;
     }
 
-    if (!zonesLoaded() && shouldLoadZones(timezone)) {
+    if (!zonesLoaded()) {
       this.zoneLoading = true;
       loadZones(this.timezonesUrl, timezone).then(() => {
         this.zoneLoading = false;

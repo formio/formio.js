@@ -739,15 +739,18 @@ export function shouldLoadZones(timezone) {
  * @param {string} timezone - The timezone to load.
  * @returns {Promise<any> | *} - Resolves when the zones for this timezone are loaded.
  */
-export function loadZones(url, timezone) {
-  if (timezone && !shouldLoadZones(timezone)) {
-    // Return non-resolving promise.
-    return new Promise(_.noop);
+export function loadZones(url, _timezone) {
+  if (moment.zonesLoaded) {
+    return Promise.resolve();
   }
 
   if (moment.zonesPromise) {
     return moment.zonesPromise;
   }
+
+  // Always load the full packed dataset once. The previous optimization skipped fetch when the
+  // display timezone matched the runtime zone, but moment-timezone still needs `tz.load()` for
+  // `.tz(ianaName)` and `z` formatting to work; otherwise conversions silently match server local time.
   return (moment.zonesPromise = fetch(url).then((resp) =>
     resp.json().then((zones) => {
       moment.tz.load(zones);
@@ -781,11 +784,7 @@ export function momentDate(value, format, timezone, options) {
   }
   if (
     (timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) &&
-    (moment.zonesLoaded ||
-      options?.email ||
-      options?.pdf ||
-      options?.readOnly ||
-      options?.server)
+    (moment.zonesLoaded || options?.email)
   ) {
     return momentDate.tz(timezone);
   }

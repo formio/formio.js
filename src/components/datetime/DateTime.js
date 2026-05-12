@@ -230,30 +230,20 @@ export default class DateTimeComponent extends Input {
     let format = FormioUtils.convertFormatToMoment(this.component.format);
     format += format.match(/z$/) ? '' : ' z';
     const timezone = this.timezone;
-    const momentOpts = {
-      ...options,
-      pdf: this.options.pdf || _.get(this.root, 'options.pdf'),
-      readOnly: this.options.readOnly || _.get(this.root, 'options.readOnly'),
-      server: this.options.server || _.get(this.root, 'options.server'),
-    };
     const useTimezoneAwareFormat =
       value &&
       timezone &&
-      (!this.attached ||
-        this.options.pdf ||
-        this.options.server ||
-        this.inEditGrid ||
-        this.options.readOnly);
+      (this.options.pdf || options?.email);
 
     if (useTimezoneAwareFormat) {
       if (Array.isArray(value) && this.component.multiple) {
         return value
           .map((item) =>
-            _.trim(FormioUtils.momentDate(item, format, timezone, momentOpts).format(format)),
+            _.trim(FormioUtils.momentDate(item, format, timezone, options).format(format)),
           )
           .join(', ');
       }
-      return _.trim(FormioUtils.momentDate(value, format, timezone, momentOpts).format(format));
+      return _.trim(FormioUtils.momentDate(value, format, timezone, options).format(format));
     }
 
     if (Array.isArray(value) && this.component.multiple) {

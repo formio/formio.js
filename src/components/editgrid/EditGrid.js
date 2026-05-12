@@ -1182,10 +1182,6 @@ export default class EditGridComponent extends NestedArrayComponent {
         null,
         recreatePartially && currentRowComponents ? currentRowComponents[colIndex] : null,
       );
-      if (comp?.type === 'datetime' && this.submissionTimezone) {
-        comp.component.widget = { ...comp.component.widget, submissionTimezone: this.submissionTimezone };
-        comp.options.submissionTimezone = this.submissionTimezone;
-      }
       comp.rowIndex = rowIndex;
       comp.inEditGrid = true;
       return comp;
