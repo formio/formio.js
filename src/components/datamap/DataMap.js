@@ -204,17 +204,6 @@ export default class DataMapComponent extends DataGridComponent {
     });
   }
 
-  getView(value, options) {
-    if (this.rows && this.rows.length > 0) {
-      const firstRow = this.rows[0];
-      if (firstRow && firstRow[this.valueKey]) {
-        const valueComponent = firstRow[this.valueKey];
-        return valueComponent.getView(value, options);
-      }
-    }
-    return super.getView(value, options);
-  }
-
   getValueAsString(value, options) {
     if (options?.email && this.visible && !this.skipInEmail && _.isObject(value)) {
       let result = `
