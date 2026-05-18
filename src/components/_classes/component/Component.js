@@ -1900,14 +1900,14 @@ export default class Component extends Element {
       value.forEach((val, index) => {
         const widget = this.refs.input[index] && this.refs.input[index].widget;
         if (widget) {
-          values.push(widget.getValueAsString(val, options));
+          values.push(widget.getValueAsString(val));
         }
       });
       return values;
     }
 
     const widget = this.refs.input[0].widget;
-    return widget.getValueAsString(value, options);
+    return widget.getValueAsString(value);
   }
 
   /**
