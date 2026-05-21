@@ -916,8 +916,65 @@ describe('DataGrid Component', function () {
       assert.equal(select.getValue(), '');
       assert.deepEqual(dataGrid.getValue(), [{ textField: 'test' }]);
 
-      done();      
+      done();
     });
+  });
+
+  it('Should emit a single form change with the originating child component when a field inside a Data Grid changes', (done) => {
+    const formDef = {
+      display: 'form',
+      components: [
+        {
+          label: 'Products',
+          key: 'products',
+          type: 'datagrid',
+          input: true,
+          tableView: false,
+          components: [
+            {
+              label: 'Name',
+              key: 'name',
+              type: 'textfield',
+              input: true,
+              tableView: true,
+              applyMaskOn: 'change',
+            },
+          ],
+          defaultValue: [{ name: '' }],
+        },
+      ],
+    };
+
+    Formio.createForm(document.createElement('div'), formDef)
+    .then(async (form) => {
+      const timeout = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+      const name = form.getComponent(['products', 0, 'name']);
+
+      await timeout(200);
+
+      const changedComponents = [];
+      form.on('change', (value) => {
+        if (value && value.changed && value.changed.component) {
+          changedComponents.push(value.changed.component.key);
+        }
+      });
+
+      const nameInput = name.refs.input[0];
+      const inputEvent = new Event('input');
+      nameInput.value = 'hello';
+      nameInput.dispatchEvent(inputEvent);
+
+      await timeout(500);
+
+      assert.deepStrictEqual(
+        changedComponents,
+        ['name'],
+        `expected exactly one form change event with changed.component.key === 'name', got: ${JSON.stringify(changedComponents)}`,
+      );
+
+      done();
+    })
+    .catch(done);
   });
 
   describe('DataGrid Panels', function () {
