@@ -429,6 +429,96 @@ describe('Webform tests', function () {
       .catch(done);
   });
 
+  it('FIO-11691: Should submit subform when hidden in JSON but revealed by a conditional', function (done) {
+    const element = document.createElement('div');
+    const form = fastCloneDeep(formWithHiddenSubform);
+    form.components.unshift({
+      label: 'Show form',
+      tableView: false,
+      validateWhenHidden: false,
+      key: 'showForm',
+      type: 'checkbox',
+      input: true,
+      defaultValue: false,
+    });
+    form.components[2].conditional = {
+      show: true,
+      conjunction: 'all',
+      conditions: [{ component: 'showForm', operator: 'isEqual', value: true }],
+    };
+
+    const originalMakeRequest = Formio.makeRequest;
+    let submissionRequestCount = 0;
+    let parentSubmissionData = null;
+    Formio.makeRequest = function (a, b, c, d, e) {
+      if (b === 'submission' && d === 'post') {
+        ++submissionRequestCount;
+        parentSubmissionData = e;
+      }
+      return Promise.resolve(e);
+    };
+
+    Formio.createForm(element, form)
+      .then((instance) => {
+        instance.formio = new Formio('http://localhost:3000/test');
+        instance.setSubmission({
+          data: {
+            showForm: true,
+            textFieldParent: 'parent value',
+            form: { data: { textField2Child: 'child value' } },
+          },
+        });
+        setTimeout(() => {
+          instance.submit().then(() => {
+            assert.equal(submissionRequestCount, 2);
+            assert.equal(parentSubmissionData.data.form.data.textField2Child, 'child value');
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          }).catch(done);
+        }, 200);
+      })
+      .catch(done);
+  });
+
+  it('FIO-11691: Should not submit subform when hidden in JSON and conditional is not met', function (done) {
+    const element = document.createElement('div');
+    const form = fastCloneDeep(formWithHiddenSubform);
+    form.components.unshift({
+      label: 'Show form',
+      tableView: false,
+      validateWhenHidden: false,
+      key: 'showForm',
+      type: 'checkbox',
+      input: true,
+      defaultValue: false,
+    });
+    form.components[2].conditional = {
+      show: true,
+      conjunction: 'all',
+      conditions: [{ component: 'showForm', operator: 'isEqual', value: true }],
+    };
+
+    const originalMakeRequest = Formio.makeRequest;
+    let submissionRequestCount = 0;
+    Formio.makeRequest = function (a, b, c, d, e) {
+      if (b === 'submission' && d === 'post') {
+        ++submissionRequestCount;
+      }
+      return Promise.resolve(e);
+    };
+
+    Formio.createForm(element, form)
+      .then((instance) => {
+        instance.formio = new Formio('http://localhost:3000/test');
+        instance.submit().then(() => {
+          assert.equal(submissionRequestCount, 1);
+          Formio.makeRequest = originalMakeRequest;
+          done();
+        }).catch(done);
+      })
+      .catch(done);
+  });
+
   it('Should not show validation alert after saving the form in draft state', function (done) {
     const element = document.createElement('div');
     const form = fastCloneDeep(formWithDraftState);
