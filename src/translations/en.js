@@ -77,5 +77,7 @@ export default {
   requiredMonthField: '{{ field }} is required',
   requiredYearField: '{{ field }} is required',
   fileTooSmall: 'File is too small; it must be at least {{ size }}',
-  fileTooBig: 'File is too big; it must be at most {{ size }}'
+  fileTooBig: 'File is too big; it must be at most {{ size }}',
+  // when temp document storing oauth state and code verifier is cleared by ttl before the user completes login
+  oauthSessionExpired: 'Login attempt expired; please try again. Refreshing...',
 }

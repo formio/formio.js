@@ -466,6 +466,12 @@ export default class ButtonComponent extends Field {
   }
 
   openOauth(settings) {
+    // this is if the temp session (storing the state and code verifiers) expires in the db 
+    // and we need to fetch new oauth state
+    if (settings.sessionExpireAt && Date.now() >= settings.sessionExpireAt) {
+      this._handleOauthSessionExpired();
+      return;
+    }
     if (!this.root?.formio) {
       console.warn('You must attach a Form API url to your form in order to use OAuth buttons.');
       return;
@@ -482,7 +488,9 @@ export default class ButtonComponent extends Field {
     };
     if (settings.state) {
       params.state = settings.state;
-    } else if (settings.code_challenge) {
+    }
+    // okta requires both a state and a code challenge for PKCE
+    if (settings.code_challenge) {
       params.code_challenge = settings.code_challenge;
       params.code_challenge_method = 'S256';
     }
@@ -532,6 +540,9 @@ export default class ButtonComponent extends Field {
             );
             return;
           }
+          if (settings.sessionId) {
+            params.sessionId = settings.sessionId;
+          }
           // Depending on where the settings came from, submit to either the submission endpoint (old) or oauth endpoint (new).
           let requestPromise = Promise.resolve();
 
@@ -567,6 +578,11 @@ export default class ButtonComponent extends Field {
               this.root?.onSubmit(result, true);
             })
             .catch((err) => {
+              console.log(err);
+              if (settings.sessionExpireAt && Date.now() >= settings.sessionExpireAt) {
+                this._handleOauthSessionExpired();
+                return;
+              }
               this.root?.onSubmissionError(err);
             });
         }
@@ -582,6 +598,12 @@ export default class ButtonComponent extends Field {
         clearInterval(interval);
       }
     }, 100);
+  }
+
+  _handleOauthSessionExpired() {
+    this.root?.setAlert('warning', this.t('oauthSessionExpired'));
+    this.loading = true;
+    setTimeout(() => window.location.reload(), 2000);
   }
 
   get oauthComponentPath() {
