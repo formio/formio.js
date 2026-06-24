@@ -1,7 +1,7 @@
 export default [
   {
     key: 'multiple',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'datagrid',
@@ -11,13 +11,15 @@ export default [
     tooltip: 'The questions you would like to ask in this survey question.',
     weight: 0,
     reorder: true,
-    defaultValue: [{ label: '', value: '' }],
+    defaultValue: [
+      { label: '', value: '' },
+    ],
     components: [
       {
         label: 'Label',
         key: 'label',
         input: true,
-        type: 'textfield'
+        type: 'textfield',
       },
       {
         label: 'Value',
@@ -25,7 +27,11 @@ export default [
         input: true,
         type: 'textfield',
         allowCalculateOverride: true,
-        calculateValue: { _camelCase: [{ var: 'row.label' }] }
+        calculateValue: {
+          _camelCase: [
+            { var: 'row.label' },
+          ],
+        },
       },
       {
         label: 'Tooltip',
@@ -33,23 +39,26 @@ export default [
         input: true,
         type: 'textfield',
       },
-    ]
+    ],
   },
   {
     type: 'datagrid',
     input: true,
     label: 'Values',
     key: 'values',
-    tooltip: 'The values that can be selected per question. Example: \'Satisfied\', \'Very Satisfied\', etc.',
+    tooltip:
+      "The values that can be selected per question. Example: 'Satisfied', 'Very Satisfied', etc.",
     weight: 1,
     reorder: true,
-    defaultValue: [{ label: '', value: '' }],
+    defaultValue: [
+      { label: '', value: '' },
+    ],
     components: [
       {
         label: 'Label',
         key: 'label',
         input: true,
-        type: 'textfield'
+        type: 'textfield',
       },
       {
         label: 'Value',
@@ -57,7 +66,11 @@ export default [
         input: true,
         type: 'textfield',
         allowCalculateOverride: true,
-        calculateValue: { _camelCase: [{ var: 'row.label' }] }
+        calculateValue: {
+          _camelCase: [
+            { var: 'row.label' },
+          ],
+        },
       },
       {
         label: 'Tooltip',
@@ -65,6 +78,6 @@ export default [
         input: true,
         type: 'textfield',
       },
-    ]
-  }
+    ],
+  },
 ];

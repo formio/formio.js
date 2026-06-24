@@ -157,7 +157,7 @@ function getConditionalPathsRecursive(conditionPaths, data) {
       }
 
       const hasInnerDataArray = currentData.find((x) =>
-        x && conditionPaths && Array.isArray(x[conditionPaths[currentLocalIndex]]),
+        Array.isArray(x[conditionPaths[currentLocalIndex]]),
       );
 
       if (hasInnerDataArray) {
@@ -167,7 +167,7 @@ function getConditionalPathsRecursive(conditionPaths, data) {
         });
       } else {
         currentData.forEach((x, index) => {
-          if (x && conditionPaths && !_.isNil(x[conditionPaths[currentLocalIndex]])) {
+          if (!_.isNil(x[conditionPaths[currentLocalIndex]])) {
             const compDataPath = `${currentPath}[${index}].${conditionPaths[currentLocalIndex]}`;
             conditionalPathsArray.push(compDataPath);
           }
@@ -257,21 +257,6 @@ export function checkSimpleConditional(component, condition, row, data, instance
         });
       } else {
         const value = getComponentActualValue(conditionComponentPath, data, row);
-
-        // When inside a DataGrid/EditGrid, construct a row-indexed path so that
-        // operators like isEmpty can look up the correct row's component instance.
-        let operatorPath = conditionComponentPath;
-        const dataParent = getDataParentComponent(instance);
-        if (dataParent && !_.isNil(instance?.rowIndex)) {
-          const parentPath = dataParent.paths?.localPath;
-          if (parentPath && conditionComponentPath.startsWith(`${parentPath}.`)) {
-            operatorPath = conditionComponentPath.replace(
-              `${parentPath}.`,
-              `${parentPath}[${instance.rowIndex}].`,
-            );
-          }
-        }
-
         const СonditionOperator = ConditionOperators[operator];
         return СonditionOperator
           ? new СonditionOperator().getResult({
@@ -279,7 +264,7 @@ export function checkSimpleConditional(component, condition, row, data, instance
               comparedValue,
               instance,
               component,
-              path: operatorPath,
+              path: conditionComponentPath,
             })
           : true;
       }
@@ -347,11 +332,7 @@ export function checkCustomConditional(
   instance,
 ) {
   if (typeof custom === 'string') {
-    custom = `
-      var ${variable} = true; 
-      ${custom}; 
-      return ${variable};
-    `;
+    custom = `var ${variable} = true; ${custom}; return ${variable};`;
   }
   const value =
     instance && instance.evaluate
@@ -739,18 +720,15 @@ export function shouldLoadZones(timezone) {
  * @param {string} timezone - The timezone to load.
  * @returns {Promise<any> | *} - Resolves when the zones for this timezone are loaded.
  */
-export function loadZones(url, _timezone) {
-  if (moment.zonesLoaded) {
-    return Promise.resolve();
+export function loadZones(url, timezone) {
+  if (timezone && !shouldLoadZones(timezone)) {
+    // Return non-resolving promise.
+    return new Promise(_.noop);
   }
 
   if (moment.zonesPromise) {
     return moment.zonesPromise;
   }
-
-  // Always load the full packed dataset once. The previous optimization skipped fetch when the
-  // display timezone matched the runtime zone, but moment-timezone still needs `tz.load()` for
-  // `.tz(ianaName)` and `z` formatting to work; otherwise conversions silently match server local time.
   return (moment.zonesPromise = fetch(url).then((resp) =>
     resp.json().then((zones) => {
       moment.tz.load(zones);
@@ -1888,138 +1866,6 @@ export function hasEncodedTimezone(value) {
     value.substring(value.length - 1) === 'Z' ||
     value.match(/[+|-][0-9]{2}:[0-9]{2}$/)
   );
-}
-// Types for min max validation if value = string
-const TYPES = new Map([["char", "Length"], ["word", "Words"]]);
-
-// The number from which the remaining character(words) count message starts being read
-const REMAIN_COUNT = new Map([["char", 10], ["word", 5]]);
-
-function getWordOrCharacterLabel(isWordType, count) {
-  const base = isWordType ? "word" : "character";
-  return Math.abs(count) === 1 ? base : `${base}s`;
-}
-/**
- * The function calculates the message values depending on the type and the current component settings.
- * @param {component} component - The component instance
- * @param {type} type - The type of validation max and min
- * @param {value} value - The current component value
- * @param {forFocus} forFocus - Whether the component is focused or not
- * @returns {string} - The messsage string
- */
-function getScreenReaderMessage(component, type, value) {
-  const isWordType = type === "word";
-  const maxKey =
-    typeof value === "string" && (type === "char" || isWordType)
-      ? `validate.max${TYPES.get(type)}`
-      : "validate.max";
-  const minKey =
-    typeof value === "string" && (type === "char" || isWordType)
-      ? `validate.min${TYPES.get(type)}`
-      : "validate.min";
-
-  const max = _.parseInt(_.get(component.component, maxKey), 10);
-  const min = _.parseInt(_.get(component.component, minKey), 10);
-
-  let message = "";
-
-  if (typeof value === "string") {
-    const currentLength = isWordType ? component.getWordCount(value) : value.length;
-
-    if (!isNaN(max)) {
-      const remains = max - currentLength;
-
-      if (value) {
-        const threshold = REMAIN_COUNT.get(type) || max;
-        if (remains > 0 && remains < threshold) {
-          message += `${remains} ${getWordOrCharacterLabel(isWordType, remains)} remaining. `;
-        } else if (remains < 0) {
-          const removeCount = Math.abs(remains);
-          message += `${removeCount} ${getWordOrCharacterLabel(isWordType, removeCount)} should be removed. `;
-        } else if (remains === 0) {
-          message += `No ${getWordOrCharacterLabel(isWordType, 0)} remaining.`;
-        }
-      } else {
-        message += `Maximum ${max} ${getWordOrCharacterLabel(isWordType, max)}. `;
-      }
-    }
-
-    if (!isNaN(min)) {
-      if (value) {
-        const remains = min - currentLength;
-        if (remains > 0) {
-          message += `${remains} ${getWordOrCharacterLabel(isWordType, remains)} should be added.`;
-        }
-        if (remains === 0) {
-          message += ``;
-        }
-      } else {
-        message += `Minimum ${min} ${getWordOrCharacterLabel(isWordType, min)}. `;
-      }
-    }
-  } else if (typeof value === "number" || value === null) {
-    if (value != null && value !== "") {
-      if (!isNaN(max) && value > max) {
-        message += `Number cannot be greater than ${max}. `;
-      }
-      if (!isNaN(min) && value < min) {
-        message += `Number cannot be less than ${min}.`;
-      }
-    } else {
-      if (!isNaN(min)) message += `Minimum value ${min}. `;
-      if (!isNaN(max)) message += `Maximum value ${max}. `;
-    }
-  }
-  return message.trim();
-}
-
-/**
- * The function for announcing messages via a screen reader
- * @param {component} component - The component instance
- * @param {value} value - The current component value
- * @param {index} index - The component index
- * @param {forFocus} forFocus - Whether the component is focused or not
- * @returns {undefined}
- */
-export function announceScreenReaderMessage(component, value, index = 0, forFocus = false) {
-  if (typeof value !== "string" && typeof value !== "number" && value !== null) {
-    return;
-  }
-  // The ref for announcing messages
-  const messageSpan = "announceMessage";
-  if (!component.refs[messageSpan]) return;
-  const el = component.refs[messageSpan][index];
-  if (!el) return;
-
-  // Define types for validation
-  const typesToCheck = [];
-  if (typeof value === "string") typesToCheck.push("char", "word");
-  if (typeof value === "number" || value === null) typesToCheck.push("number");
-
-  // Construct the combined message
-  const combinedMessage = typesToCheck
-    .map(type => getScreenReaderMessage(component, type, value))
-    .filter(msg => msg)
-    .join(" ")
-    .trim();
-
-  if (forFocus) {
-    setTimeout(() => {
-      el.textContent = "";
-      setTimeout(() => {
-        el.textContent = combinedMessage;
-      }, 50);
-    }, 150);
-    return;
-  }
-
-  clearTimeout(el._announceTimer);
-  el._announceTimer = setTimeout(() => {
-    el.textContent = "";
-    setTimeout(() => {
-        el.textContent = combinedMessage;
-    }, 50);
-  }, 500);
 }
 
 /**

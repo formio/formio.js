@@ -93,7 +93,7 @@ export default class TagsComponent extends Input {
       return;
     }
 
-    const hasPlaceholder = !!this.component.placeholder && !this.options?.readOnly;
+    const hasPlaceholder = !!this.component.placeholder;
 
     this.choices = new Choices(element, {
       delimiter: this.delimiter,

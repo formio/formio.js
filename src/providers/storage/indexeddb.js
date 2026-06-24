@@ -9,17 +9,17 @@ function indexeddb() {
     name: 'indexeddb',
     uploadFile(file, fileName, dir, progressCallback, url, options) {
       if (!('indexedDB' in window)) {
-        console.log('This browser doesn\'t support IndexedDB');
+        console.log("This browser doesn't support IndexedDB");
         return;
       }
 
       return new Promise((resolve) => {
         const request = indexedDB.open(options.indexeddb);
-        request.onsuccess = function(event) {
+        request.onsuccess = function (event) {
           const db = event.target.result;
           resolve(db);
         };
-        request.onupgradeneeded = function(e) {
+        request.onupgradeneeded = function (e) {
           const db = e.target.result;
           db.createObjectStore(options.indexeddbTable);
         };
@@ -28,7 +28,12 @@ function indexeddb() {
 
         return new Promise((resolve, reject) => {
           reader.onload = () => {
-            const blobObject = new Blob([file], { type: file.type });
+            const blobObject = new Blob(
+              [
+                file,
+              ],
+              { type: file.type },
+            );
 
             const id = uuidv4(blobObject);
 
@@ -41,15 +46,20 @@ function indexeddb() {
               url,
             };
 
-            const trans = db.transaction([options.indexeddbTable], 'readwrite');
+            const trans = db.transaction(
+              [
+                options.indexeddbTable,
+              ],
+              'readwrite',
+            );
             const addReq = trans.objectStore(options.indexeddbTable).put(data, id);
 
-            addReq.onerror = function(e) {
+            addReq.onerror = function (e) {
               console.log('error storing data');
               console.error(e);
             };
 
-            trans.oncomplete = function() {
+            trans.oncomplete = function () {
               resolve({
                 storage: 'indexeddb',
                 name: file.name,
@@ -73,20 +83,31 @@ function indexeddb() {
       return new Promise((resolve) => {
         const request = indexedDB.open(options.indexeddb);
 
-        request.onsuccess = function(event) {
+        request.onsuccess = function (event) {
           const db = event.target.result;
           resolve(db);
         };
       }).then((db) => {
         return new Promise((resolve, reject) => {
-          const trans = db.transaction([options.indexeddbTable], 'readonly');
+          const trans = db.transaction(
+            [
+              options.indexeddbTable,
+            ],
+            'readonly',
+          );
           const store = trans.objectStore(options.indexeddbTable).get(file.id);
           store.onsuccess = () => {
             trans.oncomplete = () => {
               const result = store.result;
-              const dbFile = new File([store.result.data], file.name, {
-                type: store.result.type,
-              });
+              const dbFile = new File(
+                [
+                  store.result.data,
+                ],
+                file.name,
+                {
+                  type: store.result.type,
+                },
+              );
 
               const reader = new FileReader();
 
@@ -113,13 +134,18 @@ function indexeddb() {
       return new Promise((resolve) => {
         const request = indexedDB.open(options.indexeddb);
 
-        request.onsuccess = function(event) {
+        request.onsuccess = function (event) {
           const db = event.target.result;
           resolve(db);
         };
       }).then((db) => {
         return new Promise((resolve, reject) => {
-          const trans = db.transaction([options.indexeddbTable], 'readwrite');
+          const trans = db.transaction(
+            [
+              options.indexeddbTable,
+            ],
+            'readwrite',
+          );
           const store = trans.objectStore(options.indexeddbTable).delete(file.id);
           store.onsuccess = () => {
             trans.oncomplete = () => {

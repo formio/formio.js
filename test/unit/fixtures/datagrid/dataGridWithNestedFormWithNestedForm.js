@@ -13,7 +13,9 @@ export default {
       enableRowGroups: false,
       initEmpty: false,
       tableView: false,
-      defaultValue: [{}],
+      defaultValue: [
+        {},
+      ],
       validateWhenHidden: false,
       key: 'dataGrid',
       type: 'datagrid',
@@ -28,7 +30,8 @@ export default {
               {
                 label: 'show',
                 value: 'show',
-              }, {
+              },
+              {
                 label: 'no show',
                 value: 'noShow',
               },
@@ -38,7 +41,8 @@ export default {
           key: 'select',
           type: 'select',
           input: true,
-        }, {
+        },
+        {
           label: 'Form',
           tableView: true,
           form: 'child',
@@ -59,7 +63,8 @@ export default {
           input: true,
         },
       ],
-    }, {
+    },
+    {
       type: 'button',
       label: 'Submit',
       key: 'submit',

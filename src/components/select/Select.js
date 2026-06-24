@@ -334,9 +334,10 @@ export default class SelectComponent extends ListComponent {
     const shouldUseSelectData =
       (this.component.multiple && _.isArray(this.dataValue)
         ? this.dataValue.find((val) => this.normalizeSingleValue(value) === val)
-        : this.dataValue === this.normalizeSingleValue(value)) || (this.inDataTable && !this.element);
+        : this.dataValue === this.normalizeSingleValue(value)) || this.inDataTable;
+
     if (shouldUseSelectData) {
-      const selectData = (this.inDataTable && !this.element) ? this.component.selectData : this.selectData;
+      const selectData = this.selectData;
       if (selectData) {
         const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
         if (!this.templateData || !this.templateData[templateValue]) {
@@ -631,8 +632,7 @@ export default class SelectComponent extends ListComponent {
         this.setValue(this.dataValue, {
           noUpdateEvent: true,
         });
-      }
-      else if (this.shouldAddDefaultValue && !this.options.readOnly && this.root && !this.root.submissionSet) {
+      } else if (this.shouldAddDefaultValue && !this.options.readOnly) {
         // If a default value is provided then select it.
         const defaultValue = this.defaultValue;
         if (!this.isEmpty(defaultValue)) {
@@ -929,7 +929,7 @@ export default class SelectComponent extends ListComponent {
   }
 
   addPlaceholder() {
-    if (!this.component.placeholder || this.options?.readOnly) {
+    if (!this.component.placeholder) {
       return;
     }
 
@@ -1014,8 +1014,7 @@ export default class SelectComponent extends ListComponent {
     const useSearch = this.component.hasOwnProperty('searchEnabled')
       ? this.component.searchEnabled
       : true;
-    const hasPlaceholder = !!this.component.placeholder && !this.options?.readOnly;
-    const placeholderValue = hasPlaceholder ? this.t(this.component.placeholder, { _userInput: true }) : null;
+    const placeholderValue = this.t(this.component.placeholder, { _userInput: true });
     let customOptions = this.component.customOptions || {};
     if (typeof customOptions == 'string') {
       try {
@@ -1048,7 +1047,7 @@ export default class SelectComponent extends ListComponent {
       },
       addItemText: false,
       allowHTML: true,
-      placeholder: hasPlaceholder,
+      placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
       noResultsText: this.t('No results found'),
       noChoicesText: this.t('No choices to choose from'),
@@ -1612,7 +1611,7 @@ export default class SelectComponent extends ListComponent {
     }
     // Check to see if we need to save off the template data into our metadata.
     const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
-    const shouldSaveData = (!valueIsObject || this.component.reference) && !(this.inDataTable && this.row === '');
+    const shouldSaveData = (!valueIsObject || this.component.reference) && !this.inDataTable;
     if (
       !_.isNil(templateValue) &&
       shouldSaveData &&
@@ -1644,11 +1643,6 @@ export default class SelectComponent extends ListComponent {
       }
 
       _.set(submission.metadata.selectData, this.path, templateData);
-    } else if (
-      !this.templateData[templateValue] &&
-      this.isEmpty(value)
-    ) {
-      _.unset(this.root.submission, `metadata.selectData.${this.path}`);
     }
     if (flags.resetValue && this.root?.submission && !this.options.readOnly) {
       const submission = this.root.submission;
@@ -1943,15 +1937,12 @@ export default class SelectComponent extends ListComponent {
   asString(value, options = {}) {
     value = value ?? this.getValue();
 
-    if (
-      options.modalPreview ||
-      ((this.inDataTable || this.inEditGrid) && !['values', 'custom'].includes(this.component.dataSrc))
-    ) {
+    if (options.modalPreview || this.inDataTable) {
       if (this.inDataTable) {
         value = this.undoValueTyping(value);
       }
       const templateValue =
-        !_.isEmpty(value) && this.isEntireObjectDisplay() && !_.isObject(value.data) ? { data: value } : value;
+        this.isEntireObjectDisplay() && !_.isObject(value.data) ? { data: value } : value;
       const template = this.itemTemplate(templateValue, value, options);
       return template;
     }

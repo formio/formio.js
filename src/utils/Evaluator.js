@@ -15,8 +15,7 @@ export class DefaultEvaluator extends CoreEvaluator {
       // Ensure we handle copied templates from the ejs files.
       template = template.replace(/ctx\./g, '');
       return (this.cache[hash] = _.template(template, this.templateSettings));
-    }
-    catch (err) {
+    } catch (err) {
       console.warn('Error while processing template', err, template);
     }
   }
@@ -27,8 +26,7 @@ export class DefaultEvaluator extends CoreEvaluator {
     if (typeof rawTemplate === 'function') {
       try {
         return rawTemplate(data);
-      }
-      catch (err) {
+      } catch (err) {
         console.warn('Error interpolating template', err, data);
         return err.message;
       }
@@ -38,15 +36,13 @@ export class DefaultEvaluator extends CoreEvaluator {
     let template;
     if (this.noeval || options.noeval) {
       return this.interpolateString(rawTemplate, data, _options);
-    }
-    else {
+    } else {
       template = this.template(rawTemplate);
     }
     if (typeof template === 'function') {
       try {
         return template(data);
-      }
-      catch (err) {
+      } catch (err) {
         console.warn('Error interpolating template', err, rawTemplate, data);
         return err.message;
       }
@@ -74,5 +70,5 @@ export function interpolate(...args) {
  * @returns {void}
  */
 export function registerEvaluator(override) {
-    Evaluator = override;
+  Evaluator = override;
 }

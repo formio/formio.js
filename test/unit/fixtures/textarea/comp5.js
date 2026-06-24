@@ -3,13 +3,12 @@ export default {
   display: 'form',
   components: [
     {
-      label: "Text Area",
+      label: 'Text Area',
       autoExpand: false,
       multiple: true,
-      key: "textArea",
-      type: "textarea",
+      key: 'textArea',
+      type: 'textarea',
       input: true,
-
     },
   ],
 };

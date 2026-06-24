@@ -8,11 +8,12 @@ export default {
   error: 'Bitte beheben Sie die folgenden Fehler vor dem Absenden.',
   errorListHotkey: 'Drücken Sie Strg + Alt + X, um zur Fehlerliste zurückzukehren.',
   errorsListNavigationMessage: 'Klicken Sie, um zum Feld mit folgendem Fehler zu navigieren.',
-  submitError: 'Bitte überprüfen Sie das Formular und korrigieren Sie alle Fehler vor dem Absenden.',
+  submitError:
+    'Bitte überprüfen Sie das Formular und korrigieren Sie alle Fehler vor dem Absenden.',
   required: '{{field}} ist erforderlich',
   unique: '{{field}} muss eindeutig sein',
   array: '{{field}} muss ein Array sein',
-  array_nonempty: '{{field}} muss ein nicht-leeres Array sein', // eslint-disable-line camelcase
+  array_nonempty: '{{field}} muss ein nicht-leeres Array sein',
   nonarray: '{{field}} darf kein Array sein',
   select: '{{field}} enthält eine ungültige Auswahl',
   pattern: '{{field}} entspricht nicht dem Muster {{pattern}}',
@@ -28,11 +29,11 @@ export default {
   minYear: '{{field}} darf kein Jahr kleiner als {{minYear}} enthalten',
   minSelectedCount: 'Sie müssen mindestens {{minCount}} Elemente auswählen',
   maxSelectedCount: 'Sie dürfen maximal {{maxCount}} Elemente auswählen',
-  invalid_email: '{{field}} muss eine gültige E-Mail-Adresse sein.', // eslint-disable-line camelcase
-  invalid_url: '{{field}} muss eine gültige URL sein.', // eslint-disable-line camelcase
-  invalid_regex: '{{field}} entspricht nicht dem Muster {{regex}}.', // eslint-disable-line camelcase
-  invalid_date: '{{field}} ist kein gültiges Datum.', // eslint-disable-line camelcase
-  invalid_day: '{{field}} ist kein gültiger Tag.', // eslint-disable-line camelcase
+  invalid_email: '{{field}} muss eine gültige E-Mail-Adresse sein.',
+  invalid_url: '{{field}} muss eine gültige URL sein.',
+  invalid_regex: '{{field}} entspricht nicht dem Muster {{regex}}.',
+  invalid_date: '{{field}} ist kein gültiges Datum.',
+  invalid_day: '{{field}} ist kein gültiger Tag.',
   invalidValueProperty: 'Ungültige Werteigenschaft',
   mask: '{{field}} entspricht nicht der Maske.',
   valueIsNotAvailable: '{{ field }} ist ein ungültiger Wert.',
@@ -57,16 +58,22 @@ export default {
   cancel: 'Abbrechen',
   submit: 'Formular absenden',
   confirmCancel: 'Möchten Sie wirklich abbrechen?',
-  saveDraftInstanceError: 'Entwurf kann nicht gespeichert werden, da keine Formio-Instanz vorhanden ist.',
-  saveDraftAuthError: 'Entwurf kann nicht gespeichert werden, solange kein Benutzer authentifiziert ist.',
-  restoreDraftInstanceError: 'Entwurf kann nicht wiederhergestellt werden, da keine Formio-Instanz vorhanden ist.',
+  saveDraftInstanceError:
+    'Entwurf kann nicht gespeichert werden, da keine Formio-Instanz vorhanden ist.',
+  saveDraftAuthError:
+    'Entwurf kann nicht gespeichert werden, solange kein Benutzer authentifiziert ist.',
+  restoreDraftInstanceError:
+    'Entwurf kann nicht wiederhergestellt werden, da keine Formio-Instanz vorhanden ist.',
   saveDraftError: 'Entwurf konnte nicht gespeichert werden.',
   restoreDraftError: 'Entwurf konnte nicht wiederhergestellt werden.',
   time: 'Ungültige Zeitangabe',
   cancelButtonAriaLabel: 'Abbrechen-Schaltfläche. Klicken Sie hier, um das Formular zurückzusetzen',
-  previousButtonAriaLabel:'Zurück-Schaltfläche. Klicken Sie hier, um zur vorherigen Registerkarte zu gelangen',
-  nextButtonAriaLabel:'Weiter-Schaltfläche. Klicken Sie hier, um zur nächsten Registerkarte zu gelangen',
-  submitButtonAriaLabel:'Formular absenden-Schaltfläche. Klicken Sie hier, um das Formular abzusenden',
+  previousButtonAriaLabel:
+    'Zurück-Schaltfläche. Klicken Sie hier, um zur vorherigen Registerkarte zu gelangen',
+  nextButtonAriaLabel:
+    'Weiter-Schaltfläche. Klicken Sie hier, um zur nächsten Registerkarte zu gelangen',
+  submitButtonAriaLabel:
+    'Formular absenden-Schaltfläche. Klicken Sie hier, um das Formular abzusenden',
   reCaptchaTokenValidationError: 'ReCAPTCHA: Fehler bei der Token-Validierung',
   reCaptchaTokenNotSpecifiedError: 'ReCAPTCHA: Token ist in der Übermittlung nicht angegeben',
   apiKey: 'API-Schlüssel ist nicht eindeutig: {{key}}',
@@ -75,5 +82,5 @@ export default {
   requiredDayField: '{{ field }} ist erforderlich',
   requiredDayEmpty: '{{ field }} ist erforderlich',
   requiredMonthField: '{{ field }} ist erforderlich',
-  requiredYearField: '{{ field }} ist erforderlich'
+  requiredYearField: '{{ field }} ist erforderlich',
 };

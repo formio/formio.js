@@ -4,7 +4,7 @@ export default [
     input: true,
     dataSrc: 'url',
     data: {
-      url: '/form?limit=1000000&select=_id,title,display'
+      url: '/form?limit=1000000&select=_id,title,display',
     },
     searchField: 'title__regex',
     template: '<span>{{ item.title }}</span>',
@@ -27,14 +27,18 @@ export default [
     errorLabel: '',
     key: 'lazyLoad',
     type: 'checkbox',
-    tooltip: 'if it is checked, the subform is loaded after navigation to the page with this component within the wizard.',
+    tooltip:
+      'if it is checked, the subform is loaded after navigation to the page with this component within the wizard.',
     input: true,
-    customConditional( { instance, data }) {
+    customConditional({ instance, data }) {
       const formComp = instance.root?.getComponent('form');
-      const formInfo = formComp?.defaultDownloadedResources.find(res => res._id === data.form);
+      const formInfo = formComp?.defaultDownloadedResources.find((res) => res._id === data.form);
       const displayMode = 'wizard';
 
-      return instance.options?.editForm?.display === displayMode && ((data.form && !formInfo) || (formInfo && formInfo.display !== displayMode));
+      return (
+        instance.options?.editForm?.display === displayMode &&
+        ((data.form && !formInfo) || (formInfo && formInfo.display !== displayMode))
+      );
     },
   },
   {
@@ -42,7 +46,7 @@ export default [
     input: true,
     dataSrc: 'url',
     data: {
-      url: '/form/{{ data.form }}/v'
+      url: '/form/{{ data.form }}/v',
     },
     searchField: 'title__regex',
     template: '<span>{{ item._vid }}</span>',
@@ -52,8 +56,9 @@ export default [
     key: 'revision',
     weight: 10,
     lazyLoad: true,
-    tooltip: 'You can lock the nested form to a specific revision by choosing the revision number here.',
-    customConditional: 'show = !!data.form'
+    tooltip:
+      'You can lock the nested form to a specific revision by choosing the revision number here.',
+    customConditional: 'show = !!data.form',
   },
   {
     type: 'checkbox',
@@ -61,7 +66,8 @@ export default [
     weight: 19,
     key: 'useOriginalRevision',
     label: 'Use Original Revision while Submissions Viewing',
-    tooltip: 'Using this option will make form load the original revision (the one which was used to make a submission) when viewing a submission.'
+    tooltip:
+      'Using this option will make form load the original revision (the one which was used to make a submission) when viewing a submission.',
   },
   {
     type: 'checkbox',
@@ -69,6 +75,7 @@ export default [
     weight: 20,
     key: 'reference',
     label: 'Save as reference',
-    tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.'
-  }
+    tooltip:
+      'Using this option will save this field as a reference and link its value to the value of the origin record.',
+  },
 ];

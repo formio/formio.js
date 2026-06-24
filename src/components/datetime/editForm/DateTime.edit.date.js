@@ -9,10 +9,6 @@ export default [
     label: 'Enable Date Input',
     weight: 0,
     tooltip: 'Enables date input for this field.',
-    validate: {
-      custom:
-        "valid = !data.enableTime && !input ? 'Cannot disable both Date and Time inputs at the same time' : true",
-    },
   },
   {
     type: 'tags',

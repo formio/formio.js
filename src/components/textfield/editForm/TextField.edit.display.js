@@ -17,21 +17,21 @@ export default [
     tooltip: 'The widget is the display UI used to input the value of the field.',
     defaultValue: 'input',
     calculateValue: (context) => {
-      let currentType = context.instance._widgetType;
+      let currentType = context.data['widget.type'];
       if (currentType) {
         return currentType;
       }
 
       const widget = context.data.widget;
       if (isObject(widget) && widget.type) {
-        context.instance._widgetType = widget.type;
+        context.data['widget.type'] = widget.type;
         return widget.type;
       }
 
       if (typeof widget === 'string') {
         const originalType = getOriginalWidget(context.instance)?.type;
         if (originalType) {
-          context.instance._widgetType = originalType;
+          context.data['widget.type'] = originalType;
           return originalType;
         }
       }
@@ -39,12 +39,12 @@ export default [
       return 'input';
     },
     onChange: (context) => {
-      const newType = context.instance.dataValue;
+      const newType = context.data['widget.type'];
       const currentWidget = context.data.widget;
 
       let oldType;
       if (isObject(currentWidget)) {
-        oldType = context.instance._widgetType;
+        oldType = currentWidget.type;
       }
       else if (typeof currentWidget === 'string') {
         oldType = getOriginalWidget(context.instance)?.type;
@@ -56,12 +56,10 @@ export default [
       if (newType !== oldType) {
         if (newType === 'input') {
           context.data.widget = { type: 'input' };
-          context.instance._widgetType = newType;
         }
-        else if (newType) {
+        else {
           const defaultSettings = getDefaultWidgetSettings(newType);
           context.data.widget = defaultSettings || { type: newType };
-          context.instance._widgetType = newType;
         }
       }
       else if (!currentWidget) {
@@ -99,11 +97,27 @@ export default [
       }
 
       if (isObject(currentWidget)) {
-        const currentType = context.instance.root.getComponent('widget.type')._widgetType || currentWidget.type;
+        const currentType = context.data['widget.type'];
         if (currentType && currentWidget.type !== currentType) {
           context.data.widget = { ...currentWidget, type: currentType };
         }
       }
+    },
+    customDefaultValue: (value, component, row, data, instance) => {
+      if (!data.widget) {
+        const originalWidget = getOriginalWidget(instance);
+        const widgetType = data['widget.type'] || originalWidget?.type;
+        if (widgetType && widgetType !== 'input') {
+          if (originalWidget?.type === widgetType && !_.isEmpty(_.omit(originalWidget, 'type'))) {
+            return _.omit(originalWidget, 'language');
+          }
+          const defaultSettings = getDefaultWidgetSettings(widgetType);
+          if (defaultSettings) {
+            return defaultSettings;
+          }
+        }
+      }
+      return value;
     },
     input: true,
     rows: 5,

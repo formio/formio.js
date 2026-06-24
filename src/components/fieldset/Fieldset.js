@@ -9,7 +9,6 @@ export default class FieldsetComponent extends NestedComponent {
         type: 'fieldset',
         legend: '',
         components: [],
-        clearOnHide: false,
         input: false,
         persistent: false,
       },
@@ -43,14 +42,6 @@ export default class FieldsetComponent extends NestedComponent {
 
   get templateName() {
     return 'fieldset';
-  }
-
-  attach(element) {
-    return super.attach(element).then(() => {
-      if (this.component.legend && this.refs.header) {
-        this.refs.header.setAttribute('id', `l-${this.id}-legend`);
-      }
-    });
   }
 
   constructor(...args) {

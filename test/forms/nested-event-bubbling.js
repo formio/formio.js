@@ -1,11 +1,21 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
 import FormComponent from '../../src/components/form/Form';
-import Webform from '../../src/Webform.js';
+import Webform from '../../src/Webform';
 
 export default {
   title: 'Nested Form Event Bubbling',
-  form: { components: [{ key: 'form', type: 'form', components: [{ key: 'name', type: 'textfield' }] }] },
+  form: {
+    components: [
+      {
+        key: 'form',
+        type: 'form',
+        components: [
+          { key: 'name', type: 'textfield' },
+        ],
+      },
+    ],
+  },
   tests: {
     'Event should bubble up to parent form'(form, done) {
       try {
@@ -19,13 +29,15 @@ export default {
         const listener2 = sinon.spy();
         const listener3parent = sinon.spy();
         const listener3nested = sinon.spy();
-        const [formCmp] = form.components;
+        const [
+          formCmp,
+        ] = form.components;
 
         // Check wrapper
         expect(formCmp).to.be.an.instanceof(FormComponent);
 
-        formCmp.subFormReady.
-          then(subForm => {
+        formCmp.subFormReady
+          .then((subForm) => {
             // Check nested form
             expect(subForm).to.be.an.instanceof(Webform);
 
@@ -53,12 +65,11 @@ export default {
             expect(listener3nested.callCount, ENE).to.equal(2);
             expect(listener3parent.callCount, EBB).to.equal(2);
             done();
-          }, done).
-          catch(done);
-      }
-      catch (error) {
+          }, done)
+          .catch(done);
+      } catch (error) {
         done(error);
       }
-    }
-  }
+    },
+  },
 };

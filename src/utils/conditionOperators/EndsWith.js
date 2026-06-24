@@ -2,15 +2,15 @@ import ConditionOperator from './ConditionOperator';
 import _ from 'lodash';
 
 export default class EndsWith extends ConditionOperator {
-    static get operatorKey() {
-        return 'endsWith';
-    }
+  static get operatorKey() {
+    return 'endsWith';
+  }
 
-    static get displayedName() {
-        return 'Ends With';
-    }
+  static get displayedName() {
+    return 'Ends With';
+  }
 
-    execute({ value, comparedValue }) {
-        return  _.endsWith(value, comparedValue);
-    }
+  execute({ value, comparedValue }) {
+    return _.endsWith(value, comparedValue);
+  }
 }

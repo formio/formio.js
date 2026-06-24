@@ -1,58 +1,54 @@
 export default {
-  'conditional': {
-    'eq': '',
-    'when': null,
-    'show': ''
+  conditional: {
+    eq: '',
+    when: null,
+    show: '',
   },
-  'tags': [
-
-  ],
-  'type': 'panel',
-  'components': [
+  tags: [],
+  type: 'panel',
+  components: [
     {
-      'conditional': {
-        'eq': '',
-        'when': null,
-        'show': ''
+      conditional: {
+        eq: '',
+        when: null,
+        show: '',
       },
-      'tags': [
-
-      ],
-      'type': 'day',
-      'validate': {
-        'custom': ''
+      tags: [],
+      type: 'day',
+      validate: {
+        custom: '',
       },
-      'clearOnHide': true,
-      'persistent': true,
-      'protected': false,
-      'dayFirst': false,
-      'fields': {
-        'year': {
-          'required': false,
-          'placeholder': '',
-          'type': 'number'
+      clearOnHide: true,
+      persistent: true,
+      protected: false,
+      dayFirst: false,
+      fields: {
+        year: {
+          required: false,
+          placeholder: '',
+          type: 'number',
         },
-        'month': {
-          'required': false,
-          'placeholder': '',
-          'type': 'select'
+        month: {
+          required: false,
+          placeholder: '',
+          type: 'select',
         },
-        'day': {
-          'required': false,
-          'placeholder': '',
-          'type': 'number'
-        }
+        day: {
+          required: false,
+          placeholder: '',
+          type: 'number',
+        },
       },
-      'key': 'date',
-      'label': 'Date',
-      'tableView': true,
-      'input': true
-    }
+      key: 'date',
+      label: 'Date',
+      tableView: true,
+      input: true,
+    },
   ],
-  'nextPage': null,
-  'theme': 'default',
-  'title': 'User Information',
-  'input': false,
-  'disabled': true,
-  'key': 'panel1'
+  nextPage: null,
+  theme: 'default',
+  title: 'User Information',
+  input: false,
+  disabled: true,
+  key: 'panel1',
 };

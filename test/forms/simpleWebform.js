@@ -7,7 +7,7 @@ export default {
       validateWhenHidden: false,
       key: 'textField',
       type: 'textfield',
-      input: true
+      input: true,
     },
     {
       type: 'button',
@@ -15,8 +15,8 @@ export default {
       key: 'testSubmit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   display: 'form',
   type: 'form',

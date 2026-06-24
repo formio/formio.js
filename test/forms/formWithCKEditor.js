@@ -8,7 +8,7 @@ export default {
       key: 'textArea',
       type: 'textarea',
       input: true,
-      isUploadEnabled: false
+      isUploadEnabled: false,
     },
     {
       type: 'button',
@@ -16,8 +16,8 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   title: 'FIO-560',
   display: 'form',

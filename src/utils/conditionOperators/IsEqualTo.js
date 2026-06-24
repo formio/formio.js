@@ -1,5 +1,6 @@
 import ConditionOperator from './ConditionOperator';
 import _ from 'lodash';
+import { compareSelectResourceWithObjectTypeValues, isSelectResourceWithObjectValue } from '../';
 
 export default class IsEqualTo extends ConditionOperator {
   static get operatorKey() {
@@ -10,7 +11,7 @@ export default class IsEqualTo extends ConditionOperator {
     return 'Is Equal To';
   }
 
-  execute({ value, comparedValue}) {
+  execute({ value, comparedValue, instance, path }) {
     if (
       (value || value === false) &&
       comparedValue &&
@@ -24,17 +25,27 @@ export default class IsEqualTo extends ConditionOperator {
       }
     }
 
+    if (instance?.root?.getComponent) {
+      const conditionTriggerComponent = instance.root.getComponent(path);
+
+      if (
+        conditionTriggerComponent &&
+        isSelectResourceWithObjectValue(conditionTriggerComponent.component) &&
+        conditionTriggerComponent.component?.template
+      ) {
+        return compareSelectResourceWithObjectTypeValues(
+          value,
+          comparedValue,
+          conditionTriggerComponent.component,
+        );
+      }
+    }
+
     //special check for select boxes
     if (_.isObject(value) && comparedValue && _.isBoolean(value[comparedValue])) {
       return value[comparedValue];
     }
 
-    const valuesAreObjects =
-      typeof comparedValue === 'object' &&
-      comparedValue !== null &&
-      typeof value === 'object' &&
-      value !== null;
-
-    return valuesAreObjects ? _.isMatch(value, comparedValue) : _.isEqual(comparedValue, value);
+    return _.isEqual(value, comparedValue);
   }
 }

@@ -18,7 +18,6 @@ export default class PDF extends Webform {
       (submission) =>
         this.setValue(submission, {
           fromIframe: true,
-          noDefault: true
         }),
       true,
     );
@@ -28,7 +27,6 @@ export default class PDF extends Webform {
       (submission) =>
         this.setValue(submission, {
           fromIframe: true,
-          noDefault: true
         }),
       true,
     );
@@ -345,15 +343,7 @@ if (typeof window !== 'undefined') {
       eventData.formId &&
       Formio.forms.hasOwnProperty(eventData.formId)
     ) {
-      if (eventData.compPath) {
-        const comp = Formio.forms[eventData.formId].getComponent(eventData.compPath);
-        if (comp) {
-          comp.emit(eventData.name, eventData.data);
-        }
-      }
-      else {
-        Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
-      }
+      Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
     }
   });
 }

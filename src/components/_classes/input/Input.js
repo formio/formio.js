@@ -1,5 +1,5 @@
 import Multivalue from '../multivalue/Multivalue';
-import { announceScreenReaderMessage, convertStringToHTMLElement } from '../../../utils/index';
+import { convertStringToHTMLElement } from '../../../utils/index';
 import Widgets from '../../../widgets/index';
 import _ from 'lodash';
 
@@ -40,7 +40,7 @@ export default class Input extends Multivalue {
       attr.inputmode = this.component.inputMode;
     }
 
-    if (this.component.placeholder && !this.options?.readOnly) {
+    if (this.component.placeholder) {
       attr.placeholder = this.getFormattedAttribute(this.component.placeholder);
     }
 
@@ -212,10 +212,6 @@ export default class Input extends Multivalue {
   }
 
   updateValueAt(value, flags, index) {
-    if (flags.modified) {
-      announceScreenReaderMessage(this, value, index);
-    }
-
     flags = flags || {};
     if (_.get(this.component, 'showWordCount', false)) {
       if (this.refs.wordcount && this.refs.wordcount[index]) {
@@ -247,7 +243,7 @@ export default class Input extends Multivalue {
   updateValue(value, flags, index) {
     flags = flags || {};
     const changed = super.updateValue(value, flags);
-    this.triggerUpdateValueAt(this.dataValue, { ...flags }, index);
+    this.triggerUpdateValueAt(this.dataValue, flags, index);
     return changed;
   }
 
@@ -260,8 +256,7 @@ export default class Input extends Multivalue {
   }
 
   attach(element) {
-     this.loadRefs(element, {
-      announceMessage: 'multiple',
+    this.loadRefs(element, {
       charcount: 'multiple',
       wordcount: 'multiple',
       prefix: 'multiple',
@@ -309,17 +304,6 @@ export default class Input extends Multivalue {
         }
       });
     }
-    this.on('focus', (comp) => {
-      announceScreenReaderMessage(comp, comp.dataValue, 0, true);
-    });
-
-    this.on('blur', (comp) => {
-      const el = comp.refs?.["announceMessage"]?.[0];
-      if (el) {
-        el.textContent = ""
-      }
-    });
-
     return promise;
   }
 

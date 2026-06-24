@@ -1,4 +1,3 @@
-import Harness from '../harness';
 import assert from 'power-assert';
 import { Formio } from '../../src/Formio';
 import { wait } from '../util';
@@ -38,10 +37,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
         ],
       };
       const element = document.createElement('div');
-      const form = await Formio.createForm(
-        element,
-        formWithconditionallyHiddenPanel
-      );
+      const form = await Formio.createForm(element, formWithconditionallyHiddenPanel);
       const checkbox = form.getComponent('checkbox');
       const textField = form.getComponent('textField');
       const panel = form.getComponent('panel');
@@ -108,11 +104,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       assert.equal(childTextField.visible, false);
 
       // All components should NOT be conditionally hidden
-      assert.equal(
-        panel.conditionallyHidden(),
-        false,
-        'Panel should not be conditionally hidden'
-      );
+      assert.equal(panel.conditionallyHidden(), false, 'Panel should not be conditionally hidden');
       assert.equal(childTextField.conditionallyHidden(), false);
     });
 
@@ -144,10 +136,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
         ],
       };
       const element = document.createElement('div');
-      const form = await Formio.createForm(
-        element,
-        formWithHiddenPanelAndConditionalChild
-      );
+      const form = await Formio.createForm(element, formWithHiddenPanelAndConditionalChild);
       const checkbox = form.getComponent('checkbox');
       const panel = form.getComponent('panel');
       const childTextField = form.getComponent('childTextField');
@@ -203,10 +192,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
         ],
       };
       const element = document.createElement('div');
-      const form = await Formio.createForm(
-        element,
-        formWithHiddenPanelAndConditionalChild
-      );
+      const form = await Formio.createForm(element, formWithHiddenPanelAndConditionalChild);
       const checkbox = form.getComponent('checkbox');
       const panel = form.getComponent('panel');
       const childTextField = form.getComponent('childTextField');
@@ -220,23 +206,19 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       assert.equal(
         checkbox.conditionallyHidden(),
         false,
-        'Checkbox should not be conditionally hidden'
+        'Checkbox should not be conditionally hidden',
       );
-      assert.equal(
-        panel.conditionallyHidden(),
-        false,
-        'Panel should not be conditionally hidden'
-      );
+      assert.equal(panel.conditionallyHidden(), false, 'Panel should not be conditionally hidden');
       assert.equal(
         childTextField.conditionallyHidden(),
         false,
-        'Child Text Field should not be conditionally hidden'
+        'Child Text Field should not be conditionally hidden',
       );
 
       assert.deepEqual(
         form.data,
         { checkbox: false, childTextField: '' },
-        'Initial form data is incorrect'
+        'Initial form data is incorrect',
       );
 
       // Hide the panel, which should NOT clear the value of the child text field
@@ -247,12 +229,12 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       assert.equal(
         childTextField.conditionallyHidden(),
         true,
-        'Child Text Field should be conditionally hidden'
+        'Child Text Field should be conditionally hidden',
       );
       assert.deepEqual(
         form.data,
         { checkbox: true, childTextField: 'test' },
-        'Form data is incorrect'
+        'Form data is incorrect',
       );
     });
 
@@ -284,10 +266,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
         ],
       };
       const element = document.createElement('div');
-      const form = await Formio.createForm(
-        element,
-        formWithHiddenPanelAndConditionalChild
-      );
+      const form = await Formio.createForm(element, formWithHiddenPanelAndConditionalChild);
       const checkbox = form.getComponent('checkbox');
       const panel = form.getComponent('panel');
       const childTextField = form.getComponent('childTextField');
@@ -301,23 +280,19 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       assert.equal(
         checkbox.conditionallyHidden(),
         false,
-        'Checkbox should not be conditionally hidden'
+        'Checkbox should not be conditionally hidden',
       );
-      assert.equal(
-        panel.conditionallyHidden(),
-        false,
-        'Panel should not be conditionally hidden'
-      );
+      assert.equal(panel.conditionallyHidden(), false, 'Panel should not be conditionally hidden');
       assert.equal(
         childTextField.conditionallyHidden(),
         false,
-        'Child Text Field should not be conditionally hidden'
+        'Child Text Field should not be conditionally hidden',
       );
 
       assert.deepEqual(
         form.data,
         { checkbox: false, childTextField: '' },
-        'Initial form data is incorrect'
+        'Initial form data is incorrect',
       );
 
       // Hide the panel, which should clear the value of the child text field
@@ -327,7 +302,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       assert.equal(
         childTextField.conditionallyHidden(),
         true,
-        'Child Text Field should be conditionally hidden'
+        'Child Text Field should be conditionally hidden',
       );
       assert.deepEqual(form.data, { checkbox: true }, 'Form data is incorrect');
     });
@@ -368,10 +343,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       };
 
       const element = document.createElement('div');
-      const form = await Formio.createForm(
-        element,
-        formWithconditionallyHiddenContainer
-      );
+      const form = await Formio.createForm(element, formWithconditionallyHiddenContainer);
       const checkbox = form.getComponent('checkbox');
       const textField = form.getComponent('textField');
       const container = form.getComponent('container');
@@ -399,32 +371,28 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       assert.equal(checkbox.visible, true, 'Checkbox should be visible');
       assert.equal(textField.visible, true, 'Text Field should be visible');
       assert.equal(container.visible, false, 'Container should be hidden');
-      assert.equal(
-        childTextField.visible,
-        false,
-        'Child Text Field should be hidden'
-      );
+      assert.equal(childTextField.visible, false, 'Child Text Field should be hidden');
 
       // They should also be conditionally hidden
       assert.equal(
         checkbox.conditionallyHidden(),
         false,
-        'Checkbox should not be conditionally hidden'
+        'Checkbox should not be conditionally hidden',
       );
       assert.equal(
         textField.conditionallyHidden(),
         false,
-        'Text Field should not be conditionally hidden'
+        'Text Field should not be conditionally hidden',
       );
       assert.equal(
         container.conditionallyHidden(),
         true,
-        'Container should be conditionally hidden'
+        'Container should be conditionally hidden',
       );
       assert.equal(
         childTextField.conditionallyHidden(),
         true,
-        'Child Text Field should be conditionally hidden'
+        'Child Text Field should be conditionally hidden',
       );
     });
 
@@ -455,14 +423,13 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
 
       // All components should not be visible
       assert.equal(container.visible, false, 'Container should not be visible');
-      assert.equal(childTextField.visible, false),
-        'Child Text Field should not be visible';
+      (assert.equal(childTextField.visible, false), 'Child Text Field should not be visible');
 
       // All components should NOT be conditionally hidden
       assert.equal(
         container.conditionallyHidden(),
         false,
-        'Container should not be conditionally hidden'
+        'Container should not be conditionally hidden',
       );
       assert.equal(childTextField.conditionallyHidden(), false);
     });
@@ -495,10 +462,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
         ],
       };
       const element = document.createElement('div');
-      const form = await Formio.createForm(
-        element,
-        formWithHiddenContainerAndConditionalChild
-      );
+      const form = await Formio.createForm(element, formWithHiddenContainerAndConditionalChild);
       const checkbox = form.getComponent('checkbox');
       const container = form.getComponent('container');
       const childTextField = form.getComponent('childTextField');
@@ -554,10 +518,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
         ],
       };
       const element = document.createElement('div');
-      const form = await Formio.createForm(
-        element,
-        formWithHiddenContainerAndConditionalChild
-      );
+      const form = await Formio.createForm(element, formWithHiddenContainerAndConditionalChild);
       const checkbox = form.getComponent('checkbox');
       const container = form.getComponent('container');
       const childTextField = form.getComponent('childTextField');
@@ -571,23 +532,23 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       assert.equal(
         checkbox.conditionallyHidden(),
         false,
-        'Checkbox should not be conditionally hidden'
+        'Checkbox should not be conditionally hidden',
       );
       assert.equal(
         container.conditionallyHidden(),
         false,
-        'Container should not be conditionally hidden'
+        'Container should not be conditionally hidden',
       );
       assert.equal(
         childTextField.conditionallyHidden(),
         false,
-        'Child Text Field should not be conditionally hidden'
+        'Child Text Field should not be conditionally hidden',
       );
 
       assert.deepEqual(
         form.data,
         { checkbox: false, container: { childTextField: '' } },
-        'Initial form data is incorrect'
+        'Initial form data is incorrect',
       );
 
       // Hide the panel, which should NOT clear the value of the child text field because the form is pristine
@@ -598,12 +559,12 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       assert.equal(
         childTextField.conditionallyHidden(),
         true,
-        'Child Text Field should be conditionally hidden'
+        'Child Text Field should be conditionally hidden',
       );
       assert.deepEqual(
         form.data,
         { checkbox: true, container: { childTextField: 'test' } },
-        'Form data is incorrect'
+        'Form data is incorrect',
       );
     });
 
@@ -635,10 +596,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
         ],
       };
       const element = document.createElement('div');
-      const form = await Formio.createForm(
-        element,
-        formWithHiddenContainerAndConditionalChild
-      );
+      const form = await Formio.createForm(element, formWithHiddenContainerAndConditionalChild);
       const checkbox = form.getComponent('checkbox');
       const container = form.getComponent('container');
       const childTextField = form.getComponent('childTextField');
@@ -652,23 +610,23 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       assert.equal(
         checkbox.conditionallyHidden(),
         false,
-        'Checkbox should not be conditionally hidden'
+        'Checkbox should not be conditionally hidden',
       );
       assert.equal(
         container.conditionallyHidden(),
         false,
-        'Container should not be conditionally hidden'
+        'Container should not be conditionally hidden',
       );
       assert.equal(
         childTextField.conditionallyHidden(),
         false,
-        'Child Text Field should not be conditionally hidden'
+        'Child Text Field should not be conditionally hidden',
       );
 
       assert.deepEqual(
         form.data,
         { checkbox: false, container: { childTextField: '' } },
-        'Initial form data is incorrect'
+        'Initial form data is incorrect',
       );
 
       // Hide the panel, which should clear the value of the child container
@@ -678,21 +636,18 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       assert.equal(
         childTextField.conditionallyHidden(),
         true,
-        'Child Text Field should be conditionally hidden'
+        'Child Text Field should be conditionally hidden',
       );
-      assert.deepEqual(
-        form.data,
-        { checkbox: true, container: {} },
-        'Form data is incorrect'
-      );
+      assert.deepEqual(form.data, { checkbox: true, container: {} }, 'Form data is incorrect');
     });
   });
 
   describe('Nested form components', function () {
     let oldMakeRequest;
+
     before(function () {
       oldMakeRequest = Formio.makeRequest;
-      Formio.makeRequest = (formio, type, url, method, data) => {
+      Formio.makeRequest = (formio, type, url, method) => {
         if (type === 'form' && method === 'get') {
           return Promise.resolve({
             type: 'form',
@@ -727,11 +682,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
             ],
           });
         }
-        if (
-          type === 'submission' &&
-          method === 'get' &&
-          url.includes('nestedFormSubmissionId')
-        ) {
+        if (type === 'submission' && method === 'get' && url.includes('nestedFormSubmissionId')) {
           return Promise.resolve({
             _id: 'nestedFormSubmissionId',
             form: 'nestedFormId',
@@ -774,7 +725,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       };
       const form = await Formio.createForm(
         document.createElement('div'),
-        parentFormWithIntentionallyHiddenChild
+        parentFormWithIntentionallyHiddenChild,
       );
       const checkbox = form.getComponent('checkbox');
       const nestedForm = form.getComponent('form');
@@ -786,12 +737,12 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       assert.equal(
         checkbox.conditionallyHidden(),
         false,
-        'Checkbox should not be conditionally hidden'
+        'Checkbox should not be conditionally hidden',
       );
       assert.equal(
         nestedForm.conditionallyHidden(),
         false,
-        'Nested Form should not be conditionally hidden'
+        'Nested Form should not be conditionally hidden',
       );
     });
 
@@ -821,7 +772,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       };
       const form = await Formio.createForm(
         document.createElement('div'),
-        parentFormWithconditionallyHiddenChild
+        parentFormWithconditionallyHiddenChild,
       );
       const checkbox = form.getComponent('checkbox');
       const nestedForm = form.getComponent('form');
@@ -833,12 +784,12 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       assert.equal(
         checkbox.conditionallyHidden(),
         false,
-        'Checkbox should not be conditionally hidden'
+        'Checkbox should not be conditionally hidden',
       );
       assert.equal(
         nestedForm.conditionallyHidden(),
         true,
-        'Nested Form should be conditionally hidden'
+        'Nested Form should be conditionally hidden',
       );
     });
 
@@ -866,7 +817,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       };
       const form = await Formio.createForm(
         document.createElement('div'),
-        parentFormWithIntentionallyHiddenChild
+        parentFormWithIntentionallyHiddenChild,
       );
       const checkbox = form.getComponent('checkbox');
       const nestedForm = form.getComponent('form');
@@ -883,10 +834,10 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
               nestedLastName: '',
               nestedContainer: { nestedContainerField: '' },
             },
-            metadata: {}
+            metadata: {},
           },
         },
-        'Initial form data is incorrect'
+        'Initial form data is incorrect',
       );
 
       await form.setSubmission({
@@ -912,7 +863,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
             project: 'nestedFormProjectId',
           },
         },
-        'Form data is incorrect'
+        'Form data is incorrect',
       );
     });
 
@@ -936,13 +887,13 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
             input: true,
             conditional: {
               json: { var: 'data.checkbox' },
-            }
+            },
           },
         ],
       };
       const form = await Formio.createForm(
         document.createElement('div'),
-        parentFormWithconditionallyHiddenChild
+        parentFormWithconditionallyHiddenChild,
       );
       const checkbox = form.getComponent('checkbox');
       const nestedForm = form.getComponent('form');
@@ -954,7 +905,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
         {
           checkbox: false,
         },
-        'Initial form data is incorrect'
+        'Initial form data is incorrect',
       );
 
       await form.setSubmission({
@@ -977,10 +928,10 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
             },
             form: 'nestedFormId',
             owner: 'nestedFormOwnerId',
-            project: 'nestedFormProjectId'
+            project: 'nestedFormProjectId',
           },
         },
-        'Form data is incorrect'
+        'Form data is incorrect',
       );
     });
 
@@ -1004,13 +955,13 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
             input: true,
             conditional: {
               json: { '!': { var: 'data.checkbox' } },
-            }
+            },
           },
         ],
       };
       const form = await Formio.createForm(
         document.createElement('div'),
-        parentFormWithconditionallyHiddenChild
+        parentFormWithconditionallyHiddenChild,
       );
       await wait(200);
       const checkbox = form.getComponent('checkbox');
@@ -1020,8 +971,16 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
 
       assert.equal(checkbox.visible, true, 'Checkbox should be visible');
       assert.equal(nestedForm.visible, true, 'Nested Form should be visible');
-      assert.equal(checkbox.conditionallyHidden(), false, 'Checkbox should not be conditionally hidden');
-      assert.equal(nestedForm.conditionallyHidden(), false, 'Nested Form should not be conditionally hidden');
+      assert.equal(
+        checkbox.conditionallyHidden(),
+        false,
+        'Checkbox should not be conditionally hidden',
+      );
+      assert.equal(
+        nestedForm.conditionallyHidden(),
+        false,
+        'Nested Form should not be conditionally hidden',
+      );
 
       assert.deepEqual(
         form.data,
@@ -1032,10 +991,10 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
               nestedFirstName: '',
               nestedLastName: '',
               nestedContainer: { nestedContainerField: '' },
-            }
+            },
           },
         },
-        'Initial form data is incorrect'
+        'Initial form data is incorrect',
       );
 
       await form.setSubmission({
@@ -1054,10 +1013,10 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
               nestedLastName: '',
               nestedContainer: { nestedContainerField: '' },
             },
-            metadata: {}
+            metadata: {},
           },
         },
-        'Form data is incorrect'
+        'Form data is incorrect',
       );
     });
 
@@ -1081,13 +1040,13 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
             input: true,
             conditional: {
               json: { '!': { var: 'data.checkbox' } },
-            }
+            },
           },
         ],
       };
       const form = await Formio.createForm(
         document.createElement('div'),
-        parentFormWithconditionallyHiddenChild
+        parentFormWithconditionallyHiddenChild,
       );
       await wait(200);
       const checkbox = form.getComponent('checkbox');
@@ -1097,8 +1056,16 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
 
       assert.equal(checkbox.visible, true, 'Checkbox should be visible');
       assert.equal(nestedForm.visible, true, 'Nested Form should be visible');
-      assert.equal(checkbox.conditionallyHidden(), false, 'Checkbox should not be conditionally hidden');
-      assert.equal(nestedForm.conditionallyHidden(), false, 'Nested Form should not be conditionally hidden');
+      assert.equal(
+        checkbox.conditionallyHidden(),
+        false,
+        'Checkbox should not be conditionally hidden',
+      );
+      assert.equal(
+        nestedForm.conditionallyHidden(),
+        false,
+        'Nested Form should not be conditionally hidden',
+      );
 
       assert.deepEqual(
         form.data,
@@ -1109,10 +1076,10 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
               nestedFirstName: '',
               nestedLastName: '',
               nestedContainer: { nestedContainerField: '' },
-            }
+            },
           },
         },
-        'Initial form data is incorrect'
+        'Initial form data is incorrect',
       );
 
       form.pristine = false;
@@ -1127,7 +1094,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
         {
           checkbox: true,
         },
-        'Form data is incorrect'
+        'Form data is incorrect',
       );
     });
 
@@ -1151,13 +1118,13 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
             input: true,
             conditional: {
               json: { '!': { var: 'data.checkbox' } },
-            }
+            },
           },
         ],
       };
       const form = await Formio.createForm(
         document.createElement('div'),
-        parentFormWithconditionallyHiddenChild
+        parentFormWithconditionallyHiddenChild,
       );
       await wait(200);
       const checkbox = form.getComponent('checkbox');
@@ -1167,8 +1134,16 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
 
       assert.equal(checkbox.visible, true, 'Checkbox should be visible');
       assert.equal(nestedForm.visible, true, 'Nested Form should be visible');
-      assert.equal(checkbox.conditionallyHidden(), false, 'Checkbox should not be conditionally hidden');
-      assert.equal(nestedForm.conditionallyHidden(), false, 'Nested Form should not be conditionally hidden');
+      assert.equal(
+        checkbox.conditionallyHidden(),
+        false,
+        'Checkbox should not be conditionally hidden',
+      );
+      assert.equal(
+        nestedForm.conditionallyHidden(),
+        false,
+        'Nested Form should not be conditionally hidden',
+      );
 
       assert.deepEqual(
         form.data,
@@ -1179,10 +1154,10 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
               nestedFirstName: '',
               nestedLastName: '',
               nestedContainer: { nestedContainerField: '' },
-            }
-          }
+            },
+          },
         },
-        'Initial form data is incorrect'
+        'Initial form data is incorrect',
       );
 
       form.pristine = false;
@@ -1199,7 +1174,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
         {
           checkbox: true,
         },
-        'Form data is incorrect'
+        'Form data is incorrect',
       );
     });
 
@@ -1208,7 +1183,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
     });
   });
 
-  describe('Clear on Hide when Parent is conditionally hidden but clearOnHide=false', function() {
+  describe('Clear on Hide when Parent is conditionally hidden but clearOnHide=false', function () {
     it('Should not clear child data if their parent is conditionally hidden with clearOnHide=false', async function () {
       const formWithconditionallyHiddenContainer = {
         components: [
@@ -1253,10 +1228,7 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       };
 
       const element = document.createElement('div');
-      const form = await Formio.createForm(
-        element,
-        formWithconditionallyHiddenContainer
-      );
+      const form = await Formio.createForm(element, formWithconditionallyHiddenContainer);
       const checkbox = form.getComponent('checkbox');
       const container = form.getComponent('container');
       const container2 = form.getComponent('container2');
@@ -1287,48 +1259,50 @@ describe('Clear on Hide (Omit When Conditionally Hidden) Behavior', function () 
       assert.equal(childTextField2.conditionallyHidden(), false);
 
       // Set the checkbox to true, which should hide the container and its children
-      await form.setSubmission({ data: { 
-        checkbox: true,
-        container: { childTextField: 'hello' },
-        container2: { childTextField2: 'hello' }
-      }});
+      await form.setSubmission({
+        data: {
+          checkbox: true,
+          container: { childTextField: 'hello' },
+          container2: { childTextField2: 'hello' },
+        },
+      });
       await wait(300);
       assert.equal(checkbox.visible, true, 'Checkbox should be visible');
       assert.equal(container.visible, false, 'Container should be hidden');
-      assert.equal(
-        childTextField.visible,
-        false,
-        'Child Text Field should be hidden'
-      );
+      assert.equal(childTextField.visible, false, 'Child Text Field should be hidden');
 
       // They should also be conditionally hidden
       assert.equal(
         checkbox.conditionallyHidden(),
         false,
-        'Checkbox should not be conditionally hidden'
+        'Checkbox should not be conditionally hidden',
       );
       assert.equal(
         container.conditionallyHidden(),
         true,
-        'Container should be conditionally hidden'
+        'Container should be conditionally hidden',
       );
       assert.equal(
         childTextField.conditionallyHidden(),
         true,
-        'Child Text Field should be conditionally hidden'
+        'Child Text Field should be conditionally hidden',
       );
       assert.equal(
         container2.conditionallyHidden(),
         true,
-        'Container 2 should be conditionally hidden'
+        'Container 2 should be conditionally hidden',
       );
       assert.equal(
         childTextField2.conditionallyHidden(),
         true,
-        'Child Text Field 2 should be conditionally hidden'
+        'Child Text Field 2 should be conditionally hidden',
       );
       assert(!form.data.container2, 'There should not be any container 2 data.');
-      assert.deepEqual(form.data.container, { childTextField: 'hello' }, 'Container data should be preserved.');
+      assert.deepEqual(
+        form.data.container,
+        { childTextField: 'hello' },
+        'Container data should be preserved.',
+      );
     });
   });
 });

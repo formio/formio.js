@@ -11,6 +11,7 @@ import {
   getLocaleDateFormatInfo,
   momentDate,
   zonesLoaded,
+  shouldLoadZones,
   loadZones,
   hasEncodedTimezone,
 } from '../utils';
@@ -75,7 +76,7 @@ export default class CalendarWidget extends InputWidget {
       return true;
     }
 
-    if (!zonesLoaded()) {
+    if (!zonesLoaded() && shouldLoadZones(timezone)) {
       this.zoneLoading = true;
       loadZones(this.timezonesUrl, timezone).then(() => {
         this.zoneLoading = false;
@@ -569,7 +570,7 @@ export default class CalendarWidget extends InputWidget {
     // If other fields are used to calculate disabled dates, we need to redraw calendar to refresh disabled dates
     if (this.settings.disableFunction && this.componentInstance && this.componentInstance.root) {
       this.changeHandler = (e) => {
-        if (e.changed && this.calendar?.config) {
+        if (e.changed && this.calendar) {
           this.calendar.redraw();
         }
       };
