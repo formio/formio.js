@@ -4,7 +4,6 @@ layout: vtabs
 section: examples
 weight: 300
 ---
-
 You can use [JSON Logic](http://jsonlogic.com) to create complex calculated values based on the values of other fields.
 
 <div class="row">
@@ -125,3 +124,4 @@ Formio.createForm(document.getElementById('formio'), {
   </div>
   </div>
 </div>
+

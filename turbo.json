@@ -1,0 +1,35 @@
+{
+  "extends": [
+    "//"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "src/**",
+        "embed.d.ts",
+        "form.d.ts",
+        "gulpfile.js",
+        "libpackage.js",
+        "package.json",
+        "sdk.d.ts",
+        "tsconfig.cjs.json",
+        "tsconfig.json",
+        "tsconfig.mjs.json",
+        "turbo.json",
+        "utils.d.ts",
+        "webpack.config.js",
+        "webpack.prod.js"
+      ],
+      "outputs": [
+        ".angular/cache/**",
+        "resources/latest.json",
+        "dist/**",
+        "docs/**",
+        "lib/**"
+      ]
+    }
+  }
+}

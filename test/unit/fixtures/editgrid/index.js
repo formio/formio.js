@@ -17,7 +17,6 @@ import comp16 from './comp16';
 import comp18 from './comp18';
 import comp19 from './comp19';
 import comp20 from './comp20';
-import comp21 from './comp21';
 import withOpenWhenEmptyAndConditions from './comp-with-conditions-and-openWhenEmpty';
 import compOpenWhenEmpty from './comp-openWhenEmpty';
 import compWithCustomDefaultValue from './comp-with-custom-default-value';
@@ -43,10 +42,9 @@ export {
   comp18,
   comp19,
   comp20,
-  comp21,
   compOpenWhenEmpty,
   withOpenWhenEmptyAndConditions,
   compWithCustomDefaultValue,
   compTestEvents,
-  formsWithEditGridAndConditions,
+  formsWithEditGridAndConditions
 };

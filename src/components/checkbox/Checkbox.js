@@ -133,7 +133,7 @@ export default class CheckBoxComponent extends Field {
   }
 
   get emptyValue() {
-    return this.component.inputType === 'radio' ? '' : false;
+    return this.component.inputType === 'radio' ? null : false;
   }
 
   isEmpty(value = this.dataValue) {
