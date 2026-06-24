@@ -12,10 +12,10 @@ const FormioUtils = {
   interpolate,
   ConditionOperators,
   _,
-  moment
+  moment,
 };
-if (typeof global === 'object') {
-  global.FormioUtils = FormioUtils;
+if (typeof globalThis === 'object') {
+  globalThis.FormioUtils = FormioUtils;
 }
 
 export { FormioUtils as Utils };

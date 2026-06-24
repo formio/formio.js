@@ -1,5 +1,755 @@
 # @formio/js
 
+## 5.4.0
+
+### Minor Changes
+
+- b9cf4cf: Introduces templating features
+- d09d026: FIO-10731 fixed Clear Value On Refresh Options functionality for Select component in DataGrid
+- abbb7f0: FIO-10109 fixed TextArea Styling for Quick Inline Embed
+- a1e9b57: FIO-9974 fixed clearOnHide for layout components
+
+### Patch Changes
+
+- 1d02cf4: FIO-8942: removed encrypted setting from builder when it is not enabled
+- cef435d: FIO-11468 Fix Select clearOnRefresh when refreshOn targets a Data Grid
+- c38bfd1: FIO-10766: fixed validation issues for hidden nested forms
+- 81b094f: FIO-11129: fixed an issue where value are not set to the children of nested components
+- d35d790: fix columns auto-adjust hidden
+- 371cdc3: FIO-11345 fixed the display of the select component with empty values on DataTable
+- 0804cb2: Nirvana change
+- a21484b: fix multiple file uploads
+- 02821b2: Fix dropdown arrow displaying for the select with HTML5 Widget for the Quick Inline Embed script
+- e197864: FIO-10886: added Text Field component’s Widget type preservation when settings are invalid JSON
+- a4abdb6: Fix displaying select component with default values on edit submission page
+- db6f5e5: Adds ability to pass translations Url through query parameter to render the PDF
+- aa7a1d3: FIO-11691: fixed an issue where a nested form hidden via the JSON `hidden` flag but revealed by a conditional would not submit its data
+- 39f1da6: FIO-11148 fixed esign validation after Data Map component is changed
+- fc942bf: FIO-11244: fixed an issue where custom logic with a comment does not work
+- bdb2d49: FIO-11078: fixed an issue where Address (Manually Filled) fields are not visually displayed until the checkbox is clicked
+- 6b0386c: FIO-9726 fixed updating and deleting recognized fields
+- b7edbf8: Check for root property before interacting
+- 71a008f: textarea rows height scaling
+- a639739: FIO-11117: add duplicate trigger change to fold both datagrid and child components `changed` into events
+- 7e79c19: add column headers UI for table
+- 0e005e6: Revert problematic change to submission identity
+- cfa0818: Fix bug with setting multiple submissions
+- d319a9b: FIO-10709: added unit tests for events
+- 62e2703: Fix string values not being coerced to numbers in Calculated Value
+- f0bfef3: FIO-10109 fixed applying styles to the entered text
+- 4dca323: FIO-10879 fixed populating values of the select HTML5
+- 5045254: Broken layout for Text Area.
+- 2f59c6c: FIO-11109 fixed console warnings
+- 88feee1: FIO-10768: fixed timezones load and datetime display in pdf print
+- 6c8522e: FIO-10365: fixed an issue where error is missing for empty required number field in PDF form when it has default value setting
+- 4932711: Fix column width misalignment for remove row button in dataGrid
+- 2749541: FIO-11675 fixed the display of the DataMap component inside ReviewPage component
+- 8df0425: Fix file max and min size interpolation if we provide expression in component and set variables in project config
+- e92a2d4: FIO-10506: fixed displaying text field when a user activates and then deactivates the `Allow Multiple Masks`
+- f991218: fix root.focusedComponent undefined error in console.
+- e785ece: bump lodash to 4.17.23
+- 8f4a56c: Ensure that the language key in submission metadata is correct
+- 827e520: FIO-11126: fixed the Field Set Legend announcement by a screen reader for all Components within fieldset
+- fce5b3a: Fix popup confirmation for embed scripts
+- d0c4f47: Fix date/time caret moving to end with quick inline embed
+- 974a7bc: FIO-10768: fixed date/time components display inside Data Map in the PDF of the submission
+- 8e5e880: FIO-10768: fixed date/time components display inside Edit Grid in the PDF of the submission
+- 930ef7d: FIO-11141: fixed an issue where merge component schema does not change day/month/year settings for day component
+- e4f01c1: FIO-9890: fixed resource select request when valueProperty is numeric
+- 8e381ca: FIO-10642 Fixed timezone dependent tests and validation
+- 014f99e: Adds the form's current language to the submission metadata and allows the PDF server to consume it if applicable
+- 034bde6: Fix conditionals when involving row-based components
+- 4020a37: fix an error on abort upload
+- f3d87a0: add component reorder event
+- a06d1d9: FIO-9669: added token to the list of the available variables for advanced conditions
+- 189437d: FIO-8569: removed "fork me on github" widget from the SDK page
+- ababeaa: Fix for correct displaying of address component for embed scripts
+- 1da89a5: FIO-11057: fixed an issue where address component breaks downloading the submission PDF
+- eb326e5: FIO-11087: enabled DELETE permission for uploaded files in Azure Blob Storage when using the file component in a form embedded in an application
+- 764ecdb: Fix Allow Multiple Masks Phone number not saving issue.
+- dd54c0a: Fix state bugs in EFB demo
+- a92a197: added position relative to formio-form-pdf class
+- 4e09c8c: FIO-10912 fixed an issue with saving row of the Edit grid witn nested multiple values component and require validation
+- Updated dependencies [4aa6138]
+- Updated dependencies [350deb4]
+- Updated dependencies [ef3f4de]
+- Updated dependencies [1472bcf]
+- Updated dependencies [fc942bf]
+- Updated dependencies [78047ac]
+- Updated dependencies [894f5e1]
+- Updated dependencies [62e2703]
+- Updated dependencies [189ad3a]
+- Updated dependencies [4932711]
+- Updated dependencies [e785ece]
+- Updated dependencies [0c907cb]
+- Updated dependencies [827e520]
+- Updated dependencies [8e21f4b]
+- Updated dependencies [8e381ca]
+- Updated dependencies [014f99e]
+- Updated dependencies [6353d23]
+- Updated dependencies [abd9cfc]
+- Updated dependencies [898e929]
+- Updated dependencies [92a51c3]
+- Updated dependencies [63cc956]
+- Updated dependencies [a8eb00f]
+- Updated dependencies [764ecdb]
+- Updated dependencies [4e09c8c]
+- Updated dependencies [ddc5753]
+  - @formio/core@2.7.0
+  - @formio/bootstrap@4.0.0
+
+## 5.4.0-api98.15
+
+### Patch Changes
+
+- 0e005e6: Revert problematic change to submission identity
+
+## 5.4.0-api98.14
+
+### Patch Changes
+
+- Updated dependencies [22f3279]
+  - @formio/core@2.7.0-api98.7
+
+## 5.4.0-api98.13
+
+### Patch Changes
+
+- aa7a1d3: FIO-11691: fixed an issue where a nested form hidden via the JSON `hidden` flag but revealed by a conditional would not submit its data
+- a639739: FIO-11117: add duplicate trigger change to fold both datagrid and child components `changed` into events
+
+## 5.4.0-api98.12
+
+### Patch Changes
+
+- 2749541: FIO-11675 fixed the display of the DataMap component inside ReviewPage component
+- 8f4a56c: Ensure that the language key in submission metadata is correct
+
+## 5.4.0-api98.11
+
+### Patch Changes
+
+- 88feee1: FIO-10768: fixed timezones load and datetime display in pdf print
+- 8e5e880: FIO-10768: fixed date/time components display inside Edit Grid in the PDF of the submission
+
+## 5.4.0-api98.10
+
+### Patch Changes
+
+- 014f99e: Adds the form's current language to the submission metadata and allows the PDF server to consume it if applicable
+- Updated dependencies [1472bcf]
+- Updated dependencies [014f99e]
+  - @formio/bootstrap@4.0.0-api98.5
+  - @formio/core@2.7.0-api98.6
+
+## 5.4.0-api98.9
+
+### Patch Changes
+
+- f0bfef3: FIO-10109 fixed applying styles to the entered text
+- Updated dependencies [215abc8]
+  - @formio/core@2.7.0-api98.5
+
+## 5.4.0-api98.8
+
+### Patch Changes
+
+- 62e2703: Fix string values not being coerced to numbers in Calculated Value
+- ef5291a: Fix an issue where rearranging certain components in a nested form context will cause validation to unexpectedly pass
+- Updated dependencies [62e2703]
+- Updated dependencies [92a51c3]
+  - @formio/core@2.7.0-api98.4
+  - @formio/bootstrap@4.0.0-api98.4
+
+## 5.4.0-api98.7
+
+### Patch Changes
+
+- cef435d: FIO-11468 Fix Select clearOnRefresh when refreshOn targets a Data Grid
+- ed9ab19: FIO-11516: fix further flickers in nested wizards
+- bb6f934: fix further flickers in the error list and components
+- a91362f: FIO-11412: fixed validation issues for deeply nested wizards
+- a23efbf: Fixes an issue where deeply nested wizards might "miss" a validation error under certain circumastances
+- a1760d4: FIO-11470 fixes issue with widget.type saved as flat field
+- 92fec1b: FIO-11194 updated File events
+- Updated dependencies [350deb4]
+- Updated dependencies [906ebe3]
+  - @formio/bootstrap@4.0.0-api98.3
+  - @formio/core@2.7.0-api98.3
+
+## 5.4.0-api98.6
+
+### Patch Changes
+
+- 6b0386c: FIO-9726 fixed updating and deleting recognized fields
+
+## 5.4.0-api98.5
+
+### Patch Changes
+
+- 034bde6: Fix conditionals when involving row-based components
+- a06d1d9: FIO-9669: added token to the list of the available variables for advanced conditions
+
+## 5.4.0-api98.4
+
+### Patch Changes
+
+- 371cdc3: FIO-11345 fixed the display of the select component with empty values on DataTable
+- 5045254: Broken layout for Text Area.
+
+## 5.4.0-api98.3
+
+### Patch Changes
+
+- 8cdadcf: FIO-11371: update dompurify from 3.2.4 to >=3.3.2, upgrade tests
+- 4020a37: fix an error on abort upload
+- Updated dependencies [8cdadcf]
+  - @formio/core@2.7.0-api98.2
+
+## 5.4.0-api98.2
+
+### Patch Changes
+
+- d35d790: fix columns auto-adjust hidden
+- 0804cb2: Nirvana change
+- 39f1da6: FIO-11148 fixed esign validation after Data Map component is changed
+- fc942bf: FIO-11244: fixed an issue where custom logic with a comment does not work
+- bdb2d49: FIO-11078: fixed an issue where Address (Manually Filled) fields are not visually displayed until the checkbox is clicked
+- 71a008f: textarea rows height scaling
+- 2f59c6c: FIO-11109 fixed console warnings
+- e92a2d4: FIO-10506: fixed displaying text field when a user activates and then deactivates the `Allow Multiple Masks`
+- f991218: fix root.focusedComponent undefined error in console.
+- e785ece: bump lodash to 4.17.23
+- 827e520: FIO-11126: fixed the Field Set Legend announcement by a screen reader for all Components within fieldset
+- 974a7bc: FIO-10768: fixed date/time components display inside Data Map in the PDF of the submission
+- 930ef7d: FIO-11141: fixed an issue where merge component schema does not change day/month/year settings for day component
+- eb326e5: FIO-11087: enabled DELETE permission for uploaded files in Azure Blob Storage when using the file component in a form embedded in an application
+- a92a197: added position relative to formio-form-pdf class
+- 974ab72: Add validation to Date/Time component Enable Date/Time settings preventing having both date and time disabled
+- Updated dependencies [fc942bf]
+- Updated dependencies [78047ac]
+- Updated dependencies [e785ece]
+- Updated dependencies [827e520]
+- Updated dependencies [c2779ef]
+- Updated dependencies [6353d23]
+  - @formio/core@2.7.0-api98.1
+  - @formio/bootstrap@4.0.0-api98.2
+
+## 5.4.0-api98.1
+
+### Patch Changes
+
+- 84e3be8: FIO-10862: fixed an issue where placeholders are displayed for select, address and tags components in readOnly
+- a657108: FIO-10778 displaying labels insted of values inside Data Table and EditGrid
+- 7cbcd59: FIO-11126: fixed the Field Set Legend announcement by a screen reader for all Components within fieldset
+- 6ad1048: Added improvements for screen reader support.
+- 7e79c19: add column headers UI for table
+- c156c10: making characters limits available for screen readers
+- f7edde3: FIO-10942: enabled Screen Readers to Announce Submission Success Message
+- Updated dependencies [24e1e58]
+- Updated dependencies [7cbcd59]
+- Updated dependencies [6ad1048]
+- Updated dependencies [c156c10]
+- Updated dependencies [f7edde3]
+- Updated dependencies [898e929]
+  - @formio/bootstrap@4.0.0-api98.1
+
+## 5.4.0-api98.0
+
+### Minor Changes
+
+- b9cf4cf: Introduces templating features
+- d09d026: FIO-10731 fixed Clear Value On Refresh Options functionality for Select component in DataGrid
+- abbb7f0: FIO-10109 fixed TextArea Styling for Quick Inline Embed
+- a1e9b57: FIO-9974 fixed clearOnHide for layout components
+
+### Patch Changes
+
+- 717f347: FIO-10642 Fixed the issue when timezones affected the Date value when time is disabled
+- 1d02cf4: FIO-8942: removed encrypted setting from builder when it is not enabled
+- 63136ce: FIO-10898: prevent destroyed calendar redraw.
+- c38bfd1: FIO-10766: fixed validation issues for hidden nested forms
+- 81b094f: FIO-11129: fixed an issue where value are not set to the children of nested components
+- 58d2ec0: should not display custom validation error when adding an empty row
+- a21484b: fix multiple file uploads
+- 02821b2: Fix dropdown arrow displaying for the select with HTML5 Widget for the Quick Inline Embed script
+- e197864: FIO-10886: added Text Field component’s Widget type preservation when settings are invalid JSON
+- b2e9a45: FIO-10802 Fixed logic on language change
+- a4abdb6: Fix displaying select component with default values on edit submission page
+- 33023e5: FIO-10862: fixed an issue where placeholder appears in readOnly mode
+- db6f5e5: Adds ability to pass translations Url through query parameter to render the PDF
+- b7edbf8: Check for root property before interacting
+- cfa0818: Fix bug with setting multiple submissions
+- d319a9b: FIO-10709: added unit tests for events
+- 4dca323: FIO-10879 fixed populating values of the select HTML5
+- 6c8522e: FIO-10365: fixed an issue where error is missing for empty required number field in PDF form when it has default value setting
+- 4932711: Fix column width misalignment for remove row button in dataGrid
+- 8df0425: Fix file max and min size interpolation if we provide expression in component and set variables in project config
+- 9fd7c53: Added focus/blur events to PDF forms components
+- fce5b3a: Fix popup confirmation for embed scripts
+- d0c4f47: Fix date/time caret moving to end with quick inline embed
+- 7962fe8: optimize isEqualTo operator by using partial deep equality check
+- e4f01c1: FIO-9890: fixed resource select request when valueProperty is numeric
+- 8e381ca: FIO-10642 Fixed timezone dependent tests and validation
+- 1f5f921: FIO-10778 fixed the display of the select component in DataTable with values dataSrc
+- 3db552f: FIO-10932 Fixed the issue of setting default values for nested fields inside the dataGrid during initialization of the dataGrid
+- f3d87a0: add component reorder event
+- 189437d: FIO-8569: removed "fork me on github" widget from the SDK page
+- ababeaa: Fix for correct displaying of address component for embed scripts
+- 1da89a5: FIO-11057: fixed an issue where address component breaks downloading the submission PDF
+- 764ecdb: Fix Allow Multiple Masks Phone number not saving issue.
+- dd54c0a: Fix state bugs in EFB demo
+- 4e09c8c: FIO-10912 fixed an issue with saving row of the Edit grid witn nested multiple values component and require validation
+- d834a13: FIO-11000: fixed an issue where component with . in API keys can not be edited
+- Updated dependencies [4aa6138]
+- Updated dependencies [ef3f4de]
+- Updated dependencies [faa833a]
+- Updated dependencies [894f5e1]
+- Updated dependencies [189ad3a]
+- Updated dependencies [4932711]
+- Updated dependencies [0c907cb]
+- Updated dependencies [8e21f4b]
+- Updated dependencies [8e381ca]
+- Updated dependencies [abd9cfc]
+- Updated dependencies [63cc956]
+- Updated dependencies [a8eb00f]
+- Updated dependencies [764ecdb]
+- Updated dependencies [4e09c8c]
+- Updated dependencies [ddb44a9]
+- Updated dependencies [ddc5753]
+  - @formio/core@2.7.0-api98.0
+  - @formio/bootstrap@4.0.0-api98.0
+
+## 5.3.6
+
+### Patch Changes
+
+- Updated dependencies [458086a]
+  - @formio/core@2.6.6
+
+## 5.3.6-api97.0
+
+### Patch Changes
+
+- Updated dependencies [458086a]
+  - @formio/core@2.6.6-api97.0
+
+## 5.3.5
+
+### Patch Changes
+
+- f2a7cf6: Fix an issue where rearranging certain components in a nested form context will cause validation to unexpectedly pass
+- Updated dependencies [0aeef31]
+  - @formio/core@2.6.5
+
+## 5.3.5-api97.1
+
+### Patch Changes
+
+- Updated dependencies [0aeef31]
+  - @formio/core@2.6.5-api97.0
+
+## 5.3.5-api97.0
+
+### Patch Changes
+
+- f2a7cf6: Fix an issue where rearranging certain components in a nested form context will cause validation to unexpectedly pass
+
+## 5.3.4
+
+### Patch Changes
+
+- 4b8b5c2: FIO-11516: fix further flickers in nested wizards
+- a6a8668: fix further flickers in the error list and components
+- 4394e43: FIO-11412: fixed validation issues for deeply nested wizards
+- d4b7396: Fixes an issue where deeply nested wizards might "miss" a validation error under certain circumastances
+- 2993902: FIO-11194 updated File events
+- Updated dependencies [2cc2eb8]
+  - @formio/core@2.6.4
+
+## 5.3.4-api97.3
+
+### Patch Changes
+
+- 4b8b5c2: FIO-11516: fix further flickers in nested wizards
+
+## 5.3.4-api97.2
+
+### Patch Changes
+
+- a6a8668: fix further flickers in the error list and components
+
+## 5.3.4-api97.1
+
+### Patch Changes
+
+- d4b7396: Fixes an issue where deeply nested wizards might "miss" a validation error under certain circumastances
+- 22acdfe: Alerts' innerHTML should be mutated in place wherever possible
+
+## 5.3.4-api97.0
+
+### Patch Changes
+
+- 4394e43: FIO-11412: fixed validation issues for deeply nested wizards
+- 2993902: FIO-11194 updated File events
+- Updated dependencies [2cc2eb8]
+  - @formio/core@2.6.4-api97.0
+
+## 5.3.3
+
+### Patch Changes
+
+- cb3a4f3: FIO-11470 fixes issue with widget.type saved as flat field
+- Updated dependencies [b9b71dc]
+  - @formio/core@2.6.3
+
+## 5.3.3-api97.1
+
+### Patch Changes
+
+- cb3a4f3: FIO-11470 fixes issue with widget.type saved as flat field
+- Updated dependencies [b9b71dc]
+  - @formio/core@2.6.3-api97.1
+
+## 5.3.2
+
+### Patch Changes
+
+- 868314e: FIO-11371: update dompurify from 3.2.4 to >=3.3.2, upgrade tests
+- 7c28a14: FIO-10942: enabled Screen Readers to Announce Submission Success Message
+- 39a1b27: optimize isEqualTo operator by using partial deep equality check
+- a18f48a: Add validation to Date/Time component Enable Date/Time settings preventing having both date and time disabled
+- Updated dependencies [868314e]
+- Updated dependencies [7c28a14]
+- Updated dependencies [260eeb0]
+  - @formio/core@2.6.2
+  - @formio/bootstrap@3.2.2
+
+## 5.3.2-api97.0
+
+### Patch Changes
+
+- 868314e: FIO-11371: update dompurify from 3.2.4 to >=3.3.2, upgrade tests
+- 7c28a14: FIO-10942: enabled Screen Readers to Announce Submission Success Message
+- 39a1b27: optimize isEqualTo operator by using partial deep equality check
+- a18f48a: Add validation to Date/Time component Enable Date/Time settings preventing having both date and time disabled
+- Updated dependencies [868314e]
+- Updated dependencies [7c28a14]
+- Updated dependencies [260eeb0]
+  - @formio/core@2.6.2-api97.0
+  - @formio/bootstrap@3.2.2-api97.0
+
+## 5.3.1
+
+### Patch Changes
+
+- 4b6b065: FIO-10642 Fixed the issue when timezones affected the Date value when time is disabled
+- 8c13733: FIO-10898: prevent destroyed calendar redraw.
+- 3ea92c5: should not display custom validation error when adding an empty row
+- 9e53993: FIO-10802 Fixed logic on language change
+- 83f3a1b: FIO-10862: fixed an issue where placeholders are displayed for select, address and tags components in readOnly
+- 409a807: FIO-10862: fixed an issue where placeholder appears in readOnly mode
+- f5fa215: FIO-10778 displaying labels insted of values inside Data Table and EditGrid
+- a5bd18b: FIO-11126: fixed the Field Set Legend announcement by a screen reader for all Components within fieldset
+- 550e172: Added improvements for screen reader support.
+- cde1d5b: making characters limits available for screen readers
+- d85c263: Added focus/blur events to PDF forms components
+- c93015f: optimize isEqualTo operator by using partial deep equality check
+- 5fffacd: FIO-10778 fixed the display of the select component in DataTable with values dataSrc
+- 5afcf81: FIO-10932 Fixed the issue of setting default values for nested fields inside the dataGrid during initialization of the dataGrid
+- 75db166: FIO-11000: fixed an issue where component with . in API keys can not be edited
+- Updated dependencies [38b7b20]
+- Updated dependencies [4e88b7a]
+- Updated dependencies [a5bd18b]
+- Updated dependencies [550e172]
+- Updated dependencies [cde1d5b]
+- Updated dependencies [cc8eb1c]
+  - @formio/bootstrap@3.2.1
+  - @formio/core@2.6.1
+
+## 5.3.1-api97.4
+
+### Patch Changes
+
+- 550e172: Added improvements for screen reader support.
+- Updated dependencies [550e172]
+  - @formio/bootstrap@3.2.1-api97.3
+
+## 5.3.1-api97.3
+
+### Patch Changes
+
+- a5bd18b: FIO-11126: fixed the Field Set Legend announcement by a screen reader for all Components within fieldset
+- Updated dependencies [a5bd18b]
+  - @formio/bootstrap@3.2.1-api97.2
+
+## 5.3.1-api97.2
+
+### Patch Changes
+
+- f5fa215: FIO-10778 displaying labels insted of values inside Data Table and EditGrid
+- Updated dependencies [38b7b20]
+  - @formio/bootstrap@3.2.1-api97.1
+
+## 5.3.1-api97.1
+
+### Patch Changes
+
+- 83f3a1b: FIO-10862: fixed an issue where placeholders are displayed for select, address and tags components in readOnly
+- cde1d5b: making characters limits available for screen readers
+- Updated dependencies [cde1d5b]
+  - @formio/bootstrap@3.2.1-api97.0
+
+## 5.3.1-api97.0
+
+### Patch Changes
+
+- 4b6b065: FIO-10642 Fixed the issue when timezones affected the Date value when time is disabled
+- 8c13733: FIO-10898: prevent destroyed calendar redraw.
+- 3ea92c5: should not display custom validation error when adding an empty row
+- 9e53993: FIO-10802 Fixed logic on language change
+- 409a807: FIO-10862: fixed an issue where placeholder appears in readOnly mode
+- d85c263: Added focus/blur events to PDF forms components
+- c93015f: optimize isEqualTo operator by using partial deep equality check
+- 5fffacd: FIO-10778 fixed the display of the select component in DataTable with values dataSrc
+- 5afcf81: FIO-10932 Fixed the issue of setting default values for nested fields inside the dataGrid during initialization of the dataGrid
+- 75db166: FIO-11000: fixed an issue where component with . in API keys can not be edited
+- Updated dependencies [4e88b7a]
+- Updated dependencies [cc8eb1c]
+  - @formio/core@2.6.1-api97.0
+
+## 5.3.0
+
+### Minor Changes
+
+- c7af089: FIO-10640: Fix validation of conditionally hidden required fields in nested forms
+- d34c952: Revert an effort to move to ESM-compatible syntax
+
+### Patch Changes
+
+- 319d032: Integrate previous OSS portal work into nirvana
+- 8eab74f: fix: Select in conditional container shows values instead of labels in HTML renderMode
+- be2c44c: FIO-11129: fixed an issue where value are not set to the children of nested components
+- dc1a681: FIO-10719: fixed dataGrid validation when adding or removing the data row
+- 93e6373: button logic should not revert on change
+- 2181508: FIO-10886: added Text Field component’s Widget type preservation when settings are invalid JSON
+- e91c866: FIO-10386 Fixed an issue with displaying icons
+- cf7056e: Add asterisk screenreader required
+- 6ffefd3: Made DateTime component to perform min/max date validation on erroneuos manual input
+- c165d83: FIO-10518 fixed setting the pristine flag after uploading a file
+- 52e802a: FIO-8409: added serverOverride option
+- 9a0dabb: FIO-11148 fixed esign validation after Data Map component is changed
+- 17b2b95: fixed an issue where blur validation does not work properly for components inside wizard
+- 3125a98: FIO-8372 fixed setting date after selecting and erasing entire date
+- 6cd8e45: fixed an issue where Select component submitted data is not displayed on the View tab
+- 02cbf6f: FIO-8461: fixed an issue with checkboxes (with radio input type) not appearing in submission
+- 3ed475c: fixed an issue where lazyload option on form setting shows checked although it has the false value
+- 7aebcd1: FIO-10879 fixed populating values of the select HTML5
+- add846e: Fix View tab display for HTML5 Select with multiple values
+- 8769114: added german translation file
+- 14985be: Screen readers now announce adding and removing rows on data and edit grids
+- a430668: Revert FIO-9569: Fixes an issue where Wizard will paste a copy of the current page instead of the copied one
+- 8394bee: Fix date/time caret moving to end with quick inline embed
+- 291d7d9: FIO-10163: Added check for undefined options parameter when creating Day component.
+- cd847a7: FIO-11005: fixed an issue where editGrid in conditional container does not allow to add rows
+- 5c87b17: fix-panel-component-not-showing-label-in-data-grid-test
+- a715804: FIO-9941 fixed Error List Translations
+- eda912c: FIO-9890: fixed resource select request when valueProperty is numeric
+- 8e621a6: FIO-10645: fixed an issue where validation errors are shown after saving submission in draft state2
+- 7a6a3e7: Fixes issue where time on textfield only changes when timezone included
+- 349f791: FIO-10830: update select builder (add x-jwt-token to “Value Property” select dropdown request)
+- 384a8da: FIO-10661: fixed an issue where dafault value is not set for dateTime when protected-eval is used
+- a6c9755: fix runtime error in setForm when passing string argument to Formio.builder
+- c979f93: FIO-9884 fixed file upload plugin for ckeditor
+- 5a600df: Fix Allow Multiple Masks Phone number not saving issue.
+- e4673b7: FIO-10490: fixed an issue where ‘Display’ tab options missing for wizard panel after adding conditional logic
+- 73e3abd: FIO-10912 fixed an issue with saving row of the Edit grid witn nested multiple values component and require validation
+- c8639d0: FIO-10204: fixed conditional logic inside DataGrid component: Replace localDataPath with localPath to ensure the correct row structure is created. Implement a recursive check for the component's parent to detect the data grid at any level.
+- 7dd259e: Fix aria-invalide attribute issue for radio component
+- Updated dependencies [319d032]
+- Updated dependencies [98f7031]
+- Updated dependencies [06eb194]
+- Updated dependencies [03303d5]
+- Updated dependencies [61dd4b0]
+- Updated dependencies [d34c952]
+- Updated dependencies [cf7056e]
+- Updated dependencies [6ffefd3]
+- Updated dependencies [52e802a]
+- Updated dependencies [3126796]
+- Updated dependencies [5334cf2]
+- Updated dependencies [65d5e88]
+- Updated dependencies [df5ec66]
+- Updated dependencies [685a230]
+- Updated dependencies [f6c39e7]
+- Updated dependencies [5c87b17]
+- Updated dependencies [bc152a0]
+- Updated dependencies [5a600df]
+- Updated dependencies [73e3abd]
+- Updated dependencies [bd39aee]
+  - @formio/core@2.6.0
+  - @formio/bootstrap@3.2.0
+
+## 5.3.0-rc.8
+
+### Patch Changes
+
+- 9a0dabb: FIO-11148 fixed esign validation after Data Map component is changed
+
+## 5.3.0-rc.7
+
+### Patch Changes
+
+- be2c44c: FIO-11129: fixed an issue where value are not set to the children of nested components
+- 5a600df: Fix Allow Multiple Masks Phone number not saving issue.
+- Updated dependencies [5a600df]
+  - @formio/core@2.6.0-rc.5
+
+## 5.3.0-rc.6
+
+### Patch Changes
+
+- cf7056e: Add asterisk screenreader required
+- 14985be: Screen readers now announce adding and removing rows on data and edit grids
+- 7dd259e: Fix aria-invalide attribute issue for radio component
+- Updated dependencies [98f7031]
+- Updated dependencies [cf7056e]
+  - @formio/core@2.6.0-rc.4
+  - @formio/bootstrap@3.2.0-rc.1
+
+## 5.3.0-rc.5
+
+### Patch Changes
+
+- cd847a7: FIO-11005: fixed an issue where editGrid in conditional container does not allow to add rows
+
+## 5.3.0-rc.4
+
+### Patch Changes
+
+- 07f50ff: FIO-10649: Fixed an issue where Select component with Data Source type 'Resource' and 'Save as Reference' checked does NOT reflect edited Resource submission
+- 7aebcd1: FIO-10879 fixed populating values of the select HTML5
+- 8394bee: Fix date/time caret moving to end with quick inline embed
+- 397b524: Fix an issue with a race condition between React and formio.js render cycles
+- Updated dependencies [03303d5]
+- Updated dependencies [65d5e88]
+  - @formio/core@2.6.0-rc.3
+
+## 5.3.0-rc.3
+
+### Patch Changes
+
+- 2181508: FIO-10886: added Text Field component’s Widget type preservation when settings are invalid JSON
+- eda912c: FIO-9890: fixed resource select request when valueProperty is numeric
+
+## 5.3.0-rc.2
+
+### Patch Changes
+
+- Updated dependencies [3126796]
+  - @formio/core@2.6.0-rc.2
+
+## 5.3.0-rc.1
+
+### Patch Changes
+
+- 73e3abd: FIO-10912 fixed an issue with saving row of the Edit grid witn nested multiple values component and require validation
+- Updated dependencies [bc152a0]
+- Updated dependencies [73e3abd]
+  - @formio/core@2.5.3-rc.1
+
+## 5.3.0-rc.0
+
+### Minor Changes
+
+- c7af089: FIO-10640: Fix validation of conditionally hidden required fields in nested forms
+- d34c952: Revert an effort to move to ESM-compatible syntax
+
+### Patch Changes
+
+- 319d032: Integrate previous OSS portal work into nirvana
+- 8eab74f: fix: Select in conditional container shows values instead of labels in HTML renderMode
+- dc1a681: FIO-10719: fixed dataGrid validation when adding or removing the data row
+- 93e6373: button logic should not revert on change
+- e91c866: FIO-10386 Fixed an issue with displaying icons
+- 6ffefd3: Made DateTime component to perform min/max date validation on erroneuos manual input
+- c165d83: FIO-10518 fixed setting the pristine flag after uploading a file
+- 52e802a: FIO-8409: added serverOverride option
+- 17b2b95: fixed an issue where blur validation does not work properly for components inside wizard
+- 3125a98: FIO-8372 fixed setting date after selecting and erasing entire date
+- 6cd8e45: fixed an issue where Select component submitted data is not displayed on the View tab
+- 02cbf6f: FIO-8461: fixed an issue with checkboxes (with radio input type) not appearing in submission
+- 3ed475c: fixed an issue where lazyload option on form setting shows checked although it has the false value
+- add846e: Fix View tab display for HTML5 Select with multiple values
+- 8769114: added german translation file
+- 3645f62: Changed File Component edit for to use logic for Directory setting instead of two fields with the same API key getting conditionally hidden/shown
+- a430668: Revert FIO-9569: Fixes an issue where Wizard will paste a copy of the current page instead of the copied one
+- 291d7d9: FIO-10163: Added check for undefined options parameter when creating Day component.
+- 5c87b17: fix-panel-component-not-showing-label-in-data-grid-test
+- a715804: FIO-9941 fixed Error List Translations
+- 8e621a6: FIO-10645: fixed an issue where validation errors are shown after saving submission in draft state2
+- 7a6a3e7: Fixes issue where time on textfield only changes when timezone included
+- 349f791: FIO-10830: update select builder (add x-jwt-token to “Value Property” select dropdown request)
+- 384a8da: FIO-10661: fixed an issue where dafault value is not set for dateTime when protected-eval is used
+- a6c9755: fix runtime error in setForm when passing string argument to Formio.builder
+- c979f93: FIO-9884 fixed file upload plugin for ckeditor
+- e4673b7: FIO-10490: fixed an issue where ‘Display’ tab options missing for wizard panel after adding conditional logic
+- c8639d0: FIO-10204: fixed conditional logic inside DataGrid component: Replace localDataPath with localPath to ensure the correct row structure is created. Implement a recursive check for the component's parent to detect the data grid at any level.
+- Updated dependencies [319d032]
+- Updated dependencies [06eb194]
+- Updated dependencies [61dd4b0]
+- Updated dependencies [d34c952]
+- Updated dependencies [6ffefd3]
+- Updated dependencies [52e802a]
+- Updated dependencies [5334cf2]
+- Updated dependencies [df5ec66]
+- Updated dependencies [685a230]
+- Updated dependencies [f6c39e7]
+- Updated dependencies [5c87b17]
+- Updated dependencies [35ad101]
+- Updated dependencies [bd39aee]
+  - @formio/core@2.5.3-rc.0
+  - @formio/bootstrap@3.2.0-rc.0
+
+## 5.2.6
+
+### Patch Changes
+
+- 8a72cc9: Add asterisk screenreader required
+- 82f4609: Screen readers now announce adding and removing rows on data and edit grids
+- b17f74d: FIO-10163: Added check for undefined options parameter when creating Day component.
+- 34c2885: FIO-11104: update @formio/js renders
+- 09d79e6: Fix aria-invalide attribute issue for radio component
+- Updated dependencies [17bcb81]
+- Updated dependencies [8a72cc9]
+  - @formio/core@2.5.4
+  - @formio/bootstrap@3.1.4
+
+## 5.2.6-api96.0
+
+### Patch Changes
+
+- 8a72cc9: Add asterisk screenreader required
+- 82f4609: Screen readers now announce adding and removing rows on data and edit grids
+- b17f74d: FIO-10163: Added check for undefined options parameter when creating Day component.
+- 34c2885: FIO-11104: update @formio/js renders
+- 09d79e6: Fix aria-invalide attribute issue for radio component
+- Updated dependencies [17bcb81]
+- Updated dependencies [8a72cc9]
+  - @formio/core@2.5.4-api96.0
+  - @formio/bootstrap@3.1.4-api96.0
+
+## 5.2.5
+
+### Patch Changes
+
+- 92a1c5d: FIO-11005: fixed an issue where editGrid in conditional container does not allow to add rows
+
+## 5.2.5-api96.0
+
+### Patch Changes
+
+- 92a1c5d: FIO-11005: fixed an issue where editGrid in conditional container does not allow to add rows
+
 ## 5.2.4
 
 ### Patch Changes
@@ -816,7 +1566,6 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
   console.log(textField.errors); // This will be populated with the errors of the textfield even if they are not displayed on the form.
   ```
 
-- Strict "number" validations: Before 5.x, it was possible to force the value of a Number component within the POST request made to the server where the value of a number component is a "string" number. This is now considered an error condition within 5.x and it will result in an error. It should be noted that the renderer does "coerse" the value into a number if it can be, so this would only be aparent if you are sending an API call with a string value for the number, or if you are forcing the value with a calculated value.
 - If you wish to show the "visibleErrors", then there is a new property on each component called "visibleComponents".
 
   **4.x Renderer**

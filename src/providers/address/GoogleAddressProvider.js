@@ -105,7 +105,7 @@ export class GoogleAddressProvider extends AddressProvider {
 
    */
   setAutocompleteOptions() {
-    let options = _.get(this.options, 'autocompleteOptions', {});
+    let options = _.get(this.options, 'params.autocompleteOptions', {});
 
     if (!_.isObject(options)) {
       options = {};

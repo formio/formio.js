@@ -1,6 +1,7 @@
 declare namespace _default {
-    const display: string;
-    const components: ({
+  const display: string;
+  const components: (
+    | {
         label: string;
         mask: boolean;
         spellcheck: boolean;
@@ -39,33 +40,33 @@ declare namespace _default {
         calculateValue: string;
         calculateServer: boolean;
         widget: {
-            type: string;
+          type: string;
         };
         attributes: {};
         validateOn: string;
         validate: {
-            required: boolean;
-            custom: string;
-            customPrivate: boolean;
-            strictDateValidation: boolean;
-            multiple: boolean;
-            unique: boolean;
-            min: string;
-            max: string;
-            step: string;
-            integer: string;
+          required: boolean;
+          custom: string;
+          customPrivate: boolean;
+          strictDateValidation: boolean;
+          multiple: boolean;
+          unique: boolean;
+          min: string;
+          max: string;
+          step: string;
+          integer: string;
         };
         conditional: {
-            show: null;
-            when: null;
-            eq: string;
+          show: null;
+          when: null;
+          eq: string;
         };
         overlay: {
-            style: string;
-            left: string;
-            top: string;
-            width: string;
-            height: string;
+          style: string;
+          left: string;
+          top: string;
+          width: string;
+          height: string;
         };
         allowCalculateOverride: boolean;
         encrypted: boolean;
@@ -84,7 +85,8 @@ declare namespace _default {
         block?: undefined;
         action?: undefined;
         theme?: undefined;
-    } | {
+      }
+    | {
         label: string;
         tableView: boolean;
         defaultValue: boolean;
@@ -121,28 +123,28 @@ declare namespace _default {
         attributes: {};
         validateOn: string;
         validate: {
-            required: boolean;
-            custom: string;
-            customPrivate: boolean;
-            strictDateValidation: boolean;
-            multiple: boolean;
-            unique: boolean;
-            min?: undefined;
-            max?: undefined;
-            step?: undefined;
-            integer?: undefined;
+          required: boolean;
+          custom: string;
+          customPrivate: boolean;
+          strictDateValidation: boolean;
+          multiple: boolean;
+          unique: boolean;
+          min?: undefined;
+          max?: undefined;
+          step?: undefined;
+          integer?: undefined;
         };
         conditional: {
-            show: null;
-            when: null;
-            eq: string;
+          show: null;
+          when: null;
+          eq: string;
         };
         overlay: {
-            style: string;
-            left: string;
-            top: string;
-            width: string;
-            height: string;
+          style: string;
+          left: string;
+          top: string;
+          width: string;
+          height: string;
         };
         allowCalculateOverride: boolean;
         encrypted: boolean;
@@ -166,7 +168,8 @@ declare namespace _default {
         block?: undefined;
         action?: undefined;
         theme?: undefined;
-    } | {
+      }
+    | {
         type: string;
         label: string;
         key: string;
@@ -201,33 +204,33 @@ declare namespace _default {
         calculateValue: string;
         calculateServer: boolean;
         widget: {
-            type: string;
+          type: string;
         };
         attributes: {};
         validateOn: string;
         validate: {
-            required: boolean;
-            custom: string;
-            customPrivate: boolean;
-            strictDateValidation: boolean;
-            multiple: boolean;
-            unique: boolean;
-            min?: undefined;
-            max?: undefined;
-            step?: undefined;
-            integer?: undefined;
+          required: boolean;
+          custom: string;
+          customPrivate: boolean;
+          strictDateValidation: boolean;
+          multiple: boolean;
+          unique: boolean;
+          min?: undefined;
+          max?: undefined;
+          step?: undefined;
+          integer?: undefined;
         };
         conditional: {
-            show: null;
-            when: null;
-            eq: string;
+          show: null;
+          when: null;
+          eq: string;
         };
         overlay: {
-            style: string;
-            left: string;
-            top: string;
-            width: string;
-            height: string;
+          style: string;
+          left: string;
+          top: string;
+          width: string;
+          height: string;
         };
         allowCalculateOverride: boolean;
         encrypted: boolean;
@@ -250,6 +253,7 @@ declare namespace _default {
         inputType?: undefined;
         value?: undefined;
         name?: undefined;
-    })[];
+      }
+  )[];
 }
 export default _default;

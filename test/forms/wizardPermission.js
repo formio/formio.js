@@ -63,7 +63,9 @@ export default {
     },
     {
       type: 'create_all',
-      roles: ['62ead292aeb6eb30ebf49a5d'],
+      roles: [
+        '62ead292aeb6eb30ebf49a5d',
+      ],
     },
     {
       type: 'read_own',

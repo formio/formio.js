@@ -1441,20 +1441,6 @@ export default class Component extends Element {
   }
 
   /**
-   * Announces a message to screen readers via the component's live region.
-   * @param {string} message - The message to announce.
-   */
-  announce(message) {
-    const liveRegion = this.refs.liveRegion;
-    if (liveRegion) {
-      liveRegion.textContent = '';
-      setTimeout(() => {
-        liveRegion.textContent = message;
-      }, 50);
-    }
-  }
-
-  /**
    * Opens the modal element.
    * @param {string} template - The template to use for the modal dialog.
    */
@@ -1629,7 +1615,6 @@ export default class Component extends Element {
     this.loadRefs(element, {
       messageContainer: 'single',
       tooltip: 'multiple',
-      liveRegion: 'single',
     });
 
     this.attachTooltips(this.refs.tooltip);
@@ -1900,14 +1885,14 @@ export default class Component extends Element {
       value.forEach((val, index) => {
         const widget = this.refs.input[index] && this.refs.input[index].widget;
         if (widget) {
-          values.push(widget.getValueAsString(val));
+          values.push(widget.getValueAsString(val, options));
         }
       });
       return values;
     }
 
     const widget = this.refs.input[0].widget;
-    return widget.getValueAsString(value);
+    return widget.getValueAsString(value, options);
   }
 
   /**

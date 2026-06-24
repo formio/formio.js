@@ -5733,39 +5733,6 @@ describe('Webform tests', function () {
         })
         .catch(done);
     });
-
-    it('Should not recalculate checkbox with allowCalculateOverride when display is pdf (saved submission)', function (done) {
-      const formElement = document.createElement('div');
-      const form = new Webform(formElement, { readOnly: true, display: 'pdf' });
-      const formJson = {
-        components: [
-          {
-            type: 'checkbox',
-            key: 'chk',
-            label: 'Check',
-            input: true,
-            calculateValue: 'value = true;',
-            allowCalculateOverride: true,
-          },
-        ],
-      };
-      form
-        .setForm(formJson)
-        .then(() =>
-          form.setSubmission({
-            _id: '507f1f77bcf86cd799439011',
-            data: { chk: false },
-          }),
-        )
-        .then(() => {
-          setTimeout(() => {
-            const chk = form.getComponent('chk');
-            assert.equal(chk.dataValue, false, 'Unchecked submission must stay false in pdf display');
-            done();
-          }, 400);
-        })
-        .catch(done);
-    });
   });
 
   it('Should set different ids for components inside different Table rows', function (done) {
@@ -7413,49 +7380,6 @@ describe('Webform tests', function () {
         }, 150);
       })
       .catch(done);
-  });
-
-  it('Should handle multiple set submissions correctly and should not modify submissionOne or submissionTwo', function () {
-    const formJson = {
-      components: [
-        {
-          label: "Text Field",
-          applyMaskOn: "change",
-          tableView: true,
-          validateWhenHidden: false,
-          key: "textField",
-          type: "textfield",
-          input: true,
-        },
-      ],
-    };
-    const submissionOne = {
-      data: {
-        textField: "submission 1",
-      },
-    }
-    const submissionTwo = {
-      data: {
-        textField: "submission 2",
-      },
-    }
-    return Formio.createForm(document.createElement('div'), formJson).then(async (form) => {
-      await form.setSubmission(submissionOne);
-      await form.setSubmission(submissionTwo);
-      await form.setSubmission(submissionOne);
-
-      assert.deepEqual(form.data, {textField: 'submission 1'});
-      assert.deepEqual(submissionOne, {
-        data: {
-          textField: "submission 1",
-        },
-      });
-      assert.deepEqual(submissionTwo, {
-        data: {
-          textField: "submission 2",
-        },
-      })
-    });
   });
 
   describe('showErrors with nested forms', function () {

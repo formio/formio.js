@@ -167,7 +167,7 @@ function getConditionalPathsRecursive(conditionPaths, data) {
         });
       } else {
         currentData.forEach((x, index) => {
-          if (x && conditionPaths && !_.isNil(x[conditionPaths[currentLocalIndex]])) {
+          if (!_.isNil(x[conditionPaths[currentLocalIndex]])) {
             const compDataPath = `${currentPath}[${index}].${conditionPaths[currentLocalIndex]}`;
             conditionalPathsArray.push(compDataPath);
           }
@@ -2006,9 +2006,9 @@ export function announceScreenReaderMessage(component, value, index = 0, forFocu
   if (forFocus) {
     setTimeout(() => {
       el.textContent = "";
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         el.textContent = combinedMessage;
-      }, 50);
+      });
     }, 150);
     return;
   }
@@ -2016,9 +2016,9 @@ export function announceScreenReaderMessage(component, value, index = 0, forFocu
   clearTimeout(el._announceTimer);
   el._announceTimer = setTimeout(() => {
     el.textContent = "";
-    setTimeout(() => {
+    requestAnimationFrame(() => {
         el.textContent = combinedMessage;
-    }, 50);
+    });
   }, 500);
 }
 

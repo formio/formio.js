@@ -1602,7 +1602,10 @@ export default class SelectComponent extends ListComponent {
   }
 
   setMetadata(value, flags = {}) {
-    if (_.isNil(value)) {
+    if (
+      _.isNil(value) ||
+      (this.inDataTable && this.component.dataSrc === 'values')
+    ) {
       return;
     }
     const valueIsObject = _.isObject(value);
@@ -1951,7 +1954,7 @@ export default class SelectComponent extends ListComponent {
         value = this.undoValueTyping(value);
       }
       const templateValue =
-        !_.isEmpty(value) && this.isEntireObjectDisplay() && !_.isObject(value.data) ? { data: value } : value;
+        this.isEntireObjectDisplay() && !_.isObject(value.data) ? { data: value } : value;
       const template = this.itemTemplate(templateValue, value, options);
       return template;
     }

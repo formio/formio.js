@@ -8,7 +8,7 @@ export default {
       buttonSettings: {
         previous: true,
         cancel: true,
-        next: true
+        next: true,
       },
       navigateOnEnter: false,
       saveOnEnter: false,
@@ -28,7 +28,9 @@ export default {
           enableRowGroups: false,
           initEmpty: false,
           tableView: false,
-          defaultValue: [{}],
+          defaultValue: [
+            {},
+          ],
           validateWhenHidden: false,
           key: 'dataGrid',
           type: 'datagrid',
@@ -43,11 +45,11 @@ export default {
               key: 'form1',
               type: 'form',
               input: true,
-              lazyLoad: true
-            }
-          ]
-        }
-      ]
+              lazyLoad: true,
+            },
+          ],
+        },
+      ],
     },
     {
       title: 'Page 2',
@@ -56,13 +58,13 @@ export default {
       key: 'page2',
       input: false,
       tableView: false,
-      components: []
-    }
+      components: [],
+    },
   ],
   revisions: '',
   _vid: 0,
   title: 'Wizard with dataGrid with nestedForm',
   display: 'wizard',
   name: 'dataGridWithNestedForm',
-  path: 'datagridwithnestedform'
+  path: 'datagridwithnestedform',
 };
