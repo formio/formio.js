@@ -116,7 +116,7 @@
         <div class="input-group">
           <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" disabled="disabled" value="2018-08-03" id="dateTime-dateTime" aria-labelledby="l-dateTime-dateTime " aria-required="false"></input>
           <span aria-live="assertive" id="dateTime-liveRegion" class="visually-hidden" ref="liveRegion"></span>
-          <div class="input-group-text" ref="suffix">
+          <div class="input-group-text" ref="suffix" role="presentation">
             <i ref="icon" class="bi bi-calendar" style=""></i>
           </div>
         </div>
@@ -315,7 +315,7 @@
     </div>
     <div id="panel" class="formio-component formio-component-panel formio-component-panel " ref="component">
       <div class="mb-2 card border">
-        <div class="card-header bg-default" role="button" aria-expanded="true" aria-controls="panel-panel" ref="header">
+        <div class="card-header bg-default" role="presentation" aria-expanded="true" aria-controls="panel-panel" ref="header">
           <span class="mb-0 card-title ">
     </span>
         </div>
@@ -411,6 +411,9 @@
       </label>
       <table class="table datagrid-table table-bordered
     " style="table-layout: fixed;">
+        <colgroup>
+          <col>
+        </colgroup>
         <thead>
           <tr>
             <th class="">

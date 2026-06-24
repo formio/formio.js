@@ -1,11 +1,11 @@
 export default [
   {
     key: 'validate.required',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'validate.unique',
-    ignore: true
+    ignore: true,
   },
   {
     weight: 0,
@@ -13,7 +13,7 @@ export default [
     label: 'Require Day',
     tooltip: 'A required field must be filled in before the form can be submitted.',
     key: 'fields.day.required',
-    input: true
+    input: true,
   },
   {
     weight: 10,
@@ -21,7 +21,7 @@ export default [
     label: 'Require Month',
     tooltip: 'A required field must be filled in before the form can be submitted.',
     key: 'fields.month.required',
-    input: true
+    input: true,
   },
   {
     weight: 20,
@@ -29,14 +29,15 @@ export default [
     label: 'Require Year',
     tooltip: 'A required field must be filled in before the form can be submitted.',
     key: 'fields.year.required',
-    input: true
+    input: true,
   },
   {
     weight: 40,
     type: 'textfield',
     label: 'Minimum Day',
     placeholder: 'yyyy-MM-dd',
-    tooltip: 'A minimum date that can be set. You can also use Moment.js functions. For example: \n \n moment().subtract(10, \'days\')',
+    tooltip:
+      "A minimum date that can be set. You can also use Moment.js functions. For example: \n \n moment().subtract(10, 'days')",
     key: 'minDate',
     input: true,
   },
@@ -45,7 +46,8 @@ export default [
     type: 'textfield',
     label: 'Maximum Day',
     placeholder: 'yyyy-MM-dd',
-    tooltip: 'A maximum day that can be set. You can also use Moment.js functions. For example: \n \n moment().add(10, \'days\')',
+    tooltip:
+      "A maximum day that can be set. You can also use Moment.js functions. For example: \n \n moment().add(10, 'days')",
     key: 'maxDate',
     input: true,
   },

@@ -14,7 +14,7 @@ export default {
       initEmpty: false,
       tableView: false,
       defaultValue: [
-        {}
+        {},
       ],
       validateWhenHidden: false,
       key: 'dataGrid',
@@ -30,12 +30,12 @@ export default {
           input: true,
           components: [
             {
-              label: "Checkbox",
+              label: 'Checkbox',
               tableView: false,
               validateWhenHidden: false,
-              key: "checkbox",
-              type: "checkbox",
-              input: true
+              key: 'checkbox',
+              type: 'checkbox',
+              input: true,
             },
             {
               label: 'Text Field',
@@ -50,16 +50,16 @@ export default {
                   {
                     component: 'dataGrid.container.checkbox',
                     operator: 'isEqual',
-                    value: true
-                  }
-                ]
+                    value: true,
+                  },
+                ],
               },
               type: 'textfield',
-              input: true
-            }
-          ]
-        }
-      ]
+              input: true,
+            },
+          ],
+        },
+      ],
     },
     {
       type: 'button',
@@ -67,7 +67,7 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
-  ]
+      tableView: false,
+    },
+  ],
 };

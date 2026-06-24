@@ -12,16 +12,17 @@ export default {
           attrs: [
             {
               attr: '',
-              value: ''
-            }
+              value: '',
+            },
           ],
-          content: "<b>Various Tests on Calculations, Conditionals, and Custom Validations:</b>\n<br><i>(the following rules apply to both the DataGrid and EditGrid)</i>\n<br><b>Root Text:</b>\n<br>- 1st Textfield in DG and EG should match the 'Root Text' field data\n<br>- 2nd Textfield in DG and EG ('Row') should match the data from the 1st Textfield in the DG and EG\n<br><b>Root Radio:</b>\n<br>- When show is clicked, Radio should display in DG and EG\n<br><b>Grid Radio:</b>\n<br>- When show is clicked for the Grid Radio, the 'Row Show' textfield should display in the DG and EG\n<br><b>Root Calculated Text:</b>\n<br>- Data entered in this textfield should display and populate grid calculated field\n<br>- Textfield next to above should calculate based on grid calculated field",
+          content:
+            "<b>Various Tests on Calculations, Conditionals, and Custom Validations:</b>\n<br><i>(the following rules apply to both the DataGrid and EditGrid)</i>\n<br><b>Root Text:</b>\n<br>- 1st Textfield in DG and EG should match the 'Root Text' field data\n<br>- 2nd Textfield in DG and EG ('Row') should match the data from the 1st Textfield in the DG and EG\n<br><b>Root Radio:</b>\n<br>- When show is clicked, Radio should display in DG and EG\n<br><b>Grid Radio:</b>\n<br>- When show is clicked for the Grid Radio, the 'Row Show' textfield should display in the DG and EG\n<br><b>Root Calculated Text:</b>\n<br>- Data entered in this textfield should display and populate grid calculated field\n<br>- Textfield next to above should calculate based on grid calculated field",
           refreshOnChange: false,
           key: 'html',
           type: 'htmlelement',
           tableView: false,
           input: false,
-          alwaysEnabled: false
+          alwaysEnabled: false,
         },
         {
           label: 'Root Text',
@@ -29,7 +30,7 @@ export default {
           tableView: true,
           key: 'text',
           type: 'textfield',
-          input: true
+          input: true,
         },
         {
           label: 'Root - Radio',
@@ -41,20 +42,20 @@ export default {
             {
               label: 'Show',
               value: 'show',
-              shortcut: ''
+              shortcut: '',
             },
             {
               label: 'Hide',
               value: 'hide',
-              shortcut: ''
-            }
+              shortcut: '',
+            },
           ],
           validate: {
-            required: true
+            required: true,
           },
           key: 'radio',
           type: 'radio',
-          input: true
+          input: true,
         },
         {
           label: 'Root - Text Calculate',
@@ -62,7 +63,7 @@ export default {
           tableView: true,
           key: 'textCal',
           type: 'textfield',
-          input: true
+          input: true,
         },
         {
           label: 'Data Grid',
@@ -81,23 +82,25 @@ export default {
               label: 'Textfield - DG',
               tableView: true,
               validate: {
-                custom: 'valid = (input === data.text) ? true : `data must match root textfield: ${input}, ${data.text}`;'
+                custom:
+                  'valid = (input === data.text) ? true : `data must match root textfield: ${input}, ${data.text}`;',
               },
               key: 'rootTest',
               type: 'textfield',
               alwaysEnabled: false,
-              input: true
+              input: true,
             },
             {
               label: 'Row Test - DG',
               tableView: true,
               validate: {
-                custom: 'valid = (input == row.rootTest) ? true : `must equal textfield in dg: ${input}, ${row.rootTest}`;'
+                custom:
+                  'valid = (input == row.rootTest) ? true : `must equal textfield in dg: ${input}, ${row.rootTest}`;',
               },
               key: 'rowTest',
               type: 'textfield',
               alwaysEnabled: false,
-              input: true
+              input: true,
             },
             {
               label: 'Radio',
@@ -108,22 +111,22 @@ export default {
                 {
                   label: 'DG Show',
                   value: 'dgShow',
-                  shortcut: ''
+                  shortcut: '',
                 },
                 {
                   label: 'DG Hide',
                   value: 'dgHide',
-                  shortcut: ''
-                }
+                  shortcut: '',
+                },
               ],
               validate: {
-                required: true
+                required: true,
               },
               key: 'radio1',
               customConditional: "show = (data.radio === 'show');",
               type: 'radio',
               alwaysEnabled: false,
-              input: true
+              input: true,
             },
             {
               label: "Row Show - Show textfield when data grid radio has 'show' value",
@@ -133,7 +136,7 @@ export default {
               customConditional: "show = (row.radio1 === 'dgShow');",
               type: 'textfield',
               input: true,
-              radio1: null
+              radio1: null,
             },
             {
               label: "DG Calculated - Value should populate from 'root calculated text' field",
@@ -144,7 +147,7 @@ export default {
               customConditional: 'show = (data.textCal);',
               type: 'textfield',
               alwaysEnabled: false,
-              input: true
+              input: true,
             },
             {
               label: 'Textfield - Data should populate from Datagrid calculate field',
@@ -154,14 +157,14 @@ export default {
               key: 'textfieldDataShouldPopulateFromDatagridCalculateField',
               customConditional: 'show = (data.textCal);',
               type: 'textfield',
-              input: true
-            }
+              input: true,
+            },
           ],
-          path: 'dataGrid'
-        }
+          path: 'dataGrid',
+        },
       ],
       input: false,
-      tableView: false
+      tableView: false,
     },
     {
       label: 'Submit',
@@ -169,8 +172,8 @@ export default {
       tableView: false,
       key: 'submit',
       type: 'button',
-      input: true
-    }
+      input: true,
+    },
   ],
-  display: 'form'
+  display: 'form',
 };
