@@ -3,7 +3,7 @@ export default {
   tableView: true,
   multiple: true,
   validate: {
-    multiple: true
+    multiple: true,
   },
   key: 'time',
   type: 'time',
@@ -11,6 +11,6 @@ export default {
   inputMask: '99:99',
   defaultValue: [
     '10:00:00',
-    '11:00:00'
-  ]
+    '11:00:00',
+  ],
 };

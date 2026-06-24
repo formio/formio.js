@@ -5,7 +5,7 @@ import UnknownEditDisplay from './editForm/Unknown.edit.display';
  * @param {...any} extend
  * @returns {object} - The Unknown Component edit form.
  */
-export default function() {
+export default function () {
   return {
     components: [
       {
@@ -16,10 +16,10 @@ export default function() {
             label: 'Custom',
             key: 'display',
             weight: 0,
-            components: UnknownEditDisplay
-          }
-        ]
-      }
-    ]
+            components: UnknownEditDisplay,
+          },
+        ],
+      },
+    ],
   };
 }

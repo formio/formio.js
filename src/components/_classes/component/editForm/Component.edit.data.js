@@ -59,7 +59,6 @@ export default [
       'Encrypt this field on the server. This is two way encryption which is not suitable for passwords.',
     key: 'encrypted',
     input: true,
-    customConditional: 'show = data.encrypted;',
     logic: [
       {
         name: 'disabled',
@@ -161,7 +160,7 @@ export default [
     1100,
     '<p><h4>Example:</h4><pre>value = data.a + data.b + data.c;</pre></p>',
     '<p><h4>Example:</h4><pre>{"+": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a href="https://help.form.io/userguide/form-building/logic-and-conditions#calculated-values" target="_blank" rel="noopener noreferrer">Click here for an example</a></p>',
-    EditFormUtils.tokenVariableDescription(),
+    '<tr><th>token</th><td>The decoded JWT token for the authenticated user.</td></tr>',
   ),
   {
     type: 'checkbox',

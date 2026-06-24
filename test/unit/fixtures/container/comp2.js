@@ -1,7 +1,7 @@
 export default {
-  'input': true,
-  'tree': true,
-  'components': [
+  input: true,
+  tree: true,
+  components: [
     {
       type: 'editgrid',
       label: 'Edit Grid',
@@ -12,21 +12,21 @@ export default {
           type: 'textfield',
           key: 'name',
           label: 'Name',
-          input: true
-        }
-      ]
-    }
+          input: true,
+        },
+      ],
+    },
   ],
-  'tableView': true,
-  'label': 'User',
-  'key': 'user',
-  'protected': false,
-  'persistent': true,
-  'type': 'container',
-  'tags': [],
-  'conditional': {
-    'show': '',
-    'when': null,
-    'eq': ''
-  }
+  tableView: true,
+  label: 'User',
+  key: 'user',
+  protected: false,
+  persistent: true,
+  type: 'container',
+  tags: [],
+  conditional: {
+    show: '',
+    when: null,
+    eq: '',
+  },
 };

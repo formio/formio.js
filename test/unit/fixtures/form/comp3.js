@@ -32,26 +32,26 @@ export default {
             maxLength: '',
             pattern: '',
             custom: '',
-            customPrivate: false
+            customPrivate: false,
           },
           conditional: {
             show: '',
             when: null,
-            eq: ''
+            eq: '',
           },
           type: 'textfield',
           labelPosition: 'top',
           inputFormat: 'plain',
           tags: [],
-          properties: { }
-        }
+          properties: {},
+        },
       ],
       input: false,
       key: 'page1',
       clearOnHide: false,
       theme: 'default',
       tableView: false,
-      hideLabel: false
+      hideLabel: false,
     },
     {
       type: 'panel',
@@ -80,7 +80,7 @@ export default {
             step: 'any',
             integer: '',
             multiple: '',
-            custom: ''
+            custom: '',
           },
           type: 'number',
           labelPosition: 'top',
@@ -88,17 +88,17 @@ export default {
           conditional: {
             show: '',
             when: null,
-            eq: ''
+            eq: '',
           },
-          properties: { }
-        }
+          properties: {},
+        },
       ],
       input: false,
       key: 'page2',
       clearOnHide: false,
       theme: 'default',
       tableView: false,
-      hideLabel: false
+      hideLabel: false,
     },
     {
       type: 'panel',
@@ -121,7 +121,7 @@ export default {
           value: '',
           clearOnHide: true,
           validate: {
-            required: false
+            required: false,
           },
           type: 'checkbox',
           labelPosition: 'right',
@@ -130,17 +130,17 @@ export default {
           conditional: {
             show: '',
             when: null,
-            eq: ''
+            eq: '',
           },
-          properties: { }
-        }
+          properties: {},
+        },
       ],
       input: false,
       key: 'page3',
       clearOnHide: false,
       theme: 'default',
       tableView: false,
-      hideLabel: false
+      hideLabel: false,
     },
     {
       autofocus: false,
@@ -155,14 +155,14 @@ export default {
       action: 'submit',
       disableOnInvalid: false,
       theme: 'primary',
-      type: 'button'
-    }
+      type: 'button',
+    },
   ],
   revisions: '',
   title: 'Wiizard',
   display: 'wizard',
   submissionAccess: [],
-  settings: { },
+  settings: {},
   name: 'wiizard',
-  path: 'wiizard'
+  path: 'wiizard',
 };

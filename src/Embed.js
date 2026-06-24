@@ -164,38 +164,6 @@ export class Formio {
     if (successMessage && successMessage.toLowerCase() !== 'false' && instance.element) {
       instance.element.innerHTML = `<div class="alert-success" role="alert">${successMessage}</div>`;
     }
-    const announcementMessage = successMessage && successMessage.toLowerCase() !== 'false' 
-      ? successMessage 
-      : 'Form submission complete';
-    
-    let liveRegion = document.getElementById('formio-announcements');
-    if (!liveRegion) {
-      liveRegion = Formio.createElement('div', {
-        id: 'formio-announcements',
-        'role': 'status',
-        'aria-live': 'polite',
-        'aria-atomic': 'true',
-        style: 'position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);'
-      });
-      document.body.appendChild(liveRegion);
-    }
-    
-    // Announce the submission completion using VPAT clear-and-reset technique
-    liveRegion.textContent = '';
-    liveRegion.setAttribute('aria-live', 'off');
-    
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        liveRegion.setAttribute('aria-live', 'polite');
-        liveRegion.textContent = announcementMessage;
-        
-        setTimeout(() => {
-          if (liveRegion) {
-            liveRegion.textContent = '';
-          }
-        }, 1000);
-      }, 100);
-    });
     let returnUrl = Formio.config.redirect;
 
     // Allow form based configuration for return url.
@@ -379,28 +347,6 @@ export class Formio {
     });
     const id = Formio.config.id || `formio-${Math.random().toString(36).substring(7)}`;
 
-    const hasQuillComponent = (components = []) => {
-      if (!Array.isArray(components)) {
-        return false;
-      }
-      return components.some((component) => {
-        if (!component || typeof component !== 'object') {
-          return false;
-        }
-        const isQuillTextarea =
-          component.type === 'textarea' &&
-          component.wysiwyg === true &&
-          component.editor === 'quill';
-        return (
-          isQuillTextarea ||
-          hasQuillComponent(component.components) ||
-          hasQuillComponent(component.columns?.flatMap((column) => column.components || [])) ||
-          hasQuillComponent(component.rows?.flatMap((row) => row.flatMap((cell) => cell.components || [])))
-        );
-      });
-    };
-    const disableShadowForQuill = hasQuillComponent(Formio.config.form?.components);
-
     // Create a new wrapper and add the element inside of a new wrapper.
     let wrapper = Formio.createElement('div', {
       id: `${id}-wrapper`,
@@ -411,19 +357,12 @@ export class Formio {
     const useShadowDom =
       Formio.config.includeLibs &&
       !Formio.config.noshadow &&
-      !disableShadowForQuill &&
       typeof wrapper.attachShadow === 'function';
     if (useShadowDom) {
       wrapper = wrapper.attachShadow({
         mode: 'open',
       });
       options.shadowRoot = wrapper;
-      // Due to an issue with quill not loading styles in the shadowdom, we need to add quill styles and js to the shadowdom
-      const quill = {
-        js: `${Formio.cdn.quill}/quill.js`,
-        css: `${Formio.cdn.quill}/quill.snow.css`
-      }
-      await Formio.addLibrary(wrapper, quill, 'quill');
     }
 
     element.parentNode.removeChild(element);

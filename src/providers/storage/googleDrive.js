@@ -1,15 +1,26 @@
 import { setXhrHeaders } from './xhr';
 
 /**
- * 
+ *
  * Google Drive provider for file storage.
  * @param {object} formio - formio instance
  * @returns {import('./typedefs').FileProvider} The FileProvider interface defined in index.js.
  */
 function googledrive(formio) {
   return {
-    uploadFile(file, fileName, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
-      return new Promise(((resolve, reject) => {
+    uploadFile(
+      file,
+      fileName,
+      dir,
+      progressCallback,
+      url,
+      options,
+      fileKey,
+      groupPermissions,
+      groupId,
+      abortCallback,
+    ) {
+      return new Promise((resolve, reject) => {
         // Send the file with data.
         const xhr = new XMLHttpRequest();
 
@@ -41,8 +52,7 @@ function googledrive(formio) {
             response.groupId = groupId;
             response.groupPermissions = groupPermissions;
             resolve(response);
-          }
-          else {
+          } else {
             reject(xhr.response || 'Unable to upload file');
           }
         };
@@ -58,17 +68,19 @@ function googledrive(formio) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
         xhr.send(fd);
-      }));
+      });
     },
     downloadFile(file, component) {
       const token = formio.getToken();
       // Constructed the url with the fileId, fileName, displayImage, imageSize if applicable
-      file.url =
-        `${formio.formUrl}/storage/gdrive?fileId=${file.id}&fileName=${file.originalName}${token ? `&x-jwt-token=${token}` : ''}${component.image ? '&displayImage=true' : ''}${component.imageSize ? `&imageSize=${component.imageSize}` : ''}`;
+      file.url = `${formio.formUrl}/storage/gdrive?fileId=${file.id}&fileName=${file.originalName}${token ? `&x-jwt-token=${token}` : ''}${component.image ? '&displayImage=true' : ''}${component.imageSize ? `&imageSize=${component.imageSize}` : ''}`;
       return Promise.resolve(file);
     },
     deleteFile: function deleteFile(fileInfo) {
-      var url = ''.concat(formio.formUrl, `/storage/gdrive?id=${fileInfo.id}&name=${fileInfo.originalName}`);
+      var url = ''.concat(
+        formio.formUrl,
+        `/storage/gdrive?id=${fileInfo.id}&name=${fileInfo.originalName}`,
+      );
       return formio.makeRequest('', url, 'delete');
     },
   };

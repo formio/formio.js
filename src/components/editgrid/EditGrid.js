@@ -635,7 +635,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         isVisibleInRow: (component) => this.isComponentVisibleInRow(component, flattenedComponents),
         getView: (component, data) => {
           const instance = flattenedComponents[component.key];
-          const view = instance ? instance.getView(instance.dataValue) : '';
+          const view = instance ? instance.getView(data || instance.dataValue) : '';
 
           // If there is an html tag in view, don't allow it to be injected in template
           const htmlTagRegExp = new RegExp('<(.*?)>');
@@ -1020,7 +1020,7 @@ export default class EditGridComponent extends NestedArrayComponent {
     if (this.component.rowDrafts) {
       editRow.components.forEach((comp) => comp.setPristine(this.pristine));
     }
-    this.checkValidity(null, !this.component.rowDrafts || this.root?.submitted);
+    this.checkValidity(null, true);
     this.redraw();
 
     if (editRow.alerts) {
@@ -1129,19 +1129,9 @@ export default class EditGridComponent extends NestedArrayComponent {
 
       const column = _.clone(col);
       const options = _.clone(this.options);
-      const rootSubmissionTz = _.get(this.root, 'options.submissionTimezone');
-      if (rootSubmissionTz && !options.submissionTimezone) {
-        options.submissionTimezone = rootSubmissionTz;
-      }
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
       options.rowIndex = rowIndex;
-      if (this.submissionTimezone) {
-        options.submissionTimezone = this.submissionTimezone;
-        if (column.type === 'datetime') {
-          column.widget = { ...column.widget, submissionTimezone: this.submissionTimezone };
-        }
-      }
       options.onChange = (flags = {}, changed, modified) => {
         if (changed.instance.root?.id && this.root?.id !== changed.instance.root.id) {
           changed.instance.root?.triggerChange?.(flags, changed, modified);

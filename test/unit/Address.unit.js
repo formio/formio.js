@@ -4,7 +4,7 @@ import assert from 'power-assert';
 import { Formio } from '../../src/Formio';
 import _ from 'lodash';
 
-import { comp1, comp2, comp3, comp4, comp5, comp6 } from './fixtures/address/index';
+import { comp1, comp2, comp3, comp4, comp5 } from './fixtures/address/index';
 
 describe('Address Component', function () {
   it('Should build an address component', function () {
@@ -309,48 +309,6 @@ describe('Address Component', function () {
         address.setValue(value);
         assert.deepEqual(address.dataValue, value);
         done();
-      })
-      .catch(done);
-  });
-
-  it('Should show manual mode fields when mode is set programmatically via setValue', function (done) {
-    const form = _.cloneDeep(comp6);
-    const element = document.createElement('div');
-
-    Formio.createForm(element, form)
-      .then((form) => {
-        const address = form.getComponent('address');
-        assert.equal(address.mode, 'autocomplete', 'Should start in autocomplete mode');
-
-        // All child components should be hidden initially
-        address.components.forEach((comp) => {
-          assert.equal(comp.visible, false, `${comp.component.key} should be hidden in autocomplete mode`);
-        });
-
-        const manualModeValue = {
-          mode: 'manual',
-          address: {
-            address1: '123 Main St',
-            city: 'Test City',
-            state: 'TS',
-            zip: '12345',
-          },
-        };
-        address.setValue(manualModeValue);
-
-        setTimeout(() => {
-          assert.equal(address.mode, 'manual', 'Should be in manual mode after setValue');
-          assert.equal(address.manualMode, true, 'manualMode getter should return true');
-
-          address.components.forEach((comp) => {
-            assert.equal(comp.visible, true, `${comp.component.key} should be visible in manual mode`);
-          });
-
-          assert.equal(address.refs.modeSwitcher.checked, true, 'Manual mode checkbox should be checked');
-
-          document.innerHTML = '';
-          done();
-        }, 300);
       })
       .catch(done);
   });

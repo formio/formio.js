@@ -14,12 +14,14 @@ export default [
         { label: 'URL', value: 'url' },
       ],
     },
-    'validate': {
-      'required': true
+    validate: {
+      required: true,
     },
     onChange(context) {
       if (context && context.flags && context.flags && context.flags.modified) {
-        context.data.values = [{ label: '', value: '' }];
+        context.data.values = [
+          { label: '', value: '' },
+        ];
       }
     },
   },
@@ -28,10 +30,13 @@ export default [
     input: true,
     label: 'Values',
     key: 'values',
-    tooltip: 'The radio button values that can be picked for this field. Values are text submitted with the form data. Labels are text that appears next to the radio buttons on the form.',
+    tooltip:
+      'The radio button values that can be picked for this field. Values are text submitted with the form data. Labels are text that appears next to the radio buttons on the form.',
     weight: 10,
     reorder: true,
-    defaultValue: [{ label: '', value: '' }],
+    defaultValue: [
+      { label: '', value: '' },
+    ],
     components: [
       {
         label: 'Label',
@@ -47,8 +52,8 @@ export default [
         allowCalculateOverride: true,
         calculateValue: 'value = _.camelCase(row.label);',
         validate: {
-          required: true
-        }
+          required: true,
+        },
       },
       {
         type: 'select',
@@ -65,14 +70,19 @@ export default [
           custom(context) {
             return BuilderUtils.getAvailableShortcuts(
               _.get(context, 'instance.options.editForm', {}),
-              _.get(context, 'instance.options.editComponent', {})
+              _.get(context, 'instance.options.editComponent', {}),
             );
           },
         },
       },
     ],
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'values'] },
+      json: {
+        '===': [
+          { var: 'data.dataSrc' },
+          'values',
+        ],
+      },
     },
   },
   {
@@ -81,7 +91,8 @@ export default [
     label: 'Storage Type',
     key: 'dataType',
     clearOnHide: true,
-    tooltip: 'The type to store the data. If you select something other than autotype, it will force it to that type.',
+    tooltip:
+      'The type to store the data. If you select something other than autotype, it will force it to that type.',
     weight: 12,
     template: '<span>{{ item.label }}</span>',
     dataSrc: 'values',
@@ -98,7 +109,12 @@ export default [
   {
     key: 'template',
     conditional: {
-      json: { '===': [{ var: 'data.dataSrc' }, 'url'] },
+      json: {
+        '===': [
+          { var: 'data.dataSrc' },
+          'url',
+        ],
+      },
     },
-  }
+  },
 ];

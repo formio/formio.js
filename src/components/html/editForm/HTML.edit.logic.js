@@ -83,10 +83,12 @@ export default [
                 weight: 30,
                 input: true,
                 customConditional(context) {
-                  return context.row.type === 'property' &&
+                  return (
+                    context.row.type === 'property' &&
                     context.row.hasOwnProperty('property') &&
                     context.row.property.type === 'string' &&
-                    context.row.property.component === 'content';
+                    context.row.property.component === 'content'
+                  );
                 },
               },
             ],

@@ -461,7 +461,6 @@ export default class WebformBuilder extends Component {
       component.addEventListener(component.refs.editComponent, 'click', () =>
         this.editComponent(component.schema, parent, false, false, component.component, {
           inDataGrid: component.isInDataGrid,
-          editComponentPath: component.path,
         }),
       );
     }
@@ -470,9 +469,7 @@ export default class WebformBuilder extends Component {
       this.attachTooltip(component.refs.editJson, this.t('Edit JSON'));
 
       component.addEventListener(component.refs.editJson, 'click', () =>
-        this.editComponent(component.schema, parent, false, true, component.component, {
-          editComponentPath: component.path,
-        }),
+        this.editComponent(component.schema, parent, false, true, component.component),
       );
     }
 
@@ -1163,8 +1160,6 @@ export default class WebformBuilder extends Component {
     }
 
     return rebuild.then(() => {
-      // Get the updated `toIndex` after the component has been inserted/rebuilt
-      const toIndex = _.findIndex(target.formioContainer, { key: info.key });
       this.emit(
         'addComponent',
         info,
@@ -1173,20 +1168,6 @@ export default class WebformBuilder extends Component {
         index,
         isNew && !this.options.noNewEdit && !info.noNewEdit,
       );
-      // If this is not a new component — it means it was moved
-      if (!isNew) {
-        const payload = {
-          component: info,
-          parent,
-          path,
-          fromIndex: index,
-          toIndex,
-          timestamp: new Date()
-        };
-        // New event that allows explicit tracking of reordering
-        this.emit('moveComponent', payload);
-      }
-    
       if (!isNew || this.options.noNewEdit || info.noNewEdit) {
         this.emit('change', this.form);
       }
@@ -1335,15 +1316,6 @@ export default class WebformBuilder extends Component {
       _.get(this.webform, 'form.globalSettings.sanitizeConfig');
     // Update the preview.
     if (this.preview) {
-      if (changed?.instance?.key === 'allowMultipleMasks' && changed?.value === false) {
-        const changedComp = this.preview?.getComponent(component.key);
-        if (changedComp) {
-          const emptyValue = changedComp.emptyValue;
-          changedComp.dataValue = emptyValue;
-          component.defaultValue = emptyValue;
-        }
-      }
-      
       this.preview.form = {
         components: [
           _.omit({ ...component }, [
@@ -1742,7 +1714,6 @@ export default class WebformBuilder extends Component {
     // Pass along the form being edited.
     editFormOptions.editForm = this.form;
     editFormOptions.editComponent = component;
-    editFormOptions.editComponentPath = flags.editComponentPath;
     editFormOptions.flags = flags;
 
     this.hook('editComponentParentInstance', editFormOptions, parent);

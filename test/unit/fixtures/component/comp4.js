@@ -4,7 +4,7 @@ export default {
   tableView: true,
   modalEdit: true,
   validate: {
-    required: true
+    required: true,
   },
   key: 'textField',
   type: 'textfield',

@@ -4,17 +4,19 @@ import { expect } from 'chai';
 import { Formio } from '../../src/Formio';
 import FormBuilder from '../../src/FormBuilder';
 
-describe('PDF Builder tests', () => {
-  describe('PDF Auto Conversion', () => {
-    const originalUploadFile = Formio.prototype.uploadFile;
-    const originalLoadProject = Formio.prototype.loadProject;
+describe('PDF Builder tests', function () {
+  describe('PDF Auto Conversion', function () {
+    let originalUploadFile;
+    let originalLoadProject;
 
-    after(() => {
+    after(function () {
+      originalUploadFile = Formio.prototype.uploadFile;
+      originalLoadProject = Formio.prototype.loadProject;
       Formio.prototype.uploadFile = originalUploadFile;
       Formio.prototype.loadProject = originalLoadProject;
     });
 
-    beforeEach(() => {
+    beforeEach(function () {
       Formio.prototype.loadProject = fake.resolves(null);
     });
 
@@ -39,12 +41,12 @@ describe('PDF Builder tests', () => {
               },
             },
           ],
-          ...(withNonFillable && { nonFillableConversionUsed: true })
+          ...(withNonFillable && { nonFillableConversionUsed: true }),
         },
       },
     });
 
-    it('Should assign fields from PDF auto conversion to the empty form', (done) => {
+    it('Should assign fields from PDF auto conversion to the empty form', function (done) {
       const uploadResponseMock = getUploadResponseMock();
 
       Formio.prototype.uploadFile = fake.resolves(uploadResponseMock);
@@ -55,23 +57,22 @@ describe('PDF Builder tests', () => {
         display: 'pdf',
         name: 'testPdfForm',
       };
-      const builder = new FormBuilder(document.createElement('div'), form, {});
+      Formio.builder(document.createElement('div'), form, {}).then(function (builder) {
+        builder.on('pdfUploaded', (result) => {
+          expect(result).to.be.deep.equal(uploadResponseMock.data);
+          expect(builder.webform.form.components).to.be.deep.equal(
+            uploadResponseMock.data.formfields.components,
+          );
+          expect(builder.webform.form.settings.pdf.nonFillableConversionUsed).to.be.undefined;
 
-      builder.ready
-        .then(function(builder) {
-          builder.on('pdfUploaded', (result) => {
-            expect(result).to.be.deep.equal(uploadResponseMock.data);
-            expect(builder.webform.form.components).to.be.deep.equal(uploadResponseMock.data.formfields.components);
-            expect(builder.webform.form.settings.pdf.nonFillableConversionUsed).to.be.undefined;
-
-            done();
-          });
-
-          builder.upload();
+          done();
         });
+
+        builder.upload();
+      });
     });
 
-    it('Should assign fields from PDF auto conversion to the initial form', (done) => {
+    it('Should assign fields from PDF auto conversion to the initial form', function (done) {
       const uploadResponseMock = getUploadResponseMock();
 
       Formio.prototype.uploadFile = fake.resolves(uploadResponseMock);
@@ -92,21 +93,22 @@ describe('PDF Builder tests', () => {
       };
       const builder = new FormBuilder(document.createElement('div'), form, {});
 
-      builder.ready
-        .then(function(builder) {
-          builder.on('pdfUploaded', (result) => {
-            expect(result).to.be.deep.equal(uploadResponseMock.data);
-            expect(builder.webform.form.components).to.be.deep.equal(uploadResponseMock.data.formfields.components);
-            expect(builder.webform.form.settings.pdf.nonFillableConversionUsed).to.be.undefined;
+      builder.ready.then(function (builder) {
+        builder.on('pdfUploaded', (result) => {
+          expect(result).to.be.deep.equal(uploadResponseMock.data);
+          expect(builder.webform.form.components).to.be.deep.equal(
+            uploadResponseMock.data.formfields.components,
+          );
+          expect(builder.webform.form.settings.pdf.nonFillableConversionUsed).to.be.undefined;
 
-            done();
-          });
-
-          builder.upload();
+          done();
         });
+
+        builder.upload();
+      });
     });
 
-    it('Should assign fields from PDF non fillable conversion to the initial form', (done) => {
+    it('Should assign fields from PDF non fillable conversion to the initial form', function (done) {
       const uploadResponseMock = getUploadResponseMock(true);
 
       Formio.prototype.uploadFile = fake.resolves(uploadResponseMock);
@@ -127,21 +129,22 @@ describe('PDF Builder tests', () => {
       };
       const builder = new FormBuilder(document.createElement('div'), form, {});
 
-      builder.ready
-        .then(function(builder) {
-          builder.on('pdfUploaded', (result) => {
-            expect(result).to.be.deep.equal(uploadResponseMock.data);
-            expect(builder.webform.form.components).to.be.deep.equal(uploadResponseMock.data.formfields.components);
-            expect(builder.webform.form.settings.pdf.nonFillableConversionUsed).to.be.true;
+      builder.ready.then(function (builder) {
+        builder.on('pdfUploaded', (result) => {
+          expect(result).to.be.deep.equal(uploadResponseMock.data);
+          expect(builder.webform.form.components).to.be.deep.equal(
+            uploadResponseMock.data.formfields.components,
+          );
+          expect(builder.webform.form.settings.pdf.nonFillableConversionUsed).to.be.true;
 
-            done();
-          });
-
-          builder.upload();
+          done();
         });
+
+        builder.upload();
+      });
     });
 
-    it('Should not assign fields from PDF auto conversion to non pristine form', (done) => {
+    it('Should not assign fields from PDF auto conversion to non pristine form', function (done) {
       const uploadResponseMock = getUploadResponseMock(true);
 
       Formio.prototype.uploadFile = fake.resolves(uploadResponseMock);
@@ -175,18 +178,17 @@ describe('PDF Builder tests', () => {
       };
       const builder = new FormBuilder(document.createElement('div'), form, {});
 
-      builder.ready
-        .then(function(builder) {
-          builder.on('pdfUploaded', (result) => {
-            expect(result).to.be.deep.equal(uploadResponseMock.data);
-            expect(builder.webform.form.components).to.be.deep.equal(form.components);
-            expect(builder.webform.form.settings.pdf.nonFillableConversionUsed).to.be.false;
+      builder.ready.then(function (builder) {
+        builder.on('pdfUploaded', (result) => {
+          expect(result).to.be.deep.equal(uploadResponseMock.data);
+          expect(builder.webform.form.components).to.be.deep.equal(form.components);
+          expect(builder.webform.form.settings.pdf.nonFillableConversionUsed).to.be.false;
 
-            done();
-          });
-
-          builder.upload();
+          done();
         });
+
+        builder.upload();
+      });
     });
   });
 });

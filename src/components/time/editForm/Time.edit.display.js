@@ -3,7 +3,7 @@ export default [
     type: 'select',
     input: true,
     weight: 40,
-    tooltip: 'Select the type of widget you\'d like to use.',
+    tooltip: "Select the type of widget you'd like to use.",
     key: 'inputType',
     defaultValue: 'time',
     label: 'Input Type',
@@ -36,5 +36,5 @@ export default [
   {
     key: 'placeholder',
     ignore: true,
-  }
+  },
 ];

@@ -2,13 +2,16 @@ import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class WellComponent extends NestedComponent {
   static schema(...extend) {
-    return NestedComponent.schema({
-      type: 'well',
-      key: 'well',
-      input: false,
-      persistent: false,
-      components: []
-    }, ...extend);
+    return NestedComponent.schema(
+      {
+        type: 'well',
+        key: 'well',
+        input: false,
+        persistent: false,
+        components: [],
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -19,7 +22,7 @@ export default class WellComponent extends NestedComponent {
       documentation: '/userguide/form-building/layout-components#well',
       showPreview: false,
       weight: 60,
-      schema: WellComponent.schema()
+      schema: WellComponent.schema(),
     };
   }
 

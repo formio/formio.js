@@ -29,7 +29,7 @@ export default class FormBuilder extends Form {
   /**
    * Creates a new form builder.
    * @param {HTMLElement} element - The HTML element to place the form builder.
-   * @param {string | object | undefined} form - The form to pass to the builder
+   * @param {string | object} form - The form to pass to the builder
    * @param {FormBuilderOptions} options - The options to create this builder.
    * @returns {FormBuilder} - The form builder instance.
    */

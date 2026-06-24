@@ -5,7 +5,8 @@
   "path": "testconditionsselect",
   "type": "form",
   "display": "form",
-  "components": [{
+  "components": [
+    {
       "label": "Select ref",
       "widget": "choicesjs",
       "tableView": true,
@@ -94,7 +95,8 @@
       "conditional": {
         "show": true,
         "conjunction": "all",
-        "conditions": [{
+        "conditions": [
+          {
             "component": "selectRef",
             "operator": "isEqual",
             "value": {

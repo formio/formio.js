@@ -1,8 +1,6 @@
 import enTranslation from './translations/en';
 import deTranslation from './translations/de';
-import {
-  fastCloneDeep
-} from './utils';
+import { fastCloneDeep } from './utils';
 
 export default {
   lng: 'en',
@@ -12,10 +10,10 @@ export default {
   contextSeparator: '._.',
   resources: {
     en: {
-      translation: fastCloneDeep(enTranslation)
+      translation: fastCloneDeep(enTranslation),
     },
     de: {
-      translation: fastCloneDeep(deTranslation)
-    }
-  }
+      translation: fastCloneDeep(deTranslation),
+    },
+  },
 };

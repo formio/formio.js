@@ -1,35 +1,35 @@
 export default {
-  title: "validate_submit",
-  name: "validate_submit",
-  path: "validate_submit",
-  type: "form",
-  display: "form",
+  title: 'validate_submit',
+  name: 'validate_submit',
+  path: 'validate_submit',
+  type: 'form',
+  display: 'form',
   components: [
     {
-      label: "Edit Grid",
+      label: 'Edit Grid',
       tableView: false,
       validateWhenHidden: false,
       rowDrafts: false,
-      key: "editGrid",
+      key: 'editGrid',
       validateOn: 'submit',
-      type: "editgrid",
+      type: 'editgrid',
       displayAsTable: false,
       input: true,
       components: [
         {
-          label: "Select",
-          widget: "choicesjs",
+          label: 'Select',
+          widget: 'choicesjs',
           tableView: true,
           data: {
             values: [
               {
-                label: "one",
-                value: "one",
+                label: 'one',
+                value: 'one',
               },
 
               {
-                label: "two",
-                value: "two",
+                label: 'two',
+                value: 'two',
               },
             ],
           },
@@ -38,23 +38,23 @@ export default {
           },
           validateWhenHidden: false,
           validateOn: 'submit',
-          key: "select1",
-          type: "select",
+          key: 'select1',
+          type: 'select',
           input: true,
         },
         {
-          label: "Select",
-          widget: "choicesjs",
+          label: 'Select',
+          widget: 'choicesjs',
           tableView: true,
           data: {
             values: [
               {
-                label: "three",
-                value: "three",
+                label: 'three',
+                value: 'three',
               },
               {
-                label: "four",
-                value: "four",
+                label: 'four',
+                value: 'four',
               },
             ],
           },
@@ -63,8 +63,8 @@ export default {
           },
           validateWhenHidden: false,
           validateOn: 'submit',
-          key: "select2",
-          type: "select",
+          key: 'select2',
+          type: 'select',
           input: true,
         },
       ],

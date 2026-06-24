@@ -123,8 +123,6 @@ export default class FileComponent extends Field {
     };
     this.isSyncing = false;
     this.abortUploads = [];
-    this.pendingfiles = [];
-    this.resolvedFiles = [];
   }
 
   get dataReady() {
@@ -827,43 +825,23 @@ export default class FileComponent extends Field {
     }
 
     // Check file minimum size
-    if (this.component.fileMinSize) {
-      const interpolatedMinSize = this.interpolate(this.component.fileMinSize, this.evalContext());
-      // This case is when the user entered fileMinSize expression, but did not enter or made a typo when
-      // setting the fileMinSize variable in the config of the project
-      if (!interpolatedMinSize) {
-        return {
-          status: 'error',
-          message: 'Please, check the entered parameters',
-        };
-      }
-      if (!this.validateMinSize(file, interpolatedMinSize)) {
-        return {
-          status: 'error',
-          message: this.t('fileTooSmall', {
-            size: interpolatedMinSize,
-          }),
-        };
-      }
+    if (this.component.fileMinSize && !this.validateMinSize(file, this.component.fileMinSize)) {
+      return {
+        status: 'error',
+        message: this.t('File is too small; it must be at least {{ size }}', {
+          size: this.component.fileMinSize,
+        }),
+      };
     }
 
     // Check file maximum size
-    if (this.component.fileMaxSize) {
-      const interpolatedMaxSize = this.interpolate(this.component.fileMaxSize, this.evalContext())
-      if (!interpolatedMaxSize) {
-        return {
-          status: 'error',
-          message: 'Please, check the entered parameters',
-        };
-      }
-      if (!this.validateMaxSize(file, interpolatedMaxSize)) {
-        return {
-          status: 'error',
-          message: this.t('fileTooBig', {
-            size: interpolatedMaxSize,
-          }),
-        }
-      }
+    if (this.component.fileMaxSize && !this.validateMaxSize(file, this.component.fileMaxSize)) {
+      return {
+        status: 'error',
+        message: this.t('File is too big; it must be at most {{ size }}', {
+          size: this.component.fileMaxSize,
+        }),
+      };
     }
 
     return {};
@@ -1135,7 +1113,7 @@ export default class FileComponent extends Field {
   }
 
   async uploadFile(fileToSync) {
-    const filePromise = this.fileService.uploadFile(
+    return await this.fileService.uploadFile(
       fileToSync.storage,
       fileToSync.file,
       fileToSync.name,
@@ -1148,7 +1126,7 @@ export default class FileComponent extends Field {
       fileToSync.groupPermissions,
       fileToSync.groupResourceId,
       () => {
-        this.emit('fileUploadingStart', filePromise);
+        this.emit('fileUploadingStart');
       },
       // Abort upload callback
       (abort) =>
@@ -1158,7 +1136,6 @@ export default class FileComponent extends Field {
         }),
       this.getMultipartOptions(fileToSync),
     );
-    return await filePromise;
   }
 
   async upload() {
@@ -1177,30 +1154,13 @@ export default class FileComponent extends Field {
             };
           }
 
-          if(fileToSync.status === "success") {
-            const uploadedFile = this.resolvedFiles.find(x=> x.fileToSync.originalName === fileToSync.originalName) 
-             return {
-              fileToSync: uploadedFile.fileToSync,
-              fileInfo: uploadedFile.fileInfo,
-            };
-          }
-
-          const pendingFile = this.pendingfiles.find(x => x.name === fileToSync.name);
-          if (pendingFile) {
-            fileInfo = await pendingFile.fileInfoProm;
-          }
-          else {
-            const promInfo = this.uploadFile(fileToSync);
-            this.pendingfiles.push({ name: fileToSync.name, fileInfoProm: promInfo });
-            fileInfo = await promInfo;
-          }
-          this.pendingfiles = this.pendingfiles.filter(x => x.name !== fileToSync.name);
+          fileInfo = await this.uploadFile(fileToSync);
           fileToSync.status = 'success';
           fileToSync.message = this.t('Succefully uploaded');
 
           fileInfo.originalName = fileToSync.originalName;
           fileInfo.hash = fileToSync.hash;
-          this.emit('fileUploadingEnd', Promise.resolve(fileInfo));
+          this.emit('fileUploadingEnd');
         } catch (response) {
           fileToSync.status = 'error';
           delete fileToSync.progress;
@@ -1210,21 +1170,14 @@ export default class FileComponent extends Field {
               : response.type === 'abort'
                 ? this.t('Request was aborted')
                 : response.toString();
-          this.emit('fileUploadingEnd', Promise.reject(response));
-          this.emit(
-            _.get(response, 'type') === 'abort' ? 'fileUploadCanceled' : 'fileUploadError',
-            {
-              fileToSync,
-              response,
-            }
-          );
+          this.emit('fileUploadingEnd');
+          this.emit('fileUploadError', {
+            fileToSync,
+            response,
+          });
         } finally {
           delete fileToSync.progress;
           this.redraw();
-          const fileExists = this.resolvedFiles.find(x=> x.fileInfo.originalName ===  fileToSync.originalName);
-          if (!fileExists && fileToSync.status !== 'error') {
-            this.resolvedFiles.push({ fileToSync, fileInfo })
-          }
         }
 
         return {
@@ -1247,9 +1200,6 @@ export default class FileComponent extends Field {
         this.delete(),
         this.upload(),
       ]);
-      if (filesToUpload.length !== this.filesToSync?.filesToUpload?.length) {
-        return;
-      }
       this.filesToSync.filesToDelete = filesToDelete
         .filter((file) => file.fileToSync?.status === 'error')
         .map((file) => file.fileToSync);
