@@ -13,6 +13,6 @@ export default {
   input: true,
   delimiter: true,
   defaultValue: [
-    null
-  ]
+    null,
+  ],
 };

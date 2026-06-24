@@ -1,7 +1,7 @@
 export default [
   {
     key: 'case',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'select',
@@ -9,7 +9,8 @@ export default [
     weight: 50,
     key: 'currency',
     label: 'Currency',
-    tooltip: 'The currency to use in currency formatting. Possible values are (ISO-4217) currency codes.',
+    tooltip:
+      'The currency to use in currency formatting. Possible values are (ISO-4217) currency codes.',
     defaultValue: 'USD',
     dataSrc: 'values',
     data: {
@@ -183,8 +184,8 @@ export default [
         { label: 'Dong (VND)', value: 'VND' },
         { label: 'Yemeni Rial (YER)', value: 'YER' },
         { label: 'Zambian Kwacha (ZMW)', value: 'ZMW' },
-        { label: 'Zimbabwe Dollar (ZWL),', value:  'ZWL' }
-      ]
-    }
-  }
+        { label: 'Zimbabwe Dollar (ZWL),', value: 'ZWL' },
+      ],
+    },
+  },
 ];

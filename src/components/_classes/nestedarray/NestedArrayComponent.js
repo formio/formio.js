@@ -10,13 +10,18 @@ import NestedDataComponent from '../nesteddata/NestedDataComponent';
 
 export default class NestedArrayComponent extends NestedDataComponent {
   static schema(...extend) {
-    return NestedDataComponent.schema({
-      disableAddingRemovingRows: false
-    }, ...extend);
+    return NestedDataComponent.schema(
+      {
+        disableAddingRemovingRows: false,
+      },
+      ...extend,
+    );
   }
 
   static savedValueTypes() {
-    return [componentValueTypes.array];
+    return [
+      componentValueTypes.array,
+    ];
   }
 
   componentContext(component) {
@@ -34,7 +39,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
   set rowIndex(value) {
     this.paths = getComponentPaths(this.component, this.parent?.component, {
       ...(this.parent?.paths || {}),
-      ...{ dataIndex: value }
+      ...{ dataIndex: value },
     });
     this._rowIndex = value;
   }
@@ -58,26 +63,33 @@ export default class NestedArrayComponent extends NestedDataComponent {
     row = row || this.data;
     this.checkAddButtonChanged();
 
-    return this.processRows('checkData', data, flags, Component.prototype.checkData.call(this, data, flags, row));
+    return this.processRows(
+      'checkData',
+      data,
+      flags,
+      Component.prototype.checkData.call(this, data, flags, row),
+    );
   }
 
   processRows(method, data, opts, defaultValue, silentCheck) {
-    return this.iteratableRows.reduce(
-      (valid, row, rowIndex) => {
-        if (!opts?.rowIndex || opts?.rowIndex === rowIndex) {
-          return this.processRow(method, data, opts, row.data, row.components, silentCheck) && valid;
-        }
-        else {
-          return valid;
-        }
-      },
-      defaultValue,
-    );
+    return this.iteratableRows.reduce((valid, row, rowIndex) => {
+      if (!opts?.rowIndex || opts?.rowIndex === rowIndex) {
+        return this.processRow(method, data, opts, row.data, row.components, silentCheck) && valid;
+      } else {
+        return valid;
+      }
+    }, defaultValue);
   }
 
   validate(data, flags = {}) {
     data = data || this.data;
-    return this.validateComponents([this.component], data, flags);
+    return this.validateComponents(
+      [
+        this.component,
+      ],
+      data,
+      flags,
+    );
   }
 
   checkRow(...args) {
@@ -106,15 +118,22 @@ export default class NestedArrayComponent extends NestedDataComponent {
     const maxLength = _.get(this.component, 'validate.maxLength');
     const conditionalAddButton = _.get(this.component, 'conditionalAddButton');
 
-    return !this.component.disableAddingRemovingRows &&
+    return (
+      !this.component.disableAddingRemovingRows &&
       !this.options.readOnly &&
       !this.disabled &&
       this.fullMode &&
       !this.options.preview &&
-      (!maxLength || (this.iteratableRows.length < maxLength)) &&
-      (!conditionalAddButton || this.evaluate(conditionalAddButton, {
-        value: this.dataValue,
-      }, 'show'));
+      (!maxLength || this.iteratableRows.length < maxLength) &&
+      (!conditionalAddButton ||
+        this.evaluate(
+          conditionalAddButton,
+          {
+            value: this.dataValue,
+          },
+          'show',
+        ))
+    );
   }
 
   everyComponent(fn, rowIndex, options = {}) {
@@ -143,22 +162,22 @@ export default class NestedArrayComponent extends NestedDataComponent {
 
   getValueAsString(value, options) {
     if (options?.email) {
-      let result = (`
+      let result = `
         <table border="1" style="width:100%">
           <thead>
             <tr>
-      `);
+      `;
 
       this.component.components?.forEach((component) => {
         const label = component.label || component.key;
         result += `<th style="padding: 5px 10px;">${label}</th>`;
       });
 
-      result += (`
+      result += `
           </tr>
         </thead>
         <tbody>
-      `);
+      `;
 
       this.iteratableRows.forEach(({ components }) => {
         result += '<tr>';
@@ -172,10 +191,10 @@ export default class NestedArrayComponent extends NestedDataComponent {
         result += '</tr>';
       });
 
-      result += (`
+      result += `
           </tbody>
         </table>
-      `);
+      `;
 
       return result;
     }

@@ -2,19 +2,25 @@ import assert from 'assert';
 import sinon from 'sinon';
 import fetchMock from 'fetch-mock';
 
-import { Formio } from '../../src/Formio';
 import S3 from '../../src/providers/storage/s3';
 import { withRetries } from '../../src/providers/storage/util';
 
-describe('S3 Provider', () => {
-  describe('Function Unit Tests', () => {
-    it('withRetries should retry a given function three times, then throw the provided error', (done) => {
+describe('S3 Provider', function () {
+  describe('Function Unit Tests', function () {
+    it('withRetries should retry a given function three times, then throw the provided error', function (done) {
       function sleepAndReject(ms) {
         return new Promise((_, reject) => setTimeout(reject, ms));
       }
 
       const spy = sinon.spy(sleepAndReject);
-      withRetries(spy, [200], 3, 'Custom error message').catch((err) => {
+      withRetries(
+        spy,
+        [
+          200,
+        ],
+        3,
+        'Custom error message',
+      ).catch((err) => {
         assert.equal(err.message, 'Custom error message');
         assert.equal(spy.callCount, 3);
         done();
@@ -22,9 +28,9 @@ describe('S3 Provider', () => {
     });
   });
 
-  describe('Provider Integration Tests', () => {
-    describe('AWS S3 Multipart Uploads', () => {
-      before('Mocks fetch', () => {
+  describe('Provider Integration Tests', function () {
+    describe('AWS S3 Multipart Uploads', function () {
+      before('Mocks fetch', function () {
         fetchMock
           .post('https://fakeproject.form.io/fakeform/storage/s3', {
             signed: new Array(5).fill('https://fakebucketurl.aws.com/signed'),
@@ -34,27 +40,36 @@ describe('S3 Provider', () => {
             uploadId: 'fakeuploadid',
             key: 'test.jpg',
             partSizeActual: 1,
-            data: {}
+            data: {},
           })
-          .put('https://fakebucketurl.aws.com/signed', { status: 200, headers: { 'Etag': 'fakeetag' } })
+          .put('https://fakebucketurl.aws.com/signed', {
+            status: 200,
+            headers: { Etag: 'fakeetag' },
+          })
           .post('https://fakeproject.form.io/fakeform/storage/s3/multipart/complete', 200)
           .post('https://fakeproject.form.io/fakeform/storage/s3/multipart/abort', 200);
       });
 
-      after('Restore fetch', () => {
+      after('Restore fetch', function () {
         fetchMock.restore();
       });
-      
-      it('Given an array of signed urls it should upload a file to S3 using multipart upload', (done) => {
+
+      it('Given an array of signed urls it should upload a file to S3 using multipart upload', function (done) {
         const mockFormio = {
           formUrl: 'https://fakeproject.form.io/fakeform',
-          getToken: () => {}
+          getToken: () => {},
         };
         const s3 = new S3(mockFormio);
         const uploadSpy = sinon.spy(s3, 'uploadParts');
         const completeSpy = sinon.spy(s3, 'completeMultipartUpload');
 
-        const mockFile = new File(['test!'], 'test.jpg', { type: 'image/jpeg' });
+        const mockFile = new File(
+          [
+            'test!',
+          ],
+          'test.jpg',
+          { type: 'image/jpeg' },
+        );
         s3.uploadFile(
           mockFile,
           'test.jpg',
@@ -66,7 +81,7 @@ describe('S3 Provider', () => {
           {},
           '',
           () => {},
-          { partSize: 1, changeMessage: () => {}, progressCallback: () => {} }
+          { partSize: 1, changeMessage: () => {}, progressCallback: () => {} },
         ).then((response) => {
           assert.equal(response.storage, 's3');
           assert.equal(response.name, 'test.jpg');

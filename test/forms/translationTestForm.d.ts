@@ -1,27 +1,29 @@
 declare namespace _default {
-    const type: string;
-    const components: ({
+  const type: string;
+  const components: (
+    | {
         label: string;
         tableView: boolean;
         data: {
-            values: {
-                label: string;
-                value: string;
-            }[];
+          values: {
+            label: string;
+            value: string;
+          }[];
         };
         selectThreshold: number;
         validate: {
-            required: boolean;
-            onlyAvailableItems: boolean;
+          required: boolean;
+          onlyAvailableItems: boolean;
         };
         key: string;
         type: string;
         indexeddb: {
-            filter: {};
+          filter: {};
         };
         input: boolean;
         showValidations?: undefined;
-    } | {
+      }
+    | {
         label: string;
         showValidations: boolean;
         tableView: boolean;
@@ -32,11 +34,12 @@ declare namespace _default {
         selectThreshold?: undefined;
         validate?: undefined;
         indexeddb?: undefined;
-    })[];
-    const title: string;
-    const display: string;
-    const name: string;
-    const path: string;
-    const machineName: string;
+      }
+  )[];
+  const title: string;
+  const display: string;
+  const name: string;
+  const path: string;
+  const machineName: string;
 }
 export default _default;

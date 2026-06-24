@@ -25,17 +25,15 @@ export default {
         maxLength: '',
         pattern: '',
         custom: '',
-        customPrivate: false
+        customPrivate: false,
       },
       conditional: {
         show: '',
         when: null,
-        eq: ''
+        eq: '',
       },
       type: 'textfield',
-      tags: [
-
-      ]
+      tags: [],
     },
     {
       input: true,
@@ -59,26 +57,22 @@ export default {
         maxLength: '',
         pattern: '',
         custom: '',
-        customPrivate: false
+        customPrivate: false,
       },
       conditional: {
         show: '',
         when: null,
-        eq: ''
+        eq: '',
       },
       type: 'textfield',
-      tags: [
-
-      ]
-    }
+      tags: [],
+    },
   ],
   type: 'form',
-  tags: [
-
-  ],
+  tags: [],
   conditional: {
     show: '',
     when: null,
-    eq: ''
-  }
+    eq: '',
+  },
 };

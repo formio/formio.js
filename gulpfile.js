@@ -25,7 +25,10 @@ gulp.task('builder-fonts', function builderFonts() {
 
 gulp.task('version', () => {
   return gulp
-    .src(['./lib/**/Formio.js', './lib/**/Embed.js'])
+    .src([
+      './lib/**/Formio.js',
+      './lib/**/Embed.js',
+    ])
     .pipe(replace('FORMIO_VERSION', packageJson.version))
     .pipe(gulp.dest('lib'));
 });
@@ -61,7 +64,12 @@ const compileStyles = (styles, file) => {
     .pipe(gulp.dest('dist'));
 };
 gulp.task('styles-embed', function embedStyles() {
-  return compileStyles(['./src/sass/formio.embed.scss'], 'formio.embed');
+  return compileStyles(
+    [
+      './src/sass/formio.embed.scss',
+    ],
+    'formio.embed',
+  );
 });
 gulp.task('styles-form', function formStyles() {
   return compileStyles(

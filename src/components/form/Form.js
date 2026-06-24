@@ -466,23 +466,13 @@ export default class FormComponent extends Component {
     }
   }
 
-  updateTopLevelComponentsMap() {
-    let prevRootId = null;
-    let currentRoot = this.root;
-    const subFormComponentMap = this.subForm.componentsMap;
-    // update components map for all top forms
-    while (currentRoot && prevRootId !== currentRoot.id) {
-      _.assign(currentRoot.componentsMap, subFormComponentMap);
-      prevRootId = currentRoot.id;
-      currentRoot = currentRoot.root;
-    }
-  }
-
   setComponentsMap() {
     if (!this.subForm) {
       return;
     }
-    this.updateTopLevelComponentsMap();
+    const componentsMap = this.componentsMap;
+    const formComponentsMap = this.subForm.componentsMap;
+    _.assign(componentsMap, formComponentsMap);
   }
   /**
    * Create a subform instance.
@@ -514,7 +504,7 @@ export default class FormComponent extends Component {
             this.subForm.currentForm = this;
             this.subForm.parentVisible = this.visible;
             this.setComponentsMap();
-            this.component.components = this.subForm.components.map((comp) => comp.component);
+            this.component.components = this.subForm._form?.components;
             this.component.display = this.subForm._form?.display;
             this.subForm.on('change', () => {
               if (this.subForm && !this.shouldConditionallyClear()) {
@@ -657,12 +647,10 @@ export default class FormComponent extends Component {
    * @returns {*|boolean} - TRUE if the subform should be submitted, FALSE if it should not.
    */
   get shouldSubmit() {
-    const hiddenByJsonOnly = !this.hasCondition() && this.component.hidden;
     return (
       this.subFormReady &&
       (!this.component.hasOwnProperty('reference') || this.component.reference) &&
-      !this.shouldConditionallyClear() &&
-      !(hiddenByJsonOnly && this.component.clearOnHide)
+      !this.shouldConditionallyClear()
     );
   }
 
@@ -892,9 +880,7 @@ export default class FormComponent extends Component {
       }
       this.updateSubFormVisibility();
       this.clearOnHide();
-      if (!isNestedWizard) {
-        this.redraw();
-      }
+      isNestedWizard ? this.rebuild() : this.redraw();
     }
     if (!value && isNestedWizard) {
       this.root?.redraw();

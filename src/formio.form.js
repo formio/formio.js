@@ -7,14 +7,14 @@ import Templates from './templates/Templates';
 import Providers from './providers';
 import Widgets from './widgets';
 import Form, { FormOptions } from './Form';
-import Utils, { DefaultEvaluator, Evaluator, registerEvaluator } from './utils';
+import Utils, { Evaluator, registerEvaluator, DefaultEvaluator } from './utils';
 import Licenses from './licenses';
 import EventEmitter from './EventEmitter';
 import Webform from './Webform';
 
 Formio.loadModules = (
   path = `${Formio.getApiUrl()}/externalModules.js`,
-  name = 'externalModules'
+  name = 'externalModules',
 ) => {
   Formio.requireLibrary(name, name, path, true).then((modules) => {
     Formio.use(modules);
@@ -65,7 +65,7 @@ export function registerModule(mod, defaultFn = null, options = {}) {
           Formio.Templates.extendTemplate(framework, mod.templates[framework]);
           Formio.Templates.defaultTemplates = _.defaults(
             mod.templates[framework],
-            Formio.Templates.defaultTemplates
+            Formio.Templates.defaultTemplates,
           );
         }
         if (mod.templates[current]) {
@@ -101,9 +101,12 @@ export function registerModule(mod, defaultFn = null, options = {}) {
         break;
       default:
         if (defaultFn) {
-          defaultFn(key, mod);
+          if (!defaultFn(key, mod)) {
+            console.warn('Unknown module option', key);
+          }
           break;
         }
+        console.log('Unknown module option', key);
     }
   }
 }
@@ -117,8 +120,8 @@ export function useModule(defaultFn = null) {
     plugins = _.isArray(plugins)
       ? plugins
       : [
-        plugins
-      ];
+          plugins,
+        ];
 
     plugins.forEach((plugin) => {
       if (Array.isArray(plugin)) {
@@ -153,5 +156,5 @@ export {
   EventEmitter,
   Webform,
   DefaultEvaluator,
-  FormOptions
+  FormOptions,
 };
