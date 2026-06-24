@@ -56,7 +56,12 @@ export default [
       ],
     },
     conditional: {
-      json: { '===': [{ var: 'data.action' }, 'oauth'] },
+      json: {
+        '===': [
+          { var: 'data.action' },
+          'oauth',
+        ],
+      },
     },
   },
   {
@@ -64,11 +69,17 @@ export default [
     label: 'Save in state',
     key: 'state',
     weight: 112,
-    tooltip: 'The state you wish to save the submission under when this button is pressed. Example "draft" would save the submission in Draft Mode.',
+    tooltip:
+      'The state you wish to save the submission under when this button is pressed. Example "draft" would save the submission in Draft Mode.',
     placeholder: 'submitted',
     input: true,
     conditional: {
-      json: { '===': [{ var: 'data.action' }, 'saveState'] },
+      json: {
+        '===': [
+          { var: 'data.action' },
+          'saveState',
+        ],
+      },
     },
   },
   {
@@ -80,7 +91,12 @@ export default [
     weight: 113,
     tooltip: 'Use the Enter key to submit form.',
     conditional: {
-      json: { '===': [{ var: 'data.action' }, 'submit'] },
+      json: {
+        '===': [
+          { var: 'data.action' },
+          'submit',
+        ],
+      },
     },
   },
   {
@@ -92,7 +108,12 @@ export default [
     weight: 115,
     tooltip: 'When the button is pressed, show any validation errors on the form.',
     conditional: {
-      json: { '!==': [{ var: 'data.action' }, 'submit'] },
+      json: {
+        '!==': [
+          { var: 'data.action' },
+          'submit',
+        ],
+      },
     },
   },
   {
@@ -103,7 +124,12 @@ export default [
     weight: 120,
     tooltip: 'The event to fire when the button is clicked.',
     conditional: {
-      json: { '===': [{ var: 'data.action' }, 'event'] },
+      json: {
+        '===': [
+          { var: 'data.action' },
+          'event',
+        ],
+      },
     },
   },
   {
@@ -116,7 +142,12 @@ export default [
     tooltip: 'The URL where the submission will be sent.',
     placeholder: 'https://example.form.io',
     conditional: {
-      json: { '===': [{ var: 'data.action' }, 'url'] },
+      json: {
+        '===': [
+          { var: 'data.action' },
+          'url',
+        ],
+      },
     },
   },
   {
@@ -139,10 +170,15 @@ export default [
         label: 'Value',
         input: true,
         type: 'textfield',
-      }
+      },
     ],
     conditional: {
-      json: { '===': [{ var: 'data.action' }, 'url'] },
+      json: {
+        '===': [
+          { var: 'data.action' },
+          'url',
+        ],
+      },
     },
   },
   {
@@ -156,7 +192,12 @@ export default [
     weight: 120,
     placeholder: "data['mykey'] = data['anotherKey'];",
     conditional: {
-      json: { '===': [{ var: 'data.action' }, 'custom'] },
+      json: {
+        '===': [
+          { var: 'data.action' },
+          'custom',
+        ],
+      },
     },
   },
   {
@@ -227,7 +268,7 @@ export default [
       custom(context) {
         return BuilderUtils.getAvailableShortcuts(
           _.get(context, 'instance.options.editForm', {}),
-          _.get(context, 'instance.options.editComponent', {})
+          _.get(context, 'instance.options.editComponent', {}),
         );
       },
     },

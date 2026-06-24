@@ -12,7 +12,7 @@ export default [
   },
   {
     key: 'labelMargin',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
@@ -33,7 +33,7 @@ export default [
       custom(context) {
         return BuilderUtils.getAvailableShortcuts(
           _.get(context, 'instance.options.editForm', {}),
-          _.get(context, 'instance.options.editComponent', {})
+          _.get(context, 'instance.options.editComponent', {}),
         );
       },
     },
@@ -61,7 +61,12 @@ export default [
     tooltip: 'The key used to trigger the radio button toggle.',
     weight: 420,
     conditional: {
-      json: { '===': [{ var: 'data.inputType' }, 'radio'] },
+      json: {
+        '===': [
+          { var: 'data.inputType' },
+          'radio',
+        ],
+      },
     },
   },
   {
@@ -72,7 +77,12 @@ export default [
     tooltip: 'The value used with this radio button.',
     weight: 430,
     conditional: {
-      json: { '===': [{ var: 'data.inputType' }, 'radio'] },
+      json: {
+        '===': [
+          { var: 'data.inputType' },
+          'radio',
+        ],
+      },
     },
   },
 ];

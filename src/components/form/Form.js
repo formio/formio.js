@@ -657,12 +657,10 @@ export default class FormComponent extends Component {
    * @returns {*|boolean} - TRUE if the subform should be submitted, FALSE if it should not.
    */
   get shouldSubmit() {
-    const hiddenByJsonOnly = !this.hasCondition() && this.component.hidden;
     return (
       this.subFormReady &&
       (!this.component.hasOwnProperty('reference') || this.component.reference) &&
-      !this.shouldConditionallyClear() &&
-      !(hiddenByJsonOnly && this.component.clearOnHide)
+      !this.shouldConditionallyClear()
     );
   }
 

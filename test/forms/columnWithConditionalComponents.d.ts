@@ -1,13 +1,14 @@
 declare namespace _default {
-    const type: string;
-    const components: ({
+  const type: string;
+  const components: (
+    | {
         label: string;
         optionsLabelPosition: string;
         tableView: boolean;
         values: {
-            label: string;
-            value: string;
-            shortcut: string;
+          label: string;
+          value: string;
+          shortcut: string;
         }[];
         key: string;
         type: string;
@@ -16,10 +17,12 @@ declare namespace _default {
         columns?: undefined;
         autoAdjust?: undefined;
         disableOnInvalid?: undefined;
-    } | {
+      }
+    | {
         label: string;
-        columns: ({
-            components: {
+        columns: (
+          | {
+              components: {
                 label: string;
                 tableView: boolean;
                 key: string;
@@ -27,16 +30,17 @@ declare namespace _default {
                 type: string;
                 input: boolean;
                 hideOnChildrenHidden: boolean;
-            }[];
-            width: number;
-            offset: number;
-            push: number;
-            pull: number;
-            size: string;
-            currentWidth: number;
-            element: {};
-        } | {
-            components: {
+              }[];
+              width: number;
+              offset: number;
+              push: number;
+              pull: number;
+              size: string;
+              currentWidth: number;
+              element: {};
+            }
+          | {
+              components: {
                 label: string;
                 hidden: boolean;
                 tableView: boolean;
@@ -45,15 +49,16 @@ declare namespace _default {
                 type: string;
                 input: boolean;
                 hideOnChildrenHidden: boolean;
-            }[];
-            size: string;
-            width: number;
-            offset: number;
-            push: number;
-            pull: number;
-            currentWidth: number;
-            element: {};
-        })[];
+              }[];
+              size: string;
+              width: number;
+              offset: number;
+              push: number;
+              pull: number;
+              currentWidth: number;
+              element: {};
+            }
+        )[];
         autoAdjust: boolean;
         key: string;
         type: string;
@@ -63,7 +68,8 @@ declare namespace _default {
         values?: undefined;
         inputType?: undefined;
         disableOnInvalid?: undefined;
-    } | {
+      }
+    | {
         type: string;
         label: string;
         key: string;
@@ -75,11 +81,12 @@ declare namespace _default {
         inputType?: undefined;
         columns?: undefined;
         autoAdjust?: undefined;
-    })[];
-    const title: string;
-    const display: string;
-    const name: string;
-    const path: string;
-    const machineName: string;
+      }
+  )[];
+  const title: string;
+  const display: string;
+  const name: string;
+  const path: string;
+  const machineName: string;
 }
 export default _default;

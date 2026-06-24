@@ -10,17 +10,17 @@ export default {
         {
           label: 'show',
           value: 'show',
-          shortcut: ''
+          shortcut: '',
         },
         {
           label: 'hide',
           value: 'hide',
-          shortcut: ''
-        }
+          shortcut: '',
+        },
       ],
       key: 'radio',
       type: 'radio',
-      input: true
+      input: true,
     },
     {
       label: 'Edit Grid',
@@ -28,7 +28,7 @@ export default {
       tableView: false,
       rowDrafts: false,
       key: 'editGrid',
-      customConditional: 'show = data.radio === \'show\';',
+      customConditional: "show = data.radio === 'show';",
       type: 'editgrid',
       input: true,
       components: [
@@ -37,7 +37,7 @@ export default {
           tableView: true,
           key: 'textField',
           type: 'textfield',
-          input: true
+          input: true,
         },
         {
           label: 'Select',
@@ -47,27 +47,27 @@ export default {
             values: [
               {
                 label: 'a',
-                value: 'a'
+                value: 'a',
               },
               {
                 label: 'b',
-                value: 'b'
+                value: 'b',
               },
               {
                 label: 'c',
-                value: 'c'
-              }
-            ]
+                value: 'c',
+              },
+            ],
           },
           selectThreshold: 0.3,
           key: 'select1',
           type: 'select',
           indexeddb: {
-            filter: {}
+            filter: {},
           },
-          input: true
-        }
-      ]
+          input: true,
+        },
+      ],
     },
     {
       type: 'button',
@@ -75,9 +75,8 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   display: 'form',
 };
-

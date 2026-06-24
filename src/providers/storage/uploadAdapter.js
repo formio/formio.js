@@ -11,38 +11,43 @@ class FormioUploadAdapter {
   }
 
   upload() {
-    return this.loader.file
-      .then(file => new Promise((resolve, reject) => {
-        const { uploadStorage, uploadUrl, uploadOptions, uploadDir, fileKey } = this.component.component;
-        const uploadParams = [
-          uploadStorage,
-          file,
-          uniqueName(file.name),
-          uploadDir || '', //should pass empty string if undefined
-          (evt) => this.onUploadProgress(evt),
-          uploadUrl,
-          uploadOptions,
-          fileKey,
-          null,
-          null
-        ];
+    return this.loader.file.then(
+      (file) =>
+        new Promise((resolve, reject) => {
+          const { uploadStorage, uploadUrl, uploadOptions, uploadDir, fileKey } =
+            this.component.component;
+          const uploadParams = [
+            uploadStorage,
+            file,
+            uniqueName(file.name),
+            uploadDir || '', //should pass empty string if undefined
+            (evt) => this.onUploadProgress(evt),
+            uploadUrl,
+            uploadOptions,
+            fileKey,
+            null,
+            null,
+          ];
 
-        this.fileService.uploadFile(
-          ...uploadParams,
-          () => this.component.emit('fileUploadingStart')
-        ).then((result) => {
-          return this.fileService.downloadFile(result);
-        }).then((result) => {
-          return resolve({
-            default: result.url
-          });
-        }).catch((err) => {
-          console.warn('An Error occured while uploading file', err);
-          reject(err);
-        }).finally(() => {
-          this.component.emit('fileUploadingEnd');
-        });
-      }));
+          this.fileService
+            .uploadFile(...uploadParams, () => this.component.emit('fileUploadingStart'))
+            .then((result) => {
+              return this.fileService.downloadFile(result);
+            })
+            .then((result) => {
+              return resolve({
+                default: result.url,
+              });
+            })
+            .catch((err) => {
+              console.warn('An Error occured while uploading file', err);
+              reject(err);
+            })
+            .finally(() => {
+              this.component.emit('fileUploadingEnd');
+            });
+        }),
+    );
   }
 
   abort() {}

@@ -13,8 +13,13 @@ export default [
     weight: 1000,
     input: true,
     conditional: {
-      json: { '!==': [{ var: 'data.modal' }, true] },
-    }
+      json: {
+        '!==': [
+          { var: 'data.modal' },
+          true,
+        ],
+      },
+    },
   },
   {
     type: 'checkbox',

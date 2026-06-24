@@ -25,21 +25,21 @@ export default {
             values: [
               {
                 label: 'Individual',
-                value: 'individual'
+                value: 'individual',
               },
               {
                 label: 'Entity',
-                value: 'entity'
-              }
-            ]
+                value: 'entity',
+              },
+            ],
           },
           validateWhenHidden: false,
           key: 'select',
           type: 'select',
           input: true,
-          defaultValue: 'entity'
+          defaultValue: 'entity',
         },
-      ]
+      ],
     },
     {
       type: 'button',
@@ -47,7 +47,7 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
-  ]
+      tableView: false,
+    },
+  ],
 };

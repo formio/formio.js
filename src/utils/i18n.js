@@ -13,7 +13,6 @@ for (const lang in i18n.resources) {
 export class I18n {
   languages = i18Defaults;
   language = 'en';
-  originalLanguage = 'en';
   currentLanguage = i18Defaults.en;
   constructor(languages = {}) {
     this.setLanguages(languages);
@@ -74,7 +73,6 @@ export class I18n {
   }
 
   changeLanguage(language, ready = null) {
-    this.originalLanguage = language;
     if (!this.languages[language]) {
       language = 'en';
     }

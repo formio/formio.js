@@ -1,39 +1,39 @@
 export default [
   {
     key: 'inputFormat',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'persistent',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'protected',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'dbIndex',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'encrypted',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'multiple',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'defaultValue',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'customDefaultValuePanel',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'calculateValuePanel',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'passwordInfo',
@@ -41,6 +41,7 @@ export default [
     type: 'htmlelement',
     tag: 'div',
     className: 'alert alert-info',
-    content: 'Password fields are automatically encrypted using 1-way salted bcrypt hashes. These hashes are also protected and not returned in the API.'
-  }
+    content:
+      'Password fields are automatically encrypted using 1-way salted bcrypt hashes. These hashes are also protected and not returned in the API.',
+  },
 ];

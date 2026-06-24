@@ -963,15 +963,9 @@ export default class NestedComponent extends Field {
       return component.setValue(value, flags);
     } else if (value && component.hasValue(value)) {
       return component.setValue(_.get(value, component.key), flags);
-    } 
-    // if no value is provided and noDefault flag, set empty value
-    else if (flags.noDefault && component.allowData) {
-      flags.resetValue = true;
-      return component.setValue(component.emptyValue, flags);
-    }
-    else if (
+    } else if (
       (!this.rootPristine || component.visible) &&
-      (flags.resetValue || component.shouldAddDefaultValue) 
+      (flags.resetValue || component.shouldAddDefaultValue)
     ) {
       flags.noValidate = !flags.dirty;
       flags.resetValue = true;

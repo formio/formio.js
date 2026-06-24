@@ -1,19 +1,19 @@
 export default [
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tabindex',
-    ignore: true
+    ignore: true,
   },
   {
     type: 'textfield',
     label: 'Label for Key column',
     key: 'keyLabel',
-    tooltip: 'Provide a label text for Key column (otherwise \'Key\' will be used)',
+    tooltip: "Provide a label text for Key column (otherwise 'Key' will be used)",
     weight: 404,
-    input: true
+    input: true,
   },
   {
     type: 'checkbox',
@@ -21,7 +21,7 @@ export default [
     key: 'disableAddingRemovingRows',
     tooltip: 'Check if you want to hide Add Another button and Remove Row button',
     weight: 405,
-    input: true
+    input: true,
   },
   {
     type: 'checkbox',
@@ -29,7 +29,7 @@ export default [
     key: 'keyBeforeValue',
     tooltip: 'Check if you would like to show the Key before the Value column.',
     weight: 406,
-    input: true
+    input: true,
   },
   {
     type: 'textfield',
@@ -41,6 +41,6 @@ export default [
     input: true,
     customConditional(context) {
       return !context.data.disableAddingRemovingRows;
-    }
-  }
+    },
+  },
 ];

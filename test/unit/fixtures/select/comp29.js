@@ -1,65 +1,65 @@
 export default {
   formShema: {
-    title: "Select Dropdown Issue Reproduction",
-    display: "form",
+    title: 'Select Dropdown Issue Reproduction',
+    display: 'form',
     components: [
-
       {
-        label: "Broken Panel - Select Conditionally Visible",
+        label: 'Broken Panel - Select Conditionally Visible',
         title:
-          "❌ BROKEN: Select dropdown displays incorrectly in conditionally hidden panel (simple conditional) in HTML render mode (shows values instead of labels)",
+          '❌ BROKEN: Select dropdown displays incorrectly in conditionally hidden panel (simple conditional) in HTML render mode (shows values instead of labels)',
         collapsible: false,
-        key: "brokenPanel",
+        key: 'brokenPanel',
         conditional: {
           show: true,
-          conjunction: "all",
+          conjunction: 'all',
           conditions: [
             {
-              component: "showBrokenPanel",
-              operator: "isEqual",
+              component: 'showBrokenPanel',
+              operator: 'isEqual',
               value: true,
             },
           ],
         },
-        type: "panel",
+        type: 'panel',
         components: [
           {
             input: true,
             tableView: true,
-            label: "Broken Select Dropdown",
-            key: "brokenSelect",
-            placeholder: "Select Option(s)",
+            label: 'Broken Select Dropdown',
+            key: 'brokenSelect',
+            placeholder: 'Select Option(s)',
             data: {
               values: [
                 {
-                  value: "option1",
-                  label: "First",
+                  value: 'option1',
+                  label: 'First',
                 },
                 {
-                  value: "option2",
-                  label: "Second",
+                  value: 'option2',
+                  label: 'Second',
                 },
                 {
-                  value: "option3",
-                  label: "Third",
+                  value: 'option3',
+                  label: 'Third',
                 },
-              ]
+              ],
             },
             multiple: true,
-            type: "select",
+            type: 'select',
           },
         ],
         tableView: false,
         input: false,
       },
-
     ],
-
   },
   submission: {
     data: {
       showBrokenPanel: true,
-      brokenSelect: ["option1", "option2"],
+      brokenSelect: [
+        'option1',
+        'option2',
+      ],
     },
-  }
+  },
 };

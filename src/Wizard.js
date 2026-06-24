@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import Webform from './Webform';
 import { Formio } from './Formio';
-import { fastCloneDeep, checkCondition, firstNonNil, uniqueKey, eachComponent, screenReaderSpeech } from './utils';
+import { fastCloneDeep, checkCondition, firstNonNil, uniqueKey, eachComponent } from './utils';
 
 export default class Wizard extends Webform {
   /**
@@ -831,7 +831,6 @@ export default class Wizard extends Webform {
 
   emitNextPage() {
     this.emit('nextPage', { page: this.page, submission: this.submission });
-    this.announceCurrentPage()
   }
 
   nextPage() {
@@ -884,17 +883,6 @@ export default class Wizard extends Webform {
 
   emitPrevPage() {
     this.emit('prevPage', { page: this.page, submission: this.submission });
-    this.announceCurrentPage()
-  }
-
-  announceCurrentPage() {
-    if (_.get(this.form, 'settings.wizardHeaderType', '') === 'StepIndicator') {
-      screenReaderSpeech(`Now on step ${this.page + 1} of ${this.pages.length}: ${_.get(this.currentPage, 'component.title')}`);
-      const currentLink = _.get(this.refs,`${this.wizardKey}-link.[${this.page}]`);
-      if (currentLink) {
-        currentLink.focus();
-      }
-    }
   }
 
   prevPage() {

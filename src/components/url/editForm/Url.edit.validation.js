@@ -5,6 +5,6 @@ export default [
   },
   {
     key: 'validate.maxWords',
-    ignore: true
+    ignore: true,
   },
 ];
