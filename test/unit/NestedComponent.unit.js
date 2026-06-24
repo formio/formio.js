@@ -1,31 +1,30 @@
-'use strict';
+import _ from 'lodash';
+import assert from 'power-assert';
+import { expect } from 'chai';
 import NestedComponent from '../../src/components/_classes/nested/NestedComponent';
 import Harness from '../harness';
-import assert from 'power-assert';
-import each from 'lodash/each';
-import { expect } from 'chai';
-import { comp1, comp2, comp3, comp4 } from './fixtures/nested';
-import { nestedForm } from '../fixtures';
-import _map from 'lodash/map';
+import { comp1, comp2, comp3, comp4 } from './fixtures/nested/index';
+import { nestedForm } from '../fixtures/index';
 import Webform from '../../src/Webform';
 
 let component = null;
-describe('NestedComponent class', () => {
-  it('Should create a new NestedComponent class', () => {
+
+describe('NestedComponent class', function () {
+  it('Should create a new NestedComponent class', function () {
     return Harness.testCreate(NestedComponent, {
       // key: 'nested',
       components: [
         {
           type: 'textfield',
           key: 'firstName',
-          input: true
+          input: true,
         },
         {
           type: 'textfield',
           key: 'lastName',
-          input: true
-        }
-      ]
+          input: true,
+        },
+      ],
     }).then((_component) => {
       component = _component;
       Harness.testElements(component, 'input[name="data[firstName]"]', 1);
@@ -33,46 +32,46 @@ describe('NestedComponent class', () => {
     });
   });
 
-  it('Should be able to add new components', (done) => {
+  it('Should be able to add new components', function (done) {
     component.addComponent({
       type: 'email',
       key: 'email',
-      input: true
+      input: true,
     });
     component.redraw();
     Harness.testElements(component, 'input[name="data[email]"]', 1);
     done();
   });
 
-  it('Should be able to set data within the components.', (done) => {
+  it('Should be able to set data within the components.', function (done) {
     const value = {
       firstName: 'Joe',
       lastName: 'Smith',
-      email: 'joe@example.com'
+      email: 'joe@example.com',
     };
     component.setValue(value);
     assert.deepEqual(component.getValue(), value);
-    each(component.components, (component) => {
+    _.each(component.components, (component) => {
       assert.equal(component.getValue(), value[component.key]);
     });
     done();
   });
 
-  it('Should create nested visibility elements.', () => {
+  it('Should create nested visibility elements.', function () {
     return Harness.testCreate(NestedComponent, {
       components: [
         {
           type: 'checkbox',
           key: 'showPanel',
           label: 'Show Panel',
-          input: true
+          input: true,
         },
         {
           type: 'panel',
           key: 'parent',
           title: 'Parent Panel',
           conditional: {
-            json: { var: 'data.showPanel' }
+            json: { var: 'data.showPanel' },
           },
           components: [
             {
@@ -81,8 +80,8 @@ describe('NestedComponent class', () => {
               label: 'Child 1',
               input: true,
               conditional: {
-                json: { var: 'data.showChild' }
-              }
+                json: { var: 'data.showChild' },
+              },
             },
             {
               type: 'checkbox',
@@ -91,11 +90,11 @@ describe('NestedComponent class', () => {
               input: true,
               conditional: {
                 json: { var: 'data.forceParent' },
-              }
-            }
-          ]
-        }
-      ]
+              },
+            },
+          ],
+        },
+      ],
     }).then((comp) => {
       // Make sure we built the components tree.
       assert.equal(comp.components.length, 2);
@@ -103,7 +102,7 @@ describe('NestedComponent class', () => {
       const data = {
         showPanel: true,
         showChild: false,
-        forceParent: false
+        forceParent: false,
       };
 
       comp.setValue(data);
@@ -136,12 +135,12 @@ describe('NestedComponent class', () => {
     });
   });
 
-  describe('set/get visible', () => {
-    it('should set/get visible flag on instance and child components', done => {
+  describe('set/get visible', function () {
+    it('should set/get visible flag on instance and child components', function (done) {
       Harness.testCreate(NestedComponent, comp1)
-        .then(nested => {
+        .then((nested) => {
           expect(nested.visible).to.be.true;
-          nested.components.forEach(cmp => {
+          nested.components.forEach((cmp) => {
             expect(cmp.parentVisible).to.be.true;
           });
 
@@ -149,13 +148,13 @@ describe('NestedComponent class', () => {
 
           expect(nested.visible).to.be.false;
 
-          nested.components.forEach(cmp => {
+          nested.components.forEach((cmp) => {
             expect(cmp.parentVisible).to.be.false;
           });
 
           nested.visible = true;
 
-          nested.components.forEach(cmp => {
+          nested.components.forEach((cmp) => {
             expect(cmp.parentVisible).to.be.true;
           });
 
@@ -165,13 +164,13 @@ describe('NestedComponent class', () => {
     });
   });
 
-  describe('set/get parentVisible', () => {
-    it('should set/get parentVisible flag on instance and child components', done => {
+  describe('set/get parentVisible', function () {
+    it('should set/get parentVisible flag on instance and child components', function (done) {
       Harness.testCreate(NestedComponent, comp1)
-        .then(nested => {
+        .then((nested) => {
           expect(nested.parentVisible).to.be.true;
 
-          nested.components.forEach(cmp => {
+          nested.components.forEach((cmp) => {
             expect(cmp.parentVisible).to.be.true;
           });
 
@@ -179,7 +178,7 @@ describe('NestedComponent class', () => {
 
           expect(nested.parentVisible).to.be.false;
 
-          nested.components.forEach(cmp => {
+          nested.components.forEach((cmp) => {
             expect(cmp.parentVisible).to.be.false;
           });
 
@@ -187,7 +186,7 @@ describe('NestedComponent class', () => {
 
           expect(nested.parentVisible).to.be.true;
 
-          nested.components.forEach(cmp => {
+          nested.components.forEach((cmp) => {
             expect(cmp.parentVisible).to.be.true;
           });
 
@@ -197,23 +196,31 @@ describe('NestedComponent class', () => {
     });
   });
 
-  describe('get schema', () => {
-    it('components array shouldn\'t have duplicates', done => {
+  describe('get schema', function () {
+    it("components array shouldn't have duplicates", function (done) {
       Harness.testCreate(NestedComponent, comp1)
-        .then(nested => {
+        .then((nested) => {
           const child = nested.components[0];
-          nested.components = [...nested.components, child, child, child];
+          nested.components = [
+            ...nested.components,
+            child,
+            child,
+            child,
+          ];
           expect(nested.components).to.have.lengthOf(5);
           expect(nested.schema.components).to.be.lengthOf(2);
-          expect(_map(nested.schema.components, 'key')).to.deep.equal(['firstName', 'lastName']);
+          expect(_.map(nested.schema.components, 'key')).to.deep.equal([
+            'firstName',
+            'lastName',
+          ]);
           done();
         }, done)
         .catch(done);
     });
   });
 
-  describe('Components.getComponentPath()', () => {
-    it('the first layer components', (done) => {
+  describe('Components.getComponentPath()', function () {
+    it('the first layer components', function (done) {
       Harness.testCreate(NestedComponent, comp1)
         .then((nested) => {
           assert(nested.components[0].path === 'firstName');
@@ -222,24 +229,30 @@ describe('NestedComponent class', () => {
         })
         .catch(done);
     });
-    it('inside data components', (done) => {
+
+    it('inside data components', function (done) {
       Harness.testCreate(NestedComponent, comp2)
         .then((nested) => {
           assert(nested.components[0].path === 'dataGrid');
           const dataGrid = nested.components[0];
-          dataGrid.setValue([{ textField: '' }, { textField: '' }]);
+          dataGrid.setValue([
+            { textField: '' },
+            { textField: '' },
+          ]);
           setTimeout(() => {
             assert(dataGrid.components[0].path === 'dataGrid[0].textField');
             assert(dataGrid.components[1].path === 'dataGrid[1].textField');
             done();
-          },250);
+          }, 250);
         })
         .catch(done);
     });
-    it('inside nested forms', (done) => {
+
+    it('inside nested forms', function (done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
-      form.setForm(nestedForm)
+      form
+        .setForm(nestedForm)
         .then(() => {
           assert(form.components[0].path === 'form');
 
@@ -256,7 +269,7 @@ describe('NestedComponent class', () => {
           assert(dataGrid.components[0].paths.localDataPath === 'dataGrid[0].textField');
           assert(tabs.paths.localPath === '');
           assert(tabs.path === 'form.data');
-          assert(tabs.tabs[0][0].path === 'form.data.tabsTextfield')
+          assert(tabs.tabs[0][0].path === 'form.data.tabsTextfield');
           assert(tabs.tabs[0][0].paths.localDataPath === 'tabsTextfield');
           done();
         })
@@ -265,7 +278,7 @@ describe('NestedComponent class', () => {
     // see these functions in core to see how component path is derived for checkbox components of inputType radio
     // - https://github.com/formio/core/blob/master/src/utils/formUtil.ts#L228-L240
     // - https://github.com/formio/core/blob/master/src/utils/formUtil.ts#L418-L427
-    it('returns the right path (i.e. name) for checkbox components with an inputType of radio', (done) => {
+    it('returns the right path (i.e. name) for checkbox components with an inputType of radio', function (done) {
       Harness.testCreate(NestedComponent, comp4)
         .then((nested) => {
           assert(nested.components[0].path === 'radio');
@@ -276,39 +289,47 @@ describe('NestedComponent class', () => {
     });
   });
 
-  describe('getComponent', () => {
-    it('the first layer components', (done) => {
+  describe('getComponent', function () {
+    it('the first layer components', function (done) {
       Harness.testCreate(NestedComponent, comp1)
         .then((nested) => {
           const firstNameTextFieldByStringPath = nested.getComponent('firstName');
-          const firstNameTextFieldByArrayPath = nested.getComponent(['firstName']);
+          const firstNameTextFieldByArrayPath = nested.getComponent([
+            'firstName',
+          ]);
           assert(firstNameTextFieldByStringPath.path === 'firstName');
           assert(firstNameTextFieldByArrayPath.path === 'firstName');
           done();
         })
         .catch(done);
     });
-    it('inside data components', (done) => {
+
+    it('inside data components', function (done) {
       Harness.testCreate(NestedComponent, comp2)
         .then((nested) => {
           assert(nested.components[0].path === 'dataGrid');
           const dataGrid = nested.components[0];
-          dataGrid.setValue([{ textField: '' }, { textField: '' }]);
+          dataGrid.setValue([
+            { textField: '' },
+            { textField: '' },
+          ]);
           setTimeout(() => {
-            const dataGridFirstRowTextField= nested.getComponent('dataGrid[0].textField');
-            const dataGridSecondRowTextField= nested.getComponent('dataGrid[1].textField');
+            const dataGridFirstRowTextField = nested.getComponent('dataGrid[0].textField');
+            const dataGridSecondRowTextField = nested.getComponent('dataGrid[1].textField');
 
             assert(dataGrid.components[0] === dataGridFirstRowTextField);
             assert(dataGrid.components[1] === dataGridSecondRowTextField);
             done();
-          },250);
+          }, 250);
         })
         .catch(done);
     });
-    it('inside nested forms', (done) => {
+
+    it('inside nested forms', function (done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement);
-      form.setForm(nestedForm)
+      form
+        .setForm(nestedForm)
         .then(() => {
           const childForm = form.components[0].subForm;
           const textField = form.getComponent('form.data.textField');
@@ -324,25 +345,27 @@ describe('NestedComponent class', () => {
     });
   });
 
-  describe('render value as String', () => {
-    it('Should render a Select\'s value template', (done) => {
+  describe('render value as String', function () {
+    it("Should render a Select's value template", function (done) {
       Harness.testCreate(NestedComponent, comp3)
-      .then((nested) => {
-        const editGrid = nested.components[0];
-        editGrid.addRow();
-        editGrid.editRows[0].components[0].setValue(2);
-        setTimeout(() => {
-          editGrid.saveRow(0);
+        .then((nested) => {
+          const editGrid = nested.components[0];
+          editGrid.addRow();
+          editGrid.editRows[0].components[0].setValue(2);
           setTimeout(() => {
-            assert.equal(editGrid.dataValue[0].select, 2);
-            const rowContent = editGrid.element.querySelector('[ref="editgrid-editGrid-row"] .row .col-sm-2 span');
-            assert(rowContent);
-            assert.equal(rowContent.textContent, 'Banana');
-            done();
+            editGrid.saveRow(0);
+            setTimeout(() => {
+              assert.equal(editGrid.dataValue[0].select, 2);
+              const rowContent = editGrid.element.querySelector(
+                '[ref="editgrid-editGrid-row"] .row .col-sm-2 span',
+              );
+              assert(rowContent);
+              assert.equal(rowContent.textContent, 'Banana');
+              done();
+            }, 250);
           }, 250);
-        }, 250);
-      })
-      .catch(done);
+        })
+        .catch(done);
     });
   });
 });

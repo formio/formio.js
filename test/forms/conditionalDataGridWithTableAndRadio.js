@@ -18,8 +18,8 @@ export default {
           of: '',
           weldComponentLocation: '',
           examinationDateInitial: '',
-          initialExam: ''
-        }
+          initialExam: '',
+        },
       ],
       key: 'inspectionDataGrid',
       type: 'datagrid',
@@ -44,14 +44,10 @@ export default {
               rows: [
                 [
                   {
-                    components: [
-
-                    ]
+                    components: [],
                   },
                   {
-                    components: [
-
-                    ]
+                    components: [],
                   },
                   {
                     components: [
@@ -64,25 +60,25 @@ export default {
                           {
                             label: 'Accept',
                             value: 'accept',
-                            shortcut: ''
+                            shortcut: '',
                           },
                           {
                             label: 'Reject',
                             value: 'reject',
-                            shortcut: ''
-                          }
+                            shortcut: '',
+                          },
                         ],
                         validate: {
-                          required: true
+                          required: true,
                         },
                         key: 'initialExam',
                         type: 'radio',
-                        input: true
-                      }
-                    ]
-                  }
-                ]
-              ]
+                        input: true,
+                      },
+                    ],
+                  },
+                ],
+              ],
             },
             {
               label: 'Repair Data Grid',
@@ -99,14 +95,14 @@ export default {
                 {
                   weldComponentLocationRepair: '',
                   examinationDateRepair: '',
-                  repairExam: ''
-                }
+                  repairExam: '',
+                },
               ],
               key: 'repairDataGrid',
               conditional: {
                 show: true,
                 when: 'inspectionDataGrid.initialExam',
-                eq: 'reject'
+                eq: 'reject',
               },
               type: 'datagrid',
               input: true,
@@ -122,14 +118,10 @@ export default {
                   rows: [
                     [
                       {
-                        components: [
-
-                        ]
+                        components: [],
                       },
                       {
-                        components: [
-
-                        ]
+                        components: [],
                       },
                       {
                         components: [
@@ -142,31 +134,31 @@ export default {
                               {
                                 label: 'Accept',
                                 value: 'accept',
-                                shortcut: ''
+                                shortcut: '',
                               },
                               {
                                 label: 'Reject',
                                 value: 'reject',
-                                shortcut: ''
-                              }
+                                shortcut: '',
+                              },
                             ],
                             validate: {
-                              required: true
+                              required: true,
                             },
                             key: 'repairExam',
                             type: 'radio',
-                            input: true
-                          }
-                        ]
-                      }
-                    ]
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
+                            input: true,
+                          },
+                        ],
+                      },
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     },
     {
       type: 'button',
@@ -174,8 +166,8 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   title: 'FIO-3090',
   display: 'form',

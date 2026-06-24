@@ -269,11 +269,7 @@ export default class PDFBuilder extends WebformBuilder {
         });
 
         this.emit('pdfUploaded', result.data);
-        if (autoConversionComponentsAssigned) {
-          this.rebuild();
-        } else {
-          this.redraw();
-        }
+        this.redraw();
       })
       .catch((err) => this.setUploadError(err));
   }

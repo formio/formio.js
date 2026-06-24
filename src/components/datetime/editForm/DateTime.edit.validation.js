@@ -6,7 +6,7 @@ export default [
     label: 'Use Input to add moment.js for minDate',
     persistent: false,
     weight: 10,
-    tooltip: 'Enables to use input for moment functions instead of calendar.'
+    tooltip: 'Enables to use input for moment functions instead of calendar.',
   },
   {
     label: 'Minimum Date',
@@ -59,11 +59,12 @@ export default [
     label: 'Use Input to add moment.js for maxDate',
     persistent: false,
     weight: 20,
-    tooltip: 'Enables to use input for moment functions instead of calendar.'
+    tooltip: 'Enables to use input for moment functions instead of calendar.',
   },
   {
     label: 'Maximum Date',
-    tooltip: "The maximum date that can be picked. You can also use Moment.js functions. For example: moment().add(10, 'days')",
+    tooltip:
+      "The maximum date that can be picked. You can also use Moment.js functions. For example: moment().add(10, 'days')",
     applyMaskOn: 'change',
     tableView: true,
     validateWhenHidden: false,
@@ -106,5 +107,5 @@ export default [
     enableTime: false,
     skipMerge: true,
     weight: 20,
-  }
+  },
 ];

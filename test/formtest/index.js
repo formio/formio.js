@@ -34,7 +34,7 @@ const formComponentWithConditionalRenderingForm = require('./formComponentWithCo
 const disabledNestedForm = require('./disabledNestedForm.json');
 const propertyActions = require('./propertyActions.json');
 const formWithEditGridAndNestedDraftModalRow = require('./formWithEditGridDraftModalNestedForm.json');
-const formWithDateTimeComponents = require('./formWithDateTimeComponents');
+const formWithDateTimeComponents = require('./formWithDateTimeComponents.json');
 const formWithCollapsedPanel = require('./formWithCollapsedPanel.json');
 const formWithCustomFormatDate = require('./formWithCustomFormatDate.json');
 const wizardWithHiddenPanel = require('./wizardWithHiddenPanel.json');
@@ -89,5 +89,5 @@ module.exports = {
   wizardWithTooltip,
   resourceKeyCamelCase,
   tooltipActivateCheckbox,
-  formWithObjectValueSelect
+  formWithObjectValueSelect,
 };

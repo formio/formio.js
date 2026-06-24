@@ -1,7 +1,7 @@
 import PasswordStrengthAddon from './PasswordStrength/PasswordStrengthAddon';
 
 export const editForms = [
-  PasswordStrengthAddon.info
+  PasswordStrengthAddon.info,
 ].map(({ components, name, defaultSettings }) => ({
   type: 'form',
   key: 'settings',
@@ -13,11 +13,11 @@ export const editForms = [
   }),
   tableView: false,
   defaultValue: {
-    data: defaultSettings
+    data: defaultSettings,
   },
   customConditional({ row }) {
     return row.name.value === name;
-  }
+  },
 }));
 
 export default {

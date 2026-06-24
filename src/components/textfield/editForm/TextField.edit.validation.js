@@ -6,7 +6,7 @@ export default [
     placeholder: 'Minimum Length',
     type: 'number',
     tooltip: 'The minimum length requirement this field must meet.',
-    input: true
+    input: true,
   },
   {
     weight: 120,
@@ -15,7 +15,7 @@ export default [
     placeholder: 'Maximum Length',
     type: 'number',
     tooltip: 'The maximum length requirement this field must meet.',
-    input: true
+    input: true,
   },
   {
     weight: 125,
@@ -24,7 +24,7 @@ export default [
     placeholder: 'Minimum Word Length',
     type: 'number',
     tooltip: 'The minimum amount of words that can be added to this field.',
-    input: true
+    input: true,
   },
   {
     weight: 126,
@@ -33,7 +33,7 @@ export default [
     placeholder: 'Maximum Word Length',
     type: 'number',
     tooltip: 'The maximum amount of words that can be added to this field.',
-    input: true
+    input: true,
   },
   {
     weight: 130,
@@ -41,7 +41,8 @@ export default [
     label: 'Regular Expression Pattern',
     placeholder: 'Regular Expression Pattern',
     type: 'textfield',
-    tooltip: 'The regular expression pattern test that the field value must pass before the form can be submitted.',
-    input: true
-  }
+    tooltip:
+      'The regular expression pattern test that the field value must pass before the form can be submitted.',
+    input: true,
+  },
 ];

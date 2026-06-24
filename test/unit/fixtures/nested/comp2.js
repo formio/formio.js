@@ -9,7 +9,7 @@ export default {
       enableRowGroups: false,
       tableView: false,
       defaultValue: [
-        {}
+        {},
       ],
       key: 'dataGrid',
       type: 'datagrid',
@@ -27,7 +27,7 @@ export default {
             unique: false,
             minLength: '',
             maxLength: '',
-            pattern: ''
+            pattern: '',
           },
           key: 'textField',
           type: 'textfield',
@@ -38,7 +38,7 @@ export default {
           suffix: '',
           multiple: false,
           defaultValue: null,
-          'protected': false,
+          protected: false,
           unique: false,
           persistent: true,
           hidden: false,
@@ -59,21 +59,21 @@ export default {
           calculateValue: '',
           calculateServer: false,
           widget: {
-            type: 'input'
+            type: 'input',
           },
           attributes: {},
           validateOn: 'change',
           conditional: {
             show: null,
             when: null,
-            eq: ''
+            eq: '',
           },
           overlay: {
             style: '',
             left: '',
             top: '',
             width: '',
-            height: ''
+            height: '',
           },
           allowCalculateOverride: false,
           encrypted: false,
@@ -86,15 +86,15 @@ export default {
           inputFormat: 'plain',
           inputMask: '',
           spellcheck: true,
-          id: 'emxxdbi'
-        }
+          id: 'emxxdbi',
+        },
       ],
       placeholder: '',
       prefix: '',
       customClass: '',
       suffix: '',
       multiple: false,
-      'protected': false,
+      protected: false,
       unique: false,
       persistent: true,
       hidden: false,
@@ -123,19 +123,19 @@ export default {
         customPrivate: false,
         strictDateValidation: false,
         multiple: false,
-        unique: false
+        unique: false,
       },
       conditional: {
         show: null,
         when: null,
-        eq: ''
+        eq: '',
       },
       overlay: {
         style: '',
         left: '',
         top: '',
         width: '',
-        height: ''
+        height: '',
       },
       allowCalculateOverride: false,
       encrypted: false,
@@ -145,7 +145,7 @@ export default {
       allowMultipleMasks: false,
       tree: true,
       disableAddingRemovingRows: false,
-      id: 'erygkn'
+      id: 'erygkn',
     },
     {
       label: 'Submit',
@@ -160,7 +160,7 @@ export default {
       suffix: '',
       multiple: false,
       defaultValue: null,
-      'protected': false,
+      protected: false,
       unique: false,
       persistent: false,
       hidden: false,
@@ -181,7 +181,7 @@ export default {
       calculateValue: '',
       calculateServer: false,
       widget: {
-        type: 'input'
+        type: 'input',
       },
       attributes: {},
       validateOn: 'change',
@@ -191,19 +191,19 @@ export default {
         customPrivate: false,
         strictDateValidation: false,
         multiple: false,
-        unique: false
+        unique: false,
       },
       conditional: {
         show: null,
         when: null,
-        eq: ''
+        eq: '',
       },
       overlay: {
         style: '',
         left: '',
         top: '',
         width: '',
-        height: ''
+        height: '',
       },
       allowCalculateOverride: false,
       encrypted: false,
@@ -219,7 +219,7 @@ export default {
       disableOnInvalid: false,
       theme: 'primary',
       dataGridLabel: true,
-      id: 'evn07ja'
-    }
-  ]
+      id: 'evn07ja',
+    },
+  ],
 };

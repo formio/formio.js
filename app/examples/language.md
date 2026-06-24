@@ -4,12 +4,16 @@ layout: vtabs
 section: examples
 weight: 301
 ---
+
 With Form.io, you can provide multiple languages for the forms that are rendered within your application. This
 is done like the following.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css" />
 <script src="https://cdn.form.io/js/formio.embed.js"></script>
 <div class="btn-group">
   <button type="button" class="btn btn-primary" onclick="setLanguage('sp')">Español</button>
@@ -241,4 +245,3 @@ Formio.createForm(document.getElementById('formio'), {
 </div>
 </div>
 </div>
-

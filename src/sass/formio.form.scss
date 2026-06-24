@@ -10,13 +10,6 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   content: none !important;
 }
 
-.col-md-0 {
-  flex: 0 0 0 !important;
-  max-width: 0 !important;
-  width: 0 !important;
-  padding: 0 !important;
-}
-
 .required-star {
   color: #eb0000;
 }
@@ -88,10 +81,6 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 
 .has-feedback .form-control {
   padding-right: 10px;
-}
-
-textarea.form-control {
-  height: auto;
 }
 
 .has-feedback .form-control[type='hidden'] {
@@ -342,15 +331,6 @@ td > .formio-form-group {
   overflow: hidden;
   padding-right: 25px;
   text-overflow: ellipsis;
-}
-
-/* Force remove (X) button visibility for single-select items with object values (custom dataSrc, no valueProperty). */
-.choices[data-type*='select-one']
-  .choices__list--single
-  .choices__item[data-deletable]:not([data-placeholder])
-  .choices__button {
-  display: block;
-  visibility: visible;
 }
 
 .choices__input {
@@ -1003,11 +983,6 @@ body.formio-dialog-open {
   transition:
     opacity 200ms linear,
     visibility 0ms 200ms;
-}
-
-.extra-remove-col {
-  width: 65px;
-  white-space: nowrap;
 }
 
 .formio-component-datagrid {
@@ -1914,8 +1889,4 @@ span[role='link'] {
 .justify-center {
   display: flex;
   justify-content: center;
-}
-
-.formio-form-pdf {
-  position: relative;
 }

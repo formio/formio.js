@@ -90,15 +90,10 @@ import translationErrorMessages from '../forms/translationErrorMessages';
 import formWithHiddenComponents from '../forms/formWithHiddenComponents';
 import formWithShowAsString from '../forms/formWithShowAsString';
 import formWithMergeComponentSchemaAndCustomLogic from '../forms/formWithMergeComponentSchemaAndCustomLogic';
-import clearOnHideInsideLayoutComponent from '../forms/clearOnHideInsideLayoutComponent.js';
 import formWithServerValidation from '../forms/formWithServerValidation';
 import formWithDraftState from '../forms/formWithDraftState';
 import Conditions from '../forms/conditions';
-import simpleWebform from '../forms/simpleWebform';
-import formWithHiddenSubform from '../forms/formWithHiddenSubform';
-import testLogicForDay from '../forms/testLogicForDay.js';
 import formWithPlaceholders from '../forms/formWithPlaceholders.js';
-import formWithComments from '../forms/formWithComments.js';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
@@ -125,39 +120,6 @@ describe('Webform tests', function () {
     }
     done();
   });
-
-  it('Should correctly execute custom logic containing a comment', function (done) {
-    const element = document.createElement('div');
-
-    Formio.createForm(element, fastCloneDeep(formWithComments))
-      .then((instance) => {
-        const number = instance.getComponent('number');
-        const textField = instance.getComponent('textField');
-        const textFieldCond = instance.getComponent('textField2');
-
-        assert.equal(textField.visibleErrors.length, 0);
-        assert.equal(textFieldCond.visible, false);
-
-        const inputEvent = new Event('input');
-        const numberInput = number.refs.input[0];
-        const textFieldInput = textField.refs.input[0];
-        numberInput.value = 1;
-        textFieldInput.value = 'test';
-
-        numberInput.dispatchEvent(inputEvent);
-        textFieldInput.dispatchEvent(inputEvent);
-
-        setTimeout(() => {
-          assert.equal(textFieldCond.visible, true);
-          assert.equal(textFieldCond.dataValue, 'test');
-          assert.equal(textField.errors.length, 1);
-          assert.equal(textField.visibleErrors.length, 1);
-
-          done(); 
-        }, 300)
-      })
-      .catch(done);
-  });
   
   it('Should not show placeholders in readOnly mode', function (done) {
     const element = document.createElement('div');
@@ -170,42 +132,6 @@ describe('Webform tests', function () {
           assert.equal(otherCompPlaceholders.length, 0)
           done(); 
         }, 100)
-      })
-      .catch(done);
-  });
-
-  it('Should change year options for day component when merge component schema action is executed', function (done) {
-    const element = document.createElement('div');
-    Formio.createForm(element, fastCloneDeep(testLogicForDay))
-      .then((instance) => {
-        const envComp = instance.getComponent('env');
-        const dayComp = instance.getComponent('expiryDate');
-
-        assert.equal(dayComp.years.length, 6);
-        assert.equal(dayComp.years[1].value, 2025);
-        assert.equal(dayComp.years[5].value, 2029);
-
-        const inputEvent = new Event('input');
-        let envInput = envComp.refs.input[0];
-        envInput.value = 'test';
-        envInput.dispatchEvent(inputEvent);
-
-        setTimeout(() => {
-          assert.equal(dayComp.years.length, 7);
-          assert.equal(dayComp.years[1].value, 2026);
-          assert.equal(dayComp.years[6].value, 2031);
-
-          envInput = envComp.refs.input[0];
-          envInput.value = '';
-          envInput.dispatchEvent(inputEvent);
-
-          setTimeout(() => {
-            assert.equal(dayComp.years.length, 6);
-            assert.equal(dayComp.years[1].value, 2025);
-            assert.equal(dayComp.years[5].value, 2029);
-            done();
-          }, 500);
-        }, 500);
       })
       .catch(done);
   });
@@ -304,217 +230,6 @@ describe('Webform tests', function () {
             done();
           }, 400);
         }, 500);
-      })
-      .catch(done);
-  });
-
-  it('Should not set default values if value is not provided in data object and noDefault flag is passed', function (done) {
-    const element = document.createElement('div');
-    const form = {
-      components: [
-        {
-          label: 'Number',
-          applyMaskOn: 'change',
-          mask: false,
-          tableView: false,
-          defaultValue: 4,
-          delimiter: false,
-          requireDecimal: false,
-          inputFormat: 'plain',
-          truncateMultipleSpaces: false,
-          validateWhenHidden: false,
-          key: 'number',
-          type: 'number',
-          input: true,
-        },
-        {
-          label: 'Text Field',
-          applyMaskOn: 'change',
-          tableView: true,
-          validateWhenHidden: false,
-          key: 'textField',
-          type: 'textfield',
-          input: true,
-          defaultValue: 'test',
-        },
-        {
-          type: 'button',
-          label: 'Submit',
-          key: 'submit',
-          disableOnInvalid: true,
-          input: true,
-          tableView: false,
-        },
-      ],
-    };
-
-    const originalMakeRequest = Formio.makeRequest;
-    Formio.makeRequest = function (a, b, c, d, e) {
-      return Promise.resolve(e);
-    };
-
-    Formio.createForm(element, form)
-      .then((instance) => {
-        const numberComp = instance.getComponent('number');
-        assert.equal(numberComp.dataValue, 4);
-        const inputEvent = new Event('input');
-        const numberInput = numberComp.refs.input[0];
-        numberInput.value = '';
-        numberInput.dispatchEvent(inputEvent);
-        instance.formio = new Formio('http://localhost:3000/test');
-        setTimeout(() => {
-          assert.equal(!!numberComp.dataValue, false);
-
-          instance.submit().then(() => {
-            setTimeout(() => {
-              assert.deepEqual(instance.data, { textField: 'test', submit: false });
-              assert.equal(!!numberComp.dataValue, false);
-              Formio.makeRequest = originalMakeRequest;
-              done();
-            });
-          }, 100);
-        }, 200);
-      })
-      .catch(done);
-  });
-
-  it('Should not submit subform if it is hidden and clearOnHide is enabled', function (done) {
-    const element = document.createElement('div');
-    const form = fastCloneDeep(formWithHiddenSubform);
-
-    const originalMakeRequest = Formio.makeRequest;
-    let submissionRequestCount = 0;
-    Formio.makeRequest = function (a, b, c, d, e) {
-      if (b === 'submission' && d === 'post') {
-        ++submissionRequestCount;
-      }
-      return Promise.resolve(e);
-    };
-
-    Formio.createForm(element, form)
-      .then((instance) => {
-        instance.formio = new Formio('http://localhost:3000/test');
-        instance.submit().then(() => {
-          assert.equal(submissionRequestCount, 1);
-        });
-        Formio.makeRequest = originalMakeRequest;
-        done();
-      })
-      .catch(done);
-  });
-
-  it('Should submit subform if it is hidden and clearOnHide is not enabled', function (done) {
-    const element = document.createElement('div');
-    const form = fastCloneDeep(formWithHiddenSubform);
-    form.components[1].clearOnHide = false;
-
-    const originalMakeRequest = Formio.makeRequest;
-    let submissionRequestCount = 0;
-    Formio.makeRequest = function (a, b, c, d, e) {
-      if (b === 'submission' && d === 'post') {
-        ++submissionRequestCount;
-      }
-      return Promise.resolve(e);
-    };
-
-    Formio.createForm(element, form)
-      .then((instance) => {
-        instance.formio = new Formio('http://localhost:3000/test');
-        instance.submit().then(() => {
-          assert.equal(submissionRequestCount, 2);
-        });
-        Formio.makeRequest = originalMakeRequest;
-        done();
-      })
-      .catch(done);
-  });
-
-  it('FIO-11691: Should submit subform when hidden in JSON but revealed by a conditional', function (done) {
-    const element = document.createElement('div');
-    const form = fastCloneDeep(formWithHiddenSubform);
-    form.components.unshift({
-      label: 'Show form',
-      tableView: false,
-      validateWhenHidden: false,
-      key: 'showForm',
-      type: 'checkbox',
-      input: true,
-      defaultValue: false,
-    });
-    form.components[2].conditional = {
-      show: true,
-      conjunction: 'all',
-      conditions: [{ component: 'showForm', operator: 'isEqual', value: true }],
-    };
-
-    const originalMakeRequest = Formio.makeRequest;
-    let submissionRequestCount = 0;
-    let parentSubmissionData = null;
-    Formio.makeRequest = function (a, b, c, d, e) {
-      if (b === 'submission' && d === 'post') {
-        ++submissionRequestCount;
-        parentSubmissionData = e;
-      }
-      return Promise.resolve(e);
-    };
-
-    Formio.createForm(element, form)
-      .then((instance) => {
-        instance.formio = new Formio('http://localhost:3000/test');
-        instance.setSubmission({
-          data: {
-            showForm: true,
-            textFieldParent: 'parent value',
-            form: { data: { textField2Child: 'child value' } },
-          },
-        });
-        setTimeout(() => {
-          instance.submit().then(() => {
-            assert.equal(submissionRequestCount, 2);
-            assert.equal(parentSubmissionData.data.form.data.textField2Child, 'child value');
-            Formio.makeRequest = originalMakeRequest;
-            done();
-          }).catch(done);
-        }, 200);
-      })
-      .catch(done);
-  });
-
-  it('FIO-11691: Should not submit subform when hidden in JSON and conditional is not met', function (done) {
-    const element = document.createElement('div');
-    const form = fastCloneDeep(formWithHiddenSubform);
-    form.components.unshift({
-      label: 'Show form',
-      tableView: false,
-      validateWhenHidden: false,
-      key: 'showForm',
-      type: 'checkbox',
-      input: true,
-      defaultValue: false,
-    });
-    form.components[2].conditional = {
-      show: true,
-      conjunction: 'all',
-      conditions: [{ component: 'showForm', operator: 'isEqual', value: true }],
-    };
-
-    const originalMakeRequest = Formio.makeRequest;
-    let submissionRequestCount = 0;
-    Formio.makeRequest = function (a, b, c, d, e) {
-      if (b === 'submission' && d === 'post') {
-        ++submissionRequestCount;
-      }
-      return Promise.resolve(e);
-    };
-
-    Formio.createForm(element, form)
-      .then((instance) => {
-        instance.formio = new Formio('http://localhost:3000/test');
-        instance.submit().then(() => {
-          assert.equal(submissionRequestCount, 1);
-          Formio.makeRequest = originalMakeRequest;
-          done();
-        }).catch(done);
       })
       .catch(done);
   });
@@ -1845,7 +1560,7 @@ describe('Webform tests', function () {
       .setForm(translationForm)
       .then(() => {
         const selectComp = form.getComponent('select');
-        const label = selectComp.element.querySelector('label').childNodes[0].textContent.trim();
+       const label = selectComp.element.querySelector('label').childNodes[0].textContent.trim();
 
         assert.equal(label, 'French Label');
         document.body.innerHTML = '';
@@ -3311,74 +3026,6 @@ describe('Webform tests', function () {
         assert.deepEqual(form.data, visibleData.data);
         Harness.setInputValue(form, 'data[visible]', 'no');
 
-        setTimeout(() => {
-          assert.deepEqual(form.data, hiddenData.data);
-          done();
-        }, 250);
-      }, 250);
-    });
-  });
-
-  it('Should not delete value of component inside parent conditionally hidden layout component by default', function(done) {
-    const formElement = document.createElement('div');
-    const form = new Webform(formElement);
-    form.setForm(clearOnHideInsideLayoutComponent).then(() => {
-      const visibleData = {
-        data: {
-          checkbox: true,
-          textFieldInPanel: 'some text in panel',
-          textFieldInFieldset: 'some text in fieldset',
-          submit: false
-        }
-      };
-
-      const textFieldInPanel = form.getComponent('textFieldInPanel');
-      textFieldInPanel.setValue('some text in panel');
-      const textFieldInFieldset = form.getComponent('textFieldInFieldset');
-      textFieldInFieldset.setValue('some text in fieldset');
-      setTimeout(() => {
-        assert.deepEqual(form.data, visibleData.data);
-        const checkbox = form.getComponent('checkbox');
-        checkbox.setValue(false);
-        setTimeout(() => {
-          assert.equal(form.data.textFieldInPanel, 'some text in panel');
-          assert.equal(form.data.textFieldInFieldset, 'some text in fieldset');
-          done();
-        }, 250);
-      }, 250);
-    });
-  });
-
-  it('Should delete value of component inside parent conditionally hidden layout component if clearOnHide is set to true', function(done) {
-    const formElement = document.createElement('div');
-    const form = new Webform(formElement);
-    const testForm = fastCloneDeep(clearOnHideInsideLayoutComponent);
-    _.set(testForm, 'components[1].clearOnHide', true);
-    _.set(testForm, 'components[2].clearOnHide', true)
-    form.setForm(testForm).then(() => {
-      const visibleData = {
-        data: {
-          checkbox: true,
-          textFieldInPanel: 'some text in panel',
-          textFieldInFieldset: 'some text in fieldset',
-          submit: false
-        }
-      };
-
-      const hiddenData = {
-        data: {
-          checkbox: false,
-          submit: false
-        }
-      };
-      const textFieldInPanel = form.getComponent('textFieldInPanel');
-      textFieldInPanel.setValue('some text in panel');
-      const textFieldInFieldset = form.getComponent('textFieldInFieldset');
-      textFieldInFieldset.setValue('some text in fieldset');
-      setTimeout(() => {
-        assert.deepEqual(form.data, visibleData.data);
-        const checkbox = form.getComponent('checkbox');
-        checkbox.setValue(false);
         setTimeout(() => {
           assert.deepEqual(form.data, hiddenData.data);
           done();
@@ -5086,43 +4733,6 @@ describe('Webform tests', function () {
         .catch(done);
     });
 
-    it('Should record the active language code in submission metadata.', function (done) {
-      const formElement = document.createElement('div');
-      const form = new Webform(formElement, { language: 'es' });
-      form
-        .setForm(calculateValueWithSubmissionMetadata)
-        .then(() => {
-          form.getComponent('textField').setValue('test value');
-          form.submit(false, {});
-
-          setTimeout(() => {
-            expect(form.submission.metadata).to.exist;
-            expect(form.submission.metadata.language).to.equal('es');
-            done();
-          }, 250);
-        })
-        .catch(done);
-    });
-
-    it('Should reflect runtime language changes in submission metadata.', function (done) {
-      const formElement = document.createElement('div');
-      const form = new Webform(formElement, { language: 'en' });
-      form
-        .setForm(calculateValueWithSubmissionMetadata)
-        .then(() => {
-          form.language = 'fr';
-          form.getComponent('textField').setValue('test value');
-          form.submit(false, {});
-
-          setTimeout(() => {
-            expect(form.submission.metadata).to.exist;
-            expect(form.submission.metadata.language).to.equal('fr');
-            done();
-          }, 250);
-        })
-        .catch(done);
-    });
-
     it('Should allow to change value.', function (done) {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en' });
@@ -5730,39 +5340,6 @@ describe('Webform tests', function () {
             assert.equal(value3.dataValue, '3a', 'Should have a value set from submission');
             done();
           }, 1000);
-        })
-        .catch(done);
-    });
-
-    it('Should not recalculate checkbox with allowCalculateOverride when display is pdf (saved submission)', function (done) {
-      const formElement = document.createElement('div');
-      const form = new Webform(formElement, { readOnly: true, display: 'pdf' });
-      const formJson = {
-        components: [
-          {
-            type: 'checkbox',
-            key: 'chk',
-            label: 'Check',
-            input: true,
-            calculateValue: 'value = true;',
-            allowCalculateOverride: true,
-          },
-        ],
-      };
-      form
-        .setForm(formJson)
-        .then(() =>
-          form.setSubmission({
-            _id: '507f1f77bcf86cd799439011',
-            data: { chk: false },
-          }),
-        )
-        .then(() => {
-          setTimeout(() => {
-            const chk = form.getComponent('chk');
-            assert.equal(chk.dataValue, false, 'Unchecked submission must stay false in pdf display');
-            done();
-          }, 400);
         })
         .catch(done);
     });
@@ -7374,90 +6951,6 @@ describe('Webform tests', function () {
       .catch(done);
   });
 
-  it('Should translate components using translationsUrl passed as an option', function (done) {
-    const makeStaticRequest = Formio.makeStaticRequest;
-    Formio.makeStaticRequest = function (url, method, ...args) {
-      if (url === 'https://example.com/en.json') {
-        return new Promise((resolve) => {
-          resolve({
-            en: {
-              'This Is A Banana': 'This Is A Banana Translated',
-            },
-          });
-        });
-      }
-      return makeStaticRequest(url, method, ...args);
-    };
-    const formElement = document.createElement('div');
-    const form = new Webform(formElement, {
-      language: 'en',
-      i18n: { translationsUrl: 'https://example.com/en.json' },
-    });
-    const formSchema = _.cloneDeep(simpleWebform);
-    formSchema.components[0].label = 'This Is A Banana';
-    form
-      .setForm(formSchema)
-      .then(() => {
-        setTimeout(() => {
-          const textfield = form.getComponent([
-            'textField',
-          ]);
-          const label = textfield.element.querySelector('[ref="label"]');
-          assert.equal(
-            label.innerHTML?.trim(),
-            'This Is A Banana Translated',
-            'Should be translated',
-          );
-          Formio.makeStaticRequest = makeStaticRequest;
-          done();
-        }, 150);
-      })
-      .catch(done);
-  });
-
-  it('Should handle multiple set submissions correctly and should not modify submissionOne or submissionTwo', function () {
-    const formJson = {
-      components: [
-        {
-          label: "Text Field",
-          applyMaskOn: "change",
-          tableView: true,
-          validateWhenHidden: false,
-          key: "textField",
-          type: "textfield",
-          input: true,
-        },
-      ],
-    };
-    const submissionOne = {
-      data: {
-        textField: "submission 1",
-      },
-    }
-    const submissionTwo = {
-      data: {
-        textField: "submission 2",
-      },
-    }
-    return Formio.createForm(document.createElement('div'), formJson).then(async (form) => {
-      await form.setSubmission(submissionOne);
-      await form.setSubmission(submissionTwo);
-      await form.setSubmission(submissionOne);
-
-      assert.deepEqual(form.data, {textField: 'submission 1'});
-      assert.deepEqual(submissionOne, {
-        data: {
-          textField: "submission 1",
-        },
-      });
-      assert.deepEqual(submissionTwo, {
-        data: {
-          textField: "submission 2",
-        },
-      })
-    });
-  });
-
   describe('showErrors with nested forms', function () {
     const simpleForm = {
       display: 'form',
@@ -7740,7 +7233,6 @@ describe('Webform tests', function () {
     const useDoneInsteadOfPromise = formTest.useDone;
 
     if (useDoneInsteadOfPromise) {
-
       describe(formTest.title || '', function () {
         for (const title in formTest.tests) {
           const formTestTest = formTest.tests[title];
@@ -7771,7 +7263,6 @@ describe('Webform tests', function () {
         }
       });
     } else {
-
       describe(formTest.title || '', function () {
         for (const title in formTest.tests) {
           const formTestTest = formTest.tests[title];

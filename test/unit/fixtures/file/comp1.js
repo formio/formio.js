@@ -1,16 +1,16 @@
 export default {
-  'label': 'Upload',
-  'tableView': false,
-  'storage': 'base64',
-  'webcam': false,
-  'fileTypes': [
+  label: 'Upload',
+  tableView: false,
+  storage: 'base64',
+  webcam: false,
+  fileTypes: [
     {
-      'label': '',
-      'value': ''
-    }
+      label: '',
+      value: '',
+    },
   ],
-  'calculateServer': false,
-  'key': 'upload',
-  'type': 'file',
-  'input': true
+  calculateServer: false,
+  key: 'upload',
+  type: 'file',
+  input: true,
 };

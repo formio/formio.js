@@ -6,7 +6,9 @@ export default {
   components: [
     {
       label: 'HTML',
-      attrs: [{ attr: '', value: '' }],
+      attrs: [
+        { attr: '', value: '' },
+      ],
       content: '<H1>Assessment Checklist</H1>',
       refreshOnChange: false,
       type: 'htmlelement',

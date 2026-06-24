@@ -167,7 +167,7 @@ function getConditionalPathsRecursive(conditionPaths, data) {
         });
       } else {
         currentData.forEach((x, index) => {
-          if (x && conditionPaths && !_.isNil(x[conditionPaths[currentLocalIndex]])) {
+          if (!_.isNil(x[conditionPaths[currentLocalIndex]])) {
             const compDataPath = `${currentPath}[${index}].${conditionPaths[currentLocalIndex]}`;
             conditionalPathsArray.push(compDataPath);
           }
@@ -257,21 +257,6 @@ export function checkSimpleConditional(component, condition, row, data, instance
         });
       } else {
         const value = getComponentActualValue(conditionComponentPath, data, row);
-
-        // When inside a DataGrid/EditGrid, construct a row-indexed path so that
-        // operators like isEmpty can look up the correct row's component instance.
-        let operatorPath = conditionComponentPath;
-        const dataParent = getDataParentComponent(instance);
-        if (dataParent && !_.isNil(instance?.rowIndex)) {
-          const parentPath = dataParent.paths?.localPath;
-          if (parentPath && conditionComponentPath.startsWith(`${parentPath}.`)) {
-            operatorPath = conditionComponentPath.replace(
-              `${parentPath}.`,
-              `${parentPath}[${instance.rowIndex}].`,
-            );
-          }
-        }
-
         const СonditionOperator = ConditionOperators[operator];
         return СonditionOperator
           ? new СonditionOperator().getResult({
@@ -279,7 +264,7 @@ export function checkSimpleConditional(component, condition, row, data, instance
               comparedValue,
               instance,
               component,
-              path: operatorPath,
+              path: conditionComponentPath,
             })
           : true;
       }
@@ -347,11 +332,7 @@ export function checkCustomConditional(
   instance,
 ) {
   if (typeof custom === 'string') {
-    custom = `
-      var ${variable} = true; 
-      ${custom}; 
-      return ${variable};
-    `;
+    custom = `var ${variable} = true; ${custom}; return ${variable};`;
   }
   const value =
     instance && instance.evaluate
@@ -739,18 +720,15 @@ export function shouldLoadZones(timezone) {
  * @param {string} timezone - The timezone to load.
  * @returns {Promise<any> | *} - Resolves when the zones for this timezone are loaded.
  */
-export function loadZones(url, _timezone) {
-  if (moment.zonesLoaded) {
-    return Promise.resolve();
+export function loadZones(url, timezone) {
+  if (timezone && !shouldLoadZones(timezone)) {
+    // Return non-resolving promise.
+    return new Promise(_.noop);
   }
 
   if (moment.zonesPromise) {
     return moment.zonesPromise;
   }
-
-  // Always load the full packed dataset once. The previous optimization skipped fetch when the
-  // display timezone matched the runtime zone, but moment-timezone still needs `tz.load()` for
-  // `.tz(ianaName)` and `z` formatting to work; otherwise conversions silently match server local time.
   return (moment.zonesPromise = fetch(url).then((resp) =>
     resp.json().then((zones) => {
       moment.tz.load(zones);
@@ -2006,9 +1984,9 @@ export function announceScreenReaderMessage(component, value, index = 0, forFocu
   if (forFocus) {
     setTimeout(() => {
       el.textContent = "";
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         el.textContent = combinedMessage;
-      }, 50);
+      });
     }, 150);
     return;
   }
@@ -2016,9 +1994,9 @@ export function announceScreenReaderMessage(component, value, index = 0, forFocu
   clearTimeout(el._announceTimer);
   el._announceTimer = setTimeout(() => {
     el.textContent = "";
-    setTimeout(() => {
+    requestAnimationFrame(() => {
         el.textContent = combinedMessage;
-    }, 50);
+    });
   }, 500);
 }
 

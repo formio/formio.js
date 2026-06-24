@@ -184,14 +184,6 @@ export default class DateTimeComponent extends Input {
     return FormioUtils.convertFormatToMoment(this.component.format);
   }
 
-  get timezone() {
-    const widget = this.component.widget;
-    if (widget && widget.type === 'calendar') {
-      return this.getTimezone(widget);
-    }
-    return super.timezone;
-  }
-
   isEmpty(value = this.dataValue) {
     if (value && value.toString() === 'Invalid Date') {
       return true;
@@ -230,12 +222,7 @@ export default class DateTimeComponent extends Input {
     let format = FormioUtils.convertFormatToMoment(this.component.format);
     format += format.match(/z$/) ? '' : ' z';
     const timezone = this.timezone;
-    const useTimezoneAwareFormat =
-      value &&
-      timezone &&
-      (this.options.pdf || options?.email);
-
-    if (useTimezoneAwareFormat) {
+    if (value && !this.attached && timezone) {
       if (Array.isArray(value) && this.component.multiple) {
         return value
           .map((item) =>

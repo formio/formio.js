@@ -8,7 +8,7 @@ export default {
       editor: 'ace',
       hideLabel: true,
       as: 'json',
-      input: true
+      input: true,
     },
     {
       label: 'Submit',
@@ -16,8 +16,8 @@ export default {
       tableView: false,
       key: 'submit',
       type: 'button',
-      input: true
-    }
+      input: true,
+    },
   ],
   title: 'text area tests',
   display: 'form',

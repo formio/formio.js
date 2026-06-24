@@ -8,19 +8,22 @@ import CheckboxEditValidation from './editForm/Checkbox.edit.validation';
  * @param {...any} extend - The components that extend the edit form.
  * @returns {import('@formio/core').Component[]} - The edit form components.
  */
-export default function(...extend) {
-  return Components.baseEditForm([
-    {
-      key: 'data',
-      components: CheckboxEditData
-    },
-    {
-      key: 'display',
-      components: CheckboxEditDisplay
-    },
-    {
-      key: 'validation',
-      components: CheckboxEditValidation
-    },
-  ], ...extend);
+export default function (...extend) {
+  return Components.baseEditForm(
+    [
+      {
+        key: 'data',
+        components: CheckboxEditData,
+      },
+      {
+        key: 'display',
+        components: CheckboxEditDisplay,
+      },
+      {
+        key: 'validation',
+        components: CheckboxEditValidation,
+      },
+    ],
+    ...extend,
+  );
 }

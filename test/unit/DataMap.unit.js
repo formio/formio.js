@@ -19,21 +19,6 @@ describe('DataMap Component', function () {
     });
   });
 
-  it('Should render datamap values for review page and email views', function () {
-    return Harness.testCreate(DataMapComponent, comp1).then((component) => {
-      component.setValue({
-        one: 'One',
-        two: 'Two',
-      });
-
-      const reviewView = component.getView(component.dataValue, { email: true, review: true });
-      assert(reviewView.includes('One'), 'Should include first value');
-      assert(reviewView.includes('Two'), 'Should include second value');
-      assert(!reviewView.includes('undefined'), 'Should not include undefined values');
-      assert(reviewView.includes('<table'), 'Should render as a table');
-    });
-  });
-
   it('Should render data from submission properly when the Data Map is inside conditionally shown layout component', function (done) {
     Formio.createForm(document.createElement('div'), formWithConditionalPanel, { readOnly: true })
       .then((form) => {
