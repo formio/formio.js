@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
-import { fastCloneDeep, getFocusableElements, getComponent, eachComponent } from '../../utils';
+import { fastCloneDeep, getFocusableElements, getComponent, eachComponent, screenReaderSpeech } from '../../utils';
 import dragula from 'dragula';
 
 export default class DataGridComponent extends NestedArrayComponent {
@@ -546,28 +546,19 @@ export default class DataGridComponent extends NestedArrayComponent {
       component: this.component,
       row,
     });
+    screenReaderSpeech('Row has been added');
     this.checkConditions();
     this.triggerChange?.({ modified: true, noPristineChangeOnModified: true });
     this.redraw().then(() => {
       this.focusOnNewRowElement(this.rows[index]);
-      this.announce(this.t('Row has been added'));
     });
   }
 
   updateComponentsRowIndex(components, rowIndex) {
     components.forEach((component, colIndex) => {
-      // The rowIndex setter cascades into descendants and regenerates their
-      // paths, but does not re-key them in componentsMap. Collect the slot
-      // and every descendant up front so we can re-key them after paths
-      // regenerate. Required for nested-form / sub-wizard scenarios where
-      // the outer wizard validates against its own componentsMap copy.
-      const entries = [{ instance: component, oldPath: component.paths.dataPath }];
-      if (typeof component.everyComponent === 'function') {
-        component.everyComponent((descendant) => {
-          entries.push({ instance: descendant, oldPath: descendant.paths.dataPath });
-        });
+      if (this.componentsMap[component.paths.dataPath]) {
+        delete this.componentsMap[component.paths.dataPath];
       }
-
       if (component.options?.name) {
         const newName = `[${this.key}][${rowIndex}]`;
         component.options.name = component.options.name.replace(
@@ -577,15 +568,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       }
       component.rowIndex = rowIndex;
       component.row = `${rowIndex}-${colIndex}`;
-
-      entries.forEach(({ instance, oldPath }) => {
-        instance.eachRootChildComponentsMap((map) => {
-          if (map[oldPath] === instance) {
-            delete map[oldPath];
-          }
-          map[instance.paths.dataPath] = instance;
-        });
-      });
+      this.componentsMap[component.paths.dataPath] = component;
     });
   }
 
@@ -600,6 +583,9 @@ export default class DataGridComponent extends NestedArrayComponent {
     const flags = { isReordered: !makeEmpty, resetValue: makeEmpty };
     this.splice(index, flags);
     this.emit('dataGridDeleteRow', { index });
+    if (this.rows.length > 1) {
+      screenReaderSpeech('Row has been deleted');
+    }
     const [
       row,
     ] = this.rows.splice(index, 1);
@@ -607,9 +593,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.removeRowComponents(row);
     this.updateRowsComponents(index);
     this.setValue(this.dataValue, flags);
-    this.redraw().then(() => {
-      this.announce(this.t('Row has been deleted'));
-    });
+    this.redraw();
   }
 
   removeRowComponents(row) {
@@ -673,28 +657,8 @@ export default class DataGridComponent extends NestedArrayComponent {
         if (changed.instance.root?.id && this.root?.id !== changed.instance.root.id) {
           changed.instance.root.triggerChange?.(flags, changed, modified);
         } else {
-          if (modified && !flags.noPristineChangeOnModified) {
-            this.pristine = false;
-          }
-          this.triggerRootChange(flags, {
-            instance: this,
-            component: this.component,
-            value: this.dataValue,
-            flags,
-          }, modified);
-          this.triggerRootChange(flags, changed, modified);
+          this.triggerChange?.({ modified });
         }
-
-        this.processRow(
-          'checkData',
-          null,
-          {
-            ...flags,
-            changed,
-          },
-          row,
-          _.toArray(this.rows[rowIndex]),
-        );
       };
 
       let columnComponent;

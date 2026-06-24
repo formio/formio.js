@@ -492,7 +492,9 @@ const form4 = {
       enableRowGroups: false,
       initEmpty: false,
       tableView: false,
-      defaultValue: [{}],
+      defaultValue: [
+        {},
+      ],
       key: 'dataGrid',
       type: 'datagrid',
       input: true,
@@ -917,7 +919,9 @@ const form5 = {
       key: 'number2',
       type: 'number',
       input: true,
-      defaultValue: [null],
+      defaultValue: [
+        null,
+      ],
     },
     {
       label: 'Currency 2',
@@ -1079,13 +1083,13 @@ const form8 = {
         conditions: [
           {
             component: 'container.editGrid1.editGrid2.innerSelect1',
-            operator: 'isEmpty'
-          }
-        ]
+            operator: 'isEmpty',
+          },
+        ],
       },
       type: 'textarea',
       validateWhenHidden: false,
-      input: true
+      input: true,
     },
     {
       label: 'container',
@@ -1120,17 +1124,17 @@ const form8 = {
                     values: [
                       {
                         label: '44',
-                        value: '44'
+                        value: '44',
                       },
                       {
                         label: '6t',
-                        value: '6T'
-                      }
-                    ]
+                        value: '6T',
+                      },
+                    ],
                   },
                   key: 'innerSelect1',
                   type: 'select',
-                  input: true
+                  input: true,
                 },
                 {
                   label: 'innerSelect2',
@@ -1140,19 +1144,19 @@ const form8 = {
                     values: [
                       {
                         label: 'nnn',
-                        value: 'nnn'
+                        value: 'nnn',
                       },
                       {
                         label: 'kkk',
-                        value: 'kkk'
-                      }
-                    ]
+                        value: 'kkk',
+                      },
+                    ],
                   },
                   key: 'innerSelect2',
                   type: 'select',
-                  input: true
-                }
-              ]
+                  input: true,
+                },
+              ],
             },
             {
               label: 'order',
@@ -1162,22 +1166,22 @@ const form8 = {
                 values: [
                   {
                     label: 'first',
-                    value: '1'
+                    value: '1',
                   },
                   {
                     label: 'second',
-                    value: '2'
+                    value: '2',
                   },
                   {
                     label: 'third',
-                    value: '3'
-                  }
-                ]
+                    value: '3',
+                  },
+                ],
               },
               key: 'order',
               type: 'select',
               validateWhenHidden: false,
-              input: true
+              input: true,
             },
             {
               label: 'lesson',
@@ -1187,22 +1191,22 @@ const form8 = {
                 values: [
                   {
                     label: 'math',
-                    value: 'math'
+                    value: 'math',
                   },
                   {
                     label: 'lit',
-                    value: 'lit'
-                  }
-                ]
+                    value: 'lit',
+                  },
+                ],
               },
               validateWhenHidden: false,
               key: 'lesson',
               type: 'select',
-              input: true
-            }
-          ]
-        }
-      ]
+              input: true,
+            },
+          ],
+        },
+      ],
     },
     {
       type: 'button',
@@ -1210,54 +1214,54 @@ const form8 = {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
 };
 
 const form9 = {
-  "type": "form",
-  "title": "conditionally hidden component",
-  "display": "form",
-  "path": "conditionallyhiddencomponent",
-  "components": [
+  type: 'form',
+  title: 'conditionally hidden component',
+  display: 'form',
+  path: 'conditionallyhiddencomponent',
+  components: [
     {
-      "label": "Text Field",
-      "applyMaskOn": "change",
-      "tableView": true,
-      "validateWhenHidden": false,
-      "key": "textField",
-      "type": "textfield",
-      "input": true
+      label: 'Text Field',
+      applyMaskOn: 'change',
+      tableView: true,
+      validateWhenHidden: false,
+      key: 'textField',
+      type: 'textfield',
+      input: true,
     },
     {
-      "label": "Text Field 1",
-      "applyMaskOn": "change",
-      "tableView": true,
-      "validateWhenHidden": false,
-      "key": "textField1",
-      "conditional": {
-        "show": false,
-        "conjunction": "all",
-        "conditions": [
+      label: 'Text Field 1',
+      applyMaskOn: 'change',
+      tableView: true,
+      validateWhenHidden: false,
+      key: 'textField1',
+      conditional: {
+        show: false,
+        conjunction: 'all',
+        conditions: [
           {
-            "component": "textField",
-            "operator": "includes",
-            "value": "hide"
-          }
-        ]
+            component: 'textField',
+            operator: 'includes',
+            value: 'hide',
+          },
+        ],
       },
-      "type": "textfield",
-      "input": true
+      type: 'textfield',
+      input: true,
     },
     {
-      "type": "button",
-      "label": "Submit",
-      "key": "submit",
-      "disableOnInvalid": true,
-      "input": true,
-      "tableView": false
-    }
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      disableOnInvalid: true,
+      input: true,
+      tableView: false,
+    },
   ],
 };
 
@@ -1270,5 +1274,5 @@ export default {
   form6,
   form7,
   form8,
-  form9
+  form9,
 };

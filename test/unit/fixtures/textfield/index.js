@@ -8,4 +8,15 @@ import withDisplayAndInputMasks from './comp-with-display-and-value-masks';
 import comp7 from './comp7';
 import comp8 from './comp8';
 import requiredFieldLogicComp from './requiredFieldLogicComp';
-export { comp1, comp2, comp3, comp4, comp5, comp6, comp7, comp8, withDisplayAndInputMasks, requiredFieldLogicComp };
+export {
+  comp1,
+  comp2,
+  comp3,
+  comp4,
+  comp5,
+  comp6,
+  comp7,
+  comp8,
+  withDisplayAndInputMasks,
+  requiredFieldLogicComp,
+};

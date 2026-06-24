@@ -174,7 +174,7 @@ export default class Component extends Element {
         },
 
         /**
-         * the simple conditional settings for a component.
+         * The simple conditional settings for a component.
          */
         conditional: {
           show: null,
@@ -511,25 +511,6 @@ export default class Component extends Element {
   }
 
   /**
-   * Walks this component's root chain, invoking `fn` with each ancestor root's
-   * `childComponentsMap`. Component registration is propagated up the wizard /
-   * nested-form chain at create time, so any code that mutates a registration
-   * (creation, removal, path-driven re-key) must update every map in the chain.
-   * @param {(map: object) => void} fn - Called once per root that exposes a `childComponentsMap`.
-   */
-  eachRootChildComponentsMap(fn) {
-    let currentRoot = this.root;
-    let prevRootId = null;
-    while (currentRoot && currentRoot.id !== prevRootId) {
-      if (currentRoot.childComponentsMap) {
-        fn(currentRoot.childComponentsMap);
-      }
-      prevRootId = currentRoot.id;
-      currentRoot = currentRoot.root;
-    }
-  }
-
-  /**
    * Returns if the parent should conditionally clear.
    *
    * @returns {boolean} - If the parent should conditionally clear.
@@ -547,18 +528,6 @@ export default class Component extends Element {
     }
     return false;
   }
-
-   hasCondionallyHiddenLayoutParent() {
-    let currentParent = this.parent;
-    while (currentParent) {
-      if (currentParent._conditionallyHidden && FormioUtils.isLayoutComponent(currentParent) && currentParent.component.clearOnHide === true) {
-        return true;
-      }
-      currentParent = currentParent.parent;
-    }
-    return false
-  }
-
 
   parentConditionallyHidden() {
     let currentParent = this.parent;
@@ -889,7 +858,7 @@ export default class Component extends Element {
       this._conditionallyClear = true;
       return this._conditionallyClear;
     }
-    this._conditionallyClear = this.hasSetValue ? this.hasCondionallyHiddenLayoutParent() : this.parentShouldConditionallyClear();
+    this._conditionallyClear = this.hasSetValue ? false : this.parentShouldConditionallyClear();
     return this._conditionallyClear;
   }
 
@@ -1187,22 +1156,8 @@ export default class Component extends Element {
   }
 
   renderTemplate(name, data = {}, modeOption = '') {
-    // Allow more specific template names
-    const names = [
-      `${name}-${this.component.type}-${this.key}`,
-      `${name}-${this.component.type}`,
-      `${name}-${this.key}`,
-      `${name}`,
-    ];
-    
-    // Allow template alters.
-    const mode = modeOption || this.options.renderMode || 'form';
-    const { referenceAttributeName, template } = this.getTemplate(names, mode);
-    if (referenceAttributeName) {
-      this._referenceAttributeName = referenceAttributeName;
-    }
-    
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
+    const mode = modeOption || this.options.renderMode || 'form';
     data.component = this.component;
     data.self = this;
     data.options = this.options;
@@ -1224,8 +1179,20 @@ export default class Component extends Element {
     };
     data.label = data.labelInfo || this.labelInfo;
     data.tooltip = this.getFormattedTooltip(this.component.tooltip);
-    data.customStyles = this.getCustomStyles(names);
 
+    // Allow more specific template names
+    const names = [
+      `${name}-${this.component.type}-${this.key}`,
+      `${name}-${this.component.type}`,
+      `${name}-${this.key}`,
+      `${name}`,
+    ];
+
+    // Allow template alters.
+    const { referenceAttributeName, template } = this.getTemplate(names, mode);
+    if (referenceAttributeName) {
+      this._referenceAttributeName = referenceAttributeName;
+    }
     return this.hook(
       `render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`,
       this.interpolate(template, data),
@@ -1355,14 +1322,9 @@ export default class Component extends Element {
    * @returns {string} - The submission timezone.
    */
   get submissionTimezone() {
-    if (!this.options.submissionTimezone) {
-      this.options.submissionTimezone = _.get(this.root, 'options.submissionTimezone');
-    }
-    return (
-      this.options.submissionTimezone ||
-      _.get(this.root, '_submission.metadata.timezone') ||
-      _.get(this.component, 'widget.submissionTimezone')
-    );
+    this.options.submissionTimezone =
+      this.options.submissionTimezone || _.get(this.root, 'options.submissionTimezone');
+    return this.options.submissionTimezone;
   }
 
   /**
@@ -1379,37 +1341,22 @@ export default class Component extends Element {
    * @returns {string} - The current timezone.
    */
   getTimezone(settings) {
-    settings = settings || {};
     if (settings.timezone) {
       return settings.timezone;
     }
     if (settings.displayInTimezone === 'utc') {
       return 'UTC';
     }
-
     const submissionTimezone = this.submissionTimezone;
-
-    const mode =
-      settings.displayInTimezone === '' || settings.displayInTimezone == null
-        ? 'viewer'
-        : settings.displayInTimezone;
-
-    if (this.options.pdf && submissionTimezone) {
-      return submissionTimezone;
-    }
-
-    const staticSnapshot =
-      this.options.server ||
-      this.options.renderMode === 'html' ||
-      !!this.options.viewAsHtml;
-
     if (
       submissionTimezone &&
-      (mode === 'submission' || (staticSnapshot && (mode === 'viewer' || mode === 'location')))
+      (settings.displayInTimezone === 'submission' ||
+        ((this.options.pdf || this.options.server) && settings.displayInTimezone === 'viewer'))
     ) {
       return submissionTimezone;
     }
 
+    // Return current timezone if none are provided.
     return currentTimezone();
   }
 
@@ -1437,20 +1384,6 @@ export default class Component extends Element {
       } else {
         this.refs[ref] = element.querySelectorAll(selector);
       }
-    }
-  }
-
-  /**
-   * Announces a message to screen readers via the component's live region.
-   * @param {string} message - The message to announce.
-   */
-  announce(message) {
-    const liveRegion = this.refs.liveRegion;
-    if (liveRegion) {
-      liveRegion.textContent = '';
-      setTimeout(() => {
-        liveRegion.textContent = message;
-      }, 50);
     }
   }
 
@@ -1629,7 +1562,6 @@ export default class Component extends Element {
     this.loadRefs(element, {
       messageContainer: 'single',
       tooltip: 'multiple',
-      liveRegion: 'single',
     });
 
     this.attachTooltips(this.refs.tooltip);
@@ -1900,14 +1832,14 @@ export default class Component extends Element {
       value.forEach((val, index) => {
         const widget = this.refs.input[index] && this.refs.input[index].widget;
         if (widget) {
-          values.push(widget.getValueAsString(val));
+          values.push(widget.getValueAsString(val, options));
         }
       });
       return values;
     }
 
     const widget = this.refs.input[0].widget;
-    return widget.getValueAsString(value);
+    return widget.getValueAsString(value, options);
   }
 
   /**
@@ -2013,30 +1945,15 @@ export default class Component extends Element {
       dialogClose: 'single',
     });
 
-    // Check if an element is inside shadow dom
-    const isInShadowDOM = typeof ShadowRoot !== 'undefined' && this.element?.getRootNode() instanceof ShadowRoot;
-    // if we render shadow dom inside <iframe>'s we need to get the body from the current iframe,
-    // not the general body. This is necessary to hide and show the scroll bar correctly.
-    const body = isInShadowDOM? this.element.getRootNode().host.ownerDocument.body: document.body;
-    const rootEl = isInShadowDOM? this.element.closest('.formio-form-wrapper'): document.body;
-
-    const checkModal = (method) => {
-      if (isInShadowDOM) {
-        body.style.overflow = method === 'add' ? 'hidden' : '';
-        return;
-      }
-      body.classList[method]('modal-open');
-    }
-
     dialog.refs.dialogContents.appendChild(element);
-    rootEl.appendChild(dialog);
-    checkModal('add');
+    document.body.appendChild(dialog);
+    document.body.classList.add('modal-open');
 
     dialog.close = () => {
-      checkModal('remove');
+      document.body.classList.remove('modal-open');
       dialog.dispatchEvent(new CustomEvent('close'));
     };
-    this.addEventListener(dialog, 'close', () => this.removeChildFrom(dialog, rootEl));
+    this.addEventListener(dialog, 'close', () => this.removeChildFrom(dialog, document.body));
 
     const close = (event) => {
       event.preventDefault();
@@ -2112,21 +2029,6 @@ export default class Component extends Element {
       }
     });
     return customCSS;
-  }
-  
-  /**
-   * Build custom styles from the styles form option or global config.
-   * @param {string[]} templateNames - The possible template names.
-   * @returns {{ [refName: string]: string[] }} - The custom styles object for the named template.
-   * @todo - Rename this to a better method name that doesn't clash
-   */
-  getCustomStyles(templateNames) {
-    for (const name of templateNames) {
-      if (this.options.styles?.[name]) {
-        return this.options.styles[name];
-      }
-    }
-    return {};
   }
 
   /**
@@ -3034,19 +2936,6 @@ export default class Component extends Element {
         editor.on('change', () => onChange(editor.getData()));
         return Promise.resolve(editor);
       } else {
-        // Due to an issue with ckeditor not loading styles in the shadowdom (https://github.com/ckeditor/ckeditor5/issues/15824), we need to copy cke-styles to the shadowdom
-        let current = element;
-        while (current) {
-          if (current instanceof ShadowRoot) {
-            const ckeStyles = document.querySelector('style[data-cke="true"]');
-            const clone = document.createElement('style');
-            clone.setAttribute('data-cke', 'true');
-            clone.textContent = ckeStyles.textContent;
-            current.prepend(clone);
-            break;
-          };
-          current = current.parentNode || current.host;
-        }
         return ClassicEditor.create(element, settings).then((editor) => {
           editor.model.document.on('change', () => onChange(editor.data.get()));
           return editor;
@@ -3083,7 +2972,7 @@ export default class Component extends Element {
     return Formio.requireLibrary(
       'quill',
       'Quill',
-      _.get(this.options, 'editors.quill.src', `${Formio.cdn.quill}/quill.js`),
+      _.get(this.options, 'editors.quill.src', `${Formio.cdn.quill}/quill.min.js`),
       true,
     ).then(() => {
       return Formio.requireLibrary(
@@ -3096,57 +2985,6 @@ export default class Component extends Element {
           return Promise.reject();
         }
         this.quill = new Quill(element, isIEBrowser ? { ...settings, modules: {} } : settings);
-
-        const root = element.getRootNode();
-        if (root instanceof ShadowRoot && root.getSelection) {
-          const sel = this.quill.selection;
-
-          // 1. getNativeRange: read selection from shadowRoot instead of document
-          sel.getNativeRange = () => {
-            const shadowSelection = root.getSelection();
-            if (shadowSelection == null || shadowSelection.rangeCount <= 0) return null;
-            const nativeRange = shadowSelection.getRangeAt(0);
-            if (nativeRange == null) return null;
-            return sel.normalizeNative(nativeRange);
-          };
-
-          // 2. hasFocus: check shadowRoot.activeElement instead of document.activeElement
-          sel.hasFocus = () => {
-            return root.activeElement === sel.root ||
-              (root.activeElement != null && sel.root.contains(root.activeElement));
-          };
-
-          // 3. setNativeRange: use shadowRoot's selection to add/remove ranges
-          const origSetNativeRange = sel.setNativeRange.bind(sel);
-          sel.setNativeRange = (startNode, startOffset, endNode, endOffset, force) => {
-            // Delegate to original logic for the null case (blur)
-            if (startNode == null) {
-              origSetNativeRange(null);
-              return;
-            }
-            if (!sel.hasFocus()) {
-              sel.root.focus({ preventScroll: true });
-            }
-            const shadowSelection = root.getSelection();
-            if (shadowSelection == null) return;
-            const { native } = sel.getNativeRange() || {};
-            endNode = endNode ?? startNode;
-            endOffset = endOffset ?? startOffset;
-            if (native == null || force ||
-              startNode !== native.startContainer || startOffset !== native.startOffset ||
-              endNode !== native.endContainer || endOffset !== native.endOffset) {
-              const range = document.createRange();
-              range.setStart(startNode, startOffset);
-              range.setEnd(endNode, endOffset);
-              shadowSelection.removeAllRanges();
-              shadowSelection.addRange(range);
-            }
-          };
-
-          document.addEventListener('selectionchange', () => {
-            sel.update();
-          });
-        }
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ */
         const txtArea = document.createElement('textarea');
@@ -3168,8 +3006,7 @@ export default class Component extends Element {
         this.addEventListener(element, 'click', () => this.quill.focus());
 
         // Allows users to skip toolbar items when tabbing though form
-        const queryRoot = element.getRootNode() || document;
-        const elm = queryRoot.querySelectorAll('.ql-formats > button');
+        const elm = document.querySelectorAll('.ql-formats > button');
         for (let i = 0; i < elm.length; i++) {
           elm[i].setAttribute('tabindex', '-1');
         }
@@ -3184,7 +3021,7 @@ export default class Component extends Element {
   }
 
   get shouldSanitizeValue() {
-    // Sanitize value if sanitizing for the whole content is turned off
+    // Sanitize value if sanitizing for thw whole content is turned off
     return this.options?.sanitize !== false;
   }
 
@@ -3212,7 +3049,6 @@ export default class Component extends Element {
       editor.setOptions(settings);
       editor.getSession().setMode(settings.mode);
       editor.on('change', () => onChange(editor.getValue()));
-      editor.renderer.attachToShadowRoot();
       if (settings.isUseWorkerDisabled) {
         editor.session.setUseWorker(false);
       }
@@ -3280,6 +3116,7 @@ export default class Component extends Element {
       return;
     }
     _.set(this._data, this.key, value);
+    return;
   }
 
   /**
@@ -3337,7 +3174,7 @@ export default class Component extends Element {
     );
   }
 
-   /**
+  /**
    * Determine if we should add a default value for this component.
    * @returns {boolean} - TRUE if a default value should be set
    */
@@ -4142,33 +3979,27 @@ export default class Component extends Element {
       }
     });
     this.addEventListener(element, 'blur', () => {
-      const root = this.root;
-      if (!root) {
-        return;
+      if (this.root) {
+        this.root.pendingBlur = FormioUtils.delay(() => {
+          this.emit('blur', this);
+          if (this.component.validateOn === 'blur') {
+            this.root.triggerChange?.(
+              { fromBlur: true },
+              {
+                instance: this,
+                component: this.component,
+                value: this.dataValue,
+                flags: { fromBlur: true },
+              },
+            );
+          }
+          this.root.focusedComponent = null;
+          this.root.pendingBlur = null;
+        });
       }
-      root.pendingBlur = FormioUtils.delay(() => {
-        if (!root) {
-          return;
-        }
-
-        this.emit('blur', this);
-
-        if (this.component.validateOn === 'blur') {
-          root.triggerChange?.(
-            { fromBlur: true },
-            {
-              instance: this,
-              component: this.component,
-              value: this.dataValue,
-              flags: { fromBlur: true },
-            },
-          );
-        }
-        root.focusedComponent = null;
-        root.pendingBlur = null;
-      });
     });
   }
+
   setCustomValidity(messages, dirty, external) {
     const inputRefs = this.isInputComponent ? this.refs.input || [] : null;
 

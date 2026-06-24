@@ -15,8 +15,7 @@ const form1 = {
       input: true,
       components: [
         {
-          label:
-            "A select with the same key of a container in tab1. Select the option 'more'",
+          label: "A select with the same key of a container in tab1. Select the option 'more'",
           widget: 'choicesjs',
           tableView: true,
           data: {
@@ -141,7 +140,9 @@ const form2 = {
       enableRowGroups: false,
       initEmpty: false,
       tableView: false,
-      defaultValue: [{}],
+      defaultValue: [
+        {},
+      ],
       validateWhenHidden: false,
       key: 'dataGrid',
       type: 'datagrid',

@@ -2,11 +2,14 @@ import Input from '../_classes/input/Input';
 
 export default class HiddenComponent extends Input {
   static schema(...extend) {
-    return Input.schema({
-      type: 'hidden',
-      tableView: false,
-      inputType: 'hidden'
-    }, ...extend);
+    return Input.schema(
+      {
+        type: 'hidden',
+        tableView: false,
+        inputType: 'hidden',
+      },
+      ...extend,
+    );
   }
 
   static get builderInfo() {
@@ -17,7 +20,7 @@ export default class HiddenComponent extends Input {
       weight: 0,
       documentation: '/userguide/form-building/data-components#hidden',
       showPreview: false,
-      schema: HiddenComponent.schema()
+      schema: HiddenComponent.schema(),
     };
   }
 

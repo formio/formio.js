@@ -4,7 +4,6 @@ import _ from 'lodash';
 import Harness from '../harness';
 import { Formio } from '../../src/Formio';
 import NumberComponent from '../../src/components/number/Number';
-import { wait } from '../util';
 
 import {
   comp1,
@@ -27,43 +26,6 @@ describe('Number Component', function () {
       Harness.testElements(component, 'input[type="text"]', 1);
     });
   });
-
-  it('Invalid string calculateValue sets value to null without error', async function () {
-    const compCloned = _.cloneDeep(comp8);
-    compCloned.components[0].calculateValue = "value =  'hotdogs'";
-    compCloned.components[1].disableOnInvalid = false;
-    const form = await Formio.createForm(document.createElement('div'), compCloned, {});
-    const submitBtn = form.element.querySelector('[name="data[submit]"]');
-    submitBtn.dispatchEvent(new Event('click'));
-    await wait(300);
-    assert.equal(form.visibleErrors.length, 0, 'Should not contain error');
-  });
-
-  it('Valid string calculateValue sets without error', async function () {
-    const compCloned = _.cloneDeep(comp8);
-    compCloned.components[0].calculateValue = "value =  '000.0123'";
-    compCloned.components[1].disableOnInvalid = false;
-    const form = await Formio.createForm(document.createElement('div'), compCloned, {});
-    const submitBtn = form.element.querySelector('[name="data[submit]"]');
-    submitBtn.dispatchEvent(new Event('click'));
-    await wait(300);
-    assert.equal(form.visibleErrors.length, 0, 'Should not contain error');
-    assert.equal(form.data.number, 0.0123);
-  });
-
-  it('Should parse correct array values to number if it possible and sets values to data without error', async function () {
-    const compCloned = _.cloneDeep(comp8);
-    compCloned.components[0].calculateValue = "value =  ['20', 1, 'dog', 4]"
-    compCloned.components[0].multiple = true;
-    compCloned.components[1].disableOnInvalid = false;
-    const form = await Formio.createForm(document.createElement('div'), compCloned, {});
-    const submitBtn = form.element.querySelector('[name="data[submit]"]');
-    submitBtn.dispatchEvent(new Event('click'));
-    await wait(300);
-    assert.equal(form.visibleErrors.length, 0, 'Should not contain error');
-    assert.deepEqual(form.data.number, [20, 1, null, 4]);
-  });
-
 
   it('Should correctly handle scientific notation', function () {
     return Harness.testCreate(NumberComponent, scientificNotation).then((component) => {

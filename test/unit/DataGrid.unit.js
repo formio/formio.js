@@ -19,9 +19,7 @@ import {
   comp10,
   comp11,
   comp12,
-  comp13,
   comp14,
-  comp15,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
@@ -36,7 +34,6 @@ import {
   dataGridWithNestedFormWithNestedForm,
   dataGridChildForm,
   dataGridGrandChildForm,
-  withIsEmptyConditional,
 } from './fixtures/datagrid/index';
 
 describe('DataGrid Component', function () {
@@ -754,58 +751,6 @@ describe('DataGrid Component', function () {
     });
   });
 
-  it('Should re-key descendant componentsMap entries when removing a row in a nested DataGrid', function () {
-    return Harness.testCreate(DataGridComponent, {
-      label: 'Datagrid',
-      key: 'dataGrid',
-      type: 'datagrid',
-      input: true,
-      defaultValue: [
-        {},
-      ],
-      components: [
-        {
-          label: 'Columns',
-          key: 'columns',
-          type: 'columns',
-          input: false,
-          columns: [
-            {
-              size: 'md',
-              width: 12,
-              components: [
-                {
-                  label: 'Leaf',
-                  key: 'leaf',
-                  type: 'textfield',
-                  input: true,
-                  validate: { required: true },
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    }).then((component) => {
-      component.addRow();
-      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[0].leaf'), true);
-      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[1].leaf'), true);
-      component.removeRow(0);
-      assert.equal(
-        component.componentsMap.hasOwnProperty('dataGrid[0].leaf'),
-        true,
-        'surviving row leaf should be re-keyed at index 0',
-      );
-      assert.equal(
-        component.componentsMap.hasOwnProperty('dataGrid[1].leaf'),
-        false,
-        'old index-1 leaf key should be cleared',
-      );
-      // The surviving leaf instance must be the one that's now under [0].
-      assert.equal(component.componentsMap['dataGrid[0].leaf'].paths.dataPath, 'dataGrid[0].leaf');
-    });
-  });
-
   it('Should include default values of the nested components for the first row in submission payload', function (done) {
     Formio.createForm(document.createElement('div'), {
       type: 'form',
@@ -860,121 +805,6 @@ describe('DataGrid Component', function () {
         done();
       })
       .catch((err) => done(err));
-  });
-
-  it('Should allow to Clear Value On Refresh Options for the Select component in Data Grid', (done) => {
-    Formio.createForm(document.createElement('div'), comp13)
-    .then(async (form) => {
-      const timeout = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
-      const dataGrid = form.getComponent('dataGrid');
-      const number = form.getComponent(['dataGrid', 0, 'number']);
-      const select = form.getComponent(['dataGrid', 0, 'select']);
-      await select.itemsLoaded;
-      select.setValue('q');
-
-      // timeout(50) need to complete triggerChange
-      await Promise.all([select.itemsLoaded, timeout(50)]);
-
-      assert.equal(select.getValue(), 'q');
-      assert.deepEqual(dataGrid.getValue(), [{ select: 'q' }]);
-      const numberInput = number.refs.input[0];
-      const numberValue = 5;
-      const inputEvent = new Event('input');
-      numberInput.value = numberValue;
-      numberInput.dispatchEvent(inputEvent);
-
-      await timeout(500);
-
-      assert.equal(select.getValue(), '');
-      assert.deepEqual(dataGrid.getValue(), [{ select: '', number: 5 }]);
-
-      done();      
-    });
-  });
-
-  it('Should allow to Clear Value On Refresh Options for the Select component based on Data Grid', (done) => {
-    Formio.createForm(document.createElement('div'), comp15)
-    .then(async (form) => {
-      const timeout = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
-      const dataGrid = form.getComponent('dataGrid');
-      const textField = form.getComponent(['dataGrid', 0, 'textField']);
-      const select = form.getComponent(['selectClearValueOnDataGridChange']);
-      await select.itemsLoaded;
-      select.setValue('b');
-
-      // timeout(50) need to complete triggerChange
-      await Promise.all([select.itemsLoaded, timeout(50)]);
-
-      assert.equal(select.getValue(), 'b');
-      assert.deepEqual(dataGrid.getValue(), [{ textField: '' }]);
-      const textFieldInput = textField.refs.input[0];
-      const inputEvent = new Event('input');
-      textFieldInput.value = 'test';
-      textFieldInput.dispatchEvent(inputEvent);
-
-      await timeout(500);
-      assert.equal(select.getValue(), '');
-      assert.deepEqual(dataGrid.getValue(), [{ textField: 'test' }]);
-
-      done();
-    });
-  });
-
-  it('Should emit a single form change with the originating child component when a field inside a Data Grid changes', (done) => {
-    const formDef = {
-      display: 'form',
-      components: [
-        {
-          label: 'Products',
-          key: 'products',
-          type: 'datagrid',
-          input: true,
-          tableView: false,
-          components: [
-            {
-              label: 'Name',
-              key: 'name',
-              type: 'textfield',
-              input: true,
-              tableView: true,
-              applyMaskOn: 'change',
-            },
-          ],
-          defaultValue: [{ name: '' }],
-        },
-      ],
-    };
-
-    Formio.createForm(document.createElement('div'), formDef)
-    .then(async (form) => {
-      const timeout = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
-      const name = form.getComponent(['products', 0, 'name']);
-
-      await timeout(200);
-
-      const changedComponents = [];
-      form.on('change', (value) => {
-        if (value && value.changed && value.changed.component) {
-          changedComponents.push(value.changed.component.key);
-        }
-      });
-
-      const nameInput = name.refs.input[0];
-      const inputEvent = new Event('input');
-      nameInput.value = 'hello';
-      nameInput.dispatchEvent(inputEvent);
-
-      await timeout(500);
-
-      assert.deepStrictEqual(
-        changedComponents,
-        ['name'],
-        `expected exactly one form change event with changed.component.key === 'name', got: ${JSON.stringify(changedComponents)}`,
-      );
-
-      done();
-    })
-    .catch(done);
   });
 
   describe('DataGrid Panels', function () {
@@ -1555,42 +1385,6 @@ describe('DataGrid Component', function () {
           }, 100);
         })
         .catch((err) => done(err));
-    });
-
-    it('Should evaluate isEmpty conditional per-row with multiple rows', async function () {
-      const form = await Formio.createForm(document.createElement('div'), _.cloneDeep(withIsEmptyConditional));
-      const dataGrid = form.getComponent('dataGrid');
-
-      // Add a second row
-      dataGrid.addRow();
-      await wait(300);
-
-      // Both rows have empty textFields, so both Numbers should be visible (isEmpty = true)
-      assert.equal(form.getComponent('dataGrid[0].number').visible, true, 'Row 0 number should be visible when textField is empty');
-      assert.equal(form.getComponent('dataGrid[1].number').visible, true, 'Row 1 number should be visible when textField is empty');
-
-      // Type into row 0's textField — only row 0's Number should hide
-      const textField0 = form.getComponent('dataGrid[0].textField');
-      textField0.setValue('hello');
-      await wait(300);
-
-      assert.equal(form.getComponent('dataGrid[0].number').visible, false, 'Row 0 number should be hidden when textField is not empty');
-      assert.equal(form.getComponent('dataGrid[1].number').visible, true, 'Row 1 number should still be visible when its textField is empty');
-
-      // Type into row 1's textField — now both Numbers should be hidden
-      const textField1 = form.getComponent('dataGrid[1].textField');
-      textField1.setValue('world');
-      await wait(300);
-
-      assert.equal(form.getComponent('dataGrid[0].number').visible, false, 'Row 0 number should remain hidden');
-      assert.equal(form.getComponent('dataGrid[1].number').visible, false, 'Row 1 number should be hidden when textField is not empty');
-
-      // Clear row 1's textField — row 1's Number should show again
-      textField1.setValue('');
-      await wait(300);
-
-      assert.equal(form.getComponent('dataGrid[0].number').visible, false, 'Row 0 number should remain hidden');
-      assert.equal(form.getComponent('dataGrid[1].number').visible, true, 'Row 1 number should be visible again when textField is cleared');
     });
   });
 });

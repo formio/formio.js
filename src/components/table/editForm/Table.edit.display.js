@@ -68,16 +68,6 @@ export default [
     tooltip: 'Enter the number or columns that should be displayed by this table.',
   },
   {
-    label: "Column Headers",
-    multiple: true,
-    key: "header",
-    type: "textfield",
-    input: true,
-    tooltip: 'Enter header names for the columns',
-    customConditional: "if(instance && instance.dataValue && Array.isArray(instance.dataValue)) {\r\n  const isAllowToAddHeader = instance.dataValue.length < data.numCols;\r\n  const addBtn = _.get(instance, 'refs.addButton[0]', null);\r\n  if(addBtn) {\r\n    isAllowToAddHeader? addBtn.removeAttribute('disabled'):  addBtn.setAttribute('disabled', 'disabled');\r\n  }\r\n} ",
-    weight: 3,
-  },
-  {
     type: 'checkbox',
     label: 'Clone Row Components',
     key: 'cloneRows',

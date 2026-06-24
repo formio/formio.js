@@ -1,7 +1,7 @@
 export default [
   {
     key: 'multiple',
-    ignore: true
+    ignore: true,
   },
   {
     weight: 20,
@@ -9,7 +9,7 @@ export default [
     input: true,
     key: 'delimeter',
     label: 'Delimiter',
-    tooltip: 'What is used to separate the tags.</a>'
+    tooltip: 'What is used to separate the tags.</a>',
   },
   {
     weight: 22,
@@ -18,7 +18,7 @@ export default [
     key: 'maxTags',
     label: 'Max Tags',
     defaultValue: 0,
-    tooltip: 'The maximum amount of tags that can be added. 0 for infinity.'
+    tooltip: 'The maximum amount of tags that can be added. 0 for infinity.',
   },
   {
     weight: 24,
@@ -30,8 +30,8 @@ export default [
     data: {
       values: [
         { label: 'String (CSV)', value: 'string' },
-        { label: 'Array of Tags', value: 'array' }
-      ]
-    }
-  }
+        { label: 'Array of Tags', value: 'array' },
+      ],
+    },
+  },
 ];
