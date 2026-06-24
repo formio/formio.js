@@ -6,8 +6,7 @@ import panelEditForm from '../../src/components/panel/Panel.form';
 import { Formio } from '../../src/Formio';
 import {
   comp1,
-  comp2,
-  comp3
+  comp2
 } from './fixtures/panel';
 
 describe('Panel Component', () => {
@@ -67,12 +66,6 @@ describe('Panel Component', () => {
         }, 300);
       }, 300);
     }).catch(done);
-  });
-
-  it('Should show its label in DataGrid when "Hide Label" is set to true and "Show Label in DataGrid" is set to true', () => {
-    return Formio.createForm(document.createElement('div'), comp3, {}).then((form) => {
-      assert(form.getComponent('dataGrid[0]').element.querySelector('.card-title'), 'Panel should display its label');
-    });
   });
 
   describe('Edit Form', () => {

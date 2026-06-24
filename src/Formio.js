@@ -123,8 +123,8 @@ FormioCore.addToGlobal = (global) => {
   }
 };
 
-if (typeof globalThis !== 'undefined') {
-  FormioCore.addToGlobal(globalThis);
+if (typeof global !== 'undefined') {
+  FormioCore.addToGlobal(global);
 }
 
 if (typeof window !== 'undefined') {
