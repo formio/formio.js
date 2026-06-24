@@ -18,7 +18,6 @@ export default class PDF extends Webform {
       (submission) =>
         this.setValue(submission, {
           fromIframe: true,
-          noDefault: true
         }),
       true,
     );
@@ -28,7 +27,6 @@ export default class PDF extends Webform {
       (submission) =>
         this.setValue(submission, {
           fromIframe: true,
-          noDefault: true
         }),
       true,
     );

@@ -57,19 +57,9 @@ function azure(formio) {
         'GET',
       );
     },
-    deleteFile(fileInfo, options) {
-      const name = XHR.trim(fileInfo.name);
-      const key = XHR.trim(fileInfo.key);
-      return formio.makeRequest(
-        '',
-        `${formio.formUrl}/storage/azure?name=${encodeURIComponent(name)}&key=${encodeURIComponent(key)}`,
-        'delete',
-      ).then((response) => {
-        return {
-          success: true,
-          key: response?.key || key,
-        };
-      });
+    deleteFile: function deleteFile(fileInfo) {
+      var url = `${formio.formUrl}/storage/azure?name=${XHR.trim(fileInfo.name)}&key=${XHR.trim(fileInfo.key)}`;
+      return formio.makeRequest('', url, 'delete');
     },
   };
 }

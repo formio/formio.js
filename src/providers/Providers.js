@@ -4,7 +4,6 @@ import address from './address';
 import auth from './auth';
 import storage from './storage';
 
-
 /**
  * @class Providers
  * @classdesc Represents a collection of providers.

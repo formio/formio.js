@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { fastCloneDeep } from '../../../utils';
+import { fastCloneDeep } from '../../../utils/index';
 
 export default class ComponentModal {
   static render(component, data, topLevel) {
@@ -30,8 +30,7 @@ export default class ComponentModal {
     this.showDialogListener = (event) => {
       if (this.isValueChanged() && !this.component.disabled) {
         this.showDialog();
-      }
-      else {
+      } else {
         this.closeModalHandler(event);
       }
     };
@@ -84,7 +83,11 @@ export default class ComponentModal {
 
   removeEventListeners() {
     this.component.removeEventListener(this.refs.openModal, 'click', this.openModalListener);
-    this.component.removeEventListener(this.refs.modalOverlay, 'click', this.refs.modalSave ? this.showDialogListener : this.saveModalListener);
+    this.component.removeEventListener(
+      this.refs.modalOverlay,
+      'click',
+      this.refs.modalSave ? this.showDialogListener : this.saveModalListener,
+    );
     this.component.removeEventListener(this.refs.modalClose, 'click', this.showDialogListener);
     this.component.removeEventListener(this.refs.modalSave, 'click', this.saveModalListener);
   }
@@ -92,7 +95,11 @@ export default class ComponentModal {
   setEventListeners() {
     this.removeEventListeners();
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalListener);
-    this.component.addEventListener(this.refs.modalOverlay, 'click', this.refs.modalSave ? this.showDialogListener : this.saveModalListener);
+    this.component.addEventListener(
+      this.refs.modalOverlay,
+      'click',
+      this.refs.modalSave ? this.showDialogListener : this.saveModalListener,
+    );
     this.component.addEventListener(this.refs.modalClose, 'click', this.showDialogListener);
     this.component.addEventListener(this.refs.modalSave, 'click', this.saveModalListener);
   }
@@ -113,7 +120,7 @@ export default class ComponentModal {
   setOpenEventListener() {
     this.component.removeEventListener(this.refs.openModal, 'click', this.openModalListener);
     this.component.loadRefs(this.refs.openModalWrapper ?? this.element, {
-      'openModal': 'single',
+      openModal: 'single',
     });
     this.component.addEventListener(this.refs.openModal, 'click', this.openModalListener);
   }
@@ -183,15 +190,31 @@ export default class ComponentModal {
     });
 
     this.dialog = this.component.createModal(this.dialogElement);
-    this.component.addEventListener(this.dialogElement.refs.dialogYesButton, 'click', this.saveDialogListener);
-    this.component.addEventListener(this.dialogElement.refs.dialogCancelButton, 'click', this.closeDialogListener);
+    this.component.addEventListener(
+      this.dialogElement.refs.dialogYesButton,
+      'click',
+      this.saveDialogListener,
+    );
+    this.component.addEventListener(
+      this.dialogElement.refs.dialogCancelButton,
+      'click',
+      this.closeDialogListener,
+    );
   }
 
   closeDialog(event) {
     event.preventDefault();
     this.dialog.close();
-    this.component.removeEventListener(this.dialogElement.refs.dialogYesButton, 'click', this.saveDialogListener);
-    this.component.removeEventListener(this.dialogElement.refs.dialogCancelButton, 'click', this.closeDialogListener);
+    this.component.removeEventListener(
+      this.dialogElement.refs.dialogYesButton,
+      'click',
+      this.saveDialogListener,
+    );
+    this.component.removeEventListener(
+      this.dialogElement.refs.dialogCancelButton,
+      'click',
+      this.closeDialogListener,
+    );
   }
 
   saveDialog(event) {

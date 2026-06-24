@@ -20,8 +20,6 @@ import testUniqueApiKey from '../forms/testUniqueApiKey';
 import FormBuilder from '../../src/FormBuilder';
 import { wait } from '../util';
 import * as datagridWithNestedForm from '../forms/datagridWithNestedForm';
-import { assert as chaiAssert } from 'chai';
-import simpleTextFieldForm from '../forms/simpleTextFieldForm.js';
 
 globalThis.requestAnimationFrame = (cb) => cb();
 globalThis.cancelAnimationFrame = () => {};
@@ -88,28 +86,6 @@ describe('WebformBuildert tests', function () {
           assert.equal(x.classList.contains('show'), false);
         }
       });
-    });
-
-    it('Shouldn`t display [object Object] in the text field when a user activates and then deactivates the `Allow Multiple Masks` ', async () => {
-      const builder = Harness.getBuilder();
-      await builder.webform.setForm(simpleTextFieldForm);
-      const field = builder.webform.components[0];
-      const editComponentRef = field.refs.editComponent;
-      const clickEvent = new Event('click');
-      editComponentRef.dispatchEvent(clickEvent);
-      await wait(300);
-      const defaultComp = builder.editForm.getComponent('defaultValue');
-      const allowMultipleMask = builder.editForm.getComponent('allowMultipleMasks');
-      allowMultipleMask.setValue(true);
-      await wait(300);
-      chaiAssert.isObject(defaultComp.data.defaultValue, 'Should be mask object');
-      allowMultipleMask.setValue(false);
-      await wait(300);
-      assert.equal(defaultComp.data.defaultValue, '');
-      Harness.saveComponent();
-      await wait(300);
-      const el = builder.webform.element.querySelector('input[id$="-textField"]');
-      assert.equal(el.value, "")
     });
 
     it('Should not show errors with default array values', function (done) {

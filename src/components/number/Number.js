@@ -178,25 +178,6 @@ export default class NumberComponent extends Input {
     }
   }
 
-  normalizeValue(value, flags = {}, emptyValue = this.emptyValue) {
-    if (typeof value === 'string') {
-      const result = this.parseNumber(value);
-      value = _.isNaN(result) ? this.emptyValue : result;
-    }
-    if (this.component?.multiple && Array.isArray(value)) {
-      const normilizedValues = value.map((val) => {
-        if (typeof val === 'string') {
-          const result = this.parseNumber(val);
-          return _.isNaN(result) ? this.emptyValue : result;
-        }
-        return val
-      });
-
-      value = normilizedValues;
-    }
-    return super.normalizeValue(value, flags, emptyValue);
-  }
-
   setInputMask(input) {
     let numberPattern = '[0-9';
     numberPattern += this.decimalSeparator || '';

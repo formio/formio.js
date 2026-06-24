@@ -5,7 +5,6 @@ import SelectComponent from '../../src/components/select/Select';
 import { expect } from 'chai';
 import { Formio } from '../../src/Formio';
 import _ from 'lodash';
-import Webform from '../../src/Webform';
 import { wait } from '../util';
 
 import {
@@ -41,8 +40,7 @@ import {
   comp29,
   comp30,
   comp31,
-  comp32,
-  comp33
+  comp32
 } from './fixtures/select/index';
 
 globalThis.requestAnimationFrame = (cb) => cb();
@@ -92,24 +90,7 @@ describe('Select Component', function () {
     assert.equal(typeof component.dataValue, 'object');
   });
 
-  it('Should not displaying default values for the select component on the edit submission page', async () => {
-    const formElement = document.createElement('div');
-    const form = new Webform(formElement, { readOnly: false });
-    await form.setForm(comp33)
-    form.onSetSubmission({ data: { select: "" , select1: "" } }, { fromSubmission: true })
-    await wait(200);
-   
-    const selectHtml5Options = [...form.element.querySelector('[name="data[select1]"]')];
-    const selectedHtml5 = selectHtml5Options.find(x => x.selected);
-    
-    const selectChoicesJs = form.element.querySelector('[name="data[select]"]');
-    const selectChoicesJsInner = selectChoicesJs.parentElement.querySelector('.choices__list.choices__list--single');
-
-    assert.equal(selectChoicesJsInner.innerHTML, '', "should not contain inner options here");
-    assert.equal(selectedHtml5.value, '', "should be empty");
-  });
-
-   it('Should return string value for different value types', async function () {
+  it('Should return string value for different value types', async function () {
     const component = await Harness.testCreate(SelectComponent, comp4);
     const stringValue = component.asString(true);
     const stringValue1 = component.asString(11);
@@ -136,32 +117,6 @@ describe('Select Component', function () {
   it('Should return plain text when csv option is provided', async function () {
     const component = await Harness.testCreate(SelectComponent, comp1);
     assert.equal(component.getView('red', { csv: true }), 'Red');
-  });
-
-  it('Should return empty string (not "undefined") for blank Entire Object Select with Resource DataSrc inside DataTable', async function () {
-    const restoreMakeRequest = mockMakeRequest(() => Promise.resolve([]));
-    const component = await Harness.testCreate(SelectComponent, {
-      type: 'select',
-      key: 'selectResource',
-      label: 'Select Resource',
-      input: true,
-      widget: 'html5',
-      dataSrc: 'resource',
-      data: { resource: 'someResourceId', project: 'someProjectId' },
-      dataType: 'object',
-      valueProperty: 'data',
-      template: '<span>{{ item.data.firstName }} {{ item.data.lastName }}</span>',
-    });
-    component.inDataTable = true;
-
-    for (const v of ['', {}]) {
-      const rendered = component.asString(v);
-      assert.ok(
-        typeof rendered === 'string' && !rendered.includes('undefined'),
-        `blank value ${JSON.stringify(v)} should not render "undefined", got: ${JSON.stringify(rendered)}`,
-      );
-    }
-    restoreMakeRequest();
   });
 
   it('Should correctly determine storage type when dataType is auto', async function () {
@@ -1236,52 +1191,6 @@ describe('Select Component', function () {
         label: 'Label 3',
       },
     });
-  });
-
-    it('Should unset metadata.selectData for Select component after the value was unset', async function () {
-    const testItems = [
-      { data: { textField: 'John' } },
-      { data: { textField: 'Mary' } },
-      { data: { textField: 'Sally' } },
-    ];
-    const restoreMakeRequest = mockMakeRequest(
-      () =>
-        new Promise((resolve) => {
-          resolve(testItems);
-        }),
-    );
-
-    const element = document.createElement('div');
-    const form = await Formio.createForm(element, _.cloneDeep(comp17));
-    const select = form.getComponent('select');
-
-    const value = 'John';
-    select.setValue(value);
-
-    await select.itemsLoaded;
-    assert.equal(select.dataValue, value);
-
-    const emptyValue = '';
-    select.setValue(emptyValue);
-    await select.itemsLoaded;
-    assert.equal(select.dataValue, emptyValue);
-
-    const submit = form.getComponent('submit');
-    const clickEvent = new Event('click');
-    const submitBtn = submit.refs.button;
-    submitBtn.dispatchEvent(clickEvent);
-
-    await new Promise((resolve, reject) => {
-      form.on('submit', () => resolve());
-      form.on('submitError', () => reject('Should submit the form.'));
-    });
-
-    assert.equal(
-      _.isEmpty(form.submission.metadata.selectData),
-      true,
-    );
-
-    restoreMakeRequest();
   });
 
   it('Should set correct label from metadata for multiple Select with default value', async function () {

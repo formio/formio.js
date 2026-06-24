@@ -13,7 +13,7 @@ export default {
           tableView: true,
           key: 'textField',
           type: 'textfield',
-          input: true
+          input: true,
         },
         {
           label: 'Data Grid',
@@ -24,7 +24,7 @@ export default {
           enableRowGroups: false,
           tableView: false,
           defaultValue: [
-            {}
+            {},
           ],
           key: 'dataGrid',
           type: 'datagrid',
@@ -35,9 +35,9 @@ export default {
               tableView: true,
               key: 'textField',
               type: 'textfield',
-              input: true
-            }
-          ]
+              input: true,
+            },
+          ],
         },
         {
           label: 'Tabs',
@@ -51,15 +51,15 @@ export default {
                   tableView: true,
                   key: 'tabsTextfield',
                   type: 'textfield',
-                  input: true
-                }
-              ]
-            }
+                  input: true,
+                },
+              ],
+            },
           ],
           tableView: false,
           key: 'tabs',
           type: 'tabs',
-          input: false
+          input: false,
         },
         {
           type: 'button',
@@ -67,12 +67,12 @@ export default {
           key: 'submit',
           disableOnInvalid: true,
           input: true,
-          tableView: false
-        }
+          tableView: false,
+        },
       ],
       key: 'form',
       type: 'form',
-      input: true
+      input: true,
     },
     {
       type: 'button',
@@ -80,8 +80,8 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   controller: '',
   revisions: '',
@@ -93,10 +93,10 @@ export default {
       roles: [
         '5e8f2b7cd248943778ec61bb',
         '5e8f2b7cd248941e0aec61bc',
-        '5e8f2b7cd248941083ec61bd'
+        '5e8f2b7cd248941083ec61bd',
       ],
-      type: 'read_all'
-    }
+      type: 'read_all',
+    },
   ],
   submissionAccess: [],
   settings: {},

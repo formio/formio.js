@@ -18,12 +18,12 @@ class ChoicesWrapper extends Choices {
     var target = (event || event.touches[0]).target;
     var touchWasWithinContainer = this._wasTap && this.containerOuter.element.contains(target);
     if (touchWasWithinContainer) {
-      var containerWasExactTarget = target === this.containerOuter.element || target === this.containerInner.element;
+      var containerWasExactTarget =
+        target === this.containerOuter.element || target === this.containerInner.element;
       if (containerWasExactTarget) {
         if (this._isTextElement) {
           this.input.focus();
-        }
-        else if (this._isSelectMultipleElement) {
+        } else if (this._isSelectMultipleElement) {
           this.input.focus();
           this.showDropdown();
         }
@@ -35,7 +35,9 @@ class ChoicesWrapper extends Choices {
   }
 
   _onEnterKey(...args) {
-    const [event] = args;
+    const [
+      event,
+    ] = args;
     // Prevent dropdown form opening when removeItemButton was pressed using 'Enter' on keyboard
     if (event.target.className === 'choices__button') {
       this.shouldOpenDropDown = false;
@@ -82,7 +84,7 @@ class ChoicesWrapper extends Choices {
         groupId: choice.groupId,
         customProperties: choice.customProperties,
         placeholder: choice.placeholder,
-        keyCode: choice.keyCode
+        keyCode: choice.keyCode,
       });
       this._triggerChange(choice.value);
     }
@@ -97,9 +99,8 @@ class ChoicesWrapper extends Choices {
 
   onSelectValue(event, hasActiveDropdown) {
     if (hasActiveDropdown) {
-     this._selectHighlightedChoice();
-    }
-    else if (this._isSelectOneElement) {
+      this._selectHighlightedChoice();
+    } else if (this._isSelectOneElement) {
       this.showDropdown();
       event.preventDefault();
     }

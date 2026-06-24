@@ -212,14 +212,10 @@ export default class DataMapComponent extends DataGridComponent {
       `;
 
       result = Object.keys(value).reduce((result, key) => {
-        const componentInstance = this.findComponentInstance(key);
-        const viewValue = componentInstance 
-          ? componentInstance.getView(value[key], options)
-          : this.getView(value[key], options);
         result += `
           <tr>
             <th style="padding: 5px 10px;">${key}</th>
-            <td style="width:100%;padding:5px 10px;">${viewValue}</td>
+            <td style="width:100%;padding:5px 10px;">${this.getView(value[key], options)}</td>
           </tr>
         `;
         return result;
@@ -243,19 +239,6 @@ export default class DataMapComponent extends DataGridComponent {
     return typeof value === 'object' ? '[Complex Data]' : value;
   }
 
-  findComponentInstance(key) {
-    if (!this.rows || !this.rows.length) {
-      return null;
-    }
-    // Find component instance with matching key
-    const foundRow = _.find(this.rows, (row) => row?.[this.valueKey]?.key === key);
-    if (foundRow?.[this.valueKey]) {
-      return foundRow[this.valueKey];
-    }
-    // If not found by key, return the first row's value component as fallback
-    return this.rows[0]?.[this.valueKey] || null;
-  }
-
   getDataValueAsTable(value, options) {
     let result = `
       <table border="1" style="width:100%">
@@ -264,14 +247,10 @@ export default class DataMapComponent extends DataGridComponent {
 
     if (this.visible && _.isObject(value)) {
       Object.keys(value).forEach((key) => {
-        const componentInstance = this.findComponentInstance(key);
-        const viewValue = componentInstance 
-          ? componentInstance.getView(value[key], options)
-          : this.getView(value[key], options);
         result += `
           <tr>
             <th style="padding: 5px 10px;">${key}</th>
-            <td style="width:100%;padding:5px 10px;">${viewValue}</td>
+            <td style="width:100%;padding:5px 10px;">${this.getView(value[key], options)}</td>
           </tr>
         `;
       });
@@ -313,24 +292,13 @@ export default class DataMapComponent extends DataGridComponent {
     const valueComponent = _.clone(this.component.valueComponent);
     valueComponent.key = key;
 
-    const componentOptions = _.clone(this.options);
+    const componentOptions = this.options;
     componentOptions.row = options.row;
-    if (this.submissionTimezone) {
-      componentOptions.submissionTimezone = this.submissionTimezone;
-      if (valueComponent.type === 'datetime') {
-        valueComponent.widget = { ...valueComponent.widget, submissionTimezone: this.submissionTimezone };
-      }
-    }
-    
-    const createdComponent = this.createComponent(valueComponent, componentOptions, this.dataValue);
-    
-    // Ensure submissionTimezone is set on datetime component instance's widget and options
-    if (createdComponent?.type === 'datetime' && this.submissionTimezone) {
-      createdComponent.component.widget = { ...createdComponent.component.widget, submissionTimezone: this.submissionTimezone };
-      createdComponent.options.submissionTimezone = this.submissionTimezone;
-    }
-    
-    components[this.valueKey] = createdComponent;
+    components[this.valueKey] = this.createComponent(
+      valueComponent,
+      componentOptions,
+      this.dataValue,
+    );
     return components;
   }
 

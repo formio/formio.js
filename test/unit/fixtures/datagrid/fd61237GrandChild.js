@@ -14,7 +14,8 @@ export default {
       key: 'textField',
       type: 'textfield',
       input: true,
-    }, {
+    },
+    {
       type: 'button',
       label: 'Submit',
       key: 'submit',

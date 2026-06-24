@@ -10,7 +10,7 @@ export default [
     placeholder: 'Minimum Length',
     type: 'number',
     tooltip: 'The minimum length requirement this field must meet.',
-    input: true
+    input: true,
   },
   {
     weight: 120,
@@ -19,7 +19,7 @@ export default [
     placeholder: 'Maximum Length',
     type: 'number',
     tooltip: 'The maximum length requirement this field must meet.',
-    input: true
+    input: true,
   },
   {
     type: 'checkbox',
@@ -27,6 +27,7 @@ export default [
     weight: 105,
     key: 'rowDrafts',
     label: 'Enable Row Drafts',
-    tooltip: 'Allow save rows even if their data is invalid. Errors will occur when try to submit with invalid rows.',
-  }
+    tooltip:
+      'Allow save rows even if their data is invalid. Errors will occur when try to submit with invalid rows.',
+  },
 ];

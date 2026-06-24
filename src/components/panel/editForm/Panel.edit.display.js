@@ -10,30 +10,30 @@ import _keys from 'lodash/keys';
 export default [
   {
     key: 'labelPosition',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'placeholder',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'description',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'autofocus',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'tableView',
-    ignore: true
+    ignore: true,
   },
   {
     key: 'label',
     hidden: true,
     calculateValue(context) {
       return context.data.title;
-    }
+    },
   },
   {
     key: 'tabindex',
@@ -46,7 +46,7 @@ export default [
     placeholder: 'Panel Title',
     label: 'Title',
     key: 'title',
-    tooltip: 'The title text that appears in the header of this panel.'
+    tooltip: 'The title text that appears in the header of this panel.',
   },
   {
     weight: 20,
@@ -55,7 +55,7 @@ export default [
     key: 'tooltip',
     label: 'Tooltip',
     placeholder: 'To add a tooltip to this field, enter text here.',
-    tooltip: 'Adds a tooltip to the side of this field.'
+    tooltip: 'Adds a tooltip to the side of this field.',
   },
   {
     weight: 30,
@@ -71,9 +71,9 @@ export default [
         { label: 'Info', value: 'info' },
         { label: 'Success', value: 'success' },
         { label: 'Danger', value: 'danger' },
-        { label: 'Warning', value: 'warning' }
-      ]
-    }
+        { label: 'Warning', value: 'warning' },
+      ],
+    },
   },
   {
     weight: 40,
@@ -88,8 +88,11 @@ export default [
         defaultValue: true,
         customConditional({ data = {}, buildingForm = {} }) {
           const formSettings = buildingForm.settings || {};
-          return ![data.breadcrumb, formSettings.wizardBreadcrumbsType].includes('none');
-        }
+          return ![
+            data.breadcrumb,
+            formSettings.wizardBreadcrumbsType,
+          ].includes('none');
+        },
       },
       {
         input: true,
@@ -99,8 +102,13 @@ export default [
         defaultValue: false,
         tooltip: 'Determines if the breadcrumb bar is clickable or not for visited tabs.',
         conditional: {
-          json: { '===': [{ var: 'data.breadcrumbClickable' }, false] }
-        }
+          json: {
+            '===': [
+              { var: 'data.breadcrumbClickable' },
+              false,
+            ],
+          },
+        },
       },
       {
         weight: 50,
@@ -118,7 +126,7 @@ export default [
           {
             label: 'Next',
             value: 'next',
-          }
+          },
         ],
         inline: true,
         type: 'selectboxes',
@@ -128,7 +136,7 @@ export default [
         defaultValue: {
           previous: true,
           cancel: true,
-          next: true
+          next: true,
         },
       },
       {
@@ -139,7 +147,7 @@ export default [
         input: true,
         inputType: 'checkbox',
         defaultValue: false,
-        tooltip: 'Use the Enter key to go forward through pages.'
+        tooltip: 'Use the Enter key to go forward through pages.',
       },
       {
         weight: 56,
@@ -149,7 +157,7 @@ export default [
         input: true,
         inputType: 'checkbox',
         defaultValue: false,
-        tooltip: 'Use the Enter key to submit form on last page.'
+        tooltip: 'Use the Enter key to submit form on last page.',
       },
       {
         weight: 60,
@@ -159,8 +167,8 @@ export default [
         input: true,
         inputType: 'checkbox',
         defaultValue: false,
-        tooltip: 'Scroll to the top of the wizard page when user navigates to it'
-      }
+        tooltip: 'Scroll to the top of the wizard page when user navigates to it',
+      },
     ],
     customConditional(context) {
       let isWizardPanel = false;
@@ -172,11 +180,11 @@ export default [
             const cleanComp = _omit(comp, diff);
             _each(cleanComp, (propValue, prop) => {
               if (_isPlainObject(propValue)) {
-                cleanComp[prop] = _omitBy(propValue, v => !v && !_isNumber(v) && v !== false);
+                cleanComp[prop] = _omitBy(propValue, (v) => !v && !_isNumber(v) && v !== false);
               }
             });
             return cleanComp;
-          }
+          };
           isWizardPanel = components.some((comp) => {
             const diff = _difference(_keys(comp), _keys(component)) || [];
             diff.push('components');
@@ -185,7 +193,7 @@ export default [
         }
       }
       return isWizardPanel;
-    }
+    },
   },
   {
     weight: 650,
@@ -193,7 +201,7 @@ export default [
     label: 'Collapsible',
     tooltip: 'If checked, this will turn this Panel into a collapsible panel.',
     key: 'collapsible',
-    input: true
+    input: true,
   },
   {
     weight: 651,
@@ -203,7 +211,12 @@ export default [
     key: 'collapsed',
     input: true,
     conditional: {
-      json: { '===': [{ var: 'data.collapsible' }, true] }
-    }
-  }
+      json: {
+        '===': [
+          { var: 'data.collapsible' },
+          true,
+        ],
+      },
+    },
+  },
 ];

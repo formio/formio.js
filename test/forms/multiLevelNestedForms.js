@@ -202,7 +202,9 @@ export default {
     path: 'genericapplicantorganization',
     type: 'form',
     display: 'form',
-    tags: ['Generic'],
+    tags: [
+      'Generic',
+    ],
     access: [
       {
         type: 'create_own',
@@ -218,7 +220,9 @@ export default {
       },
       {
         type: 'read_all',
-        roles: ['000000000000000000000000'],
+        roles: [
+          '000000000000000000000000',
+        ],
       },
       {
         type: 'update_own',

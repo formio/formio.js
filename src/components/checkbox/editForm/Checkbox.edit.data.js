@@ -1,6 +1,6 @@
 export default [
   {
     key: 'multiple',
-    ignore: true
+    ignore: true,
   },
 ];

@@ -13,11 +13,11 @@ export default {
           tableView: true,
           key: 'textField',
           type: 'textfield',
-          input: true
-        }
+          input: true,
+        },
       ],
       input: false,
-      tableView: false
+      tableView: false,
     },
     {
       title: 'Page 2',
@@ -32,11 +32,11 @@ export default {
           tableView: true,
           key: 'textArea',
           type: 'textarea',
-          input: true
-        }
+          input: true,
+        },
       ],
       input: false,
-      tableView: false
-    }
-  ]
-}
+      tableView: false,
+    },
+  ],
+};

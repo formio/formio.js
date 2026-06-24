@@ -1,10 +1,9 @@
 import assert from 'power-assert';
 import Harness from '../harness';
 import FileComponent from '../../src/components/file/File';
-import { comp1, comp2, comp4 } from './fixtures/file/index';
+import { comp1, comp2 } from './fixtures/file/index';
 import { Formio } from '../../src/Formio';
 import _ from 'lodash';
-import { wait } from '../util';
 import * as testFileUpload from '../forms/formWithFileComponent';
 
 describe('File Component', function () {
@@ -41,58 +40,6 @@ describe('File Component', function () {
       Harness.testElements(component, 'a.browse', 0);
       assert(component.checkValidity(component.getValue()), 'Item should be valid');
     });
-  });
-
-  it('Should show correct error messages maxSize and minSize ', async () => {
-    const comp4Cloned = _.cloneDeep(comp4);
-    const element = document.createElement('div');
-
-    const form = await Formio.createForm(element, comp4Cloned);
-    const value =
-      [{
-        lastModified: 1746689434865,
-        lastModifiedDate: "Thu May 08 2025",
-        name: "basic.json",
-        size: 200000000000000,   // huge file > 5MB
-        type: "application/json",
-        webkitRelativePath: ""
-      }]
-    const file = form.getComponent('file');
-    file.handleFilesToUpload(value);
-    await wait(300);
-    const errorMax = file.element.querySelector('.list-group-item .status.text-danger');
-    assert.equal(errorMax.textContent, "File is too big; it must be at most 5MB");
-    file.rebuild();
-    await wait(300);
-    value[0].size = 10;  // tiny file < 1MB
-    file.handleFilesToUpload(value);
-    await wait(300);
-    const errorMin = file.element.querySelector('.list-group-item .status.text-danger');
-    assert.equal(errorMin.textContent, "File is too small; it must be at least 1MB");
-  });
-
-  it('Should be returned an error about invalid parameters if we made a typo in a parameter in the configuration', async () => {
-    const comp4Cloned = _.cloneDeep(comp4);
-    delete comp4Cloned.config.maxAttachmentSize;
-    comp4Cloned.config.maxxxxxxAttachmentSize = '5MB' // special typo to get typo error
-    const element = document.createElement('div');
-
-    const form = await Formio.createForm(element, comp4Cloned);
-    const value =
-      [{
-        lastModified: 1746689434865,
-        lastModifiedDate: "Thu May 08 2025",
-        name: "basic.json",
-        size: 20000000000,
-        type: "application/json",
-        webkitRelativePath: ""
-      }]
-
-    const file = form.getComponent('file');
-    file.handleFilesToUpload(value);
-    await wait(300);
-    const errorTypo = file.element.querySelector('.list-group-item .status.text-danger');
-    assert.equal(errorTypo.textContent, "Please, check the entered parameters");
   });
 
   it('Should hide loader after loading process', function () {

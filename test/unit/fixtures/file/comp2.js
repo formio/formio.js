@@ -8,7 +8,9 @@ export default {
       modalEdit: true,
       storage: 'base64',
       webcam: false,
-      fileTypes: [{ label: '', value: '' }],
+      fileTypes: [
+        { label: '', value: '' },
+      ],
       key: 'file',
       type: 'file',
       input: true,
