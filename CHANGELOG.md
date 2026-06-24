@@ -1,5 +1,45 @@
 # @formio/js
 
+## 5.2.6
+
+### Patch Changes
+
+- 8a72cc9: Add asterisk screenreader required
+- 82f4609: Screen readers now announce adding and removing rows on data and edit grids
+- b17f74d: FIO-10163: Added check for undefined options parameter when creating Day component.
+- 34c2885: FIO-11104: update @formio/js renders
+- 09d79e6: Fix aria-invalide attribute issue for radio component
+- Updated dependencies [17bcb81]
+- Updated dependencies [8a72cc9]
+  - @formio/core@2.5.4
+  - @formio/bootstrap@3.1.4
+
+## 5.2.6-api96.0
+
+### Patch Changes
+
+- 8a72cc9: Add asterisk screenreader required
+- 82f4609: Screen readers now announce adding and removing rows on data and edit grids
+- b17f74d: FIO-10163: Added check for undefined options parameter when creating Day component.
+- 34c2885: FIO-11104: update @formio/js renders
+- 09d79e6: Fix aria-invalide attribute issue for radio component
+- Updated dependencies [17bcb81]
+- Updated dependencies [8a72cc9]
+  - @formio/core@2.5.4-api96.0
+  - @formio/bootstrap@3.1.4-api96.0
+
+## 5.2.5
+
+### Patch Changes
+
+- 92a1c5d: FIO-11005: fixed an issue where editGrid in conditional container does not allow to add rows
+
+## 5.2.5-api96.0
+
+### Patch Changes
+
+- 92a1c5d: FIO-11005: fixed an issue where editGrid in conditional container does not allow to add rows
+
 ## 5.2.4
 
 ### Patch Changes
@@ -816,7 +856,6 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
   console.log(textField.errors); // This will be populated with the errors of the textfield even if they are not displayed on the form.
   ```
 
-- Strict "number" validations: Before 5.x, it was possible to force the value of a Number component within the POST request made to the server where the value of a number component is a "string" number. This is now considered an error condition within 5.x and it will result in an error. It should be noted that the renderer does "coerse" the value into a number if it can be, so this would only be aparent if you are sending an API call with a string value for the number, or if you are forcing the value with a calculated value.
 - If you wish to show the "visibleErrors", then there is a new property on each component called "visibleComponents".
 
   **4.x Renderer**

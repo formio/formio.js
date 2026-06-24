@@ -4,15 +4,11 @@ layout: vtabs
 section: examples
 weight: 30
 ---
-
 All forms that are rendered within this framework are JSON powered forms.
 
 ```html
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-/>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
 <script src="https://cdn.form.io/js/formio.embed.js"></script>
 <div id="formio"></div>
 ```
@@ -365,3 +361,5 @@ Formio.createForm(document.getElementById('formio'), {
 </div>
 </div>
 </div>
+
+

@@ -15,84 +15,77 @@ export const AddressComponentMode = {
 };
 
 const RemoveValueIconHiddenClass = 'address-autocomplete-remove-value-icon--hidden';
-const ChildConditional = "show = _.get(instance, 'parent.manualMode', false);";
+const ChildConditional = 'show = _.get(instance, \'parent.manualMode\', false);';
 
 export default class AddressComponent extends ContainerComponent {
   static schema(...extend) {
-    return ContainerComponent.schema(
-      {
-        type: 'address',
-        label: 'Address',
-        key: 'address',
-        switchToManualModeLabel: "Can't find address? Switch to manual mode.",
-        provider: '',
-        manualModeViewString: '',
-        hideLabel: false,
-        disableClearIcon: false,
-        enableManualMode: false,
-        components: [
-          {
-            label: 'Address 1',
-            tableView: false,
-            key: 'address1',
-            type: 'textfield',
-            input: true,
-            customConditional: ChildConditional,
-          },
-          {
-            label: 'Address 2',
-            tableView: false,
-            key: 'address2',
-            type: 'textfield',
-            input: true,
-            customConditional: ChildConditional,
-          },
-          {
-            label: 'City',
-            tableView: false,
-            key: 'city',
-            type: 'textfield',
-            input: true,
-            customConditional: ChildConditional,
-          },
-          {
-            label: 'State',
-            tableView: false,
-            key: 'state',
-            type: 'textfield',
-            input: true,
-            customConditional: ChildConditional,
-          },
-          {
-            label: 'Country',
-            tableView: false,
-            key: 'country',
-            type: 'textfield',
-            input: true,
-            customConditional: ChildConditional,
-          },
-          {
-            label: 'Zip Code',
-            tableView: false,
-            key: 'zip',
-            type: 'textfield',
-            input: true,
-            customConditional: ChildConditional,
-          },
-        ],
-      },
-      ...extend,
-    );
+    return ContainerComponent.schema({
+      type: 'address',
+      label: 'Address',
+      key: 'address',
+      switchToManualModeLabel: 'Can\'t find address? Switch to manual mode.',
+      provider: '',
+      manualModeViewString: '',
+      hideLabel: false,
+      disableClearIcon: false,
+      enableManualMode: false,
+      components: [
+        {
+          label: 'Address 1',
+          tableView: false,
+          key: 'address1',
+          type: 'textfield',
+          input: true,
+          customConditional: ChildConditional,
+        },
+        {
+          label: 'Address 2',
+          tableView: false,
+          key: 'address2',
+          type: 'textfield',
+          input: true,
+          customConditional: ChildConditional,
+        },
+        {
+          label: 'City',
+          tableView: false,
+          key: 'city',
+          type: 'textfield',
+          input: true,
+          customConditional: ChildConditional,
+        },
+        {
+          label: 'State',
+          tableView: false,
+          key: 'state',
+          type: 'textfield',
+          input: true,
+          customConditional: ChildConditional,
+        },
+        {
+          label: 'Country',
+          tableView: false,
+          key: 'country',
+          type: 'textfield',
+          input: true,
+          customConditional: ChildConditional,
+        },
+        {
+          label: 'Zip Code',
+          tableView: false,
+          key: 'zip',
+          type: 'textfield',
+          input: true,
+          customConditional: ChildConditional,
+        },
+      ],
+    }, ...extend);
   }
 
   static savedValueTypes(schema) {
     schema = schema || {};
 
-    return (
-      getComponentSavedTypes(schema) || [
-        componentValueTypes.object,
-      ]
-    );
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   static get builderInfo() {
@@ -113,10 +106,7 @@ export default class AddressComponent extends ContainerComponent {
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
-      operators: [
-        'isEmpty',
-        'isNotEmpty',
-      ],
+      operators: ['isEmpty', 'isNotEmpty'],
     };
   }
 
@@ -127,7 +117,7 @@ export default class AddressComponent extends ContainerComponent {
       defaultSchema = _.omit(defaultSchema, 'components');
     }
 
-    return _.defaultsDeep(component, defaultSchema);
+    return _.defaultsDeep(component , defaultSchema);
   }
 
   init() {
@@ -139,12 +129,11 @@ export default class AddressComponent extends ContainerComponent {
 
     // Added for backwards compatibility
     if (this.component.providerOptions) {
-      const { params, url, queryProperty, responseProperty, displayValueProperty } =
-        this.component.providerOptions;
+      const {params, url, queryProperty, responseProperty, displayValueProperty } = this.component.providerOptions;
       const key = params?.key;
       const autocompleteOptions = params?.autocompleteOptions;
 
-      delete this.component.providerOptions;
+      delete this.component.providerOptions
       this.component.url = url;
       this.component.queryProperty = queryProperty;
       this.component.responseProperty = responseProperty;
@@ -160,20 +149,20 @@ export default class AddressComponent extends ContainerComponent {
     if (!this.builderMode) {
       if (provider) {
         if (_.get(providerOptions, 'params.subscriptionKey')) {
-          _.set(
-            providerOptions,
-            "params['subscription-key']",
-            _.get(providerOptions, 'params.subscriptionKey'),
-          );
+          _.set(providerOptions, "params['subscription-key']", _.get(providerOptions, 'params.subscriptionKey'));
           _.unset(providerOptions, 'params.subscriptionKey');
         }
 
         this.provider = this.initializeProvider(provider, providerOptions);
-      } else if (map) {
+      }
+      else if (map) {
         // Fallback to legacy version where Google Maps was the only provider.
         provider = this.component.provider = GoogleAddressProvider.name;
 
-        const { key, region } = map;
+        const {
+          key,
+          region,
+        } = map;
 
         if (key) {
           _.set(providerOptions, 'params.key', key);
@@ -196,9 +185,9 @@ export default class AddressComponent extends ContainerComponent {
   get emptyValue() {
     return this.manualModeEnabled
       ? {
-          mode: AddressComponentMode.Autocomplete,
-          address: {},
-        }
+        mode: AddressComponentMode.Autocomplete,
+        address: {},
+      }
       : {};
   }
 
@@ -243,20 +232,17 @@ export default class AddressComponent extends ContainerComponent {
 
   get address() {
     if (this.isMultiple) {
-      return _.isArray(this.dataValue)
-        ? this.dataValue
-        : [
-            this.dataValue,
-          ];
+      return _.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
     }
     // Manual mode is not implementing for multiple value
-    return this.manualModeEnabled && this.dataValue ? this.dataValue.address : this.dataValue;
+    return (this.manualModeEnabled && this.dataValue) ? this.dataValue.address : this.dataValue;
   }
 
   set address(value) {
     if (this.manualModeEnabled && !this.isMultiple && !_.isEqual(value, this.emptyValue)) {
       this.dataValue.address = value;
-    } else {
+    }
+    else {
       this.dataValue = value;
     }
   }
@@ -265,14 +251,10 @@ export default class AddressComponent extends ContainerComponent {
     let defaultValue = super.defaultValue;
 
     if (this.isMultiple) {
-      defaultValue = _.isArray(defaultValue)
-        ? defaultValue
-        : [
-            defaultValue,
-          ];
+      defaultValue = _.isArray(defaultValue) ? defaultValue : [defaultValue];
     }
 
-    return defaultValue;
+    return  defaultValue;
   }
 
   get defaultSchema() {
@@ -284,25 +266,23 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   set dataValue(value) {
-    super.dataValue = value;
+    super.dataValue = value
   }
 
   get dataValue() {
     const resultValue = _.get(this._data, this.path);
     if (!_.isArray(resultValue) && this.component.multiple) {
-      return [
-        resultValue,
-      ];
+      return [resultValue]
     }
     return super.dataValue;
   }
 
   normalizeValue(value) {
-    return this.manualModeEnabled && this.isValueInLegacyFormat(value)
+    return (this.manualModeEnabled && this.isValueInLegacyFormat(value))
       ? {
-          mode: AddressComponentMode.Autocomplete,
-          address: value,
-        }
+        mode: AddressComponentMode.Autocomplete,
+        address: value,
+      }
       : value;
   }
 
@@ -313,9 +293,7 @@ export default class AddressComponent extends ContainerComponent {
       this.restoreComponentsContext();
     }
 
-    if (changed || (!_.isEmpty(value) && flags.fromSubmission)) {
-      // Recheck conditions on child components before redraw so their visibility is updated
-      this.getComponents().forEach((comp) => comp.checkConditions(this.root?.data));
+    if (changed || !_.isEmpty(value) && flags.fromSubmission) {
       this.redraw();
     }
 
@@ -343,38 +321,44 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get modeSwitcher() {
-    return this.refs ? this.refs[AddressComponent.modeSwitcherRef] || null : null;
+    return this.refs
+      ? (this.refs[AddressComponent.modeSwitcherRef] || null)
+      : null;
   }
 
   get providerOptions() {
     return {
-      params: {
-        subscriptionKey: this.component.subscriptionKey,
-        key: this.component.apiKey,
-        ...this.component.params,
-      },
+      params: {subscriptionKey: this.component.subscriptionKey, key: this.component.apiKey, ...this.component.params},
       url: this.component.url,
       queryProperty: this.component.queryProperty,
       responseProperty: this.component.responseProperty,
       displayValueProperty: this.component.displayValueProperty,
-      autocompleteOptions: this.component.autocompleteOptions,
-    };
+      autocompleteOptions: this.component.autocompleteOptions
+    }
   }
 
   get removeValueIcon() {
-    return this.refs ? this.refs[AddressComponent.removeValueIconRef] || null : null;
+    return this.refs
+      ? (this.refs[AddressComponent.removeValueIconRef] || null)
+      : null;
   }
 
   get searchInput() {
-    return this.refs ? this.refs[AddressComponent.searchInputRef] || null : null;
+    return this.refs
+      ? (this.refs[AddressComponent.searchInputRef] || null)
+      : null;
   }
 
   get addRowButton() {
-    return this.refs ? this.refs[AddressComponent.addRowButtonRef] || null : null;
+    return this.refs
+      ? (this.refs[AddressComponent.addRowButtonRef] || null)
+      : null;
   }
 
   get removeRowButton() {
-    return this.refs ? this.refs[AddressComponent.removeRowButtonRef] || null : null;
+    return this.refs
+      ? (this.refs[AddressComponent.removeRowButtonRef] || null)
+      : null;
   }
 
   get searchInputAttributes() {
@@ -386,8 +370,8 @@ export default class AddressComponent extends ContainerComponent {
       tabindex: this.component.tabindex || 0,
     };
 
-    if (this.component.placeholder && !this.options?.readOnly) {
-      ((attr.placeholder = this.t(this.component.placeholder)), { _userInput: true });
+    if (this.component.placeholder) {
+      attr.placeholder = this.t(this.component.placeholder), { _userInput: true };
     }
 
     if (this.disabled) {
@@ -464,10 +448,9 @@ export default class AddressComponent extends ContainerComponent {
   onSelectAddress(address, element, index) {
     if (this.isMultiple) {
       this.address[index] = address;
-      this.address = [
-        ...this.address,
-      ];
-    } else {
+      this.address = [...this.address];
+    }
+    else {
       this.address = address;
     }
 
@@ -488,9 +471,7 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   attach(element) {
-    const result = (
-      this.builderMode || this.manualMode ? super.attach : Field.prototype.attach
-    ).call(this, element);
+    const result = ((this.builderMode || this.manualMode) ? super.attach : Field.prototype.attach).call(this, element);
 
     if (!this.builderMode) {
       if (!this.provider && this.component.provider) {
@@ -508,29 +489,14 @@ export default class AddressComponent extends ContainerComponent {
       [AddressComponent.searchInputRef]: 'multiple',
     });
 
-    // We define a container for rendering autocomplete.
-    // If isInShadowDOM=true then we render it in shadow dom otherwise in the document body.
-    const isInShadowDOM = typeof ShadowRoot !== 'undefined' && this.element?.getRootNode() instanceof ShadowRoot;
-    let container;
-    if (isInShadowDOM) {
-      const shadowRoot = this.element.getRootNode();
-      container = document.createElement('div');
-      const target = shadowRoot.querySelector('.formio-form-wrapper');
-      target.appendChild(container);
-    } 
-    else {
-      container = document.createElement('div');
-      document.body.appendChild(container);
-    }
-
     this.searchInput.forEach((element, index) => {
       if (!this.builderMode && element && this.provider) {
         if (this.component.provider === 'google') {
           this.provider.attachAutocomplete(element, index, this.onSelectAddress.bind(this));
-        } else {
+        }
+        else {
           autocompleter({
             input: element,
-            container,
             debounceWaitMs: 300,
             fetch: (text, update) => {
               const query = text;
@@ -553,9 +519,7 @@ export default class AddressComponent extends ContainerComponent {
           }
 
           if (element.value) {
-            element.value = this.getDisplayValue(
-              this.isMultiple ? this.address[index] : this.address,
-            );
+            element.value = this.getDisplayValue(this.isMultiple ? this.address[index] : this.address);
           }
         });
 
@@ -571,13 +535,13 @@ export default class AddressComponent extends ContainerComponent {
       }
     });
     if (this.addRowButton) {
-      this.addEventListener(this.addRowButton, 'click', (event) => {
+      this.addEventListener(this.addRowButton, 'click', event => {
         event.preventDefault();
         this.addRow();
       });
     }
     this.removeRowButton.forEach((removeRowButton, index) => {
-      this.addEventListener(removeRowButton, 'click', (event) => {
+      this.addEventListener(removeRowButton, 'click', event => {
         event.preventDefault();
         this.removeValue(index);
       });
@@ -629,7 +593,7 @@ export default class AddressComponent extends ContainerComponent {
         });
       });
 
-      _.each(this.refs.searchInput || [], (el) => this.addFocusBlurEvents(el));
+      _.each(this.refs.searchInput || [], el => this.addFocusBlurEvents(el));
     }
 
     return result;
@@ -640,15 +604,16 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   redraw() {
-    const modeSwitcherInFocus = this.modeSwitcher && document.activeElement === this.modeSwitcher;
+    const modeSwitcherInFocus = (this.modeSwitcher && (document.activeElement === this.modeSwitcher));
 
-    return super.redraw().then((result) => {
-      if (modeSwitcherInFocus && this.modeSwitcher) {
-        this.modeSwitcher.focus();
-      }
+    return super.redraw()
+      .then((result) => {
+        if (modeSwitcherInFocus && this.modeSwitcher) {
+          this.modeSwitcher.focus();
+        }
 
-      return result;
-    });
+        return result;
+      });
   }
 
   clearAddress(element, index) {
@@ -658,7 +623,8 @@ export default class AddressComponent extends ContainerComponent {
 
     if (this.address?.[index]) {
       this.address[index] = this.emptyValue;
-    } else {
+    }
+    else {
       this.address = this.emptyValue;
     }
     if (element) {
@@ -668,7 +634,9 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   getDisplayValue(value = this.address) {
-    return this.provider && !this.manualMode ? this.provider.getDisplayValue(value) : '';
+    return (this.provider && !this.manualMode)
+      ? this.provider.getDisplayValue(value)
+      : '';
   }
 
   validateMultiple() {
@@ -681,7 +649,8 @@ export default class AddressComponent extends ContainerComponent {
       const value = this.isMultiple ? this.address[index] : this.address;
       if (this.isEmpty(value) || this.disabled) {
         this.addClass(removeValueIcon, RemoveValueIconHiddenClass);
-      } else {
+      }
+      else {
         this.removeClass(removeValueIcon, RemoveValueIconHiddenClass);
       }
     }
@@ -694,13 +663,18 @@ export default class AddressComponent extends ContainerComponent {
 
     const normalizedValue = this.normalizeValue(value);
 
-    const { address, mode } = this.manualModeEnabled
-      ? normalizedValue
-      : {
+    const {
+      address,
+      mode,
+    } = (
+      this.manualModeEnabled
+        ? normalizedValue
+        : {
           address: normalizedValue,
           mode: AddressComponentMode.Autocomplete,
-        };
-    const valueInManualMode = mode === AddressComponentMode.Manual;
+        }
+    );
+    const valueInManualMode = (mode === AddressComponentMode.Manual);
 
     if (this.provider && !valueInManualMode) {
       return this.getDisplayValue(address);
@@ -717,22 +691,9 @@ export default class AddressComponent extends ContainerComponent {
 
       return this.getComponents()
         .filter((component) => component.hasValue(address))
-        .map((component) => [
-          component,
-          _.get(address, component.key),
-        ])
-        .filter(
-          ([
-            component,
-            componentValue,
-          ]) => !component.isEmpty(componentValue),
-        )
-        .map(
-          ([
-            component,
-            componentValue,
-          ]) => component.getValueAsString(componentValue, options),
-        )
+        .map((component) => [component, _.get(address, component.key)])
+        .filter(([component, componentValue]) => !component.isEmpty(componentValue))
+        .map(([component, componentValue]) => component.getValueAsString(componentValue, options))
         .join(', ');
     }
 
