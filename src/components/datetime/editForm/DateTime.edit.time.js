@@ -5,11 +5,7 @@ export default [
     key: 'enableTime',
     label: 'Enable Time Input',
     tooltip: 'Enables time input for this field.',
-    weight: 0,
-    validate: {
-      custom:
-        "valid = !data.enableDate && !input ? 'Cannot disable both Date and Time inputs at the same time' : true",
-    },
+    weight: 0
   },
   {
     type: 'number',
@@ -17,7 +13,7 @@ export default [
     key: 'timePicker.hourStep',
     label: 'Hour Step Size',
     tooltip: 'The number of hours to increment/decrement in the time picker.',
-    weight: 10,
+    weight: 10
   },
   {
     type: 'number',
@@ -25,7 +21,7 @@ export default [
     key: 'timePicker.minuteStep',
     label: 'Minute Step Size',
     tooltip: 'The number of minutes to increment/decrement in the time picker.',
-    weight: 20,
+    weight: 20
   },
   {
     type: 'checkbox',
@@ -33,6 +29,6 @@ export default [
     key: 'timePicker.showMeridian',
     label: '12 Hour Time (AM/PM)',
     tooltip: 'Display time in 12 hour time with AM/PM.',
-    weight: 30,
-  },
+    weight: 30
+  }
 ];

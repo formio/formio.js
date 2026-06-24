@@ -1,6 +1,6 @@
 import Multivalue from '../multivalue/Multivalue';
-import { announceScreenReaderMessage, convertStringToHTMLElement } from '../../../utils/index';
-import Widgets from '../../../widgets/index';
+import { convertStringToHTMLElement } from '../../../utils';
+import Widgets from '../../../widgets';
 import _ from 'lodash';
 
 export default class Input extends Multivalue {
@@ -10,14 +10,11 @@ export default class Input extends Multivalue {
   }
 
   static schema(...extend) {
-    return Multivalue.schema(
-      {
-        widget: {
-          type: 'input',
-        },
-      },
-      ...extend,
-    );
+    return Multivalue.schema({
+      widget: {
+        type: 'input'
+      }
+    }, ...extend);
   }
 
   get inputInfo() {
@@ -25,14 +22,10 @@ export default class Input extends Multivalue {
       name: this.options.name,
       type: this.component.inputType || 'text',
       class: 'form-control',
-      lang: this.options.language,
+      lang: this.options.language
     };
 
-    if (
-      this.options.attachMode === 'builder' ||
-      this.options.building ||
-      _.get(this.root, 'form.settings.disableAutocomplete')
-    ) {
+    if (this.options.attachMode === 'builder' || this.options.building || _.get(this.root, 'form.settings.disableAutocomplete')) {
       attr.autocomplete = this.autocompleteDisableAttrName;
     }
 
@@ -40,7 +33,7 @@ export default class Input extends Multivalue {
       attr.inputmode = this.component.inputMode;
     }
 
-    if (this.component.placeholder && !this.options?.readOnly) {
+    if (this.component.placeholder) {
       attr.placeholder = this.getFormattedAttribute(this.component.placeholder);
     }
 
@@ -63,7 +56,7 @@ export default class Input extends Multivalue {
       type: 'input',
       changeEvent: 'input',
       content: '',
-      attr,
+      attr
     };
   }
 
@@ -72,20 +65,16 @@ export default class Input extends Multivalue {
   }
 
   get maskOptions() {
-    return _.map(this.component.inputMasks, (mask) => {
+    return _.map(this.component.inputMasks, mask => {
       return {
         label: mask.label,
-        value: mask.label,
+        value: mask.label
       };
     });
   }
 
   get isMultipleMasksField() {
-    return (
-      this.component.allowMultipleMasks &&
-      !!this.component.inputMasks &&
-      !!this.component.inputMasks.length
-    );
+    return this.component.allowMultipleMasks && !!this.component.inputMasks && !!this.component.inputMasks.length;
   }
 
   getMaskByName(maskName) {
@@ -101,10 +90,11 @@ export default class Input extends Multivalue {
   }
 
   getMaskOptions() {
-    return this.component.inputMasks.map((mask) => ({
-      label: mask.label,
-      value: mask.label,
-    }));
+    return this.component.inputMasks
+      .map(mask => ({
+        label: mask.label,
+        value: mask.label,
+      }));
   }
 
   getWordCount(value) {
@@ -126,11 +116,9 @@ export default class Input extends Multivalue {
       const calendarIcon = this.renderTemplate('icon', {
         ref: 'icon',
         // After font-awesome would be updated to v5.x, "clock-o" should be replaced with "clock"
-        className: this.iconClass(
-          this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'clock-o',
-        ),
+        className: this.iconClass(this.component.enableDate || this.component.widget.enableDate ? 'calendar' : 'clock-o'),
         styles: '',
-        content: '',
+        content: ''
       }).trim();
       if (this.component.prefix !== calendarIcon) {
         // converting string to HTML markup to render correctly DateTime component in portal.form.io
@@ -147,10 +135,8 @@ export default class Input extends Multivalue {
     }
     const info = this.inputInfo;
     info.attr = info.attr || {};
-    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value))).replace(
-      /"/g,
-      '&quot;',
-    );
+    info.attr.value = this.getValueAsString(this.formatValue(this.parseValue(value)))
+      .replace(/"/g, '&quot;');
 
     const valueMask = this.component.inputMask;
     const displayMask = this.component.displayMask;
@@ -161,28 +147,20 @@ export default class Input extends Multivalue {
     }
 
     return this.isMultipleMasksField
-      ? this.renderTemplate(
-          'multipleMasksInput',
-          {
-            input: info,
-            value,
-            index,
-            selectOptions: this.getMaskOptions() || [],
-          },
-          this.isHtmlRenderMode() ? 'html' : null,
-        )
-      : this.renderTemplate(
-          'input',
-          {
-            prefix: this.prefix,
-            suffix: this.suffix,
-            input: info,
-            value: this.formatValue(this.parseValue(value)),
-            hasValueMaskInput: hasDifferentDisplayAndSaveFormats,
-            index,
-          },
-          this.isHtmlRenderMode() ? 'html' : null,
-        );
+      ? this.renderTemplate('multipleMasksInput', {
+        input: info,
+        value,
+        index,
+        selectOptions: this.getMaskOptions() || [],
+      }, this.isHtmlRenderMode() ? 'html' : null)
+      : this.renderTemplate('input', {
+        prefix: this.prefix,
+        suffix: this.suffix,
+        input: info,
+        value: this.formatValue(this.parseValue(value)),
+        hasValueMaskInput: hasDifferentDisplayAndSaveFormats,
+        index
+      }, this.isHtmlRenderMode() ? 'html' : null);
   }
 
   setCounter(type, element, count, max) {
@@ -190,42 +168,29 @@ export default class Input extends Multivalue {
       const remaining = max - count;
       if (remaining > 0) {
         this.removeClass(element, 'text-danger');
-      } else {
+      }
+      else {
         this.addClass(element, 'text-danger');
       }
-      this.setContent(
-        element,
-        this.t(`typeRemaining`, {
-          remaining: remaining,
-          type: type,
-        }),
-      );
-    } else {
-      this.setContent(
-        element,
-        this.t(`typeCount`, {
-          count: count,
-          type: type,
-        }),
-      );
+      this.setContent(element, this.t(`typeRemaining`, {
+        remaining: remaining,
+        type: type
+      }));
+    }
+    else {
+      this.setContent(element, this.t(`typeCount`, {
+        count: count,
+        type: type
+      }));
     }
   }
 
   updateValueAt(value, flags, index) {
-    if (flags.modified) {
-      announceScreenReaderMessage(this, value, index);
-    }
-
     flags = flags || {};
     if (_.get(this.component, 'showWordCount', false)) {
       if (this.refs.wordcount && this.refs.wordcount[index]) {
         const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords', 0), 10);
-        this.setCounter(
-          this.t('words'),
-          this.refs.wordcount[index],
-          this.getWordCount(value),
-          maxWords,
-        );
+        this.setCounter(this.t('words'), this.refs.wordcount[index], this.getWordCount(value), maxWords);
       }
     }
     if (_.get(this.component, 'showCharCount', false)) {
@@ -247,7 +212,7 @@ export default class Input extends Multivalue {
   updateValue(value, flags, index) {
     flags = flags || {};
     const changed = super.updateValue(value, flags);
-    this.triggerUpdateValueAt(this.dataValue, { ...flags }, index);
+    this.triggerUpdateValueAt(this.dataValue, flags, index);
     return changed;
   }
 
@@ -260,12 +225,11 @@ export default class Input extends Multivalue {
   }
 
   attach(element) {
-     this.loadRefs(element, {
-      announceMessage: 'multiple',
+    this.loadRefs(element, {
       charcount: 'multiple',
       wordcount: 'multiple',
       prefix: 'multiple',
-      suffix: 'multiple',
+      suffix: 'multiple'
     });
     return super.attach(element);
   }
@@ -309,17 +273,6 @@ export default class Input extends Multivalue {
         }
       });
     }
-    this.on('focus', (comp) => {
-      announceScreenReaderMessage(comp, comp.dataValue, 0, true);
-    });
-
-    this.on('blur', (comp) => {
-      const el = comp.refs?.["announceMessage"]?.[0];
-      if (el) {
-        el.textContent = ""
-      }
-    });
-
     return promise;
   }
 
@@ -335,12 +288,9 @@ export default class Input extends Multivalue {
     }
 
     // Get the widget settings.
-    const settings =
-      typeof this.component.widget === 'string'
-        ? {
-            type: this.component.widget,
-          }
-        : this.component.widget;
+    const settings = (typeof this.component.widget === 'string') ? {
+      type: this.component.widget
+    } : this.component.widget;
 
     if (this.root?.shadowRoot) {
       settings.shadowRoot = this.root?.shadowRoot;
@@ -353,18 +303,9 @@ export default class Input extends Multivalue {
 
     // Create the widget.
     const widget = new Widgets[settings.type](settings, this.component, this, index);
-    widget.on(
-      'update',
-      () =>
-        this.updateValue(
-          this.getValue(),
-          {
-            modified: true,
-          },
-          index,
-        ),
-      true,
-    );
+    widget.on('update', () => this.updateValue(this.getValue(), {
+      modified: true
+    }, index), true);
     widget.on('redraw', () => this.redraw(), true);
     return widget;
   }

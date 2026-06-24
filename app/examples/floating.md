@@ -5,7 +5,6 @@ section: examples
 formioFull: true
 weight: 31
 ---
-
 With the default template of Bootstrap 5, it is now possible to have Floating Labels feature where the labels are placeholders until the user clicks into component. The label, will then move to above the cursor improving the UI/UX of the form experience. To enable floating labels, you must first use the "default" Bootstrap 5 template, and then provide the following when embedding your form.
 
 ```js
@@ -17,11 +16,8 @@ Formio.createForm(document.getElementById('formio'), {...}, {
 Here is an example.
 
 ```html
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-/>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
 <script src="https://cdn.form.io/js/formio.embed.js"></script>
 <div id="formio"></div>
 ```
@@ -130,3 +126,5 @@ Formio.createForm(document.getElementById('formio'), {
 </div>
 </div>
 </div>
+
+

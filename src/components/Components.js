@@ -40,13 +40,8 @@ export default class Components {
     // Set the tableView method on BaseComponent.
     if (comps.base) {
       // Implement the tableView method.
-      comps.base.tableView = function (value, options) {
-        const comp = Components.create(
-          options.component,
-          options.options || {},
-          options.data || {},
-          true,
-        );
+      comps.base.tableView = function(value, options) {
+        const comp = Components.create(options.component, options.options || {}, options.data || {}, true);
         return comp.getView(value);
       };
     }
@@ -65,21 +60,28 @@ export default class Components {
     let comp = null;
     if (component.type && Components.components.hasOwnProperty(component.type)) {
       comp = new Components.components[component.type](component, options, data);
-    } else if (component.arrayTree) {
+    }
+    else if (component.arrayTree) {
+      // eslint-disable-next-line new-cap
       comp = new Components.components['datagrid'](component, options, data);
-    } else if (component.tree || (component.input && Array.isArray(component.components))) {
+    }
+    else if (component.tree || (component.input && Array.isArray(component.components))) {
+      // eslint-disable-next-line new-cap
       comp = new Components.components['nesteddata'](component, options, data);
-    } else if (Array.isArray(component.components)) {
+    }
+    else if (Array.isArray(component.components)) {
+      // eslint-disable-next-line new-cap
       comp = new Components.components['nested'](component, options, data);
-    } else if (options && options.server) {
+    }
+    else if (options && options.server) {
+      // eslint-disable-next-line new-cap
       comp = new Components.components['hidden'](component, options, data);
-    } else {
+    }
+    else {
       comp = new Component(component, options, data);
     }
     if (comp.path) {
-      comp.eachRootChildComponentsMap((map) => {
-        map[comp.path] = comp;
-      });
+      comp.componentsMap[comp.path] = comp;
     }
     // Reset the componentMatches on the root element if any new component is created.
     let parent = comp.parent;

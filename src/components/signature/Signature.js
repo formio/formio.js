@@ -5,22 +5,19 @@ import { componentValueTypes, getComponentSavedTypes } from '../../utils';
 
 export default class SignatureComponent extends Input {
   static schema(...extend) {
-    return Input.schema(
-      {
-        type: 'signature',
-        label: 'Signature',
-        key: 'signature',
-        footer: 'Sign above',
-        width: '100%',
-        height: '150px',
-        penColor: 'black',
-        backgroundColor: 'rgb(245,245,235)',
-        minWidth: '0.5',
-        maxWidth: '2.5',
-        keepOverlayRatio: true,
-      },
-      ...extend,
-    );
+    return Input.schema({
+      type: 'signature',
+      label: 'Signature',
+      key: 'signature',
+      footer: 'Sign above',
+      width: '100%',
+      height: '150px',
+      penColor: 'black',
+      backgroundColor: 'rgb(245,245,235)',
+      minWidth: '0.5',
+      maxWidth: '2.5',
+      keepOverlayRatio: true,
+    }, ...extend);
   }
 
   static get builderInfo() {
@@ -30,7 +27,7 @@ export default class SignatureComponent extends Input {
       icon: 'pencil',
       weight: 120,
       documentation: '/developers/integrations/esign/esign-integrations#signature-component',
-      schema: SignatureComponent.schema(),
+      schema: SignatureComponent.schema()
     };
   }
 
@@ -41,20 +38,13 @@ export default class SignatureComponent extends Input {
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
-      operators: [
-        'isEmpty',
-        'isNotEmpty',
-      ],
+      operators: ['isEmpty', 'isNotEmpty'],
     };
   }
 
   static savedValueTypes(schema) {
     schema = schema || {};
-    return (
-      getComponentSavedTypes(schema) || [
-        componentValueTypes.string,
-      ]
-    );
+    return getComponentSavedTypes(schema) || [componentValueTypes.string];
   }
 
   init() {
@@ -70,10 +60,10 @@ export default class SignatureComponent extends Input {
     }
 
     if (
-      this.component.keepOverlayRatio &&
-      this.options.pdf &&
-      this.component.overlay?.width &&
-      this.component.overlay?.height
+      this.component.keepOverlayRatio
+      && this.options?.display === 'pdf'
+      && this.component.overlay?.width
+      && this.component.overlay?.height
     ) {
       this.ratio = this.component.overlay?.width / this.component.overlay?.height;
       this.component.width = '100%';
@@ -133,7 +123,8 @@ export default class SignatureComponent extends Input {
       if (this.refs.signatureImage) {
         this.refs.signatureImage.style.display = 'none';
       }
-    } else {
+    }
+    else {
       if (this.refs.canvas) {
         this.refs.canvas.style.display = 'none';
       }
@@ -155,7 +146,8 @@ export default class SignatureComponent extends Input {
         if (this.refs.signatureImage && this.dataValue) {
           this.refs.signatureImage.setAttribute('src', this.dataValue);
         }
-      } else {
+      }
+      else {
         this.signaturePad.on();
         if (this.refs.refresh) {
           this.refs.refresh.classList.remove('disabled');
@@ -165,10 +157,7 @@ export default class SignatureComponent extends Input {
   }
 
   checkSize(force, scale) {
-    if (
-      this.refs.padBody &&
-      (force || (this.refs.padBody && this.refs.padBody.offsetWidth !== this.currentWidth))
-    ) {
+    if (this.refs.padBody && (force || this.refs.padBody && this.refs.padBody.offsetWidth !== this.currentWidth)) {
       this.scale = force ? scale : this.scale;
       this.currentWidth = this.refs.padBody.offsetWidth;
       const width = this.currentWidth * this.scale;
@@ -181,7 +170,7 @@ export default class SignatureComponent extends Input {
       this.refs.canvas.style.maxHeight = `${maxHeight}px`;
       const ctx = this.refs.canvas.getContext('2d');
       ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale(1 / this.scale, 1 / this.scale);
+      ctx.scale((1 / this.scale), (1 / this.scale));
       ctx.fillStyle = this.signaturePad.backgroundColor;
       ctx.fillRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
       this.signaturePad.clear();
@@ -209,19 +198,14 @@ export default class SignatureComponent extends Input {
 
   getModalPreviewTemplate() {
     return this.renderModalPreview({
-      previewText: this.dataValue
-        ? `<img src=${this.dataValue} ${this._referenceAttributeName}='openModal' style="width: 100%;height: 100%;" />`
-        : this.t('Click to Sign'),
+      previewText: this.dataValue ?
+        `<img src=${this.dataValue} ${this._referenceAttributeName}='openModal' style="width: 100%;height: 100%;" />` :
+        this.t('Click to Sign')
     });
   }
 
   attach(element) {
-    this.loadRefs(element, {
-      canvas: 'single',
-      refresh: 'single',
-      padBody: 'single',
-      signatureImage: 'single',
-    });
+    this.loadRefs(element, { canvas: 'single', refresh: 'single', padBody: 'single', signatureImage: 'single' });
     const superAttach = super.attach(element);
 
     if (this.refs.refresh && this.options.readOnly) {
@@ -234,12 +218,10 @@ export default class SignatureComponent extends Input {
         minWidth: this.component.minWidth,
         maxWidth: this.component.maxWidth,
         penColor: this.component.penColor,
-        backgroundColor: this.component.backgroundColor,
+        backgroundColor: this.component.backgroundColor
       });
 
-      this.signaturePad.addEventListener('endStroke', () =>
-        this.setValue(this.signaturePad.toDataURL()),
-      );
+      this.signaturePad.addEventListener('endStroke', () => this.setValue(this.signaturePad.toDataURL()));
       this.refs.signatureImage.setAttribute('src', this.signaturePad.toDataURL());
 
       this.onDisabled();
@@ -256,24 +238,18 @@ export default class SignatureComponent extends Input {
           });
 
           this.observer.observe(this.refs.padBody);
-        }
+         }
 
-        this.addEventListener(
-          window,
-          'resize',
-          _.debounce(() => this.checkSize(), 10),
-        );
+        this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 10));
 
-        setTimeout(
-          function checkWidth() {
-            if (this.refs.padBody && this.refs.padBody.offsetWidth) {
-              this.checkSize();
-            } else {
-              setTimeout(checkWidth.bind(this), 20);
-            }
-          }.bind(this),
-          20,
-        );
+        setTimeout(function checkWidth() {
+          if (this.refs.padBody && this.refs.padBody.offsetWidth) {
+            this.checkSize();
+          }
+          else {
+            setTimeout(checkWidth.bind(this), 20);
+          }
+        }.bind(this), 20);
       }
     }
     this.addEventListener(this.refs.refresh, 'click', (event) => {
@@ -285,6 +261,7 @@ export default class SignatureComponent extends Input {
     this.setValue(this.dataValue);
     return superAttach;
   }
+  /* eslint-enable max-statements */
 
   detach() {
     if (this.observer) {

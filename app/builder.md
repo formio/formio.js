@@ -6,7 +6,6 @@ section: builder
 weight: 30
 lib: builder
 ---
-
 <div class="row">
   <div class="col-sm-8">
     <h3 class="text-center text-muted">The <a href="https://github.com/formio/formio.js" target="_blank">Form Builder</a> allows you to build a <select class="form-control" id="form-select" style="display: inline-block; width: 150px;"><option value="form">Form</option><option value="wizard">Wizard</option><option value="pdf">PDF</option></select></h3>
@@ -112,14 +111,13 @@ var setDisplay = function(display) {
     };
 
     instance.ready.then(onReady);
-
-});
+  });
 };
 
 // Handle the form selection.
 var formSelect = document.getElementById('form-select');
 formSelect.addEventListener("change", function() {
-setDisplay(this.value);
+  setDisplay(this.value);
 });
 
 setDisplay('form');
