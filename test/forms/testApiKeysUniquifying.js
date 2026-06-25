@@ -27,15 +27,15 @@ export default {
                       tableView: true,
                       key: 'textField',
                       type: 'textfield',
-                      input: true
-                    }
+                      input: true,
+                    },
                   ],
                   width: 6,
                   offset: 0,
                   push: 0,
                   pull: 0,
                   size: 'md',
-                  currentWidth: 6
+                  currentWidth: 6,
                 },
                 {
                   components: [],
@@ -44,17 +44,17 @@ export default {
                   push: 0,
                   pull: 0,
                   size: 'md',
-                  currentWidth: 6
-                }
+                  currentWidth: 6,
+                },
               ],
               key: 'columns',
               type: 'columns',
               input: false,
-              tableView: false
-            }
-          ]
-        }
-      ]
+              tableView: false,
+            },
+          ],
+        },
+      ],
     },
     {
       collapsible: false,
@@ -73,7 +73,7 @@ export default {
           initEmpty: false,
           tableView: false,
           defaultValue: [
-            {}
+            {},
           ],
           key: 'dataGrid',
           type: 'datagrid',
@@ -96,15 +96,15 @@ export default {
                           tableView: false,
                           key: 'checkbox',
                           type: 'checkbox',
-                          input: true
-                        }
+                          input: true,
+                        },
                       ],
                       width: 6,
                       offset: 0,
                       push: 0,
                       pull: 0,
                       size: 'md',
-                      currentWidth: 6
+                      currentWidth: 6,
                     },
                     {
                       components: [],
@@ -113,15 +113,15 @@ export default {
                       push: 0,
                       pull: 0,
                       size: 'md',
-                      currentWidth: 6
-                    }
+                      currentWidth: 6,
+                    },
                   ],
                   key: 'columns',
                   type: 'columns',
                   input: false,
-                  tableView: false
-                }
-              ]
+                  tableView: false,
+                },
+              ],
             },
             {
               label: 'Number',
@@ -133,11 +133,11 @@ export default {
               truncateMultipleSpaces: false,
               key: 'number',
               type: 'number',
-              input: true
-            }
-          ]
-        }
-      ]
+              input: true,
+            },
+          ],
+        },
+      ],
     },
     {
       type: 'button',
@@ -145,8 +145,8 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   title: 'FIO-3476',
   display: 'form',

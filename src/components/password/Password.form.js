@@ -9,19 +9,22 @@ import PasswordEditValidation from './editForm/Password.edit.validation';
  * @param {...any} extend - The components that extend the edit form.
  * @returns {import('@formio/core').Component[]} - The edit form components.
  */
-export default function(...extend) {
-  return textEditForm([
-    {
-      key: 'data',
-      components: PasswordEditData
-    },
-    {
-      key: 'display',
-      components: PasswordEditDisplay
-    },
-    {
-      key: 'validation',
-      components: PasswordEditValidation
-    },
-  ], ...extend);
+export default function (...extend) {
+  return textEditForm(
+    [
+      {
+        key: 'data',
+        components: PasswordEditData,
+      },
+      {
+        key: 'display',
+        components: PasswordEditDisplay,
+      },
+      {
+        key: 'validation',
+        components: PasswordEditValidation,
+      },
+    ],
+    ...extend,
+  );
 }

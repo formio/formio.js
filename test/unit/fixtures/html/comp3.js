@@ -18,8 +18,9 @@ export default {
           value: '',
         },
       ],
-      content: '<img src=1 onerror=alert("htmlContent")>\n<div class="myClass {{data.textField + \'-class\'}}">{{' +
-        ' data.textField ? data.textField : \'No Text\'}}</div>',
+      content:
+        '<img src=1 onerror=alert("htmlContent")>\n<div class="myClass {{data.textField + \'-class\'}}">{{' +
+        " data.textField ? data.textField : 'No Text'}}</div>",
       refreshOnChange: true,
       key: 'html',
       type: 'htmlelement',

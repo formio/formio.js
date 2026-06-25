@@ -742,8 +742,6 @@ export default class Webform extends NestedDataComponent {
               ...resolveFlags,
             };
           }
-          this._submission = {};
-          this._data = {};
           this.onSetSubmission(submission, flags);
           return this.submissionReadyResolve(submission);
         },

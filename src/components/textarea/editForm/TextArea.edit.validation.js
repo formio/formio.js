@@ -6,7 +6,7 @@ export default [
     placeholder: 'Minimum Word Length',
     type: 'number',
     tooltip: 'The minimum amount of words that can be added to this field.',
-    input: true
+    input: true,
   },
   {
     weight: 126,
@@ -15,6 +15,6 @@ export default [
     placeholder: 'Maximum Word Length',
     type: 'number',
     tooltip: 'The maximum amount of words that can be added to this field.',
-    input: true
-  }
+    input: true,
+  },
 ];

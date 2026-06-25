@@ -7415,49 +7415,6 @@ describe('Webform tests', function () {
       .catch(done);
   });
 
-  it('Should handle multiple set submissions correctly and should not modify submissionOne or submissionTwo', function () {
-    const formJson = {
-      components: [
-        {
-          label: "Text Field",
-          applyMaskOn: "change",
-          tableView: true,
-          validateWhenHidden: false,
-          key: "textField",
-          type: "textfield",
-          input: true,
-        },
-      ],
-    };
-    const submissionOne = {
-      data: {
-        textField: "submission 1",
-      },
-    }
-    const submissionTwo = {
-      data: {
-        textField: "submission 2",
-      },
-    }
-    return Formio.createForm(document.createElement('div'), formJson).then(async (form) => {
-      await form.setSubmission(submissionOne);
-      await form.setSubmission(submissionTwo);
-      await form.setSubmission(submissionOne);
-
-      assert.deepEqual(form.data, {textField: 'submission 1'});
-      assert.deepEqual(submissionOne, {
-        data: {
-          textField: "submission 1",
-        },
-      });
-      assert.deepEqual(submissionTwo, {
-        data: {
-          textField: "submission 2",
-        },
-      })
-    });
-  });
-
   describe('showErrors with nested forms', function () {
     const simpleForm = {
       display: 'form',

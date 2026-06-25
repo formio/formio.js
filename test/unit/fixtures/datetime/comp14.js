@@ -71,7 +71,15 @@ export default {
         maxDate: '2025-10-31T12:00:00',
       },
     },
-    { label: 'Submit', showValidations: false, tableView: false, key: 'submit', type: 'button', input: true, disableOnInvalid: true }
+    {
+      label: 'Submit',
+      showValidations: false,
+      tableView: false,
+      key: 'submit',
+      type: 'button',
+      input: true,
+      disableOnInvalid: true,
+    },
   ],
   title: 'test11',
   display: 'form',
