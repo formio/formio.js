@@ -5,6 +5,7 @@ import sinon from 'sinon';
 import Harness from '../harness';
 import DataGridComponent from '../../src/components/datagrid/DataGrid';
 import { Formio } from '../../src/Formio';
+import { wait } from '../util';
 import {
   comp1,
   comp2,
@@ -17,6 +18,10 @@ import {
   comp9,
   comp10,
   comp11,
+  comp12,
+  comp13,
+  comp14,
+  comp15,
   withDefValue,
   withRowGroupsAndDefValue,
   modalWithRequiredFields,
@@ -24,39 +29,57 @@ import {
   withLogic,
   withCollapsibleRowGroups,
   withAllowCalculateOverride,
-  twoWithAllowCalculatedOverride, withCheckboxes,
+  twoWithAllowCalculatedOverride,
+  withCheckboxes,
   withReorder,
   wizardWithDataGridWithNestedForm,
-  dataGridWithNestedFormWithNestedForm, dataGridChildForm, dataGridGrandChildForm,
-} from './fixtures/datagrid';
+  dataGridWithNestedFormWithNestedForm,
+  dataGridChildForm,
+  dataGridGrandChildForm,
+  withIsEmptyConditional,
+} from './fixtures/datagrid/index';
 
-describe('DataGrid Component', () => {
-  it('Test modal edit confirmation dialog', (done) => {
-    Harness.testCreate(DataGridComponent, comp5).then((component) => {
-      component.componentModal.openModal();
-      const fakeEvent = {
-        preventDefault: () => {}
-      };
-      component.componentModal.showDialogListener(fakeEvent);
-      assert.equal(component.componentModal.isOpened, false, 'Should be closed without confirmation dialog since value was not changed');
-      setTimeout(() => {
+describe('DataGrid Component', function () {
+  it('Test modal edit confirmation dialog', function (done) {
+    Harness.testCreate(DataGridComponent, comp5)
+      .then((component) => {
         component.componentModal.openModal();
-        Harness.setInputValue(component, 'data[dataGrid][0][textField]', 'My Text');
+        const fakeEvent = {
+          preventDefault: () => {},
+        };
+        component.componentModal.showDialogListener(fakeEvent);
+        assert.equal(
+          component.componentModal.isOpened,
+          false,
+          'Should be closed without confirmation dialog since value was not changed',
+        );
         setTimeout(() => {
-          component.componentModal.showDialogListener(fakeEvent);
-          assert.equal(component.componentModal.isValueChanged(), true, 'Should return true since value was modified');
-          assert.equal(component.componentModal.isOpened, true, 'Should stay opened and wait until user confirm closing without changes saving');
-          assert(component.componentModal.dialog, 'Should open confirmation dialog');
-          component.componentModal.closeDialog(fakeEvent);
-          component.destroy();
-          done();
+          component.componentModal.openModal();
+          Harness.setInputValue(component, 'data[dataGrid][0][textField]', 'My Text');
+          setTimeout(() => {
+            component.componentModal.showDialogListener(fakeEvent);
+            assert.equal(
+              component.componentModal.isValueChanged(),
+              true,
+              'Should return true since value was modified',
+            );
+            assert.equal(
+              component.componentModal.isOpened,
+              true,
+              'Should stay opened and wait until user confirm closing without changes saving',
+            );
+            assert(component.componentModal.dialog, 'Should open confirmation dialog');
+            component.componentModal.closeDialog(fakeEvent);
+            component.destroy();
+            done();
+          }, 100);
         }, 100);
-      }, 100);
-    }).catch(done);
+      })
+      .catch(done);
   });
 
   it(`Should show alert message in modal edit, when clicking on modal overlay and value was changed,
-    and clear values when pushing 'yes, delete it' in alert container`, (done) => {
+    and clear values when pushing 'yes, delete it' in alert container`, function (done) {
     Harness.testCreate(DataGridComponent, comp4).then((component) => {
       const hiddenModalWindow = component.element.querySelector('.component-rendering-hidden');
       assert.equal(!!hiddenModalWindow, true);
@@ -70,14 +93,19 @@ describe('DataGrid Component', () => {
         assert.equal(!!component.element.querySelector('.component-rendering-hidden'), false);
 
         const inputEvent = new Event('input');
-        const dataGridInputField = component.element.querySelector('[name="data[dataGrid][0][number]"]');
+        const dataGridInputField = component.element.querySelector(
+          '[name="data[dataGrid][0][number]"]',
+        );
 
         dataGridInputField.value = 55555;
         //input value in dataGrid field inside modal edit window
         dataGridInputField.dispatchEvent(inputEvent);
 
         setTimeout(() => {
-          assert.equal(component.element.querySelector('[name="data[dataGrid][0][number]"]').value, '55555');
+          assert.equal(
+            component.element.querySelector('[name="data[dataGrid][0][number]"]').value,
+            '55555',
+          );
 
           const clickEvent = new Event('click');
           const modalOverlay = component.refs.modalOverlay;
@@ -99,7 +127,10 @@ describe('DataGrid Component', () => {
               openModalElement.dispatchEvent(clickEvent);
 
               setTimeout(() => {
-                assert.equal( component.element.querySelector('[name="data[dataGrid][0][number]"]').value, '');
+                assert.equal(
+                  component.element.querySelector('[name="data[dataGrid][0][number]"]').value,
+                  '',
+                );
                 done();
               }, 350);
             }, 300);
@@ -109,97 +140,106 @@ describe('DataGrid Component', () => {
     });
   });
 
-  it('Should build a data grid component', () => {
+  it('Should build a data grid component', function () {
     return Harness.testCreate(DataGridComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 3);
     });
   });
 
-  it('Should build a data grid component with formio-component-datagrid class property', done => {
-    Harness.testCreate(DataGridComponent, comp6).then((component) => {
-      const element = component.element.component.components[0].element;
-      setTimeout(() => {
-        assert.deepEqual(element.className.includes('formio-component-datagrid'), true);
-        done();
-      }, 200);
-    }, done)
-    .catch(done);
+  it('Should build a data grid component with formio-component-datagrid class property', function (done) {
+    Harness.testCreate(DataGridComponent, comp6)
+      .then((component) => {
+        const element = component.element.component.components[0].element;
+        setTimeout(() => {
+          assert.deepEqual(element.className.includes('formio-component-datagrid'), true);
+          done();
+        }, 200);
+      }, done)
+      .catch(done);
   });
 
-  it('Should not skip validation on input nested components', done => {
+  it('Should not skip validation on input nested components', function (done) {
     Harness.testCreate(DataGridComponent, comp1)
-      .then(cmp => {
+      .then((cmp) => {
         expect(cmp.shouldSkipValidation()).to.be.false;
         done();
       }, done)
       .catch(done);
   });
 
-  it('Should get and set values within the grid.', () => {
-    return Harness.testCreate(DataGridComponent, comp1).then((component) => {
-      Harness.testSetGet(component, [
-        {
-          make: 'Jeep',
-          model: 'Wrangler',
-          year: 1997
-        },
-        {
-          make: 'Chevy',
-          model: 'Tahoe',
-          year: 2014
-        }
-      ]);
-    });
+  it('Should not display custom validation error when adding a row', async () => {
+    const form = await Formio.createForm(document.createElement('div'), comp14)
+    const datagrid = form.getComponent('dataGrid');
+    datagrid.addRow();
+    await wait(300);
+    const dataGrid = form.element.querySelector('.formio-component-datagrid');
+    const errorContainer = dataGrid.querySelector(':scope > [ref="messageContainer"]');
+    assert.equal(errorContainer.textContent, "");
+  })
+
+  it('Should get and set values within the grid.', async function () {
+    const component = await Harness.testCreate(DataGridComponent, comp1);
+    Harness.testSetGet(component, [
+      {
+        make: 'Jeep',
+        model: 'Wrangler',
+        year: 1997,
+      },
+      {
+        make: 'Chevy',
+        model: 'Tahoe',
+        year: 2014,
+      },
+    ]);
   });
 
-  it('Should be able to add another row.', () => {
+  it('Should be able to add another row.', function () {
     return Harness.testCreate(DataGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
           make: 'Jeep',
           model: 'Wrangler',
-          year: 1997
-        }
+          year: 1997,
+        },
       ]);
       component.addRow();
       assert.deepEqual(component.getValue(), [
         {
           make: 'Jeep',
           model: 'Wrangler',
-          year: 1997
+          year: 1997,
         },
         {
           make: '',
           model: '',
-        }
+        },
       ]);
     });
   });
 
-  it('Should allow provide default value', function(done) {
+  it('Should allow provide default value', function (done) {
     try {
       Harness.testCreate(DataGridComponent, withDefValue)
         .then((datagrid) => {
           expect(datagrid.getValue()).to.deep.equal([
             { name: 'Alex', age: 1 },
-            { name: 'Bob',  age: 2 },
-            { name: 'Conny', age: 3 }
+            { name: 'Bob', age: 2 },
+            { name: 'Conny', age: 3 },
           ]);
           done();
         }, done)
         .catch(done);
-    }
-    catch (err) {
+    } catch (err) {
       done(err);
     }
   });
 
-  it('Should remove the corresponding row from the metadata when removing a row', (done) => {
+  it('Should remove the corresponding row from the metadata when removing a row', function (done) {
     Formio.createForm(document.createElement('div'), comp11)
       .then((form) => {
         const checkValue = (index, value) => {
           assert.equal(datagrid.getValue()[index].select, value);
-        }
+        };
         const datagrid = form.getComponent('dataGrid');
         datagrid.addRow();
         assert.equal(datagrid.getValue().length, 2);
@@ -207,7 +247,7 @@ describe('DataGrid Component', () => {
         select.setValue('individual');
         checkValue(0, 'entity');
         checkValue(1, 'individual');
-        setTimeout(()=> {
+        setTimeout(() => {
           assert.equal(select.getView(), '<span>Individual</span>');
           datagrid.removeRow(1);
           assert.equal(datagrid.getValue().length, 1);
@@ -218,73 +258,70 @@ describe('DataGrid Component', () => {
             const selectNew = form.getComponent('dataGrid[1].select');
             assert.equal(selectNew.getView(), '<span>Entity</span>');
             done();
-          }, 200)
-        }, 200)
+          }, 200);
+        }, 200);
       })
       .catch(done);
-  })
+  });
 
-  it('Should allow provide default value in row-groups model', function(done) {
+  it('Should allow provide default value in row-groups model', function (done) {
     try {
       Harness.testCreate(DataGridComponent, withRowGroupsAndDefValue)
         .then((datagrid) => {
           expect(datagrid.getValue()).to.deep.equal([
             { name: 'Alex', age: 1 },
-            { name: 'Bob',  age: 2 },
+            { name: 'Bob', age: 2 },
             { name: 'Conny', age: 3 },
             { name: '' },
-            { name: '' }
+            { name: '' },
           ]);
           done();
         }, done)
         .catch(done);
-    }
-    catch (err) {
+    } catch (err) {
       done(err);
     }
   });
 
-  it('Should not cause setValue loops when logic within hidden component is set', function(done) {
-    Formio.createForm(document.createElement('div'), withLogic)
-      .then((form) => {
-        const datagrid = form.getComponent('dataGrid');
-        const spyFunc = sinon.spy(datagrid, 'checkComponentConditions');
-        const textField = form.getComponent('escalationId');
-        const select = form.getComponent('teamName');
+  it('Should not cause setValue loops when logic within hidden component is set', function (done) {
+    Formio.createForm(document.createElement('div'), withLogic).then((form) => {
+      const datagrid = form.getComponent('dataGrid');
+      const spyFunc = sinon.spy(datagrid, 'checkComponentConditions');
+      const textField = form.getComponent('escalationId');
+      const select = form.getComponent('teamName');
 
-        textField.component.hidden = true;
-        select.setValue('preRiskAnalysis', { modified: true });
+      textField.component.hidden = true;
+      select.setValue('preRiskAnalysis', { modified: true });
 
-        setTimeout(() => {
-          expect(spyFunc.callCount).to.be.lessThan(4);
-          done();
-        }, 1500);
-      });
+      setTimeout(() => {
+        expect(spyFunc.callCount).to.be.lessThan(4);
+        done();
+      }, 1500);
+    });
   });
 
-  it('Should collapse group rows on group header click', (done) => {
-    Formio.createForm(document.createElement('div'), withCollapsibleRowGroups)
-      .then((form) => {
-        const groupHeadersRefName= 'datagrid-dataGrid-group-header';
-        const datagrid = form.getComponent('dataGrid');
-        assert.equal(datagrid.refs[groupHeadersRefName][0]?.classList?.contains('collapsed'), false);
-        assert.equal(datagrid.refs.chunks[0][0].classList?.contains('hidden'), false);
-        assert.equal(datagrid.refs.chunks[0][1].classList?.contains('hidden'), false);
+  it('Should collapse group rows on group header click', function (done) {
+    Formio.createForm(document.createElement('div'), withCollapsibleRowGroups).then((form) => {
+      const groupHeadersRefName = 'datagrid-dataGrid-group-header';
+      const datagrid = form.getComponent('dataGrid');
+      assert.equal(datagrid.refs[groupHeadersRefName][0]?.classList?.contains('collapsed'), false);
+      assert.equal(datagrid.refs.chunks[0][0].classList?.contains('hidden'), false);
+      assert.equal(datagrid.refs.chunks[0][1].classList?.contains('hidden'), false);
 
-        const clickEvent = new Event('click');
-        datagrid.refs[groupHeadersRefName][0].dispatchEvent(clickEvent);
-        setTimeout(() => {
-          const collapedGroupRows = datagrid.refs.chunks[0] || [];
-          assert.equal(datagrid.refs[groupHeadersRefName][0]?.classList?.contains('collapsed'), true);
-          assert.equal(collapedGroupRows[0]?.classList?.contains('hidden'), true);
-          assert.equal(collapedGroupRows[1]?.classList?.contains('hidden'), true);
-          done();
-        }, 300);
-      });
+      const clickEvent = new Event('click');
+      datagrid.refs[groupHeadersRefName][0].dispatchEvent(clickEvent);
+      setTimeout(() => {
+        const collapedGroupRows = datagrid.refs.chunks[0] || [];
+        assert.equal(datagrid.refs[groupHeadersRefName][0]?.classList?.contains('collapsed'), true);
+        assert.equal(collapedGroupRows[0]?.classList?.contains('hidden'), true);
+        assert.equal(collapedGroupRows[1]?.classList?.contains('hidden'), true);
+        done();
+      }, 300);
+    });
   });
 
-  describe('get minLength', () => {
-    it('should return minimal number of required rows', () => {
+  describe('get minLength', function () {
+    it('should return minimal number of required rows', function () {
       const EIDV = 'Invalid default value';
       const EDFC = 'Differ from configured value';
       const EDFG = 'Differ from number of rows in groups';
@@ -304,8 +341,8 @@ describe('DataGrid Component', () => {
           { label: 'H1', numberOfRows: 1 },
           { label: 'B2', numberOfRows: 3 },
           { label: 'C3', numberOfRows: 3 },
-          { label: 'M4', numberOfRows: 2 }
-        ]
+          { label: 'M4', numberOfRows: 2 },
+        ],
       });
       datagrid = new DataGridComponent(schema, {});
       expect(datagrid.minLength, EDFG).to.equal(9);
@@ -317,97 +354,164 @@ describe('DataGrid Component', () => {
           { label: 'H1', numberOfRows: 1 },
           { label: 'B2', numberOfRows: 3 },
           { label: 'C3', numberOfRows: 3 },
-          { label: 'M4', numberOfRows: 2 }
-        ]
+          { label: 'M4', numberOfRows: 2 },
+        ],
       });
       datagrid = new DataGridComponent(schema, {});
       if (datagrid.minLength === 5) {
         expect.fail('Number of row should take precedence over config');
-      }
-      else {
+      } else {
         expect(datagrid.minLength, EDFG).to.equal(9);
       }
     });
   });
 
-  describe('getGroupSizes', () => {
-    it('should return array of numbers representing group sizes', () => {
+  describe('getGroupSizes', function () {
+    it('should return array of numbers representing group sizes', function () {
       const { getGroupSizes } = DataGridComponent.prototype;
       let self = { component: {} };
 
       expect(getGroupSizes.call(self)).to.deep.equal([]);
 
-      self = { component: {
-        rowGroups: [{ numberOfRows: 1 }]
-      } };
+      self = {
+        component: {
+          rowGroups: [
+            { numberOfRows: 1 },
+          ],
+        },
+      };
 
-      expect(getGroupSizes.call(self)).to.deep.equal([1]);
+      expect(getGroupSizes.call(self)).to.deep.equal([
+        1,
+      ]);
 
-      self = { component: {
-        rowGroups: [{ numberOfRows: 1 }, { numberOfRows: 2 }]
-      } };
+      self = {
+        component: {
+          rowGroups: [
+            { numberOfRows: 1 },
+            { numberOfRows: 2 },
+          ],
+        },
+      };
 
-      expect(getGroupSizes.call(self)).to.deep.equal([1, 2]);
+      expect(getGroupSizes.call(self)).to.deep.equal([
+        1,
+        2,
+      ]);
 
-      self = { component: {
-        rowGroups: [{ numberOfRows: 1 }, { numberOfRows: 3 }, { numberOfRows: 10 }]
-      } };
+      self = {
+        component: {
+          rowGroups: [
+            { numberOfRows: 1 },
+            { numberOfRows: 3 },
+            { numberOfRows: 10 },
+          ],
+        },
+      };
 
-      expect(getGroupSizes.call(self)).to.deep.equal([1, 3, 10]);
+      expect(getGroupSizes.call(self)).to.deep.equal([
+        1,
+        3,
+        10,
+      ]);
     });
   });
 
-  it('Test "components" property and their context', (done) => {
+  it('Test "components" property and their context', function (done) {
     const testComponentsData = (components, expectedData) => {
-      components.forEach((comp) => assert.deepEqual(
-        comp.data,
-        expectedData,
-        'Data of components inside DataGrid should be equal to row\'s data'
-      ));
+      components.forEach((comp) =>
+        assert.deepEqual(
+          comp.data,
+          expectedData,
+          "Data of components inside DataGrid should be equal to row's data",
+        ),
+      );
     };
 
     Formio.createForm(document.createElement('div'), withConditionalFieldsAndValidations)
       .then((form) => {
-        const rootText = form.getComponent(['text']);
+        const rootText = form.getComponent([
+          'text',
+        ]);
         rootText.setValue('Match', { modified: true });
 
         setTimeout(() => {
           const emptyRowData = {
             rootTest: '',
-            rowTest: ''
+            rowTest: '',
           };
-          const dataGrid = form.getComponent(['dataGrid']);
+          const dataGrid = form.getComponent([
+            'dataGrid',
+          ]);
 
-          assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+          assert.equal(
+            dataGrid.components.length,
+            6,
+            'DataGrid.components should contain 6 components',
+          );
           testComponentsData(dataGrid.components, emptyRowData);
 
-          const showTextFieldInsideDataGridRadio = form.getComponent(['radio']);
+          const showTextFieldInsideDataGridRadio = form.getComponent([
+            'radio',
+          ]);
           showTextFieldInsideDataGridRadio.setValue('show', { modified: true });
 
           setTimeout(() => {
             const rowData1 = { ...emptyRowData, radio1: '' };
-            const dataGridRowRadio = form.getComponent(['dataGrid', 0, 'radio1']);
+            const dataGridRowRadio = form.getComponent([
+              'dataGrid',
+              0,
+              'radio1',
+            ]);
 
-            assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+            assert.equal(
+              dataGrid.components.length,
+              6,
+              'DataGrid.components should contain 6 components',
+            );
             testComponentsData(dataGrid.components, rowData1);
-            assert.equal(dataGridRowRadio.visible, true, 'Radio inside DataGrid should become visible');
+            assert.equal(
+              dataGridRowRadio.visible,
+              true,
+              'Radio inside DataGrid should become visible',
+            );
 
             dataGridRowRadio.setValue('dgShow', { modified: true });
 
             setTimeout(() => {
-              const rowData2 =  {
+              const rowData2 = {
                 ...emptyRowData,
                 radio1: 'dgShow',
-                rowShowShowTextfieldWhenDataGridRadioHasShowValue: ''
+                rowShowShowTextfieldWhenDataGridRadioHasShowValue: '',
               };
-              const dataGridRowConditionalField = form.getComponent(['dataGrid', 0, 'rowShowShowTextfieldWhenDataGridRadioHasShowValue']);
+              const dataGridRowConditionalField = form.getComponent([
+                'dataGrid',
+                0,
+                'rowShowShowTextfieldWhenDataGridRadioHasShowValue',
+              ]);
 
-              assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+              assert.equal(
+                dataGrid.components.length,
+                6,
+                'DataGrid.components should contain 6 components',
+              );
               testComponentsData(dataGrid.components, rowData2);
-              assert.equal(dataGridRowConditionalField.visible, true, 'Conditional field inside DataGrid should become visible');
+              assert.equal(
+                dataGridRowConditionalField.visible,
+                true,
+                'Conditional field inside DataGrid should become visible',
+              );
 
-              const rootTest = form.getComponent(['dataGrid', 0, 'rootTest']);
-              const rowTest = form.getComponent(['dataGrid', 0, 'rowTest']);
+              const rootTest = form.getComponent([
+                'dataGrid',
+                0,
+                'rootTest',
+              ]);
+              const rowTest = form.getComponent([
+                'dataGrid',
+                0,
+                'rowTest',
+              ]);
 
               rootTest.setValue('Match', { modified: true });
               rowTest.setValue('Match', { modified: true });
@@ -416,16 +520,23 @@ describe('DataGrid Component', () => {
                 const rowData3 = {
                   ...rowData2,
                   rowTest: 'Match',
-                  rootTest: 'Match'
+                  rootTest: 'Match',
                 };
 
-                assert.equal(dataGrid.components.length, 6, 'DataGrid.components should contain 6 components');
+                assert.equal(
+                  dataGrid.components.length,
+                  6,
+                  'DataGrid.components should contain 6 components',
+                );
                 testComponentsData(dataGrid.components, rowData3);
 
-                form.checkAsyncValidity(null, true).then((valid) => {
-                  assert(valid, 'Form should be valid');
-                  done();
-                }).catch(done);
+                form
+                  .checkAsyncValidity(null, true)
+                  .then((valid) => {
+                    assert(valid, 'Form should be valid');
+                    done();
+                  })
+                  .catch(done);
               }, 300);
             }, 350);
           }, 300);
@@ -434,633 +545,1052 @@ describe('DataGrid Component', () => {
       .catch(done);
   });
 
-  it('Should retain previous checkboxes checked property when add another is pressed (checked)', () => {
+  it('Should retain previous checkboxes checked property when add another is pressed (checked)', function () {
     return Harness.testCreate(DataGridComponent, withCheckboxes).then((component) => {
       component.componentsMap['dataGrid[0].radio'].element.querySelector('input').click();
       component.addRow();
-      assert.equal(component.componentsMap['dataGrid[0].radio'].element.querySelector('input').checked, true);
+      assert.equal(
+        component.componentsMap['dataGrid[0].radio'].element.querySelector('input').checked,
+        true,
+      );
     });
   });
 
-  it('Should retain previous checkboxes checked property when add another is pressed (unchecked)', () => {
+  it('Should retain previous checkboxes checked property when add another is pressed (unchecked)', function () {
     return Harness.testCreate(DataGridComponent, withCheckboxes).then((component) => {
       component.componentsMap['dataGrid[0].radio'].element.querySelector('input').click();
       component.componentsMap['dataGrid[0].radio'].element.querySelector('input').click();
       component.addRow();
-      assert.equal(component.componentsMap['dataGrid[0].radio'].element.querySelector('input').checked, false);
+      assert.equal(
+        component.componentsMap['dataGrid[0].radio'].element.querySelector('input').checked,
+        false,
+      );
     });
   });
 
-  it('Should have dragula available when reorder flag is set to true', () => {
+  it('Should have dragula available when reorder flag is set to true', function () {
     return Formio.createForm(document.createElement('div'), comp9, {}).then((form) => {
       const dataGridComponent = form.getComponent('dataGrid');
       assert(dataGridComponent.root.dragulaLib, 'could not find dragulaLib');
     });
   });
 
-  it('Disable/not disable submit button with required flag in dataGrid', function(done) {
+  it('Disable/not disable submit button with required flag in dataGrid', function (done) {
     Formio.createForm(document.createElement('div'), comp10)
       .then((form) => {
-      const buttonComponent = form.getComponent('submit');
-      assert.equal(buttonComponent.disabled, true, '(1) Component should be disabled');
-      const dataGrid = form.getComponent('dataGrid');
-      dataGrid.setValue([
-        {
-          textField: 'some value',
-          checkbox: false
-        },
-        {
-          textField: '',
-          checkbox: false
-        }
-      ]);
-
-      setTimeout(() => {
-        assert.equal(buttonComponent.disabled, false, '(2) Component should be not disabled');
+        const buttonComponent = form.getComponent('submit');
+        assert.equal(buttonComponent.disabled, true, '(1) Component should be disabled');
+        const dataGrid = form.getComponent('dataGrid');
         dataGrid.setValue([
           {
-            textField: '',
-            checkbox: false
+            textField: 'some value',
+            checkbox: false,
           },
           {
             textField: '',
-            checkbox: false
-          }
+            checkbox: false,
+          },
         ]);
 
         setTimeout(() => {
-          assert.equal(buttonComponent.disabled, true, '(3) Component should be disabled');
-          done();
-        }, 300);
-      }, 300);
-    }).catch((err) => done(err));
-  });
-
-  it('Should trigger DataGrid change event when row component value changes', (done) => {
-    Formio.createForm(document.createElement('div'), {
-      type: 'form',
-      display: 'form',
-      components: [{
-        label: 'Datagrid',
-        key: 'dataGrid',
-        type: 'datagrid',
-        defaultValue: [{ }],
-        input: true,
-        components: [
-          {
-            label: 'Number',
-            key: 'number',
-            type: 'number',
-            input: true
-          },
-        ],
-      }],
-    }).then((form) => {
-      form.on('change', ({ changed }) => {
-        assert(changed.component.key, 'dataGrid');
-        done();
-      });
-      const numberComp = form.getComponent(['dataGrid', 0, 'number']);
-      numberComp.setValue(1);
-    }).catch((err) => done(err));
-  });
-
-  it('Should trigger DataGrid change event when adding a new row', (done) => {
-    Formio.createForm(document.createElement('div'), {
-      type: 'form',
-      display: 'form',
-      components: [{
-        label: 'Datagrid',
-        key: 'dataGrid',
-        type: 'datagrid',
-        defaultValue: [{ }],
-        input: true,
-        components: [
-          {
-            label: 'Number',
-            key: 'number',
-            type: 'number',
-            input: true
-          },
-        ],
-      }],
-    }).then((form) => {
-      form.on('change', ({ changed }) => {
-        assert(changed.component.key, 'dataGrid');
-        done();
-      });
-      const dataGrid = form.getComponent(['dataGrid']);
-      dataGrid.addRow();
-    }).catch((err) => done(err));
-  });
-
-  it('Should trigger DataGrid change event when removing the row', (done) => {
-    Formio.createForm(document.createElement('div'), {
-      type: 'form',
-      display: 'form',
-      components: [{
-        label: 'Datagrid',
-        key: 'dataGrid',
-        type: 'datagrid',
-        defaultValue: [{ }],
-        input: true,
-        components: [
-          {
-            label: 'Number',
-            key: 'number',
-            type: 'number',
-            input: true
-          },
-        ],
-      }],
-    }).then((form) => {
-      form.on('change', ({ changed }) => {
-        assert(changed.component.key, 'dataGrid');
-        done();
-      });
-      const dataGrid = form.getComponent(['dataGrid']);
-      dataGrid.removeRow(0);
-    }).catch((err) => done(err));
-  });
-});
-
-describe('DataGrid Panels', () => {
-  it('Should build a data grid component', () => {
-    return Harness.testCreate(DataGridComponent, comp2);
-  });
-
-  it('Should be able to set the values of one panel in the DataGrid.', () => {
-    return Harness.testCreate(DataGridComponent, comp2).then((component) => {
-      Harness.testSetGet(component, [
-        {
-          firstName: 'Joe',
-          lastName: 'Smith'
-        }
-      ]);
-
-      // Now add a new row.
-      component.addRow();
-      assert.deepEqual(component.getValue(), [
-        {
-          firstName: 'Joe',
-          lastName: 'Smith'
-        },
-        {
-          firstName: '',
-          lastName: ''
-        }
-      ]);
-    });
-  });
-
-  it('Should have unique IDs inside data grid', () => {
-    return Harness.testCreate(DataGridComponent, comp7).then((component) => {
-      component.addRow();
-      const idArr = [];
-      component.components.forEach((row, i) => {
-        idArr[i] = row.element.component.components[0].id;
-      });
-      assert.equal(idArr[0] !== idArr[1], true);
-    });
-  });
-
-  it('Should hide label in header for Button component when hideLabel is true.', () => {
-    const formElement = document.createElement('div');
-    return Formio.createForm(formElement, {
-      display: 'form',
-      components: [comp8]
-    })
-    .then(() => {
-      assert.equal(formElement.getElementsByTagName('th')[0].textContent.trim(), '', 'Should hide a label');
-      assert.equal(formElement.getElementsByTagName('th')[1].textContent.trim(), 'Text Field', 'Should show a label');
-    });
-  });
-});
-
-describe('DataGrid disabling', () => {
-  it('Child components should be disabled', () => {
-    return Harness.testCreate(DataGridComponent, comp3).then((component) => {
-      assert.equal(component.components.reduce((acc, child) => acc && child.parentDisabled, true), true);
-    });
-  });
-});
-
-describe('DataGrid modal', () => {
-  it('Should be highlighted in red when invalid', (done) => {
-    const formElement = document.createElement('div');
-    Formio.createForm(formElement, {
-      display: 'form',
-      components: [modalWithRequiredFields]
-    })
-    .then((form) => {
-      form.setSubmission({
-        data: {
-          dataGrid: [
+          assert.equal(buttonComponent.disabled, false, '(2) Component should be not disabled');
+          dataGrid.setValue([
             {
               textField: '',
-              textArea: ''
+              checkbox: false,
+            },
+            {
+              textField: '',
+              checkbox: false,
+            },
+          ]);
+
+          setTimeout(() => {
+            assert.equal(buttonComponent.disabled, true, '(3) Component should be disabled');
+            done();
+          }, 300);
+        }, 300);
+      })
+      .catch((err) => done(err));
+  });
+
+  it('Should trigger DataGrid change event when row component value changes', function (done) {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [
+        {
+          label: 'Datagrid',
+          key: 'dataGrid',
+          type: 'datagrid',
+          defaultValue: [
+            {},
+          ],
+          input: true,
+          components: [
+            {
+              label: 'Number',
+              key: 'number',
+              type: 'number',
+              input: true,
+            },
+          ],
+        },
+      ],
+    })
+      .then((form) => {
+        form.on('change', ({ changed }) => {
+          assert(changed.component.key, 'dataGrid');
+          done();
+        });
+        const numberComp = form.getComponent([
+          'dataGrid',
+          0,
+          'number',
+        ]);
+        numberComp.setValue(1);
+      })
+      .catch((err) => done(err));
+  });
+
+  it('Should trigger DataGrid change event when adding a new row', function (done) {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [
+        {
+          label: 'Datagrid',
+          key: 'dataGrid',
+          type: 'datagrid',
+          defaultValue: [
+            {},
+          ],
+          input: true,
+          components: [
+            {
+              label: 'Number',
+              key: 'number',
+              type: 'number',
+              input: true,
+            },
+          ],
+        },
+      ],
+    })
+      .then((form) => {
+        form.on('change', ({ changed }) => {
+          assert(changed.component.key, 'dataGrid');
+          done();
+        });
+        const dataGrid = form.getComponent([
+          'dataGrid',
+        ]);
+        dataGrid.addRow();
+      })
+      .catch((err) => done(err));
+  });
+
+  it('Should trigger DataGrid change event when removing the row', function (done) {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [
+        {
+          label: 'Datagrid',
+          key: 'dataGrid',
+          type: 'datagrid',
+          defaultValue: [
+            {},
+          ],
+          input: true,
+          components: [
+            {
+              label: 'Number',
+              key: 'number',
+              type: 'number',
+              input: true,
+            },
+          ],
+        },
+      ],
+    })
+      .then((form) => {
+        form.on('change', ({ changed }) => {
+          assert(changed.component.key, 'dataGrid');
+          done();
+        });
+        const dataGrid = form.getComponent([
+          'dataGrid',
+        ]);
+        dataGrid.removeRow(0);
+      })
+      .catch((err) => done(err));
+  });
+
+  it('Should update indexes in componentsMap when removing dataGrid row', function () {
+    return Harness.testCreate(DataGridComponent, {
+      label: 'Datagrid',
+      key: 'dataGrid',
+      type: 'datagrid',
+      input: true,
+      defaultValue: [
+        {},
+      ],
+      components: [
+        {
+          label: 'Number',
+          key: 'number',
+          type: 'number',
+          input: true,
+        },
+      ],
+    }).then((component) => {
+      component.addRow();
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[0].number'), true);
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[1].number'), true);
+      component.removeRow(0);
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[0].number'), true);
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[1].number'), false);
+    });
+  });
+
+  it('Should re-key descendant componentsMap entries when removing a row in a nested DataGrid', function () {
+    return Harness.testCreate(DataGridComponent, {
+      label: 'Datagrid',
+      key: 'dataGrid',
+      type: 'datagrid',
+      input: true,
+      defaultValue: [
+        {},
+      ],
+      components: [
+        {
+          label: 'Columns',
+          key: 'columns',
+          type: 'columns',
+          input: false,
+          columns: [
+            {
+              size: 'md',
+              width: 12,
+              components: [
+                {
+                  label: 'Leaf',
+                  key: 'leaf',
+                  type: 'textfield',
+                  input: true,
+                  validate: { required: true },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    }).then((component) => {
+      component.addRow();
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[0].leaf'), true);
+      assert.equal(component.componentsMap.hasOwnProperty('dataGrid[1].leaf'), true);
+      component.removeRow(0);
+      assert.equal(
+        component.componentsMap.hasOwnProperty('dataGrid[0].leaf'),
+        true,
+        'surviving row leaf should be re-keyed at index 0',
+      );
+      assert.equal(
+        component.componentsMap.hasOwnProperty('dataGrid[1].leaf'),
+        false,
+        'old index-1 leaf key should be cleared',
+      );
+      // The surviving leaf instance must be the one that's now under [0].
+      assert.equal(component.componentsMap['dataGrid[0].leaf'].paths.dataPath, 'dataGrid[0].leaf');
+    });
+  });
+
+  it('Should include default values of the nested components for the first row in submission payload', function (done) {
+    Formio.createForm(document.createElement('div'), {
+      type: 'form',
+      display: 'form',
+      components: [
+        {
+          label: 'Datagrid containing hidden fields',
+          reorder: false,
+          addAnotherPosition: 'bottom',
+          layoutFixed: false,
+          enableRowGroups: false,
+          initEmpty: false,
+          tableView: false,
+          defaultValue: [
+            {}
+          ],
+          validateWhenHidden: false,
+          key: 'datagrid',
+          type: 'datagrid',
+          input: true,
+          components: [
+            {
+              label: 'Hidden textfield that must not lose its value',
+              applyMaskOn: 'change',
+              hidden: true,
+              disabled: true,
+              tableView: true,
+              defaultValue: 'Hidden value that should be available',
+              clearOnHide: false,
+              validateWhenHidden: false,
+              key: 'hidden_textfield_in_datagrid',
+              type: 'textfield',
+              input: true
+            },
+            {
+              label: 'Visible Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              defaultValue: 'Visible value',
+              validateWhenHidden: false,
+              key: 'visible_text_field',
+              type: 'textfield',
+              input: true
             }
           ]
         }
-      }, {
-        dirty: true
+      ],
+    })
+      .then((form) => {
+        assert.equal(form.data.datagrid[0].hidden_textfield_in_datagrid, 'Hidden value that should be available');
+        assert.equal(form.data.datagrid[0].visible_text_field, 'Visible value');
+        done();
+      })
+      .catch((err) => done(err));
+  });
+
+  it('Should allow to Clear Value On Refresh Options for the Select component in Data Grid', (done) => {
+    Formio.createForm(document.createElement('div'), comp13)
+    .then(async (form) => {
+      const timeout = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+      const dataGrid = form.getComponent('dataGrid');
+      const number = form.getComponent(['dataGrid', 0, 'number']);
+      const select = form.getComponent(['dataGrid', 0, 'select']);
+      await select.itemsLoaded;
+      select.setValue('q');
+
+      // timeout(50) need to complete triggerChange
+      await Promise.all([select.itemsLoaded, timeout(50)]);
+
+      assert.equal(select.getValue(), 'q');
+      assert.deepEqual(dataGrid.getValue(), [{ select: 'q' }]);
+      const numberInput = number.refs.input[0];
+      const numberValue = 5;
+      const inputEvent = new Event('input');
+      numberInput.value = numberValue;
+      numberInput.dispatchEvent(inputEvent);
+
+      await timeout(500);
+
+      assert.equal(select.getValue(), '');
+      assert.deepEqual(dataGrid.getValue(), [{ select: '', number: 5 }]);
+
+      done();      
+    });
+  });
+
+  it('Should allow to Clear Value On Refresh Options for the Select component based on Data Grid', (done) => {
+    Formio.createForm(document.createElement('div'), comp15)
+    .then(async (form) => {
+      const timeout = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+      const dataGrid = form.getComponent('dataGrid');
+      const textField = form.getComponent(['dataGrid', 0, 'textField']);
+      const select = form.getComponent(['selectClearValueOnDataGridChange']);
+      await select.itemsLoaded;
+      select.setValue('b');
+
+      // timeout(50) need to complete triggerChange
+      await Promise.all([select.itemsLoaded, timeout(50)]);
+
+      assert.equal(select.getValue(), 'b');
+      assert.deepEqual(dataGrid.getValue(), [{ textField: '' }]);
+      const textFieldInput = textField.refs.input[0];
+      const inputEvent = new Event('input');
+      textFieldInput.value = 'test';
+      textFieldInput.dispatchEvent(inputEvent);
+
+      await timeout(500);
+      assert.equal(select.getValue(), '');
+      assert.deepEqual(dataGrid.getValue(), [{ textField: 'test' }]);
+
+      done();
+    });
+  });
+
+  it('Should emit a single form change with the originating child component when a field inside a Data Grid changes', (done) => {
+    const formDef = {
+      display: 'form',
+      components: [
+        {
+          label: 'Products',
+          key: 'products',
+          type: 'datagrid',
+          input: true,
+          tableView: false,
+          components: [
+            {
+              label: 'Name',
+              key: 'name',
+              type: 'textfield',
+              input: true,
+              tableView: true,
+              applyMaskOn: 'change',
+            },
+          ],
+          defaultValue: [{ name: '' }],
+        },
+      ],
+    };
+
+    Formio.createForm(document.createElement('div'), formDef)
+    .then(async (form) => {
+      const timeout = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+      const name = form.getComponent(['products', 0, 'name']);
+
+      await timeout(200);
+
+      const changedComponents = [];
+      form.on('change', (value) => {
+        if (value && value.changed && value.changed.component) {
+          changedComponents.push(value.changed.component.key);
+        }
       });
 
-      setTimeout(() => {
-        Harness.testModalWrapperErrorClasses(form);
+      const nameInput = name.refs.input[0];
+      const inputEvent = new Event('input');
+      nameInput.value = 'hello';
+      nameInput.dispatchEvent(inputEvent);
 
-        const validData = {
-          dataGrid: [
-            {
-              textField: 'Some text',
-              textArea: 'Mre text'
-            }
-          ]
-        };
+      await timeout(500);
 
-        form.setSubmission({ data: validData });
+      assert.deepStrictEqual(
+        changedComponents,
+        ['name'],
+        `expected exactly one form change event with changed.component.key === 'name', got: ${JSON.stringify(changedComponents)}`,
+      );
 
-        setTimeout(() => {
-          Harness.testModalWrapperErrorClasses(form, false);
-          done();
-        }, 200);
-      }, 200);
+      done();
     })
     .catch(done);
   });
-});
 
-describe('DataGrid calculated values', () => {
-  it('Should allow override calculated value', (done) => {
-    Formio.createForm(document.createElement('div'), withAllowCalculateOverride)
-      .then((form) => {
-        const select = form.getComponent('select');
-        const dataGrid = form.getComponent('dataGrid');
+  describe('DataGrid Panels', function () {
+    it('Should build a data grid component', function () {
+      return Harness.testCreate(DataGridComponent, comp2);
+    });
 
-        assert.deepEqual(dataGrid.getValue(),
-          [{
+    it('Should be able to set the values of one panel in the DataGrid.', function () {
+      return Harness.testCreate(DataGridComponent, comp2).then((component) => {
+        Harness.testSetGet(component, [
+          {
+            firstName: 'Joe',
+            lastName: 'Smith',
+          },
+        ]);
+
+        // Now add a new row.
+        component.addRow();
+        assert.deepEqual(component.getValue(), [
+          {
+            firstName: 'Joe',
+            lastName: 'Smith',
+          },
+          {
             firstName: '',
-            lastName: ''
-          }]
-        );
+            lastName: '',
+          },
+        ]);
+      });
+    });
 
-        select.setValue('a', { modified: true });
-        setTimeout(() => {
-          assert.deepEqual(dataGrid.getValue(),
-            [{
-              firstName: 'A f 1',
-              lastName: 'A l 1'
-            }]
+    it('Should have unique IDs inside data grid', function () {
+      return Harness.testCreate(DataGridComponent, comp7).then((component) => {
+        component.addRow();
+        const idArr = [];
+        component.components.forEach((row, i) => {
+          idArr[i] = row.element.component.components[0].id;
+        });
+        assert.equal(idArr[0] !== idArr[1], true);
+      });
+    });
+
+    it('Should hide label in header for Button component when hideLabel is true.', function () {
+      const formElement = document.createElement('div');
+      return Formio.createForm(formElement, {
+        display: 'form',
+        components: [
+          comp8,
+        ],
+      }).then(() => {
+        assert.equal(
+          formElement.getElementsByTagName('th')[0].textContent.trim(),
+          '',
+          'Should hide a label',
+        );
+        assert.equal(
+          formElement.getElementsByTagName('th')[1].textContent.trim(),
+          'Text Field',
+          'Should show a label',
+        );
+      });
+    });
+  });
+
+  describe('DataGrid disabling', function () {
+    it('Child components should be disabled', function () {
+      return Harness.testCreate(DataGridComponent, comp3).then((component) => {
+        assert.equal(
+          component.components.reduce((acc, child) => acc && child.parentDisabled, true),
+          true,
+        );
+      });
+    });
+  });
+
+  describe('DataGrid modal', function () {
+    it('Should be highlighted in red when invalid', function (done) {
+      const formElement = document.createElement('div');
+      Formio.createForm(formElement, {
+        display: 'form',
+        components: [
+          modalWithRequiredFields,
+        ],
+      })
+        .then((form) => {
+          form.setSubmission(
+            {
+              data: {
+                dataGrid: [
+                  {
+                    textField: '',
+                    textArea: '',
+                  },
+                ],
+              },
+            },
+            {
+              dirty: true,
+            },
           );
 
-          select.setValue('b', { modified: true });
           setTimeout(() => {
-            assert.deepEqual(dataGrid.getValue(),
-              [{
-                firstName: 'B f 1',
-                lastName: 'B l 1'
-              },
-              {
-                firstName: 'B f 2',
-                lastName: 'B l 2'
-              }]
-            );
+            Harness.testModalWrapperErrorClasses(form);
 
-            const firstName = form.getComponent(['dataGrid', 0, 'firstName']);
-            firstName.setValue('first name', { modified: true });
-            select.setValue('c', { modified: true });
+            const validData = {
+              dataGrid: [
+                {
+                  textField: 'Some text',
+                  textArea: 'Mre text',
+                },
+              ],
+            };
+
+            form.setSubmission({ data: validData });
+
             setTimeout(() => {
-              assert.deepEqual(dataGrid.getValue(),
-                [{
-                  firstName: 'first name',
-                  lastName: 'B l 1'
+              Harness.testModalWrapperErrorClasses(form, false);
+              done();
+            }, 200);
+          }, 200);
+        })
+        .catch(done);
+    });
+  });
+
+  describe('DataGrid calculated values', function () {
+    it('Should allow override calculated value', function (done) {
+      Formio.createForm(document.createElement('div'), withAllowCalculateOverride)
+        .then((form) => {
+          const select = form.getComponent('select');
+          const dataGrid = form.getComponent('dataGrid');
+
+          assert.deepEqual(dataGrid.getValue(), [
+            {
+              firstName: '',
+              lastName: '',
+            },
+          ]);
+
+          select.setValue('a', { modified: true });
+          setTimeout(() => {
+            assert.deepEqual(dataGrid.getValue(), [
+              {
+                firstName: 'A f 1',
+                lastName: 'A l 1',
+              },
+            ]);
+
+            select.setValue('b', { modified: true });
+            setTimeout(() => {
+              assert.deepEqual(dataGrid.getValue(), [
+                {
+                  firstName: 'B f 1',
+                  lastName: 'B l 1',
                 },
                 {
                   firstName: 'B f 2',
-                  lastName: 'B l 2'
-                }]
-              );
-              done();
+                  lastName: 'B l 2',
+                },
+              ]);
+
+              const firstName = form.getComponent([
+                'dataGrid',
+                0,
+                'firstName',
+              ]);
+              firstName.setValue('first name', { modified: true });
+              select.setValue('c', { modified: true });
+              setTimeout(() => {
+                assert.deepEqual(dataGrid.getValue(), [
+                  {
+                    firstName: 'first name',
+                    lastName: 'B l 1',
+                  },
+                  {
+                    firstName: 'B f 2',
+                    lastName: 'B l 2',
+                  },
+                ]);
+                done();
+              }, 300);
             }, 300);
           }, 300);
-        }, 300);
-      })
-      .catch(done);
-  });
+        })
+        .catch(done);
+    });
 
-  it('Should not recalculate value after restoring to previous calculated value', (done) => {
-    Formio.createForm(document.createElement('div'), withAllowCalculateOverride)
-      .then((form) => {
-        const select = form.getComponent('select');
-        const dataGrid = form.getComponent('dataGrid');
+    it('Should not recalculate value after restoring to previous calculated value', function (done) {
+      Formio.createForm(document.createElement('div'), withAllowCalculateOverride)
+        .then((form) => {
+          const select = form.getComponent('select');
+          const dataGrid = form.getComponent('dataGrid');
 
-        assert.deepEqual(dataGrid.getValue(),
-          [{
-            firstName: '',
-            lastName: ''
-          }]
-        );
+          assert.deepEqual(dataGrid.getValue(), [
+            {
+              firstName: '',
+              lastName: '',
+            },
+          ]);
 
-        select.setValue('a', { modified: true });
-        setTimeout(() => {
-          assert.deepEqual(dataGrid.getValue(),
-            [{
-              firstName: 'A f 1',
-              lastName: 'A l 1'
-            }]
-          );
-
-          const firstName = form.getComponent(['dataGrid', 0, 'firstName']);
-          firstName.setValue('first name', { modified: true });
+          select.setValue('a', { modified: true });
           setTimeout(() => {
-            select.setValue('c', { modified: true });
-            setTimeout(() => {
-              assert.deepEqual(dataGrid.getValue(),
-                [{
-                  firstName: 'first name',
-                  lastName: 'A l 1'
-                }]
-              );
+            assert.deepEqual(dataGrid.getValue(), [
+              {
+                firstName: 'A f 1',
+                lastName: 'A l 1',
+              },
+            ]);
 
-              firstName.setValue('A f 1', { modified: true });
+            const firstName = form.getComponent([
+              'dataGrid',
+              0,
+              'firstName',
+            ]);
+            firstName.setValue('first name', { modified: true });
+            setTimeout(() => {
+              select.setValue('c', { modified: true });
               setTimeout(() => {
-                assert.equal(select.getValue(), 'c');
-                assert.deepEqual(dataGrid.getValue(),
-                  [{
-                    firstName: 'A f 1',
-                    lastName: 'A l 1'
-                  }]
-                );
-                done();
+                assert.deepEqual(dataGrid.getValue(), [
+                  {
+                    firstName: 'first name',
+                    lastName: 'A l 1',
+                  },
+                ]);
+
+                firstName.setValue('A f 1', { modified: true });
+                setTimeout(() => {
+                  assert.equal(select.getValue(), 'c');
+                  assert.deepEqual(dataGrid.getValue(), [
+                    {
+                      firstName: 'A f 1',
+                      lastName: 'A l 1',
+                    },
+                  ]);
+                  done();
+                }, 400);
               }, 400);
             }, 400);
           }, 400);
-        }, 400);
-      })
-      .catch(done);
-  });
+        })
+        .catch(done);
+    });
 
-  it('Should calculate value for several DataGrid components', (done) => {
-    Formio.createForm(document.createElement('div'), twoWithAllowCalculatedOverride)
-      .then((form) => {
-        const select = form.getComponent('select');
-        const dataGrid = form.getComponent('dataGrid');
-        const dataGrid2 = form.getComponent('dataGrid2');
+    it('Should calculate value for several DataGrid components', function (done) {
+      Formio.createForm(document.createElement('div'), twoWithAllowCalculatedOverride)
+        .then((form) => {
+          const select = form.getComponent('select');
+          const dataGrid = form.getComponent('dataGrid');
+          const dataGrid2 = form.getComponent('dataGrid2');
 
-        assert.deepEqual(dataGrid.getValue(),
-          [{
-            firstName: '',
-            lastName: ''
-          }]
-        );
-        assert.deepEqual(dataGrid2.getValue(),
-          [{
-            firstName: '',
-            lastName: ''
-          }]
-        );
+          assert.deepEqual(dataGrid.getValue(), [
+            {
+              firstName: '',
+              lastName: '',
+            },
+          ]);
+          assert.deepEqual(dataGrid2.getValue(), [
+            {
+              firstName: '',
+              lastName: '',
+            },
+          ]);
 
-        select.setValue('a', { modified: true });
-        setTimeout(() => {
-          assert.deepEqual(dataGrid.getValue(),
-            [{
-              firstName: 'A f 1',
-              lastName: 'A l 1'
-            }]
-          );
-          assert.deepEqual(dataGrid2.getValue(),
-            [{
-              firstName: 'A f 1',
-              lastName: 'A l 1'
-            }]
-          );
-
-          select.setValue('b', { modified: true });
+          select.setValue('a', { modified: true });
           setTimeout(() => {
-            assert.deepEqual(dataGrid.getValue(),
-              [{
-                firstName: 'B f 1',
-                lastName: 'B l 1'
-              },
+            assert.deepEqual(dataGrid.getValue(), [
               {
-                firstName: 'B f 2',
-                lastName: 'B l 2'
-              }]
-            );
-            assert.deepEqual(dataGrid2.getValue(),
-              [{
-                firstName: 'B f 1',
-                lastName: 'B l 1'
+                firstName: 'A f 1',
+                lastName: 'A l 1',
               },
+            ]);
+            assert.deepEqual(dataGrid2.getValue(), [
               {
-                firstName: 'B f 2',
-                lastName: 'B l 2'
-              }]
-            );
+                firstName: 'A f 1',
+                lastName: 'A l 1',
+              },
+            ]);
 
-            const firstName = form.getComponent(['dataGrid', 0, 'firstName']);
-            firstName.setValue('first name', { modified: true });
-            const firstName2 = form.getComponent(['dataGrid2', 0, 'firstName']);
-            firstName2.setValue('first name 2', { modified: true });
-            select.setValue('c', { modified: true });
+            select.setValue('b', { modified: true });
             setTimeout(() => {
-              assert.deepEqual(dataGrid.getValue(),
-                [{
-                  firstName: 'first name',
-                  lastName: 'B l 1'
+              assert.deepEqual(dataGrid.getValue(), [
+                {
+                  firstName: 'B f 1',
+                  lastName: 'B l 1',
                 },
                 {
                   firstName: 'B f 2',
-                  lastName: 'B l 2'
-                }]
-              );
-              assert.deepEqual(dataGrid2.getValue(),
-                [{
-                  firstName: 'first name 2',
-                  lastName: 'B l 1'
+                  lastName: 'B l 2',
+                },
+              ]);
+              assert.deepEqual(dataGrid2.getValue(), [
+                {
+                  firstName: 'B f 1',
+                  lastName: 'B l 1',
                 },
                 {
                   firstName: 'B f 2',
-                  lastName: 'B l 2'
-                }]
-              );
-              done();
+                  lastName: 'B l 2',
+                },
+              ]);
+
+              const firstName = form.getComponent([
+                'dataGrid',
+                0,
+                'firstName',
+              ]);
+              firstName.setValue('first name', { modified: true });
+              const firstName2 = form.getComponent([
+                'dataGrid2',
+                0,
+                'firstName',
+              ]);
+              firstName2.setValue('first name 2', { modified: true });
+              select.setValue('c', { modified: true });
+              setTimeout(() => {
+                assert.deepEqual(dataGrid.getValue(), [
+                  {
+                    firstName: 'first name',
+                    lastName: 'B l 1',
+                  },
+                  {
+                    firstName: 'B f 2',
+                    lastName: 'B l 2',
+                  },
+                ]);
+                assert.deepEqual(dataGrid2.getValue(), [
+                  {
+                    firstName: 'first name 2',
+                    lastName: 'B l 1',
+                  },
+                  {
+                    firstName: 'B f 2',
+                    lastName: 'B l 2',
+                  },
+                ]);
+                done();
+              }, 300);
             }, 300);
           }, 300);
-        }, 300);
-      })
-      .catch(done);
+        })
+        .catch(done);
+    });
   });
-});
 
-describe('DataGrid Reorder', () => {
-  it('Should display select components labels correctly on rows reorder', (done) => {
-    Formio.createForm(document.createElement('div'), withReorder.form)
-      .then((form) => {
-        form.setSubmission(withReorder.submission)
-        .then(() => {
-          const values = [
-            { value: '11', label: 1 },
-            { value: '22', label: 2 },
-            { value: '33', label: 3 },
-            { value: '44', label: 4 },
-            { value: '55', label: 5 },
-          ];
-
-          const dataGrid = form.getComponent('dataGrid');
-          _.each(dataGrid.components, (selectComp, ind) => {
-            const expectedValue = values[ind];
-            assert.equal(ind, selectComp.rowIndex);
-            assert.equal(selectComp.dataValue, expectedValue.value);
-            assert.equal(selectComp.templateData[expectedValue.value].data.number, expectedValue.label);
-          });
-
-          dataGrid.onReorder({ dragInfo: { index: 4 } }, null, null, { dragInfo: { index: 0 } });
-          dataGrid.onReorder({ dragInfo: { index: 4 } }, null, null, { dragInfo: { index: 1 } });
-          dataGrid.onReorder({ dragInfo: { index: 2 } }, null, null, { dragInfo: { index: 4 } });
-
-          setTimeout(() => {
+  describe('DataGrid Reorder', function () {
+    it('Should display select components labels correctly on rows reorder', function (done) {
+      Formio.createForm(document.createElement('div'), withReorder.form)
+        .then((form) => {
+          form.setSubmission(withReorder.submission).then(() => {
             const values = [
-              { value: '55', label: 5 },
-              { value: '44', label: 4 },
-              { value: '22', label: 2 },
               { value: '11', label: 1 },
+              { value: '22', label: 2 },
               { value: '33', label: 3 },
+              { value: '44', label: 4 },
+              { value: '55', label: 5 },
             ];
 
+            const dataGrid = form.getComponent('dataGrid');
             _.each(dataGrid.components, (selectComp, ind) => {
               const expectedValue = values[ind];
-              assert.equal(ind, selectComp.rowIndex, 'Component index after reorder');
-              assert.equal(selectComp.dataValue, expectedValue.value, 'Component value after reorder');
-              assert.equal(selectComp.templateData[expectedValue.value].data.number, expectedValue.label, 'Component label value after reorder');
+              assert.equal(ind, selectComp.rowIndex);
+              assert.equal(selectComp.dataValue, expectedValue.value);
+              assert.equal(
+                selectComp.templateData[expectedValue.value].data.number,
+                expectedValue.label,
+              );
             });
 
-            done();
-          }, 600);
-        });
-      })
-      .catch(done);
-  });
-});
+            dataGrid.onReorder({ dragInfo: { index: 4 } }, null, null, { dragInfo: { index: 0 } });
+            dataGrid.onReorder({ dragInfo: { index: 4 } }, null, null, { dragInfo: { index: 1 } });
+            dataGrid.onReorder({ dragInfo: { index: 2 } }, null, null, { dragInfo: { index: 4 } });
 
-describe('Wizard Form with Grid with Nested Form validation', () => {
-  const originalMakeRequest = Formio.makeRequest;
-
-  const nestedForm = {
-    _id: '6800c965a969b07fbd8d7077',
-    title: 'Base Simple',
-    name: 'baseSimple',
-    path: 'basesimple',
-    type: 'form',
-    components: [
-      {
-        label: 'First Name',
-        applyMaskOn: 'change',
-        tableView: true,
-        validate: {
-          required: true
-        },
-        validateWhenHidden: false,
-        key: 'firstName',
-        type: 'textfield',
-        input: true
-      },
-      {
-        label: 'Submit',
-        key: 'submit',
-        type: 'button'
-      }
-    ]
-  };
-
-  before(() => {
-    // Mock Formio.makeRequest to serve mock forms
-    Formio.makeRequest = (formio, type, url, method, data) => {
-      if (type === 'form' && method === 'get' && url.includes('6800c965a969b07fbd8d7077')) {
-        return Promise.resolve(_.cloneDeep(nestedForm));
-      }
-      if (type === 'form' && method === 'get' && url.includes('child')) {
-        return Promise.resolve(_.cloneDeep(dataGridChildForm));
-      }
-      if (type === 'form' && method === 'get' && url.includes('grandChild')) {
-        return Promise.resolve(_.cloneDeep(dataGridGrandChildForm));
-      }
-      return Promise.resolve();
-    };
-  });
-
-  after(() => {
-    // Restore the original makeRequest
-    Formio.makeRequest = originalMakeRequest;
-  });
-
-  it('Should validate DataGrid with nested form before going to the next page', function (done) {
-    Formio.createForm(document.createElement('div'), wizardWithDataGridWithNestedForm)
-    .then((wizard) => {
-      const nextBtn = _.get(wizard.refs, `${wizard.wizardKey}-next`);
-      const clickEvent = new Event('click');
-      nextBtn.dispatchEvent(clickEvent);
-      setTimeout(() => {
-        assert.equal(wizard.page, 0, 'Should open wizard page 1');
-        const errors = wizard.errors;
-        assert.equal(errors.length, 1, 'Should have an error');
-        assert.equal(errors[0].ruleName, 'required');
-        done()
-      }, 300);
-    }).catch(done);
-  });
-
-  it('Should validate DataGrid with nested form inside Nested Wizard before going to the next page', function (done) {
-    Formio.createForm(document.createElement('div'), dataGridWithNestedFormWithNestedForm)
-          .then((form) => {
-            const selectToShowChildForm = form.getComponent(['dataGrid', 0, 'select']);
-            selectToShowChildForm.setValue('show', { modified: true });
             setTimeout(() => {
-              const selectToShowGrandChildForm = form.getComponent(['dataGrid', 0, 'form', 'data', 'selectnested']);
-              selectToShowGrandChildForm.setValue('dog', { modified: true });
+              const values = [
+                { value: '55', label: 5 },
+                { value: '44', label: 4 },
+                { value: '22', label: 2 },
+                { value: '11', label: 1 },
+                { value: '33', label: 3 },
+              ];
+
+              _.each(dataGrid.components, (selectComp, ind) => {
+                const expectedValue = values[ind];
+                assert.equal(ind, selectComp.rowIndex, 'Component index after reorder');
+                assert.equal(
+                  selectComp.dataValue,
+                  expectedValue.value,
+                  'Component value after reorder',
+                );
+                assert.equal(
+                  selectComp.templateData[expectedValue.value].data.number,
+                  expectedValue.label,
+                  'Component label value after reorder',
+                );
+              });
+
+              done();
+            }, 600);
+          });
+        })
+        .catch(done);
+    });
+  });
+
+  describe('Wizard Form with Grid with Nested Form validation', function () {
+    let originalMakeRequest;
+
+    const nestedForm = {
+      _id: '6800c965a969b07fbd8d7077',
+      title: 'Base Simple',
+      name: 'baseSimple',
+      path: 'basesimple',
+      type: 'form',
+      components: [
+        {
+          label: 'First Name',
+          applyMaskOn: 'change',
+          tableView: true,
+          validate: {
+            required: true,
+          },
+          validateWhenHidden: false,
+          key: 'firstName',
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Submit',
+          key: 'submit',
+          type: 'button',
+        },
+      ],
+    };
+
+    before(function () {
+      originalMakeRequest = Formio.makeRequest;
+      // Mock Formio.makeRequest to serve mock forms
+      Formio.makeRequest = (formio, type, url, method) => {
+        if (type === 'form' && method === 'get' && url.includes('6800c965a969b07fbd8d7077')) {
+          return Promise.resolve(_.cloneDeep(nestedForm));
+        }
+        if (type === 'form' && method === 'get' && url.includes('child')) {
+          return Promise.resolve(_.cloneDeep(dataGridChildForm));
+        }
+        if (type === 'form' && method === 'get' && url.includes('grandChild')) {
+          return Promise.resolve(_.cloneDeep(dataGridGrandChildForm));
+        }
+        return Promise.resolve();
+      };
+    });
+
+    after(function () {
+      // Restore the original makeRequest
+      Formio.makeRequest = originalMakeRequest;
+    });
+
+    it('Should validate DataGrid with nested form before going to the next page', function (done) {
+      Formio.createForm(document.createElement('div'), wizardWithDataGridWithNestedForm)
+        .then((wizard) => {
+          const nextBtn = _.get(wizard.refs, `${wizard.wizardKey}-next`);
+          const clickEvent = new Event('click');
+          nextBtn.dispatchEvent(clickEvent);
+          setTimeout(() => {
+            assert.equal(wizard.page, 0, 'Should open wizard page 1');
+            const errors = wizard.errors;
+            assert.equal(errors.length, 1, 'Should have an error');
+            assert.equal(errors[0].ruleName, 'required');
+            done();
+          }, 300);
+        })
+        .catch(done);
+    });
+
+    it('Should validate DataGrid with nested form inside Nested Wizard before going to the next page', function (done) {
+      Formio.createForm(document.createElement('div'), dataGridWithNestedFormWithNestedForm)
+        .then((form) => {
+          const selectToShowChildForm = form.getComponent([
+            'dataGrid',
+            0,
+            'select',
+          ]);
+          selectToShowChildForm.setValue('show', { modified: true });
+          setTimeout(() => {
+            const selectToShowGrandChildForm = form.getComponent([
+              'dataGrid',
+              0,
+              'form',
+              'data',
+              'selectnested',
+            ]);
+            selectToShowGrandChildForm.setValue('dog', { modified: true });
+            setTimeout(() => {
+              const grandChildTextField = form.getComponent([
+                'dataGrid',
+                0,
+                'form',
+                'data',
+                'form',
+                'data',
+                'textField',
+              ]);
+              grandChildTextField.setValue('Test', { modified: true });
               setTimeout(() => {
-                const grandChildTextField = form.getComponent(['dataGrid', 0, 'form', 'data', 'form', 'data', 'textField']);
-                grandChildTextField.setValue('Test', { modified: true });
-                setTimeout(() => {
-                  assert.equal(grandChildTextField.dataValue, 'Test', 'Should set the value properly');
-                  const submissionData = {
-                    dataGrid: [
-                      {
-                        select: 'show',
-                        form: {
-                          data: {
-                            selectnested: 'dog',
-                            form: {
-                              data: {
-                                textField: 'Test',
-                              },
-                            },
-                          },
-                          metadata: {
-                            selectData: {
-                              dataGrid: [
-                                {
-                                  form: {
-                                    data: {
-                                      selectnested: {
-                                        label: 'dog',
-                                      },
-                                    },
-                                  },
-                                },
-                              ],
+                assert.equal(
+                  grandChildTextField.dataValue,
+                  'Test',
+                  'Should set the value properly',
+                );
+                const submissionData = {
+                  dataGrid: [
+                    {
+                      select: 'show',
+                      form: {
+                        data: {
+                          selectnested: 'dog',
+                          form: {
+                            data: {
+                              textField: 'Test',
                             },
                           },
                         },
+                        metadata: {
+                          selectData: {
+                            dataGrid: [
+                              {
+                                form: {
+                                  data: {
+                                    selectnested: {
+                                      label: 'dog',
+                                    },
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        },
                       },
-                    ],
-                    submit: false,
-                  };
-                  assert.deepEqual(form.submission.data,  submissionData, 'Should set all the nested values to submission object properly');
-                  done();
-                }, 500);
+                    },
+                  ],
+                  submit: false,
+                };
+                assert.deepEqual(
+                  form.submission.data,
+                  submissionData,
+                  'Should set all the nested values to submission object properly',
+                );
+                done();
               }, 500);
             }, 500);
-          }).catch(done);
+          }, 500);
+        })
+        .catch(done);
+    });
+  });
+
+  describe('DataGrid conditional logic', function () {
+    it('Should show and hide components based on conditional logic inside container', function (done) {
+      Formio.createForm(document.createElement('div'), _.cloneDeep(comp12))
+        .then((form) => {
+          const dataGrid = form.getComponent('dataGrid');
+          dataGrid.refs['datagrid-dataGrid-addRow'][0].click();
+          setTimeout(() => {
+            dataGrid.refs['datagrid-dataGrid-addRow'][0].click();
+            setTimeout(() => {
+              assert.equal(dataGrid.rows.length, 3);
+              const checkbox = form.getComponent('dataGrid[1].container.checkbox');
+              const textfield = form.getComponent('dataGrid[1].container.textField');
+              assert.equal(checkbox.visible, true);
+              assert.equal(textfield.visible, false);
+              checkbox.refs.input[0].click();
+              setTimeout(() => {
+                assert.equal(textfield.visible, true);
+                assert.equal(form.getComponent('dataGrid[0].container.textField').visible, false);
+                assert.equal(form.getComponent('dataGrid[2].container.textField').visible, false);
+                done();
+              }, 400);
+            }, 100);
+          }, 100);
+        })
+        .catch((err) => done(err));
+    });
+
+    it('Should evaluate isEmpty conditional per-row with multiple rows', async function () {
+      const form = await Formio.createForm(document.createElement('div'), _.cloneDeep(withIsEmptyConditional));
+      const dataGrid = form.getComponent('dataGrid');
+
+      // Add a second row
+      dataGrid.addRow();
+      await wait(300);
+
+      // Both rows have empty textFields, so both Numbers should be visible (isEmpty = true)
+      assert.equal(form.getComponent('dataGrid[0].number').visible, true, 'Row 0 number should be visible when textField is empty');
+      assert.equal(form.getComponent('dataGrid[1].number').visible, true, 'Row 1 number should be visible when textField is empty');
+
+      // Type into row 0's textField — only row 0's Number should hide
+      const textField0 = form.getComponent('dataGrid[0].textField');
+      textField0.setValue('hello');
+      await wait(300);
+
+      assert.equal(form.getComponent('dataGrid[0].number').visible, false, 'Row 0 number should be hidden when textField is not empty');
+      assert.equal(form.getComponent('dataGrid[1].number').visible, true, 'Row 1 number should still be visible when its textField is empty');
+
+      // Type into row 1's textField — now both Numbers should be hidden
+      const textField1 = form.getComponent('dataGrid[1].textField');
+      textField1.setValue('world');
+      await wait(300);
+
+      assert.equal(form.getComponent('dataGrid[0].number').visible, false, 'Row 0 number should remain hidden');
+      assert.equal(form.getComponent('dataGrid[1].number').visible, false, 'Row 1 number should be hidden when textField is not empty');
+
+      // Clear row 1's textField — row 1's Number should show again
+      textField1.setValue('');
+      await wait(300);
+
+      assert.equal(form.getComponent('dataGrid[0].number').visible, false, 'Row 0 number should remain hidden');
+      assert.equal(form.getComponent('dataGrid[1].number').visible, true, 'Row 1 number should be visible again when textField is cleared');
+    });
   });
 });

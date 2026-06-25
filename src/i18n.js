@@ -1,4 +1,5 @@
 import enTranslation from './translations/en';
+import deTranslation from './translations/de';
 import {
   fastCloneDeep
 } from './utils';
@@ -12,6 +13,9 @@ export default {
   resources: {
     en: {
       translation: fastCloneDeep(enTranslation)
+    },
+    de: {
+      translation: fastCloneDeep(deTranslation)
     }
   }
 };

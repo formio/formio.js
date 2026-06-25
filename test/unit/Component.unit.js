@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import Component from '../../src/components/_classes/component/Component';
 import Webform from '../../src/Webform';
 import Harness from '../harness';
-import { comp1, comp3, comp4, comp5, comp6 } from './fixtures/component';
+import { comp1, comp3, comp4, comp5, comp6, comp7 } from './fixtures/component';
 import _merge from 'lodash/merge';
 
 describe('Component', () => {
@@ -396,5 +396,23 @@ describe('Component', () => {
         done();
       },200);
     }).catch(done);
+  });
+
+  it('Should set the state of hidden permanently if a logic event action sets the hidden state', (done) => {
+    Formio.createForm(document.createElement('div'), comp7, {}).then((form) => {
+      const showButtonComponent = form.getComponent('show');
+      const textFieldComponent = form.getComponent('textField1');
+      const panelComponent = form.getComponent('panel');
+      showButtonComponent.refs.button.click();
+      setTimeout(()=>{
+        textFieldComponent.refs.input[0].value = "test"
+        textFieldComponent.refs.input[0].dispatchEvent(new Event('input'));
+        setTimeout(()=>{
+          assert.equal(panelComponent.component.hidden, false);
+          assert.equal(panelComponent.visible, true);
+          done();
+        },400);
+      },200);
+    });
   });
 });

@@ -45,18 +45,16 @@ export class GoogleAddressProvider extends AddressProvider {
     return 'google';
   }
 
-
   /**
    * @returns {string} The display name of the provider.
    */
 
   static get displayName() {
-
     return 'Google Maps';
   }
 
   /**
-   
+
    * @param {ProviderOptions} options - The options for the provider.
    */
 
@@ -71,7 +69,6 @@ export class GoogleAddressProvider extends AddressProvider {
     Formio.requireLibrary(this.getLibraryName(), 'google.maps.places', src);
   }
 
-
   /**
    * get display value property
    * @returns {string} The property to use for display value.
@@ -81,14 +78,12 @@ export class GoogleAddressProvider extends AddressProvider {
     return 'formattedPlace';
   }
 
-
   /**
    * @returns {string} The alternative property to use for display value.
    */
 
   get alternativeDisplayValueProperty() {
     return 'formatted_address';
-
   }
 
   /**
@@ -98,21 +93,19 @@ export class GoogleAddressProvider extends AddressProvider {
     this._autocompleteOptions = options;
   }
 
-
   /**
    * @returns {AutocompleteOptions} The autocomplete options.
    */
   get autocompleteOptions() {
-
     return this._autocompleteOptions;
   }
 
   /**
    * Sets the autocomplete options based on the provider options.
-   
+
    */
   setAutocompleteOptions() {
-    let options = _.get(this.options, 'params.autocompleteOptions', {});
+    let options = _.get(this.options, 'autocompleteOptions', {});
 
     if (!_.isObject(options)) {
       options = {};
@@ -123,7 +116,7 @@ export class GoogleAddressProvider extends AddressProvider {
   }
 
   /**
-   
+
    * Converts the region to autocomplete option if it exists.
    * @param {ProviderOptions} options - The provider options.
    */
@@ -132,7 +125,6 @@ export class GoogleAddressProvider extends AddressProvider {
     // providing support of old Google Provider option
     this.convertRegionToAutocompleteOption(options);
   }
-
 
   /**
    * @returns {string} The name of the library.
@@ -146,17 +138,18 @@ export class GoogleAddressProvider extends AddressProvider {
    * @param {ProviderOptions} options - The provider options.
    */
   convertRegionToAutocompleteOption(options) {
-
     const providerOptions = options;
     let region = _.get(providerOptions, 'params.region', '');
     if (region && !_.has(options, 'params.autocompleteOptions')) {
       region = region.toUpperCase().trim();
       // providing compatibility with ISO 3166-1 Alpha-2 county codes (for checking compatibility https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)
-      const countryCodes = { 'UK': 'GB' };
+      const countryCodes = { UK: 'GB' };
       if (countryCodes[region]) {
         region = countryCodes[region];
       }
-      _.set(providerOptions, 'params.autocompleteOptions.componentRestrictions.country', [region]);
+      _.set(providerOptions, 'params.autocompleteOptions.componentRestrictions.country', [
+        region,
+      ]);
     }
   }
 
@@ -164,7 +157,14 @@ export class GoogleAddressProvider extends AddressProvider {
    * @returns {string[]} The required address properties.
    */
   getRequiredAddressProperties() {
-    return ['address_components', 'formatted_address','geometry','place_id', 'plus_code', 'types'];
+    return [
+      'address_components',
+      'formatted_address',
+      'geometry',
+      'place_id',
+      'plus_code',
+      'types',
+    ];
   }
 
   /**
@@ -172,11 +172,10 @@ export class GoogleAddressProvider extends AddressProvider {
    * @param {AutocompleteOptions} options - The autocomplete options.
    */
   addRequiredProviderOptions(options) {
-
     const addressProperties = this.getRequiredAddressProperties();
-    if (_.isArray(options.fields) && options.fields.length > 0 ) {
-      options.fields.forEach(optionalField => {
-        if (!addressProperties.some(addressProp => optionalField === addressProp)) {
+    if (_.isArray(options.fields) && options.fields.length > 0) {
+      options.fields.forEach((optionalField) => {
+        if (!addressProperties.some((addressProp) => optionalField === addressProp)) {
           addressProperties.push(optionalField);
         }
       });
@@ -189,7 +188,7 @@ export class GoogleAddressProvider extends AddressProvider {
     const filteredPlace = {};
 
     if (this.autocompleteOptions) {
-      this.autocompleteOptions.fields.forEach(field => {
+      this.autocompleteOptions.fields.forEach((field) => {
         if (place[field]) {
           filteredPlace[field] = place[field];
         }
@@ -203,9 +202,13 @@ export class GoogleAddressProvider extends AddressProvider {
     Formio.libraryReady(this.getLibraryName()).then(() => {
       const autocomplete = new google.maps.places.Autocomplete(elem, this.autocompleteOptions);
 
-      autocomplete.addListener('place_changed', ()=>{
+      autocomplete.addListener('place_changed', () => {
         const place = this.filterPlace(autocomplete.getPlace());
-        place.formattedPlace = _.get(autocomplete, 'gm_accessors_.place.se.formattedPrediction', place[this.alternativeDisplayValueProperty]);
+        place.formattedPlace = _.get(
+          autocomplete,
+          'gm_accessors_.place.se.formattedPrediction',
+          place[this.alternativeDisplayValueProperty],
+        );
 
         onSelectAddress(place, elem, index);
       });
@@ -238,12 +241,17 @@ export class GoogleAddressProvider extends AddressProvider {
     }
 
     const existingScript = document.querySelector(`script[src^="${GOOGLE_MAPS_JS_URL}"]`);
-    if (existingScript && options.params?.key && !existingScript.attributes.src.value.endsWith(options.params.key)) {
-        const googleMapsScripts = document.querySelectorAll(`script[src^="${GOOGLE_MAPS_BASE_URL}"]`) ?? [];
-        googleMapsScripts.forEach(script => script.parentNode.removeChild(script));
-        delete Formio.libraries[this.getLibraryName()];
-        delete global?.google?.maps;
-        delete global[`${this.getLibraryName()}Callback`];
+    if (
+      existingScript &&
+      options.params?.key &&
+      !existingScript.attributes.src.value.endsWith(options.params.key)
+    ) {
+      const googleMapsScripts =
+        document.querySelectorAll(`script[src^="${GOOGLE_MAPS_BASE_URL}"]`) ?? [];
+      googleMapsScripts.forEach((script) => script.parentNode.removeChild(script));
+      delete Formio.libraries[this.getLibraryName()];
+      delete globalThis?.google?.maps;
+      delete globalThis[`${this.getLibraryName()}Callback`];
     }
   }
 }

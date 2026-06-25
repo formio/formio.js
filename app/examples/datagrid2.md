@@ -4,6 +4,7 @@ layout: vtabs
 section: examples
 weight: 222
 ---
+
 In addition to data grid input, you can also place panels inside the data grid to provide dynamic "add another" sections.
 
 ```js
@@ -24,37 +25,37 @@ Formio.createForm(document.getElementById('formio'), {
               label: 'First Name',
               key: 'firstName',
               type: 'textfield',
-              input: true
+              input: true,
             },
             {
               label: 'Last Name',
               key: 'lastName',
               type: 'textfield',
-              input: true
+              input: true,
             },
             {
-              label: "Gender",
-              key: "gender",
-              type: "radio",
-              inputType: "radio",
+              label: 'Gender',
+              key: 'gender',
+              type: 'radio',
+              inputType: 'radio',
               input: true,
               values: [
                 {
-                  label: "Male",
-                  value: "male"
+                  label: 'Male',
+                  value: 'male',
                 },
                 {
-                  label: "Female",
-                  value: "female"
-                }
-              ]
+                  label: 'Female',
+                  value: 'female',
+                },
+              ],
             },
             {
               type: 'checkbox',
               label: 'Dependant',
               key: 'dependant',
               inputType: 'checkbox',
-              input: true
+              input: true,
             },
             {
               label: 'Birthdate',
@@ -74,7 +75,7 @@ Formio.createForm(document.getElementById('formio'), {
                 maxMode: 'year',
                 yearRows: 4,
                 yearColumns: 5,
-                datepickerMode: 'day'
+                datepickerMode: 'day',
               },
               timePicker: {
                 hourStep: 1,
@@ -82,22 +83,21 @@ Formio.createForm(document.getElementById('formio'), {
                 showMeridian: true,
                 readonlyInput: false,
                 mousewheel: true,
-                arrowkeys: true
+                arrowkeys: true,
               },
               conditional: {
-                eq: "true",
-                when: "dependant",
-                show: "true"
-              }
-            }
-          
-          ]
-        }
-      ]
-    }
-  ]
+                eq: 'true',
+                when: 'dependant',
+                show: 'true',
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
 });
-````
+```
 
 <h3>Result</h3>
 <div class='card card-body bg-light'>
