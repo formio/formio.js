@@ -4,29 +4,39 @@ layout: vtabs
 section: examples
 weight: 15
 ---
+
 You can load in data from an external API as a result of values entered in a form.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css" />
 <script src="https://cdn.form.io/js/formio.embed.js"></script>
 <div id="formio"></div>
 ```
 
 ```js
-Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/customerload')
-  .then(function(form) {
+Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/customerload').then(
+  function (form) {
     // Triggered when they click the submit button.
-    form.on('change', function(event) {
-      if (event.changed && event.changed.component.key === 'customerNumber' && event.changed.value) {
-        Formio.fetch('https://examples.form.io/customers/submission?data.number=' + event.changed.value, {
-          headers: {
-            'content-type': 'application/json'
+    form.on('change', function (event) {
+      if (
+        event.changed &&
+        event.changed.component.key === 'customerNumber' &&
+        event.changed.value
+      ) {
+        Formio.fetch(
+          'https://examples.form.io/customers/submission?data.number=' + event.changed.value,
+          {
+            headers: {
+              'content-type': 'application/json',
+            },
+            mode: 'cors',
           },
-          mode: 'cors',
-        })
-        .then(function(response) {
-          response.json().then(function(result) {
+        ).then(function (response) {
+          response.json().then(function (result) {
             if (Array.isArray(result) && result.length > 0) {
               var submission = { data: event.data };
               submission.data.name = result[0].data.name;
@@ -37,7 +47,8 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/c
         });
       }
     });
-  });
+  },
+);
 ```
 
 <h3>Result</h3>
