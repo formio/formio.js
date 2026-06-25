@@ -2,7 +2,7 @@
   <div class="formio-form formio-read-only" ref="webform" novalidate>
     <div id="page1" class="formio-component formio-component-panel formio-component-page1 " ref="component">
       <div class="mb-2 card border">
-        <div class="card-header bg-default" role="button" aria-expanded="true" aria-controls="page1-page1" ref="header">
+        <div class="card-header bg-default" role="presentation" aria-expanded="true" aria-controls="page1-page1" ref="header">
           <span class="mb-0 card-title ">
       Layouts
     </span>
@@ -14,7 +14,7 @@
           </div>
           <div id="panel1" class="formio-component formio-component-panel formio-component-panel1 " ref="component">
             <div class="mb-2 card border">
-              <div class="card-header bg-default" role="button" aria-expanded="true" aria-controls="panel1-panel1" ref="header">
+              <div class="card-header bg-default" role="presentation" aria-expanded="true" aria-controls="panel1-panel1" ref="header">
                 <span class="mb-0 card-title ">
       Panel
     </span>
@@ -23,6 +23,8 @@
                 <div id="textField" class="mb-2 formio-form-group has-feedback formio-component formio-component-textfield formio-component-textField  required" ref="component">
                   <label ref="label" class="col-form-label  field-required" for="textField-textField" id="l-textField-textField">
                     Text Field - Panel
+                    <span class="required-star" aria-hidden="true">*</span>
+                    <span class="visually-hidden">required field</span>
                   </label>
                   <div ref="element">
                     <input ref="input" name="data[textField]" type="text" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="textField-textField" aria-labelledby="l-textField-textField " aria-required="true"></input>
@@ -32,6 +34,8 @@
                 <div id="number" class="mb-2 formio-form-group has-feedback formio-component formio-component-number formio-component-number  required" ref="component">
                   <label ref="label" class="col-form-label  field-required" for="number-number" id="l-number-number">
                     Number
+                    <span class="required-star" aria-hidden="true">*</span>
+                    <span class="visually-hidden">required field</span>
                     <span class="visually-hidden">, numeric only,</span>
                   </label>
                   <div ref="element">
@@ -45,6 +49,8 @@
                     <div id="selectColumn" class="mb-2 formio-form-group has-feedback formio-component formio-component-select formio-component-selectColumn  required" ref="component">
                       <label ref="label" class="col-form-label  field-required" for="selectColumn-selectColumn" id="l-selectColumn-selectColumn">
                         Select - Column
+                        <span class="required-star" aria-hidden="true">*</span>
+                        <span class="visually-hidden">required field</span>
                       </label>
                       <select ref="selectContainer" name="data[selectColumn]" type="text" class="form-control" lang="en" disabled="disabled" id="selectColumn-selectColumn" aria-required="true"></select>
                       <input type="text" class="formio-select-autocomplete-input" ref="autocompleteInput" tabindex="-1" aria-label="autocomplete" />
@@ -78,6 +84,8 @@
                 <div id="radioFieldSet" class="mb-2 formio-form-group has-feedback formio-component formio-component-radio formio-component-radioFieldSet  required" ref="component">
                   <label ref="label" class="col-form-label  field-required" for="radioFieldSet-radioFieldSet" id="l-radioFieldSet-radioFieldSet">
                     Radio - Field Set
+                    <span class="required-star" aria-hidden="true">*</span>
+                    <span class="visually-hidden">required field</span>
                   </label>
                   <div class="form-radio radio" ref="radioGroup" role="radiogroup" aria-required="true" aria-labelledby="l-radioFieldSet-radioFieldSet">
                     <div class="radio  form-check" ref="wrapper">
@@ -98,6 +106,8 @@
                 <div id="phoneNumberFieldset" class="mb-2 formio-form-group has-feedback formio-component formio-component-phoneNumber formio-component-phoneNumberFieldset  required" ref="component">
                   <label ref="label" class="col-form-label  field-required" for="phoneNumberFieldset-phoneNumberFieldset" id="l-phoneNumberFieldset-phoneNumberFieldset">
                     Phone Number - Fieldset
+                    <span class="required-star" aria-hidden="true">*</span>
+                    <span class="visually-hidden">required field</span>
                     <span class="visually-hidden">, numeric only,</span>
                   </label>
                   <div ref="element">
@@ -115,12 +125,14 @@
                           <div id="dateTime" class="mb-2 formio-form-group has-feedback formio-component formio-component-datetime formio-component-dateTime  required" ref="component">
                             <label ref="label" class="col-form-label  field-required" for="dateTime-dateTime" id="l-dateTime-dateTime">
                               Date / Time
+                              <span class="required-star" aria-hidden="true">*</span>
+                              <span class="visually-hidden">required field</span>
                             </label>
                             <div ref="element">
                               <div class="input-group">
                                 <input ref="input" name="data[dateTime]" type="text" class="form-control" lang="en" disabled="disabled" value="" id="dateTime-dateTime" aria-labelledby="l-dateTime-dateTime " aria-required="true"></input>
                                 <span aria-live="assertive" id="dateTime-liveRegion" class="visually-hidden" ref="liveRegion"></span>
-                                <div class="input-group-text" ref="suffix">
+                                <div class="input-group-text" ref="suffix" role="presentation">
                                   <i ref="icon" class="bi bi-calendar" style=""></i>
                                 </div>
                               </div>
@@ -202,6 +214,8 @@
                           <div id="currencyTable" class="mb-2 formio-form-group has-feedback formio-component formio-component-currency formio-component-currencyTable  required" ref="component">
                             <label ref="label" class="col-form-label  field-required" for="currencyTable-currencyTable" id="l-currencyTable-currencyTable">
                               Currency - Table
+                              <span class="required-star" aria-hidden="true">*</span>
+                              <span class="visually-hidden">required field</span>
                               <span class="visually-hidden">, numeric only,</span>
                             </label>
                             <div ref="element">
@@ -227,6 +241,8 @@
                 <div id="emailWell" class="mb-2 formio-form-group has-feedback formio-component formio-component-email formio-component-emailWell  required" ref="component">
                   <label ref="label" class="col-form-label  field-required" for="emailWell-emailWell" id="l-emailWell-emailWell">
                     Email - Well
+                    <span class="required-star" aria-hidden="true">*</span>
+                    <span class="visually-hidden">required field</span>
                   </label>
                   <div ref="element">
                     <input ref="input" name="data[emailWell]" type="email" class="form-control" lang="en" disabled="disabled" spellcheck="true" value="" id="emailWell-emailWell" aria-labelledby="l-emailWell-emailWell " aria-required="true"></input>
@@ -236,6 +252,8 @@
                 <div id="addressWell" class="mb-2 formio-form-group has-feedback formio-component formio-component-address formio-component-addressWell  required" ref="component">
                   <label ref="label" class="col-form-label  field-required" for="addressWell-addressWell" id="l-addressWell-addressWell">
                     Address - Well
+                    <span class="required-star" aria-hidden="true">*</span>
+                    <span class="visually-hidden">required field</span>
                   </label>
                   <div class="address-autocomplete-container">
                     <input ref="searchInput" name="data[addressWell]" type="text" class="form-control" lang="en" tabindex="0" disabled="disabled" value="" autocomplete="off" aria-label="autocomplete">

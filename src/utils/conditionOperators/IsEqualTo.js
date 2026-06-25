@@ -1,40 +1,42 @@
 import ConditionOperator from './ConditionOperator';
 import _ from 'lodash';
+import { compareSelectResourceWithObjectTypeValues, isSelectResourceWithObjectValue } from '../';
 
 export default class IsEqualTo extends ConditionOperator {
-  static get operatorKey() {
-    return 'isEqual';
-  }
-
-  static get displayedName() {
-    return 'Is Equal To';
-  }
-
-  execute({ value, comparedValue}) {
-    if (
-      (value || value === false) &&
-      comparedValue &&
-      typeof value !== typeof comparedValue &&
-      _.isString(comparedValue)
-    ) {
-      try {
-        comparedValue = JSON.parse(comparedValue);
-      } catch (ignoreErr) {
-        // ignore
-      }
+    static get operatorKey() {
+        return 'isEqual';
     }
 
-    //special check for select boxes
-    if (_.isObject(value) && comparedValue && _.isBoolean(value[comparedValue])) {
-      return value[comparedValue];
+    static get displayedName() {
+        return 'Is Equal To';
     }
 
-    const valuesAreObjects =
-      typeof comparedValue === 'object' &&
-      comparedValue !== null &&
-      typeof value === 'object' &&
-      value !== null;
+    execute({ value, comparedValue, instance, path }) {
+        if ((value || value === false) && comparedValue && typeof value !== typeof comparedValue && _.isString(comparedValue)) {
+            try {
+                comparedValue = JSON.parse(comparedValue);
+            }
+            // eslint-disable-next-line no-empty
+            catch (e) {}
+        }
 
-    return valuesAreObjects ? _.isMatch(value, comparedValue) : _.isEqual(comparedValue, value);
-  }
+        if (instance?.root?.getComponent) {
+            const conditionTriggerComponent = instance.root.getComponent(path);
+
+            if (
+                conditionTriggerComponent
+                && isSelectResourceWithObjectValue(conditionTriggerComponent.component)
+                && conditionTriggerComponent.component?.template
+            ) {
+                return compareSelectResourceWithObjectTypeValues(value, comparedValue, conditionTriggerComponent.component);
+            }
+        }
+
+        //special check for select boxes
+        if (_.isObject(value) && comparedValue && _.isBoolean(value[comparedValue])) {
+            return value[comparedValue];
+        }
+
+        return  _.isEqual(value, comparedValue);
+    }
 }

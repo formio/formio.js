@@ -10,8 +10,13 @@
         "name": "Mocha Tests",
         "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
         "args": [
-          "--config",
-          "${workspaceFolder}/.mocharc.json"
+          "-b",
+          "-t",
+          "0",
+          "--colors",
+          "${workspaceFolder}/test/**/*.unit.js",
+          "-t",
+          "30000"
         ],
         "internalConsoleOptions": "openOnSessionStart",
         "skipFiles": [
