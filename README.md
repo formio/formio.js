@@ -56,7 +56,7 @@ This will create a robust Form builder embedded right within your own applicatio
 
 ### Form Builder Documentation
 
-Go to the [Form Builder Documentation](https://help.form.io/developers/form-builder) for a full documentation on how the open source form builder works.
+Go to the [Form Builder Documentation](https://help.form.io/dev/form-development/form-builder) for a full documentation on how the open source form builder works.
 
 ## Form Rendering
 
@@ -86,7 +86,8 @@ The following is a simple example on how to render a form within your HTML appli
 
 This will render the following form within your application.
 
-![Alt text](https://monosnap.com/file/iOZ1yB0wPntJLWQwyhdt7ucToLHEfF.png)
+<img width="717" height="626" alt="image" src="https://github.com/user-attachments/assets/51fc2933-6749-4efd-bb0c-06b764d532d6" />
+
 
 You can also render JSON directly instead of referencing the embed URL from Form.io.
 
@@ -127,7 +128,7 @@ http://jsfiddle.net/travistidwell/z63jvwkp/
 
 ### Form Renderer Documentation
 
-For a more complete documentation of how to utilize this library within your application go to the [Form Renderer](https://help.form.io/developers/form-renderer) documentation.
+For a more complete documentation of how to utilize this library within your application go to the [Form Renderer](https://help.form.io/dev/form-renderer) documentation.
 
 ## Wizard Rendering
 
@@ -169,7 +170,7 @@ For an example of how this looks and works, check out the following [Form.io Inl
 
 ## Form Embedding Documentation
 
-For a more complete documentation of how to embed forms, go to the [Form Embedding Documentation](https://help.form.io/developers/rendering).
+For a more complete documentation of how to embed forms, go to the [Form Embedding Documentation](https://help.form.io/dev/rendering).
 
 ## JavaScript SDK
 
@@ -226,7 +227,7 @@ formio.loadForm((form) => {
 
 ### JavaScript SDK Documentation.
 
-For more complete documentation over the JavaScript SDK, please take a look at the [JavaScript SDK Documentation](https://help.form.io/developers/javascript-sdk).
+For more complete documentation over the JavaScript SDK, please take a look at the [JavaScript SDK Documentation](https://help.form.io/dev/javascript-sdk).
 
 ### Full Developer API Documentation
 
