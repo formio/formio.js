@@ -42,6 +42,7 @@ import {
   comp30,
   comp31,
   comp32,
+  resourceDataGridSubmission,
   comp33
 } from './fixtures/select/index';
 
@@ -80,6 +81,18 @@ const mockMakeRequest = (func) => {
 };
 
 describe('Select Component', function () {
+  it('Should sanitize Choices.js placeholder to prevent XSS', async function () {
+    const xssPlaceholder = `<a href="javascript:alert('XSS')">Click me</a>`;
+    const def = Object.assign({}, comp1, {
+      placeholder: xssPlaceholder,
+      widget: 'choicesjs',
+    });
+    const component = await Harness.testCreate(SelectComponent, def);
+    const opts = component.choicesOptions();
+    assert.equal(opts.placeholder, true);
+    assert.ok(!opts.placeholderValue.includes('javascript:'), opts.placeholderValue);
+  });
+
   it('Should not stringify select option value', async function () {
     const component = await Harness.testCreate(SelectComponent, comp6);
     await component.itemsLoaded;
@@ -92,34 +105,57 @@ describe('Select Component', function () {
     assert.equal(typeof component.dataValue, 'object');
   });
 
-  it('Should not displaying default values for the select component on the edit submission page', async () => {
+  it('Should not displaying default values for the select component on the edit submission page', async function () {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, { readOnly: false });
-    await form.setForm(comp33)
-    form.onSetSubmission({ data: { select: "" , select1: "" } }, { fromSubmission: true })
+    await form.setForm(comp33);
+    form.onSetSubmission({ data: { select: '', select1: '' } }, { fromSubmission: true });
     await wait(200);
-   
-    const selectHtml5Options = [...form.element.querySelector('[name="data[select1]"]')];
-    const selectedHtml5 = selectHtml5Options.find(x => x.selected);
-    
-    const selectChoicesJs = form.element.querySelector('[name="data[select]"]');
-    const selectChoicesJsInner = selectChoicesJs.parentElement.querySelector('.choices__list.choices__list--single');
 
-    assert.equal(selectChoicesJsInner.innerHTML, '', "should not contain inner options here");
-    assert.equal(selectedHtml5.value, '', "should be empty");
+    const selectHtml5Options = [...form.element.querySelector('[name="data[select1]"]')];
+    const selectedHtml5 = selectHtml5Options.find((x) => x.selected);
+
+    const selectChoicesJs = form.element.querySelector('[name="data[select]"]');
+    const selectChoicesJsInner = selectChoicesJs.parentElement.querySelector(
+      '.choices__list.choices__list--single',
+    );
+
+    assert.equal(selectChoicesJsInner.innerHTML, '', 'should not contain inner options here');
+    assert.equal(selectedHtml5.value, '', 'should be empty');
   });
 
-   it('Should return string value for different value types', async function () {
+  it('Should preserve apostrophes in html5 select option values', async function () {
+    const comp = {
+      label: 'Select',
+      widget: 'html5',
+      dataSrc: 'values',
+      data: {
+        values: [
+          {
+            label: 'Jane',
+            value: "jane's"
+          },
+        ]
+      },
+      key: 'select',
+      type: 'select',
+      input: true
+    };
+    const component = await Harness.testCreate(SelectComponent, comp);
+    component.setItems(component.component.data.values);
+    await component.itemsLoaded;
+    const select = component.refs.selectContainer;
+    assert.equal(select.options.length, 2);
+    assert.equal(select.options[1].value, "jane's");
+  });
+
+  it('Should return string value for different value types', async function () {
     const component = await Harness.testCreate(SelectComponent, comp4);
     const stringValue = component.asString(true);
     const stringValue1 = component.asString(11);
     const stringValue2 = component.asString('test');
     const stringValue3 = component.asString(12);
-    const stringValue4 = component.asString([
-      1,
-      2,
-      3,
-    ]);
+    const stringValue4 = component.asString([1, 2, 3]);
     assert.equal(stringValue, '<span>true</span>');
     assert.equal(stringValue1, '<span>11</span>');
     assert.equal(stringValue2, '<span>test</span>');
@@ -293,24 +329,9 @@ describe('Select Component', function () {
   it('Should set multiple selected values not repeating them', async function () {
     const component = await Harness.testCreate(SelectComponent, multiSelect);
     component.setItems(multiSelectOptions, false);
-    component.setChoicesValue([
-      'Cheers',
-    ]);
-    component.setChoicesValue(
-      [
-        'Cheers',
-        'Cyberdyne Systems',
-      ],
-      1,
-    );
-    component.setChoicesValue(
-      [
-        'Cheers',
-        'Cyberdyne Systems',
-        'Massive Dynamic',
-      ],
-      2,
-    );
+    component.setChoicesValue(['Cheers']);
+    component.setChoicesValue(['Cheers', 'Cyberdyne Systems'], 1);
+    component.setChoicesValue(['Cheers', 'Cyberdyne Systems', 'Massive Dynamic'], 2);
     const choices = component.element.querySelector('.choices__list--multiple').children;
     assert.equal(choices.length, 3);
   });
@@ -328,9 +349,7 @@ describe('Select Component', function () {
     await form.submissionReady;
     await select.itemsLoaded;
     await wait(300);
-    const selectedItems = [
-      ...select.element.querySelectorAll('[ref="value"] span'),
-    ];
+    const selectedItems = [...select.element.querySelectorAll('[ref="value"] span')];
     assert.equal(selectedItems[0].innerHTML, 'First');
     assert.equal(selectedItems[1].innerHTML, 'Second');
   });
@@ -338,16 +357,8 @@ describe('Select Component', function () {
   it('Should not show selected values in dropdown when searching', async function () {
     const component = await Harness.testCreate(SelectComponent, multiSelect);
     component.setItems(multiSelectOptions, false);
-    component.setChoicesValue([
-      'Cheers',
-    ]);
-    component.setChoicesValue(
-      [
-        'Cheers',
-        'Cyberdyne Systems',
-      ],
-      1,
-    );
+    component.setChoicesValue(['Cheers']);
+    component.setChoicesValue(['Cheers', 'Cyberdyne Systems'], 1);
     component.setItems([], true);
     const itemsInDropdown = component.element.querySelectorAll('.choices__item--choice');
     const choices = component.element.querySelector('.choices__list--multiple').children;
@@ -375,11 +386,7 @@ describe('Select Component', function () {
     const c2 = Object.assign(_.cloneDeep(comp1), { selectThreshold: 0.4 });
     const c3 = Object.assign(_.cloneDeep(comp1), { selectThreshold: 0.8 });
 
-    const [
-      a,
-      b,
-      c,
-    ] = await Promise.all([
+    const [a, b, c] = await Promise.all([
       Harness.testCreate(SelectComponent, c1),
       Harness.testCreate(SelectComponent, c2),
       Harness.testCreate(SelectComponent, c3),
@@ -443,10 +450,7 @@ describe('Select Component', function () {
     assert.equal(!!selectHtml.choices, false);
     assert.equal(!!selectChoices.choices, true);
 
-    await Promise.all([
-      selectHtml.itemsLoaded,
-      selectChoices.itemsLoaded,
-    ]);
+    await Promise.all([selectHtml.itemsLoaded, selectChoices.itemsLoaded]);
     await timeout(0);
     assert.equal(selectHtml.selectOptions.length, 3);
     assert.equal(selectChoices.selectOptions.length, 3);
@@ -457,10 +461,7 @@ describe('Select Component', function () {
     selectHtml.setValue(value);
     selectChoices.setValue(value);
 
-    await Promise.all([
-      selectHtml.itemsLoaded,
-      selectChoices.itemsLoaded,
-    ]);
+    await Promise.all([selectHtml.itemsLoaded, selectChoices.itemsLoaded]);
     assert.equal(selectHtml.dataValue, value);
     assert.equal(selectChoices.dataValue, value);
     assert.equal(selectChoices.choices._store.items.length, 1);
@@ -481,10 +482,7 @@ describe('Select Component', function () {
     select.setValue(value);
 
     // timeout(50) need to complete triggerChange
-    await Promise.all([
-      select.itemsLoaded,
-      timeout(50),
-    ]);
+    await Promise.all([select.itemsLoaded, timeout(50)]);
     assert.equal(select.dataValue, value);
     assert.equal(select.getValue(), value);
 
@@ -509,16 +507,9 @@ describe('Select Component', function () {
     const restoreMakeRequest = mockMakeRequest(
       (formio, type, url) =>
         new Promise((resolve) => {
-          let values = [
-            { name: 'Ivan' },
-            { name: 'Mike' },
-          ];
+          let values = [{ name: 'Ivan' }, { name: 'Mike' }];
           if (url.endsWith('5')) {
-            values = [
-              { name: 'Kate' },
-              { name: 'Ann' },
-              { name: 'Lana' },
-            ];
+            values = [{ name: 'Kate' }, { name: 'Ann' }, { name: 'Lana' }];
           }
           resolve(values);
         }),
@@ -554,16 +545,9 @@ describe('Select Component', function () {
     const restoreMakeRequest = mockMakeRequest(
       (formio, type, url) =>
         new Promise((resolve) => {
-          let values = [
-            { name: 'Ivan' },
-            { name: 'Mike' },
-          ];
+          let values = [{ name: 'Ivan' }, { name: 'Mike' }];
           if (url.endsWith('5')) {
-            values = [
-              { name: 'Kate' },
-              { name: 'Ann' },
-              { name: 'Lana' },
-            ];
+            values = [{ name: 'Kate' }, { name: 'Ann' }, { name: 'Lana' }];
           }
           resolve(values);
         }),
@@ -696,9 +680,7 @@ describe('Select Component', function () {
     const formSchema = _.cloneDeep(comp9);
     formSchema.components[1].refreshOn = null;
     formSchema.components[1].lazyLoad = true;
-    formSchema.components[1].data.headers = [
-      { key: 'testHeader', value: 'test' },
-    ];
+    formSchema.components[1].data.headers = [{ key: 'testHeader', value: 'test' }];
 
     const element = document.createElement('div');
     const form = await Formio.createForm(element, formSchema);
@@ -718,10 +700,7 @@ describe('Select Component', function () {
     const restoreMakeRequest = mockMakeRequest(
       () =>
         new Promise((resolve) => {
-          const values = [
-            { name: 'Ivan' },
-            { name: 'Mike' },
-          ];
+          const values = [{ name: 'Ivan' }, { name: 'Mike' }];
           resolve(values);
         }),
     );
@@ -751,10 +730,7 @@ describe('Select Component', function () {
     const restoreMakeRequest = mockMakeRequest(
       () =>
         new Promise((resolve) => {
-          const values = [
-            { name: 'Ivan' },
-            { name: 'Mike' },
-          ];
+          const values = [{ name: 'Ivan' }, { name: 'Mike' }];
           resolve(values);
         }),
     );
@@ -779,6 +755,27 @@ describe('Select Component', function () {
       select.choices.containerInner.element.children[1].children[0].children[0].textContent,
       'Ivan',
     );
+
+    restoreDebounce();
+    restoreMakeRequest();
+  });
+
+  it('The select component that uses resource data inside a DataGrid should display the label (not value) when we set submission in custom logic', async () => {
+    const restoreDebounce = mockDebounce(0);
+    const restoreMakeRequest = mockMakeRequest((formio, type, url) => new Promise((resolve) => {
+      let values = [{ data: { value: 'test', label: "Label" } }, { data: { value: 'test2', label: "label2" } }];
+      resolve(values);
+    }));
+
+    const element = document.createElement('div');
+    const form = await Formio.createForm(element, _.cloneDeep(resourceDataGridSubmission));
+    const setValue = form.getComponent('setValue');
+    const clickEvent = new Event('click');
+    const setVal = setValue.refs.button;
+    setVal.dispatchEvent(clickEvent);
+    await wait(400);
+    const item = form.element.querySelector('.choices__item.choices__item--selectable');
+    assert.equal(item.textContent.includes("label2"), true);
 
     restoreDebounce();
     restoreMakeRequest();
@@ -865,10 +862,7 @@ describe('Select Component', function () {
     const restoreMakeRequest = mockMakeRequest(
       (formio, type, url) =>
         new Promise((resolve) => {
-          let values = [
-            { data: { name: 'Ivan' } },
-            { data: { name: 'Mike' } },
-          ];
+          let values = [{ data: { name: 'Ivan' } }, { data: { name: 'Mike' } }];
 
           if (url.endsWith('Ivan')) {
             assert.equal(
@@ -877,9 +871,7 @@ describe('Select Component', function () {
               ),
               true,
             );
-            values = [
-              { data: { name: 'Ivan' } },
-            ];
+            values = [{ data: { name: 'Ivan' } }];
           } else {
             assert.equal(
               url.endsWith('/form/60114dd32cab36ad94ac4f94/submission?limit=100&skip=0'),
@@ -941,7 +933,7 @@ describe('Select Component', function () {
     assert.equal(emptyOption.value, '');
   });
 
-  it('Should correctly display the View tab when multiple values (2 values) are set for a Select component using the HTML5 widget.', async () => {
+  it('Should correctly display the View tab when multiple values (2 values) are set for a Select component using the HTML5 widget.', async function () {
     const element = document.createElement('div');
     const form = await Formio.createForm(element, comp30);
     const select = form.getComponent('select');
@@ -951,15 +943,15 @@ describe('Select Component', function () {
     const submitBtn = submit.refs.button;
     submitBtn.dispatchEvent(clickEvent);
 
-    select.updateValue(["one", "two"]);
+    select.updateValue(['one', 'two']);
 
     await timeout(200);
     const options = [...form.element.querySelectorAll('.formio-component-multiple option')];
-    const result = options.filter(x => x.value && x.selected);
-    assert.equal(result.length, 2) // view should contain two selected items;
+    const result = options.filter((x) => x.value && x.selected);
+    assert.equal(result.length, 2); // view should contain two selected items;
   });
 
-  it('Should correctly display the View tab when multiple values (1 value) are set for a Select component using the HTML5 widget.', async () => {
+  it('Should correctly display the View tab when multiple values (1 value) are set for a Select component using the HTML5 widget.', async function () {
     const element = document.createElement('div');
     const form = await Formio.createForm(element, comp30);
     const select = form.getComponent('select');
@@ -969,15 +961,15 @@ describe('Select Component', function () {
     const submitBtn = submit.refs.button;
     submitBtn.dispatchEvent(clickEvent);
 
-    select.updateValue(["one"]);
+    select.updateValue(['one']);
 
     await timeout(200);
     const options = [...form.element.querySelectorAll('.formio-component-multiple option')];
-    const result = options.filter(x => x.value && x.selected);
+    const result = options.filter((x) => x.value && x.selected);
     assert.equal(result.length, 1); // view should contain one selected items
   });
 
-  it('Should correctly display the View tab when Multiple Values are turned off for a Select component using the HTML5 widget.', async () => {
+  it('Should correctly display the View tab when Multiple Values are turned off for a Select component using the HTML5 widget.', async function () {
     const element = document.createElement('div');
     const cloned = _.cloneDeep(comp30);
     cloned.components[0].multiple = false;
@@ -989,13 +981,13 @@ describe('Select Component', function () {
     const submitBtn = submit.refs.button;
     submitBtn.dispatchEvent(clickEvent);
 
-    select.updateValue("one");
+    select.updateValue('one');
 
     await timeout(200);
     const options = [...form.element.querySelectorAll('.formio-component-select option')];
-    const result = options.filter(x => x.selected);
-    assert.equal(result.length, 1); // view should contain one selected items 
-    assert.equal(result[0].value, 'one')
+    const result = options.filter((x) => x.selected);
+    assert.equal(result.length, 1); // view should contain one selected items
+    assert.equal(result[0].value, 'one');
   });
 
   it('Should not have default values in schema', async function () {
@@ -1080,10 +1072,7 @@ describe('Select Component', function () {
     const element = document.createElement('div');
     const form = await Formio.createForm(element, _.cloneDeep(comp20));
     const select = form.getComponent('select');
-    const values = [
-      'apple',
-      'orange',
-    ];
+    const values = ['apple', 'orange'];
     select.setValue(values);
 
     await select.itemsLoaded;
@@ -1238,7 +1227,7 @@ describe('Select Component', function () {
     });
   });
 
-    it('Should unset metadata.selectData for Select component after the value was unset', async function () {
+  it('Should unset metadata.selectData for Select component after the value was unset', async function () {
     const testItems = [
       { data: { textField: 'John' } },
       { data: { textField: 'Mary' } },
@@ -1276,10 +1265,7 @@ describe('Select Component', function () {
       form.on('submitError', () => reject('Should submit the form.'));
     });
 
-    assert.equal(
-      _.isEmpty(form.submission.metadata.selectData),
-      true,
-    );
+    assert.equal(_.isEmpty(form.submission.metadata.selectData), true);
 
     restoreMakeRequest();
   });
@@ -1290,10 +1276,7 @@ describe('Select Component', function () {
     const select = form.getComponent('select');
     form.submission = {
       data: {
-        select: [
-          'value1',
-          'value2',
-        ],
+        select: ['value1', 'value2'],
       },
       metadata: {
         selectData: {
@@ -1469,10 +1452,7 @@ describe('Select Component', function () {
         },
       },
       data: {
-        select: [
-          1,
-          'olivia',
-        ],
+        select: [1, 'olivia'],
         submit: true,
       },
       state: 'submitted',
@@ -1525,32 +1505,20 @@ describe('Select Component', function () {
   it('Select Component Should work correctly with the values in the form of an array', async function () {
     const testItems = [
       {
-        textField: [
-          'one',
-          'two',
-        ],
+        textField: ['one', 'two'],
       },
       {
-        textField: [
-          'three',
-          'four',
-        ],
+        textField: ['three', 'four'],
       },
       {
-        textField: [
-          'five',
-          'six',
-        ],
+        textField: ['five', 'six'],
       },
     ];
     const element = document.createElement('div');
     const form = await Formio.createForm(element, _.cloneDeep(comp18));
     const select = form.getComponent('select');
     select.setItems(testItems.map((item) => ({ data: item })));
-    const value = [
-      'three',
-      'four',
-    ];
+    const value = ['three', 'four'];
     select.setValue(value);
 
     await select.itemsLoaded;
@@ -1570,26 +1538,33 @@ describe('Select Component', function () {
     assert.equal(select.dataValue, value);
   });
 
-  it('Should update select component submission value when corresponding resource submission is edited', async () => {
+  it('Should update select component submission value when corresponding resource submission is edited', async function () {
     const restoreDebounce = mockDebounce(0);
     let requestCount = 0;
-    const restoreMakeRequest = mockMakeRequest((formio, type, url) => new Promise((resolve) => {
-      requestCount++;
+    const restoreMakeRequest = mockMakeRequest(
+      (_formio, _type, _url) =>
+        new Promise((resolve) => {
+          requestCount++;
 
-      let values = [{ 
-        _id: '68de72fde765715fe4ebcbf6',
-        data: { textField: 'test 1' } 
-      }];
-      
-      if (requestCount > 1) {
-        values = [{ 
-          _id: '68de72fde765715fe4ebcbf6',
-          data: { textField: 'test 1 updated' } 
-        }];
-      }
-      
-      resolve(values);
-    }));
+          let values = [
+            {
+              _id: '68de72fde765715fe4ebcbf6',
+              data: { textField: 'test 1' },
+            },
+          ];
+
+          if (requestCount > 1) {
+            values = [
+              {
+                _id: '68de72fde765715fe4ebcbf6',
+                data: { textField: 'test 1 updated' },
+              },
+            ];
+          }
+
+          resolve(values);
+        }),
+    );
 
     const element = document.createElement('div');
     const form = await Formio.createForm(element, _.cloneDeep(comp31));
@@ -1599,19 +1574,19 @@ describe('Select Component', function () {
         selectData: {
           selectResource: {
             data: {
-              textField: "test 1",
+              textField: 'test 1',
             },
           },
         },
       },
       data: {
         selectResource: {
-            _id: "68de72fde765715fe4ebcbf6",
-            form: "68de72f4e765715fe4ebcafb",
-            data: {
-                textField: "test 1",
-                submit: true
-            },
+          _id: '68de72fde765715fe4ebcbf6',
+          form: '68de72f4e765715fe4ebcafb',
+          data: {
+            textField: 'test 1',
+            submit: true,
+          },
         },
         submit: true,
       },
@@ -1622,24 +1597,28 @@ describe('Select Component', function () {
     await select.itemsLoaded;
     let previewSelect = select.element.querySelector('[aria-selected="true"] span');
     assert.equal(previewSelect.innerHTML, 'test 1');
-    
+
     // Update template data to reflect the resource changes
     select.templateData = {
       '68de72fde765715fe4ebcbf6': {
         data: {
-          textField: "test 1 updated"
-        }
-      }
+          textField: 'test 1 updated',
+        },
+      },
     };
     select.refresh(null, { instance: select });
     await select.itemsLoaded;
-    
+
     previewSelect = select.element.querySelector('[aria-selected="true"] span');
     assert.equal(previewSelect.innerHTML, 'test 1 updated');
-        
+
     const itemTemplateResult = select.itemTemplate(select.dataValue, select.dataValue);
-    assert.equal(itemTemplateResult, '<span>test 1 updated</span>', 'itemTemplate should return the updated value from template data');
-    
+    assert.equal(
+      itemTemplateResult,
+      '<span>test 1 updated</span>',
+      'itemTemplate should return the updated value from template data',
+    );
+
     restoreDebounce();
     restoreMakeRequest();
   });
@@ -1896,17 +1875,15 @@ describe('Select Component', function () {
 
     it('Should convert __regex to __eq for numeric search values when valueProperty points to number field', async function () {
       const capturedUrls = [];
-      const restoreMakeRequest = mockMakeRequest(
-        (formio, type, url) => {
-          capturedUrls.push(url);
-          return new Promise((resolve) => {
-            resolve([
-              { id: 4, name: 'Item 4' },
-              { id: 5, name: 'Item 5' },
-            ]);
-          });
-        },
-      );
+      const restoreMakeRequest = mockMakeRequest((formio, type, url) => {
+        capturedUrls.push(url);
+        return new Promise((resolve) => {
+          resolve([
+            { id: 4, name: 'Item 4' },
+            { id: 5, name: 'Item 5' },
+          ]);
+        });
+      });
 
       const restoreDebounce = mockDebounce(0);
 
@@ -1927,17 +1904,23 @@ describe('Select Component', function () {
       };
 
       const component = await Harness.testCreate(SelectComponent, componentSchema);
-      
+
       component.loadItems('https://example.com/api/items', '4', {}, {}, 'GET', null);
       await timeout(50);
       let lastUrl = capturedUrls[capturedUrls.length - 1];
       assert.ok(lastUrl.includes('data.id__eq=4'), 'Should use __eq for numeric search value');
-      assert.ok(!lastUrl.includes('data.id__regex'), 'Should not use __regex for numeric search value');
+      assert.ok(
+        !lastUrl.includes('data.id__regex'),
+        'Should not use __regex for numeric search value',
+      );
 
       component.loadItems('https://example.com/api/items', 'abc', {}, {}, 'GET', null);
       await timeout(50);
       lastUrl = capturedUrls[capturedUrls.length - 1];
-      assert.ok(lastUrl.includes('data.id__regex'), 'Should use __regex for non-numeric search value');
+      assert.ok(
+        lastUrl.includes('data.id__regex'),
+        'Should use __regex for non-numeric search value',
+      );
 
       restoreDebounce();
       restoreMakeRequest();

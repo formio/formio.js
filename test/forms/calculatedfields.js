@@ -28,10 +28,7 @@ export default {
         inputType: 'text',
         disabled: true,
         calculateValue: {
-          '+': [
-            { var: 'data.a' },
-            { var: 'data.b' },
-          ],
+          '+': [{ var: 'data.a' }, { var: 'data.b' }],
         },
       },
     ],

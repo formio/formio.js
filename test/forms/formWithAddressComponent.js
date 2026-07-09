@@ -10,9 +10,7 @@ const form = {
       enableRowGroups: false,
       initEmpty: false,
       tableView: false,
-      defaultValue: [
-        {},
-      ],
+      defaultValue: [{}],
       key: 'dataGrid',
       type: 'datagrid',
       input: true,
@@ -107,34 +105,22 @@ const submission = {
           {
             long_name: 'Dallas',
             short_name: 'Dallas',
-            types: [
-              'locality',
-              'political',
-            ],
+            types: ['locality', 'political'],
           },
           {
             long_name: 'Dallas County',
             short_name: 'Dallas County',
-            types: [
-              'administrative_area_level_2',
-              'political',
-            ],
+            types: ['administrative_area_level_2', 'political'],
           },
           {
             long_name: 'Texas',
             short_name: 'TX',
-            types: [
-              'administrative_area_level_1',
-              'political',
-            ],
+            types: ['administrative_area_level_1', 'political'],
           },
           {
             long_name: 'United States',
             short_name: 'US',
-            types: [
-              'country',
-              'political',
-            ],
+            types: ['country', 'political'],
           },
         ],
         formatted_address: 'Dallas, TX, USA',
@@ -166,10 +152,7 @@ const submission = {
           },
         },
         place_id: 'ChIJS5dFe_cZTIYRj2dH9qSb7Lk',
-        types: [
-          'locality',
-          'political',
-        ],
+        types: ['locality', 'political'],
       },
     },
   ],

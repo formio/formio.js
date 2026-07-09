@@ -43,10 +43,7 @@ export default class Field extends Component {
     if (this.root?.focusedComponent?.path === this.path) {
       try {
         this.root.currentSelection = {
-          selection: [
-            element.selectionStart,
-            element.selectionEnd,
-          ],
+          selection: [element.selectionStart, element.selectionEnd],
           index,
         };
       } catch (e) {

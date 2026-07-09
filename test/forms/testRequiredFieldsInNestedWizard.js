@@ -208,9 +208,7 @@ export default {
         },
         validateWhenHidden: false,
         key: 'firstName',
-        tags: [
-          'recommended',
-        ],
+        tags: ['recommended'],
         type: 'textfield',
         input: true,
       },

@@ -12,6 +12,7 @@ import comp11 from './comp11';
 import comp12 from './comp12';
 import comp13 from './comp13';
 import comp15 from './comp15';
+import comp16 from './comp16';
 export {
   comp1,
   comp2,
@@ -27,4 +28,5 @@ export {
   comp12,
   comp13,
   comp15,
+  comp16
 };

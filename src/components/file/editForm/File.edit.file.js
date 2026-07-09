@@ -30,10 +30,7 @@ export default [
       "The <a href='https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html'>S3 Multipart Upload API</a> is designed to improve the upload experience for larger objects (> 5GB).",
     conditional: {
       json: {
-        '===': [
-          { var: 'data.storage' },
-          's3',
-        ],
+        '===': [{ var: 'data.storage' }, 's3'],
       },
     },
   },
@@ -65,10 +62,7 @@ export default [
     ],
     conditional: {
       json: {
-        '===': [
-          { var: 'data.useMultipartUpload' },
-          true,
-        ],
+        '===': [{ var: 'data.useMultipartUpload' }, true],
       },
     },
   },
@@ -83,10 +77,7 @@ export default [
       "See <a href='https://github.com/danialfarid/ng-file-upload#server-side' target='_blank'>https://github.com/danialfarid/ng-file-upload#server-side</a> for how to set up the server.",
     conditional: {
       json: {
-        '===': [
-          { var: 'data.storage' },
-          'url',
-        ],
+        '===': [{ var: 'data.storage' }, 'url'],
       },
     },
   },
@@ -103,9 +94,7 @@ export default [
           {
             var: 'data.storage',
           },
-          [
-            'indexeddb',
-          ],
+          ['indexeddb'],
         ],
       },
     },
@@ -123,9 +112,7 @@ export default [
           {
             var: 'data.storage',
           },
-          [
-            'indexeddb',
-          ],
+          ['indexeddb'],
         ],
       },
     },
@@ -302,10 +289,7 @@ export default [
     weight: 31,
     conditional: {
       json: {
-        '===': [
-          { var: 'data.storage' },
-          'url',
-        ],
+        '===': [{ var: 'data.storage' }, 'url'],
       },
     },
   },
@@ -319,10 +303,7 @@ export default [
     weight: 40,
     conditional: {
       json: {
-        '==': [
-          { var: 'data.image' },
-          true,
-        ],
+        '==': [{ var: 'data.image' }, true],
       },
     },
   },
@@ -345,10 +326,7 @@ export default [
     weight: 38,
     conditional: {
       json: {
-        '==': [
-          { var: 'data.webcam' },
-          true,
-        ],
+        '==': [{ var: 'data.webcam' }, true],
       },
     },
   },

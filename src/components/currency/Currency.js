@@ -120,13 +120,8 @@ export default class CurrencyComponent extends NumberComponent {
     value = this.stripPrefixSuffix(isNegative ? value.replace(negativeValueSymbol, '') : value);
 
     if (value.includes(this.decimalSeparator)) {
-      [
-        integerPart,
-        decimalPart,
-      ] = value.split(this.decimalSeparator);
-      decimalPartNumbers = [
-        ...decimalPart.split(''),
-      ];
+      [integerPart, decimalPart] = value.split(this.decimalSeparator);
+      decimalPartNumbers = [...decimalPart.split('')];
     } else {
       integerPart = value;
     }

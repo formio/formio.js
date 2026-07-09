@@ -42,9 +42,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
     // Add new values based on minLength.
     this.rows = [];
-    this.columns = [
-      ...this.component.components,
-    ];
+    this.columns = [...this.component.components];
 
     if (this.initRows || !_.isEqual(this.dataValue, this.emptyValue)) {
       this.createRows(true);
@@ -80,11 +78,7 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   get emptyValue() {
-    return this.initEmpty
-      ? []
-      : [
-          {},
-        ];
+    return this.initEmpty ? [] : [{}];
   }
 
   get addAnotherPosition() {
@@ -104,11 +98,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     const isEmptyInit = this.initEmpty;
     // Ensure we have one and only one row in builder mode.
     if (isBuilderMode || (isEmptyInit && !this.dataValue.length)) {
-      return isEmptyInit && !isBuilderMode
-        ? []
-        : [
-            {},
-          ];
+      return isEmptyInit && !isBuilderMode ? [] : [{}];
     }
 
     const value = super.defaultValue;
@@ -117,9 +107,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (Array.isArray(value)) {
       defaultValue = value;
     } else if (value && typeof value === 'object') {
-      defaultValue = [
-        value,
-      ];
+      defaultValue = [value];
     } else {
       defaultValue = this.emptyValue;
     }
@@ -135,7 +123,7 @@ export default class DataGridComponent extends NestedArrayComponent {
     if (defaultValue.length === 1 && this.columns) {
       eachComponent(this.components, (comp, path) => {
         if (comp.component?.input && comp.defaultValue) {
-          _.set(defaultValue[0], path, comp.defaultValue)
+          _.set(defaultValue[0], path, comp.defaultValue);
         }
       });
     }
@@ -191,33 +179,12 @@ export default class DataGridComponent extends NestedArrayComponent {
    * @returns {Array<T[]>} - The chunked rows
    */
   getRowChunks(groups, rows) {
-    const [
-      ,
-      chunks,
-    ] = groups.reduce(
-      (
-        [
-          startIndex,
-          acc,
-        ],
-        size,
-      ) => {
+    const [, chunks] = groups.reduce(
+      ([startIndex, acc], size) => {
         const endIndex = startIndex + size;
-        return [
-          endIndex,
-          [
-            ...acc,
-            [
-              startIndex,
-              endIndex,
-            ],
-          ],
-        ];
+        return [endIndex, [...acc, [startIndex, endIndex]]];
       },
-      [
-        0,
-        [],
-      ],
+      [0, []],
     );
     return chunks.map((range) => _.slice(rows, ...range));
   }
@@ -235,9 +202,7 @@ export default class DataGridComponent extends NestedArrayComponent {
         const last = groupIndexes[groupIndexes.length - 1];
         return groupIndexes.concat(last + size);
       },
-      [
-        0,
-      ],
+      [0],
     );
 
     return groups.reduce((gidxs, group, idx) => {
@@ -284,23 +249,11 @@ export default class DataGridComponent extends NestedArrayComponent {
   }
 
   hasTopSubmit() {
-    return (
-      this.hasAddButton() &&
-      [
-        'top',
-        'both',
-      ].includes(this.addAnotherPosition)
-    );
+    return this.hasAddButton() && ['top', 'both'].includes(this.addAnotherPosition);
   }
 
   hasBottomSubmit() {
-    return (
-      this.hasAddButton() &&
-      [
-        'bottom',
-        'both',
-      ].includes(this.addAnotherPosition)
-    );
+    return this.hasAddButton() && ['bottom', 'both'].includes(this.addAnotherPosition);
   }
 
   get canAddColumn() {
@@ -387,22 +340,17 @@ export default class DataGridComponent extends NestedArrayComponent {
         row.dragInfo = { index };
       });
 
-      this.dragula = dragula(
-        [
-          this.refs[`${this.datagridKey}-tbody`],
-        ],
-        {
-          moves: (_draggedElement, _oldParent, clickedElement) => {
-            const clickedElementKey = clickedElement.getAttribute('data-key');
-            const oldParentKey = _oldParent.getAttribute('data-key');
+      this.dragula = dragula([this.refs[`${this.datagridKey}-tbody`]], {
+        moves: (_draggedElement, _oldParent, clickedElement) => {
+          const clickedElementKey = clickedElement.getAttribute('data-key');
+          const oldParentKey = _oldParent.getAttribute('data-key');
 
-            //Check if the clicked button belongs to that container, if false, it belongs to the nested container
-            if (oldParentKey === clickedElementKey) {
-              return clickedElement.classList.contains('formio-drag-button');
-            }
-          },
+          //Check if the clicked button belongs to that container, if false, it belongs to the nested container
+          if (oldParentKey === clickedElementKey) {
+            return clickedElement.classList.contains('formio-drag-button');
+          }
         },
-      ).on('drop', this.onReorder.bind(this));
+      }).on('drop', this.onReorder.bind(this));
 
       this.dragula.on('cloned', (el, original) => {
         if (el && el.children && original && original.children) {
@@ -448,9 +396,7 @@ export default class DataGridComponent extends NestedArrayComponent {
       columns.forEach((col) => {
         this.attachComponents(
           this.refs[this.datagridKey][rowIndex * rowLength + columnIndex],
-          [
-            this.rows[rowIndex][col.key],
-          ],
+          [this.rows[rowIndex][col.key]],
           this.getComponentsContainer(),
         );
         columnIndex++;
@@ -485,7 +431,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   onReorder(element, _target, _source, sibling) {
     if (!element.dragInfo || (sibling && !sibling.dragInfo)) {
-      console.warn('There is no Drag Info available for either dragged or sibling element');
+      console.warn(this.t('noDragInfoError'));
       return;
     }
 
@@ -597,12 +543,15 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   removeRow(index) {
     const makeEmpty = index === 0 && this.rows.length === 1;
-    const flags = { isReordered: !makeEmpty, resetValue: makeEmpty };
+    const flags = {
+      isReordered: !makeEmpty,
+      resetValue: makeEmpty,
+      modified: true,
+      noPristineChangeOnModified: true,
+    };
     this.splice(index, flags);
     this.emit('dataGridDeleteRow', { index });
-    const [
-      row,
-    ] = this.rows.splice(index, 1);
+    const [row] = this.rows.splice(index, 1);
     this.removeSubmissionMetadataRow(index);
     this.removeRowComponents(row);
     this.updateRowsComponents(index);
@@ -676,12 +625,16 @@ export default class DataGridComponent extends NestedArrayComponent {
           if (modified && !flags.noPristineChangeOnModified) {
             this.pristine = false;
           }
-          this.triggerRootChange(flags, {
-            instance: this,
-            component: this.component,
-            value: this.dataValue,
+          this.triggerRootChange(
             flags,
-          }, modified);
+            {
+              instance: this,
+              component: this.component,
+              value: this.dataValue,
+              flags,
+            },
+            modified,
+          );
           this.triggerRootChange(flags, changed, modified);
         }
 
@@ -744,10 +697,7 @@ export default class DataGridComponent extends NestedArrayComponent {
             (col.checkConditions(data, flags, dataValue[rowIndex]) && col.type !== 'hidden');
 
           if (col.component.logic && firstRowCheck) {
-            const compIndex = _.findIndex(this.columns, [
-              'key',
-              key,
-            ]);
+            const compIndex = _.findIndex(this.columns, ['key', key]);
             const equalColumns = _.isEqualWith(
               this.columns[compIndex],
               col.component,
@@ -801,14 +751,10 @@ export default class DataGridComponent extends NestedArrayComponent {
     }
     if (!Array.isArray(value)) {
       if (typeof value === 'object') {
-        value = [
-          value,
-        ];
+        value = [value];
       } else {
         this.createRows();
-        value = [
-          {},
-        ];
+        value = [{}];
       }
     }
 

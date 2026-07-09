@@ -39,9 +39,7 @@ export default [
       if (data.defaultValue) {
         const defaultValueParts = data.defaultValue.split('/');
         if (!data.fields.day.hide && defaultValueParts.length !== 3) {
-          const newDefaultValue = [
-            '00',
-          ];
+          const newDefaultValue = ['00'];
           if (!data.fields.month.hide) {
             data.dayFirst
               ? newDefaultValue.push(defaultValueParts[0])

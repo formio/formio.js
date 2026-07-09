@@ -21,11 +21,7 @@ export default {
     },
     {
       type: 'read_all',
-      roles: [
-        '62ead292aeb6eb30ebf49a58',
-        '62ead292aeb6eb30ebf49a5d',
-        '62ead292aeb6eb30ebf49a62',
-      ],
+      roles: ['62ead292aeb6eb30ebf49a58', '62ead292aeb6eb30ebf49a5d', '62ead292aeb6eb30ebf49a62'],
     },
     {
       type: 'update_own',
@@ -63,9 +59,7 @@ export default {
     },
     {
       type: 'create_all',
-      roles: [
-        '62ead292aeb6eb30ebf49a5d',
-      ],
+      roles: ['62ead292aeb6eb30ebf49a5d'],
     },
     {
       type: 'read_own',

@@ -206,12 +206,7 @@ export default class Component extends Element {
    */
   static get conditionOperatorsSettings() {
     return {
-      operators: [
-        'isEqual',
-        'isNotEqual',
-        'isEmpty',
-        'isNotEmpty',
-      ],
+      operators: ['isEqual', 'isNotEqual', 'isEmpty', 'isNotEmpty'],
       valueComponent() {
         return {
           type: 'textfield',
@@ -231,11 +226,7 @@ export default class Component extends Element {
   static savedValueTypes(schema) {
     schema = schema || {};
 
-    return (
-      FormioUtils.getComponentSavedTypes(schema) || [
-        FormioUtils.componentValueTypes.any,
-      ]
-    );
+    return FormioUtils.getComponentSavedTypes(schema) || [FormioUtils.componentValueTypes.any];
   }
   /**
    * Provides a table view for this component. Override if you wish to do something different than using getView
@@ -548,17 +539,20 @@ export default class Component extends Element {
     return false;
   }
 
-   hasCondionallyHiddenLayoutParent() {
+  hasCondionallyHiddenLayoutParent() {
     let currentParent = this.parent;
     while (currentParent) {
-      if (currentParent._conditionallyHidden && FormioUtils.isLayoutComponent(currentParent) && currentParent.component.clearOnHide === true) {
+      if (
+        currentParent._conditionallyHidden &&
+        FormioUtils.isLayoutComponent(currentParent) &&
+        currentParent.component.clearOnHide === true
+      ) {
         return true;
       }
       currentParent = currentParent.parent;
     }
-    return false
+    return false;
   }
-
 
   parentConditionallyHidden() {
     let currentParent = this.parent;
@@ -701,7 +695,10 @@ export default class Component extends Element {
         this.addons.push(addon);
       } else {
         console.warn(
-          `Addon ${name.label} does not support component of type ${this.component.type}.`,
+          this.t('addonSupportTypeError', {
+            type: this.component.type,
+            label: name.label,
+          }),
         );
       }
     }
@@ -769,7 +766,7 @@ export default class Component extends Element {
   }
 
   set path(path) {
-    throw new Error('Should not be setting the path of a component.');
+    throw new Error(this.t('setPathError'));
   }
 
   set parentVisible(value) {
@@ -889,7 +886,9 @@ export default class Component extends Element {
       this._conditionallyClear = true;
       return this._conditionallyClear;
     }
-    this._conditionallyClear = this.hasSetValue ? this.hasCondionallyHiddenLayoutParent() : this.parentShouldConditionallyClear();
+    this._conditionallyClear = this.hasSetValue
+      ? this.hasCondionallyHiddenLayoutParent()
+      : this.parentShouldConditionallyClear();
     return this._conditionallyClear;
   }
 
@@ -930,7 +929,7 @@ export default class Component extends Element {
   }
 
   get calculatedPath() {
-    console.error('component.calculatedPath was deprecated, use component.path instead.');
+    console.error(this.t('calculatedPathDeprecation'));
     return this.path;
   }
 
@@ -949,12 +948,7 @@ export default class Component extends Element {
   }
 
   get isAdvancedLabel() {
-    return [
-      'left-left',
-      'left-right',
-      'right-left',
-      'right-right',
-    ].includes(this.labelPosition);
+    return ['left-left', 'left-right', 'right-left', 'right-right'].includes(this.labelPosition);
   }
 
   get labelPositions() {
@@ -1098,16 +1092,8 @@ export default class Component extends Element {
   }
 
   getTemplate(names, modes) {
-    modes = Array.isArray(modes)
-      ? modes
-      : [
-          modes,
-        ];
-    names = Array.isArray(names)
-      ? names
-      : [
-          names,
-        ];
+    modes = Array.isArray(modes) ? modes : [modes];
+    names = Array.isArray(names) ? names : [names];
     if (!modes.includes('form')) {
       modes.push('form');
     }
@@ -1134,7 +1120,7 @@ export default class Component extends Element {
     const templatesByName = Templates.defaultTemplates[name];
 
     if (!templatesByName) {
-      return { template: `Unknown template: ${name}` };
+      return { template: this.t('unknownTemplate', { name }) };
     }
 
     const templateByMode = this.checkTemplateMode(templatesByName, modes);
@@ -1194,14 +1180,14 @@ export default class Component extends Element {
       `${name}-${this.key}`,
       `${name}`,
     ];
-    
+
     // Allow template alters.
     const mode = modeOption || this.options.renderMode || 'form';
     const { referenceAttributeName, template } = this.getTemplate(names, mode);
     if (referenceAttributeName) {
       this._referenceAttributeName = referenceAttributeName;
     }
-    
+
     // Need to make this fall back to form if renderMode is not found similar to how we search templates.
     data.component = this.component;
     data.self = this;
@@ -1217,9 +1203,7 @@ export default class Component extends Element {
     data.disabled = this.disabled;
     data.builder = this.builderMode;
     data.render = (...args) => {
-      console.warn(`Form.io 'render' template function is deprecated.
-      If you need to render template (template A) inside of another template (template B),
-      pass pre-compiled template A (use this.renderTemplate('template_A_name') as template context variable for template B`);
+      console.warn(this.t('renderTemplateFunctionDeprecation'));
       return this.renderTemplate(...args);
     };
     data.label = data.labelInfo || this.labelInfo;
@@ -1399,9 +1383,7 @@ export default class Component extends Element {
     }
 
     const staticSnapshot =
-      this.options.server ||
-      this.options.renderMode === 'html' ||
-      !!this.options.viewAsHtml;
+      this.options.server || this.options.renderMode === 'html' || !!this.options.viewAsHtml;
 
     if (
       submissionTimezone &&
@@ -1486,7 +1468,7 @@ export default class Component extends Element {
 
     return this.renderModalPreview({
       previewText:
-        this.getValueAsString(dataValue, { modalPreview: true }) || this.t('Click to set value'),
+        this.getValueAsString(dataValue, { modalPreview: true }) || this.t('clickToSetValue'),
       messages: '',
       labelInfo: modalLabel,
     });
@@ -1514,7 +1496,7 @@ export default class Component extends Element {
    * @param {boolean} topLevel - If this is the topmost component that is being rendered.
    * @returns {string} - The rendered HTML string of a component.
    */
-  render(children = `Unknown component: ${this.component.type}`, topLevel = false) {
+  render(children = this.t('unknownComponent', { type: this.component.type }), topLevel = false) {
     const isVisible = this.visible;
     this.rendered = true;
 
@@ -1769,9 +1751,7 @@ export default class Component extends Element {
       return;
     }
     if (!changes.length && flags.changed) {
-      changes = [
-        flags.changed,
-      ];
+      changes = [flags.changed];
     }
     const refreshOn = flags.fromBlur
       ? this.component.refreshOnBlur
@@ -1883,10 +1863,11 @@ export default class Component extends Element {
   /**
    * Uses the widget to determine the output string.
    * @param {any} value - The current value of the component.
-   * @param {any} options - The options for getValueAsString.
+   * @param {any} _options - The options for getValueAsString.
    * @returns {any|Array<any>} - The value as a string.
    */
-  getWidgetValueAsString(value, options) {
+  // GOTCHA(G-FJS04)
+  getWidgetValueAsString(value, _options) {
     const noInputWidget = !this.refs.input || !this.refs.input[0] || !this.refs.input[0].widget;
     if (!value || noInputWidget) {
       if (!this.widget || !value) {
@@ -2014,11 +1995,12 @@ export default class Component extends Element {
     });
 
     // Check if an element is inside shadow dom
-    const isInShadowDOM = typeof ShadowRoot !== 'undefined' && this.element?.getRootNode() instanceof ShadowRoot;
+    const isInShadowDOM =
+      typeof ShadowRoot !== 'undefined' && this.element?.getRootNode() instanceof ShadowRoot;
     // if we render shadow dom inside <iframe>'s we need to get the body from the current iframe,
     // not the general body. This is necessary to hide and show the scroll bar correctly.
-    const body = isInShadowDOM? this.element.getRootNode().host.ownerDocument.body: document.body;
-    const rootEl = isInShadowDOM? this.element.closest('.formio-form-wrapper'): document.body;
+    const body = isInShadowDOM ? this.element.getRootNode().host.ownerDocument.body : document.body;
+    const rootEl = isInShadowDOM ? this.element.closest('.formio-form-wrapper') : document.body;
 
     const checkModal = (method) => {
       if (isInShadowDOM) {
@@ -2026,7 +2008,7 @@ export default class Component extends Element {
         return;
       }
       body.classList[method]('modal-open');
-    }
+    };
 
     dialog.refs.dialogContents.appendChild(element);
     rootEl.appendChild(dialog);
@@ -2113,7 +2095,7 @@ export default class Component extends Element {
     });
     return customCSS;
   }
-  
+
   /**
    * Build custom styles from the styles form option or global config.
    * @param {string[]} templateNames - The possible template names.
@@ -2237,10 +2219,7 @@ export default class Component extends Element {
     const iconset = this.options.iconset || Templates.current.defaultIconset || 'fa';
     return Templates.current.hasOwnProperty('iconClass')
       ? Templates.current.iconClass(iconset, name, spinning)
-      : [
-            'fa',
-            'bi',
-          ].includes(this.options.iconset)
+      : ['fa', 'bi'].includes(this.options.iconset)
         ? Templates.defaultTemplates.iconClass(iconset, name, spinning)
         : name;
   }
@@ -2443,7 +2422,10 @@ export default class Component extends Element {
    * @returns {boolean} - TRUE if the component is conditionally visible.
    */
   conditionallyVisible(data, row) {
-    data = data || this.rootValue;
+    data =
+      data ||
+      (this.root?.submissionSet && _.merge({}, this.root?.subFromServer, this.rootValue)) ||
+      this.rootValue;
     row = row || this.data;
     if (this.builderMode || this.previewMode) {
       return true;
@@ -2746,9 +2728,7 @@ export default class Component extends Element {
     }
 
     if (!Array.isArray(messages)) {
-      messages = [
-        messages,
-      ];
+      messages = [messages];
     }
 
     messages = _.uniqBy(messages, (message) => message.message);
@@ -2917,30 +2897,15 @@ export default class Component extends Element {
           toolbar: [
             [
               {
-                size: [
-                  'small',
-                  false,
-                  'large',
-                  'huge',
-                ],
+                size: ['small', false, 'large', 'huge'],
               },
             ], // custom dropdown
             [
               {
-                header: [
-                  1,
-                  2,
-                  3,
-                  4,
-                  5,
-                  6,
-                  false,
-                ],
+                header: [1, 2, 3, 4, 5, 6, false],
               },
             ],
-            [
-              { font: [] },
-            ],
+            [{ font: [] }],
             [
               'bold',
               'italic',
@@ -2950,10 +2915,7 @@ export default class Component extends Element {
               { script: 'super' },
               'clean',
             ],
-            [
-              { color: [] },
-              { background: [] },
-            ],
+            [{ color: [] }, { background: [] }],
             [
               { list: 'ordered' },
               { list: 'bullet' },
@@ -2961,17 +2923,8 @@ export default class Component extends Element {
               { indent: '+1' },
               { align: [] },
             ],
-            [
-              'blockquote',
-              'code-block',
-            ],
-            [
-              'link',
-              'image',
-              'video',
-              'formula',
-              'source',
-            ],
+            ['blockquote', 'code-block'],
+            ['link', 'image', 'video', 'formula', 'source'],
           ],
         },
       },
@@ -2993,12 +2946,7 @@ export default class Component extends Element {
             'imageStyle:alignCenter',
             'imageStyle:alignRight',
           ],
-          styles: [
-            'full',
-            'alignLeft',
-            'alignCenter',
-            'alignRight',
-          ],
+          styles: ['full', 'alignLeft', 'alignCenter', 'alignRight'],
         },
         extraPlugins: [],
       },
@@ -3044,7 +2992,7 @@ export default class Component extends Element {
             clone.textContent = ckeStyles.textContent;
             current.prepend(clone);
             break;
-          };
+          }
           current = current.parentNode || current.host;
         }
         return ClassicEditor.create(element, settings).then((editor) => {
@@ -3073,9 +3021,7 @@ export default class Component extends Element {
     Formio.requireLibrary(
       `quill-css-${settings.theme}`,
       'Quill',
-      [
-        { type: 'styles', src: `${Formio.cdn.quill}/quill.${settings.theme}.css` },
-      ],
+      [{ type: 'styles', src: `${Formio.cdn.quill}/quill.${settings.theme}.css` }],
       true,
     );
 
@@ -3112,8 +3058,10 @@ export default class Component extends Element {
 
           // 2. hasFocus: check shadowRoot.activeElement instead of document.activeElement
           sel.hasFocus = () => {
-            return root.activeElement === sel.root ||
-              (root.activeElement != null && sel.root.contains(root.activeElement));
+            return (
+              root.activeElement === sel.root ||
+              (root.activeElement != null && sel.root.contains(root.activeElement))
+            );
           };
 
           // 3. setNativeRange: use shadowRoot's selection to add/remove ranges
@@ -3132,9 +3080,14 @@ export default class Component extends Element {
             const { native } = sel.getNativeRange() || {};
             endNode = endNode ?? startNode;
             endOffset = endOffset ?? startOffset;
-            if (native == null || force ||
-              startNode !== native.startContainer || startOffset !== native.startOffset ||
-              endNode !== native.endContainer || endOffset !== native.endOffset) {
+            if (
+              native == null ||
+              force ||
+              startNode !== native.startContainer ||
+              startOffset !== native.startOffset ||
+              endNode !== native.endContainer ||
+              endOffset !== native.endOffset
+            ) {
               const range = document.createRange();
               range.setStart(startNode, startOffset);
               range.setEnd(endNode, endOffset);
@@ -3337,7 +3290,7 @@ export default class Component extends Element {
     );
   }
 
-   /**
+  /**
    * Determine if we should add a default value for this component.
    * @returns {boolean} - TRUE if a default value should be set
    */
@@ -3833,9 +3786,7 @@ export default class Component extends Element {
       paths: this.paths,
       scope: validationScope,
       instance: this,
-      processors: [
-        validateProcessInfo,
-      ],
+      processors: [validateProcessInfo],
     });
     const errors = validationScope.errors;
     const interpolatedErrors = FormioUtils.interpolateErrors(
@@ -3885,10 +3836,7 @@ export default class Component extends Element {
       this.t.bind(this),
     );
     return this.serverErrors?.length
-      ? [
-          ...interpolatedErrors,
-          ...this.serverErrors,
-        ]
+      ? [...interpolatedErrors, ...this.serverErrors]
       : interpolatedErrors;
   }
 
@@ -3938,9 +3886,7 @@ export default class Component extends Element {
       instance: this,
       form: this.root ? this.root._form : {},
       scope: { errors: [] },
-      processors: [
-        validateProcessInfo,
-      ],
+      processors: [validateProcessInfo],
     };
 
     if (async) {
@@ -4072,9 +4018,7 @@ export default class Component extends Element {
     }
     if (dirty && !isValid) {
       this.setErrorClasses(
-        [
-          this.refs.openModal,
-        ],
+        [this.refs.openModal],
         dirty,
         !isValid,
         !!messages.length,
@@ -4182,9 +4126,7 @@ export default class Component extends Element {
 
     if (!Array.isArray(messages)) {
       if (messages) {
-        messages = [
-          messages,
-        ];
+        messages = [messages];
       } else {
         messages = [];
       }
@@ -4289,9 +4231,7 @@ export default class Component extends Element {
 
   // Maintain reverse compatibility.
   whenReady() {
-    console.warn(
-      'The whenReady() method has been deprecated. Please use the dataReady property instead.',
-    );
+    console.warn(this.t('whenReadyDeprecation'));
     return this.dataReady;
   }
 
@@ -4306,15 +4246,7 @@ export default class Component extends Element {
    */
   asString(value) {
     value = value || this.getValue();
-    return (
-      Array.isArray(value)
-        ? value
-        : [
-            value,
-          ]
-    )
-      .map(_.toString)
-      .join(', ');
+    return (Array.isArray(value) ? value : [value]).map(_.toString).join(', ');
   }
 
   /**
@@ -4601,11 +4533,7 @@ Component.requireLibrary = function (name, property, src, polling) {
     if (plugin) {
       Component.externalLibraries[name].resolve(plugin);
     } else {
-      src = Array.isArray(src)
-        ? src
-        : [
-            src,
-          ];
+      src = Array.isArray(src) ? src : [src];
       src.forEach((lib) => {
         let attrs = {};
         let elementType = '';

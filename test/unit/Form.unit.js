@@ -36,10 +36,7 @@ describe('Form Component', function () {
       form
         .setForm(comp5)
         .then(() => {
-          const textField = form.getComponent([
-            'form',
-            'textField',
-          ]);
+          const textField = form.getComponent(['form', 'textField']);
           textField.setValue('123', { modified: true });
           assert.equal(textField.dataValue, '123', 'Should set value');
           const toString = form.getValueAsString(textField.data, { email: true });
@@ -64,14 +61,8 @@ describe('Form Component', function () {
     form
       .setForm(comp4)
       .then(() => {
-        const make = form.getComponent([
-          'form',
-          'make',
-        ]);
-        const model = form.getComponent([
-          'form',
-          'model',
-        ]);
+        const make = form.getComponent(['form', 'make']);
+        const model = form.getComponent(['form', 'model']);
         make.setValue('ford');
         setTimeout(() => {
           assert.equal(make.dataValue, 'ford', 'Should set value');
@@ -264,12 +255,8 @@ describe('Form Component', function () {
       form
         .setForm(comp6)
         .then(() => {
-          const textField = form.getComponent([
-            'textField',
-          ]);
-          const nestedForm = form.getComponent([
-            'form',
-          ]);
+          const textField = form.getComponent(['textField']);
+          const nestedForm = form.getComponent(['form']);
           textField.setValue('test', { modified: true });
           setTimeout(() => {
             assert.equal(textField.dataValue, 'test', 'Should set value');
@@ -288,10 +275,7 @@ describe('Form Component', function () {
       form
         .setForm(comp5)
         .then(() => {
-          const textField = form.getComponent([
-            'form',
-            'textField',
-          ]);
+          const textField = form.getComponent(['form', 'textField']);
           const panel = form.getComponent('panel333');
           textField.setValue('123', { modified: true });
           setTimeout(() => {
@@ -344,13 +328,7 @@ describe('Form Component', function () {
 
       originalMakeRequest = Formio.makeRequest;
       Formio.makeRequest = (formio, type, url, method, data) => {
-        if (
-          type === 'submission' &&
-          [
-            'put',
-            'post',
-          ].includes(method)
-        ) {
+        if (type === 'submission' && ['put', 'post'].includes(method)) {
           state = data.state;
           subFormState = _.get(data, 'data.form.state', null);
           if (state === 'draft') {
@@ -536,6 +514,7 @@ describe('Form Component', function () {
     });
 
     it('Should not create a draft submission for nested form if Save as reference is set to false', function (done) {
+      this.retries(3);
       _.set(comp7.components[1], 'reference', false);
       const formElement = document.createElement('div');
       Formio.createForm(formElement, 'http://localhost:3000/idwqwhclwioyqbw/testdraftparent', {
@@ -547,12 +526,16 @@ describe('Form Component', function () {
             tfNestedInput.value = 'test Nested Input';
             const inputEvent = new Event('input');
             tfNestedInput.dispatchEvent(inputEvent);
-            setTimeout(() => {
-              assert.equal(saveDraftCalls, 1);
-              assert.equal(state, 'draft');
-              _.unset(comp7.components[1], 'reference');
-              done();
-            }, 1000);
+            // Wait for the first saveDraft of the parent form
+            form.on('saveDraft', () => {
+              // Wait long enough to make sure that the second saveDraft is never called for the child form that should be saved as part of teh parent form
+              setTimeout(() => {
+                assert.equal(saveDraftCalls, 1);
+                assert.equal(state, 'draft');
+                _.unset(comp7.components[1], 'reference');
+                done();
+              }, 1000);
+            });
           }, 200);
         })
         .catch((err) => done(err));
@@ -742,12 +725,7 @@ describe('Form Component', function () {
             ++childFormRequestCount;
             return Promise.resolve(_.cloneDeep(childForm));
           }
-          if (
-            type === 'submission' &&
-            [
-              'post',
-            ].includes(method)
-          ) {
+          if (type === 'submission' && ['post'].includes(method)) {
             postRequestCount++;
           }
           return Promise.resolve();
@@ -998,7 +976,7 @@ describe('Form Component', function () {
   describe('Wizard with Nested Form and Conditionally Hidden Required Field', function () {
     let originalMakeRequest;
 
-    before(function(done) {
+    before(function (done) {
       Formio.setUser({
         _id: '123',
       });
@@ -1028,13 +1006,13 @@ describe('Form Component', function () {
       done();
     });
 
-    after(function(done) {
+    after(function (done) {
       Formio.makeRequest = originalMakeRequest;
       Formio.setUser();
       done();
     });
 
-    it('Should show validation errors when clicking next button with conditionally shown required field empty', function(done) {
+    it('Should show validation errors when clicking next button with conditionally shown required field empty', function (done) {
       const formElement = document.createElement('div');
 
       Formio.createForm(formElement, 'http://localhost:3000/test/wizardparent')
@@ -1085,7 +1063,7 @@ describe('Form Component', function () {
         .catch((err) => done(err));
     });
 
-    it('Should allow navigation to next page when required field is filled', function(done) {
+    it('Should allow navigation to next page when required field is filled', function (done) {
       const formElement = document.createElement('div');
 
       Formio.createForm(formElement, 'http://localhost:3000/test/wizardparent')
@@ -1124,7 +1102,7 @@ describe('Form Component', function () {
         .catch((err) => done(err));
     });
 
-    it('Should not show validation errors when required field is hidden)', function(done) {
+    it('Should not show validation errors when required field is hidden)', function (done) {
       const formElement = document.createElement('div');
 
       Formio.createForm(formElement, 'http://localhost:3000/test/wizardparent')

@@ -20,10 +20,7 @@ export default [
     tooltip: 'A URL that returns a JSON array to use as the data source.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'url',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'url'],
       },
     },
   },
@@ -51,10 +48,7 @@ export default [
     ],
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'url',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'url'],
       },
     },
   },
@@ -71,14 +65,7 @@ export default [
       'The property of each item in the data source to use as the select value. If not specified, the item itself will be used.',
     conditional: {
       json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'json',
-            'url',
-            'custom',
-          ],
-        ],
+        in: [{ var: 'data.dataSrc' }, ['json', 'url', 'custom']],
       },
     },
   },
@@ -111,10 +98,7 @@ export default [
     tooltip: 'Check this if you would like to use Formio Authentication with the request.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'url',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'url'],
       },
     },
   },
@@ -130,16 +114,10 @@ export default [
       json: {
         or: [
           {
-            '===': [
-              { var: 'data.dataSrc' },
-              'url',
-            ],
+            '===': [{ var: 'data.dataSrc' }, 'url'],
           },
           {
-            '===': [
-              { var: 'data.dataSrc' },
-              'resource',
-            ],
+            '===': [{ var: 'data.dataSrc' }, 'resource'],
           },
         ],
       },

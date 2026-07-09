@@ -14,10 +14,7 @@ export default [
     input: true,
     conditional: {
       json: {
-        '!==': [
-          { var: 'data.modal' },
-          true,
-        ],
+        '!==': [{ var: 'data.modal' }, true],
       },
     },
   },

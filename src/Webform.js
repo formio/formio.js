@@ -308,13 +308,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     if (element.nodeName === 'INPUT') {
-      return (
-        [
-          'text',
-          'email',
-          'password',
-        ].indexOf(element.type) === -1
-      );
+      return ['text', 'email', 'password'].indexOf(element.type) === -1;
     }
 
     return true;
@@ -616,7 +610,7 @@ export default class Webform extends NestedDataComponent {
       this.ready.then(() => {
         this.setAlert(
           'alert alert-danger',
-          'Form schema is for a newer version, please upgrade your renderer. Some functionality may not work.',
+          this.t('newFormSchema')
         );
       });
     }
@@ -830,11 +824,7 @@ export default class Webform extends NestedDataComponent {
   }
 
   get schema() {
-    const schema = fastCloneDeep(
-      _.omit(this._form, [
-        'components',
-      ]),
-    );
+    const schema = fastCloneDeep(_.omit(this._form, ['components']));
     schema.components = [];
     this.eachComponent((component) => schema.components.push(component.schema));
     return schema;
@@ -866,12 +856,14 @@ export default class Webform extends NestedDataComponent {
     if (!this.options.submissionTimezone && submission.metadata && submission.metadata.timezone) {
       this.options.submissionTimezone = submission.metadata.timezone;
     }
+    this.subFromServer = _.cloneDeep(submission.data);
 
     const changed = super.setValue(submission.data, flags);
     if (!flags.sanitize) {
       this.mergeData(this.data, submission.data);
     }
 
+    // GOTCHA(G-FJS01)
     submission.data = this.data;
     this._submission = submission;
     return changed;
@@ -1155,6 +1147,7 @@ export default class Webform extends NestedDataComponent {
       const component = this.getComponent(key);
       if (component) {
         component.focus();
+        component.scrollIntoView();
       }
     }
   }
@@ -1181,9 +1174,7 @@ export default class Webform extends NestedDataComponent {
   showErrors(errors, triggerEvent) {
     this.loading = false;
     if (!Array.isArray(errors)) {
-      errors = [
-        errors,
-      ];
+      errors = [errors];
     }
 
     if (
@@ -1224,11 +1215,7 @@ export default class Webform extends NestedDataComponent {
     const displayedErrors = [];
     if (errors.length) {
       errors = _.uniqBy(errors, (error) =>
-        [
-          error.message,
-          error.component?.id,
-          error.context?.path,
-        ].join(),
+        [error.message, error.component?.id, error.context?.path].join(),
       );
       const createListItem = (message, index) => {
         const err = errors[index];
@@ -1262,6 +1249,7 @@ export default class Webform extends NestedDataComponent {
     }
 
     const errorsList = this.renderTemplate('errorsList', { errors: displayedErrors });
+    // GOTCHA(G-FJS02)
     // Only paint the alert from a subform when the root won't double paint it to avoid a painful flicker
     if (this === this.root || !this.root?.submitted) {
       this.root?.setAlert('danger', errorsList);
@@ -1294,10 +1282,10 @@ export default class Webform extends NestedDataComponent {
     if (this.draftEnabled && this.triggerSaveDraft?.cancel) {
       this.triggerSaveDraft.cancel();
     }
-    
+
     if (typeof document !== 'undefined' && document.body) {
       const announcementMessage = this.t ? this.t('complete') : 'Form submission complete';
-      
+
       // Get or create ARIA live region for announcements
       let liveRegion = document.getElementById('formio-announcements');
       if (!liveRegion) {
@@ -1306,26 +1294,27 @@ export default class Webform extends NestedDataComponent {
         liveRegion.setAttribute('role', 'status');
         liveRegion.setAttribute('aria-live', 'polite');
         liveRegion.setAttribute('aria-atomic', 'true');
-        liveRegion.style.cssText = 'position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);';
+        liveRegion.style.cssText =
+          'position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);';
         document.body.appendChild(liveRegion);
       }
-      
+
       // Announce the submission completion using VPAT clear-and-reset technique
       liveRegion.textContent = '';
       liveRegion.setAttribute('aria-live', 'off');
-      
+
       requestAnimationFrame(() => {
         setTimeout(() => {
           liveRegion.setAttribute('aria-live', 'polite');
           liveRegion.textContent = announcementMessage;
-          
+
           setTimeout(() => {
             liveRegion.textContent = '';
           }, 1000);
         }, 100);
       });
     }
-    
+
     this.emit('submit', submission, saved);
     if (saved) {
       this.emit('submitDone', submission);
@@ -1558,11 +1547,7 @@ export default class Webform extends NestedDataComponent {
             }
 
             // Ensure err is an array.
-            err = Array.isArray(err)
-              ? err
-              : [
-                  err,
-                ];
+            err = Array.isArray(err) ? err : [err];
             return reject(err);
           }
 
@@ -1628,9 +1613,7 @@ export default class Webform extends NestedDataComponent {
           return err;
         });
     } else if (typeof error === 'string') {
-      this.serverErrors = [
-        { fromServer: true, level: 'error', message: error },
-      ];
+      this.serverErrors = [{ fromServer: true, level: 'error', message: error }];
     }
   }
 
@@ -1692,7 +1675,7 @@ export default class Webform extends NestedDataComponent {
 
   submitUrl(URL, headers) {
     if (!URL) {
-      return console.warn('Missing URL argument');
+      return console.warn(this.t('missingUrl'));
     }
 
     const submission = this.submission || {};
@@ -1715,7 +1698,7 @@ export default class Webform extends NestedDataComponent {
       })
         .then(() => {
           this.emit('requestDone');
-          this.setAlert('success', '<p> Success </p>');
+          this.setAlert('success', `<p> ${this.t('success')} </p>`);
         })
         .catch((e) => {
           const message = `${e.statusText ? e.statusText : ''} ${e.status ? e.status : e}`;
@@ -1725,9 +1708,10 @@ export default class Webform extends NestedDataComponent {
           return Promise.reject(this.onSubmissionError(e));
         });
     } else {
-      this.emit('error', 'You should add a URL to this button.');
-      this.setAlert('warning', 'You should add a URL to this button.');
-      return console.warn('You should add a URL to this button.');
+      const message = this.t('urlNotAttachedToBtn')
+      this.emit('error', message);
+      this.setAlert('warning', message);
+      return console.warn(message);
     }
   }
 

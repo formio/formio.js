@@ -19,9 +19,7 @@ const form = {
           enableRowGroups: false,
           initEmpty: true,
           tableView: true,
-          defaultValue: [
-            { select: '', email: '' },
-          ],
+          defaultValue: [{ select: '', email: '' }],
           key: 'dataGrid',
           type: 'datagrid',
           input: true,

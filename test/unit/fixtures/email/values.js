@@ -1,4 +1,1 @@
-export default [
-  'admin@example.com',
-  'test@example.com',
-];
+export default ['admin@example.com', 'test@example.com'];

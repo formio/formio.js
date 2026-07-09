@@ -24,15 +24,7 @@ const fileProcessor = (formio, config) => (file, options) =>
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
         const mimetype = xhr.getResponseHeader('Content-Type') || file.type;
-        resolve(
-          new File(
-            [
-              xhr.response,
-            ],
-            file.name,
-            { type: mimetype },
-          ),
-        );
+        resolve(new File([xhr.response], file.name, { type: mimetype }));
       } else {
         reject(xhr.response || 'Unable to process file');
       }

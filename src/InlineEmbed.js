@@ -28,12 +28,7 @@ export function embed(config = {}) {
     let scriptSrc = thisScript.src.replace(/^([^?]+).*/, '$1').split('/');
     scriptSrc.pop();
     let cdnSrc = '';
-    if (
-      [
-        'js',
-        'offline',
-      ].includes(scriptSrc[scriptSrc.length - 1])
-    ) {
+    if (['js', 'offline'].includes(scriptSrc[scriptSrc.length - 1])) {
       scriptSrc.pop();
       scriptSrc = cdnSrc = scriptSrc.join('/');
       scriptSrc += '/js';

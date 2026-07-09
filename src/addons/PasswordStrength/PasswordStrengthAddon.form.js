@@ -9,9 +9,7 @@ export default [
     enableRowGroups: false,
     initEmpty: false,
     tableView: false,
-    defaultValue: [
-      {},
-    ],
+    defaultValue: [{}],
     key: 'levels',
     type: 'editgrid',
     input: true,
@@ -123,9 +121,7 @@ export default [
     enableRowGroups: false,
     initEmpty: false,
     tableView: false,
-    defaultValue: [
-      {},
-    ],
+    defaultValue: [{}],
     key: 'rulesSettings',
     type: 'datagrid',
     input: true,

@@ -86,11 +86,7 @@ export default class DateTimeComponent extends Input {
   static savedValueTypes(schema) {
     schema = schema || {};
 
-    return (
-      getComponentSavedTypes(schema) || [
-        componentValueTypes.date,
-      ]
-    );
+    return getComponentSavedTypes(schema) || [componentValueTypes.date];
   }
 
   constructor(component, options, data) {
@@ -230,10 +226,7 @@ export default class DateTimeComponent extends Input {
     let format = FormioUtils.convertFormatToMoment(this.component.format);
     format += format.match(/z$/) ? '' : ' z';
     const timezone = this.timezone;
-    const useTimezoneAwareFormat =
-      value &&
-      timezone &&
-      (this.options.pdf || options?.email);
+    const useTimezoneAwareFormat = value && timezone && (this.options.pdf || options?.email);
 
     if (useTimezoneAwareFormat) {
       if (Array.isArray(value) && this.component.multiple) {

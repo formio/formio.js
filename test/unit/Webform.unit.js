@@ -116,10 +116,10 @@ describe('Webform tests', function () {
         matches: false, // Default to false, adjust as needed for specific tests
         media: query,
         onchange: null,
-        addListener: () => { }, // Deprecated, but good for compatibility
-        removeListener: () => { }, // Deprecated
-        addEventListener: () => { },
-        removeEventListener: () => { },
+        addListener: () => {}, // Deprecated, but good for compatibility
+        removeListener: () => {}, // Deprecated
+        addEventListener: () => {},
+        removeEventListener: () => {},
         dispatchEvent: () => true,
       });
     }
@@ -153,23 +153,25 @@ describe('Webform tests', function () {
           assert.equal(textField.errors.length, 1);
           assert.equal(textField.visibleErrors.length, 1);
 
-          done(); 
-        }, 300)
+          done();
+        }, 300);
       })
       .catch(done);
   });
-  
+
   it('Should not show placeholders in readOnly mode', function (done) {
     const element = document.createElement('div');
-    Formio.createForm(element, fastCloneDeep(formWithPlaceholders), { readOnly: true})
+    Formio.createForm(element, fastCloneDeep(formWithPlaceholders), { readOnly: true })
       .then((instance) => {
         setTimeout(() => {
           const selectChoicesPlaceholder = instance.element.querySelector('.choices__placeholder');
-          const otherCompPlaceholders = instance.element.querySelectorAll('[placeholder="test placeholder"]');
+          const otherCompPlaceholders = instance.element.querySelectorAll(
+            '[placeholder="test placeholder"]',
+          );
           assert.equal(!!selectChoicesPlaceholder, false);
-          assert.equal(otherCompPlaceholders.length, 0)
-          done(); 
-        }, 100)
+          assert.equal(otherCompPlaceholders.length, 0);
+          done();
+        }, 100);
       })
       .catch(done);
   });
@@ -469,12 +471,15 @@ describe('Webform tests', function () {
           },
         });
         setTimeout(() => {
-          instance.submit().then(() => {
-            assert.equal(submissionRequestCount, 2);
-            assert.equal(parentSubmissionData.data.form.data.textField2Child, 'child value');
-            Formio.makeRequest = originalMakeRequest;
-            done();
-          }).catch(done);
+          instance
+            .submit()
+            .then(() => {
+              assert.equal(submissionRequestCount, 2);
+              assert.equal(parentSubmissionData.data.form.data.textField2Child, 'child value');
+              Formio.makeRequest = originalMakeRequest;
+              done();
+            })
+            .catch(done);
         }, 200);
       })
       .catch(done);
@@ -510,11 +515,14 @@ describe('Webform tests', function () {
     Formio.createForm(element, form)
       .then((instance) => {
         instance.formio = new Formio('http://localhost:3000/test');
-        instance.submit().then(() => {
-          assert.equal(submissionRequestCount, 1);
-          Formio.makeRequest = originalMakeRequest;
-          done();
-        }).catch(done);
+        instance
+          .submit()
+          .then(() => {
+            assert.equal(submissionRequestCount, 1);
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          })
+          .catch(done);
       })
       .catch(done);
   });
@@ -912,11 +920,7 @@ describe('Webform tests', function () {
 
     Formio.createForm(formElement, formWithValidateWhenHidden)
       .then((form) => {
-        const errorClasses = [
-          'has-error',
-          'has-message',
-          form.options.componentErrorClass,
-        ];
+        const errorClasses = ['has-error', 'has-message', form.options.componentErrorClass];
         const number1 = form.getComponent('number1');
         const number2 = form.getComponent('number2');
         const number = form.getComponent('number');
@@ -1250,11 +1254,7 @@ describe('Webform tests', function () {
   it('Should set radio components value inside data grid correctly', function (done) {
     Formio.createForm(formWithRadioInsideDataGrid)
       .then((form) => {
-        const dataGridData = [
-          { radio: 'two' },
-          { radio: 'two' },
-          { radio: 'three' },
-        ];
+        const dataGridData = [{ radio: 'two' }, { radio: 'two' }, { radio: 'three' }];
         form.setValue({ data: { dataGrid: fastCloneDeep(dataGridData) } });
         setTimeout(() => {
           const dataGrid = form.getComponent('dataGrid');
@@ -1271,14 +1271,8 @@ describe('Webform tests', function () {
       .then((form) => {
         form.setSubmission({
           data: {
-            dataGrid: [
-              { textField: '' },
-              { textField: '' },
-            ],
-            editGrid: [
-              { number: '' },
-              { number: '' },
-            ],
+            dataGrid: [{ textField: '' }, { textField: '' }],
+            editGrid: [{ number: '' }, { number: '' }],
           },
         });
         setTimeout(() => {
@@ -1300,9 +1294,7 @@ describe('Webform tests', function () {
     })
       .then((form) => {
         assert.deepEqual(form.data, {
-          editGrid: [
-            { fielda: undefined, fieldb: 'test' },
-          ],
+          editGrid: [{ fielda: undefined, fieldb: 'test' }],
         });
         assert.equal(spy.callCount, 1);
 
@@ -1313,9 +1305,7 @@ describe('Webform tests', function () {
         setTimeout(() => {
           assert.deepEqual(form.data, {
             first: 'test value',
-            editGrid: [
-              { fielda: 'test value', fieldb: 'test' },
-            ],
+            editGrid: [{ fielda: 'test value', fieldb: 'test' }],
           });
           assert.equal(spy.callCount, 2);
           // Remove the spy from setValue method
@@ -1442,9 +1432,7 @@ describe('Webform tests', function () {
           assert.equal(regesteredAddress.dataValue, value);
 
           const role = form.getComponent('role');
-          role.setValue([
-            'client',
-          ]);
+          role.setValue(['client']);
 
           setTimeout(() => {
             assert.equal(address.visible, false);
@@ -1650,12 +1638,7 @@ describe('Webform tests', function () {
 
         setTimeout(() => {
           columns.columns.forEach((column, index) => {
-            if (
-              [
-                3,
-                6,
-              ].includes(index + 1)
-            ) {
+            if ([3, 6].includes(index + 1)) {
               assert.equal(
                 column[0].visible,
                 true,
@@ -1708,11 +1691,7 @@ describe('Webform tests', function () {
 
             setTimeout(() => {
               columns.columns.forEach((column, index) => {
-                if (
-                  [
-                    6,
-                  ].includes(index + 1)
-                ) {
+                if ([6].includes(index + 1)) {
                   assert.equal(
                     column[0].visible,
                     true,
@@ -3001,6 +2980,9 @@ describe('Webform tests', function () {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, {
       language: 'es',
+      i18n:{
+        es: {}
+      }
     });
 
     assert.equal(form.language, 'es');
@@ -3319,7 +3301,7 @@ describe('Webform tests', function () {
     });
   });
 
-  it('Should not delete value of component inside parent conditionally hidden layout component by default', function(done) {
+  it('Should not delete value of component inside parent conditionally hidden layout component by default', function (done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     form.setForm(clearOnHideInsideLayoutComponent).then(() => {
@@ -3328,8 +3310,8 @@ describe('Webform tests', function () {
           checkbox: true,
           textFieldInPanel: 'some text in panel',
           textFieldInFieldset: 'some text in fieldset',
-          submit: false
-        }
+          submit: false,
+        },
       };
 
       const textFieldInPanel = form.getComponent('textFieldInPanel');
@@ -3349,27 +3331,27 @@ describe('Webform tests', function () {
     });
   });
 
-  it('Should delete value of component inside parent conditionally hidden layout component if clearOnHide is set to true', function(done) {
+  it('Should delete value of component inside parent conditionally hidden layout component if clearOnHide is set to true', function (done) {
     const formElement = document.createElement('div');
     const form = new Webform(formElement);
     const testForm = fastCloneDeep(clearOnHideInsideLayoutComponent);
     _.set(testForm, 'components[1].clearOnHide', true);
-    _.set(testForm, 'components[2].clearOnHide', true)
+    _.set(testForm, 'components[2].clearOnHide', true);
     form.setForm(testForm).then(() => {
       const visibleData = {
         data: {
           checkbox: true,
           textFieldInPanel: 'some text in panel',
           textFieldInFieldset: 'some text in fieldset',
-          submit: false
-        }
+          submit: false,
+        },
       };
 
       const hiddenData = {
         data: {
           checkbox: false,
-          submit: false
-        }
+          submit: false,
+        },
       };
       const textFieldInPanel = form.getComponent('textFieldInPanel');
       textFieldInPanel.setValue('some text in panel');
@@ -3815,18 +3797,10 @@ describe('Webform tests', function () {
     form
       .setForm(disableSubmitButton)
       .then(() => {
-        const textField = form.getComponent([
-          'textField',
-        ]);
-        const fileA = form.getComponent([
-          'upload',
-        ]);
-        const fileB = form.getComponent([
-          'file',
-        ]);
-        const submitButton = form.getComponent([
-          'submit',
-        ]);
+        const textField = form.getComponent(['textField']);
+        const fileA = form.getComponent(['upload']);
+        const fileB = form.getComponent(['file']);
+        const submitButton = form.getComponent(['submit']);
         assert.equal(submitButton.disabled, false, 'Button should be enabled at the beginning');
 
         const simulateFileUploading = (comp, debounce = 250) => {
@@ -3878,17 +3852,11 @@ describe('Webform tests', function () {
       form.nosubmit = true;
       expect(form.nosubmit).to.be.true;
       expect(emit.callCount).to.equal(1);
-      expect(emit.args[0]).to.deep.equal([
-        'nosubmit',
-        true,
-      ]);
+      expect(emit.args[0]).to.deep.equal(['nosubmit', true]);
       form.nosubmit = false;
       expect(form.nosubmit).to.be.false;
       expect(emit.callCount).to.equal(2);
-      expect(emit.args[1]).to.deep.equal([
-        'nosubmit',
-        false,
-      ]);
+      expect(emit.args[1]).to.deep.equal(['nosubmit', false]);
     });
   });
 
@@ -3952,16 +3920,12 @@ describe('Webform tests', function () {
                   {
                     d: 'd1',
                     e: 'e1',
-                    f: [
-                      { g: 'g1' },
-                    ],
+                    f: [{ g: 'g1' }],
                   },
                   {
                     d: 'd2',
                     e: 'e2',
-                    f: [
-                      { g: 'g2' },
-                    ],
+                    f: [{ g: 'g2' }],
                   },
                 ],
               },
@@ -4153,10 +4117,7 @@ describe('Webform tests', function () {
               data: {
                 firstName: 'Joe',
                 lastName: 'Bob',
-                favoriteThings: [
-                  'whiskersOnKittens',
-                  'warmWoolenMittens',
-                ],
+                favoriteThings: ['whiskersOnKittens', 'warmWoolenMittens'],
                 number: 233,
               },
             })
@@ -4165,10 +4126,7 @@ describe('Webform tests', function () {
                 data: {
                   firstName: 'Joe',
                   lastName: 'Bob',
-                  favoriteThings: [
-                    'whiskersOnKittens',
-                    'warmWoolenMittens',
-                  ],
+                  favoriteThings: ['whiskersOnKittens', 'warmWoolenMittens'],
                   number: 233,
                   submit: false,
                 },
@@ -4455,11 +4413,7 @@ describe('Webform tests', function () {
               survey: {
                 q1: 'true',
               },
-              number: [
-                100,
-                25,
-                350,
-              ],
+              number: [100, 25, 350],
               checkbox: true,
               selectBoxes: {
                 one: true,
@@ -4509,12 +4463,7 @@ describe('Webform tests', function () {
         .then(() => {
           const dataGrid = form.getComponent('dataGrid');
 
-          dataGrid.setValue([
-            { number: 50 },
-            { number: 55 },
-            { number: 12 },
-            { number: 105 },
-          ]);
+          dataGrid.setValue([{ number: 50 }, { number: 55 }, { number: 12 }, { number: 105 }]);
 
           setTimeout(() => {
             const expectedValues = {
@@ -4596,9 +4545,7 @@ describe('Webform tests', function () {
               dateTime3: '2022-09-12T12:00:00+03:00',
               textArea: 'test',
               textField2: 'test2',
-              number2: [
-                100,
-              ],
+              number2: [100],
               currency2: 100,
               email: 'some@form.io',
               url2: 'portal.form.io',
@@ -4748,15 +4695,11 @@ describe('Webform tests', function () {
           const selectRef = form.getComponent('selectRef');
           selectRef.setValue(fastCloneDeep(values[3]));
           const selectNoValuePropertyMult = form.getComponent('selectNoValueProperty');
-          selectNoValuePropertyMult.setValue([
-            fastCloneDeep(values[2]),
-          ]);
+          selectNoValuePropertyMult.setValue([fastCloneDeep(values[2])]);
           const selectEntireObject = form.getComponent('selectEntireObject');
           selectEntireObject.setValue(fastCloneDeep(values[1].data));
           const selectEntireObjectMult = form.getComponent('selectEntireObjectMult');
-          selectEntireObjectMult.setValue([
-            fastCloneDeep(values[0].data),
-          ]);
+          selectEntireObjectMult.setValue([fastCloneDeep(values[0].data)]);
 
           setTimeout(() => {
             assert.equal(numberComp.visible, true);
@@ -5011,40 +4954,23 @@ describe('Webform tests', function () {
         .setForm(calculateValueWithManualOverride)
         .then(() => {
           const dataGrid = form.getComponent('dataGrid');
-          dataGrid.setValue([
-            { label: 'yes' },
-            { label: 'no' },
-          ]);
+          dataGrid.setValue([{ label: 'yes' }, { label: 'no' }]);
           setTimeout(() => {
             expect(form.submission).to.deep.equal(initialSubmission);
-            const row1Value = form.getComponent([
-              'dataGrid',
-              0,
-              'value',
-            ]);
-            const row2Value = form.getComponent([
-              'dataGrid',
-              1,
-              'value',
-            ]);
+            const row1Value = form.getComponent(['dataGrid', 0, 'value']);
+            const row2Value = form.getComponent(['dataGrid', 1, 'value']);
             row1Value.setValue('y');
             row2Value.setValue('n');
 
             setTimeout(() => {
               expect(form.submission).to.deep.equal(submissionWithOverridenValues);
-              const row1Label = form.getComponent([
-                'dataGrid',
-                0,
-                'label',
-              ]);
+              const row1Label = form.getComponent(['dataGrid', 0, 'label']);
               row1Label.setValue('yes2');
               setTimeout(() => {
                 expect(form.submission).to.deep.equal(submissionWithOverridenValues2);
                 form.setSubmission(submissionWithOverridenValues).then(() => {
                   setTimeout(() => {
-                    const tabs = form.getComponent([
-                      'tabs',
-                    ]);
+                    const tabs = form.getComponent(['tabs']);
                     tabs.setTab(1);
                     setTimeout(() => {
                       expect(form.submission).to.deep.equal(submissionWithOverridenValues);
@@ -5129,15 +5055,11 @@ describe('Webform tests', function () {
       form
         .setForm(calculatedSelectboxes)
         .then(() => {
-          const radio = form.getComponent([
-            'radio',
-          ]);
+          const radio = form.getComponent(['radio']);
           radio.setValue('a');
           setTimeout(() => {
             assert.equal(radio.dataValue, 'a');
-            const selectBoxes = form.getComponent([
-              'selectBoxes',
-            ]);
+            const selectBoxes = form.getComponent(['selectBoxes']);
             assert.equal(
               selectBoxes.dataValue['a'],
               true,
@@ -5487,12 +5409,7 @@ describe('Webform tests', function () {
         submit: true,
       },
     };
-    const componentsKeys = [
-      'checkbox',
-      'selectBoxes',
-      'select',
-      'textfield',
-    ];
+    const componentsKeys = ['checkbox', 'selectBoxes', 'select', 'textfield'];
     const expectedValues = {
       checkbox: 'Yes',
       selectBoxes: 'a, b',
@@ -5508,9 +5425,7 @@ describe('Webform tests', function () {
         .then(() => {
           return form.setSubmission(submission, { fromSubmission: true }).then(() => {
             componentsKeys.forEach((key) => {
-              const comp = form.getComponent([
-                key,
-              ]);
+              const comp = form.getComponent([key]);
               assert(comp);
               const preview = comp.componentModal.refs.openModal;
               assert(preview);
@@ -5529,9 +5444,7 @@ describe('Webform tests', function () {
         .setForm(modalEditComponents)
         .then(() => {
           return form.setSubmission(submission, { fromSubmission: true }).then(() => {
-            const comp = form.getComponent([
-              'textfield',
-            ]);
+            const comp = form.getComponent(['textfield']);
             comp.componentModal.openModal();
             Harness.dispatchEvent(
               'input',
@@ -5606,9 +5519,7 @@ describe('Webform tests', function () {
             state: 'submitted',
           });
           setTimeout(() => {
-            const persistentField = form.getComponent([
-              'a',
-            ]);
+            const persistentField = form.getComponent(['a']);
             assert.equal(
               persistentField.dataValue,
               'testValue',
@@ -5673,14 +5584,10 @@ describe('Webform tests', function () {
             state: 'submitted',
           });
           setTimeout(() => {
-            const total = form.getComponent([
-              'total',
-            ]);
+            const total = form.getComponent(['total']);
             assert.equal(total.dataValue, 9, 'Should set and keep the value');
 
-            const b = form.getComponent([
-              'b',
-            ]);
+            const b = form.getComponent(['b']);
             Harness.dispatchEvent('input', b.element, 'input', (i) => (i.value = '6'));
 
             setTimeout(() => {
@@ -5710,23 +5617,11 @@ describe('Webform tests', function () {
             },
           });
           setTimeout(() => {
-            const value1 = form.getComponent([
-              'dataGrid',
-              0,
-              'value',
-            ]);
+            const value1 = form.getComponent(['dataGrid', 0, 'value']);
             assert.equal(value1.dataValue, '1a', 'Should have a value set from submission');
-            const value2 = form.getComponent([
-              'dataGrid',
-              1,
-              'value',
-            ]);
+            const value2 = form.getComponent(['dataGrid', 1, 'value']);
             assert.equal(value2.dataValue, '2a', 'Should have a value set from submission');
-            const value3 = form.getComponent([
-              'dataGrid',
-              2,
-              'value',
-            ]);
+            const value3 = form.getComponent(['dataGrid', 2, 'value']);
             assert.equal(value3.dataValue, '3a', 'Should have a value set from submission');
             done();
           }, 1000);
@@ -5760,7 +5655,11 @@ describe('Webform tests', function () {
         .then(() => {
           setTimeout(() => {
             const chk = form.getComponent('chk');
-            assert.equal(chk.dataValue, false, 'Unchecked submission must stay false in pdf display');
+            assert.equal(
+              chk.dataValue,
+              false,
+              'Unchecked submission must stay false in pdf display',
+            );
             done();
           }, 400);
         })
@@ -5774,11 +5673,7 @@ describe('Webform tests', function () {
     form
       .setForm(conditionalDataGridWithTableAndRadio)
       .then(() => {
-        const radioInspection0 = form.getComponent([
-          'inspectionDataGrid',
-          0,
-          'initialExam',
-        ]);
+        const radioInspection0 = form.getComponent(['inspectionDataGrid', 0, 'initialExam']);
         Harness.dispatchEvent(
           'click',
           radioInspection0.element,
@@ -5787,11 +5682,7 @@ describe('Webform tests', function () {
         );
 
         setTimeout(() => {
-          const repairDataGrid0 = form.getComponent([
-            'inspectionDataGrid',
-            0,
-            'repairDataGrid',
-          ]);
+          const repairDataGrid0 = form.getComponent(['inspectionDataGrid', 0, 'repairDataGrid']);
           assert.equal(radioInspection0.dataValue, 'reject', 'Should set value');
           assert.equal(repairDataGrid0.visible, true, 'Should become visible');
 
@@ -5811,19 +5702,13 @@ describe('Webform tests', function () {
 
           setTimeout(() => {
             assert.equal(radioRepair0.dataValue, 'accept', 'Should set value');
-            const inspectionDataGrid = form.getComponent([
-              'inspectionDataGrid',
-            ]);
+            const inspectionDataGrid = form.getComponent(['inspectionDataGrid']);
             inspectionDataGrid.addRow();
 
             setTimeout(() => {
               assert.equal(inspectionDataGrid.rows.length, 2, 'Should add a row');
 
-              const radioInspection1 = form.getComponent([
-                'inspectionDataGrid',
-                1,
-                'initialExam',
-              ]);
+              const radioInspection1 = form.getComponent(['inspectionDataGrid', 1, 'initialExam']);
               Harness.dispatchEvent(
                 'click',
                 radioInspection1.element,
@@ -5886,26 +5771,18 @@ describe('Webform tests', function () {
       .then(() => {
         form.setSubmission({
           data: {
-            textArea2: [
-              'test',
-            ],
+            textArea2: ['test'],
             didAnyBehavioralIssuesOccurOnYourShift: 'yes',
             submit: false,
           },
         });
         setTimeout(() => {
-          const textarea = form.getComponent([
-            'textArea2',
-          ]);
-          const panel = form.getComponent([
-            'behavioralIssues',
-          ]);
+          const textarea = form.getComponent(['textArea2']);
+          const panel = form.getComponent(['behavioralIssues']);
           assert.equal(panel.visible, true, 'Should be visible');
           assert.deepEqual(
             textarea.dataValue,
-            [
-              'test',
-            ],
+            ['test'],
             'Should set the value from the submission',
           );
           const inputRows = textarea.element.querySelectorAll('[ref="input"]');
@@ -5929,14 +5806,8 @@ describe('Webform tests', function () {
         );
         const subFormComponents = form.components[1].subForm.components;
         assert.deepEqual(
-          [
-            subFormComponents[0].disabled,
-            subFormComponents[1].disabled,
-          ],
-          [
-            true,
-            true,
-          ],
+          [subFormComponents[0].disabled, subFormComponents[1].disabled],
+          [true, true],
           'Components that are inside of disabled Nested Form should be disabled',
         );
         done();
@@ -5950,11 +5821,7 @@ describe('Webform tests', function () {
     form
       .setForm(nestedFormInsideDataGrid)
       .then(() => {
-        const nestedForm = form.getComponent([
-          'dataGrid',
-          0,
-          'form1',
-        ]);
+        const nestedForm = form.getComponent(['dataGrid', 0, 'form1']);
         const submissionWithIdOnly = { _id: '1232', data: {} };
         nestedForm.dataValue = { ...submissionWithIdOnly };
         nestedForm.restoreValue();
@@ -5975,9 +5842,7 @@ describe('Webform tests', function () {
     const formElement = document.createElement('div');
     Formio.createForm(formElement, nestedFormInWizard)
       .then((form) => {
-        const nestedForm = form.getComponent([
-          'form',
-        ]);
+        const nestedForm = form.getComponent(['form']);
         const submission = {
           data: {
             radio: false,
@@ -6164,15 +6029,9 @@ describe('Webform tests', function () {
     };
 
     await form.setForm(truncateMultipleSpaces);
-    const textFieldRequired = form.getComponent([
-      'textField1',
-    ]);
-    const textFieldMinMaxLength = form.getComponent([
-      'textField',
-    ]);
-    const textAreaMinMaxLength = form.getComponent([
-      'textArea',
-    ]);
+    const textFieldRequired = form.getComponent(['textField1']);
+    const textFieldMinMaxLength = form.getComponent(['textField']);
+    const textAreaMinMaxLength = form.getComponent(['textArea']);
     Harness.dispatchEvent(
       'input',
       textFieldRequired.element,
@@ -6340,11 +6199,7 @@ describe('Webform tests', function () {
             page2Customer: 'bob@example.com',
             textfieldonPage2: 'test',
             numberField: 234,
-            textfieldonpage1: [
-              'a',
-              'b',
-              'c',
-            ],
+            textfieldonpage1: ['a', 'b', 'c'],
             panelHtml5Select: 'banana',
             page3Iagreetothefollowtherules: true,
             panelText: 'hello',
@@ -6496,11 +6351,7 @@ describe('Webform tests', function () {
             page2Customer: 'bob@example.com',
             textfieldonPage2: 'test',
             numberField: 234,
-            textfieldonpage1: [
-              'a',
-              'b',
-              'c',
-            ],
+            textfieldonpage1: ['a', 'b', 'c'],
             panelHtml5Select: 'banana',
             page3Iagreetothefollowtherules: true,
             panelText: 'hello',
@@ -6746,9 +6597,7 @@ describe('Webform tests', function () {
           tableView: false,
           storage: 'base64',
           webcam: false,
-          fileTypes: [
-            { label: '', value: '' },
-          ],
+          fileTypes: [{ label: '', value: '' }],
           multiple: true,
           validate: { required: true, customMessage: 'will be showed once' },
           key: 'file',
@@ -6865,10 +6714,7 @@ describe('Webform tests', function () {
       const form = new Webform(formElement);
       const testForm = fastCloneDeep(formWithNotAllowedTags);
       ((testForm.settings.sanitizeConfig = {
-        addTags: [
-          'iframe',
-          'script',
-        ],
+        addTags: ['iframe', 'script'],
       }),
         form
           .setForm(testForm)
@@ -6897,10 +6743,7 @@ describe('Webform tests', function () {
       const form = new Webform(formElement);
       const testForm = fastCloneDeep(formWithNotAllowedTags);
       ((testForm.globalSettings.sanitizeConfig = {
-        addTags: [
-          'iframe',
-          'script',
-        ],
+        addTags: ['iframe', 'script'],
       }),
         form
           .setForm(testForm)
@@ -6928,16 +6771,12 @@ describe('Webform tests', function () {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, {
         sanitizeConfig: {
-          addTags: [
-            'iframe',
-          ],
+          addTags: ['iframe'],
         },
       });
       const testForm = fastCloneDeep(formWithNotAllowedTags);
       ((testForm.globalSettings.sanitizeConfig = {
-        addTags: [
-          'script',
-        ],
+        addTags: ['script'],
       }),
         form
           .setForm(testForm)
@@ -6965,16 +6804,12 @@ describe('Webform tests', function () {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, {
         sanitizeConfig: {
-          addTags: [
-            'iframe',
-          ],
+          addTags: ['iframe'],
         },
       });
       const testForm = fastCloneDeep(formWithNotAllowedTags);
       ((testForm.settings.sanitizeConfig = {
-        addTags: [
-          'script',
-        ],
+        addTags: ['script'],
       }),
         form
           .setForm(testForm)
@@ -7003,14 +6838,10 @@ describe('Webform tests', function () {
       const form = new Webform(formElement);
       const testForm = fastCloneDeep(formWithNotAllowedTags);
       ((testForm.settings.sanitizeConfig = {
-        addTags: [
-          'iframe',
-        ],
+        addTags: ['iframe'],
       }),
         (testForm.globalSettings.sanitizeConfig = {
-          addTags: [
-            'script',
-          ],
+          addTags: ['script'],
         }),
         form
           .setForm(testForm)
@@ -7399,9 +7230,7 @@ describe('Webform tests', function () {
       .setForm(formSchema)
       .then(() => {
         setTimeout(() => {
-          const textfield = form.getComponent([
-            'textField',
-          ]);
+          const textfield = form.getComponent(['textField']);
           const label = textfield.element.querySelector('[ref="label"]');
           assert.equal(
             label.innerHTML?.trim(),
@@ -7451,7 +7280,12 @@ describe('Webform tests', function () {
           subform.submitted = true;
           const spy = sinon.spy(root, 'setAlert');
 
-          subform.showErrors([{ message: 'Text Field is required', component: { key: 'textField', label: 'Text Field' } }]);
+          subform.showErrors([
+            {
+              message: 'Text Field is required',
+              component: { key: 'textField', label: 'Text Field' },
+            },
+          ]);
 
           const dangerCalls = spy.getCalls().filter((c) => c.args[0] === 'danger');
           assert.equal(
@@ -7471,7 +7305,12 @@ describe('Webform tests', function () {
           subform.submitted = true;
           const spy = sinon.spy(root, 'setAlert');
 
-          subform.showErrors([{ message: 'Text Field is required', component: { key: 'textField', label: 'Text Field' } }]);
+          subform.showErrors([
+            {
+              message: 'Text Field is required',
+              component: { key: 'textField', label: 'Text Field' },
+            },
+          ]);
 
           const dangerCalls = spy.getCalls().filter((c) => c.args[0] === 'danger');
           assert.equal(
@@ -7489,7 +7328,12 @@ describe('Webform tests', function () {
         root.submitted = true;
         const spy = sinon.spy(root, 'setAlert');
 
-        root.showErrors([{ message: 'Text Field is required', component: { key: 'textField', label: 'Text Field' } }]);
+        root.showErrors([
+          {
+            message: 'Text Field is required',
+            component: { key: 'textField', label: 'Text Field' },
+          },
+        ]);
 
         const dangerCalls = spy.getCalls().filter((c) => c.args[0] === 'danger');
         assert.equal(dangerCalls.length, 1, 'Root always paints');
@@ -7539,7 +7383,8 @@ describe('Webform tests', function () {
 
         textField.setCustomValidity([errorMessage], true);
 
-        const wrapperChurn = addSpy.getCalls()
+        const wrapperChurn = addSpy
+          .getCalls()
           .concat(removeSpy.getCalls())
           .filter((c) => c.args[1] === 'formio-error-wrapper');
         assert.equal(
@@ -7611,8 +7456,9 @@ describe('Webform tests', function () {
         // explicit dirty flag and both validation paths fire.
         form.onChange({ noEmit: true }, null, true);
 
-        const wrapperChurn = [...addSpy.getCalls(), ...removeSpy.getCalls()]
-          .filter((c) => c.args[1] === 'formio-error-wrapper');
+        const wrapperChurn = [...addSpy.getCalls(), ...removeSpy.getCalls()].filter(
+          (c) => c.args[1] === 'formio-error-wrapper',
+        );
         assert.equal(
           wrapperChurn.length,
           0,
@@ -7672,8 +7518,9 @@ describe('Webform tests', function () {
 
         form.onChange({ noEmit: true }, null, true);
 
-        const wrapperChurn = [...addSpy.getCalls(), ...removeSpy.getCalls()]
-          .filter((c) => c.args[1] === 'formio-error-wrapper');
+        const wrapperChurn = [...addSpy.getCalls(), ...removeSpy.getCalls()].filter(
+          (c) => c.args[1] === 'formio-error-wrapper',
+        );
         assert.equal(
           wrapperChurn.length,
           0,
@@ -7692,12 +7539,11 @@ describe('Webform tests', function () {
   });
 
   /* eslint-disable mocha/no-setup-in-describe */
-  /* eslint-disable mocha/consistent-spacing-between-blocks */
+
   for (const formTest of FormTests) {
     const useDoneInsteadOfPromise = formTest.useDone;
 
     if (useDoneInsteadOfPromise) {
-
       describe(formTest.title || '', function () {
         for (const title in formTest.tests) {
           const formTestTest = formTest.tests[title];
@@ -7728,7 +7574,6 @@ describe('Webform tests', function () {
         }
       });
     } else {
-
       describe(formTest.title || '', function () {
         for (const title in formTest.tests) {
           const formTestTest = formTest.tests[title];

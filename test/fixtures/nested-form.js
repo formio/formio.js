@@ -23,9 +23,7 @@ export default {
           layoutFixed: false,
           enableRowGroups: false,
           tableView: false,
-          defaultValue: [
-            {},
-          ],
+          defaultValue: [{}],
           key: 'dataGrid',
           type: 'datagrid',
           input: true,
@@ -90,11 +88,7 @@ export default {
   display: 'form',
   access: [
     {
-      roles: [
-        '5e8f2b7cd248943778ec61bb',
-        '5e8f2b7cd248941e0aec61bc',
-        '5e8f2b7cd248941083ec61bd',
-      ],
+      roles: ['5e8f2b7cd248943778ec61bb', '5e8f2b7cd248941e0aec61bc', '5e8f2b7cd248941083ec61bd'],
       type: 'read_all',
     },
   ],

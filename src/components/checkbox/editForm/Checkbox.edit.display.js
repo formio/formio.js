@@ -62,10 +62,7 @@ export default [
     weight: 420,
     conditional: {
       json: {
-        '===': [
-          { var: 'data.inputType' },
-          'radio',
-        ],
+        '===': [{ var: 'data.inputType' }, 'radio'],
       },
     },
   },
@@ -78,10 +75,7 @@ export default [
     weight: 430,
     conditional: {
       json: {
-        '===': [
-          { var: 'data.inputType' },
-          'radio',
-        ],
+        '===': [{ var: 'data.inputType' }, 'radio'],
       },
     },
   },

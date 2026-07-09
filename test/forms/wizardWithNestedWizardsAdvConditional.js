@@ -9,11 +9,7 @@ export default {
   access: [
     {
       type: 'read_all',
-      roles: [
-        '67379d374d2df086c78c93ae',
-        '67379d374d2df086c78c93b2',
-        '67379d374d2df086c78c93b6',
-      ],
+      roles: ['67379d374d2df086c78c93ae', '67379d374d2df086c78c93b2', '67379d374d2df086c78c93b6'],
     },
   ],
   submissionAccess: [],

@@ -43,9 +43,7 @@ export default {
               enableRowGroups: false,
               initEmpty: false,
               tableView: false,
-              defaultValue: [
-                {},
-              ],
+              defaultValue: [{}],
               key: 'dataGrid',
               type: 'datagrid',
               input: true,

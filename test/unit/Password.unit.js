@@ -17,33 +17,11 @@ describe('Password Component', function () {
     const form = _.cloneDeep(comp2);
     form.components[0].validate = { minLength: 5, maxLength: 10 };
 
-    const validValues = [
-      '',
-      'te_st',
-      'test value',
-      '      ',
-      'What?',
-      'test: ',
-      't    ',
-      '   t ',
-    ];
+    const validValues = ['', 'te_st', 'test value', '      ', 'What?', 'test: ', 't    ', '   t '];
 
-    const invalidMin = [
-      't',
-      'tt',
-      'ttt',
-      'tttt',
-      '  t ',
-      '  t',
-      '_4_',
-    ];
+    const invalidMin = ['t', 'tt', 'ttt', 'tttt', '  t ', '  t', '_4_'];
 
-    const invalidMax = [
-      'test__value',
-      'test value ',
-      ' test value',
-      'test: value',
-    ];
+    const invalidMax = ['test__value', 'test value ', ' test value', 'test: value'];
 
     const testValidity = (values, valid, message, lastValue) => {
       _.each(values, (value) => {
@@ -110,13 +88,7 @@ describe('Password Component', function () {
       '  some - test - value   ',
     ];
 
-    const invalidValues = [
-      'test(2)',
-      '123',
-      '0 waste',
-      '"9"',
-      '   9',
-    ];
+    const invalidValues = ['test(2)', '123', '0 waste', '"9"', '   9'];
 
     const testValidity = (values, valid, message, lastValue) => {
       _.each(values, (value) => {

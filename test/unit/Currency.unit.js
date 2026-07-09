@@ -124,10 +124,7 @@ describe('Currency Component', function () {
       const firstValueElement = component.element.querySelectorAll('[name="data[currency]"]')[0];
       const secondValueElement = component.element.querySelectorAll('[name="data[currency]"]')[1];
 
-      component.setValue([
-        111,
-        222,
-      ]);
+      component.setValue([111, 222]);
 
       firstValueElement.dispatchEvent(blurEvent);
       secondValueElement.dispatchEvent(blurEvent);
@@ -203,30 +200,9 @@ describe('Currency Component', function () {
       Harness.testSetInput(component, undefined, null, '');
       Harness.testSetInput(component, {}, null, '');
       Harness.testSetInput(component, [], null, '');
-      Harness.testSetInput(
-        component,
-        [
-          '',
-        ],
-        null,
-        '',
-      );
-      Harness.testSetInput(
-        component,
-        [
-          '1',
-        ],
-        1,
-        '$1.00',
-      );
-      Harness.testSetInput(
-        component,
-        [
-          '$1.00',
-        ],
-        1,
-        '$1.00',
-      );
+      Harness.testSetInput(component, [''], null, '');
+      Harness.testSetInput(component, ['1'], 1, '$1.00');
+      Harness.testSetInput(component, ['$1.00'], 1, '$1.00');
       Harness.testSetInput(component, 0, 0, '$0.00');
       Harness.testSetInput(component, 1.0, 1, '$1.00');
       Harness.testSetInput(component, -1.0, -1, '-$1.00');
@@ -339,12 +315,7 @@ describe('Currency Component', function () {
       .then((component) => {
         component.refs.input = null;
         assert.equal(
-          component.getValueAsString([
-            100,
-            200,
-            300,
-            500,
-          ]),
+          component.getValueAsString([100, 200, 300, 500]),
           '$100.00, $200.00, $300.00, $500.00',
         );
         done();

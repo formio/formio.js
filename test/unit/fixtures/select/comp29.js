@@ -56,10 +56,7 @@ export default {
   submission: {
     data: {
       showBrokenPanel: true,
-      brokenSelect: [
-        'option1',
-        'option2',
-      ],
+      brokenSelect: ['option1', 'option2'],
     },
   },
 };

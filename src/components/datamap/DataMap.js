@@ -51,11 +51,7 @@ export default class DataMapComponent extends DataGridComponent {
   }
 
   static savedValueTypes(schema) {
-    return (
-      getComponentSavedTypes(schema) || [
-        componentValueTypes.object,
-      ]
-    );
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   constructor(component, options, data) {
@@ -119,9 +115,7 @@ export default class DataMapComponent extends DataGridComponent {
   getRowValues() {
     const dataValue = this.dataValue;
     if (this.builderMode) {
-      return [
-        dataValue,
-      ];
+      return [dataValue];
     }
     if (_.isEmpty(dataValue)) {
       return [];
@@ -142,8 +136,8 @@ export default class DataMapComponent extends DataGridComponent {
     return this.rows.map((row) => {
       return {
         components: row,
-        data: _.mapValues(row, (comp) => comp.dataValue)
-      }
+        data: _.mapValues(row, (comp) => comp.dataValue),
+      };
     });
   }
 
@@ -169,15 +163,7 @@ export default class DataMapComponent extends DataGridComponent {
     const valueSchema = Object.assign({}, this.component.valueComponent);
     keySchema.hideLabel = false;
     valueSchema.hideLabel = false;
-    return this.component.keyBeforeValue
-      ? [
-          keySchema,
-          valueSchema,
-        ]
-      : [
-          valueSchema,
-          keySchema,
-        ];
+    return this.component.keyBeforeValue ? [keySchema, valueSchema] : [valueSchema, keySchema];
   }
 
   getRowKey(rowIndex) {
@@ -213,7 +199,7 @@ export default class DataMapComponent extends DataGridComponent {
 
       result = Object.keys(value).reduce((result, key) => {
         const componentInstance = this.findComponentInstance(key);
-        const viewValue = componentInstance 
+        const viewValue = componentInstance
           ? componentInstance.getView(value[key], options)
           : this.getView(value[key], options);
         result += `
@@ -265,7 +251,7 @@ export default class DataMapComponent extends DataGridComponent {
     if (this.visible && _.isObject(value)) {
       Object.keys(value).forEach((key) => {
         const componentInstance = this.findComponentInstance(key);
-        const viewValue = componentInstance 
+        const viewValue = componentInstance
           ? componentInstance.getView(value[key], options)
           : this.getView(value[key], options);
         result += `
@@ -318,18 +304,24 @@ export default class DataMapComponent extends DataGridComponent {
     if (this.submissionTimezone) {
       componentOptions.submissionTimezone = this.submissionTimezone;
       if (valueComponent.type === 'datetime') {
-        valueComponent.widget = { ...valueComponent.widget, submissionTimezone: this.submissionTimezone };
+        valueComponent.widget = {
+          ...valueComponent.widget,
+          submissionTimezone: this.submissionTimezone,
+        };
       }
     }
-    
+
     const createdComponent = this.createComponent(valueComponent, componentOptions, this.dataValue);
-    
+
     // Ensure submissionTimezone is set on datetime component instance's widget and options
     if (createdComponent?.type === 'datetime' && this.submissionTimezone) {
-      createdComponent.component.widget = { ...createdComponent.component.widget, submissionTimezone: this.submissionTimezone };
+      createdComponent.component.widget = {
+        ...createdComponent.component.widget,
+        submissionTimezone: this.submissionTimezone,
+      };
       createdComponent.options.submissionTimezone = this.submissionTimezone;
     }
-    
+
     components[this.valueKey] = createdComponent;
     return components;
   }

@@ -20,9 +20,7 @@ export default class WizardBuilder extends WebformBuilder {
     super(element, options);
 
     this._form = {
-      components: [
-        this.getPageConfig(1),
-      ],
+      components: [this.getPageConfig(1)],
     };
 
     this.page = 0;
@@ -118,9 +116,7 @@ export default class WizardBuilder extends WebformBuilder {
 
     if (this.pages.length === 0) {
       const components = this._form.components.filter((component) => component.type !== 'button');
-      this._form.components = [
-        this.getPageConfig(1, components),
-      ];
+      this._form.components = [this.getPageConfig(1, components)];
     } else {
       const components = this._form.components.filter(
         (component) => component.type !== 'button' || component.action !== 'submit',
@@ -183,15 +179,10 @@ export default class WizardBuilder extends WebformBuilder {
     });
 
     if (this.dragulaLib) {
-      this.navigationDragula = this.dragulaLib(
-        [
-          this.element.querySelector('.wizard-pages'),
-        ],
-        {
-          moves: (el) => !el.classList.contains('wizard-add-page'),
-          accepts: (el, target, source, sibling) => (sibling ? true : false),
-        },
-      ).on('drop', this.onReorder.bind(this));
+      this.navigationDragula = this.dragulaLib([this.element.querySelector('.wizard-pages')], {
+        moves: (el) => !el.classList.contains('wizard-add-page'),
+        accepts: (el, target, source, sibling) => (sibling ? true : false),
+      }).on('drop', this.onReorder.bind(this));
     }
 
     this.refs.addPage.forEach((link) => {
@@ -226,11 +217,7 @@ export default class WizardBuilder extends WebformBuilder {
       {
         display: 'form',
         type: 'form',
-        components: page
-          ? [
-              page,
-            ]
-          : [],
+        components: page ? [page] : [],
         controller: this._form?.controller || '',
       },
       { keepAsReference: true },
@@ -280,7 +267,7 @@ export default class WizardBuilder extends WebformBuilder {
     const isSiblingAnAddPageButton = sibling?.classList.contains('wizard-add-page');
     // We still can paste before Add Page button
     if (!element.dragInfo || (sibling && !sibling.dragInfo && !isSiblingAnAddPageButton)) {
-      console.warn('There is no Drag Info available for either dragged or sibling element');
+      console.warn(this.t('noDragInfoError'));
       return;
     }
     const oldPosition = element.dragInfo.index;

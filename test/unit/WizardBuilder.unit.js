@@ -28,9 +28,7 @@ describe('WizardBuilder tests', function () {
       formBuilderElement,
       {
         ...form,
-        components: [
-          ...form.components,
-        ],
+        components: [...form.components],
       },
       {},
     );

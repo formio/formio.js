@@ -69,9 +69,7 @@ export default {
           customConditional: "show = _.get(instance, 'parent.manualMode', false);",
         },
       ],
-      defaultValue: [
-        {},
-      ],
+      defaultValue: [{}],
     },
     {
       type: 'button',

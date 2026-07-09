@@ -8,9 +8,7 @@ describe('Tabs Component', function () {
     Formio.createForm(formElement, {
       display: 'form',
       type: 'form',
-      components: [
-        comp1,
-      ],
+      components: [comp1],
     })
       .then((form) => {
         const comp = form.components[0];

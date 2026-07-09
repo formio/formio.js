@@ -783,13 +783,8 @@ export default {
             settings: {},
             condition: {},
             _id: '5e5f14a23a26d9d768249322',
-            handler: [
-              'after',
-            ],
-            method: [
-              'create',
-              'update',
-            ],
+            handler: ['after'],
+            method: ['create', 'update'],
             priority: 0,
             name: 'webhook',
             title: 'Webhook (Premium)',
@@ -811,13 +806,8 @@ export default {
               name: 'webhook',
               title: 'Webhook (Premium)',
               settings: {},
-              handler: [
-                'after',
-              ],
-              method: [
-                'create',
-                'update',
-              ],
+              handler: ['after'],
+              method: ['create', 'update'],
               condition: {},
               submit: false,
               _id: '5e5f14a23a26d9d768249322',
@@ -844,13 +834,8 @@ export default {
                 settings: {
                   url: 'https://google.com',
                 },
-                handler: [
-                  'after',
-                ],
-                method: [
-                  'create',
-                  'update',
-                ],
+                handler: ['after'],
+                method: ['create', 'update'],
                 condition: {},
                 submit: false,
                 _id: '5e5f14a23a26d9d768249322',

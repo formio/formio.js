@@ -37,9 +37,7 @@ describe('NestedDataComponent class', function () {
         const openModalBtnRows = openModalBtn.querySelectorAll('tr');
         assert.equal(openModalBtnRows.length, 1);
 
-        const dataGrid = form.getComponent([
-          'dataGrid',
-        ]);
+        const dataGrid = form.getComponent(['dataGrid']);
         dataGrid.setValue([
           {
             textField: 'test',
@@ -56,10 +54,7 @@ describe('NestedDataComponent class', function () {
           assert.equal(modalPreviewValues.length, 2);
           assert.deepEqual(
             Array.prototype.map.call(modalPreviewValues, (i) => i.value),
-            [
-              'test',
-              'test2',
-            ],
+            ['test', 'test2'],
           );
           done();
         }, 300);

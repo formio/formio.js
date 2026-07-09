@@ -125,34 +125,22 @@ describe('Address Component', function () {
             {
               long_name: 'Los Angeles',
               short_name: 'Los Angeles',
-              types: [
-                'locality',
-                'political',
-              ],
+              types: ['locality', 'political'],
             },
             {
               long_name: 'Los Angeles County',
               short_name: 'Los Angeles County',
-              types: [
-                'administrative_area_level_2',
-                'political',
-              ],
+              types: ['administrative_area_level_2', 'political'],
             },
             {
               long_name: 'California',
               short_name: 'CA',
-              types: [
-                'administrative_area_level_1',
-                'political',
-              ],
+              types: ['administrative_area_level_1', 'political'],
             },
             {
               long_name: 'United States',
               short_name: 'US',
-              types: [
-                'country',
-                'political',
-              ],
+              types: ['country', 'political'],
             },
           ],
           formatted_address: 'Los Angeles, CA, USA',
@@ -166,10 +154,7 @@ describe('Address Component', function () {
             },
           },
           place_id: 'ChIJE9on3F3HwoAR9AhGJW_fL-I',
-          types: [
-            'locality',
-            'political',
-          ],
+          types: ['locality', 'political'],
           formattedPlace: 'Los Angeles, CA, USA',
         };
         const address = form.getComponent('address');
@@ -211,12 +196,7 @@ describe('Address Component', function () {
       licence: 'Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright',
       osm_type: 'relation',
       osm_id: 1180520,
-      boundingbox: [
-        37.4148293,
-        37.907822,
-        -93.191483,
-        -92.845795,
-      ],
+      boundingbox: [37.4148293, 37.907822, -93.191483, -92.845795],
       lat: 37.6832712,
       lon: -93.0219376,
       display_name: 'Dallas County, Missouri, United States',
@@ -265,14 +245,9 @@ describe('Address Component', function () {
       .then((form) => {
         const address = form.getComponent('address');
         assert.equal(!!address.provider, true);
-        assert.deepEqual(address.dataValue, [
-          {},
-        ]);
+        assert.deepEqual(address.dataValue, [{}]);
         address.addRow();
-        assert.deepEqual(address.dataValue, [
-          {},
-          {},
-        ]);
+        assert.deepEqual(address.dataValue, [{}, {}]);
 
         const value = [
           {
@@ -297,12 +272,7 @@ describe('Address Component', function () {
               country: 'United Kingdom',
               country_code: 'gb',
             },
-            boundingbox: [
-              '51.2867601',
-              '51.6918741',
-              '-0.5103751',
-              '0.3340155',
-            ],
+            boundingbox: ['51.2867601', '51.6918741', '-0.5103751', '0.3340155'],
           },
           {},
         ];
@@ -324,7 +294,11 @@ describe('Address Component', function () {
 
         // All child components should be hidden initially
         address.components.forEach((comp) => {
-          assert.equal(comp.visible, false, `${comp.component.key} should be hidden in autocomplete mode`);
+          assert.equal(
+            comp.visible,
+            false,
+            `${comp.component.key} should be hidden in autocomplete mode`,
+          );
         });
 
         const manualModeValue = {
@@ -343,10 +317,18 @@ describe('Address Component', function () {
           assert.equal(address.manualMode, true, 'manualMode getter should return true');
 
           address.components.forEach((comp) => {
-            assert.equal(comp.visible, true, `${comp.component.key} should be visible in manual mode`);
+            assert.equal(
+              comp.visible,
+              true,
+              `${comp.component.key} should be visible in manual mode`,
+            );
           });
 
-          assert.equal(address.refs.modeSwitcher.checked, true, 'Manual mode checkbox should be checked');
+          assert.equal(
+            address.refs.modeSwitcher.checked,
+            true,
+            'Manual mode checkbox should be checked',
+          );
 
           document.innerHTML = '';
           done();

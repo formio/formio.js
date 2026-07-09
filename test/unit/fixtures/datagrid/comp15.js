@@ -5,7 +5,7 @@ export default {
   type: 'form',
   display: 'form',
   components: [
-     {
+    {
       label: 'Select clear value on data grid change',
       widget: 'choicesjs',
       tableView: true,
@@ -13,20 +13,20 @@ export default {
         values: [
           {
             label: 'a',
-            value: 'a'
+            value: 'a',
           },
           {
             label: 'b',
-            value: 'b'
-          }
-        ]
+            value: 'b',
+          },
+        ],
       },
       refreshOn: 'dataGrid',
       clearOnRefresh: true,
       validateWhenHidden: false,
       key: 'selectClearValueOnDataGridChange',
       type: 'select',
-      input: true
+      input: true,
     },
     {
       label: 'Data Grid',
@@ -48,9 +48,9 @@ export default {
           validateWhenHidden: false,
           key: 'textField',
           type: 'textfield',
-          input: true
-        }
-      ]
-    }
-  ]
-}
+          input: true,
+        },
+      ],
+    },
+  ],
+};

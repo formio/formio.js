@@ -19,6 +19,7 @@ import {
   comp11,
   comp13,
   comp15,
+  comp16,
 } from './fixtures/radio/index';
 import { fastCloneDeep } from '@formio/core';
 
@@ -28,6 +29,37 @@ describe('Radio Component', function () {
       Harness.testElements(component, 'input[type="radio"]', 4);
       Harness.testElements(component, 'span', 4);
     });
+  });
+
+  it('Should preserve radio selection and maintain state after conditional hide/show cycle', async function () {
+    const form = await Formio.createForm(document.createElement('div'), comp16);
+    const checkbox = form.getComponent('checkbox');
+    const radio = form.getComponent('radio');
+    
+    // 1. Enable checkbox → radio becomes visible
+    checkbox.refs.input[0].click();
+    await wait(300);
+
+    // 2. Select first radio option
+    const firstRadio = radio.refs.input[0];
+    firstRadio.click();
+    await wait(300);
+
+    // 3. Disable checkbox → radio is hidden
+    checkbox.refs.input[0].click();
+    await wait(300);
+
+    // 4. Re-enable checkbox → radio is shown again
+    checkbox.refs.input[0].click();
+    await wait(300);
+
+    // 5. Select first radio option again after re-render
+    const firstRadioAgain = radio.refs.input[0];
+    firstRadioAgain.click();
+    await wait(300);
+    
+    // 6. Verify that radio remains checked
+    assert.equal(firstRadioAgain.checked, true, 'Should be checked');
   });
 
   it('Should allow to uncheck default radio value and set correct submission data', function (done) {
@@ -234,18 +266,18 @@ describe('Radio Component', function () {
     });
   });
 
-  it('Should show aria-invalid attribute only if an error occurs', async () => {
+  it('Should show aria-invalid attribute only if an error occurs', async function () {
     const initForm = _.cloneDeep(comp5);
     const element = document.createElement('div');
-    initForm.components[0].validate = { required: true }
+    initForm.components[0].validate = { required: true };
 
     const form = await Formio.createForm(element, initForm);
     const result = [...form.element.querySelectorAll('[role="radio"]')];
     result.forEach((radio) => {
       assert.equal(!!radio.hasAttribute('aria-invalid'), false);
-    })
+    });
     const clickEvent = new Event('click');
-    const submit = form.getComponent("submit");
+    const submit = form.getComponent('submit');
     const submitBtn = submit.refs.button;
     submitBtn.dispatchEvent(clickEvent);
 
@@ -253,7 +285,7 @@ describe('Radio Component', function () {
     result.forEach((radio) => {
       assert.equal(!!radio.hasAttribute('aria-invalid'), true);
       assert.equal(radio.getAttribute('aria-invalid'), 'true');
-    })
+    });
   });
 
   it('Should provide "Allow only available values" validation', function (done) {

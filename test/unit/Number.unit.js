@@ -53,7 +53,7 @@ describe('Number Component', function () {
 
   it('Should parse correct array values to number if it possible and sets values to data without error', async function () {
     const compCloned = _.cloneDeep(comp8);
-    compCloned.components[0].calculateValue = "value =  ['20', 1, 'dog', 4]"
+    compCloned.components[0].calculateValue = "value =  ['20', 1, 'dog', 4]";
     compCloned.components[0].multiple = true;
     compCloned.components[1].disableOnInvalid = false;
     const form = await Formio.createForm(document.createElement('div'), compCloned, {});
@@ -64,60 +64,29 @@ describe('Number Component', function () {
     assert.deepEqual(form.data.number, [20, 1, null, 4]);
   });
 
-
   it('Should correctly handle scientific notation', function () {
     return Harness.testCreate(NumberComponent, scientificNotation).then((component) => {
       const testCases = [
-        [
-          '6.54e+12',
-          6.54e12,
-          '6.54e+12',
-        ],
-        [
-          '1.23e-5',
-          1.23e-5,
-          '1.23e-5',
-        ],
-        [
-          '3.14e+2',
-          3.14e2,
-          '3.14e+2',
-        ],
-        [
-          '2e-3',
-          2e-3,
-          '2e-3',
-        ],
-        [
-          '7.5e+5',
-          7.5e5,
-          '7.5e+5',
-        ],
-        [
-          '1.23e+10',
-          1.23e10,
-          '1.23e+10',
-        ],
+        ['6.54e+12', 6.54e12, '6.54e+12'],
+        ['1.23e-5', 1.23e-5, '1.23e-5'],
+        ['3.14e+2', 3.14e2, '3.14e+2'],
+        ['2e-3', 2e-3, '2e-3'],
+        ['7.5e+5', 7.5e5, '7.5e+5'],
+        ['1.23e+10', 1.23e10, '1.23e+10'],
       ];
-      testCases.forEach(
-        ([
-          input,
+      testCases.forEach(([input, expectedValue, expectedDisplayValue]) => {
+        component.setValue(input);
+        assert.equal(
+          component.dataValue,
           expectedValue,
+          `setValue: ${input} should result in ${expectedValue}`,
+        );
+        assert.equal(
+          component.getValueAsString(input),
           expectedDisplayValue,
-        ]) => {
-          component.setValue(input);
-          assert.equal(
-            component.dataValue,
-            expectedValue,
-            `setValue: ${input} should result in ${expectedValue}`,
-          );
-          assert.equal(
-            component.getValueAsString(input),
-            expectedDisplayValue,
-            `getValueAsString: ${input} should result in ${expectedDisplayValue}`,
-          );
-        },
-      );
+          `getValueAsString: ${input} should result in ${expectedDisplayValue}`,
+        );
+      });
     });
   });
 
@@ -245,10 +214,7 @@ describe('Number Component', function () {
       const firstValueElement = component.element.querySelectorAll('[name="data[number]"]')[0];
       const secondValueElement = component.element.querySelectorAll('[name="data[number]"]')[1];
 
-      component.setValue([
-        111,
-        222,
-      ]);
+      component.setValue([111, 222]);
 
       firstValueElement.dispatchEvent(blurEvent);
       secondValueElement.dispatchEvent(blurEvent);
@@ -318,22 +284,8 @@ describe('Number Component', function () {
       Harness.testSetInput(component, '', null, '');
       Harness.testSetInput(component, {}, null, '');
       Harness.testSetInput(component, [], null, '');
-      Harness.testSetInput(
-        component,
-        [
-          '',
-        ],
-        null,
-        '',
-      );
-      Harness.testSetInput(
-        component,
-        [
-          '1',
-        ],
-        1,
-        '1',
-      );
+      Harness.testSetInput(component, [''], null, '');
+      Harness.testSetInput(component, ['1'], 1, '1');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1, 1, '1');
       Harness.testSetInput(component, -1, -1, '-1');
@@ -458,15 +410,7 @@ describe('Number Component', function () {
 
   it('Should display default integer value', function () {
     return Harness.testCreate(NumberComponent, comp3).then((number) => {
-      assert.deepEqual(
-        _.get(number, [
-          'refs',
-          'input',
-          '0',
-          'value',
-        ]),
-        '42',
-      );
+      assert.deepEqual(_.get(number, ['refs', 'input', '0', 'value']), '42');
     });
   });
 
@@ -479,44 +423,18 @@ describe('Number Component', function () {
     comp.requireDecimal = true;
 
     return Harness.testCreate(NumberComponent, comp).then((number) => {
-      assert.deepEqual(
-        _.get(number, [
-          'refs',
-          'input',
-          '0',
-          'value',
-        ]),
-        '4.20',
-      );
+      assert.deepEqual(_.get(number, ['refs', 'input', '0', 'value']), '4.20');
     });
   });
 
   it('Should provide min/max validation', function (done) {
     const form = _.cloneDeep(comp6);
 
-    const validValues = [
-      null,
-      20,
-      555,
-      34,
-      20.000001,
-      554.999,
-    ];
+    const validValues = [null, 20, 555, 34, 20.000001, 554.999];
 
-    const invalidMin = [
-      19.99,
-      0,
-      1,
-      0.34,
-      -0.1,
-      -20,
-    ];
+    const invalidMin = [19.99, 0, 1, 0.34, -0.1, -20];
 
-    const invalidMax = [
-      555.00000001,
-      100000,
-      5555,
-    ];
+    const invalidMax = [555.00000001, 100000, 5555];
 
     const testValidity = (values, valid, message, lastValue) => {
       _.each(values, (value) => {
@@ -573,12 +491,7 @@ describe('Number Component', function () {
 
   it('Should be able to switch between multiple and single values', function (done) {
     Harness.testCreate(NumberComponent, comp5).then((component) => {
-      assert.equal(
-        _.isEqual(component.defaultValue, [
-          null,
-        ]),
-        true,
-      );
+      assert.equal(_.isEqual(component.defaultValue, [null]), true);
       component.component.multiple = false;
       component.redraw().then(() => {
         assert.equal(component.defaultValue, null);
@@ -591,16 +504,7 @@ describe('Number Component', function () {
     Harness.testCreate(NumberComponent, comp7)
       .then((component) => {
         component.refs.input = null;
-        assert.equal(
-          component.getValueAsString([
-            1,
-            2,
-            3,
-            4,
-            5,
-          ]),
-          '1, 2, 3, 4, 5',
-        );
+        assert.equal(component.getValueAsString([1, 2, 3, 4, 5]), '1, 2, 3, 4, 5');
         done();
       })
       .catch(done);

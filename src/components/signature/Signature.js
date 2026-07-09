@@ -29,7 +29,7 @@ export default class SignatureComponent extends Input {
       group: 'advanced',
       icon: 'pencil',
       weight: 120,
-      documentation: '/developers/integrations/esign/esign-integrations#signature-component',
+      documentation: '/userguide/forms/form-building/form-components/advanced-components#signature',
       schema: SignatureComponent.schema(),
     };
   }
@@ -41,20 +41,13 @@ export default class SignatureComponent extends Input {
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
-      operators: [
-        'isEmpty',
-        'isNotEmpty',
-      ],
+      operators: ['isEmpty', 'isNotEmpty'],
     };
   }
 
   static savedValueTypes(schema) {
     schema = schema || {};
-    return (
-      getComponentSavedTypes(schema) || [
-        componentValueTypes.string,
-      ]
-    );
+    return getComponentSavedTypes(schema) || [componentValueTypes.string];
   }
 
   init() {
@@ -211,7 +204,7 @@ export default class SignatureComponent extends Input {
     return this.renderModalPreview({
       previewText: this.dataValue
         ? `<img src=${this.dataValue} ${this._referenceAttributeName}='openModal' style="width: 100%;height: 100%;" />`
-        : this.t('Click to Sign'),
+        : this.t('clickToSign'),
     });
   }
 
@@ -304,7 +297,7 @@ export default class SignatureComponent extends Input {
     if (_.isUndefined(value) && this.inDataTable) {
       return '';
     }
-    return value ? 'Yes' : 'No';
+    return this.t(value ? 'yes' : 'no');
   }
 
   focus() {

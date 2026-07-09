@@ -88,9 +88,7 @@ describe('Panel Component', function () {
     it('should include components for important settings', function () {
       const components = flattenComponents(panelEditForm().components);
       const keys = Object.keys(components).map((path) => components[path].key);
-      const settings = [
-        'breadcrumbClickable',
-      ];
+      const settings = ['breadcrumbClickable'];
 
       assert(settings.every((s) => keys.includes(s)));
     });

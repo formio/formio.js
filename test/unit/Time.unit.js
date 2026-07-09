@@ -78,9 +78,7 @@ describe('Time Component', function () {
       .setForm(timeForm2)
       .then(() => {
         const component = form.components[1];
-        Harness.setInputValue(component, 'data[multipleTime]', [
-          '89:19',
-        ]);
+        Harness.setInputValue(component, 'data[multipleTime]', ['89:19']);
         setTimeout(() => {
           assert.equal(component.errors[0].message, 'Invalid time', 'Should have an error');
           done();
@@ -96,9 +94,7 @@ describe('Time Component', function () {
       .setForm(timeForm2)
       .then(() => {
         const component = form.components[1];
-        Harness.setInputValue(component, 'data[multipleTime]', [
-          '10:00:00',
-        ]);
+        Harness.setInputValue(component, 'data[multipleTime]', ['10:00:00']);
         setTimeout(() => {
           assert.equal(component.errors.length, 0, 'Should not have an error');
           done();
@@ -112,10 +108,7 @@ describe('Time Component', function () {
       .then((time) => {
         assert.deepEqual(
           time.dataValue,
-          [
-            '10:00:00',
-            '11:00:00',
-          ],
+          ['10:00:00', '11:00:00'],
           'Should be set to default value',
         );
         done();

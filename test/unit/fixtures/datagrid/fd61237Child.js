@@ -5,9 +5,7 @@ export default {
   path: 'fd61237child',
   pdfComponents: [],
   display: 'form',
-  tags: [
-    'common',
-  ],
+  tags: ['common'],
   settings: {},
   components: [
     {

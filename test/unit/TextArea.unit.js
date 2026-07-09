@@ -30,9 +30,7 @@ describe('TextArea Component', function () {
     });
     const component = form.getComponent('textArea');
     const emit = sinon.spy(component, 'redraw');
-    component.setValue([
-      'Hello',
-    ]);
+    component.setValue(['Hello']);
     assert.equal(emit.callCount, 0);
   });
 
@@ -60,33 +58,11 @@ describe('TextArea Component', function () {
     const form = _.cloneDeep(comp3);
     form.components[0].validate = { minLength: 5, maxLength: 10 };
 
-    const validValues = [
-      '',
-      'te_st',
-      'test value',
-      '      ',
-      'What?',
-      'test: ',
-      't    ',
-      '   t ',
-    ];
+    const validValues = ['', 'te_st', 'test value', '      ', 'What?', 'test: ', 't    ', '   t '];
 
-    const invalidMin = [
-      't',
-      'tt',
-      'ttt',
-      'tttt',
-      '  t ',
-      '  t',
-      '_4_',
-    ];
+    const invalidMin = ['t', 'tt', 'ttt', 'tttt', '  t ', '  t', '_4_'];
 
-    const invalidMax = [
-      'test__value',
-      'test value ',
-      ' test value',
-      'test: value',
-    ];
+    const invalidMax = ['test__value', 'test value ', ' test value', 'test: value'];
 
     const testValidity = (values, valid, message, lastValue) => {
       _.each(values, (value) => {
@@ -155,16 +131,7 @@ describe('TextArea Component', function () {
       '" test "',
     ];
 
-    const invalidMin = [
-      '  t   ',
-      '? ',
-      'e',
-      '_test    ',
-      '   9',
-      't  ',
-      'What?',
-      '"4"',
-    ];
+    const invalidMin = ['  t   ', '? ', 'e', '_test    ', '   9', 't  ', 'What?', '"4"'];
 
     const invalidMax = [
       'te st __ va lue ""',
@@ -238,13 +205,7 @@ describe('TextArea Component', function () {
       '  some - test - value   ',
     ];
 
-    const invalidValues = [
-      'test(2)',
-      '123',
-      '0 waste',
-      '"9"',
-      '   9',
-    ];
+    const invalidValues = ['test(2)', '123', '0 waste', '"9"', '   9'];
 
     const testValidity = (values, valid, message, lastValue) => {
       _.each(values, (value) => {
@@ -578,12 +539,8 @@ describe('TextArea Component', function () {
             },
           });
 
-          const plainTextArea = form.getComponent([
-            'textArea',
-          ]);
-          const aceTextArea = form.getComponent([
-            'textAreaAce',
-          ]);
+          const plainTextArea = form.getComponent(['textArea']);
+          const aceTextArea = form.getComponent(['textAreaAce']);
           aceTextArea.editorsReady[0].then(() => {
             const textAreaElement = plainTextArea.element.querySelector('textarea');
             console.log(aceTextArea.editors);
@@ -619,9 +576,7 @@ describe('TextArea Component', function () {
 
       Formio.createForm(element, comp4)
         .then((form) => {
-          const aceTextArea = form.getComponent([
-            'jsonTextarea',
-          ]);
+          const aceTextArea = form.getComponent(['jsonTextarea']);
           assert.equal(aceTextArea.data.jsonTextarea, '', 'The value should be empty');
           done();
         })
@@ -684,20 +639,9 @@ describe('TextArea Component', function () {
       Formio.createForm(element, textAreaJsonType)
         .then((form) => {
           const textArea = form.getComponent('textArea');
-          textArea.setValue([
-            1,
-            2,
-            3,
-          ]);
+          textArea.setValue([1, 2, 3]);
           setTimeout(() => {
-            assert.deepEqual(
-              textArea.dataValue,
-              [
-                1,
-                2,
-                3,
-              ],
-            );
+            assert.deepEqual(textArea.dataValue, [1, 2, 3]);
             done();
           }, 300);
         })

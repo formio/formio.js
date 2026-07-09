@@ -5,9 +5,7 @@ import PasswordStrengthEditForm from './PasswordStrengthAddon.form';
 export default class PasswordStrengthAddon extends FormioAddon {
   static get info() {
     return {
-      supportedComponents: [
-        'password',
-      ],
+      supportedComponents: ['password'],
       name: 'passwordStrength',
       components: PasswordStrengthEditForm,
       label: 'Password Strength',
@@ -188,9 +186,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
   }
 
   checkBlackList(value) {
-    const blackList = [
-      ...this.settings.blackList,
-    ];
+    const blackList = [...this.settings.blackList];
     let customBlacklistedWords = this.settings.customBlacklistedWords;
 
     if (customBlacklistedWords && typeof customBlacklistedWords === 'string') {
@@ -360,9 +356,7 @@ export default class PasswordStrengthAddon extends FormioAddon {
   constructor(settings, componentInstance) {
     super(settings, componentInstance);
     this._entropy = 0; // Set initial value of entropy
-    this.levels = [
-      ...(this.settings.levels || this.defaultSettings.levels),
-    ];
+    this.levels = [...(this.settings.levels || this.defaultSettings.levels)];
     this.levels.sort((a, b) => a.maxEntropy - b.maxEntropy); // Sort levels from the lowest one to the highest
     this.level = this.levels[0]; // Set currnt level to the lowest one
     this.maxEntropy = this.levels[this.levels.length - 1].maxEntropy; // Set maximal amount of security points based on the highest level

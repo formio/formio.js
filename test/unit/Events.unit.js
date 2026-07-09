@@ -42,7 +42,7 @@ describe('Events tests', function () {
       {
         i18n: {
           language: 'en',
-          en: {}
+          en: {},
         },
       },
     );

@@ -29,11 +29,7 @@ function s3(formio) {
     ) {
       const xhrCallback = async (xhr, response, abortCallback) => {
         response.data.fileName = fileName;
-        response.data.key = XHR.path([
-          response.data.key,
-          dir,
-          fileName,
-        ]);
+        response.data.key = XHR.path([response.data.key, dir, fileName]);
         if (response.signed) {
           if (multipartOptions && Array.isArray(response.signed)) {
             // patch abort callback
@@ -54,11 +50,7 @@ function s3(formio) {
               );
               await withRetries(
                 this.completeMultipartUpload,
-                [
-                  response,
-                  parts,
-                  multipartOptions,
-                ],
+                [response, parts, multipartOptions],
                 3,
               );
               return;
@@ -107,10 +99,7 @@ function s3(formio) {
         name: fileName,
         bucket: response.bucket,
         key: response.data.key,
-        url: XHR.path([
-          response.url,
-          response.data.key,
-        ]),
+        url: XHR.path([response.url, response.data.key]),
         acl: response.data.acl,
         size: file.size,
         type: file.type,

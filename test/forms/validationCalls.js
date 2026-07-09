@@ -60,10 +60,7 @@ export default {
 
   tests: {
     'validationCall Text 1 change should not trigger number validation'(form, done) {
-      const [
-        textfield,
-        number,
-      ] = form.components;
+      const [textfield, number] = form.components;
       const textCheckSpy = sinon.spy(textfield, 'checkValidity');
       const textEvalSpy = sinon.spy(textfield, 'evaluate');
       const numberCheckSpy = sinon.spy(number, 'checkValidity');
@@ -80,10 +77,7 @@ export default {
       }, 250);
     },
     'validationCall Number 1 change should not trigger text validation'(form, done) {
-      const [
-        textfield,
-        number,
-      ] = form.components;
+      const [textfield, number] = form.components;
       const textCheckSpy = sinon.spy(textfield, 'checkValidity');
       const textEvalSpy = sinon.spy(textfield, 'evaluate');
       const numberCheckSpy = sinon.spy(number, 'checkValidity');
@@ -100,10 +94,7 @@ export default {
       }, 250);
     },
     'All validations should trigger when fileds are touched.'(form, done) {
-      const [
-        textfield,
-        number,
-      ] = form.components;
+      const [textfield, number] = form.components;
       const textCheckSpy = sinon.spy(textfield, 'checkValidity');
       const textEvalSpy = sinon.spy(textfield, 'evaluate');
       const numberCheckSpy = sinon.spy(number, 'checkValidity');

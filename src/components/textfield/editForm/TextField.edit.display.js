@@ -45,8 +45,7 @@ export default [
       let oldType;
       if (isObject(currentWidget)) {
         oldType = context.instance._widgetType;
-      }
-      else if (typeof currentWidget === 'string') {
+      } else if (typeof currentWidget === 'string') {
         oldType = getOriginalWidget(context.instance)?.type;
         if (oldType === newType) {
           return;
@@ -57,14 +56,12 @@ export default [
         if (newType === 'input') {
           context.data.widget = { type: 'input' };
           context.instance._widgetType = newType;
-        }
-        else if (newType) {
+        } else if (newType) {
           const defaultSettings = getDefaultWidgetSettings(newType);
           context.data.widget = defaultSettings || { type: newType };
           context.instance._widgetType = newType;
         }
-      }
-      else if (!currentWidget) {
+      } else if (!currentWidget) {
         context.data.widget = { type: newType };
       }
     },
@@ -77,10 +74,7 @@ export default [
     },
     conditional: {
       json: {
-        '===': [
-          { var: 'data.type' },
-          'textfield',
-        ],
+        '===': [{ var: 'data.type' }, 'textfield'],
       },
     },
   },
@@ -99,7 +93,8 @@ export default [
       }
 
       if (isObject(currentWidget)) {
-        const currentType = context.instance.root.getComponent('widget.type')._widgetType || currentWidget.type;
+        const currentType =
+          context.instance.root.getComponent('widget.type')._widgetType || currentWidget.type;
         if (currentType && currentWidget.type !== currentType) {
           context.data.widget = { ...currentWidget, type: currentType };
         }
@@ -111,10 +106,7 @@ export default [
     as: 'json',
     conditional: {
       json: {
-        '!==': [
-          { var: 'data.widget.type' },
-          'input',
-        ],
+        '!==': [{ var: 'data.widget.type' }, 'input'],
       },
     },
   },

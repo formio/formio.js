@@ -30,7 +30,7 @@ export default {
           validateWhenHidden: false,
           key: 'number',
           type: 'number',
-          input: true
+          input: true,
         },
         {
           label: 'Select2',
@@ -40,23 +40,22 @@ export default {
             values: [
               {
                 label: 'q',
-                value: 'q'
+                value: 'q',
               },
               {
                 label: 'w',
-                value: 'w'
-              }
-            ]
+                value: 'w',
+              },
+            ],
           },
           refreshOn: 'dataGrid.number',
           clearOnRefresh: true,
           validateWhenHidden: false,
           key: 'select',
           type: 'select',
-          input: true
-        }
-      ]
-    }
-  ]
-  
-}
+          input: true,
+        },
+      ],
+    },
+  ],
+};

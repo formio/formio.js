@@ -30,14 +30,7 @@ if (htmlCanvasElement && !htmlCanvasElement.prototype.toBlob) {
           arr[i] = binStr.charCodeAt(i);
         }
 
-        callback(
-          new Blob(
-            [
-              arr,
-            ],
-            { type: type || 'image/png' },
-          ),
-        );
+        callback(new Blob([arr], { type: type || 'image/png' }));
       });
     },
   });
@@ -82,21 +75,14 @@ export default class FileComponent extends Field {
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
-      operators: [
-        'isEmpty',
-        'isNotEmpty',
-      ],
+      operators: ['isEmpty', 'isNotEmpty'],
     };
   }
 
   static savedValueTypes(schema) {
     schema = schema || {};
 
-    return (
-      getComponentSavedTypes(schema) || [
-        componentValueTypes.object,
-      ]
-    );
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   init() {
@@ -265,7 +251,7 @@ export default class FileComponent extends Field {
 
         const { videoPlayer } = this.refs;
         if (!videoPlayer) {
-          console.warn('Video player not found in template.');
+          console.warn(this.t('videoPlayerNotFound'));
           this.cameraMode = false;
           this.redraw();
           return;
@@ -293,7 +279,7 @@ export default class FileComponent extends Field {
   takePicture() {
     const { videoPlayer } = this.refs;
     if (!videoPlayer) {
-      console.warn('Video player not found in template.');
+      console.warn(this.t('videoPlayerNotFound'));
       this.cameraMode = false;
       this.redraw();
       return;
@@ -301,9 +287,7 @@ export default class FileComponent extends Field {
 
     this.getFrame(videoPlayer).then((frame) => {
       frame.name = `photo-${Date.now()}.png`;
-      this.handleFilesToUpload([
-        frame,
-      ]);
+      this.handleFilesToUpload([frame]);
       this.cameraMode = false;
       this.redraw();
     });
@@ -503,16 +487,9 @@ export default class FileComponent extends Field {
               fileEntry.file((file) => {
                 const reader = new FileReader();
                 reader.onloadend = (evt) => {
-                  const blob = new Blob(
-                    [
-                      new Uint8Array(evt.target.result),
-                    ],
-                    { type: file.type },
-                  );
+                  const blob = new Blob([new Uint8Array(evt.target.result)], { type: file.type });
                   blob.name = file.name;
-                  this.handleFilesToUpload([
-                    blob,
-                  ]);
+                  this.handleFilesToUpload([blob]);
                 };
                 reader.readAsArrayBuffer(file);
               });
@@ -537,16 +514,9 @@ export default class FileComponent extends Field {
               fileEntry.file((file) => {
                 const reader = new FileReader();
                 reader.onloadend = (evt) => {
-                  const blob = new Blob(
-                    [
-                      new Uint8Array(evt.target.result),
-                    ],
-                    { type: file.type },
-                  );
+                  const blob = new Blob([new Uint8Array(evt.target.result)], { type: file.type });
                   blob.name = file.name;
-                  this.handleFilesToUpload([
-                    blob,
-                  ]);
+                  this.handleFilesToUpload([blob]);
                 };
                 reader.readAsArrayBuffer(file);
               });
@@ -738,10 +708,7 @@ export default class FileComponent extends Field {
     if (!target.id) {
       return;
     }
-    const [
-      action,
-      id,
-    ] = target.id.split('-');
+    const [action, id] = target.id.split('-');
     if (!action || !id || !this.actions[action]) {
       return;
     }
@@ -769,7 +736,7 @@ export default class FileComponent extends Field {
       file,
       size: file.size,
       status: 'info',
-      message: this.t('Processing file. Please wait...'),
+      message: this.t('waitFileProcessing'),
       hash: '',
     };
   }
@@ -808,9 +775,7 @@ export default class FileComponent extends Field {
     return fileWithSameNameUploaded || fileWithSameNameUploading
       ? {
           status: 'error',
-          message: this.t(
-            `File with the same name is already ${fileWithSameNameUploading ? 'being ' : ''}uploaded`,
-          ),
+          message: this.t(fileWithSameNameUploading ? 'fileWithDuplicatedNameInProgress' : 'fileWithDuplicatedNameLoaded'),
         }
       : {};
   }
@@ -820,7 +785,7 @@ export default class FileComponent extends Field {
     if (this.component.filePattern && !this.validatePattern(file, this.component.filePattern)) {
       return {
         status: 'error',
-        message: this.t('File is the wrong type; it must be {{ pattern }}', {
+        message: this.t('wrongFileType', {
           pattern: this.component.filePattern,
         }),
       };
@@ -834,7 +799,7 @@ export default class FileComponent extends Field {
       if (!interpolatedMinSize) {
         return {
           status: 'error',
-          message: 'Please, check the entered parameters',
+          message: this.t('checkEnteredParameters'),
         };
       }
       if (!this.validateMinSize(file, interpolatedMinSize)) {
@@ -849,11 +814,11 @@ export default class FileComponent extends Field {
 
     // Check file maximum size
     if (this.component.fileMaxSize) {
-      const interpolatedMaxSize = this.interpolate(this.component.fileMaxSize, this.evalContext())
+      const interpolatedMaxSize = this.interpolate(this.component.fileMaxSize, this.evalContext());
       if (!interpolatedMaxSize) {
         return {
           status: 'error',
-          message: 'Please, check the entered parameters',
+          message: this.t('checkEnteredParameters'),
         };
       }
       if (!this.validateMaxSize(file, interpolatedMaxSize)) {
@@ -862,7 +827,7 @@ export default class FileComponent extends Field {
           message: this.t('fileTooBig', {
             size: interpolatedMaxSize,
           }),
-        }
+        };
       }
     }
 
@@ -874,7 +839,7 @@ export default class FileComponent extends Field {
     return !fileService
       ? {
           status: 'error',
-          message: this.t('File Service not provided.'),
+          message: this.t('noFileService'),
         }
       : {};
   }
@@ -910,11 +875,7 @@ export default class FileComponent extends Field {
           : element.component.submissionAccess;
 
         groupPermissions.forEach((permission) => {
-          groupKey = [
-            'admin',
-            'write',
-            'create',
-          ].includes(permission.type)
+          groupKey = ['admin', 'write', 'create'].includes(permission.type)
             ? element.component.key
             : null;
         });
@@ -941,7 +902,7 @@ export default class FileComponent extends Field {
         this.fileDropHidden = false;
         return {
           status: 'error',
-          message: this.t('File processing has been failed.'),
+          message: this.t('fileProcessingFailed'),
         };
       } finally {
         if (this.refs.fileProcessingLoader) {
@@ -981,7 +942,7 @@ export default class FileComponent extends Field {
     }
 
     if (this.autoSync) {
-      fileToSync.message = this.t('Ready to be uploaded into storage');
+      fileToSync.message = this.t('readyForUpload');
     }
 
     this.filesToSync.filesToUpload.push({
@@ -1004,9 +965,7 @@ export default class FileComponent extends Field {
       this.fileDropHidden = true;
 
       return Promise.all(
-        [
-          ...files,
-        ].map(async (file) => {
+        [...files].map(async (file) => {
           await this.prepareFileToUpload(file);
           this.redraw();
         }),
@@ -1028,8 +987,8 @@ export default class FileComponent extends Field {
       ...fileInfo,
       status: 'info',
       message: this.autoSync
-        ? this.t('Ready to be removed from storage')
-        : this.t('Preparing file to remove'),
+        ? this.t('readyForRemovingFromStorage')
+        : this.t('preparingFileToRemove'),
     });
 
     const index = this.dataValue.findIndex((file) => file.name === fileInfo.name);
@@ -1049,13 +1008,7 @@ export default class FileComponent extends Field {
 
     if (
       fileInfo &&
-      [
-        'url',
-        'indexeddb',
-        's3',
-        'azure',
-        'googledrive',
-      ].includes(this.component.storage)
+      ['url', 'indexeddb', 's3', 'azure', 'googledrive'].includes(this.component.storage)
     ) {
       const { fileService } = this;
       if (fileService && typeof fileService.deleteFile === 'function') {
@@ -1084,7 +1037,7 @@ export default class FileComponent extends Field {
 
           await this.deleteFile(fileToSync);
           fileToSync.status = 'success';
-          fileToSync.message = this.t('Succefully removed');
+          fileToSync.message = this.t('succefullyRemoved');
         } catch (response) {
           fileToSync.status = 'error';
           fileToSync.message = typeof response === 'string' ? response : response.toString();
@@ -1177,26 +1130,27 @@ export default class FileComponent extends Field {
             };
           }
 
-          if(fileToSync.status === "success") {
-            const uploadedFile = this.resolvedFiles.find(x=> x.fileToSync.originalName === fileToSync.originalName) 
-             return {
+          if (fileToSync.status === 'success') {
+            const uploadedFile = this.resolvedFiles.find(
+              (x) => x.fileToSync.originalName === fileToSync.originalName,
+            );
+            return {
               fileToSync: uploadedFile.fileToSync,
               fileInfo: uploadedFile.fileInfo,
             };
           }
 
-          const pendingFile = this.pendingfiles.find(x => x.name === fileToSync.name);
+          const pendingFile = this.pendingfiles.find((x) => x.name === fileToSync.name);
           if (pendingFile) {
             fileInfo = await pendingFile.fileInfoProm;
-          }
-          else {
+          } else {
             const promInfo = this.uploadFile(fileToSync);
             this.pendingfiles.push({ name: fileToSync.name, fileInfoProm: promInfo });
             fileInfo = await promInfo;
           }
-          this.pendingfiles = this.pendingfiles.filter(x => x.name !== fileToSync.name);
+          this.pendingfiles = this.pendingfiles.filter((x) => x.name !== fileToSync.name);
           fileToSync.status = 'success';
-          fileToSync.message = this.t('Succefully uploaded');
+          fileToSync.message = this.t('succefullyUploaded');
 
           fileInfo.originalName = fileToSync.originalName;
           fileInfo.hash = fileToSync.hash;
@@ -1208,7 +1162,7 @@ export default class FileComponent extends Field {
             typeof response === 'string'
               ? response
               : response.type === 'abort'
-                ? this.t('Request was aborted')
+                ? this.t('requestAborted')
                 : response.toString();
           this.emit('fileUploadingEnd', Promise.reject(response));
           this.emit(
@@ -1216,14 +1170,16 @@ export default class FileComponent extends Field {
             {
               fileToSync,
               response,
-            }
+            },
           );
         } finally {
           delete fileToSync.progress;
           this.redraw();
-          const fileExists = this.resolvedFiles.find(x=> x.fileInfo.originalName ===  fileToSync.originalName);
-          if (!fileExists && fileToSync.status !== 'error') {
-            this.resolvedFiles.push({ fileToSync, fileInfo })
+          if (fileInfo) {
+            const fileExists = this.resolvedFiles.find(x => x.fileInfo.originalName === fileToSync.originalName);
+            if (!fileExists && fileToSync.status !== 'error') {
+              this.resolvedFiles.push({ fileToSync, fileInfo })
+            }
           }
         }
 
@@ -1240,10 +1196,7 @@ export default class FileComponent extends Field {
     this.fileDropHidden = true;
     this.redraw();
     try {
-      const [
-        filesToDelete = [],
-        filesToUpload = [],
-      ] = await Promise.all([
+      const [filesToDelete = [], filesToUpload = []] = await Promise.all([
         this.delete(),
         this.upload(),
       ]);
@@ -1283,7 +1236,7 @@ export default class FileComponent extends Field {
     const { options = {} } = this.component;
     const { fileService } = this;
     if (!fileService) {
-      return alert('File Service not provided');
+      return alert(this.t('noFileService'));
     }
     if (this.component.privateDownload) {
       fileInfo.private = true;
@@ -1292,12 +1245,7 @@ export default class FileComponent extends Field {
       .downloadFile(fileInfo, options)
       .then((file) => {
         if (file) {
-          if (
-            [
-              'base64',
-              'indexeddb',
-            ].includes(file.storage)
-          ) {
+          if (['base64', 'indexeddb'].includes(file.storage)) {
             download(file.url, file.originalName || file.name, file.type);
           } else {
             window.open(file.url, '_blank');
@@ -1328,7 +1276,7 @@ export default class FileComponent extends Field {
       }
 
       await this.syncFiles();
-      return this.shouldSyncFiles ? Promise.reject('Synchronization is failed') : Promise.resolve();
+      return this.shouldSyncFiles ? Promise.reject(this.t('synchronizationFailed')) : Promise.resolve();
     } catch (error) {
       return Promise.reject(error.message);
     }

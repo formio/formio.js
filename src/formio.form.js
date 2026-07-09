@@ -11,10 +11,11 @@ import Utils, { DefaultEvaluator, Evaluator, registerEvaluator } from './utils';
 import Licenses from './licenses';
 import EventEmitter from './EventEmitter';
 import Webform from './Webform';
+import { I18n } from './utils/i18n';
 
 Formio.loadModules = (
   path = `${Formio.getApiUrl()}/externalModules.js`,
-  name = 'externalModules'
+  name = 'externalModules',
 ) => {
   Formio.requireLibrary(name, name, path, true).then((modules) => {
     Formio.use(modules);
@@ -65,7 +66,7 @@ export function registerModule(mod, defaultFn = null, options = {}) {
           Formio.Templates.extendTemplate(framework, mod.templates[framework]);
           Formio.Templates.defaultTemplates = _.defaults(
             mod.templates[framework],
-            Formio.Templates.defaultTemplates
+            Formio.Templates.defaultTemplates,
           );
         }
         if (mod.templates[current]) {
@@ -99,6 +100,9 @@ export function registerModule(mod, defaultFn = null, options = {}) {
           ? Formio.Licenses.addLicense(mod.library, options.license)
           : Formio.Licenses.removeLicense(mod.library);
         break;
+      case 'translations':
+        I18n.setDefaultTranslations(mod.translations);
+      break;
       default:
         if (defaultFn) {
           defaultFn(key, mod);
@@ -114,11 +118,7 @@ export function registerModule(mod, defaultFn = null, options = {}) {
  */
 export function useModule(defaultFn = null) {
   return (plugins, options = {}) => {
-    plugins = _.isArray(plugins)
-      ? plugins
-      : [
-        plugins
-      ];
+    plugins = _.isArray(plugins) ? plugins : [plugins];
 
     plugins.forEach((plugin) => {
       if (Array.isArray(plugin)) {
@@ -153,5 +153,5 @@ export {
   EventEmitter,
   Webform,
   DefaultEvaluator,
-  FormOptions
+  FormOptions,
 };

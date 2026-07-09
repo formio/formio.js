@@ -21,6 +21,8 @@ export default [
   {
     rules: {
       'no-prototype-builtins': 'off',
+      // Conflicts with prettier, which manages blank lines between mocha blocks.
+      'mocha/consistent-spacing-between-blocks': 'off',
     },
   },
 ];

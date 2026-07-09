@@ -24,9 +24,9 @@ export default {
             key: 'form',
             type: 'form',
             input: true,
-            lazyLoad: true
-          }
-        ]
+            lazyLoad: true,
+          },
+        ],
       },
       {
         title: 'Page 2',
@@ -41,14 +41,14 @@ export default {
             validateWhenHidden: false,
             key: 'textField',
             type: 'textfield',
-            input: true
-          }
+            input: true,
+          },
         ],
         input: false,
-        tableView: false
-      }
+        tableView: false,
+      },
     ],
-    machineName: 'thjqzjuwyfrmoxi:wizardParent'
+    machineName: 'thjqzjuwyfrmoxi:wizardParent',
   },
   childForm: {
     _id: '68f8aa74f0639938ba4c2e0c',
@@ -65,13 +65,13 @@ export default {
         data: {
           values: [
             { label: 'Yes', value: 'yes' },
-            { label: 'No', value: 'no' }
-          ]
+            { label: 'No', value: 'no' },
+          ],
         },
         validateWhenHidden: false,
         key: 'select',
         type: 'select',
-        input: true
+        input: true,
       },
       {
         label: 'Text Field',
@@ -87,12 +87,12 @@ export default {
             {
               component: 'select',
               operator: 'isEqual',
-              value: 'yes'
-            }
-          ]
+              value: 'yes',
+            },
+          ],
         },
         type: 'textfield',
-        input: true
+        input: true,
       },
       {
         type: 'button',
@@ -100,8 +100,8 @@ export default {
         key: 'submit',
         disableOnInvalid: true,
         input: true,
-        tableView: false
-      }
-    ]
-  }
+        tableView: false,
+      },
+    ],
+  },
 };

@@ -5,7 +5,13 @@ import { editgrid as templates } from '@formio/bootstrap/components';
 import NestedArrayComponent from '../_classes/nestedarray/NestedArrayComponent';
 import Component from '../_classes/component/Component';
 import Alert from '../alert/Alert';
-import { fastCloneDeep, Evaluator, getArrayFromComponentPath, eachComponent, screenReaderSpeech } from '../../utils';
+import {
+  fastCloneDeep,
+  Evaluator,
+  getArrayFromComponentPath,
+  eachComponent,
+  screenReaderSpeech,
+} from '../../utils';
 
 const EditRowState = {
   New: 'new',
@@ -127,10 +133,10 @@ export default class EditGridComponent extends NestedArrayComponent {
 
   get defaultDialogTemplate() {
     return `
-    <h3 ${this._referenceAttributeName}="dialogHeader">${this.t('Do you want to clear data?')}</h3>
+    <h3 ${this._referenceAttributeName}="dialogHeader">${this.t('wantToClearData')}</h3>
     <div style="display:flex; justify-content: flex-end;">
-      <button ${this._referenceAttributeName}="dialogCancelButton" class="btn btn-secondary" aria-label="${this.t('Cancel')}">${this.t('Cancel')}</button>
-      <button ${this._referenceAttributeName}="dialogYesButton" class="btn btn-danger" aria-label="${this.t('Yes, delete it')}">${this.t('Yes, delete it')}</button>
+      <button ${this._referenceAttributeName}="dialogCancelButton" class="btn btn-secondary" aria-label="${this.t('cancel')}">${this.t('cancel')}</button>
+      <button ${this._referenceAttributeName}="dialogYesButton" class="btn btn-danger" aria-label="${this.t('yesDelete')}">${this.t('yesDelete')}</button>
     </div>
   `;
   }
@@ -302,6 +308,13 @@ export default class EditGridComponent extends NestedArrayComponent {
     );
   }
 
+  checkData(data, flags, row) {
+    super.checkData(data, flags, row);
+    if (this.type === 'editgrid' && flags?.fromSubmission) {
+      return this.redraw();
+    }
+  }
+
   init() {
     if (this.builderMode) {
       this.editRows = [];
@@ -362,20 +375,12 @@ export default class EditGridComponent extends NestedArrayComponent {
   }
 
   isOpen(editRow) {
-    return [
-      EditRowState.New,
-      EditRowState.Editing,
-      EditRowState.Viewing,
-    ].includes(editRow.state);
+    return [EditRowState.New, EditRowState.Editing, EditRowState.Viewing].includes(editRow.state);
   }
 
   isComponentVisibleInSomeRow(component) {
     const rows = this.editRows;
-    const savedStates = [
-      EditRowState.Saved,
-      EditRowState.Editing,
-      EditRowState.Draft,
-    ];
+    const savedStates = [EditRowState.Saved, EditRowState.Editing, EditRowState.Draft];
     const savedRows = rows.filter((row) => _.includes(savedStates, row.state));
 
     this.visibleInHeader = this.visibleInHeader || [];
@@ -402,9 +407,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       });
 
       const isVisible = checkComponent ? checkComponent.visible : true;
-      [
-        ...this.components,
-      ].forEach((comp) => this.removeComponent(comp, this.components));
+      [...this.components].forEach((comp) => this.removeComponent(comp, this.components));
 
       changeVisibleInHeader(component, isVisible);
 
@@ -568,10 +571,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           Array.prototype.forEach.call(elements, (element) => {
             if (
               this.options.pdf &&
-              _.intersection(element.classList, [
-                'editRow',
-                'removeRow',
-              ]).length
+              _.intersection(element.classList, ['editRow', 'removeRow']).length
             ) {
               element.style.display = 'none';
             } else {
@@ -633,7 +633,7 @@ export default class EditGridComponent extends NestedArrayComponent {
         flattenedComponents,
         displayValue: (component) => this.displayComponentValue(component),
         isVisibleInRow: (component) => this.isComponentVisibleInRow(component, flattenedComponents),
-        getView: (component, data) => {
+        getView: (component, _data) => {
           const instance = flattenedComponents[component.key];
           const view = instance ? instance.getView(instance.dataValue) : '';
 
@@ -1260,12 +1260,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       editRow.errors =
         this.component.modal || this.component.rowDrafts
           ? errors
-          : errors.filter((err) =>
-              _.find(this.visibleErrors, [
-                'component.id',
-                err.component.id,
-              ]),
-            );
+          : errors.filter((err) => _.find(this.visibleErrors, ['component.id', err.component.id]));
     }
 
     // TODO: this is essentially running its own custom validation and should be moved into a validation rule
@@ -1289,7 +1284,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       if (valid === null) {
         editRow.errors.push({
           type: 'error',
-          message: `Invalid row validation for ${this.key}`,
+          message: this.t('componentInvalidRowValidation', { componentKey: this.key })
         });
       }
     }
@@ -1381,19 +1376,6 @@ export default class EditGridComponent extends NestedArrayComponent {
       return false;
     }
 
-    // TODO: this is the only place invalidMessage gets called, and it's not clear why it's needed - we already validate the editGrid
-    // component above with super.checkComponentValidity
-    const message = this.invalid || this.invalidMessage(data, dirty, false, row, options);
-    if (allRowErrors.length && this.root?.submitted && !message) {
-      this._errors = this.setCustomValidity(message, dirty);
-      errors.push(...this._errors);
-      this.root?.showErrors([
-        message,
-      ]);
-    } else {
-      this._errors = this.setCustomValidity(message, dirty);
-      errors.push(...this._errors);
-    }
     return superValid;
   }
 
@@ -1423,9 +1405,7 @@ export default class EditGridComponent extends NestedArrayComponent {
 
     if (!Array.isArray(value)) {
       if (typeof value === 'object') {
-        value = [
-          value,
-        ];
+        value = [value];
       } else {
         return false;
       }

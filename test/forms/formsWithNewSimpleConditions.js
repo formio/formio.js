@@ -492,9 +492,7 @@ const form4 = {
       enableRowGroups: false,
       initEmpty: false,
       tableView: false,
-      defaultValue: [
-        {},
-      ],
+      defaultValue: [{}],
       key: 'dataGrid',
       type: 'datagrid',
       input: true,
@@ -919,9 +917,7 @@ const form5 = {
       key: 'number2',
       type: 'number',
       input: true,
-      defaultValue: [
-        null,
-      ],
+      defaultValue: [null],
     },
     {
       label: 'Currency 2',

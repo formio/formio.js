@@ -60,11 +60,7 @@ export default class NumberComponent extends Input {
 
   static savedValueTypes(schema) {
     schema = schema || {};
-    return (
-      getComponentSavedTypes(schema) || [
-        componentValueTypes.number,
-      ]
-    );
+    return getComponentSavedTypes(schema) || [componentValueTypes.number];
   }
 
   constructor(...args) {
@@ -90,9 +86,7 @@ export default class NumberComponent extends Input {
         this.options.properties?.thousandsSeparator ||
         this.options.thousandsSeparator
       ) {
-        console.warn(
-          'In order for thousands separator to work properly, you must set the delimiter to true in the component json',
-        );
+        console.warn(this.t('noDelimiterSet'));
       }
       this.delimiter = '';
     }
@@ -189,7 +183,7 @@ export default class NumberComponent extends Input {
           const result = this.parseNumber(val);
           return _.isNaN(result) ? this.emptyValue : result;
         }
-        return val
+        return val;
       });
 
       value = normilizedValues;

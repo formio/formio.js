@@ -38,10 +38,7 @@ function azure(formio) {
       ).then((response) => {
         return {
           storage: 'azure',
-          name: XHR.path([
-            dir,
-            fileName,
-          ]),
+          name: XHR.path([dir, fileName]),
           size: file.size,
           type: file.type,
           groupPermissions,
@@ -57,19 +54,21 @@ function azure(formio) {
         'GET',
       );
     },
-    deleteFile(fileInfo, options) {
+    deleteFile(fileInfo, _options) {
       const name = XHR.trim(fileInfo.name);
       const key = XHR.trim(fileInfo.key);
-      return formio.makeRequest(
-        '',
-        `${formio.formUrl}/storage/azure?name=${encodeURIComponent(name)}&key=${encodeURIComponent(key)}`,
-        'delete',
-      ).then((response) => {
-        return {
-          success: true,
-          key: response?.key || key,
-        };
-      });
+      return formio
+        .makeRequest(
+          '',
+          `${formio.formUrl}/storage/azure?name=${encodeURIComponent(name)}&key=${encodeURIComponent(key)}`,
+          'delete',
+        )
+        .then((response) => {
+          return {
+            success: true,
+            key: response?.key || key,
+          };
+        });
     },
   };
 }

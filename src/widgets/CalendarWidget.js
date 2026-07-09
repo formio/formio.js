@@ -156,9 +156,7 @@ export default class CalendarWidget extends InputWidget {
     Formio.requireLibrary(
       'flatpickr-css',
       'flatpickr',
-      [
-        { type: 'styles', src: `${Formio.cdn['flatpickr-formio']}/flatpickr.min.css` },
-      ],
+      [{ type: 'styles', src: `${Formio.cdn['flatpickr-formio']}/flatpickr.min.css` }],
       true,
     );
 
@@ -494,9 +492,7 @@ export default class CalendarWidget extends InputWidget {
     this._input.removeAttribute('aria-labelledby');
     this._input.removeAttribute('aria-required');
 
-    const excludedFromMaskFormats = [
-      'MMMM',
-    ];
+    const excludedFromMaskFormats = ['MMMM'];
 
     if (
       !this.settings.readOnly &&

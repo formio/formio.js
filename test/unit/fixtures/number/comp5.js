@@ -14,7 +14,5 @@ export default {
   key: 'number',
   type: 'number',
   input: true,
-  defaultValue: [
-    null,
-  ],
+  defaultValue: [null],
 };

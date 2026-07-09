@@ -38,45 +38,36 @@ const XHR = {
     abortCallback,
     multipartOptions,
   ) {
-    // make request to Form.io server
-    const token = formio.getToken();
-    let response;
+    // Use makeRequest so portal plugins (e.g. x-remote-token) are applied.
+    let serverResponse;
     try {
-      response = await fetch(`${formio.formUrl}/storage/${type}`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json; charset=UTF-8',
-          ...(token ? { 'x-jwt-token': token } : {}),
-        },
-        body: JSON.stringify({
-          name: XHR.path([
-            dir,
-            fileName,
-          ]),
+      serverResponse = await formio.makeRequest(
+        'file',
+        `${formio.formUrl}/storage/${type}`,
+        'POST',
+        {
+          name: XHR.path([dir, fileName]),
           size: file.size,
           type: file.type,
           groupPermissions,
           groupId,
           multipart: multipartOptions,
-        }),
-      });
+        },
+      );
     } catch (err) {
-      // only throws on network errors
-      err.networkError = true;
-      throw err;
-    }
-    if (!response.ok) {
-      if (response.status === 504) {
-        const error = new Error('Network request failed');
-        error.networkError = true;
-        throw error;
+      if (err?.networkError) {
+        throw err;
       }
-
-      const message = await response.text();
-      throw new Error(message || 'Unable to sign file.');
+      if (err instanceof Error) {
+        throw err;
+      }
+      const message = typeof err === 'string' ? err : err?.message || err?.error;
+      const error = new Error(message || 'Unable to sign file.');
+      if (err?.status === 504) {
+        error.networkError = true;
+      }
+      throw error;
     }
-    const serverResponse = await response.json();
     return await XHR.makeXhrRequest(
       formio,
       xhrCallback,

@@ -37,9 +37,7 @@ export default class CheckBoxComponent extends Field {
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
-      operators: [
-        'isEqual',
-      ],
+      operators: ['isEqual'],
       valueComponent() {
         return {
           valueType: 'boolean',
@@ -64,14 +62,10 @@ export default class CheckBoxComponent extends Field {
     }
 
     if (schema.inputType === 'radio') {
-      return [
-        componentValueTypes.string,
-      ];
+      return [componentValueTypes.string];
     }
 
-    return [
-      componentValueTypes.boolean,
-    ];
+    return [componentValueTypes.boolean];
   }
 
   get defaultSchema() {
@@ -224,7 +218,7 @@ export default class CheckBoxComponent extends Field {
       return '';
     }
 
-    return this.t(hasValue ? 'Yes' : 'No');
+    return this.t(hasValue ? 'yes' : 'no');
   }
 
   updateValue(value, flags) {

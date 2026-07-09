@@ -26,9 +26,7 @@ const form = {
       disabled: false,
       tableView: false,
       modalEdit: false,
-      defaultValue: [
-        {},
-      ],
+      defaultValue: [{}],
       persistent: true,
       protected: false,
       dbIndex: false,
@@ -255,19 +253,13 @@ const form = {
 
 const submission3rows = {
   data: {
-    dataGrid: [
-      { number: 1 },
-      { number: 2 },
-      { number: 3 },
-    ],
+    dataGrid: [{ number: 1 }, { number: 2 }, { number: 3 }],
   },
 };
 
 const submission1row = {
   data: {
-    dataGrid: [
-      { number: 555 },
-    ],
+    dataGrid: [{ number: 555 }],
   },
 };
 

@@ -131,9 +131,7 @@ export default [
     },
     conditional: {
       json: {
-        '!': [
-          { var: 'data.dataSrc' },
-        ],
+        '!': [{ var: 'data.dataSrc' }],
       },
     },
   },
@@ -188,8 +186,9 @@ export default [
     input: true,
     key: 'serverOverride',
     label: 'Server Override',
-    tooltip: 'A JSON object containing the component settings that should be overriden when the form submission is processed on the server side.',
+    tooltip:
+      'A JSON object containing the component settings that should be overriden when the form submission is processed on the server side.',
     defaultValue: {},
     description: '<b>Example</b>: { "clearOnHide": true }',
-  }
+  },
 ];

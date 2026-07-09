@@ -6,9 +6,7 @@ export default {
       optionsLabelPosition: 'right',
       inline: true,
       tableView: false,
-      values: [
-        { label: '', value: '' },
-      ],
+      values: [{ label: '', value: '' }],
       validate: { onlyAvailableItems: false },
       key: 'radio',
       type: 'radio',

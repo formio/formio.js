@@ -11,9 +11,7 @@ export default [
     tooltip: 'The questions you would like to ask in this survey question.',
     weight: 0,
     reorder: true,
-    defaultValue: [
-      { label: '', value: '' },
-    ],
+    defaultValue: [{ label: '', value: '' }],
     components: [
       {
         label: 'Label',
@@ -28,9 +26,7 @@ export default [
         type: 'textfield',
         allowCalculateOverride: true,
         calculateValue: {
-          _camelCase: [
-            { var: 'row.label' },
-          ],
+          _camelCase: [{ var: 'row.label' }],
         },
       },
       {
@@ -50,9 +46,7 @@ export default [
       "The values that can be selected per question. Example: 'Satisfied', 'Very Satisfied', etc.",
     weight: 1,
     reorder: true,
-    defaultValue: [
-      { label: '', value: '' },
-    ],
+    defaultValue: [{ label: '', value: '' }],
     components: [
       {
         label: 'Label',
@@ -67,9 +61,7 @@ export default [
         type: 'textfield',
         allowCalculateOverride: true,
         calculateValue: {
-          _camelCase: [
-            { var: 'row.label' },
-          ],
+          _camelCase: [{ var: 'row.label' }],
         },
       },
       {

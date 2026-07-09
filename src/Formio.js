@@ -115,20 +115,15 @@ FormioCore.prototype.deleteFile = function (file, options) {
 };
 
 // Esnure we proxy the following methods to the FormioEmbed class.
-[
-  'setBaseUrl',
-  'setApiUrl',
-  'setAppUrl',
-  'setProjectUrl',
-  'setPathType',
-  'setLicense',
-].forEach((fn) => {
-  const baseFn = FormioCore[fn];
-  FormioCore[fn] = function (arg) {
-    const retVal = FormioEmbed[fn](arg, true);
-    return baseFn ? baseFn.call(this, arg) : retVal;
-  };
-});
+['setBaseUrl', 'setApiUrl', 'setAppUrl', 'setProjectUrl', 'setPathType', 'setLicense'].forEach(
+  (fn) => {
+    const baseFn = FormioCore[fn];
+    FormioCore[fn] = function (arg) {
+      const retVal = FormioEmbed[fn](arg, true);
+      return baseFn ? baseFn.call(this, arg) : retVal;
+    };
+  },
+);
 
 // For reverse compatability.
 FormioCore.Promise = Promise;

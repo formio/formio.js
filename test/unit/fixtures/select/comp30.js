@@ -1,42 +1,42 @@
 export default {
-  "_id": "6900c3c2d10679a735412de9",
-  "title": "select",
-  "name": "select",
-  "path": "select",
-  "type": "form",
-  "display": "form",
-  "tags": [],
-  "components": [
+  _id: '6900c3c2d10679a735412de9',
+  title: 'select',
+  name: 'select',
+  path: 'select',
+  type: 'form',
+  display: 'form',
+  tags: [],
+  components: [
     {
-      "label": "Select",
-      "widget": "html5",
-      "tableView": true,
-      "multiple": true,
-      "data": {
-        "values": [
+      label: 'Select',
+      widget: 'html5',
+      tableView: true,
+      multiple: true,
+      data: {
+        values: [
           {
-            "label": "One",
-            "value": "one"
+            label: 'One',
+            value: 'one',
           },
           {
-            "label": "Two",
-            "value": "two"
-          }
-        ]
+            label: 'Two',
+            value: 'two',
+          },
+        ],
       },
-      "validateWhenHidden": false,
-      "key": "select",
-      "type": "select",
-      "input": true
+      validateWhenHidden: false,
+      key: 'select',
+      type: 'select',
+      input: true,
     },
     {
-      "type": "button",
-      "label": "Submit",
-      "key": "submit",
-      "disableOnInvalid": true,
-      "input": true,
-      "tableView": false
-    }
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      disableOnInvalid: true,
+      input: true,
+      tableView: false,
+    },
   ],
   "pdfComponents": [],
   "settings": {},

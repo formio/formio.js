@@ -26,11 +26,7 @@ export default class Alert {
   }
 
   showErrors(errors = [], triggerEvent = false, options = {}) {
-    errors = _.isArray(errors)
-      ? errors
-      : [
-          errors,
-        ];
+    errors = _.isArray(errors) ? errors : [errors];
 
     const messagesList = this.createMessagesList('error', errors);
     this.showAlert('error', messagesList, options);
@@ -129,17 +125,12 @@ export default class Alert {
 
     if (this.refs.messageRef?.length) {
       this.refs.messageRef.forEach((el) => {
-        Object.entries(customEvents).forEach(
-          ([
-            event,
-            listeners,
-          ]) => {
-            listeners.forEach((listener) =>
-              this.parentComponent.addEventListener(el, event, listener),
-            );
-            this.eventListenersKeys.push(event);
-          },
-        );
+        Object.entries(customEvents).forEach(([event, listeners]) => {
+          listeners.forEach((listener) =>
+            this.parentComponent.addEventListener(el, event, listener),
+          );
+          this.eventListenersKeys.push(event);
+        });
       });
     }
   }
@@ -169,6 +160,7 @@ export default class Alert {
       const component = this.parentComponent.root?.getComponent(path, null, keyOrPath);
       if (component && _.isFunction(component.focus)) {
         component.focus();
+        component.scrollIntoView();
       }
     }
   }

@@ -21,15 +21,7 @@ export default [
     input: true,
     conditional: {
       json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'values',
-            'json',
-            'custom',
-            'url',
-          ],
-        ],
+        in: [{ var: 'data.dataSrc' }, ['values', 'json', 'custom', 'url']],
       },
     },
   },

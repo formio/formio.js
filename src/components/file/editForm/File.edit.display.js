@@ -16,11 +16,7 @@ export default [
           {
             var: 'data.storage',
           },
-          [
-            's3',
-            'azure',
-            'googledrive',
-          ],
+          ['s3', 'azure', 'googledrive'],
         ],
       },
     },

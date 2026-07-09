@@ -47,14 +47,18 @@ describe('TextField Component', function () {
   });
 
   it('Should not display placeholder in readOnly mode', function (done) {
-    Harness.testCreate(TextFieldComponent, {
-      label: 'First Name',
-      key: 'firstName',
-      input: true,
-      type: 'textfield',
-      placeholder: 'Enter your name'
-    }, { readOnly: true }).then((component) => {
-      console.log(1111)
+    Harness.testCreate(
+      TextFieldComponent,
+      {
+        label: 'First Name',
+        key: 'firstName',
+        input: true,
+        type: 'textfield',
+        placeholder: 'Enter your name',
+      },
+      { readOnly: true },
+    ).then((component) => {
+      console.log(1111);
       const input = Harness.testElement(component, 'input[type="text"]');
       assert.equal(!!input.attributes.placeholder, false);
 
@@ -68,7 +72,7 @@ describe('TextField Component', function () {
       key: 'firstName',
       input: true,
       type: 'textfield',
-      placeholder: 'Enter your name'
+      placeholder: 'Enter your name',
     }).then((component) => {
       const input = Harness.testElement(component, 'input[type="text"]');
       assert.equal(input.attributes?.placeholder?.textContent, 'Enter your name');
@@ -327,10 +331,7 @@ describe('TextField Component', function () {
           json: {
             if: [
               {
-                '===': [
-                  { var: 'data.firstName' },
-                  'Joe',
-                ],
+                '===': [{ var: 'data.firstName' }, 'Joe'],
               },
               true,
               'You must be Joe',
@@ -454,10 +455,7 @@ describe('TextField Component', function () {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '99/99-99.99:99,99';
 
-    const validValues = [
-      '',
-      '99/99-99.99:99,99',
-    ];
+    const validValues = ['', '99/99-99.99:99,99'];
 
     const invalidValues = [
       '99/99-99.99:99,,99',
@@ -585,21 +583,9 @@ describe('TextField Component', function () {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = 'aa-9{1,3}/9[99]';
 
-    const validValues = [
-      '',
-      'bB-77/555',
-      'bc-789/8',
-      'De-7/8',
-      'tr-81/888',
-    ];
+    const validValues = ['', 'bB-77/555', 'bc-789/8', 'De-7/8', 'tr-81/888'];
 
-    const invalidValues = [
-      '123',
-      '12-hh/789',
-      'dd-/893',
-      'he-538/',
-      'e1-77/790',
-    ];
+    const invalidValues = ['123', '12-hh/789', 'dd-/893', 'he-538/', 'e1-77/790'];
 
     const testValidity = (values, valid, lastValue) => {
       _.each(values, (value) => {
@@ -652,11 +638,7 @@ describe('TextField Component', function () {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = 'a/A/a-a:a.a,aa';
 
-    const validValues = [
-      '',
-      'b/V/r-y:d.d,as',
-      'b/B/r-y:d.d,as',
-    ];
+    const validValues = ['', 'b/V/r-y:d.d,as', 'b/B/r-y:d.d,as'];
 
     const invalidValues = [
       'b/b/r-y:d.d',
@@ -770,13 +752,7 @@ describe('TextField Component', function () {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '**/***.*-*,**';
 
-    const validValues = [
-      '',
-      'f4/D34.3-S,dd',
-      'gg/ggg.g-g,gg',
-      'DD/DDD.D-D,DD',
-      '55/555.5-5,55',
-    ];
+    const validValues = ['', 'f4/D34.3-S,dd', 'gg/ggg.g-g,gg', 'DD/DDD.D-D,DD', '55/555.5-5,55'];
 
     const invalidValues = [
       'er432ff',
@@ -883,14 +859,7 @@ describe('TextField Component', function () {
     const form = _.cloneDeep(comp6);
     form.components[0].inputMask = '**/99-aa';
 
-    const validValues = [
-      '',
-      '4r/34-fg',
-      '46/34-yy',
-      'ye/56-op',
-      'We/56-op',
-      'te/56-Dp',
-    ];
+    const validValues = ['', '4r/34-fg', '46/34-yy', 'ye/56-op', 'We/56-op', 'te/56-Dp'];
 
     const invalidValues = [
       'te/E6-pp',
@@ -1004,32 +973,20 @@ describe('TextField Component', function () {
       {
         index: 0,
         mask: 'number',
-        valueValid: [
-          '33-33',
-        ],
-        valueInvalid: [
-          'Bd',
-        ],
+        valueValid: ['33-33'],
+        valueInvalid: ['Bd'],
       },
       {
         index: 1,
         mask: 'letter',
-        valueValid: [
-          'rr.dd',
-        ],
-        valueInvalid: [
-          'Nr-22',
-        ],
+        valueValid: ['rr.dd'],
+        valueInvalid: ['Nr-22'],
       },
       {
         index: 2,
         mask: 'any',
-        valueValid: [
-          'Dv/33',
-        ],
-        valueInvalid: [
-          '4/4',
-        ],
+        valueValid: ['Dv/33'],
+        valueInvalid: ['4/4'],
       },
     ];
 
@@ -1088,16 +1045,9 @@ describe('TextField Component', function () {
     form.components[0].inputMask = '99_99/99';
     form.components[0].inputMaskPlaceholderChar = '.';
 
-    const validValues = [
-      '',
-      '55_44/88',
-    ];
+    const validValues = ['', '55_44/88'];
 
-    const invalidValues = [
-      '99 99 99',
-      '44_44_55',
-      '55555555',
-    ];
+    const invalidValues = ['99 99 99', '44_44_55', '55555555'];
 
     const testValidity = (values, valid, lastValue) => {
       _.each(values, (value) => {
@@ -1159,9 +1109,7 @@ describe('TextField Component', function () {
     form.components[0].inputMask = '99_99/99';
     form.components[0].inputMaskPlaceholderChar = '.';
 
-    const values = [
-      { value: '4444444', expected: '44_44/44' },
-    ];
+    const values = [{ value: '4444444', expected: '44_44/44' }];
 
     const testFormatting = (values, lastValue) => {
       _.each(values, (value) => {
@@ -1724,12 +1672,20 @@ describe('TextField Component', function () {
     context.data.widget = '{"dateFormat": "inval';
 
     widgetType = widgetTypeComponent.calculateValue(context);
-    assert.equal(widgetType, 'calendar', 'Widget type should remain calendar when typing invalid JSON');
+    assert.equal(
+      widgetType,
+      'calendar',
+      'Widget type should remain calendar when typing invalid JSON',
+    );
 
     // After the user finishes editing and widget is restored, it should still work
     context.data.widget = { type: 'calendar', dateFormat: 'yyyy-MM-dd' };
     widgetType = widgetTypeComponent.calculateValue(context);
-    assert.equal(widgetType, 'calendar', 'Widget type should remain calendar after widget is restored');
+    assert.equal(
+      widgetType,
+      'calendar',
+      'Widget type should remain calendar after widget is restored',
+    );
   });
 
   it('Should not create a flat "widget.type" key on the component data', function () {
@@ -1761,10 +1717,14 @@ describe('TextField Component', function () {
     assert.equal(
       context.data.hasOwnProperty('widget.type'),
       false,
-      'Should not have a flat "widget.type" key — it pollutes the saved component JSON'
+      'Should not have a flat "widget.type" key — it pollutes the saved component JSON',
     );
 
-    assert.equal(context.data.widget.type, 'input', 'widget.type should be accessible via the nested object');
+    assert.equal(
+      context.data.widget.type,
+      'input',
+      'widget.type should be accessible via the nested object',
+    );
   });
 
   it('Should not create a flat "widget.type" key when widget is Calendar Picker', function () {
@@ -1797,9 +1757,13 @@ describe('TextField Component', function () {
     assert.equal(
       context.data.hasOwnProperty('widget.type'),
       false,
-      'Should not have a flat "widget.type" key for calendar widget'
+      'Should not have a flat "widget.type" key for calendar widget',
     );
-    assert.equal(context.data.widget.type, 'calendar', 'widget.type should remain calendar via nested object');
+    assert.equal(
+      context.data.widget.type,
+      'calendar',
+      'widget.type should remain calendar via nested object',
+    );
   });
 
   it('Test Display mask', function (done) {
@@ -1807,15 +1771,9 @@ describe('TextField Component', function () {
 
     Formio.createForm(element, withDisplayAndInputMasks)
       .then((form) => {
-        const textField = form.getComponent([
-          'textField',
-        ]);
-        const textFieldDisplayMask = form.getComponent([
-          'textFieldDisplayMask',
-        ]);
-        const textFieldDisplayAndInputMasks = form.getComponent([
-          'textFieldDisplayAndInputMasks',
-        ]);
+        const textField = form.getComponent(['textField']);
+        const textFieldDisplayMask = form.getComponent(['textFieldDisplayMask']);
+        const textFieldDisplayAndInputMasks = form.getComponent(['textFieldDisplayAndInputMasks']);
         const textFieldDisplayAndInputMasksReverse = form.getComponent([
           'textFieldDisplayAndInputMasksReverse',
         ]);
@@ -1990,12 +1948,8 @@ describe('TextField Component', function () {
         .then((form) => {
           const textField = form.getComponent('textField');
           textField.setValue('hello, world');
-          assert.deepEqual(textField.dataValue, [
-            'hello, world',
-          ]);
-          assert.deepEqual(form.data.textField, [
-            'hello, world',
-          ]);
+          assert.deepEqual(textField.dataValue, ['hello, world']);
+          assert.deepEqual(form.data.textField, ['hello, world']);
           done();
         })
         .catch(done);
@@ -2019,9 +1973,7 @@ describe('TextField Component', function () {
       })
         .then((form) => {
           const textField = form.getComponent('textField');
-          textField.setValue([
-            'hello, world',
-          ]);
+          textField.setValue(['hello, world']);
           assert.deepEqual(textField.dataValue, 'hello, world');
           assert.deepEqual(form.data.textField, 'hello, world');
           done();

@@ -6,9 +6,7 @@ export default {
       tableView: true,
       dataSrc: 'resource',
       data: {
-        values: [
-          { label: '', value: '' },
-        ],
+        values: [{ label: '', value: '' }],
         resource: '60114dd32cab36ad94ac4f94',
       },
       valueProperty: 'data.name',

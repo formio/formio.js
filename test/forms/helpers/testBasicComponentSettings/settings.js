@@ -102,16 +102,7 @@ export default {
     {},
   ),
   prefix: _.reduce(
-    [
-      'textField',
-      'textArea',
-      'number',
-      'password',
-      'email',
-      'url',
-      'phoneNumber',
-      'currency',
-    ],
+    ['textField', 'textArea', 'number', 'password', 'email', 'url', 'phoneNumber', 'currency'],
     (obj, componentKey, index) => {
       obj[componentKey] = 'test prefix' + index;
       return obj;
@@ -119,16 +110,7 @@ export default {
     {},
   ),
   suffix: _.reduce(
-    [
-      'textField',
-      'textArea',
-      'number',
-      'password',
-      'email',
-      'url',
-      'phoneNumber',
-      'currency',
-    ],
+    ['textField', 'textArea', 'number', 'password', 'email', 'url', 'phoneNumber', 'currency'],
     (obj, componentKey, index) => {
       obj[componentKey] = 'test suffix' + index;
       return obj;
@@ -368,14 +350,9 @@ export default {
       question1: 'yes',
       question2: 'no',
     },
-    dataGrid: [
-      { textFieldDataGrid: 'default1' },
-      { textFieldDataGrid: 'default2' },
-    ],
+    dataGrid: [{ textFieldDataGrid: 'default1' }, { textFieldDataGrid: 'default2' }],
     tree: {
-      children: [
-        { children: [], data: { textFieldTree: 'default2' } },
-      ],
+      children: [{ children: [], data: { textFieldTree: 'default2' } }],
       data: { textFieldTree: 'default1' },
     },
   },
@@ -463,9 +440,7 @@ export default {
     },
     editGrid: {
       js: 'value = [{textFieldEditGrid: data.basis + " default"}]',
-      expectedValue: [
-        { textFieldEditGrid: 'base value default' },
-      ],
+      expectedValue: [{ textFieldEditGrid: 'base value default' }],
     },
     tree: {
       js: "value = {children: [], data:{ textFieldTree: data.basis + ' default' } }",
@@ -708,9 +683,7 @@ export default {
     },
     editGrid: {
       js: 'value = [{textFieldEditGrid: data.basis + " calculated"}]',
-      expectedValue: (basis) => [
-        { textFieldEditGrid: basis + ' calculated' },
-      ],
+      expectedValue: (basis) => [{ textFieldEditGrid: basis + ' calculated' }],
     },
     tree: {
       js: "value = {children: [], data:{ textFieldTree: data.basis + ' calculated' } }",

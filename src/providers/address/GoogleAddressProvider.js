@@ -147,9 +147,7 @@ export class GoogleAddressProvider extends AddressProvider {
       if (countryCodes[region]) {
         region = countryCodes[region];
       }
-      _.set(providerOptions, 'params.autocompleteOptions.componentRestrictions.country', [
-        region,
-      ]);
+      _.set(providerOptions, 'params.autocompleteOptions.componentRestrictions.country', [region]);
     }
   }
 

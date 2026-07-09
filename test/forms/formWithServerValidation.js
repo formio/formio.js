@@ -3,10 +3,7 @@ export default {
     {
       message: 'Text Field - Unique must be unique',
       level: 'error',
-      path: [
-        'containerNotUnique',
-        'textFieldUnique',
-      ],
+      path: ['containerNotUnique', 'textFieldUnique'],
       context: {
         validator: 'unique',
         hasLabel: true,
@@ -21,11 +18,7 @@ export default {
     {
       message: 'Text Field must be unique',
       level: 'error',
-      path: [
-        'dataGrid',
-        0,
-        'textField',
-      ],
+      path: ['dataGrid', 0, 'textField'],
       context: {
         validator: 'unique',
         hasLabel: true,
@@ -41,9 +34,7 @@ export default {
   values: {
     data: {
       containerNotUnique: { textFieldUnique: '1' },
-      dataGrid: [
-        { textField: '1' },
-      ],
+      dataGrid: [{ textField: '1' }],
       submit: true,
     },
   },
@@ -98,9 +89,7 @@ export default {
         enableRowGroups: false,
         initEmpty: false,
         tableView: false,
-        defaultValue: [
-          {},
-        ],
+        defaultValue: [{}],
         validateWhenHidden: false,
         key: 'dataGrid',
         type: 'datagrid',

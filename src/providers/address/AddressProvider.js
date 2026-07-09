@@ -101,12 +101,7 @@ export class AddressProvider {
    */
   serialize(params) {
     return _.toPairs(params)
-      .map(
-        ([
-          key,
-          value,
-        ]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
-      )
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join('&');
   }
 

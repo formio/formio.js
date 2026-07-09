@@ -41,43 +41,26 @@ export default _.map(testedProperties, (property) => {
         });
       } else {
         //if we have expected value in property settings
-        if (
-          [
-            'customDefaultValue',
-            'calculateValue',
-          ].includes(property)
-        ) {
+        if (['customDefaultValue', 'calculateValue'].includes(property)) {
           _.set(comp, property, _.get(settings, property)[comp.key].js);
         } else {
           _.set(comp, property, _.get(settings, property)[comp.key]);
         }
       }
-      if (
-        [
-          'redrawOn',
-        ].includes(property)
-      ) {
+      if (['redrawOn'].includes(property)) {
         comp.label = `${comp.label} {{data.${_.get(settings, property)[comp.key]}}}`;
       }
       return comp;
     });
 
   if (
-    [
-      'customDefaultValue',
-      'calculateValue',
-      'conditional',
-      'customConditional',
-      'logic',
-    ].includes(property)
+    ['customDefaultValue', 'calculateValue', 'conditional', 'customConditional', 'logic'].includes(
+      property,
+    )
   ) {
     testedForm.components.unshift(baseHelpingComponent);
 
-    if (
-      [
-        'logic',
-      ].includes(property)
-    ) {
+    if (['logic'].includes(property)) {
       testedForm.components.push(helpingActionBtn);
     }
   }

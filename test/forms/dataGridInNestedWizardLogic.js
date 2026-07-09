@@ -45,7 +45,7 @@ export default {
       },
     ],
   },
-  'bbbbbbbbbbbbbbbbbbbbbbbb': {
+  bbbbbbbbbbbbbbbbbbbbbbbb: {
     _id: 'bbbbbbbbbbbbbbbbbbbbbbbb',
     title: 'nestedWizard',
     name: 'nestedWizard',
@@ -155,9 +155,7 @@ export default {
         type: 'panel',
         input: false,
         tableView: false,
-        components: [
-          { label: 'X', key: 'x', type: 'textfield', input: true, tableView: true },
-        ],
+        components: [{ label: 'X', key: 'x', type: 'textfield', input: true, tableView: true }],
       },
     ],
   },
