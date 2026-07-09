@@ -157,12 +157,12 @@ export default class ListComponent extends Field {
       component: this.component,
       message: err.toString(),
     });
-    console.warn(`Unable to load resources for ${this.key}`);
+    console.warn(this.t('loadResourcesError', {componentKey: this.key}));
   }
 
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
-      console.warn(`Select component ${this.key} does not have data configuration.`);
+      console.warn(this.t('noSelectDataConfiguration', {componentKey: this.key}));
       this.itemsLoadedResolve();
       return;
     }
@@ -199,7 +199,7 @@ export default class ListComponent extends Field {
           try {
             this.loadItems(resourceUrl, searchInput, this.requestHeaders);
           } catch (ignoreErr) {
-            console.warn(`Unable to load resources for ${this.key}`);
+            console.warn(this.t('loadResourcesError', {componentKey: this.key}));
           }
         } else {
           this.setItems(this.downloadedResources);
@@ -250,7 +250,7 @@ export default class ListComponent extends Field {
         }
 
         if (!window.indexedDB) {
-          window.alert("Your browser doesn't support current version of indexedDB");
+          window.alert(this.t('indexedDBSupportError'));
         }
 
         if (

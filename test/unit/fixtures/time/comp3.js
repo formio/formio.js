@@ -9,8 +9,5 @@ export default {
   type: 'time',
   input: true,
   inputMask: '99:99',
-  defaultValue: [
-    '10:00:00',
-    '11:00:00',
-  ],
+  defaultValue: ['10:00:00', '11:00:00'],
 };

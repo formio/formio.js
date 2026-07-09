@@ -17,9 +17,7 @@ export default [
     placeholder: 'Width',
     conditional: {
       json: {
-        '!': [
-          { var: 'data.keepOverlayRatio' },
-        ],
+        '!': [{ var: 'data.keepOverlayRatio' }],
       },
     },
     weight: 50,
@@ -33,9 +31,7 @@ export default [
     placeholder: 'Height',
     conditional: {
       json: {
-        '!': [
-          { var: 'data.keepOverlayRatio' },
-        ],
+        '!': [{ var: 'data.keepOverlayRatio' }],
       },
     },
     weight: 51,

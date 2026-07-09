@@ -283,9 +283,7 @@ describe('SelectBoxes Component', function () {
   it('Should set "checked" attribute correctly when value is changed', function (done) {
     Formio.createForm(document.createElement('div'), wizardWithSelectBoxes)
       .then((form) => {
-        const selectBoxes = form.getComponent([
-          'selectBoxes',
-        ]);
+        const selectBoxes = form.getComponent(['selectBoxes']);
         const value = {
           five: false,
           four: false,
@@ -297,15 +295,10 @@ describe('SelectBoxes Component', function () {
         selectBoxes.setValue(value);
 
         const checkInputs = (values) => {
-          Object.entries(values).forEach(
-            ([
-              key,
-              value,
-            ]) => {
-              const input = selectBoxes.element.querySelector(`input[value="${key}"]`);
-              assert.equal(input.checked, value, 'Should be checked');
-            },
-          );
+          Object.entries(values).forEach(([key, value]) => {
+            const input = selectBoxes.element.querySelector(`input[value="${key}"]`);
+            assert.equal(input.checked, value, 'Should be checked');
+          });
         };
 
         setTimeout(() => {

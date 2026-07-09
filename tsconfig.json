@@ -10,9 +10,7 @@
     "baseUrl": "src" /* Base directory to resolve non-absolute module names. */,
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
     "inlineSourceMap": false /* Emit a single file with source maps instead of having a separate file. */,
-    "lib": [
-      "esnext"
-    ] /* Specify library files to be included in the compilation. */,
+    "lib": ["esnext"] /* Specify library files to be included in the compilation. */,
     "listEmittedFiles": false,
     "listFiles": false,
     "moduleResolution": "node",
@@ -22,20 +20,10 @@
     "skipLibCheck": true,
     "strict": true,
     "traceResolution": false,
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
   },
-  "include": [
-    "src/**/*.js"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "lib",
-    "**/*.spec.js",
-    "**/*.unit.js"
-  ]
+  "include": ["src/**/*.js"],
+  "exclude": ["node_modules", "dist", "lib", "**/*.spec.js", "**/*.unit.js"]
 }

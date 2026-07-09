@@ -17,24 +17,11 @@ describe('Url Component', function () {
     const form = _.cloneDeep(comp2);
     form.components[0].validate = { minLength: 6, maxLength: 10 };
 
-    const validValues = [
-      '',
-      'www.hhh.by',
-      'uuu.by',
-      'TE2-t.est',
-      'te2-t.est',
-    ];
+    const validValues = ['', 'www.hhh.by', 'uuu.by', 'TE2-t.est', 'te2-t.est'];
 
-    const invalidMin = [
-      'hh.jj',
-      'w.by',
-    ];
+    const invalidMin = ['hh.jj', 'w.by'];
 
-    const invalidMax = [
-      'Test-t.Test',
-      'test.test.test',
-      't-t-t-t-t.tt',
-    ];
+    const invalidMax = ['Test-t.Test', 'test.test.test', 't-t-t-t-t.tt'];
 
     const testValidity = (values, valid, message, lastValue) => {
       _.each(values, (value) => {
@@ -102,11 +89,7 @@ describe('Url Component', function () {
       '',
     ];
 
-    const invalidValues = [
-      'www.test.com',
-      'test.hh',
-      'http://at--er.b.co',
-    ];
+    const invalidValues = ['www.test.com', 'test.hh', 'http://at--er.b.co'];
 
     const testValidity = (values, valid, message, lastValue) => {
       _.each(values, (value) => {

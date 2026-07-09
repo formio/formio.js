@@ -32,19 +32,11 @@ describe('Tags Component', function () {
     Formio.createForm(element, {
       type: 'form',
       display: 'form',
-      components: [
-        comp2,
-      ],
+      components: [comp2],
     })
       .then((form) => {
-        const component = form.getComponent([
-          'tags',
-        ]);
-        const values = [
-          'test',
-          'test1',
-          'test',
-        ];
+        const component = form.getComponent(['tags']);
+        const values = ['test', 'test1', 'test'];
         Harness.setTagsValue(values, component);
         assert.equal(component.choices.getValue(true).length, 2);
         done();
@@ -58,22 +50,13 @@ describe('Tags Component', function () {
     const form = await Formio.createForm(element, {
       type: 'form',
       display: 'form',
-      components: [
-        comp2,
-      ],
+      components: [comp2],
     });
-    const component = form.getComponent([
-      'tags',
-    ]);
-    const values = [
-      'one',
-      'two',
-    ];
+    const component = form.getComponent(['tags']);
+    const values = ['one', 'two'];
     const choicesInstance = component.choices;
     Harness.setTagsValue(values, component);
-    const value = [
-      ...component.refs.input,
-    ][0].value;
+    const value = [...component.refs.input][0].value;
     assert.equal(value, 'one,two');
     const removeBtn = element.querySelector(
       '.choices__list--multiple .choices__item .choices__button',
@@ -84,9 +67,7 @@ describe('Tags Component', function () {
     await wait(200);
     await form.redraw();
     await wait(200);
-    const currentValue = [
-      ...component.refs.input,
-    ][0].value;
+    const currentValue = [...component.refs.input][0].value;
     assert.equal(currentValue, 'two');
   });
 
@@ -95,21 +76,11 @@ describe('Tags Component', function () {
     Formio.createForm(element, {
       type: 'form',
       display: 'form',
-      components: [
-        comp2,
-      ],
+      components: [comp2],
     })
       .then((form) => {
-        const component = form.getComponent([
-          'tags',
-        ]);
-        const values = [
-          '1',
-          '2',
-          '3',
-          '4',
-          '5',
-        ];
+        const component = form.getComponent(['tags']);
+        const values = ['1', '2', '3', '4', '5'];
         Harness.setTagsValue(values, component);
 
         setTimeout(() => {
@@ -124,19 +95,10 @@ describe('Tags Component', function () {
     const element = document.createElement('div');
     Formio.createForm(element, modalTagsComponent)
       .then((form) => {
-        const component = form.getComponent([
-          'tags',
-        ]);
+        const component = form.getComponent(['tags']);
         const modalWindow = component.componentModal.refs.modalContents;
 
-        Harness.setTagsValue(
-          [
-            'test',
-            'test1',
-            'test2',
-          ],
-          component,
-        );
+        Harness.setTagsValue(['test', 'test1', 'test2'], component);
         Harness.dispatchEvent('click', modalWindow, '[ref="modalSave"]');
 
         setTimeout(() => {
@@ -161,11 +123,7 @@ describe('Tags Component', function () {
     Formio.createForm(element, form)
       .then((form) => {
         const tags = form.getComponent('tags');
-        const value = [
-          'tag1',
-          'tag2',
-          'tag3',
-        ];
+        const value = ['tag1', 'tag2', 'tag3'];
 
         tags.setValue(value);
 
@@ -189,11 +147,7 @@ describe('Tags Component', function () {
     Formio.createForm(element, form)
       .then((form) => {
         const tags = form.getComponent('tags');
-        const value = [
-          'tag1',
-          'tag2',
-          'tag3',
-        ];
+        const value = ['tag1', 'tag2', 'tag3'];
 
         tags.setValue(value);
 
@@ -216,11 +170,7 @@ describe('Tags Component', function () {
     Formio.createForm(element, form)
       .then((form) => {
         const tags = form.getComponent('tags');
-        const value = [
-          'tag1',
-          'tag2',
-          'tag3',
-        ];
+        const value = ['tag1', 'tag2', 'tag3'];
 
         tags.setValue(value);
 
@@ -244,14 +194,7 @@ describe('Tags Component', function () {
       .then((form) => {
         const tags = form.getComponent('tags');
         // tags.setValue(['1', '2', '3']);
-        Harness.setTagsValue(
-          [
-            'test',
-            'test1',
-            'test2',
-          ],
-          tags,
-        );
+        Harness.setTagsValue(['test', 'test1', 'test2'], tags);
         tags.choices.input.element.focus();
 
         setTimeout(() => {

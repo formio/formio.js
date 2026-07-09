@@ -34,10 +34,7 @@ export default [
     template: '<span>{{ item.label }}</span>',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.displayInTimezone' },
-          'location',
-        ],
+        '===': [{ var: 'data.displayInTimezone' }, 'location'],
       },
     },
   },

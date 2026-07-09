@@ -88,10 +88,7 @@ export default [
         defaultValue: true,
         customConditional({ data = {}, buildingForm = {} }) {
           const formSettings = buildingForm.settings || {};
-          return ![
-            data.breadcrumb,
-            formSettings.wizardBreadcrumbsType,
-          ].includes('none');
+          return ![data.breadcrumb, formSettings.wizardBreadcrumbsType].includes('none');
         },
       },
       {
@@ -103,10 +100,7 @@ export default [
         tooltip: 'Determines if the breadcrumb bar is clickable or not for visited tabs.',
         conditional: {
           json: {
-            '===': [
-              { var: 'data.breadcrumbClickable' },
-              false,
-            ],
+            '===': [{ var: 'data.breadcrumbClickable' }, false],
           },
         },
       },
@@ -212,10 +206,7 @@ export default [
     input: true,
     conditional: {
       json: {
-        '===': [
-          { var: 'data.collapsible' },
-          true,
-        ],
+        '===': [{ var: 'data.collapsible' }, true],
       },
     },
   },

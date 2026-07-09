@@ -18,11 +18,7 @@ describe('Columns Component', function () {
           columns.every((col) => col.currentWidth === 2),
           true,
         );
-        const oddIndexes = [
-          0,
-          2,
-          4,
-        ]; // 0 column has 2 textfields
+        const oddIndexes = [0, 2, 4]; // 0 column has 2 textfields
         oddIndexes.forEach((i) => (columns[i].components[0].hidden = true)); // we're setting hidden for odd columns
         // initially all components aren't hidden and have default width = 2
         component.rebuild(); // rebuild component to check conditions

@@ -61,11 +61,7 @@ export default {
   display: 'wizard',
   access: [
     {
-      roles: [
-        '6038c83637595d104cfc3594',
-        '6038c83637595d104cfc3595',
-        '6038c83637595d104cfc3596',
-      ],
+      roles: ['6038c83637595d104cfc3594', '6038c83637595d104cfc3595', '6038c83637595d104cfc3596'],
       type: 'read_all',
     },
   ],

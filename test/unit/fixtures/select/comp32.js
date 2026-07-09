@@ -10,26 +10,26 @@ export default {
         json: [
           {
             value: 'Apple',
-            label: 'A'
+            label: 'A',
           },
           {
             value: 'Banana',
-            label: 'B'
+            label: 'B',
           },
           {
             value: 'Cat',
-            label: 'C'
+            label: 'C',
           },
           {
             value: 'Dog',
-            label: 'D'
-          }
-        ]
+            label: 'D',
+          },
+        ],
       },
       validateWhenHidden: false,
       key: 'select',
       type: 'select',
-      input: true
+      input: true,
     },
     {
       type: 'button',
@@ -37,11 +37,11 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   title: 'Select JSON Test',
   display: 'form',
   name: 'selectJsonTest',
-  path: 'selectJsonTest'
+  path: 'selectJsonTest',
 };

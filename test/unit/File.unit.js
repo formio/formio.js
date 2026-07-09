@@ -43,56 +43,58 @@ describe('File Component', function () {
     });
   });
 
-  it('Should show correct error messages maxSize and minSize ', async () => {
+  it('Should show correct error messages maxSize and minSize ', async function () {
     const comp4Cloned = _.cloneDeep(comp4);
     const element = document.createElement('div');
 
     const form = await Formio.createForm(element, comp4Cloned);
-    const value =
-      [{
+    const value = [
+      {
         lastModified: 1746689434865,
-        lastModifiedDate: "Thu May 08 2025",
-        name: "basic.json",
-        size: 200000000000000,   // huge file > 5MB
-        type: "application/json",
-        webkitRelativePath: ""
-      }]
+        lastModifiedDate: 'Thu May 08 2025',
+        name: 'basic.json',
+        size: 200000000000000, // huge file > 5MB
+        type: 'application/json',
+        webkitRelativePath: '',
+      },
+    ];
     const file = form.getComponent('file');
     file.handleFilesToUpload(value);
     await wait(300);
     const errorMax = file.element.querySelector('.list-group-item .status.text-danger');
-    assert.equal(errorMax.textContent, "File is too big; it must be at most 5MB");
+    assert.equal(errorMax.textContent, 'File is too big; it must be at most 5MB');
     file.rebuild();
     await wait(300);
-    value[0].size = 10;  // tiny file < 1MB
+    value[0].size = 10; // tiny file < 1MB
     file.handleFilesToUpload(value);
     await wait(300);
     const errorMin = file.element.querySelector('.list-group-item .status.text-danger');
-    assert.equal(errorMin.textContent, "File is too small; it must be at least 1MB");
+    assert.equal(errorMin.textContent, 'File is too small; it must be at least 1MB');
   });
 
-  it('Should be returned an error about invalid parameters if we made a typo in a parameter in the configuration', async () => {
+  it('Should be returned an error about invalid parameters if we made a typo in a parameter in the configuration', async function () {
     const comp4Cloned = _.cloneDeep(comp4);
     delete comp4Cloned.config.maxAttachmentSize;
-    comp4Cloned.config.maxxxxxxAttachmentSize = '5MB' // special typo to get typo error
+    comp4Cloned.config.maxxxxxxAttachmentSize = '5MB'; // special typo to get typo error
     const element = document.createElement('div');
 
     const form = await Formio.createForm(element, comp4Cloned);
-    const value =
-      [{
+    const value = [
+      {
         lastModified: 1746689434865,
-        lastModifiedDate: "Thu May 08 2025",
-        name: "basic.json",
+        lastModifiedDate: 'Thu May 08 2025',
+        name: 'basic.json',
         size: 20000000000,
-        type: "application/json",
-        webkitRelativePath: ""
-      }]
+        type: 'application/json',
+        webkitRelativePath: '',
+      },
+    ];
 
     const file = form.getComponent('file');
     file.handleFilesToUpload(value);
     await wait(300);
     const errorTypo = file.element.querySelector('.list-group-item .status.text-danger');
-    assert.equal(errorTypo.textContent, "Please, check the entered parameters");
+    assert.equal(errorTypo.textContent, 'Please, check the entered parameters');
   });
 
   it('Should hide loader after loading process', function () {
@@ -352,9 +354,7 @@ describe('File Component', function () {
         options: options,
         form: {
           submissionRevisions: false,
-          components: [
-            cmp,
-          ],
+          components: [cmp],
         },
       };
       const parentNode = document.createElement('div');
@@ -362,23 +362,11 @@ describe('File Component', function () {
       parentNode.appendChild(element);
       component.build(element);
 
-      const content = [
-        1,
-      ];
+      const content = [1];
       const files = [
         new File(content, 'file.0'),
-        new File(
-          [
-            content,
-          ],
-          'file.1',
-        ),
-        new File(
-          [
-            content,
-          ],
-          'file.2',
-        ),
+        new File([content], 'file.1'),
+        new File([content], 'file.2'),
       ];
 
       component.handleFilesToUpload(files);
@@ -465,9 +453,7 @@ describe('File Component', function () {
         options: options,
         form: {
           submissionRevisions: false,
-          components: [
-            cmp,
-          ],
+          components: [cmp],
         },
       };
       const parentNode = document.createElement('div');
@@ -489,13 +475,9 @@ describe('File Component', function () {
       });
 
       // Trigger file upload
-      const content = [
-        1,
-      ];
+      const content = [1];
       const file = new File(content, 'file.0');
-      component.handleFilesToUpload([
-        file,
-      ]);
+      component.handleFilesToUpload([file]);
     });
   });
 

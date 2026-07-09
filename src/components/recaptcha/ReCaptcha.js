@@ -27,10 +27,7 @@ export default class ReCaptchaComponent extends Component {
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
-      operators: [
-        'isEmpty',
-        'isNotEmpty',
-      ],
+      operators: ['isEmpty', 'isNotEmpty'],
     };
   }
 
@@ -62,7 +59,7 @@ export default class ReCaptchaComponent extends Component {
           true,
         );
       } else {
-        console.warn('There is no Site Key specified in settings in form JSON');
+        console.warn(this.t('noSiteKey'));
       }
     }
   }
@@ -78,7 +75,7 @@ export default class ReCaptchaComponent extends Component {
   async verify(actionName) {
     const siteKey = _get(this.root?.form, 'settings.recaptcha.siteKey');
     if (!siteKey) {
-      console.warn('There is no Site Key specified in settings in form JSON');
+      console.warn(this.t('noSiteKey'));
       return;
     }
     if (!this.recaptchaApiReady) {

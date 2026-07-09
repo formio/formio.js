@@ -57,10 +57,7 @@ export default [
     },
     conditional: {
       json: {
-        '===': [
-          { var: 'data.action' },
-          'oauth',
-        ],
+        '===': [{ var: 'data.action' }, 'oauth'],
       },
     },
   },
@@ -75,10 +72,7 @@ export default [
     input: true,
     conditional: {
       json: {
-        '===': [
-          { var: 'data.action' },
-          'saveState',
-        ],
+        '===': [{ var: 'data.action' }, 'saveState'],
       },
     },
   },
@@ -92,10 +86,7 @@ export default [
     tooltip: 'Use the Enter key to submit form.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.action' },
-          'submit',
-        ],
+        '===': [{ var: 'data.action' }, 'submit'],
       },
     },
   },
@@ -109,10 +100,7 @@ export default [
     tooltip: 'When the button is pressed, show any validation errors on the form.',
     conditional: {
       json: {
-        '!==': [
-          { var: 'data.action' },
-          'submit',
-        ],
+        '!==': [{ var: 'data.action' }, 'submit'],
       },
     },
   },
@@ -125,10 +113,7 @@ export default [
     tooltip: 'The event to fire when the button is clicked.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.action' },
-          'event',
-        ],
+        '===': [{ var: 'data.action' }, 'event'],
       },
     },
   },
@@ -143,10 +128,7 @@ export default [
     placeholder: 'https://example.form.io',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.action' },
-          'url',
-        ],
+        '===': [{ var: 'data.action' }, 'url'],
       },
     },
   },
@@ -174,10 +156,7 @@ export default [
     ],
     conditional: {
       json: {
-        '===': [
-          { var: 'data.action' },
-          'url',
-        ],
+        '===': [{ var: 'data.action' }, 'url'],
       },
     },
   },
@@ -193,10 +172,7 @@ export default [
     placeholder: "data['mykey'] = data['anotherKey'];",
     conditional: {
       json: {
-        '===': [
-          { var: 'data.action' },
-          'custom',
-        ],
+        '===': [{ var: 'data.action' }, 'custom'],
       },
     },
   },

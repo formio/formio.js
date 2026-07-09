@@ -58,10 +58,7 @@ export default [
     weight: 415,
     conditional: {
       json: {
-        '==': [
-          { var: 'data.editor' },
-          '',
-        ],
+        '==': [{ var: 'data.editor' }, ''],
       },
     },
   },
@@ -75,16 +72,10 @@ export default [
       json: {
         or: [
           {
-            '===': [
-              { var: 'data.editor' },
-              'quill',
-            ],
+            '===': [{ var: 'data.editor' }, 'quill'],
           },
           {
-            '===': [
-              { var: 'data.editor' },
-              'ckeditor',
-            ],
+            '===': [{ var: 'data.editor' }, 'ckeditor'],
           },
         ],
       },
@@ -110,10 +101,7 @@ export default [
     },
     conditional: {
       json: {
-        '===': [
-          { var: 'data.isUploadEnabled' },
-          true,
-        ],
+        '===': [{ var: 'data.isUploadEnabled' }, true],
       },
     },
   },
@@ -128,10 +116,7 @@ export default [
       "See <a href='https://github.com/danialfarid/ng-file-upload#server-side' target='_blank'>https://github.com/danialfarid/ng-file-upload#server-side</a> for how to set up the server.",
     conditional: {
       json: {
-        '===': [
-          { var: 'data.uploadStorage' },
-          'url',
-        ],
+        '===': [{ var: 'data.uploadStorage' }, 'url'],
       },
     },
   },
@@ -168,10 +153,7 @@ export default [
     weight: 415.5,
     conditional: {
       json: {
-        '===': [
-          { var: 'data.isUploadEnabled' },
-          true,
-        ],
+        '===': [{ var: 'data.isUploadEnabled' }, true],
       },
     },
   },
@@ -188,22 +170,13 @@ export default [
       json: {
         and: [
           {
-            '===': [
-              { var: 'data.editor' },
-              'quill',
-            ],
+            '===': [{ var: 'data.editor' }, 'quill'],
           },
           {
-            '===': [
-              { var: 'data.isUploadEnabled' },
-              true,
-            ],
+            '===': [{ var: 'data.isUploadEnabled' }, true],
           },
           {
-            '===': [
-              { var: 'data.uploadStorage' },
-              'url',
-            ],
+            '===': [{ var: 'data.uploadStorage' }, 'url'],
           },
         ],
       },
@@ -228,16 +201,10 @@ export default [
       json: {
         or: [
           {
-            '===': [
-              { var: 'data.editor' },
-              'quill',
-            ],
+            '===': [{ var: 'data.editor' }, 'quill'],
           },
           {
-            '===': [
-              { var: 'data.editor' },
-              'ace',
-            ],
+            '===': [{ var: 'data.editor' }, 'ace'],
           },
         ],
       },
@@ -260,22 +227,13 @@ export default [
       json: {
         or: [
           {
-            '===': [
-              { var: 'data.editor' },
-              'ace',
-            ],
+            '===': [{ var: 'data.editor' }, 'ace'],
           },
           {
-            '===': [
-              { var: 'data.editor' },
-              'ckeditor',
-            ],
+            '===': [{ var: 'data.editor' }, 'ckeditor'],
           },
           {
-            '===': [
-              { var: 'data.editor' },
-              'quill',
-            ],
+            '===': [{ var: 'data.editor' }, 'quill'],
           },
         ],
       },

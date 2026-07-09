@@ -15,21 +15,11 @@ describe('Email Component', function () {
     const form = _.cloneDeep(comp2);
     form.components[0].validate = { minLength: 7, maxLength: 10 };
 
-    const validValues = [
-      '',
-      'test@te.st',
-      't__t@t.st',
-      '_t@test.st',
-    ];
+    const validValues = ['', 'test@te.st', 't__t@t.st', '_t@test.st'];
 
-    const invalidMin = [
-      't@t.st',
-    ];
+    const invalidMin = ['t@t.st'];
 
-    const invalidMax = [
-      't@test.test',
-      'test@test.test',
-    ];
+    const invalidMax = ['t@test.test', 'test@test.test'];
 
     const testValidity = (values, valid, message, lastValue) => {
       _.each(values, (value) => {
@@ -88,12 +78,7 @@ describe('Email Component', function () {
     const form = _.cloneDeep(comp2);
     form.components[0].validate = { pattern: '^[0-9]+@[0-9]+\\.[a-z]{2,4}$' };
 
-    const validValues = [
-      '000@12.ts',
-      '123456@1234.com',
-      '123456@1234.come',
-      '',
-    ];
+    const validValues = ['000@12.ts', '123456@1234.com', '123456@1234.come', ''];
 
     const invalidValues = [
       '123_456@1234.com',

@@ -906,22 +906,12 @@ describe('Formio.js Tests', function () {
       {
         fnName: 'uploadFile',
         formUrl: 'https://api.localhost:3000/project/123/form/123',
-        args: [
-          's3',
-          'FILE',
-          'file.jpg',
-          'dir/',
-        ],
+        args: ['s3', 'FILE', 'file.jpg', 'dir/'],
       },
       {
         fnName: 'uploadFile',
         formUrl: 'https://api.localhost:3000/project/123/form/123',
-        args: [
-          'dropbox',
-          'FILE',
-          'file.jpg',
-          'dir/',
-        ],
+        args: ['dropbox', 'FILE', 'file.jpg', 'dir/'],
       },
       {
         fnName: 'downloadFile',
@@ -1215,9 +1205,7 @@ describe('Formio.js Tests', function () {
                   'Range-Unit': 'items',
                   'x-jwt-token': userToken,
                 },
-                body: [
-                  project,
-                ],
+                body: [project],
               };
             },
           };
@@ -1400,9 +1388,7 @@ describe('Formio.js Tests', function () {
                   'Range-Unit': 'items',
                   'x-jwt-token': userToken,
                 },
-                body: [
-                  form,
-                ],
+                body: [form],
               };
             },
           };
@@ -1537,9 +1523,7 @@ describe('Formio.js Tests', function () {
                   'Range-Unit': 'items',
                   'x-jwt-token': userToken,
                 },
-                body: [
-                  submission,
-                ],
+                body: [submission],
               };
             },
           };
@@ -1786,9 +1770,7 @@ describe('Formio.js Tests', function () {
         test() {
           const user = {
             _id: 'test_user_id',
-            roles: [
-              'test_role_id',
-            ],
+            roles: ['test_role_id'],
           };
 
           const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
@@ -1811,9 +1793,7 @@ describe('Formio.js Tests', function () {
                     submissionAccess: [
                       {
                         type: 'create_all',
-                        roles: [
-                          'test_role_id',
-                        ],
+                        roles: ['test_role_id'],
                       },
                     ],
                   },
@@ -1841,9 +1821,7 @@ describe('Formio.js Tests', function () {
           const userId = 'test_user_id';
           const user = {
             _id: userId,
-            roles: [
-              'test_role_id',
-            ],
+            roles: ['test_role_id'],
           };
           const submission = {
             owner: userId,
@@ -1868,9 +1846,7 @@ describe('Formio.js Tests', function () {
                     submissionAccess: [
                       {
                         type: 'create_own',
-                        roles: [
-                          'test_role_id',
-                        ],
+                        roles: ['test_role_id'],
                       },
                     ],
                   },
@@ -1919,9 +1895,7 @@ describe('Formio.js Tests', function () {
                     submissionAccess: [
                       {
                         type: 'create_all',
-                        roles: [
-                          'test_anonymous_role_id',
-                        ],
+                        roles: ['test_anonymous_role_id'],
                       },
                     ],
                   },
@@ -1952,9 +1926,7 @@ describe('Formio.js Tests', function () {
         name: 'userPermissions method should give all permissions for admin role',
         test() {
           const user = {
-            roles: [
-              'test_admin_role',
-            ],
+            roles: ['test_admin_role'],
           };
           const formio = new Formio(`${Formio.getBaseUrl()}/testform`);
           return formio.userPermissions(user).then((permissions) => {
@@ -2002,9 +1974,7 @@ describe('Formio.js Tests', function () {
         name: 'userPermissions method should give only group read permission for `read` level',
         test() {
           const user = {
-            roles: [
-              'test_group_id',
-            ],
+            roles: ['test_group_id'],
           };
           const submission = {
             data: {
@@ -2061,9 +2031,7 @@ describe('Formio.js Tests', function () {
         name: 'userPermissions method should give group read and create permissions for `create` level',
         test() {
           const user = {
-            roles: [
-              'test_group_id',
-            ],
+            roles: ['test_group_id'],
           };
           const submission = {
             data: {
@@ -2120,9 +2088,7 @@ describe('Formio.js Tests', function () {
         name: 'userPermissions method should give group read, create and edit permissions for `write` level',
         test() {
           const user = {
-            roles: [
-              'test_group_id',
-            ],
+            roles: ['test_group_id'],
           };
           const submission = {
             data: {
@@ -2179,9 +2145,7 @@ describe('Formio.js Tests', function () {
         name: 'userPermissions method should give all group permissions for `admin` level',
         test() {
           const user = {
-            roles: [
-              'test_group_id',
-            ],
+            roles: ['test_group_id'],
           };
           const submission = {
             data: {
@@ -2238,14 +2202,10 @@ describe('Formio.js Tests', function () {
         name: 'userPermissions method should handle submission with multiple groups',
         test() {
           const user1 = {
-            roles: [
-              'test_group_id1',
-            ],
+            roles: ['test_group_id1'],
           };
           const user2 = {
-            roles: [
-              'test_group_id2',
-            ],
+            roles: ['test_group_id2'],
           };
           const submission = {
             data: {

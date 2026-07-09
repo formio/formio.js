@@ -28,12 +28,7 @@ function indexeddb() {
 
         return new Promise((resolve, reject) => {
           reader.onload = () => {
-            const blobObject = new Blob(
-              [
-                file,
-              ],
-              { type: file.type },
-            );
+            const blobObject = new Blob([file], { type: file.type });
 
             const id = uuidv4(blobObject);
 
@@ -46,12 +41,7 @@ function indexeddb() {
               url,
             };
 
-            const trans = db.transaction(
-              [
-                options.indexeddbTable,
-              ],
-              'readwrite',
-            );
+            const trans = db.transaction([options.indexeddbTable], 'readwrite');
             const addReq = trans.objectStore(options.indexeddbTable).put(data, id);
 
             addReq.onerror = function (e) {
@@ -89,25 +79,14 @@ function indexeddb() {
         };
       }).then((db) => {
         return new Promise((resolve, reject) => {
-          const trans = db.transaction(
-            [
-              options.indexeddbTable,
-            ],
-            'readonly',
-          );
+          const trans = db.transaction([options.indexeddbTable], 'readonly');
           const store = trans.objectStore(options.indexeddbTable).get(file.id);
           store.onsuccess = () => {
             trans.oncomplete = () => {
               const result = store.result;
-              const dbFile = new File(
-                [
-                  store.result.data,
-                ],
-                file.name,
-                {
-                  type: store.result.type,
-                },
-              );
+              const dbFile = new File([store.result.data], file.name, {
+                type: store.result.type,
+              });
 
               const reader = new FileReader();
 
@@ -140,12 +119,7 @@ function indexeddb() {
         };
       }).then((db) => {
         return new Promise((resolve, reject) => {
-          const trans = db.transaction(
-            [
-              options.indexeddbTable,
-            ],
-            'readwrite',
-          );
+          const trans = db.transaction([options.indexeddbTable], 'readwrite');
           const store = trans.objectStore(options.indexeddbTable).delete(file.id);
           store.onsuccess = () => {
             trans.oncomplete = () => {

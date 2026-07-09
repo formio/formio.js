@@ -70,9 +70,7 @@ export default [
         label: 'Key',
         allowCalculateOverride: true,
         calculateValue: {
-          _camelCase: [
-            { var: 'row.label' },
-          ],
+          _camelCase: [{ var: 'row.label' }],
         },
       },
     ],

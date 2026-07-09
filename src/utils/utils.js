@@ -156,8 +156,8 @@ function getConditionalPathsRecursive(conditionPaths, data) {
         return;
       }
 
-      const hasInnerDataArray = currentData.find((x) =>
-        x && conditionPaths && Array.isArray(x[conditionPaths[currentLocalIndex]]),
+      const hasInnerDataArray = currentData.find(
+        (x) => x && conditionPaths && Array.isArray(x[conditionPaths[currentLocalIndex]]),
       );
 
       if (hasInnerDataArray) {
@@ -1164,9 +1164,7 @@ export function fieldData(data, component) {
 
       // Convert old single field data in submissions to multiple
       if (key === parts[parts.length - 1] && component.multiple && !Array.isArray(value[key])) {
-        value[key] = [
-          value[key],
-        ];
+        value[key] = [value[key]];
       }
 
       // Set the value of this key.
@@ -1176,9 +1174,7 @@ export function fieldData(data, component) {
   } else {
     // Convert old single field data in submissions to multiple
     if (component.multiple && !Array.isArray(data[component.key])) {
-      data[component.key] = [
-        data[component.key],
-      ];
+      data[component.key] = [data[component.key]];
     }
 
     // Fix for checkbox type radio submission values in tableView
@@ -1320,10 +1316,7 @@ export function withSwitch(a, b) {
     next = prev;
   }
 
-  return [
-    get,
-    toggle,
-  ];
+  return [get, toggle];
 }
 
 /**
@@ -1470,9 +1463,7 @@ function translateElemValue(elem, translate) {
  * @returns {void}
  */
 function translateDeepTag(tag, translate) {
-  const children = tag.children.length && [
-    ...tag.children,
-  ];
+  const children = tag.children.length && [...tag.children];
   const shouldTranslateEntireContent =
     children &&
     children.every(
@@ -1522,10 +1513,7 @@ export function sanitize(string, options) {
   }
   // Dompurify configuration
   const sanitizeOptions = {
-    ADD_ATTR: [
-      'ref',
-      'target',
-    ],
+    ADD_ATTR: ['ref', 'target'],
     USE_PROFILES: { html: true },
   };
   // Use profiles
@@ -1628,9 +1616,7 @@ export function isInputComponent(componentJson) {
 export function getArrayFromComponentPath(pathStr) {
   if (!pathStr || !_.isString(pathStr)) {
     if (!_.isArray(pathStr)) {
-      return [
-        pathStr,
-      ];
+      return [pathStr];
     }
     return pathStr;
   }
@@ -1840,9 +1826,7 @@ export function getComponentSavedTypes(fullSchema) {
   }
 
   if (schema.multiple) {
-    return [
-      componentValueTypes.array,
-    ];
+    return [componentValueTypes.array];
   }
 
   return null;
@@ -1890,13 +1874,19 @@ export function hasEncodedTimezone(value) {
   );
 }
 // Types for min max validation if value = string
-const TYPES = new Map([["char", "Length"], ["word", "Words"]]);
+const TYPES = new Map([
+  ['char', 'Length'],
+  ['word', 'Words'],
+]);
 
 // The number from which the remaining character(words) count message starts being read
-const REMAIN_COUNT = new Map([["char", 10], ["word", 5]]);
+const REMAIN_COUNT = new Map([
+  ['char', 10],
+  ['word', 5],
+]);
 
 function getWordOrCharacterLabel(isWordType, count) {
-  const base = isWordType ? "word" : "character";
+  const base = isWordType ? 'word' : 'character';
   return Math.abs(count) === 1 ? base : `${base}s`;
 }
 /**
@@ -1908,22 +1898,22 @@ function getWordOrCharacterLabel(isWordType, count) {
  * @returns {string} - The messsage string
  */
 function getScreenReaderMessage(component, type, value) {
-  const isWordType = type === "word";
+  const isWordType = type === 'word';
   const maxKey =
-    typeof value === "string" && (type === "char" || isWordType)
+    typeof value === 'string' && (type === 'char' || isWordType)
       ? `validate.max${TYPES.get(type)}`
-      : "validate.max";
+      : 'validate.max';
   const minKey =
-    typeof value === "string" && (type === "char" || isWordType)
+    typeof value === 'string' && (type === 'char' || isWordType)
       ? `validate.min${TYPES.get(type)}`
-      : "validate.min";
+      : 'validate.min';
 
   const max = _.parseInt(_.get(component.component, maxKey), 10);
   const min = _.parseInt(_.get(component.component, minKey), 10);
 
-  let message = "";
+  let message = '';
 
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     const currentLength = isWordType ? component.getWordCount(value) : value.length;
 
     if (!isNaN(max)) {
@@ -1957,8 +1947,8 @@ function getScreenReaderMessage(component, type, value) {
         message += `Minimum ${min} ${getWordOrCharacterLabel(isWordType, min)}. `;
       }
     }
-  } else if (typeof value === "number" || value === null) {
-    if (value != null && value !== "") {
+  } else if (typeof value === 'number' || value === null) {
+    if (value != null && value !== '') {
       if (!isNaN(max) && value > max) {
         message += `Number cannot be greater than ${max}. `;
       }
@@ -1982,30 +1972,30 @@ function getScreenReaderMessage(component, type, value) {
  * @returns {undefined}
  */
 export function announceScreenReaderMessage(component, value, index = 0, forFocus = false) {
-  if (typeof value !== "string" && typeof value !== "number" && value !== null) {
+  if (typeof value !== 'string' && typeof value !== 'number' && value !== null) {
     return;
   }
   // The ref for announcing messages
-  const messageSpan = "announceMessage";
+  const messageSpan = 'announceMessage';
   if (!component.refs[messageSpan]) return;
   const el = component.refs[messageSpan][index];
   if (!el) return;
 
   // Define types for validation
   const typesToCheck = [];
-  if (typeof value === "string") typesToCheck.push("char", "word");
-  if (typeof value === "number" || value === null) typesToCheck.push("number");
+  if (typeof value === 'string') typesToCheck.push('char', 'word');
+  if (typeof value === 'number' || value === null) typesToCheck.push('number');
 
   // Construct the combined message
   const combinedMessage = typesToCheck
-    .map(type => getScreenReaderMessage(component, type, value))
-    .filter(msg => msg)
-    .join(" ")
+    .map((type) => getScreenReaderMessage(component, type, value))
+    .filter((msg) => msg)
+    .join(' ')
     .trim();
 
   if (forFocus) {
     setTimeout(() => {
-      el.textContent = "";
+      el.textContent = '';
       setTimeout(() => {
         el.textContent = combinedMessage;
       }, 50);
@@ -2015,9 +2005,9 @@ export function announceScreenReaderMessage(component, value, index = 0, forFocu
 
   clearTimeout(el._announceTimer);
   el._announceTimer = setTimeout(() => {
-    el.textContent = "";
+    el.textContent = '';
     setTimeout(() => {
-        el.textContent = combinedMessage;
+      el.textContent = combinedMessage;
     }, 50);
   }, 500);
 }
@@ -2026,9 +2016,12 @@ export function announceScreenReaderMessage(component, value, index = 0, forFocu
  * Outputs text to screen reader
  * @param {string} text The text to output to screen readers
  */
-export function screenReaderSpeech(text){
+export function screenReaderSpeech(text) {
   const ariaSpeechElement = document.createElement('div');
-  ariaSpeechElement.setAttribute("style", "border: 0;clip: rect(0 0 0 0);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;white-space: nowrap;")
+  ariaSpeechElement.setAttribute(
+    'style',
+    'border: 0;clip: rect(0 0 0 0);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;white-space: nowrap;',
+  );
   document.body.append(ariaSpeechElement);
   ariaSpeechElement.ariaLive = 'assertive';
   setTimeout(() => {

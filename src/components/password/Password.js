@@ -27,10 +27,7 @@ export default class PasswordComponent extends TextFieldComponent {
   }
 
   get defaultSchema() {
-    return _.omit(PasswordComponent.schema(), [
-      'protected',
-      'tableView',
-    ]);
+    return _.omit(PasswordComponent.schema(), ['protected', 'tableView']);
   }
 
   get inputInfo() {

@@ -34,19 +34,12 @@ export default class SurveyComponent extends Field {
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
-      operators: [
-        'isEmpty',
-        'isNotEmpty',
-      ],
+      operators: ['isEmpty', 'isNotEmpty'],
     };
   }
 
   static savedValueTypes(schema) {
-    return (
-      getComponentSavedTypes(schema) || [
-        componentValueTypes.object,
-      ]
-    );
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   get defaultSchema() {
@@ -168,22 +161,16 @@ export default class SurveyComponent extends Field {
         <table border="1" style="width:100%">
           <thead>
             <tr>
-              <th>Question</th>
-              <th>Value</th>
+              <th>${this.t('surveyQuestion')}</th>
+              <th>${this.t('surveyQuestionValue')}</th>
             </tr>
           </thead>
           <tbody>
       `;
 
       _.forIn(value, (value, key) => {
-        const question = _.find(this.component.questions, [
-          'value',
-          key,
-        ]);
-        const answer = _.find(this.component.values, [
-          'value',
-          value,
-        ]);
+        const question = _.find(this.component.questions, ['value', key]);
+        const answer = _.find(this.component.values, ['value', value]);
 
         if (!question || !answer) {
           return;

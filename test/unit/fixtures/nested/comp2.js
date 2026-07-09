@@ -8,9 +8,7 @@ export default {
       layoutFixed: false,
       enableRowGroups: false,
       tableView: false,
-      defaultValue: [
-        {},
-      ],
+      defaultValue: [{}],
       key: 'dataGrid',
       type: 'datagrid',
       input: true,

@@ -42,9 +42,7 @@ describe('HTML Component', function () {
           const div = form.element.querySelector('.myClass');
           assert.equal(div.innerHTML.trim(), 'No Text');
 
-          const textField = form.getComponent([
-            'textField',
-          ]);
+          const textField = form.getComponent(['textField']);
           textField.setValue('apple', { modified: true });
 
           setTimeout(() => {

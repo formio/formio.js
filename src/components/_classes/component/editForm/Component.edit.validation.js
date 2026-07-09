@@ -135,10 +135,7 @@ export default [
             {
               if: [
                 {
-                  '===': [
-                    { var: 'input' },
-                    'Bob',
-                  ],
+                  '===': [{ var: 'input' }, 'Bob'],
                 },
                 true,
                 "Your name must be 'Bob'!",

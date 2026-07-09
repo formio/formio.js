@@ -41,11 +41,7 @@ export default class ButtonComponent extends Field {
   }
 
   static savedValueTypes(schema) {
-    return (
-      getComponentSavedTypes(schema) || [
-        componentValueTypes.boolean,
-      ]
-    );
+    return getComponentSavedTypes(schema) || [componentValueTypes.boolean];
   }
 
   constructor(component, options, data) {
@@ -60,12 +56,7 @@ export default class ButtonComponent extends Field {
   get inputInfo() {
     const info = super.elementInfo();
     info.type = 'button';
-    info.attr.type = [
-      'submit',
-      'saveState',
-    ].includes(this.component.action)
-      ? 'submit'
-      : 'button';
+    info.attr.type = ['submit', 'saveState'].includes(this.component.action) ? 'submit' : 'button';
     this.component.theme = this.component.theme || 'default';
     info.attr.class = `btn btn-${this.component.theme}`;
     if (this.component.size) {
@@ -440,22 +431,19 @@ export default class ButtonComponent extends Field {
         break;
       case 'oauth':
         if (this.root === this) {
-          console.warn('You must add the OAuth button to a form for it to function properly');
+          console.warn(this.t('noOAuthBtn'));
           return;
         }
 
         // Display Alert if OAuth config is missing
         if (!this.oauthConfig) {
-          this.root?.setAlert(
-            'danger',
-            'OAuth not configured. You must configure oauth for your project before it will work.',
-          );
+          this.root.setAlert('danger', this.t('noOAuthConfiguration'));
           break;
         }
 
         // Display Alert if oAuth has an error is missing
         if (this.oauthConfig.error) {
-          this.root?.setAlert('danger', `The Following Error Has Occured ${this.oauthConfig.error}`);
+          this.root?.setAlert('danger', `${this.t('oAuthErrorsTitle')} ${this.t(this.oauthConfig.error)}`);
           break;
         }
 
@@ -466,14 +454,14 @@ export default class ButtonComponent extends Field {
   }
 
   openOauth(settings) {
-    // this is if the temp session (storing the state and code verifiers) expires in the db 
+    // this is if the temp session (storing the state and code verifiers) expires in the db
     // and we need to fetch new oauth state
     if (settings.sessionExpireAt && Date.now() >= settings.sessionExpireAt) {
       this._handleOauthSessionExpired();
       return;
     }
     if (!this.root?.formio) {
-      console.warn('You must attach a Form API url to your form in order to use OAuth buttons.');
+      console.warn(this.t('noOAuthFormUrl'));
       return;
     }
 
@@ -536,7 +524,7 @@ export default class ButtonComponent extends Field {
           if (settings.state !== params.state) {
             this.root?.setAlert(
               'danger',
-              'OAuth state does not match. Please try logging in again.',
+              this.t('oAuthStateError')
             );
             return;
           }
@@ -591,7 +579,7 @@ export default class ButtonComponent extends Field {
           error.name !== 'SecurityError' &&
           (error.name !== 'Error' || error.message !== 'Permission denied')
         ) {
-          this.root?.setAlert('danger', error.message || error);
+          this.root?.setAlert('danger', this.t(`${error.message || error}`));
         }
       }
       if (!popup || popup.closed || popup.closed === undefined) {

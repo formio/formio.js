@@ -485,6 +485,62 @@ describe('EditGrid Component', function () {
     });
   });
 
+  it('Should not treat a required edit grid as empty inside a nested form when it has rows', function (done) {
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement);
+    form
+      .setForm({
+        type: 'form',
+        display: 'form',
+        components: [
+          {
+            label: 'Nested Form',
+            key: 'form',
+            type: 'form',
+            display: 'form',
+            components: [
+              {
+                label: 'Edit Grid',
+                key: 'editGrid',
+                type: 'editgrid',
+                input: true,
+                validate: { required: true },
+                components: [
+                  {
+                    label: 'Text Field',
+                    key: 'textFieldEditGrid',
+                    type: 'textfield',
+                    input: true,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      })
+      .then(() => form.ready)
+      .then(() => {
+        form.setSubmission({
+          data: {
+            form: {
+              data: {
+                editGrid: [{ textFieldEditGrid: '444' }],
+              },
+            },
+          },
+        });
+        setTimeout(() => {
+          const editGrid = form.getComponent(['form', 'editGrid']);
+          assert(editGrid, 'Should find edit grid inside nested form');
+          assert.deepEqual(editGrid.dataValue, [{ textFieldEditGrid: '444' }]);
+          assert(editGrid.checkValidity(null, true), 'Should be valid when edit grid has rows');
+          assert.equal(editGrid.errors.length, 0, 'Should have no validation errors');
+          done();
+        }, 200);
+      })
+      .catch(done);
+  });
+
   it('Should not allow to go to the next page if row is not saved', function (done) {
     const form = _.cloneDeep(comp16);
     const element = document.createElement('div');

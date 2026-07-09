@@ -19,9 +19,7 @@ export default [
     },
     onChange(context) {
       if (context && context.flags && context.flags && context.flags.modified) {
-        context.data.values = [
-          { label: '', value: '' },
-        ];
+        context.data.values = [{ label: '', value: '' }];
       }
     },
   },
@@ -34,9 +32,7 @@ export default [
       'The radio button values that can be picked for this field. Values are text submitted with the form data. Labels are text that appears next to the radio buttons on the form.',
     weight: 10,
     reorder: true,
-    defaultValue: [
-      { label: '', value: '' },
-    ],
+    defaultValue: [{ label: '', value: '' }],
     components: [
       {
         label: 'Label',
@@ -78,10 +74,7 @@ export default [
     ],
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'values',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'values'],
       },
     },
   },
@@ -110,10 +103,7 @@ export default [
     key: 'template',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'url',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'url'],
       },
     },
   },

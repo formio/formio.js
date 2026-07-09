@@ -108,9 +108,7 @@ export default {
       disabled: false,
       tableView: false,
       modalEdit: false,
-      defaultValue: [
-        {},
-      ],
+      defaultValue: [{}],
       persistent: true,
       protected: false,
       dbIndex: false,

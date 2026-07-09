@@ -69,11 +69,7 @@ export default class DayComponent extends Field {
 
   static savedValueTypes(schema) {
     schema = schema || {};
-    return (
-      getComponentSavedTypes(schema) || [
-        componentValueTypes.string,
-      ]
-    );
+    return getComponentSavedTypes(schema) || [componentValueTypes.string];
   }
 
   // Empty value used before 9.3.x
@@ -198,9 +194,7 @@ export default class DayComponent extends Field {
   }
 
   get days() {
-    const days = [
-      { value: '', label: _.get(this.component, 'fields.day.placeholder', '') },
-    ];
+    const days = [{ value: '', label: _.get(this.component, 'fields.day.placeholder', '') }];
     for (let x = 1; x <= 31; x++) {
       days.push({
         value: x,
@@ -216,7 +210,7 @@ export default class DayComponent extends Field {
         value: '',
         label:
           _.get(this.component, 'fields.month.placeholder') ||
-          (this.hideInputLabels ? this.t('Month') : ''),
+          (this.hideInputLabels ? this.t('month') : ''),
       },
       { value: 1, label: 'January' },
       { value: 2, label: 'February' },
@@ -235,9 +229,7 @@ export default class DayComponent extends Field {
   }
 
   get years() {
-    const years = [
-      { value: '', label: _.get(this.component, 'fields.year.placeholder', '') },
-    ];
+    const years = [{ value: '', label: _.get(this.component, 'fields.year.placeholder', '') }];
     const minYears = _.get(this.component, 'fields.year.minYear', 1900) || 1900;
     const maxYears = _.get(this.component, 'fields.year.maxYear', 2030) || 2030;
     for (let x = minYears; x <= maxYears; x++) {
@@ -251,23 +243,11 @@ export default class DayComponent extends Field {
 
   setErrorClasses(elements, dirty, hasError) {
     super.setErrorClasses(elements, dirty, hasError);
-    super.setErrorClasses(
-      [
-        this.refs.day,
-        this.refs.month,
-        this.refs.year,
-      ],
-      dirty,
-      hasError,
-    );
+    super.setErrorClasses([this.refs.day, this.refs.month, this.refs.year], dirty, hasError);
   }
 
   removeInputError(elements) {
-    super.removeInputError([
-      this.refs.day,
-      this.refs.month,
-      this.refs.year,
-    ]);
+    super.removeInputError([this.refs.day, this.refs.month, this.refs.year]);
     super.removeInputError(elements);
   }
 
@@ -335,7 +315,7 @@ export default class DayComponent extends Field {
       try {
         this.saveCaretPosition(element, name);
       } catch (err) {
-        console.warn('An error occurred while trying to save caret position', err);
+        console.warn(this.t('caretPositionSavingError'), err);
       }
       this.updateValue(null, {
         modified: true,
@@ -376,11 +356,7 @@ export default class DayComponent extends Field {
           modified: true,
         }),
       );
-      [
-        this.refs.day,
-        this.refs.month,
-        this.refs.year,
-      ]
+      [this.refs.day, this.refs.month, this.refs.year]
         .filter((element) => !!element)
         .forEach((element) => {
           super.addFocusBlurEvents(element);
@@ -439,21 +415,7 @@ export default class DayComponent extends Field {
     }
     const dateParts = [];
     const valueParts = value.split('/');
-    const [
-      DAY,
-      MONTH,
-      YEAR,
-    ] = this.component.dayFirst
-      ? [
-          0,
-          1,
-          2,
-        ]
-      : [
-          1,
-          0,
-          2,
-        ];
+    const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const defaultValue = this.component.defaultValue ? this.component.defaultValue.split('/') : '';
 
     let defaultDay = '';
@@ -539,21 +501,7 @@ export default class DayComponent extends Field {
   }
 
   getDayWithHiddenFields(parts) {
-    let [
-      DAY,
-      MONTH,
-      YEAR,
-    ] = this.component.dayFirst
-      ? [
-          0,
-          1,
-          2,
-        ]
-      : [
-          1,
-          0,
-          2,
-        ];
+    let [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     if (!this.showDay) {
       MONTH = MONTH === 0 ? 0 : MONTH - 1;
       YEAR = YEAR - 1;
@@ -623,21 +571,7 @@ export default class DayComponent extends Field {
       month,
       year;
     // Map positions to identifiers to get default values for each part of day
-    const [
-      DAY,
-      MONTH,
-      YEAR,
-    ] = this.component.dayFirst
-      ? [
-          0,
-          1,
-          2,
-        ]
-      : [
-          1,
-          0,
-          2,
-        ];
+    const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const defaultValue = value || this.component.defaultValue;
     if (defaultValue) {
       defaults = defaultValue.split('/').map((x) => parseInt(x, 10));
@@ -795,21 +729,7 @@ export default class DayComponent extends Field {
     if (!value) {
       return true;
     }
-    const [
-      DAY,
-      MONTH,
-      YEAR,
-    ] = this.component.dayFirst
-      ? [
-          0,
-          1,
-          2,
-        ]
-      : [
-          1,
-          0,
-          2,
-        ];
+    const [DAY, MONTH, YEAR] = this.component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const values = value.split('/');
     if (values.length < 3) {
       return true;

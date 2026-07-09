@@ -54,11 +54,7 @@ describe('Util Tests', function () {
         },
       };
       const data = {
-        test: [
-          1,
-          2,
-          3,
-        ],
+        test: [1, 2, 3],
       };
 
       utils.checkCalculated(component, null, data);
@@ -116,26 +112,15 @@ describe('Util Tests', function () {
         key: 'sum',
         conditional: {
           json: {
-            '===': [
-              { _sum: { var: 'data.test' } },
-              6,
-            ],
+            '===': [{ _sum: { var: 'data.test' } }, 6],
           },
         },
       };
       const data1 = {
-        test: [
-          1,
-          2,
-          3,
-        ],
+        test: [1, 2, 3],
       };
       const data2 = {
-        test: [
-          1,
-          2,
-          4,
-        ],
+        test: [1, 2, 4],
       };
 
       expect(utils.checkCondition(component, null, data1)).to.be.equal(true);
@@ -216,25 +201,14 @@ describe('Util Tests', function () {
       const trigger = {
         type: 'json',
         json: {
-          '===': [
-            { _sum: { var: 'data.test' } },
-            6,
-          ],
+          '===': [{ _sum: { var: 'data.test' } }, 6],
         },
       };
       const data1 = {
-        test: [
-          1,
-          2,
-          3,
-        ],
+        test: [1, 2, 3],
       };
       const data2 = {
-        test: [
-          1,
-          2,
-          4,
-        ],
+        test: [1, 2, 4],
       };
 
       expect(utils.checkTrigger(component, trigger, null, data1)).to.be.equal(true);
@@ -478,16 +452,12 @@ describe('Util Tests', function () {
 
     describe('#get', function () {
       it('should return one of state', function () {
-        const [
-          get,
-        ] = utils.withSwitch(42, 24);
+        const [get] = utils.withSwitch(42, 24);
         expect(get()).to.be.equal(42);
       });
 
       it('should be pure', function () {
-        const [
-          get,
-        ] = utils.withSwitch(42, 24);
+        const [get] = utils.withSwitch(42, 24);
         expect(get()).to.be.equal(42);
         expect(get()).to.be.equal(42);
         expect(get()).to.be.equal(42);
@@ -497,10 +467,7 @@ describe('Util Tests', function () {
 
     describe('#toggle', function () {
       it('should cycle between states', function () {
-        const [
-          get,
-          toggle,
-        ] = utils.withSwitch(42, 24);
+        const [get, toggle] = utils.withSwitch(42, 24);
         expect(get()).to.be.equal(42);
         toggle();
         expect(get()).to.be.equal(24);
@@ -512,12 +479,7 @@ describe('Util Tests', function () {
 
   describe('unfold', function () {
     it('should return provided argument', function () {
-      const parameters = [
-        {},
-        1,
-        null,
-        'string',
-      ];
+      const parameters = [{}, 1, null, 'string'];
 
       parameters.forEach((p) => {
         assert(p === utils.unfold(p));
@@ -532,54 +494,16 @@ describe('Util Tests', function () {
 
   describe('firstNonNil', function () {
     it('should return first non nil value', function () {
-      expect(
-        utils.firstNonNil([
-          1,
-        ]),
-      ).to.equal(1);
-      expect(
-        utils.firstNonNil([
-          1,
-          3,
-        ]),
-      ).to.equal(1);
-      expect(
-        utils.firstNonNil([
-          3,
-          2,
-          1,
-        ]),
-      ).to.equal(3);
-      expect(
-        utils.firstNonNil([
-          undefined,
-          undefined,
-          3,
-          1,
-        ]),
-      ).to.equal(3);
+      expect(utils.firstNonNil([1])).to.equal(1);
+      expect(utils.firstNonNil([1, 3])).to.equal(1);
+      expect(utils.firstNonNil([3, 2, 1])).to.equal(3);
+      expect(utils.firstNonNil([undefined, undefined, 3, 1])).to.equal(3);
     });
 
     it('should unfold all functions in array', function () {
-      expect(
-        utils.firstNonNil([
-          () => 1,
-        ]),
-      ).to.equal(1);
-      expect(
-        utils.firstNonNil([
-          () => 1,
-          3,
-        ]),
-      ).to.equal(1);
-      expect(
-        utils.firstNonNil([
-          undefined,
-          undefined,
-          () => 3,
-          1,
-        ]),
-      ).to.equal(3);
+      expect(utils.firstNonNil([() => 1])).to.equal(1);
+      expect(utils.firstNonNil([() => 1, 3])).to.equal(1);
+      expect(utils.firstNonNil([undefined, undefined, () => 3, 1])).to.equal(3);
     });
   });
 

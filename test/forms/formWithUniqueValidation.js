@@ -50,9 +50,7 @@ export default {
       {
         message: 'Text Field unique must be unique',
         level: 'error',
-        path: [
-          'textFieldUnique',
-        ],
+        path: ['textFieldUnique'],
         context: {
           validator: 'unique',
           hasLabel: true,

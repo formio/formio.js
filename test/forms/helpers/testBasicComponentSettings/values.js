@@ -17,10 +17,7 @@ const findMultipleValues = (valuesObj) => {
 
 const multipleValues = _.mapValues(findMultipleValues(values), (value, compKey) => {
   if (compKey === 'select') {
-    return [
-      'a',
-      'b',
-    ];
+    return ['a', 'b'];
   }
 
   if (compKey === 'file') {
@@ -38,10 +35,7 @@ const multipleValues = _.mapValues(findMultipleValues(values), (value, compKey) 
     return fileValue;
   }
 
-  return [
-    fastCloneDeep(value),
-    fastCloneDeep(value),
-  ];
+  return [fastCloneDeep(value), fastCloneDeep(value)];
 });
 
 const stringValues = {
@@ -116,12 +110,7 @@ const submission = {
       country: 'United States',
       country_code: 'us',
     },
-    boundingbox: [
-      '32.5453486',
-      '32.9899027',
-      '-97.0383833',
-      '-96.5168819',
-    ],
+    boundingbox: ['32.5453486', '32.9899027', '-97.0383833', '-96.5168819'],
     class: 'boundary',
     display_name: 'Dallas County, Texas, United States',
     icon: 'https://nominatim.openstreetmap.org/ui/mapicons//poi_boundary_administrative.p.20.png',
@@ -158,18 +147,10 @@ const submission = {
   hidden: 'hidden value',
   container: { textFieldContainer: 'value1' },
   dataMap: { key: 'value1', key1: 'value2' },
-  dataGrid: [
-    { textFieldDataGrid: 'value1' },
-    { textFieldDataGrid: 'value2' },
-  ],
-  editGrid: [
-    { textFieldEditGrid: 'value1' },
-    { textFieldEditGrid: 'value2' },
-  ],
+  dataGrid: [{ textFieldDataGrid: 'value1' }, { textFieldDataGrid: 'value2' }],
+  editGrid: [{ textFieldEditGrid: 'value1' }, { textFieldEditGrid: 'value2' }],
   tree: {
-    children: [
-      { children: [], data: { textFieldTree: 'value2' } },
-    ],
+    children: [{ children: [], data: { textFieldTree: 'value2' } }],
     data: { textFieldTree: 'value1' },
   },
   file: [

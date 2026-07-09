@@ -50,16 +50,10 @@ export default [
       json: {
         and: [
           {
-            '!==': [
-              { var: 'data.labelPosition' },
-              'top',
-            ],
+            '!==': [{ var: 'data.labelPosition' }, 'top'],
           },
           {
-            '!==': [
-              { var: 'data.labelPosition' },
-              'bottom',
-            ],
+            '!==': [{ var: 'data.labelPosition' }, 'bottom'],
           },
         ],
       },
@@ -83,16 +77,10 @@ export default [
       json: {
         and: [
           {
-            '!==': [
-              { var: 'data.labelPosition' },
-              'top',
-            ],
+            '!==': [{ var: 'data.labelPosition' }, 'top'],
           },
           {
-            '!==': [
-              { var: 'data.labelPosition' },
-              'bottom',
-            ],
+            '!==': [{ var: 'data.labelPosition' }, 'bottom'],
           },
         ],
       },

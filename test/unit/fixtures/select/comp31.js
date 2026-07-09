@@ -7,7 +7,7 @@ export default {
       tableView: true,
       dataSrc: 'resource',
       data: {
-        resource: '60114dd32cab36ad94ac4f94'
+        resource: '60114dd32cab36ad94ac4f94',
       },
       valueProperty: 'data.textField',
       template: '<span>{{ item.data.textField }}</span>',
@@ -18,7 +18,7 @@ export default {
       searchField: 'data.textField__regex',
       input: true,
       addResource: false,
-      reference: true
+      reference: true,
     },
     {
       type: 'button',
@@ -26,11 +26,11 @@ export default {
       key: 'submit',
       disableOnInvalid: true,
       input: true,
-      tableView: false
-    }
+      tableView: false,
+    },
   ],
   title: 'Resource Reference Test',
   display: 'form',
   name: 'resourceReferenceTest',
-  path: 'resourceReferenceTest'
+  path: 'resourceReferenceTest',
 };

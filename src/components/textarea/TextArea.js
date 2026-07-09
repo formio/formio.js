@@ -169,9 +169,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         case 'quill':
           // Normalize the configurations for quill.
           if (settings.hasOwnProperty('toolbarGroups') || settings.hasOwnProperty('toolbar')) {
-            console.warn(
-              'The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.',
-            );
+            console.warn(this.t('needConfigurationForQuill'));
             settings = this.wysiwygDefault.quill;
           }
 
@@ -259,7 +257,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     const quillInstance = moduleInstance.quill;
 
     if (!files || !files.length) {
-      console.warn('No files selected');
+      console.warn(this.t('noFilesSelected'));
       return;
     }
 
@@ -300,7 +298,7 @@ export default class TextAreaComponent extends TextFieldComponent {
         );
       })
       .catch((error) => {
-        console.warn('Quill image upload failed');
+        console.warn(this.t('quillImageUploadFailed'));
         console.warn(error);
         quillInstance.enable(true);
       });
@@ -363,15 +361,8 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   setContent(element, content, forceSanitize) {
     super.setContent(element, content, forceSanitize, {
-      addAttr: [
-        'allow',
-        'allowfullscreen',
-        'frameborder',
-        'scrolling',
-      ],
-      addTags: [
-        'iframe',
-      ],
+      addAttr: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'],
+      addTags: ['iframe'],
     });
   }
 
@@ -654,7 +645,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.element.scrollIntoView();
           })
           .catch((err) => {
-            console.warn('An editor did not initialize properly when trying to focus:', err);
+            console.warn(this.t('editorFocusError'), err);
           });
         break;
       }
@@ -665,7 +656,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.element.scrollIntoView();
           })
           .catch((err) => {
-            console.warn('An editor did not initialize properly when trying to focus:', err);
+            console.warn(this.t('editorFocusError'), err);
           });
         break;
       }
@@ -675,7 +666,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.editors[0].focus();
           })
           .catch((err) => {
-            console.warn('An editor did not initialize properly when trying to focus:', err);
+            console.warn(this.t('editorFocusError'), err);
           });
         break;
       }

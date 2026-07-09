@@ -17,14 +17,9 @@ export default {
         formKeys[comp.key] = true;
 
         if (
-          [
-            'address',
-            'container',
-            'datagrid',
-            'editgrid',
-            'dynamicWizard',
-            'tree',
-          ].includes(comp.type) ||
+          ['address', 'container', 'datagrid', 'editgrid', 'dynamicWizard', 'tree'].includes(
+            comp.type,
+          ) ||
           comp.tree ||
           comp.arrayTree
         ) {
@@ -36,9 +31,7 @@ export default {
 
     // Recurse into all child components.
     eachComponent(
-      [
-        component,
-      ],
+      [component],
       (component) => {
         // Skip key uniquification if this component doesn't have a key.
         if (!component.key) {
@@ -54,14 +47,9 @@ export default {
         formKeys[newKey] = true;
 
         if (
-          [
-            'address',
-            'container',
-            'datagrid',
-            'editgrid',
-            'dynamicWizard',
-            'tree',
-          ].includes(component.type) ||
+          ['address', 'container', 'datagrid', 'editgrid', 'dynamicWizard', 'tree'].includes(
+            component.type,
+          ) ||
           component.tree ||
           component.arrayTree
         ) {
@@ -77,10 +65,7 @@ export default {
    * Additional shortcuts for the builder.
    */
   additionalShortcuts: {
-    button: [
-      'Enter',
-      'Esc',
-    ],
+    button: ['Enter', 'Esc'],
   },
 
   /**
@@ -128,9 +113,7 @@ export default {
     if (!component) {
       return [];
     }
-    return [
-      '',
-    ]
+    return ['']
       .concat(
         _.difference(
           this.getAlphaShortcuts().concat(this.getAdditionalShortcuts(component.type)),

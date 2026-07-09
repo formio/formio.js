@@ -212,18 +212,16 @@
     { "type": "read_all", "roles": [] },
     { "type": "update_all", "roles": [] },
     { "type": "delete_all", "roles": [] },
-    { "type": "create_own", "roles": [
-        "5692b920d1028f01000407e6"
-      ] },
+    { "type": "create_own", "roles": ["5692b920d1028f01000407e6"] },
     { "type": "read_own", "roles": [] },
     { "type": "update_own", "roles": [] },
     { "type": "delete_own", "roles": [] }
   ],
   "access": [
-    { "type": "read_all", "roles": [
-        "5692b920d1028f01000407e4",
-        "5692b920d1028f01000407e5",
-        "5692b920d1028f01000407e6"
-      ] }],
+    {
+      "type": "read_all",
+      "roles": ["5692b920d1028f01000407e4", "5692b920d1028f01000407e5", "5692b920d1028f01000407e6"]
+    }
+  ],
   "tags": []
 }

@@ -163,12 +163,7 @@ export default {
       Harness.testConditionals(
         form,
         { data: {} },
-        [
-          'typeMe',
-          'typeThe',
-          'typeMonkey',
-          'monkey',
-        ],
+        ['typeMe', 'typeThe', 'typeMonkey', 'monkey'],
         done,
       );
     },
@@ -260,11 +255,7 @@ export default {
             typeShow: 'Show',
           },
         },
-        [
-          'typeThe',
-          'typeMonkey',
-          'monkey',
-        ],
+        ['typeThe', 'typeMonkey', 'monkey'],
         done,
       );
     },
@@ -277,10 +268,7 @@ export default {
             typeMe: 'Me',
           },
         },
-        [
-          'typeMonkey',
-          'monkey',
-        ],
+        ['typeMonkey', 'monkey'],
         done,
       );
     },
@@ -294,9 +282,7 @@ export default {
             typeThe: 'The',
           },
         },
-        [
-          'monkey',
-        ],
+        ['monkey'],
         done,
       );
     },

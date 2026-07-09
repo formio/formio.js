@@ -5,9 +5,7 @@ export default {
       label: 'Select',
       tableView: true,
       data: {
-        values: [
-          { label: '', value: '' },
-        ],
+        values: [{ label: '', value: '' }],
       },
       selectThreshold: 0.3,
       validate: { onlyAvailableItems: false },

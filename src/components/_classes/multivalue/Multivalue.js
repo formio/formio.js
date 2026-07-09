@@ -19,29 +19,16 @@ export default class Multivalue extends Field {
       if (Array.isArray(value)) {
         if (underlyingValueShouldBeArray) {
           if (value.length === 0 || !Array.isArray(value[0])) {
-            return [
-              value,
-            ];
+            return [value];
           }
         }
         if (value.length === 0) {
-          return [
-            emptyValue,
-          ];
+          return [emptyValue];
         }
 
         return super.normalizeValue(value, flags);
       } else {
-        return super.normalizeValue(
-          value == null
-            ? [
-                emptyValue,
-              ]
-            : [
-                value,
-              ],
-          flags,
-        );
+        return super.normalizeValue(value == null ? [emptyValue] : [value], flags);
       }
     } else {
       if (Array.isArray(value) && !underlyingValueShouldBeArray) {
@@ -70,22 +57,16 @@ export default class Multivalue extends Field {
     let value = super.defaultValue;
     if (this.component.multiple) {
       if (_.isArray(value)) {
-        value = !value.length
-          ? [
-              super.emptyValue,
-            ]
-          : value;
+        value = !value.length ? [super.emptyValue] : value;
       } else {
-        value = [
-          value,
-        ];
+        value = [value];
       }
     }
     return value;
   }
 
   get addAnother() {
-    return this.t(this.component.addAnother || 'Add Another');
+    return this.t(this.component.addAnother || 'addAnother');
   }
 
   /**
@@ -222,7 +203,7 @@ export default class Multivalue extends Field {
       try {
         this.saveCaretPosition(element, index);
       } catch (err) {
-        console.warn('An error occurred while trying to save caret position', err);
+        console.warn(this.t('caretPositionSavingError'), err);
       }
 
       // If a mask is present, delay the update to allow mask to update first.
@@ -343,9 +324,7 @@ export default class Multivalue extends Field {
     }
     let dataValue = this.dataValue || [];
     if (!Array.isArray(dataValue)) {
-      dataValue = [
-        dataValue,
-      ];
+      dataValue = [dataValue];
     }
 
     if (Array.isArray(value)) {

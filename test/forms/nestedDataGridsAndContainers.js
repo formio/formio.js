@@ -13,9 +13,7 @@ export default {
       defaultValue: [
         {
           container: {
-            dataGrid6: [
-              { checkbox: false },
-            ],
+            dataGrid6: [{ checkbox: false }],
           },
         },
       ],
@@ -38,9 +36,7 @@ export default {
               enableRowGroups: false,
               initEmpty: false,
               tableView: false,
-              defaultValue: [
-                { checkbox: false },
-              ],
+              defaultValue: [{ checkbox: false }],
               key: 'dataGrid6',
               type: 'datagrid',
               input: true,
@@ -60,9 +56,7 @@ export default {
                   enableRowGroups: false,
                   initEmpty: false,
                   tableView: false,
-                  defaultValue: [
-                    { number: '' },
-                  ],
+                  defaultValue: [{ number: '' }],
                   key: 'dataGrid5',
                   customConditional: 'show = row.checkbox === true',
                   type: 'datagrid',

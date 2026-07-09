@@ -252,10 +252,7 @@ describe('DateTime Component', function () {
     ];
 
     const getAllFormats = function (formats) {
-      const separators = [
-        '.',
-        '/',
-      ];
+      const separators = ['.', '/'];
 
       const formatsWithDiffSeparators = separators.reduce((result, separator) => {
         const formatWithNewSeparator = formats
@@ -271,16 +268,10 @@ describe('DateTime Component', function () {
             };
           });
 
-        return [
-          ...result,
-          ...formatWithNewSeparator,
-        ];
+        return [...result, ...formatWithNewSeparator];
       }, []);
 
-      return [
-        ...formats,
-        ...formatsWithDiffSeparators,
-      ];
+      return [...formats, ...formatsWithDiffSeparators];
     };
 
     const formats = getAllFormats(formatsInitial);

@@ -44,9 +44,7 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   get schema() {
-    const schema = _.omit(super.schema, [
-      'components',
-    ]);
+    const schema = _.omit(super.schema, ['components']);
     schema.columns?.map((column, colIndex) => {
       column.components.map((comp, compIndex) => {
         const clonedComp = _.clone(comp);
@@ -156,30 +154,20 @@ export default class ColumnsComponent extends NestedComponent {
     const result = _.reduce(
       this.components,
       (acc, next) => {
-        const stack = [
-          ...acc.stack,
-          next,
-        ];
+        const stack = [...acc.stack, next];
         if (_.sumBy(stack, width) <= this.gridSize) {
           acc.stack = stack;
           return acc;
         } else {
-          acc.rows = [
-            ...acc.rows,
-            acc.stack,
-          ];
-          acc.stack = [
-            next,
-          ];
+          acc.rows = [...acc.rows, acc.stack];
+          acc.stack = [next];
           return acc;
         }
       },
       initVal,
     );
 
-    return _.concat(result.rows, [
-      result.stack,
-    ]);
+    return _.concat(result.rows, [result.stack]);
   }
 
   checkData(data, flags, row, components) {

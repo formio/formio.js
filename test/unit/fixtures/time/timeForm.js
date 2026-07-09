@@ -33,11 +33,7 @@ export default {
   display: 'form',
   access: [
     {
-      roles: [
-        '5e96e79ee1c3ad3178454100',
-        '5e96e79ee1c3ad3178454101',
-        '5e96e79ee1c3ad3178454102',
-      ],
+      roles: ['5e96e79ee1c3ad3178454100', '5e96e79ee1c3ad3178454101', '5e96e79ee1c3ad3178454102'],
       type: 'read_all',
     },
   ],

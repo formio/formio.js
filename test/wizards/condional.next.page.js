@@ -268,11 +268,7 @@ export default {
     access: [
       {
         type: 'read_all',
-        roles: [
-          '58cc056767cb9600a75712e3',
-          '58cc056767cb9600a75712e4',
-          '58cc056767cb9600a75712e5',
-        ],
+        roles: ['58cc056767cb9600a75712e3', '58cc056767cb9600a75712e4', '58cc056767cb9600a75712e5'],
       },
     ],
     tags: [],
@@ -291,10 +287,7 @@ export default {
       // Check current page
       expect(form.page, 'shod start form page 0').to.equal(0);
       Harness.testElements(form, 'input[type="text"]', 2);
-      const buttonsToValid = [
-        'Cancel',
-        'Next',
-      ];
+      const buttonsToValid = ['Cancel', 'Next'];
       const buttonsText = _map(Harness.testElements(form, 'button'), (button) => button.innerText);
       assert.deepEqual(buttonsText, buttonsToValid);
 
@@ -318,11 +311,7 @@ export default {
             // Check next page
             assert.equal(form.page, 2);
             Harness.testElements(form, 'input[type="text"]', 3);
-            const buttonsToValid = [
-              'Cancel',
-              'Previous',
-              'Submit Form',
-            ];
+            const buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
             const buttonsText = _map(
               Harness.testElements(form, 'button'),
               (button) => button.innerText,
@@ -366,11 +355,7 @@ export default {
             // Check previous page
             assert.equal(form.page, 1);
             Harness.testElements(form, 'input[type="text"]', 2);
-            const buttonsToValid = [
-              'Cancel',
-              'Previous',
-              'Next',
-            ];
+            const buttonsToValid = ['Cancel', 'Previous', 'Next'];
             const buttonsText = _map(
               Harness.testElements(form, 'button'),
               (button) => button.innerText,
@@ -401,11 +386,7 @@ export default {
             // Check last page
             assert.equal(form.page, 2);
             Harness.testElements(form, 'input[type="text"]', 3);
-            const buttonsToValid = [
-              'Cancel',
-              'Previous',
-              'Submit Form',
-            ];
+            const buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
             const buttonsText = _map(
               Harness.testElements(form, 'button'),
               (button) => button.innerText,
@@ -474,10 +455,7 @@ export default {
       // Check current page
       assert.equal(form.page, 0);
       Harness.testElements(form, 'input[type="text"]', 2);
-      const buttonsToValid = [
-        'Cancel',
-        'Next',
-      ];
+      const buttonsToValid = ['Cancel', 'Next'];
       const buttonsText = _map(Harness.testElements(form, 'button'), (button) => button.innerText);
       assert.deepEqual(buttonsText, buttonsToValid);
 
@@ -500,11 +478,7 @@ export default {
           // Check next page
           assert.equal(form.page, 1);
           Harness.testElements(form, 'input[type="text"]', 2);
-          const buttonsToValid = [
-            'Cancel',
-            'Previous',
-            'Next',
-          ];
+          const buttonsToValid = ['Cancel', 'Previous', 'Next'];
           const buttonsText = _map(
             Harness.testElements(form, 'button'),
             (button) => button.innerText,
@@ -525,11 +499,7 @@ export default {
             });
 
             // Should show a submit button instead of next button
-            const buttonsToValid = [
-              'Cancel',
-              'Previous',
-              'Submit Form',
-            ];
+            const buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
             const buttonsText = _map(
               Harness.testElements(form, 'button'),
               (button) => button.innerText,

@@ -405,15 +405,11 @@ describe('Day Component', function () {
     document.body.appendChild(element);
     Formio.createForm(element, comp6)
       .then((form) => {
-        const textField = form.getComponent([
-          'textField',
-        ]);
+        const textField = form.getComponent(['textField']);
         textField.setValue('test');
 
         setTimeout(() => {
-          const day = form.getComponent([
-            'day',
-          ]);
+          const day = form.getComponent(['day']);
           document.querySelector('select.form-control').focus();
           day.refs.month.value = 2;
           day.refs.month.dispatchEvent(new Event('input'));

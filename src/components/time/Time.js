@@ -78,10 +78,7 @@ export default class TimeComponent extends TextFieldComponent {
 
   removeValue(index) {
     this.rawData = Array.isArray(this.rawData)
-      ? [
-          ...this.rawData.slice(0, index),
-          ...this.rawData.slice(index + 1),
-        ]
+      ? [...this.rawData.slice(0, index), ...this.rawData.slice(index + 1)]
       : this.emptyValue;
     super.removeValue(index);
   }

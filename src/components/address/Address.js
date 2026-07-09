@@ -88,11 +88,7 @@ export default class AddressComponent extends ContainerComponent {
   static savedValueTypes(schema) {
     schema = schema || {};
 
-    return (
-      getComponentSavedTypes(schema) || [
-        componentValueTypes.object,
-      ]
-    );
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   static get builderInfo() {
@@ -113,10 +109,7 @@ export default class AddressComponent extends ContainerComponent {
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
-      operators: [
-        'isEmpty',
-        'isNotEmpty',
-      ],
+      operators: ['isEmpty', 'isNotEmpty'],
     };
   }
 
@@ -243,11 +236,7 @@ export default class AddressComponent extends ContainerComponent {
 
   get address() {
     if (this.isMultiple) {
-      return _.isArray(this.dataValue)
-        ? this.dataValue
-        : [
-            this.dataValue,
-          ];
+      return _.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
     }
     // Manual mode is not implementing for multiple value
     return this.manualModeEnabled && this.dataValue ? this.dataValue.address : this.dataValue;
@@ -265,11 +254,7 @@ export default class AddressComponent extends ContainerComponent {
     let defaultValue = super.defaultValue;
 
     if (this.isMultiple) {
-      defaultValue = _.isArray(defaultValue)
-        ? defaultValue
-        : [
-            defaultValue,
-          ];
+      defaultValue = _.isArray(defaultValue) ? defaultValue : [defaultValue];
     }
 
     return defaultValue;
@@ -290,9 +275,7 @@ export default class AddressComponent extends ContainerComponent {
   get dataValue() {
     const resultValue = _.get(this._data, this.path);
     if (!_.isArray(resultValue) && this.component.multiple) {
-      return [
-        resultValue,
-      ];
+      return [resultValue];
     }
     return super.dataValue;
   }
@@ -416,7 +399,7 @@ export default class AddressComponent extends ContainerComponent {
   }
 
   get addAnother() {
-    return this.t(this.component.addAnother || 'Add Another');
+    return this.t(this.component.addAnother || 'addAnother');
   }
 
   renderElement(value) {
@@ -464,9 +447,7 @@ export default class AddressComponent extends ContainerComponent {
   onSelectAddress(address, element, index) {
     if (this.isMultiple) {
       this.address[index] = address;
-      this.address = [
-        ...this.address,
-      ];
+      this.address = [...this.address];
     } else {
       this.address = address;
     }
@@ -510,15 +491,15 @@ export default class AddressComponent extends ContainerComponent {
 
     // We define a container for rendering autocomplete.
     // If isInShadowDOM=true then we render it in shadow dom otherwise in the document body.
-    const isInShadowDOM = typeof ShadowRoot !== 'undefined' && this.element?.getRootNode() instanceof ShadowRoot;
+    const isInShadowDOM =
+      typeof ShadowRoot !== 'undefined' && this.element?.getRootNode() instanceof ShadowRoot;
     let container;
     if (isInShadowDOM) {
       const shadowRoot = this.element.getRootNode();
       container = document.createElement('div');
       const target = shadowRoot.querySelector('.formio-form-wrapper');
       target.appendChild(container);
-    } 
-    else {
+    } else {
       container = document.createElement('div');
       document.body.appendChild(container);
     }
@@ -717,22 +698,9 @@ export default class AddressComponent extends ContainerComponent {
 
       return this.getComponents()
         .filter((component) => component.hasValue(address))
-        .map((component) => [
-          component,
-          _.get(address, component.key),
-        ])
-        .filter(
-          ([
-            component,
-            componentValue,
-          ]) => !component.isEmpty(componentValue),
-        )
-        .map(
-          ([
-            component,
-            componentValue,
-          ]) => component.getValueAsString(componentValue, options),
-        )
+        .map((component) => [component, _.get(address, component.key)])
+        .filter(([component, componentValue]) => !component.isEmpty(componentValue))
+        .map(([component, componentValue]) => component.getValueAsString(componentValue, options))
         .join(', ');
     }
 

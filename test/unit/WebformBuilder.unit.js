@@ -76,9 +76,7 @@ describe('WebformBuildert tests', function () {
       );
       await builder.ready;
       const sidebarContainer = builder.element.querySelector('[ref="sidebar-groups"]');
-      const groupsCollapse = [
-        ...sidebarContainer.querySelectorAll('[ref="sidebar-group"]'),
-      ];
+      const groupsCollapse = [...sidebarContainer.querySelectorAll('[ref="sidebar-group"]')];
       // Should be opened only one group with default = true. As we get sort ascending (by weight field) the "Components group 2" will be visible
       groupsCollapse.forEach((x) => {
         const id = x.getAttribute('id');
@@ -90,7 +88,7 @@ describe('WebformBuildert tests', function () {
       });
     });
 
-    it('Shouldn`t display [object Object] in the text field when a user activates and then deactivates the `Allow Multiple Masks` ', async () => {
+    it('Shouldn`t display [object Object] in the text field when a user activates and then deactivates the `Allow Multiple Masks` ', async function () {
       const builder = Harness.getBuilder();
       await builder.webform.setForm(simpleTextFieldForm);
       const field = builder.webform.components[0];
@@ -109,7 +107,7 @@ describe('WebformBuildert tests', function () {
       Harness.saveComponent();
       await wait(300);
       const el = builder.webform.element.querySelector('input[id$="-textField"]');
-      assert.equal(el.value, "")
+      assert.equal(el.value, '');
     });
 
     it('Should not show errors with default array values', function (done) {
@@ -157,9 +155,7 @@ describe('WebformBuildert tests', function () {
         .setForm(uniqueApiKeysTranslation)
         .then(() => {
           builder.highlightInvalidComponents();
-          const component = builder.webform.getComponent([
-            'textField',
-          ]);
+          const component = builder.webform.getComponent(['textField']);
           assert.equal(component.visibleErrors.length, 1);
           done();
         })
@@ -173,9 +169,7 @@ describe('WebformBuildert tests', function () {
         .setForm(uniqueApiKeysTranslation)
         .then(() => {
           builder.highlightInvalidComponents();
-          const component = builder.webform.getComponent([
-            'textField',
-          ]);
+          const component = builder.webform.getComponent(['textField']);
           assert.equal(component.visibleErrors[0].message, 'translated api key error textField');
           done();
         })
@@ -210,9 +204,7 @@ describe('WebformBuildert tests', function () {
         .setForm(uniqueApiKeysTranslation)
         .then(() => {
           builder.highlightInvalidComponents();
-          const component = builder.webform.getComponent([
-            'textField',
-          ]);
+          const component = builder.webform.getComponent(['textField']);
           assert.equal(component.visibleErrors.length, 1);
           done();
         })
@@ -225,9 +217,7 @@ describe('WebformBuildert tests', function () {
         .setForm(uniqueApiKeysLayout)
         .then(() => {
           builder.highlightInvalidComponents();
-          const component = builder.webform.getComponent([
-            'textField',
-          ]);
+          const component = builder.webform.getComponent(['textField']);
           assert.equal(component.visibleErrors.length, 1);
           done();
         })
@@ -271,9 +261,7 @@ describe('WebformBuildert tests', function () {
         .setForm(uniqueApiKeysSameLevel)
         .then(() => {
           builder.highlightInvalidComponents();
-          const component = builder.webform.getComponent([
-            'textField',
-          ]);
+          const component = builder.webform.getComponent(['textField']);
           assert.equal(component.visibleErrors.length, 1);
           done();
         })
@@ -290,9 +278,7 @@ describe('WebformBuildert tests', function () {
           let containerTestsReady;
           const containerTestsPromise = new Promise((resolve) => (containerTestsReady = resolve));
 
-          const container = builder.webform.element.querySelector([
-            '[ref="container-container"]',
-          ]);
+          const container = builder.webform.element.querySelector(['[ref="container-container"]']);
           Harness.buildComponent('editgrid', container);
 
           setTimeout(() => {
@@ -327,9 +313,7 @@ describe('WebformBuildert tests', function () {
           }, 150);
 
           containerTestsPromise.then(() => {
-            const panel = builder.webform.element.querySelector([
-              '[ref="panel-container"]',
-            ]);
+            const panel = builder.webform.element.querySelector(['[ref="panel-container"]']);
             Harness.buildComponent('datagrid', panel);
 
             setTimeout(() => {
@@ -463,9 +447,7 @@ describe('WebformBuildert tests', function () {
               Harness.saveComponent();
 
               setTimeout(() => {
-                const dayComp = builder.webform.getComponent([
-                  'day',
-                ]);
+                const dayComp = builder.webform.getComponent(['day']);
                 assert.equal(dayComp.component.maxDate, "moment().add(10, 'days')");
                 done();
               }, 500);
@@ -524,16 +506,8 @@ describe('WebformBuildert tests', function () {
           );
 
           setTimeout(() => {
-            const dataGrid = builder.webform.getComponent([
-              'dataGrid',
-            ]);
-            assert.deepEqual(
-              dataGrid.schema.defaultValue,
-              [
-                {},
-              ],
-              'Should remove TextField key',
-            );
+            const dataGrid = builder.webform.getComponent(['dataGrid']);
+            assert.deepEqual(dataGrid.schema.defaultValue, [{}], 'Should remove TextField key');
             done();
           }, 300);
         })
@@ -652,9 +626,7 @@ describe('WebformBuildert tests', function () {
           setTimeout(() => {
             const dataSrc = builder.editForm.getComponent('dataSrc');
             dataSrc.setValue('url');
-            const url = builder.editForm.getComponent([
-              'data.url',
-            ]);
+            const url = builder.editForm.getComponent(['data.url']);
             const valueProperty = builder.editForm.getComponent('valueProperty');
             url.setValue('htts//fakeurl.com');
             valueProperty.setValue('value');
@@ -689,9 +661,7 @@ describe('WebformBuildert tests', function () {
           setTimeout(() => {
             const dataSrc = builder.editForm.getComponent('dataSrc');
             dataSrc.setValue('resource');
-            const resource = builder.editForm.getComponent([
-              'data.resource',
-            ]);
+            const resource = builder.editForm.getComponent(['data.resource']);
             const valueProperty = builder.editForm.getComponent('valueProperty');
             resource.setValue('12345678');
             valueProperty.setValue('value');
@@ -726,9 +696,7 @@ describe('WebformBuildert tests', function () {
           setTimeout(() => {
             const dataSrc = builder.editForm.getComponent('dataSrc');
             dataSrc.setValue('url');
-            const url = builder.editForm.getComponent([
-              'data.url',
-            ]);
+            const url = builder.editForm.getComponent(['data.url']);
             url.setValue('https://fakeurl.com');
 
             setTimeout(() => {
@@ -759,9 +727,7 @@ describe('WebformBuildert tests', function () {
           setTimeout(() => {
             const dataSrc = builder.editForm.getComponent('dataSrc');
             dataSrc.setValue('url');
-            const url = builder.editForm.getComponent([
-              'data.url',
-            ]);
+            const url = builder.editForm.getComponent(['data.url']);
             const valueProperty = builder.editForm.getComponent('valueProperty');
             url.setValue('htts//fakeurl.com');
             valueProperty.setValue('value');
@@ -806,9 +772,7 @@ describe('WebformBuildert tests', function () {
           setTimeout(() => {
             const dataSrc = builder.editForm.getComponent('dataSrc');
             dataSrc.setValue('url');
-            const url = builder.editForm.getComponent([
-              'data.url',
-            ]);
+            const url = builder.editForm.getComponent(['data.url']);
             const valueProperty = builder.editForm.getComponent('valueProperty');
             url.setValue('htts//fakeurl.com');
             valueProperty.setValue('value');
@@ -854,19 +818,14 @@ describe('WebformBuildert tests', function () {
             multiple.setValue(true);
             const dataSrc = builder.editForm.getComponent('dataSrc');
             dataSrc.setValue('url');
-            const url = builder.editForm.getComponent([
-              'data.url',
-            ]);
+            const url = builder.editForm.getComponent(['data.url']);
             const valueProperty = builder.editForm.getComponent('valueProperty');
             url.setValue('htts//fakeurl.com');
             valueProperty.setValue('value');
 
             setTimeout(() => {
               const defaultValue = builder.editForm.getComponent('defaultValue');
-              defaultValue.setValue([
-                'value1',
-                'value3',
-              ]);
+              defaultValue.setValue(['value1', 'value3']);
               defaultValue.updateItems(null, true);
 
               setTimeout(() => {
@@ -899,9 +858,7 @@ describe('WebformBuildert tests', function () {
           setTimeout(() => {
             const dataSrc = builder.editForm.getComponent('dataSrc');
             dataSrc.setValue('url');
-            const url = builder.editForm.getComponent([
-              'data.url',
-            ]);
+            const url = builder.editForm.getComponent(['data.url']);
             const valueProperty = builder.editForm.getComponent('valueProperty');
             url.setValue('htts//fakeurl.com');
             valueProperty.setValue('value');
@@ -978,9 +935,7 @@ describe('WebformBuildert tests', function () {
             multiple.setValue(true);
             const dataSrc = builder.editForm.getComponent('dataSrc');
             dataSrc.setValue('url');
-            const url = builder.editForm.getComponent([
-              'data.url',
-            ]);
+            const url = builder.editForm.getComponent(['data.url']);
             const valueProperty = builder.editForm.getComponent('valueProperty');
             url.setValue('htts//fakeurl.com');
             valueProperty.setValue('value');
@@ -988,10 +943,7 @@ describe('WebformBuildert tests', function () {
             setTimeout(() => {
               const defaultValue = builder.editForm.getComponent('defaultValue');
               assert.equal(defaultValue.type, 'select');
-              defaultValue.setValue([
-                'value1',
-                'value3',
-              ]);
+              defaultValue.setValue(['value1', 'value3']);
               defaultValue.updateItems(null, true);
 
               setTimeout(() => {
@@ -1010,10 +962,7 @@ describe('WebformBuildert tests', function () {
                     .element.querySelectorAll('.choices__list--multiple span');
                   assert.deepEqual(
                     Array.prototype.map.call(elements, (element) => element.innerHTML),
-                    [
-                      'Label 1',
-                      'Label 3',
-                    ],
+                    ['Label 1', 'Label 3'],
                   );
 
                   const click = new MouseEvent('click', {
@@ -1030,10 +979,7 @@ describe('WebformBuildert tests', function () {
                   setTimeout(() => {
                     const defaultValue = builder.editForm.getComponent('defaultValue');
                     assert.equal(defaultValue.type, 'select');
-                    defaultValue.setValue([
-                      'value2',
-                      'value3',
-                    ]);
+                    defaultValue.setValue(['value2', 'value3']);
                     defaultValue.updateItems(null, true);
 
                     setTimeout(() => {
@@ -1052,10 +998,7 @@ describe('WebformBuildert tests', function () {
                           .element.querySelectorAll('.choices__list--multiple span');
                         assert.deepEqual(
                           Array.prototype.map.call(elements, (element) => element.innerHTML),
-                          [
-                            'Label 2',
-                            'Label 3',
-                          ],
+                          ['Label 2', 'Label 3'],
                         );
                         done();
                       }, 150);

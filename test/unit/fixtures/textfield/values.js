@@ -1,5 +1,1 @@
-export default [
-  'do',
-  're',
-  'me',
-];
+export default ['do', 're', 'me'];

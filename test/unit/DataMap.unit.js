@@ -52,12 +52,8 @@ describe('DataMap Component', function () {
         };
 
         setTimeout(() => {
-          const dataMap1 = form.getComponent([
-            'dataMap1',
-          ]);
-          const dataMap = form.getComponent([
-            'dataMap',
-          ]);
+          const dataMap1 = form.getComponent(['dataMap1']);
+          const dataMap = form.getComponent(['dataMap']);
           assert.equal(dataMap1.visible, true, 'Data Map should become visible');
           assert.equal(dataMap.visible, true, 'Data Map inside a panel should become visible');
           assert.deepEqual(

@@ -13,9 +13,7 @@ export default {
       enableRowGroups: false,
       initEmpty: false,
       tableView: false,
-      defaultValue: [
-        {},
-      ],
+      defaultValue: [{}],
       validate: {
         required: true,
       },

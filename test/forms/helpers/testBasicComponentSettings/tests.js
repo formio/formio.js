@@ -5,14 +5,7 @@ import FormioUtils from '../../../../src/utils/index';
 import settings from './settings';
 import values from './values';
 
-const layoutComponents = [
-  'columns',
-  'fieldset',
-  'panel',
-  'table',
-  'tabs',
-  'well',
-];
+const layoutComponents = ['columns', 'fieldset', 'panel', 'table', 'tabs', 'well'];
 
 export default {
   placeholder: {
@@ -266,11 +259,7 @@ export default {
           }
 
           if (compInput || compInputs.length) {
-            const inputs = compInput
-              ? [
-                  compInput,
-                ]
-              : compInputs;
+            const inputs = compInput ? [compInput] : compInputs;
             _.each(inputs, (input) => {
               assert.equal(
                 input.disabled,
@@ -401,12 +390,7 @@ export default {
   multiple: {
     'Should render component in multiple mode and able to add/remove value'(form, done) {
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            'select',
-            'file',
-            'address',
-          ].includes(comp.component.type),
+        (comp) => !['select', 'file', 'address'].includes(comp.component.type),
       );
       (function testNext() {
         const comp = testComponents.shift();
@@ -477,10 +461,7 @@ export default {
     },
     'Should set multiple values'(form, done) {
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            'address',
-          ].includes(comp.component.type),
+        (comp) => !['address'].includes(comp.component.type),
       );
       testComponents.forEach((comp) => {
         const compKey = comp.component.key;
@@ -514,12 +495,7 @@ export default {
             `${compKey} (component ${compType}): set and get values must be equal in multiple mode`,
           );
 
-          if (
-            ![
-              'select',
-              'file',
-            ].includes(compType)
-          ) {
+          if (!['select', 'file'].includes(compType)) {
             const componentInputs = comp.refs.input || comp.refs.searchInput;
             assert.deepEqual(
               componentInputs.length,
@@ -552,20 +528,9 @@ export default {
   },
   modalEdit: {
     'Should open and close modal window'(form, done) {
-      const componentsWithBug = [
-        'columns',
-        'fieldset',
-        'panel',
-        'table',
-        'tabs',
-        'well',
-      ]; //BUG: include them in test when it is fixed
+      const componentsWithBug = ['columns', 'fieldset', 'panel', 'table', 'tabs', 'well']; //BUG: include them in test when it is fixed
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            ...componentsWithBug,
-            'button',
-          ].includes(comp.component.type),
+        (comp) => ![...componentsWithBug, 'button'].includes(comp.component.type),
       );
       (function testNext() {
         const comp = testComponents.shift();
@@ -614,21 +579,9 @@ export default {
       form,
       done,
     ) {
-      const layoutComponents = [
-        'columns',
-        'fieldset',
-        'panel',
-        'table',
-        'tabs',
-        'well',
-      ];
+      const layoutComponents = ['columns', 'fieldset', 'panel', 'table', 'tabs', 'well'];
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            'htmlelement',
-            'content',
-            'button',
-          ].includes(comp.component.type),
+        (comp) => !['htmlelement', 'content', 'button'].includes(comp.component.type),
       );
       (function testNext() {
         const comp = testComponents.shift();
@@ -740,12 +693,7 @@ export default {
     },
     'Should save component values and close the modal after clicking "save"'(form, done) {
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            'htmlelement',
-            'content',
-            'button',
-          ].includes(comp.component.type),
+        (comp) => !['htmlelement', 'content', 'button'].includes(comp.component.type),
       );
 
       (function testNext() {
@@ -947,12 +895,7 @@ export default {
       const checkCalculatedValue = (overriden) => {
         const testComponents = form.components.filter(
           (comp) =>
-            ![
-              'form',
-            ].includes(comp.component.type) &&
-            ![
-              'basis',
-            ].includes(comp.component.key),
+            !['form'].includes(comp.component.type) && !['basis'].includes(comp.component.key),
         );
 
         testComponents.forEach((comp) => {
@@ -997,10 +940,7 @@ export default {
     ) {
       test.timeout(5000);
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            'button',
-          ].includes(comp.component.type),
+        (comp) => !['button'].includes(comp.component.type),
       );
 
       const clickEvent = new Event('click');
@@ -1093,10 +1033,7 @@ export default {
     'Should show custom validation error if component is invalid'(form, done, test) {
       test.timeout(5000);
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            'button',
-          ].includes(comp.component.type),
+        (comp) => !['button'].includes(comp.component.type),
       );
       _.each(testComponents, (comp) => {
         _.set(
@@ -1149,10 +1086,7 @@ export default {
     'Should show custom validation label if component is invalid'(form, done, test) {
       test.timeout(5000);
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            'button',
-          ].includes(comp.component.type),
+        (comp) => !['button'].includes(comp.component.type),
       );
       _.each(testComponents, (comp) => {
         _.set(comp.component, 'errorLabel', 'Custom label for {{component.key}}');
@@ -1251,16 +1185,7 @@ export default {
 
           //remove below line once tree validation error display is fixed
           //remove below line once container validation error display is fixed
-          if (
-            _.includes(
-              [
-                'tree',
-                'container',
-              ],
-              comp.component.type,
-            )
-          )
-            return;
+          if (_.includes(['tree', 'container'], comp.component.type)) return;
           assert.deepEqual(
             comp.refs.messageContainer.querySelector('.error')?.textContent.trim(),
             getExpectedErrorMessage(),
@@ -1322,11 +1247,7 @@ export default {
           }
           if (
             !component.validate_nested_components &&
-            ![
-              ...layoutComponents,
-              'datagrid',
-              'tree',
-            ].includes(component.type)
+            ![...layoutComponents, 'datagrid', 'tree'].includes(component.type)
           ) {
             if (componentInstance) {
               _.set(componentInstance.component, 'validate.required', true);
@@ -1381,15 +1302,7 @@ export default {
             );
 
             //remove below line once tree validation error display is fixed
-            if (
-              _.includes(
-                [
-                  'tree',
-                ],
-                comp.component.type,
-              )
-            )
-              return;
+            if (_.includes(['tree'], comp.component.type)) return;
             assert.deepEqual(
               comp.refs.messageContainer.querySelector('.error')?.textContent.trim(),
               getExpectedErrorMessage(),
@@ -1447,10 +1360,7 @@ export default {
     ) {
       test.timeout(3000);
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            'basis',
-          ].includes(comp.component.key),
+        (comp) => !['basis'].includes(comp.component.key),
       );
 
       const testVisibility = (shouldBeVisible) => {
@@ -1507,10 +1417,7 @@ export default {
     ) {
       test.timeout(3000);
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            'basis',
-          ].includes(comp.component.key),
+        (comp) => !['basis'].includes(comp.component.key),
       );
 
       const testVisibility = (shouldBeVisible) => {
@@ -1567,11 +1474,7 @@ export default {
     ) {
       test.timeout(8000);
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            'basis',
-            'hideBtn',
-          ].includes(comp.component.key),
+        (comp) => !['basis', 'hideBtn'].includes(comp.component.key),
       );
 
       form.getComponent('basis').setValue('value action');
@@ -1639,11 +1542,7 @@ export default {
     'Should execute value action if js logic condition is met'(form, done, test) {
       test.timeout(5000);
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            'basis',
-            'hideBtn',
-          ].includes(comp.component.key),
+        (comp) => !['basis', 'hideBtn'].includes(comp.component.key),
       );
 
       form.getComponent('basis').setValue('some text value with length over twenty');
@@ -1655,11 +1554,7 @@ export default {
     'Should execute property action if json logic condition is met'(form, done, test) {
       test.timeout(3500);
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            'basis',
-            'hideBtn',
-          ].includes(comp.component.key),
+        (comp) => !['basis', 'hideBtn'].includes(comp.component.key),
       );
 
       form.getComponent('basis').setValue('add class');
@@ -1679,11 +1574,7 @@ export default {
     },
     'Should execute property action if logic event is emitted'(form, done) {
       const testComponents = form.components.filter(
-        (comp) =>
-          ![
-            'basis',
-            'hideBtn',
-          ].includes(comp.component.key),
+        (comp) => !['basis', 'hideBtn'].includes(comp.component.key),
       );
       const clickEvent = new Event('click');
       form.getComponent('hideBtn').refs.button.dispatchEvent(clickEvent);

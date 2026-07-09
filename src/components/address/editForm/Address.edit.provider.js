@@ -40,10 +40,7 @@ export default [
     },
     conditional: {
       json: {
-        '===': [
-          { var: 'data.provider' },
-          'azure',
-        ],
+        '===': [{ var: 'data.provider' }, 'azure'],
       },
     },
   },
@@ -60,10 +57,7 @@ export default [
     },
     conditional: {
       json: {
-        '===': [
-          { var: 'data.provider' },
-          'custom',
-        ],
+        '===': [{ var: 'data.provider' }, 'custom'],
       },
     },
   },
@@ -78,10 +72,7 @@ export default [
     tooltip: 'Which query param should be used to pass as a search string. Default is `query`.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.provider' },
-          'custom',
-        ],
+        '===': [{ var: 'data.provider' }, 'custom'],
       },
     },
   },
@@ -96,10 +87,7 @@ export default [
       'The property within the response data, where iterable addresses reside. For example: results.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.provider' },
-          'custom',
-        ],
+        '===': [{ var: 'data.provider' }, 'custom'],
       },
     },
   },
@@ -113,10 +101,7 @@ export default [
     tooltip: 'The property of each address in the response to use as the display value.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.provider' },
-          'custom',
-        ],
+        '===': [{ var: 'data.provider' }, 'custom'],
       },
     },
   },
@@ -133,10 +118,7 @@ export default [
     tooltip: 'Additional query params can be specified here in a way of JSON object.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.provider' },
-          'custom',
-        ],
+        '===': [{ var: 'data.provider' }, 'custom'],
       },
     },
   },
@@ -153,10 +135,7 @@ export default [
     },
     conditional: {
       json: {
-        '===': [
-          { var: 'data.provider' },
-          'google',
-        ],
+        '===': [{ var: 'data.provider' }, 'google'],
       },
     },
   },
@@ -175,10 +154,7 @@ export default [
       "Specify Google Maps Autocomplete options used for address searching as JSON object. Follow the <a href ='https://developers.google.com/maps/documentation/javascript/places-autocomplete' target='_blank'>link</a> for available options",
     conditional: {
       json: {
-        '===': [
-          { var: 'data.provider' },
-          'google',
-        ],
+        '===': [{ var: 'data.provider' }, 'google'],
       },
     },
   },

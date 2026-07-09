@@ -1,5 +1,64 @@
 # @formio/js
 
+## 5.4.2
+
+### Patch Changes
+
+- 6e4e477: FIO-11504 added sanitize method for placeholder
+- 12fb10b: harden flaky test
+- 1d7f6d7: fix required Data Table validation in Nested Form
+- 67c0a04: fix conditional field rendering below Edit Grid in submission view and PDF
+- 8f7cfab: FIO-11436: fixed an issue where Number and currency components not appearing as expected in server response
+- 7a9f179: FIO-11594: fixed Edit grid required validation within a Nested form
+- 799bfe5: preserve apostrophes in html5 option values
+- cd8fe42: FIO-10729 fixed setting isModified flag
+- 2526a3c: Fix radio components requiring double click after hide/show cycle
+- 7f5f0f2: FIO-11530: add origin validation in pdf iframe listener
+- 656fd3f: Fixes link to the Help documentation for Signature component
+- 5ea9453: FIO-11551: fixed an error when file uploading to Azure from remotely connected stage
+- c40ad3e: FIO-7954: refactored and fixed translations
+- 01ac28f: Fix missing "X" button on second upload after invalid attempt
+- 8a33709: fix signature comp width
+- 5b2937f: fix issue about label not rendered for Select with Resource data after setValue in DataGrid
+- 189b6bb: FIO-11179: Error list focus on checkbox not working on iOS
+- 6528ca3: FIO-11250 fixed the display of the Select Resource when Save as reference is unchecked
+- Updated dependencies [799bfe5]
+- Updated dependencies [c40ad3e]
+- Updated dependencies [6063d69]
+  - @formio/bootstrap@4.0.2
+
+## 5.4.2-api99.1
+
+### Patch Changes
+
+- 12fb10b: harden flaky test
+
+## 5.4.2-api99.0
+
+### Patch Changes
+
+- 6e4e477: FIO-11504 added sanitize method for placeholder
+- 1d7f6d7: fix required Data Table validation in Nested Form
+- 67c0a04: fix conditional field rendering below Edit Grid in submission view and PDF
+- 8f7cfab: FIO-11436: fixed an issue where Number and currency components not appearing as expected in server response
+- 7a9f179: FIO-11594: fixed Edit grid required validation within a Nested form
+- 799bfe5: preserve apostrophes in html5 option values
+- cd8fe42: FIO-10729 fixed setting isModified flag
+- 2526a3c: Fix radio components requiring double click after hide/show cycle
+- 7f5f0f2: FIO-11530: add origin validation in pdf iframe listener
+- 656fd3f: Fixes link to the Help documentation for Signature component
+- 5ea9453: FIO-11551: fixed an error when file uploading to Azure from remotely connected stage
+- c40ad3e: FIO-7954: refactored and fixed translations
+- 01ac28f: Fix missing "X" button on second upload after invalid attempt
+- 8a33709: fix signature comp width
+- 5b2937f: fix issue about label not rendered for Select with Resource data after setValue in DataGrid
+- 189b6bb: FIO-11179: Error list focus on checkbox not working on iOS
+- 6528ca3: FIO-11250 fixed the display of the Select Resource when Save as reference is unchecked
+- Updated dependencies [799bfe5]
+- Updated dependencies [c40ad3e]
+- Updated dependencies [6063d69]
+  - @formio/bootstrap@4.0.2-api99.0
+
 ## 5.4.1
 
 ### Patch Changes

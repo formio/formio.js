@@ -1,6 +1,6 @@
 {
   "name": "@formio/js",
-  "version": "5.4.1",
+  "version": "5.4.2",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "lib/cjs/index.js",
   "exports": {
@@ -58,7 +58,9 @@
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "mocha --config .mocharc.json test/unit/*.unit.js",
     "test:updateRenders": "npm run lib && cross-env TZ=UTC node --require jsdom-global/register test/updateRenders.cjs",
-    "show-coverage": "open coverage/lcov-report/index.html"
+    "show-coverage": "open coverage/lcov-report/index.html",
+    "check-types": "tsc --noEmit",
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -79,7 +81,7 @@
   },
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
-    "@formio/bootstrap": "^4.0.1",
+    "@formio/bootstrap": "^4.0.2",
     "@formio/core": "^2.7.1",
     "@formio/text-mask-addons": "^3.8.0-formio.4",
     "@formio/vanilla-text-mask": "^5.1.1-formio.1",

@@ -69,12 +69,7 @@ export default {
         licence: 'Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright',
         osm_type: 'relation',
         osm_id: 1837698,
-        boundingbox: [
-          '32.5453486',
-          '32.9899027',
-          '-97.0383833',
-          '-96.5168819',
-        ],
+        boundingbox: ['32.5453486', '32.9899027', '-97.0383833', '-96.5168819'],
         lat: '32.7620405',
         lon: '-96.7790069',
         display_name: 'Dallas County, Texas, United States',

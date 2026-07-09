@@ -11,9 +11,7 @@ export default class RadioComponent extends ListComponent {
         inputType: 'radio',
         label: 'Radio',
         key: 'radio',
-        values: [
-          { label: '', value: '' },
-        ],
+        values: [{ label: '', value: '' }],
         data: {
           url: '',
         },
@@ -71,25 +69,14 @@ export default class RadioComponent extends ListComponent {
     }
 
     if (dataType === 'object') {
-      return [
-        object,
-        array,
-      ];
+      return [object, array];
     }
 
     if (componentValueTypes[dataType]) {
-      return [
-        componentValueTypes[dataType],
-      ];
+      return [componentValueTypes[dataType]];
     }
 
-    return [
-      boolean,
-      string,
-      number,
-      object,
-      array,
-    ];
+    return [boolean, string, number, object, array];
   }
 
   constructor(component, options, data) {
@@ -489,6 +476,9 @@ export default class RadioComponent extends ListComponent {
     if (!flags || !flags.modified || !this.isRadio) {
       if (changed) {
         this.previousValue = this.dataValue;
+      }
+      if (!this.visible) {
+        this.previousValue = this.emptyValue;
       }
 
       return changed;

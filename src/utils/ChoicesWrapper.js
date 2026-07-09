@@ -35,9 +35,7 @@ class ChoicesWrapper extends Choices {
   }
 
   _onEnterKey(...args) {
-    const [
-      event,
-    ] = args;
+    const [event] = args;
     // Prevent dropdown form opening when removeItemButton was pressed using 'Enter' on keyboard
     if (event.target.className === 'choices__button') {
       this.shouldOpenDropDown = false;

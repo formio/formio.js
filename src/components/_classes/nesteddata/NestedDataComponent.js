@@ -14,11 +14,7 @@ export default class NestedDataComponent extends NestedComponent {
   }
 
   static savedValueTypes(schema) {
-    return (
-      getComponentSavedTypes(schema) || [
-        componentValueTypes.object,
-      ]
-    );
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   get allowData() {

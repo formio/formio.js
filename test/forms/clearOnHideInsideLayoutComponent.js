@@ -1,85 +1,85 @@
 export default {
-  "type": "form",
-  "components": [
+  type: 'form',
+  components: [
     {
-      "label": "Checkbox",
-      "tableView": false,
-      "defaultValue": true,
-      "validateWhenHidden": false,
-      "key": "checkbox",
-      "type": "checkbox",
-      "input": true
+      label: 'Checkbox',
+      tableView: false,
+      defaultValue: true,
+      validateWhenHidden: false,
+      key: 'checkbox',
+      type: 'checkbox',
+      input: true,
     },
     {
-      "label": "Panel",
-      "collapsible": false,
-      "key": "panel",
-      "conditional": {
-        "show": true,
-        "conjunction": "all",
-        "conditions": [
+      label: 'Panel',
+      collapsible: false,
+      key: 'panel',
+      conditional: {
+        show: true,
+        conjunction: 'all',
+        conditions: [
           {
-            "component": "checkbox",
-            "operator": "isEqual",
-            "value": true
-          }
-        ]
+            component: 'checkbox',
+            operator: 'isEqual',
+            value: true,
+          },
+        ],
       },
-      "type": "panel",
-      "input": false,
-      "tableView": false,
-      "components": [
+      type: 'panel',
+      input: false,
+      tableView: false,
+      components: [
         {
-          "label": "Text Field",
-          "applyMaskOn": "change",
-          "tableView": true,
-          "validateWhenHidden": false,
-          "key": "textFieldInPanel",
-          "type": "textfield",
-          "input": true
-        }
-      ]
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textFieldInPanel',
+          type: 'textfield',
+          input: true,
+        },
+      ],
     },
     {
-      "label": "",
-      "key": "fieldset",
-      "conditional": {
-        "show": true,
-        "conjunction": "all",
-        "conditions": [
+      label: '',
+      key: 'fieldset',
+      conditional: {
+        show: true,
+        conjunction: 'all',
+        conditions: [
           {
-            "component": "checkbox",
-            "operator": "isEqual",
-            "value": true
-          }
-        ]
+            component: 'checkbox',
+            operator: 'isEqual',
+            value: true,
+          },
+        ],
       },
-      "type": "fieldset",
-      "input": false,
-      "tableView": false,
-      "components": [
+      type: 'fieldset',
+      input: false,
+      tableView: false,
+      components: [
         {
-          "label": "Text Field",
-          "applyMaskOn": "change",
-          "tableView": true,
-          "validateWhenHidden": false,
-          "key": "textFieldInFieldset",
-          "type": "textfield",
-          "input": true
-        }
-      ]
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textFieldInFieldset',
+          type: 'textfield',
+          input: true,
+        },
+      ],
     },
     {
-      "type": "button",
-      "label": "Submit",
-      "key": "submit",
-      "disableOnInvalid": true,
-      "input": true,
-      "tableView": false
-    }
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      disableOnInvalid: true,
+      input: true,
+      tableView: false,
+    },
   ],
-  "title": "clearOnHide",
-  "display": "form",
-  "name": "clearOnHide",
-  "path": "clearonhide"
-}
+  title: 'clearOnHide',
+  display: 'form',
+  name: 'clearOnHide',
+  path: 'clearonhide',
+};

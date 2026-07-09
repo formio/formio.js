@@ -10,9 +10,7 @@ export default {
       {
         key: 'form',
         type: 'form',
-        components: [
-          { key: 'name', type: 'textfield' },
-        ],
+        components: [{ key: 'name', type: 'textfield' }],
       },
     ],
   },
@@ -29,9 +27,7 @@ export default {
         const listener2 = sinon.spy();
         const listener3parent = sinon.spy();
         const listener3nested = sinon.spy();
-        const [
-          formCmp,
-        ] = form.components;
+        const [formCmp] = form.components;
 
         // Check wrapper
         expect(formCmp).to.be.an.instanceof(FormComponent);

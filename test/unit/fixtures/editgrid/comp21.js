@@ -18,14 +18,14 @@ export default {
           tableView: true,
           multiple: true,
           validate: {
-            required: true
+            required: true,
           },
           validateWhenHidden: false,
           key: 'textField',
           type: 'textfield',
-          input: true
-        }
-      ]
-    }
-  ]
-}
+          input: true,
+        },
+      ],
+    },
+  ],
+};

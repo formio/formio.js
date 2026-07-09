@@ -4,6 +4,7 @@ import fetchMock from 'fetch-mock';
 
 import S3 from '../../src/providers/storage/s3';
 import { withRetries } from '../../src/providers/storage/util';
+import { Formio } from '../../src/Formio';
 
 describe('S3 Provider', function () {
   describe('Function Unit Tests', function () {
@@ -13,14 +14,7 @@ describe('S3 Provider', function () {
       }
 
       const spy = sinon.spy(sleepAndReject);
-      withRetries(
-        spy,
-        [
-          200,
-        ],
-        3,
-        'Custom error message',
-      ).catch((err) => {
+      withRetries(spy, [200], 3, 'Custom error message').catch((err) => {
         assert.equal(err.message, 'Custom error message');
         assert.equal(spy.callCount, 3);
         done();
@@ -30,8 +24,15 @@ describe('S3 Provider', function () {
 
   describe('Provider Integration Tests', function () {
     describe('AWS S3 Multipart Uploads', function () {
+      let mockFetch;
+      let previousGlobalFetch;
+      let previousFormioFetch;
+
       before('Mocks fetch', function () {
-        fetchMock
+        previousGlobalFetch = globalThis.fetch;
+        previousFormioFetch = Formio.fetch;
+        mockFetch = fetchMock.sandbox();
+        mockFetch
           .post('https://fakeproject.form.io/fakeform/storage/s3', {
             signed: new Array(5).fill('https://fakebucketurl.aws.com/signed'),
             minio: false,
@@ -44,32 +45,36 @@ describe('S3 Provider', function () {
           })
           .put('https://fakebucketurl.aws.com/signed', {
             status: 200,
-            headers: { Etag: 'fakeetag' },
+            headers: { etag: 'fakeetag' },
           })
           .post('https://fakeproject.form.io/fakeform/storage/s3/multipart/complete', 200)
           .post('https://fakeproject.form.io/fakeform/storage/s3/multipart/abort', 200);
+
+        Formio.fetch = mockFetch;
+        globalThis.fetch = mockFetch;
       });
 
       after('Restore fetch', function () {
-        fetchMock.restore();
+        if (mockFetch) {
+          mockFetch.restore();
+        }
+        globalThis.fetch = previousGlobalFetch;
+        Formio.fetch = previousFormioFetch;
       });
 
       it('Given an array of signed urls it should upload a file to S3 using multipart upload', function (done) {
         const mockFormio = {
           formUrl: 'https://fakeproject.form.io/fakeform',
           getToken: () => {},
+          makeRequest(type, url, method, data, opts) {
+            return Formio.makeRequest(this, type, url, method, data, opts);
+          },
         };
         const s3 = new S3(mockFormio);
         const uploadSpy = sinon.spy(s3, 'uploadParts');
         const completeSpy = sinon.spy(s3, 'completeMultipartUpload');
 
-        const mockFile = new File(
-          [
-            'test!',
-          ],
-          'test.jpg',
-          { type: 'image/jpeg' },
-        );
+        const mockFile = new File(['test!'], 'test.jpg', { type: 'image/jpeg' });
         s3.uploadFile(
           mockFile,
           'test.jpg',

@@ -10,7 +10,7 @@ export default class IsEqualTo extends ConditionOperator {
     return 'Is Equal To';
   }
 
-  execute({ value, comparedValue}) {
+  execute({ value, comparedValue }) {
     if (
       (value || value === false) &&
       comparedValue &&

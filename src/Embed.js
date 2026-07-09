@@ -164,31 +164,33 @@ export class Formio {
     if (successMessage && successMessage.toLowerCase() !== 'false' && instance.element) {
       instance.element.innerHTML = `<div class="alert-success" role="alert">${successMessage}</div>`;
     }
-    const announcementMessage = successMessage && successMessage.toLowerCase() !== 'false' 
-      ? successMessage 
-      : 'Form submission complete';
-    
+    const announcementMessage =
+      successMessage && successMessage.toLowerCase() !== 'false'
+        ? successMessage
+        : 'Form submission complete';
+
     let liveRegion = document.getElementById('formio-announcements');
     if (!liveRegion) {
       liveRegion = Formio.createElement('div', {
         id: 'formio-announcements',
-        'role': 'status',
+        role: 'status',
         'aria-live': 'polite',
         'aria-atomic': 'true',
-        style: 'position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);'
+        style:
+          'position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);',
       });
       document.body.appendChild(liveRegion);
     }
-    
+
     // Announce the submission completion using VPAT clear-and-reset technique
     liveRegion.textContent = '';
     liveRegion.setAttribute('aria-live', 'off');
-    
+
     requestAnimationFrame(() => {
       setTimeout(() => {
         liveRegion.setAttribute('aria-live', 'polite');
         liveRegion.textContent = announcementMessage;
-        
+
         setTimeout(() => {
           if (liveRegion) {
             liveRegion.textContent = '';
@@ -303,9 +305,7 @@ export class Formio {
     Formio.cdn = new CDN(Formio.config.cdn, Formio.config.cdnUrls || {});
     Formio.config.libs = Formio.config.libs || {
       uswds: {
-        dependencies: [
-          'fontawesome',
-        ],
+        dependencies: ['fontawesome'],
         js: `${Formio.cdn.uswds}/uswds.min.js`,
         css: `${Formio.cdn.uswds}/uswds.min.css`,
         use: true,
@@ -323,15 +323,11 @@ export class Formio {
                   }`,
       },
       bootstrap4: {
-        dependencies: [
-          'fontawesome',
-        ],
+        dependencies: ['fontawesome'],
         css: `${Formio.cdn.bootstrap4}/css/bootstrap.min.css`,
       },
       bootstrap: {
-        dependencies: [
-          'bootstrap-icons',
-        ],
+        dependencies: ['bootstrap-icons'],
         css: `${Formio.cdn.bootstrap}/css/bootstrap.min.css`,
       },
       'bootstrap-icons': {
@@ -371,9 +367,7 @@ export class Formio {
       'yeti',
     ].forEach((template) => {
       Formio.config.libs[template] = {
-        dependencies: [
-          'bootstrap-icons',
-        ],
+        dependencies: ['bootstrap-icons'],
         css: `${Formio.cdn.bootswatch}/dist/${template}/bootstrap.min.css`,
       };
     });
@@ -395,7 +389,9 @@ export class Formio {
           isQuillTextarea ||
           hasQuillComponent(component.components) ||
           hasQuillComponent(component.columns?.flatMap((column) => column.components || [])) ||
-          hasQuillComponent(component.rows?.flatMap((row) => row.flatMap((cell) => cell.components || [])))
+          hasQuillComponent(
+            component.rows?.flatMap((row) => row.flatMap((cell) => cell.components || [])),
+          )
         );
       });
     };
@@ -421,8 +417,8 @@ export class Formio {
       // Due to an issue with quill not loading styles in the shadowdom, we need to add quill styles and js to the shadowdom
       const quill = {
         js: `${Formio.cdn.quill}/quill.js`,
-        css: `${Formio.cdn.quill}/quill.snow.css`
-      }
+        css: `${Formio.cdn.quill}/quill.snow.css`,
+      };
       await Formio.addLibrary(wrapper, quill, 'quill');
     }
 

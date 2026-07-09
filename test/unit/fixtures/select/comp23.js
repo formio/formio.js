@@ -25,10 +25,7 @@ export default {
       key: 'select',
       type: 'select',
       input: true,
-      defaultValue: [
-        'value1',
-        'value3',
-      ],
+      defaultValue: ['value1', 'value3'],
       selectValues: 'data',
       disableLimit: false,
       noRefreshOnScroll: false,

@@ -40,11 +40,7 @@ export default class ContainerComponent extends NestedDataComponent {
   }
 
   static savedValueTypes(schema) {
-    return (
-      getComponentSavedTypes(schema) || [
-        componentValueTypes.object,
-      ]
-    );
+    return getComponentSavedTypes(schema) || [componentValueTypes.object];
   }
 
   addComponents(data, options) {

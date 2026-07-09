@@ -260,7 +260,7 @@ export default class Input extends Multivalue {
   }
 
   attach(element) {
-     this.loadRefs(element, {
+    this.loadRefs(element, {
       announceMessage: 'multiple',
       charcount: 'multiple',
       wordcount: 'multiple',
@@ -314,9 +314,9 @@ export default class Input extends Multivalue {
     });
 
     this.on('blur', (comp) => {
-      const el = comp.refs?.["announceMessage"]?.[0];
+      const el = comp.refs?.['announceMessage']?.[0];
       if (el) {
-        el.textContent = ""
+        el.textContent = '';
       }
     });
 

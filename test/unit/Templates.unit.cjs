@@ -1,5 +1,5 @@
 /* eslint-disable mocha/no-setup-in-describe */
-/* eslint-disable mocha/consistent-spacing-between-blocks */
+
 const renders = require('../renders');
 const forms = require('../formtest');
 const pretty = require('pretty');

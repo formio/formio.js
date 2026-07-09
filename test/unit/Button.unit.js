@@ -266,42 +266,26 @@ describe('Button Component', function () {
     form
       .setForm(formWithResetValue)
       .then(() => {
-        const select = form.getComponent([
-          'showPanel',
-        ]);
+        const select = form.getComponent(['showPanel']);
 
         select.setValue('yes');
 
         setTimeout(() => {
-          const panel = form.getComponent([
-            'panel',
-          ]);
-          const textField = form.getComponent([
-            'textField',
-          ]);
-          const textArea = form.getComponent([
-            'textArea',
-          ]);
+          const panel = form.getComponent(['panel']);
+          const textField = form.getComponent(['textField']);
+          const textArea = form.getComponent(['textArea']);
 
           assert.equal(panel.visible, true, 'Panel should be visible');
           assert.equal(textField.visible, true, 'TextFiled should be visible');
           assert.equal(textArea.visible, true, 'TextArea should be visible');
 
-          const resetButton = form.getComponent([
-            'reset',
-          ]);
+          const resetButton = form.getComponent(['reset']);
           resetButton.emit('resetForm');
 
           setTimeout(() => {
-            const panel = form.getComponent([
-              'panel',
-            ]);
-            const textField = form.getComponent([
-              'textField',
-            ]);
-            const textArea = form.getComponent([
-              'textArea',
-            ]);
+            const panel = form.getComponent(['panel']);
+            const textField = form.getComponent(['textField']);
+            const textArea = form.getComponent(['textArea']);
 
             assert.equal(panel.visible, false, 'Panel should NOT be visible');
             assert.equal(textField.visible, false, 'TextFiled should NOT be visible');
@@ -362,14 +346,7 @@ describe('Button Component', function () {
     Formio.createForm(element, form)
       .then((formObj) => {
         const btns = formObj.components;
-        const theme = [
-          'warning',
-          'danger',
-          'success',
-          'info',
-          'secondary',
-          'primary',
-        ];
+        const theme = ['warning', 'danger', 'success', 'info', 'secondary', 'primary'];
 
         _.each(btns, (btn, index) => {
           const btnClass = `btn-${theme[index]}`;

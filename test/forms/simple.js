@@ -177,17 +177,13 @@ export default {
       { type: 'create_all', roles: [] },
       {
         type: 'read_all',
-        roles: [
-          '58704bed7cc4b7006c4b8a6f',
-        ],
+        roles: ['58704bed7cc4b7006c4b8a6f'],
       },
       { type: 'update_all', roles: [] },
       { type: 'delete_all', roles: [] },
       {
         type: 'create_own',
-        roles: [
-          '58704bed7cc4b7006c4b8a6f',
-        ],
+        roles: ['58704bed7cc4b7006c4b8a6f'],
       },
       { type: 'read_own', roles: [] },
       { type: 'update_own', roles: [] },
@@ -203,11 +199,7 @@ export default {
       { type: 'create_all', roles: [] },
       {
         type: 'read_all',
-        roles: [
-          '58704bed7cc4b7006c4b8a6d',
-          '58704bed7cc4b7006c4b8a6e',
-          '58704bed7cc4b7006c4b8a6f',
-        ],
+        roles: ['58704bed7cc4b7006c4b8a6d', '58704bed7cc4b7006c4b8a6e', '58704bed7cc4b7006c4b8a6f'],
       },
       { type: 'update_all', roles: [] },
       { type: 'delete_all', roles: [] },

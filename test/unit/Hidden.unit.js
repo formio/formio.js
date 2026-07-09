@@ -29,16 +29,8 @@ describe('Hidden Component', function () {
   it('Should set correct array data for Hidden component', function () {
     return Harness.testCreate(HiddenComponent, comp1).then((component) => {
       const value = [
-        [
-          1,
-          2,
-          3,
-        ],
-        [
-          'a',
-          'b',
-          'c',
-        ],
+        [1, 2, 3],
+        ['a', 'b', 'c'],
       ];
       component.setValue(value);
       assert(Array.isArray(component.dataValue), 'Value should be an Array');

@@ -19,9 +19,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
   }
 
   static savedValueTypes() {
-    return [
-      componentValueTypes.array,
-    ];
+    return [componentValueTypes.array];
   }
 
   componentContext(component) {
@@ -29,7 +27,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
   }
 
   get iteratableRows() {
-    throw new Error('Getter #iteratableRows() is not implemented');
+    throw new Error(this.t('iteratableRowsError'));
   }
 
   get rowIndex() {
@@ -83,17 +81,11 @@ export default class NestedArrayComponent extends NestedDataComponent {
 
   validate(data, flags = {}) {
     data = data || this.data;
-    return this.validateComponents(
-      [
-        this.component,
-      ],
-      data,
-      flags,
-    );
+    return this.validateComponents([this.component], data, flags);
   }
 
   checkRow(...args) {
-    console.log('Deprecation Warning: checkRow method has been replaced with processRow');
+    console.log(this.t('checkRowDeprecation'));
     return this.processRow.call(this, ...args);
   }
 
@@ -170,7 +162,7 @@ export default class NestedArrayComponent extends NestedDataComponent {
 
       this.component.components?.forEach((component) => {
         const label = component.label || component.key;
-        result += `<th style="padding: 5px 10px;">${label}</th>`;
+        result += `<th style="padding: 5px 10px;">${this.t(label, { _userInput: true })}</th>`;
       });
 
       result += `

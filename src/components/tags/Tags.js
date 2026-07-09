@@ -35,11 +35,7 @@ export default class TagsComponent extends Input {
   static get conditionOperatorsSettings() {
     return {
       ...super.conditionOperatorsSettings,
-      operators: [
-        ...super.conditionOperatorsSettings.operators,
-        'includes',
-        'notIncludes',
-      ],
+      operators: [...super.conditionOperatorsSettings.operators, 'includes', 'notIncludes'],
     };
   }
 
@@ -105,7 +101,7 @@ export default class TagsComponent extends Input {
       shadowRoot: this.root ? this.root.shadowRoot : null,
       placeholder: hasPlaceholder,
       placeholderValue: hasPlaceholder
-        ? this.t(this.component.placeholder, { _userInput: true })
+        ? this.sanitize(this.t(this.component.placeholder, { _userInput: true }), true)
         : null,
     });
     this.choices.itemList.element.tabIndex = element.tabIndex;
@@ -126,9 +122,7 @@ export default class TagsComponent extends Input {
         } else if (isRepeatedValue) {
           this.choices.clearInput();
         } else {
-          this.choices.setValue([
-            value,
-          ]);
+          this.choices.setValue([value]);
           this.choices.clearInput();
           this.choices.hideDropdown(true);
           this.updateValue(null, {
@@ -165,11 +159,7 @@ export default class TagsComponent extends Input {
         if (typeof dataValue === 'string') {
           dataValue = dataValue.split(this.delimiter).filter((result) => result);
         }
-        const value = Array.isArray(dataValue)
-          ? dataValue
-          : [
-              dataValue,
-            ];
+        const value = Array.isArray(dataValue) ? dataValue : [dataValue];
         this.choices.setValue(value.map((val) => this.sanitize(val, this.shouldSanitizeValue)));
       }
     }

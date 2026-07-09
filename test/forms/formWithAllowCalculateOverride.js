@@ -7,9 +7,7 @@ export default {
     'Values to use as the data source. Labels are shown in the select field. Values are the corresponding values saved with the submission.',
   weight: 10,
   reorder: true,
-  defaultValue: [
-    { label: '', value: '' },
-  ],
+  defaultValue: [{ label: '', value: '' }],
   components: [
     {
       label: 'Label',
@@ -24,9 +22,7 @@ export default {
       type: 'textfield',
       allowCalculateOverride: true,
       calculateValue: {
-        _camelCase: [
-          { var: 'row.label' },
-        ],
+        _camelCase: [{ var: 'row.label' }],
       },
     },
   ],

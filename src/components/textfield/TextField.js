@@ -64,11 +64,7 @@ export default class TextFieldComponent extends Input {
   }
 
   static savedValueTypes(schema) {
-    return (
-      FormioUtils.getComponentSavedTypes(schema) || [
-        FormioUtils.componentValueTypes.string,
-      ]
-    );
+    return FormioUtils.getComponentSavedTypes(schema) || [FormioUtils.componentValueTypes.string];
   }
 
   get defaultSchema() {
@@ -146,7 +142,11 @@ export default class TextFieldComponent extends Input {
         defaultValue = defaultValue[0];
       }
       // Extract string if defaultValue is a mask object to prevent nesting
-      if (defaultValue && typeof defaultValue === 'object' && defaultValue.hasOwnProperty('value')) {
+      if (
+        defaultValue &&
+        typeof defaultValue === 'object' &&
+        defaultValue.hasOwnProperty('value')
+      ) {
         defaultValue = defaultValue.value;
       }
       value.value = defaultValue;

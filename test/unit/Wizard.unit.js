@@ -166,13 +166,7 @@ describe('Wizard tests', function () {
             return Promise.resolve(_.cloneDeep(childFormOwner));
           }
         }
-        if (
-          type === 'submission' &&
-          [
-            'put',
-            'post',
-          ].includes(method)
-        ) {
+        if (type === 'submission' && ['put', 'post'].includes(method)) {
           postRequestCount++;
         }
         return Promise.resolve();
@@ -261,7 +255,6 @@ describe('Wizard tests', function () {
                 assert.equal(wizard.page, 3);
                 clickWizardBtn(wizard, 'submit');
                 setTimeout(() => {
-
                   assert.equal(wizard.errors.length, 1);
                   assert.equal(attemptsToSubmit, 0);
 
@@ -272,10 +265,10 @@ describe('Wizard tests', function () {
               }, 300);
             }, 300);
           }, 300);
-        }, 300)
+        }, 300);
       })
       .catch((err) => done(err));
-  })
+  });
 
   it('FIO-11517: highlights logic-driven required field in DataGrid row inside a nested wizard after add-row post-submit', function (done) {
     const formElement = document.createElement('div');
@@ -285,7 +278,8 @@ describe('Wizard tests', function () {
     Formio.makeRequest = (formio, type, url, method) => {
       if (type === 'form' && method === 'get') {
         if (url.endsWith('outer')) return Promise.resolve(forms.mainForm);
-        if (url.includes('bbbbbbbbbbbbbbbbbbbbbbbb')) return Promise.resolve(forms['bbbbbbbbbbbbbbbbbbbbbbbb']);
+        if (url.includes('bbbbbbbbbbbbbbbbbbbbbbbb'))
+          return Promise.resolve(forms['bbbbbbbbbbbbbbbbbbbbbbbb']);
         return Promise.resolve();
       }
     };
@@ -301,12 +295,18 @@ describe('Wizard tests', function () {
             wizard.everyComponent((c) => {
               if (c.component.key === 'nameResponsibleOfficial') sel = c;
             });
-            const liveEl = wizard.element.querySelector('.formio-component-nameResponsibleOfficial');
+            const liveEl = wizard.element.querySelector(
+              '.formio-component-nameResponsibleOfficial',
+            );
             Formio.makeRequest = originalMakeRequest;
             Formio.setUser();
             try {
               assert(sel, 'select instance should exist in new row');
-              assert.equal(sel.component.validate?.required, true, 'logic should set required=true on new row');
+              assert.equal(
+                sel.component.validate?.required,
+                true,
+                'logic should set required=true on new row',
+              );
               assert(liveEl, 'select element should be in the DOM');
               assert.equal(
                 liveEl.classList.contains('formio-error-wrapper'),
@@ -713,25 +713,12 @@ describe('Wizard tests', function () {
           elem.dispatchEvent(event);
         };
 
-        checkComponents(
-          0,
-          1,
-          [],
-          [
-            {},
-          ],
-        );
+        checkComponents(0, 1, [], [{}]);
 
         const submission = {
           data: {
-            dataGrid: [
-              { number: 1111 },
-              { number: 2222 },
-            ],
-            editGrid: [
-              { textField: 'test1' },
-              { textField: 'test2' },
-            ],
+            dataGrid: [{ number: 1111 }, { number: 2222 }],
+            editGrid: [{ textField: 'test1' }, { textField: 'test2' }],
           },
         };
 
@@ -742,14 +729,7 @@ describe('Wizard tests', function () {
           wizard.cancel(true);
 
           setTimeout(() => {
-            checkComponents(
-              0,
-              1,
-              [],
-              [
-                {},
-              ],
-            );
+            checkComponents(0, 1, [], [{}]);
             event('click', editGrid.refs['editgrid-editGrid-addRow'][0]);
 
             setTimeout(() => {
@@ -767,16 +747,7 @@ describe('Wizard tests', function () {
               event('input', dataGridFirstRowInput);
 
               setTimeout(() => {
-                checkComponents(
-                  1,
-                  1,
-                  [
-                    { textField: 'test row 1' },
-                  ],
-                  [
-                    { number: 11 },
-                  ],
-                );
+                checkComponents(1, 1, [{ textField: 'test row 1' }], [{ number: 11 }]);
 
                 event('click', editGrid.refs['editgrid-editGrid-addRow'][0]);
                 event('click', dataGrid.refs['datagrid-dataGrid-addRow'][0]);
@@ -800,10 +771,7 @@ describe('Wizard tests', function () {
                       { textField: 'test row 1' },
                       { textField: 'test row 2' },
                     ];
-                    const dataGridValue = [
-                      { number: 11 },
-                      { number: 22 },
-                    ];
+                    const dataGridValue = [{ number: 11 }, { number: 22 }];
 
                     checkComponents(2, 2, editGridValue, dataGridValue);
 
@@ -2602,9 +2570,7 @@ describe('Wizard tests', function () {
       .then(() => {
         wizardForm.setValue({
           data: {
-            editGrid: [
-              { textField: '111' },
-            ],
+            editGrid: [{ textField: '111' }],
             number: 222,
           },
         });
@@ -2961,9 +2927,7 @@ describe('Wizard tests', function () {
       form
         .setForm(wizardWithConditionallyVisiblePage)
         .then(() => {
-          const textField = form.getComponent([
-            'textField',
-          ]);
+          const textField = form.getComponent(['textField']);
           Harness.dispatchEvent(
             'input',
             textField.element,
@@ -2978,9 +2942,7 @@ describe('Wizard tests', function () {
 
           setTimeout(() => {
             assert.equal(textField.dataValue, 'hide', 'Should set value');
-            const page2 = form.getComponent([
-              'page2',
-            ]);
+            const page2 = form.getComponent(['page2']);
             assert.equal(page2.visible, false, 'Should be hidden by logic');
             assert.equal(
               form.refs[`wizard-${form.id}-link`].length,
@@ -2997,9 +2959,7 @@ describe('Wizard tests', function () {
       const formElement = document.createElement('div');
       Formio.createForm(formElement, nestedConditionalWizard)
         .then((form) => {
-          const nestedFormRadio = form.getComponent([
-            'nestedForm',
-          ]);
+          const nestedFormRadio = form.getComponent(['nestedForm']);
 
           nestedFormRadio.setValue('yes');
           setTimeout(() => {
@@ -3010,9 +2970,7 @@ describe('Wizard tests', function () {
             secondQuestionToOpenNestedFormRadio.setValue('openChildForm');
 
             setTimeout(() => {
-              const nestedForm = form.getComponent([
-                'form',
-              ]);
+              const nestedForm = form.getComponent(['form']);
               assert(nestedForm.visible, 'Should become visible');
               nestedForm.subForm.components.forEach((comp) => {
                 assert.equal(
@@ -3021,9 +2979,7 @@ describe('Wizard tests', function () {
                   'The root of the nested components should be set to the' + ' Wizard itself',
                 );
               });
-              const nestedRadio1 = nestedForm.subForm.getComponent([
-                'radio1',
-              ]);
+              const nestedRadio1 = nestedForm.subForm.getComponent(['radio1']);
 
               nestedRadio1.setValue('unhidePage3');
 
@@ -3050,9 +3006,7 @@ describe('Wizard tests', function () {
                         'The root of the nested components should be set to the' + ' Wizard itself',
                       );
                     });
-                    const nestedRadio1 = nestedForm.subForm.getComponent([
-                      'radio1',
-                    ]);
+                    const nestedRadio1 = nestedForm.subForm.getComponent(['radio1']);
 
                     nestedRadio1.setValue('unhidePage3');
 
@@ -3226,5 +3180,98 @@ describe('Wizard tests', function () {
         }, 200);
       }, 200);
     });
+  });
+
+  it('Should merge schema defaults for hidden wizard page fields (clearOnHide: false)', async function () {
+    const wizardHiddenPageDefaults = {
+      display: 'wizard',
+      type: 'form',
+      components: [
+        {
+          title: 'Page 1',
+          label: 'Page 1',
+          type: 'panel',
+          key: 'page1',
+          components: [
+            {
+              label: 'Checkbox',
+              tableView: false,
+              key: 'checkbox',
+              type: 'checkbox',
+              input: true,
+            },
+          ],
+          input: false,
+          tableView: false,
+        },
+        {
+          label: 'Page 2',
+          title: 'Page 2',
+          key: 'page2',
+          type: 'panel',
+          input: false,
+          tableView: false,
+          conditional: {
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'page1.checkbox',
+                operator: 'isEqual',
+                value: true,
+              },
+            ],
+            show: true,
+          },
+          components: [
+            {
+              label: 'Text Field',
+              tableView: true,
+              clearOnHide: false,
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+              defaultValue: 'test',
+            },
+            {
+              label: 'Number',
+              mask: false,
+              tableView: false,
+              defaultValue: 1,
+              delimiter: false,
+              requireDecimal: false,
+              inputFormat: 'plain',
+              clearOnHide: false,
+              key: 'number',
+              type: 'number',
+              input: true,
+            },
+            {
+              label: 'Currency',
+              mask: false,
+              tableView: false,
+              defaultValue: 2,
+              currency: 'USD',
+              inputFormat: 'plain',
+              clearOnHide: false,
+              key: 'currency',
+              type: 'currency',
+              input: true,
+              delimiter: true,
+            },
+          ],
+        },
+      ],
+    };
+
+    const wizard = new Wizard(document.createElement('div'));
+    await wizard.setForm(wizardHiddenPageDefaults);
+    await wizard.formReady;
+
+    wizard.data = { checkbox: false };
+    wizard.mergeDefaultsFromSchema(wizard.data);
+
+    assert.equal(wizard.data.textField, 'test');
+    assert.equal(wizard.data.number, 1);
+    assert.equal(wizard.data.currency, 2);
   });
 });

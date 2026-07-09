@@ -60,11 +60,7 @@ export default class HTMLComponent extends Component {
   }
 
   get singleTags() {
-    return [
-      'br',
-      'img',
-      'hr',
-    ];
+    return ['br', 'img', 'hr'];
   }
 
   checkRefreshOn(changed) {

@@ -76,10 +76,7 @@ export default [
     tooltip: 'The name of the indexeddb database.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'indexeddb',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'indexeddb'],
       },
     },
   },
@@ -92,10 +89,7 @@ export default [
     tooltip: 'The name of table in the indexeddb database.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'indexeddb',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'indexeddb'],
       },
     },
   },
@@ -111,10 +105,7 @@ export default [
     defaultValue: {},
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'indexeddb',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'indexeddb'],
       },
     },
   },
@@ -131,10 +122,7 @@ export default [
       '<div>Example: <pre>["apple", "banana", "orange"].</pre></div> <div>Example 2: <pre>[{"name": "John", "email": "john.doe@test.com"}, {"name": "Jane", "email": "jane.doe@test.com"}].</pre></div>',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'json',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'json'],
       },
     },
   },
@@ -151,19 +139,10 @@ export default [
       json: {
         and: [
           {
-            in: [
-              { var: 'data.dataSrc' },
-              [
-                'resource',
-                'url',
-              ],
-            ],
+            in: [{ var: 'data.dataSrc' }, ['resource', 'url']],
           },
           {
-            '!==': [
-              { var: 'data.widget' },
-              'html5',
-            ],
+            '!==': [{ var: 'data.widget' }, 'html5'],
           },
         ],
       },
@@ -178,9 +157,7 @@ export default [
       'Values to use as the data source. Labels are shown in the select field. Values are the corresponding values saved with the submission.',
     weight: 10,
     reorder: true,
-    defaultValue: [
-      { label: '', value: '' },
-    ],
+    defaultValue: [{ label: '', value: '' }],
     components: [
       {
         label: 'Label',
@@ -199,10 +176,7 @@ export default [
     ],
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'values',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'values'],
       },
     },
   },
@@ -224,10 +198,7 @@ export default [
     tooltip: 'The resource to be used with this field.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'resource',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'resource'],
       },
     },
   },
@@ -242,10 +213,7 @@ export default [
       'The property within the source data, where iterable items reside. For example: results.items or results[0].items',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'url',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'url'],
       },
     },
   },
@@ -302,16 +270,10 @@ export default [
       json: {
         and: [
           {
-            '===': [
-              { var: 'data.dataSrc' },
-              'resource',
-            ],
+            '===': [{ var: 'data.dataSrc' }, 'resource'],
           },
           {
-            '!==': [
-              { var: 'data.reference' },
-              true,
-            ],
+            '!==': [{ var: 'data.reference' }, true],
           },
           { var: 'data.data.resource' },
         ],
@@ -361,16 +323,10 @@ export default [
       json: {
         and: [
           {
-            '===': [
-              { var: 'data.dataSrc' },
-              'resource',
-            ],
+            '===': [{ var: 'data.dataSrc' }, 'resource'],
           },
           {
-            '===': [
-              { var: 'data.valueProperty' },
-              '',
-            ],
+            '===': [{ var: 'data.valueProperty' }, ''],
           },
         ],
       },
@@ -386,10 +342,7 @@ export default [
     weight: 15,
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'url',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'url'],
       },
     },
   },
@@ -404,13 +357,7 @@ export default [
       'The name of the search querystring parameter used when sending a request to filter results with. The server at the URL must handle this query parameter.',
     conditional: {
       json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'url',
-            'resource',
-          ],
-        ],
+        in: [{ var: 'data.dataSrc' }, ['url', 'resource']],
       },
     },
   },
@@ -435,13 +382,7 @@ export default [
     defaultValue: 0.3,
     conditional: {
       json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'url',
-            'resource',
-          ],
-        ],
+        in: [{ var: 'data.dataSrc' }, ['url', 'resource']],
       },
     },
   },
@@ -457,16 +398,10 @@ export default [
       json: {
         and: [
           {
-            '===': [
-              { var: 'data.dataSrc' },
-              'url',
-            ],
+            '===': [{ var: 'data.dataSrc' }, 'url'],
           },
           {
-            '!=': [
-              { var: 'data.searchField' },
-              '',
-            ],
+            '!=': [{ var: 'data.searchField' }, ''],
           },
         ],
       },
@@ -482,13 +417,7 @@ export default [
     tooltip: 'Use this to provide additional filtering using query parameters.',
     conditional: {
       json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'url',
-            'resource',
-          ],
-        ],
+        in: [{ var: 'data.dataSrc' }, ['url', 'resource']],
       },
     },
   },
@@ -502,13 +431,7 @@ export default [
     tooltip: 'Use this to provide additional sorting using query parameters',
     conditional: {
       json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'url',
-            'resource',
-          ],
-        ],
+        in: [{ var: 'data.dataSrc' }, ['url', 'resource']],
       },
     },
   },
@@ -525,19 +448,10 @@ export default [
       json: {
         and: [
           {
-            in: [
-              { var: 'data.dataSrc' },
-              [
-                'url',
-                'resource',
-              ],
-            ],
+            in: [{ var: 'data.dataSrc' }, ['url', 'resource']],
           },
           {
-            '!==': [
-              { var: 'data.disableLimit' },
-              true,
-            ],
+            '!==': [{ var: 'data.disableLimit' }, true],
           },
         ],
       },
@@ -556,10 +470,7 @@ export default [
       'Write custom code to return the value options or a promise with value options. The form data object is available.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'custom',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'custom'],
       },
     },
   },
@@ -592,15 +503,7 @@ export default [
     },
     conditional: {
       json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'url',
-            'resource',
-            'values',
-            'custom',
-          ],
-        ],
+        in: [{ var: 'data.dataSrc' }, ['url', 'resource', 'values', 'custom']],
       },
     },
   },
@@ -633,14 +536,7 @@ export default [
     },
     conditional: {
       json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'url',
-            'resource',
-            'values',
-          ],
-        ],
+        in: [{ var: 'data.dataSrc' }, ['url', 'resource', 'values']],
       },
     },
   },
@@ -654,15 +550,7 @@ export default [
     tooltip: 'When the Refresh On field is changed, clear this components value.',
     conditional: {
       json: {
-        in: [
-          { var: 'data.dataSrc' },
-          [
-            'url',
-            'resource',
-            'values',
-            'custom',
-          ],
-        ],
+        in: [{ var: 'data.dataSrc' }, ['url', 'resource', 'values', 'custom']],
       },
     },
   },
@@ -689,19 +577,10 @@ export default [
       json: {
         and: [
           {
-            in: [
-              { var: 'data.dataSrc' },
-              [
-                'url',
-                'resource',
-              ],
-            ],
+            in: [{ var: 'data.dataSrc' }, ['url', 'resource']],
           },
           {
-            '===': [
-              { var: 'data.searchEnabled' },
-              true,
-            ],
+            '===': [{ var: 'data.searchEnabled' }, true],
           },
         ],
       },
@@ -738,10 +617,7 @@ export default [
     tooltip: 'Allows to create a new resource while entering a submission.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'resource',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'resource'],
       },
     },
   },
@@ -757,10 +633,7 @@ export default [
       json: {
         and: [
           {
-            '===': [
-              { var: 'data.dataSrc' },
-              'resource',
-            ],
+            '===': [{ var: 'data.dataSrc' }, 'resource'],
           },
           { '!!': { var: 'data.addResource' } },
         ],
@@ -777,10 +650,7 @@ export default [
       'Using this option will save this field as a reference and link its value to the value of the origin record.',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.dataSrc' },
-          'resource',
-        ],
+        '===': [{ var: 'data.dataSrc' }, 'resource'],
       },
     },
   },
@@ -829,39 +699,24 @@ export default [
         and: [
           { var: 'data.valueProperty' },
           {
-            '===': [
-              { var: 'data.lazyLoad' },
-              true,
-            ],
+            '===': [{ var: 'data.lazyLoad' }, true],
           },
           {
-            '!==': [
-              { var: 'data.widget' },
-              'html5',
-            ],
+            '!==': [{ var: 'data.widget' }, 'html5'],
           },
           {
             or: [
               {
-                '===': [
-                  { var: 'data.dataSrc' },
-                  'url',
-                ],
+                '===': [{ var: 'data.dataSrc' }, 'url'],
               },
               {
                 and: [
                   {
-                    '===': [
-                      { var: 'data.dataSrc' },
-                      'resource',
-                    ],
+                    '===': [{ var: 'data.dataSrc' }, 'resource'],
                   },
                   // 'data' means entire object from resource will be used
                   {
-                    '!==': [
-                      { var: 'data.valueProperty' },
-                      'data',
-                    ],
+                    '!==': [{ var: 'data.valueProperty' }, 'data'],
                   },
                 ],
               },

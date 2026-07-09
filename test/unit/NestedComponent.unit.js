@@ -201,18 +201,10 @@ describe('NestedComponent class', function () {
       Harness.testCreate(NestedComponent, comp1)
         .then((nested) => {
           const child = nested.components[0];
-          nested.components = [
-            ...nested.components,
-            child,
-            child,
-            child,
-          ];
+          nested.components = [...nested.components, child, child, child];
           expect(nested.components).to.have.lengthOf(5);
           expect(nested.schema.components).to.be.lengthOf(2);
-          expect(_.map(nested.schema.components, 'key')).to.deep.equal([
-            'firstName',
-            'lastName',
-          ]);
+          expect(_.map(nested.schema.components, 'key')).to.deep.equal(['firstName', 'lastName']);
           done();
         }, done)
         .catch(done);
@@ -235,10 +227,7 @@ describe('NestedComponent class', function () {
         .then((nested) => {
           assert(nested.components[0].path === 'dataGrid');
           const dataGrid = nested.components[0];
-          dataGrid.setValue([
-            { textField: '' },
-            { textField: '' },
-          ]);
+          dataGrid.setValue([{ textField: '' }, { textField: '' }]);
           setTimeout(() => {
             assert(dataGrid.components[0].path === 'dataGrid[0].textField');
             assert(dataGrid.components[1].path === 'dataGrid[1].textField');
@@ -294,9 +283,7 @@ describe('NestedComponent class', function () {
       Harness.testCreate(NestedComponent, comp1)
         .then((nested) => {
           const firstNameTextFieldByStringPath = nested.getComponent('firstName');
-          const firstNameTextFieldByArrayPath = nested.getComponent([
-            'firstName',
-          ]);
+          const firstNameTextFieldByArrayPath = nested.getComponent(['firstName']);
           assert(firstNameTextFieldByStringPath.path === 'firstName');
           assert(firstNameTextFieldByArrayPath.path === 'firstName');
           done();
@@ -309,10 +296,7 @@ describe('NestedComponent class', function () {
         .then((nested) => {
           assert(nested.components[0].path === 'dataGrid');
           const dataGrid = nested.components[0];
-          dataGrid.setValue([
-            { textField: '' },
-            { textField: '' },
-          ]);
+          dataGrid.setValue([{ textField: '' }, { textField: '' }]);
           setTimeout(() => {
             const dataGridFirstRowTextField = nested.getComponent('dataGrid[0].textField');
             const dataGridSecondRowTextField = nested.getComponent('dataGrid[1].textField');

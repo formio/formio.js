@@ -8,9 +8,7 @@ export default {
   initEmpty: false,
   tableView: false,
   modalEdit: true,
-  defaultValue: [
-    {},
-  ],
+  defaultValue: [{}],
   key: 'dataGrid',
   type: 'datagrid',
   input: true,

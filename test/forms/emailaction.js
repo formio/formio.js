@@ -564,12 +564,8 @@ export default {
           data: {
             settings: {},
             condition: {},
-            handler: [
-              'after',
-            ],
-            method: [
-              'create',
-            ],
+            handler: ['after'],
+            method: ['create'],
             priority: 0,
             name: 'email',
             title: 'Email',
@@ -585,12 +581,8 @@ export default {
                 settings: {
                   transport: 'default',
                 },
-                handler: [
-                  'after',
-                ],
-                method: [
-                  'create',
-                ],
+                handler: ['after'],
+                method: ['create'],
                 condition: {},
                 submit: false,
               },
@@ -604,15 +596,9 @@ export default {
                   attachPDF: false,
                   transport: 'default',
                   from: 'no-reply@form.io',
-                  emails: [
-                    'travis@form.io',
-                  ],
-                  cc: [
-                    '',
-                  ],
-                  bcc: [
-                    '',
-                  ],
+                  emails: ['travis@form.io'],
+                  cc: [''],
+                  bcc: [''],
                   subject: 'New submission for {{ form.title }}.',
                   template: 'https://pro.formview.io/assets/email.html',
                   message: '{{ submission(data, form.components) }}',
@@ -620,9 +606,7 @@ export default {
               });
 
               const toEmail = form.getComponent('emails');
-              toEmail.updateValue([
-                'travis@form.io',
-              ]);
+              toEmail.updateValue(['travis@form.io']);
 
               setTimeout(() => {
                 done();

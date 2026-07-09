@@ -8,8 +8,8 @@ This library is a plain JavaScript form renderer and SDK for Form.io. This allow
 - Nested components, layouts, Date/Time, Select, Input Masks, and many more included features
 - Full JavaScript API SDK library on top of Form.io
 
-Official Documentation
---------------------------
+## Official Documentation
+
 For the latest documentation, release information, and guides, always refer to the official Form.io Help Documentation available here:
 
 **[https://help.form.io](https://help.form.io/dev/form-development/form-renderer)**
@@ -87,7 +87,6 @@ The following is a simple example on how to render a form within your HTML appli
 This will render the following form within your application.
 
 <img width="717" height="626" alt="image" src="https://github.com/user-attachments/assets/51fc2933-6749-4efd-bb0c-06b764d532d6" />
-
 
 You can also render JSON directly instead of referencing the embed URL from Form.io.
 

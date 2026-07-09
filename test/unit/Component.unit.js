@@ -184,10 +184,7 @@ describe('Component', function () {
           json: {
             if: [
               {
-                '===': [
-                  { var: 'data.firstName' },
-                  'Joe',
-                ],
+                '===': [{ var: 'data.firstName' }, 'Joe'],
               },
               true,
               'You must be Joe',
@@ -338,28 +335,15 @@ describe('Component', function () {
   it('Should return value for HTML mode', function () {
     return Harness.testCreate(Component, comp1).then((component) => {
       assert.equal(
-        component.itemValueForHTMLMode([
-          'option 1',
-          'option 2',
-          'option 3',
-        ]),
+        component.itemValueForHTMLMode(['option 1', 'option 2', 'option 3']),
         'option 1, option 2, option 3',
       );
       assert.equal(
-        component.itemValueForHTMLMode([
-          'option 1',
-          [
-            'option 2',
-            'option 3',
-          ],
-        ]),
+        component.itemValueForHTMLMode(['option 1', ['option 2', 'option 3']]),
         'option 1, option 2, option 3',
       );
       assert.equal(
-        component.itemValueForHTMLMode([
-          '2020-03-18T15:00:00.000Z',
-          '2020-03-31T09:05:00.000Z',
-        ]),
+        component.itemValueForHTMLMode(['2020-03-18T15:00:00.000Z', '2020-03-31T09:05:00.000Z']),
         '2020-03-18T15:00:00.000Z, 2020-03-31T09:05:00.000Z',
       );
       assert.equal(component.itemValueForHTMLMode('test'), 'test');
@@ -424,11 +408,7 @@ describe('Component', function () {
       .then(() => {
         return form.setSubmission({
           data: {
-            email: [
-              'oleg@form.io',
-              'oleg@form',
-              '',
-            ],
+            email: ['oleg@form.io', 'oleg@form', ''],
           },
         });
       })

@@ -227,9 +227,9 @@ export default class PDFBuilder extends WebformBuilder {
             const progress = Math.floor((event.loaded / event.total) * 100);
             this.refs.uploadProgress.style.width = `${progress}%`;
             if (progress > 98) {
-              this.refs.uploadProgress.innerHTML = this.t('Converting PDF. Please wait.');
+              this.refs.uploadProgress.innerHTML = this.t('waitPdfConverting');
             } else {
-              this.refs.uploadProgress.innerHTML = `${this.t('Uploading')} ${progress}%`;
+              this.refs.uploadProgress.innerHTML = `${this.t('uploading')} ${progress}%`;
             }
           }
         },
@@ -283,7 +283,7 @@ export default class PDFBuilder extends WebformBuilder {
       return;
     }
     this.refs.uploadError.style.display = message ? '' : 'none';
-    this.refs.uploadError.innerHTML = message;
+    this.refs.uploadError.innerHTML = this.t(`${message}`);
   }
 
   createForm(options) {
@@ -295,9 +295,7 @@ export default class PDFBuilder extends WebformBuilder {
       // If the dropzone exists but has been removed in a PDF rebuild, reinstate it
       if (
         this.refs.iframeDropzone &&
-        ![
-          ...this.refs.form.children,
-        ].includes(this.refs.iframeDropzone)
+        ![...this.refs.form.children].includes(this.refs.iframeDropzone)
       ) {
         this.prependTo(this.refs.iframeDropzone, this.refs.form);
       }
@@ -435,9 +433,7 @@ export default class PDFBuilder extends WebformBuilder {
       return;
     }
     this.refs['sidebar-container'].forEach((container) => {
-      [
-        ...container.children,
-      ].forEach((el) => {
+      [...container.children].forEach((el) => {
         el.draggable = true;
         el.setAttribute('draggable', true);
         this.removeEventListener(el, 'dragstart');
@@ -578,7 +574,7 @@ export default class PDFBuilder extends WebformBuilder {
           name: 'showBuilderErrors',
           data: {
             compId: comp.component.id,
-            errorMessage: `API Key is not unique: ${comp.key}`,
+            errorMessage: `${this.t('notUniqueKey')}: ${comp.key}`,
           },
         });
       }

@@ -77,10 +77,7 @@ export const APIMock = {
             .split('&')
             .map(_.partial(_.split, _, '=', 2))
             .fromPairs()
-            .omit([
-              'limit',
-              'skip',
-            ])
+            .omit(['limit', 'skip'])
             .value(),
         );
       })
@@ -96,10 +93,7 @@ export const APIMock = {
             .split('&')
             .map(_.partial(_.split, _, '=', 2))
             .fromPairs()
-            .omit([
-              'limit',
-              'skip',
-            ])
+            .omit(['limit', 'skip'])
             .value(),
         );
       });

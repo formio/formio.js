@@ -26,10 +26,7 @@ export default [
     defaultValue: 'HH:mm',
     conditional: {
       json: {
-        '===': [
-          { var: 'data.inputType' },
-          'text',
-        ],
+        '===': [{ var: 'data.inputType' }, 'text'],
       },
     },
   },

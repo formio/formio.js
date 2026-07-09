@@ -22,9 +22,7 @@ export default class SelectComponent extends ListComponent {
         key: 'select',
         idPath: 'id',
         data: {
-          values: [
-            { label: '', value: '' },
-          ],
+          values: [{ label: '', value: '' }],
           json: '',
           url: '',
           resource: '',
@@ -96,12 +94,7 @@ export default class SelectComponent extends ListComponent {
         return valueComp;
       },
       dataTypeOperators: {
-        number: [
-          'lessThan',
-          'greaterThan',
-          'lessThanOrEqual',
-          'greaterThanOrEqual',
-        ],
+        number: ['lessThan', 'greaterThan', 'lessThanOrEqual', 'greaterThanOrEqual'],
       },
       dataTypeValueComponents: {
         number: {
@@ -124,31 +117,18 @@ export default class SelectComponent extends ListComponent {
     }
 
     if (reference) {
-      return [
-        object,
-      ];
+      return [object];
     }
 
     if (dataType === 'object') {
-      return [
-        object,
-        array,
-      ];
+      return [object, array];
     }
 
     if (componentValueTypes[dataType]) {
-      return [
-        componentValueTypes[dataType],
-      ];
+      return [componentValueTypes[dataType]];
     }
 
-    return [
-      boolean,
-      string,
-      number,
-      object,
-      array,
-    ];
+    return [boolean, string, number, object, array];
   }
 
   init() {
@@ -334,11 +314,14 @@ export default class SelectComponent extends ListComponent {
     const shouldUseSelectData =
       (this.component.multiple && _.isArray(this.dataValue)
         ? this.dataValue.find((val) => this.normalizeSingleValue(value) === val)
-        : this.dataValue === this.normalizeSingleValue(value)) || (this.inDataTable && !this.element);
+        : this.dataValue === this.normalizeSingleValue(value)) ||
+      (this.inDataTable && !this.element);
     if (shouldUseSelectData) {
-      const selectData = (this.inDataTable && !this.element) ? this.component.selectData : this.selectData;
+      const selectData =
+        this.inDataTable && !this.element ? this.component.selectData : this.selectData;
       if (selectData) {
         const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
+        const isEqualWithoutData = _.isEqual(data, value) && _.isUndefined(data.data);
         if (!this.templateData || !this.templateData[templateValue]) {
           this.getOptionTemplate(data, value);
         }
@@ -350,7 +333,7 @@ export default class SelectComponent extends ListComponent {
           data = selectData;
         }
         // use template data for reference fields to make sure the data is updated
-        if (this.component.reference && this.templateData[templateValue]) {
+        if (this.component.reference && this.templateData[templateValue] && !isEqualWithoutData) {
           data = this.templateData[templateValue];
         }
       }
@@ -416,7 +399,8 @@ export default class SelectComponent extends ListComponent {
       }
       // Add element to option so we can reference it later.
       const div = document.createElement('div');
-      const isInDataValue = this.component.multiple && Array.isArray(this.dataValue) && this.dataValue.includes(value)
+      const isInDataValue =
+        this.component.multiple && Array.isArray(this.dataValue) && this.dataValue.includes(value);
       div.innerHTML = this.sanitize(
         this.renderTemplate('selectOption', {
           selected: _.isEqual(this.getOptionValue(this.dataValue), option.value) || isInDataValue,
@@ -453,12 +437,7 @@ export default class SelectComponent extends ListComponent {
 
     if (!this.selectOptions.length) {
       // Add the currently selected choices if they don't already exist.
-      const currentChoices =
-        Array.isArray(data) && this.component.multiple
-          ? data
-          : [
-              data,
-            ];
+      const currentChoices = Array.isArray(data) && this.component.multiple ? data : [data];
       added = this.addCurrentChoices(currentChoices, items);
       if (!added && !this.component.multiple) {
         this.addPlaceholder();
@@ -631,8 +610,12 @@ export default class SelectComponent extends ListComponent {
         this.setValue(this.dataValue, {
           noUpdateEvent: true,
         });
-      }
-      else if (this.shouldAddDefaultValue && !this.options.readOnly && this.root && !this.root.submissionSet) {
+      } else if (
+        this.shouldAddDefaultValue &&
+        !this.options.readOnly &&
+        this.root &&
+        !this.root.submissionSet
+      ) {
         // If a default value is provided then select it.
         const defaultValue = this.defaultValue;
         if (!this.isEmpty(defaultValue)) {
@@ -742,7 +725,8 @@ export default class SelectComponent extends ListComponent {
 
       let searchFieldName = this.component.searchField;
       if (searchFieldName.endsWith('__regex')) {
-        const isNumeric = !isNaN(searchValue) && !isNaN(parseFloat(searchValue)) && isFinite(searchValue);
+        const isNumeric =
+          !isNaN(searchValue) && !isNaN(parseFloat(searchValue)) && isFinite(searchValue);
         if (isNumeric) {
           // Convert __regex to __eq for numeric searches
           searchFieldName = searchFieldName.replace(/__regex$/, '__eq');
@@ -811,7 +795,7 @@ export default class SelectComponent extends ListComponent {
       component: this.component,
       message: err.toString(),
     });
-    console.warn(`Unable to load resources for ${this.key}`);
+    console.warn(this.t('loadResourcesError', { componentKey: this.key}));
   }
   /**
    * Get the request headers for this select dropdown.
@@ -979,7 +963,7 @@ export default class SelectComponent extends ListComponent {
         );
       }
     } else if (this.component.dataSrc === 'url' || this.component.dataSrc === 'resource') {
-      this.addOption('', this.t('loading...'));
+      this.addOption('', `${this.t('loading')}...`);
     }
   }
 
@@ -1015,7 +999,9 @@ export default class SelectComponent extends ListComponent {
       ? this.component.searchEnabled
       : true;
     const hasPlaceholder = !!this.component.placeholder && !this.options?.readOnly;
-    const placeholderValue = hasPlaceholder ? this.t(this.component.placeholder, { _userInput: true }) : null;
+    const placeholderValue = hasPlaceholder
+      ? this.sanitize(this.t(this.component.placeholder, { _userInput: true }), true)
+      : null;
     let customOptions = this.component.customOptions || {};
     if (typeof customOptions == 'string') {
       try {
@@ -1037,11 +1023,7 @@ export default class SelectComponent extends ListComponent {
         : _.get(this.component, 'removeItemButton', true),
       itemSelectText: '',
       classNames: {
-        containerOuter: [
-          'choices',
-          'form-group',
-          'formio-choices',
-        ],
+        containerOuter: ['choices', 'form-group', 'formio-choices'],
         containerInner: this.transform('class', 'form-control ui fluid selection dropdown').split(
           ' ',
         ),
@@ -1050,16 +1032,14 @@ export default class SelectComponent extends ListComponent {
       allowHTML: true,
       placeholder: hasPlaceholder,
       placeholderValue: placeholderValue,
-      noResultsText: this.t('No results found'),
-      noChoicesText: this.t('No choices to choose from'),
-      searchPlaceholderValue: this.t('Type to search'),
+ noResultsText: this.t('noResultsFound'),
+      noChoicesText: this.t('noChoices'),
+      searchPlaceholderValue: this.t('typeToSearch'),
       shouldSort: false,
       position: this.component.dropdown || 'auto',
       searchEnabled: useSearch,
       searchChoices: !this.component.searchField,
-      searchFields: _.get(this, 'component.searchFields', [
-        'label',
-      ]),
+      searchFields: _.get(this, 'component.searchFields', ['label']),
       shadowRoot: this.root ? this.root.shadowRoot : null,
       fuseOptions: this.component.useExactSearch
         ? {
@@ -1099,8 +1079,8 @@ export default class SelectComponent extends ListComponent {
     }
     this.addEventListener(input, this.inputInfo.changeEvent, () => {
       this.updateValue(null, {
-        modified: true
-      })
+        modified: true,
+      });
     });
     this.attachRefreshOnBlur();
 
@@ -1121,12 +1101,7 @@ export default class SelectComponent extends ListComponent {
       this.addEventListener(input, 'keydown', (event) => {
         const { key } = event;
 
-        if (
-          [
-            'Backspace',
-            'Delete',
-          ].includes(key)
-        ) {
+        if (['Backspace', 'Delete'].includes(key)) {
           this.setValue(this.emptyValue);
         }
       });
@@ -1273,10 +1248,7 @@ export default class SelectComponent extends ListComponent {
             let value = this.valueProperty ? _.get(submission, this.valueProperty) : submission;
 
             if (this.component.multiple) {
-              value = [
-                ...this.dataValue,
-                value,
-              ];
+              value = [...this.dataValue, value];
             }
             this.setValue(value);
             this.triggerUpdate();
@@ -1288,7 +1260,7 @@ export default class SelectComponent extends ListComponent {
 
     // Force the disabled state with getters and setters.
     this.disabled = this.shouldDisabled;
-    this.triggerUpdate();
+    this.triggerUpdate(null, !_.isEmpty(this.data[this.key]) && this.itemsFromUrl);
     return superAttach;
   }
 
@@ -1356,12 +1328,7 @@ export default class SelectComponent extends ListComponent {
   attachRefreshOnBlur() {
     if (this.component.refreshOnBlur) {
       this.on('blur', (instance) => {
-        this.checkRefreshOn(
-          [
-            { instance, value: instance.dataValue },
-          ],
-          { fromBlur: true },
-        );
+        this.checkRefreshOn([{ instance, value: instance.dataValue }], { fromBlur: true });
       });
     }
   }
@@ -1411,7 +1378,7 @@ export default class SelectComponent extends ListComponent {
       return false;
     }
     const notFoundValuesToAdd = [];
-    const added = values.reduce((defaultAdded, value) => {
+    const added = values.reduce((defaultAdded, value, i) => {
       if (!value || _.isEmpty(value)) {
         return defaultAdded;
       }
@@ -1431,6 +1398,10 @@ export default class SelectComponent extends ListComponent {
             return false;
           }
           const itemValue = keyValue ? choice.value : this.itemValue(choice, isSelectOptions);
+          if (this.component.reference && itemValue._id === value._id) {
+            _.set(values, i, itemValue);
+            value = itemValue;
+          }
           found |= _.isEqual(itemValue, value);
           return found ? false : true;
         });
@@ -1583,7 +1554,7 @@ export default class SelectComponent extends ListComponent {
     try {
       return normalize[dataType]().value;
     } catch (err) {
-      console.warn('Failed to normalize value', err);
+      console.warn(this.t('failedToNormalize'), err);
       return value;
     }
   }
@@ -1612,7 +1583,8 @@ export default class SelectComponent extends ListComponent {
     }
     // Check to see if we need to save off the template data into our metadata.
     const templateValue = this.component.reference && value?._id ? value._id.toString() : value;
-    const shouldSaveData = (!valueIsObject || this.component.reference) && !(this.inDataTable && this.row === '');
+    const shouldSaveData =
+      (!valueIsObject || this.component.reference) && !(this.inDataTable && this.row === '');
     if (
       !_.isNil(templateValue) &&
       shouldSaveData &&
@@ -1644,10 +1616,7 @@ export default class SelectComponent extends ListComponent {
       }
 
       _.set(submission.metadata.selectData, this.path, templateData);
-    } else if (
-      !this.templateData[templateValue] &&
-      this.isEmpty(value)
-    ) {
+    } else if (!this.templateData[templateValue] && this.isEmpty(value)) {
       _.unset(this.root.submission, `metadata.selectData.${this.path}`);
     }
     if (flags.resetValue && this.root?.submission && !this.options.readOnly) {
@@ -1761,12 +1730,7 @@ export default class SelectComponent extends ListComponent {
       if (hasValue) {
         this.choices.removeActiveItems();
         // Add the currently selected choices if they don't already exist.
-        const currentChoices =
-          Array.isArray(value) && this.component.multiple
-            ? value
-            : [
-                value,
-              ];
+        const currentChoices = Array.isArray(value) && this.component.multiple ? value : [value];
         if (!this.addCurrentChoices(currentChoices, this.selectOptions, true)) {
           this.choices.setChoices(this.selectOptions, 'value', 'label', true);
         }
@@ -1776,11 +1740,7 @@ export default class SelectComponent extends ListComponent {
       }
     } else {
       if (hasValue) {
-        const values = Array.isArray(value)
-          ? value
-          : [
-              value,
-            ];
+        const values = Array.isArray(value) ? value : [value];
         if (
           (!_.isEqual(this.dataValue, this.defaultValue) && this.selectOptions.length < 2) ||
           (this.selectData && flags.fromSubmission)
@@ -1830,7 +1790,7 @@ export default class SelectComponent extends ListComponent {
           try {
             return JSON.stringify(normalizedOptionValue) === JSON.stringify(value);
           } catch (err) {
-            console.warn.error('Error while comparing items', err);
+            console.warn.error(this.t('failedToCompareItems'), err);
             return false;
           }
         };
@@ -1945,13 +1905,16 @@ export default class SelectComponent extends ListComponent {
 
     if (
       options.modalPreview ||
-      ((this.inDataTable || this.inEditGrid) && !['values', 'custom'].includes(this.component.dataSrc))
+      ((this.inDataTable || this.inEditGrid) &&
+        !['values', 'custom'].includes(this.component.dataSrc))
     ) {
       if (this.inDataTable) {
         value = this.undoValueTyping(value);
       }
       const templateValue =
-        !_.isEmpty(value) && this.isEntireObjectDisplay() && !_.isObject(value.data) ? { data: value } : value;
+        !_.isEmpty(value) && this.isEntireObjectDisplay() && !_.isObject(value.data)
+          ? { data: value }
+          : value;
       const template = this.itemTemplate(templateValue, value, options);
       return template;
     }
@@ -1979,13 +1942,7 @@ export default class SelectComponent extends ListComponent {
 
     value = convertToString(value);
 
-    if (
-      [
-        'values',
-        'custom',
-      ].includes(this.component.dataSrc) &&
-      !this.asyncCustomValues()
-    ) {
+    if (['values', 'custom'].includes(this.component.dataSrc) && !this.asyncCustomValues()) {
       const { items, valueProperty } =
         this.component.dataSrc === 'values'
           ? {
@@ -1998,10 +1955,7 @@ export default class SelectComponent extends ListComponent {
             };
 
       const getFromValues = () => {
-        const initialValue = _.find(items, [
-          valueProperty,
-          value,
-        ]);
+        const initialValue = _.find(items, [valueProperty, value]);
         const values = this.defaultSchema.data.values || [];
         return _.isEqual(initialValue, values[0]) ? '-' : initialValue;
       };
@@ -2063,24 +2017,14 @@ export default class SelectComponent extends ListComponent {
     super.setErrorClasses(elements, dirty, hasError, hasMessages, element);
     if (this.choices) {
       super.setErrorClasses(
-        [
-          this.choices.containerInner.element,
-        ],
+        [this.choices.containerInner.element],
         dirty,
         hasError,
         hasMessages,
         element,
       );
     } else {
-      super.setErrorClasses(
-        [
-          this.refs.selectContainer,
-        ],
-        dirty,
-        hasError,
-        hasMessages,
-        element,
-      );
+      super.setErrorClasses([this.refs.selectContainer], dirty, hasError, hasMessages, element);
     }
   }
 }

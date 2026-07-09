@@ -1,4 +1,1 @@
-export default [
-  'one',
-  1,
-];
+export default ['one', 1];
