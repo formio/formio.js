@@ -797,6 +797,22 @@ export default class Wizard extends Webform {
     return this.page - 1;
   }
 
+  renderTemplate(...args) {
+    if (args[0] === 'errorsList' && _.isPlainObject(args[1])) {
+      const pages = this.getPages({ all: true });
+      const errors = args[1].errors;
+      if (_.isArray(errors)) {
+        _.forEach(errors, (compWithError) => {
+          const pageNum = _.findIndex(pages, (page) => page.getComponent(compWithError.keyOrPath));
+          if (pageNum >= 0) {
+            compWithError.errorPageTitle = _.get(pages[pageNum], 'component.title');
+          }
+        });
+      }
+    }
+    return super.renderTemplate(...args);
+  }
+
   mergeDefaultsFromSchema(data) {
     const components = this.form?.components;
     if (!components || !data || this.options?.readOnly) {

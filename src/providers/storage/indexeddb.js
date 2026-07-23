@@ -70,8 +70,16 @@ function indexeddb() {
       });
     },
     downloadFile(file, options) {
+      const opts = options?.options || options || {};
+      const dbName = opts.indexeddb;
+      const tableName = opts.indexeddbTable;
+
+      if (!dbName || !tableName) {
+        return Promise.reject(new Error('IndexedDB storage options (indexeddb, indexeddbTable) are required for download'));
+      }
+
       return new Promise((resolve) => {
-        const request = indexedDB.open(options.indexeddb);
+        const request = indexedDB.open(dbName);
 
         request.onsuccess = function (event) {
           const db = event.target.result;
@@ -79,13 +87,16 @@ function indexeddb() {
         };
       }).then((db) => {
         return new Promise((resolve, reject) => {
-          const trans = db.transaction([options.indexeddbTable], 'readonly');
-          const store = trans.objectStore(options.indexeddbTable).get(file.id);
+          const trans = db.transaction(tableName, 'readonly');
+          const store = trans.objectStore(tableName).get(file.id);
           store.onsuccess = () => {
             trans.oncomplete = () => {
               const result = store.result;
-              const dbFile = new File([store.result.data], file.name, {
-                type: store.result.type,
+              if (!result || !result.data) {
+                return reject(new Error('File not found in IndexedDB'));
+              }
+              const dbFile = new File([result.data], file.name, {
+                type: result.type,
               });
 
               const reader = new FileReader();

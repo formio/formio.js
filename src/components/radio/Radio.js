@@ -412,6 +412,17 @@ export default class RadioComponent extends ListComponent {
 
   setItems(items) {
     const listData = [];
+
+    // If the items is a string, then parse as JSON.
+    if (typeof items == 'string') {
+      try {
+        items = JSON.parse(items);
+      } catch (err) {
+        console.warn(err.message);
+        items = [];
+      }
+    }
+
     items?.forEach((item, i) => {
       const valueAtProperty = _.get(item, this.component.valueProperty);
       this.loadedOptions[i] = {

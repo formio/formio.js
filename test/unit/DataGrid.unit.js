@@ -719,6 +719,70 @@ describe('DataGrid Component', function () {
     );
   });
 
+  it('Should move focus to the Add Another button when removing the last row', async function () {
+    const element = document.createElement('div');
+    document.body.appendChild(element);
+    try {
+      const form = await Formio.createForm(element, {
+        type: 'form',
+        display: 'form',
+        components: [
+          {
+            label: 'Datagrid',
+            key: 'dataGrid',
+            type: 'datagrid',
+            defaultValue: [{ number: 1 }, { number: 2 }, { number: 3 }],
+            input: true,
+            components: [{ label: 'Number', key: 'number', type: 'number', input: true }],
+          },
+        ],
+      });
+      const dataGrid = form.getComponent(['dataGrid']);
+      dataGrid.removeRow(2);
+      await wait(400);
+
+      assert.equal(
+        document.activeElement,
+        dataGrid.refs['datagrid-dataGrid-addRow'][0],
+        'Focus should move to the Add Another button after deleting the last row',
+      );
+    } finally {
+      document.body.removeChild(element);
+    }
+  });
+
+  it('Should move focus to the next existing row when removing a non-last row', async function () {
+    const element = document.createElement('div');
+    document.body.appendChild(element);
+    try {
+      const form = await Formio.createForm(element, {
+        type: 'form',
+        display: 'form',
+        components: [
+          {
+            label: 'Datagrid',
+            key: 'dataGrid',
+            type: 'datagrid',
+            defaultValue: [{ number: 1 }, { number: 2 }, { number: 3 }],
+            input: true,
+            components: [{ label: 'Number', key: 'number', type: 'number', input: true }],
+          },
+        ],
+      });
+      const dataGrid = form.getComponent(['dataGrid']);
+      dataGrid.removeRow(0);
+      await wait(400);
+
+      assert.equal(
+        document.activeElement,
+        dataGrid.rows[0].number.element.querySelector('input'),
+        'Focus should move to the first component of the row that shifted into the deleted position',
+      );
+    } finally {
+      document.body.removeChild(element);
+    }
+  });
+
   it('Should update indexes in componentsMap when removing dataGrid row', function () {
     return Harness.testCreate(DataGridComponent, {
       label: 'Datagrid',
@@ -1589,6 +1653,30 @@ describe('DataGrid Component', function () {
         true,
         'Row 1 number should be visible again when textField is cleared',
       );
+    });
+  });
+
+  describe('DataGrid accessibility', function () {
+    it('resolves a cell input aria-labelledby to a rendered label even when the column label is hidden', function () {
+      return Harness.testCreate(DataGridComponent, comp1).then((component) => {
+        const input = component.element.querySelector('[name="data[cars][0][make]"]');
+        assert(input, 'expected the "make" cell input to render');
+  
+        const labelledby = input.getAttribute('aria-labelledby');
+        assert(labelledby, 'expected the cell input to have an aria-labelledby attribute');
+  
+        const labelId = labelledby.trim().split(/\s+/)[0];
+        const label = component.element.querySelector(`[id="${labelId}"]`);
+        assert(
+          label,
+          `expected a label element with id "${labelId}" for aria-labelledby to resolve to`,
+        );
+        assert.equal(
+          label.textContent.trim(),
+          'Make',
+          'expected the referenced label to contain the column label text "Make"',
+        );
+      });
     });
   });
 });

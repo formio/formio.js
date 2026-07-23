@@ -96,6 +96,9 @@ var setDisplay = function(display) {
         subJSON.innerHTML = '';
         subJSON.appendChild(document.createTextNode(JSON.stringify(form.submission, null, 4)));
       });
+      form.on('submit', function (submission, saved) {
+        form.emit('submitDone', submission);
+      });
     };
 
     var onBuild = function(build) {

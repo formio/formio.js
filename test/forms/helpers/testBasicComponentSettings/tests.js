@@ -214,15 +214,21 @@ export default {
         switch (comp.component.type) {
           case 'checkbox':
             label = comp.element.querySelector('.form-check-label span');
+            assert.equal(!!label, false, `Should hide label for ${compKey} (component ${compType})`);
             break;
           case 'panel':
             label = comp.element.querySelector('.card-title');
+            assert.equal(!!label, false, `Should hide label for ${compKey} (component ${compType})`);
             break;
           default:
             label = comp.element.querySelector(`label[for="${comp.id}-${compKey}"]`);
+            if (label) {
+              assert(
+                label.classList.contains('visually-hidden'),
+                `Should visually hide label for ${compKey} (component ${compType})`,
+              );
+            }
         }
-
-        assert.equal(!!label, false, `Should hide label for ${compKey} (component ${compType})`);
       });
       done();
     },

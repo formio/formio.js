@@ -69,8 +69,19 @@ function url(formio) {
         }
       };
 
-      xhr.onerror = () => reject(xhr);
-      xhr.onabort = () => reject(xhr);
+      xhr.onerror = () => {
+        xhr.message =
+          xhr.status >= 400
+            ? `${xhr.status} ${xhr.statusText || ''}`.trim()
+            : xhr.statusText && xhr.statusText.trim()
+              ? xhr.statusText.trim()
+              : 'Unable to upload file';
+        return reject(xhr);
+      };
+      xhr.onabort = () => {
+        xhr.type = 'abort';
+        return reject(xhr)
+      };
 
       let requestUrl = url + (url.indexOf('?') > -1 ? '&' : '?');
       for (const key in query) {

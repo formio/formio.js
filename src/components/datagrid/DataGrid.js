@@ -543,6 +543,7 @@ export default class DataGridComponent extends NestedArrayComponent {
 
   removeRow(index) {
     const makeEmpty = index === 0 && this.rows.length === 1;
+    const wasLastRow = index === this.rows.length - 1;
     const flags = {
       isReordered: !makeEmpty,
       resetValue: makeEmpty,
@@ -557,6 +558,11 @@ export default class DataGridComponent extends NestedArrayComponent {
     this.updateRowsComponents(index);
     this.setValue(this.dataValue, flags);
     this.redraw().then(() => {
+      if (wasLastRow && (!makeEmpty || this.initEmpty)) {
+        this.refs[`${this.datagridKey}-addRow`]?.[0]?.focus();
+      } else {
+        this.focusOnNewRowElement(this.rows[index]);
+      }
       this.announce(this.t('Row has been deleted'));
     });
   }

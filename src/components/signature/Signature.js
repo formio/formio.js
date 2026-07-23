@@ -55,22 +55,24 @@ export default class SignatureComponent extends Input {
     this.currentWidth = 0;
     this.scale = 1;
 
-    if (!this.component.width) {
-      this.component.width = '100%';
-    }
-    if (!this.component.height) {
-      this.component.height = '200px';
-    }
+    if (this.options?.inFormBuilder) {
+      if (!this.component.width) {
+        this.component.width = '100%';
+      }
+      if (!this.component.height) {
+        this.component.height = '200px';
+      }
 
-    if (
-      this.component.keepOverlayRatio &&
-      this.options.pdf &&
-      this.component.overlay?.width &&
-      this.component.overlay?.height
-    ) {
-      this.ratio = this.component.overlay?.width / this.component.overlay?.height;
-      this.component.width = '100%';
-      this.component.height = 'auto';
+      if (
+        this.component.keepOverlayRatio &&
+        this.options.pdf &&
+        this.component.overlay?.width &&
+        this.component.overlay?.height
+      ) {
+        this.ratio = this.component.overlay?.width / this.component.overlay?.height;
+        this.component.width = '100%';
+        this.component.height = 'auto';
+      }
     }
   }
 

@@ -1,5 +1,81 @@
 # @formio/js
 
+## 5.4.3
+
+### Patch Changes
+
+- 10cae27: FIO-11658 GitHub Demo Page updates
+- be69fe1: Adding information to the error link about which wizard page the error occurred on
+- 5ba7ff8: FIO-11810: fix HTML component duplicating its content
+- c892a54: FIO-11883: fixed Data Grid delete button focus
+- d9d09ad: FIO-9900 added json parse for string items
+- 201c538: FIO-11773 fixed HTML instance.t rendering
+- 4df3010: FIO-11249: fixed Signature Width and Height component settings
+- acc8772: FIO-10968: fixed Image preview when the storage type is 'indexedDB'
+- 1578fb7: disable clickable links for uploaded file names in review page pdf
+- 476a632: FIO-11213 added helpful error message for File Component
+- 341af96: Fix wrong validation behavior for number component with underscore data
+- Updated dependencies [4864d4c]
+- Updated dependencies [be69fe1]
+- Updated dependencies [af465a1]
+- Updated dependencies [a334b0f]
+- Updated dependencies [8d7803a]
+- Updated dependencies [7c5dd71]
+- Updated dependencies [7b4b9f6]
+- Updated dependencies [c657268]
+- Updated dependencies [2fae4ad]
+  - @formio/bootstrap@4.0.3
+
+## 5.4.3-api98.4
+
+### Patch Changes
+
+- Updated dependencies [7c5dd71]
+  - @formio/bootstrap@4.0.3-api98.3
+
+## 5.4.3-api98.3
+
+### Patch Changes
+
+- Updated dependencies [4864d4c]
+- Updated dependencies [8d7803a]
+- Updated dependencies [2fae4ad]
+  - @formio/bootstrap@4.0.3-api98.2
+
+## 5.4.3-api98.2
+
+### Patch Changes
+
+- 5ba7ff8: FIO-11810: fix HTML component duplicating its content
+
+## 5.4.3-api98.1
+
+### Patch Changes
+
+- be69fe1: Adding information to the error link about which wizard page the error occurred on
+- c892a54: FIO-11883: fixed Data Grid delete button focus
+- Updated dependencies [be69fe1]
+  - @formio/bootstrap@4.0.3-api98.1
+
+## 5.4.3-api98.0
+
+### Patch Changes
+
+- 10cae27: FIO-11658 GitHub Demo Page updates
+- d9d09ad: FIO-9900 added json parse for string items
+- 201c538: FIO-11773 fixed HTML instance.t rendering
+- 4df3010: FIO-11249: fixed Signature Width and Height component settings
+- acc8772: FIO-10968: fixed Image preview when the storage type is 'indexedDB'
+- 1578fb7: disable clickable links for uploaded file names in review page pdf
+- 476a632: FIO-11213 added helpful error message for File Component
+- 341af96: Fix wrong validation behavior for number component with underscore data
+- Updated dependencies [6431682]
+- Updated dependencies [af465a1]
+- Updated dependencies [a334b0f]
+- Updated dependencies [7b4b9f6]
+- Updated dependencies [c657268]
+  - @formio/bootstrap@4.0.3-api98.0
+
 ## 5.4.2
 
 ### Patch Changes

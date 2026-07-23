@@ -81,7 +81,7 @@ export default class HTMLComponent extends Component {
     }
   }
 
-  renderContent() {
+  renderContent(content = this.content) {
     const submission = _.get(this.root, 'submission', {});
     return this.renderTemplate('html', {
       component: this.component,
@@ -97,13 +97,13 @@ export default class HTMLComponent extends Component {
           }),
         };
       }),
-      content: this.content,
+      content,
       singleTags: this.singleTags,
     });
   }
 
   render() {
-    return super.render(this.renderContent());
+    return super.render(this.renderContent(''));
   }
 
   get dataReady() {
@@ -112,11 +112,13 @@ export default class HTMLComponent extends Component {
 
   attach(element) {
     this.loadRefs(element, { html: 'single' });
-    this.dataReady.then(() => {
+    const setHtmlContent = () => {
       if (this.refs.html) {
         this.setContent(this.refs.html, this.content);
       }
-    });
+    };
+    setHtmlContent();
+    this.dataReady.then(setHtmlContent);
     return super.attach(element);
   }
 }

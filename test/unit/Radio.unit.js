@@ -35,7 +35,7 @@ describe('Radio Component', function () {
     const form = await Formio.createForm(document.createElement('div'), comp16);
     const checkbox = form.getComponent('checkbox');
     const radio = form.getComponent('radio');
-    
+
     // 1. Enable checkbox → radio becomes visible
     checkbox.refs.input[0].click();
     await wait(300);
@@ -57,7 +57,7 @@ describe('Radio Component', function () {
     const firstRadioAgain = radio.refs.input[0];
     firstRadioAgain.click();
     await wait(300);
-    
+
     // 6. Verify that radio remains checked
     assert.equal(firstRadioAgain.checked, true, 'Should be checked');
   });

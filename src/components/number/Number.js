@@ -222,7 +222,12 @@ export default class NumberComponent extends Input {
     }
 
     const val = this.refs.input[index].value;
-    return val && val !== '-_' ? this.parseNumber(val) : null;
+    const result = val && val !== '-_' ? this.parseNumber(val) : null;
+    
+    if (_.isNaN(result)) {
+      return null;
+    }
+    return result
   }
 
   setValueAt(index, value, flags = {}) {

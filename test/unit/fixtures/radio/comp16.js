@@ -5,7 +5,7 @@ export default {
       tableView: false,
       key: 'checkbox',
       type: 'checkbox',
-      input: true
+      input: true,
     },
     {
       label: 'Radio',
@@ -14,7 +14,7 @@ export default {
       tableView: false,
       values: [
         { label: 'a', value: 'a' },
-        { label: 'b', value: 'b' }
+        { label: 'b', value: 'b' },
       ],
       key: 'radio',
       conditional: {
@@ -24,18 +24,18 @@ export default {
           {
             component: 'checkbox',
             operator: 'isEqual',
-            value: true
-          }
-        ]
+            value: true,
+          },
+        ],
       },
       type: 'radio',
-      input: true
+      input: true,
     },
     {
       type: 'button',
       label: 'Submit',
       key: 'submit',
-      input: true
-    }
-  ]
+      input: true,
+    },
+  ],
 };

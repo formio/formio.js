@@ -15,10 +15,9 @@ export default [
     label: 'Width',
     tooltip: 'The width of the signature area.',
     placeholder: 'Width',
-    conditional: {
-      json: {
-        '!': [{ var: 'data.keepOverlayRatio' }],
-      },
+    customConditional: (context) => {
+      const isPdf = context.options?.editForm?.display === 'pdf';
+      return isPdf ? !context.data?.keepOverlayRatio : true;
     },
     weight: 50,
   },
@@ -29,10 +28,9 @@ export default [
     label: 'Height',
     tooltip: 'The height of the signature area.',
     placeholder: 'Height',
-    conditional: {
-      json: {
-        '!': [{ var: 'data.keepOverlayRatio' }],
-      },
+    customConditional: (context) => {
+      const isPdf = context.options?.editForm?.display === 'pdf';
+      return isPdf ? !context.data?.keepOverlayRatio : true;
     },
     weight: 51,
   },
