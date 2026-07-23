@@ -1,5 +1,35 @@
 # @formio/js
 
+## 5.5.0
+
+### Minor Changes
+
+- a03805a: force minor bump on remaining packages that didn't bump with initial build
+
+### Patch Changes
+
+- Updated dependencies [801970f]
+- Updated dependencies [8a329d9]
+  - @formio/core@2.8.0
+
+## 5.5.0-api99.1
+
+### Minor Changes
+
+- a03805a: force minor bump on remaining packages that didn't bump with initial build
+
+### Patch Changes
+
+- Updated dependencies [8a329d9]
+  - @formio/core@2.8.0-api99.1
+
+## 5.4.4-api99.0
+
+### Patch Changes
+
+- Updated dependencies [801970f]
+  - @formio/core@2.8.0-api99.0
+
 ## 5.4.3
 
 ### Patch Changes
