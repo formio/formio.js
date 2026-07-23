@@ -292,6 +292,9 @@ lodash: true
             setSubmission(renderer.submission, 'renderer');
           }
         });
+        renderer.on('submit', function (submission, saved) {
+          renderer.emit('submitDone', submission);
+        });
         renderer.onAny(onEvent);
       },
     );

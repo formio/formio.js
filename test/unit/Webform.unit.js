@@ -99,6 +99,8 @@ import formWithHiddenSubform from '../forms/formWithHiddenSubform';
 import testLogicForDay from '../forms/testLogicForDay.js';
 import formWithPlaceholders from '../forms/formWithPlaceholders.js';
 import formWithComments from '../forms/formWithComments.js';
+import formWithNumbers from '../forms/formWithNumbers.js';
+import { wait } from '../util.js';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
@@ -124,6 +126,22 @@ describe('Webform tests', function () {
       });
     }
     done();
+  });
+
+  it('Should show form validation errors if we insert invalid underscore data into a number component', async () => {
+    const form = await Formio.createForm(document.createElement('div'), formWithNumbers);
+    const numberDatagrid = form.getComponent('dataGrid.number');
+    const number = form.getComponent('number');
+    const validate = form.getComponent('validate');
+    numberDatagrid.refs.input[0].value = 'abc_123';
+    number.refs.input[0].value = 'abc_123';
+
+    number.updateComponentValue(null, { modified: true });
+    numberDatagrid.updateComponentValue(null, { modified: true });
+    assert.strictEqual(form.visibleErrors.length, 0)
+    validate.emit('checkValidity', validate.data);
+    await wait(300);
+    assert.strictEqual(form.visibleErrors.length, 2)
   });
 
   it('Should correctly execute custom logic containing a comment', function (done) {

@@ -52,6 +52,7 @@ export default class FileComponent extends Field {
         fileMinSize: '0KB',
         fileMaxSize: '1GB',
         uploadOnly: false,
+        options: {},
       },
       ...extend,
     );
@@ -134,7 +135,7 @@ export default class FileComponent extends Field {
   }
 
   getValueAsString(value, options) {
-    if (options?.review && !this.component.uploadOnly) {
+    if (options?.review && !this.component.uploadOnly && !options?.pdf) {
       return _.map(value, (val, index) => {
         return `<a href="${val.url || '#'}" target="_blank" data-path='${this.path}' data-fileindex='${index}'>${val.originalName}</a>`;
       }).join(', ');
@@ -732,7 +733,9 @@ export default class FileComponent extends Field {
       originalName: escapedFileName,
       fileKey: this.component.fileKey || 'file',
       storage: this.component.storage,
-      options: this.component.options,
+      options: this.component.storage === 'url'
+        ? (this.component.urlRequestOptions || this.component.options)
+        : this.component.options,
       file,
       size: file.size,
       status: 'info',
@@ -1004,7 +1007,9 @@ export default class FileComponent extends Field {
   }
 
   async deleteFile(fileInfo) {
-    const { options = {} } = this.component;
+    const options = this.component.storage === 'url'
+      ? (this.component.urlRequestOptions || this.component.options || {})
+      : (this.component.options || {});
 
     if (
       fileInfo &&
@@ -1163,7 +1168,7 @@ export default class FileComponent extends Field {
               ? response
               : response.type === 'abort'
                 ? this.t('requestAborted')
-                : response.toString();
+                : response.message || response.toString();
           this.emit('fileUploadingEnd', Promise.reject(response));
           this.emit(
             _.get(response, 'type') === 'abort' ? 'fileUploadCanceled' : 'fileUploadError',
@@ -1233,7 +1238,9 @@ export default class FileComponent extends Field {
   }
 
   getFile(fileInfo) {
-    const { options = {} } = this.component;
+    const options = this.component.storage === 'url'
+      ? (this.component.urlRequestOptions || this.component.options || {})
+      : (this.component.options || {});
     const { fileService } = this;
     if (!fileService) {
       return alert(this.t('noFileService'));

@@ -82,12 +82,11 @@ export default [
     },
   },
   {
-    type: 'textfield',
-    input: true,
-    key: 'options.indexeddb',
-    label: 'Database',
+    type: 'container',
+    key: 'options',
+    label: 'IndexedDB options',
     weight: 10,
-    placeholder: 'Enter the indexeddb database name',
+    input: true,
     conditional: {
       json: {
         in: [
@@ -98,28 +97,26 @@ export default [
         ],
       },
     },
-  },
-  {
-    type: 'textfield',
-    input: true,
-    label: 'Table',
-    key: 'options.indexeddbTable',
-    weight: 10,
-    placeholder: 'Enter the name for indexeddb table',
-    conditional: {
-      json: {
-        in: [
-          {
-            var: 'data.storage',
-          },
-          ['indexeddb'],
-        ],
+    components: [
+      {
+        type: 'textfield',
+        input: true,
+        key: 'indexeddb',
+        label: 'Database',
+        placeholder: 'Enter the indexeddb database name',
       },
-    },
+      {
+        type: 'textfield',
+        input: true,
+        key: 'indexeddbTable',
+        label: 'Table',
+        placeholder: 'Enter the name for indexeddb table',
+      },
+    ],
   },
   {
     type: 'textarea',
-    key: 'options',
+    key: 'urlRequestOptions',
     label: 'Custom request options',
     tooltip: 'Pass your custom xhr options(optional)',
     rows: 5,

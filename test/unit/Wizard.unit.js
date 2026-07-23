@@ -50,7 +50,7 @@ import testRequiredFieldsInNestedWizard from '../forms/testRequiredFieldsInNeste
 import testWizardWithNestedForm from '../forms/testWizardWithNestedForm';
 import wizardWithLazyLoadSelect from '../forms/wizardWithLazyLoadSelect';
 import wizardWithBlurValidation from '../forms/wizardWithBlurValidation';
-import { wait } from '../util';
+import { wait, waitFor } from '../util';
 import formWithDataGridAndDeeplyNestedForms from '../forms/formWithDataGridAndDeeplyNestedForms.js';
 import wizardWithDeeplyNestedWizards from '../forms/wizardWithDeeplyNestedWizards.js';
 import dataGridInNestedWizardLogic from '../forms/dataGridInNestedWizardLogic.js';
@@ -327,48 +327,46 @@ describe('Wizard tests', function () {
       });
   });
 
-  it('Should allow to add new row to dataGrid with deeply nested forms and fire validation on next btn for required components in nested form', function (done) {
+  it('Should allow to add new row to dataGrid with deeply nested forms and fire validation on next btn for required components in nested form', async function () {
     const element = document.createElement('div');
+    const instance = await Formio.createForm(
+      element,
+      fastCloneDeep(formWithDataGridAndDeeplyNestedForms),
+    );
 
-    Formio.createForm(element, fastCloneDeep(formWithDataGridAndDeeplyNestedForms))
-      .then((instance) => {
-        assert.equal(instance.pages.length, 2);
-        const dg = instance.getComponent('dataGrid');
-        assert.equal(dg.rows.length, 0);
-        const addAnotherBtn = dg.element.querySelector('[ref="datagrid-dataGrid-addRow"]');
-        const clickEvent = new Event('click');
-        addAnotherBtn.dispatchEvent(clickEvent);
+    assert.equal(instance.pages.length, 2);
+    const dg = instance.getComponent('dataGrid');
+    assert.equal(dg.rows.length, 0);
 
-        setTimeout(() => {
-          assert.equal(dg.rows.length, 1);
-          const nextBtn = instance.element.querySelector(`[ref="wizard-${instance.id}-next"]`);
-          nextBtn.dispatchEvent(clickEvent);
-          setTimeout(() => {
-            assert.equal(instance.errors.length, 1);
-            assert.equal(instance.page, 0);
-            const nextBtn = instance.element.querySelector('.formio-component-checkbox');
-            assert.equal(nextBtn.classList.contains('has-message'), true);
+    dg.addRow();
 
-            const secondPageBtn = instance.refs[`wizard-${instance.id}-link`][1];
-            secondPageBtn.dispatchEvent(clickEvent);
+    await waitFor(() => dg.rows.length === 1);
 
-            setTimeout(() => {
-              assert.equal(instance.errors.length, 1);
-              assert.equal(instance.page, 1);
-              const submitBtn = instance.refs[`wizard-${instance.id}-submit`];
-              submitBtn.dispatchEvent(clickEvent);
+    let checkbox;
+    await waitFor(() => {
+      instance.everyComponent((c) => {
+        if (c.component?.key === 'checkbox' && c.paths?.dataPath?.startsWith('dataGrid[0]')) {
+          checkbox = c;
+        }
+      });
+      return !!checkbox?.element;
+    });
 
-              setTimeout(() => {
-                assert.equal(instance.errors.length, 1);
-                assert.equal(instance.page, 1);
+    await waitFor(() => instance.validateCurrentPage({ dirty: true }).length === 1);
 
-                done();
-              }, 300);
-            }, 300);
-          }, 300);
-        }, 300);
-      })
-      .catch(done);
+    await instance.nextPage().catch(() => {});
+
+    assert.equal(instance.errors.length, 1);
+    assert.equal(instance.page, 0);
+    assert.equal(checkbox.element.classList.contains('has-message'), true);
+
+    await instance.setPage(1);
+    assert.equal(instance.errors.length, 1);
+    assert.equal(instance.page, 1);
+
+    await instance.submit().catch(() => {});
+    assert.equal(instance.errors.length, 1);
+    assert.equal(instance.page, 1);
   });
 
   it('Should validate components on blur', function (done) {

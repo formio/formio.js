@@ -1072,34 +1072,6 @@ Here is a large form which includes all fields with many different configuration
           customClass: 'myclass'
       },
       {
-          customClass: 'myclass',
-          conditional: {
-              eq: '',
-              when: null,
-              show: ''
-          },
-          type: 'resource',
-          defaultPermission: '',
-          validate: {
-              required: false
-          },
-          persistent: true,
-          protected: false,
-          multiple: false,
-          searchFields: ['data.fullName'],
-          selectFields: 'data.fullName, data.email',
-          template: '<span>\{\{ item.data \}\}</span>',
-          defaultValue: [],
-          resource: '5757ea1c6e37370100cb5bce',
-          project: '5757ea1c6e37370100cb5bc8',
-          placeholder: 'Select Resource',
-          key: 'resource',
-          label: 'Resource',
-          tableView: true,
-          input: true,
-          tags: []
-      },
-      {
           input: true,
           tableView: true,
           label: 'Signature',

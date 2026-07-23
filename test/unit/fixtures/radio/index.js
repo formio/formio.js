@@ -28,5 +28,5 @@ export {
   comp12,
   comp13,
   comp15,
-  comp16
+  comp16,
 };

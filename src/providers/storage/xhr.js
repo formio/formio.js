@@ -38,7 +38,7 @@ const XHR = {
     abortCallback,
     multipartOptions,
   ) {
-    // Use makeRequest so portal plugins (e.g. x-remote-token) are applied.
+    // Use makeRequest so portal plugins (e.g. x-remote-token) are applied. GOTCHA(G-FJS05)
     let serverResponse;
     try {
       serverResponse = await formio.makeRequest(

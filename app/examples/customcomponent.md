@@ -4,6 +4,7 @@ layout: vtabs
 section: examples
 weight: 19
 lib: builder
+formioFull: true
 ---
 
 The Form.io renderer allows for the creation of Custom components. These can be created by extending the base components within Form.io and then registering them within the core renderer. This can be done as follows.
@@ -242,7 +243,7 @@ As an example, you can import the Contributed Components into your application u
 <script src="https://unpkg.com/@formio/contrib@latest/dist/formio-contrib.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/@formio/contrib@latest/dist/formio-contrib.css">
 <script type="text/javascript">
-    Formio.use(FormioContrib);
+  Formio.use(FormioContrib);
 </script>
 <div class="card card-body bg-light">
   <div id="builder"></div>

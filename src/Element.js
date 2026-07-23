@@ -609,7 +609,7 @@ export default class Element {
     if (
       typeof string !== 'function' &&
       (this.component.content || this.component.html) &&
-      !FormioUtils.Evaluator.templateSettings.interpolate.test(string)
+      !(new RegExp(FormioUtils.Evaluator.templateSettings.interpolate)).test(string)
     ) {
       string = FormioUtils.translateHTMLTemplate(String(string), (value) => this.t(value));
     }
