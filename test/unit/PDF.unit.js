@@ -145,5 +145,27 @@ describe('PDF Component', function () {
 
       expect(form.emit.called).to.equal(false);
     });
+
+    it('Should emit iframe-pageEnd for pageEnd messages from the PDF iframe', function () {
+      const pageEnd = {
+        page: 1,
+        isLastPage: false,
+      };
+
+      dispatchMessage({
+        data: {
+          formId,
+          name: 'pageEnd',
+          data: pageEnd,
+        },
+      });
+
+      expect(form.emit.calledOnce).to.equal(true);
+      expect(form.emit.firstCall.args).to.deep.equal([
+        'iframe-pageEnd',
+        pageEnd,
+      ]);
+    });
   });
 });
+

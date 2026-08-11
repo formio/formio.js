@@ -56,6 +56,8 @@ export default class Input extends Multivalue {
       attr.autocomplete = this.component.autocomplete;
     }
 
+    this.applyViewAccessibleAriaLabel(attr);
+
     _.defaults(attr, this.component.attributes);
 
     return {

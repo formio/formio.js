@@ -43,6 +43,7 @@ import {
   comp31,
   comp32,
   resourceDataGridSubmission,
+  resourceEditGridSubmission,
   comp33
 } from './fixtures/select/index';
 
@@ -133,13 +134,13 @@ describe('Select Component', function () {
         values: [
           {
             label: 'Jane',
-            value: "jane's"
+            value: "jane's",
           },
-        ]
+        ],
       },
       key: 'select',
       type: 'select',
-      input: true
+      input: true,
     };
     const component = await Harness.testCreate(SelectComponent, comp);
     component.setItems(component.component.data.values);
@@ -760,12 +761,18 @@ describe('Select Component', function () {
     restoreMakeRequest();
   });
 
-  it('The select component that uses resource data inside a DataGrid should display the label (not value) when we set submission in custom logic', async () => {
+  it('The select component that uses resource data inside a DataGrid should display the label (not value) when we set submission in custom logic', async function () {
     const restoreDebounce = mockDebounce(0);
-    const restoreMakeRequest = mockMakeRequest((formio, type, url) => new Promise((resolve) => {
-      let values = [{ data: { value: 'test', label: "Label" } }, { data: { value: 'test2', label: "label2" } }];
-      resolve(values);
-    }));
+    const restoreMakeRequest = mockMakeRequest(
+      (formio, type, url) =>
+        new Promise((resolve) => {
+          let values = [
+            { data: { value: 'test', label: 'Label' } },
+            { data: { value: 'test2', label: 'label2' } },
+          ];
+          resolve(values);
+        }),
+    );
 
     const element = document.createElement('div');
     const form = await Formio.createForm(element, _.cloneDeep(resourceDataGridSubmission));
@@ -775,7 +782,34 @@ describe('Select Component', function () {
     setVal.dispatchEvent(clickEvent);
     await wait(400);
     const item = form.element.querySelector('.choices__item.choices__item--selectable');
-    assert.equal(item.textContent.includes("label2"), true);
+    assert.equal(item.textContent.includes('label2'), true);
+
+    restoreDebounce();
+    restoreMakeRequest();
+  });
+
+  it('The select component that uses resource data inside an EditGrid should display the label (not value) when we set value in custom logic', async function () {
+    const restoreDebounce = mockDebounce(0);
+    const restoreMakeRequest = mockMakeRequest(
+      () =>
+        new Promise((resolve) => {
+          const values = [
+            { data: { value: 'test', label: 'Label' } },
+            { data: { value: 'test2', label: 'label2' } },
+          ];
+          resolve(values);
+        }),
+    );
+
+    const element = document.createElement('div');
+    const form = await Formio.createForm(element, _.cloneDeep(resourceEditGridSubmission));
+    const setValue = form.getComponent('setValue');
+    const clickEvent = new Event('click');
+    const setVal = setValue.refs.button;
+    setVal.dispatchEvent(clickEvent);
+    await wait(400);
+    const editGrid = form.getComponent('editGrid');
+    assert.equal(editGrid.element.textContent.includes('label2'), true);
 
     restoreDebounce();
     restoreMakeRequest();

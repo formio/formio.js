@@ -74,6 +74,9 @@ export default class PDF extends Webform {
 
     // Trigger when this form is ready.
     this.on('iframe-ready', () => this.iframeReadyResolve(), true);
+
+    // Re-emit pageEnd without the iframe- prefix for consumers tracking PDF scroll position.
+    this.on('iframe-pageEnd', (data) => this.emit('pageEnd', data), true);
   }
 
   render() {

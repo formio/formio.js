@@ -126,7 +126,7 @@ export default {
                     defaultValue: false,
                     key: 'forwardHeaders',
                     label: 'Forward headers',
-                    tooltip: 'Pass on any headers received by the form.io server.',
+                    tooltip: 'Pass on any headers received by the form.io server. This forwards the form.io JWT token to the webhook endpoint.',
                     hideLabel: false,
                     inputType: 'checkbox',
                     input: true,

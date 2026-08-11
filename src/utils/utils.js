@@ -499,6 +499,28 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
 }
 
 /**
+ * Recursively HTML-escape strings in submission-like objects so logic templates
+ * (e.g. dynamic labels) cannot treat user-entered values as HTML.
+ * @param {*} obj - The value to escape.
+ * @returns {*} - The same structure with strings escaped.
+ */
+export function escapeInterpolationDataStrings(obj) {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+  if (typeof obj === 'string') {
+    return _.escape(obj);
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(escapeInterpolationDataStrings);
+  }
+  if (_.isPlainObject(obj)) {
+    return _.mapValues(obj, escapeInterpolationDataStrings);
+  }
+  return obj;
+}
+
+/**
  * Sets a property on a component via an executed Logic action.
  * @param {import('@formio/core').Component} component - The component to set the property on.
  * @param {import('@formio/core').LogicAction} action - The action to perform on the component.
@@ -523,11 +545,17 @@ export function setActionProperty(component, action, result, row, data, instance
       break;
     }
     case 'string': {
+      const safeData = escapeInterpolationDataStrings(data);
+      const safeRow = escapeInterpolationDataStrings(row);
+      const safeResult =
+        typeof result === 'string'
+          ? _.escape(result)
+          : escapeInterpolationDataStrings(result);
       const evalData = {
-        data,
-        row,
+        data: safeData,
+        row: safeRow,
         component,
-        result,
+        result: safeResult,
       };
       const textValue = action.property.component ? action[action.property.component] : action.text;
       const currentValue = _.get(component, property, '');

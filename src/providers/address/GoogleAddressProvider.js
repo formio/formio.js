@@ -197,10 +197,9 @@ export class GoogleAddressProvider extends AddressProvider {
   }
 
   attachAutocomplete(elem, index, onSelectAddress) {
-    Formio.libraryReady(this.getLibraryName()).then(() => {
+    return Formio.libraryReady(this.getLibraryName()).then(() => {
       const autocomplete = new google.maps.places.Autocomplete(elem, this.autocompleteOptions);
-
-      autocomplete.addListener('place_changed', () => {
+      const listener = autocomplete.addListener('place_changed', () => {
         const place = this.filterPlace(autocomplete.getPlace());
         place.formattedPlace = _.get(
           autocomplete,
@@ -210,6 +209,18 @@ export class GoogleAddressProvider extends AddressProvider {
 
         onSelectAddress(place, elem, index);
       });
+
+      return () => {
+        if (google?.maps?.event) {
+          google.maps.event.clearInstanceListeners(autocomplete);
+          google.maps.event.removeListener(listener);
+        }
+        document.querySelectorAll('.pac-container').forEach((node) => {
+          if (node.parentNode) {
+            node.parentNode.removeChild(node);
+          }
+        });
+      };
     });
   }
 

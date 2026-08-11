@@ -2,6 +2,7 @@ import Harness from '../harness';
 import AddressComponent from '../../src/components/address/Address';
 import assert from 'power-assert';
 import { Formio } from '../../src/Formio';
+import { wait } from '../util';
 import _ from 'lodash';
 
 import { comp1, comp2, comp3, comp4, comp5, comp6 } from './fixtures/address/index';
@@ -335,5 +336,63 @@ describe('Address Component', function () {
         }, 300);
       })
       .catch(done);
+  });
+
+  it('Should not add new DOM elements switching to manual mode', async function () {
+    const formJson = _.cloneDeep(comp2);
+    formJson.components[0].enableManualMode = true;
+    const element = document.createElement('div');
+
+    const countAutocompleteRoots = () => document.querySelectorAll('body > .autocomplete').length;
+
+    const form = await Formio.createForm(element, formJson);
+    const address = form.getComponent('address');
+    const mockResults = [
+      {
+        display_name: 'Texas, United States',
+        place_id: 1,
+      },
+    ];
+    address.provider.search = () => Promise.resolve(mockResults);
+
+    const toggleManualMode = () => {
+      address.refs.modeSwitcher.checked = !address.refs.modeSwitcher.checked;
+      address.refs.modeSwitcher.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+
+    const iterations = 3;
+    for (let i = 0; i < iterations; i++) {
+      if (address.manualMode) {
+        toggleManualMode();
+        await wait(200);
+      }
+
+      assert.equal(address.autocompleteMode, true, `iteration ${i}: should be in autocomplete mode`);
+
+      const searchInput = address.refs.searchInput[0];
+      searchInput.focus();
+      searchInput.value = 'ex';
+      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+      await wait(200);
+
+      const openRoots = countAutocompleteRoots();
+      assert(
+        openRoots <= 1,
+        `iteration ${i}: at most one autocompleter root, found ${openRoots}`,
+      );
+
+      toggleManualMode();
+      await wait(200);
+    }
+
+    assert(
+      countAutocompleteRoots() <= 1,
+      `expected at most one autocompleter root on body after ${iterations} toggles, found ${countAutocompleteRoots()}`,
+    );
+
+    if (element.parentNode) {
+      element.parentNode.removeChild(element);
+    }
   });
 });
