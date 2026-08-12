@@ -1,5 +1,61 @@
 # @formio/js
 
+## 5.5.1
+
+### Patch Changes
+
+- 8eb6855: FIO-11523 prevent adding new DOM when toggling manual mode
+- 1d9fcee: pin animation-frame-polyfill to ~1.0.3
+- 5d51d06: FIO-9855 removed deprecated settings
+- 6298b64: Clarified the tooltip of the Forward Headers setting of Webhook Actions
+- 3f8bcc1: FIO-11772 Added Quill deprecation notice
+- 793d0d8: FIO-11291: fixed Field Set Legend announcement by a screen reader for all Components within the field set on the View Submission page and PDF download
+- 2a0676a: FIO-11342 fixed refresh on feature for components inside DT
+- 543b082: FIO-9986 updated fjs Readme file
+- 5fa2592: FIO-11314: upgrade dompurify to 3.4.12
+- 587b8b4: Revert pull#977
+- dc60a11: FIO-11489 prevent HTML injection via logic
+- b20c6e2: Fixes an issue where submitting through Wizard navigation won't change state to 'submitted' from 'draft'
+- 5ec8478: Adds pageEnd event to PDF forms
+- eccfae0: showing label instead of raw value for Resource/URL Select inside an Edit Grid after setValue
+- Updated dependencies [9813447]
+- Updated dependencies [793d0d8]
+- Updated dependencies [5fa2592]
+- Updated dependencies [dc60a11]
+  - @formio/bootstrap@4.0.4
+  - @formio/core@2.8.1
+
+## 5.5.1-api99.1
+
+### Patch Changes
+
+- 587b8b4: Revert pull#977
+
+## 5.5.1-api99.0
+
+### Patch Changes
+
+- 8eb6855: FIO-11523 prevent adding new DOM when toggling manual mode
+- 1d9fcee: pin animation-frame-polyfill to ~1.0.3
+- 5d51d06: FIO-9855 removed deprecated settings
+- 6298b64: Clarified the tooltip of the Forward Headers setting of Webhook Actions
+- 3f8bcc1: FIO-11772 Added Quill deprecation notice
+- 793d0d8: FIO-11291: fixed Field Set Legend announcement by a screen reader for all Components within the field set on the View Submission page and PDF download
+- 82583ef: Fix nested form duplicate div wrapper
+- 2a0676a: FIO-11342 fixed refresh on feature for components inside DT
+- 543b082: FIO-9986 updated fjs Readme file
+- 5fa2592: FIO-11314: upgrade dompurify to 3.4.12
+- dc60a11: FIO-11489 prevent HTML injection via logic
+- b20c6e2: Fixes an issue where submitting through Wizard navigation won't change state to 'submitted' from 'draft'
+- 5ec8478: Adds pageEnd event to PDF forms
+- eccfae0: showing label instead of raw value for Resource/URL Select inside an Edit Grid after setValue
+- Updated dependencies [9813447]
+- Updated dependencies [793d0d8]
+- Updated dependencies [5fa2592]
+- Updated dependencies [dc60a11]
+  - @formio/bootstrap@4.0.4-api99.0
+  - @formio/core@2.8.1-api99.0
+
 ## 5.5.0
 
 ### Minor Changes

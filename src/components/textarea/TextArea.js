@@ -68,6 +68,9 @@ export default class TextAreaComponent extends TextFieldComponent {
     info.content = value;
     if ((this.options.readOnly || this.disabled) && !this.isHtmlRenderMode()) {
       const elementStyle = this.info.attr.style || '';
+      const viewAccessibleLabel = (this.options.readOnly || this.options.pdf)
+        ? this.getFormattedViewAccessibleLabel()
+        : '';
       const children = `
         <div ${this._referenceAttributeName}="input"
           class="formio-editor-read-only-content"
@@ -75,6 +78,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           role="textbox"
           aria-multiline="true"
           aria-readonly="true"
+          ${viewAccessibleLabel ? `aria-label='${viewAccessibleLabel}'` : ''}
         >
         </div>`;
 

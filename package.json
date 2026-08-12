@@ -1,6 +1,6 @@
 {
   "name": "@formio/js",
-  "version": "5.5.0",
+  "version": "5.5.1",
   "description": "JavaScript powered Forms with JSON Form Builder",
   "main": "lib/cjs/index.js",
   "exports": {
@@ -81,11 +81,12 @@
   },
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
-    "@formio/bootstrap": "^4.0.3",
-    "@formio/core": "^2.8.0",
+    "@formio/bootstrap": "^4.0.4",
+    "@formio/core": "^2.8.1",
     "@formio/text-mask-addons": "^3.8.0-formio.4",
     "@formio/vanilla-text-mask": "^5.1.1-formio.1",
     "abortcontroller-polyfill": "^1.7.5",
+    "animation-frame-polyfill": "~1.0.3",
     "autocompleter": "^8.0.4",
     "bootstrap": "^5.3.3",
     "browser-cookies": "^1.2.0",
@@ -95,7 +96,7 @@
     "core-js": "^3.37.1",
     "dialog-polyfill": "^0.5.6",
     "dom-autoscroller": "^2.3.4",
-    "dompurify": "^3.4.0",
+    "dompurify": "^3.4.12",
     "downloadjs": "^1.4.7",
     "dragula": "^3.7.3",
     "eventemitter3": "^5.0.1",

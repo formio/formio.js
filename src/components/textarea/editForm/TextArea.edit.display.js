@@ -49,6 +49,20 @@ export default [
     weight: 415,
   },
   {
+    key: 'quillInfo',
+    weight: 415,
+    type: 'htmlelement',
+    tag: 'div',
+    className: 'alert alert-info',
+    content:
+      '<i class="fa fa-info-circle" aria-hidden="true" style="margin-right: 0.5rem;"></i>Quill will be deprecated in an upcoming release. It is recommended to select another Editor.',
+    conditional: {
+      json: {
+        '===': [{ var: 'data.editor' }, 'quill'],
+      },
+    },
+  },
+  {
     type: 'checkbox',
     input: true,
     key: 'autoExpand',

@@ -630,16 +630,46 @@ export default class Component extends Element {
     return label;
   }
 
-  getFieldsetLegendIds() {
+  getFieldsetLegendData() {
     const legendIds = [];
+    const legendLabels = [];
     let currentParent = this.parent;
     while (currentParent) {
       if (currentParent.component?.type === 'fieldset' && currentParent.component?.legend) {
         legendIds.push(`l-${currentParent.id}-legend`);
+        legendLabels.push(this.t(currentParent.component.legend, { _userInput: true }));
       }
       currentParent = currentParent.parent;
     }
-    return legendIds.reverse().join(' ');
+    legendIds.reverse();
+    legendLabels.reverse();
+    return { legendIds, legendLabels };
+  }
+
+  getFieldsetLegendIds() {
+    return this.getFieldsetLegendData().legendIds.join(' ');
+  }
+
+  getViewAccessibleLabel() {
+    const { legendLabels } = this.getFieldsetLegendData();
+    if (legendLabels.length === 0) {
+      return '';
+    }
+    return legendLabels.join(', ');
+  }
+
+  getFormattedViewAccessibleLabel() {
+    const label = this.getViewAccessibleLabel();
+    return label ? this.getFormattedAttribute(label) : '';
+  }
+
+  applyViewAccessibleAriaLabel(attributes = {}) {
+    if ((this.options.readOnly || this.options.pdf) && !attributes['aria-label']) {
+      const viewAccessibleLabel = this.getFormattedViewAccessibleLabel();
+      if (viewAccessibleLabel) {
+        attributes['aria-label'] = viewAccessibleLabel;
+      }
+    }
   }
 
   init() {
@@ -2645,14 +2675,20 @@ export default class Component extends Element {
           break;
         }
         case 'mergeComponentSchema': {
+          const safeData = FormioUtils.escapeInterpolationDataStrings(data);
+          const safeRow = FormioUtils.escapeInterpolationDataStrings(row);
+          const safeResult =
+            typeof result === 'string'
+              ? _.escape(result)
+              : FormioUtils.escapeInterpolationDataStrings(result);
           const schema = this.evaluate(
             action.schemaDefinition,
             {
               value: _.clone(this.getValue()),
-              data,
-              row,
+              data: safeData,
+              row: safeRow,
               component: newComponent,
-              result,
+              result: safeResult,
             },
             'schema',
           );
@@ -4426,6 +4462,8 @@ export default class Component extends Element {
     if (this.disabled) {
       attributes.disabled = 'disabled';
     }
+
+    this.applyViewAccessibleAriaLabel(attributes);
 
     _.defaults(attributes, this.component.attributes);
 

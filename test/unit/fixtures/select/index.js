@@ -31,6 +31,7 @@ import comp30 from './comp30';
 import comp31 from './comp31';
 import comp32 from './comp32';
 import resourceDataGridSubmission from './resourceDataGridSubmission';
+import resourceEditGridSubmission from './resourceEditGridSubmission';
 import comp33 from './comp33';
 export {
   comp1,
@@ -65,5 +66,6 @@ export {
   comp31,
   comp32,
   resourceDataGridSubmission,
+  resourceEditGridSubmission,
   comp33
 };

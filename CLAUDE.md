@@ -66,6 +66,7 @@ See [`/docs/gotchas/formio.js.md`](../../docs/gotchas/formio.js.md). Current ent
 - `formio.js/widget-value-format-01` — `widget.getValueAsString(value, format)` takes a format string; never forward the display-options object into the widget layer
 - `formio.js/condition-operators-mutated-by-reporting-01` — `@formio/reporting` adds a `filterKey` getter to `Utils.ConditionOperators` at load
 - `formio.js/makerequest-plugin-bypass-01` — client→server calls must go through `Formio.makeRequest`, not bare `fetch`/`XHR`, or plugin-injected auth (remote-stage `x-remote-token`) is dropped
+- `formio.js/animation-frame-polyfill-pin-01` — `animation-frame-polyfill` is pinned to `~1.0.3` (transitive via `dom-autoscroller`); `1.1.0` breaks CRA consumers, never loosen to `^`
 
 ## Cross-cutting triggers
 
@@ -82,6 +83,7 @@ See [`/docs/gotchas/formio.js.md`](../../docs/gotchas/formio.js.md). Current ent
 - **Adding or changing instance API that user-authored JS can reach (`evalContext`, public Component getters/methods used in custom logic)** → the server mirrors that surface in `apps/formio/src/vm/src/InstanceShim.js`; an unmirrored addition works in the browser and breaks server-side validation/calculation. Read [`/docs/cross-cutting/server-evaluation.md`](../../docs/cross-cutting/server-evaluation.md).
 - **Changing component markup the renderer reads back — `ref` names, element ids, `aria-*` wiring, or a shared id format (e.g. fieldset legend `l-<id>-legend` via `getFieldsetLegendIds()`)** → read [`/docs/cross-cutting/template-markup-contract.md`](../../docs/cross-cutting/template-markup-contract.md) first. The same markup is reimplemented in `@formio/bootstrap` (bootstrap3/4/5), `@formio/uswds`, and `@formio/standard-template`; a one-sided change is a silent a11y/behavior regression (FIO-11126, FIO-10942).
 - **Bumping `@formio/core`** → audit [`src/templates/Templates.js:2`](./src/templates/Templates.js) for the experimental-surface import. Core's experimental directory can change shape between minor releases.
+- **Touching the `animation-frame-polyfill` / `dom-autoscroller` dependency entries in [`package.json`](./package.json)** → keep `animation-frame-polyfill` pinned to `~1.0.3` (`<1.1.0`). It is a transitive dep of `dom-autoscroller` pinned directly because `1.1.0`'s `exports`/`.cjs`/`.mjs` packaging breaks Create React App consumers (FIO-11876). Do not loosen to `^` or drop the seemingly-unused pin. See [`formio.js/animation-frame-polyfill-pin-01`](../../docs/gotchas/formio.js.md#animation-frame-polyfill-pin-01--animation-frame-polyfill-is-pinned-to-103-never-loosen-to-).
 - **`major` bump** → affects external npm consumers of `@formio/js`, not just the 24 workspace dependents.
 
 ## References

@@ -625,6 +625,20 @@ export default class EditGridComponent extends NestedArrayComponent {
       const flattenedComponents = this.flattenComponents(rowIndex);
       const rowTemplate = this.rowTemplate;
 
+      _.each(flattenedComponents, (instance) => {
+        const needsItemLoad =
+          instance &&
+          instance.itemsFromUrl &&
+          !instance.editGridItemsRequested &&
+          !instance.isEmpty(instance.dataValue) &&
+          _.isEmpty(instance.selectData);
+        if (needsItemLoad) {
+          instance.editGridItemsRequested = true;
+          instance.triggerUpdate(null, true);
+          instance.itemsLoaded.then(() => this.redraw());
+        }
+      });
+
       return this.renderString(rowTemplate, {
         row: dataValue[rowIndex] || {},
         data: this.data,
@@ -1153,7 +1167,7 @@ export default class EditGridComponent extends NestedArrayComponent {
           return;
         }
 
-        const editRow = this.editRows[rowIndex];
+        const editRow = this.editRows[this.type === 'datatable' ? 0 : rowIndex];
 
         if (editRow) {
           this.processRow(

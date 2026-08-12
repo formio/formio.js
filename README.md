@@ -41,6 +41,7 @@ This library has a very powerful JSON form builder, and can be used like the fol
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css"
     />
+    <link rel="stylesheet" href="https://cdn.form.io/js/formio.full.min.css">
     <script src="https://cdn.form.io/js/formio.full.min.js"></script>
   </head>
   <body>

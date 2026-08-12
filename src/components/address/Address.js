@@ -499,19 +499,22 @@ export default class AddressComponent extends ContainerComponent {
       container = document.createElement('div');
       const target = shadowRoot.querySelector('.formio-form-wrapper');
       target.appendChild(container);
-    } else {
-      container = document.createElement('div');
-      document.body.appendChild(container);
     }
 
     this.searchInput.forEach((element, index) => {
       if (!this.builderMode && element && this.provider) {
         if (this.component.provider === 'google') {
-          this.provider.attachAutocomplete(element, index, this.onSelectAddress.bind(this));
+          this.googlePlacesCleanups = [];
+          this.provider.attachAutocomplete(element, index, this.onSelectAddress.bind(this))
+          .then((cleanup) => {
+            if (typeof cleanup === 'function') {
+              this.googlePlacesCleanups.push(cleanup);
+            }
+          });
         } else {
-          autocompleter({
+          this.autocompleterWidget = autocompleter({
             input: element,
-            container,
+            ...(container ? { container } : {}),
             debounceWaitMs: 300,
             fetch: (text, update) => {
               const query = text;
@@ -614,6 +617,16 @@ export default class AddressComponent extends ContainerComponent {
     }
 
     return result;
+  }
+
+  detach() {
+    if (this.autocompleterWidget && typeof this.autocompleterWidget.destroy === 'function') {
+      this.autocompleterWidget.destroy();
+    };
+    (this.googlePlacesCleanups || []).forEach((cleanup) => {
+      cleanup();
+    });
+    super.detach();
   }
 
   addChildComponent(component) {

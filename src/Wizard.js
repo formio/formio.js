@@ -159,7 +159,10 @@ export default class Wizard extends Webform {
       { name: 'cancel', method: 'cancel' },
       { name: 'previous', method: 'prevPage' },
       { name: 'next', method: 'nextPage' },
-      { name: 'submit', method: 'submit' },
+      { name: 'submit', method: 'submit', args: [false, {
+          state: 'submitted',
+        }],
+      },
     ].forEach((button) => {
       if (this.hasButton(button.name)) {
         buttons[button.name] = button;
@@ -422,7 +425,7 @@ export default class Wizard extends Webform {
         this.setLoading(buttonElement, true);
 
         // Call the button method, then re-enable the button.
-        this[button.method]()
+        this[button.method](...(button.args || []))
           .then(() => {
             buttonElement.removeAttribute('disabled');
             this.setLoading(buttonElement, false);
