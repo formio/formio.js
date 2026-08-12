@@ -1,4 +1,27 @@
-import { v4 as uuidv4 } from 'uuid';
+
+/**
+ * Generates an RFC 4122 version 4 UUID.
+ *
+ * Uses the native `crypto.randomUUID()` when available. That API is only exposed
+ * in secure contexts (HTTPS or localhost), whereas IndexedDB also works over plain
+ * HTTP, so a `crypto.getRandomValues()` based fallback preserves the previous
+ * behaviour in those environments.
+ * @returns {string} A randomly generated v4 UUID.
+ */
+function generateId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40; // version 4
+  bytes[8] = (bytes[8] & 0x3f) | 0x80; // variant RFC 4122
+
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
 /**
  * indexedDb provider for file storage.
  * @returns {import('./typedefs').FileProvider} The FileProvider interface defined in index.js.
@@ -30,7 +53,7 @@ function indexeddb() {
           reader.onload = () => {
             const blobObject = new Blob([file], { type: file.type });
 
-            const id = uuidv4(blobObject);
+            const id = generateId();
 
             const data = {
               id,
