@@ -6,7 +6,9 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
   position: relative;
 }
 
-.col-form-label.field-required:after {
+.col-form-label.field-required:after,
+.form-check-label.field-required:after,
+.usa-checkbox__label.field-required:after {
   content: none !important;
 }
 
@@ -19,6 +21,15 @@ $autocomplete-in-dialog-z-index: $dialog-z-index + 1000;
 
 .required-star {
   color: #eb0000;
+}
+
+// Radio/selectboxes keep the required star OUTSIDE the (aria-hidden) label so it
+// isn't pulled into the group's accessible name via aria-labelledby (FIO-11111).
+// An inline-block label fills the column and drops the trailing star onto its own
+// line; making the label inline lets the star sit at the end of the label text.
+.formio-component-radio label.col-form-label,
+.formio-component-selectboxes label.col-form-label {
+  display: inline;
 }
 
 .formio-error-wrapper,
@@ -846,6 +857,25 @@ body.formio-dialog-open {
   position: absolute;
   top: 6px;
   right: 5px;
+}
+
+// The required asterisk is now a real span rendered outside the (sr-only) label
+// for screen-reader correctness (FIO-11111). When the label is hidden it would
+// otherwise flow to the top-left; pin it to the top-right corner like the old
+// control-label--hidden :after star.
+.formio-component-label-hidden > .required-star {
+  position: absolute;
+  top: 6px;
+  right: 5px;
+}
+
+.formio-component-datetime.formio-component-label-hidden > .required-star {
+  right: 45px;
+}
+
+.formio-component-select.formio-component-label-hidden > .required-star,
+.formio-component-resource.formio-component-label-hidden > .required-star {
+  right: 40px;
 }
 
 .formio-component-datetime .control-label--hidden.field-required {

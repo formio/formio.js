@@ -128,7 +128,7 @@ describe('Webform tests', function () {
     done();
   });
 
-  it('Should show form validation errors if we insert invalid underscore data into a number component', async () => {
+  it('Should show form validation errors if we insert invalid underscore data into a number component', async function () {
     const form = await Formio.createForm(document.createElement('div'), formWithNumbers);
     const numberDatagrid = form.getComponent('dataGrid.number');
     const number = form.getComponent('number');

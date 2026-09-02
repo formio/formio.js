@@ -80,6 +80,80 @@ describe('Checkbox Component', function () {
       .catch(done);
   });
 
+  it('Should render the required asterisk as an aria-hidden span inside the label (FIO-11111)', function () {
+    const requiredCheckbox = {
+      label: 'Check me',
+      key: 'checkbox',
+      type: 'checkbox',
+      input: true,
+      validate: { required: true },
+    };
+    return Harness.testCreate(CheckBoxComponent, requiredCheckbox).then((component) => {
+      const star = component.element.querySelector('span.required-star');
+      assert(star, 'required asterisk should be a real <span class="required-star"> element');
+      assert.equal(
+        star.getAttribute('aria-hidden'),
+        'true',
+        'the asterisk span must be aria-hidden so a screen reader does not announce "star"',
+      );
+      // The star lives INSIDE the label so it stays on the label's last line (a sibling
+      // after a block label drops to a new line). It is an aria-hidden DESCENDANT — not the
+      // element aria-labelledby points at directly — so accname excludes it from the input's
+      // name (verified in Chrome/Edge and WebKit); the "star" is never announced.
+      assert(star.closest('label'), 'the asterisk span must be inside the label');
+      // FIO-11977 guard: exactly one asterisk (no duplicated CSS pseudo + span).
+      assert.equal(
+        component.element.querySelectorAll('span.required-star').length,
+        1,
+        'there must be exactly one required-star span (no duplicated asterisk)',
+      );
+      // Requiredness is announced through aria-required on the input, not the star.
+      const input = component.element.querySelector('input[ref="input"]');
+      assert.equal(
+        input.getAttribute('aria-required'),
+        'true',
+        'the input should carry aria-required so the requirement is announced',
+      );
+    });
+  });
+
+  it('Should render the description exactly once, with or without the field wrapper (FIO-12196)', function () {
+    const describedCheckbox = {
+      label: 'Check me',
+      key: 'checkbox',
+      type: 'checkbox',
+      input: true,
+      description: 'TEST',
+    };
+    return Harness.testCreate(CheckBoxComponent, describedCheckbox).then((component) => {
+      const descriptionId = `d-${component.id}-${component.component.key}`;
+      const countDescriptions = (html) => html.split(`id="${descriptionId}"`).length - 1;
+
+      // Normally the `field` wrapper renders the description.
+      assert.equal(
+        countDescriptions(component.render()),
+        1,
+        'the description should be rendered once when the field wrapper is used',
+      );
+
+      // An a11y layer (@formio/vpat) sets noField on the checkbox to avoid a duplicate label,
+      // which skips that wrapper — the description must still be there, and still only once.
+      component.noField = true;
+      const html = component.render();
+      assert.equal(
+        countDescriptions(html),
+        1,
+        'the description should still be rendered when the field wrapper is skipped',
+      );
+      assert(html.indexOf('TEST') !== -1, 'the description text should be rendered');
+      // The input points at the description, so the id must exist or the reference dangles.
+      assert(
+        html.indexOf(`aria-describedby="${descriptionId}"`) !== -1,
+        'aria-describedby should reference the rendered description',
+      );
+    });
+  });
+
   it('Should hide component with conditional logic when checkbox component with the radio input type is unchecked', function (done) {
     const form = _.cloneDeep(comp4);
     const element = document.createElement('div');

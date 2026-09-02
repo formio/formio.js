@@ -242,6 +242,13 @@ export default class PDF extends Webform {
       params.push('builder=1');
     }
 
+    const parentIconset =
+      this.options.iconset || Formio.Templates?.current?.defaultIconset;
+
+    if (parentIconset && parentIconset !== 'bi') {
+      params.push(`iconset=${encodeURIComponent(parentIconset)}`);
+    }
+
     if (params.length) {
       iframeSrc += `?${params.join('&')}`;
     }

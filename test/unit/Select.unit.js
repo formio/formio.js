@@ -764,9 +764,9 @@ describe('Select Component', function () {
   it('The select component that uses resource data inside a DataGrid should display the label (not value) when we set submission in custom logic', async function () {
     const restoreDebounce = mockDebounce(0);
     const restoreMakeRequest = mockMakeRequest(
-      (formio, type, url) =>
+      () =>
         new Promise((resolve) => {
-          let values = [
+          const values = [
             { data: { value: 'test', label: 'Label' } },
             { data: { value: 'test2', label: 'label2' } },
           ];

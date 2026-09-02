@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { guid } from '../../utils/utils';
 /**
  * indexedDb provider for file storage.
  * @returns {import('./typedefs').FileProvider} The FileProvider interface defined in index.js.
@@ -30,7 +30,7 @@ function indexeddb() {
           reader.onload = () => {
             const blobObject = new Blob([file], { type: file.type });
 
-            const id = uuidv4(blobObject);
+            const id = guid();
 
             const data = {
               id,

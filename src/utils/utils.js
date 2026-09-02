@@ -2,7 +2,7 @@ import _ from 'lodash';
 import moment from 'moment-timezone/moment-timezone';
 import jtz from 'jstimezonedetect';
 import dompurify from 'dompurify';
-import { getValue } from './formUtils';
+import { getValue, guid } from './formUtils';
 import { Evaluator } from './Evaluator';
 import ConditionOperators from './conditionOperators';
 import { jsonLogic, convertShowToBoolean } from '@formio/core';
@@ -640,17 +640,8 @@ export function uniqueName(name, template, evalContext) {
   return uniqueName;
 }
 
-/**
- * Returns a GUID
- * @returns {string} - A GUID.
- */
-export function guid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
+// Re-export GUID generator from @formio/core to avoid duplication
+export { guid };
 
 /**
  * Return a translated date setting.

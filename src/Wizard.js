@@ -272,6 +272,8 @@ export default class Wizard extends Webform {
           [`${this.wizardKey}-previous`]: 'single',
           [`${this.wizardKey}-next`]: 'single',
           [`${this.wizardKey}-submit`]: 'single',
+          [`${this.wizardKey}-buttonMessageContainer`]: 'single',
+          [`${this.wizardKey}-buttonMessage`]: 'single',
         });
         this.attachNav();
       }
@@ -313,6 +315,8 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-previous`]: 'single',
       [`${this.wizardKey}-next`]: 'single',
       [`${this.wizardKey}-submit`]: 'single',
+      [`${this.wizardKey}-buttonMessageContainer`]: 'single',
+      [`${this.wizardKey}-buttonMessage`]: 'single',
       [`${this.wizardKey}-link`]: 'multiple',
       [`${this.wizardKey}-tooltip`]: 'multiple',
     });
@@ -328,6 +332,7 @@ export default class Wizard extends Webform {
     ]);
     this.attachNav();
     this.attachHeader();
+    this.attachSubmitMessage();
     return promises.then(() => {
       this.emit('render', { component: this.currentPage, page: this.page });
       if (this.component.scrollToTop) {
@@ -436,6 +441,28 @@ export default class Wizard extends Webform {
           });
       });
     });
+  }
+
+  /**
+   * Renders the submission result message under the navigation submit button, mirroring the
+   * behavior of the Button components.
+   */
+  attachSubmitMessage() {
+    this.on(
+      'submitDone',
+      (message) => {
+        const messageContainer = this.refs[`${this.wizardKey}-buttonMessageContainer`];
+        const messageElement = this.refs[`${this.wizardKey}-buttonMessage`];
+        if (!messageElement) {
+          return;
+        }
+        const resultMessage = _.isString(message) ? message : this.t('complete');
+        this.addClass(messageContainer, 'has-success');
+        this.removeClass(messageContainer, 'has-error');
+        this.setContent(messageElement, resultMessage);
+      },
+      true,
+    );
   }
 
   /**
