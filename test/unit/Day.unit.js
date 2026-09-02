@@ -16,6 +16,25 @@ describe('Day Component', function () {
     });
   });
 
+  it('Should mark required day sub-fields with aria-required and an aria-hidden asterisk span (FIO-11111)', function () {
+    return Harness.testCreate(DayComponent, comp2).then((component) => {
+      ['day', 'month', 'year'].forEach((name) => {
+        const input = component.refs[name];
+        assert(input, `the ${name} input should exist`);
+        assert.equal(
+          input.getAttribute('aria-required'),
+          'true',
+          `the ${name} input should carry aria-required so the requirement is announced`,
+        );
+      });
+      const stars = component.element.querySelectorAll('span.required-star[aria-hidden="true"]');
+      assert(
+        stars.length >= 1,
+        'required day sub-labels should render an aria-hidden required-star span instead of a CSS asterisk',
+      );
+    });
+  });
+
   it('Should build a day component directly by Components class create method', function () {
     const { component } = Components.create(comp1);
     assert.deepEqual(comp1, component);

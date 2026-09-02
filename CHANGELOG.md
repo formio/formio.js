@@ -1,5 +1,55 @@
 # @formio/js
 
+## 5.5.2
+
+### Patch Changes
+
+- 539fef1: Lints, introduce nextgen build
+- 681539d: FIO-11440 fixed eSignTooltip icon for PDF forms
+- cc30e15: change asterisks behavior
+- 1c2bf19: FIO-11911: remove the `uuid` dependency from `@formio/js`
+- 14b3fd4: FIO-11979: show the Submission Complete message under the Wizard submit
+- Updated dependencies [bae15e2]
+- Updated dependencies [cc30e15]
+- Updated dependencies [1c2bf19]
+- Updated dependencies [08d2c57]
+- Updated dependencies [baf4e14]
+- Updated dependencies [2cb75c4]
+- Updated dependencies [14b3fd4]
+  - @formio/bootstrap@4.0.5
+  - @formio/core@2.8.2
+
+## 5.5.2-api99.2
+
+### Patch Changes
+
+- Updated dependencies [bae15e2]
+  - @formio/bootstrap@4.0.5-api99.1
+
+## 5.5.2-api99.1
+
+### Patch Changes
+
+- Updated dependencies [2cb75c4]
+  - @formio/core@2.8.2-api99.1
+
+## 5.5.2-api99.0
+
+### Patch Changes
+
+- 539fef1: Lints, introduce nextgen build
+- 681539d: FIO-11440 fixed eSignTooltip icon for PDF forms
+- cc30e15: change asterisks behavior
+- 1c2bf19: FIO-11911: remove the `uuid` dependency from `@formio/js`
+- 14b3fd4: FIO-11979: show the Submission Complete message under the Wizard submit
+- Updated dependencies [cc30e15]
+- Updated dependencies [1c2bf19]
+- Updated dependencies [08d2c57]
+- Updated dependencies [baf4e14]
+- Updated dependencies [14b3fd4]
+  - @formio/bootstrap@4.0.5-api99.0
+  - @formio/core@2.8.2-api99.0
+
 ## 5.5.1
 
 ### Patch Changes

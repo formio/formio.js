@@ -1146,6 +1146,66 @@ describe('Wizard tests', function () {
     );
   });
 
+  it('Should show the "Submission Complete" message under the wizard navigation submit button', function (done) {
+    const wizardForm = {
+      display: 'wizard',
+      components: [
+        {
+          title: 'Page 1',
+          key: 'page1',
+          type: 'panel',
+          label: 'Page 1',
+          input: false,
+          components: [
+            {
+              label: 'Text Field',
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+            },
+          ],
+        },
+      ],
+    };
+
+    const element = document.createElement('div');
+    const originalMakeRequest = Formio.makeRequest;
+    Formio.makeRequest = function () {
+      return Promise.resolve({
+        _id: '000000000000000000000001',
+        form: '000000000000000000000002',
+        data: { textField: 'test' },
+        state: 'submitted',
+      });
+    };
+
+    Formio.createForm(element, wizardForm)
+      .then((wizard) => {
+        wizard.formio = new Formio('http://localhost:3000/test');
+        wizard.setValue({ data: { textField: 'test' } });
+        wizard
+          .submit()
+          .then(() => {
+            const messageEl = wizard.element.querySelector(
+              `[ref="${wizard.wizardKey}-buttonMessage"]`,
+            );
+            assert(messageEl, 'Wizard navigation should render a submit message element');
+            assert.equal(
+              messageEl.textContent.trim(),
+              'Submission Complete',
+              'Should show the "Submission Complete" message under the submit button',
+            );
+            Formio.makeRequest = originalMakeRequest;
+            done();
+          })
+          .catch(done);
+      })
+      .catch((err) => {
+        Formio.makeRequest = originalMakeRequest;
+        done(err);
+      });
+  });
+
   it('Should have validation errors when parent form is valid but nested wizard is not', function (done) {
     const formElement = document.createElement('div');
     const wizard = new Wizard(formElement);

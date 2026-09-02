@@ -1041,7 +1041,7 @@ export default class WebformBuilder extends Component {
         this.webform.redraw();
         this.webform.setAlert(
           'danger',
-          this.t('builderUniqueError', { componentKeyOrTitle: draggableComponent.key })
+          this.t('builderUniqueError', { componentKeyOrTitle: draggableComponent.key }),
         );
         return;
       }
@@ -1063,7 +1063,7 @@ export default class WebformBuilder extends Component {
         this.webform.redraw();
         this.webform.setAlert(
           'danger',
-          this.t('builderUniqueError', { componentKeyOrTitle: draggableComponent.title })
+          this.t('builderUniqueError', { componentKeyOrTitle: draggableComponent.title }),
         );
         return;
       }
