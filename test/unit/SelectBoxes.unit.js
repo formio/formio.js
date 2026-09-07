@@ -104,6 +104,41 @@ describe('SelectBoxes Component', function () {
   });
 
   describe('error messages', function () {
+    it('Should add minSelectedCount errors to the caller error list', function () {
+      const formJson = {
+        components: [
+          {
+            type: 'selectboxes',
+            key: 'options',
+            values: [
+              { label: 'Option 1', value: '1' },
+              { label: 'Option 2', value: '2' },
+            ],
+            validate: {
+              required: true,
+              minSelectedCount: 1,
+            },
+          },
+        ],
+      };
+      const element = document.createElement('div');
+      return Formio.createForm(element, formJson).then((form) => {
+        const errors = [];
+        const component = form.getComponent('options');
+        const valid = component.checkComponentValidity(
+          form.data,
+          true,
+          null,
+          { dirty: true },
+          errors,
+        );
+
+        assert.equal(valid, false);
+        assert.equal(errors.length, 1);
+        assert.equal(errors[0].ruleName, 'required');
+      });
+    });
+
     it('Should have a minSelectedCount validation message', function () {
       const formJson = {
         components: [

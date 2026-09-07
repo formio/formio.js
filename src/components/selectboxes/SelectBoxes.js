@@ -297,23 +297,8 @@ export default class SelectBoxesComponent extends RadioComponent {
           this.setInputsDisabled(false);
         }
 
-        if (!isValid && maxCount && count > maxCount) {
-          const message = this.t(
-            this.component.maxSelectedCountMessage || 'maxSelectItems',
-            { maxCount },
-          );
-          this.errors.push({ message });
-          this.setCustomValidity(message, dirty);
-          return false;
-        } else if (!isValid && minCount && count < minCount) {
+        if (!isValid && minCount && count < minCount) {
           this.setInputsDisabled(false);
-          const message = this.t(
-            this.component.minSelectedCountMessage || 'minSelectItems',
-            { minCount },
-          );
-          this.errors.push({ message });
-          this.setCustomValidity(message, dirty);
-          return false;
         }
       }
     }
