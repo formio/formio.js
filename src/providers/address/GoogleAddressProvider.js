@@ -6,6 +6,7 @@ import { AddressProvider } from './AddressProvider';
 const GOOGLE_MAPS_BASE_URL = 'https://maps.googleapis.com';
 const GOOGLE_MAPS_JS_URL = `${GOOGLE_MAPS_BASE_URL}/maps/api/js`;
 const GOOGLE_MAPS_JS_WITH_PARAMS_URL = `${GOOGLE_MAPS_JS_URL}?v=quarterly&libraries=places&loading=async&callback=googleMapsCallback`;
+const NEW_PLACES_API_VERSION = 'newPlacesApi';
 
 /**
  * @typedef {object} AutocompleteOptions
@@ -87,6 +88,22 @@ export class GoogleAddressProvider extends AddressProvider {
   }
 
   /**
+   * @returns {string} The property to use for display value on places returned by the new Places API.
+   */
+
+  get newApiDisplayValueProperty() {
+    return 'formattedAddress';
+  }
+
+  /**
+   * @returns {boolean} Whether the provider is configured to use the new Places API.
+   */
+
+  get usesNewPlacesApi() {
+    return this.options?.version === NEW_PLACES_API_VERSION;
+  }
+
+  /**
    * @param {AutocompleteOptions} options - The autocomplete options.
    */
   set autocompleteOptions(options) {
@@ -105,11 +122,12 @@ export class GoogleAddressProvider extends AddressProvider {
 
    */
   setAutocompleteOptions() {
-    let options = _.get(this.options, 'autocompleteOptions', {});
+    // Clone so the stored provider options are never mutated: the required fields
+    // differ per Places API version, and stale fields from a previous computation
+    // must not leak into the next one (FIO-10428).
+    const storedOptions = _.get(this.options, 'autocompleteOptions', {});
+    const options = _.isObject(storedOptions) ? _.cloneDeep(storedOptions) : {};
 
-    if (!_.isObject(options)) {
-      options = {};
-    }
     this.addRequiredProviderOptions(options);
 
     this.autocompleteOptions = options;
@@ -155,14 +173,9 @@ export class GoogleAddressProvider extends AddressProvider {
    * @returns {string[]} The required address properties.
    */
   getRequiredAddressProperties() {
-    return [
-      'address_components',
-      'formatted_address',
-      'geometry',
-      'place_id',
-      'plus_code',
-      'types',
-    ];
+    return this.usesNewPlacesApi
+      ? ['addressComponents', 'formattedAddress', 'location', 'viewport', 'id', 'plusCode', 'types']
+      : ['address_components', 'formatted_address', 'geometry', 'place_id', 'plus_code', 'types'];
   }
 
   /**
@@ -196,30 +209,86 @@ export class GoogleAddressProvider extends AddressProvider {
     return filteredPlace;
   }
 
-  attachAutocomplete(elem, index, onSelectAddress) {
+  attachAutocomplete(elem, index, onSelectAddress, disable = false) {
+    if (disable) {
+      return Promise.resolve();
+    }
     return Formio.libraryReady(this.getLibraryName()).then(() => {
-      const autocomplete = new google.maps.places.Autocomplete(elem, this.autocompleteOptions);
-      const listener = autocomplete.addListener('place_changed', () => {
-        const place = this.filterPlace(autocomplete.getPlace());
-        place.formattedPlace = _.get(
-          autocomplete,
-          'gm_accessors_.place.se.formattedPrediction',
-          place[this.alternativeDisplayValueProperty],
-        );
+      this.setAutocompleteOptions();
+      if (!this.usesNewPlacesApi) {
+        const autocomplete = new google.maps.places.Autocomplete(elem, this.autocompleteOptions);
+        const listener = autocomplete.addListener('place_changed', () => {
+          const place = this.filterPlace(autocomplete.getPlace());
+          place.formattedPlace = _.get(
+            autocomplete,
+            'gm_accessors_.place.se.formattedPrediction',
+            place[this.alternativeDisplayValueProperty],
+          );
 
-        onSelectAddress(place, elem, index);
-      });
+          onSelectAddress(place, elem, index);
+        });
+
+        return () => {
+          if (google?.maps?.event) {
+            google.maps.event.clearInstanceListeners(autocomplete);
+            google.maps.event.removeListener(listener);
+          }
+          document.querySelectorAll('.pac-container').forEach((node) => {
+            if (node.parentNode) {
+              node.parentNode.removeChild(node);
+            }
+          });
+        };
+      }
+
+      const { fields, componentRestrictions, ...elementOptions } = this.autocompleteOptions;
+      const country = componentRestrictions?.country;
+      if (country) {
+        // The new element spells legacy componentRestrictions.country as includedRegionCodes.
+        elementOptions.includedRegionCodes = _.castArray(country);
+      }
+      elementOptions.noInputIcon = true;
+
+      const autocomplete = new google.maps.places.PlaceAutocompleteElement(elementOptions);
+      if (elem?.value) {
+        autocomplete.value = elem.value;
+      }
+      autocomplete.classList.add('form-control');
+      // Replace the existing element with the autocomplete element
+      elem.parentNode.replaceChildren(autocomplete);
+
+      const handlePlaceSelect = async (event) => {
+        let selectedPlace;
+        try {
+          const place = event.placePrediction.toPlace();
+          await place.fetchFields({
+            fields: fields || this.getRequiredAddressProperties(),
+          });
+
+          const convertedPlace = {
+            addressComponents: place.addressComponents || [],
+            formattedAddress: place.formattedAddress || '',
+            location: place.location || {},
+            viewport: place.viewport || {},
+            id: place.id || '',
+            plusCode: place.plusCode || {},
+            types: place.types || [],
+          };
+          selectedPlace = this.filterPlace(convertedPlace);
+          selectedPlace.formattedPlace = convertedPlace.formattedAddress;
+        } catch (err) {
+          // fetchFields rejections are otherwise swallowed by the Maps event
+          // dispatcher; never let a failed details request drop the selection.
+          console.warn(`Unable to fetch the selected place's details: ${err}`);
+          selectedPlace = { formattedPlace: String(event.placePrediction?.text ?? '') };
+        }
+
+        onSelectAddress(selectedPlace, elem, index);
+      };
+      autocomplete.addEventListener('gmp-select', handlePlaceSelect);
 
       return () => {
-        if (google?.maps?.event) {
-          google.maps.event.clearInstanceListeners(autocomplete);
-          google.maps.event.removeListener(listener);
-        }
-        document.querySelectorAll('.pac-container').forEach((node) => {
-          if (node.parentNode) {
-            node.parentNode.removeChild(node);
-          }
-        });
+        autocomplete.removeEventListener('gmp-select', handlePlaceSelect);
       };
     });
   }
@@ -233,11 +302,13 @@ export class GoogleAddressProvider extends AddressProvider {
   }
 
   getDisplayValue(address) {
-    const displayedProperty = _.has(address, this.displayValueProperty)
-      ? this.displayValueProperty
-      : this.alternativeDisplayValueProperty;
+    const displayedProperty = [
+      this.displayValueProperty,
+      this.alternativeDisplayValueProperty,
+      this.newApiDisplayValueProperty,
+    ].find((property) => _.has(address, property));
 
-    return _.get(address, displayedProperty, '');
+    return displayedProperty ? _.get(address, displayedProperty, '') : '';
   }
 
   /**

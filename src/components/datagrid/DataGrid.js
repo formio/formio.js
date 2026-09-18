@@ -644,6 +644,7 @@ export default class DataGridComponent extends NestedArrayComponent {
           this.triggerRootChange(flags, changed, modified);
         }
 
+        const rowData = this.dataValue[rowIndex];
         this.processRow(
           'checkData',
           null,
@@ -651,7 +652,7 @@ export default class DataGridComponent extends NestedArrayComponent {
             ...flags,
             changed,
           },
-          row,
+          rowData,
           _.toArray(this.rows[rowIndex]),
         );
       };

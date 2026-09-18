@@ -31,6 +31,40 @@ describe('Radio Component', function () {
     });
   });
 
+  it('Should translate lowercase option labels that match default English translation keys', async function () {
+    const form = await Formio.createForm(
+      document.createElement('div'),
+      {
+        components: [
+          {
+            type: 'radio',
+            key: 'radio',
+            label: 'Radio',
+            input: true,
+            values: [
+              { label: 'yes', value: 'yes' },
+              { label: 'no', value: 'no' },
+            ],
+          },
+        ],
+      },
+      {
+        language: 'es',
+        i18n: {
+          es: {
+            yes: 'si',
+            no: 'nooooo',
+          },
+        },
+      },
+    );
+    const labels = [...form.element.querySelectorAll('.form-check-label')].map((label) =>
+      label.textContent.trim(),
+    );
+
+    assert.deepEqual(labels, ['si', 'nooooo']);
+  });
+
   it('Should preserve radio selection and maintain state after conditional hide/show cycle', async function () {
     const form = await Formio.createForm(document.createElement('div'), comp16);
     const checkbox = form.getComponent('checkbox');

@@ -112,6 +112,11 @@ export default class FileComponent extends Field {
     this.abortUploads = [];
     this.pendingfiles = [];
     this.resolvedFiles = [];
+    const imageSize = Number(this.component.imageSize);
+    const isValidImageSize = imageSize > 0;
+    if (!isValidImageSize) {
+      this.component.imageSize = '200';
+    }
   }
 
   get dataReady() {
@@ -733,9 +738,10 @@ export default class FileComponent extends Field {
       originalName: escapedFileName,
       fileKey: this.component.fileKey || 'file',
       storage: this.component.storage,
-      options: this.component.storage === 'url'
-        ? (this.component.urlRequestOptions || this.component.options)
-        : this.component.options,
+      options:
+        this.component.storage === 'url'
+          ? this.component.urlRequestOptions || this.component.options
+          : this.component.options,
       file,
       size: file.size,
       status: 'info',
@@ -778,7 +784,11 @@ export default class FileComponent extends Field {
     return fileWithSameNameUploaded || fileWithSameNameUploading
       ? {
           status: 'error',
-          message: this.t(fileWithSameNameUploading ? 'fileWithDuplicatedNameInProgress' : 'fileWithDuplicatedNameLoaded'),
+          message: this.t(
+            fileWithSameNameUploading
+              ? 'fileWithDuplicatedNameInProgress'
+              : 'fileWithDuplicatedNameLoaded',
+          ),
         }
       : {};
   }
@@ -1007,9 +1017,10 @@ export default class FileComponent extends Field {
   }
 
   async deleteFile(fileInfo) {
-    const options = this.component.storage === 'url'
-      ? (this.component.urlRequestOptions || this.component.options || {})
-      : (this.component.options || {});
+    const options =
+      this.component.storage === 'url'
+        ? this.component.urlRequestOptions || this.component.options || {}
+        : this.component.options || {};
 
     if (
       fileInfo &&
@@ -1181,9 +1192,11 @@ export default class FileComponent extends Field {
           delete fileToSync.progress;
           this.redraw();
           if (fileInfo) {
-            const fileExists = this.resolvedFiles.find(x => x.fileInfo.originalName === fileToSync.originalName);
+            const fileExists = this.resolvedFiles.find(
+              (x) => x.fileInfo.originalName === fileToSync.originalName,
+            );
             if (!fileExists && fileToSync.status !== 'error') {
-              this.resolvedFiles.push({ fileToSync, fileInfo })
+              this.resolvedFiles.push({ fileToSync, fileInfo });
             }
           }
         }
@@ -1238,9 +1251,10 @@ export default class FileComponent extends Field {
   }
 
   getFile(fileInfo) {
-    const options = this.component.storage === 'url'
-      ? (this.component.urlRequestOptions || this.component.options || {})
-      : (this.component.options || {});
+    const options =
+      this.component.storage === 'url'
+        ? this.component.urlRequestOptions || this.component.options || {}
+        : this.component.options || {};
     const { fileService } = this;
     if (!fileService) {
       return alert(this.t('noFileService'));
@@ -1283,7 +1297,9 @@ export default class FileComponent extends Field {
       }
 
       await this.syncFiles();
-      return this.shouldSyncFiles ? Promise.reject(this.t('synchronizationFailed')) : Promise.resolve();
+      return this.shouldSyncFiles
+        ? Promise.reject(this.t('synchronizationFailed'))
+        : Promise.resolve();
     } catch (error) {
       return Promise.reject(error.message);
     }

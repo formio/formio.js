@@ -41,7 +41,7 @@ This library has a very powerful JSON form builder, and can be used like the fol
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css"
     />
-    <link rel="stylesheet" href="https://cdn.form.io/js/formio.full.min.css">
+    <link rel="stylesheet" href="https://cdn.form.io/js/formio.full.min.css" />
     <script src="https://cdn.form.io/js/formio.full.min.js"></script>
   </head>
   <body>
@@ -231,4 +231,4 @@ For more complete documentation over the JavaScript SDK, please take a look at t
 
 ### Full Developer API Documentation
 
-To view the full SDK Documentation, go to [Developer SDK Documentation](https://formio.github.io/formio.js/docs/)
+To view the full SDK Documentation, go to <a href="https://github.com/formio/formio.js/" target="_blank" rel="noopener noreferrer">Developer SDK Documentation</a>

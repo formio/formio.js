@@ -296,8 +296,9 @@ export default [
     key: 'imageSize',
     label: 'Image Size',
     placeholder: '100',
-    tooltip: 'The image size for previewing images.',
+    tooltip: 'The image size, in square pixels, for previewing images.',
     weight: 40,
+    clearOnHide: false,
     conditional: {
       json: {
         '==': [{ var: 'data.image' }, true],

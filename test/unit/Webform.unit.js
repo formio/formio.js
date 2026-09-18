@@ -100,7 +100,7 @@ import testLogicForDay from '../forms/testLogicForDay.js';
 import formWithPlaceholders from '../forms/formWithPlaceholders.js';
 import formWithComments from '../forms/formWithComments.js';
 import formWithNumbers from '../forms/formWithNumbers.js';
-import { wait } from '../util.js';
+import { wait, waitFor } from '../util.js';
 
 const SpySanitize = sinon.spy(FormioUtils, 'sanitize');
 
@@ -138,10 +138,10 @@ describe('Webform tests', function () {
 
     number.updateComponentValue(null, { modified: true });
     numberDatagrid.updateComponentValue(null, { modified: true });
-    assert.strictEqual(form.visibleErrors.length, 0)
+    assert.strictEqual(form.visibleErrors.length, 0);
     validate.emit('checkValidity', validate.data);
     await wait(300);
-    assert.strictEqual(form.visibleErrors.length, 2)
+    assert.strictEqual(form.visibleErrors.length, 2);
   });
 
   it('Should correctly execute custom logic containing a comment', function (done) {
@@ -447,6 +447,193 @@ describe('Webform tests', function () {
         done();
       })
       .catch(done);
+  });
+
+  it('FIO-9879: Should not submit subform if its fieldset parent is hidden and clearOnHide is enabled', async function () {
+    const element = document.createElement('div');
+    const form = fastCloneDeep(formWithHiddenSubform);
+    const subform = form.components[1];
+    subform.hidden = false;
+    form.components[1] = {
+      legend: 'Field Set',
+      label: 'Field Set',
+      hidden: true,
+      tableView: false,
+      key: 'fieldSet',
+      type: 'fieldset',
+      input: false,
+      components: [subform],
+    };
+
+    const originalMakeRequest = Formio.makeRequest;
+    let submissionRequestCount = 0;
+    Formio.makeRequest = function (a, b, c, d, e) {
+      if (b === 'submission' && d === 'post') {
+        ++submissionRequestCount;
+      }
+      return Promise.resolve(e);
+    };
+
+    try {
+      const instance = await Formio.createForm(element, form);
+      instance.formio = new Formio('http://localhost:3000/test');
+      await instance.submit();
+      assert.equal(submissionRequestCount, 1);
+    } finally {
+      Formio.makeRequest = originalMakeRequest;
+    }
+  });
+
+  it('FIO-9879: Should not submit subform if its fieldset parent is hidden by a conditional', async function () {
+    const element = document.createElement('div');
+    const form = fastCloneDeep(formWithHiddenSubform);
+    const subform = form.components[1];
+    subform.hidden = false;
+    form.components[1] = {
+      legend: 'Field Set',
+      label: 'Field Set',
+      hidden: false,
+      clearOnHide: false, // the builder's default for a fieldset — see Fieldset.schema()
+      tableView: false,
+      key: 'fieldSet',
+      type: 'fieldset',
+      input: false,
+      conditional: {
+        show: false,
+        conjunction: 'all',
+        conditions: [{ component: 'hideIt', operator: 'isEqual', value: true }],
+      },
+      components: [subform],
+    };
+    form.components.unshift({
+      label: 'Hide it',
+      tableView: false,
+      validateWhenHidden: false,
+      key: 'hideIt',
+      type: 'checkbox',
+      input: true,
+      defaultValue: false,
+    });
+
+    const originalMakeRequest = Formio.makeRequest;
+    let submissionRequestCount = 0;
+    Formio.makeRequest = function (a, b, c, d, e) {
+      if (b === 'submission' && d === 'post') {
+        ++submissionRequestCount;
+      }
+      return Promise.resolve(e);
+    };
+
+    try {
+      const instance = await Formio.createForm(element, form);
+      instance.formio = new Formio('http://localhost:3000/test');
+      // Fill the subform while the fieldset is still visible, then hide it via the checkbox —
+      // driving the change through a value keeps the conditional settled before submit.
+      instance.setSubmission({
+        data: {
+          hideIt: false,
+          textFieldParent: 'parent value',
+          form: { data: { textField2Child: 'child value' } },
+        },
+      });
+      await wait(300);
+      instance.getComponent('hideIt').setValue(true);
+      await wait(300);
+      await instance.submit();
+      assert.equal(submissionRequestCount, 1);
+    } finally {
+      Formio.makeRequest = originalMakeRequest;
+    }
+  });
+
+  it('FIO-9879: Should submit subform hidden by its fieldset parent when clearOnHide is not enabled', async function () {
+    const element = document.createElement('div');
+    const form = fastCloneDeep(formWithHiddenSubform);
+    const subform = form.components[1];
+    subform.hidden = true;
+    subform.clearOnHide = false;
+    form.components[1] = {
+      legend: 'Field Set',
+      label: 'Field Set',
+      hidden: true,
+      clearOnHide: false,
+      tableView: false,
+      key: 'fieldSet',
+      type: 'fieldset',
+      input: false,
+      components: [subform],
+    };
+
+    const originalMakeRequest = Formio.makeRequest;
+    let submissionRequestCount = 0;
+    Formio.makeRequest = function (a, b, c, d, e) {
+      if (b === 'submission' && d === 'post') {
+        ++submissionRequestCount;
+      }
+      return Promise.resolve(e);
+    };
+
+    try {
+      const instance = await Formio.createForm(element, form);
+      instance.formio = new Formio('http://localhost:3000/test');
+      await instance.submit();
+      assert.equal(submissionRequestCount, 2);
+    } finally {
+      Formio.makeRequest = originalMakeRequest;
+    }
+  });
+
+  it('FIO-9879: Should submit subform when its fieldset parent is hidden in JSON but revealed by a conditional', async function () {
+    const element = document.createElement('div');
+    const form = fastCloneDeep(formWithHiddenSubform);
+    const subform = form.components[1];
+    subform.hidden = false;
+    form.components[1] = {
+      legend: 'Field Set',
+      label: 'Field Set',
+      hidden: true,
+      tableView: false,
+      key: 'fieldSet',
+      type: 'fieldset',
+      input: false,
+      conditional: {
+        show: true,
+        conjunction: 'all',
+        conditions: [{ component: 'showIt', operator: 'isEqual', value: true }],
+      },
+      components: [subform],
+    };
+    form.components.unshift({
+      label: 'Show it',
+      tableView: false,
+      validateWhenHidden: false,
+      key: 'showIt',
+      type: 'checkbox',
+      input: true,
+      defaultValue: false,
+    });
+
+    const originalMakeRequest = Formio.makeRequest;
+    let submissionRequestCount = 0;
+    Formio.makeRequest = function (a, b, c, d, e) {
+      if (b === 'submission' && d === 'post') {
+        ++submissionRequestCount;
+      }
+      return Promise.resolve(e);
+    };
+
+    try {
+      const instance = await Formio.createForm(element, form);
+      instance.formio = new Formio('http://localhost:3000/test');
+      instance.getComponent('showIt').setValue(true);
+      await wait(300);
+      instance.getComponent('form').setValue({ data: { textField2Child: 'child value' } });
+      await wait(300);
+      await instance.submit();
+      assert.equal(submissionRequestCount, 2);
+    } finally {
+      Formio.makeRequest = originalMakeRequest;
+    }
   });
 
   it('FIO-11691: Should submit subform when hidden in JSON but revealed by a conditional', function (done) {
@@ -2998,9 +3185,9 @@ describe('Webform tests', function () {
     const formElement = document.createElement('div');
     const form = new Webform(formElement, {
       language: 'es',
-      i18n:{
-        es: {}
-      }
+      i18n: {
+        es: {},
+      },
     });
 
     assert.equal(form.language, 'es');
@@ -3993,45 +4180,42 @@ describe('Webform tests', function () {
   });
 
   describe('Validate onBlur', function () {
-    it('Should keep component valid onChange', function (done) {
+    it('Should keep component valid onChange', async function () {
       const formElement = document.createElement('div');
       const form = new Webform(formElement, { language: 'en' });
-      form
-        .setForm(validationOnBlur)
-        .then(() => {
-          setTimeout(() => {
-            const field = form.components[0];
-            const field2 = form.components[1];
-            const fieldInput = field.refs.input[0];
+      const nextChange = () => new Promise((resolve) => form.once('change', resolve));
 
-            Harness.setInputValue(field, 'data[textField]', '12');
+      try {
+        await form.setForm(validationOnBlur);
+        const field = form.components[0];
+        const field2 = form.components[1];
+        const fieldInput = field.refs.input[0];
 
-            setTimeout(() => {
-              assert.equal(field.errors.length, 0, 'Should be valid while changing');
-              const blurEvent = new Event('blur');
-              fieldInput.dispatchEvent(blurEvent);
+        // Wait for the debounced change (not a fixed timeout). disableOnInvalid
+        // silently validates on that event and writes field.errors even when
+        // validateOn is blur — visibleErrors is the on-screen validity.
+        const afterInput = nextChange();
+        Harness.setInputValue(field, 'data[textField]', '12');
+        await afterInput;
+        assert.equal(field.visibleErrors.length, 0, 'Should be valid while changing');
 
-              setTimeout(() => {
-                assert.equal(
-                  field.errors.length,
-                  1,
-                  'Should set error after component was blurred',
-                );
-                Harness.setInputValue(field2, 'data[textField1]', 'ab');
+        const afterBlur = nextChange();
+        fieldInput.dispatchEvent(new Event('blur'));
+        await afterBlur;
+        await waitFor(() => field.visibleErrors.length === 1);
+        assert.equal(field.visibleErrors.length, 1, 'Should set error after component was blurred');
 
-                setTimeout(() => {
-                  assert.equal(
-                    field.errors.length,
-                    1,
-                    'Should keep error when editing another component',
-                  );
-                  done();
-                }, 200);
-              }, 200);
-            }, 200);
-          }, 200);
-        })
-        .catch(done);
+        const afterOtherInput = nextChange();
+        Harness.setInputValue(field2, 'data[textField1]', 'ab');
+        await afterOtherInput;
+        assert.equal(
+          field.visibleErrors.length,
+          1,
+          'Should keep error when editing another component',
+        );
+      } finally {
+        form.destroy();
+      }
     });
 
     it('Should keep components inside DataGrid valid onChange', function (done) {

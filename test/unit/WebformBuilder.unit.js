@@ -616,6 +616,49 @@ describe('WebformBuildert tests', function () {
       Harness.builderAfter(done);
     });
 
+    /**
+     * Edit-form calculated values can briefly flip defaultValue between textfield
+     * and select after reopen. Wrap updateComponent and proceed only once it has
+     * settled as select, then restore the original method.
+     */
+    function whenDefaultValueSelectReady(builder, done, next) {
+      const originalUpdateComponent = builder.updateComponent;
+      let settleTimer = null;
+      const timeout = setTimeout(() => {
+        cleanup();
+        done(new Error('Timed out waiting for defaultValue type "select"'));
+      }, 5000);
+
+      function cleanup() {
+        clearTimeout(timeout);
+        if (settleTimer) {
+          clearTimeout(settleTimer);
+          settleTimer = null;
+        }
+        builder.updateComponent = originalUpdateComponent;
+      }
+
+      builder.updateComponent = function (component, changed) {
+        const result = originalUpdateComponent.call(this, component, changed);
+        const defaultValue = this.editForm && this.editForm.getComponent('defaultValue');
+        if (settleTimer) {
+          clearTimeout(settleTimer);
+          settleTimer = null;
+        }
+        if (defaultValue && defaultValue.type === 'select') {
+          settleTimer = setTimeout(() => {
+            cleanup();
+            try {
+              next(defaultValue);
+            } catch (err) {
+              done(err);
+            }
+          }, 50);
+        }
+        return result;
+      };
+    }
+
     it('Should calculate selectData property for url dataSource', function (done) {
       const builder = Harness.getBuilder();
       builder
@@ -971,13 +1014,7 @@ describe('WebformBuildert tests', function () {
                     cancelable: true,
                   });
 
-                  builder.webform
-                    .getComponent('select')
-                    .element.querySelector('.component-settings-button-edit')
-                    .dispatchEvent(click);
-
-                  setTimeout(() => {
-                    const defaultValue = builder.editForm.getComponent('defaultValue');
+                  whenDefaultValueSelectReady(builder, done, (defaultValue) => {
                     assert.equal(defaultValue.type, 'select');
                     defaultValue.setValue(['value2', 'value3']);
                     defaultValue.updateItems(null, true);
@@ -1003,7 +1040,12 @@ describe('WebformBuildert tests', function () {
                         done();
                       }, 150);
                     }, 250);
-                  }, 500);
+                  });
+
+                  builder.webform
+                    .getComponent('select')
+                    .element.querySelector('.component-settings-button-edit')
+                    .dispatchEvent(click);
                 }, 150);
               }, 250);
             }, 250);
