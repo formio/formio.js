@@ -504,13 +504,17 @@ export default class AddressComponent extends ContainerComponent {
     this.searchInput.forEach((element, index) => {
       if (!this.builderMode && element && this.provider) {
         if (this.component.provider === 'google') {
+          if (this.component.enableNewPlacesApi) {
+            this.provider.options.version = 'newPlacesApi';
+          }
           this.googlePlacesCleanups = [];
-          this.provider.attachAutocomplete(element, index, this.onSelectAddress.bind(this))
-          .then((cleanup) => {
-            if (typeof cleanup === 'function') {
-              this.googlePlacesCleanups.push(cleanup);
-            }
-          });
+          this.provider
+            .attachAutocomplete(element, index, this.onSelectAddress.bind(this), this.disabled)
+            .then((cleanup) => {
+              if (typeof cleanup === 'function') {
+                this.googlePlacesCleanups.push(cleanup);
+              }
+            });
         } else {
           this.autocompleterWidget = autocompleter({
             input: element,
@@ -622,7 +626,7 @@ export default class AddressComponent extends ContainerComponent {
   detach() {
     if (this.autocompleterWidget && typeof this.autocompleterWidget.destroy === 'function') {
       this.autocompleterWidget.destroy();
-    };
+    }
     (this.googlePlacesCleanups || []).forEach((cleanup) => {
       cleanup();
     });

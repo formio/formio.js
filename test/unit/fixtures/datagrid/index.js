@@ -28,6 +28,7 @@ import dataGridWithNestedFormWithNestedForm from './dataGridWithNestedFormWithNe
 import dataGridChildForm from './fd61237Child';
 import dataGridGrandChildForm from './fd61237GrandChild';
 import withIsEmptyConditional from './comp-with-isEmpty-conditional';
+import fio12086LogicFlicker from './comp-fio-12086-logic-flicker';
 
 export {
   comp1,
@@ -60,4 +61,5 @@ export {
   dataGridChildForm,
   dataGridGrandChildForm,
   withIsEmptyConditional,
+  fio12086LogicFlicker,
 };

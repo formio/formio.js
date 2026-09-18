@@ -233,7 +233,7 @@ export default class SignatureComponent extends Input {
       });
 
       this.signaturePad.addEventListener('endStroke', () =>
-        this.setValue(this.signaturePad.toDataURL()),
+        this.setValue(this.signaturePad.toDataURL(), { modified: true }),
       );
       this.refs.signatureImage.setAttribute('src', this.signaturePad.toDataURL());
 
@@ -275,7 +275,7 @@ export default class SignatureComponent extends Input {
       event.preventDefault();
       this.showCanvas(true);
       this.signaturePad.clear();
-      this.setValue(this.defaultValue);
+      this.setValue(this.defaultValue, { modified: true });
     });
     this.setValue(this.dataValue);
     return superAttach;

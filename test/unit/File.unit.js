@@ -521,4 +521,61 @@ describe('File Component', function () {
       }, 300);
     });
   });
+
+  const findEditComponent = (components, key) => {
+    for (const comp of components || []) {
+      if (comp.key === key) {
+        return comp;
+      }
+      const children = [
+        ...(comp.components || []),
+        ...(comp.columns || []).flatMap((col) => col.components || []),
+        ...(comp.tabs || []).flatMap((tab) => tab.components || []),
+      ];
+      const found = findEditComponent(children, key);
+      if (found) {
+        return found;
+      }
+    }
+    return undefined;
+  };
+
+  it('Should default imageSize to 200 when it is left empty', function () {
+    const cmp = _.cloneDeep(comp1);
+    cmp.image = true;
+    cmp.imageSize = '';
+    return Harness.testCreate(FileComponent, cmp).then((component) => {
+      assert.equal(component.component.imageSize, '200');
+    });
+  });
+
+  it('Should default imageSize to 200 when it is not a positive number', function () {
+    const invalidSizes = ['abc', '-50', '0'];
+    return Promise.all(
+      invalidSizes.map((imageSize) => {
+        const cmp = _.cloneDeep(comp1);
+        cmp.image = true;
+        cmp.imageSize = imageSize;
+        return Harness.testCreate(FileComponent, cmp).then((component) => {
+          assert.equal(
+            component.component.imageSize,
+            '200',
+            `imageSize "${imageSize}" should fall back to 200`,
+          );
+        });
+      }),
+    );
+  });
+
+  it('Should not clear the imageSize setting when Display as image(s) is disabled', function () {
+    const editForm = FileComponent.editForm();
+    const imageSize = findEditComponent(editForm.components, 'imageSize');
+    assert.equal(imageSize.clearOnHide, false);
+  });
+
+  it('Should use a pixel-based imageSize tooltip in the edit form', function () {
+    const editForm = FileComponent.editForm();
+    const imageSize = findEditComponent(editForm.components, 'imageSize');
+    assert.equal(imageSize.tooltip, 'The image size, in square pixels, for previewing images.');
+  });
 });

@@ -1,5 +1,48 @@
 # @formio/js
 
+## 5.6.0
+
+### Minor Changes
+
+- b35ca79: FIO-10428: support the new google.maps.places.PlaceAutocompleteElement API in the Address component via the opt-in "Places API (New)" setting, keeping the legacy Autocomplete as the default
+
+### Patch Changes
+
+- edd6949: Bump dompurify to 3.4.13
+- f1c7ae2: FIO-11585: Keep the File component Image Size default from being cleared, and fall back to 200px so previews stay contained in the portal and PDF
+- e3851de: FIO-9879: Fixes an issue where a nested form inside a layout component hidden in the JSON or by a condition was still saved as a separate reference submission, triggering required validation errors
+- 19617b9: Fixes multiple select default value test to be consistent
+- 22325f8: fix returning early if translation is in default translations
+- d96cc58: FIO-12086: fix component flickering in DataGrid
+- 2d41328: FIO-12038: emit isModified: true on the form change event when a signature is drawn or cleared
+- Updated dependencies [edd6949]
+- Updated dependencies [80591a9]
+  - @formio/core@2.8.3
+
+## 5.6.0-api910.1
+
+### Patch Changes
+
+- 22325f8: fix returning early if translation is in default translations
+
+## 5.6.0-api910.0
+
+### Minor Changes
+
+- b35ca79: FIO-10428: support the new google.maps.places.PlaceAutocompleteElement API in the Address component via the opt-in "Places API (New)" setting, keeping the legacy Autocomplete as the default
+
+### Patch Changes
+
+- edd6949: Bump dompurify to 3.4.13
+- f1c7ae2: FIO-11585: Keep the File component Image Size default from being cleared, and fall back to 200px so previews stay contained in the portal and PDF
+- e3851de: FIO-9879: Fixes an issue where a nested form inside a layout component hidden in the JSON or by a condition was still saved as a separate reference submission, triggering required validation errors
+- 19617b9: Fixes multiple select default value test to be consistent
+- d96cc58: FIO-12086: fix component flickering in DataGrid
+- 2d41328: FIO-12038: emit isModified: true on the form change event when a signature is drawn or cleared
+- Updated dependencies [edd6949]
+- Updated dependencies [80591a9]
+  - @formio/core@2.8.3-api910.0
+
 ## 5.5.2
 
 ### Patch Changes

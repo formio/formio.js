@@ -37,6 +37,7 @@ import {
   dataGridChildForm,
   dataGridGrandChildForm,
   withIsEmptyConditional,
+  fio12086LogicFlicker,
 } from './fixtures/datagrid/index';
 
 describe('DataGrid Component', function () {
@@ -702,7 +703,11 @@ describe('DataGrid Component', function () {
 
     const isModifiedForDataGridChanges = [];
     form.on('change', (submission, _flags, isModified) => {
-      console.log(submission?.changed?.component.key,  isModified, ' - submission, _flags, isModified')
+      console.log(
+        submission?.changed?.component.key,
+        isModified,
+        ' - submission, _flags, isModified',
+      );
       if (submission?.changed?.component?.key === 'dataGrid') {
         isModifiedForDataGridChanges.push(isModified);
       }
@@ -1661,10 +1666,10 @@ describe('DataGrid Component', function () {
       return Harness.testCreate(DataGridComponent, comp1).then((component) => {
         const input = component.element.querySelector('[name="data[cars][0][make]"]');
         assert(input, 'expected the "make" cell input to render');
-  
+
         const labelledby = input.getAttribute('aria-labelledby');
         assert(labelledby, 'expected the cell input to have an aria-labelledby attribute');
-  
+
         const labelId = labelledby.trim().split(/\s+/)[0];
         const label = component.element.querySelector(`[id="${labelId}"]`);
         assert(
@@ -1677,6 +1682,61 @@ describe('DataGrid Component', function () {
           'expected the referenced label to contain the column label text "Make"',
         );
       });
+    });
+  });
+
+  // FIO-12086: DataGrid onChange must pass live row data into checkData so Advanced Logic
+  // that reads `row.*` does not oscillate hidden/redraw while typing.
+  describe('FIO-12086 DataGrid Advanced Logic row context', function () {
+    it('Should not redraw a logic-shown TextField on each keystroke inside DataGrid columns', async function () {
+      const form = await Formio.createForm(
+        document.createElement('div'),
+        _.cloneDeep(fio12086LogicFlicker),
+      );
+      await wait(100);
+
+      const dataGrid = form.getComponent('datagrid2');
+      const radio = form.getComponent('datagrid2[0].fiEducationOutsideUs');
+      let textField = form.getComponent('datagrid2[0].additionalInformation');
+      assert.equal(textField.visible, false, 'text field starts hidden by Advanced Logic');
+
+      radio.setValue('yes', { modified: true });
+      form.checkConditions(form.data);
+      await wait(300);
+
+      textField = form.getComponent('datagrid2[0].additionalInformation');
+      assert.equal(textField.visible, true, 'text field is visible after selecting Yes');
+
+      let redrawCount = 0;
+      const origRedraw = textField.redraw.bind(textField);
+      textField.redraw = function (...args) {
+        redrawCount++;
+        return origRedraw(...args);
+      };
+
+      const rowColumn = dataGrid.rows[0].well;
+
+      for (const ch of ['a', 'b', 'c']) {
+        textField.setValue(`${textField.getValue() || ''}${ch}`, { modified: true });
+        await wait(100);
+      }
+
+      assert.equal(
+        redrawCount,
+        0,
+        `expected no TextField redraws while typing; got ${redrawCount}`,
+      );
+      assert.equal(
+        dataGrid.rows[0].well,
+        rowColumn,
+        'row components were not rebuilt while typing',
+      );
+      assert.equal(
+        form.getComponent('datagrid2[0].additionalInformation').visible,
+        true,
+        'text field stays visible after typing',
+      );
+      assert.equal(form.data.datagrid2[0].additionalInformation, 'abc');
     });
   });
 });

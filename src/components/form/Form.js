@@ -651,16 +651,40 @@ export default class FormComponent extends Component {
   }
 
   /**
+   * Determine if an ancestor is hidden by the `hidden` JSON flag alone. An ancestor that has its
+   * own condition is governed by that condition instead and is left to `parentConditionallyHidden`
+   * — the `hidden` flag and conditionally-hidden are distinct states (FIO-11691).
+   * @returns {boolean} - TRUE if an ancestor is hidden in the JSON and has no condition.
+   */
+  hasAncestorHiddenInJsonOnly() {
+    let currentParent = this.parent;
+    while (currentParent) {
+      if (currentParent.component.hidden && !currentParent.hasCondition()) {
+        return true;
+      }
+      currentParent = currentParent.parent;
+    }
+    return false;
+  }
+
+  /**
    * Determine if the subform should be submitted.
    * @returns {*|boolean} - TRUE if the subform should be submitted, FALSE if it should not.
    */
   get shouldSubmit() {
+    const savesAsReference =
+      !this.component.hasOwnProperty('reference') || this.component.reference;
     const hiddenByJsonOnly = !this.hasCondition() && this.component.hidden;
+    // Layout ancestors (fieldset, panel, tabs...) hide us without appearing in our data path, so
+    // their hidden state is only reachable by walking the instance chain (FIO-9879).
+    const hiddenByAncestor = this.hasAncestorHiddenInJsonOnly() || this.parentConditionallyHidden();
+    // Gate on our own clearOnHide, never an ancestor's.
+    const clearedWhileHidden = (hiddenByJsonOnly || hiddenByAncestor) && this.component.clearOnHide;
     return (
       this.subFormReady &&
-      (!this.component.hasOwnProperty('reference') || this.component.reference) &&
+      savesAsReference &&
       !this.shouldConditionallyClear() &&
-      !(hiddenByJsonOnly && this.component.clearOnHide)
+      !clearedWhileHidden
     );
   }
 
@@ -806,7 +830,10 @@ export default class FormComponent extends Component {
           : {};
       this.subForm.setUrl(submissionUrl, { ...this.options, ...options });
       this.subForm.loadSubmission().catch((err) => {
-        console.error(this.t('subformSubmissionLoadingError', { submissionId: submission._id }), err);
+        console.error(
+          this.t('subformSubmissionLoadingError', { submissionId: submission._id }),
+          err,
+        );
       });
     } else {
       this.onSetSubFormValue(submission, flags);

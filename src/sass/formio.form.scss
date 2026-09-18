@@ -1538,6 +1538,12 @@ div[data-oembed-url] {
       display: none;
     }
   }
+
+  // The new Places API web component draws its own focus ring inside the
+  // bootstrap-styled host; hide it so only the theme's focus style shows (FIO-10428).
+  gmp-place-autocomplete.form-control::part(focus-ring) {
+    display: none;
+  }
 }
 
 .autocomplete {

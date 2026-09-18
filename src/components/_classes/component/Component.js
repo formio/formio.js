@@ -1092,7 +1092,7 @@ export default class Component extends Element {
       return '';
     }
     // Use _userInput: true to ignore translations from defaults
-    if (text in enTranslation && params._userInput) {
+    if (this.i18next?.language === 'en' && text in enTranslation && params._userInput) {
       return text;
     }
     params.data = params.data || this.rootValue;

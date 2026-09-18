@@ -5,7 +5,13 @@ import { Formio } from '../../src/Formio';
 import { wait } from '../util';
 import _ from 'lodash';
 
-import { comp1, comp2, comp3, comp4, comp5, comp6 } from './fixtures/address/index';
+import { comp1, comp2, comp3, comp4, comp5, comp6, comp7 } from './fixtures/address/index';
+import {
+  mockGoogleMapsLibrary,
+  createGooglePlace,
+  selectGmpPlace,
+  newApiPlaceData,
+} from './fixtures/address/googleMock';
 
 describe('Address Component', function () {
   it('Should build an address component', function () {
@@ -338,6 +344,35 @@ describe('Address Component', function () {
       .catch(done);
   });
 
+  it('Should store and display an address selected through the new Places API', async function () {
+    const mock = mockGoogleMapsLibrary();
+    try {
+      const element = document.createElement('div');
+      const form = await Formio.createForm(element, _.cloneDeep(comp7));
+      const address = form.getComponent('address');
+      await wait(100);
+
+      const gmpElement = mock.created.elements[0];
+      assert(gmpElement, 'should render the new Places API autocomplete element');
+
+      selectGmpPlace(gmpElement, createGooglePlace(newApiPlaceData));
+      await wait(100);
+
+      assert.equal(
+        address.dataValue.formattedPlace,
+        newApiPlaceData.formattedAddress,
+        'the selected place should be stored in the submission',
+      );
+      assert.equal(
+        address.getDisplayValue(address.dataValue),
+        newApiPlaceData.formattedAddress,
+        'the stored value should render on View/Edit/PDF pages',
+      );
+    } finally {
+      mock.restore();
+    }
+  });
+
   it('Should not add new DOM elements switching to manual mode', async function () {
     const formJson = _.cloneDeep(comp2);
     formJson.components[0].enableManualMode = true;
@@ -367,7 +402,11 @@ describe('Address Component', function () {
         await wait(200);
       }
 
-      assert.equal(address.autocompleteMode, true, `iteration ${i}: should be in autocomplete mode`);
+      assert.equal(
+        address.autocompleteMode,
+        true,
+        `iteration ${i}: should be in autocomplete mode`,
+      );
 
       const searchInput = address.refs.searchInput[0];
       searchInput.focus();
@@ -377,10 +416,7 @@ describe('Address Component', function () {
       await wait(200);
 
       const openRoots = countAutocompleteRoots();
-      assert(
-        openRoots <= 1,
-        `iteration ${i}: at most one autocompleter root, found ${openRoots}`,
-      );
+      assert(openRoots <= 1, `iteration ${i}: at most one autocompleter root, found ${openRoots}`);
 
       toggleManualMode();
       await wait(200);

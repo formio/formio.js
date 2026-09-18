@@ -44,7 +44,7 @@ import {
   comp32,
   resourceDataGridSubmission,
   resourceEditGridSubmission,
-  comp33
+  comp33,
 } from './fixtures/select/index';
 
 globalThis.requestAnimationFrame = (cb) => cb();

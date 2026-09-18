@@ -140,6 +140,19 @@ export default [
     },
   },
   {
+    weight: 10,
+    type: 'checkbox',
+    input: true,
+    key: 'enableNewPlacesApi',
+    label: 'Places API (New)',
+    tooltip: 'Enable the new Google Places API instead of the legacy version.',
+    conditional: {
+      json: {
+        '===': [{ var: 'data.provider' }, 'google'],
+      },
+    },
+  },
+  {
     type: 'textarea',
     input: true,
     key: 'autocompleteOptions',
