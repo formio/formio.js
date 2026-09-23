@@ -26,7 +26,7 @@ const indexeddb = () => ({
         reader.onload = () => {
           const blobObject = new Blob([file], { type: file.type });
 
-          const id = uuidv4(blobObject);
+          const id = uuidv4();
 
           const data = {
             id,
