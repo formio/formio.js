@@ -490,8 +490,20 @@ export function uniqueName(name, template, evalContext) {
 }
 
 export function guid() {
+  /* global globalThis */
+  // Try to get the crypto object from the global context.
+  const webCrypto = typeof globalThis !== 'undefined' ? globalThis.crypto : undefined;
+  // Prefer native generator crypto.randomUUID() (browser contexts and Node 19+)
+  if (webCrypto && typeof webCrypto.randomUUID === 'function') {
+    return webCrypto.randomUUID();
+  }
+  // Fall back to crypto.getRandomValues (available if randomUUID is not provided (insecure browser contexts (http), old environments)
+  // and finally to Math.random as a last resort.
+  const randomFraction = webCrypto && typeof webCrypto.getRandomValues === 'function'
+    ? () => webCrypto.getRandomValues(new Uint8Array(1))[0] / 256
+    : () => Math.random();
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random()*16|0;
+    const r = randomFraction()*16|0;
     const v = c === 'x'
       ? r
       : (r&0x3|0x8);
