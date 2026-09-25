@@ -259,4 +259,85 @@ describe('Checkbox Component', function () {
       })
       .catch((err) => done(err));
   });
+
+  describe('Checkboxes with the radio input type that share a data path', function () {
+    const radioWithCheckboxes = () => ({
+      type: 'form',
+      display: 'form',
+      components: [
+        {
+          label: 'Is this valid?',
+          tableView: false,
+          values: [
+            { label: 'Yes', value: 'yes', shortcut: '' },
+            { label: 'No', value: 'no', shortcut: '' },
+          ],
+          validate: { required: true },
+          key: 'isValid',
+          type: 'radio',
+          input: true,
+        },
+        {
+          label: 'Yes, this is valid',
+          inputType: 'radio',
+          tableView: false,
+          defaultValue: false,
+          key: 'yesThisIsValid',
+          name: 'isValid',
+          value: 'yes',
+          type: 'checkbox',
+          input: true,
+        },
+        {
+          label: 'No, it is not valid',
+          inputType: 'radio',
+          tableView: false,
+          defaultValue: false,
+          key: 'noItIsNotValid',
+          name: 'isValid',
+          value: 'no',
+          type: 'checkbox',
+          input: true,
+        },
+      ],
+    });
+
+    it('Should report the required error for a radio that shares its data path with radio-input checkboxes', async function () {
+      const form = await Formio.createForm(document.createElement('div'), radioWithCheckboxes());
+
+      const errors = form.validate(form.data, { dirty: true });
+
+      assert.equal(errors.length, 1);
+      assert.equal(errors[0].message, 'Is this valid? is required');
+    });
+
+    it('Should validate every component that shares a data path, not just one of them', async function () {
+      const schema = radioWithCheckboxes();
+      schema.components[1].validate = { custom: 'valid = "Yes checkbox is invalid"' };
+      schema.components[2].validate = { custom: 'valid = "No checkbox is invalid"' };
+
+      const form = await Formio.createForm(document.createElement('div'), schema);
+
+      const messages = form.validate(form.data, { dirty: true }).map((error) => error.message);
+
+      assert.deepEqual(messages.sort(), [
+        'Is this valid? is required',
+        'No checkbox is invalid',
+        'Yes checkbox is invalid',
+      ]);
+    });
+
+    it('Should validate a radio-input checkbox group that has no radio component of its own', async function () {
+      const schema = radioWithCheckboxes();
+      schema.components.shift();
+      schema.components[0].validate = { custom: 'valid = "Yes checkbox is invalid"' };
+      schema.components[1].validate = { custom: 'valid = "No checkbox is invalid"' };
+
+      const form = await Formio.createForm(document.createElement('div'), schema);
+
+      const messages = form.validate(form.data, { dirty: true }).map((error) => error.message);
+
+      assert.deepEqual(messages.sort(), ['No checkbox is invalid', 'Yes checkbox is invalid']);
+    });
+  });
 });
