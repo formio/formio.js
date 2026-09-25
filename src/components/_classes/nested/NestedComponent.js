@@ -633,11 +633,7 @@ export default class NestedComponent extends Field {
     components = components || this.components;
     component.destroy(all);
     _.remove(components, { id: component.id });
-    component.eachRootChildComponentsMap((map) => {
-      if (map[component.path]) {
-        delete map[component.path];
-      }
-    });
+    component.unregisterComponentInstance();
   }
 
   /**
@@ -767,9 +763,11 @@ export default class NestedComponent extends Field {
   validationProcessor({ scope, data, row, instance, paths }, flags) {
     const { dirty } = flags;
     if (this.root && this.root.hasSubWizards && this.page !== this.root.page) {
-      instance = this.componentsMap?.hasOwnProperty(paths.dataPath)
-        ? this.componentsMap[paths.dataPath]
-        : this.getComponent(paths.dataPath);
+      // `instance` was resolved by @formio/core against this very map, shared-path rule and
+      // all, so only fill in what that lookup cannot reach: components keyed by their data
+      // path where core looked under a full path, and components absent from the map.
+      instance =
+        instance || this.componentsMap?.[paths.dataPath] || this.getComponent(paths.dataPath);
     }
     if (!instance) {
       return;
