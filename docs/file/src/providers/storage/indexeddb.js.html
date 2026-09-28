@@ -187,7 +187,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/providers/storage/indexeddb.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { v4 as uuidv4 } from &apos;uuid&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { guid } from &apos;../../utils/utils&apos;;
 import NativePromise from &apos;native-promise-only&apos;;
 const indexeddb = () =&gt; ({
   title: &apos;indexedDB&apos;,
@@ -215,7 +215,7 @@ const indexeddb = () =&gt; ({
         reader.onload = () =&gt; {
           const blobObject = new Blob([file], { type: file.type });
 
-          const id = uuidv4(blobObject);
+          const id = guid();
 
           const data = {
             id,

@@ -190,6 +190,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* eslint-disable no-irregular-whitespace */
 import * as fs from &apos;fs&apos;;
 import { expect, assert } from &apos;chai&apos;;
+import sinon from &apos;sinon&apos;;
 import _ from &apos;lodash&apos;;
 import writtenNumber from &apos;written-number&apos;;
 import utils from &apos;.&apos;;
@@ -1059,6 +1060,56 @@ describe(&apos;Util Tests&apos;, () =&gt; {
       }
     });
 */
+  });
+});
+
+describe(&apos;guid&apos;, () =&gt; {
+  /* global globalThis */
+  const v4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  // globalThis.crypto only exists on newer Node versions (and in browsers), so swap it out explicitly.
+  const originalCrypto = Object.getOwnPropertyDescriptor(globalThis, &apos;crypto&apos;);
+  const setCrypto = (value) =&gt; Object.defineProperty(globalThis, &apos;crypto&apos;, {
+    value,
+    configurable: true,
+    writable: true,
+  });
+
+  afterEach(() =&gt; {
+    if (originalCrypto) {
+      Object.defineProperty(globalThis, &apos;crypto&apos;, originalCrypto);
+    }
+    else {
+      delete globalThis.crypto;
+    }
+  });
+
+  it(&apos;returns a valid v4 UUID&apos;, () =&gt; {
+    assert.match(utils.guid(), v4);
+  });
+
+  it(&apos;uses the native crypto.randomUUID when available&apos;, () =&gt; {
+    const randomUUID = sinon.stub().returns(&apos;11111111-1111-4111-8111-111111111111&apos;);
+    setCrypto({ randomUUID });
+    const result = utils.guid();
+    assert.isTrue(randomUUID.calledOnce);
+    assert.equal(result, &apos;11111111-1111-4111-8111-111111111111&apos;);
+  });
+
+  it(&apos;falls back to getRandomValues when randomUUID is unavailable&apos;, () =&gt; {
+    const getRandomValues = sinon.spy((array) =&gt; {
+      for (let i = 0; i &lt; array.length; i++) {
+        array[i] = Math.floor(Math.random() * 256);
+      }
+      return array;
+    });
+    setCrypto({ getRandomValues });
+    assert.match(utils.guid(), v4);
+    assert.isTrue(getRandomValues.called);
+  });
+
+  it(&apos;falls back to Math.random when crypto is unavailable&apos;, () =&gt; {
+    setCrypto(undefined);
+    assert.match(utils.guid(), v4);
   });
 });
 </code></pre>
