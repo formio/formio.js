@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { guid } from '../../utils/utils';
 import NativePromise from 'native-promise-only';
 const indexeddb = () => ({
   title: 'indexedDB',
@@ -26,7 +26,7 @@ const indexeddb = () => ({
         reader.onload = () => {
           const blobObject = new Blob([file], { type: file.type });
 
-          const id = uuidv4(blobObject);
+          const id = guid();
 
           const data = {
             id,

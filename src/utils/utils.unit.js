@@ -1,6 +1,7 @@
 /* eslint-disable no-irregular-whitespace */
 import * as fs from 'fs';
 import { expect, assert } from 'chai';
+import sinon from 'sinon';
 import _ from 'lodash';
 import writtenNumber from 'written-number';
 import utils from '.';
@@ -870,5 +871,55 @@ describe('Util Tests', () => {
       }
     });
 */
+  });
+});
+
+describe('guid', () => {
+  /* global globalThis */
+  const v4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  // globalThis.crypto only exists on newer Node versions (and in browsers), so swap it out explicitly.
+  const originalCrypto = Object.getOwnPropertyDescriptor(globalThis, 'crypto');
+  const setCrypto = (value) => Object.defineProperty(globalThis, 'crypto', {
+    value,
+    configurable: true,
+    writable: true,
+  });
+
+  afterEach(() => {
+    if (originalCrypto) {
+      Object.defineProperty(globalThis, 'crypto', originalCrypto);
+    }
+    else {
+      delete globalThis.crypto;
+    }
+  });
+
+  it('returns a valid v4 UUID', () => {
+    assert.match(utils.guid(), v4);
+  });
+
+  it('uses the native crypto.randomUUID when available', () => {
+    const randomUUID = sinon.stub().returns('11111111-1111-4111-8111-111111111111');
+    setCrypto({ randomUUID });
+    const result = utils.guid();
+    assert.isTrue(randomUUID.calledOnce);
+    assert.equal(result, '11111111-1111-4111-8111-111111111111');
+  });
+
+  it('falls back to getRandomValues when randomUUID is unavailable', () => {
+    const getRandomValues = sinon.spy((array) => {
+      for (let i = 0; i < array.length; i++) {
+        array[i] = Math.floor(Math.random() * 256);
+      }
+      return array;
+    });
+    setCrypto({ getRandomValues });
+    assert.match(utils.guid(), v4);
+    assert.isTrue(getRandomValues.called);
+  });
+
+  it('falls back to Math.random when crypto is unavailable', () => {
+    setCrypto(undefined);
+    assert.match(utils.guid(), v4);
   });
 });

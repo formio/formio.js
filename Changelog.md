@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [Unreleased: 4.21.8-rc.0]
+### Changed
+ - Security: removed the uuid dependency (CVE-2026-41907); guid() now uses native crypto (backport of FIO-11911)
+
 ## 4.21.7
 ### Changed
  - Official Release
