@@ -50,6 +50,7 @@ export default class PDFBuilder extends WebformBuilder {
           file: true,
           htmlelement: true,
           signrequestsignature: true,
+          datasource: true,
         },
       },
       basic: false,

@@ -1,7 +1,8 @@
 import { expect } from 'chai';
 import { spy, stub } from 'sinon';
 
-import '../../src/PDF';
+import '../../src/formio.form';
+import PDF from '../../src/PDF';
 import { Formio } from '../../src/Formio';
 
 describe('PDF Component', function () {
@@ -26,11 +27,13 @@ describe('PDF Component', function () {
       origin = iframeOrigin,
       source = iframe.contentWindow,
     } = {}) => {
-      window.dispatchEvent(new MessageEvent('message', {
-        data: typeof data === 'string' ? data : JSON.stringify(data),
-        origin,
-        source,
-      }));
+      window.dispatchEvent(
+        new MessageEvent('message', {
+          data: typeof data === 'string' ? data : JSON.stringify(data),
+          origin,
+          source,
+        }),
+      );
     };
 
     beforeEach(function () {
@@ -51,8 +54,7 @@ describe('PDF Component', function () {
     afterEach(function () {
       if (hadPreviousForm) {
         Formio.forms[formId] = previousForm;
-      }
-      else {
+      } else {
         delete Formio.forms[formId];
       }
 
@@ -75,10 +77,7 @@ describe('PDF Component', function () {
       });
 
       expect(form.emit.calledOnce).to.equal(true);
-      expect(form.emit.firstCall.args).to.deep.equal([
-        'iframe-change',
-        submission,
-      ]);
+      expect(form.emit.firstCall.args).to.deep.equal(['iframe-change', submission]);
     });
 
     it('Should ignore messages from the wrong source window', function () {
@@ -92,8 +91,7 @@ describe('PDF Component', function () {
         });
 
         expect(form.emit.called).to.equal(false);
-      }
-      finally {
+      } finally {
         otherIframe.remove();
       }
     });
@@ -126,10 +124,7 @@ describe('PDF Component', function () {
 
       expect(form.getComponent.calledOnceWith('data.textField')).to.equal(true);
       expect(component.emit.calledOnce).to.equal(true);
-      expect(component.emit.firstCall.args).to.deep.equal([
-        'focus',
-        data,
-      ]);
+      expect(component.emit.firstCall.args).to.deep.equal(['focus', component]);
       expect(form.emit.called).to.equal(false);
     });
 
@@ -161,11 +156,125 @@ describe('PDF Component', function () {
       });
 
       expect(form.emit.calledOnce).to.equal(true);
-      expect(form.emit.firstCall.args).to.deep.equal([
-        'iframe-pageEnd',
-        pageEnd,
+      expect(form.emit.firstCall.args).to.deep.equal(['iframe-pageEnd', pageEnd]);
+    });
+  });
+
+  describe('parent shell', function () {
+    let element;
+
+    const pdfForm = (components) => ({
+      display: 'pdf',
+      settings: {
+        pdf: {
+          src: 'https://files.form.io/pdf/test.pdf',
+        },
+      },
+      components,
+    });
+
+    beforeEach(function () {
+      element = document.createElement('div');
+      document.body.appendChild(element);
+    });
+
+    afterEach(function () {
+      element.remove();
+    });
+
+    it('Should mark every component it builds as the PDF shell', function () {
+      const pdf = new PDF(element, {});
+      pdf.setForm(
+        pdfForm([
+          { type: 'textfield', key: 'textField', label: 'Text Field', input: true },
+          {
+            type: 'panel',
+            key: 'panel',
+            label: 'Panel',
+            input: false,
+            components: [{ type: 'textfield', key: 'nested', label: 'Nested', input: true }],
+          },
+        ]),
+      );
+
+      const flags = {};
+      pdf.everyComponent((component) => {
+        flags[component.component.key] = component.options.pdfShell;
+      });
+
+      expect(flags).to.deep.equal({
+        textField: true,
+        panel: true,
+        nested: true,
+      });
+    });
+
+    it('Should not mark the options object the caller owns', function () {
+      const callerOptions = {};
+
+      new PDF(element, callerOptions);
+
+      expect(callerOptions.pdfShell).to.equal(undefined);
+    });
+  });
+
+  describe('event forwarding', function () {
+    let element;
+
+    const dataSourceForm = (refreshOnEvent) => ({
+      display: 'pdf',
+      settings: {
+        pdf: {
+          src: 'https://files.form.io/pdf/test.pdf',
+        },
+      },
+      components: [
+        {
+          type: 'datasource',
+          key: 'dataSource',
+          label: 'Data Source',
+          input: true,
+          refreshOnEvent,
+        },
+      ],
+    });
+
+    const forwardedEvents = (pdf, messages) => {
+      pdf.postMessage = (message) => messages.push(message);
+      return messages;
+    };
+
+    beforeEach(function () {
+      element = document.createElement('div');
+      document.body.appendChild(element);
+    });
+
+    afterEach(function () {
+      element.remove();
+    });
+
+    it('Should forward an event a component refreshes on to the iframe', function () {
+      const messages = [];
+      const pdf = new PDF(element, {});
+      forwardedEvents(pdf, messages);
+      pdf.setForm(dataSourceForm('refreshIt'));
+
+      pdf.emit('refreshIt');
+
+      expect(messages.filter((message) => message.name === 'emit')).to.deep.equal([
+        { name: 'emit', data: 'refreshIt' },
       ]);
+    });
+
+    it('Should not forward an event no component refreshes on', function () {
+      const messages = [];
+      const pdf = new PDF(element, {});
+      forwardedEvents(pdf, messages);
+      pdf.setForm(dataSourceForm('refreshIt'));
+
+      pdf.emit('unrelated');
+
+      expect(messages.filter((message) => message.name === 'emit')).to.deep.equal([]);
     });
   });
 });
-

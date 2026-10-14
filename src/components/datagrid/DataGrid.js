@@ -525,12 +525,8 @@ export default class DataGridComponent extends NestedArrayComponent {
       component.row = `${rowIndex}-${colIndex}`;
 
       entries.forEach(({ instance, oldPath }) => {
-        instance.eachRootChildComponentsMap((map) => {
-          if (map[oldPath] === instance) {
-            delete map[oldPath];
-          }
-          map[instance.paths.dataPath] = instance;
-        });
+        instance.unregisterComponentInstance(oldPath);
+        instance.registerComponentInstance();
       });
     });
   }

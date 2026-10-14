@@ -1,5 +1,75 @@
 # @formio/js
 
+## 5.7.0
+
+### Minor Changes
+
+- 01994a0: FIO-12067: allow PDF translations to be sourced from a Form.io Language resource in the project, alongside the existing hosted translations URL
+
+### Patch Changes
+
+- 118421a: FIO-11738 fixed row validation for nested form in editGrid
+- 72662e9: FIO-12466: fixed an issue where errors of components sharing a name with a radio-type checkbox were shown under, and linked to, the wrong component
+- 9579878: FIO-9842: remove Widget and Input Masks options from the Currency component edit form
+- 760cf16: FIO-12299: Fetch translationsUrl without Content-Type or JWT so CORS preflight is not required
+- 2eefe56: FIO-11981: fixed the issue where calculated values blank out after submit
+- ccdf6bc: FIO-11344 fixed broken layout for Text Area in Quick Inline Embed
+- a6e7751: FIO-12066: Data Source triggers in PDF-first forms
+- 797da5d: Adjusts PDF forms focus/blur events payload to match the payload of Webforms
+- 598aa95: FIO-12034: point an invalid Number input at its error message via aria-describedby
+- 424eda2: FIO-9842: removed extra options from Display/Data tabs
+- e673507: Clarify image size behavior for PDF First forms
+- 8f24eeb: FIO-12192: fix wizard validation being skipped for required fields in a nested form inside a data grid after a row is removed
+
+## 5.7.0-api912.2
+
+### Patch Changes
+
+- 72662e9: FIO-12466: fixed an issue where errors of components sharing a name with a radio-type checkbox were shown under, and linked to, the wrong component
+- a6e7751: FIO-12066: Data Source triggers in PDF-first forms
+
+## 5.7.0-api912.1
+
+### Patch Changes
+
+- 9579878: FIO-9842: remove Widget and Input Masks options from the Currency component edit form
+
+## 5.7.0-api912.0
+
+### Minor Changes
+
+- 01994a0: FIO-12067: allow PDF translations to be sourced from a Form.io Language resource in the project, alongside the existing hosted translations URL
+
+### Patch Changes
+
+- 118421a: FIO-11738 fixed row validation for nested form in editGrid
+- 760cf16: FIO-12299: Fetch translationsUrl without Content-Type or JWT so CORS preflight is not required
+- 2eefe56: FIO-11981: fixed the issue where calculated values blank out after submit
+- ccdf6bc: FIO-11344 fixed broken layout for Text Area in Quick Inline Embed
+- 797da5d: Adjusts PDF forms focus/blur events payload to match the payload of Webforms
+- 598aa95: FIO-12034: point an invalid Number input at its error message via aria-describedby
+- 424eda2: FIO-9842: removed extra options from Display/Data tabs
+- e673507: Clarify image size behavior for PDF First forms
+- 8f24eeb: FIO-12192: fix wizard validation being skipped for required fields in a nested form inside a data grid after a row is removed
+
+## 5.6.1
+
+### Patch Changes
+
+- 6d5f18f: FIO-12390: resolve a processor's component instance by its own schema when several components share a data path, so a required radio is still validated alongside radio-input checkboxes named after it
+- Updated dependencies [6d5f18f]
+- Updated dependencies [c2b3cc2]
+  - @formio/core@2.9.0
+
+## 5.6.1-api911.0
+
+### Patch Changes
+
+- 6d5f18f: FIO-12390: resolve a processor's component instance by its own schema when several components share a data path, so a required radio is still validated alongside radio-input checkboxes named after it
+- Updated dependencies [6d5f18f]
+- Updated dependencies [c2b3cc2]
+  - @formio/core@2.9.0-api911.0
+
 ## 5.6.0
 
 ### Minor Changes

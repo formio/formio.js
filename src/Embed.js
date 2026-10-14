@@ -373,7 +373,10 @@ export class Formio {
     });
     const id = Formio.config.id || `formio-${Math.random().toString(36).substring(7)}`;
 
-    const hasQuillComponent = (components = []) => {
+    // Quill and CKEditor cannot run in the shadow DOM (https://github.com/quilljs/quill/issues/2021,
+    // https://github.com/ckeditor/ckeditor5/issues/15824), so fall back to the light DOM when the
+    // form contains one of them.
+    const hasShadowIncompatibleEditor = (components) => {
       if (!Array.isArray(components)) {
         return false;
       }
@@ -381,21 +384,42 @@ export class Formio {
         if (!component || typeof component !== 'object') {
           return false;
         }
-        const isQuillTextarea =
-          component.type === 'textarea' &&
-          component.wysiwyg === true &&
-          component.editor === 'quill';
-        return (
-          isQuillTextarea ||
-          hasQuillComponent(component.components) ||
-          hasQuillComponent(component.columns?.flatMap((column) => column.components || [])) ||
-          hasQuillComponent(
-            component.rows?.flatMap((row) => row.flatMap((cell) => cell.components || [])),
-          )
+        if (component.type === 'textarea') {
+          // A textarea with `wysiwyg` set and no explicit `editor` defaults to CKEditor at render time.
+          const editor = component.editor || (component.wysiwyg ? 'ckeditor' : '');
+          if (['quill', 'ckeditor'].includes(editor)) {
+            return true;
+          }
+        }
+        const children = (component.components || []).concat(
+          component.columns?.flatMap((column) => column.components || []) || [],
+          component.rows?.flatMap((row) => row.flatMap((cell) => cell.components || [])) || [],
         );
+        return hasShadowIncompatibleEditor(children);
       });
     };
-    const disableShadowForQuill = hasQuillComponent(Formio.config.form?.components);
+
+    const shouldSkipShadowDom = async () => {
+      if (Formio.config.form?.components) {
+        return hasShadowIncompatibleEditor(Formio.config.form.components);
+      }
+      const formUrl =
+        Formio.config.src || (typeof Formio.config.form === 'string' ? Formio.config.form : '');
+      if (!formUrl) {
+        return false;
+      }
+      try {
+        const response = await fetch(formUrl);
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+        const form = await response.json();
+        return hasShadowIncompatibleEditor(form?.components);
+      } catch (err) {
+        Formio.debug('Could not load the form to check for shadow DOM support', err);
+        return false;
+      }
+    };
 
     // Create a new wrapper and add the element inside of a new wrapper.
     let wrapper = Formio.createElement('div', {
@@ -407,20 +431,8 @@ export class Formio {
     const useShadowDom =
       Formio.config.includeLibs &&
       !Formio.config.noshadow &&
-      !disableShadowForQuill &&
-      typeof wrapper.attachShadow === 'function';
-    if (useShadowDom) {
-      wrapper = wrapper.attachShadow({
-        mode: 'open',
-      });
-      options.shadowRoot = wrapper;
-      // Due to an issue with quill not loading styles in the shadowdom, we need to add quill styles and js to the shadowdom
-      const quill = {
-        js: `${Formio.cdn.quill}/quill.js`,
-        css: `${Formio.cdn.quill}/quill.snow.css`,
-      };
-      await Formio.addLibrary(wrapper, quill, 'quill');
-    }
+      typeof wrapper.attachShadow === 'function' &&
+      !(await shouldSkipShadowDom());
 
     element.parentNode.removeChild(element);
     wrapper.appendChild(element);

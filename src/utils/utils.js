@@ -548,9 +548,7 @@ export function setActionProperty(component, action, result, row, data, instance
       const safeData = escapeInterpolationDataStrings(data);
       const safeRow = escapeInterpolationDataStrings(row);
       const safeResult =
-        typeof result === 'string'
-          ? _.escape(result)
-          : escapeInterpolationDataStrings(result);
+        typeof result === 'string' ? _.escape(result) : escapeInterpolationDataStrings(result);
       const evalData = {
         data: safeData,
         row: safeRow,
@@ -1966,18 +1964,9 @@ function getScreenReaderMessage(component, type, value) {
         message += `Minimum ${min} ${getWordOrCharacterLabel(isWordType, min)}. `;
       }
     }
-  } else if (typeof value === 'number' || value === null) {
-    if (value != null && value !== '') {
-      if (!isNaN(max) && value > max) {
-        message += `Number cannot be greater than ${max}. `;
-      }
-      if (!isNaN(min) && value < min) {
-        message += `Number cannot be less than ${min}.`;
-      }
-    } else {
-      if (!isNaN(min)) message += `Minimum value ${min}. `;
-      if (!isNaN(max)) message += `Maximum value ${max}. `;
-    }
+  } else if (value === null) {
+    if (!isNaN(min)) message += `Minimum value ${min}. `;
+    if (!isNaN(max)) message += `Maximum value ${max}. `;
   }
   return message.trim();
 }

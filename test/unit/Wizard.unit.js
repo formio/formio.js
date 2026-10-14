@@ -54,6 +54,8 @@ import { wait, waitFor } from '../util';
 import formWithDataGridAndDeeplyNestedForms from '../forms/formWithDataGridAndDeeplyNestedForms.js';
 import wizardWithDeeplyNestedWizards from '../forms/wizardWithDeeplyNestedWizards.js';
 import dataGridInNestedWizardLogic from '../forms/dataGridInNestedWizardLogic.js';
+import wizardWithRadioAndRadioCheckboxes from '../forms/wizardWithRadioAndRadioCheckboxes.js';
+import nestedWizardWithRadioAndRadioCheckboxes from '../forms/nestedWizardWithRadioAndRadioCheckboxes.js';
 
 describe('Wizard tests', function () {
   // helpers
@@ -367,6 +369,78 @@ describe('Wizard tests', function () {
     await instance.submit().catch(() => {});
     assert.equal(instance.errors.length, 1);
     assert.equal(instance.page, 1);
+  });
+
+  it('Should not advance to the next page when a required radio shares a data path with radio-input checkboxes', async function () {
+    const element = document.createElement('div');
+    const instance = await Formio.createForm(
+      element,
+      fastCloneDeep(wizardWithRadioAndRadioCheckboxes),
+    );
+
+    await instance.nextPage().catch(() => {});
+
+    assert.equal(instance.page, 0);
+    assert.equal(instance.errors.length, 1);
+    assert.equal(instance.errors[0].message, 'Is this valid? is required');
+  });
+
+  it('Should not advance to the next page when the radio-input checkboxes are declared before the required radio', async function () {
+    const form = fastCloneDeep(wizardWithRadioAndRadioCheckboxes);
+    const page1 = form.components[0];
+    // Move the required radio after the two checkboxes that share its data path.
+    page1.components.push(page1.components.shift());
+
+    const element = document.createElement('div');
+    const instance = await Formio.createForm(element, form);
+
+    await instance.nextPage().catch(() => {});
+
+    assert.equal(instance.page, 0);
+    assert.equal(instance.errors.length, 1);
+    assert.equal(instance.errors[0].message, 'Is this valid? is required');
+  });
+
+  it('Should advance to the next page once one of the radio-input checkboxes is checked', async function () {
+    const element = document.createElement('div');
+    const instance = await Formio.createForm(
+      element,
+      fastCloneDeep(wizardWithRadioAndRadioCheckboxes),
+    );
+
+    const checkbox = instance.getComponent('yesThisIsValid');
+    Harness.clickElement(checkbox, checkbox.refs.input[0]);
+
+    await waitFor(() => instance.data.isValid === 'yes');
+    await instance.nextPage();
+
+    assert.equal(instance.page, 1);
+    assert.equal(instance.errors.length, 0);
+  });
+
+  it('Should stay on the page and focus the required radio when its error link is clicked and radio-input checkboxes sharing its data path are on a later page', async function () {
+    const form = fastCloneDeep(wizardWithRadioAndRadioCheckboxes);
+    const [page1, page2] = form.components;
+    // Move the two checkboxes that share the radio's data path onto the next page.
+    page2.components.push(...page1.components.splice(1));
+
+    const element = document.createElement('div');
+    const instance = await Formio.createForm(element, form);
+
+    await instance.nextPage().catch(() => {});
+
+    const focused = [];
+    instance.everyComponent((component) => {
+      component.focus = () => focused.push(component.component.key);
+      component.scrollIntoView = () => {};
+    });
+
+    assert.equal(instance.refs.errorRef.length, 1);
+    instance.refs.errorRef[0].dispatchEvent(new MouseEvent('click'));
+    await wait(200);
+
+    assert.equal(instance.page, 0);
+    assert.deepEqual(focused, ['isValid']);
   });
 
   it('Should validate components on blur', function (done) {
@@ -1251,6 +1325,31 @@ describe('Wizard tests', function () {
         }, 300);
       })
       .catch((err) => done(err));
+  });
+
+  it('Should report the required error for a radio sharing a data path with radio-input checkboxes inside a nested wizard', async function () {
+    const formElement = document.createElement('div');
+    const wizard = new Wizard(formElement);
+    const childWizard = _.cloneDeep(nestedWizardWithRadioAndRadioCheckboxes.childWizard);
+    const parentWizard = _.cloneDeep(nestedWizardWithRadioAndRadioCheckboxes.parentWizard);
+
+    await wizard.setForm(parentWizard);
+    wizard.formio = new Formio('http://test.localhost/test', {});
+
+    const nestedFormComp = wizard.getComponent('child');
+    nestedFormComp.loadSubForm = () => {
+      nestedFormComp.formObj = childWizard;
+      nestedFormComp.subFormLoading = false;
+      return Promise.resolve(childWizard);
+    };
+    nestedFormComp.createSubForm();
+    await wait(300);
+
+    await wizard.nextPage().catch(() => {});
+
+    assert.equal(wizard.page, 0);
+    assert.equal(wizard.errors.length, 1);
+    assert.equal(wizard.errors[0].message, 'Is this valid? is required');
   });
 
   it('Should show form-level errors after failed submission even when the current page has no errors', async function () {

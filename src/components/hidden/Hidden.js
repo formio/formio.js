@@ -54,7 +54,7 @@ export default class HiddenComponent extends Input {
   }
 
   get emptyValue() {
-    return '';
+    return null;
   }
 
   setValue(value, flags = {}) {

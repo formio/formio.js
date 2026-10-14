@@ -14,6 +14,7 @@ import {
   convertStringToHTMLElement,
   getArrayFromComponentPath,
   eachComponent,
+  resolveInstanceAtPath,
 } from './utils';
 
 // We need this here because dragula pulls in CustomEvent class that requires global to exist.
@@ -608,10 +609,7 @@ export default class Webform extends NestedDataComponent {
 
     if ('schema' in form && compareVersions(form.schema, '1.x') > 0) {
       this.ready.then(() => {
-        this.setAlert(
-          'alert alert-danger',
-          this.t('newFormSchema')
-        );
+        this.setAlert('alert alert-danger', this.t('newFormSchema'));
       });
     }
 
@@ -1121,16 +1119,19 @@ export default class Webform extends NestedDataComponent {
     this.loadRefs(this.alert, { errorRef: 'multiple' });
 
     if (this.refs.errorRef && this.refs.errorRef.length) {
-      this.refs.errorRef.forEach((el) => {
-        this.addEventListener(el, 'click', (e) => {
-          const key = e.currentTarget.dataset.componentKey;
-          this.focusOnComponent(key);
-        });
+      this.refs.errorRef.forEach((el, index) => {
+        // The Nth link renders the Nth error; a custom template that reorders or filters the list
+        // fails this check, and the link then resolves by its key alone.
+        const listItem = options?.errors?.[index];
+        const isLinkForListItem = !!listItem && listItem.keyOrPath === el.dataset.componentKey;
+        const componentKey = isLinkForListItem ? listItem.componentKey : undefined;
+        const focusOnLinkedComponent = (e) =>
+          this.focusOnComponent(e.currentTarget.dataset.componentKey, componentKey);
+        this.addEventListener(el, 'click', focusOnLinkedComponent);
         this.addEventListener(el, 'keydown', (e) => {
           if (e.keyCode === 13) {
             e.preventDefault();
-            const key = e.currentTarget.dataset.componentKey;
-            this.focusOnComponent(key);
+            focusOnLinkedComponent(e);
           }
         });
       });
@@ -1141,15 +1142,36 @@ export default class Webform extends NestedDataComponent {
   /**
    * Focus on selected component.
    * @param {string} key - The key of selected component.
+   * @param {string} [componentKey] - The schema key of the component that produced the error, if known.
    */
-  focusOnComponent(key) {
+  focusOnComponent(key, componentKey) {
     if (key) {
-      const component = this.getComponent(key);
+      const component = this.getErrorComponent(key, componentKey);
       if (component) {
         component.focus();
         component.scrollIntoView();
       }
     }
+  }
+
+  /**
+   * Resolves the component that produced an error, to attach the error to it or to focus it from
+   * the error list. A checkbox with inputType 'radio' takes its `name` as its path, so several
+   * components can share `key`; the schema key of the component that produced the error tells them
+   * apart. The shared-path lookup is only consulted when `getComponent` picked another component,
+   * and only trusted when it finds the one with that schema key.
+   * @param {string} key - The path the error was reported at.
+   * @param {string} [componentKey] - The schema key of the component that produced the error, if known.
+   * @returns {any} - The component that produced the error, if found.
+   */
+  getErrorComponent(key, componentKey) {
+    const component = this.getComponent(key);
+    if (!componentKey || component?.component.key === componentKey) {
+      return component;
+    }
+    // GOTCHA(G-FJS06)
+    const componentWithKey = resolveInstanceAtPath(this.componentsMap, key, componentKey);
+    return componentWithKey?.component.key === componentKey ? componentWithKey : component;
   }
 
   /**
@@ -1193,24 +1215,24 @@ export default class Webform extends NestedDataComponent {
     }
 
     // Mark any components as invalid if in a custom message.
-    const componentErrors = {};
+    const errorsByComponent = new Map();
     errors.forEach((err) => {
       const path = getStringFromComponentPath(err.path) || err.context?.path || err.component?.key;
-      if (!componentErrors[path]) {
-        componentErrors[path] = [];
+      const component = path && this.getErrorComponent(path, err.component?.key);
+      if (!component) {
+        return;
       }
-      componentErrors[path].push(err);
+      if (!errorsByComponent.has(component)) {
+        errorsByComponent.set(component, []);
+      }
+      errorsByComponent.get(component).push(err);
     });
 
     // Iterate through all of our component errors and apply them to the components.
-    for (let path in componentErrors) {
-      const component = this.getComponent(path);
-      const errors = componentErrors[path];
-      if (component) {
-        component.serverErrors = errors.filter((err) => err.fromServer);
-        component.setCustomValidity(errors, true);
-      }
-    }
+    errorsByComponent.forEach((componentErrors, component) => {
+      component.serverErrors = componentErrors.filter((err) => err.fromServer);
+      component.setCustomValidity(componentErrors, true);
+    });
 
     const displayedErrors = [];
     if (errors.length) {
@@ -1236,6 +1258,7 @@ export default class Webform extends NestedDataComponent {
         return {
           message: unescapeHTML(message),
           keyOrPath: formattedKeyOrPath,
+          componentKey: err.component?.key,
         };
       };
 
@@ -1252,7 +1275,7 @@ export default class Webform extends NestedDataComponent {
     // GOTCHA(G-FJS02)
     // Only paint the alert from a subform when the root won't double paint it to avoid a painful flicker
     if (this === this.root || !this.root?.submitted) {
-      this.root?.setAlert('danger', errorsList);
+      this.root?.setAlert('danger', errorsList, { errors: displayedErrors });
     }
     if (triggerEvent) {
       this.emit('error', errors);
@@ -1708,7 +1731,7 @@ export default class Webform extends NestedDataComponent {
           return Promise.reject(this.onSubmissionError(e));
         });
     } else {
-      const message = this.t('urlNotAttachedToBtn')
+      const message = this.t('urlNotAttachedToBtn');
       this.emit('error', message);
       this.setAlert('warning', message);
       return console.warn(message);
@@ -1749,9 +1772,16 @@ export default class Webform extends NestedDataComponent {
       typeof this.options.i18n?.translationsUrl === 'string'
         ? this.options.i18n.translationsUrl
         : null;
+    // Translations can also live in a Form.io resource, one submission per language.
+    const languageResource = this.options.i18n?.resource;
+    const usesLanguageResource = Boolean(languageResource?.form);
     if (translationsUrl) {
       const url = this.sanitize(this.interpolate(translationsUrl, {}), this.shouldSanitizeValue);
-      Formio.makeStaticRequest(url, 'GET')
+      // Simple CORS GET: skip Content-Type / token so static hosts need no preflight.
+      Formio.makeStaticRequest(url, 'GET', null, {
+        headers: { Accept: 'application/json' },
+        noToken: true,
+      })
         .then((response) => {
           let languages = response;
           try {
@@ -1771,6 +1801,26 @@ export default class Webform extends NestedDataComponent {
             console.warn(err.message);
             translationsLoadResolve();
           }
+        })
+        .catch((err) => {
+          console.warn(err);
+          translationsLoadResolve();
+        });
+    } else if (usesLanguageResource) {
+      const { form: resourceId, codeComponent, mapComponent } = languageResource;
+      const language = this.i18next?.originalLanguage || this.options.language;
+      const languageQuery = `data.${codeComponent}=${encodeURIComponent(language)}`;
+      // The resource is addressed by id, so it needs the /form/ route — the bare
+      // `{project}/{alias}` route resolves by path only and would 404 on an id.
+      const url = `${Formio.getProjectUrl()}/form/${resourceId}/submission?${languageQuery}&limit=1`;
+      Formio.makeStaticRequest(url, 'GET')
+        .then((submissions) => {
+          const translations = submissions?.[0]?.data?.[mapComponent];
+          // No submission for this language just leaves the form in its default language.
+          if (translations) {
+            this.addLanguage(language, translations, true);
+          }
+          translationsLoadResolve();
         })
         .catch((err) => {
           console.warn(err);

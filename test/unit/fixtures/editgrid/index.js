@@ -20,6 +20,7 @@ import comp20 from './comp20';
 import comp21 from './comp21';
 import withOpenWhenEmptyAndConditions from './comp-with-conditions-and-openWhenEmpty';
 import compOpenWhenEmpty from './comp-openWhenEmpty';
+import compOpenWhenEmptyNestedForm from './comp-openWhenEmptyNestedForm';
 import compWithCustomDefaultValue from './comp-with-custom-default-value';
 import compTestEvents from './comp-test-events';
 import formsWithEditGridAndConditions from './formsWithEditGridAndConditions';
@@ -45,6 +46,7 @@ export {
   comp20,
   comp21,
   compOpenWhenEmpty,
+  compOpenWhenEmptyNestedForm,
   withOpenWhenEmptyAndConditions,
   compWithCustomDefaultValue,
   compTestEvents,

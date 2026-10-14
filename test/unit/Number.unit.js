@@ -427,6 +427,66 @@ describe('Number Component', function () {
     });
   });
 
+  it('Should point the invalid input at the error message for screen readers', function (done) {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, _.cloneDeep(comp6), { language: 'en-US' }).then((form) => {
+      form.setPristine(false);
+
+      const component = form.getComponent('number');
+      component.setValue(1);
+
+      setTimeout(() => {
+        try {
+          const input = component.refs.input[0];
+          const message = component.refs.messageContainer.firstElementChild;
+
+          assert(message.id, 'Should render the error message with an id');
+          assert.equal(input.getAttribute('aria-invalid'), 'true', 'Should mark the input invalid');
+          assert(
+            (input.getAttribute('aria-describedby') || '').split(' ').includes(message.id),
+            'Should point aria-describedby at the error message',
+          );
+          done();
+        } catch (err) {
+          done(err);
+        }
+      }, 500);
+    });
+  });
+
+  it('Should stop pointing at the error message once the value is valid', function (done) {
+    const element = document.createElement('div');
+
+    Formio.createForm(element, _.cloneDeep(comp6), { language: 'en-US' }).then((form) => {
+      form.setPristine(false);
+
+      const component = form.getComponent('number');
+      component.setValue(1);
+
+      setTimeout(() => {
+        const errorId = component.refs.messageContainer.firstElementChild?.id;
+        component.setValue(30);
+
+        setTimeout(() => {
+          try {
+            const describedBy = component.refs.input[0].getAttribute('aria-describedby') || '';
+
+            assert(errorId, 'Should have rendered an error message id to clear');
+            assert.equal(
+              describedBy.split(' ').includes(errorId),
+              false,
+              'Should no longer point aria-describedby at the error message',
+            );
+            done();
+          } catch (err) {
+            done(err);
+          }
+        }, 500);
+      }, 500);
+    });
+  });
+
   it('Should provide min/max validation', function (done) {
     const form = _.cloneDeep(comp6);
 

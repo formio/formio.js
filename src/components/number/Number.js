@@ -223,11 +223,11 @@ export default class NumberComponent extends Input {
 
     const val = this.refs.input[index].value;
     const result = val && val !== '-_' ? this.parseNumber(val) : null;
-    
+
     if (_.isNaN(result)) {
       return null;
     }
-    return result
+    return result;
   }
 
   setValueAt(index, value, flags = {}) {
@@ -315,5 +315,44 @@ export default class NumberComponent extends Input {
     this.addEventListener(element, 'blur', () => {
       element.value = this.getValueAsString(this.formatValue(this.parseValue(element.value)));
     });
+  }
+
+  setErrorClasses(elements, dirty, hasErrors, hasMessages, element = this.element) {
+    super.setErrorClasses(elements, dirty, hasErrors, hasMessages, element);
+    this.linkErrorMessages(elements, hasErrors);
+  }
+
+  /**
+   * Points the invalid inputs at the rendered error messages through `aria-describedby`, so a
+   * screen reader announces what is wrong with the value. The base class only marks the input
+   * `aria-invalid`, which says the value was rejected but not why.
+   * @param {Array<HTMLElement>} elements - The input elements the errors apply to.
+   * @param {boolean} hasErrors - TRUE if the component currently has errors.
+   * @returns {void}
+   */
+  linkErrorMessages(elements, hasErrors) {
+    const previousIds = this.errorMessageIds || [];
+    const renderedMessages = Array.from(this.refs.messageContainer?.children || []);
+    const errorIds = hasErrors ? renderedMessages.map((message) => message.id).filter(Boolean) : [];
+    const invalidInputs = hasErrors ? Array.from(elements || []) : [];
+    const isOwnErrorId = (id) => previousIds.includes(id) || errorIds.includes(id);
+
+    Array.from(this.refs.input || []).forEach((input) => {
+      const describedBy = (input.getAttribute('aria-describedby') || '')
+        .split(' ')
+        .filter((id) => id && !isOwnErrorId(id));
+
+      if (invalidInputs.includes(input)) {
+        describedBy.push(...errorIds);
+      }
+
+      if (describedBy.length) {
+        input.setAttribute('aria-describedby', describedBy.join(' '));
+      } else {
+        input.removeAttribute('aria-describedby');
+      }
+    });
+
+    this.errorMessageIds = errorIds;
   }
 }

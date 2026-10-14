@@ -1560,6 +1560,63 @@ describe('DataGrid Component', function () {
         })
         .catch(done);
     });
+
+    it('Should create the sub form for a row added after the first row loaded its sub form', async function () {
+      const wizard = await Formio.createForm(
+        document.createElement('div'),
+        _.cloneDeep(wizardWithDataGridWithNestedForm),
+      );
+      await wait(500);
+      const dataGrid = wizard.getComponent('dataGrid');
+      dataGrid.addRow();
+      await wait(500);
+
+      assert(!!dataGrid.rows[1].form1.subForm, 'Added row should create its own sub form instance');
+    });
+
+    it('Should validate a nested form in a DataGrid after adding a row and removing the first row', async function () {
+      const wizard = await Formio.createForm(
+        document.createElement('div'),
+        _.cloneDeep(wizardWithDataGridWithNestedForm),
+      );
+      await wait(500);
+      const dataGrid = wizard.getComponent('dataGrid');
+      dataGrid.addRow();
+      await wait(500);
+      dataGrid.removeRow(0);
+      await wait(500);
+
+      _.get(wizard.refs, `${wizard.wizardKey}-next`).dispatchEvent(new Event('click'));
+      await wait(300);
+
+      assert.equal(wizard.page, 0, 'Should stay on wizard page 1');
+      const errors = wizard.errors;
+      assert.equal(errors.length, 1, 'Should have an error');
+      assert.equal(errors[0].ruleName, 'required');
+    });
+
+    it(`Should validate an eagerly loaded nested form in a DataGrid
+      after adding a row and removing the first row`, async function () {
+      const eagerForm = _.cloneDeep(wizardWithDataGridWithNestedForm);
+      // page1 -> dataGrid -> nested form column
+      eagerForm.components[0].components[0].components[0].lazyLoad = false;
+
+      const wizard = await Formio.createForm(document.createElement('div'), eagerForm);
+      await wait(500);
+      const dataGrid = wizard.getComponent('dataGrid');
+      dataGrid.addRow();
+      await wait(500);
+      dataGrid.removeRow(0);
+      await wait(500);
+
+      _.get(wizard.refs, `${wizard.wizardKey}-next`).dispatchEvent(new Event('click'));
+      await wait(300);
+
+      assert.equal(wizard.page, 0, 'Should stay on wizard page 1');
+      const errors = wizard.errors;
+      assert.equal(errors.length, 1, 'Should have an error');
+      assert.equal(errors[0].ruleName, 'required');
+    });
   });
 
   describe('DataGrid conditional logic', function () {

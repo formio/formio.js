@@ -3,8 +3,17 @@ import { expect } from 'chai';
 
 import { Formio } from '../../src/Formio';
 import FormBuilder from '../../src/FormBuilder';
+import PDFBuilder from '../../src/PDFBuilder';
 
 describe('PDF Builder tests', function () {
+  describe('PDF Fields palette', function () {
+    it('Should offer the data source in the palette', function () {
+      const paletteTypes = Object.keys(PDFBuilder.prototype.defaultGroups.pdf.components);
+
+      expect(paletteTypes).to.include('datasource');
+    });
+  });
+
   describe('PDF Auto Conversion', function () {
     let originalUploadFile;
     let originalLoadProject;

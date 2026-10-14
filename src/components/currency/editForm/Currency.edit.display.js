@@ -4,7 +4,27 @@ export default [
     ignore: true,
   },
   {
+    key: 'widget.type',
+    ignore: true,
+  },
+  {
+    key: 'widget',
+    ignore: true,
+  },
+  {
+    key: 'inputMasks',
+    ignore: true,
+  },
+  {
     key: 'allowMultipleMasks',
+    ignore: true,
+  },
+  {
+    key: 'labelWidth',
+    ignore: true,
+  },
+  {
+    key: 'labelMargin',
     ignore: true,
   },
   {
