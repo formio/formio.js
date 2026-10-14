@@ -9,6 +9,19 @@ export default function (...extend) {
   return Components.baseEditForm(
     [
       {
+        key: 'display',
+        components: [
+          {
+            key: 'labelWidth',
+            ignore: true,
+          },
+          {
+            key: 'labelMargin',
+            ignore: true,
+          },
+        ],
+      },
+      {
         key: 'data',
         ignore: true,
       },

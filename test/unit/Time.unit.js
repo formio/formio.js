@@ -116,6 +116,14 @@ describe('Time Component', function () {
       .catch(done);
   });
 
+  // FIO-7184: the Data tab's table renders its cells through getValueAsString, which used
+  // to format only the first value of a multiple-value Time component.
+  it('Should format every value of a multiple-value component', function () {
+    return Harness.testCreate(TimeComponent, comp3).then((time) => {
+      assert.equal(time.getValueAsString(['10:00:00', '11:30:00']), '10:00, 11:30');
+    });
+  });
+
   it('Should not display error when embedded in a wizard form', function () {
     return Formio.createForm(document.createElement('div'), comp4, {}).then((form) => {
       const timeComponent = form.getComponent('time1');

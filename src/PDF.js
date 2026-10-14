@@ -6,8 +6,7 @@ const getIframeOrigin = (iframeElement) => {
   try {
     const origin = new URL(iframeElement.src, window.location.href).origin;
     return origin === 'null' ? null : origin;
-  }
-  catch (ignoreErr) {
+  } catch (ignoreErr) {
     return null;
   }
 };
@@ -17,10 +16,7 @@ const isTrustedIframeMessage = (event, form) => {
   const iframeOrigin = form?.iframeElement && getIframeOrigin(form.iframeElement);
 
   return Boolean(
-    iframeWindow &&
-    iframeOrigin &&
-    event.source === iframeWindow &&
-    event.origin === iframeOrigin,
+    iframeWindow && iframeOrigin && event.source === iframeWindow && event.origin === iframeOrigin,
   );
 };
 
@@ -32,7 +28,10 @@ export default class PDF extends Webform {
   }
 
   init() {
+    this.options.pdfShell = true;
     super.init();
+
+    this.forwardRefreshEventsToIframe();
 
     // Handle an iframe submission.
     this.on(
@@ -77,6 +76,20 @@ export default class PDF extends Webform {
 
     // Re-emit pageEnd without the iframe- prefix for consumers tracking PDF scroll position.
     this.on('iframe-pageEnd', (data) => this.emit('pageEnd', data), true);
+  }
+
+  // The iframe renders the components in its own realm with its own emitter, so an event they
+  // refresh on only reaches them across the bridge.
+  forwardRefreshEventsToIframe() {
+    const refreshEvents = new Set();
+    eachComponent(this.component.components, (component) => {
+      if (component.refreshOnEvent) {
+        refreshEvents.add(component.refreshOnEvent);
+      }
+    });
+    refreshEvents.forEach((event) =>
+      this.on(event, () => this.postMessage({ name: 'emit', data: event }), true),
+    );
   }
 
   render() {
@@ -242,8 +255,7 @@ export default class PDF extends Webform {
       params.push('builder=1');
     }
 
-    const parentIconset =
-      this.options.iconset || Formio.Templates?.current?.defaultIconset;
+    const parentIconset = this.options.iconset || Formio.Templates?.current?.defaultIconset;
 
     if (parentIconset && parentIconset !== 'bi') {
       params.push(`iconset=${encodeURIComponent(parentIconset)}`);
@@ -383,10 +395,14 @@ if (typeof window !== 'undefined') {
       if (eventData.compPath) {
         const comp = form.getComponent(eventData.compPath);
         if (comp) {
-          comp.emit(eventData.name, eventData.data);
+          // Emit component instance for focus/blur events to match payload of those events on other forms
+          if (['focus', 'blur'].includes(eventData.name)) {
+            comp.emit(eventData.name, comp);
+          } else {
+            comp.emit(eventData.name, eventData.data);
+          }
         }
-      }
-      else {
+      } else {
         form.emit(`iframe-${eventData.name}`, eventData.data);
       }
     }

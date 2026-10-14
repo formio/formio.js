@@ -21,6 +21,14 @@ export default function (...extend) {
             key: 'showCharCount',
             ignore: true,
           },
+          {
+            key: 'widget.type',
+            ignore: true,
+          },
+          {
+            key: 'widget',
+            ignore: true,
+          },
         ],
       },
       {

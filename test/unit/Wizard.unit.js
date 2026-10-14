@@ -418,6 +418,31 @@ describe('Wizard tests', function () {
     assert.equal(instance.errors.length, 0);
   });
 
+  it('Should stay on the page and focus the required radio when its error link is clicked and radio-input checkboxes sharing its data path are on a later page', async function () {
+    const form = fastCloneDeep(wizardWithRadioAndRadioCheckboxes);
+    const [page1, page2] = form.components;
+    // Move the two checkboxes that share the radio's data path onto the next page.
+    page2.components.push(...page1.components.splice(1));
+
+    const element = document.createElement('div');
+    const instance = await Formio.createForm(element, form);
+
+    await instance.nextPage().catch(() => {});
+
+    const focused = [];
+    instance.everyComponent((component) => {
+      component.focus = () => focused.push(component.component.key);
+      component.scrollIntoView = () => {};
+    });
+
+    assert.equal(instance.refs.errorRef.length, 1);
+    instance.refs.errorRef[0].dispatchEvent(new MouseEvent('click'));
+    await wait(200);
+
+    assert.equal(instance.page, 0);
+    assert.deepEqual(focused, ['isValid']);
+  });
+
   it('Should validate components on blur', function (done) {
     const formElement = document.createElement('div');
 

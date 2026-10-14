@@ -576,6 +576,9 @@ describe('File Component', function () {
   it('Should use a pixel-based imageSize tooltip in the edit form', function () {
     const editForm = FileComponent.editForm();
     const imageSize = findEditComponent(editForm.components, 'imageSize');
-    assert.equal(imageSize.tooltip, 'The image size, in square pixels, for previewing images.');
+    assert.equal(
+      imageSize.tooltip,
+      'The image size, in square pixels, for previewing images. If explicitly set, the frame of the component must be large enough to allow for the specified size.',
+    );
   });
 });

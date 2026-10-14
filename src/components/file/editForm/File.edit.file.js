@@ -296,7 +296,8 @@ export default [
     key: 'imageSize',
     label: 'Image Size',
     placeholder: '100',
-    tooltip: 'The image size, in square pixels, for previewing images.',
+    tooltip:
+      'The image size, in square pixels, for previewing images. If explicitly set, the frame of the component must be large enough to allow for the specified size.',
     weight: 40,
     clearOnHide: false,
     conditional: {

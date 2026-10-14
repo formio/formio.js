@@ -20,6 +20,7 @@ import {
   comp12,
   comp13,
   comp14,
+  multipleValuesComp,
   requiredFieldLogicComp,
 } from './fixtures/datetime';
 
@@ -53,6 +54,37 @@ describe('DateTime Component', function () {
       assert.equal(dateTime.getValueAsString('2020-09-18T12:12:00'), '2020-09-18 12:12 PM');
       dateTime.destroy();
     });
+  });
+
+  // FIO-7184: with 'Multiple values' on, the whole array has to be formatted -- the Data
+  // tab's table renders its cells through getValueAsString, and it used to show only the
+  // first value (Time) or 'Invalid date' (Date / Time).
+  it('Should format every value of a multiple-value component', function () {
+    return Formio.createForm(document.createElement('div'), _.cloneDeep(comp8)).then((form) => {
+      const dateTime = form.getComponent('dateTime');
+      assert.equal(
+        dateTime.getValueAsString(['2020-09-18T12:12:00', '2020-09-19T13:13:00']),
+        '2020-09-18, 2020-09-19',
+      );
+    });
+  });
+
+  it('Should show every value of a multiple-value component in submission time zone', async function () {
+    const form = await new Form(_.cloneDeep(multipleValuesComp), {
+      server: true,
+      noeval: true,
+      noDefaults: true,
+      submissionTimezone: 'Europe/Berlin',
+    }).ready;
+
+    const dateTime = form.getComponent('dateTime');
+    // One value in CET and one in CEST, so each is converted on its own rather than
+    // through a single offset taken from the first.
+    const response = dateTime.getValueAsString(
+      ['2025-02-11T10:00:00.000Z', '2025-08-11T10:00:00.000Z'],
+      { email: true },
+    );
+    assert.equal(response, '2025-02-11 11:00 AM CET, 2025-08-11 12:00 PM CEST');
   });
 
   it('Should show date and time in submission time zone', async function () {

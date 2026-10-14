@@ -7446,6 +7446,90 @@ describe('Webform tests', function () {
       .catch(done);
   });
 
+  it('Should fetch translationsUrl as a simple CORS GET (no Content-Type / token)', function (done) {
+    const makeStaticRequest = Formio.makeStaticRequest;
+    let capturedOpts;
+    Formio.makeStaticRequest = function (url, method, data, opts) {
+      if (url === 'https://example.com/cors-translations.json') {
+        capturedOpts = opts;
+        return Promise.resolve({ en: {} });
+      }
+      return makeStaticRequest(url, method, data, opts);
+    };
+    const form = new Webform(document.createElement('div'), {
+      language: 'en',
+      i18n: { translationsUrl: 'https://example.com/cors-translations.json' },
+    });
+    form
+      .setForm(_.cloneDeep(simpleWebform))
+      .then(() => {
+        assert.ok(capturedOpts, 'makeStaticRequest should be called with opts');
+        // Pin exact opts: Formio.request defaults Content-Type + token → CORS preflight.
+        assert.deepEqual(capturedOpts.headers, { Accept: 'application/json' });
+        assert.strictEqual(capturedOpts.noToken, true);
+        Formio.makeStaticRequest = makeStaticRequest;
+        done();
+      })
+      .catch((err) => {
+        Formio.makeStaticRequest = makeStaticRequest;
+        done(err);
+      });
+  });
+
+  it('Should translate components using a language resource passed as an option', function (done) {
+    const makeStaticRequest = Formio.makeStaticRequest;
+    let requestedUrl = null;
+    Formio.makeStaticRequest = function (url, method, ...args) {
+      if (url.includes('652f0a0000000000000000a1')) {
+        requestedUrl = url;
+        return new Promise((resolve) => {
+          resolve([
+            {
+              data: {
+                languageKey: 'es',
+                translations: { 'This Is A Banana': 'Esto Es Un Platano' },
+              },
+            },
+          ]);
+        });
+      }
+      return makeStaticRequest(url, method, ...args);
+    };
+    const formElement = document.createElement('div');
+    const form = new Webform(formElement, {
+      language: 'es',
+      i18n: {
+        resource: {
+          form: '652f0a0000000000000000a1',
+          codeComponent: 'languageKey',
+          mapComponent: 'translations',
+        },
+      },
+    });
+    const formSchema = _.cloneDeep(simpleWebform);
+    formSchema.components[0].label = 'This Is A Banana';
+    form
+      .setForm(formSchema)
+      .then(() => {
+        setTimeout(() => {
+          const textfield = form.getComponent(['textField']);
+          const label = textfield.element.querySelector('[ref="label"]');
+          assert.equal(label.innerHTML?.trim(), 'Esto Es Un Platano', 'Should be translated');
+          // The resource is identified by id, so it must go through the /form/ route;
+          // the bare `{project}/{alias}` route resolves by path and 404s on an id.
+          assert.ok(
+            requestedUrl?.endsWith(
+              '/form/652f0a0000000000000000a1/submission?data.languageKey=es&limit=1',
+            ),
+            `Should query the resource by id through the /form/ route, got: ${requestedUrl}`,
+          );
+          Formio.makeStaticRequest = makeStaticRequest;
+          done();
+        }, 150);
+      })
+      .catch(done);
+  });
+
   describe('showErrors with nested forms', function () {
     const simpleForm = {
       display: 'form',
@@ -7795,4 +7879,253 @@ describe('Webform tests', function () {
       });
     }
   }
+
+  describe('Calculated values with a client-only source on submit', function () {
+    const formWithClientOnlyCalcSource = {
+      display: 'form',
+      components: [
+        {
+          label: 'Source',
+          key: 'dataSource',
+          type: 'hidden',
+          persistent: 'client-only',
+          input: true,
+        },
+        {
+          label: 'Text Field',
+          key: 'textField',
+          type: 'textfield',
+          input: true,
+          persistent: true,
+          calculateValue: 'value = data.dataSource[0]?.name',
+        },
+        { type: 'button', label: 'Submit', key: 'submit', action: 'submit', input: true },
+      ],
+    };
+
+    const editedSubmission = () => ({
+      _id: 'existing-submission-id',
+      state: 'submitted',
+      data: { dataSource: [{ name: 'Alabama', abbreviation: 'AL' }], textField: 'Alabama' },
+    });
+
+    it('preserves client-only source data on the post-submit re-application so calculations survive', function (done) {
+      const form = new Webform(document.createElement('div'), { language: 'en' });
+      form
+        .setForm(formWithClientOnlyCalcSource)
+        .then(() => form.setSubmission(editedSubmission()))
+        .then(() => {
+          // Mimic Webform.onSubmit re-applying the server response (client-only dataSource absent).
+          form.setValue(
+            { data: { textField: 'Alabama' } },
+            { noDefault: true, noValidate: true, noCheck: true },
+          );
+          // A later recalculation (e.g. from a reference nested form reload) must still find the source.
+          form.checkData();
+          setTimeout(() => {
+            try {
+              assert.deepEqual(
+                form.getComponent(['dataSource']).dataValue,
+                [{ name: 'Alabama', abbreviation: 'AL' }],
+                'client-only source should be preserved through the re-application',
+              );
+              assert.equal(
+                form.getComponent(['textField']).dataValue,
+                'Alabama',
+                'calculated value should not blank after submit',
+              );
+              done();
+            } catch (err) {
+              done(err);
+            }
+          }, 300);
+        })
+        .catch(done);
+    });
+
+    it('still clears non-client-only data absent from the re-applied submission (reset behavior unchanged)', function (done) {
+      const form = new Webform(document.createElement('div'), { language: 'en' });
+      form
+        .setForm(formWithClientOnlyCalcSource)
+        .then(() => form.setSubmission(editedSubmission()))
+        .then(() => {
+          const source = form.getComponent(['dataSource']);
+          const textField = form.getComponent(['textField']);
+          // Re-apply a response missing every field; noCheck prevents recalculation.
+          form.setValue({ data: {} }, { noDefault: true, noValidate: true, noCheck: true });
+          setTimeout(() => {
+            try {
+              assert.equal(
+                textField.dataValue,
+                textField.emptyValue,
+                'a normal (non-client-only) component absent from the response is still cleared',
+              );
+              assert.deepEqual(
+                source.dataValue,
+                [{ name: 'Alabama', abbreviation: 'AL' }],
+                'client-only data is preserved regardless',
+              );
+              done();
+            } catch (err) {
+              done(err);
+            }
+          }, 300);
+        })
+        .catch(done);
+    });
+  });
+
+  describe('Error list link with a named radio checkbox sharing the key', function () {
+    const namedCheckbox = (key, value) => ({
+      type: 'checkbox',
+      key,
+      label: key,
+      inputType: 'radio',
+      name: 'answerOne',
+      value,
+      input: true,
+    });
+    const formWithNamedRadioCheckboxes = {
+      display: 'form',
+      components: [
+        {
+          type: 'radio',
+          key: 'answerOne',
+          label: 'Answer One',
+          input: true,
+          values: [
+            { label: 'Yes', value: 'yes' },
+            { label: 'No', value: 'no' },
+          ],
+          validate: { required: true },
+        },
+        namedCheckbox('answerOneYes', 'yes'),
+        namedCheckbox('answerOneNo', 'no'),
+      ],
+    };
+
+    it('focuses the component that produced the error, not the checkbox sharing its key', function () {
+      const form = new Webform(document.createElement('div'));
+      return form
+        .setForm(fastCloneDeep(formWithNamedRadioCheckboxes))
+        .then(() => form.submit())
+        .catch(() => {
+          // the required radio rejects the submission
+        })
+        .then(() => {
+          const focused = [];
+          form.everyComponent((component) => {
+            sinon.stub(component, 'focus').callsFake(() => focused.push(component.component.key));
+            sinon.stub(component, 'scrollIntoView');
+          });
+
+          assert.equal(form.refs.errorRef.length, 1);
+          form.refs.errorRef[0].dispatchEvent(new MouseEvent('click'));
+
+          assert.deepEqual(focused, ['answerOne']);
+        });
+    });
+
+    const submitWithRequired = (requiredKeys, { wrapInPanel = false, radioLast = false } = {}) => {
+      const schema = fastCloneDeep(formWithNamedRadioCheckboxes);
+      schema.components.forEach((component) => {
+        component.validate = { required: requiredKeys.includes(component.key) };
+      });
+      if (radioLast) {
+        schema.components.push(schema.components.shift());
+      }
+      if (wrapInPanel) {
+        schema.components = [
+          { type: 'panel', key: 'panel', input: false, components: schema.components },
+        ];
+      }
+      const form = new Webform(document.createElement('div'));
+      return form
+        .setForm(schema)
+        .then(() => form.submit())
+        .catch(() => {
+          // the required components reject the submission
+        })
+        .then(() => form);
+    };
+
+    const recordFocus = (form) => {
+      const focused = [];
+      form.everyComponent((component) => {
+        sinon.stub(component, 'focus').callsFake(() => focused.push(component.component.key));
+        sinon.stub(component, 'scrollIntoView');
+      });
+      return focused;
+    };
+
+    const errorLinks = (form) => form.element.querySelectorAll('[ref="errorRef"]');
+
+    it("focuses a radio-input checkbox when the link is for that checkbox's own error", function () {
+      return submitWithRequired(['answerOneYes']).then((form) => {
+        const focused = recordFocus(form);
+
+        assert.equal(errorLinks(form).length, 1);
+        errorLinks(form)[0].dispatchEvent(new MouseEvent('click'));
+
+        assert.deepEqual(focused, ['answerOneYes']);
+      });
+    });
+
+    it('focuses each link its own component when the radio and a checkbox sharing its key both have errors', function () {
+      return submitWithRequired(['answerOne', 'answerOneYes']).then((form) => {
+        const focused = recordFocus(form);
+
+        assert.equal(errorLinks(form).length, 2);
+        errorLinks(form)[0].dispatchEvent(new MouseEvent('click'));
+        errorLinks(form)[1].dispatchEvent(new MouseEvent('click'));
+
+        assert.deepEqual(focused, ['answerOne', 'answerOneYes']);
+      });
+    });
+
+    it('focuses each link its own component when the radio is declared after the checkboxes sharing its key', function () {
+      return submitWithRequired(['answerOne', 'answerOneYes'], { radioLast: true }).then((form) => {
+        const focused = recordFocus(form);
+
+        assert.equal(errorLinks(form).length, 2);
+        errorLinks(form)[0].dispatchEvent(new MouseEvent('click'));
+        errorLinks(form)[1].dispatchEvent(new MouseEvent('click'));
+
+        assert.deepEqual(focused, ['answerOneYes', 'answerOne']);
+      });
+    });
+
+    it('still focuses the component that produced the error after its container is rebuilt', function () {
+      return submitWithRequired(['answerOne'], { wrapInPanel: true }).then((form) =>
+        form
+          .getComponent('panel')
+          .rebuild()
+          .then(() => {
+            const focused = recordFocus(form);
+
+            assert.equal(errorLinks(form).length, 1);
+            errorLinks(form)[0].dispatchEvent(new MouseEvent('click'));
+
+            assert.deepEqual(focused, ['answerOne']);
+          }),
+      );
+    });
+
+    it('shows each component only its own error when the radio and the checkboxes sharing its key are all required', function () {
+      return submitWithRequired(['answerOne', 'answerOneYes', 'answerOneNo']).then((form) => {
+        const shownErrors = {};
+        form.everyComponent((component) => {
+          shownErrors[component.component.key] = Array.from(
+            component.refs.messageContainer?.children || [],
+          ).map((message) => message.textContent.trim());
+        });
+
+        assert.deepEqual(shownErrors, {
+          answerOne: ['Answer One is required'],
+          answerOneYes: ['answerOneYes is required'],
+          answerOneNo: ['answerOneNo is required'],
+        });
+      });
+    });
+  });
 });

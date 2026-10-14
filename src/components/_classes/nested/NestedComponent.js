@@ -962,6 +962,10 @@ export default class NestedComponent extends Field {
     // if no value is provided and noDefault flag, set empty value
     else if (flags.noDefault && component.allowData) {
       flags.resetValue = true;
+      //  Preserve the live value instead of wiping it, so client-side calculations that read it don't blank out.
+      if (component.component.persistent === 'client-only') {
+        return false;
+      }
       return component.setValue(component.emptyValue, flags);
     } else if (
       (!this.rootPristine || component.visible) &&

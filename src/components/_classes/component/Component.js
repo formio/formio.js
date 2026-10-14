@@ -3053,19 +3053,6 @@ export default class Component extends Element {
         editor.on('change', () => onChange(editor.getData()));
         return Promise.resolve(editor);
       } else {
-        // Due to an issue with ckeditor not loading styles in the shadowdom (https://github.com/ckeditor/ckeditor5/issues/15824), we need to copy cke-styles to the shadowdom
-        let current = element;
-        while (current) {
-          if (current instanceof ShadowRoot) {
-            const ckeStyles = document.querySelector('style[data-cke="true"]');
-            const clone = document.createElement('style');
-            clone.setAttribute('data-cke', 'true');
-            clone.textContent = ckeStyles.textContent;
-            current.prepend(clone);
-            break;
-          }
-          current = current.parentNode || current.host;
-        }
         return ClassicEditor.create(element, settings).then((editor) => {
           editor.model.document.on('change', () => onChange(editor.data.get()));
           return editor;
@@ -3113,64 +3100,6 @@ export default class Component extends Element {
           return Promise.reject();
         }
         this.quill = new Quill(element, isIEBrowser ? { ...settings, modules: {} } : settings);
-
-        const root = element.getRootNode();
-        if (root instanceof ShadowRoot && root.getSelection) {
-          const sel = this.quill.selection;
-
-          // 1. getNativeRange: read selection from shadowRoot instead of document
-          sel.getNativeRange = () => {
-            const shadowSelection = root.getSelection();
-            if (shadowSelection == null || shadowSelection.rangeCount <= 0) return null;
-            const nativeRange = shadowSelection.getRangeAt(0);
-            if (nativeRange == null) return null;
-            return sel.normalizeNative(nativeRange);
-          };
-
-          // 2. hasFocus: check shadowRoot.activeElement instead of document.activeElement
-          sel.hasFocus = () => {
-            return (
-              root.activeElement === sel.root ||
-              (root.activeElement != null && sel.root.contains(root.activeElement))
-            );
-          };
-
-          // 3. setNativeRange: use shadowRoot's selection to add/remove ranges
-          const origSetNativeRange = sel.setNativeRange.bind(sel);
-          sel.setNativeRange = (startNode, startOffset, endNode, endOffset, force) => {
-            // Delegate to original logic for the null case (blur)
-            if (startNode == null) {
-              origSetNativeRange(null);
-              return;
-            }
-            if (!sel.hasFocus()) {
-              sel.root.focus({ preventScroll: true });
-            }
-            const shadowSelection = root.getSelection();
-            if (shadowSelection == null) return;
-            const { native } = sel.getNativeRange() || {};
-            endNode = endNode ?? startNode;
-            endOffset = endOffset ?? startOffset;
-            if (
-              native == null ||
-              force ||
-              startNode !== native.startContainer ||
-              startOffset !== native.startOffset ||
-              endNode !== native.endContainer ||
-              endOffset !== native.endOffset
-            ) {
-              const range = document.createRange();
-              range.setStart(startNode, startOffset);
-              range.setEnd(endNode, endOffset);
-              shadowSelection.removeAllRanges();
-              shadowSelection.addRange(range);
-            }
-          };
-
-          document.addEventListener('selectionchange', () => {
-            sel.update();
-          });
-        }
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ */
         const txtArea = document.createElement('textarea');

@@ -378,6 +378,28 @@ export default class EditGridComponent extends NestedArrayComponent {
     return [EditRowState.New, EditRowState.Editing, EditRowState.Viewing].includes(editRow.state);
   }
 
+  shouldBlockUnsavedOpenRows() {
+    const openRows = this.editRows.filter((editRow) => this.isOpen(editRow));
+
+    if (!openRows.length) {
+      return false;
+    }
+
+    const isOnlyPristineOpenWhenEmptyRow =
+      this.component.openWhenEmpty &&
+      openRows.length === 1 &&
+      openRows.every((row) => row.state === EditRowState.New) &&
+      openRows.every((row) => {
+        let isPristine = true;
+        eachComponent(row.components, (comp) => {
+          isPristine =
+            comp.type === 'form' ? _.isEqual(comp.emptyValue, comp.dataValue) : comp.pristine;
+        });
+        return isPristine;
+      });
+    return !isOnlyPristineOpenWhenEmptyRow;
+  }
+
   isComponentVisibleInSomeRow(component) {
     const rows = this.editRows;
     const savedStates = [EditRowState.Saved, EditRowState.Editing, EditRowState.Draft];
@@ -1298,7 +1320,7 @@ export default class EditGridComponent extends NestedArrayComponent {
       if (valid === null) {
         editRow.errors.push({
           type: 'error',
-          message: this.t('componentInvalidRowValidation', { componentKey: this.key })
+          message: this.t('componentInvalidRowValidation', { componentKey: this.key }),
         });
       }
     }
@@ -1384,7 +1406,11 @@ export default class EditGridComponent extends NestedArrayComponent {
         this.removeClass(this.element, 'has-error');
       }
       return false;
-    } else if (rowsEditing && this.saveEditMode && !this.component.openWhenEmpty) {
+    } else if (
+      rowsEditing &&
+      this.saveEditMode &&
+      (this.shouldBlockUnsavedOpenRows() || this.errors.length)
+    ) {
       this._errors = this.setCustomValidity(this.t(this.errorMessage('unsavedRowsError')), dirty);
       errors.push(...this._errors);
       return false;

@@ -309,7 +309,7 @@ export default class FormComponent extends Component {
       return super.attach(element);
     }
     return super.attach(element).then(() => {
-      if (this.isSubFormLazyLoad() && !this.hasLoadedForm && !this.subFormLoading) {
+      if (this.isSubFormLazyLoad() && !this.subForm && !this.subFormLoading) {
         this.createSubForm(true);
       }
 
@@ -433,6 +433,28 @@ export default class FormComponent extends Component {
       this.setSubFormDisabled(this.subForm);
     }
     return super.redraw();
+  }
+
+  /**
+   * Get Row Index. Declared so the setter below does not shadow the inherited getter.
+   * @returns {number} - The row index.
+   */
+  get rowIndex() {
+    return super.rowIndex;
+  }
+
+  /**
+   * Set Row Index to row and pass it down to the subform so that its components
+   * regenerate their paths. Unlike NestedComponent, the subform is not part of
+   * this.components, so the row index has to be forwarded explicitly.
+   * @param {number} value - The row index.
+   * @returns {void}
+   */
+  set rowIndex(value) {
+    super.rowIndex = value;
+    if (this.subForm) {
+      this.subForm.rowIndex = value;
+    }
   }
 
   /**

@@ -23,6 +23,7 @@ import {
   comp21,
   withOpenWhenEmptyAndConditions,
   compOpenWhenEmpty,
+  compOpenWhenEmptyNestedForm,
   compWithCustomDefaultValue,
   formsWithEditGridAndConditions,
   compTestEvents,
@@ -2154,6 +2155,79 @@ describe('EditGrid Component', function () {
               );
               const error = editRow.errors[0];
               assert.equal(error.formattedKeyOrPath, 'editGrid[0].textField');
+              done();
+            }, 450);
+          }, 100);
+        })
+        .catch(done);
+    });
+
+    it('Should not submit openWhenEmpty form with a modified unsaved row', function (done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const formSchema = _.cloneDeep(compOpenWhenEmpty);
+      formSchema.components[1].disableOnInvalid = false;
+
+      form
+        .setForm(formSchema)
+        .then(() => {
+          const editGrid = form.components[0];
+          const textField = editGrid.editRows[0].components[0];
+
+          Harness.dispatchEvent(
+            'input',
+            textField.element,
+            '[name="data[editGrid][0][textField]"]',
+            (input) => (input.value = 'Value'),
+          );
+
+          setTimeout(() => {
+            Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
+            setTimeout(() => {
+              assert(!form.submission.state, 'Form should not be submitted');
+              assert(editGrid.errors.length > 0, 'Should show unsaved rows error');
+              done();
+            }, 450);
+          }, 200);
+        })
+        .catch(done);
+    });
+
+    it('Should not submit openWhenEmpty form with multiple unsaved rows', function (done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+      const formSchema = _.cloneDeep(compOpenWhenEmpty);
+      formSchema.components[1].disableOnInvalid = false;
+
+      form
+        .setForm(formSchema)
+        .then(() => {
+          const editGrid = form.components[0];
+          editGrid.addRow();
+
+          setTimeout(() => {
+            Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
+            setTimeout(() => {
+              assert(!form.submission.state, 'Form should not be submitted');
+              assert(editGrid.errors.length > 0, 'Should show unsaved rows error');
+              done();
+            }, 450);
+          }, 200);
+        })
+        .catch(done);
+    });
+
+    it('Should not submit openWhenEmpty form with untouched nested form required fields', function (done) {
+      const formElement = document.createElement('div');
+      const form = new Webform(formElement);
+
+      form
+        .setForm(compOpenWhenEmptyNestedForm)
+        .then(() => {
+          setTimeout(() => {
+            Harness.dispatchEvent('click', form.element, '[name="data[submit]"]');
+            setTimeout(() => {
+              assert(!form.submission.state, 'Form should not be submitted');
               done();
             }, 450);
           }, 100);

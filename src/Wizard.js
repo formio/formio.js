@@ -159,9 +159,15 @@ export default class Wizard extends Webform {
       { name: 'cancel', method: 'cancel' },
       { name: 'previous', method: 'prevPage' },
       { name: 'next', method: 'nextPage' },
-      { name: 'submit', method: 'submit', args: [false, {
-          state: 'submitted',
-        }],
+      {
+        name: 'submit',
+        method: 'submit',
+        args: [
+          false,
+          {
+            state: 'submitted',
+          },
+        ],
       },
     ].forEach((button) => {
       if (this.hasButton(button.name)) {
@@ -1212,8 +1218,8 @@ export default class Wizard extends Webform {
     return !this.isLastPage() && !this.submitted ? this.currentPage.errors : super.errors;
   }
 
-  focusOnComponent(key) {
-    const component = this.getComponent(key);
+  focusOnComponent(key, componentKey) {
+    const component = this.getErrorComponent(key, componentKey);
     if (component) {
       let topPanel = component.parent;
       while (!(topPanel.parent instanceof Wizard)) {
@@ -1223,11 +1229,11 @@ export default class Wizard extends Webform {
       if (pageIndex >= 0) {
         const page = this.pages[pageIndex];
         if (page && page !== this.currentPage) {
-          return this.setPage(pageIndex).then(() => super.focusOnComponent(key));
+          return this.setPage(pageIndex).then(() => super.focusOnComponent(key, componentKey));
         }
       }
     }
-    return super.focusOnComponent(key);
+    return super.focusOnComponent(key, componentKey);
   }
 
   triggerButtonCaptcha(page) {
