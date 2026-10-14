@@ -521,6 +521,41 @@ export default class Component extends Element {
   }
 
   /**
+   * Registers this instance in every root's `childComponentsMap`. Several components can resolve
+   * to one data path — see `getSharedPathKey` in `@formio/core` for the rule this follows.
+   * @returns {void}
+   */
+  registerComponentInstance() {
+    const path = this.path;
+    if (!path) {
+      return;
+    }
+    // Recorded on every instance, not just the ones that lose the race for the path: it names
+    // this registration for `unregisterComponentInstance()`, which can run after `path` changed.
+    this.sharedPathKey = FormioUtils.getSharedPathKey(path, this.component.key);
+    this.eachRootChildComponentsMap((map) => {
+      FormioUtils.registerInstanceAtPath(map, path, this.component.key, this);
+    });
+  }
+
+  /**
+   * Removes this instance from every root's `childComponentsMap`.
+   * @param {string} [path] - The path this instance was registered under, when it has since
+   * been re-keyed (a DataGrid row index change regenerates paths before unregistering).
+   * @returns {void}
+   */
+  unregisterComponentInstance(path = this.path) {
+    this.eachRootChildComponentsMap((map) => {
+      if (map[path] === this) {
+        delete map[path];
+      }
+      if (this.sharedPathKey && map[this.sharedPathKey] === this) {
+        delete map[this.sharedPathKey];
+      }
+    });
+  }
+
+  /**
    * Returns if the parent should conditionally clear.
    *
    * @returns {boolean} - If the parent should conditionally clear.
