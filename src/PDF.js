@@ -3,6 +3,28 @@ import { GlobalFormio as Formio } from './Formio';
 import Webform from './Webform';
 import { fastCloneDeep, eachComponent } from './utils/utils';
 
+const getIframeOrigin = (iframeElement) => {
+  try {
+    const origin = new URL(iframeElement.src, window.location.href).origin;
+    return origin === 'null' ? null : origin;
+  }
+  catch (ignoreErr) {
+    return null;
+  }
+};
+
+const isTrustedIframeMessage = (event, form) => {
+  const iframeWindow = form?.iframeElement?.contentWindow;
+  const iframeOrigin = form?.iframeElement && getIframeOrigin(form.iframeElement);
+
+  return Boolean(
+    iframeWindow &&
+    iframeOrigin &&
+    event.source === iframeWindow &&
+    event.origin === iframeOrigin
+  );
+};
+
 export default class PDF extends Webform {
   constructor(element, options) {
     options.display = 'pdf';
@@ -319,14 +341,19 @@ if (typeof window !== 'undefined') {
       eventData = null;
     }
 
-    // If this form exists, then emit the event within this form.
+    // If this form exists and the message came from its PDF iframe, emit the event within this form.
     if (
       eventData &&
       eventData.name &&
       eventData.formId &&
       Formio.forms.hasOwnProperty(eventData.formId)
     ) {
-      Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
+      const form = Formio.forms[eventData.formId];
+      if (!isTrustedIframeMessage(event, form)) {
+        return;
+      }
+
+      form.emit(`iframe-${eventData.name}`, eventData.data);
     }
   });
 }
