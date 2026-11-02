@@ -224,7 +224,9 @@ export function checkSimpleConditional(component, condition, row, data, instance
     }
 
     const conditionsResult = _.map(conditions, (cond) => {
-      const { value: comparedValue, operator, component: conditionComponentPath } = cond;
+      const { value: comparedValue, operator } = cond;
+      // A numeric key such as "507" can be saved as a number by the builder, so use a string path.
+      const conditionComponentPath = _.isNil(cond.component) ? '' : String(cond.component);
       if (!conditionComponentPath) {
         return true;
       }

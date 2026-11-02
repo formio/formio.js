@@ -126,6 +126,23 @@ describe('Util Tests', function () {
       expect(utils.checkCondition(component, null, data1)).to.be.equal(true);
       expect(utils.checkCondition(component, null, data2)).to.be.equal(false);
     });
+
+    it('should calculate simple conditions when the condition component key is saved as a number', function () {
+      // The builder's "auto" data type select saves a numeric key such as "507" as the number 507.
+      const component = {
+        key: 'textField1',
+        conditional: {
+          show: true,
+          conjunction: 'all',
+          conditions: [{ component: 507, operator: 'isEqual', value: true }],
+        },
+      };
+      const data1 = { 507: true };
+      const data2 = { 507: false };
+
+      expect(utils.checkCondition(component, null, data1)).to.be.equal(true);
+      expect(utils.checkCondition(component, null, data2)).to.be.equal(false);
+    });
   });
 
   describe('getDateSetting', function () {
