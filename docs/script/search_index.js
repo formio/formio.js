@@ -2244,6 +2244,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/pdf.unit.js",
+    "file/src/PDF.unit.js.html",
+    "src/PDF.unit.js",
+    "file"
+  ],
+  [
     "src/pdfbuilder.spec.js",
     "file/src/PDFBuilder.spec.js.html",
     "src/PDFBuilder.spec.js",
