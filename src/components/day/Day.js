@@ -52,13 +52,13 @@ export default class DayComponent extends Field {
     schema = schema || {};
     return getComponentSavedTypes(schema) || [componentValueTypes.string];
   }
-
+  
   constructor(component, options, data) {
-    if (component.maxDate && component.maxDate.indexOf('moment(') === -1) {
-      component.maxDate = moment(component.maxDate, 'YYYY-MM-DD').toISOString();
+    if (component.maxDate && component.maxDate.indexOf('moment(') === -1) { 
+      component.maxDate = moment(component.maxDate).toISOString();
     }
     if (component.minDate && component.minDate.indexOf('moment(') === -1) {
-      component.minDate = moment(component.minDate, 'YYYY-MM-DD').toISOString();
+      component.minDate = moment(component.minDate).toISOString();
     }
     super(component, options, data);
   }
