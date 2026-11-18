@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.21.9
+### Changed
+ - Official Release
+
 ## 4.21.9-rc.0
 ### Changed
  - FIO-12667: PDF iframe message handling update
